@@ -9,7 +9,8 @@
 		android:id="@+id/song_list"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		android:layout_weight="1" />
+		android:layout_weight="1"
+		android:fastScrollEnabled="true" />
 	<LinearLayout
 		android:id="@+id/filter_layout"
 		android:layout_height="wrap_content"
