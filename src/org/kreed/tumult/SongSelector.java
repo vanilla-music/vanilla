@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -63,21 +62,6 @@ public class SongSelector extends Activity implements View.OnClickListener, OnIt
 
 		for (Button button : mButtons)
 			button.setOnClickListener(this);
-	}
-	
-	@Override
-	public boolean onKeyUp(int keyCode, KeyEvent event)
-	{
-		switch (keyCode) {
-		case KeyEvent.KEYCODE_BACK:
-			if (mFilterLayout.getVisibility() != View.GONE)
-				onClick(mCloseButton);
-			else
-				finish();
-			return true;
-		}
-
-		return false;
 	}
 
 	@Override
