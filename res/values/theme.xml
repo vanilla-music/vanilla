@@ -1,0 +1,5 @@
+<resources>
+    <style name="Theme.NoBackground" parent="android:Theme.NoTitleBar">
+        <item name="android:windowBackground">@null</item>
+    </style>
+</resources>

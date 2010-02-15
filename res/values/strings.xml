@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">Tumult</string>
+	<string name="headset_only_summary_on">Audio only plays when a headset is plugged in</string>
+	<string name="headset_only_title">Headset only</string>
+	<string name="headset_only_summary_off">Audio may play without a headset plugged in</string>
+</resources>

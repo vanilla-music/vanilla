@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:persistent="true">    
+	<CheckBoxPreference
+		android:key="headset_only"
+		android:title="@string/headset_only_title"
+		android:defaultValue="false"
+		android:summaryOn="@string/headset_only_summary_on"
+		android:summaryOff="@string/headset_only_summary_off" />
+</PreferenceScreen>
