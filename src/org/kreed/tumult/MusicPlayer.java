@@ -4,6 +4,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.util.Log;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -152,6 +153,7 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 					case ITEM_SONG:
 						int i = mCurrentSong + 1 + mQueuePos++;
 						Song song = new Song(message.arg2);
+						Toast.makeText(Tumult.getContext(), "Enqueued " + song.title, Toast.LENGTH_SHORT).show();
 
 						if (i < mSongTimeline.size())
 							mSongTimeline.set(i, song);
@@ -247,7 +249,6 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 	private void pause()
 	{
 		mMediaPlayer.pause();
-		Log.i("Tumult", "background");
 		mService.stopForegroundCompat(NOTIFICATION_ID);
 	}
 

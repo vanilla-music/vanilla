@@ -90,7 +90,8 @@ public class SongAdapter extends BaseAdapter implements Filterable {
 		return view;
 	}
 
-	public Filter getFilter() {
+	public Filter getFilter()
+	{
 		if (mFilter == null)
 			mFilter = new ArrayFilter();
 		return mFilter;
