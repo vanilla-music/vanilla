@@ -29,11 +29,31 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 	
 	public static final int STATE_NORMAL = 0;
 	public static final int STATE_NO_MEDIA = 1;
+	public static final int STATE_PLAYING = 2;
 
 	public IPlaybackService.Stub mBinder = new IPlaybackService.Stub() {
 		public Song[] getCurrentSongs()
 		{
 			return new Song[] { getSong(-1), getSong(0), getSong(1) };
+		}
+		
+		public int getState()
+		{
+			return mState;
+		}
+		
+		public long getStartTime()
+		{
+			if (mMediaPlayer == null)
+				return 0;
+			return MusicPlayer.this.getStartTime();
+		}
+		
+		public int getDuration()
+		{
+			if (mMediaPlayer == null)
+				return 0;
+			return mMediaPlayer.getDuration();
 		}
 
 		public void nextSong()
@@ -61,6 +81,16 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 		{
 			if (watcher != null)
 				mWatchers.register(watcher);
+		}
+
+		public void seekToProgress(int progress)
+		{
+			if (mMediaPlayer == null || !mMediaPlayer.isPlaying())
+				return;
+			
+			long position = (long)mMediaPlayer.getDuration() * progress / 1000;
+			mMediaPlayer.seekTo((int)position);
+			mediaLengthChanged();
 		}
 	};
 	
@@ -201,6 +231,9 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 	
 	public void setState(int state)
 	{
+		if (mState == state)
+			return;
+
 		int oldState = mState;
 		mState = state;
 
@@ -244,12 +277,15 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 		notification.contentIntent = PendingIntent.getActivity(mService, 0, intent, 0);
 
 		mService.startForegroundCompat(NOTIFICATION_ID, notification);
+		
+		setState(STATE_PLAYING);
 	}
 	
 	private void pause()
 	{
 		mMediaPlayer.pause();
 		mService.stopForegroundCompat(NOTIFICATION_ID);
+		setState(STATE_NORMAL);
 	}
 
 	private void setPlaying(boolean play)
@@ -291,12 +327,36 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 			Log.e("Tumult", "IOException", e);
 		}
 
+		mediaLengthChanged();
+
 		getSong(+2);
 
 		while (mCurrentSong > 15) {
 			mSongTimeline.remove(0);
 			--mCurrentSong;
 		}
+	}
+	
+	private long getStartTime()
+	{
+		int position = mMediaPlayer.getCurrentPosition();
+		return System.currentTimeMillis() - position;	
+	}
+
+	private void mediaLengthChanged()
+	{
+		long start = getStartTime();
+		int duration = mMediaPlayer.getDuration();
+
+		int i = mWatchers.beginBroadcast();
+		while (--i != -1) {
+			try {
+				mWatchers.getBroadcastItem(i).mediaLengthChanged(start, duration);
+			} catch (RemoteException e) {
+				// Null elements will be removed automatically
+			}
+		}
+		mWatchers.finishBroadcast();
 	}
 
 	public void onCompletion(MediaPlayer player)
@@ -306,7 +366,7 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 
 	private Song randomSong()
 	{
-		return new Song(mSongs[mRandom.nextInt(mSongs.length)]);	
+		return new Song(mSongs[mRandom.nextInt(mSongs.length)]);
 	}
 
 	private synchronized Song getSong(int delta)

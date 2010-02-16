@@ -6,4 +6,5 @@ oneway interface IMusicPlayerWatcher {
 	void previousSong(in Song playingSong, in Song nextForwardSong);
 	void nextSong(in Song playingSong, in Song nextBackwardSong);
 	void stateChanged(in int oldState, in int newState);
+	void mediaLengthChanged(in long startTime, in int duration);
 }

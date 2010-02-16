@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region;
+import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -32,17 +33,17 @@ public class CoverView extends View {
 	public interface CoverViewWatcher {
 		public void next();
 		public void previous();
-		public void togglePlayback();
+		public void clicked();
 	}
 
-	public CoverView(Context context)
+	public CoverView(Context context, AttributeSet attributes)
 	{
-		super(context);
+		super(context, attributes);
 
 		mScroller = new Scroller(context);
 	}
 
-	public void setCoverSwapListener(CoverViewWatcher listener)
+	public void setWatcher(CoverViewWatcher listener)
 	{
 		mListener = listener;
 	}
@@ -254,7 +255,7 @@ public class CoverView extends View {
 			break; 		
 		 case MotionEvent.ACTION_UP:
 			if (Math.abs(mStartX - x) + Math.abs(mStartY - ev.getY()) < 10) {
-				mListener.togglePlayback();
+				mListener.clicked();
 			} else {
 				VelocityTracker velocityTracker = mVelocityTracker;
 				velocityTracker.computeCurrentVelocity(1000);

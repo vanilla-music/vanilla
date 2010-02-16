@@ -8,22 +8,41 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
-public class NowPlayingActivity extends Activity implements CoverViewWatcher, ServiceConnection {
+public class NowPlayingActivity extends Activity implements CoverViewWatcher, ServiceConnection, View.OnClickListener, SeekBar.OnSeekBarChangeListener {
 	private IPlaybackService mService;
+	
+	private ViewGroup mLayout;
 	private CoverView mCoverView;
 	private LinearLayout mMessageBox;
+	private View mControls;
 
-	private static final int MENU_PREVIOUS = 0;
-	private static final int MENU_NEXT = 1;
+	private ImageButton mPreviousButton;
+	private ImageButton mPlayPauseButton;
+	private ImageButton mNextButton;
+	private SeekBar mSeekBar;
+	private TextView mSeekText;
+
+	private int mState;
+	private long mStartTime;
+	private int mDuration;
+	private boolean mSeekBarTracking;
+
 	private static final int MENU_PREFS = 2;
 	private static final int MENU_QUEUE = 3;
 
@@ -32,18 +51,40 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 	{
 		super.onCreate(icicle);
 
-		mCoverView = new CoverView(this);
-		mCoverView.setCoverSwapListener(this);;
-		setContentView(mCoverView);
-//		Bundle extras = getIntent().getExtras();
+		setContentView(R.layout.nowplaying);
+
+		mCoverView = (CoverView)findViewById(R.id.cover_view);
+		mCoverView.setWatcher(this);
+		
+		mLayout = (ViewGroup)mCoverView.getParent();
+		
+		mControls = findViewById(R.id.controls);
+		
+		mPreviousButton = (ImageButton)findViewById(R.id.previous);
+		mPreviousButton.setOnClickListener(this);
+		mPlayPauseButton = (ImageButton)findViewById(R.id.play_pause);
+		mPlayPauseButton.setOnClickListener(this);
+		mNextButton = (ImageButton)findViewById(R.id.next);
+		mNextButton.setOnClickListener(this);
+		
+		mSeekText = (TextView)findViewById(R.id.seek_text);
+		mSeekBar = (SeekBar)findViewById(R.id.seek_bar);
+		mSeekBar.setMax(1000);
+		mSeekBar.setOnSeekBarChangeListener(this);
 	}
 	
 	public void setState(int state)
 	{
+		mState = state;
+
 		switch (state) {
 		case MusicPlayer.STATE_NORMAL:
-			setContentView(mCoverView);
-			mMessageBox = null;
+		case MusicPlayer.STATE_PLAYING:
+			if (mMessageBox != null) {
+				mLayout.removeView(mMessageBox);
+				mMessageBox = null;
+			}
+			mPlayPauseButton.setImageResource(state == MusicPlayer.STATE_PLAYING ? R.drawable.pause : R.drawable.play);
 			break;
 		case MusicPlayer.STATE_NO_MEDIA:
 			mMessageBox = new LinearLayout(this);
@@ -51,11 +92,11 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 			TextView text = new TextView(this);
 			text.setText("No songs found on your device.");
 			text.setGravity(Gravity.CENTER);
-			LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+			LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
 			layoutParams.gravity = Gravity.CENTER;
 			text.setLayoutParams(layoutParams);
 			mMessageBox.addView(text);
-			setContentView(mMessageBox);
+			mLayout.addView(mMessageBox);
 			break;
 		}
 	}
@@ -98,6 +139,7 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 		try {
 			mService.registerWatcher(mWatcher);
 			refreshSongs();
+			setState(mService.getState());
 		} catch (RemoteException e) {
 			Log.i("Tumult", "Failed to initialize connection to playback service", e);
 		}
@@ -147,6 +189,12 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 				}
 			});
 		}
+
+		public void mediaLengthChanged(long startTime, int duration)
+		{
+			mStartTime = startTime;
+			mDuration = duration;
+		}
 	};
 
 	public void next()
@@ -167,7 +215,7 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 		}
 	}
 	
-	public void togglePlayback()
+	private void togglePlayback()
 	{
 		try {
 			mService.togglePlayback();
@@ -178,8 +226,6 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-		menu.add(0, MENU_PREVIOUS, 0, "Previous");
-		menu.add(0, MENU_NEXT, 0, "Next");
 		menu.add(0, MENU_PREFS, 0, "Preferences");
 		menu.add(0, MENU_QUEUE, 0, "Add to Queue");
 		return true;
@@ -188,33 +234,139 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 	@Override
 	public boolean onOptionsItemSelected(final MenuItem item)
 	{
-		new Thread(new Runnable() {
-			public void run()
-			{
-				switch (item.getItemId()) {
-				case MENU_PREVIOUS:
-					previous();
-					break;
-				case MENU_NEXT:
-					next();
-					break;
-				case MENU_PREFS:
-					startActivity(new Intent(NowPlayingActivity.this, PreferencesActivity.class));
-					break;
-				case MENU_QUEUE:
-					onSearchRequested();
-					break;
-				}
-			}
-		}).start();
+		switch (item.getItemId()) {
+		case MENU_PREFS:
+			startActivity(new Intent(this, PreferencesActivity.class));
+			break;
+		case MENU_QUEUE:
+			onSearchRequested();
+			break;
+		}
 
 		return true;
 	}
-	
+
 	@Override
 	public boolean onSearchRequested()
 	{
 		startActivity(new Intent(this, SongSelector.class));
 		return false;
+	}
+
+	@Override
+	public boolean onKeyUp(int keyCode, KeyEvent event)
+	{
+		switch (keyCode) {
+		case KeyEvent.KEYCODE_DPAD_CENTER:
+		case KeyEvent.KEYCODE_ENTER:
+			clicked();
+			return true;
+		}
+
+		return false;
+	}
+
+	public void clicked()
+	{
+		mControls.setVisibility(View.VISIBLE);
+		
+		if (mStartTime == 0) {
+			try {
+				mStartTime = mService.getStartTime();
+				mDuration = mService.getDuration();
+			} catch (RemoteException e) {
+				return;
+			}
+		}
+		
+		updateProgress();
+		sendHideMessage();
+	}
+	
+	private String stringForTime(int ms)
+	{
+		int seconds = ms / 1000;
+
+		int hours = seconds / 3600;
+		seconds -= hours * 3600;
+		int minutes = seconds / 60;
+		seconds -= minutes * 60;
+
+		if (hours > 0)
+			return String.format("%d:%02d:%02d", hours, minutes, seconds);
+		else
+			return String.format("%02d:%02d", minutes, seconds);
+	}
+
+	private void updateProgress()
+	{
+		if (mState != MusicPlayer.STATE_PLAYING || mControls.getVisibility() != View.VISIBLE)
+			return;
+		
+		long position = System.currentTimeMillis() - mStartTime;
+		if (!mSeekBarTracking)
+			mSeekBar.setProgress((int)(1000 * position / mDuration));
+		mSeekText.setText(stringForTime((int)position) + " / " + stringForTime(mDuration));
+		
+		long next = 1000 - position % 1000;
+		mHandler.sendMessageDelayed(mHandler.obtainMessage(UPDATE_PROGRESS), next);
+	}
+	
+	private void sendHideMessage()
+	{
+		Message message = mHandler.obtainMessage(HIDE);
+		mHandler.removeMessages(HIDE);
+		mHandler.sendMessageDelayed(message, 3000);
+	}
+
+	public void onClick(View view)
+	{
+		sendHideMessage();
+
+		if (view == mNextButton) {
+			next();
+		} else if (view == mPreviousButton) {
+			previous();
+		} else if (view == mPlayPauseButton) {
+			togglePlayback();
+		}
+	}
+	
+	private static final int HIDE = 0;
+	private static final int UPDATE_PROGRESS = 1;
+
+	private Handler mHandler = new Handler() {
+		public void handleMessage(Message message) {
+			switch (message.what) {
+			case HIDE:
+				mControls.setVisibility(View.GONE);
+				break;
+			case UPDATE_PROGRESS:
+				updateProgress();
+				break;
+			}
+		}
+	};
+
+	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
+	{
+		if (fromUser) {
+			try {
+				mService.seekToProgress(progress);
+			} catch (RemoteException e) {
+			}
+		}
+	}
+
+	public void onStartTrackingTouch(SeekBar seekBar)
+	{
+		mHandler.removeMessages(HIDE);
+		mSeekBarTracking = true;
+	}
+
+	public void onStopTrackingTouch(SeekBar seekBar)
+	{
+		sendHideMessage();
+		mSeekBarTracking = false;
 	}
 }
