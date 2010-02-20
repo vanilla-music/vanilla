@@ -77,6 +77,8 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 		mSeekBar.setMax(1000);
 		mSeekBar.setOnSeekBarChangeListener(this);
 		mSeekBar.setOnFocusChangeListener(this);
+
+		setState(MusicPlayer.STATE_NORMAL);
 	}
 	
 	public void setState(int state)
@@ -85,6 +87,8 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 
 		switch (state) {
 		case MusicPlayer.STATE_NORMAL:
+			mControlsBottom.setVisibility(View.VISIBLE);
+			// fall through
 		case MusicPlayer.STATE_PLAYING:
 			if (mMessageBox != null) {
 				mLayout.removeView(mMessageBox);
@@ -356,7 +360,8 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 			switch (message.what) {
 			case HIDE:
 				mControlsTop.setVisibility(View.GONE);
-				mControlsBottom.setVisibility(View.GONE);
+				if (mState == MusicPlayer.STATE_PLAYING)
+					mControlsBottom.setVisibility(View.GONE);
 				break;
 			case UPDATE_PROGRESS:
 				updateProgress();
