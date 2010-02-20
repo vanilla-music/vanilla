@@ -161,11 +161,6 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 					setCurrentSong(message.arg1);
 					break;
 				case PLAY_PAUSE:
-					if (mCurrentSong == -1) {
-						setCurrentSong(+1);
-						return;
-					}
-			
 					setPlaying(!mMediaPlayer.isPlaying());
 					break;
 				case HEADSET_PLUGGED:
@@ -224,12 +219,7 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 		mHeadsetOnly = settings.getBoolean("headset_only", false);
 		settings.registerOnSharedPreferenceChangeListener(this);
 		
-		mHandler.post(new Runnable() {
-			public void run() 
-			{
-				setCurrentSong(1);
-			}
-		});
+		setCurrentSong(1);
 		
 		Looper.loop();
 	}
