@@ -5,55 +5,56 @@
 		android:layout_height="fill_parent"
 		android:layout_width="fill_parent" />
 	<LinearLayout
-		android:id="@+id/controls"
+		android:id="@+id/controls_top"
 		android:visibility="gone"
 		android:layout_height="wrap_content"
 		android:layout_width="fill_parent"
-		android:layout_gravity="bottom|center_horizontal"
-		android:background="#000"
-		android:orientation="vertical">
-		<LinearLayout
+		android:layout_gravity="top"
+		android:background="#a000"
+		android:orientation="horizontal">
+		<SeekBar
+			android:id="@+id/seek_bar"
 			android:layout_height="wrap_content"
 			android:layout_width="wrap_content"
 			android:layout_gravity="center"
-			android:orientation="horizontal">
-			<ImageButton
-				android:id="@+id/previous"
-				android:layout_height="wrap_content"
-				android:layout_width="wrap_content"
-				android:background="@null"
-				android:src="@drawable/previous" />
-			<ImageButton
-				android:id="@+id/play_pause"
-				android:layout_height="wrap_content"
-				android:layout_width="wrap_content"
-				android:layout_marginLeft="25px"
-				android:background="@null"
-				android:src="@drawable/play" />
-			<ImageButton
-				android:id="@+id/next"
-				android:layout_height="wrap_content"
-				android:layout_width="wrap_content"
-				android:layout_marginLeft="25px"
-				android:background="@null"
-				android:src="@drawable/next" />
-		</LinearLayout>
-		<LinearLayout
+			android:layout_marginLeft="15px"
+			android:layout_marginRight="15px"
+			android:layout_weight="1" />
+		<TextView
+			android:id="@+id/seek_text"
 			android:layout_height="wrap_content"
-			android:layout_width="fill_parent"
-			android:orientation="horizontal">
-			<SeekBar
-				android:id="@+id/seek_bar"
-				android:layout_height="wrap_content"
-				android:layout_width="wrap_content"
-				android:layout_gravity="center"
-				android:layout_weight="1" />
-			<TextView
-				android:id="@+id/seek_text"
-				android:layout_height="wrap_content"
-				android:layout_width="wrap_content"
-				android:layout_gravity="center"
-				android:text="0:00 / 0:00" />
-		</LinearLayout>
+			android:layout_width="wrap_content"
+			android:layout_gravity="center"
+			android:layout_marginRight="15px"
+			android:text="0:00 / 0:00" />
+	</LinearLayout>
+	<LinearLayout
+		android:id="@+id/controls_bottom"
+		android:visibility="gone"
+		android:layout_height="wrap_content"
+		android:layout_width="wrap_content"
+		android:layout_gravity="bottom|center_horizontal"
+		android:background="#a000"
+		android:orientation="horizontal">
+		<ImageButton
+			android:id="@+id/previous"
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:background="@null"
+			android:src="@drawable/previous" />
+		<ImageButton
+			android:id="@+id/play_pause"
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:layout_marginLeft="25px"
+			android:background="@null"
+			android:src="@drawable/play" />
+		<ImageButton
+			android:id="@+id/next"
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:layout_marginLeft="25px"
+			android:background="@null"
+			android:src="@drawable/next" />
 	</LinearLayout>
 </merge>

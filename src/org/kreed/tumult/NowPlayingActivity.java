@@ -30,7 +30,8 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 	private ViewGroup mLayout;
 	private CoverView mCoverView;
 	private LinearLayout mMessageBox;
-	private View mControls;
+	private View mControlsTop;
+	private View mControlsBottom;
 
 	private ImageButton mPreviousButton;
 	private ImageButton mPlayPauseButton;
@@ -58,7 +59,8 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 		
 		mLayout = (ViewGroup)mCoverView.getParent();
 		
-		mControls = findViewById(R.id.controls);
+		mControlsTop = findViewById(R.id.controls_top);
+		mControlsBottom = findViewById(R.id.controls_bottom);
 		
 		mPreviousButton = (ImageButton)findViewById(R.id.previous);
 		mPreviousButton.setOnClickListener(this);
@@ -268,7 +270,8 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 
 	public void clicked()
 	{
-		mControls.setVisibility(View.VISIBLE);
+		mControlsTop.setVisibility(View.VISIBLE);
+		mControlsBottom.setVisibility(View.VISIBLE);
 		
 		if (mStartTime == 0) {
 			try {
@@ -300,7 +303,7 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 
 	private void updateProgress()
 	{
-		if (mState != MusicPlayer.STATE_PLAYING || mControls.getVisibility() != View.VISIBLE)
+		if (mState != MusicPlayer.STATE_PLAYING || mControlsTop.getVisibility() != View.VISIBLE)
 			return;
 		
 		long position = System.currentTimeMillis() - mStartTime;
@@ -339,7 +342,8 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 		public void handleMessage(Message message) {
 			switch (message.what) {
 			case HIDE:
-				mControls.setVisibility(View.GONE);
+				mControlsTop.setVisibility(View.GONE);
+				mControlsBottom.setVisibility(View.GONE);
 				break;
 			case UPDATE_PROGRESS:
 				updateProgress();
