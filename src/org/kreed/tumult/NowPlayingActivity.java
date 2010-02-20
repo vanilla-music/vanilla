@@ -7,6 +7,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -92,15 +93,21 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 			mPlayPauseButton.setImageResource(state == MusicPlayer.STATE_PLAYING ? R.drawable.pause : R.drawable.play);
 			break;
 		case MusicPlayer.STATE_NO_MEDIA:
-			mMessageBox = new LinearLayout(this);
-			mMessageBox.setGravity(Gravity.CENTER);
+			LinearLayout.LayoutParams layoutParams =
+				new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
+				                              LinearLayout.LayoutParams.FILL_PARENT);
+			layoutParams.gravity = Gravity.CENTER;
+
 			TextView text = new TextView(this);
 			text.setText("No songs found on your device.");
 			text.setGravity(Gravity.CENTER);
-			LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
-			layoutParams.gravity = Gravity.CENTER;
 			text.setLayoutParams(layoutParams);
+
+			mMessageBox = new LinearLayout(this);
+			mMessageBox.setLayoutParams(layoutParams);
+			mMessageBox.setBackgroundColor(Color.BLACK);
 			mMessageBox.addView(text);
+
 			mLayout.addView(mMessageBox);
 			break;
 		}
