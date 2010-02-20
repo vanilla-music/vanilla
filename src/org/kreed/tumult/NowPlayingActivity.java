@@ -274,22 +274,27 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 
 	public void clicked()
 	{
-		mControlsTop.setVisibility(View.VISIBLE);
-		mControlsBottom.setVisibility(View.VISIBLE);
-		
-		mPlayPauseButton.requestFocus();
-		
-		if (mStartTime == 0) {
-			try {
-				mStartTime = mService.getStartTime();
-				mDuration = mService.getDuration();
-			} catch (RemoteException e) {
-				return;
+		if (mControlsBottom.getVisibility() == View.VISIBLE) {
+			mControlsTop.setVisibility(View.GONE);
+			mControlsBottom.setVisibility(View.GONE);
+		} else {
+			mControlsTop.setVisibility(View.VISIBLE);
+			mControlsBottom.setVisibility(View.VISIBLE);
+			
+			mPlayPauseButton.requestFocus();
+			
+			if (mStartTime == 0) {
+				try {
+					mStartTime = mService.getStartTime();
+					mDuration = mService.getDuration();
+				} catch (RemoteException e) {
+					return;
+				}
 			}
+			
+			updateProgress();
+			sendHideMessage();
 		}
-		
-		updateProgress();
-		sendHideMessage();
 	}
 	
 	private String stringForTime(int ms)
