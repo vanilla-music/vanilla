@@ -203,7 +203,8 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 					setCurrentSong(+1);
 					break;
 				case RELEASE_WAKE_LOCK:
-					mWakeLock.release();
+					if (mWakeLock.isHeld())
+						mWakeLock.release();
 					break;
 				}
 			}
@@ -241,7 +242,7 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 			mMediaPlayer = null;
 		}
 
-		if (mWakeLock != null)
+		if (mWakeLock != null && mWakeLock.isHeld())
 			mWakeLock.release();
 	}
 	
