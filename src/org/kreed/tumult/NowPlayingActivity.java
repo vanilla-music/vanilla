@@ -277,6 +277,8 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 		mControlsTop.setVisibility(View.VISIBLE);
 		mControlsBottom.setVisibility(View.VISIBLE);
 		
+		mPlayPauseButton.requestFocus();
+		
 		if (mStartTime == 0) {
 			try {
 				mStartTime = mService.getStartTime();
