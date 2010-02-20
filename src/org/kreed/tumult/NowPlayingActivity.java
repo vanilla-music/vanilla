@@ -24,7 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-public class NowPlayingActivity extends Activity implements CoverViewWatcher, ServiceConnection, View.OnClickListener, SeekBar.OnSeekBarChangeListener {
+public class NowPlayingActivity extends Activity implements CoverViewWatcher, ServiceConnection, View.OnClickListener, SeekBar.OnSeekBarChangeListener, View.OnFocusChangeListener {
 	private IPlaybackService mService;
 	
 	private ViewGroup mLayout;
@@ -64,15 +64,19 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 		
 		mPreviousButton = (ImageButton)findViewById(R.id.previous);
 		mPreviousButton.setOnClickListener(this);
+		mPreviousButton.setOnFocusChangeListener(this);
 		mPlayPauseButton = (ImageButton)findViewById(R.id.play_pause);
 		mPlayPauseButton.setOnClickListener(this);
+		mPlayPauseButton.setOnFocusChangeListener(this);
 		mNextButton = (ImageButton)findViewById(R.id.next);
 		mNextButton.setOnClickListener(this);
+		mNextButton.setOnFocusChangeListener(this);
 		
 		mSeekText = (TextView)findViewById(R.id.seek_text);
 		mSeekBar = (SeekBar)findViewById(R.id.seek_bar);
 		mSeekBar.setMax(1000);
 		mSeekBar.setOnSeekBarChangeListener(this);
+		mSeekBar.setOnFocusChangeListener(this);
 	}
 	
 	public void setState(int state)
@@ -372,5 +376,11 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 	{
 		sendHideMessage();
 		mSeekBarTracking = false;
+	}
+
+	public void onFocusChange(View v, boolean hasFocus)
+	{
+		if (hasFocus)
+			sendHideMessage();
 	}
 }
