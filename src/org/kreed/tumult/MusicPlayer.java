@@ -138,7 +138,8 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 	private static final int HEADSET_PLUGGED = 2;
 	private static final int HEADSET_PREF_CHANGED = 3;
 	private static final int QUEUE_ITEM = 4;
-	
+	private static final int TRACK_CHANGED = 5;
+
 	private static final int ITEM_SONG = 0;
 	private static final int ITEM_RESET = 1;
 	
@@ -194,6 +195,9 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 						mQueuePos = 0;
 						break;
 					}
+					break;
+				case TRACK_CHANGED:
+					setCurrentSong(+1);
 					break;
 				}
 			}
@@ -361,7 +365,7 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 
 	public void onCompletion(MediaPlayer player)
 	{
-		setCurrentSong(+1);
+		mHandler.sendEmptyMessage(TRACK_CHANGED);
 	}
 
 	private Song randomSong()
