@@ -17,8 +17,8 @@
 			android:layout_height="wrap_content"
 			android:layout_width="wrap_content"
 			android:layout_gravity="center"
-			android:layout_marginLeft="15px"
-			android:layout_marginRight="15px"
+			android:paddingLeft="15px"
+			android:paddingRight="15px"
 			android:layout_weight="1" />
 		<TextView
 			android:id="@+id/seek_text"
