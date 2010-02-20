@@ -77,8 +77,6 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 		mSeekBar.setMax(1000);
 		mSeekBar.setOnSeekBarChangeListener(this);
 		mSeekBar.setOnFocusChangeListener(this);
-
-		setState(MusicPlayer.STATE_NORMAL);
 	}
 	
 	public void setState(int state)
