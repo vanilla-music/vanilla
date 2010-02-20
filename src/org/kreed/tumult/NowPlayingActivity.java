@@ -154,6 +154,7 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 			mService.registerWatcher(mWatcher);
 			refreshSongs();
 			setState(mService.getState());
+			mDuration = mService.getDuration();
 		} catch (RemoteException e) {
 			Log.i("Tumult", "Failed to initialize connection to playback service", e);
 		}
