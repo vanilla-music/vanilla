@@ -166,9 +166,10 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 					boolean plugged = message.arg1 == 1;
 					if (plugged != mPlugged) {
 						mPlugged = plugged;
-						if (mCurrentSong == -1 || mPlugged == mMediaPlayer.isPlaying())
+						if (mCurrentSong == -1)
 							return;
-						setPlaying(mPlugged);
+						if (mMediaPlayer.isPlaying())
+							setPlaying(false);
 					}
 					break;
 				case HEADSET_PREF_CHANGED:
