@@ -281,8 +281,12 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 	private void retrieveSongs()
 	{
 		mSongs = Song.getAllSongs();
-		if (mSongs == null && mState != STATE_NO_MEDIA)
+		if (mSongs == null) {
 			setState(STATE_NO_MEDIA);
+		} else {
+			if (mState == STATE_NO_MEDIA)
+				setState(STATE_NORMAL);
+		}
 	}
 	
 	private Notification createNotfication()
