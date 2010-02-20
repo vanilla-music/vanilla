@@ -20,6 +20,7 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.os.PowerManager;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
@@ -116,6 +117,7 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 	private Handler mHandler;
 	private MediaPlayer mMediaPlayer;
 	private Random mRandom;
+	private PowerManager.WakeLock mWakeLock;
 
 	private int[] mSongs;
 	private ArrayList<Song> mSongTimeline;
@@ -139,6 +141,7 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 	private static final int HEADSET_PREF_CHANGED = 3;
 	private static final int QUEUE_ITEM = 4;
 	private static final int TRACK_CHANGED = 5;
+	private static final int RELEASE_WAKE_LOCK = 6;
 
 	private static final int ITEM_SONG = 0;
 	private static final int ITEM_RESET = 1;
@@ -199,13 +202,20 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 				case TRACK_CHANGED:
 					setCurrentSong(+1);
 					break;
+				case RELEASE_WAKE_LOCK:
+					mWakeLock.release();
+					break;
 				}
 			}
 		};
 
 		mService.registerReceiver(mReceiver, new IntentFilter(Intent.ACTION_HEADSET_PLUG));
 
+		PowerManager powerManager = (PowerManager)mService.getSystemService(Context.POWER_SERVICE);
+		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "TumultSongChangeLock");
+		
 		mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+		mMediaPlayer.setWakeMode(mService, PowerManager.PARTIAL_WAKE_LOCK);
 		mMediaPlayer.setOnCompletionListener(this);
 		retrieveSongs();
 		
@@ -225,12 +235,14 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 
 	public void release()
 	{
-		pause();
-
 		if (mMediaPlayer != null) {
+			pause();
 			mMediaPlayer.release();
 			mMediaPlayer = null;
 		}
+
+		if (mWakeLock != null)
+			mWakeLock.release();
 	}
 	
 	public void setState(int state)
@@ -365,7 +377,9 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 
 	public void onCompletion(MediaPlayer player)
 	{
+		mWakeLock.acquire(15000);
 		mHandler.sendEmptyMessage(TRACK_CHANGED);
+		mHandler.sendEmptyMessage(RELEASE_WAKE_LOCK);
 	}
 
 	private Song randomSong()
