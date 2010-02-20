@@ -157,6 +157,13 @@ public class CoverView extends View {
 		regenerateBitmaps();
 	}
 
+	public void setSong(int delta, Song song)
+	{
+		int i = 1 + delta;
+		mSongs[i] = song;
+		createBitmap(i);
+	}
+
 	public void regenerateBitmaps()
 	{
 		if (getWidth() == 0 || getHeight() == 0)
@@ -167,30 +174,22 @@ public class CoverView extends View {
 		reset();
 	}
 	
-	public void setForwardSong(Song song)
+	public void shiftBackward()
 	{
-		if (mSongs[mSongs.length - 1] != null) {
-			System.arraycopy(mSongs, 1, mSongs, 0, mSongs.length - 1);
-			System.arraycopy(mBitmaps, 1, mBitmaps, 0, mBitmaps.length - 1);
-			mBitmaps[mBitmaps.length - 1] = null;
-			reset();
-		}
-
-		mSongs[mSongs.length - 1] = song;
-		createBitmap(mSongs.length - 1);
+		System.arraycopy(mSongs, 1, mSongs, 0, mSongs.length - 1);
+		System.arraycopy(mBitmaps, 1, mBitmaps, 0, mBitmaps.length - 1);
+		mSongs[mSongs.length - 1] = null;
+		mBitmaps[mBitmaps.length - 1] = null;
+		reset();
 	}
 
-	public void setBackwardSong(Song song)
+	public void shiftForward()
 	{
-		if (mSongs[0] != null) {
-			System.arraycopy(mSongs, 0, mSongs, 1, mSongs.length - 1);
-			System.arraycopy(mBitmaps, 0, mBitmaps, 1, mBitmaps.length - 1);
-			mBitmaps[0] = null;
-			reset();
-		}
-
-		mSongs[0] = song;
-		createBitmap(0);
+		System.arraycopy(mSongs, 0, mSongs, 1, mSongs.length - 1);
+		System.arraycopy(mBitmaps, 0, mBitmaps, 1, mBitmaps.length - 1);
+		mSongs[0] = null;
+		mBitmaps[0] = null;
+		reset();
 	}
 
 	public void reset()

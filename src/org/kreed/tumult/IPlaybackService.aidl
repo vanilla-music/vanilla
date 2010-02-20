@@ -7,6 +7,7 @@ interface IPlaybackService {
 	void registerWatcher(IMusicPlayerWatcher watcher);
 
 	Song[] getCurrentSongs();
+	Song getSong(int delta);
 	int getState();
 	int getPosition();
 	int getDuration();

@@ -37,7 +37,12 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 		{
 			return new Song[] { getSong(-1), getSong(0), getSong(1) };
 		}
-		
+
+		public Song getSong(int delta)
+		{
+			return MusicPlayer.this.getSong(delta);
+		}
+
 		public int getState()
 		{
 			return mState;
@@ -324,14 +329,10 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 			Log.e("Tumult", "IOException", e);
 		}
 		
-		Song newSong = getSong(delta);
 		int i = mWatchers.beginBroadcast();
 		while (--i != -1) {
 			try {
-				if (delta < 0)
-					mWatchers.getBroadcastItem(i).previousSong(song, newSong);
-				else
-					mWatchers.getBroadcastItem(i).nextSong(song, newSong);
+				mWatchers.getBroadcastItem(i).songChanged(song);
 			} catch (RemoteException e) {
 				// Null elements will be removed automatically
 			}

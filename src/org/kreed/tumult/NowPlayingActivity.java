@@ -165,38 +165,23 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 		reconnect();
 	}
 
-	private boolean requestSongInfo(Song playingSong)
-	{
-		try {
-			mDuration = mService.getDuration();
-			mHandler.sendEmptyMessage(UPDATE_PROGRESS);
-		} catch (RemoteException e) {
-		}
-
-		if (!playingSong.equals(mCoverView.getActiveSong())) {
-			runOnUiThread(new Runnable() {
-				public void run()
-				{
-					refreshSongs();
-				}
-			});
-			return false;
-		}
-
-		return true;
-	}
-
 	private IMusicPlayerWatcher mWatcher = new IMusicPlayerWatcher.Stub() {
-		public void nextSong(final Song playingSong, final Song forwardSong)
+		public void songChanged(Song playingSong)
 		{
-			if (requestSongInfo(playingSong))
-				mCoverView.setForwardSong(forwardSong);
-		}
+			try {
+				mDuration = mService.getDuration();
+				mHandler.sendEmptyMessage(UPDATE_PROGRESS);
+			} catch (RemoteException e) {
+			}
 
-		public void previousSong(final Song playingSong, final Song backwardSong)
-		{
-			if (requestSongInfo(playingSong))
-				mCoverView.setBackwardSong(backwardSong);
+			if (!playingSong.equals(mCoverView.getActiveSong())) {
+				runOnUiThread(new Runnable() {
+					public void run()
+					{
+						refreshSongs();
+					}
+				});
+			}
 		}
 
 		public void stateChanged(final int oldState, final int newState)
@@ -212,18 +197,20 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 
 	public void next()
 	{
-		mCoverView.setForwardSong(null);
 		try {
 			mService.nextSong();
+			mCoverView.shiftBackward();
+			mHandler.sendMessage(mHandler.obtainMessage(QUERY_SONG, 1, 0));
 		} catch (RemoteException e) {
 		}
 	}
 
 	public void previous()
 	{
-		mCoverView.setBackwardSong(null);
 		try {
 			mService.previousSong();
+			mCoverView.shiftForward();
+			mHandler.sendMessage(mHandler.obtainMessage(QUERY_SONG, -1, 0));
 		} catch (RemoteException e) {
 		}
 	}
@@ -352,6 +339,7 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 	
 	private static final int HIDE = 0;
 	private static final int UPDATE_PROGRESS = 1;
+	private static final int QUERY_SONG = 2;
 
 	private Handler mHandler = new Handler() {
 		public void handleMessage(Message message) {
@@ -364,6 +352,12 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 			case UPDATE_PROGRESS:
 				updateProgress();
 				break;
+			case QUERY_SONG:
+				try {
+					int delta = message.arg1;
+					mCoverView.setSong(delta, mService.getSong(delta));
+				} catch (RemoteException e) {
+				}
 			}
 		}
 	};
