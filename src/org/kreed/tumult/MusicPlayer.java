@@ -339,7 +339,8 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 			mMediaPlayer.reset();
 			mMediaPlayer.setDataSource(song.path);
 			mMediaPlayer.prepare();
-			play();
+			if (mState == STATE_PLAYING)
+				play();
 		} catch (IOException e) {
 			Log.e("Tumult", "IOException", e);
 		}
