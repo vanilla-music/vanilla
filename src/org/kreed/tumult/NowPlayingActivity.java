@@ -270,9 +270,10 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 
 	public void clicked()
 	{
-		if (mControlsBottom.getVisibility() == View.VISIBLE) {
+		if (mControlsTop.getVisibility() == View.VISIBLE) {
 			mControlsTop.setVisibility(View.GONE);
-			mControlsBottom.setVisibility(View.GONE);
+			if (mState == MusicPlayer.STATE_PLAYING)
+				mControlsBottom.setVisibility(View.GONE);
 		} else {
 			mControlsTop.setVisibility(View.VISIBLE);
 			mControlsBottom.setVisibility(View.VISIBLE);
