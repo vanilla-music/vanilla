@@ -148,6 +148,7 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 	private static final int RELEASE_WAKE_LOCK = 6;
 	private static final int HANDLE_PLAY = 7;
 	private static final int HANDLE_PAUSE = 8;
+	private static final int RETRIEVE_SONGS = 9;
 
 	private static final int ITEM_SONG = 0;
 	private static final int ITEM_RESET = 1;
@@ -216,11 +217,18 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 					mService.stopForegroundCompat(NOTIFICATION_ID);
 					setState(STATE_NORMAL);
 					break;
+				case RETRIEVE_SONGS:
+					retrieveSongs();
+					break;
 				}
 			}
 		};
 
-		mService.registerReceiver(mReceiver, new IntentFilter(Intent.ACTION_HEADSET_PLUG));
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(Intent.ACTION_HEADSET_PLUG);
+		filter.addAction(Intent.ACTION_MEDIA_SCANNER_FINISHED);
+		filter.addAction(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+		mService.registerReceiver(mReceiver, filter);
 
 		PowerManager powerManager = (PowerManager)mService.getSystemService(Context.POWER_SERVICE);
 		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "TumultSongChangeLock");
@@ -273,7 +281,7 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 	private void retrieveSongs()
 	{
 		mSongs = Song.getAllSongs();
-		if (mSongs == null && mState == STATE_NORMAL)
+		if (mSongs == null && mState != STATE_NO_MEDIA)
 			setState(STATE_NO_MEDIA);
 	}
 	
@@ -391,9 +399,13 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 		@Override
 		public void onReceive(Context content, Intent intent)
 		{
-			if (intent.getAction().equals(Intent.ACTION_HEADSET_PLUG) && mHandler != null) {
+			String action = intent.getAction();
+			if (Intent.ACTION_HEADSET_PLUG.equals(action) && mHandler != null) {
 				int plugged = intent.getIntExtra("state", 0) == 130 ? 1 : 0;
 				mHandler.sendMessage(mHandler.obtainMessage(HEADSET_PLUGGED, plugged, 0));
+			} else if (Intent.ACTION_MEDIA_SCANNER_FINISHED.equals(action)
+			        || Intent.ACTION_MEDIA_SCANNER_SCAN_FILE.equals(action)) {
+				mHandler.sendEmptyMessage(RETRIEVE_SONGS);
 			}
 		}
 	};
