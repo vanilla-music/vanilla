@@ -200,6 +200,16 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 		{
 			mStartTime = startTime;
 			mDuration = duration;
+			runOnUiThread(new Runnable() {
+				public void run()
+				{
+					if (mState != MusicPlayer.STATE_PLAYING) {
+						String text = mSeekText.getText().toString();
+						text = text.substring(0, text.indexOf('/') + 2) + stringForTime(mDuration);
+						mSeekText.setText(text);
+					}
+				}
+			});
 		}
 	};
 
