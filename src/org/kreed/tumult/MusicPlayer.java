@@ -378,7 +378,7 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 
 	public void onCompletion(MediaPlayer player)
 	{
-		mWakeLock.acquire(15000);
+		mWakeLock.acquire();
 		mHandler.sendEmptyMessage(TRACK_CHANGED);
 		mHandler.sendEmptyMessage(RELEASE_WAKE_LOCK);
 	}
