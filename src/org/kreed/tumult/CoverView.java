@@ -95,7 +95,7 @@ public class CoverView extends View {
 			Bitmap cover = song.coverPath == null ? null : BitmapFactory.decodeFile(song.coverPath);
 			if (cover != null) {
 				RectF dest = scale(cover, width, height);
-				canvas.drawBitmap(cover, new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight()), dest, paint);
+				canvas.drawBitmap(cover, null, dest, paint);
 				cover.recycle();
 				cover = null;
 			}
