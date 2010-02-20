@@ -146,6 +146,8 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 	private static final int QUEUE_ITEM = 4;
 	private static final int TRACK_CHANGED = 5;
 	private static final int RELEASE_WAKE_LOCK = 6;
+	private static final int HANDLE_PLAY = 7;
+	private static final int HANDLE_PAUSE = 8;
 
 	private static final int ITEM_SONG = 0;
 	private static final int ITEM_RESET = 1;
@@ -205,6 +207,14 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 				case RELEASE_WAKE_LOCK:
 					if (mWakeLock.isHeld())
 						mWakeLock.release();
+					break;
+				case HANDLE_PLAY:
+					mService.startForegroundCompat(NOTIFICATION_ID, createNotfication());
+					setState(STATE_PLAYING);
+					break;
+				case HANDLE_PAUSE:
+					mService.stopForegroundCompat(NOTIFICATION_ID);
+					setState(STATE_NORMAL);
 					break;
 				}
 			}
@@ -292,15 +302,13 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 			return;
 
 		mMediaPlayer.start();
-		mService.startForegroundCompat(NOTIFICATION_ID, createNotfication());
-		setState(STATE_PLAYING);
+		mHandler.sendEmptyMessage(HANDLE_PLAY);
 	}
 	
 	private void pause()
 	{
 		mMediaPlayer.pause();
-		mService.stopForegroundCompat(NOTIFICATION_ID);
-		setState(STATE_NORMAL);
+		mHandler.sendEmptyMessage(HANDLE_PAUSE);
 	}
 
 	private void setPlaying(boolean play)
