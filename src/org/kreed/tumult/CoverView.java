@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -53,30 +54,21 @@ public class CoverView extends View {
 		return mSongs[1];
 	}
 
-	private RectF scale(Bitmap bitmap, int maxWidth, int maxHeight)
-	{
-		float bitmapWidth = bitmap.getWidth(); 
-		float bitmapHeight = bitmap.getHeight(); 
-
-		float drawableAspectRatio = bitmapHeight / bitmapWidth; 
-		float viewAspectRatio = (float) maxHeight / maxWidth;
-		float scale = drawableAspectRatio > viewAspectRatio ? maxHeight / bitmapWidth 
-		                                                    : maxWidth / bitmapHeight;
-
-		bitmapWidth *= scale;
-		bitmapHeight *= scale;
-
-		float left = (maxWidth - bitmapWidth) / 2; 
-		float top = (maxHeight - bitmapHeight) / 2; 
-
-		return new RectF(left, top, maxWidth - left, maxHeight - top);
-	}
-	
 	private void drawText(Canvas canvas, String text, float left, float top, float width, float maxWidth, Paint paint)
 	{
 		float offset = Math.max(0, maxWidth - width) / 2;
 		canvas.clipRect(left, top, left + maxWidth, top + paint.getTextSize() * 2, Region.Op.REPLACE);
 		canvas.drawText(text, left + offset, top - paint.ascent(), paint);
+	}
+
+	private RectF centerRect(float maxWidth, float maxHeight, float width, float height)
+	{
+		RectF rect = new RectF();
+		rect.left = (maxWidth - width) / 2;
+		rect.top = (maxHeight - height) / 2;
+		rect.right = (maxWidth + width) / 2;
+		rect.bottom = (maxHeight + height) / 2;
+		return rect;
 	}
 
 	private void createBitmap(int i)
@@ -87,62 +79,79 @@ public class CoverView extends View {
 		if (song != null) {
 			int width = getWidth();
 			int height = getHeight();
-	
-			bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
-			Canvas canvas = new Canvas(bitmap);
+
 			Paint paint = new Paint();
-	
-			Bitmap cover = song.coverPath == null ? null : BitmapFactory.decodeFile(song.coverPath);
-			if (cover != null) {
-				RectF dest = scale(cover, width, height);
-				canvas.drawBitmap(cover, null, dest, paint);
-				cover.recycle();
-				cover = null;
-			}
-	
 			paint.setAntiAlias(true);
-	
+
 			String title = song.title == null ? "" : song.title;
 			String album = song.album == null ? "" : song.album;
 			String artist = song.artist == null ? "" : song.artist;
-	
+			Bitmap cover = song.coverPath == null ? null : BitmapFactory.decodeFile(song.coverPath);
+
 			float titleSize = 20;
 			float subSize = 14;
 			float padding = 10;
-	
+
 			paint.setTextSize(titleSize);
 			float titleWidth = paint.measureText(title);
 			paint.setTextSize(subSize);
 			float albumWidth = paint.measureText(album);
 			float artistWidth = paint.measureText(artist);
-	
-			float boxWidth = Math.max(titleWidth, Math.max(artistWidth, albumWidth)) + padding * 2;
-			float boxHeight = titleSize + subSize * 2 + padding * 4;
-	
-			boxWidth = Math.min(boxWidth, width);
-			boxHeight = Math.min(boxHeight, height);
-	
+
+			float boxWidth = Math.min(width, Math.max(titleWidth, Math.max(artistWidth, albumWidth)) + padding * 2);
+			float boxHeight = Math.min(height, titleSize + subSize * 2 + padding * 4);
+
+			float coverWidth;
+			float coverHeight;
+
+			if (cover == null) {
+				coverWidth = 0;
+				coverHeight = 0;
+			} else {
+				coverWidth = cover.getWidth();
+				coverHeight = cover.getHeight();
+
+				float drawableAspectRatio = coverHeight / coverWidth; 
+				float viewAspectRatio = (float) height / width;
+				float scale = drawableAspectRatio > viewAspectRatio ? height / coverWidth 
+				                                                    : width / coverHeight;
+
+				coverWidth *= scale;
+				coverHeight *= scale;
+			}
+
+			int bitmapWidth = (int)Math.max(coverWidth, boxWidth);
+			int bitmapHeight = (int)Math.max(coverHeight, boxHeight);
+
+			bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.RGB_565);
+			Canvas canvas = new Canvas(bitmap);
+
+			if (cover != null) {
+				RectF rect = centerRect(bitmapWidth, bitmapHeight, coverWidth, coverHeight);
+				canvas.drawBitmap(cover, null, rect, paint);
+				cover.recycle();
+				cover = null;
+			}
+
+			RectF boxRect = centerRect(bitmapWidth, bitmapHeight, boxWidth, boxHeight);
+
 			paint.setARGB(150, 0, 0, 0);
-			float left = (width - boxWidth) / 2;
-			float top = (height - boxHeight) / 2;
-			float right = (width + boxWidth) / 2;
-			float bottom = (height + boxHeight) / 2;
-			canvas.drawRect(left, top, right, bottom, paint);
-	
+			canvas.drawRect(boxRect, paint);
+
 			float maxWidth = boxWidth - padding * 2;
 			paint.setARGB(255, 255, 255, 255);
-			top += padding;
-			left += padding;
-	
+			boxRect.top += padding;
+			boxRect.left += padding;
+
 			paint.setTextSize(titleSize);
-			drawText(canvas, title, left, top, titleWidth, maxWidth, paint);
-			top += titleSize + padding;
+			drawText(canvas, title, boxRect.left, boxRect.top, titleWidth, maxWidth, paint);
+			boxRect.top += titleSize + padding;
 			
 			paint.setTextSize(subSize);
-			drawText(canvas, album, left, top, albumWidth, maxWidth, paint);
-			top += subSize + padding;
+			drawText(canvas, album, boxRect.left, boxRect.top, albumWidth, maxWidth, paint);
+			boxRect.top += subSize + padding;
 			
-			drawText(canvas, artist, left, top, artistWidth, maxWidth, paint);
+			drawText(canvas, artist, boxRect.left, boxRect.top, artistWidth, maxWidth, paint);
 		}
 		
 		Bitmap oldBitmap = mBitmaps[i];
@@ -216,9 +225,15 @@ public class CoverView extends View {
 		int width = getWidth();
 		int height = getHeight();
 
-		for (int x = 0, i = 0; i != mBitmaps.length; ++i, x += width)
-			if (mBitmaps[i] != null && clip.intersects(x, 0, x + width, height))
-				canvas.drawBitmap(mBitmaps[i], x, 0, paint);
+		canvas.drawColor(Color.BLACK);
+
+		for (int x = 0, i = 0; i != mBitmaps.length; ++i, x += width) {
+			if (mBitmaps[i] != null && clip.intersects(x, 0, x + width, height)) {
+				int xOffset = (width - mBitmaps[i].getWidth()) / 2;
+				int yOffset = (height - mBitmaps[i].getHeight()) / 2;
+				canvas.drawBitmap(mBitmaps[i], x + xOffset, yOffset, paint);
+			}
+		}
 		paint = null;
 	}
 
