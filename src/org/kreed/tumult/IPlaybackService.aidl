@@ -8,7 +8,7 @@ interface IPlaybackService {
 
 	Song[] getCurrentSongs();
 	int getState();
-	long getStartTime();
+	int getPosition();
 	int getDuration();
 
 	void previousSong();

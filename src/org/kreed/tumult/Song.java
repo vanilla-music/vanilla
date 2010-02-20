@@ -76,6 +76,13 @@ public class Song implements Parcelable {
 		return songs;
 	}
 
+	public boolean equals(Song other)
+	{
+		if (other == null)
+			return false;
+		return path.equals(other.path);
+	}
+
 	public static Parcelable.Creator<Song> CREATOR = new Parcelable.Creator<Song>() {
 		public Song createFromParcel(Parcel in)
 		{

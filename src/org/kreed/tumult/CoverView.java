@@ -47,7 +47,12 @@ public class CoverView extends View {
 	{
 		mListener = listener;
 	}
-	
+
+	public Song getActiveSong()
+	{
+		return mSongs[1];
+	}
+
 	private RectF scale(Bitmap bitmap, int maxWidth, int maxHeight)
 	{
 		float bitmapWidth = bitmap.getWidth(); 

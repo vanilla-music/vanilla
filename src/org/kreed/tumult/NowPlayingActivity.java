@@ -40,7 +40,6 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 	private TextView mSeekText;
 
 	private int mState;
-	private long mStartTime;
 	private int mDuration;
 	private boolean mSeekBarTracking;
 
@@ -157,33 +156,38 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 		reconnect();
 	}
 
+	private boolean requestSongInfo(Song playingSong)
+	{
+		try {
+			mDuration = mService.getDuration();
+			mHandler.sendEmptyMessage(UPDATE_PROGRESS);
+		} catch (RemoteException e) {
+		}
+
+		if (!playingSong.equals(mCoverView.getActiveSong())) {
+			runOnUiThread(new Runnable() {
+				public void run()
+				{
+					refreshSongs();
+				}
+			});
+			return false;
+		}
+
+		return true;
+	}
+
 	private IMusicPlayerWatcher mWatcher = new IMusicPlayerWatcher.Stub() {
 		public void nextSong(final Song playingSong, final Song forwardSong)
 		{
-			if (mCoverView.mSongs[1] != null && mCoverView.mSongs[1].path.equals(playingSong.path)) {
+			if (requestSongInfo(playingSong))
 				mCoverView.setForwardSong(forwardSong);
-			} else {
-				runOnUiThread(new Runnable() {
-					public void run()
-					{
-						refreshSongs();
-					}
-				});
-			}
 		}
 
 		public void previousSong(final Song playingSong, final Song backwardSong)
 		{
-			if (mCoverView.mSongs[1] != null && mCoverView.mSongs[1].path.equals(playingSong.path)) {
+			if (requestSongInfo(playingSong))
 				mCoverView.setBackwardSong(backwardSong);
-			} else {
-				runOnUiThread(new Runnable() {
-					public void run()
-					{
-						refreshSongs();
-					}
-				});
-			}
 		}
 
 		public void stateChanged(final int oldState, final int newState)
@@ -192,22 +196,6 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 				public void run()
 				{
 					setState(newState);					
-				}
-			});
-		}
-
-		public void mediaLengthChanged(long startTime, int duration)
-		{
-			mStartTime = startTime;
-			mDuration = duration;
-			runOnUiThread(new Runnable() {
-				public void run()
-				{
-					if (mState != MusicPlayer.STATE_PLAYING) {
-						String text = mSeekText.getText().toString();
-						text = text.substring(0, text.indexOf('/') + 2) + stringForTime(mDuration);
-						mSeekText.setText(text);
-					}
 				}
 			});
 		}
@@ -293,15 +281,6 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 			
 			mPlayPauseButton.requestFocus();
 			
-			if (mStartTime == 0) {
-				try {
-					mStartTime = mService.getStartTime();
-					mDuration = mService.getDuration();
-				} catch (RemoteException e) {
-					return;
-				}
-			}
-			
 			updateProgress();
 			sendHideMessage();
 		}
@@ -324,23 +303,29 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 
 	private void updateProgress()
 	{
-		if (mState != MusicPlayer.STATE_PLAYING || mControlsTop.getVisibility() != View.VISIBLE)
+		if (mControlsTop.getVisibility() != View.VISIBLE)
 			return;
 		
-		long position = System.currentTimeMillis() - mStartTime;
+		int position;
+		try {
+			position = mService.getPosition();
+		} catch (RemoteException e) {
+			return;
+		}
+
 		if (!mSeekBarTracking)
-			mSeekBar.setProgress((int)(1000 * position / mDuration));
+			mSeekBar.setProgress(mDuration == 0 ? 0 : (int)(1000 * position / mDuration));
 		mSeekText.setText(stringForTime((int)position) + " / " + stringForTime(mDuration));
 		
 		long next = 1000 - position % 1000;
-		mHandler.sendMessageDelayed(mHandler.obtainMessage(UPDATE_PROGRESS), next);
+		mHandler.removeMessages(UPDATE_PROGRESS);
+		mHandler.sendEmptyMessageDelayed(UPDATE_PROGRESS, next);
 	}
 	
 	private void sendHideMessage()
 	{
-		Message message = mHandler.obtainMessage(HIDE);
 		mHandler.removeMessages(HIDE);
-		mHandler.sendMessageDelayed(message, 3000);
+		mHandler.sendEmptyMessageDelayed(HIDE, 3000);
 	}
 
 	public void onClick(View view)

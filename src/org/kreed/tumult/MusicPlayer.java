@@ -42,14 +42,14 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 		{
 			return mState;
 		}
-		
-		public long getStartTime()
+
+		public int getPosition()
 		{
 			if (mMediaPlayer == null)
 				return 0;
-			return MusicPlayer.this.getStartTime();
+			return mMediaPlayer.getCurrentPosition();
 		}
-		
+
 		public int getDuration()
 		{
 			if (mMediaPlayer == null)
@@ -91,7 +91,6 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 			
 			long position = (long)mMediaPlayer.getDuration() * progress / 1000;
 			mMediaPlayer.seekTo((int)position);
-			mediaLengthChanged();
 		}
 	};
 	
@@ -261,14 +260,9 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 		if (mSongs == null && mState == STATE_NORMAL)
 			setState(STATE_NO_MEDIA);
 	}
-
-	private void play()
+	
+	private Notification createNotfication()
 	{
-		if (mHeadsetOnly && !mPlugged)
-			return;
-
-		mMediaPlayer.start();
-
 		Song song = getSong(0);
 
 		RemoteViews views = new RemoteViews(mService.getPackageName(), R.layout.statusbar);
@@ -282,9 +276,17 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 		notification.flags |= Notification.FLAG_ONGOING_EVENT;
 		Intent intent = new Intent(mService, NowPlayingActivity.class);
 		notification.contentIntent = PendingIntent.getActivity(mService, 0, intent, 0);
-
-		mService.startForegroundCompat(NOTIFICATION_ID, notification);
 		
+		return notification;
+	}
+
+	private void play()
+	{
+		if (mHeadsetOnly && !mPlugged)
+			return;
+
+		mMediaPlayer.start();
+		mService.startForegroundCompat(NOTIFICATION_ID, createNotfication());
 		setState(STATE_PLAYING);
 	}
 	
@@ -311,6 +313,16 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 
 		mCurrentSong += delta;
 
+		try {
+			mMediaPlayer.reset();
+			mMediaPlayer.setDataSource(song.path);
+			mMediaPlayer.prepare();
+			if (mState == STATE_PLAYING)
+				play();
+		} catch (IOException e) {
+			Log.e("Tumult", "IOException", e);
+		}
+		
 		Song newSong = getSong(delta);
 		int i = mWatchers.beginBroadcast();
 		while (--i != -1) {
@@ -325,46 +337,12 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 		}
 		mWatchers.finishBroadcast();
 
-		try {
-			mMediaPlayer.reset();
-			mMediaPlayer.setDataSource(song.path);
-			mMediaPlayer.prepare();
-			if (mState == STATE_PLAYING)
-				play();
-		} catch (IOException e) {
-			Log.e("Tumult", "IOException", e);
-		}
-
-		mediaLengthChanged();
-
 		getSong(+2);
 
 		while (mCurrentSong > 15) {
 			mSongTimeline.remove(0);
 			--mCurrentSong;
 		}
-	}
-	
-	private long getStartTime()
-	{
-		int position = mMediaPlayer.getCurrentPosition();
-		return System.currentTimeMillis() - position;	
-	}
-
-	private void mediaLengthChanged()
-	{
-		long start = getStartTime();
-		int duration = mMediaPlayer.getDuration();
-
-		int i = mWatchers.beginBroadcast();
-		while (--i != -1) {
-			try {
-				mWatchers.getBroadcastItem(i).mediaLengthChanged(start, duration);
-			} catch (RemoteException e) {
-				// Null elements will be removed automatically
-			}
-		}
-		mWatchers.finishBroadcast();
 	}
 
 	public void onCompletion(MediaPlayer player)
