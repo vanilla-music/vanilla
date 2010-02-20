@@ -176,7 +176,7 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 						mPlugged = plugged;
 						if (mCurrentSong == -1)
 							return;
-						if (mMediaPlayer.isPlaying())
+						if (!plugged && mMediaPlayer.isPlaying())
 							setPlaying(false);
 					}
 					break;
