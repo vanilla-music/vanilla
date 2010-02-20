@@ -92,6 +92,7 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 				mLayout.removeView(mMessageBox);
 				mMessageBox = null;
 			}
+			mSeekBar.setEnabled(state == MusicPlayer.STATE_PLAYING);
 			mPlayPauseButton.setImageResource(state == MusicPlayer.STATE_PLAYING ? R.drawable.pause : R.drawable.play);
 			break;
 		case MusicPlayer.STATE_NO_MEDIA:
