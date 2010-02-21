@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -212,12 +213,12 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 						mWakeLock.release();
 					break;
 				case HANDLE_PLAY:
-					mService.startForegroundCompat(NOTIFICATION_ID, createNotfication());
 					setState(STATE_PLAYING);
+					mService.startForegroundCompat(NOTIFICATION_ID, createNotification());
 					break;
 				case HANDLE_PAUSE:
-					mService.stopForegroundCompat(NOTIFICATION_ID);
 					setState(STATE_NORMAL);
+					mService.stopForegroundCompat(0);
 					break;
 				case RETRIEVE_SONGS:
 					retrieveSongs();
@@ -225,7 +226,7 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 				case REMOTE_PLAYER_PREF_CHANGED:
 					mUseRemotePlayer = message.arg1 == 1;
 					if (mState == STATE_PLAYING)
-						mService.startForegroundCompat(NOTIFICATION_ID, createNotfication());
+						mService.startForegroundCompat(NOTIFICATION_ID, createNotification());
 					break;
 				}
 			}
@@ -251,7 +252,10 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 		settings.registerOnSharedPreferenceChangeListener(this);
 
 		setCurrentSong(1);
-		
+
+		NotificationManager manager = (NotificationManager)mService.getSystemService(Context.NOTIFICATION_SERVICE);
+		manager.notify(NOTIFICATION_ID, createNotification());
+
 		Looper.loop();
 	}
 
@@ -296,8 +300,8 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 				setState(STATE_NORMAL);
 		}
 	}
-	
-	private Notification createNotfication()
+
+	private Notification createNotification()
 	{
 		Song song = getSong(0);
 
