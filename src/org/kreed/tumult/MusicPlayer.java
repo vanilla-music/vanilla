@@ -262,12 +262,14 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 	public void release()
 	{
 		if (mMediaPlayer != null) {
-			pause();
+			if (mMediaPlayer.isPlaying())
+				mMediaPlayer.pause();
 			mMediaPlayer.release();
 			mMediaPlayer = null;
 		}
 
 		mService.unregisterReceiver(mReceiver);
+		mService.stopForegroundCompat(NOTIFICATION_ID);
 
 		if (mWakeLock != null && mWakeLock.isHeld())
 			mWakeLock.release();
