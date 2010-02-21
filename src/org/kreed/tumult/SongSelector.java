@@ -76,7 +76,7 @@ public class SongSelector extends Activity implements View.OnClickListener, OnIt
 		int visible = View.VISIBLE;
 		String text = mFilterText.getText().toString();
 		if (text.length() == 0)
-			text = "Filter: ";
+			text = getResources().getString(R.string.filter);
 		if (view == mCloseButton) {
 			visible = View.GONE;
 			text = null;

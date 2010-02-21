@@ -295,7 +295,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 						mQueuePos = 0;
 					} else {
 						Song song = new Song(message.arg1);
-						Toast.makeText(Tumult.getContext(), "Enqueued " + song.title, Toast.LENGTH_SHORT).show();
+						String text = getResources().getString(R.string.enqueued, song.title);
+						Toast.makeText(Tumult.getContext(), text, Toast.LENGTH_SHORT).show();
 
 						int i = mCurrentSong + 1 + mQueuePos++;
 						if (i < mSongTimeline.size())

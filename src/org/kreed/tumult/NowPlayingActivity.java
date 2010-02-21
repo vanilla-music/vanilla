@@ -121,7 +121,7 @@ public class NowPlayingActivity extends Activity implements ServiceConnection, V
 			layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
 
 			mReconnectButton = new Button(this);
-			mReconnectButton.setText("Connect to Service");
+			mReconnectButton.setText(R.string.connect_to_service);
 			mReconnectButton.setLayoutParams(layoutParams);
 			mReconnectButton.setOnClickListener(this);
 			mMessageOverlay.addView(mReconnectButton);
@@ -151,7 +151,7 @@ public class NowPlayingActivity extends Activity implements ServiceConnection, V
 			layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
 
 			TextView text = new TextView(this);
-			text.setText("No songs found on your device.");
+			text.setText(R.string.no_songs);
 			text.setLayoutParams(layoutParams);
 			mMessageOverlay.addView(text);
 			break;
@@ -250,9 +250,9 @@ public class NowPlayingActivity extends Activity implements ServiceConnection, V
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-		menu.add(0, MENU_PREFS, 0, "Preferences");
-		menu.add(0, MENU_QUEUE, 0, "Add to Queue");
-		menu.add(0, MENU_KILL, 0, "Quit Service");
+		menu.add(0, MENU_PREFS, 0, R.string.settings);
+		menu.add(0, MENU_QUEUE, 0, R.string.add_to_queue);
+		menu.add(0, MENU_KILL, 0, R.string.stop_service);
 		return true;
 	}
 
