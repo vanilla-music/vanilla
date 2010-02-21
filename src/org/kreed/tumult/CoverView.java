@@ -9,7 +9,11 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region;
+import android.os.Handler;
+import android.os.Message;
+import android.os.RemoteException;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -17,25 +21,19 @@ import android.widget.Scroller;
 
 public class CoverView extends View {
 	private static final int SNAP_VELOCITY = 1000;
+	private static final int STORE_SIZE = 3;
 
 	private Scroller mScroller;
 	private VelocityTracker mVelocityTracker;
 	private float mLastMotionX;
 	private float mStartX;
 	private float mStartY;
-
-	private CoverViewWatcher mListener;
+	private IPlaybackService mService;
 
 	Song[] mSongs = new Song[3];
 	private Bitmap[] mBitmaps = new Bitmap[3];
 
 	private int mTentativeCover = -1;
-
-	public interface CoverViewWatcher {
-		public void next();
-		public void previous();
-		public void clicked();
-	}
 
 	public CoverView(Context context, AttributeSet attributes)
 	{
@@ -44,14 +42,14 @@ public class CoverView extends View {
 		mScroller = new Scroller(context);
 	}
 
-	public void setWatcher(CoverViewWatcher listener)
+	public void setPlaybackService(IPlaybackService service)
 	{
-		mListener = listener;
-	}
-
-	public Song getActiveSong()
-	{
-		return mSongs[1];
+		try {
+			mService = service;
+			mService.registerWatcher(mWatcher);
+			refreshSongs();
+		} catch (RemoteException e) {
+		}
 	}
 
 	private void drawText(Canvas canvas, String text, float left, float top, float width, float maxWidth, Paint paint)
@@ -159,18 +157,15 @@ public class CoverView extends View {
 		if (oldBitmap != null)
 			oldBitmap.recycle();
 	}
-	
-	public void setSongs(Song[] songs)
-	{
-		mSongs = songs;
-		regenerateBitmaps();
-	}
 
-	public void setSong(int delta, Song song)
+	private void refreshSongs()
 	{
-		int i = 1 + delta;
-		mSongs[i] = song;
-		createBitmap(i);
+		try {
+			mSongs = mService.getCurrentSongs();
+			regenerateBitmaps();
+		} catch (RemoteException e) {
+			Log.e("Tumult", "RemoteException", e);
+		}
 	}
 
 	public void regenerateBitmaps()
@@ -178,27 +173,58 @@ public class CoverView extends View {
 		if (getWidth() == 0 || getHeight() == 0)
 			return;
 
-		for (int i = mSongs.length; --i != -1; )
+		for (int i = STORE_SIZE; --i != -1; )
 			createBitmap(i);
 		reset();
 	}
-	
-	public void shiftBackward()
+
+	public void nextCover()
 	{
-		System.arraycopy(mSongs, 1, mSongs, 0, mSongs.length - 1);
-		System.arraycopy(mBitmaps, 1, mBitmaps, 0, mBitmaps.length - 1);
-		mSongs[mSongs.length - 1] = null;
-		mBitmaps[mBitmaps.length - 1] = null;
-		reset();
+		if (mService == null)
+			return;
+
+		try {
+			mService.nextSong();
+
+			System.arraycopy(mSongs, 1, mSongs, 0, STORE_SIZE - 1);
+			System.arraycopy(mBitmaps, 1, mBitmaps, 0, STORE_SIZE - 1);
+			mSongs[STORE_SIZE - 1] = null;
+			mBitmaps[STORE_SIZE - 1] = null;
+			reset();
+
+			mHandler.sendMessage(mHandler.obtainMessage(QUERY_SONG, 2, 0));
+		} catch (RemoteException e) {
+		}
 	}
 
-	public void shiftForward()
+	public void previousCover()
 	{
-		System.arraycopy(mSongs, 0, mSongs, 1, mSongs.length - 1);
-		System.arraycopy(mBitmaps, 0, mBitmaps, 1, mBitmaps.length - 1);
-		mSongs[0] = null;
-		mBitmaps[0] = null;
-		reset();
+		if (mService == null)
+			return;
+
+		try {
+			mService.previousSong();
+
+			System.arraycopy(mSongs, 0, mSongs, 1, STORE_SIZE - 1);
+			System.arraycopy(mBitmaps, 0, mBitmaps, 1, STORE_SIZE - 1);
+			mSongs[0] = null;
+			mBitmaps[0] = null;
+			reset();
+
+			mHandler.sendMessage(mHandler.obtainMessage(QUERY_SONG, 0, 0));
+		} catch (RemoteException e) {
+		}
+	}
+
+	public void togglePlayback()
+	{
+		if (mService == null)
+			return;
+
+		try {
+			mService.togglePlayback();
+		} catch (RemoteException e) {
+		}
 	}
 
 	public void reset()
@@ -227,7 +253,7 @@ public class CoverView extends View {
 
 		canvas.drawColor(Color.BLACK);
 
-		for (int x = 0, i = 0; i != mBitmaps.length; ++i, x += width) {
+		for (int x = 0, i = 0; i != STORE_SIZE; ++i, x += width) {
 			if (mBitmaps[i] != null && clip.intersects(x, 0, x + width, height)) {
 				int xOffset = (width - mBitmaps[i].getWidth()) / 2;
 				int yOffset = (height - mBitmaps[i].getHeight()) / 2;
@@ -274,7 +300,7 @@ public class CoverView extends View {
 			break; 		
 		 case MotionEvent.ACTION_UP:
 			if (Math.abs(mStartX - x) + Math.abs(mStartY - ev.getY()) < 10) {
-				mListener.clicked();
+				performClick();
 			} else {
 				VelocityTracker velocityTracker = mVelocityTracker;
 				velocityTracker.computeCurrentVelocity(1000);
@@ -314,13 +340,46 @@ public class CoverView extends View {
 			scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
 			postInvalidate();
 		} else if (mTentativeCover != -1) {
-			if (mListener != null) {
-				if (mTentativeCover == 2)
-					mListener.next();
-				else if (mTentativeCover == 0)
-					mListener.previous();
-			}
+			if (mTentativeCover == 2)
+				nextCover();
+			else if (mTentativeCover == 0)
+				previousCover();
+
 			mTentativeCover = -1;
 		}
 	}
+
+	private static final int REFRESH_SONGS = 0;
+	private static final int QUERY_SONG = 1;
+
+	private Handler mHandler = new Handler() {
+		public void handleMessage(Message message) {
+			switch (message.what) {
+			case REFRESH_SONGS:
+				refreshSongs();
+				break;
+			case QUERY_SONG:
+				try {
+					int i = message.arg1;
+					int delta = i - STORE_SIZE / 2;
+					mSongs[i] = mService.getSong(delta);
+					createBitmap(i);
+				} catch (RemoteException e) {
+				}
+				break;
+			}
+		}
+	};
+
+	private IMusicPlayerWatcher mWatcher = new IMusicPlayerWatcher.Stub() {
+		public void songChanged(Song playingSong)
+		{
+			if (!playingSong.equals(mSongs[STORE_SIZE / 2]))
+				mHandler.sendEmptyMessage(REFRESH_SONGS);
+		}
+
+		public void stateChanged(int oldState, int newState)
+		{
+		}
+	};
 }

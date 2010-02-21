@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+	<ImageButton
+		android:id="@+id/previous"
+		android:layout_height="wrap_content"
+		android:layout_width="wrap_content"
+		android:layout_marginLeft="15px"
+		android:background="@null"
+		android:src="@drawable/previous" />
+	<ImageButton
+		android:id="@+id/play_pause"
+		android:layout_height="wrap_content"
+		android:layout_width="wrap_content"
+		android:layout_marginLeft="25px"
+		android:background="@null"
+		android:src="@drawable/play" />
+	<ImageButton
+		android:id="@+id/next"
+		android:layout_height="wrap_content"
+		android:layout_width="wrap_content"
+		android:layout_marginLeft="25px"
+		android:layout_marginRight="15px"
+		android:background="@null"
+		android:src="@drawable/next" />
+</merge>

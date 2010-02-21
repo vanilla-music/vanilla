@@ -115,9 +115,10 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 	
 	private PlaybackService mService;
 	private RemoteCallbackList<IMusicPlayerWatcher> mWatchers;
-	
-	private boolean mHeadsetOnly = true;
-	
+
+	private boolean mHeadsetOnly;
+	private boolean mUseRemotePlayer;
+
 	private Handler mHandler;
 	private MediaPlayer mMediaPlayer;
 	private Random mRandom;
@@ -149,6 +150,7 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 	private static final int HANDLE_PLAY = 7;
 	private static final int HANDLE_PAUSE = 8;
 	private static final int RETRIEVE_SONGS = 9;
+	private static final int REMOTE_PLAYER_PREF_CHANGED = 10;
 
 	private static final int ITEM_SONG = 0;
 	private static final int ITEM_RESET = 1;
@@ -220,6 +222,11 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 				case RETRIEVE_SONGS:
 					retrieveSongs();
 					break;
+				case REMOTE_PLAYER_PREF_CHANGED:
+					mUseRemotePlayer = message.arg1 == 1;
+					if (mState == STATE_PLAYING)
+						mService.startForegroundCompat(NOTIFICATION_ID, createNotfication());
+					break;
 				}
 			}
 		};
@@ -237,11 +244,12 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 		mMediaPlayer.setWakeMode(mService, PowerManager.PARTIAL_WAKE_LOCK);
 		mMediaPlayer.setOnCompletionListener(this);
 		retrieveSongs();
-		
+
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(mService);
 		mHeadsetOnly = settings.getBoolean("headset_only", false);
+		mUseRemotePlayer = settings.getBoolean("remote_player", true);
 		settings.registerOnSharedPreferenceChangeListener(this);
-		
+
 		setCurrentSong(1);
 		
 		Looper.loop();
@@ -302,7 +310,7 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 		notification.contentView = views;
 		notification.icon = R.drawable.status_icon;
 		notification.flags |= Notification.FLAG_ONGOING_EVENT;
-		Intent intent = new Intent(mService, NowPlayingActivity.class);
+		Intent intent = new Intent(mService, mUseRemotePlayer ? RemoteActivity.class : NowPlayingActivity.class);
 		notification.contentIntent = PendingIntent.getActivity(mService, 0, intent, 0);
 		
 		return notification;
@@ -416,9 +424,15 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 
 	public void onSharedPreferenceChanged(SharedPreferences settings, String key)
 	{
-		if ("headset_only".equals(key) && mHandler != null) {
+		if (mHandler == null)
+			return;
+
+		if ("headset_only".equals(key)) {
 			int arg = settings.getBoolean(key, false) ? 1 : 0;
 			mHandler.sendMessage(mHandler.obtainMessage(HEADSET_PREF_CHANGED, arg, 0));
+		} else if ("remote_player".equals(key)) {
+			int arg = settings.getBoolean(key, true) ? 1 : 0;
+			mHandler.sendMessage(mHandler.obtainMessage(REMOTE_PLAYER_PREF_CHANGED, arg, 0));
 		}
 	}
 }

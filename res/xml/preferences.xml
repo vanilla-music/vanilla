@@ -8,4 +8,10 @@
 		android:defaultValue="false"
 		android:summaryOn="@string/headset_only_summary_on"
 		android:summaryOff="@string/headset_only_summary_off" />
+	<CheckBoxPreference
+		android:key="remote_player"
+		android:title="@string/remote_player_title"
+		android:defaultValue="true"
+		android:summaryOn="@string/remote_player_summary_on"
+		android:summaryOff="@string/remote_player_summary_off" />
 </PreferenceScreen>

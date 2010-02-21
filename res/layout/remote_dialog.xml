@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<org.kreed.tumult.RemoteLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_height="wrap_content"
+	android:layout_width="wrap_content">
+	<org.kreed.tumult.CoverView
+		android:id="@+id/cover_view"
+		android:layout_height="wrap_content"
+		android:layout_width="wrap_content" />
+	<LinearLayout
+		android:orientation="horizontal"
+		android:layout_height="wrap_content"
+		android:layout_width="wrap_content">
+		<include layout="@layout/playback_buttons" />
+	</LinearLayout>
+	<LinearLayout
+		android:orientation="horizontal"
+		android:layout_height="wrap_content"
+		android:layout_width="wrap_content">
+		<Button
+			android:id="@+id/open_button"
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:text="Open Player" />
+		<Button
+			android:id="@+id/kill_button"
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:text="Kill Service" />
+	</LinearLayout>
+</org.kreed.tumult.RemoteLayout>

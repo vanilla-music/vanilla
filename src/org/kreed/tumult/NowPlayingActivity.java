@@ -1,7 +1,5 @@
 package org.kreed.tumult;
 
-import org.kreed.tumult.CoverView.CoverViewWatcher;
-
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -25,7 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-public class NowPlayingActivity extends Activity implements CoverViewWatcher, ServiceConnection, View.OnClickListener, SeekBar.OnSeekBarChangeListener, View.OnFocusChangeListener {
+public class NowPlayingActivity extends Activity implements ServiceConnection, View.OnClickListener, SeekBar.OnSeekBarChangeListener, View.OnFocusChangeListener {
 	private IPlaybackService mService;
 	
 	private ViewGroup mLayout;
@@ -55,8 +53,8 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 		setContentView(R.layout.nowplaying);
 
 		mCoverView = (CoverView)findViewById(R.id.cover_view);
-		mCoverView.setWatcher(this);
-		
+		mCoverView.setOnClickListener(this);
+
 		mLayout = (ViewGroup)mCoverView.getParent();
 		
 		mControlsTop = findViewById(R.id.controls_top);
@@ -139,21 +137,12 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 		unbindService(this);
 	}
 
-	private void refreshSongs()
-	{
-		try {
-			mCoverView.setSongs(mService.getCurrentSongs());
-		} catch (RemoteException e) {
-			Log.e("Tumult", "RemoteException", e);
-		}
-	}
-
 	public void onServiceConnected(ComponentName name, IBinder service)
 	{
 		mService = IPlaybackService.Stub.asInterface(service);
 		try {
 			mService.registerWatcher(mWatcher);
-			refreshSongs();
+			mCoverView.setPlaybackService(mService);
 			setState(mService.getState());
 			mDuration = mService.getDuration();
 		} catch (RemoteException e) {
@@ -175,15 +164,6 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 				mHandler.sendEmptyMessage(UPDATE_PROGRESS);
 			} catch (RemoteException e) {
 			}
-
-			if (!playingSong.equals(mCoverView.getActiveSong())) {
-				runOnUiThread(new Runnable() {
-					public void run()
-					{
-						refreshSongs();
-					}
-				});
-			}
 		}
 
 		public void stateChanged(final int oldState, final int newState)
@@ -197,34 +177,6 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 		}
 	};
 
-	public void next()
-	{
-		try {
-			mService.nextSong();
-			mCoverView.shiftBackward();
-			mHandler.sendMessage(mHandler.obtainMessage(QUERY_SONG, 1, 0));
-		} catch (RemoteException e) {
-		}
-	}
-
-	public void previous()
-	{
-		try {
-			mService.previousSong();
-			mCoverView.shiftForward();
-			mHandler.sendMessage(mHandler.obtainMessage(QUERY_SONG, -1, 0));
-		} catch (RemoteException e) {
-		}
-	}
-	
-	private void togglePlayback()
-	{
-		try {
-			mService.togglePlayback();
-		} catch (RemoteException e) {
-		}
-	}
-	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
@@ -261,30 +213,13 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_DPAD_CENTER:
 		case KeyEvent.KEYCODE_ENTER:
-			clicked();
+			onClick(mCoverView);
 			return true;
 		}
 
 		return false;
 	}
 
-	public void clicked()
-	{
-		if (mControlsTop.getVisibility() == View.VISIBLE) {
-			mControlsTop.setVisibility(View.GONE);
-			if (mState == MusicPlayer.STATE_PLAYING)
-				mControlsBottom.setVisibility(View.GONE);
-		} else {
-			mControlsTop.setVisibility(View.VISIBLE);
-			mControlsBottom.setVisibility(View.VISIBLE);
-			
-			mPlayPauseButton.requestFocus();
-			
-			updateProgress();
-			sendHideMessage();
-		}
-	}
-	
 	private String stringForTime(int ms)
 	{
 		int seconds = ms / 1000;
@@ -331,18 +266,30 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 	{
 		sendHideMessage();
 
-		if (view == mNextButton) {
-			next();
+		if (view == mCoverView) {
+			if (mControlsTop.getVisibility() == View.VISIBLE) {
+				mControlsTop.setVisibility(View.GONE);
+				if (mState == MusicPlayer.STATE_PLAYING)
+					mControlsBottom.setVisibility(View.GONE);
+			} else {
+				mControlsTop.setVisibility(View.VISIBLE);
+				mControlsBottom.setVisibility(View.VISIBLE);
+
+				mPlayPauseButton.requestFocus();
+
+				updateProgress();
+			}
+		} else if (view == mNextButton) {
+			mCoverView.nextCover();
 		} else if (view == mPreviousButton) {
-			previous();
+			mCoverView.previousCover();
 		} else if (view == mPlayPauseButton) {
-			togglePlayback();
+			mCoverView.togglePlayback();
 		}
 	}
 	
 	private static final int HIDE = 0;
 	private static final int UPDATE_PROGRESS = 1;
-	private static final int QUERY_SONG = 2;
 
 	private Handler mHandler = new Handler() {
 		public void handleMessage(Message message) {
@@ -355,12 +302,6 @@ public class NowPlayingActivity extends Activity implements CoverViewWatcher, Se
 			case UPDATE_PROGRESS:
 				updateProgress();
 				break;
-			case QUERY_SONG:
-				try {
-					int delta = message.arg1;
-					mCoverView.setSong(delta, mService.getSong(delta));
-				} catch (RemoteException e) {
-				}
 			}
 		}
 	};
