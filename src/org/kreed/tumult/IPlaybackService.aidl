@@ -5,6 +5,7 @@ import org.kreed.tumult.IMusicPlayerWatcher;
 
 interface IPlaybackService {
 	void registerWatcher(IMusicPlayerWatcher watcher);
+	void unregisterWatcher(IMusicPlayerWatcher watcher);
 
 	Song[] getCurrentSongs();
 	Song getSong(int delta);

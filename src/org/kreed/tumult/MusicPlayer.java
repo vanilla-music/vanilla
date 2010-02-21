@@ -90,6 +90,12 @@ public class MusicPlayer implements Runnable, MediaPlayer.OnCompletionListener, 
 				mWatchers.register(watcher);
 		}
 
+		public void unregisterWatcher(IMusicPlayerWatcher watcher)
+		{
+			if (watcher != null)
+				mWatchers.unregister(watcher);
+		}
+
 		public void seekToProgress(int progress)
 		{
 			if (mMediaPlayer == null || !mMediaPlayer.isPlaying())

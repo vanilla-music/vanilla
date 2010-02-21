@@ -26,6 +26,6 @@
 			android:id="@+id/kill_button"
 			android:layout_height="wrap_content"
 			android:layout_width="wrap_content"
-			android:text="Kill Service" />
+			android:text="Quit Service" />
 	</LinearLayout>
 </org.kreed.tumult.RemoteLayout>

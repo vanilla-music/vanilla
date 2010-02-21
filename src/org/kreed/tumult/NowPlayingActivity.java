@@ -12,14 +12,15 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -28,7 +29,7 @@ public class NowPlayingActivity extends Activity implements ServiceConnection, V
 	
 	private ViewGroup mLayout;
 	private CoverView mCoverView;
-	private LinearLayout mMessageBox;
+	private RelativeLayout mMessageOverlay;
 	private View mControlsTop;
 	private View mControlsBottom;
 
@@ -37,11 +38,13 @@ public class NowPlayingActivity extends Activity implements ServiceConnection, V
 	private ImageButton mNextButton;
 	private SeekBar mSeekBar;
 	private TextView mSeekText;
+	private Button mReconnectButton;
 
 	private int mState;
 	private int mDuration;
 	private boolean mSeekBarTracking;
 
+	private static final int MENU_KILL = 0;
 	private static final int MENU_PREFS = 2;
 	private static final int MENU_QUEUE = 3;
 
@@ -76,89 +79,156 @@ public class NowPlayingActivity extends Activity implements ServiceConnection, V
 		mSeekBar.setOnSeekBarChangeListener(this);
 		mSeekBar.setOnFocusChangeListener(this);
 	}
-	
+
+	private void makeMessageOverlay()
+	{
+		if (mMessageOverlay != null) {
+			mMessageOverlay.removeAllViews();
+			return;
+		}
+
+		ViewGroup.LayoutParams layoutParams =
+			new ViewGroup.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
+			                              LinearLayout.LayoutParams.FILL_PARENT);
+
+		mMessageOverlay = new RelativeLayout(this);
+		mMessageOverlay.setLayoutParams(layoutParams);
+		mMessageOverlay.setBackgroundColor(Color.BLACK);
+
+		mLayout.addView(mMessageOverlay);
+	}
+
+	private void removeMessageOverlay()
+	{
+		mReconnectButton = null;
+
+		if (mMessageOverlay != null) {
+			mLayout.removeView(mMessageOverlay);
+			mMessageOverlay = null;
+		}
+	}
+
 	public void setState(int state)
 	{
 		mState = state;
+
+		if (mService == null) {
+			makeMessageOverlay();
+
+			RelativeLayout.LayoutParams layoutParams =
+				new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+				                              LinearLayout.LayoutParams.WRAP_CONTENT);
+			layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+
+			mReconnectButton = new Button(this);
+			mReconnectButton.setText("Connect to Service");
+			mReconnectButton.setLayoutParams(layoutParams);
+			mReconnectButton.setOnClickListener(this);
+			mMessageOverlay.addView(mReconnectButton);
+
+			return;
+		}
 
 		switch (state) {
 		case MusicPlayer.STATE_NORMAL:
 			mControlsBottom.setVisibility(View.VISIBLE);
 			// fall through
 		case MusicPlayer.STATE_PLAYING:
-			if (mMessageBox != null) {
-				mLayout.removeView(mMessageBox);
-				mMessageBox = null;
-			}
+			removeMessageOverlay();
+
+			if (!mHandler.hasMessages(HIDE))
+				mControlsBottom.setVisibility(View.GONE);
+
 			mSeekBar.setEnabled(state == MusicPlayer.STATE_PLAYING);
 			mPlayPauseButton.setImageResource(state == MusicPlayer.STATE_PLAYING ? R.drawable.pause : R.drawable.play);
 			break;
 		case MusicPlayer.STATE_NO_MEDIA:
-			LinearLayout.LayoutParams layoutParams =
-				new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
-				                              LinearLayout.LayoutParams.FILL_PARENT);
-			layoutParams.gravity = Gravity.CENTER;
+			makeMessageOverlay();
+
+			RelativeLayout.LayoutParams layoutParams =
+				new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+				                              LinearLayout.LayoutParams.WRAP_CONTENT);
+			layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
 
 			TextView text = new TextView(this);
 			text.setText("No songs found on your device.");
-			text.setGravity(Gravity.CENTER);
 			text.setLayoutParams(layoutParams);
-
-			mMessageBox = new LinearLayout(this);
-			mMessageBox.setLayoutParams(layoutParams);
-			mMessageBox.setBackgroundColor(Color.BLACK);
-			mMessageBox.addView(text);
-
-			mLayout.addView(mMessageBox);
+			mMessageOverlay.addView(text);
 			break;
 		}
 	}
 	
 	@Override
-	public void onResume()
+	public void onStart()
 	{
-		super.onResume();
+		super.onStart();
 
-		reconnect();
+		prepareService();
 	}
 
-	private void reconnect()
+	@Override
+	public void onStop()
+	{
+		super.onStop();
+
+		if (mService != null) {
+			unbindService(this);
+			mHandler.sendEmptyMessage(UNSET_SERVICE);
+		}
+	}
+
+	private void prepareService()
 	{
 		Intent intent = new Intent(this, PlaybackService.class);
 		startService(intent);
 		bindService(intent, this, Context.BIND_AUTO_CREATE);
 	}
 
-	@Override
-	public void onPause()
+	private void setService(IPlaybackService service)
 	{
-		super.onPause();
+		if (service == mService)
+			return;
 
-		unbindService(this);
+		int state = mState;
+
+		if (service == null) {
+			if (mService != null)
+				try {
+					mService.unregisterWatcher(mWatcher);
+				} catch (RemoteException e) {
+				}
+		} else {
+			try {
+				service.registerWatcher(mWatcher);
+				mCoverView.setPlaybackService(service);
+				state = service.getState();
+				mDuration = service.getDuration();
+			} catch (RemoteException e) {
+				Log.i("Tumult", "Failed to initialize connection to playback service", e);
+				return;
+			}
+		}
+
+		mService = service;
+		setState(state);
 	}
 
 	public void onServiceConnected(ComponentName name, IBinder service)
 	{
-		mService = IPlaybackService.Stub.asInterface(service);
-		try {
-			mService.registerWatcher(mWatcher);
-			mCoverView.setPlaybackService(mService);
-			setState(mService.getState());
-			mDuration = mService.getDuration();
-		} catch (RemoteException e) {
-			Log.i("Tumult", "Failed to initialize connection to playback service", e);
-		}
+		setService(IPlaybackService.Stub.asInterface(service));
 	}
 
 	public void onServiceDisconnected(ComponentName name)
 	{
-		mService = null;
-		reconnect();
+		setService(null);
 	}
 
 	private IMusicPlayerWatcher mWatcher = new IMusicPlayerWatcher.Stub() {
 		public void songChanged(Song playingSong)
 		{
+			if (mService == null)
+				return;
+
 			try {
 				mDuration = mService.getDuration();
 				mHandler.sendEmptyMessage(UPDATE_PROGRESS);
@@ -182,13 +252,26 @@ public class NowPlayingActivity extends Activity implements ServiceConnection, V
 	{
 		menu.add(0, MENU_PREFS, 0, "Preferences");
 		menu.add(0, MENU_QUEUE, 0, "Add to Queue");
+		menu.add(0, MENU_KILL, 0, "Quit Service");
 		return true;
 	}
-	
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu)
+	{
+		menu.findItem(MENU_KILL).setEnabled(mService != null);
+		return true;
+	}
+
 	@Override
 	public boolean onOptionsItemSelected(final MenuItem item)
 	{
 		switch (item.getItemId()) {
+		case MENU_KILL:
+			setService(null);
+			unbindService(this);
+			stopService(new Intent(this, PlaybackService.class));
+			break;
 		case MENU_PREFS:
 			startActivity(new Intent(this, PreferencesActivity.class));
 			break;
@@ -240,11 +323,12 @@ public class NowPlayingActivity extends Activity implements ServiceConnection, V
 		if (mControlsTop.getVisibility() != View.VISIBLE)
 			return;
 		
-		int position;
-		try {
-			position = mService.getPosition();
-		} catch (RemoteException e) {
-			return;
+		int position = 0;
+		if (mService != null) {
+			try {
+				position = mService.getPosition();
+			} catch (RemoteException e) {
+			}
 		}
 
 		if (!mSeekBarTracking)
@@ -285,11 +369,14 @@ public class NowPlayingActivity extends Activity implements ServiceConnection, V
 			mCoverView.previousCover();
 		} else if (view == mPlayPauseButton) {
 			mCoverView.togglePlayback();
+		} else if (view == mReconnectButton) {
+			prepareService();
 		}
 	}
-	
+
 	private static final int HIDE = 0;
 	private static final int UPDATE_PROGRESS = 1;
+	private static final int UNSET_SERVICE = 2;
 
 	private Handler mHandler = new Handler() {
 		public void handleMessage(Message message) {
@@ -302,17 +389,21 @@ public class NowPlayingActivity extends Activity implements ServiceConnection, V
 			case UPDATE_PROGRESS:
 				updateProgress();
 				break;
+			case UNSET_SERVICE:
+				setService(null);
+				break;
 			}
 		}
 	};
 
 	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
 	{
-		if (fromUser) {
-			try {
-				mService.seekToProgress(progress);
-			} catch (RemoteException e) {
-			}
+		if (!fromUser || mService == null)
+			return;
+
+		try {
+			mService.seekToProgress(progress);
+		} catch (RemoteException e) {
 		}
 	}
 
