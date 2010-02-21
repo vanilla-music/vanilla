@@ -101,10 +101,10 @@ public class RemoteActivity extends Activity implements ServiceConnection, View.
 
 	private void setState(int state)
 	{
-		if (state == MusicPlayer.STATE_NO_MEDIA)
+		if (state == PlaybackService.STATE_NO_MEDIA)
 			finish();
 
-		mPlayPauseButton.setImageResource(state == MusicPlayer.STATE_PLAYING ? R.drawable.pause : R.drawable.play);
+		mPlayPauseButton.setImageResource(state == PlaybackService.STATE_PLAYING ? R.drawable.pause : R.drawable.play);
 	}
 
 	private IMusicPlayerWatcher mWatcher = new IMusicPlayerWatcher.Stub() {

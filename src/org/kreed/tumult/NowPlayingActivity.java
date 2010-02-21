@@ -130,19 +130,19 @@ public class NowPlayingActivity extends Activity implements ServiceConnection, V
 		}
 
 		switch (state) {
-		case MusicPlayer.STATE_NORMAL:
+		case PlaybackService.STATE_NORMAL:
 			mControlsBottom.setVisibility(View.VISIBLE);
 			// fall through
-		case MusicPlayer.STATE_PLAYING:
+		case PlaybackService.STATE_PLAYING:
 			removeMessageOverlay();
 
 			if (!mHandler.hasMessages(HIDE))
 				mControlsBottom.setVisibility(View.GONE);
 
-			mSeekBar.setEnabled(state == MusicPlayer.STATE_PLAYING);
-			mPlayPauseButton.setImageResource(state == MusicPlayer.STATE_PLAYING ? R.drawable.pause : R.drawable.play);
+			mSeekBar.setEnabled(state == PlaybackService.STATE_PLAYING);
+			mPlayPauseButton.setImageResource(state == PlaybackService.STATE_PLAYING ? R.drawable.pause : R.drawable.play);
 			break;
-		case MusicPlayer.STATE_NO_MEDIA:
+		case PlaybackService.STATE_NO_MEDIA:
 			makeMessageOverlay();
 
 			RelativeLayout.LayoutParams layoutParams =
@@ -353,7 +353,7 @@ public class NowPlayingActivity extends Activity implements ServiceConnection, V
 		if (view == mCoverView) {
 			if (mControlsTop.getVisibility() == View.VISIBLE) {
 				mControlsTop.setVisibility(View.GONE);
-				if (mState == MusicPlayer.STATE_PLAYING)
+				if (mState == PlaybackService.STATE_PLAYING)
 					mControlsBottom.setVisibility(View.GONE);
 			} else {
 				mControlsTop.setVisibility(View.VISIBLE);
@@ -383,7 +383,7 @@ public class NowPlayingActivity extends Activity implements ServiceConnection, V
 			switch (message.what) {
 			case HIDE:
 				mControlsTop.setVisibility(View.GONE);
-				if (mState == MusicPlayer.STATE_PLAYING)
+				if (mState == PlaybackService.STATE_PLAYING)
 					mControlsBottom.setVisibility(View.GONE);
 				break;
 			case UPDATE_PROGRESS:
