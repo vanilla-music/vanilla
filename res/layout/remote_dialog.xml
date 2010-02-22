@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.kreed.tumult.RemoteLayout
+<org.kreed.vanilla.RemoteLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_height="wrap_content"
 	android:layout_width="wrap_content">
-	<org.kreed.tumult.CoverView
+	<org.kreed.vanilla.CoverView
 		android:id="@+id/cover_view"
 		android:layout_height="wrap_content"
 		android:layout_width="wrap_content" />
@@ -28,4 +28,4 @@
 			android:layout_width="wrap_content"
 			android:text="@string/stop_service" />
 	</LinearLayout>
-</org.kreed.tumult.RemoteLayout>
+</org.kreed.vanilla.RemoteLayout>

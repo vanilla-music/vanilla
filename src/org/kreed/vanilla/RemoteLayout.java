@@ -1,4 +1,4 @@
-package org.kreed.tumult;
+package org.kreed.vanilla;
 
 import android.content.Context;
 import android.util.AttributeSet;

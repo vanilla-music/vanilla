@@ -1,4 +1,4 @@
-package org.kreed.tumult;
+package org.kreed.vanilla;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -1,4 +1,7 @@
-package org.kreed.tumult;
+package org.kreed.vanilla;
+
+import org.kreed.vanilla.IMusicPlayerWatcher;
+import org.kreed.vanilla.IPlaybackService;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -164,7 +167,7 @@ public class CoverView extends View {
 			mSongs = mService.getCurrentSongs();
 			regenerateBitmaps();
 		} catch (RemoteException e) {
-			Log.e("Tumult", "RemoteException", e);
+			Log.e("VanillaMusic", "RemoteException", e);
 		}
 	}
 

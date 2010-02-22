@@ -1,6 +1,6 @@
-package org.kreed.tumult;
+package org.kreed.vanilla;
 
-import org.kreed.tumult.Song;
+import org.kreed.vanilla.Song;
 
 oneway interface IMusicPlayerWatcher {
 	void songChanged(in Song playingSong);

@@ -1,7 +1,7 @@
-package org.kreed.tumult;
+package org.kreed.vanilla;
 
-import org.kreed.tumult.Song;
-import org.kreed.tumult.IMusicPlayerWatcher;
+import org.kreed.vanilla.Song;
+import org.kreed.vanilla.IMusicPlayerWatcher;
 
 interface IPlaybackService {
 	void registerWatcher(IMusicPlayerWatcher watcher);

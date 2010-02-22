@@ -1,4 +1,6 @@
-package org.kreed.tumult;
+package org.kreed.vanilla;
+
+import org.kreed.vanilla.R;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -28,7 +30,7 @@ public class SongSelector extends Activity implements View.OnClickListener, OnIt
 	{
 		super.onCreate(icicle);
 
-		setContentView(R.layout.songselector);
+		setContentView(R.layout.song_selector);
 		mListView = (ListView)findViewById(R.id.song_list);
 		mAdapter = new SongAdapter(this);
 		mListView.setAdapter(mAdapter);

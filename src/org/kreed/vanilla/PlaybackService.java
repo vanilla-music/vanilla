@@ -1,10 +1,14 @@
-package org.kreed.tumult;
+package org.kreed.vanilla;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Random;
+
+import org.kreed.vanilla.IMusicPlayerWatcher;
+import org.kreed.vanilla.IPlaybackService;
+import org.kreed.vanilla.R;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -177,9 +181,9 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			try {
 				mStartForeground.invoke(this, startForegroundArgs);
 			} catch (InvocationTargetException e) {
-				Log.w("Tumult", "Unable to invoke startForeground", e);
+				Log.w("VanillaMusic", "Unable to invoke startForeground", e);
 			} catch (IllegalAccessException e) {
-				Log.w("Tumult", "Unable to invoke startForeground", e);
+				Log.w("VanillaMusic", "Unable to invoke startForeground", e);
 			}
 		}
 	}
@@ -194,9 +198,9 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			try {
 				mStopForeground.invoke(this, topForegroundArgs);
 			} catch (InvocationTargetException e) {
-				Log.w("Tumult", "Unable to invoke stopForeground", e);
+				Log.w("VanillaMusic", "Unable to invoke stopForeground", e);
 			} catch (IllegalAccessException e) {
-				Log.w("Tumult", "Unable to invoke stopForeground", e);
+				Log.w("VanillaMusic", "Unable to invoke stopForeground", e);
 			}
 		}
 	}
@@ -296,7 +300,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 					} else {
 						Song song = new Song(message.arg1);
 						String text = getResources().getString(R.string.enqueued, song.title);
-						Toast.makeText(Tumult.getContext(), text, Toast.LENGTH_SHORT).show();
+						Toast.makeText(ContextApplication.getContext(), text, Toast.LENGTH_SHORT).show();
 
 						int i = mCurrentSong + 1 + mQueuePos++;
 						if (i < mSongTimeline.size())
@@ -339,7 +343,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		registerReceiver(mReceiver, filter);
 
 		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
-		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "TumultSongChangeLock");
+		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicSongChangeLock");
 
 		mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		mMediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
@@ -446,7 +450,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			if (mState == STATE_PLAYING)
 				play();
 		} catch (IOException e) {
-			Log.e("Tumult", "IOException", e);
+			Log.e("VanillaMusic", "IOException", e);
 		}
 
 		int i = mWatchers.beginBroadcast();

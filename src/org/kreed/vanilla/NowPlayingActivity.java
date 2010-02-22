@@ -1,4 +1,8 @@
-package org.kreed.tumult;
+package org.kreed.vanilla;
+
+import org.kreed.vanilla.IMusicPlayerWatcher;
+import org.kreed.vanilla.IPlaybackService;
+import org.kreed.vanilla.R;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -53,7 +57,7 @@ public class NowPlayingActivity extends Activity implements ServiceConnection, V
 	{
 		super.onCreate(icicle);
 
-		setContentView(R.layout.nowplaying);
+		setContentView(R.layout.now_playing);
 
 		mCoverView = (CoverView)findViewById(R.id.cover_view);
 		mCoverView.setOnClickListener(this);
@@ -204,7 +208,7 @@ public class NowPlayingActivity extends Activity implements ServiceConnection, V
 				state = service.getState();
 				mDuration = service.getDuration();
 			} catch (RemoteException e) {
-				Log.i("Tumult", "Failed to initialize connection to playback service", e);
+				Log.i("VanillaMusic", "Failed to initialize connection to playback service", e);
 				return;
 			}
 		}

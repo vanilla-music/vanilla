@@ -1,4 +1,8 @@
-package org.kreed.tumult;
+package org.kreed.vanilla;
+
+import org.kreed.vanilla.IMusicPlayerWatcher;
+import org.kreed.vanilla.IPlaybackService;
+import org.kreed.vanilla.R;
 
 import android.app.Activity;
 import android.content.ComponentName;

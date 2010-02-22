@@ -1,4 +1,4 @@
-package org.kreed.tumult;
+package org.kreed.vanilla;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
@@ -27,7 +27,7 @@ public class Song implements Parcelable {
 			};
 		String selection = MediaStore.Audio.Media._ID + "==" + id;;
 
-		ContentResolver resolver = Tumult.getContext().getContentResolver();
+		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
 		Cursor cursor = resolver.query(media, projection, selection, null, null);
 
 		if (cursor != null && cursor.moveToNext()) {
@@ -56,7 +56,7 @@ public class Song implements Parcelable {
 		String[] projection = { MediaStore.Audio.Media._ID };
 		String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
 
-		ContentResolver resolver = Tumult.getContext().getContentResolver();
+		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
 		Cursor cursor = resolver.query(media, projection, selection, null, null);
 
 		if (cursor == null)
