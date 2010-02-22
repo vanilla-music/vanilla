@@ -33,7 +33,7 @@ import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
-public class PlaybackService extends Service implements Runnable, MediaPlayer.OnCompletionListener, SharedPreferences.OnSharedPreferenceChangeListener {	
+public class PlaybackService extends Service implements Runnable, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, SharedPreferences.OnSharedPreferenceChangeListener {	
 	private static final int NOTIFICATION_ID = 2;
 
 	public static final int STATE_NORMAL = 0;
@@ -348,6 +348,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		mMediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
 		mMediaPlayer.setOnCompletionListener(this);
+		mMediaPlayer.setOnErrorListener(this);
 		retrieveSongs();
 
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
@@ -476,6 +477,14 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		mWakeLock.acquire();
 		mHandler.sendEmptyMessage(TRACK_CHANGED);
 		mHandler.sendEmptyMessage(RELEASE_WAKE_LOCK);
+	}
+
+	public boolean onError(MediaPlayer player, int what, int extra)
+	{
+		Log.e("VanillaMusic", "MediaPlayer error: " + what + " " + extra);
+		mMediaPlayer.reset();
+		mHandler.sendEmptyMessage(TRACK_CHANGED);
+		return true;
 	}
 
 	private Song randomSong()
