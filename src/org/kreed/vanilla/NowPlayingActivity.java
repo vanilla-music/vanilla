@@ -112,7 +112,7 @@ public class NowPlayingActivity extends Activity implements ServiceConnection, V
 		}
 	}
 
-	public void setState(int state)
+	private void setState(int state)
 	{
 		mState = state;
 
@@ -134,14 +134,15 @@ public class NowPlayingActivity extends Activity implements ServiceConnection, V
 		}
 
 		switch (state) {
-		case PlaybackService.STATE_NORMAL:
-			mControlsBottom.setVisibility(View.VISIBLE);
-			// fall through
 		case PlaybackService.STATE_PLAYING:
-			removeMessageOverlay();
-
 			if (!mHandler.hasMessages(HIDE))
 				mControlsBottom.setVisibility(View.GONE);
+			// fall through
+		case PlaybackService.STATE_NORMAL:
+			removeMessageOverlay();
+
+			if (state == PlaybackService.STATE_NORMAL)
+				mControlsBottom.setVisibility(View.VISIBLE);
 
 			mSeekBar.setEnabled(state == PlaybackService.STATE_PLAYING);
 			mPlayPauseButton.setImageResource(state == PlaybackService.STATE_PLAYING ? R.drawable.pause : R.drawable.play);
