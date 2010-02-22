@@ -241,6 +241,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private MediaPlayer mMediaPlayer;
 	private Random mRandom;
 	private PowerManager.WakeLock mWakeLock;
+	private Notification mNotification;
 
 	private int[] mSongs;
 	private ArrayList<Song> mSongTimeline;
@@ -318,7 +319,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 					break;
 				case HANDLE_PLAY:
 					setState(STATE_PLAYING);
-					startForegroundCompat(NOTIFICATION_ID, createNotification());
+					startForegroundCompat(NOTIFICATION_ID, mNotification);
 					break;
 				case HANDLE_PAUSE:
 					setState(STATE_NORMAL);
@@ -330,7 +331,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				case REMOTE_PLAYER_PREF_CHANGED:
 					mUseRemotePlayer = message.arg1 == 1;
 					if (mState == STATE_PLAYING)
-						startForegroundCompat(NOTIFICATION_ID, createNotification());
+						startForegroundCompat(NOTIFICATION_ID, mNotification);
 					break;
 				}
 			}
@@ -357,8 +358,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		settings.registerOnSharedPreferenceChangeListener(this);
 
 		setCurrentSong(1);
-
-		mNotificationManager.notify(NOTIFICATION_ID, createNotification());
 
 		Looper.loop();
 	}
@@ -443,6 +442,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			return;
 
 		mCurrentSong += delta;
+		mNotification = createNotification();
+		mNotificationManager.notify(NOTIFICATION_ID, mNotification);
 
 		try {
 			mMediaPlayer.reset();
