@@ -75,15 +75,18 @@ public class SongSelector extends Activity implements View.OnClickListener, OnIt
 	
 	public void onClick(View view)
 	{
+		String defaultText = getResources().getString(R.string.filter) + ' ';
+
 		int visible = View.VISIBLE;
 		String text = mFilterText.getText().toString();
 		if (text.length() == 0)
-			text = getResources().getString(R.string.filter);
+			text = defaultText;
+
 		if (view == mCloseButton) {
 			visible = View.GONE;
 			text = null;
 		} else if (view == mBackspaceButton) {
-			if (text.length() > 8)
+			if (text.length() > defaultText.length())
 				text = text.substring(0, text.length() - 1);
 		} else {
 			int i = -1;
@@ -98,7 +101,7 @@ public class SongSelector extends Activity implements View.OnClickListener, OnIt
 		mFilterLayout.setVisibility(visible);
 		mListView.setTextFilterEnabled(visible == View.VISIBLE);
 
-		String filterText = text == null || text.length() <= 8 ? null : text.substring(8);
+		String filterText = text == null || text.length() <= defaultText.length() ? null : text.substring(defaultText.length());
 		mAdapter.getFilter().filter(filterText);
 	}
 

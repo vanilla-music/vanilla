@@ -3,7 +3,7 @@
 	<string name="app_name">Vanilla Music</string>
 
 	<string name="enqueued">Enqueued %s</string>
-	<string name="filter">Filter: </string>
+	<string name="filter">Filter:</string>
 	<string name="no_songs">No songs found on your device.</string>
 	<string name="settings">Preferences</string>
 	<string name="add_to_queue">Add to Queue</string>
