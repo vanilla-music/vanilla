@@ -10,6 +10,7 @@
 	<string name="open_player">Open Player</string>
 	<string name="stop_service">Stop Service</string>
 	<string name="connect_to_service">Connect to Service</string>
+	<string name="paused">(Paused)</string>
 
 	<string name="headset_only_title">Headset only</string>
 	<string name="headset_only_summary_on">Audio only plays when a headset is plugged in</string>

@@ -371,6 +371,9 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		int oldState = mState;
 		mState = state;
 
+		mNotification = createNotification();
+		mNotificationManager.notify(NOTIFICATION_ID, mNotification);
+
 		int i = mWatchers.beginBroadcast();
 		while (--i != -1) {
 			try {
@@ -397,9 +400,13 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	{
 		Song song = getSong(0);
 
+		String title = song.title;
+		if (mState != STATE_PLAYING)
+			title += ' ' + getResources().getString(R.string.paused);
+
 		RemoteViews views = new RemoteViews(getPackageName(), R.layout.statusbar);
 		views.setImageViewResource(R.id.icon, R.drawable.status_icon);
-		views.setTextViewText(R.id.title, song.title);
+		views.setTextViewText(R.id.title, title);
 		views.setTextViewText(R.id.artist, song.artist);
 
 		Notification notification = new Notification();
