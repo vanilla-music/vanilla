@@ -408,7 +408,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		notification.icon = R.drawable.status_icon;
 		notification.flags |= Notification.FLAG_ONGOING_EVENT;
 		Intent intent = new Intent(this, mUseRemotePlayer ? RemoteActivity.class : NowPlayingActivity.class);
-		notification.contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
+		notification.contentIntent = PendingIntent.getActivity(ContextApplication.getContext(), 0, intent, 0);
 
 		return notification;
 	}
