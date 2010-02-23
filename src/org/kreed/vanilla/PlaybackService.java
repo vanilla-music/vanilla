@@ -165,7 +165,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		}
 
 		unregisterReceiver(mReceiver);
-		stopForegroundCompat(NOTIFICATION_ID);
+		mNotificationManager.cancel(NOTIFICATION_ID);
 
 		if (mWakeLock != null && mWakeLock.isHeld())
 			mWakeLock.release();
@@ -188,13 +188,12 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		}
 	}
 
-	public void stopForegroundCompat(int id)
+	public void stopForegroundCompat(boolean cancelNotification)
 	{
 		if (mStopForeground == null) {
-			mNotificationManager.cancel(id);
 			setForeground(false);
 		} else {
-			Object[] topForegroundArgs = { Boolean.TRUE };
+			Object[] topForegroundArgs = { Boolean.FALSE };
 			try {
 				mStopForeground.invoke(this, topForegroundArgs);
 			} catch (InvocationTargetException e) {
@@ -314,7 +313,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 					break;
 				case HANDLE_PAUSE:
 					setState(STATE_NORMAL);
-					stopForegroundCompat(0);
+					stopForegroundCompat(false);
 					break;
 				case RETRIEVE_SONGS:
 					retrieveSongs();
