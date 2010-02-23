@@ -19,4 +19,7 @@
 	<string name="remote_player_title">Use Remote Player</string>
 	<string name="remote_player_summary_on">Clicking the notification will open a mini-player dialog</string>
 	<string name="remote_player_summary_off">Clicking the notification will open a the full player activity</string>
+
+	<string name="notify_while_paused_title">Notify While Paused</string>
+	<string name="notify_while_paused_summary">Always display the notification</string>
 </resources>

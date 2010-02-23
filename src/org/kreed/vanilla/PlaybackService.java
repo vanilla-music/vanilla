@@ -222,26 +222,20 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 	public void onSharedPreferenceChanged(SharedPreferences settings, String key)
 	{
-		if (mHandler == null)
-			return;
-
-		if ("headset_only".equals(key)) {
-			int arg = settings.getBoolean(key, false) ? 1 : 0;
-			mHandler.sendMessage(mHandler.obtainMessage(HEADSET_PREF_CHANGED, arg, 0));
-		} else if ("remote_player".equals(key)) {
-			int arg = settings.getBoolean(key, true) ? 1 : 0;
-			mHandler.sendMessage(mHandler.obtainMessage(REMOTE_PLAYER_PREF_CHANGED, arg, 0));
-		}
+		if (mHandler != null)
+			mHandler.sendMessage(mHandler.obtainMessage(PREF_CHANGED, key));
 	}
 
 	private boolean mHeadsetOnly;
 	private boolean mUseRemotePlayer;
+	private boolean mNotifyWhilePaused = true;
 
 	private Handler mHandler;
 	private MediaPlayer mMediaPlayer;
 	private Random mRandom;
 	private PowerManager.WakeLock mWakeLock;
 	private Notification mNotification;
+	private SharedPreferences mSettings;
 
 	private int[] mSongs;
 	private ArrayList<Song> mSongTimeline;
@@ -253,14 +247,13 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private static final int SET_SONG = 0;
 	private static final int PLAY_PAUSE = 1;
 	private static final int HEADSET_PLUGGED = 2;
-	private static final int HEADSET_PREF_CHANGED = 3;
+	private static final int PREF_CHANGED = 3;
 	private static final int QUEUE_ITEM = 4;
 	private static final int TRACK_CHANGED = 5;
 	private static final int RELEASE_WAKE_LOCK = 6;
 	private static final int HANDLE_PLAY = 7;
 	private static final int HANDLE_PAUSE = 8;
 	private static final int RETRIEVE_SONGS = 9;
-	private static final int REMOTE_PLAYER_PREF_CHANGED = 10;
 
 	public void run()
 	{
@@ -290,10 +283,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 							setPlaying(false);
 					}
 					break;
-				case HEADSET_PREF_CHANGED:
-					mHeadsetOnly = message.arg1 == 1;
-					if (mHeadsetOnly && !mPlugged && mMediaPlayer.isPlaying())
-						pause();
+				case PREF_CHANGED:
+					loadPreference((String)message.obj);
 					break;
 				case QUEUE_ITEM:
 					if (message.arg1 == -1) {
@@ -328,11 +319,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				case RETRIEVE_SONGS:
 					retrieveSongs();
 					break;
-				case REMOTE_PLAYER_PREF_CHANGED:
-					mUseRemotePlayer = message.arg1 == 1;
-					if (mState == STATE_PLAYING)
-						startForegroundCompat(NOTIFICATION_ID, mNotification);
-					break;
 				}
 			}
 		};
@@ -352,16 +338,31 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		mMediaPlayer.setOnErrorListener(this);
 		retrieveSongs();
 
-		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-		mHeadsetOnly = settings.getBoolean("headset_only", false);
-		mUseRemotePlayer = settings.getBoolean("remote_player", true);
-		settings.registerOnSharedPreferenceChangeListener(this);
+		mSettings = PreferenceManager.getDefaultSharedPreferences(this);
+		mSettings.registerOnSharedPreferenceChangeListener(this);
+		mHeadsetOnly = mSettings.getBoolean("headset_only", false);
+		mUseRemotePlayer = mSettings.getBoolean("remote_player", true);
+		mNotifyWhilePaused = mSettings.getBoolean("notify_while_paused", true);
 
 		setCurrentSong(1);
 
 		Looper.loop();
 	}
 
+	private void loadPreference(String key)
+	{
+		if ("headset_only".equals(key)) {
+			mHeadsetOnly = mSettings.getBoolean(key, false);
+			if (mHeadsetOnly && !mPlugged && mMediaPlayer.isPlaying())
+				pause();
+		} else if ("remote_player".equals(key)) {
+			mUseRemotePlayer = mSettings.getBoolean(key, true);
+			updateNotification();
+		} else if ("notify_while_paused".equals(key)){
+			mNotifyWhilePaused = mSettings.getBoolean(key, true);
+			updateNotification();
+		}
+	}
 
 	public void setState(int state)
 	{
@@ -371,8 +372,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		int oldState = mState;
 		mState = state;
 
-		mNotification = createNotification();
-		mNotificationManager.notify(NOTIFICATION_ID, mNotification);
+		updateNotification();
 
 		int i = mWatchers.beginBroadcast();
 		while (--i != -1) {
@@ -396,8 +396,13 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		}
 	}
 
-	private Notification createNotification()
+	private void updateNotification()
 	{
+		if (!mNotifyWhilePaused && mState == STATE_NORMAL) {
+			mNotificationManager.cancel(NOTIFICATION_ID);
+			return;
+		}
+
 		Song song = getSong(0);
 
 		String title = song.title;
@@ -416,7 +421,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		Intent intent = new Intent(this, mUseRemotePlayer ? RemoteActivity.class : NowPlayingActivity.class);
 		notification.contentIntent = PendingIntent.getActivity(ContextApplication.getContext(), 0, intent, 0);
 
-		return notification;
+		mNotification = notification;
+		mNotificationManager.notify(NOTIFICATION_ID, mNotification);
 	}
 
 	private void play()
@@ -449,8 +455,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			return;
 
 		mCurrentSong += delta;
-		mNotification = createNotification();
-		mNotificationManager.notify(NOTIFICATION_ID, mNotification);
+
+		updateNotification();
 
 		try {
 			mMediaPlayer.reset();
