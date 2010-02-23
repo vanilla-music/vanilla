@@ -29,6 +29,8 @@ import android.os.PowerManager;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
@@ -219,6 +221,27 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		}
 	};
 
+	private PhoneStateListener mCallListener = new PhoneStateListener() {
+		@Override
+		public void onCallStateChanged(int state, String incomingNumber)
+		{
+			int inCall = -1;
+
+			switch (state) {
+			case TelephonyManager.CALL_STATE_RINGING:
+			case TelephonyManager.CALL_STATE_OFFHOOK:
+				inCall = 1;
+				break;
+			case TelephonyManager.CALL_STATE_IDLE:
+				inCall = 0;
+				break;
+			}
+
+			if (mHandler != null)
+				mHandler.sendMessage(mHandler.obtainMessage(CALL, inCall, 0));
+		}
+	};
+
 	public void onSharedPreferenceChanged(SharedPreferences settings, String key)
 	{
 		if (mHandler != null)
@@ -243,6 +266,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private int mQueuePos = 0;
 	private boolean mPlugged = true;
 	private int mState = STATE_NORMAL;
+	private boolean mPlayingBeforeCall;
 
 	private static final int SET_SONG = 0;
 	private static final int PLAY_PAUSE = 1;
@@ -254,6 +278,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private static final int HANDLE_PLAY = 7;
 	private static final int HANDLE_PAUSE = 8;
 	private static final int RETRIEVE_SONGS = 9;
+	private static final int CALL = 10;
 
 	public void run()
 	{
@@ -319,6 +344,20 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				case RETRIEVE_SONGS:
 					retrieveSongs();
 					break;
+				case CALL:
+					boolean inCall = message.arg1 == 1;
+					if (inCall) {
+						if (mState == STATE_PLAYING) {
+							mPlayingBeforeCall = true;
+							pause();
+						}
+					} else {
+						if (mPlayingBeforeCall) {
+							play();
+							mPlayingBeforeCall = false;
+						}
+					}
+					break;
 				}
 			}
 		};
@@ -331,6 +370,9 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
 		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicSongChangeLock");
+
+		TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+		telephonyManager.listen(mCallListener, PhoneStateListener.LISTEN_CALL_STATE);
 
 		mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		mMediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
