@@ -382,6 +382,11 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			}
 		}
 		mWatchers.finishBroadcast();
+
+		Intent intent = new Intent("net.jjc1138.android.scrobbler.action.MUSIC_STATUS");
+		intent.putExtra("playing", mState == STATE_PLAYING);
+		intent.putExtra("id", getSong(0).id);
+		sendBroadcast(intent);
 	}
 
 	private void retrieveSongs()
