@@ -8,6 +8,8 @@ import android.os.Parcelable;
 import android.provider.MediaStore;
 
 public class Song implements Parcelable {
+	int id;
+
 	public String path;
 	public String coverPath;
 
@@ -17,6 +19,8 @@ public class Song implements Parcelable {
 
 	public Song(int id)
 	{
+		this.id = id;
+
 		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 		String[] projection = {
 			MediaStore.Audio.Media.DATA,
@@ -80,7 +84,7 @@ public class Song implements Parcelable {
 	{
 		if (other == null)
 			return false;
-		return path.equals(other.path);
+		return id == other.id;
 	}
 
 	public static Parcelable.Creator<Song> CREATOR = new Parcelable.Creator<Song>() {
@@ -97,6 +101,7 @@ public class Song implements Parcelable {
 
 	public Song(Parcel in)
 	{
+		id = in.readInt();
 		path = in.readString();
 		coverPath = in.readString();
 		title = in.readString();
@@ -106,6 +111,7 @@ public class Song implements Parcelable {
 
 	public void writeToParcel(Parcel out, int flags)
 	{
+		out.writeInt(id);
 		out.writeString(path);
 		out.writeString(coverPath);
 		out.writeString(title);
