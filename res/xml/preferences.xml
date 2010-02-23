@@ -19,4 +19,9 @@
 		android:title="@string/notify_while_paused_title"
 		android:defaultValue="true"
 		android:summary="@string/notify_while_paused_summary" />
+	<CheckBoxPreference
+		android:key="scrobble"
+		android:title="@string/scrobble_title"
+		android:defaultValue="true"
+		android:summary="@string/scrobble_summary" />
 </PreferenceScreen>

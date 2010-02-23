@@ -227,7 +227,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 	private boolean mHeadsetOnly;
 	private boolean mUseRemotePlayer;
-	private boolean mNotifyWhilePaused = true;
+	private boolean mNotifyWhilePaused;
+	private boolean mScrobble;
 
 	private Handler mHandler;
 	private MediaPlayer mMediaPlayer;
@@ -342,6 +343,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		mHeadsetOnly = mSettings.getBoolean("headset_only", false);
 		mUseRemotePlayer = mSettings.getBoolean("remote_player", true);
 		mNotifyWhilePaused = mSettings.getBoolean("notify_while_paused", true);
+		mScrobble = mSettings.getBoolean("scrobble", false);
 
 		setCurrentSong(1);
 
@@ -360,6 +362,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		} else if ("notify_while_paused".equals(key)){
 			mNotifyWhilePaused = mSettings.getBoolean(key, true);
 			updateNotification();
+		} else if ("scrobble".equals(key)) {
+			mScrobble = mSettings.getBoolean("scrobble", false);
 		}
 	}
 
@@ -383,10 +387,12 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		}
 		mWatchers.finishBroadcast();
 
-		Intent intent = new Intent("net.jjc1138.android.scrobbler.action.MUSIC_STATUS");
-		intent.putExtra("playing", mState == STATE_PLAYING);
-		intent.putExtra("id", getSong(0).id);
-		sendBroadcast(intent);
+		if (mScrobble) {
+			Intent intent = new Intent("net.jjc1138.android.scrobbler.action.MUSIC_STATUS");
+			intent.putExtra("playing", mState == STATE_PLAYING);
+			intent.putExtra("id", getSong(0).id);
+			sendBroadcast(intent);
+		}
 	}
 
 	private void retrieveSongs()

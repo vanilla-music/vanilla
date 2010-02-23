@@ -22,4 +22,7 @@
 
 	<string name="notify_while_paused_title">Notify While Paused</string>
 	<string name="notify_while_paused_summary">Always display the notification</string>
+
+	<string name="scrobble_title">Use ScrobbleDroid API</string>
+	<string name="scrobble_summary">Send song info to Last.FM scrobblers such as ScrobbleDroid and Simple Last.FM Scrobbler</string>
 </resources>
