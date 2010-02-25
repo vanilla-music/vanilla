@@ -16,7 +16,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -80,6 +79,9 @@ public class CoverView extends View {
 		if (song != null) {
 			int width = getWidth();
 			int height = getHeight();
+
+			if (width == 0 || height == 0)
+				return;
 
 			Paint paint = new Paint();
 			paint.setAntiAlias(true);
@@ -163,22 +165,9 @@ public class CoverView extends View {
 
 	private void refreshSongs()
 	{
-		try {
-			mSongs = mService.getCurrentSongs();
-			regenerateBitmaps();
-		} catch (RemoteException e) {
-			Log.e("VanillaMusic", "RemoteException", e);
-		}
-	}
-
-	public void regenerateBitmaps()
-	{
-		if (getWidth() == 0 || getHeight() == 0)
-			return;
-
-		for (int i = STORE_SIZE; --i != -1; )
-			createBitmap(i);
-		reset();
+		mHandler.sendMessage(mHandler.obtainMessage(QUERY_SONG, 1, 0));
+		mHandler.sendMessage(mHandler.obtainMessage(QUERY_SONG, 0, 0));
+		mHandler.sendMessage(mHandler.obtainMessage(QUERY_SONG, 2, 0));
 	}
 
 	public void nextCover()
@@ -239,9 +228,14 @@ public class CoverView extends View {
 	}
 
 	@Override
-	protected void onSizeChanged(int w, int h, int oldw, int oldh)
+	protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight)
 	{
-		regenerateBitmaps();
+		if (width == 0 || height == 0)
+			return;
+
+		for (int i = STORE_SIZE; --i != -1; )
+			createBitmap(i);
+		reset();
 	}
 
 	@Override
@@ -352,21 +346,19 @@ public class CoverView extends View {
 		}
 	}
 
-	private static final int REFRESH_SONGS = 0;
 	private static final int QUERY_SONG = 1;
 
 	private Handler mHandler = new Handler() {
 		public void handleMessage(Message message) {
 			switch (message.what) {
-			case REFRESH_SONGS:
-				refreshSongs();
-				break;
 			case QUERY_SONG:
 				try {
 					int i = message.arg1;
 					int delta = i - STORE_SIZE / 2;
 					mSongs[i] = mService.getSong(delta);
 					createBitmap(i);
+					if (delta == 0)
+						reset();
 				} catch (RemoteException e) {
 				}
 				break;
@@ -378,7 +370,7 @@ public class CoverView extends View {
 		public void songChanged(Song playingSong)
 		{
 			if (!playingSong.equals(mSongs[STORE_SIZE / 2]))
-				mHandler.sendEmptyMessage(REFRESH_SONGS);
+				refreshSongs();
 		}
 
 		public void stateChanged(int oldState, int newState)
