@@ -1,0 +1,4 @@
+Vanilla Music Player is designed to be simple and streamlined. The playback screen is clean and minimal. Music is played from a continuous stream of random songs from your music library with the ability for you to enqueue songs of your choosing.
+
+
+Build using 'android update project --target 3' or the included Eclipse project.
