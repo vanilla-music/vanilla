@@ -468,12 +468,12 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 	private void updateNotification()
 	{
-		if (!mNotifyWhilePaused && mState == STATE_NORMAL) {
+		Song song = getSong(0);
+
+		if (song == null || !mNotifyWhilePaused && mState == STATE_NORMAL) {
 			mNotificationManager.cancel(NOTIFICATION_ID);
 			return;
 		}
-
-		Song song = getSong(0);
 
 		String title = song.title;
 		if (mState != STATE_PLAYING)
