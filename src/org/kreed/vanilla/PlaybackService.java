@@ -56,6 +56,10 @@ import android.widget.Toast;
 public class PlaybackService extends Service implements Runnable, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, SharedPreferences.OnSharedPreferenceChangeListener {	
 	private static final int NOTIFICATION_ID = 2;
 
+	public static final String APPWIDGET_SMALL_UPDATE = "org.kreed.vanilla.action.APPWIDGET_SMALL_UPDATE";
+	public static final String TOGGLE_PLAYBACK = "org.kreed.vanilla.action.TOGGLE_PLAYBACK";
+	public static final String NEXT_SONG = "org.kreed.vanilla.action.NEXT_SONG";
+
 	public static final int STATE_NORMAL = 0;
 	public static final int STATE_NO_MEDIA = 1;
 	public static final int STATE_PLAYING = 2;
@@ -187,6 +191,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		unregisterReceiver(mReceiver);
 		mNotificationManager.cancel(NOTIFICATION_ID);
 
+		resetWidgets();
+
 		if (mWakeLock != null && mWakeLock.isHeld())
 			mWakeLock.release();
 	}
@@ -235,6 +241,27 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			} else if (Intent.ACTION_MEDIA_SCANNER_FINISHED.equals(action)
 			        || Intent.ACTION_MEDIA_SCANNER_SCAN_FILE.equals(action)) {
 				mHandler.sendEmptyMessage(RETRIEVE_SONGS);
+			} else if (TOGGLE_PLAYBACK.equals(action)) {
+				if (mHandler.hasMessages(DO)) {
+					mHandler.removeMessages(DO);
+					Intent launcher = new Intent(PlaybackService.this, NowPlayingActivity.class);
+					launcher.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					startActivity(launcher);
+				} else {
+					mHandler.sendMessageDelayed(mHandler.obtainMessage(DO, PLAY_PAUSE, 0), 250);
+				}
+			} else if (NEXT_SONG.equals(action)) {
+				if (mHandler.hasMessages(DO)) {
+					mHandler.removeMessages(DO);
+					Intent launcher = new Intent(PlaybackService.this, NowPlayingActivity.class);
+					launcher.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					startActivity(launcher);
+				} else {
+					mHandler.sendMessageDelayed(mHandler.obtainMessage(DO, SET_SONG, 1), 250);
+				}
+			} else if (APPWIDGET_SMALL_UPDATE.equals(intent.getAction())) {
+				OneCellWidget.update(PlaybackService.this, getSong(0));
+				return;
 			}
 		}
 	};
@@ -297,6 +324,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private static final int HANDLE_PAUSE = 8;
 	private static final int RETRIEVE_SONGS = 9;
 	private static final int CALL = 10;
+	private static final int DO = 11;
 
 	public void run()
 	{
@@ -376,6 +404,16 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 						}
 					}
 					break;
+				case DO:
+					if (message.arg1 == DO) {
+						Log.w("VanillaMusic", "handleMessage.DO should not be called with arg1 = DO");
+						return;
+					}
+
+					message.what = message.arg1;
+					message.arg1 = message.arg2;
+					handleMessage(message);
+					break;
 				}
 			}
 		};
@@ -384,6 +422,9 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		filter.addAction(Intent.ACTION_HEADSET_PLUG);
 		filter.addAction(Intent.ACTION_MEDIA_SCANNER_FINISHED);
 		filter.addAction(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+		filter.addAction(TOGGLE_PLAYBACK);
+		filter.addAction(NEXT_SONG);
+		filter.addAction(APPWIDGET_SMALL_UPDATE);
 		registerReceiver(mReceiver, filter);
 
 		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
@@ -554,6 +595,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			mSongTimeline.remove(0);
 			--mCurrentSong;
 		}
+
+		updateWidgets();
 	}
 
 	public void onCompletion(MediaPlayer player)
@@ -597,5 +640,16 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		}
 
 		return mSongTimeline.get(pos);
+	}
+
+	private void updateWidgets()
+	{
+		Song song = getSong(0);
+		OneCellWidget.update(this, song);
+	}
+
+	private void resetWidgets()
+	{
+		OneCellWidget.reset(this);
 	}
 }

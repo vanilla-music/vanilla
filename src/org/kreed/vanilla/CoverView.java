@@ -72,14 +72,14 @@ public class CoverView extends View {
 		}
 	}
 
-	private void drawText(Canvas canvas, String text, float left, float top, float width, float maxWidth, Paint paint)
+	private static void drawText(Canvas canvas, String text, float left, float top, float width, float maxWidth, Paint paint)
 	{
 		float offset = Math.max(0, maxWidth - width) / 2;
 		canvas.clipRect(left, top, left + maxWidth, top + paint.getTextSize() * 2, Region.Op.REPLACE);
 		canvas.drawText(text, left + offset, top - paint.ascent(), paint);
 	}
 
-	private RectF centerRect(float maxWidth, float maxHeight, float width, float height)
+	private static RectF centerRect(float maxWidth, float maxHeight, float width, float height)
 	{
 		RectF rect = new RectF();
 		rect.left = (maxWidth - width) / 2;
@@ -89,94 +89,146 @@ public class CoverView extends View {
 		return rect;
 	}
 
+	private static RectF bottomStretchRect(float maxWidth, float maxHeight, float width, float height)
+	{
+		RectF rect = new RectF();
+		rect.left = 0;
+		rect.top = maxHeight - height;
+		rect.right = maxWidth;
+		rect.bottom = maxHeight;
+		return rect;
+	}
+
+	public static Bitmap createMiniBitmap(Song song, int width, int height)
+	{
+		if (song == null || width < 1 || height < 1)
+			return null;
+
+		Paint paint = new Paint();
+		paint.setAntiAlias(true);
+
+		String title = song.title == null ? "" : song.title;
+		Bitmap cover = song.coverPath == null ? null : BitmapFactory.decodeFile(song.coverPath);
+
+		float titleSize = 12;
+		float padding = 2;
+
+		paint.setTextSize(titleSize);
+		float titleWidth = paint.measureText(title);
+
+		float boxWidth = width;
+		float boxHeight = Math.min(height, titleSize + padding * 2);
+
+		Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+		Canvas canvas = new Canvas(bitmap);
+
+		if (cover != null) {
+			canvas.drawBitmap(cover, null, new Rect(0, 0, width, height), paint);
+			cover.recycle();
+			cover = null;
+		}
+
+		RectF boxRect = bottomStretchRect(width, height, boxWidth, boxHeight);
+
+		paint.setARGB(150, 0, 0, 0);
+		canvas.drawRect(boxRect, paint);
+
+		float maxWidth = boxWidth - padding * 2;
+		paint.setARGB(255, 255, 255, 255);
+		boxRect.top += padding;
+		boxRect.left += padding;
+
+		paint.setTextSize(titleSize);
+		drawText(canvas, title, boxRect.left, boxRect.top, titleWidth, maxWidth, paint);
+
+		return bitmap;
+	}
+
+	public static Bitmap createBitmap(Song song, int width, int height)
+	{
+		if (song == null || width < 1 || height < 1)
+			return null;
+
+		Paint paint = new Paint();
+		paint.setAntiAlias(true);
+
+		String title = song.title == null ? "" : song.title;
+		String album = song.album == null ? "" : song.album;
+		String artist = song.artist == null ? "" : song.artist;
+		Bitmap cover = song.coverPath == null ? null : BitmapFactory.decodeFile(song.coverPath);
+
+		float titleSize = 20;
+		float subSize = 14;
+		float padding = 10;
+
+		paint.setTextSize(titleSize);
+		float titleWidth = paint.measureText(title);
+		paint.setTextSize(subSize);
+		float albumWidth = paint.measureText(album);
+		float artistWidth = paint.measureText(artist);
+
+		float boxWidth = Math.min(width, Math.max(titleWidth, Math.max(artistWidth, albumWidth)) + padding * 2);
+		float boxHeight = Math.min(height, titleSize + subSize * 2 + padding * 4);
+
+		float coverWidth;
+		float coverHeight;
+
+		if (cover == null) {
+			coverWidth = 0;
+			coverHeight = 0;
+		} else {
+			coverWidth = cover.getWidth();
+			coverHeight = cover.getHeight();
+
+			float drawableAspectRatio = coverHeight / coverWidth; 
+			float viewAspectRatio = (float) height / width;
+			float scale = drawableAspectRatio > viewAspectRatio ? height / coverWidth 
+			                                                    : width / coverHeight;
+
+			coverWidth *= scale;
+			coverHeight *= scale;
+		}
+
+		int bitmapWidth = (int)Math.max(coverWidth, boxWidth);
+		int bitmapHeight = (int)Math.max(coverHeight, boxHeight);
+
+		Bitmap bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.RGB_565);
+		Canvas canvas = new Canvas(bitmap);
+
+		if (cover != null) {
+			RectF rect = centerRect(bitmapWidth, bitmapHeight, coverWidth, coverHeight);
+			canvas.drawBitmap(cover, null, rect, paint);
+			cover.recycle();
+			cover = null;
+		}
+
+		RectF boxRect = centerRect(bitmapWidth, bitmapHeight, boxWidth, boxHeight);
+
+		paint.setARGB(150, 0, 0, 0);
+		canvas.drawRect(boxRect, paint);
+
+		float maxWidth = boxWidth - padding * 2;
+		paint.setARGB(255, 255, 255, 255);
+		boxRect.top += padding;
+		boxRect.left += padding;
+
+		paint.setTextSize(titleSize);
+		drawText(canvas, title, boxRect.left, boxRect.top, titleWidth, maxWidth, paint);
+		boxRect.top += titleSize + padding;
+
+		paint.setTextSize(subSize);
+		drawText(canvas, album, boxRect.left, boxRect.top, albumWidth, maxWidth, paint);
+		boxRect.top += subSize + padding;
+
+		drawText(canvas, artist, boxRect.left, boxRect.top, artistWidth, maxWidth, paint);
+
+		return bitmap;
+	}
+
 	private void createBitmap(int i)
 	{
-		Song song = mSongs[i];
-		Bitmap bitmap = null;
-
-		if (song != null) {
-			int width = getWidth();
-			int height = getHeight();
-
-			if (width == 0 || height == 0)
-				return;
-
-			Paint paint = new Paint();
-			paint.setAntiAlias(true);
-
-			String title = song.title == null ? "" : song.title;
-			String album = song.album == null ? "" : song.album;
-			String artist = song.artist == null ? "" : song.artist;
-			Bitmap cover = song.coverPath == null ? null : BitmapFactory.decodeFile(song.coverPath);
-
-			float titleSize = 20;
-			float subSize = 14;
-			float padding = 10;
-
-			paint.setTextSize(titleSize);
-			float titleWidth = paint.measureText(title);
-			paint.setTextSize(subSize);
-			float albumWidth = paint.measureText(album);
-			float artistWidth = paint.measureText(artist);
-
-			float boxWidth = Math.min(width, Math.max(titleWidth, Math.max(artistWidth, albumWidth)) + padding * 2);
-			float boxHeight = Math.min(height, titleSize + subSize * 2 + padding * 4);
-
-			float coverWidth;
-			float coverHeight;
-
-			if (cover == null) {
-				coverWidth = 0;
-				coverHeight = 0;
-			} else {
-				coverWidth = cover.getWidth();
-				coverHeight = cover.getHeight();
-
-				float drawableAspectRatio = coverHeight / coverWidth; 
-				float viewAspectRatio = (float) height / width;
-				float scale = drawableAspectRatio > viewAspectRatio ? height / coverWidth 
-				                                                    : width / coverHeight;
-
-				coverWidth *= scale;
-				coverHeight *= scale;
-			}
-
-			int bitmapWidth = (int)Math.max(coverWidth, boxWidth);
-			int bitmapHeight = (int)Math.max(coverHeight, boxHeight);
-
-			bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.RGB_565);
-			Canvas canvas = new Canvas(bitmap);
-
-			if (cover != null) {
-				RectF rect = centerRect(bitmapWidth, bitmapHeight, coverWidth, coverHeight);
-				canvas.drawBitmap(cover, null, rect, paint);
-				cover.recycle();
-				cover = null;
-			}
-
-			RectF boxRect = centerRect(bitmapWidth, bitmapHeight, boxWidth, boxHeight);
-
-			paint.setARGB(150, 0, 0, 0);
-			canvas.drawRect(boxRect, paint);
-
-			float maxWidth = boxWidth - padding * 2;
-			paint.setARGB(255, 255, 255, 255);
-			boxRect.top += padding;
-			boxRect.left += padding;
-
-			paint.setTextSize(titleSize);
-			drawText(canvas, title, boxRect.left, boxRect.top, titleWidth, maxWidth, paint);
-			boxRect.top += titleSize + padding;
-			
-			paint.setTextSize(subSize);
-			drawText(canvas, album, boxRect.left, boxRect.top, albumWidth, maxWidth, paint);
-			boxRect.top += subSize + padding;
-			
-			drawText(canvas, artist, boxRect.left, boxRect.top, artistWidth, maxWidth, paint);
-		}
-		
 		Bitmap oldBitmap = mBitmaps[i];
-		mBitmaps[i] = bitmap;
+		mBitmaps[i] = createBitmap(mSongs[i], getWidth(), getHeight());
 		if (oldBitmap != null)
 			oldBitmap.recycle();
 	}
