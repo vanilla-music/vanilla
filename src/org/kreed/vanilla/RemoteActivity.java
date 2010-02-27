@@ -32,7 +32,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.view.View;
 import android.view.Window;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 
 public class RemoteActivity extends Activity implements ServiceConnection, View.OnClickListener {
 	private CoverView mCoverView;
@@ -40,7 +40,7 @@ public class RemoteActivity extends Activity implements ServiceConnection, View.
 	private View mOpenButton;
 	private View mKillButton;
 	private View mPreviousButton;
-	private ImageButton mPlayPauseButton;
+	private ImageView mPlayPauseButton;
 	private View mNextButton;
 
 	@Override
@@ -59,7 +59,7 @@ public class RemoteActivity extends Activity implements ServiceConnection, View.
 		mKillButton.setOnClickListener(this);
 		mPreviousButton = findViewById(R.id.previous);
 		mPreviousButton.setOnClickListener(this);
-		mPlayPauseButton = (ImageButton)findViewById(R.id.play_pause);
+		mPlayPauseButton = (ImageView)findViewById(R.id.play_pause);
 		mPlayPauseButton.setOnClickListener(this);
 		mNextButton = findViewById(R.id.next);
 		mNextButton.setOnClickListener(this);

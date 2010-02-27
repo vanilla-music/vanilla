@@ -40,7 +40,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -55,9 +55,9 @@ public class NowPlayingActivity extends Activity implements ServiceConnection, V
 	private View mControlsTop;
 	private View mControlsBottom;
 
-	private ImageButton mPreviousButton;
-	private ImageButton mPlayPauseButton;
-	private ImageButton mNextButton;
+	private View mPreviousButton;
+	private ImageView mPlayPauseButton;
+	private View mNextButton;
 	private SeekBar mSeekBar;
 	private TextView mSeekText;
 	private Button mReconnectButton;
@@ -81,20 +81,20 @@ public class NowPlayingActivity extends Activity implements ServiceConnection, V
 		mCoverView.setOnClickListener(this);
 
 		mLayout = (ViewGroup)mCoverView.getParent();
-		
+
 		mControlsTop = findViewById(R.id.controls_top);
 		mControlsBottom = findViewById(R.id.controls_bottom);
-		
-		mPreviousButton = (ImageButton)findViewById(R.id.previous);
+
+		mPreviousButton = findViewById(R.id.previous);
 		mPreviousButton.setOnClickListener(this);
 		mPreviousButton.setOnFocusChangeListener(this);
-		mPlayPauseButton = (ImageButton)findViewById(R.id.play_pause);
+		mPlayPauseButton = (ImageView)findViewById(R.id.play_pause);
 		mPlayPauseButton.setOnClickListener(this);
 		mPlayPauseButton.setOnFocusChangeListener(this);
-		mNextButton = (ImageButton)findViewById(R.id.next);
+		mNextButton = findViewById(R.id.next);
 		mNextButton.setOnClickListener(this);
 		mNextButton.setOnFocusChangeListener(this);
-		
+
 		mSeekText = (TextView)findViewById(R.id.seek_text);
 		mSeekBar = (SeekBar)findViewById(R.id.seek_bar);
 		mSeekBar.setMax(1000);
