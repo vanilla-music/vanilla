@@ -12,6 +12,7 @@ public class OneCellWidget extends AppWidgetProvider {
 	@Override
 	public void onUpdate(Context context, AppWidgetManager manager, int[] ids)
 	{
+		reset(context);
 		context.sendBroadcast(new Intent(PlaybackService.APPWIDGET_SMALL_UPDATE));
 	}
 
@@ -36,6 +37,7 @@ public class OneCellWidget extends AppWidgetProvider {
 	public static void reset(Context context)
 	{
 		RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.default_widget);
+		views.setOnClickPendingIntent(R.id.stopped_text, PendingIntent.getService(context, 0, new Intent(context, PlaybackService.class), 0));
 		sendUpdate(context, views);
 	}
 }
