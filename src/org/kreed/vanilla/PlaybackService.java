@@ -18,6 +18,9 @@
 
 package org.kreed.vanilla;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -167,6 +170,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	{
 		super.onDestroy();
 
+		saveState(true);
+
 		if (mMediaPlayer != null) {
 			MediaPlayer player = mMediaPlayer;
 			mMediaPlayer = null;
@@ -301,6 +306,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private int mQueuePos = 0;
 	private int mState = STATE_NORMAL;
 	private boolean mPlayingBeforeCall;
+	private int mPendingSeek;
 
 	private Method mIsWiredHeadsetOn;
 	private Method mIsBluetoothScoOn;
@@ -320,17 +326,26 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private static final int RETRIEVE_SONGS = 9;
 	private static final int CALL = 10;
 	private static final int DO = 11;
+	private static final int SAVE_STATE = 12;
 
 	public void run()
 	{
 		Looper.prepare();
 
-		retrieveSongs();
-		broadcastSongChange(getSong(0));
-
-		mMediaPlayer = new MediaPlayer();
 		mSongTimeline = new ArrayList<Song>();
 		mRandom = new Random();
+
+		boolean stateLoaded = loadState();
+		if (!stateLoaded)
+			retrieveSongs();
+
+		broadcastSongChange(getSong(0));
+
+		// if we can, delay this so that the cover will show up faster in the activity
+		if (stateLoaded)
+			retrieveSongs();
+
+		mMediaPlayer = new MediaPlayer();
 		mHandler = new MusicHandler();
 
 		mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -364,6 +379,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		mScrobble = mSettings.getBoolean("scrobble", false);
 
 		setCurrentSong(0);
+		if (mPendingSeek != 0)
+			mMediaPlayer.seekTo(mPendingSeek);
 
 		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
 		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicSongChangeLock");
@@ -554,6 +571,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				--mCurrentSong;
 			}
 		}
+
+		mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
 	}
 
 	public void onCompletion(MediaPlayer player)
@@ -613,6 +632,48 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		OneCellWidget.reset(this);
 	}
 
+	private static final String STATE_FILE = "state";
+	private static final long STATE_FILE_MAGIC = 0x8a9d3f9fca31L;
+
+	private boolean loadState()
+	{
+		try {
+			DataInputStream in = new DataInputStream(openFileInput(STATE_FILE));
+			if (in.readLong() == STATE_FILE_MAGIC) {
+				mCurrentSong = in.readInt();
+				int n = in.readInt();
+				mSongTimeline.ensureCapacity(n);
+				while (--n != -1)
+					mSongTimeline.add(new Song(in.readInt()));
+				mPendingSeek = in.readInt();
+				in.close();
+				return true;
+			}
+		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
+			Log.w("VanillaMusic", e);
+		}
+
+		return false;
+	}
+
+	private void saveState(boolean savePosition)
+	{
+		try {
+			DataOutputStream out = new DataOutputStream(openFileOutput(STATE_FILE, 0));
+			out.writeLong(STATE_FILE_MAGIC);
+			out.writeInt(mCurrentSong);
+			int n = mSongTimeline.size();
+			out.writeInt(n);
+			for (int i = 0; i != n; ++i)
+				out.writeInt(mSongTimeline.get(i).id);
+			out.writeInt(savePosition ? mMediaPlayer.getCurrentPosition() : 0);
+			out.close();
+		} catch (IOException e) {
+			Log.w("VanillaMusic", e);
+		}
+	}
+
 	private class MusicHandler extends Handler {
 		@Override
 		public void handleMessage(Message message)
@@ -649,6 +710,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 						else
 							mSongTimeline.add(song);
 					}
+
+					mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
 				}
 				break;
 			case TRACK_CHANGED:
@@ -692,6 +755,11 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				message.what = message.arg1;
 				message.arg1 = message.arg2;
 				handleMessage(message);
+				break;
+			case SAVE_STATE:
+				// For unexpected terminations: crashes, task killers, etc.
+				// In most cases onDestroy will handle this
+				saveState(false);
 				break;
 			}
 		}
