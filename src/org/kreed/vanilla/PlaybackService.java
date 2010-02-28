@@ -327,87 +327,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		mMediaPlayer = new MediaPlayer();
 		mSongTimeline = new ArrayList<Song>();
 		mRandom = new Random();
-
-		mHandler = new Handler() {
-			public void handleMessage(Message message)
-			{
-				switch (message.what) {
-				case SET_SONG:
-					setCurrentSong(message.arg1);
-					break;
-				case PLAY_PAUSE:
-					setPlaying(!mMediaPlayer.isPlaying());
-					break;
-				case HEADSET_PLUGGED:
-					if (mHeadsetPause) {
-						boolean plugged = message.arg1 == 1;
-						if (!plugged && mMediaPlayer.isPlaying())
-							pause();
-					}
-					break;
-				case PREF_CHANGED:
-					loadPreference((String)message.obj);
-					break;
-				case QUEUE_ITEM:
-					if (message.arg1 == -1) {
-						mQueuePos = 0;
-					} else {
-						Song song = new Song(message.arg1);
-						String text = getResources().getString(R.string.enqueued, song.title);
-						Toast.makeText(ContextApplication.getContext(), text, Toast.LENGTH_SHORT).show();
-
-						int i = mCurrentSong + 1 + mQueuePos++;
-						if (i < mSongTimeline.size())
-							mSongTimeline.set(i, song);
-						else
-							mSongTimeline.add(song);
-					}
-					break;
-				case TRACK_CHANGED:
-					setCurrentSong(+1);
-					break;
-				case RELEASE_WAKE_LOCK:
-					if (mWakeLock.isHeld())
-						mWakeLock.release();
-					break;
-				case HANDLE_PLAY:
-					setState(STATE_PLAYING);
-					startForegroundCompat(NOTIFICATION_ID, mNotification);
-					break;
-				case HANDLE_PAUSE:
-					setState(STATE_NORMAL);
-					stopForegroundCompat(false);
-					break;
-				case RETRIEVE_SONGS:
-					retrieveSongs();
-					break;
-				case CALL:
-					boolean inCall = message.arg1 == 1;
-					if (inCall) {
-						if (mState == STATE_PLAYING) {
-							mPlayingBeforeCall = true;
-							pause();
-						}
-					} else {
-						if (mPlayingBeforeCall) {
-							play();
-							mPlayingBeforeCall = false;
-						}
-					}
-					break;
-				case DO:
-					if (message.arg1 == DO) {
-						Log.w("VanillaMusic", "handleMessage.DO should not be called with arg1 = DO");
-						return;
-					}
-
-					message.what = message.arg1;
-					message.arg1 = message.arg2;
-					handleMessage(message);
-					break;
-				}
-			}
-		};
+		mHandler = new MusicHandler();
 
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Intent.ACTION_HEADSET_PLUG);
@@ -678,5 +598,87 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private void resetWidgets()
 	{
 		OneCellWidget.reset(this);
+	}
+
+	private class MusicHandler extends Handler {
+		@Override
+		public void handleMessage(Message message)
+		{
+			switch (message.what) {
+			case SET_SONG:
+				setCurrentSong(message.arg1);
+				break;
+			case PLAY_PAUSE:
+				setPlaying(!mMediaPlayer.isPlaying());
+				break;
+			case HEADSET_PLUGGED:
+				if (mHeadsetPause) {
+					boolean plugged = message.arg1 == 1;
+					if (!plugged && mMediaPlayer.isPlaying())
+						pause();
+				}
+				break;
+			case PREF_CHANGED:
+				loadPreference((String)message.obj);
+				break;
+			case QUEUE_ITEM:
+				if (message.arg1 == -1) {
+					mQueuePos = 0;
+				} else {
+					Song song = new Song(message.arg1);
+					String text = getResources().getString(R.string.enqueued, song.title);
+					Toast.makeText(ContextApplication.getContext(), text, Toast.LENGTH_SHORT).show();
+
+					int i = mCurrentSong + 1 + mQueuePos++;
+					if (i < mSongTimeline.size())
+						mSongTimeline.set(i, song);
+					else
+						mSongTimeline.add(song);
+				}
+				break;
+			case TRACK_CHANGED:
+				setCurrentSong(+1);
+				break;
+			case RELEASE_WAKE_LOCK:
+				if (mWakeLock.isHeld())
+					mWakeLock.release();
+				break;
+			case HANDLE_PLAY:
+				setState(STATE_PLAYING);
+				startForegroundCompat(NOTIFICATION_ID, mNotification);
+				break;
+			case HANDLE_PAUSE:
+				setState(STATE_NORMAL);
+				stopForegroundCompat(false);
+				break;
+			case RETRIEVE_SONGS:
+				retrieveSongs();
+				break;
+			case CALL:
+				boolean inCall = message.arg1 == 1;
+				if (inCall) {
+					if (mState == STATE_PLAYING) {
+						mPlayingBeforeCall = true;
+						pause();
+					}
+				} else {
+					if (mPlayingBeforeCall) {
+						play();
+						mPlayingBeforeCall = false;
+					}
+				}
+				break;
+			case DO:
+				if (message.arg1 == DO) {
+					Log.w("VanillaMusic", "handleMessage.DO should not be called with arg1 = DO");
+					return;
+				}
+
+				message.what = message.arg1;
+				message.arg1 = message.arg2;
+				handleMessage(message);
+				break;
+			}
+		}
 	}
 }
