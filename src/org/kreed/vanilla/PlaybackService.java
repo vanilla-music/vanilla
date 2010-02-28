@@ -296,7 +296,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 	private int[] mSongs;
 	private ArrayList<Song> mSongTimeline;
-	private int mCurrentSong = -1;
+	private int mCurrentSong = 0;
 	private int mQueuePos = 0;
 	private int mState = STATE_NORMAL;
 	private boolean mPlayingBeforeCall;
@@ -325,7 +325,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		Looper.prepare();
 
 		retrieveSongs();
-		broadcastSongChange(getSong(1));
+		broadcastSongChange(getSong(0));
 
 		mMediaPlayer = new MediaPlayer();
 		mSongTimeline = new ArrayList<Song>();
@@ -362,7 +362,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		mNotifyWhilePaused = mSettings.getBoolean("notify_while_paused", true);
 		mScrobble = mSettings.getBoolean("scrobble", false);
 
-		setCurrentSong(1);
+		setCurrentSong(0);
 
 		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
 		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicSongChangeLock");
