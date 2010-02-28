@@ -1,31 +1,37 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <PreferenceScreen
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:persistent="true">    
-	<CheckBoxPreference
-		android:key="headset_only"
-		android:title="@string/headset_only_title"
-		android:defaultValue="false"
-		android:summary="@string/headset_only_summary" />
-	<CheckBoxPreference
-		android:key="headset_pause"
-		android:title="@string/headset_pause_title"
-		android:defaultValue="true"
-		android:summary="@string/headset_pause_summary" />
-	<CheckBoxPreference
-		android:key="remote_player"
-		android:title="@string/remote_player_title"
-		android:defaultValue="true"
-		android:summaryOn="@string/remote_player_summary_on"
-		android:summaryOff="@string/remote_player_summary_off" />
-	<CheckBoxPreference
-		android:key="notify_while_paused"
-		android:title="@string/notify_while_paused_title"
-		android:defaultValue="true"
-		android:summary="@string/notify_while_paused_summary" />
-	<CheckBoxPreference
-		android:key="scrobble"
-		android:title="@string/scrobble_title"
-		android:defaultValue="true"
-		android:summary="@string/scrobble_summary" />
+	android:persistent="true">
+	<PreferenceCategory android:title="@string/pref_output">
+		<CheckBoxPreference
+			android:key="headset_only"
+			android:title="@string/headset_only_title"
+			android:defaultValue="false"
+			android:summary="@string/headset_only_summary" />
+		<CheckBoxPreference
+			android:key="headset_pause"
+			android:title="@string/headset_pause_title"
+			android:defaultValue="true"
+			android:summary="@string/headset_pause_summary" />
+	</PreferenceCategory>
+	<PreferenceCategory android:title="@string/pref_notifications">
+		<CheckBoxPreference
+			android:key="remote_player"
+			android:title="@string/remote_player_title"
+			android:defaultValue="true"
+			android:summaryOn="@string/remote_player_summary_on"
+			android:summaryOff="@string/remote_player_summary_off" />
+		<CheckBoxPreference
+			android:key="notify_while_paused"
+			android:title="@string/notify_while_paused_title"
+			android:defaultValue="true"
+			android:summary="@string/notify_while_paused_summary" />
+	</PreferenceCategory>
+	<PreferenceCategory android:title="@string/pref_misc">
+		<CheckBoxPreference
+			android:key="scrobble"
+			android:title="@string/scrobble_title"
+			android:defaultValue="true"
+			android:summary="@string/scrobble_summary" />
+	</PreferenceCategory>
 </PreferenceScreen>
