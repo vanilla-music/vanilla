@@ -13,9 +13,8 @@
 	<string name="paused">(Paused)</string>
 	<string name="widget_start_service">Click to start the music service.</string>
 
-	<string name="headset_only_title">Headset only</string>
-	<string name="headset_only_summary_on">Audio only plays when a headset is plugged in</string>
-	<string name="headset_only_summary_off">Audio may play without a headset plugged in</string>
+	<string name="headset_only_title">Disallow Use of Speaker</string>
+	<string name="headset_only_summary">Do not play music when the speaker would be used</string>
 
 	<string name="remote_player_title">Use Remote Player</string>
 	<string name="remote_player_summary_on">Clicking the notification will open a mini-player dialog</string>

@@ -6,8 +6,7 @@
 		android:key="headset_only"
 		android:title="@string/headset_only_title"
 		android:defaultValue="false"
-		android:summaryOn="@string/headset_only_summary_on"
-		android:summaryOff="@string/headset_only_summary_off" />
+		android:summary="@string/headset_only_summary" />
 	<CheckBoxPreference
 		android:key="remote_player"
 		android:title="@string/remote_player_title"

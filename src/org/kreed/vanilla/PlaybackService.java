@@ -65,9 +65,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	public static final int STATE_PLAYING = 2;
 
 	private RemoteCallbackList<IMusicPlayerWatcher> mWatchers;
-	private NotificationManager mNotificationManager;
-	private Method mStartForeground;
-	private Method mStopForeground;
 
 	public IPlaybackService.Stub mBinder = new IPlaybackService.Stub() {
 		public Song[] getCurrentSongs()
@@ -150,15 +147,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	@Override
 	public void onCreate()
 	{
-		mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-		try {
-			mStartForeground = getClass().getMethod("startForeground", new Class[] { int.class, Notification.class });
-			mStopForeground = getClass().getMethod("stopForeground", new Class[] { boolean.class });
-		} catch (NoSuchMethodException e) {
-			// Running on an older platform.
-			mStartForeground = mStopForeground = null;
-		}
-
 		mWatchers = new RemoteCallbackList<IMusicPlayerWatcher>();
 
 		new Thread(this).start();
@@ -203,13 +191,12 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			setForeground(true);
 			mNotificationManager.notify(id, notification);
 		} else {
-			Object[] startForegroundArgs = { Integer.valueOf(id), notification };
 			try {
-				mStartForeground.invoke(this, startForegroundArgs);
+				mStartForeground.invoke(this, Integer.valueOf(id), notification);
 			} catch (InvocationTargetException e) {
-				Log.w("VanillaMusic", "Unable to invoke startForeground", e);
+				Log.w("VanillaMusic", e);
 			} catch (IllegalAccessException e) {
-				Log.w("VanillaMusic", "Unable to invoke startForeground", e);
+				Log.w("VanillaMusic", e);
 			}
 		}
 	}
@@ -219,13 +206,12 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		if (mStopForeground == null) {
 			setForeground(false);
 		} else {
-			Object[] topForegroundArgs = { Boolean.FALSE };
 			try {
-				mStopForeground.invoke(this, topForegroundArgs);
+				mStopForeground.invoke(this, Boolean.FALSE);
 			} catch (InvocationTargetException e) {
-				Log.w("VanillaMusic", "Unable to invoke stopForeground", e);
+				Log.w("VanillaMusic", e);
 			} catch (IllegalAccessException e) {
-				Log.w("VanillaMusic", "Unable to invoke stopForeground", e);
+				Log.w("VanillaMusic", e);
 			}
 		}
 	}
@@ -304,6 +290,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private PowerManager.WakeLock mWakeLock;
 	private Notification mNotification;
 	private SharedPreferences mSettings;
+	private AudioManager mAudioManager;
+	private NotificationManager mNotificationManager;
 
 	private int[] mSongs;
 	private ArrayList<Song> mSongTimeline;
@@ -312,6 +300,12 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private boolean mPlugged = true;
 	private int mState = STATE_NORMAL;
 	private boolean mPlayingBeforeCall;
+
+	private Method mIsWiredHeadsetOn;
+	private Method mIsBluetoothScoOn;
+	private Method mIsBluetoothA2dpOn;
+	private Method mStartForeground;
+	private Method mStopForeground;
 
 	private static final int SET_SONG = 0;
 	private static final int PLAY_PAUSE = 1;
@@ -433,6 +427,23 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 		telephonyManager.listen(mCallListener, PhoneStateListener.LISTEN_CALL_STATE);
 
+		mAudioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+		try {
+			mIsWiredHeadsetOn = mAudioManager.getClass().getMethod("isWiredHeadsetOn", (Class[]) null);
+			mIsBluetoothScoOn = mAudioManager.getClass().getMethod("isBluetoothScoOn", (Class[]) null);
+			mIsBluetoothA2dpOn = mAudioManager.getClass().getMethod("isBluetoothA2dpOn", (Class[]) null);
+		} catch (NoSuchMethodException e) {
+			Log.d("VanillaMusic", "falling back to pre-2.0 AudioManager APIs");
+		}
+		
+		mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+		try {
+			mStartForeground = getClass().getMethod("startForeground", int.class, Notification.class);
+			mStopForeground = getClass().getMethod("stopForeground", boolean.class);
+		} catch (NoSuchMethodException e) {
+			Log.d("VanillaMusic", "falling back to pre-2.0 Service APIs");
+		}
+
 		mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		mMediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
 		mMediaPlayer.setOnCompletionListener(this);
@@ -455,7 +466,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	{
 		if ("headset_only".equals(key)) {
 			mHeadsetOnly = mSettings.getBoolean(key, false);
-			if (mHeadsetOnly && !mPlugged && mMediaPlayer.isPlaying())
+			if (mHeadsetOnly && isSpeakerOn() && mMediaPlayer.isPlaying())
 				pause();
 		} else if ("remote_player".equals(key)) {
 			mUseRemotePlayer = mSettings.getBoolean(key, true);
@@ -536,9 +547,25 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		mNotificationManager.notify(NOTIFICATION_ID, mNotification);
 	}
 
+	private boolean isSpeakerOn()
+	{
+		try {
+			return !(Boolean)mIsWiredHeadsetOn.invoke(mAudioManager, (Object[])null)
+				&& !(Boolean)mIsBluetoothScoOn.invoke(mAudioManager, (Object[])null)
+				&& !(Boolean)mIsBluetoothA2dpOn.invoke(mAudioManager, (Object[])null);
+		} catch (InvocationTargetException e) {
+			Log.w("VanillaMusic", e);
+		} catch (IllegalAccessException e) {
+			Log.w("VanillaMusic", e);
+		}
+
+		// Why is there no true equivalent to this in Android 2.0?
+		return (mAudioManager.getRouting(mAudioManager.getMode()) & AudioManager.ROUTE_SPEAKER) != 0;
+	}
+
 	private void play()
 	{
-		if (mHeadsetOnly && !mPlugged)
+		if (mHeadsetOnly && isSpeakerOn())
 			return;
 
 		mMediaPlayer.start();
