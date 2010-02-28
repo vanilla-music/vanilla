@@ -233,6 +233,17 @@ public class CoverView extends View {
 			oldBitmap.recycle();
 	}
 
+	public void clearSongs()
+	{
+		for (int i = STORE_SIZE; --i != -1; ) {
+			mSongs[i] = null;
+			if (mBitmaps[i] != null) {
+				mBitmaps[i].recycle();
+				mBitmaps[i] = null;
+			}
+		}
+	}
+
 	private void refreshSongs()
 	{
 		mHandler.sendMessage(mHandler.obtainMessage(QUERY_SONG, 1, 0));
@@ -439,8 +450,14 @@ public class CoverView extends View {
 	private IMusicPlayerWatcher mWatcher = new IMusicPlayerWatcher.Stub() {
 		public void songChanged(Song playingSong)
 		{
-			if (!playingSong.equals(mSongs[STORE_SIZE / 2]))
-				refreshSongs();
+			Song currentSong = mSongs[STORE_SIZE / 2];
+			if (currentSong == null) {
+				mSongs[STORE_SIZE / 2] = currentSong;
+				createBitmap(STORE_SIZE / 2);
+				reset();
+			} else if (currentSong.equals(playingSong))
+				return;
+			refreshSongs();
 		}
 
 		public void stateChanged(int oldState, int newState)

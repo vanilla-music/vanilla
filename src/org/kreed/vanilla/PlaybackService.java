@@ -324,25 +324,18 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	{
 		Looper.prepare();
 
+		retrieveSongs();
+		broadcastSongChange(getSong(1));
+
 		mMediaPlayer = new MediaPlayer();
 		mSongTimeline = new ArrayList<Song>();
 		mRandom = new Random();
 		mHandler = new MusicHandler();
 
-		IntentFilter filter = new IntentFilter();
-		filter.addAction(Intent.ACTION_HEADSET_PLUG);
-		filter.addAction(Intent.ACTION_MEDIA_SCANNER_FINISHED);
-		filter.addAction(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-		filter.addAction(TOGGLE_PLAYBACK);
-		filter.addAction(NEXT_SONG);
-		filter.addAction(APPWIDGET_SMALL_UPDATE);
-		registerReceiver(mReceiver, filter);
-
-		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
-		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicSongChangeLock");
-
-		TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-		telephonyManager.listen(mCallListener, PhoneStateListener.LISTEN_CALL_STATE);
+		mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+		mMediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
+		mMediaPlayer.setOnCompletionListener(this);
+		mMediaPlayer.setOnErrorListener(this);
 
 		mAudioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
 		try {
@@ -352,7 +345,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		} catch (NoSuchMethodException e) {
 			Log.d("VanillaMusic", "falling back to pre-2.0 AudioManager APIs");
 		}
-		
+
 		mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 		try {
 			mStartForeground = getClass().getMethod("startForeground", int.class, Notification.class);
@@ -360,12 +353,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		} catch (NoSuchMethodException e) {
 			Log.d("VanillaMusic", "falling back to pre-2.0 Service APIs");
 		}
-
-		mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-		mMediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
-		mMediaPlayer.setOnCompletionListener(this);
-		mMediaPlayer.setOnErrorListener(this);
-		retrieveSongs();
 
 		mSettings = PreferenceManager.getDefaultSharedPreferences(this);
 		mSettings.registerOnSharedPreferenceChangeListener(this);
@@ -376,6 +363,21 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		mScrobble = mSettings.getBoolean("scrobble", false);
 
 		setCurrentSong(1);
+
+		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
+		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicSongChangeLock");
+
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(Intent.ACTION_HEADSET_PLUG);
+		filter.addAction(Intent.ACTION_MEDIA_SCANNER_FINISHED);
+		filter.addAction(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+		filter.addAction(TOGGLE_PLAYBACK);
+		filter.addAction(NEXT_SONG);
+		filter.addAction(APPWIDGET_SMALL_UPDATE);
+		registerReceiver(mReceiver, filter);
+
+		TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+		telephonyManager.listen(mCallListener, PhoneStateListener.LISTEN_CALL_STATE);
 
 		Looper.loop();
 	}
@@ -506,6 +508,19 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			pause();
 	}
 
+	private void broadcastSongChange(Song song)
+	{
+		int i = mWatchers.beginBroadcast();
+		while (--i != -1) {
+			try {
+				mWatchers.getBroadcastItem(i).songChanged(song);
+			} catch (RemoteException e) {
+				// Null elements will be removed automatically
+			}
+		}
+		mWatchers.finishBroadcast();
+	}
+
 	private void setCurrentSong(int delta)
 	{
 		Song song = getSong(delta);
@@ -513,8 +528,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			return;
 
 		mCurrentSong += delta;
-
-		updateNotification();
 
 		try {
 			mMediaPlayer.reset();
@@ -526,15 +539,9 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			Log.e("VanillaMusic", "IOException", e);
 		}
 
-		int i = mWatchers.beginBroadcast();
-		while (--i != -1) {
-			try {
-				mWatchers.getBroadcastItem(i).songChanged(song);
-			} catch (RemoteException e) {
-				// Null elements will be removed automatically
-			}
-		}
-		mWatchers.finishBroadcast();
+		broadcastSongChange(song);
+		updateNotification();
+		updateWidgets();
 
 		getSong(+2);
 
@@ -542,13 +549,12 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			mSongTimeline.remove(0);
 			--mCurrentSong;
 		}
-
-		updateWidgets();
 	}
 
 	public void onCompletion(MediaPlayer player)
 	{
-		mWakeLock.acquire();
+		if (mWakeLock != null)
+			mWakeLock.acquire();
 		mHandler.sendEmptyMessage(TRACK_CHANGED);
 		mHandler.sendEmptyMessage(RELEASE_WAKE_LOCK);
 	}
@@ -640,7 +646,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				setCurrentSong(+1);
 				break;
 			case RELEASE_WAKE_LOCK:
-				if (mWakeLock.isHeld())
+				if (mWakeLock != null && mWakeLock.isHeld())
 					mWakeLock.release();
 				break;
 			case HANDLE_PLAY:

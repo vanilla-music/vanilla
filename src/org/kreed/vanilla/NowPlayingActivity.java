@@ -220,6 +220,7 @@ public class NowPlayingActivity extends Activity implements ServiceConnection, V
 					mService.unregisterWatcher(mWatcher);
 				} catch (RemoteException e) {
 				}
+			mCoverView.clearSongs();
 		} else {
 			try {
 				service.registerWatcher(mWatcher);
