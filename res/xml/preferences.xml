@@ -8,6 +8,11 @@
 		android:defaultValue="false"
 		android:summary="@string/headset_only_summary" />
 	<CheckBoxPreference
+		android:key="headset_pause"
+		android:title="@string/headset_pause_title"
+		android:defaultValue="true"
+		android:summary="@string/headset_pause_summary" />
+	<CheckBoxPreference
 		android:key="remote_player"
 		android:title="@string/remote_player_title"
 		android:defaultValue="true"

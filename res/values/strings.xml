@@ -16,6 +16,9 @@
 	<string name="headset_only_title">Disallow Use of Speaker</string>
 	<string name="headset_only_summary">Do not play music when the speaker would be used</string>
 
+	<string name="headset_pause_title">Pause When Unplugged</string>
+	<string name="headset_pause_summary">Pause when the headphones are unplugged.</string>
+
 	<string name="remote_player_title">Use Remote Player</string>
 	<string name="remote_player_summary_on">Clicking the notification will open a mini-player dialog</string>
 	<string name="remote_player_summary_off">Clicking the notification will open a the full player activity</string>

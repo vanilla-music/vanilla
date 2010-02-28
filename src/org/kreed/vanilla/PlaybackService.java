@@ -279,6 +279,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			mHandler.sendMessage(mHandler.obtainMessage(PREF_CHANGED, key));
 	}
 
+	private boolean mHeadsetPause;
 	private boolean mHeadsetOnly;
 	private boolean mUseRemotePlayer;
 	private boolean mNotifyWhilePaused;
@@ -297,7 +298,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private ArrayList<Song> mSongTimeline;
 	private int mCurrentSong = -1;
 	private int mQueuePos = 0;
-	private boolean mPlugged = true;
 	private int mState = STATE_NORMAL;
 	private boolean mPlayingBeforeCall;
 
@@ -339,13 +339,10 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 					setPlaying(!mMediaPlayer.isPlaying());
 					break;
 				case HEADSET_PLUGGED:
-					boolean plugged = message.arg1 == 1;
-					if (plugged != mPlugged) {
-						mPlugged = plugged;
-						if (mCurrentSong == -1)
-							return;
+					if (mHeadsetPause) {
+						boolean plugged = message.arg1 == 1;
 						if (!plugged && mMediaPlayer.isPlaying())
-							setPlaying(false);
+							pause();
 					}
 					break;
 				case PREF_CHANGED:
@@ -452,6 +449,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 		mSettings = PreferenceManager.getDefaultSharedPreferences(this);
 		mSettings.registerOnSharedPreferenceChangeListener(this);
+		mHeadsetPause = mSettings.getBoolean("headset_pause", true);
 		mHeadsetOnly = mSettings.getBoolean("headset_only", false);
 		mUseRemotePlayer = mSettings.getBoolean("remote_player", true);
 		mNotifyWhilePaused = mSettings.getBoolean("notify_while_paused", true);
@@ -464,7 +462,9 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 	private void loadPreference(String key)
 	{
-		if ("headset_only".equals(key)) {
+		if ("headset_pause".equals(key)) {
+			mHeadsetPause = mSettings.getBoolean("headset_pause", true);
+		} else if ("headset_only".equals(key)) {
 			mHeadsetOnly = mSettings.getBoolean(key, false);
 			if (mHeadsetOnly && isSpeakerOn() && mMediaPlayer.isPlaying())
 				pause();
