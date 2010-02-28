@@ -296,6 +296,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 	private int[] mSongs;
 	private ArrayList<Song> mSongTimeline;
+	private Object mSongTimelineLock = new Object();
 	private int mCurrentSong = 0;
 	private int mQueuePos = 0;
 	private int mState = STATE_NORMAL;
@@ -527,7 +528,9 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		if (song == null)
 			return;
 
-		mCurrentSong += delta;
+		synchronized (mSongTimelineLock) {
+			mCurrentSong += delta;
+		}
 
 		try {
 			mMediaPlayer.reset();
@@ -545,9 +548,11 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 		getSong(+2);
 
-		while (mCurrentSong > 15) {
-			mSongTimeline.remove(0);
-			--mCurrentSong;
+		synchronized (mSongTimelineLock) {
+			while (mCurrentSong > 15) {
+				mSongTimeline.remove(0);
+				--mCurrentSong;
+			}
 		}
 	}
 
@@ -572,27 +577,29 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		return new Song(mSongs[mRandom.nextInt(mSongs.length)]);
 	}
 
-	private synchronized Song getSong(int delta)
+	private Song getSong(int delta)
 	{
-		if (mSongTimeline == null)
-			return null;
-
-		int pos = mCurrentSong + delta;
-
-		if (pos < 0)
-			return null;
-
-		int size = mSongTimeline.size();
-		if (pos > size)
-			return null;
-
-		if (pos == size) {
-			if (mSongs == null)
+		synchronized (mSongTimelineLock) {
+			if (mSongTimeline == null)
 				return null;
-			mSongTimeline.add(randomSong());
+	
+			int pos = mCurrentSong + delta;
+	
+			if (pos < 0)
+				return null;
+	
+			int size = mSongTimeline.size();
+			if (pos > size)
+				return null;
+	
+			if (pos == size) {
+				if (mSongs == null)
+					return null;
+				mSongTimeline.add(randomSong());
+			}
+	
+			return mSongTimeline.get(pos);
 		}
-
-		return mSongTimeline.get(pos);
 	}
 
 	private void updateWidgets()
@@ -635,11 +642,13 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 					String text = getResources().getString(R.string.enqueued, song.title);
 					Toast.makeText(ContextApplication.getContext(), text, Toast.LENGTH_SHORT).show();
 
-					int i = mCurrentSong + 1 + mQueuePos++;
-					if (i < mSongTimeline.size())
-						mSongTimeline.set(i, song);
-					else
-						mSongTimeline.add(song);
+					synchronized (mSongTimelineLock) {
+						int i = mCurrentSong + 1 + mQueuePos++;
+						if (i < mSongTimeline.size())
+							mSongTimeline.set(i, song);
+						else
+							mSongTimeline.add(song);
+					}
 				}
 				break;
 			case TRACK_CHANGED:
