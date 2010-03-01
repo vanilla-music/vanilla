@@ -246,9 +246,9 @@ public class CoverView extends View {
 
 	private void refreshSongs()
 	{
-		mHandler.sendMessage(mHandler.obtainMessage(QUERY_SONG, 1, 0));
-		mHandler.sendMessage(mHandler.obtainMessage(QUERY_SONG, 0, 0));
-		mHandler.sendMessage(mHandler.obtainMessage(QUERY_SONG, 2, 0));
+		mHandler.sendEmptyMessage(1);
+		mHandler.sendEmptyMessage(2);
+		mHandler.sendEmptyMessage(0);
 	}
 
 	public void nextCover()
@@ -265,7 +265,7 @@ public class CoverView extends View {
 			mBitmaps[STORE_SIZE - 1] = null;
 			reset();
 
-			mHandler.sendMessage(mHandler.obtainMessage(QUERY_SONG, 2, 0));
+			mHandler.sendEmptyMessage(2);
 		} catch (RemoteException e) {
 		}
 	}
@@ -284,7 +284,7 @@ public class CoverView extends View {
 			mBitmaps[0] = null;
 			reset();
 
-			mHandler.sendMessage(mHandler.obtainMessage(QUERY_SONG, 0, 0));
+			mHandler.sendEmptyMessage(0);
 		} catch (RemoteException e) {
 		}
 	}
@@ -427,22 +427,16 @@ public class CoverView extends View {
 		}
 	}
 
-	private static final int QUERY_SONG = 1;
-
 	private Handler mHandler = new Handler() {
 		public void handleMessage(Message message) {
-			switch (message.what) {
-			case QUERY_SONG:
-				try {
-					int i = message.arg1;
-					int delta = i - STORE_SIZE / 2;
-					mSongs[i] = mService.getSong(delta);
-					createBitmap(i);
-					if (delta == 0)
-						reset();
-				} catch (RemoteException e) {
-				}
-				break;
+			try {
+				int i = message.what;
+				int delta = i - STORE_SIZE / 2;
+				mSongs[i] = mService.getSong(delta);
+				createBitmap(i);
+				if (delta == 0)
+					reset();
+			} catch (RemoteException e) {
 			}
 		}
 	};
