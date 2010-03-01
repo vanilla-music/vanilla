@@ -89,14 +89,18 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		{
 			if (mMediaPlayer == null)
 				return 0;
-			return mMediaPlayer.getCurrentPosition();
+			synchronized (mMediaPlayer) {
+				return mMediaPlayer.getCurrentPosition();
+			}
 		}
 
 		public int getDuration()
 		{
 			if (mMediaPlayer == null)
 				return 0;
-			return mMediaPlayer.getDuration();
+			synchronized (mMediaPlayer) {
+				return mMediaPlayer.getDuration();
+			}
 		}
 
 		public void nextSong()
@@ -130,10 +134,14 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 		public void seekToProgress(int progress)
 		{
-			if (mMediaPlayer == null || !mMediaPlayer.isPlaying())
+			if (mMediaPlayer == null)
 				return;
-			long position = (long)mMediaPlayer.getDuration() * progress / 1000;
-			mMediaPlayer.seekTo((int)position);
+			synchronized (mMediaPlayer) {
+				if (!mMediaPlayer.isPlaying())
+					return;
+				long position = (long)mMediaPlayer.getDuration() * progress / 1000;
+				mMediaPlayer.seekTo((int)position);
+			}
 		}
 	};
 
@@ -547,9 +555,11 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		}
 
 		try {
-			mMediaPlayer.reset();
-			mMediaPlayer.setDataSource(song.path);
-			mMediaPlayer.prepare();
+			synchronized (mMediaPlayer) {
+				mMediaPlayer.reset();
+				mMediaPlayer.setDataSource(song.path);
+				mMediaPlayer.prepare();
+			}
 			if (mState == STATE_PLAYING)
 				play();
 		} catch (IOException e) {
