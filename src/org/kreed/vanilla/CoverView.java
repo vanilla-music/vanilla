@@ -276,28 +276,12 @@ public class CoverView extends View {
 		mHandler.sendEmptyMessage(i);
 	}
 
-	public void nextCover() throws RemoteException
+	public void go(int delta) throws RemoteException
 	{
 		if (mService == null)
 			throw new RemoteException();
 
-		mHandler.sendMessage(mHandler.obtainMessage(GO, 1, 0));
-	}
-
-	public void previousCover() throws RemoteException
-	{
-		if (mService == null)
-			throw new RemoteException();
-
-		mHandler.sendMessage(mHandler.obtainMessage(GO, -1, 0));
-	}
-
-	public void togglePlayback() throws RemoteException
-	{
-		if (mService == null)
-			throw new RemoteException();
-
-		mHandler.sendMessage(mHandler.obtainMessage(GO, 0, 0));
+		mHandler.sendMessage(mHandler.obtainMessage(GO, delta, 0));
 	}
 
 	public void reset()

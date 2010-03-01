@@ -116,11 +116,11 @@ public class RemoteActivity extends Activity implements ServiceConnection, View.
 		} else {
 			try {
 				if (view == mNextButton)
-					mCoverView.nextCover();
+					mCoverView.go(1);
 				else if (view == mPreviousButton)
-					mCoverView.previousCover();
+					mCoverView.go(-1);
 				else if (view == mPlayPauseButton)
-					mCoverView.togglePlayback();
+					mCoverView.go(0);
 			} catch (RemoteException e) {
 				Log.e("VanillaMusic", "service dead", e);
 				finish();
