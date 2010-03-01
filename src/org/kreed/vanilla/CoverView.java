@@ -251,10 +251,10 @@ public class CoverView extends View {
 		mHandler.sendEmptyMessage(0);
 	}
 
-	private void shiftCover(int delta) throws RemoteException
+	private void shiftCover(int delta)
 	{
 		if (mService == null)
-			throw new RemoteException();
+			return;
 
 		int from = delta > 0 ? 1 : 0;
 		int to = delta > 0 ? 0 : 1;
@@ -267,19 +267,29 @@ public class CoverView extends View {
 		reset();
 		invalidate();
 
-		mService.setCurrentSong(delta);
+		try {
+			mService.setCurrentSong(delta);
+		} catch (RemoteException e) {
+			mService = null;
+		}
 
 		mHandler.sendEmptyMessage(i);
 	}
 
 	public void nextCover() throws RemoteException
 	{
-		shiftCover(1);
+		if (mService == null)
+			throw new RemoteException();
+
+		mHandler.sendMessage(mHandler.obtainMessage(GO, 1, 0));
 	}
 
 	public void previousCover() throws RemoteException
 	{
-		shiftCover(-1);
+		if (mService == null)
+			throw new RemoteException();
+
+		mHandler.sendMessage(mHandler.obtainMessage(GO, -1, 0));
 	}
 
 	public void togglePlayback() throws RemoteException
@@ -287,7 +297,7 @@ public class CoverView extends View {
 		if (mService == null)
 			throw new RemoteException();
 
-		mService.togglePlayback();
+		mHandler.sendMessage(mHandler.obtainMessage(GO, 0, 0));
 	}
 
 	public void reset()
@@ -409,24 +419,32 @@ public class CoverView extends View {
 			scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
 			postInvalidate();
 		} else if (mTentativeCover != -1) {
-			try {
-				shiftCover(mTentativeCover - 1);
-			} catch (RemoteException e) {
-				mService = null;
-			}
+			shiftCover(mTentativeCover - 1);
 			mTentativeCover = -1;
 		}
 	}
 
+	private static final int GO = 10;
+
 	private Handler mHandler = new Handler() {
 		public void handleMessage(Message message) {
 			try {
-				int i = message.what;
-				int delta = i - STORE_SIZE / 2;
-				mSongs[i] = mService.getSong(delta);
-				createBitmap(i);
-				if (delta == 0)
-					reset();
+				switch (message.what) {
+				case GO:
+					if (message.arg1 == 0)
+						mService.togglePlayback();
+					else
+						shiftCover(message.arg1);
+					break;
+				default:
+					int i = message.what;
+					int delta = i - STORE_SIZE / 2;
+					mSongs[i] = mService.getSong(delta);
+					createBitmap(i);
+					if (delta == 0)
+						reset();
+					break;
+				}
 			} catch (RemoteException e) {
 				mService = null;
 			}
