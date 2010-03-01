@@ -536,6 +536,9 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 	private void setCurrentSong(int delta)
 	{
+		if (mMediaPlayer == null)
+			return;
+
 		Song song = getSong(delta);
 		if (song == null)
 			return;
