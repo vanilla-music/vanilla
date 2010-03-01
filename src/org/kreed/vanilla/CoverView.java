@@ -256,8 +256,6 @@ public class CoverView extends View {
 		if (mService == null)
 			throw new RemoteException();
 
-		mService.setCurrentSong(delta);
-
 		int from = delta > 0 ? 1 : 0;
 		int to = delta > 0 ? 0 : 1;
 		int i = delta > 0 ? STORE_SIZE - 1 : 0;
@@ -267,6 +265,9 @@ public class CoverView extends View {
 		mSongs[i] = null;
 		mBitmaps[i] = null;
 		reset();
+		invalidate();
+
+		mService.setCurrentSong(delta);
 
 		mHandler.sendEmptyMessage(i);
 	}
