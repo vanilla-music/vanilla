@@ -101,16 +101,12 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 		public void nextSong()
 		{
-			if (mHandler == null)
-				return;
-			mHandler.sendMessage(mHandler.obtainMessage(SET_SONG, 1, 0));
+			setCurrentSong(1);
 		}
 
 		public void previousSong()
 		{
-			if (mHandler == null)
-				return;
-			mHandler.sendMessage(mHandler.obtainMessage(SET_SONG, -1, 0));
+			setCurrentSong(-1);
 		}
 
 		public void togglePlayback()
@@ -327,6 +323,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private static final int CALL = 10;
 	private static final int DO = 11;
 	private static final int SAVE_STATE = 12;
+	private static final int PROCESS_SONG = 13;
 
 	public void run()
 	{
@@ -559,20 +556,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			Log.e("VanillaMusic", "IOException", e);
 		}
 
-		broadcastSongChange(song);
-		updateNotification();
-		updateWidgets();
-
-		getSong(+2);
-
-		synchronized (mSongTimelineLock) {
-			while (mCurrentSong > 15) {
-				mSongTimeline.remove(0);
-				--mCurrentSong;
-			}
-		}
-
-		mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
+		mHandler.sendEmptyMessage(PROCESS_SONG);
 	}
 
 	public void onCompletion(MediaPlayer player)
@@ -760,6 +744,24 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				// For unexpected terminations: crashes, task killers, etc.
 				// In most cases onDestroy will handle this
 				saveState(false);
+				break;
+			case PROCESS_SONG:
+				Song song = getSong(0);
+
+				broadcastSongChange(song);
+				updateNotification();
+				updateWidgets();
+
+				getSong(+2);
+
+				synchronized (mSongTimelineLock) {
+					while (mCurrentSong > 15) {
+						mSongTimeline.remove(0);
+						--mCurrentSong;
+					}
+				}
+
+				mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
 				break;
 			}
 		}
