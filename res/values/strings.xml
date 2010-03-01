@@ -17,8 +17,8 @@
 	<string name="pref_notifications">Notifications</string>
 	<string name="pref_misc">Miscellaneous Features</string>
 
-	<string name="headset_only_title">Disallow Use of Speaker</string>
-	<string name="headset_only_summary">Do not play music when the speaker would be used</string>
+	<string name="headset_only_title">External Output Only</string>
+	<string name="headset_only_summary">Only play music when an external output (e.g. headphones, bluetooth) is used</string>
 
 	<string name="headset_pause_title">Pause When Unplugged</string>
 	<string name="headset_pause_summary">Pause when the headphones are unplugged.</string>
