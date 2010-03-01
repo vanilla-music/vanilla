@@ -70,11 +70,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private RemoteCallbackList<IMusicPlayerWatcher> mWatchers;
 
 	public IPlaybackService.Stub mBinder = new IPlaybackService.Stub() {
-		public Song[] getCurrentSongs()
-		{
-			return new Song[] { getSong(-1), getSong(0), getSong(1) };
-		}
-
 		public Song getSong(int delta)
 		{
 			return PlaybackService.this.getSong(delta);
