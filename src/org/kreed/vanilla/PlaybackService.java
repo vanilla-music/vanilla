@@ -112,7 +112,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		{
 			if (mHandler == null)
 				return;
-			mHandler.sendMessage(mHandler.obtainMessage(PLAY_PAUSE, 0, 0));
+			mHandler.sendMessage(mHandler.obtainMessage(GO, 0, 0));
 		}
 
 		public void registerWatcher(IMusicPlayerWatcher watcher)
@@ -221,6 +221,18 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		}
 	}
 
+	private void go(int delta)
+	{
+		if (mHandler.hasMessages(GO)) {
+			mHandler.removeMessages(GO);
+			Intent launcher = new Intent(PlaybackService.this, NowPlayingActivity.class);
+			launcher.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			startActivity(launcher);
+		} else {
+			mHandler.sendMessageDelayed(mHandler.obtainMessage(GO, delta, 0), 250);
+		}
+	}
+
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context content, Intent intent)
@@ -233,23 +245,9 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			        || Intent.ACTION_MEDIA_SCANNER_SCAN_FILE.equals(action)) {
 				mHandler.sendEmptyMessage(RETRIEVE_SONGS);
 			} else if (TOGGLE_PLAYBACK.equals(action)) {
-				if (mHandler.hasMessages(DO)) {
-					mHandler.removeMessages(DO);
-					Intent launcher = new Intent(PlaybackService.this, NowPlayingActivity.class);
-					launcher.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					startActivity(launcher);
-				} else {
-					mHandler.sendMessageDelayed(mHandler.obtainMessage(DO, PLAY_PAUSE, 0), 250);
-				}
+				go(0);
 			} else if (NEXT_SONG.equals(action)) {
-				if (mHandler.hasMessages(DO)) {
-					mHandler.removeMessages(DO);
-					Intent launcher = new Intent(PlaybackService.this, NowPlayingActivity.class);
-					launcher.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					startActivity(launcher);
-				} else {
-					mHandler.sendMessageDelayed(mHandler.obtainMessage(DO, SET_SONG, 1), 250);
-				}
+				go(1);
 			} else if (APPWIDGET_SMALL_UPDATE.equals(intent.getAction())) {
 				OneCellWidget.update(PlaybackService.this, getSong(0));
 				return;
@@ -313,8 +311,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private Method mStartForeground;
 	private Method mStopForeground;
 
-	private static final int SET_SONG = 0;
-	private static final int PLAY_PAUSE = 1;
+	private static final int GO = 0;
 	private static final int HEADSET_PLUGGED = 2;
 	private static final int PREF_CHANGED = 3;
 	private static final int QUEUE_ITEM = 4;
@@ -324,7 +321,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private static final int HANDLE_PAUSE = 8;
 	private static final int RETRIEVE_SONGS = 9;
 	private static final int CALL = 10;
-	private static final int DO = 11;
 	private static final int SAVE_STATE = 12;
 	private static final int PROCESS_SONG = 13;
 
@@ -667,12 +663,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		public void handleMessage(Message message)
 		{
 			switch (message.what) {
-			case SET_SONG:
-				setCurrentSong(message.arg1);
-				break;
-			case PLAY_PAUSE:
-				setPlaying(!mMediaPlayer.isPlaying());
-				break;
 			case HEADSET_PLUGGED:
 				if (mHeadsetPause) {
 					boolean plugged = message.arg1 == 1;
@@ -734,15 +724,11 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 					}
 				}
 				break;
-			case DO:
-				if (message.arg1 == DO) {
-					Log.w("VanillaMusic", "handleMessage.DO should not be called with arg1 = DO");
-					return;
-				}
-
-				message.what = message.arg1;
-				message.arg1 = message.arg2;
-				handleMessage(message);
+			case GO:
+				if (message.arg1 == 0)
+					setPlaying(!mMediaPlayer.isPlaying());
+				else
+					setCurrentSong(message.arg1);
 				break;
 			case SAVE_STATE:
 				// For unexpected terminations: crashes, task killers, etc.
