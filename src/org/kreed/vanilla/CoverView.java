@@ -365,7 +365,7 @@ public class CoverView extends View {
 				if (availableToScroll > 0)
 					scrollBy(Math.min(availableToScroll, deltaX), 0);
 			}
-			break; 		
+			break;
 		 case MotionEvent.ACTION_UP:
 			if (Math.abs(mStartX - x) + Math.abs(mStartY - ev.getY()) < 10) {
 				performClick();
@@ -373,22 +373,23 @@ public class CoverView extends View {
 				VelocityTracker velocityTracker = mVelocityTracker;
 				velocityTracker.computeCurrentVelocity(1000);
 				int velocity = (int) velocityTracker.getXVelocity();
-	
+
 				int min = mBitmaps[0] == null ? 1 : 0;
 				int max = 2;
 				int nearestCover = (scrollX + width / 2) / width;
 				int whichCover = Math.max(min, Math.min(nearestCover, max));
-	
+
 				if (velocity > SNAP_VELOCITY && whichCover != min)
 					--whichCover;
 				else if (velocity < -SNAP_VELOCITY && whichCover != max)
 					++whichCover;
-	
+
 				int newX = whichCover * width;
 				int delta = newX - scrollX;
 				mScroller.startScroll(scrollX, 0, delta, 0, Math.abs(delta) * 2);
-				mTentativeCover = whichCover;
-				
+				if (whichCover != 1)
+					mTentativeCover = whichCover;
+
 				postInvalidate();
 			}
 
