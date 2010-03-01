@@ -150,6 +150,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	public void onCreate()
 	{
 		mWatchers = new RemoteCallbackList<IMusicPlayerWatcher>();
+		mSongTimeline = new ArrayList<Song>();
 
 		new Thread(this).start();
 	}
@@ -300,7 +301,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 	private int[] mSongs;
 	private ArrayList<Song> mSongTimeline;
-	private Object mSongTimelineLock = new Object();
 	private int mCurrentSong = 0;
 	private int mQueuePos = 0;
 	private int mState = STATE_NORMAL;
@@ -332,7 +332,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	{
 		Looper.prepare();
 
-		mSongTimeline = new ArrayList<Song>();
 		mRandom = new Random();
 
 		boolean stateLoaded = loadState();
@@ -545,7 +544,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		if (song == null)
 			return;
 
-		synchronized (mSongTimelineLock) {
+		synchronized (mSongTimeline) {
 			mCurrentSong += delta;
 		}
 
@@ -587,7 +586,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 	private Song getSong(int delta)
 	{
-		synchronized (mSongTimelineLock) {
+		synchronized (mSongTimeline) {
 			if (mSongTimeline == null)
 				return null;
 	
@@ -692,7 +691,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 					String text = getResources().getString(R.string.enqueued, song.title);
 					Toast.makeText(ContextApplication.getContext(), text, Toast.LENGTH_SHORT).show();
 
-					synchronized (mSongTimelineLock) {
+					synchronized (mSongTimeline) {
 						int i = mCurrentSong + 1 + mQueuePos++;
 						if (i < mSongTimeline.size())
 							mSongTimeline.set(i, song);
@@ -759,7 +758,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 				getSong(+2);
 
-				synchronized (mSongTimelineLock) {
+				synchronized (mSongTimeline) {
 					while (mCurrentSong > 15) {
 						mSongTimeline.remove(0);
 						--mCurrentSong;
