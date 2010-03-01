@@ -325,15 +325,35 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 		mRandom = new Random();
 
-		boolean stateLoaded = loadState();
+		boolean stateLoaded = false;
+
+		try {
+			DataInputStream in = new DataInputStream(openFileInput(STATE_FILE));
+			if (in.readLong() == STATE_FILE_MAGIC) {
+				mCurrentSong = in.readInt();
+				int[] ids = new int[in.readInt()];
+				for (int i = ids.length; --i != -1; )
+					ids[i] = in.readInt();
+				mPendingSeek = in.readInt();
+				in.close();
+
+				stateLoaded = true;
+				Song song = new Song(ids[mCurrentSong]);
+				broadcastSongChange(song);
+
+				mSongTimeline.ensureCapacity(ids.length);
+				for (int i = ids.length; --i != -1; )
+					mSongTimeline.add(i == mCurrentSong ? song : new Song(ids[i]));
+			}
+		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
+			Log.w("VanillaMusic", e);
+		}
+
+		retrieveSongs();
+
 		if (!stateLoaded)
-			retrieveSongs();
-
-		broadcastSongChange(getSong(0));
-
-		// if we can, delay this so that the cover will show up faster in the activity
-		if (stateLoaded)
-			retrieveSongs();
+			broadcastSongChange(getSong(0));
 
 		mMediaPlayer = new MediaPlayer();
 		mHandler = new MusicHandler();
@@ -616,28 +636,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 	private static final String STATE_FILE = "state";
 	private static final long STATE_FILE_MAGIC = 0x8a9d3f9fca31L;
-
-	private boolean loadState()
-	{
-		try {
-			DataInputStream in = new DataInputStream(openFileInput(STATE_FILE));
-			if (in.readLong() == STATE_FILE_MAGIC) {
-				mCurrentSong = in.readInt();
-				int n = in.readInt();
-				mSongTimeline.ensureCapacity(n);
-				while (--n != -1)
-					mSongTimeline.add(new Song(in.readInt()));
-				mPendingSeek = in.readInt();
-				in.close();
-				return true;
-			}
-		} catch (FileNotFoundException e) {
-		} catch (IOException e) {
-			Log.w("VanillaMusic", e);
-		}
-
-		return false;
-	}
 
 	private void saveState(boolean savePosition)
 	{
