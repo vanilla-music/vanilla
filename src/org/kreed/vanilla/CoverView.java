@@ -251,42 +251,37 @@ public class CoverView extends View {
 		mHandler.sendEmptyMessage(0);
 	}
 
-	public void nextCover()
+	private void shiftCover(int delta)
 	{
 		if (mService == null)
 			return;
 
 		try {
-			mService.nextSong();
+			mService.setCurrentSong(delta);
 
-			System.arraycopy(mSongs, 1, mSongs, 0, STORE_SIZE - 1);
-			System.arraycopy(mBitmaps, 1, mBitmaps, 0, STORE_SIZE - 1);
-			mSongs[STORE_SIZE - 1] = null;
-			mBitmaps[STORE_SIZE - 1] = null;
+			int from = delta > 0 ? 1 : 0;
+			int to = delta > 0 ? 0 : 1;
+			int i = delta > 0 ? STORE_SIZE - 1 : 0;
+
+			System.arraycopy(mSongs, from, mSongs, to, STORE_SIZE - 1);
+			System.arraycopy(mBitmaps, from, mBitmaps, to, STORE_SIZE - 1);
+			mSongs[i] = null;
+			mBitmaps[i] = null;
 			reset();
 
-			mHandler.sendEmptyMessage(2);
+			mHandler.sendEmptyMessage(i);
 		} catch (RemoteException e) {
 		}
 	}
 
+	public void nextCover()
+	{
+		shiftCover(1);
+	}
+
 	public void previousCover()
 	{
-		if (mService == null)
-			return;
-
-		try {
-			mService.previousSong();
-
-			System.arraycopy(mSongs, 0, mSongs, 1, STORE_SIZE - 1);
-			System.arraycopy(mBitmaps, 0, mBitmaps, 1, STORE_SIZE - 1);
-			mSongs[0] = null;
-			mBitmaps[0] = null;
-			reset();
-
-			mHandler.sendEmptyMessage(0);
-		} catch (RemoteException e) {
-		}
+		shiftCover(-1);
 	}
 
 	public void togglePlayback()
@@ -418,11 +413,7 @@ public class CoverView extends View {
 			scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
 			postInvalidate();
 		} else if (mTentativeCover != -1) {
-			if (mTentativeCover == 2)
-				nextCover();
-			else if (mTentativeCover == 0)
-				previousCover();
-
+			shiftCover(mTentativeCover - 1);
 			mTentativeCover = -1;
 		}
 	}

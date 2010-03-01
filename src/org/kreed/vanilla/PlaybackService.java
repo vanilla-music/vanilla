@@ -103,14 +103,9 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			}
 		}
 
-		public void nextSong()
+		public void setCurrentSong(int delta)
 		{
-			setCurrentSong(1);
-		}
-
-		public void previousSong()
-		{
-			setCurrentSong(-1);
+			PlaybackService.this.setCurrentSong(delta);
 		}
 
 		public void togglePlayback()

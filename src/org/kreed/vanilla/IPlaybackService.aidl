@@ -31,8 +31,7 @@ interface IPlaybackService {
 	int getPosition();
 	int getDuration();
 
-	void previousSong();
+	void setCurrentSong(int delta);
 	void togglePlayback();
-	void nextSong();
 	void seekToProgress(int progress);
 }
