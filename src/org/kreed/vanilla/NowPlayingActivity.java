@@ -387,14 +387,20 @@ public class NowPlayingActivity extends Activity implements ServiceConnection, V
 
 				updateProgress();
 			}
-		} else if (view == mNextButton) {
-			mCoverView.nextCover();
-		} else if (view == mPreviousButton) {
-			mCoverView.previousCover();
-		} else if (view == mPlayPauseButton) {
-			mCoverView.togglePlayback();
 		} else if (view == mReconnectButton) {
 			prepareService();
+		} else {
+			try {
+				if (view == mNextButton)
+					mCoverView.nextCover();
+				else if (view == mPreviousButton)
+					mCoverView.previousCover();
+				else if (view == mPlayPauseButton)
+					mCoverView.togglePlayback();
+			} catch (RemoteException e) {
+				Log.e("VanillaMusic", "service dead", e);
+				setService(null);
+			}
 		}
 	}
 

@@ -251,48 +251,42 @@ public class CoverView extends View {
 		mHandler.sendEmptyMessage(0);
 	}
 
-	private void shiftCover(int delta)
+	private void shiftCover(int delta) throws RemoteException
 	{
 		if (mService == null)
-			return;
+			throw new RemoteException();
 
-		try {
-			mService.setCurrentSong(delta);
+		mService.setCurrentSong(delta);
 
-			int from = delta > 0 ? 1 : 0;
-			int to = delta > 0 ? 0 : 1;
-			int i = delta > 0 ? STORE_SIZE - 1 : 0;
+		int from = delta > 0 ? 1 : 0;
+		int to = delta > 0 ? 0 : 1;
+		int i = delta > 0 ? STORE_SIZE - 1 : 0;
 
-			System.arraycopy(mSongs, from, mSongs, to, STORE_SIZE - 1);
-			System.arraycopy(mBitmaps, from, mBitmaps, to, STORE_SIZE - 1);
-			mSongs[i] = null;
-			mBitmaps[i] = null;
-			reset();
+		System.arraycopy(mSongs, from, mSongs, to, STORE_SIZE - 1);
+		System.arraycopy(mBitmaps, from, mBitmaps, to, STORE_SIZE - 1);
+		mSongs[i] = null;
+		mBitmaps[i] = null;
+		reset();
 
-			mHandler.sendEmptyMessage(i);
-		} catch (RemoteException e) {
-		}
+		mHandler.sendEmptyMessage(i);
 	}
 
-	public void nextCover()
+	public void nextCover() throws RemoteException
 	{
 		shiftCover(1);
 	}
 
-	public void previousCover()
+	public void previousCover() throws RemoteException
 	{
 		shiftCover(-1);
 	}
 
-	public void togglePlayback()
+	public void togglePlayback() throws RemoteException
 	{
 		if (mService == null)
-			return;
+			throw new RemoteException();
 
-		try {
-			mService.togglePlayback();
-		} catch (RemoteException e) {
-		}
+		mService.togglePlayback();
 	}
 
 	public void reset()
@@ -413,7 +407,11 @@ public class CoverView extends View {
 			scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
 			postInvalidate();
 		} else if (mTentativeCover != -1) {
-			shiftCover(mTentativeCover - 1);
+			try {
+				shiftCover(mTentativeCover - 1);
+			} catch (RemoteException e) {
+				mService = null;
+			}
 			mTentativeCover = -1;
 		}
 	}
@@ -428,6 +426,7 @@ public class CoverView extends View {
 				if (delta == 0)
 					reset();
 			} catch (RemoteException e) {
+				mService = null;
 			}
 		}
 	};

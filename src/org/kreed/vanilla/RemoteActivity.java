@@ -30,6 +30,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
@@ -112,12 +113,18 @@ public class RemoteActivity extends Activity implements ServiceConnection, View.
 		} else if (view == mOpenButton) {
 			startActivity(new Intent(this, NowPlayingActivity.class));
 			finish();
-		} else if (view == mNextButton) {
-			mCoverView.nextCover();
-		} else if (view == mPreviousButton) {
-			mCoverView.previousCover();
-		} else if (view == mPlayPauseButton) {
-			mCoverView.togglePlayback();
+		} else {
+			try {
+				if (view == mNextButton)
+					mCoverView.nextCover();
+				else if (view == mPreviousButton)
+					mCoverView.previousCover();
+				else if (view == mPlayPauseButton)
+					mCoverView.togglePlayback();
+			} catch (RemoteException e) {
+				Log.e("VanillaMusic", "service dead", e);
+				finish();
+			}
 		}
 	}
 
