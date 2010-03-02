@@ -67,7 +67,6 @@ public class CoverView extends View {
 		try {
 			mService = service;
 			mService.registerWatcher(mWatcher);
-			refreshSongs();
 		} catch (RemoteException e) {
 		}
 	}
@@ -409,6 +408,7 @@ public class CoverView extends View {
 	}
 
 	private static final int GO = 10;
+	private static final int SET_SONG = 11;
 
 	private Handler mHandler = new Handler() {
 		public void handleMessage(Message message) {
@@ -419,6 +419,11 @@ public class CoverView extends View {
 						mService.togglePlayback();
 					else
 						shiftCover(message.arg1);
+					break;
+				case SET_SONG:
+					mSongs[STORE_SIZE / 2] = (Song)message.obj;
+					createBitmap(STORE_SIZE / 2);
+					reset();
 					break;
 				default:
 					int i = message.what;
@@ -436,16 +441,18 @@ public class CoverView extends View {
 	};
 
 	private IMusicPlayerWatcher mWatcher = new IMusicPlayerWatcher.Stub() {
+		public void loaded()
+		{
+			refreshSongs();
+		}
+
 		public void songChanged(Song playingSong)
 		{
 			Song currentSong = mSongs[STORE_SIZE / 2];
-			if (currentSong == null) {
-				mSongs[STORE_SIZE / 2] = currentSong;
-				createBitmap(STORE_SIZE / 2);
-				reset();
-			} else if (currentSong.equals(playingSong))
-				return;
-			refreshSongs();
+			if (currentSong == null)
+				mHandler.sendMessage(mHandler.obtainMessage(SET_SONG, playingSong));
+			else if (!currentSong.equals(playingSong))
+				refreshSongs();
 		}
 
 		public void stateChanged(int oldState, int newState)

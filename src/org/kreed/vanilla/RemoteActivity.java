@@ -137,6 +137,10 @@ public class RemoteActivity extends Activity implements ServiceConnection, View.
 	}
 
 	private IMusicPlayerWatcher mWatcher = new IMusicPlayerWatcher.Stub() {
+		public void loaded()
+		{
+		}
+
 		public void songChanged(Song playingSong)
 		{
 		}

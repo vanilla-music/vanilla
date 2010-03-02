@@ -110,10 +110,14 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			mHandler.sendMessage(mHandler.obtainMessage(GO, 0, 0));
 		}
 
-		public void registerWatcher(IMusicPlayerWatcher watcher)
+		public void registerWatcher(IMusicPlayerWatcher watcher) throws RemoteException
 		{
-			if (watcher != null)
+			if (watcher != null) {
 				mWatchers.register(watcher);
+				// if we're already loaded callback immediately
+				if (mHandler != null)
+					watcher.loaded();
+			}
 		}
 
 		public void unregisterWatcher(IMusicPlayerWatcher watcher)
@@ -145,7 +149,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	public void onCreate()
 	{
 		mWatchers = new RemoteCallbackList<IMusicPlayerWatcher>();
-		mSongTimeline = new ArrayList<Song>();
 
 		new Thread(this).start();
 	}
@@ -325,38 +328,55 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 		mRandom = new Random();
 
-		boolean stateLoaded = false;
-
 		try {
 			DataInputStream in = new DataInputStream(openFileInput(STATE_FILE));
 			if (in.readLong() == STATE_FILE_MAGIC) {
 				mCurrentSong = in.readInt();
-				int[] ids = new int[in.readInt()];
-				for (int i = ids.length; --i != -1; )
-					ids[i] = in.readInt();
-				mPendingSeek = in.readInt();
-				in.close();
+				int n = in.readInt();
 
-				stateLoaded = true;
-				Song song = new Song(ids[mCurrentSong]);
-				broadcastSongChange(song);
+				if (n > 0) {
+					int[] ids = new int[n];
+					for (int i = 0; i != n; ++i)
+						ids[i] = in.readInt();
+					mPendingSeek = in.readInt();
+					in.close();
 
-				mSongTimeline.ensureCapacity(ids.length);
-				for (int i = ids.length; --i != -1; )
-					mSongTimeline.add(i == mCurrentSong ? song : new Song(ids[i]));
+					Song song = new Song(ids[mCurrentSong]);
+					broadcastSongChange(song);
+
+					ArrayList<Song> timeline = new ArrayList<Song>(n);
+					for (int i = 0; i != n; ++i)
+						timeline.add(i == mCurrentSong ? song : new Song(ids[i]));
+
+					mSongTimeline = timeline;
+				}
 			}
 		} catch (FileNotFoundException e) {
 		} catch (IOException e) {
 			Log.w("VanillaMusic", e);
 		}
 
-		retrieveSongs();
+		boolean stateLoaded = mSongTimeline != null;
 
-		if (!stateLoaded)
+		if (!stateLoaded) {
+			retrieveSongs();
+			mSongTimeline = new ArrayList<Song>();
 			broadcastSongChange(getSong(0));
+		}
+
+		int i = mWatchers.beginBroadcast();
+		while (--i != -1) {
+			try {
+				mWatchers.getBroadcastItem(i).loaded();
+			} catch (RemoteException e) {
+			}
+		}
+		mWatchers.finishBroadcast();
+
+		if (stateLoaded)
+			retrieveSongs();
 
 		mMediaPlayer = new MediaPlayer();
-		mHandler = new MusicHandler();
 
 		mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		mMediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
@@ -388,12 +408,14 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		mNotifyWhilePaused = mSettings.getBoolean("notify_while_paused", true);
 		mScrobble = mSettings.getBoolean("scrobble", false);
 
+		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
+		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicSongChangeLock");
+
+		mHandler = new MusicHandler();
+
 		setCurrentSong(0);
 		if (mPendingSeek != 0)
 			mMediaPlayer.seekTo(mPendingSeek);
-
-		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
-		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicSongChangeLock");
 
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Intent.ACTION_HEADSET_PLUG);
@@ -600,10 +622,10 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 	private Song getSong(int delta)
 	{
+		if (mSongTimeline == null)
+			return null;
+
 		synchronized (mSongTimeline) {
-			if (mSongTimeline == null)
-				return null;
-	
 			int pos = mCurrentSong + delta;
 	
 			if (pos < 0)
@@ -643,11 +665,11 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			DataOutputStream out = new DataOutputStream(openFileOutput(STATE_FILE, 0));
 			out.writeLong(STATE_FILE_MAGIC);
 			out.writeInt(mCurrentSong);
-			int n = mSongTimeline.size();
+			int n = mSongTimeline == null ? 0 : mSongTimeline.size();
 			out.writeInt(n);
 			for (int i = 0; i != n; ++i)
 				out.writeInt(mSongTimeline.get(i).id);
-			out.writeInt(savePosition ? mMediaPlayer.getCurrentPosition() : 0);
+			out.writeInt(savePosition && mMediaPlayer != null ? mMediaPlayer.getCurrentPosition() : 0);
 			out.close();
 		} catch (IOException e) {
 			Log.w("VanillaMusic", e);

@@ -248,6 +248,10 @@ public class NowPlayingActivity extends Activity implements ServiceConnection, V
 	}
 
 	private IMusicPlayerWatcher mWatcher = new IMusicPlayerWatcher.Stub() {
+		public void loaded()
+		{
+		}
+
 		public void songChanged(Song playingSong)
 		{
 			if (mService == null)
