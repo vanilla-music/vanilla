@@ -42,6 +42,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -304,8 +305,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private int mPendingSeek;
 
 	private Method mIsWiredHeadsetOn;
-	private Method mIsBluetoothScoOn;
-	private Method mIsBluetoothA2dpOn;
 	private Method mStartForeground;
 	private Method mStopForeground;
 
@@ -384,20 +383,21 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		mMediaPlayer.setOnErrorListener(this);
 
 		mAudioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-		try {
-			mIsWiredHeadsetOn = mAudioManager.getClass().getMethod("isWiredHeadsetOn", (Class[]) null);
-			mIsBluetoothScoOn = mAudioManager.getClass().getMethod("isBluetoothScoOn", (Class[]) null);
-			mIsBluetoothA2dpOn = mAudioManager.getClass().getMethod("isBluetoothA2dpOn", (Class[]) null);
-		} catch (NoSuchMethodException e) {
-			Log.d("VanillaMusic", "falling back to pre-2.0 AudioManager APIs");
-		}
-
 		mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+
 		try {
 			mStartForeground = getClass().getMethod("startForeground", int.class, Notification.class);
 			mStopForeground = getClass().getMethod("stopForeground", boolean.class);
 		} catch (NoSuchMethodException e) {
 			Log.d("VanillaMusic", "falling back to pre-2.0 Service APIs");
+		}
+
+		if (!"3".equals(Build.VERSION.SDK)) {
+			try {
+				mIsWiredHeadsetOn = mAudioManager.getClass().getMethod("isWiredHeadsetOn", (Class[])null);
+			} catch (NoSuchMethodException e) {
+				Log.d("VanillaMusic", "falling back to pre-1.6 AudioManager APIs");
+			}
 		}
 
 		mSettings = PreferenceManager.getDefaultSharedPreferences(this);
@@ -521,14 +521,17 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 	private boolean isSpeakerOn()
 	{
-		try {
-			return !(Boolean)mIsWiredHeadsetOn.invoke(mAudioManager, (Object[])null)
-				&& !(Boolean)mIsBluetoothScoOn.invoke(mAudioManager, (Object[])null)
-				&& !(Boolean)mIsBluetoothA2dpOn.invoke(mAudioManager, (Object[])null);
-		} catch (InvocationTargetException e) {
-			Log.w("VanillaMusic", e);
-		} catch (IllegalAccessException e) {
-			Log.w("VanillaMusic", e);
+		if (mAudioManager.isBluetoothA2dpOn() || mAudioManager.isBluetoothScoOn())
+			return false;
+
+		if (mIsWiredHeadsetOn != null) {
+			try {
+				return !(Boolean)mIsWiredHeadsetOn.invoke(mAudioManager, (Object[])null);
+			} catch (InvocationTargetException e) {
+				Log.w("VanillaMusic", e);
+			} catch (IllegalAccessException e) {
+				Log.w("VanillaMusic", e);
+			}
 		}
 
 		// Why is there no true equivalent to this in Android 2.0?
