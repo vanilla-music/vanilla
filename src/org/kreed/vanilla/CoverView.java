@@ -49,6 +49,7 @@ public class CoverView extends View {
 	private float mStartX;
 	private float mStartY;
 	private IPlaybackService mService;
+	private boolean loaded;
 
 	Song[] mSongs = new Song[3];
 	private Bitmap[] mBitmaps = new Bitmap[3];
@@ -279,7 +280,8 @@ public class CoverView extends View {
 	{
 		if (mService == null)
 			throw new RemoteException();
-
+		if (delta != 0 && !loaded)
+			return;
 		mHandler.sendMessage(mHandler.obtainMessage(GO, delta, 0));
 	}
 
@@ -354,7 +356,7 @@ public class CoverView extends View {
 				if (availableToScroll > 0)
 					scrollBy(Math.max(-availableToScroll, deltaX), 0);
 			} else if (deltaX > 0) {
-				int availableToScroll = getWidth() * 2 - scrollX;
+				int availableToScroll = getWidth() * (mBitmaps[0] == null ? 1 : 2) - scrollX;
 				if (availableToScroll > 0)
 					scrollBy(Math.min(availableToScroll, deltaX), 0);
 			}
@@ -368,7 +370,7 @@ public class CoverView extends View {
 				int velocity = (int) velocityTracker.getXVelocity();
 
 				int min = mBitmaps[0] == null ? 1 : 0;
-				int max = 2;
+				int max = mBitmaps[2] == null ? 1 : 2;
 				int nearestCover = (scrollX + width / 2) / width;
 				int whichCover = Math.max(min, Math.min(nearestCover, max));
 
@@ -443,6 +445,7 @@ public class CoverView extends View {
 	private IMusicPlayerWatcher mWatcher = new IMusicPlayerWatcher.Stub() {
 		public void loaded()
 		{
+			loaded = true;
 			refreshSongs();
 		}
 
