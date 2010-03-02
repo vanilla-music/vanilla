@@ -363,15 +363,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			broadcastSongChange(getSong(0));
 		}
 
-		int i = mWatchers.beginBroadcast();
-		while (--i != -1) {
-			try {
-				mWatchers.getBroadcastItem(i).loaded();
-			} catch (RemoteException e) {
-			}
-		}
-		mWatchers.finishBroadcast();
-
 		if (stateLoaded)
 			retrieveSongs();
 
@@ -416,6 +407,15 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		setCurrentSong(0);
 		if (mPendingSeek != 0)
 			mMediaPlayer.seekTo(mPendingSeek);
+
+		int i = mWatchers.beginBroadcast();
+		while (--i != -1) {
+			try {
+				mWatchers.getBroadcastItem(i).loaded();
+			} catch (RemoteException e) {
+			}
+		}
+		mWatchers.finishBroadcast();
 
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Intent.ACTION_HEADSET_PLUG);
