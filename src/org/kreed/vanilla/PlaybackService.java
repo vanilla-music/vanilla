@@ -357,6 +357,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 		boolean stateLoaded = mSongTimeline != null;
 
+		mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+
 		if (!stateLoaded) {
 			retrieveSongs();
 			mSongTimeline = new ArrayList<Song>();
@@ -374,7 +376,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		mMediaPlayer.setOnErrorListener(this);
 
 		mAudioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-		mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 
 		try {
 			mStartForeground = getClass().getMethod("startForeground", int.class, Notification.class);
