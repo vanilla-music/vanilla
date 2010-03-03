@@ -169,6 +169,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	{
 		super.onDestroy();
 
+		Log.d("VanillaMusic", "destroy");
+
 		saveState(true);
 
 		if (mMediaPlayer != null) {
@@ -439,6 +441,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			mHeadsetPause = mSettings.getBoolean("headset_pause", true);
 		} else if ("headset_only".equals(key)) {
 			mHeadsetOnly = mSettings.getBoolean(key, false);
+			Log.d("VanillaMusic", "mp: " + mMediaPlayer);
 			if (mHeadsetOnly && isSpeakerOn() && mMediaPlayer.isPlaying())
 				pause();
 		} else if ("remote_player".equals(key)) {
