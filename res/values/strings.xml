@@ -3,7 +3,6 @@
 	<string name="app_name">Vanilla Music</string>
 
 	<string name="enqueued">Enqueued %s</string>
-	<string name="filter">Filter:</string>
 	<string name="no_songs">No songs found on your device.</string>
 	<string name="settings">Preferences</string>
 	<string name="add_to_queue">Add to Queue</string>
@@ -15,6 +14,7 @@
 
 	<string name="pref_output">Audio Output</string>
 	<string name="pref_notifications">Notifications</string>
+	<string name="pref_song_selector">Song Selector</string>
 	<string name="pref_misc">Miscellaneous Features</string>
 
 	<string name="headset_only_title">External Output Only</string>
@@ -29,6 +29,9 @@
 
 	<string name="notify_while_paused_title">Persistent Notification</string>
 	<string name="notify_while_paused_summary">Always display the notification</string>
+
+	<string name="phone_input_title">Use Phone Dialer Input</string>
+	<string name="phone_input_summary">Enter filter text using buttons 1-9, where 1 matches 1, a, b or c, etc</string>
 
 	<string name="scrobble_title">Use ScrobbleDroid API</string>
 	<string name="scrobble_summary">Send song info to Last.FM scrobblers such as ScrobbleDroid and Simple Last.FM Scrobbler</string>

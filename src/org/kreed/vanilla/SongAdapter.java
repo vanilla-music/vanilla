@@ -115,7 +115,7 @@ public class SongAdapter extends BaseAdapter implements Filterable {
 		return mFilter;
 	}
 
-	private static final String[] mRanges = { "[01 ]", "[2abc]", "[3def]", "[4ghi]", "[5jkl]", "[6mno]", "[7pqrs]", "[8tuv]", "[9wxyz]"};
+	private static final String[] mRanges = { "[2abc]", "[3def]", "[4ghi]", "[5jkl]", "[6mno]", "[7pqrs]", "[8tuv]", "[9wxyz]"};
 	private class ArrayFilter extends Filter {
 		@Override
 		protected FilterResults performFiltering(CharSequence filter)
@@ -138,8 +138,8 @@ public class SongAdapter extends BaseAdapter implements Filterable {
 				String patternString = "";
 				for (int i = 0, end = filter.length(); i != end; ++i) {
 					char c = filter.charAt(i);
-					int value = c - '1';
-					if (value >= 0 && value < 9)
+					int value = c - '2';
+					if (value >= 0 && value < 8)
 						patternString += mRanges[value];
 					else
 						patternString += c; 

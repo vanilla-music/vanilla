@@ -22,8 +22,11 @@ import org.kreed.vanilla.R;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
@@ -51,6 +54,12 @@ public class SongSelector extends Activity implements AdapterView.OnItemClickLis
 
 		mTextView = (TextView)findViewById(R.id.filter_text);
 		mTextView.addTextChangedListener(this);
+
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+		boolean phoneInput = settings.getBoolean("phone_input", false);
+		int inputType = phoneInput ? InputType.TYPE_CLASS_PHONE
+		                           : InputType.TYPE_CLASS_TEXT;
+		mTextView.setInputType(inputType);
 	}
 
 	@Override
