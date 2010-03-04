@@ -33,6 +33,11 @@
 			android:title="@string/phone_input_title"
 			android:summary="@string/phone_input_summary"
 			android:defaultValue="false" />
+		<CheckBoxPreference
+			android:key="filter_suggestions"
+			android:title="@string/filter_suggestions_title"
+			android:summary="@string/filter_suggestions_summary"
+			android:defaultValue="false" />
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/pref_misc">
 		<CheckBoxPreference

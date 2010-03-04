@@ -33,6 +33,9 @@
 	<string name="phone_input_title">Use Phone Dialer Input</string>
 	<string name="phone_input_summary">Enter filter text using buttons 1-9, where 1 matches 1, a, b or c, etc</string>
 
+	<string name="filter_suggestions_title">Use Suggestions in Filter Text</string>
+	<string name="filter_suggestions_summary">Use text suggestions when editing the filter text</string>	
+
 	<string name="scrobble_title">Use ScrobbleDroid API</string>
 	<string name="scrobble_summary">Send song info to Last.FM scrobblers such as ScrobbleDroid and Simple Last.FM Scrobbler</string>
 </resources>

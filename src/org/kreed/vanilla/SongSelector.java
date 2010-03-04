@@ -55,10 +55,14 @@ public class SongSelector extends Activity implements AdapterView.OnItemClickLis
 		mTextView = (TextView)findViewById(R.id.filter_text);
 		mTextView.addTextChangedListener(this);
 
-		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-		boolean phoneInput = settings.getBoolean("phone_input", false);
-		int inputType = phoneInput ? InputType.TYPE_CLASS_PHONE
-		                           : InputType.TYPE_CLASS_TEXT;
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this); 
+		int inputType;
+		if (settings.getBoolean("phone_input", false))
+			inputType = InputType.TYPE_CLASS_PHONE;
+		else if (!settings.getBoolean("filter_suggestions", false))
+			inputType = InputType.TYPE_TEXT_VARIATION_FILTER;
+		else
+			inputType = InputType.TYPE_CLASS_TEXT;
 		mTextView.setInputType(inputType);
 	}
 
