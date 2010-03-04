@@ -305,6 +305,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private int mState = STATE_NORMAL;
 	private boolean mPlayingBeforeCall;
 	private int mPendingSeek;
+	private Song mLastSongBroadcast;
 
 	private Method mIsWiredHeadsetOn;
 	private Method mStartForeground;
@@ -316,8 +317,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private static final int QUEUE_ITEM = 4;
 	private static final int TRACK_CHANGED = 5;
 	private static final int RELEASE_WAKE_LOCK = 6;
-	private static final int HANDLE_PLAY = 7;
-	private static final int HANDLE_PAUSE = 8;
 	private static final int RETRIEVE_SONGS = 9;
 	private static final int CALL = 10;
 	private static final int SAVE_STATE = 12;
@@ -455,30 +454,33 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		}
 	}
 
-	public void setState(int state)
+	public void updateState(int state)
 	{
-		if (mState == state)
-			return;
-
 		int oldState = mState;
 		mState = state;
 
-		updateNotification();
-
-		int i = mWatchers.beginBroadcast();
-		while (--i != -1) {
-			try {
-				mWatchers.getBroadcastItem(i).stateChanged(oldState, mState);
-			} catch (RemoteException e) {
-				// Null elements will be removed automatically
+		if (mState != oldState) {
+			int i = mWatchers.beginBroadcast();
+			while (--i != -1) {
+				try {
+					mWatchers.getBroadcastItem(i).stateChanged(oldState, mState);
+				} catch (RemoteException e) {
+					// Null elements will be removed automatically
+				}
 			}
+			mWatchers.finishBroadcast();
 		}
-		mWatchers.finishBroadcast();
+
+		Song song = getSong(0);
+		broadcastSongChange(song);
+
+		updateNotification();
+		updateWidgets();
 
 		if (mScrobble) {
 			Intent intent = new Intent("net.jjc1138.android.scrobbler.action.MUSIC_STATUS");
 			intent.putExtra("playing", mState == STATE_PLAYING);
-			intent.putExtra("id", getSong(0).id);
+			intent.putExtra("id", song.id);
 			sendBroadcast(intent);
 		}
 	}
@@ -486,12 +488,10 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private void retrieveSongs()
 	{
 		mSongs = Song.getAllSongs();
-		if (mSongs == null) {
-			setState(STATE_NO_MEDIA);
-		} else {
-			if (mState == STATE_NO_MEDIA)
-				setState(STATE_NORMAL);
-		}
+		if (mSongs == null)
+			updateState(STATE_NO_MEDIA);
+		else if (mState == STATE_NO_MEDIA)
+			updateState(STATE_NORMAL);
 	}
 
 	private void updateNotification()
@@ -548,13 +548,15 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			return;
 
 		mMediaPlayer.start();
-		mHandler.sendEmptyMessage(HANDLE_PLAY);
+		updateState(STATE_PLAYING);
+		startForegroundCompat(NOTIFICATION_ID, mNotification);
 	}
 
 	private void pause()
 	{
 		mMediaPlayer.pause();
-		mHandler.sendEmptyMessage(HANDLE_PAUSE);
+		updateState(STATE_NORMAL);
+		stopForegroundCompat(false);
 	}
 
 	private void setPlaying(boolean play)
@@ -567,6 +569,11 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 	private void broadcastSongChange(Song song)
 	{
+		if (song == mLastSongBroadcast)
+			return;
+
+		mLastSongBroadcast = song;
+
 		int i = mWatchers.beginBroadcast();
 		while (--i != -1) {
 			try {
@@ -598,7 +605,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				mMediaPlayer.prepare();
 			}
 			if (mState == STATE_PLAYING)
-				play();
+				mMediaPlayer.start();
+			updateState(mState);
 		} catch (IOException e) {
 			Log.e("VanillaMusic", "IOException", e);
 		}
@@ -724,14 +732,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				if (mWakeLock != null && mWakeLock.isHeld())
 					mWakeLock.release();
 				break;
-			case HANDLE_PLAY:
-				setState(STATE_PLAYING);
-				startForegroundCompat(NOTIFICATION_ID, mNotification);
-				break;
-			case HANDLE_PAUSE:
-				setState(STATE_NORMAL);
-				stopForegroundCompat(false);
-				break;
 			case RETRIEVE_SONGS:
 				retrieveSongs();
 				break;
@@ -761,12 +761,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				saveState(false);
 				break;
 			case PROCESS_SONG:
-				Song song = getSong(0);
-
-				broadcastSongChange(song);
-				updateNotification();
-				updateWidgets();
-
 				getSong(+2);
 
 				synchronized (mSongTimeline) {
@@ -776,6 +770,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 					}
 				}
 
+				mHandler.removeMessages(SAVE_STATE);
 				mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
 				break;
 			}
