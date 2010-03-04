@@ -11,49 +11,8 @@
 		android:layout_height="wrap_content"
 		android:layout_weight="1"
 		android:fastScrollEnabled="true" />
-	<LinearLayout
-		android:id="@+id/filter_layout"
-		android:layout_height="wrap_content"
+	<EditText
+		android:id="@+id/filter_text"
 		android:layout_width="fill_parent"
-		android:orientation="horizontal"
-		android:visibility="gone">
-		<TextView
-			android:id="@+id/filter_text"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:paddingLeft="5px"
-			android:layout_weight="1" />
-		<Button
-			android:id="@+id/backspace"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="&lt;" />
-		<Button
-			android:id="@+id/close"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="x" />
-	</LinearLayout>
-	<TableLayout
-		android:id="@+id/numpad"
-		android:layout_height="wrap_content"
-		android:layout_width="fill_parent"
-		android:stretchColumns="0,1,2"
-		android:visibility="gone">
-		<TableRow>
-			<Button android:id="@+id/Button1" android:text="0 1" />
-			<Button android:id="@+id/Button2" android:text="2 abc" />
-			<Button android:id="@+id/Button3" android:text="3 def" />
-		</TableRow>
-		<TableRow>
-			<Button android:id="@+id/Button4" android:text="4 ghi" />
-			<Button android:id="@+id/Button5" android:text="5 jkl" />
-			<Button android:id="@+id/Button6" android:text="6 mno" />
-		</TableRow>
-		<TableRow>
-			<Button android:id="@+id/Button7" android:text="7 pqrs" />
-			<Button android:id="@+id/Button8" android:text="8 tuv" />
-			<Button android:id="@+id/Button9" android:text="9 wxyz" />
-		</TableRow>
-	</TableLayout>
+		android:layout_height="wrap_content" />
 </LinearLayout>

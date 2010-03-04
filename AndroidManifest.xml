@@ -15,20 +15,26 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
-		<receiver android:name=".OneCellWidget" android:label="Vanilla Music 1x1">
+		<receiver
+			android:name=".OneCellWidget"
+			android:label="Vanilla Music 1x1">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
 			</intent-filter>
-			<meta-data android:name="android.appwidget.provider" android:resource="@xml/one_cell_widget" />
+			<meta-data
+				android:name="android.appwidget.provider"
+				android:resource="@xml/one_cell_widget" />
 		</receiver>
 		<activity
 			android:name="RemoteActivity"
 			android:theme="@android:style/Theme.Dialog"
 			android:excludeFromRecents="true"
 			android:launchMode="singleInstance" />
+		<activity
+			android:name="SongSelector"
+			android:windowSoftInputMode="adjustResize" />
 		<service android:name="PlaybackService" />
 		<activity android:name="PreferencesActivity" />
-		<activity android:name="SongSelector"/>
 	</application>
 	<uses-sdk android:minSdkVersion="3"/>
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
