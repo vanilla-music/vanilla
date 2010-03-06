@@ -509,17 +509,21 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		}
 
 		String title = song.title;
-		if (mState != STATE_PLAYING)
+		int statusIcon = R.drawable.status_icon;
+
+		if (mState != STATE_PLAYING) {
 			title += ' ' + getResources().getString(R.string.paused);
+			statusIcon = R.drawable.status_icon_paused;
+		}
 
 		RemoteViews views = new RemoteViews(getPackageName(), R.layout.statusbar);
-		views.setImageViewResource(R.id.icon, R.drawable.status_icon);
+		views.setImageViewResource(R.id.icon, statusIcon);
 		views.setTextViewText(R.id.title, title);
 		views.setTextViewText(R.id.artist, song.artist);
 
 		Notification notification = new Notification();
 		notification.contentView = views;
-		notification.icon = R.drawable.status_icon;
+		notification.icon = statusIcon;
 		notification.flags |= Notification.FLAG_ONGOING_EVENT;
 		Intent intent = new Intent(this, mUseRemotePlayer ? RemoteActivity.class : NowPlayingActivity.class);
 		notification.contentIntent = PendingIntent.getActivity(ContextApplication.getContext(), 0, intent, 0);
