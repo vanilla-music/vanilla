@@ -240,8 +240,12 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		{
 			String action = intent.getAction();
 			if (Intent.ACTION_HEADSET_PLUG.equals(action) && mHandler != null) {
-				int plugged = intent.getIntExtra("state", 0) == 130 ? 1 : 0;
-				mHandler.sendMessage(mHandler.obtainMessage(HEADSET_PLUGGED, plugged, 0));
+				boolean oldPlugged = mPlugged;
+				mPlugged = intent.getIntExtra("state", 0) != 0;
+				if (mPlugged != oldPlugged && (mHeadsetPause && !mPlugged || mHeadsetOnly && !isSpeakerOn()) && mMediaPlayer.isPlaying()) {
+					mMediaPlayer.pause();
+					mHandler.sendMessage(mHandler.obtainMessage(SET_STATE, STATE_NORMAL, 0));
+				}
 			} else if (Intent.ACTION_MEDIA_SCANNER_FINISHED.equals(action)
 			        || Intent.ACTION_MEDIA_SCANNER_SCAN_FILE.equals(action)) {
 				mHandler.sendEmptyMessage(RETRIEVE_SONGS);
@@ -306,13 +310,14 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private boolean mPlayingBeforeCall;
 	private int mPendingSeek;
 	private Song mLastSongBroadcast;
+	private boolean mPlugged;
 
 	private Method mIsWiredHeadsetOn;
 	private Method mStartForeground;
 	private Method mStopForeground;
 
 	private static final int GO = 0;
-	private static final int HEADSET_PLUGGED = 2;
+	private static final int SET_STATE = 1;
 	private static final int PREF_CHANGED = 3;
 	private static final int QUEUE_ITEM = 4;
 	private static final int TRACK_CHANGED = 5;
@@ -530,13 +535,17 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 		if (mIsWiredHeadsetOn != null) {
 			try {
-				return !(Boolean)mIsWiredHeadsetOn.invoke(mAudioManager, (Object[])null);
+				if ((Boolean)mIsWiredHeadsetOn.invoke(mAudioManager, (Object[])null))
+					return false;
 			} catch (InvocationTargetException e) {
 				Log.w("VanillaMusic", e);
 			} catch (IllegalAccessException e) {
 				Log.w("VanillaMusic", e);
 			}
 		}
+
+		if (mPlugged)
+			return false;
 
 		// Why is there no true equivalent to this in Android 2.0?
 		return (mAudioManager.getRouting(mAudioManager.getMode()) & AudioManager.ROUTE_SPEAKER) != 0;
@@ -696,13 +705,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		public void handleMessage(Message message)
 		{
 			switch (message.what) {
-			case HEADSET_PLUGGED:
-				if (mHeadsetPause) {
-					boolean plugged = message.arg1 == 1;
-					if (!plugged && mMediaPlayer.isPlaying())
-						pause();
-				}
-				break;
 			case PREF_CHANGED:
 				loadPreference((String)message.obj);
 				break;
@@ -754,6 +756,9 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 					setPlaying(!mMediaPlayer.isPlaying());
 				else
 					setCurrentSong(message.arg1);
+				break;
+			case SET_STATE:
+				updateState(message.arg1);
 				break;
 			case SAVE_STATE:
 				// For unexpected terminations: crashes, task killers, etc.
