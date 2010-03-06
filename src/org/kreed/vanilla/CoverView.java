@@ -256,9 +256,13 @@ public class CoverView extends View {
 		if (mService == null)
 			return;
 
+		int i = delta > 0 ? STORE_SIZE - 1 : 0;
+
+		if (mSongs[i] == null)
+			return;
+
 		int from = delta > 0 ? 1 : 0;
 		int to = delta > 0 ? 0 : 1;
-		int i = delta > 0 ? STORE_SIZE - 1 : 0;
 
 		System.arraycopy(mSongs, from, mSongs, to, STORE_SIZE - 1);
 		System.arraycopy(mBitmaps, from, mBitmaps, to, STORE_SIZE - 1);
@@ -267,12 +271,7 @@ public class CoverView extends View {
 		reset();
 		invalidate();
 
-		try {
-			mService.setCurrentSong(delta);
-		} catch (RemoteException e) {
-			mService = null;
-		}
-
+		mHandler.sendMessage(mHandler.obtainMessage(SET_SONG, delta, 0));
 		mHandler.sendEmptyMessage(i);
 	}
 
@@ -411,6 +410,7 @@ public class CoverView extends View {
 
 	private static final int GO = 10;
 	private static final int SET_SONG = 11;
+	private static final int SET_COVER = 12;
 
 	private Handler mHandler = new Handler() {
 		public void handleMessage(Message message) {
@@ -423,6 +423,13 @@ public class CoverView extends View {
 						shiftCover(message.arg1);
 					break;
 				case SET_SONG:
+					try {
+						mService.setCurrentSong(message.arg1);
+					} catch (RemoteException e) {
+						mService = null;
+					}
+					break;
+				case SET_COVER:
 					mSongs[STORE_SIZE / 2] = (Song)message.obj;
 					createBitmap(STORE_SIZE / 2);
 					reset();
@@ -453,7 +460,7 @@ public class CoverView extends View {
 		{
 			Song currentSong = mSongs[STORE_SIZE / 2];
 			if (currentSong == null)
-				mHandler.sendMessage(mHandler.obtainMessage(SET_SONG, playingSong));
+				mHandler.sendMessage(mHandler.obtainMessage(SET_COVER, playingSong));
 			else if (!currentSong.equals(playingSong))
 				refreshSongs();
 		}
