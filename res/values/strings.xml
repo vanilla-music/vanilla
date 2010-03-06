@@ -6,7 +6,6 @@
 	<string name="no_songs">No songs found on your device.</string>
 	<string name="settings">Preferences</string>
 	<string name="add_to_queue">Add to Queue</string>
-	<string name="open_player">Open Player</string>
 	<string name="stop_service">Stop Service</string>
 	<string name="connect_to_service">Connect to Service</string>
 	<string name="paused">(Paused)</string>
