@@ -207,13 +207,13 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		}
 	}
 
-	public void stopForegroundCompat(boolean cancelNotification)
+	public void stopForegroundCompat(Boolean cancelNotification)
 	{
 		if (mStopForeground == null) {
 			setForeground(false);
 		} else {
 			try {
-				mStopForeground.invoke(this, Boolean.FALSE);
+				mStopForeground.invoke(this, cancelNotification);
 			} catch (InvocationTargetException e) {
 				Log.w("VanillaMusic", e);
 			} catch (IllegalAccessException e) {
@@ -454,6 +454,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		} else if ("notify_while_paused".equals(key)){
 			mNotifyWhilePaused = mSettings.getBoolean(key, true);
 			updateNotification();
+			if (!mNotifyWhilePaused && mState != STATE_PLAYING)
+				stopForegroundCompat(true);
 		} else if ("scrobble".equals(key)) {
 			mScrobble = mSettings.getBoolean("scrobble", false);
 		}
@@ -479,8 +481,15 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		Song song = getSong(0);
 		broadcastSongChange(song);
 
-		updateNotification();
+		boolean cancelNotification = updateNotification();
 		updateWidgets();
+
+		if (mState != oldState) {
+			if (mState == STATE_PLAYING)
+				startForegroundCompat(NOTIFICATION_ID, mNotification);
+			else
+				stopForegroundCompat(cancelNotification);
+		}
 
 		if (mScrobble) {
 			Intent intent = new Intent("net.jjc1138.android.scrobbler.action.MUSIC_STATUS");
@@ -499,13 +508,13 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			updateState(STATE_NORMAL);
 	}
 
-	private void updateNotification()
+	private boolean updateNotification()
 	{
 		Song song = getSong(0);
 
 		if (song == null || !mNotifyWhilePaused && mState == STATE_NORMAL) {
 			mNotificationManager.cancel(NOTIFICATION_ID);
-			return;
+			return true;
 		}
 
 		String title = song.title;
@@ -530,6 +539,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 		mNotification = notification;
 		mNotificationManager.notify(NOTIFICATION_ID, mNotification);
+
+		return false;
 	}
 
 	private boolean isSpeakerOn()
@@ -562,14 +573,12 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 		mMediaPlayer.start();
 		updateState(STATE_PLAYING);
-		startForegroundCompat(NOTIFICATION_ID, mNotification);
 	}
 
 	private void pause()
 	{
 		mMediaPlayer.pause();
 		updateState(STATE_NORMAL);
-		stopForegroundCompat(false);
 	}
 
 	private void setPlaying(boolean play)
