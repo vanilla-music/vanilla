@@ -16,6 +16,7 @@ public class ControlButton extends ImageView {
 		super(context, attrs);
 
 		setFocusable(true);
+		setClickable(true);
 	}
 
 	@Override

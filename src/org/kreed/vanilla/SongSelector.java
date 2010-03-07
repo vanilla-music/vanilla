@@ -34,7 +34,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class SongSelector extends Activity implements AdapterView.OnItemClickListener, TextWatcher {
+public class SongSelector extends Activity implements AdapterView.OnItemClickListener, TextWatcher, View.OnClickListener {
 	private SongAdapter mAdapter;
 	private ListView mListView;
 	private TextView mTextView;
@@ -54,6 +54,9 @@ public class SongSelector extends Activity implements AdapterView.OnItemClickLis
 
 		mTextView = (TextView)findViewById(R.id.filter_text);
 		mTextView.addTextChangedListener(this);
+		
+		View clearButton = findViewById(R.id.clear_button);
+		clearButton.setOnClickListener(this);
 
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this); 
 		int inputType;
@@ -94,5 +97,10 @@ public class SongSelector extends Activity implements AdapterView.OnItemClickLis
 	public void onTextChanged(CharSequence s, int start, int before, int count)
 	{
 		mAdapter.getFilter().filter(s);
+	}
+
+	public void onClick(View view)
+	{
+		mTextView.setText("");
 	}
 }

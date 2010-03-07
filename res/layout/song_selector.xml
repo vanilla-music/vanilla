@@ -11,8 +11,18 @@
 		android:layout_height="wrap_content"
 		android:layout_weight="1"
 		android:fastScrollEnabled="true" />
-	<EditText
-		android:id="@+id/filter_text"
+	<RelativeLayout
 		android:layout_width="fill_parent"
-		android:layout_height="wrap_content" />
+		android:layout_height="wrap_content">
+		<EditText
+			android:id="@+id/filter_text"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" />
+		<org.kreed.vanilla.ControlButton
+			android:id="@+id/clear_button"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentRight="true"
+			android:src="@android:drawable/ic_menu_close_clear_cancel" />
+	</RelativeLayout>
 </LinearLayout>
