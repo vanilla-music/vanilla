@@ -258,6 +258,9 @@ public class NowPlayingActivity extends Activity implements ServiceConnection, V
 		{
 			String action = intent.getAction();
 			if (PlaybackService.EVENT_SONG_CHANGED.equals(action)) {
+				if (mService == null)
+					return;
+
 				try {
 					mDuration = mService.getDuration();
 					mHandler.sendEmptyMessage(UPDATE_PROGRESS);
