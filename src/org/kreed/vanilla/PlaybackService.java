@@ -27,7 +27,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Random;
 
-import org.kreed.vanilla.IMusicPlayerWatcher;
 import org.kreed.vanilla.IPlaybackService;
 import org.kreed.vanilla.R;
 
@@ -48,8 +47,6 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.PowerManager;
-import android.os.RemoteCallbackList;
-import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
@@ -64,13 +61,20 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	public static final String TOGGLE_PLAYBACK = "org.kreed.vanilla.action.TOGGLE_PLAYBACK";
 	public static final String NEXT_SONG = "org.kreed.vanilla.action.NEXT_SONG";
 
+	public static final String EVENT_LOADED = "org.kreed.vanilla.event.LOADED";
+	public static final String EVENT_STATE_CHANGED = "org.kreed.vanilla.event.STATE_CHANGED";
+	public static final String EVENT_SONG_CHANGED = "org.kreed.vanilla.event.SONG_CHANGED";
+
 	public static final int STATE_NORMAL = 0;
 	public static final int STATE_NO_MEDIA = 1;
 	public static final int STATE_PLAYING = 2;
 
-	private RemoteCallbackList<IMusicPlayerWatcher> mWatchers;
-
 	public IPlaybackService.Stub mBinder = new IPlaybackService.Stub() {
+		public boolean isLoaded()
+		{
+			return mHandler != null;
+		}
+
 		public Song getSong(int delta)
 		{
 			return PlaybackService.this.getSong(delta);
@@ -111,22 +115,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			mHandler.sendMessage(mHandler.obtainMessage(GO, 0, 0));
 		}
 
-		public void registerWatcher(IMusicPlayerWatcher watcher) throws RemoteException
-		{
-			if (watcher != null) {
-				mWatchers.register(watcher);
-				// if we're already loaded callback immediately
-				if (mHandler != null)
-					watcher.loaded();
-			}
-		}
-
-		public void unregisterWatcher(IMusicPlayerWatcher watcher)
-		{
-			if (watcher != null)
-				mWatchers.unregister(watcher);
-		}
-
 		public void seekToProgress(int progress)
 		{
 			if (mMediaPlayer == null)
@@ -149,8 +137,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	@Override
 	public void onCreate()
 	{
-		mWatchers = new RemoteCallbackList<IMusicPlayerWatcher>();
-
 		new Thread(this).start();
 	}
 
@@ -182,7 +168,11 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			player.release();
 		}
 
-		unregisterReceiver(mReceiver);
+		try {
+			unregisterReceiver(mReceiver);
+		} catch (IllegalArgumentException e) {
+			// we haven't registered the receiver yet
+		}
 		mNotificationManager.cancel(NOTIFICATION_ID);
 
 		resetWidgets();
@@ -415,14 +405,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		if (mPendingSeek != 0)
 			mMediaPlayer.seekTo(mPendingSeek);
 
-		int i = mWatchers.beginBroadcast();
-		while (--i != -1) {
-			try {
-				mWatchers.getBroadcastItem(i).loaded();
-			} catch (RemoteException e) {
-			}
-		}
-		mWatchers.finishBroadcast();
+		sendBroadcast(new Intent(EVENT_LOADED));
 
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Intent.ACTION_HEADSET_PLUG);
@@ -467,15 +450,10 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		mState = state;
 
 		if (mState != oldState) {
-			int i = mWatchers.beginBroadcast();
-			while (--i != -1) {
-				try {
-					mWatchers.getBroadcastItem(i).stateChanged(oldState, mState);
-				} catch (RemoteException e) {
-					// Null elements will be removed automatically
-				}
-			}
-			mWatchers.finishBroadcast();
+			Intent intent = new Intent(EVENT_STATE_CHANGED);
+			intent.putExtra("oldState", oldState);
+			intent.putExtra("newState", state);
+			sendBroadcast(intent);
 		}
 
 		Song song = getSong(0);
@@ -596,15 +574,9 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 		mLastSongBroadcast = song;
 
-		int i = mWatchers.beginBroadcast();
-		while (--i != -1) {
-			try {
-				mWatchers.getBroadcastItem(i).songChanged(song);
-			} catch (RemoteException e) {
-				// Null elements will be removed automatically
-			}
-		}
-		mWatchers.finishBroadcast();
+		Intent intent = new Intent(EVENT_SONG_CHANGED);
+		intent.putExtra("song", song);
+		sendBroadcast(intent);
 	}
 
 	private void setCurrentSong(int delta)

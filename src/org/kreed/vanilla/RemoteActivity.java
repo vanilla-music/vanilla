@@ -18,14 +18,15 @@
 
 package org.kreed.vanilla;
 
-import org.kreed.vanilla.IMusicPlayerWatcher;
 import org.kreed.vanilla.IPlaybackService;
 import org.kreed.vanilla.R;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -72,6 +73,7 @@ public class RemoteActivity extends Activity implements ServiceConnection, View.
 		super.onResume();
 
 		reconnect();
+		registerReceiver(mReceiver, new IntentFilter(PlaybackService.EVENT_STATE_CHANGED));
 	}
 
 	private void reconnect()
@@ -87,6 +89,11 @@ public class RemoteActivity extends Activity implements ServiceConnection, View.
 		super.onPause();
 
 		unbindService(this);
+		try {
+			unregisterReceiver(mReceiver);
+		} catch (IllegalArgumentException e) {
+			// we haven't registered the receiver yet
+		}
 	}
 
 	public void onServiceConnected(ComponentName name, IBinder binder)
@@ -94,7 +101,6 @@ public class RemoteActivity extends Activity implements ServiceConnection, View.
 		IPlaybackService service = IPlaybackService.Stub.asInterface(binder);
 		mCoverView.setPlaybackService(service);
 		try {
-			service.registerWatcher(mWatcher);
 			setState(service.getState());
 		} catch (RemoteException e) {
 		}
@@ -136,23 +142,13 @@ public class RemoteActivity extends Activity implements ServiceConnection, View.
 		mPlayPauseButton.setImageResource(state == PlaybackService.STATE_PLAYING ? R.drawable.pause : R.drawable.play);
 	}
 
-	private IMusicPlayerWatcher mWatcher = new IMusicPlayerWatcher.Stub() {
-		public void loaded()
+	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent)
 		{
-		}
-
-		public void songChanged(Song playingSong)
-		{
-		}
-
-		public void stateChanged(final int oldState, final int newState)
-		{
-			runOnUiThread(new Runnable() {
-				public void run()
-				{
-					setState(newState);
-				}
-			});
+			String action = intent.getAction();
+			if (PlaybackService.EVENT_STATE_CHANGED.equals(action))
+				setState(intent.getIntExtra("newState", 0));
 		}
 	};
 }

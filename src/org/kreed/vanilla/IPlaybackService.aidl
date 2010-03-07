@@ -19,11 +19,9 @@
 package org.kreed.vanilla;
 
 import org.kreed.vanilla.Song;
-import org.kreed.vanilla.IMusicPlayerWatcher;
 
 interface IPlaybackService {
-	void registerWatcher(IMusicPlayerWatcher watcher);
-	void unregisterWatcher(IMusicPlayerWatcher watcher);
+	boolean isLoaded();
 
 	Song getSong(int delta);
 	int getState();

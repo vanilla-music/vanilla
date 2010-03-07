@@ -18,10 +18,12 @@
 
 package org.kreed.vanilla;
 
-import org.kreed.vanilla.IMusicPlayerWatcher;
 import org.kreed.vanilla.IPlaybackService;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -49,7 +51,6 @@ public class CoverView extends View {
 	private float mStartX;
 	private float mStartY;
 	private IPlaybackService mService;
-	private boolean loaded;
 
 	Song[] mSongs = new Song[3];
 	private Bitmap[] mBitmaps = new Bitmap[3];
@@ -61,13 +62,19 @@ public class CoverView extends View {
 		super(context, attributes);
 
 		mScroller = new Scroller(context);
+
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(PlaybackService.EVENT_LOADED);
+		filter.addAction(PlaybackService.EVENT_SONG_CHANGED);
+		context.registerReceiver(mReceiver, filter);
 	}
 
 	public void setPlaybackService(IPlaybackService service)
 	{
 		try {
 			mService = service;
-			mService.registerWatcher(mWatcher);
+			if (mService.isLoaded())
+				refreshSongs();
 		} catch (RemoteException e) {
 		}
 	}
@@ -279,8 +286,6 @@ public class CoverView extends View {
 	{
 		if (mService == null)
 			throw new RemoteException();
-		if (delta != 0 && !loaded)
-			return;
 		mHandler.sendMessage(mHandler.obtainMessage(GO, delta, 0));
 	}
 
@@ -289,7 +294,7 @@ public class CoverView extends View {
 		if (!mScroller.isFinished())
 			mScroller.abortAnimation();
 		scrollTo(getWidth(), 0);
-		postInvalidate();
+		invalidate();
 	}
 
 	@Override
@@ -449,24 +454,22 @@ public class CoverView extends View {
 		}
 	};
 
-	private IMusicPlayerWatcher mWatcher = new IMusicPlayerWatcher.Stub() {
-		public void loaded()
+	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent)
 		{
-			loaded = true;
-			refreshSongs();
-		}
+			String action = intent.getAction();
 
-		public void songChanged(Song playingSong)
-		{
-			Song currentSong = mSongs[STORE_SIZE / 2];
-			if (currentSong == null)
-				mHandler.sendMessage(mHandler.obtainMessage(SET_COVER, playingSong));
-			else if (!currentSong.equals(playingSong))
+			if (PlaybackService.EVENT_LOADED.equals(action)) {
 				refreshSongs();
-		}
-
-		public void stateChanged(int oldState, int newState)
-		{
+			} else if (PlaybackService.EVENT_SONG_CHANGED.equals(action)) {
+				Song currentSong = mSongs[STORE_SIZE / 2];
+				Song playingSong = intent.getParcelableExtra("song");
+				if (currentSong == null)
+					mHandler.sendMessage(mHandler.obtainMessage(SET_COVER, playingSong));
+				else if (!currentSong.equals(playingSong))
+					refreshSongs();
+			}
 		}
 	};
 }
