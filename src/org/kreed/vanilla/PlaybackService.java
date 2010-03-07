@@ -503,7 +503,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			statusIcon = R.drawable.status_icon_paused;
 		}
 
-		RemoteViews views = new RemoteViews(getPackageName(), R.layout.statusbar);
+		RemoteViews views = new RemoteViews(getPackageName(), R.layout.notification);
 		views.setImageViewResource(R.id.icon, statusIcon);
 		views.setTextViewText(R.id.title, title);
 		views.setTextViewText(R.id.artist, song.artist);
