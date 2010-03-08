@@ -25,6 +25,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.InputType;
@@ -38,6 +39,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 
 public class SongSelector extends TabActivity implements AdapterView.OnItemClickListener, TextWatcher, View.OnClickListener {
+	private Handler mHandler;
 	private TabHost mTabHost;
 	private TextView mTextFilter;
 
@@ -54,6 +56,7 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 
 		setContentView(R.layout.song_selector);
 
+		mHandler = new Handler();
 		mTabHost = getTabHost();
 
 		Resources res = getResources();
@@ -61,20 +64,11 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		mTabHost.addTab(mTabHost.newTabSpec("tab_albums").setIndicator(res.getText(R.string.albums), res.getDrawable(R.drawable.tab_albums)).setContent(R.id.album_list));
 		mTabHost.addTab(mTabHost.newTabSpec("tab_songs").setIndicator(res.getText(R.string.songs), res.getDrawable(R.drawable.tab_songs)).setContent(R.id.song_list));
 
-		Song[] songs = Song.getAllSongMetadata();
+		final Song[] songs = Song.getAllSongMetadata();
 		mArtistAdapter = new ArtistAdapter(this, songs);
-		mAlbumAdapter = new AlbumAdapter(this, songs);
-		mSongAdapter = new SongAdapter(this, songs);
 
 		ListView artistView = (ListView)findViewById(R.id.artist_list);
 		artistView.setAdapter(mArtistAdapter);
-
-		ListView albumView = (ListView)findViewById(R.id.album_list);
-		albumView.setAdapter(mAlbumAdapter);
-
-		ListView songView = (ListView)findViewById(R.id.song_list);
-		songView.setAdapter(mSongAdapter);
-		songView.setOnItemClickListener(this);
 
 		mTextFilter = (TextView)findViewById(R.id.filter_text);
 		mTextFilter.addTextChangedListener(this);
@@ -91,6 +85,21 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		else
 			inputType = InputType.TYPE_CLASS_TEXT;
 		mTextFilter.setInputType(inputType);
+
+		mHandler.post(new Runnable() {
+			public void run()
+			{
+				mAlbumAdapter = new AlbumAdapter(SongSelector.this, songs);
+				mSongAdapter = new SongAdapter(SongSelector.this, songs);
+
+				ListView albumView = (ListView)findViewById(R.id.album_list);
+				albumView.setAdapter(mAlbumAdapter);
+
+				ListView songView = (ListView)findViewById(R.id.song_list);
+				songView.setAdapter(mSongAdapter);
+				songView.setOnItemClickListener(SongSelector.this);
+			}
+		});
 	}
 
 	@Override
@@ -120,7 +129,8 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 
 	public void onTextChanged(CharSequence s, int start, int before, int count)
 	{
-		mSongAdapter.getFilter().filter(s);
+		if (mSongAdapter != null)
+			mSongAdapter.getFilter().filter(s);
 	}
 
 	public void onClick(View view)
