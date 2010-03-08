@@ -73,7 +73,22 @@ public class SongAdapter extends BaseAdapter implements Filterable {
 		return mFilter;
 	}
 
-	private static final String[] mRanges = { "[2abc]", "[3def]", "[4ghi]", "[5jkl]", "[6mno]", "[7pqrs]", "[8tuv]", "[9wxyz]"};
+	private static final String[] mRanges = { ".", "[2abc]", "[3def]", "[4ghi]", "[5jkl]", "[6mno]", "[7pqrs]", "[8tuv]", "[9wxyz]"};
+	private static Matcher createMatcher(String input)
+	{
+		String patternString = "";
+		for (int i = 0, end = input.length(); i != end; ++i) {
+			char c = input.charAt(i);
+			int value = c - '1';
+			if (value >= 0 && value < 9)
+				patternString += mRanges[value];
+			else
+				patternString += c;
+		}
+
+		return Pattern.compile(patternString, Pattern.CASE_INSENSITIVE).matcher("");
+	}
+
 	private class ArrayFilter extends Filter {
 		@Override
 		protected FilterResults performFiltering(CharSequence filter)
@@ -84,29 +99,30 @@ public class SongAdapter extends BaseAdapter implements Filterable {
 				results.values = Arrays.asList(mAllObjects);
 				results.count = mAllObjects.length;
 			} else {
-				String patternString = "";
-				for (int i = 0, end = filter.length(); i != end; ++i) {
-					char c = filter.charAt(i);
-					int value = c - '2';
-					if (value >= 0 && value < 8)
-						patternString += mRanges[value];
-					else
-						patternString += c; 
-				}
-
-				Pattern pattern = Pattern.compile(patternString);
-				Matcher matcher = pattern.matcher("");
+				String[] words = filter.toString().split("\\s+");
+				Matcher[] matchers = new Matcher[words.length];
+				for (int i = words.length; --i != -1; )
+					matchers[i] = createMatcher(words[i]);
 
 				int count = mAllObjects.length;
 				ArrayList<Song> newValues = new ArrayList<Song>();
 				newValues.ensureCapacity(count);
 
+			outer:
 				for (int i = 0; i != count; ++i) {
-					Song value = mAllObjects[i];
-					matcher.reset(value.title.toLowerCase());
+					Song song = mAllObjects[i];
 
-					if (matcher.find())
-						newValues.add(value);
+					for (int j = matchers.length; --j != -1; ) {
+						if (song.artist != null && matchers[j].reset(song.artist).find())
+							continue;
+						if (song.album != null && matchers[j].reset(song.album).find())
+							continue;
+						if (song.title != null && matchers[j].reset(song.title).find())
+							continue;
+						continue outer;
+					}
+
+					newValues.add(song);
 				}
 
 				newValues.trimToSize();
