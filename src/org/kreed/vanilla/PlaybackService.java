@@ -339,10 +339,12 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 					in.close();
 
 					Song song = new Song(ids[mCurrentSong]);
-					if (song.path == null)
+					if (song.path == null) {
 						stateLoaded = false;
-					else
+					} else {
 						broadcastSongChange(song);
+						updateWidgets(song);
+					}
 
 					ArrayList<Song> timeline = new ArrayList<Song>(n);
 					for (int i = 0; i != n; ++i)
@@ -359,12 +361,12 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		if (stateLoaded)
 			stateLoaded = mSongTimeline != null;
 
-		mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-
 		if (!stateLoaded) {
 			retrieveSongs();
 			mSongTimeline = new ArrayList<Song>();
-			broadcastSongChange(getSong(0));
+			Song song = getSong(0);
+			broadcastSongChange(song);
+			updateWidgets(song);
 		}
 
 		if (stateLoaded)
@@ -378,6 +380,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		mMediaPlayer.setOnErrorListener(this);
 
 		mAudioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+		mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 
 		try {
 			mStartForeground = getClass().getMethod("startForeground", int.class, Notification.class);
@@ -466,7 +469,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		broadcastSongChange(song);
 
 		boolean cancelNotification = updateNotification();
-		updateWidgets();
+		updateWidgets(song);
 
 		if (mState != oldState) {
 			if (mState == STATE_PLAYING)
@@ -667,9 +670,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		}
 	}
 
-	private void updateWidgets()
+	private void updateWidgets(Song song)
 	{
-		Song song = getSong(0);
 		OneCellWidget.update(this, song);
 	}
 
