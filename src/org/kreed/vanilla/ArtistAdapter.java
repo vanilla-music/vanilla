@@ -19,56 +19,50 @@
 package org.kreed.vanilla;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 import android.content.Context;
 import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class SongAdapter extends AbstractAdapter {
-	private static Song[] sort(Song[] songs)
+public class ArtistAdapter extends AbstractAdapter {
+	private static Song[] filter(Song[] songs)
 	{
-		Arrays.sort(songs, new Song.TitleComparator());
-		return songs;
+		HashMap<Integer, Song> artists = new HashMap<Integer, Song>();
+		for (int i = songs.length; --i != -1; ) {
+			Song song = songs[i];
+			if (!artists.containsKey(song.artistId))
+				artists.put(song.artistId, song);
+		}
+		Song[] result = artists.values().toArray(new Song[0]);
+		Arrays.sort(result, new Song.ArtistComparator());
+		return result;
 	}
 
-	public SongAdapter(Context context, Song[] allSongs)
+	public ArtistAdapter(Context context, Song[] allSongs)
 	{
-		super(ContextApplication.getContext(), sort(allSongs));
+		super(context, filter(allSongs));
 	}
 
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
-		LinearLayout view = null;
+		TextView view = null;
 		try {
-			view = (LinearLayout)convertView;
+			view = (TextView)convertView;
 		} catch (ClassCastException e) {	
 		}
 
 		if (view == null) {
-			view = new LinearLayout(mContext);
-			view.setOrientation(LinearLayout.VERTICAL);
+			view = new TextView(mContext);
 			view.setPadding(mPadding, mPadding, mPadding, mPadding);
-
-			TextView title = new TextView(mContext);
-			title.setSingleLine();
-			title.setTextColor(Color.WHITE);
-			title.setTextSize(mSize);
-			title.setId(0);
-			view.addView(title);
-
-			TextView artist = new TextView(mContext);
-			artist.setSingleLine();
-			artist.setTextSize(mSize);
-			artist.setId(1);
-			view.addView(artist);
+			view.setSingleLine();
+			view.setTextColor(Color.WHITE);
+			view.setTextSize(mSize);
 		}
 
-		Song song = get(position);
-		((TextView)view.findViewById(0)).setText(song.title);
-		((TextView)view.findViewById(1)).setText(song.artist);
+		view.setText(get(position).artist);
 		return view;
 	}
 }

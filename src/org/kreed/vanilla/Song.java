@@ -195,4 +195,18 @@ public class Song implements Parcelable {
 			return a.title.compareTo(b.title);
 		}
 	}
+
+	public static class AlbumComparator implements Comparator<Song> {
+		public int compare(Song a, Song b)
+		{
+			return a.album.compareTo(b.album);
+		}
+	}
+
+	public static class ArtistComparator implements Comparator<Song> {
+		public int compare(Song a, Song b)
+		{
+			return a.artist.compareTo(b.artist);
+		}
+	}
 }

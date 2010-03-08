@@ -22,16 +22,16 @@
 				android:id="@android:id/tabcontent"
 				android:layout_width="fill_parent"
 				android:layout_height="fill_parent">
-				<TextView
+				<ListView
 					android:id="@+id/artist_list"
 					android:layout_width="fill_parent"
 					android:layout_height="fill_parent"
-					android:text="this is another tab" />
-				<TextView
+					android:fastScrollEnabled="true" />
+				<ListView
 					android:id="@+id/album_list"
 					android:layout_width="fill_parent"
 					android:layout_height="fill_parent"
-					android:text="this is a third tab" />
+					android:fastScrollEnabled="true" />
 				<ListView
 					android:id="@+id/song_list"
 					android:layout_width="fill_parent"
