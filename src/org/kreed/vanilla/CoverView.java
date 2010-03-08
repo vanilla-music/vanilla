@@ -36,14 +36,17 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.widget.Scroller;
 
 public class CoverView extends View {
-	private static final int SNAP_VELOCITY = 1000;
 	private static final int STORE_SIZE = 3;
+	private final int SNAP_VELOCITY;
 
 	private Scroller mScroller;
 	private VelocityTracker mVelocityTracker;
@@ -62,6 +65,7 @@ public class CoverView extends View {
 		super(context, attributes);
 
 		mScroller = new Scroller(context);
+		SNAP_VELOCITY = ViewConfiguration.get(context).getScaledMinimumFlingVelocity();
 
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(PlaybackService.EVENT_LOADED);
@@ -151,7 +155,7 @@ public class CoverView extends View {
 		return bitmap;
 	}
 
-	public static Bitmap createBitmap(Song song, int width, int height)
+	public Bitmap createBitmap(Song song, int width, int height)
 	{
 		if (song == null || width < 1 || height < 1)
 			return null;
@@ -164,9 +168,10 @@ public class CoverView extends View {
 		String artist = song.artist == null ? "" : song.artist;
 		Bitmap cover = song.coverPath == null ? null : BitmapFactory.decodeFile(song.coverPath);
 
-		float titleSize = 20;
-		float subSize = 14;
-		float padding = 10;
+		DisplayMetrics metrics = getContext().getResources().getDisplayMetrics();
+		float titleSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, metrics);
+		float subSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, metrics);
+		float padding = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, metrics);
 
 		paint.setTextSize(titleSize);
 		float titleWidth = paint.measureText(title);
