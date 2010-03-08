@@ -30,7 +30,6 @@ import android.util.TypedValue;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.TextView;
 
 public abstract class AbstractAdapter extends BaseAdapter implements Filterable {
 	protected Context mContext;
@@ -56,8 +55,9 @@ public abstract class AbstractAdapter extends BaseAdapter implements Filterable 
 		return true;
 	}
 
-	protected void updateViews(Song song, TextView upper, TextView lower)
+	public int getAllowedFields()
 	{
+		return 3;
 	}
 
 	public Filter getFilter()
@@ -98,6 +98,7 @@ public abstract class AbstractAdapter extends BaseAdapter implements Filterable 
 				for (int i = words.length; --i != -1; )
 					matchers[i] = createMatcher(words[i]);
 
+				int max = getAllowedFields();
 				int count = mAllObjects.length;
 				ArrayList<Song> newValues = new ArrayList<Song>();
 				newValues.ensureCapacity(count);
@@ -107,11 +108,11 @@ public abstract class AbstractAdapter extends BaseAdapter implements Filterable 
 					Song song = mAllObjects[i];
 
 					for (int j = matchers.length; --j != -1; ) {
-						if (song.artist != null && matchers[j].reset(song.artist).find())
+						if (matchers[j].reset(song.artist).find())
 							continue;
-						if (song.album != null && matchers[j].reset(song.album).find())
+						if (max > 1 && matchers[j].reset(song.album).find())
 							continue;
-						if (song.title != null && matchers[j].reset(song.title).find())
+						if (max > 2 && matchers[j].reset(song.title).find())
 							continue;
 						continue outer;
 					}

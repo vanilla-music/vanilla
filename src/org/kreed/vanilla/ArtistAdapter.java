@@ -46,6 +46,12 @@ public class ArtistAdapter extends AbstractAdapter {
 		super(context, filter(allSongs));
 	}
 
+	@Override
+	public int getAllowedFields()
+	{
+		return 1;
+	}
+
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
 		TextView view = null;

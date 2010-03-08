@@ -29,6 +29,12 @@ public class AlbumAdapter extends AbstractAdapter {
 		super(context, filter(allSongs));
 	}
 
+	@Override
+	public int getAllowedFields()
+	{
+		return 2;
+	}
+
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
 		LinearLayout view = null;

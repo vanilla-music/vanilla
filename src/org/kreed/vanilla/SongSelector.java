@@ -42,10 +42,7 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 	private Handler mHandler;
 	private TabHost mTabHost;
 	private TextView mTextFilter;
-
-	private AbstractAdapter mArtistAdapter;
-	private AbstractAdapter mAlbumAdapter;
-	private AbstractAdapter mSongAdapter;
+	private AbstractAdapter[] mAdapters = new AbstractAdapter[3];
 
 	@Override
 	public void onCreate(Bundle icicle)
@@ -65,10 +62,10 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		mTabHost.addTab(mTabHost.newTabSpec("tab_songs").setIndicator(res.getText(R.string.songs), res.getDrawable(R.drawable.tab_songs)).setContent(R.id.song_list));
 
 		final Song[] songs = Song.getAllSongMetadata();
-		mArtistAdapter = new ArtistAdapter(this, songs);
+		mAdapters[0] = new ArtistAdapter(this, songs);
 
 		ListView artistView = (ListView)findViewById(R.id.artist_list);
-		artistView.setAdapter(mArtistAdapter);
+		artistView.setAdapter(mAdapters[0]);
 
 		mTextFilter = (TextView)findViewById(R.id.filter_text);
 		mTextFilter.addTextChangedListener(this);
@@ -89,14 +86,14 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		mHandler.post(new Runnable() {
 			public void run()
 			{
-				mAlbumAdapter = new AlbumAdapter(SongSelector.this, songs);
-				mSongAdapter = new SongAdapter(SongSelector.this, songs);
+				mAdapters[1] = new AlbumAdapter(SongSelector.this, songs);
+				mAdapters[2] = new SongAdapter(SongSelector.this, songs);
 
 				ListView albumView = (ListView)findViewById(R.id.album_list);
-				albumView.setAdapter(mAlbumAdapter);
+				albumView.setAdapter(mAdapters[1]);
 
 				ListView songView = (ListView)findViewById(R.id.song_list);
-				songView.setAdapter(mSongAdapter);
+				songView.setAdapter(mAdapters[2]);
 				songView.setOnItemClickListener(SongSelector.this);
 			}
 		});
@@ -129,8 +126,9 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 
 	public void onTextChanged(CharSequence s, int start, int before, int count)
 	{
-		if (mSongAdapter != null)
-			mSongAdapter.getFilter().filter(s);
+		AbstractAdapter adapter = mAdapters[mTabHost.getCurrentTab()];
+		if (adapter != null)
+			adapter.getFilter().filter(s);
 	}
 
 	public void onClick(View view)
