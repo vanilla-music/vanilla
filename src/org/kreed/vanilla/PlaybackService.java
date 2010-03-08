@@ -323,6 +323,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 		mRandom = new Random();
 
+		boolean stateLoaded = true;
+
 		try {
 			DataInputStream in = new DataInputStream(openFileInput(STATE_FILE));
 			if (in.readLong() == STATE_FILE_MAGIC) {
@@ -337,7 +339,10 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 					in.close();
 
 					Song song = new Song(ids[mCurrentSong]);
-					broadcastSongChange(song);
+					if (song.path == null)
+						stateLoaded = false;
+					else
+						broadcastSongChange(song);
 
 					ArrayList<Song> timeline = new ArrayList<Song>(n);
 					for (int i = 0; i != n; ++i)
@@ -351,7 +356,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			Log.w("VanillaMusic", e);
 		}
 
-		boolean stateLoaded = mSongTimeline != null;
+		if (stateLoaded)
+			stateLoaded = mSongTimeline != null;
 
 		mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 
@@ -636,21 +642,28 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 		synchronized (mSongTimeline) {
 			int pos = mCurrentSong + delta;
-	
+
 			if (pos < 0)
 				return null;
-	
+
 			int size = mSongTimeline.size();
 			if (pos > size)
 				return null;
-	
+
 			if (pos == size) {
 				if (mSongs == null)
 					return null;
 				mSongTimeline.add(randomSong());
 			}
-	
-			return mSongTimeline.get(pos);
+
+			Song song = mSongTimeline.get(pos);
+
+			if (song.path == null) {
+				song = randomSong();
+				mSongTimeline.set(pos, song);
+			}
+
+			return song;
 		}
 	}
 
