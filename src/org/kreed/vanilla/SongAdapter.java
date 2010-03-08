@@ -19,16 +19,12 @@
 package org.kreed.vanilla;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import android.content.ContentResolver;
 import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -38,53 +34,15 @@ import android.widget.TextView;
 
 public class SongAdapter extends BaseAdapter implements Filterable {
 	private Context mContext;
-	private final Object mLock = new Object();
-	private List<StringPair> mObjects;
-	private List<StringPair> mOriginalValues;
+	private List<Song> mObjects;
+	private Song[] mAllObjects;
 	private ArrayFilter mFilter;
-	
-	private class StringPair implements Comparable<StringPair> {
-		public int id;
-		public String value;
-		public int compareTo(StringPair another)
-		{
-			return value.compareTo(another.value);
-		}
-	}
 
 	public SongAdapter(Context context)
 	{
 		mContext = context;
-		querySongs();
-	}
-
-	private void querySongs()
-	{
-		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-		String[] projection = { MediaStore.Audio.Media._ID,
-				MediaStore.Audio.Media.TITLE,
-				MediaStore.Audio.Media.ALBUM,
-				MediaStore.Audio.Media.ARTIST };
-		String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
-
-		ContentResolver resolver = mContext.getContentResolver();
-		Cursor cursor = resolver.query(media, projection, selection, null, null);
-
-		if (cursor == null)
-			return;
-		
-		mObjects = new ArrayList<StringPair>(cursor.getCount());
-
-		while (cursor.moveToNext()) {
-			StringPair pair = new StringPair();
-			pair.id = cursor.getInt(0);
-			pair.value = cursor.getString(3) + " / " + cursor.getString(2) + " / " + cursor.getString(1);
-			mObjects.add(pair);
-		}
-
-		cursor.close();
-
-		Collections.sort(mObjects);
+		mAllObjects = Song.getAllSongMetadata();
+		Arrays.sort(mAllObjects, new Song.TitleComparator());
 	}
 
 	@Override
@@ -104,7 +62,7 @@ public class SongAdapter extends BaseAdapter implements Filterable {
 		if (view == null)
 			view = new TextView(mContext);
 
-		view.setText(mObjects.get(position).value);
+		view.setText(mObjects.get(position).title);
 		return view;
 	}
 
@@ -122,18 +80,9 @@ public class SongAdapter extends BaseAdapter implements Filterable {
 		{
 			FilterResults results = new FilterResults();
 
-			if (mOriginalValues == null) {
-				synchronized (mLock) {
-					mOriginalValues = new ArrayList<StringPair>(mObjects);
-				}
-			}
-
 			if (filter == null || filter.length() == 0) {
-				synchronized (mLock) {
-					ArrayList<StringPair> list = new ArrayList<StringPair>(mOriginalValues);
-					results.values = list;
-					results.count = list.size();
-				}
+				results.values = Arrays.asList(mAllObjects);
+				results.count = mAllObjects.length;
 			} else {
 				String patternString = "";
 				for (int i = 0, end = filter.length(); i != end; ++i) {
@@ -148,16 +97,13 @@ public class SongAdapter extends BaseAdapter implements Filterable {
 				Pattern pattern = Pattern.compile(patternString);
 				Matcher matcher = pattern.matcher("");
 
-				List<StringPair> values = mOriginalValues;
-				int count = values.size();
-
-				ArrayList<StringPair> newValues = new ArrayList<StringPair>();
+				int count = mAllObjects.length;
+				ArrayList<Song> newValues = new ArrayList<Song>();
 				newValues.ensureCapacity(count);
 
-				int i;
-				for (i = 0; i != count; ++i) {
-					StringPair value = values.get(i);
-					matcher.reset(value.value.toLowerCase());
+				for (int i = 0; i != count; ++i) {
+					Song value = mAllObjects[i];
+					matcher.reset(value.title.toLowerCase());
 
 					if (matcher.find())
 						newValues.add(value);
@@ -176,7 +122,7 @@ public class SongAdapter extends BaseAdapter implements Filterable {
 		@Override
 		protected void publishResults(CharSequence constraint, FilterResults results)
 		{
-			mObjects = (List<StringPair>) results.values;
+			mObjects = (List<Song>)results.values;
 			if (results.count == 0)
 				notifyDataSetInvalidated();
 			else
@@ -186,21 +132,32 @@ public class SongAdapter extends BaseAdapter implements Filterable {
 
 	public int getCount()
 	{
-		if (mObjects == null)
-			return 0;
+		if (mObjects == null) {
+			if (mAllObjects == null)
+				return 0;
+			return mAllObjects.length;
+		}
 		return mObjects.size();
 	}
 
 	public Object getItem(int position)
 	{
-		if (mObjects == null)
-			return null;
+		if (mObjects == null) {
+			if (mAllObjects == null)
+				return 0;
+			return mAllObjects[position];
+		}
 		return mObjects.get(position);
 	}
 
 	public long getItemId(int position)
 	{
-		if (mObjects == null || mObjects.isEmpty())
+		if (mObjects == null) {
+			if (mAllObjects == null)
+				return 0;
+			return mAllObjects[position].id;
+		}
+		if (mObjects.isEmpty())
 			return 0;
 		return mObjects.get(position).id;
 	}

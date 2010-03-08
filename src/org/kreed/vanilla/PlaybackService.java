@@ -479,7 +479,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 	private void retrieveSongs()
 	{
-		mSongs = Song.getAllSongs();
+		mSongs = Song.getAllSongIds();
 		if (mSongs == null)
 			updateState(STATE_NO_MEDIA);
 		else if (mState == STATE_NO_MEDIA)
