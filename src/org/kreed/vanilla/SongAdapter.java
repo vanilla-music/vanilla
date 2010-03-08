@@ -25,11 +25,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class SongAdapter extends BaseAdapter implements Filterable {
@@ -37,12 +41,18 @@ public class SongAdapter extends BaseAdapter implements Filterable {
 	private List<Song> mObjects;
 	private Song[] mAllObjects;
 	private ArrayFilter mFilter;
+	private float mSize;
+	private int mPadding;
 
 	public SongAdapter(Context context)
 	{
 		mContext = context;
 		mAllObjects = Song.getAllSongMetadata();
 		Arrays.sort(mAllObjects, new Song.TitleComparator());
+
+		DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+		mSize = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, metrics);
+		mPadding = (int)mSize / 2;
 	}
 
 	@Override
@@ -53,16 +63,33 @@ public class SongAdapter extends BaseAdapter implements Filterable {
 
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
-		TextView view = null;
+		LinearLayout view = null;
 		try {
-			view = (TextView)convertView;
+			view = (LinearLayout)convertView;
 		} catch (ClassCastException e) {	
 		}
-		
-		if (view == null)
-			view = new TextView(mContext);
 
-		view.setText(mObjects.get(position).title);
+		if (view == null) {
+			view = new LinearLayout(mContext);
+			view.setOrientation(LinearLayout.VERTICAL);
+			view.setPadding(mPadding, mPadding, mPadding, mPadding);
+
+			TextView title = new TextView(mContext);
+			title.setSingleLine();
+			title.setTextColor(Color.WHITE);
+			title.setTextSize(mSize);
+			title.setId(0);
+			view.addView(title);
+
+			TextView artist = new TextView(mContext);
+			artist.setSingleLine();
+			artist.setTextSize(mSize);
+			artist.setId(1);
+			view.addView(artist);
+		}
+
+		((TextView)view.findViewById(0)).setText(mObjects.get(position).title);
+		((TextView)view.findViewById(1)).setText(mObjects.get(position).artist);
 		return view;
 	}
 
