@@ -5,12 +5,41 @@
 	android:layout_height="fill_parent"
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical">
-	<ListView
-		android:id="@+id/song_list"
+	<TabHost
+		android:id="@android:id/tabhost"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		android:layout_weight="1"
-		android:fastScrollEnabled="true" />
+		android:layout_weight="1">
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent">
+			<TabWidget
+				android:id="@android:id/tabs"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content" />
+			<FrameLayout
+				android:id="@android:id/tabcontent"
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent">
+				<TextView
+					android:id="@+id/artist_list"
+					android:layout_width="fill_parent"
+					android:layout_height="fill_parent"
+					android:text="this is another tab" />
+				<TextView
+					android:id="@+id/album_list"
+					android:layout_width="fill_parent"
+					android:layout_height="fill_parent"
+					android:text="this is a third tab" />
+				<ListView
+					android:id="@+id/song_list"
+					android:layout_width="fill_parent"
+					android:layout_height="fill_parent"
+					android:fastScrollEnabled="true" />
+			</FrameLayout>
+		</LinearLayout>
+	</TabHost>
 	<RelativeLayout
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content">

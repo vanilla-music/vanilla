@@ -20,9 +20,10 @@ package org.kreed.vanilla;
 
 import org.kreed.vanilla.R;
 
-import android.app.Activity;
+import android.app.TabActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
@@ -30,11 +31,14 @@ import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TabHost;
 import android.widget.TextView;
 
-public class SongSelector extends Activity implements AdapterView.OnItemClickListener, TextWatcher, View.OnClickListener {
+public class SongSelector extends TabActivity implements AdapterView.OnItemClickListener, TextWatcher, View.OnClickListener {
+	private TabHost mTabHost;
 	private SongAdapter mAdapter;
 	private ListView mListView;
 	private TextView mTextView;
@@ -44,7 +48,16 @@ public class SongSelector extends Activity implements AdapterView.OnItemClickLis
 	{
 		super.onCreate(icicle);
 
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+
 		setContentView(R.layout.song_selector);
+
+		mTabHost = getTabHost();
+
+		Resources res = getResources();
+		mTabHost.addTab(mTabHost.newTabSpec("tab_artists").setIndicator(res.getText(R.string.artists), res.getDrawable(R.drawable.tab_artists)).setContent(R.id.artist_list));
+		mTabHost.addTab(mTabHost.newTabSpec("tab_albums").setIndicator(res.getText(R.string.albums), res.getDrawable(R.drawable.tab_albums)).setContent(R.id.album_list));
+		mTabHost.addTab(mTabHost.newTabSpec("tab_songs").setIndicator(res.getText(R.string.songs), res.getDrawable(R.drawable.tab_songs)).setContent(R.id.song_list));
 
 		mAdapter = new SongAdapter(this);
 

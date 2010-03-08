@@ -11,6 +11,10 @@
 	<string name="paused">(Paused)</string>
 	<string name="widget_start_service">Click to start the music service.</string>
 
+	<string name="artists">Artists</string>
+	<string name="albums">Albums</string>
+	<string name="songs">Songs</string>
+
 	<string name="pref_output">Audio Output</string>
 	<string name="pref_notifications">Notifications</string>
 	<string name="pref_song_selector">Song Selector</string>
