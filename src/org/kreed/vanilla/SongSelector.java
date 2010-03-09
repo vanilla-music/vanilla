@@ -31,10 +31,13 @@ import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.view.ContextMenu;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -43,6 +46,14 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 	private TabHost mTabHost;
 	private TextView mTextFilter;
 	private AbstractAdapter[] mAdapters = new AbstractAdapter[3];
+
+	private void initializeListView(int id, BaseAdapter adapter)
+	{
+		ListView view = (ListView)findViewById(id);
+		view.setOnItemClickListener(this);
+		view.setOnCreateContextMenuListener(this);
+		view.setAdapter(adapter);
+	}
 
 	@Override
 	public void onCreate(Bundle icicle)
@@ -64,9 +75,7 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		mAdapters[0] = new ArtistAdapter(this, songs);
 		mAdapters[0].setExpanderListener(this);
 
-		ListView artistView = (ListView)findViewById(R.id.artist_list);
-		artistView.setOnItemClickListener(this);
-		artistView.setAdapter(mAdapters[0]);
+		initializeListView(R.id.artist_list, mAdapters[0]);
 
 		mTextFilter = (TextView)findViewById(R.id.filter_text);
 		mTextFilter.addTextChangedListener(this);
@@ -89,13 +98,10 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 			{
 				mAdapters[1] = new AlbumAdapter(SongSelector.this, songs);
 				mAdapters[1].setExpanderListener(SongSelector.this);
-				ListView albumView = (ListView)findViewById(R.id.album_list);
-				albumView.setAdapter(mAdapters[1]);
+				initializeListView(R.id.album_list, mAdapters[1]);
 
 				mAdapters[2] = new SongAdapter(SongSelector.this, songs);
-				ListView songView = (ListView)findViewById(R.id.song_list);
-				songView.setAdapter(mAdapters[2]);
-				songView.setOnItemClickListener(SongSelector.this);
+				initializeListView(R.id.song_list, mAdapters[2]);
 			}
 		});
 	}
@@ -169,4 +175,29 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 			}
 		}
 	};
+
+	private static final int MENU_PLAY = 0;
+	private static final int MENU_ENQUEUE = 1;
+
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo)
+	{
+		menu.add(0, MENU_PLAY, 0, R.string.play);
+		menu.add(0, MENU_ENQUEUE, 0, R.string.enqueue);
+	}
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item)
+	{
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+		switch (item.getItemId()) {
+		case MENU_PLAY:
+			pushSong(PlaybackService.ACTION_PLAY, (int)info.id);
+			break;
+		case MENU_ENQUEUE:
+			pushSong(PlaybackService.ACTION_ENQUEUE, (int)info.id);
+			break;
+		}
+		return true;
+	}
 }

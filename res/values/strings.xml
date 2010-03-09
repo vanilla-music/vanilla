@@ -2,15 +2,18 @@
 <resources>
 	<string name="app_name">Vanilla Music</string>
 
-	<string name="enqueued">Enqueued %s</string>
-	<string name="playing">Playing %s</string>
 	<string name="no_songs">No songs found on your device.</string>
+	<string name="connect_to_service">Connect to Service</string>
+	<string name="paused">(Paused)</string>
+
+	<string name="enqueue">Enqueue</string>
+	<string name="play">Play</string>
 	<string name="settings">Preferences</string>
 	<string name="add_to_queue">Add to Queue</string>
 	<string name="stop_service">Stop Service</string>
-	<string name="connect_to_service">Connect to Service</string>
-	<string name="paused">(Paused)</string>
-	<string name="widget_start_service">Click to start the music service.</string>
+
+	<string name="enqueued">Enqueued %s</string>
+	<string name="playing">Playing %s</string>
 
 	<string name="artists">Artists</string>
 	<string name="albums">Albums</string>
