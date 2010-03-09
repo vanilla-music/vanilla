@@ -32,7 +32,7 @@ public class SongAdapter extends AbstractAdapter {
 
 	public SongAdapter(Context context, Song[] allSongs)
 	{
-		super(ContextApplication.getContext(), sort(allSongs), NO_EXPANDER, 3);
+		super(ContextApplication.getContext(), sort(allSongs), 0, 3);
 	}
 
 	@Override

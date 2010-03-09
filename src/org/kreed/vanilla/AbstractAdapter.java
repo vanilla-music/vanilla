@@ -30,6 +30,7 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -39,7 +40,6 @@ import android.widget.TextView;
 
 public abstract class AbstractAdapter extends BaseAdapter implements Filterable {
 	public static final int ONE_LINE = 0x1;
-	public static final int NO_EXPANDER = 0x2;
 
 	private Context mContext;
 	private List<Song> mObjects;
@@ -49,6 +49,7 @@ public abstract class AbstractAdapter extends BaseAdapter implements Filterable 
 	private int mPadding;
 	private int mDrawFlags;
 	private int mFieldCount;
+	private OnClickListener mExpanderListener;
 
 	public AbstractAdapter(Context context, Song[] allObjects, int drawFlags, int numFields)
 	{
@@ -60,6 +61,11 @@ public abstract class AbstractAdapter extends BaseAdapter implements Filterable 
 		DisplayMetrics metrics = context.getResources().getDisplayMetrics();
 		mSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, metrics);
 		mPadding = (int)mSize / 2;
+	}
+
+	public void setExpanderListener(View.OnClickListener listener)
+	{
+		mExpanderListener = listener;
 	}
 
 	@Override
@@ -84,7 +90,7 @@ public abstract class AbstractAdapter extends BaseAdapter implements Filterable 
 
 			RelativeLayout.LayoutParams params;
 
-			if ((mDrawFlags & NO_EXPANDER) == 0) {
+			if (mExpanderListener != null) {
 				params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 				params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 				params.addRule(RelativeLayout.CENTER_VERTICAL);
@@ -93,6 +99,10 @@ public abstract class AbstractAdapter extends BaseAdapter implements Filterable 
 				button.setImageResource(R.drawable.expander_arrow);
 				button.setId(3);
 				button.setLayoutParams(params);
+				button.setTag(R.id.list, mFieldCount);
+				button.setTag(R.id.song, get(position));
+				button.setOnClickListener(mExpanderListener);
+
 				view.addView(button);
 			}
 

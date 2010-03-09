@@ -63,8 +63,10 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 
 		final Song[] songs = Song.getAllSongMetadata();
 		mAdapters[0] = new ArtistAdapter(this, songs);
+		mAdapters[0].setExpanderListener(this);
 
 		ListView artistView = (ListView)findViewById(R.id.artist_list);
+		artistView.setOnItemClickListener(this);
 		artistView.setAdapter(mAdapters[0]);
 
 		mTextFilter = (TextView)findViewById(R.id.filter_text);
@@ -87,11 +89,11 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 			public void run()
 			{
 				mAdapters[1] = new AlbumAdapter(SongSelector.this, songs);
-				mAdapters[2] = new SongAdapter(SongSelector.this, songs);
-
+				mAdapters[1].setExpanderListener(SongSelector.this);
 				ListView albumView = (ListView)findViewById(R.id.album_list);
 				albumView.setAdapter(mAdapters[1]);
 
+				mAdapters[2] = new SongAdapter(SongSelector.this, songs);
 				ListView songView = (ListView)findViewById(R.id.song_list);
 				songView.setAdapter(mAdapters[2]);
 				songView.setOnItemClickListener(SongSelector.this);
@@ -133,6 +135,12 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 
 	public void onClick(View view)
 	{
-		mTextFilter.setText("");
+		if (view == mTextFilter) {
+			mTextFilter.setText("");
+		} else {
+			Object list = view.getTag(R.id.list);
+			if (list != null)
+				mTabHost.setCurrentTab((Integer)list);
+		}
 	}
 }
