@@ -26,6 +26,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.InputType;
@@ -39,7 +40,6 @@ import android.widget.TabHost;
 import android.widget.TextView;
 
 public class SongSelector extends TabActivity implements AdapterView.OnItemClickListener, TextWatcher, View.OnClickListener {
-	private Handler mHandler;
 	private TabHost mTabHost;
 	private TextView mTextFilter;
 	private AbstractAdapter[] mAdapters = new AbstractAdapter[3];
@@ -53,7 +53,6 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 
 		setContentView(R.layout.song_selector);
 
-		mHandler = new Handler();
 		mTabHost = getTabHost();
 
 		Resources res = getResources();
@@ -111,11 +110,24 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		return mTextFilter.onKeyDown(keyCode, event);
 	}
 
-	public void onItemClick(AdapterView<?> list, View view, int pos, long id)
+	private void pushSong(int action, int id)
 	{
 		Intent intent = new Intent(this, PlaybackService.class);
-		intent.putExtra("songId", (int)id);
+		intent.putExtra("id", id);
+		intent.putExtra("action", action);
 		startService(intent);
+	}
+
+	public void onItemClick(AdapterView<?> list, View view, int pos, long id)
+	{
+		if (mHandler.hasMessages(MSG_ITEM_CLICK, view)) {
+			mHandler.removeMessages(MSG_ITEM_CLICK, view);
+			pushSong(PlaybackService.ACTION_ENQUEUE, (int)id);
+		} else {
+			Message message = mHandler.obtainMessage(MSG_ITEM_CLICK, view);
+			message.arg1 = (int)id;
+			mHandler.sendMessageDelayed(message, 333);
+		}
 	}
 
 	public void afterTextChanged(Editable editable)
@@ -143,4 +155,18 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 				mTabHost.setCurrentTab((Integer)list);
 		}
 	}
+
+	private static final int MSG_ITEM_CLICK = 0;
+
+	private Handler mHandler = new Handler() {
+		@Override
+		public void handleMessage(Message message)
+		{
+			switch (message.what) {
+			case MSG_ITEM_CLICK:
+				pushSong(PlaybackService.ACTION_PLAY, message.arg1);
+				break;
+			}
+		}
+	};
 }

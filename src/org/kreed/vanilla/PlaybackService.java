@@ -65,6 +65,9 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	public static final String EVENT_STATE_CHANGED = "org.kreed.vanilla.event.STATE_CHANGED";
 	public static final String EVENT_SONG_CHANGED = "org.kreed.vanilla.event.SONG_CHANGED";
 
+	public static int ACTION_PLAY = 0;
+	public static int ACTION_ENQUEUE = 1;
+
 	public static final int STATE_NORMAL = 0;
 	public static final int STATE_NO_MEDIA = 1;
 	public static final int STATE_PLAYING = 2;
@@ -143,11 +146,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	@Override
 	public void onStart(Intent intent, int flags)
 	{
-		if (mHandler == null)
-			return;
-
-		int id = intent.getIntExtra("songId", -1);
-		mHandler.sendMessage(mHandler.obtainMessage(QUEUE_ITEM, id, 0));
+		if (mHandler != null)
+			mHandler.sendMessage(mHandler.obtainMessage(DO_ITEM, intent));
 	}
 
 	@Override
@@ -309,7 +309,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private static final int GO = 0;
 	private static final int SET_STATE = 1;
 	private static final int PREF_CHANGED = 3;
-	private static final int QUEUE_ITEM = 4;
+	private static final int DO_ITEM = 4;
 	private static final int TRACK_CHANGED = 5;
 	private static final int RELEASE_WAKE_LOCK = 6;
 	private static final int RETRIEVE_SONGS = 9;
@@ -708,20 +708,41 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			case PREF_CHANGED:
 				loadPreference((String)message.obj);
 				break;
-			case QUEUE_ITEM:
-				if (message.arg1 == -1) {
+			case DO_ITEM:
+				Intent intent = (Intent)message.obj;
+				int id = intent.getIntExtra("id", -1);
+				if (id == -1) {
 					mQueuePos = 0;
 				} else {
-					Song song = new Song(message.arg1);
-					String text = getResources().getString(R.string.enqueued, song.title);
-					Toast.makeText(ContextApplication.getContext(), text, Toast.LENGTH_SHORT).show();
+					int action = intent.getIntExtra("action", ACTION_PLAY);
+					int actionRes;
+
+					Song song = new Song(id);
 
 					synchronized (mSongTimeline) {
-						int i = mCurrentSong + 1 + mQueuePos++;
+						int i;
+
+						if (action == ACTION_ENQUEUE) {
+							i = mCurrentSong + 1 + mQueuePos++;
+							actionRes = R.string.enqueued;
+						} else {
+							i = mCurrentSong;
+							actionRes = R.string.playing;
+						}
+
 						if (i < mSongTimeline.size())
 							mSongTimeline.set(i, song);
 						else
 							mSongTimeline.add(song);
+					}
+
+					String text = getResources().getString(actionRes, song.title);
+					Toast.makeText(ContextApplication.getContext(), text, Toast.LENGTH_SHORT).show();
+
+					if (action == ACTION_PLAY) {
+						setCurrentSong(0);
+						if (mState != STATE_PLAYING)
+							play();
 					}
 
 					mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
