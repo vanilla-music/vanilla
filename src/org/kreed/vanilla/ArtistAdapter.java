@@ -18,9 +18,6 @@
 
 package org.kreed.vanilla;
 
-import java.util.Arrays;
-import java.util.HashMap;
-
 import android.content.Context;
 import android.graphics.Color;
 import android.view.View;
@@ -28,22 +25,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 public class ArtistAdapter extends AbstractAdapter {
-	private static Song[] filter(Song[] songs)
-	{
-		HashMap<Integer, Song> artists = new HashMap<Integer, Song>();
-		for (int i = songs.length; --i != -1; ) {
-			Song song = songs[i];
-			if (!artists.containsKey(song.artistId))
-				artists.put(song.artistId, song);
-		}
-		Song[] result = artists.values().toArray(new Song[0]);
-		Arrays.sort(result, new Song.ArtistComparator());
-		return result;
-	}
-
 	public ArtistAdapter(Context context, Song[] allSongs)
 	{
-		super(context, filter(allSongs));
+		super(context, Song.filter(allSongs, new Song.ArtistComparator()));
 	}
 
 	@Override

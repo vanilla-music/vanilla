@@ -1,8 +1,5 @@
 package org.kreed.vanilla;
 
-import java.util.Arrays;
-import java.util.HashMap;
-
 import android.content.Context;
 import android.graphics.Color;
 import android.view.View;
@@ -11,22 +8,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class AlbumAdapter extends AbstractAdapter {
-	private static Song[] filter(Song[] songs)
-	{
-		HashMap<Integer, Song> albums = new HashMap<Integer, Song>();
-		for (int i = songs.length; --i != -1; ) {
-			Song song = songs[i];
-			if (!albums.containsKey(song.albumId))
-				albums.put(song.albumId, song);
-		}
-		Song[] result = albums.values().toArray(new Song[0]);
-		Arrays.sort(result, new Song.AlbumComparator());
-		return result;
-	}
-
 	public AlbumAdapter(Context context, Song[] allSongs)
 	{
-		super(context, filter(allSongs));
+		super(context, Song.filter(allSongs, new Song.AlbumComparator()));
 	}
 
 	@Override

@@ -18,6 +18,7 @@
 
 package org.kreed.vanilla;
 
+import java.util.Arrays;
 import java.util.Comparator;
 
 import android.content.ContentResolver;
@@ -26,6 +27,7 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.util.SparseArray;
 
 public class Song implements Parcelable {
 	int id;
@@ -196,17 +198,49 @@ public class Song implements Parcelable {
 		}
 	}
 
-	public static class AlbumComparator implements Comparator<Song> {
+	public static class AlbumComparator implements IdComparator {
 		public int compare(Song a, Song b)
 		{
 			return a.album.compareTo(b.album);
 		}
+
+		public int getId(Song song)
+		{
+			return song.albumId;
+		}
 	}
 
-	public static class ArtistComparator implements Comparator<Song> {
+	public static class ArtistComparator implements IdComparator {
 		public int compare(Song a, Song b)
 		{
 			return a.artist.compareTo(b.artist);
 		}
+
+		public int getId(Song song)
+		{
+			return song.artistId;
+		}
+	}
+
+	public static interface IdComparator extends Comparator<Song> {
+		public int getId(Song song);
+	}
+
+	public static Song[] filter(Song[] songs, IdComparator comparator)
+	{
+		SparseArray<Song> albums = new SparseArray<Song>(songs.length);
+		for (int i = songs.length; --i != -1; ) {
+			Song song = songs[i];
+			int id = comparator.getId(song);
+			if (albums.get(id) == null)
+				albums.put(id, song);
+		}
+
+		Song[] result = new Song[albums.size()];
+		for (int i = result.length; --i != -1; )
+			result[i] = albums.valueAt(i);
+
+		Arrays.sort(result, comparator);
+		return result;
 	}
 }
