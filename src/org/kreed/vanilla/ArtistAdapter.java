@@ -19,40 +19,18 @@
 package org.kreed.vanilla;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 public class ArtistAdapter extends AbstractAdapter {
 	public ArtistAdapter(Context context, Song[] allSongs)
 	{
-		super(context, Song.filter(allSongs, new Song.ArtistComparator()));
+		super(context, Song.filter(allSongs, new Song.ArtistComparator()), ONE_LINE, 1);
 	}
 
 	@Override
-	public int getAllowedFields()
+	protected void updateText(int position, TextView upper, TextView lower)
 	{
-		return 1;
-	}
-
-	public View getView(int position, View convertView, ViewGroup parent)
-	{
-		TextView view = null;
-		try {
-			view = (TextView)convertView;
-		} catch (ClassCastException e) {	
-		}
-
-		if (view == null) {
-			view = new TextView(mContext);
-			view.setPadding(mPadding, mPadding, mPadding, mPadding);
-			view.setSingleLine();
-			view.setTextColor(Color.WHITE);
-			view.setTextSize(mSize);
-		}
-
-		view.setText(get(position).artist);
-		return view;
+		Song song = get(position);
+		upper.setText(song.artist);
 	}
 }

@@ -25,24 +25,37 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 public abstract class AbstractAdapter extends BaseAdapter implements Filterable {
-	protected Context mContext;
+	public static final int ONE_LINE = 0x1;
+	public static final int NO_EXPANDER = 0x2;
+
+	private Context mContext;
 	private List<Song> mObjects;
 	private Song[] mAllObjects;
 	private ArrayFilter mFilter;
-	protected float mSize;
-	protected int mPadding;
+	private float mSize;
+	private int mPadding;
+	private int mDrawFlags;
+	private int mFieldCount;
 
-	public AbstractAdapter(Context context, Song[] allObjects)
+	public AbstractAdapter(Context context, Song[] allObjects, int drawFlags, int numFields)
 	{
 		mContext = context;
 		mAllObjects = allObjects;
+		mDrawFlags = drawFlags;
+		mFieldCount = numFields;
 
 		DisplayMetrics metrics = context.getResources().getDisplayMetrics();
 		mSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, metrics);
@@ -55,9 +68,64 @@ public abstract class AbstractAdapter extends BaseAdapter implements Filterable 
 		return true;
 	}
 
-	public int getAllowedFields()
+	protected abstract void updateText(int position, TextView upper, TextView lower);
+
+	public View getView(int position, View convertView, ViewGroup parent)
 	{
-		return 3;
+		RelativeLayout view = null;
+		try {
+			view = (RelativeLayout)convertView;
+		} catch (ClassCastException e) {
+		}
+
+		if (view == null) {
+			view = new RelativeLayout(mContext);
+			view.setPadding(mPadding, mPadding, mPadding, mPadding);
+
+			RelativeLayout.LayoutParams params;
+
+			if ((mDrawFlags & NO_EXPANDER) == 0) {
+				params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+				params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+				params.addRule(RelativeLayout.CENTER_VERTICAL);
+
+				ImageView button = new ImageView(mContext);
+				button.setImageResource(R.drawable.expander_arrow);
+				button.setId(3);
+				button.setLayoutParams(params);
+				view.addView(button);
+			}
+
+			params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+			params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+			params.addRule(RelativeLayout.LEFT_OF, 3);
+
+			TextView title = new TextView(mContext);
+			title.setSingleLine();
+			title.setTextColor(Color.WHITE);
+			title.setTextSize(mSize);
+			title.setId(1);
+			title.setLayoutParams(params);
+			view.addView(title);
+
+			if ((mDrawFlags & ONE_LINE) == 0) {
+				params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+				params.addRule(RelativeLayout.BELOW, 1);
+				params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+				params.addRule(RelativeLayout.LEFT_OF, 3);
+
+				TextView artist = new TextView(mContext);
+				artist.setSingleLine();
+				artist.setTextSize(mSize);
+				artist.setId(2);
+				artist.setLayoutParams(params);
+				view.addView(artist);
+			}
+		}
+
+		updateText(position, (TextView)view.findViewById(1),(TextView)view.findViewById(2));
+
+		return view;
 	}
 
 	public Filter getFilter()
@@ -98,7 +166,6 @@ public abstract class AbstractAdapter extends BaseAdapter implements Filterable 
 				for (int i = words.length; --i != -1; )
 					matchers[i] = createMatcher(words[i]);
 
-				int max = getAllowedFields();
 				int count = mAllObjects.length;
 				ArrayList<Song> newValues = new ArrayList<Song>();
 				newValues.ensureCapacity(count);
@@ -110,9 +177,9 @@ public abstract class AbstractAdapter extends BaseAdapter implements Filterable 
 					for (int j = matchers.length; --j != -1; ) {
 						if (matchers[j].reset(song.artist).find())
 							continue;
-						if (max > 1 && matchers[j].reset(song.album).find())
+						if (mFieldCount > 1 && matchers[j].reset(song.album).find())
 							continue;
-						if (max > 2 && matchers[j].reset(song.title).find())
+						if (mFieldCount > 2 && matchers[j].reset(song.title).find())
 							continue;
 						continue outer;
 					}
