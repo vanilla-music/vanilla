@@ -46,6 +46,7 @@ import android.widget.Toast;
 public class SongSelector extends TabActivity implements AdapterView.OnItemClickListener, TextWatcher, View.OnClickListener {
 	private TabHost mTabHost;
 	private TextView mTextFilter;
+	private View mClearButton;
 	private AbstractAdapter[] mAdapters = new AbstractAdapter[3];
 
 	private void initializeListView(int id, BaseAdapter adapter)
@@ -81,8 +82,8 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		mTextFilter = (TextView)findViewById(R.id.filter_text);
 		mTextFilter.addTextChangedListener(this);
 
-		View clearButton = findViewById(R.id.clear_button);
-		clearButton.setOnClickListener(this);
+		mClearButton = findViewById(R.id.clear_button);
+		mClearButton.setOnClickListener(this);
 
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this); 
 		int inputType;
@@ -157,7 +158,7 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 
 	public void onClick(View view)
 	{
-		if (view == mTextFilter) {
+		if (view == mClearButton) {
 			mTextFilter.setText("");
 		} else {
 			Object list = view.getTag(R.id.list);
