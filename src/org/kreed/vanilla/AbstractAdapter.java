@@ -93,7 +93,6 @@ public abstract class AbstractAdapter extends BaseAdapter implements Filterable 
 
 		if (view == null) {
 			view = new RelativeLayout(mContext);
-			view.setPadding(mPadding, mPadding, mPadding, mPadding);
 
 			RelativeLayout.LayoutParams params;
 
@@ -103,6 +102,7 @@ public abstract class AbstractAdapter extends BaseAdapter implements Filterable 
 				params.addRule(RelativeLayout.CENTER_VERTICAL);
 
 				ImageView button = new ImageView(mContext);
+				button.setPadding(mPadding * 2, mPadding, mPadding, mPadding);
 				button.setImageResource(R.drawable.expander_arrow);
 				button.setId(3);
 				button.setLayoutParams(params);
@@ -117,6 +117,7 @@ public abstract class AbstractAdapter extends BaseAdapter implements Filterable 
 			params.addRule(RelativeLayout.LEFT_OF, 3);
 
 			TextView title = new TextView(mContext);
+			title.setPadding(mPadding, mPadding, 0, (mDrawFlags & ONE_LINE) == 0 ? 0 : mPadding);
 			title.setSingleLine();
 			title.setTextColor(Color.WHITE);
 			title.setTextSize(mSize);
@@ -131,6 +132,7 @@ public abstract class AbstractAdapter extends BaseAdapter implements Filterable 
 				params.addRule(RelativeLayout.LEFT_OF, 3);
 
 				TextView artist = new TextView(mContext);
+				artist.setPadding(mPadding, 0, 0, mPadding);
 				artist.setSingleLine();
 				artist.setTextSize(mSize);
 				artist.setId(2);
