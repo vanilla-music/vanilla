@@ -375,7 +375,7 @@ public class CoverView extends View {
 				performClick();
 			} else {
 				VelocityTracker velocityTracker = mVelocityTracker;
-				velocityTracker.computeCurrentVelocity(1000);
+				velocityTracker.computeCurrentVelocity(250);
 				int velocity = (int) velocityTracker.getXVelocity();
 
 				int min = mBitmaps[0] == null ? 1 : 0;
