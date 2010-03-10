@@ -26,7 +26,6 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.InputType;
@@ -48,6 +47,8 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 	private TextView mTextFilter;
 	private View mClearButton;
 	private AbstractAdapter[] mAdapters = new AbstractAdapter[3];
+
+	private int mDefaultAction;
 
 	private void initializeListView(int id, BaseAdapter adapter)
 	{
@@ -95,7 +96,9 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 			inputType = InputType.TYPE_CLASS_TEXT;
 		mTextFilter.setInputType(inputType);
 
-		mHandler.post(new Runnable() {
+		mDefaultAction = settings.getString("default_action", "Play").equals("Play") ? PlaybackService.ACTION_PLAY : PlaybackService.ACTION_ENQUEUE;
+
+		new Handler().post(new Runnable() {
 			public void run()
 			{
 				mAdapters[1] = new AlbumAdapter(SongSelector.this, songs);
@@ -131,14 +134,7 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 
 	public void onItemClick(AdapterView<?> list, View view, int pos, long id)
 	{
-		if (mHandler.hasMessages(MSG_ITEM_CLICK, list)) {
-			mHandler.removeMessages(MSG_ITEM_CLICK, list);
-			sendSongIntent(((AbstractAdapter)list.getAdapter()).buildSongIntent(PlaybackService.ACTION_ENQUEUE, pos));
-		} else {
-			Message message = mHandler.obtainMessage(MSG_ITEM_CLICK, list);
-			message.arg1 = pos;
-			mHandler.sendMessageDelayed(message, 333);
-		}
+		sendSongIntent(((AbstractAdapter)list.getAdapter()).buildSongIntent(mDefaultAction, pos));
 	}
 
 	public void afterTextChanged(Editable editable)
@@ -166,21 +162,6 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 				mTabHost.setCurrentTab((Integer)list);
 		}
 	}
-
-	private static final int MSG_ITEM_CLICK = 0;
-
-	private Handler mHandler = new Handler() {
-		@Override
-		public void handleMessage(Message message)
-		{
-			switch (message.what) {
-			case MSG_ITEM_CLICK:
-				AbstractAdapter adapter = (AbstractAdapter)((ListView)message.obj).getAdapter();
-				sendSongIntent(adapter.buildSongIntent(PlaybackService.ACTION_PLAY, message.arg1));
-				break;
-			}
-		}
-	};
 
 	private static final int MENU_PLAY = 0;
 	private static final int MENU_ENQUEUE = 1;

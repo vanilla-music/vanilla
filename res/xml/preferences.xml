@@ -38,6 +38,13 @@
 			android:title="@string/filter_suggestions_title"
 			android:summary="@string/filter_suggestions_summary"
 			android:defaultValue="false" />
+		<ListPreference
+			android:key="default_action"
+			android:title="@string/default_action_title"
+			android:summary="@string/default_action_summary"
+			android:entries="@array/default_action_entries"
+			android:entryValues="@array/default_action_entries"
+			android:defaultValue="Play" />
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/pref_misc">
 		<CheckBoxPreference

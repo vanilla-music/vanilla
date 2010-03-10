@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string-array name="default_action_entries">
+		<item>Play</item>
+		<item>Enqueue</item>
+	</string-array>
+</resources>
