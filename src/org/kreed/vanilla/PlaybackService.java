@@ -505,17 +505,11 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			return true;
 		}
 
-		String title = song.title;
-		int statusIcon = R.drawable.status_icon;
-
-		if (mState != STATE_PLAYING) {
-			title += ' ' + getResources().getString(R.string.paused);
-			statusIcon = R.drawable.status_icon_paused;
-		}
+		int statusIcon = mState == STATE_PLAYING ? R.drawable.status_icon : R.drawable.status_icon_paused;
 
 		RemoteViews views = new RemoteViews(getPackageName(), R.layout.notification);
 		views.setImageViewResource(R.id.icon, statusIcon);
-		views.setTextViewText(R.id.title, title);
+		views.setTextViewText(R.id.title, song.title);
 		views.setTextViewText(R.id.artist, song.artist);
 
 		Notification notification = new Notification();
