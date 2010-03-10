@@ -157,9 +157,14 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		if (view == mClearButton) {
 			mTextFilter.setText("");
 		} else {
-			Object list = view.getTag(R.id.list);
-			if (list != null)
-				mTabHost.setCurrentTab((Integer)list);
+			Object fieldObj = view.getTag(R.id.field);
+			if (fieldObj != null) {
+				int field = (Integer)fieldObj;
+				int id = (Integer)view.getTag(R.id.id);
+				mTabHost.setCurrentTab(field);
+				for (int i = field; i != 3; ++i)
+					mAdapters[i].setLimiter(field, id);
+			}
 		}
 	}
 

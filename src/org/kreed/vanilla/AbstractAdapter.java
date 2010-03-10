@@ -43,14 +43,20 @@ public abstract class AbstractAdapter extends BaseAdapter implements Filterable 
 	public static final int ONE_LINE = 0x1;
 
 	private Context mContext;
+	private OnClickListener mExpanderListener;
+
 	private List<Song> mObjects;
 	private Song[] mAllObjects;
 	private ArrayFilter mFilter;
+	private int mLimiterField = -1;
+	private int mLimiterId = -1;
+	private CharSequence mLastFilter;
+
 	private float mSize;
 	private int mPadding;
+
 	private int mDrawFlags;
 	private int mMediaField;
-	private OnClickListener mExpanderListener;
 
 	public AbstractAdapter(Context context, Song[] allObjects, int drawFlags, int mediaField)
 	{
@@ -100,8 +106,7 @@ public abstract class AbstractAdapter extends BaseAdapter implements Filterable 
 				button.setImageResource(R.drawable.expander_arrow);
 				button.setId(3);
 				button.setLayoutParams(params);
-				button.setTag(R.id.list, mMediaField);
-				button.setTag(R.id.song, get(position));
+				button.setTag(R.id.field, mMediaField);
 				button.setOnClickListener(mExpanderListener);
 
 				view.addView(button);
@@ -135,6 +140,8 @@ public abstract class AbstractAdapter extends BaseAdapter implements Filterable 
 		}
 
 		updateText(position, (TextView)view.findViewById(1),(TextView)view.findViewById(2));
+		if (mExpanderListener != null)
+			view.findViewById(3).setTag(R.id.id, (int)getItemId(position));
 
 		return view;
 	}
@@ -168,14 +175,19 @@ public abstract class AbstractAdapter extends BaseAdapter implements Filterable 
 		{
 			FilterResults results = new FilterResults();
 
-			if (filter == null || filter.length() == 0) {
+			boolean noFilter = filter == null || filter.length() == 0;
+
+			if (noFilter && mLimiterField == -1) {
 				results.values = Arrays.asList(mAllObjects);
 				results.count = mAllObjects.length;
 			} else {
-				String[] words = filter.toString().split("\\s+");
-				Matcher[] matchers = new Matcher[words.length];
-				for (int i = words.length; --i != -1; )
-					matchers[i] = createMatcher(words[i]);
+				Matcher[] matchers = null;
+				if (!noFilter) {
+					String[] words = filter.toString().split("\\s+");
+					matchers = new Matcher[words.length];
+					for (int i = words.length; --i != -1; )
+						matchers[i] = createMatcher(words[i]);
+				}
 
 				int count = mAllObjects.length;
 				ArrayList<Song> newValues = new ArrayList<Song>();
@@ -185,14 +197,19 @@ public abstract class AbstractAdapter extends BaseAdapter implements Filterable 
 				for (int i = 0; i != count; ++i) {
 					Song song = mAllObjects[i];
 
-					for (int j = matchers.length; --j != -1; ) {
-						if (matchers[j].reset(song.artist).find())
-							continue;
-						if (mMediaField > 1 && matchers[j].reset(song.album).find())
-							continue;
-						if (mMediaField > 2 && matchers[j].reset(song.title).find())
-							continue;
-						continue outer;
+					if (mLimiterField != -1 && song.getFieldId(mLimiterField) != mLimiterId)
+						continue;
+
+					if (!noFilter) {
+						for (int j = matchers.length; --j != -1; ) {
+							if (matchers[j].reset(song.artist).find())
+								continue;
+							if (mMediaField > 1 && matchers[j].reset(song.album).find())
+								continue;
+							if (mMediaField > 2 && matchers[j].reset(song.title).find())
+								continue;
+							continue outer;
+						}
 					}
 
 					newValues.add(song);
@@ -212,11 +229,23 @@ public abstract class AbstractAdapter extends BaseAdapter implements Filterable 
 		protected void publishResults(CharSequence constraint, FilterResults results)
 		{
 			mObjects = (List<Song>)results.values;
+			mLastFilter = constraint;
 			if (results.count == 0)
 				notifyDataSetInvalidated();
 			else
 				notifyDataSetChanged();
 		}
+	}
+
+	public void setLimiter(int field, int id)
+	{
+		mLimiterField = field;
+		mLimiterId = id;
+
+		mObjects = new ArrayList<Song>();
+		notifyDataSetInvalidated();
+
+		getFilter().filter(mLastFilter);
 	}
 
 	public int getCount()
