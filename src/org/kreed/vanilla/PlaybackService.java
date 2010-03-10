@@ -49,12 +49,10 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 public class PlaybackService extends Service implements Runnable, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, SharedPreferences.OnSharedPreferenceChangeListener {	
 	private static final int NOTIFICATION_ID = 2;
@@ -69,10 +67,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 	public static final int ACTION_PLAY = 0;
 	public static final int ACTION_ENQUEUE = 1;
-
-	public static final int TYPE_SONG = 0;
-	public static final int TYPE_ALBUM = 1;
-	public static final int TYPE_ARTIST = 2;
 
 	public static final int STATE_NORMAL = 0;
 	public static final int STATE_NO_MEDIA = 1;
@@ -722,22 +716,10 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				if (id == -1) {
 					mQueuePos = 0;
 				} else {
-					int type = intent.getIntExtra("type", TYPE_SONG);
 					boolean enqueue = intent.getIntExtra("action", ACTION_PLAY) == ACTION_ENQUEUE;
 
-					int[] songs;
-					Song first;
-
-					if (type == TYPE_SONG)
-						songs = new int[] { id };
-					else if (type == TYPE_ALBUM)
-						songs = Song.getAllSongIds(MediaStore.Audio.Media.ALBUM_ID + "=" + id);
-					else if (type == TYPE_ARTIST)
-						songs = Song.getAllSongIds(MediaStore.Audio.Media.ARTIST_ID + "=" + id);
-					else
-						break;
-
-					if (songs.length == 0)
+					int[] songs = Song.getAllSongIdsWith(intent.getIntExtra("type", Song.FIELD_TITLE), id);
+					if (songs == null || songs.length == 0)
 						break;
 
 					for (int i = songs.length; --i != 0; ) {
@@ -759,8 +741,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 									mSongTimeline.add(song);
 							}
 
-							first = mSongTimeline.get(mCurrentSong + mQueuePos + 1);
-
 							mQueuePos += songs.length;
 						} else {
 							List<Song> view = mSongTimeline.subList(mCurrentSong + 1, mSongTimeline.size());
@@ -774,29 +754,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 								mSongTimeline.addAll(queue);
 
 							mQueuePos += songs.length - 1;
-
-							first = mSongTimeline.get(mCurrentSong + 1);
 						}
 					}
-
-					first.populate();
-					String title;
-					switch (type) {
-					case TYPE_ARTIST:
-						title = first.artist;
-						break;
-					case TYPE_SONG:
-						title = first.title;
-						break;
-					case TYPE_ALBUM:
-						title = first.album;
-						break;
-					default:
-						title = null;
-					}
-
-					String text = getResources().getString(enqueue ? R.string.enqueued : R.string.playing, title);
-					Toast.makeText(PlaybackService.this, text, Toast.LENGTH_SHORT).show();
 
 					if (!enqueue)
 						mHandler.sendEmptyMessage(TRACK_CHANGED);

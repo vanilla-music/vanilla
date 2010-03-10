@@ -24,7 +24,7 @@ import android.widget.TextView;
 public class ArtistAdapter extends AbstractAdapter {
 	public ArtistAdapter(Context context, Song[] allSongs)
 	{
-		super(context, Song.filter(allSongs, new Song.ArtistComparator()), ONE_LINE, 1);
+		super(context, Song.filter(allSongs, new Song.ArtistComparator()), ONE_LINE, Song.FIELD_ARTIST);
 	}
 
 	@Override
@@ -32,13 +32,5 @@ public class ArtistAdapter extends AbstractAdapter {
 	{
 		Song song = get(position);
 		upper.setText(song.artist);
-	}
-
-	public long getItemId(int i)
-	{
-		Song song = get(i);
-		if (song == null)
-			return 0;
-		return song.artistId;
 	}
 }

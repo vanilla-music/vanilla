@@ -25,6 +25,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -48,15 +49,15 @@ public abstract class AbstractAdapter extends BaseAdapter implements Filterable 
 	private float mSize;
 	private int mPadding;
 	private int mDrawFlags;
-	private int mFieldCount;
+	private int mMediaField;
 	private OnClickListener mExpanderListener;
 
-	public AbstractAdapter(Context context, Song[] allObjects, int drawFlags, int numFields)
+	public AbstractAdapter(Context context, Song[] allObjects, int drawFlags, int mediaField)
 	{
 		mContext = context;
 		mAllObjects = allObjects;
 		mDrawFlags = drawFlags;
-		mFieldCount = numFields;
+		mMediaField = mediaField;
 
 		DisplayMetrics metrics = context.getResources().getDisplayMetrics();
 		mSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, metrics);
@@ -99,7 +100,7 @@ public abstract class AbstractAdapter extends BaseAdapter implements Filterable 
 				button.setImageResource(R.drawable.expander_arrow);
 				button.setId(3);
 				button.setLayoutParams(params);
-				button.setTag(R.id.list, mFieldCount);
+				button.setTag(R.id.list, mMediaField);
 				button.setTag(R.id.song, get(position));
 				button.setOnClickListener(mExpanderListener);
 
@@ -187,9 +188,9 @@ public abstract class AbstractAdapter extends BaseAdapter implements Filterable 
 					for (int j = matchers.length; --j != -1; ) {
 						if (matchers[j].reset(song.artist).find())
 							continue;
-						if (mFieldCount > 1 && matchers[j].reset(song.album).find())
+						if (mMediaField > 1 && matchers[j].reset(song.album).find())
 							continue;
-						if (mFieldCount > 2 && matchers[j].reset(song.title).find())
+						if (mMediaField > 2 && matchers[j].reset(song.title).find())
 							continue;
 						continue outer;
 					}
@@ -243,5 +244,27 @@ public abstract class AbstractAdapter extends BaseAdapter implements Filterable 
 	public Object getItem(int i)
 	{
 		return get(i);
+	}
+
+	public long getItemId(int i)
+	{
+		Song song = get(i);
+		if (song == null)
+			return 0;
+		return song.getFieldId(mMediaField);
+	}
+
+	public Intent buildSongIntent(int action, int pos)
+	{
+		Song song = get(pos);
+		if (song == null)
+			return null;
+
+		Intent intent = new Intent(mContext, PlaybackService.class);
+		intent.putExtra("type", mMediaField);
+		intent.putExtra("action", action);
+		intent.putExtra("id", song.getFieldId(mMediaField));
+		intent.putExtra("title", song.getField(mMediaField));
+		return intent;
 	}
 }

@@ -30,6 +30,10 @@ import android.provider.MediaStore;
 import android.util.SparseArray;
 
 public class Song implements Parcelable {
+	public static final int FIELD_ARTIST = 1;
+	public static final int FIELD_ALBUM = 2;
+	public static final int FIELD_TITLE = 3;
+
 	int id;
 	int albumId;
 	int artistId;
@@ -131,6 +135,17 @@ public class Song implements Parcelable {
 		cursor.close();
 		return songs;
 	}
+	
+	public static int[] getAllSongIdsWith(int type, int id)
+	{
+		if (type == FIELD_TITLE)
+			return new int[] { id };
+		else if (type == FIELD_ALBUM)
+			return Song.getAllSongIds(MediaStore.Audio.Media.ALBUM_ID + "=" + id);
+		else if (type == FIELD_ARTIST)
+			return Song.getAllSongIds(MediaStore.Audio.Media.ARTIST_ID + "=" + id);
+		return null;
+	}
 
 	public static Song[] getAllSongMetadata()
 	{
@@ -162,6 +177,32 @@ public class Song implements Parcelable {
 
 		cursor.close();
 		return songs;
+	}
+
+	public String getField(int field)
+	{
+		switch (field) {
+		case FIELD_TITLE:
+			return title;
+		case FIELD_ARTIST:
+			return artist;
+		case FIELD_ALBUM:
+			return album;
+		}
+		return null;
+	}
+
+	public int getFieldId(int field)
+	{
+		switch (field) {
+		case FIELD_TITLE:
+			return id;
+		case FIELD_ARTIST:
+			return artistId;
+		case FIELD_ALBUM:
+			return albumId;
+		}
+		return 0;
 	}
 
 	public boolean equals(Song other)

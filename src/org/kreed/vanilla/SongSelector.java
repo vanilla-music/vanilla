@@ -41,31 +41,19 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class SongSelector extends TabActivity implements AdapterView.OnItemClickListener, TextWatcher, View.OnClickListener {
 	private TabHost mTabHost;
 	private TextView mTextFilter;
 	private AbstractAdapter[] mAdapters = new AbstractAdapter[3];
 
-	private ListView mArtistView;
-	private ListView mAlbumView;
-
-	private int listToMediaType(Object list)
-	{
-		if (list == mArtistView)
-			return PlaybackService.TYPE_ARTIST;
-		if (list == mAlbumView)
-			return PlaybackService.TYPE_ALBUM;
-		return PlaybackService.TYPE_SONG;
-	}
-
-	private ListView initializeListView(int id, BaseAdapter adapter)
+	private void initializeListView(int id, BaseAdapter adapter)
 	{
 		ListView view = (ListView)findViewById(id);
 		view.setOnItemClickListener(this);
 		view.setOnCreateContextMenuListener(this);
 		view.setAdapter(adapter);
-		return view;
 	}
 
 	@Override
@@ -88,7 +76,7 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		mAdapters[0] = new ArtistAdapter(this, songs);
 		mAdapters[0].setExpanderListener(this);
 
-		mArtistView = initializeListView(R.id.artist_list, mAdapters[0]);
+		initializeListView(R.id.artist_list, mAdapters[0]);
 
 		mTextFilter = (TextView)findViewById(R.id.filter_text);
 		mTextFilter.addTextChangedListener(this);
@@ -111,7 +99,7 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 			{
 				mAdapters[1] = new AlbumAdapter(SongSelector.this, songs);
 				mAdapters[1].setExpanderListener(SongSelector.this);
-				mAlbumView = initializeListView(R.id.album_list, mAdapters[1]);
+				initializeListView(R.id.album_list, mAdapters[1]);
 
 				mAdapters[2] = new SongAdapter(SongSelector.this, songs);
 				initializeListView(R.id.song_list, mAdapters[2]);
@@ -129,23 +117,25 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		return mTextFilter.onKeyDown(keyCode, event);
 	}
 
-	private Intent buildSongIntent(int action, int type, int id)
+	private void sendSongIntent(Intent intent)
 	{
-		Intent intent = new Intent(this, PlaybackService.class);
-		intent.putExtra("type", type);
-		intent.putExtra("action", action);
-		intent.putExtra("id", id);
-		return intent;
+		int action = intent.getIntExtra("action", PlaybackService.ACTION_PLAY) == PlaybackService.ACTION_PLAY ? R.string.playing : R.string.enqueued;
+		String title = intent.getStringExtra("title");
+		String text = getResources().getString(action, title);
+		Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+
+		intent.removeExtra("title");
+		startService(intent);
 	}
 
 	public void onItemClick(AdapterView<?> list, View view, int pos, long id)
 	{
-		if (mHandler.hasMessages(MSG_ITEM_CLICK, view)) {
-			mHandler.removeMessages(MSG_ITEM_CLICK, view);
-			startService(buildSongIntent(PlaybackService.ACTION_ENQUEUE, listToMediaType(list), (int)id));
+		if (mHandler.hasMessages(MSG_ITEM_CLICK, list)) {
+			mHandler.removeMessages(MSG_ITEM_CLICK, list);
+			sendSongIntent(((AbstractAdapter)list.getAdapter()).buildSongIntent(PlaybackService.ACTION_ENQUEUE, pos));
 		} else {
-			Message message = mHandler.obtainMessage(MSG_ITEM_CLICK, view);
-			message.arg1 = (int)id;
+			Message message = mHandler.obtainMessage(MSG_ITEM_CLICK, list);
+			message.arg1 = pos;
 			mHandler.sendMessageDelayed(message, 333);
 		}
 	}
@@ -184,9 +174,8 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		{
 			switch (message.what) {
 			case MSG_ITEM_CLICK:
-				int type = listToMediaType(((View)message.obj).getParent());
-				int id = message.arg1;
-				startService(buildSongIntent(PlaybackService.ACTION_PLAY, type, id));
+				AbstractAdapter adapter = (AbstractAdapter)((ListView)message.obj).getAdapter();
+				sendSongIntent(adapter.buildSongIntent(PlaybackService.ACTION_PLAY, message.arg1));
 				break;
 			}
 		}
@@ -198,16 +187,16 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo info)
 	{
-		int type = listToMediaType(view);
-		int id = (int)((AdapterView.AdapterContextMenuInfo)info).id;
-		menu.add(0, MENU_PLAY, 0, R.string.play).setIntent(buildSongIntent(PlaybackService.ACTION_PLAY, type, id));
-		menu.add(0, MENU_ENQUEUE, 0, R.string.enqueue).setIntent(buildSongIntent(PlaybackService.ACTION_ENQUEUE, type, id));
+		AbstractAdapter adapter = (AbstractAdapter)((ListView)view).getAdapter();
+		int pos = (int)((AdapterView.AdapterContextMenuInfo)info).position;
+		menu.add(0, MENU_PLAY, 0, R.string.play).setIntent(adapter.buildSongIntent(PlaybackService.ACTION_PLAY, pos));
+		menu.add(0, MENU_ENQUEUE, 0, R.string.enqueue).setIntent(adapter.buildSongIntent(PlaybackService.ACTION_ENQUEUE, pos));
 	}
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item)
 	{
-		startService(item.getIntent());
+		sendSongIntent(item.getIntent());
 		return true;
 	}
 }

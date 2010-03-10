@@ -32,7 +32,7 @@ public class SongAdapter extends AbstractAdapter {
 
 	public SongAdapter(Context context, Song[] allSongs)
 	{
-		super(ContextApplication.getContext(), sort(allSongs), 0, 3);
+		super(ContextApplication.getContext(), sort(allSongs), 0, Song.FIELD_TITLE);
 	}
 
 	@Override
@@ -41,13 +41,5 @@ public class SongAdapter extends AbstractAdapter {
 		Song song = get(position);
 		upper.setText(song.title);
 		lower.setText(song.artist);
-	}
-
-	public long getItemId(int i)
-	{
-		Song song = get(i);
-		if (song == null)
-			return 0;
-		return song.id;
 	}
 }
