@@ -54,6 +54,14 @@ public class Song implements Parcelable {
 	public Song(int id)
 	{
 		this.id = id;
+	}
+
+	public boolean populate()
+	{
+		if (path != null)
+			return true;
+		if (id == -1)
+			return false;
 
 		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 		String[] projection = {
@@ -68,31 +76,40 @@ public class Song implements Parcelable {
 		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
 		Cursor cursor = resolver.query(media, projection, selection, null, null);
 
-		if (cursor != null && cursor.moveToNext()) {
-			path = cursor.getString(0);
-			title = cursor.getString(1);
-			album = cursor.getString(2);
-			artist = cursor.getString(3);
-			albumId = cursor.getInt(4);
-			cursor.close();
-
-			media = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
-			String[] albumProjection = { MediaStore.Audio.Albums.ALBUM_ART };
-			String albumSelection = MediaStore.Audio.Albums._ID + "==" + albumId;
-
-			cursor = resolver.query(media, albumProjection, albumSelection, null, null);
-			if (cursor != null && cursor.moveToNext()) {
-				coverPath = cursor.getString(0);
-				cursor.close();
-			}
+		if (cursor == null || !cursor.moveToNext()) {
+			id = -1;
+			return false;
 		}
+
+		path = cursor.getString(0);
+		title = cursor.getString(1);
+		album = cursor.getString(2);
+		artist = cursor.getString(3);
+		albumId = cursor.getInt(4);
+		cursor.close();
+
+		media = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
+		String[] albumProjection = { MediaStore.Audio.Albums.ALBUM_ART };
+		String albumSelection = MediaStore.Audio.Albums._ID + "==" + albumId;
+
+		cursor = resolver.query(media, albumProjection, albumSelection, null, null);
+		if (cursor != null && cursor.moveToNext()) {
+			coverPath = cursor.getString(0);
+			cursor.close();
+		}
+
+		return true;
 	}
 
-	public static int[] getAllSongIds()
+	public static int[] getAllSongIds(String selection)
 	{
 		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 		String[] projection = { MediaStore.Audio.Media._ID };
-		String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
+		String isMusic = MediaStore.Audio.Media.IS_MUSIC + "!=0";
+		if (selection == null)
+			selection = isMusic;
+		else
+			selection += " AND " + isMusic;
 
 		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
 		Cursor cursor = resolver.query(media, projection, selection, null, null);

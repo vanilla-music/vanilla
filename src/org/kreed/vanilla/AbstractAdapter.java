@@ -235,18 +235,13 @@ public abstract class AbstractAdapter extends BaseAdapter implements Filterable 
 				return null;
 			return mAllObjects[i];
 		}
+		if (i >= mObjects.size())
+			return null;
 		return mObjects.get(i);
 	}
 
 	public Object getItem(int i)
 	{
 		return get(i);
-	}
-
-	public long getItemId(int i)
-	{
-		if (mObjects != null && mObjects.isEmpty())
-			return 0;
-		return get(i).id;
 	}
 }

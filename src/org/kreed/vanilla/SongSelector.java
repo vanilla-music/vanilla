@@ -47,12 +47,25 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 	private TextView mTextFilter;
 	private AbstractAdapter[] mAdapters = new AbstractAdapter[3];
 
-	private void initializeListView(int id, BaseAdapter adapter)
+	private ListView mArtistView;
+	private ListView mAlbumView;
+
+	private int listToMediaType(Object list)
+	{
+		if (list == mArtistView)
+			return PlaybackService.TYPE_ARTIST;
+		if (list == mAlbumView)
+			return PlaybackService.TYPE_ALBUM;
+		return PlaybackService.TYPE_SONG;
+	}
+
+	private ListView initializeListView(int id, BaseAdapter adapter)
 	{
 		ListView view = (ListView)findViewById(id);
 		view.setOnItemClickListener(this);
 		view.setOnCreateContextMenuListener(this);
 		view.setAdapter(adapter);
+		return view;
 	}
 
 	@Override
@@ -75,11 +88,11 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		mAdapters[0] = new ArtistAdapter(this, songs);
 		mAdapters[0].setExpanderListener(this);
 
-		initializeListView(R.id.artist_list, mAdapters[0]);
+		mArtistView = initializeListView(R.id.artist_list, mAdapters[0]);
 
 		mTextFilter = (TextView)findViewById(R.id.filter_text);
 		mTextFilter.addTextChangedListener(this);
-		
+
 		View clearButton = findViewById(R.id.clear_button);
 		clearButton.setOnClickListener(this);
 
@@ -98,7 +111,7 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 			{
 				mAdapters[1] = new AlbumAdapter(SongSelector.this, songs);
 				mAdapters[1].setExpanderListener(SongSelector.this);
-				initializeListView(R.id.album_list, mAdapters[1]);
+				mAlbumView = initializeListView(R.id.album_list, mAdapters[1]);
 
 				mAdapters[2] = new SongAdapter(SongSelector.this, songs);
 				initializeListView(R.id.song_list, mAdapters[2]);
@@ -116,19 +129,20 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		return mTextFilter.onKeyDown(keyCode, event);
 	}
 
-	private void pushSong(int action, int id)
+	private Intent buildSongIntent(int action, int type, int id)
 	{
 		Intent intent = new Intent(this, PlaybackService.class);
-		intent.putExtra("id", id);
+		intent.putExtra("type", type);
 		intent.putExtra("action", action);
-		startService(intent);
+		intent.putExtra("id", id);
+		return intent;
 	}
 
 	public void onItemClick(AdapterView<?> list, View view, int pos, long id)
 	{
 		if (mHandler.hasMessages(MSG_ITEM_CLICK, view)) {
 			mHandler.removeMessages(MSG_ITEM_CLICK, view);
-			pushSong(PlaybackService.ACTION_ENQUEUE, (int)id);
+			startService(buildSongIntent(PlaybackService.ACTION_ENQUEUE, listToMediaType(list), (int)id));
 		} else {
 			Message message = mHandler.obtainMessage(MSG_ITEM_CLICK, view);
 			message.arg1 = (int)id;
@@ -170,7 +184,9 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		{
 			switch (message.what) {
 			case MSG_ITEM_CLICK:
-				pushSong(PlaybackService.ACTION_PLAY, message.arg1);
+				int type = listToMediaType(((View)message.obj).getParent());
+				int id = message.arg1;
+				startService(buildSongIntent(PlaybackService.ACTION_PLAY, type, id));
 				break;
 			}
 		}
@@ -180,24 +196,18 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 	private static final int MENU_ENQUEUE = 1;
 
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo)
+	public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo info)
 	{
-		menu.add(0, MENU_PLAY, 0, R.string.play);
-		menu.add(0, MENU_ENQUEUE, 0, R.string.enqueue);
+		int type = listToMediaType(view);
+		int id = (int)((AdapterView.AdapterContextMenuInfo)info).id;
+		menu.add(0, MENU_PLAY, 0, R.string.play).setIntent(buildSongIntent(PlaybackService.ACTION_PLAY, type, id));
+		menu.add(0, MENU_ENQUEUE, 0, R.string.enqueue).setIntent(buildSongIntent(PlaybackService.ACTION_ENQUEUE, type, id));
 	}
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item)
 	{
-		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
-		switch (item.getItemId()) {
-		case MENU_PLAY:
-			pushSong(PlaybackService.ACTION_PLAY, (int)info.id);
-			break;
-		case MENU_ENQUEUE:
-			pushSong(PlaybackService.ACTION_ENQUEUE, (int)info.id);
-			break;
-		}
+		startService(item.getIntent());
 		return true;
 	}
 }

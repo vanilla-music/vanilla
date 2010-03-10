@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import org.kreed.vanilla.IPlaybackService;
@@ -48,6 +49,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -65,8 +67,12 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	public static final String EVENT_STATE_CHANGED = "org.kreed.vanilla.event.STATE_CHANGED";
 	public static final String EVENT_SONG_CHANGED = "org.kreed.vanilla.event.SONG_CHANGED";
 
-	public static int ACTION_PLAY = 0;
-	public static int ACTION_ENQUEUE = 1;
+	public static final int ACTION_PLAY = 0;
+	public static final int ACTION_ENQUEUE = 1;
+
+	public static final int TYPE_SONG = 0;
+	public static final int TYPE_ALBUM = 1;
+	public static final int TYPE_ARTIST = 2;
 
 	public static final int STATE_NORMAL = 0;
 	public static final int STATE_NO_MEDIA = 1;
@@ -339,6 +345,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 					in.close();
 
 					Song song = new Song(ids[mCurrentSong]);
+					song.populate();
 					if (song.path == null) {
 						stateLoaded = false;
 					} else {
@@ -488,7 +495,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 	private void retrieveSongs()
 	{
-		mSongs = Song.getAllSongIds();
+		mSongs = Song.getAllSongIds(null);
 		if (mSongs == null)
 			updateState(STATE_NO_MEDIA);
 		else if (mState == STATE_NO_MEDIA)
@@ -633,9 +640,9 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		return true;
 	}
 
-	private Song randomSong()
+	private int randomSong()
 	{
-		return new Song(mSongs[mRandom.nextInt(mSongs.length)]);
+		return mSongs[mRandom.nextInt(mSongs.length)];
 	}
 
 	private Song getSong(int delta)
@@ -643,9 +650,10 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		if (mSongTimeline == null)
 			return null;
 
+		Song song;
+
 		synchronized (mSongTimeline) {
 			int pos = mCurrentSong + delta;
-
 			if (pos < 0)
 				return null;
 
@@ -656,18 +664,18 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			if (pos == size) {
 				if (mSongs == null)
 					return null;
-				mSongTimeline.add(randomSong());
+				mSongTimeline.add(new Song(randomSong()));
 			}
 
-			Song song = mSongTimeline.get(pos);
-
-			if (song.path == null) {
-				song = randomSong();
-				mSongTimeline.set(pos, song);
-			}
-
-			return song;
+			song = mSongTimeline.get(pos);
 		}
+
+		if (!song.populate()) {
+			song.id = randomSong();
+			song.populate();
+		}
+
+		return song;
 	}
 
 	private void updateWidgets(Song song)
@@ -714,42 +722,93 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				if (id == -1) {
 					mQueuePos = 0;
 				} else {
-					int action = intent.getIntExtra("action", ACTION_PLAY);
-					int actionRes;
+					int type = intent.getIntExtra("type", TYPE_SONG);
+					boolean enqueue = intent.getIntExtra("action", ACTION_PLAY) == ACTION_ENQUEUE;
 
-					Song song = new Song(id);
+					int[] songs;
+					Song first;
+
+					if (type == TYPE_SONG)
+						songs = new int[] { id };
+					else if (type == TYPE_ALBUM)
+						songs = Song.getAllSongIds(MediaStore.Audio.Media.ALBUM_ID + "=" + id);
+					else if (type == TYPE_ARTIST)
+						songs = Song.getAllSongIds(MediaStore.Audio.Media.ARTIST_ID + "=" + id);
+					else
+						break;
+
+					if (songs.length == 0)
+						break;
+
+					for (int i = songs.length; --i != 0; ) {
+						int j = mRandom.nextInt(i + 1);
+						int tmp = songs[j];
+						songs[j] = songs[i];
+						songs[i] = tmp;
+					}
 
 					synchronized (mSongTimeline) {
-						int i;
+						if (enqueue) {
+							int i = mCurrentSong + mQueuePos + 1;
 
-						if (action == ACTION_ENQUEUE) {
-							i = mCurrentSong + 1 + mQueuePos++;
-							actionRes = R.string.enqueued;
+							for (int j = 0; j != songs.length; ++i, ++j) {
+								Song song = new Song(songs[j]);
+								if (i < mSongTimeline.size())
+									mSongTimeline.set(i, song);
+								else
+									mSongTimeline.add(song);
+							}
+
+							first = mSongTimeline.get(mCurrentSong + mQueuePos + 1);
+
+							mQueuePos += songs.length;
 						} else {
-							i = mCurrentSong;
-							actionRes = R.string.playing;
+							List<Song> view = mSongTimeline.subList(mCurrentSong + 1, mSongTimeline.size());
+							List<Song> queue = mQueuePos == 0 ? null : new ArrayList<Song>(view);
+							view.clear();
+
+							for (int i = 0; i != songs.length; ++i)
+								mSongTimeline.add(new Song(songs[i]));
+
+							if (queue != null)
+								mSongTimeline.addAll(queue);
+
+							mQueuePos += songs.length - 1;
+
+							first = mSongTimeline.get(mCurrentSong + 1);
 						}
-
-						if (i < mSongTimeline.size())
-							mSongTimeline.set(i, song);
-						else
-							mSongTimeline.add(song);
 					}
 
-					String text = getResources().getString(actionRes, song.title);
-					Toast.makeText(ContextApplication.getContext(), text, Toast.LENGTH_SHORT).show();
-
-					if (action == ACTION_PLAY) {
-						setCurrentSong(0);
-						if (mState != STATE_PLAYING)
-							play();
+					first.populate();
+					String title;
+					switch (type) {
+					case TYPE_ARTIST:
+						title = first.artist;
+						break;
+					case TYPE_SONG:
+						title = first.title;
+						break;
+					case TYPE_ALBUM:
+						title = first.album;
+						break;
+					default:
+						title = null;
 					}
 
+					String text = getResources().getString(enqueue ? R.string.enqueued : R.string.playing, title);
+					Toast.makeText(PlaybackService.this, text, Toast.LENGTH_SHORT).show();
+
+					if (!enqueue)
+						mHandler.sendEmptyMessage(TRACK_CHANGED);
+
+					mHandler.removeMessages(SAVE_STATE);
 					mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
 				}
 				break;
 			case TRACK_CHANGED:
 				setCurrentSong(+1);
+				if (mState != STATE_PLAYING)
+					play();
 				break;
 			case RELEASE_WAKE_LOCK:
 				if (mWakeLock != null && mWakeLock.isHeld())

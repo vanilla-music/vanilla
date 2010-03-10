@@ -42,4 +42,12 @@ public class SongAdapter extends AbstractAdapter {
 		upper.setText(song.title);
 		lower.setText(song.artist);
 	}
+
+	public long getItemId(int i)
+	{
+		Song song = get(i);
+		if (song == null)
+			return 0;
+		return song.id;
+	}
 }
