@@ -51,6 +51,7 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 	private MediaAdapter[] mAdapters = new MediaAdapter[3];
 
 	private int mDefaultAction;
+	private boolean mDefaultIsLastAction;
 
 	private void initializeListView(int id, BaseAdapter adapter)
 	{
@@ -92,7 +93,15 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 			inputType = InputType.TYPE_CLASS_TEXT;
 		mTextFilter.setInputType(inputType);
 
-		mDefaultAction = settings.getString("default_action", "Play").equals("Play") ? PlaybackService.ACTION_PLAY : PlaybackService.ACTION_ENQUEUE;
+		String action = settings.getString("default_action", "Play");
+		if (action.equals("Last Used Action")) {
+			mDefaultIsLastAction = true;
+			mDefaultAction = PlaybackService.ACTION_PLAY;
+		} else if (action.equals("Enqueue")) {
+			mDefaultAction = PlaybackService.ACTION_ENQUEUE;
+		} else {
+			mDefaultAction = PlaybackService.ACTION_PLAY;
+		}
 
 		new Handler().post(new Runnable() {
 			public void run()
@@ -186,7 +195,10 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 	@Override
 	public boolean onContextItemSelected(MenuItem item)
 	{
-		sendSongIntent(item.getIntent());
+		Intent intent = item.getIntent();
+		if (mDefaultIsLastAction)
+			mDefaultAction = intent.getIntExtra("action", PlaybackService.ACTION_PLAY);
+		sendSongIntent(intent);
 		return true;
 	}
 }

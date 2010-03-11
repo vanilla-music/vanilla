@@ -3,5 +3,6 @@
 	<string-array name="default_action_entries">
 		<item>Play</item>
 		<item>Enqueue</item>
+		<item>Last Used Action</item>
 	</string-array>
 </resources>
