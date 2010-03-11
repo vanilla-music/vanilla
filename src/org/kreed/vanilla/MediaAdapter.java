@@ -185,13 +185,16 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 		}
 	}
 
+	public void hideAll()
+	{
+		mObjects = new ArrayList<Song>();
+		notifyDataSetInvalidated();
+	}
+
 	public void setLimiter(int field, Song media)
 	{
 		mLimiterField = field;
 		mLimiterMedia = media;
-
-		mObjects = new ArrayList<Song>();
-		notifyDataSetInvalidated();
 
 		getFilter().filter(mLastFilter);
 	}

@@ -236,8 +236,10 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 				}
 				updateLimiterViews();
 			} else {
-				for (int i = data.field; i != 3; ++i)
+				for (int i = data.field; i != 3; ++i) {
 					mAdapters[i].setLimiter(data.field, data.media);
+					mAdapters[i].hideAll();
+				}
 				mTabHost.setCurrentTab(data.field);
 			}
 		}
