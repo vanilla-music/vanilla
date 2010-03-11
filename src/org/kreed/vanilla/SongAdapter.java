@@ -21,7 +21,6 @@ package org.kreed.vanilla;
 import java.util.Arrays;
 
 import android.content.Context;
-import android.widget.TextView;
 
 public class SongAdapter extends AbstractAdapter {
 	private static Song[] sort(Song[] songs)
@@ -32,14 +31,14 @@ public class SongAdapter extends AbstractAdapter {
 
 	public SongAdapter(Context context, Song[] allSongs)
 	{
-		super(ContextApplication.getContext(), sort(allSongs), 0, Song.FIELD_TITLE);
+		super(ContextApplication.getContext(), sort(allSongs), MediaView.SECONDARY_LINE, Song.FIELD_TITLE);
 	}
 
 	@Override
-	protected void updateText(int position, TextView upper, TextView lower)
+	protected void updateView(int position, MediaView view)
 	{
 		Song song = get(position);
-		upper.setText(song.title);
-		lower.setText(song.artist);
+		view.setPrimaryText(song.title);
+		view.setSecondaryText(song.artist);
 	}
 }

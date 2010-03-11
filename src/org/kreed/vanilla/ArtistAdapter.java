@@ -19,18 +19,18 @@
 package org.kreed.vanilla;
 
 import android.content.Context;
-import android.widget.TextView;
 
 public class ArtistAdapter extends AbstractAdapter {
 	public ArtistAdapter(Context context, Song[] allSongs)
 	{
-		super(context, Song.filter(allSongs, new Song.ArtistComparator()), ONE_LINE, Song.FIELD_ARTIST);
+		super(context, Song.filter(allSongs, new Song.ArtistComparator()), MediaView.EXPANDER, Song.FIELD_ARTIST);
 	}
 
 	@Override
-	protected void updateText(int position, TextView upper, TextView lower)
+	protected void updateView(int position, MediaView view)
 	{
 		Song song = get(position);
-		upper.setText(song.artist);
+		view.setPrimaryText(song.artist);
+		view.setMediaId(song.artistId);
 	}
 }

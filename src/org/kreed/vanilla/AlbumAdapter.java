@@ -1,19 +1,19 @@
 package org.kreed.vanilla;
 
 import android.content.Context;
-import android.widget.TextView;
 
 public class AlbumAdapter extends AbstractAdapter {
 	public AlbumAdapter(Context context, Song[] allSongs)
 	{
-		super(context, Song.filter(allSongs, new Song.AlbumComparator()), 0, Song.FIELD_ALBUM);
+		super(context, Song.filter(allSongs, new Song.AlbumComparator()), MediaView.EXPANDER | MediaView.SECONDARY_LINE, Song.FIELD_ALBUM);
 	}
 
 	@Override
-	protected void updateText(int position, TextView upper, TextView lower)
+	protected void updateView(int position, MediaView view)
 	{
 		Song song = get(position);
-		upper.setText(song.album);
-		lower.setText(song.artist);
+		view.setPrimaryText(song.album);
+		view.setSecondaryText(song.artist);
+		view.setMediaId(song.albumId);
 	}
 }

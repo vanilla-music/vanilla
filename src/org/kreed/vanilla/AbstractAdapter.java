@@ -26,22 +26,14 @@ import java.util.regex.Pattern;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.util.DisplayMetrics;
-import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 public abstract class AbstractAdapter extends BaseAdapter implements Filterable {
-	public static final int ONE_LINE = 0x1;
-
 	private Context mContext;
 	private OnClickListener mExpanderListener;
 
@@ -52,9 +44,6 @@ public abstract class AbstractAdapter extends BaseAdapter implements Filterable 
 	private int mLimiterId = -1;
 	private CharSequence mLastFilter;
 
-	private float mSize;
-	private int mPadding;
-
 	private int mDrawFlags;
 	private int mMediaField;
 
@@ -64,10 +53,6 @@ public abstract class AbstractAdapter extends BaseAdapter implements Filterable 
 		mAllObjects = allObjects;
 		mDrawFlags = drawFlags;
 		mMediaField = mediaField;
-
-		DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-		mSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, metrics);
-		mPadding = (int)mSize / 2;
 	}
 
 	public void setExpanderListener(View.OnClickListener listener)
@@ -81,69 +66,24 @@ public abstract class AbstractAdapter extends BaseAdapter implements Filterable 
 		return true;
 	}
 
-	protected abstract void updateText(int position, TextView upper, TextView lower);
+	protected abstract void updateView(int position, MediaView view);
 
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
-		RelativeLayout view = null;
+		MediaView view = null;
 		try {
-			view = (RelativeLayout)convertView;
+			view = (MediaView)convertView;
 		} catch (ClassCastException e) {
 		}
 
 		if (view == null) {
-			view = new RelativeLayout(mContext);
+			view = new MediaView(mContext, mDrawFlags);
 
-			RelativeLayout.LayoutParams params;
-
-			if (mExpanderListener != null) {
-				params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-				params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-				params.addRule(RelativeLayout.CENTER_VERTICAL);
-
-				ImageView button = new ImageView(mContext);
-				button.setPadding(mPadding * 2, mPadding, mPadding, mPadding);
-				button.setImageResource(R.drawable.expander_arrow);
-				button.setId(3);
-				button.setLayoutParams(params);
-				button.setTag(R.id.field, mMediaField);
-				button.setOnClickListener(mExpanderListener);
-
-				view.addView(button);
-			}
-
-			params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-			params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-			params.addRule(RelativeLayout.LEFT_OF, 3);
-
-			TextView title = new TextView(mContext);
-			title.setPadding(mPadding, mPadding, 0, (mDrawFlags & ONE_LINE) == 0 ? 0 : mPadding);
-			title.setSingleLine();
-			title.setTextColor(Color.WHITE);
-			title.setTextSize(mSize);
-			title.setId(1);
-			title.setLayoutParams(params);
-			view.addView(title);
-
-			if ((mDrawFlags & ONE_LINE) == 0) {
-				params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-				params.addRule(RelativeLayout.BELOW, 1);
-				params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-				params.addRule(RelativeLayout.LEFT_OF, 3);
-
-				TextView artist = new TextView(mContext);
-				artist.setPadding(mPadding, 0, 0, mPadding);
-				artist.setSingleLine();
-				artist.setTextSize(mSize);
-				artist.setId(2);
-				artist.setLayoutParams(params);
-				view.addView(artist);
-			}
+			if (mExpanderListener != null)
+				view.setupExpander(mMediaField, mExpanderListener);
 		}
 
-		updateText(position, (TextView)view.findViewById(1),(TextView)view.findViewById(2));
-		if (mExpanderListener != null)
-			view.findViewById(3).setTag(R.id.id, (int)getItemId(position));
+		updateView(position, view);
 
 		return view;
 	}
