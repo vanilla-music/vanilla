@@ -141,6 +141,6 @@ public class MediaView extends ViewGroup {
 		if (mSecondaryLine != null)
 			mSecondaryLine.setText(song.getField(secondaryField));
 		if (mExpander != null)
-			mExpander.setTag(R.id.id, song.getFieldId(primaryField));
+			mExpander.setTag(R.id.media, song);
 	}
 }

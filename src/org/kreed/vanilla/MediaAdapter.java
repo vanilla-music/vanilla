@@ -41,7 +41,7 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 	private Song[] mAllObjects;
 	private ArrayFilter mFilter;
 	private int mLimiterField = -1;
-	private int mLimiterId = -1;
+	private Song mLimiterMedia;
 	private CharSequence mLastFilter;
 
 	private int mPrimaryField;
@@ -135,6 +135,8 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 						matchers[i] = createMatcher(words[i]);
 				}
 
+				int limiterId = mLimiterField == -1 ? 0 : mLimiterMedia.getFieldId(mLimiterField);
+
 				int count = mAllObjects.length;
 				ArrayList<Song> newValues = new ArrayList<Song>();
 				newValues.ensureCapacity(count);
@@ -143,7 +145,7 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 				for (int i = 0; i != count; ++i) {
 					Song song = mAllObjects[i];
 
-					if (mLimiterField != -1 && song.getFieldId(mLimiterField) != mLimiterId)
+					if (mLimiterField != -1 && song.getFieldId(mLimiterField) != limiterId)
 						continue;
 
 					if (!noFilter) {
@@ -183,15 +185,25 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 		}
 	}
 
-	public void setLimiter(int field, int id)
+	public void setLimiter(int field, Song media)
 	{
 		mLimiterField = field;
-		mLimiterId = id;
+		mLimiterMedia = media;
 
 		mObjects = new ArrayList<Song>();
 		notifyDataSetInvalidated();
 
 		getFilter().filter(mLastFilter);
+	}
+
+	public int getLimiterField()
+	{
+		return mLimiterField;
+	}
+
+	public Song getLimiterMedia()
+	{
+		return mLimiterMedia;
 	}
 
 	public int getCount()

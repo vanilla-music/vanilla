@@ -26,28 +26,34 @@ import android.app.TabActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.drawable.PaintDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class SongSelector extends TabActivity implements AdapterView.OnItemClickListener, TextWatcher, View.OnClickListener {
+public class SongSelector extends TabActivity implements AdapterView.OnItemClickListener, TextWatcher, View.OnClickListener, TabHost.OnTabChangeListener {
 	private TabHost mTabHost;
 	private TextView mTextFilter;
 	private View mClearButton;
+	private ViewGroup mLimiters;
 	private MediaAdapter[] mAdapters = new MediaAdapter[3];
 
 	private int mDefaultAction;
@@ -71,6 +77,7 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		setContentView(R.layout.song_selector);
 
 		mTabHost = getTabHost();
+		mTabHost.setOnTabChangedListener(this);
 
 		Resources res = getResources();
 		mTabHost.addTab(mTabHost.newTabSpec("tab_artists").setIndicator(res.getText(R.string.artists), res.getDrawable(R.drawable.tab_artists)).setContent(R.id.artist_list));
@@ -82,6 +89,8 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 
 		mClearButton = findViewById(R.id.clear_button);
 		mClearButton.setOnClickListener(this);
+
+		mLimiters = (ViewGroup)findViewById(R.id.limiter_layout);
 
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this); 
 		int inputType;
@@ -164,6 +173,47 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 			adapter.getFilter().filter(s);
 	}
 
+	private void updateLimiterViews()
+	{
+		if (mLimiters == null)
+			return;
+
+		mLimiters.removeAllViews();
+
+		MediaAdapter adapter = mAdapters[mTabHost.getCurrentTab()];
+		if (adapter == null)
+			return;
+
+		int field = adapter.getLimiterField();
+		if (field == -1)
+			return;
+
+		Song media = adapter.getLimiterMedia();
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+		params.leftMargin = 5;
+		for (int i = Song.FIELD_ARTIST; i <= field; ++i) {
+			PaintDrawable background = new PaintDrawable(Color.GRAY);
+			background.setCornerRadius(5);
+
+			TextView view = new TextView(this);
+			view.setSingleLine();
+			view.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+			view.setText(media.getField(i) + " | X");
+			view.setTextColor(Color.WHITE);
+			view.setBackgroundDrawable(background);
+			view.setLayoutParams(params);
+			view.setPadding(5, 2, 5, 2);
+			view.setTag(R.id.limiter_field, i);
+			view.setOnClickListener(this);
+			mLimiters.addView(view);
+		}
+	}
+
+	public void onTabChanged(String tabId)
+	{
+		updateLimiterViews();
+	}
+
 	public void onClick(View view)
 	{
 		if (view == mClearButton) {
@@ -172,10 +222,21 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 			Object fieldObj = view.getTag(R.id.field);
 			if (fieldObj != null) {
 				int field = (Integer)fieldObj;
-				int id = (Integer)view.getTag(R.id.id);
-				mTabHost.setCurrentTab(field);
+				Song media = (Song)view.getTag(R.id.media);
 				for (int i = field; i != 3; ++i)
-					mAdapters[i].setLimiter(field, id);
+					mAdapters[i].setLimiter(field, media);
+				mTabHost.setCurrentTab(field);
+			} else {
+				fieldObj = view.getTag(R.id.limiter_field);
+				if (fieldObj != null) {
+					int field = (Integer)fieldObj;
+					int newField = field == Song.FIELD_ARTIST ? -1 : field - 1;
+					for (int i = mAdapters.length; --i != -1; ) {
+						if (mAdapters[i].getLimiterField() >= field)
+							mAdapters[i].setLimiter(newField, mAdapters[i].getLimiterMedia());
+					}
+					updateLimiterViews();
+				}
 			}
 		}
 	}
