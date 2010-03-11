@@ -76,12 +76,6 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		mTabHost.addTab(mTabHost.newTabSpec("tab_albums").setIndicator(res.getText(R.string.albums), res.getDrawable(R.drawable.tab_albums)).setContent(R.id.album_list));
 		mTabHost.addTab(mTabHost.newTabSpec("tab_songs").setIndicator(res.getText(R.string.songs), res.getDrawable(R.drawable.tab_songs)).setContent(R.id.song_list));
 
-		final Song[] songs = Song.getAllSongMetadata();
-		mAdapters[0] = new MediaAdapter(this, Song.filter(songs, new Song.ArtistComparator()), Song.FIELD_ARTIST, -1);
-		mAdapters[0].setExpanderListener(this);
-
-		initializeListView(R.id.artist_list, mAdapters[0]);
-
 		mTextFilter = (TextView)findViewById(R.id.filter_text);
 		mTextFilter.addTextChangedListener(this);
 
@@ -103,6 +97,12 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		new Handler().post(new Runnable() {
 			public void run()
 			{
+				Song[] songs = Song.getAllSongMetadata();
+
+				mAdapters[0] = new MediaAdapter(SongSelector.this, Song.filter(songs, new Song.ArtistComparator()), Song.FIELD_ARTIST, -1);
+				mAdapters[0].setExpanderListener(SongSelector.this);
+				initializeListView(R.id.artist_list, mAdapters[0]);
+
 				mAdapters[1] = new MediaAdapter(SongSelector.this, Song.filter(songs, new Song.AlbumComparator()), Song.FIELD_ALBUM, Song.FIELD_ARTIST);
 				mAdapters[1].setExpanderListener(SongSelector.this);
 				initializeListView(R.id.album_list, mAdapters[1]);
