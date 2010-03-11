@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.util.TypedValue;
 import android.widget.RemoteViews;
 
 public class OneCellWidget extends AppWidgetProvider {
@@ -28,8 +29,10 @@ public class OneCellWidget extends AppWidgetProvider {
 		RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.one_cell_widget);
 		views.setOnClickPendingIntent(R.id.play_pause, PendingIntent.getBroadcast(context, 0, new Intent(PlaybackService.TOGGLE_PLAYBACK), 0));
 		views.setOnClickPendingIntent(R.id.next, PendingIntent.getBroadcast(context, 0, new Intent(PlaybackService.NEXT_SONG), 0));
-		if (song != null)
-			views.setImageViewBitmap(R.id.cover_view, CoverView.createMiniBitmap(song, 72, 72));
+		if (song != null) {
+			int size = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 72, context.getResources().getDisplayMetrics());
+			views.setImageViewBitmap(R.id.cover_view, CoverView.createMiniBitmap(song, size, size));
+		}
 
 		sendUpdate(context, views);
 	}

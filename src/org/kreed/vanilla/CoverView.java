@@ -121,8 +121,9 @@ public class CoverView extends View {
 		String title = song.title == null ? "" : song.title;
 		Bitmap cover = song.coverPath == null ? null : BitmapFactory.decodeFile(song.coverPath);
 
-		float titleSize = 12;
-		float padding = 2;
+		DisplayMetrics metrics = ContextApplication.getContext().getResources().getDisplayMetrics();
+		float titleSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12, metrics);
+		float padding = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, metrics);
 
 		paint.setTextSize(titleSize);
 		float titleWidth = paint.measureText(title);
