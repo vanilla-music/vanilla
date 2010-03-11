@@ -33,7 +33,7 @@ import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 
-public abstract class AbstractAdapter extends BaseAdapter implements Filterable {
+public class MediaAdapter extends BaseAdapter implements Filterable {
 	private Context mContext;
 	private OnClickListener mExpanderListener;
 
@@ -44,15 +44,15 @@ public abstract class AbstractAdapter extends BaseAdapter implements Filterable 
 	private int mLimiterId = -1;
 	private CharSequence mLastFilter;
 
-	private int mDrawFlags;
-	private int mMediaField;
+	private int mPrimaryField;
+	private int mSecondaryField;
 
-	public AbstractAdapter(Context context, Song[] allObjects, int drawFlags, int mediaField)
+	public MediaAdapter(Context context, Song[] allObjects, int primaryField, int secondaryField)
 	{
 		mContext = context;
 		mAllObjects = allObjects;
-		mDrawFlags = drawFlags;
-		mMediaField = mediaField;
+		mPrimaryField = primaryField;
+		mSecondaryField = secondaryField;
 	}
 
 	public void setExpanderListener(View.OnClickListener listener)
@@ -66,8 +66,6 @@ public abstract class AbstractAdapter extends BaseAdapter implements Filterable 
 		return true;
 	}
 
-	protected abstract void updateView(int position, MediaView view);
-
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
 		MediaView view = null;
@@ -77,13 +75,19 @@ public abstract class AbstractAdapter extends BaseAdapter implements Filterable 
 		}
 
 		if (view == null) {
-			view = new MediaView(mContext, mDrawFlags);
+			int flags = 0;
+			if (mSecondaryField != -1)
+				flags |= MediaView.SECONDARY_LINE;
+			if (mExpanderListener != null)
+				flags |= MediaView.EXPANDER;
+
+			view = new MediaView(mContext, flags);
 
 			if (mExpanderListener != null)
-				view.setupExpander(mMediaField, mExpanderListener);
+				view.setupExpander(mPrimaryField, mExpanderListener);
 		}
 
-		updateView(position, view);
+		view.updateMedia(get(position), mPrimaryField, mSecondaryField);
 
 		return view;
 	}
@@ -146,9 +150,9 @@ public abstract class AbstractAdapter extends BaseAdapter implements Filterable 
 						for (int j = matchers.length; --j != -1; ) {
 							if (matchers[j].reset(song.artist).find())
 								continue;
-							if (mMediaField > 1 && matchers[j].reset(song.album).find())
+							if (mPrimaryField > 1 && matchers[j].reset(song.album).find())
 								continue;
-							if (mMediaField > 2 && matchers[j].reset(song.title).find())
+							if (mPrimaryField > 2 && matchers[j].reset(song.title).find())
 								continue;
 							continue outer;
 						}
@@ -222,7 +226,7 @@ public abstract class AbstractAdapter extends BaseAdapter implements Filterable 
 		Song song = get(i);
 		if (song == null)
 			return 0;
-		return song.getFieldId(mMediaField);
+		return song.getFieldId(mPrimaryField);
 	}
 
 	public Intent buildSongIntent(int action, int pos)
@@ -232,10 +236,10 @@ public abstract class AbstractAdapter extends BaseAdapter implements Filterable 
 			return null;
 
 		Intent intent = new Intent(mContext, PlaybackService.class);
-		intent.putExtra("type", mMediaField);
+		intent.putExtra("type", mPrimaryField);
 		intent.putExtra("action", action);
-		intent.putExtra("id", song.getFieldId(mMediaField));
-		intent.putExtra("title", song.getField(mMediaField));
+		intent.putExtra("id", song.getFieldId(mPrimaryField));
+		intent.putExtra("title", song.getField(mPrimaryField));
 		return intent;
 	}
 }

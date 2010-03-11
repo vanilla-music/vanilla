@@ -18,6 +18,8 @@
 
 package org.kreed.vanilla;
 
+import java.util.Arrays;
+
 import org.kreed.vanilla.R;
 
 import android.app.TabActivity;
@@ -46,7 +48,7 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 	private TabHost mTabHost;
 	private TextView mTextFilter;
 	private View mClearButton;
-	private AbstractAdapter[] mAdapters = new AbstractAdapter[3];
+	private MediaAdapter[] mAdapters = new MediaAdapter[3];
 
 	private int mDefaultAction;
 
@@ -75,7 +77,7 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		mTabHost.addTab(mTabHost.newTabSpec("tab_songs").setIndicator(res.getText(R.string.songs), res.getDrawable(R.drawable.tab_songs)).setContent(R.id.song_list));
 
 		final Song[] songs = Song.getAllSongMetadata();
-		mAdapters[0] = new ArtistAdapter(this, songs);
+		mAdapters[0] = new MediaAdapter(this, Song.filter(songs, new Song.ArtistComparator()), Song.FIELD_ARTIST, -1);
 		mAdapters[0].setExpanderListener(this);
 
 		initializeListView(R.id.artist_list, mAdapters[0]);
@@ -101,11 +103,12 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		new Handler().post(new Runnable() {
 			public void run()
 			{
-				mAdapters[1] = new AlbumAdapter(SongSelector.this, songs);
+				mAdapters[1] = new MediaAdapter(SongSelector.this, Song.filter(songs, new Song.AlbumComparator()), Song.FIELD_ALBUM, Song.FIELD_ARTIST);
 				mAdapters[1].setExpanderListener(SongSelector.this);
 				initializeListView(R.id.album_list, mAdapters[1]);
 
-				mAdapters[2] = new SongAdapter(SongSelector.this, songs);
+				Arrays.sort(songs, new Song.TitleComparator());
+				mAdapters[2] = new MediaAdapter(SongSelector.this, songs, Song.FIELD_TITLE, Song.FIELD_ARTIST);
 				initializeListView(R.id.song_list, mAdapters[2]);
 			}
 		});
@@ -134,7 +137,7 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 
 	public void onItemClick(AdapterView<?> list, View view, int pos, long id)
 	{
-		sendSongIntent(((AbstractAdapter)list.getAdapter()).buildSongIntent(mDefaultAction, pos));
+		sendSongIntent(((MediaAdapter)list.getAdapter()).buildSongIntent(mDefaultAction, pos));
 	}
 
 	public void afterTextChanged(Editable editable)
@@ -147,7 +150,7 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 
 	public void onTextChanged(CharSequence s, int start, int before, int count)
 	{
-		AbstractAdapter adapter = mAdapters[mTabHost.getCurrentTab()];
+		MediaAdapter adapter = mAdapters[mTabHost.getCurrentTab()];
 		if (adapter != null)
 			adapter.getFilter().filter(s);
 	}
@@ -174,7 +177,7 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo info)
 	{
-		AbstractAdapter adapter = (AbstractAdapter)((ListView)view).getAdapter();
+		MediaAdapter adapter = (MediaAdapter)((ListView)view).getAdapter();
 		int pos = (int)((AdapterView.AdapterContextMenuInfo)info).position;
 		menu.add(0, MENU_PLAY, 0, R.string.play).setIntent(adapter.buildSongIntent(PlaybackService.ACTION_PLAY, pos));
 		menu.add(0, MENU_ENQUEUE, 0, R.string.enqueue).setIntent(adapter.buildSongIntent(PlaybackService.ACTION_ENQUEUE, pos));
