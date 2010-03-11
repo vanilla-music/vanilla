@@ -84,7 +84,7 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 			view = new MediaView(mContext, flags);
 
 			if (mExpanderListener != null)
-				view.setupExpander(mPrimaryField, mExpanderListener);
+				view.setExpanderOnClickListener(mExpanderListener);
 		}
 
 		view.updateMedia(get(position), mPrimaryField, mSecondaryField);

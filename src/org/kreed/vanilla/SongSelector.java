@@ -203,7 +203,7 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 			view.setBackgroundDrawable(background);
 			view.setLayoutParams(params);
 			view.setPadding(5, 2, 5, 2);
-			view.setTag(R.id.limiter_field, i);
+			view.setTag(new MediaView.ExpanderData(i));
 			view.setOnClickListener(this);
 			mLimiters.addView(view);
 		}
@@ -219,24 +219,26 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		if (view == mClearButton) {
 			mTextFilter.setText("");
 		} else {
-			Object fieldObj = view.getTag(R.id.field);
-			if (fieldObj != null) {
-				int field = (Integer)fieldObj;
-				Song media = (Song)view.getTag(R.id.media);
-				for (int i = field; i != 3; ++i)
-					mAdapters[i].setLimiter(field, media);
-				mTabHost.setCurrentTab(field);
-			} else {
-				fieldObj = view.getTag(R.id.limiter_field);
-				if (fieldObj != null) {
-					int field = (Integer)fieldObj;
-					int newField = field == Song.FIELD_ARTIST ? -1 : field - 1;
-					for (int i = mAdapters.length; --i != -1; ) {
-						if (mAdapters[i].getLimiterField() >= field)
-							mAdapters[i].setLimiter(newField, mAdapters[i].getLimiterMedia());
-					}
-					updateLimiterViews();
+			MediaView.ExpanderData data = null;
+			try {
+				data = (MediaView.ExpanderData)view.getTag();
+			} catch (ClassCastException e) {
+			}
+
+			if (data == null)
+				return;
+
+			if (view instanceof TextView) {
+				int newField = data.field == Song.FIELD_ARTIST ? -1 : data.field - 1;
+				for (int i = mAdapters.length; --i != -1; ) {
+					if (mAdapters[i].getLimiterField() >= data.field)
+						mAdapters[i].setLimiter(newField, mAdapters[i].getLimiterMedia());
 				}
+				updateLimiterViews();
+			} else {
+				for (int i = data.field; i != 3; ++i)
+					mAdapters[i].setLimiter(data.field, data.media);
+				mTabHost.setCurrentTab(data.field);
 			}
 		}
 	}
