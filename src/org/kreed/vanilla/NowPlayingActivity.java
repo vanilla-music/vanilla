@@ -69,7 +69,7 @@ public class NowPlayingActivity extends Activity implements ServiceConnection, V
 
 	private static final int MENU_KILL = 0;
 	private static final int MENU_PREFS = 2;
-	private static final int MENU_QUEUE = 3;
+	private static final int MENU_LIBRARY = 3;
 
 	@Override
 	public void onCreate(Bundle icicle)
@@ -277,7 +277,7 @@ public class NowPlayingActivity extends Activity implements ServiceConnection, V
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
 		menu.add(0, MENU_PREFS, 0, R.string.settings);
-		menu.add(0, MENU_QUEUE, 0, R.string.add_to_queue);
+		menu.add(0, MENU_LIBRARY, 0, R.string.library);
 		menu.add(0, MENU_KILL, 0, R.string.stop_service);
 		return true;
 	}
@@ -301,7 +301,7 @@ public class NowPlayingActivity extends Activity implements ServiceConnection, V
 		case MENU_PREFS:
 			startActivity(new Intent(this, PreferencesActivity.class));
 			break;
-		case MENU_QUEUE:
+		case MENU_LIBRARY:
 			onSearchRequested();
 			break;
 		}

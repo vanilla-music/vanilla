@@ -8,7 +8,7 @@
 	<string name="enqueue">Enqueue</string>
 	<string name="play">Play</string>
 	<string name="settings">Preferences</string>
-	<string name="add_to_queue">Add to Queue</string>
+	<string name="library">Media Library</string>
 	<string name="stop_service">Stop Service</string>
 
 	<string name="enqueued">Enqueued %s</string>
