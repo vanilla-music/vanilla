@@ -157,7 +157,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 		Log.d("VanillaMusic", "destroy");
 
-		saveState(true);
+		if (mSongs != null)
+			saveState(true);
 
 		if (mMediaPlayer != null) {
 			MediaPlayer player = mMediaPlayer;
@@ -467,6 +468,9 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		}
 
 		Song song = getSong(0);
+		if (song == null)
+			return;
+
 		broadcastSongChange(song);
 
 		boolean cancelNotification = updateNotification();
@@ -659,8 +663,11 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		}
 
 		if (!song.populate()) {
+			if (mSongs == null)
+				return null;
 			song.id = randomSong();
-			song.populate();
+			if (!song.populate())
+				return null;
 		}
 
 		return song;
