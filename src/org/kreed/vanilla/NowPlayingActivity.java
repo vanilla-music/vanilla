@@ -286,6 +286,7 @@ public class NowPlayingActivity extends Activity implements ServiceConnection, V
 	public boolean onPrepareOptionsMenu(Menu menu)
 	{
 		menu.findItem(MENU_KILL).setEnabled(mService != null);
+		menu.findItem(MENU_LIBRARY).setEnabled(mState != PlaybackService.STATE_NO_MEDIA);
 		return true;
 	}
 
