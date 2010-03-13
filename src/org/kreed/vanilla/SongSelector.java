@@ -42,13 +42,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.Filter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class SongSelector extends TabActivity implements AdapterView.OnItemClickListener, TextWatcher, View.OnClickListener, TabHost.OnTabChangeListener {
+public class SongSelector extends TabActivity implements AdapterView.OnItemClickListener, TextWatcher, View.OnClickListener, TabHost.OnTabChangeListener, Filter.FilterListener {
 	private TabHost mTabHost;
 	private TextView mTextFilter;
 	private View mClearButton;
@@ -170,11 +171,11 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 	{
 	}
 
-	public void onTextChanged(CharSequence s, int start, int before, int count)
+	public void onTextChanged(CharSequence text, int start, int before, int count)
 	{
 		MediaAdapter adapter = getAdapter(mTabHost.getCurrentTab());
 		if (adapter != null)
-			adapter.getFilter().filter(s);
+			adapter.getFilter().filter(text, this);
 	}
 
 	private void updateLimiterViews()
@@ -271,5 +272,12 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 			mDefaultAction = intent.getIntExtra("action", PlaybackService.ACTION_PLAY);
 		sendSongIntent(intent);
 		return true;
+	}
+
+	public void onFilterComplete(int count)
+	{
+		CharSequence text = mTextFilter.getText();
+		for (int i = 3; --i != -1; )
+			getAdapter(i).getFilter().filter(text);
 	}
 }

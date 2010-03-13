@@ -123,7 +123,10 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 
 			boolean noFilter = filter == null || filter.length() == 0;
 
-			if (noFilter && mLimiterField == -1) {
+			if (mLastFilter.equals(filter)) {
+				results.values = mObjects;
+				results.count = mObjects.size();
+			} else if (noFilter && mLimiterField == -1) {
 				results.values = Arrays.asList(mAllObjects);
 				results.count = mAllObjects.length;
 			} else {
