@@ -183,7 +183,7 @@ public class NowPlayingActivity extends PlaybackServiceActivity implements View.
 	{
 		super.onStart();
 
-		bindPlaybackService();
+		bindPlaybackService(false);
 
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(PlaybackService.EVENT_SONG_CHANGED);
@@ -371,7 +371,7 @@ public class NowPlayingActivity extends PlaybackServiceActivity implements View.
 				updateProgress();
 			}
 		} else if (view == mReconnectButton) {
-			bindPlaybackService();
+			bindPlaybackService(true);
 		} else {
 			try {
 				if (view == mNextButton)

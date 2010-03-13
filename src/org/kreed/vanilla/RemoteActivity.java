@@ -68,7 +68,7 @@ public class RemoteActivity extends PlaybackServiceActivity implements View.OnCl
 	{
 		super.onResume();
 
-		bindPlaybackService();
+		bindPlaybackService(true);
 		registerReceiver(mReceiver, new IntentFilter(PlaybackService.EVENT_STATE_CHANGED));
 	}
 

@@ -23,7 +23,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 
 public class PlaybackServiceActivity extends Activity implements ServiceConnection {
@@ -45,8 +47,16 @@ public class PlaybackServiceActivity extends Activity implements ServiceConnecti
 		return handleKeyLongPress(this, keyCode);
 	}
 
-	protected void bindPlaybackService()
+	protected void bindPlaybackService(boolean force)
 	{
+		if (!force) {
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+			if (prefs.getBoolean("explicit_stop", false)) {
+				setService(null);
+				return;
+			}
+		}
+
 		Intent intent = new Intent(this, PlaybackService.class);
 		startService(intent);
 		bindService(intent, this, Context.BIND_AUTO_CREATE);
@@ -54,6 +64,11 @@ public class PlaybackServiceActivity extends Activity implements ServiceConnecti
 
 	protected static void stopPlaybackService(Activity activity)
 	{
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putBoolean("explicit_stop", true);
+		editor.commit();
+
 		activity.stopService(new Intent(activity, PlaybackService.class));
 	}
 
