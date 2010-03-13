@@ -42,7 +42,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TabHost;
@@ -54,16 +53,28 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 	private TextView mTextFilter;
 	private View mClearButton;
 	private ViewGroup mLimiters;
-	private MediaAdapter[] mAdapters = new MediaAdapter[3];
 
 	private int mDefaultAction;
 	private boolean mDefaultIsLastAction;
 
-	private void initializeListView(int id, BaseAdapter adapter)
+	private ListView getList(int tab)
+	{
+		return (ListView)mTabHost.getTabContentView().getChildAt(tab);
+	}
+
+	private MediaAdapter getAdapter(int tab)
+	{
+		return (MediaAdapter)getList(tab).getAdapter();
+	}
+
+	private void initializeList(int id, Song[] songs, int lineA, int lineB, View.OnClickListener expanderListener)
 	{
 		ListView view = (ListView)findViewById(id);
 		view.setOnItemClickListener(this);
 		view.setOnCreateContextMenuListener(this);
+
+		MediaAdapter adapter = new MediaAdapter(SongSelector.this, songs, lineA, lineB);
+		adapter.setExpanderListener(this);
 		view.setAdapter(adapter);
 	}
 
@@ -117,17 +128,10 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 			{
 				Song[] songs = Song.getAllSongMetadata();
 
-				mAdapters[0] = new MediaAdapter(SongSelector.this, Song.filter(songs, new Song.ArtistComparator()), Song.FIELD_ARTIST, -1);
-				mAdapters[0].setExpanderListener(SongSelector.this);
-				initializeListView(R.id.artist_list, mAdapters[0]);
-
-				mAdapters[1] = new MediaAdapter(SongSelector.this, Song.filter(songs, new Song.AlbumComparator()), Song.FIELD_ALBUM, Song.FIELD_ARTIST);
-				mAdapters[1].setExpanderListener(SongSelector.this);
-				initializeListView(R.id.album_list, mAdapters[1]);
-
+				initializeList(R.id.artist_list, Song.filter(songs, new Song.ArtistComparator()), Song.FIELD_ARTIST, -1, SongSelector.this);
+				initializeList(R.id.album_list, Song.filter(songs, new Song.AlbumComparator()), Song.FIELD_ALBUM, Song.FIELD_ARTIST, SongSelector.this);
 				Arrays.sort(songs, new Song.TitleComparator());
-				mAdapters[2] = new MediaAdapter(SongSelector.this, songs, Song.FIELD_TITLE, Song.FIELD_ARTIST);
-				initializeListView(R.id.song_list, mAdapters[2]);
+				initializeList(R.id.song_list, songs, Song.FIELD_TITLE, Song.FIELD_ARTIST, null);
 			}
 		});
 	}
@@ -168,7 +172,7 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 
 	public void onTextChanged(CharSequence s, int start, int before, int count)
 	{
-		MediaAdapter adapter = mAdapters[mTabHost.getCurrentTab()];
+		MediaAdapter adapter = getAdapter(mTabHost.getCurrentTab());
 		if (adapter != null)
 			adapter.getFilter().filter(s);
 	}
@@ -180,7 +184,7 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 
 		mLimiters.removeAllViews();
 
-		MediaAdapter adapter = mAdapters[mTabHost.getCurrentTab()];
+		MediaAdapter adapter = getAdapter(mTabHost.getCurrentTab());
 		if (adapter == null)
 			return;
 
@@ -230,15 +234,17 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 
 			if (view instanceof TextView) {
 				int newField = data.field == Song.FIELD_ARTIST ? -1 : data.field - 1;
-				for (int i = mAdapters.length; --i != -1; ) {
-					if (mAdapters[i].getLimiterField() >= data.field)
-						mAdapters[i].setLimiter(newField, mAdapters[i].getLimiterMedia());
+				for (int i = mTabHost.getChildCount(); --i != -1; ) {
+					MediaAdapter adapter = getAdapter(i);
+					if (adapter.getLimiterField() >= data.field)
+						adapter.setLimiter(newField, adapter.getLimiterMedia());
 				}
 				updateLimiterViews();
 			} else {
 				for (int i = data.field; i != 3; ++i) {
-					mAdapters[i].setLimiter(data.field, data.media);
-					mAdapters[i].hideAll();
+					MediaAdapter adapter = getAdapter(i);
+					adapter.setLimiter(data.field, data.media);
+					adapter.hideAll();
 				}
 				mTabHost.setCurrentTab(data.field);
 			}
