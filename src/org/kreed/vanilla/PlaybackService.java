@@ -29,11 +29,9 @@ import java.util.List;
 import java.util.Random;
 
 import org.kreed.vanilla.IPlaybackService;
-import org.kreed.vanilla.R;
 
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -52,7 +50,6 @@ import android.preference.PreferenceManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.widget.RemoteViews;
 
 public class PlaybackService extends Service implements Runnable, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, SharedPreferences.OnSharedPreferenceChangeListener {	
 	private static final int NOTIFICATION_ID = 2;
@@ -280,7 +277,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 	private boolean mHeadsetPause;
 	private boolean mHeadsetOnly;
-	private boolean mUseRemotePlayer;
 	private boolean mNotifyWhilePaused;
 	private boolean mScrobble;
 
@@ -403,7 +399,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		mSettings.registerOnSharedPreferenceChangeListener(this);
 		mHeadsetPause = mSettings.getBoolean("headset_pause", true);
 		mHeadsetOnly = mSettings.getBoolean("headset_only", false);
-		mUseRemotePlayer = mSettings.getBoolean("remote_player", true);
 		mNotifyWhilePaused = mSettings.getBoolean("notify_while_paused", true);
 		mScrobble = mSettings.getBoolean("scrobble", false);
 
@@ -447,7 +442,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			if (mHeadsetOnly && isSpeakerOn() && mMediaPlayer.isPlaying())
 				pause();
 		} else if ("remote_player".equals(key)) {
-			mUseRemotePlayer = mSettings.getBoolean(key, true);
 			updateNotification();
 		} else if ("notify_while_paused".equals(key)){
 			mNotifyWhilePaused = mSettings.getBoolean(key, true);
@@ -513,21 +507,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			return true;
 		}
 
-		int statusIcon = mState == STATE_PLAYING ? R.drawable.status_icon : R.drawable.status_icon_paused;
-
-		RemoteViews views = new RemoteViews(getPackageName(), R.layout.notification);
-		views.setImageViewResource(R.id.icon, statusIcon);
-		views.setTextViewText(R.id.title, song.title);
-		views.setTextViewText(R.id.artist, song.artist);
-
-		Notification notification = new Notification();
-		notification.contentView = views;
-		notification.icon = statusIcon;
-		notification.flags |= Notification.FLAG_ONGOING_EVENT;
-		Intent intent = new Intent(this, mUseRemotePlayer ? RemoteActivity.class : NowPlayingActivity.class);
-		notification.contentIntent = PendingIntent.getActivity(ContextApplication.getContext(), 0, intent, 0);
-
-		mNotification = notification;
+		mNotification = new SongNotification(song, mState == STATE_PLAYING);
 		mNotificationManager.notify(NOTIFICATION_ID, mNotification);
 
 		return false;
