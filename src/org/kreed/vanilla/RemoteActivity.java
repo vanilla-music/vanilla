@@ -21,7 +21,6 @@ package org.kreed.vanilla;
 import org.kreed.vanilla.IPlaybackService;
 import org.kreed.vanilla.R;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -36,7 +35,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 
-public class RemoteActivity extends Activity implements ServiceConnection, View.OnClickListener {
+public class RemoteActivity extends PlaybackServiceActivity implements ServiceConnection, View.OnClickListener {
 	private CoverView mCoverView;
 
 	private View mOpenButton;

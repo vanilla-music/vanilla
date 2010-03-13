@@ -21,7 +21,6 @@ package org.kreed.vanilla;
 import org.kreed.vanilla.IPlaybackService;
 import org.kreed.vanilla.R;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -47,7 +46,7 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-public class NowPlayingActivity extends Activity implements ServiceConnection, View.OnClickListener, SeekBar.OnSeekBarChangeListener, View.OnFocusChangeListener {
+public class NowPlayingActivity extends PlaybackServiceActivity implements ServiceConnection, View.OnClickListener, SeekBar.OnSeekBarChangeListener, View.OnFocusChangeListener {
 	private IPlaybackService mService;
 	
 	private ViewGroup mLayout;

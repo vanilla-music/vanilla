@@ -280,4 +280,10 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		for (int i = 3; --i != -1; )
 			getAdapter(i).getFilter().filter(text);
 	}
+
+	@Override
+	public boolean onKeyLongPress(int keyCode, KeyEvent event)
+	{
+		return PlaybackServiceActivity.handleKeyLongPress(this, keyCode);
+	}
 }
