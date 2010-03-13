@@ -22,20 +22,17 @@ import org.kreed.vanilla.IPlaybackService;
 import org.kreed.vanilla.R;
 
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 
-public class RemoteActivity extends PlaybackServiceActivity implements ServiceConnection, View.OnClickListener {
+public class RemoteActivity extends PlaybackServiceActivity implements View.OnClickListener {
 	private CoverView mCoverView;
 
 	private View mOpenButton;
@@ -71,15 +68,8 @@ public class RemoteActivity extends PlaybackServiceActivity implements ServiceCo
 	{
 		super.onResume();
 
-		reconnect();
+		bindPlaybackService();
 		registerReceiver(mReceiver, new IntentFilter(PlaybackService.EVENT_STATE_CHANGED));
-	}
-
-	private void reconnect()
-	{
-		Intent intent = new Intent(this, PlaybackService.class);
-		startService(intent);
-		bindService(intent, this, Context.BIND_AUTO_CREATE);
 	}
 
 	@Override
@@ -95,25 +85,32 @@ public class RemoteActivity extends PlaybackServiceActivity implements ServiceCo
 		}
 	}
 
-	public void onServiceConnected(ComponentName name, IBinder binder)
+	@Override
+	protected void setService(IPlaybackService service)
 	{
-		IPlaybackService service = IPlaybackService.Stub.asInterface(binder);
-		mCoverView.setPlaybackService(service);
-		try {
-			setState(service.getState());
-		} catch (RemoteException e) {
+		if (service == null) {
+			finish();
+		} else {
+			mCoverView.setPlaybackService(service);
+			try {
+				setState(service.getState());
+			} catch (RemoteException e) {
+			}
 		}
 	}
 
-	public void onServiceDisconnected(ComponentName name)
+	private void setState(int state)
 	{
-		reconnect();
+		if (state == PlaybackService.STATE_NO_MEDIA)
+			finish();
+
+		mPlayPauseButton.setImageResource(state == PlaybackService.STATE_PLAYING ? R.drawable.pause : R.drawable.play);
 	}
 
 	public void onClick(View view)
 	{
 		if (view == mKillButton) {
-			stopService(new Intent(this, PlaybackService.class));
+			stopPlaybackService(this);
 			finish();
 		} else if (view == mOpenButton) {
 			startActivity(new Intent(this, NowPlayingActivity.class));
@@ -131,14 +128,6 @@ public class RemoteActivity extends PlaybackServiceActivity implements ServiceCo
 				finish();
 			}
 		}
-	}
-
-	private void setState(int state)
-	{
-		if (state == PlaybackService.STATE_NO_MEDIA)
-			finish();
-
-		mPlayPauseButton.setImageResource(state == PlaybackService.STATE_PLAYING ? R.drawable.pause : R.drawable.play);
 	}
 
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {

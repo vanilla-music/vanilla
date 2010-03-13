@@ -22,15 +22,12 @@ import org.kreed.vanilla.IPlaybackService;
 import org.kreed.vanilla.R;
 
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
 import android.util.Log;
@@ -46,7 +43,7 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-public class NowPlayingActivity extends PlaybackServiceActivity implements ServiceConnection, View.OnClickListener, SeekBar.OnSeekBarChangeListener, View.OnFocusChangeListener {
+public class NowPlayingActivity extends PlaybackServiceActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, View.OnFocusChangeListener {
 	private IPlaybackService mService;
 	
 	private ViewGroup mLayout;
@@ -186,7 +183,7 @@ public class NowPlayingActivity extends PlaybackServiceActivity implements Servi
 	{
 		super.onStart();
 
-		prepareService();
+		bindPlaybackService();
 
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(PlaybackService.EVENT_SONG_CHANGED);
@@ -210,14 +207,8 @@ public class NowPlayingActivity extends PlaybackServiceActivity implements Servi
 		}
 	}
 
-	private void prepareService()
-	{
-		Intent intent = new Intent(this, PlaybackService.class);
-		startService(intent);
-		bindService(intent, this, Context.BIND_AUTO_CREATE);
-	}
-
-	private void setService(IPlaybackService service)
+	@Override
+	protected void setService(IPlaybackService service)
 	{
 		if (service == mService)
 			return;
@@ -239,16 +230,6 @@ public class NowPlayingActivity extends PlaybackServiceActivity implements Servi
 
 		mService = service;
 		setState(state);
-	}
-
-	public void onServiceConnected(ComponentName name, IBinder service)
-	{
-		setService(IPlaybackService.Stub.asInterface(service));
-	}
-
-	public void onServiceDisconnected(ComponentName name)
-	{
-		setService(null);
 	}
 
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -296,7 +277,7 @@ public class NowPlayingActivity extends PlaybackServiceActivity implements Servi
 		case MENU_KILL:
 			setService(null);
 			unbindService(this);
-			stopService(new Intent(this, PlaybackService.class));
+			stopPlaybackService(this);
 			break;
 		case MENU_PREFS:
 			startActivity(new Intent(this, PreferencesActivity.class));
@@ -390,7 +371,7 @@ public class NowPlayingActivity extends PlaybackServiceActivity implements Servi
 				updateProgress();
 			}
 		} else if (view == mReconnectButton) {
-			prepareService();
+			bindPlaybackService();
 		} else {
 			try {
 				if (view == mNextButton)

@@ -19,15 +19,19 @@
 package org.kreed.vanilla;
 
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.IBinder;
 import android.view.KeyEvent;
 
-public class PlaybackServiceActivity extends Activity {
+public class PlaybackServiceActivity extends Activity implements ServiceConnection {
 	public static boolean handleKeyLongPress(Activity activity, int keyCode)
 	{
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_BACK:
-			activity.stopService(new Intent(activity, PlaybackService.class));
+			stopPlaybackService(activity);
 			activity.finish();
 			return true;
 		}
@@ -39,5 +43,31 @@ public class PlaybackServiceActivity extends Activity {
 	public boolean onKeyLongPress(int keyCode, KeyEvent event)
 	{
 		return handleKeyLongPress(this, keyCode);
+	}
+
+	protected void bindPlaybackService()
+	{
+		Intent intent = new Intent(this, PlaybackService.class);
+		startService(intent);
+		bindService(intent, this, Context.BIND_AUTO_CREATE);
+	}
+
+	protected static void stopPlaybackService(Activity activity)
+	{
+		activity.stopService(new Intent(activity, PlaybackService.class));
+	}
+
+	protected void setService(IPlaybackService service)
+	{
+	}
+
+	public void onServiceConnected(ComponentName name, IBinder service)
+	{
+		setService(IPlaybackService.Stub.asInterface(service));
+	}
+
+	public void onServiceDisconnected(ComponentName name)
+	{
+		setService(null);
 	}
 }
