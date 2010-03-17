@@ -20,10 +20,8 @@ package org.kreed.vanilla;
 
 import org.kreed.vanilla.IPlaybackService;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -66,11 +64,6 @@ public class CoverView extends View {
 
 		mScroller = new Scroller(context);
 		SNAP_VELOCITY = ViewConfiguration.get(context).getScaledMinimumFlingVelocity();
-
-		IntentFilter filter = new IntentFilter();
-		filter.addAction(PlaybackService.EVENT_LOADED);
-		filter.addAction(PlaybackService.EVENT_SONG_CHANGED);
-		context.registerReceiver(mReceiver, filter);
 	}
 
 	public void setPlaybackService(IPlaybackService service)
@@ -460,22 +453,18 @@ public class CoverView extends View {
 		}
 	};
 
-	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context context, Intent intent)
-		{
-			String action = intent.getAction();
-
-			if (PlaybackService.EVENT_LOADED.equals(action)) {
+	public void onReceive(Intent intent)
+	{
+		String action = intent.getAction();
+		if (PlaybackService.EVENT_LOADED.equals(action)) {
+			refreshSongs();
+		} else if (PlaybackService.EVENT_CHANGED.equals(action)) {
+			Song currentSong = mSongs[STORE_SIZE / 2];
+			Song playingSong = intent.getParcelableExtra("song");
+			if (currentSong == null)
+				mHandler.sendMessage(mHandler.obtainMessage(SET_COVER, playingSong));
+			else if (!currentSong.equals(playingSong))
 				refreshSongs();
-			} else if (PlaybackService.EVENT_SONG_CHANGED.equals(action)) {
-				Song currentSong = mSongs[STORE_SIZE / 2];
-				Song playingSong = intent.getParcelableExtra("song");
-				if (currentSong == null)
-					mHandler.sendMessage(mHandler.obtainMessage(SET_COVER, playingSong));
-				else if (!currentSong.equals(playingSong))
-					refreshSongs();
-			}
 		}
-	};
+	}
 }

@@ -21,10 +21,8 @@ package org.kreed.vanilla;
 import org.kreed.vanilla.IPlaybackService;
 import org.kreed.vanilla.R;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -47,7 +45,6 @@ public class NowPlayingActivity extends PlaybackServiceActivity implements View.
 	private IPlaybackService mService;
 	
 	private ViewGroup mLayout;
-	private CoverView mCoverView;
 	private RelativeLayout mMessageOverlay;
 	private View mControlsTop;
 	private View mControlsBottom;
@@ -127,7 +124,15 @@ public class NowPlayingActivity extends PlaybackServiceActivity implements View.
 		}
 	}
 
-	private void setState(int state)
+	@Override
+	public void unbindService(ServiceConnection connection)
+	{
+		super.unbindService(connection);
+		mHandler.sendEmptyMessage(UNSET_SERVICE);
+	}
+
+	@Override
+	protected void setState(int state)
 	{
 		mState = state;
 
@@ -178,34 +183,6 @@ public class NowPlayingActivity extends PlaybackServiceActivity implements View.
 		}
 	}
 	
-	@Override
-	public void onStart()
-	{
-		super.onStart();
-
-		bindPlaybackService(false);
-
-		IntentFilter filter = new IntentFilter();
-		filter.addAction(PlaybackService.EVENT_SONG_CHANGED);
-		filter.addAction(PlaybackService.EVENT_STATE_CHANGED);
-		registerReceiver(mReceiver, filter);
-	}
-
-	@Override
-	public void onStop()
-	{
-		super.onStop();
-
-		if (mService != null) {
-			unbindService(this);
-			try {
-				unregisterReceiver(mReceiver);
-			} catch (IllegalArgumentException e) {
-				// we haven't registered the receiver yet
-			}
-			mHandler.sendEmptyMessage(UNSET_SERVICE);
-		}
-	}
 
 	@Override
 	protected void setService(IPlaybackService service)
@@ -232,26 +209,20 @@ public class NowPlayingActivity extends PlaybackServiceActivity implements View.
 		setState(state);
 	}
 
-	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context context, Intent intent)
-		{
-			String action = intent.getAction();
-			if (PlaybackService.EVENT_SONG_CHANGED.equals(action)) {
-				if (mService == null)
-					return;
+	@Override
+	protected void onServiceChange(Intent intent)
+	{
+		super.onServiceChange(intent);
 
-				try {
-					mDuration = mService.getDuration();
-					mHandler.sendEmptyMessage(UPDATE_PROGRESS);
-				} catch (RemoteException e) {
-					setService(null);
-				}
-			} else if (PlaybackService.EVENT_STATE_CHANGED.equals(action)) {
-				setState(intent.getIntExtra("newState", 0));
+		if (mService != null) {
+			try {
+				mDuration = mService.getDuration();
+				mHandler.sendEmptyMessage(UPDATE_PROGRESS);
+			} catch (RemoteException e) {
+				setService(null);
 			}
 		}
-	};
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
@@ -271,11 +242,10 @@ public class NowPlayingActivity extends PlaybackServiceActivity implements View.
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(final MenuItem item)
+	public boolean onOptionsItemSelected(MenuItem item)
 	{
 		switch (item.getItemId()) {
 		case MENU_KILL:
-			setService(null);
 			unbindService(this);
 			stopPlaybackService(this);
 			break;

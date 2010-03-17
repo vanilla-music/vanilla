@@ -59,8 +59,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	public static final String NEXT_SONG = "org.kreed.vanilla.action.NEXT_SONG";
 
 	public static final String EVENT_LOADED = "org.kreed.vanilla.event.LOADED";
-	public static final String EVENT_STATE_CHANGED = "org.kreed.vanilla.event.STATE_CHANGED";
-	public static final String EVENT_SONG_CHANGED = "org.kreed.vanilla.event.SONG_CHANGED";
+	public static final String EVENT_CHANGED = "org.kreed.vanilla.event.CHANGED";
 
 	public static final int ACTION_PLAY = 0;
 	public static final int ACTION_ENQUEUE = 1;
@@ -340,7 +339,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 					if (song.path == null) {
 						stateLoaded = false;
 					} else {
-						broadcastSongChange(song);
+						broadcastChange(mState, mState, song);
 						updateWidgets(song);
 					}
 
@@ -363,7 +362,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			retrieveSongs();
 			mSongTimeline = new ArrayList<Song>();
 			Song song = getSong(0);
-			broadcastSongChange(song);
+			broadcastChange(mState, mState, song);
 			updateWidgets(song);
 		}
 
@@ -453,23 +452,29 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		}
 	}
 
+	public void broadcastChange(int oldState, int newState, Song song)
+	{
+		if (newState != oldState || song != mLastSongBroadcast) {
+			Intent intent = new Intent(EVENT_CHANGED);
+			intent.putExtra("oldState", oldState);
+			intent.putExtra("newState", newState);
+			intent.putExtra("song", song);
+			sendBroadcast(intent);
+
+			mLastSongBroadcast = song;
+		}
+	}
+
 	public void updateState(int state)
 	{
+		Song song = getSong(0);
 		int oldState = mState;
 		mState = state;
 
-		if (mState != oldState) {
-			Intent intent = new Intent(EVENT_STATE_CHANGED);
-			intent.putExtra("oldState", oldState);
-			intent.putExtra("newState", state);
-			sendBroadcast(intent);
-		}
-
-		Song song = getSong(0);
 		if (song == null)
 			return;
 
-		broadcastSongChange(song);
+		broadcastChange(oldState, state, song);
 
 		boolean cancelNotification = updateNotification();
 		updateWidgets(song);
@@ -557,18 +562,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			play();
 		else
 			pause();
-	}
-
-	private void broadcastSongChange(Song song)
-	{
-		if (song == mLastSongBroadcast)
-			return;
-
-		mLastSongBroadcast = song;
-
-		Intent intent = new Intent(EVENT_SONG_CHANGED);
-		intent.putExtra("song", song);
-		sendBroadcast(intent);
 	}
 
 	private void setCurrentSong(int delta)

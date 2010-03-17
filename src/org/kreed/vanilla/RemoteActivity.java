@@ -21,10 +21,7 @@ package org.kreed.vanilla;
 import org.kreed.vanilla.IPlaybackService;
 import org.kreed.vanilla.R;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.util.Log;
@@ -33,8 +30,6 @@ import android.view.Window;
 import android.widget.ImageView;
 
 public class RemoteActivity extends PlaybackServiceActivity implements View.OnClickListener {
-	private CoverView mCoverView;
-
 	private View mOpenButton;
 	private View mKillButton;
 	private View mPreviousButton;
@@ -64,28 +59,6 @@ public class RemoteActivity extends PlaybackServiceActivity implements View.OnCl
 	}
 
 	@Override
-	public void onResume()
-	{
-		super.onResume();
-
-		bindPlaybackService(true);
-		registerReceiver(mReceiver, new IntentFilter(PlaybackService.EVENT_STATE_CHANGED));
-	}
-
-	@Override
-	public void onPause()
-	{
-		super.onPause();
-
-		unbindService(this);
-		try {
-			unregisterReceiver(mReceiver);
-		} catch (IllegalArgumentException e) {
-			// we haven't registered the receiver yet
-		}
-	}
-
-	@Override
 	protected void setService(IPlaybackService service)
 	{
 		if (service == null) {
@@ -99,7 +72,8 @@ public class RemoteActivity extends PlaybackServiceActivity implements View.OnCl
 		}
 	}
 
-	private void setState(int state)
+	@Override
+	protected void setState(int state)
 	{
 		if (state == PlaybackService.STATE_NO_MEDIA)
 			finish();
@@ -129,14 +103,4 @@ public class RemoteActivity extends PlaybackServiceActivity implements View.OnCl
 			}
 		}
 	}
-
-	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context context, Intent intent)
-		{
-			String action = intent.getAction();
-			if (PlaybackService.EVENT_STATE_CHANGED.equals(action))
-				setState(intent.getIntExtra("newState", 0));
-		}
-	};
 }

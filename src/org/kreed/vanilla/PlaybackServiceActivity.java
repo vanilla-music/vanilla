@@ -19,16 +19,46 @@
 package org.kreed.vanilla;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 
-public class PlaybackServiceActivity extends Activity implements ServiceConnection {
+public abstract class PlaybackServiceActivity extends Activity implements ServiceConnection {
+	protected CoverView mCoverView;
+
+	@Override
+	public void onStart()
+	{
+		super.onStart();
+
+		bindPlaybackService(false);
+
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(PlaybackService.EVENT_CHANGED);
+		filter.addAction(PlaybackService.EVENT_LOADED);
+		registerReceiver(mReceiver, filter);
+	}
+
+	@Override
+	public void onStop()
+	{
+		super.onStop();
+
+		unbindService(this);
+		try {
+			unregisterReceiver(mReceiver);
+		} catch (IllegalArgumentException e) {
+			// we haven't registered the receiver yet
+		}
+	}
+
 	public static boolean handleKeyLongPress(Activity activity, int keyCode)
 	{
 		switch (keyCode) {
@@ -72,9 +102,8 @@ public class PlaybackServiceActivity extends Activity implements ServiceConnecti
 		activity.stopService(new Intent(activity, PlaybackService.class));
 	}
 
-	protected void setService(IPlaybackService service)
-	{
-	}
+	protected abstract void setState(int state);
+	protected abstract void setService(IPlaybackService service);
 
 	public void onServiceConnected(ComponentName name, IBinder service)
 	{
@@ -85,4 +114,21 @@ public class PlaybackServiceActivity extends Activity implements ServiceConnecti
 	{
 		setService(null);
 	}
+
+	protected void onServiceChange(Intent intent)
+	{
+		int newState = intent.getIntExtra("newState", 0);
+		if (intent.getIntExtra("oldState", 0) != newState)
+			setState(newState);
+	}
+
+	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent)
+		{
+			mCoverView.onReceive(intent);
+			if (PlaybackService.EVENT_CHANGED.equals(intent.getAction()))
+				onServiceChange(intent);
+		}
+	};
 }
