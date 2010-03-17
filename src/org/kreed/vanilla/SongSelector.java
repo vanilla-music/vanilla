@@ -53,7 +53,8 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 	private TabHost mTabHost;
 	private TextView mTextFilter;
 	private View mClearButton;
-	private ViewGroup mLimiters;
+
+	private ViewGroup mLimiterViews;
 
 	private int mDefaultAction;
 	private boolean mDefaultIsLastAction;
@@ -73,10 +74,7 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		ListView view = (ListView)findViewById(id);
 		view.setOnItemClickListener(this);
 		view.setOnCreateContextMenuListener(this);
-
-		MediaAdapter adapter = new MediaAdapter(SongSelector.this, songs, lineA, lineB);
-		adapter.setExpanderListener(this);
-		view.setAdapter(adapter);
+		view.setAdapter(new MediaAdapter(SongSelector.this, songs, lineA, lineB, this));
 	}
 
 	@Override
@@ -102,7 +100,7 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		mClearButton = findViewById(R.id.clear_button);
 		mClearButton.setOnClickListener(this);
 
-		mLimiters = (ViewGroup)findViewById(R.id.limiter_layout);
+		mLimiterViews = (ViewGroup)findViewById(R.id.limiter_layout);
 
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this); 
 		int inputType;
@@ -180,37 +178,36 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 
 	private void updateLimiterViews()
 	{
-		if (mLimiters == null)
+		if (mLimiterViews == null)
 			return;
 
-		mLimiters.removeAllViews();
+		mLimiterViews.removeAllViews();
 
 		MediaAdapter adapter = getAdapter(mTabHost.getCurrentTab());
 		if (adapter == null)
 			return;
 
-		int field = adapter.getLimiterField();
-		if (field == -1)
+		SongData limiter = adapter.getLimiter();
+		if (limiter == null)
 			return;
 
-		Song media = adapter.getLimiterMedia();
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 		params.leftMargin = 5;
-		for (int i = Song.FIELD_ARTIST; i <= field; ++i) {
+		for (int i = Song.FIELD_ARTIST; i <= limiter.field; ++i) {
 			PaintDrawable background = new PaintDrawable(Color.GRAY);
 			background.setCornerRadius(5);
 
 			TextView view = new TextView(this);
 			view.setSingleLine();
 			view.setEllipsize(TextUtils.TruncateAt.MARQUEE);
-			view.setText(media.getField(i) + " | X");
+			view.setText(limiter.media.getField(i) + " | X");
 			view.setTextColor(Color.WHITE);
 			view.setBackgroundDrawable(background);
 			view.setLayoutParams(params);
 			view.setPadding(5, 2, 5, 2);
-			view.setTag(new MediaView.ExpanderData(i));
+			view.setTag(new SongData(i, null));
 			view.setOnClickListener(this);
-			mLimiters.addView(view);
+			mLimiterViews.addView(view);
 		}
 	}
 
@@ -224,9 +221,9 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		if (view == mClearButton) {
 			mTextFilter.setText("");
 		} else {
-			MediaView.ExpanderData data = null;
+			SongData data = null;
 			try {
-				data = (MediaView.ExpanderData)view.getTag();
+				data = (SongData)view.getTag();
 			} catch (ClassCastException e) {
 			}
 
@@ -234,18 +231,25 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 				return;
 
 			if (view instanceof TextView) {
-				int newField = data.field == Song.FIELD_ARTIST ? -1 : data.field - 1;
-				for (int i = mTabHost.getChildCount(); --i != -1; ) {
+				SongData limiter = getAdapter(mTabHost.getCurrentTab()).getLimiter();
+				int field = data.field - 1;
+				if (limiter.field == 0)
+					limiter = null;
+				else
+					limiter.field = field;
+				for (int i = 3; --i != -1; ) {
 					MediaAdapter adapter = getAdapter(i);
-					if (adapter.getLimiterField() >= data.field)
-						adapter.setLimiter(newField, adapter.getLimiterMedia());
+					SongData currentLimiter = adapter.getLimiter();
+					if (currentLimiter != null && currentLimiter.field > field)
+						adapter.setLimiter(limiter);
 				}
 				updateLimiterViews();
 			} else {
+				SongData limiter = new SongData(data);
 				for (int i = data.field; i != 3; ++i) {
 					MediaAdapter adapter = getAdapter(i);
-					adapter.setLimiter(data.field, data.media);
 					adapter.hideAll();
+					adapter.setLimiter(limiter);
 				}
 				mTabHost.setCurrentTab(data.field);
 			}

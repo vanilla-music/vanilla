@@ -40,24 +40,20 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 	private List<Song> mObjects;
 	private Song[] mAllObjects;
 	private ArrayFilter mFilter;
-	private int mLimiterField = -1;
-	private Song mLimiterMedia;
-	private CharSequence mLastFilter;
+	private SongData mLimiter;
+	private CharSequence mPublishedFilter;
+	private int mPublishedLimiter;
 
 	private int mPrimaryField;
 	private int mSecondaryField;
 
-	public MediaAdapter(Context context, Song[] allObjects, int primaryField, int secondaryField)
+	public MediaAdapter(Context context, Song[] allObjects, int primaryField, int secondaryField, View.OnClickListener expanderListener)
 	{
 		mContext = context;
 		mAllObjects = allObjects;
 		mPrimaryField = primaryField;
 		mSecondaryField = secondaryField;
-	}
-
-	public void setExpanderListener(View.OnClickListener listener)
-	{
-		mExpanderListener = listener;
+		mExpanderListener = expanderListener;
 	}
 
 	@Override
@@ -116,29 +112,41 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 	}
 
 	private class ArrayFilter extends Filter {
+		class ArrayFilterResults extends FilterResults {
+			public int limiterHash;
+
+			public ArrayFilterResults(List<Song> list, int limiterHash)
+			{
+				values = list;
+				count = list.size();
+				this.limiterHash = limiterHash;
+			}
+		}
+
 		@Override
 		protected FilterResults performFiltering(CharSequence filter)
 		{
-			FilterResults results = new FilterResults();
+			List<Song> list;
+			int limiterHash = mLimiter == null ? 0 : mLimiter.hashCode();
 
-			boolean noFilter = filter == null || filter.length() == 0;
+			if (filter != null && filter.length() == 0)
+				filter = null;
 
-			if (mLastFilter.equals(filter)) {
-				results.values = mObjects;
-				results.count = mObjects.size();
-			} else if (noFilter && mLimiterField == -1) {
-				results.values = Arrays.asList(mAllObjects);
-				results.count = mAllObjects.length;
+			if ((filter == null && mPublishedFilter == null || mPublishedFilter != null && mPublishedFilter.equals(filter)) && mPublishedLimiter == limiterHash) {
+				list = mObjects;
+			} else if (filter == null && mLimiter == null) {
+				list = Arrays.asList(mAllObjects);
 			} else {
 				Matcher[] matchers = null;
-				if (!noFilter) {
+				if (filter != null) {
 					String[] words = filter.toString().split("\\s+");
 					matchers = new Matcher[words.length];
 					for (int i = words.length; --i != -1; )
 						matchers[i] = createMatcher(words[i]);
 				}
 
-				int limiterId = mLimiterField == -1 ? 0 : mLimiterMedia.getFieldId(mLimiterField);
+				int limiterField = mLimiter == null ? -1 : mLimiter.field;
+				int limiterId = mLimiter == null ? -1 : mLimiter.media.getFieldId(limiterField);
 
 				int count = mAllObjects.length;
 				ArrayList<Song> newValues = new ArrayList<Song>();
@@ -148,10 +156,10 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 				for (int i = 0; i != count; ++i) {
 					Song song = mAllObjects[i];
 
-					if (mLimiterField != -1 && song.getFieldId(mLimiterField) != limiterId)
+					if (limiterField != -1 && song.getFieldId(limiterField) != limiterId)
 						continue;
 
-					if (!noFilter) {
+					if (filter != null) {
 						for (int j = matchers.length; --j != -1; ) {
 							if (matchers[j].reset(song.artist).find())
 								continue;
@@ -168,19 +176,20 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 
 				newValues.trimToSize();
 
-				results.values = newValues;
-				results.count = newValues.size();
+				list = newValues;
 			}
 
-			return results;
+			return new ArrayFilterResults(list, limiterHash);
 		}
 
 		@SuppressWarnings("unchecked")
 		@Override
-		protected void publishResults(CharSequence constraint, FilterResults results)
+		protected void publishResults(CharSequence filter, FilterResults results)
 		{
 			mObjects = (List<Song>)results.values;
-			mLastFilter = constraint;
+			mPublishedFilter = filter == null || filter.length() == 0 ? null : filter;
+			mPublishedLimiter = ((ArrayFilterResults)results).limiterHash;
+
 			if (results.count == 0)
 				notifyDataSetInvalidated();
 			else
@@ -194,22 +203,15 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 		notifyDataSetInvalidated();
 	}
 
-	public void setLimiter(int field, Song media)
+	public void setLimiter(SongData limiter)
 	{
-		mLimiterField = field;
-		mLimiterMedia = media;
-
-		getFilter().filter(mLastFilter);
+		mLimiter = limiter;
+		getFilter().filter(mPublishedFilter);
 	}
 
-	public int getLimiterField()
+	public SongData getLimiter()
 	{
-		return mLimiterField;
-	}
-
-	public Song getLimiterMedia()
-	{
-		return mLimiterMedia;
+		return mLimiter;
 	}
 
 	public int getCount()

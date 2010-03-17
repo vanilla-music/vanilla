@@ -302,3 +302,30 @@ public class Song implements Parcelable {
 		return result;
 	}
 }
+
+class SongData {
+	public SongData(int field, Song media)
+	{
+		this.field = field;
+		this.media = media;
+	}
+
+	public SongData(SongData other)
+	{
+		this.field = other.field;
+		this.media = other.media;
+	}
+
+	public SongData()
+	{
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return (field << 29) + media.getFieldId(field);
+	}
+
+	public int field;
+	public Song media;
+}

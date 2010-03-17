@@ -139,28 +139,18 @@ public class MediaView extends ViewGroup {
 		if (mSecondaryLine != null)
 			mSecondaryLine.setText(song.getField(secondaryField));
 		if (mExpander != null) {
-			ExpanderData data = null;
+			SongData data = null;
 			try {
-				data = (ExpanderData)mExpander.getTag();
+				data = (SongData)mExpander.getTag();
 			} catch (ClassCastException e) {
 			}
 
 			if (data == null) {
-				data = new ExpanderData(primaryField);
+				data = new SongData(primaryField, null);
 				mExpander.setTag(data);
 			}
 
 			data.media = song;
 		}
-	}
-
-	public static class ExpanderData {
-		public ExpanderData(int field)
-		{
-			this.field = field;
-		}
-
-		public int field;
-		public Song media;
 	}
 }
