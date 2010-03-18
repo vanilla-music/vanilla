@@ -74,7 +74,7 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		ListView view = (ListView)findViewById(id);
 		view.setOnItemClickListener(this);
 		view.setOnCreateContextMenuListener(this);
-		view.setAdapter(new MediaAdapter(SongSelector.this, songs, lineA, lineB, this));
+		view.setAdapter(new MediaAdapter(this, songs, lineA, lineB, expanderListener));
 	}
 
 	@Override
