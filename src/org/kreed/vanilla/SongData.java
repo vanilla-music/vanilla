@@ -138,14 +138,14 @@ public class SongData {
 	public static class TitleComparator implements Comparator<SongData> {
 		public int compare(SongData a, SongData b)
 		{
-			return a.title.compareTo(b.title);
+			return a.title.compareToIgnoreCase(b.title);
 		}
 	}
 
 	public static class AlbumComparator implements IdComparator {
 		public int compare(SongData a, SongData b)
 		{
-			return a.album.compareTo(b.album);
+			return a.album.compareToIgnoreCase(b.album);
 		}
 
 		public int getId(SongData song)
@@ -157,7 +157,7 @@ public class SongData {
 	public static class ArtistComparator implements IdComparator {
 		public int compare(SongData a, SongData b)
 		{
-			return a.artist.compareTo(b.artist);
+			return a.artist.compareToIgnoreCase(b.artist);
 		}
 
 		public int getId(SongData song)
