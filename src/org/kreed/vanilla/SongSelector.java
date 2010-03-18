@@ -233,10 +233,7 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 			if (view instanceof TextView) {
 				SongData.Field limiter = getAdapter(mTabHost.getCurrentTab()).getLimiter();
 				int field = data.field - 1;
-				if (limiter.field == 0)
-					limiter = null;
-				else
-					limiter.field = field;
+				limiter = limiter.field == 0 ? null : new SongData.Field(field, limiter.data);
 				for (int i = 3; --i != -1; ) {
 					MediaAdapter adapter = getAdapter(i);
 					SongData.Field currentLimiter = adapter.getLimiter();

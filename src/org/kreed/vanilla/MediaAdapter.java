@@ -112,7 +112,7 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 	}
 
 	private class ArrayFilter extends Filter {
-		class ArrayFilterResults extends FilterResults {
+		protected class ArrayFilterResults extends FilterResults {
 			public int limiterHash;
 
 			public ArrayFilterResults(List<SongData> list, int limiterHash)
@@ -127,7 +127,7 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 		protected FilterResults performFiltering(CharSequence filter)
 		{
 			List<SongData> list;
-			int limiterHash = mLimiter == null ? 0 : mLimiter.hashCode();
+			int limiterHash = mLimiter == null ? -1 : mLimiter.hashCode();
 
 			if (filter != null && filter.length() == 0)
 				filter = null;
