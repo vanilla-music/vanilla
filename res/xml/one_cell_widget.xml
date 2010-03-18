@@ -2,5 +2,5 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:minWidth="72dip"
 	android:minHeight="72dip"
-	android:initialLayout="@layout/default_widget"
+	android:initialLayout="@layout/one_cell_widget"
 	/>

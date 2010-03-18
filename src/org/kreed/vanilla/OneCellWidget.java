@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.util.TypedValue;
 import android.widget.RemoteViews;
 
@@ -13,34 +14,34 @@ public class OneCellWidget extends AppWidgetProvider {
 	@Override
 	public void onUpdate(Context context, AppWidgetManager manager, int[] ids)
 	{
-		reset(context);
-		context.sendBroadcast(new Intent(PlaybackService.APPWIDGET_SMALL_UPDATE));
+		Log.i("VanillaMusic", "initial update");
 	}
 
-	private static void sendUpdate(Context context, RemoteViews views)
+	@Override
+	public void onReceive(Context context, Intent intent)
 	{
-		AppWidgetManager manager = AppWidgetManager.getInstance(context);
-		ComponentName widget = new ComponentName(context, OneCellWidget.class);
-		manager.updateAppWidget(widget, views);
+		if (PlaybackService.EVENT_CHANGED.equals(intent.getAction())) {
+			Song song = intent.getParcelableExtra("song");
+			boolean playing = intent.getIntExtra("newState", 0) == PlaybackService.STATE_PLAYING;
+			update(context, song, playing);
+		} else {
+			super.onReceive(context, intent);
+		}
 	}
 
-	public static void update(Context context, Song song)
+	public static void update(Context context, Song song, boolean playing)
 	{
 		RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.one_cell_widget);
+		ComponentName widget = new ComponentName(context, OneCellWidget.class);
+
 		views.setOnClickPendingIntent(R.id.play_pause, PendingIntent.getBroadcast(context, 0, new Intent(PlaybackService.TOGGLE_PLAYBACK), 0));
 		views.setOnClickPendingIntent(R.id.next, PendingIntent.getBroadcast(context, 0, new Intent(PlaybackService.NEXT_SONG), 0));
+
 		if (song != null) {
 			int size = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 72, context.getResources().getDisplayMetrics());
 			views.setImageViewBitmap(R.id.cover_view, CoverView.createMiniBitmap(song, size, size));
 		}
 
-		sendUpdate(context, views);
-	}
-
-	public static void reset(Context context)
-	{
-		RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.default_widget);
-		views.setOnClickPendingIntent(R.id.stopped_text, PendingIntent.getService(context, 0, new Intent(context, PlaybackService.class), 0));
-		sendUpdate(context, views);
+		AppWidgetManager.getInstance(context).updateAppWidget(widget, views);
 	}
 }

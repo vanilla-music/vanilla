@@ -54,7 +54,6 @@ import android.util.Log;
 public class PlaybackService extends Service implements Runnable, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, SharedPreferences.OnSharedPreferenceChangeListener {	
 	private static final int NOTIFICATION_ID = 2;
 
-	public static final String APPWIDGET_SMALL_UPDATE = "org.kreed.vanilla.action.APPWIDGET_SMALL_UPDATE";
 	public static final String TOGGLE_PLAYBACK = "org.kreed.vanilla.action.TOGGLE_PLAYBACK";
 	public static final String NEXT_SONG = "org.kreed.vanilla.action.NEXT_SONG";
 
@@ -172,8 +171,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		}
 		mNotificationManager.cancel(NOTIFICATION_ID);
 
-		resetWidgets();
-
 		if (mWakeLock != null && mWakeLock.isHeld())
 			mWakeLock.release();
 	}
@@ -240,9 +237,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				go(0);
 			} else if (NEXT_SONG.equals(action)) {
 				go(1);
-			} else if (APPWIDGET_SMALL_UPDATE.equals(intent.getAction())) {
-				OneCellWidget.update(PlaybackService.this, getSong(0));
-				return;
 			}
 		}
 	};
@@ -336,12 +330,11 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 					Song song = new Song(ids[mCurrentSong]);
 					song.populate();
-					if (song.path == null) {
+					if (song.path == null)
 						stateLoaded = false;
-					} else {
+					else
 						broadcastChange(mState, mState, song);
-						updateWidgets(song);
-					}
+
 
 					ArrayList<Song> timeline = new ArrayList<Song>(n);
 					for (int i = 0; i != n; ++i)
@@ -361,9 +354,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		if (!stateLoaded) {
 			retrieveSongs();
 			mSongTimeline = new ArrayList<Song>();
-			Song song = getSong(0);
-			broadcastChange(mState, mState, song);
-			updateWidgets(song);
+			broadcastChange(mState, mState, getSong(0));
 		}
 
 		if (stateLoaded)
@@ -418,7 +409,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		filter.addAction(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
 		filter.addAction(TOGGLE_PLAYBACK);
 		filter.addAction(NEXT_SONG);
-		filter.addAction(APPWIDGET_SMALL_UPDATE);
 		registerReceiver(mReceiver, filter);
 
 		TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
@@ -477,7 +467,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		broadcastChange(oldState, state, song);
 
 		boolean cancelNotification = updateNotification();
-		updateWidgets(song);
 
 		if (mState != oldState) {
 			if (mState == STATE_PLAYING)
@@ -648,16 +637,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		}
 
 		return song;
-	}
-
-	private void updateWidgets(Song song)
-	{
-		OneCellWidget.update(this, song);
-	}
-
-	private void resetWidgets()
-	{
-		OneCellWidget.reset(this);
 	}
 
 	private static final String STATE_FILE = "state";

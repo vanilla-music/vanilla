@@ -20,6 +20,7 @@
 			android:label="Vanilla Music 1x1">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+				<action android:name="org.kreed.vanilla.event.CHANGED" />
 			</intent-filter>
 			<meta-data
 				android:name="android.appwidget.provider"
