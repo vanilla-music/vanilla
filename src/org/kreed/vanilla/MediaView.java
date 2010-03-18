@@ -132,25 +132,25 @@ public class MediaView extends ViewGroup {
 			mExpander.setOnClickListener(listener);
 	}
 
-	public void updateMedia(Song song, int primaryField, int secondaryField)
+	public void updateMedia(SongData song, int primaryField, int secondaryField)
 	{
 		if (mPrimaryLine != null)
 			mPrimaryLine.setText(song.getField(primaryField));
 		if (mSecondaryLine != null)
 			mSecondaryLine.setText(song.getField(secondaryField));
 		if (mExpander != null) {
-			SongData data = null;
+			SongData.Field data = null;
 			try {
-				data = (SongData)mExpander.getTag();
+				data = (SongData.Field)mExpander.getTag();
 			} catch (ClassCastException e) {
 			}
 
 			if (data == null) {
-				data = new SongData(primaryField, null);
+				data = new SongData.Field(primaryField, null);
 				mExpander.setTag(data);
 			}
 
-			data.media = song;
+			data.data = song;
 		}
 	}
 }

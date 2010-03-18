@@ -18,25 +18,15 @@
 
 package org.kreed.vanilla;
 
-import java.util.Arrays;
-import java.util.Comparator;
-
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.MediaStore;
-import android.util.SparseArray;
 
 public class Song implements Parcelable {
-	public static final int FIELD_ARTIST = 1;
-	public static final int FIELD_ALBUM = 2;
-	public static final int FIELD_TITLE = 3;
-
-	int id;
-	int albumId;
-	int artistId;
+	public int id;
 
 	public String path;
 	public String coverPath;
@@ -44,16 +34,6 @@ public class Song implements Parcelable {
 	public String title;
 	public String album;
 	public String artist;
-
-	private Song(Cursor cursor)
-	{
-		id = cursor.getInt(0);
-		title = cursor.getString(1);
-		albumId = cursor.getInt(2);
-		album = cursor.getString(3);
-		artistId = cursor.getInt(4);
-		artist = cursor.getString(5);
-	}
 
 	public Song(int id)
 	{
@@ -89,7 +69,7 @@ public class Song implements Parcelable {
 		title = cursor.getString(1);
 		album = cursor.getString(2);
 		artist = cursor.getString(3);
-		albumId = cursor.getInt(4);
+		int albumId = cursor.getInt(4);
 		cursor.close();
 
 		media = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
@@ -138,71 +118,13 @@ public class Song implements Parcelable {
 	
 	public static int[] getAllSongIdsWith(int type, int id)
 	{
-		if (type == FIELD_TITLE)
+		if (type == SongData.FIELD_TITLE)
 			return new int[] { id };
-		else if (type == FIELD_ALBUM)
+		else if (type == SongData.FIELD_ALBUM)
 			return Song.getAllSongIds(MediaStore.Audio.Media.ALBUM_ID + "=" + id);
-		else if (type == FIELD_ARTIST)
+		else if (type == SongData.FIELD_ARTIST)
 			return Song.getAllSongIds(MediaStore.Audio.Media.ARTIST_ID + "=" + id);
 		return null;
-	}
-
-	public static Song[] getAllSongMetadata()
-	{
-		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-		String[] projection = { MediaStore.Audio.Media._ID,
-				MediaStore.Audio.Media.TITLE,
-				MediaStore.Audio.Media.ALBUM_ID,
-				MediaStore.Audio.Media.ALBUM,
-				MediaStore.Audio.Media.ARTIST_ID,
-				MediaStore.Audio.Media.ARTIST };
-		String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
-
-		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
-		Cursor cursor = resolver.query(media, projection, selection, null, null);
-
-		if (cursor == null)
-			return null;
-
-		int count = cursor.getCount();
-		if (count == 0)
-			return null;
-
-		Song[] songs = new Song[count];
-		while (--count != -1) {
-			if (!cursor.moveToNext())
-				return null;
-			songs[count] = new Song(cursor);
-		}
-
-		cursor.close();
-		return songs;
-	}
-
-	public String getField(int field)
-	{
-		switch (field) {
-		case FIELD_TITLE:
-			return title;
-		case FIELD_ARTIST:
-			return artist;
-		case FIELD_ALBUM:
-			return album;
-		}
-		return null;
-	}
-
-	public int getFieldId(int field)
-	{
-		switch (field) {
-		case FIELD_TITLE:
-			return id;
-		case FIELD_ARTIST:
-			return artistId;
-		case FIELD_ALBUM:
-			return albumId;
-		}
-		return 0;
 	}
 
 	public boolean equals(Song other)
@@ -248,84 +170,4 @@ public class Song implements Parcelable {
 	{
 		return 0;
 	}
-
-	public static class TitleComparator implements Comparator<Song> {
-		public int compare(Song a, Song b)
-		{
-			return a.title.compareTo(b.title);
-		}
-	}
-
-	public static class AlbumComparator implements IdComparator {
-		public int compare(Song a, Song b)
-		{
-			return a.album.compareTo(b.album);
-		}
-
-		public int getId(Song song)
-		{
-			return song.albumId;
-		}
-	}
-
-	public static class ArtistComparator implements IdComparator {
-		public int compare(Song a, Song b)
-		{
-			return a.artist.compareTo(b.artist);
-		}
-
-		public int getId(Song song)
-		{
-			return song.artistId;
-		}
-	}
-
-	public static interface IdComparator extends Comparator<Song> {
-		public int getId(Song song);
-	}
-
-	public static Song[] filter(Song[] songs, IdComparator comparator)
-	{
-		SparseArray<Song> albums = new SparseArray<Song>(songs.length);
-		for (int i = songs.length; --i != -1; ) {
-			Song song = songs[i];
-			int id = comparator.getId(song);
-			if (albums.get(id) == null)
-				albums.put(id, song);
-		}
-
-		Song[] result = new Song[albums.size()];
-		for (int i = result.length; --i != -1; )
-			result[i] = albums.valueAt(i);
-
-		Arrays.sort(result, comparator);
-		return result;
-	}
-}
-
-class SongData {
-	public SongData(int field, Song media)
-	{
-		this.field = field;
-		this.media = media;
-	}
-
-	public SongData(SongData other)
-	{
-		this.field = other.field;
-		this.media = other.media;
-	}
-
-	public SongData()
-	{
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return (field << 29) + media.getFieldId(field);
-	}
-
-	public int field;
-	public Song media;
 }

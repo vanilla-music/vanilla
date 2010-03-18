@@ -37,17 +37,17 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 	private Context mContext;
 	private OnClickListener mExpanderListener;
 
-	private List<Song> mObjects;
-	private Song[] mAllObjects;
+	private List<SongData> mObjects;
+	private SongData[] mAllObjects;
 	private ArrayFilter mFilter;
-	private SongData mLimiter;
+	private SongData.Field mLimiter;
 	private CharSequence mPublishedFilter;
 	private int mPublishedLimiter;
 
 	private int mPrimaryField;
 	private int mSecondaryField;
 
-	public MediaAdapter(Context context, Song[] allObjects, int primaryField, int secondaryField, View.OnClickListener expanderListener)
+	public MediaAdapter(Context context, SongData[] allObjects, int primaryField, int secondaryField, View.OnClickListener expanderListener)
 	{
 		mContext = context;
 		mAllObjects = allObjects;
@@ -115,7 +115,7 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 		class ArrayFilterResults extends FilterResults {
 			public int limiterHash;
 
-			public ArrayFilterResults(List<Song> list, int limiterHash)
+			public ArrayFilterResults(List<SongData> list, int limiterHash)
 			{
 				values = list;
 				count = list.size();
@@ -126,7 +126,7 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 		@Override
 		protected FilterResults performFiltering(CharSequence filter)
 		{
-			List<Song> list;
+			List<SongData> list;
 			int limiterHash = mLimiter == null ? 0 : mLimiter.hashCode();
 
 			if (filter != null && filter.length() == 0)
@@ -146,15 +146,15 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 				}
 
 				int limiterField = mLimiter == null ? -1 : mLimiter.field;
-				int limiterId = mLimiter == null ? -1 : mLimiter.media.getFieldId(limiterField);
+				int limiterId = mLimiter == null ? -1 : mLimiter.data.getFieldId(limiterField);
 
 				int count = mAllObjects.length;
-				ArrayList<Song> newValues = new ArrayList<Song>();
+				ArrayList<SongData> newValues = new ArrayList<SongData>();
 				newValues.ensureCapacity(count);
 
 			outer:
 				for (int i = 0; i != count; ++i) {
-					Song song = mAllObjects[i];
+					SongData song = mAllObjects[i];
 
 					if (limiterField != -1 && song.getFieldId(limiterField) != limiterId)
 						continue;
@@ -186,7 +186,7 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 		@Override
 		protected void publishResults(CharSequence filter, FilterResults results)
 		{
-			mObjects = (List<Song>)results.values;
+			mObjects = (List<SongData>)results.values;
 			mPublishedFilter = filter == null || filter.length() == 0 ? null : filter;
 			mPublishedLimiter = ((ArrayFilterResults)results).limiterHash;
 
@@ -199,17 +199,17 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 
 	public void hideAll()
 	{
-		mObjects = new ArrayList<Song>();
+		mObjects = new ArrayList<SongData>();
 		notifyDataSetInvalidated();
 	}
 
-	public void setLimiter(SongData limiter)
+	public void setLimiter(SongData.Field limiter)
 	{
 		mLimiter = limiter;
 		getFilter().filter(mPublishedFilter);
 	}
 
-	public SongData getLimiter()
+	public SongData.Field getLimiter()
 	{
 		return mLimiter;
 	}
@@ -224,7 +224,7 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 		return mObjects.size();
 	}
 
-	public Song get(int i)
+	public SongData get(int i)
 	{
 		if (mObjects == null) {
 			if (mAllObjects == null)
@@ -243,7 +243,7 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 
 	public long getItemId(int i)
 	{
-		Song song = get(i);
+		SongData song = get(i);
 		if (song == null)
 			return 0;
 		return song.getFieldId(mPrimaryField);
@@ -251,7 +251,7 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 
 	public Intent buildSongIntent(int action, int pos)
 	{
-		Song song = get(pos);
+		SongData song = get(pos);
 		if (song == null)
 			return null;
 

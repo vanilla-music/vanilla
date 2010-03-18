@@ -69,7 +69,7 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		return (MediaAdapter)getList(tab).getAdapter();
 	}
 
-	private void initializeList(int id, Song[] songs, int lineA, int lineB, View.OnClickListener expanderListener)
+	private void initializeList(int id, SongData[] songs, int lineA, int lineB, View.OnClickListener expanderListener)
 	{
 		ListView view = (ListView)findViewById(id);
 		view.setOnItemClickListener(this);
@@ -125,12 +125,12 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		new Handler().post(new Runnable() {
 			public void run()
 			{
-				Song[] songs = Song.getAllSongMetadata();
+				SongData[] songs = SongData.getAllSongData();
 
-				initializeList(R.id.artist_list, Song.filter(songs, new Song.ArtistComparator()), Song.FIELD_ARTIST, -1, SongSelector.this);
-				initializeList(R.id.album_list, Song.filter(songs, new Song.AlbumComparator()), Song.FIELD_ALBUM, Song.FIELD_ARTIST, SongSelector.this);
-				Arrays.sort(songs, new Song.TitleComparator());
-				initializeList(R.id.song_list, songs, Song.FIELD_TITLE, Song.FIELD_ARTIST, null);
+				initializeList(R.id.artist_list, SongData.filter(songs, new SongData.ArtistComparator()), SongData.FIELD_ARTIST, -1, SongSelector.this);
+				initializeList(R.id.album_list, SongData.filter(songs, new SongData.AlbumComparator()), SongData.FIELD_ALBUM, SongData.FIELD_ARTIST, SongSelector.this);
+				Arrays.sort(songs, new SongData.TitleComparator());
+				initializeList(R.id.song_list, songs, SongData.FIELD_TITLE, SongData.FIELD_ARTIST, null);
 			}
 		});
 	}
@@ -187,25 +187,25 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		if (adapter == null)
 			return;
 
-		SongData limiter = adapter.getLimiter();
+		SongData.Field limiter = adapter.getLimiter();
 		if (limiter == null)
 			return;
 
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 		params.leftMargin = 5;
-		for (int i = Song.FIELD_ARTIST; i <= limiter.field; ++i) {
+		for (int i = SongData.FIELD_ARTIST; i <= limiter.field; ++i) {
 			PaintDrawable background = new PaintDrawable(Color.GRAY);
 			background.setCornerRadius(5);
 
 			TextView view = new TextView(this);
 			view.setSingleLine();
 			view.setEllipsize(TextUtils.TruncateAt.MARQUEE);
-			view.setText(limiter.media.getField(i) + " | X");
+			view.setText(limiter.data.getField(i) + " | X");
 			view.setTextColor(Color.WHITE);
 			view.setBackgroundDrawable(background);
 			view.setLayoutParams(params);
 			view.setPadding(5, 2, 5, 2);
-			view.setTag(new SongData(i, null));
+			view.setTag(new SongData.Field(i, null));
 			view.setOnClickListener(this);
 			mLimiterViews.addView(view);
 		}
@@ -221,9 +221,9 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		if (view == mClearButton) {
 			mTextFilter.setText("");
 		} else {
-			SongData data = null;
+			SongData.Field data = null;
 			try {
-				data = (SongData)view.getTag();
+				data = (SongData.Field)view.getTag();
 			} catch (ClassCastException e) {
 			}
 
@@ -231,7 +231,7 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 				return;
 
 			if (view instanceof TextView) {
-				SongData limiter = getAdapter(mTabHost.getCurrentTab()).getLimiter();
+				SongData.Field limiter = getAdapter(mTabHost.getCurrentTab()).getLimiter();
 				int field = data.field - 1;
 				if (limiter.field == 0)
 					limiter = null;
@@ -239,13 +239,13 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 					limiter.field = field;
 				for (int i = 3; --i != -1; ) {
 					MediaAdapter adapter = getAdapter(i);
-					SongData currentLimiter = adapter.getLimiter();
+					SongData.Field currentLimiter = adapter.getLimiter();
 					if (currentLimiter != null && currentLimiter.field > field)
 						adapter.setLimiter(limiter);
 				}
 				updateLimiterViews();
 			} else {
-				SongData limiter = new SongData(data);
+				SongData.Field limiter = new SongData.Field(data);
 				for (int i = data.field; i != 3; ++i) {
 					MediaAdapter adapter = getAdapter(i);
 					adapter.hideAll();

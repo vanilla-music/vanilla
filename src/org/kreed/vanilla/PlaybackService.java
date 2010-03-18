@@ -696,7 +696,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				} else {
 					boolean enqueue = intent.getIntExtra("action", ACTION_PLAY) == ACTION_ENQUEUE;
 
-					int[] songs = Song.getAllSongIdsWith(intent.getIntExtra("type", Song.FIELD_TITLE), id);
+					int[] songs = Song.getAllSongIdsWith(intent.getIntExtra("type", SongData.FIELD_TITLE), id);
 					if (songs == null || songs.length == 0)
 						break;
 
