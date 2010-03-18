@@ -158,7 +158,20 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 
 	public void onItemClick(AdapterView<?> list, View view, int pos, long id)
 	{
-		sendSongIntent(((MediaAdapter)list.getAdapter()).buildSongIntent(mDefaultAction, pos));
+		MediaAdapter adapter = (MediaAdapter)list.getAdapter();
+		SongData data = ((MediaView)view).getExpanderData();
+		if (data != null) {
+			int field = adapter.getPrimaryField();
+			SongData.Field limiter = new SongData.Field(field, data);
+			for (int i = field; i != 3; ++i) {
+				MediaAdapter tabAdapter = getAdapter(i);
+				tabAdapter.hideAll();
+				tabAdapter.setLimiter(limiter);
+			}
+			mTabHost.setCurrentTab(field);
+		} else {
+			sendSongIntent(adapter.buildSongIntent(mDefaultAction, pos));
+		}
 	}
 
 	public void afterTextChanged(Editable editable)
@@ -227,10 +240,7 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 			} catch (ClassCastException e) {
 			}
 
-			if (data == null)
-				return;
-
-			if (view instanceof TextView) {
+			if (data != null) {
 				SongData.Field limiter = getAdapter(mTabHost.getCurrentTab()).getLimiter();
 				int field = data.field - 1;
 				limiter = limiter.field == 0 ? null : new SongData.Field(field, limiter.data);
@@ -241,14 +251,6 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 						adapter.setLimiter(limiter);
 				}
 				updateLimiterViews();
-			} else {
-				SongData.Field limiter = new SongData.Field(data);
-				for (int i = data.field; i != 3; ++i) {
-					MediaAdapter adapter = getAdapter(i);
-					adapter.hideAll();
-					adapter.setLimiter(limiter);
-				}
-				mTabHost.setCurrentTab(data.field);
 			}
 		}
 	}

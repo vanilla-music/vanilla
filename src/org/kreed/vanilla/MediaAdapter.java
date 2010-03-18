@@ -62,6 +62,11 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 		return true;
 	}
 
+	public int getPrimaryField()
+	{
+		return mPrimaryField;
+	}
+
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
 		MediaView view = null;
@@ -70,20 +75,10 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 		} catch (ClassCastException e) {
 		}
 
-		if (view == null) {
-			int flags = 0;
-			if (mSecondaryField != -1)
-				flags |= MediaView.SECONDARY_LINE;
-			if (mExpanderListener != null)
-				flags |= MediaView.EXPANDER;
+		if (view == null)
+			view = new MediaView(mContext, mPrimaryField, mSecondaryField, mExpanderListener != null);
 
-			view = new MediaView(mContext, flags);
-
-			if (mExpanderListener != null)
-				view.setExpanderOnClickListener(mExpanderListener);
-		}
-
-		view.updateMedia(get(position), mPrimaryField, mSecondaryField);
+		view.updateMedia(get(position));
 
 		return view;
 	}

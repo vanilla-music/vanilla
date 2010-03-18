@@ -19,138 +19,114 @@
 package org.kreed.vanilla;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-public class MediaView extends ViewGroup {
-	public static final int SECONDARY_LINE = 0x1;
-	public static final int EXPANDER = 0x2;
+public class MediaView extends View {
+	private static float mTextSize = -1;
+	private static Bitmap mExpander = null;
 
-	private TextView mPrimaryLine;
-	private TextView mSecondaryLine;
-	private ImageView mExpander;
+	private SongData mData;
+	private int mPrimaryField;
+	private int mSecondaryField;
+	private boolean mHasExpander;
 
-	private int mPadding;
+	private boolean mExpanderPressed;
 
-	public MediaView(Context context, int flags)
+	public MediaView(Context context, int primaryField, int secondaryField, boolean hasExpander)
 	{
 		super(context);
 
-		DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-		float textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, metrics);
-		mPadding = (int)textSize / 2;
-
-		mPrimaryLine = new TextView(context);
-		mPrimaryLine.setSingleLine();
-		mPrimaryLine.setTextColor(Color.WHITE);
-		mPrimaryLine.setTextSize(textSize);
-		addView(mPrimaryLine);
-
-		if ((flags & SECONDARY_LINE) != 0) {
-			mSecondaryLine = new TextView(context);
-			mSecondaryLine.setSingleLine();
-			mSecondaryLine.setTextSize(textSize);
-			addView(mSecondaryLine);
+		if (mExpander == null)
+			mExpander = BitmapFactory.decodeResource(context.getResources(), R.drawable.expander_arrow);
+		if (mTextSize == -1) {
+			DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+			mTextSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, metrics);
 		}
 
-		if ((flags & EXPANDER) != 0) {
-			mExpander = new ImageView(context);
-			mExpander.setPadding(mPadding * 2, mPadding, mPadding, mPadding);
-			mExpander.setImageResource(R.drawable.expander_arrow);
-			addView(mExpander);
-		}
+		mPrimaryField = primaryField;
+		mSecondaryField = secondaryField;
+		mHasExpander = hasExpander;
 	}
 
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
 	{
-		int width = MeasureSpec.getSize(widthMeasureSpec);
+		int expanderHeight;
+		int textHeight;
 
-		widthMeasureSpec = MeasureSpec.makeMeasureSpec(width, MeasureSpec.AT_MOST);
-		heightMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+		if (mHasExpander)
+			expanderHeight = mExpander.getHeight() + (int)mTextSize;
+		else
+			expanderHeight = 0;
 
-		int expanderHeight = 0;
-		int textHeight = 4 * mPadding;
+		if (mSecondaryField != -1)
+			textHeight = (int)(7 * mTextSize / 2);
+		else
+			textHeight = (int)(2 * mTextSize);
 
-		if (mExpander != null) {
-			mExpander.measure(widthMeasureSpec, heightMeasureSpec);
-			expanderHeight = mExpander.getMeasuredHeight();
-		}
-
-		if (mSecondaryLine != null) {
-			mSecondaryLine.measure(widthMeasureSpec, heightMeasureSpec);
-			textHeight = mSecondaryLine.getMeasuredHeight() + mPadding;
-		}
-
-		mPrimaryLine.measure(widthMeasureSpec, heightMeasureSpec);
-		textHeight += mPrimaryLine.getMeasuredHeight();
-
-		setMeasuredDimension(width, Math.max(expanderHeight, textHeight));
+		setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec),
+		                     Math.max(expanderHeight, textHeight));
 	}
 
 	@Override
-	protected void onLayout(boolean changed, int left, int top, int right, int bottom)
+	public void onDraw(Canvas canvas)
 	{
-		int width = right - left;
-		int height = bottom - top;
+		if (mData == null)
+			return;
 
-		int textWidth;
-		int textHeight = height - 2 * mPadding;
+		int width = getWidth();
+		int height = getHeight();
+		float padding = mTextSize / 2;
 
-		int actualHeight;
+		Paint paint = new Paint();
+		paint.setTextSize(mTextSize);
+		paint.setAntiAlias(true);
 
-		if (mExpander != null) {
-			textWidth = width - mExpander.getMeasuredWidth();
-			mExpander.layout(textWidth, 0, width, height);
+		if (mHasExpander) {
+			width -= padding * 3 + mExpander.getWidth();
+			canvas.drawBitmap(mExpander, width + padding * 2, (height - mExpander.getHeight()) / 2, paint);
+		}
+
+		canvas.clipRect(padding, 0, width - padding, height);
+
+		float allocatedHeight;
+
+		if (mSecondaryField != -1) {
+			allocatedHeight = height / 2 - padding * 3 / 2;
+
+			paint.setColor(Color.GRAY);
+			canvas.drawText(mData.getField(mSecondaryField), padding, height / 2 + padding / 2 + (allocatedHeight - mTextSize) / 2 - paint.ascent(), paint);
 		} else {
-			textWidth = width;
+			allocatedHeight = height - padding * 2;
 		}
 
-		textWidth -= 2 * mPadding;
-
-		if (mSecondaryLine != null) {
-			textHeight = (textHeight - mPadding) / 2;
-
-			actualHeight = mSecondaryLine.getMeasuredHeight();
-			top = mPadding * 3 / 2 + textHeight + (textHeight - actualHeight) / 2;
-			mSecondaryLine.layout(mPadding, top, mPadding + textWidth, top + actualHeight);
-		}
-
-		actualHeight = mPrimaryLine.getMeasuredHeight();
-		top = mPadding + (textHeight - actualHeight) / 2;
-		mPrimaryLine.layout(mPadding, top, mPadding + textWidth, top + actualHeight);
+		paint.setColor(Color.WHITE);
+		canvas.drawText(mData.getField(mPrimaryField), padding, padding + (allocatedHeight - mTextSize) / 2 - paint.ascent(), paint);
 	}
 
-	public void setExpanderOnClickListener(View.OnClickListener listener)
+	public void updateMedia(SongData data)
 	{
-		if (mExpander != null)
-			mExpander.setOnClickListener(listener);
+		mData = data;
+		invalidate();
 	}
 
-	public void updateMedia(SongData song, int primaryField, int secondaryField)
+	public SongData getExpanderData()
 	{
-		if (mPrimaryLine != null)
-			mPrimaryLine.setText(song.getField(primaryField));
-		if (mSecondaryLine != null)
-			mSecondaryLine.setText(song.getField(secondaryField));
-		if (mExpander != null) {
-			SongData.Field data = null;
-			try {
-				data = (SongData.Field)mExpander.getTag();
-			} catch (ClassCastException e) {
-			}
+		return mExpanderPressed ? mData : null;
+	}
 
-			if (data == null) {
-				data = new SongData.Field(primaryField, null);
-				mExpander.setTag(data);
-			}
-
-			data.data = song;
-		}
+	@Override
+	public boolean onTouchEvent(MotionEvent event)
+	{
+		mExpanderPressed = mHasExpander && event.getX() > getWidth() - mExpander.getWidth() - 3 * mTextSize / 2;
+		return false;
 	}
 }
