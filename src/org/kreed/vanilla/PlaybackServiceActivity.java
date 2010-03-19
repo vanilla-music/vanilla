@@ -44,6 +44,8 @@ public abstract class PlaybackServiceActivity extends Activity implements Servic
 		filter.addAction(PlaybackService.EVENT_CHANGED);
 		filter.addAction(PlaybackService.EVENT_LOADED);
 		registerReceiver(mReceiver, filter);
+
+		setState(PlaybackService.STATE_NORMAL);
 	}
 
 	@Override
@@ -51,7 +53,11 @@ public abstract class PlaybackServiceActivity extends Activity implements Servic
 	{
 		super.onStop();
 
-		unbindService(this);
+		try {
+			unbindService(this);
+		} catch (IllegalArgumentException e) {
+			// we have not registered the service yet
+		}
 		try {
 			unregisterReceiver(mReceiver);
 		} catch (IllegalArgumentException e) {
