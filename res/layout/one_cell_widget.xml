@@ -12,11 +12,18 @@
 		android:layout_width="fill_parent"
 		android:orientation="vertical" >
 		<ImageButton
-			android:id="@+id/play_pause"
-			android:background="@drawable/hidden_play_pause"
+			android:id="@+id/play"
+			android:background="@drawable/hidden_play"
 			android:layout_height="wrap_content"
 			android:layout_width="fill_parent"
 			android:layout_weight="1" />
+		<ImageButton
+			android:id="@+id/pause"
+			android:background="@drawable/hidden_pause"
+			android:layout_height="wrap_content"
+			android:layout_width="fill_parent"
+			android:layout_weight="1"
+			android:visibility="gone" />
 		<ImageButton
 			android:id="@+id/next"
 			android:background="@drawable/hidden_next"

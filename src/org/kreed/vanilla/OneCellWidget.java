@@ -25,6 +25,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.util.TypedValue;
+import android.view.View;
 import android.widget.RemoteViews;
 
 public class OneCellWidget extends AppWidgetProvider {
@@ -63,7 +64,21 @@ public class OneCellWidget extends AppWidgetProvider {
 	{
 		RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.one_cell_widget);
 
-		views.setOnClickPendingIntent(R.id.play_pause, PendingIntent.getBroadcast(context, 0, new Intent(PlaybackService.TOGGLE_PLAYBACK), 0));
+		int toggle;
+
+		// Unfortunately we have to have two views since we can not call
+		// setBackgroundResource from RemoteViews
+		if (playing) {
+			toggle = R.id.pause;
+			views.setViewVisibility(R.id.play, View.GONE);
+			views.setViewVisibility(R.id.pause, View.VISIBLE);
+		} else {
+			toggle = R.id.play;
+			views.setViewVisibility(R.id.pause, View.GONE);
+			views.setViewVisibility(R.id.play, View.VISIBLE);
+		}
+
+		views.setOnClickPendingIntent(toggle, PendingIntent.getBroadcast(context, 0, new Intent(PlaybackService.TOGGLE_PLAYBACK), 0));
 		views.setOnClickPendingIntent(R.id.next, PendingIntent.getBroadcast(context, 0, new Intent(PlaybackService.NEXT_SONG), 0));
 
 		if (song == null) {
