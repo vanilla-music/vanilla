@@ -429,6 +429,14 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			intent.putExtra("song", song);
 			sendBroadcast(intent);
 
+			if (mScrobble) {
+				intent = new Intent("net.jjc1138.android.scrobbler.action.MUSIC_STATUS");
+				intent.putExtra("playing", mState == STATE_PLAYING);
+				if (song != null)
+					intent.putExtra("id", song.id);
+				sendBroadcast(intent);
+			}
+
 			mLastSongBroadcast = song;
 		}
 	}
@@ -451,13 +459,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				startForegroundCompat(NOTIFICATION_ID, mNotification);
 			else
 				stopForegroundCompat(cancelNotification);
-		}
-
-		if (mScrobble) {
-			Intent intent = new Intent("net.jjc1138.android.scrobbler.action.MUSIC_STATUS");
-			intent.putExtra("playing", mState == STATE_PLAYING);
-			intent.putExtra("id", song.id);
-			sendBroadcast(intent);
 		}
 	}
 
