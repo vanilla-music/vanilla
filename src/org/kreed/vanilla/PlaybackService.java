@@ -18,9 +18,6 @@
 
 package org.kreed.vanilla;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -315,50 +312,31 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 		boolean stateLoaded = true;
 
-		try {
-			DataInputStream in = new DataInputStream(openFileInput(STATE_FILE));
-			if (in.readLong() == STATE_FILE_MAGIC) {
-				mCurrentSong = in.readInt();
-				int n = in.readInt();
+		PlaybackServiceState state = new PlaybackServiceState();
+		if (state.load(this)) {
+			Song song = new Song(state.savedIds[state.savedIndex]);
+			if (song.populate())
+				broadcastChange(mState, mState, song);
+			else
+				stateLoaded = false;
 
-				if (n > 0) {
-					int[] ids = new int[n];
-					for (int i = 0; i != n; ++i)
-						ids[i] = in.readInt();
-					mPendingSeek = in.readInt();
-					in.close();
+			mSongTimeline = new ArrayList<Song>(state.savedIds.length);
+			mCurrentSong = state.savedIndex;
+			mPendingSeek = state.savedSeek;
 
-					Song song = new Song(ids[mCurrentSong]);
-					song.populate();
-					if (song.path == null)
-						stateLoaded = false;
-					else
-						broadcastChange(mState, mState, song);
-
-
-					ArrayList<Song> timeline = new ArrayList<Song>(n);
-					for (int i = 0; i != n; ++i)
-						timeline.add(i == mCurrentSong ? song : new Song(ids[i]));
-
-					mSongTimeline = timeline;
-				}
-			}
-		} catch (FileNotFoundException e) {
-		} catch (IOException e) {
-			Log.w("VanillaMusic", e);
+			for (int i = 0; i != state.savedIds.length; ++i)
+				mSongTimeline.add(i == mCurrentSong ? song : new Song(state.savedIds[i]));
 		}
 
 		if (stateLoaded)
 			stateLoaded = mSongTimeline != null;
 
+		retrieveSongs();
+
 		if (!stateLoaded) {
-			retrieveSongs();
 			mSongTimeline = new ArrayList<Song>();
 			broadcastChange(mState, mState, getSong(0));
 		}
-
-		if (stateLoaded)
-			retrieveSongs();
 
 		mMediaPlayer = new MediaPlayer();
 
@@ -639,24 +617,9 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		return song;
 	}
 
-	private static final String STATE_FILE = "state";
-	private static final long STATE_FILE_MAGIC = 0x8a9d3f9fca31L;
-
 	private void saveState(boolean savePosition)
 	{
-		try {
-			DataOutputStream out = new DataOutputStream(openFileOutput(STATE_FILE, 0));
-			out.writeLong(STATE_FILE_MAGIC);
-			out.writeInt(mCurrentSong);
-			int n = mSongTimeline == null ? 0 : mSongTimeline.size();
-			out.writeInt(n);
-			for (int i = 0; i != n; ++i)
-				out.writeInt(mSongTimeline.get(i).id);
-			out.writeInt(savePosition && mMediaPlayer != null ? mMediaPlayer.getCurrentPosition() : 0);
-			out.close();
-		} catch (IOException e) {
-			Log.w("VanillaMusic", e);
-		}
+		PlaybackServiceState.saveState(this, mSongTimeline, mCurrentSong, savePosition && mMediaPlayer != null ? mMediaPlayer.getCurrentPosition() : 0);
 	}
 
 	private class MusicHandler extends Handler {
