@@ -108,33 +108,6 @@ public class SongData {
 		return songs;
 	}
 
-	public static class Field {
-		public Field(int field, SongData data)
-		{
-			this.field = field;
-			this.data = data;
-		}
-
-		public Field(Field other)
-		{
-			this.field = other.field;
-			this.data = other.data;
-		}
-
-		public Field()
-		{
-		}
-
-		@Override
-		public int hashCode()
-		{
-			return (field << 29) + data.getFieldId(field);
-		}
-
-		public int field;
-		public SongData data;
-	}
-
 	public static class TitleComparator implements Comparator<SongData> {
 		public int compare(SongData a, SongData b)
 		{

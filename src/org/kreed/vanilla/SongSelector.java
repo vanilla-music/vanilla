@@ -167,17 +167,18 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 
 	private void expand(MediaAdapter.MediaView view)
 	{
-		SongData data = view.getExpanderData();
 		int field = view.getPrimaryField();
-		SongData.Field limiter = new SongData.Field(field, data);
-		int hashCode = limiter.hashCode();
+		SongData data = view.getExpanderData();
+		int limiter = MediaAdapter.makeLimiter(field, data);
+
 		for (int i = field; i != 3; ++i) {
-			MediaAdapter tabAdapter = getAdapter(i);
-			SongData.Field tabLimiter = tabAdapter.getLimiter();
-			if (tabLimiter == null || tabLimiter.hashCode() != hashCode)
-				tabAdapter.hideAll();
-			tabAdapter.setLimiter(limiter);
+			MediaAdapter adapter = getAdapter(i);
+			if (adapter.getLimiter() != limiter) {
+				adapter.hideAll();
+				adapter.setLimiter(limiter, data);
+			}
 		}
+
 		mTabHost.setCurrentTab(field);
 	}
 
@@ -216,20 +217,21 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		if (adapter == null)
 			return;
 
-		SongData.Field limiter = adapter.getLimiter();
-		if (limiter == null)
+		int field = adapter.getLimiterField();
+		SongData data = adapter.getLimiterData();
+		if (data == null)
 			return;
 
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 		params.leftMargin = 5;
-		for (int i = SongData.FIELD_ARTIST; i <= limiter.field; ++i) {
+		for (int i = SongData.FIELD_ARTIST; i <= field; ++i) {
 			PaintDrawable background = new PaintDrawable(Color.GRAY);
 			background.setCornerRadius(5);
 
 			TextView view = new TextView(this);
 			view.setSingleLine();
 			view.setEllipsize(TextUtils.TruncateAt.MARQUEE);
-			view.setText(limiter.data.getField(i) + " | X");
+			view.setText(data.getField(i) + " | X");
 			view.setTextColor(Color.WHITE);
 			view.setBackgroundDrawable(background);
 			view.setLayoutParams(params);
@@ -250,15 +252,16 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		if (view == mClearButton) {
 			mTextFilter.setText("");
 		} else {
-			SongData.Field limiter = getAdapter(mTabHost.getCurrentTab()).getLimiter();
 			int field = (Integer)view.getTag() - 1;
-			limiter = limiter.field == 0 ? null : new SongData.Field(field, limiter.data);
+			SongData data = getAdapter(mTabHost.getCurrentTab()).getLimiterData();
+			int limiter = field == 0 ? -1 : MediaAdapter.makeLimiter(field, data);
+
 			for (int i = 3; --i != -1; ) {
 				MediaAdapter adapter = getAdapter(i);
-				SongData.Field currentLimiter = adapter.getLimiter();
-				if (currentLimiter != null && currentLimiter.field > field)
-					adapter.setLimiter(limiter);
+				if (adapter.getLimiterField() > field)
+					adapter.setLimiter(limiter, data);
 			}
+
 			updateLimiterViews();
 		}
 	}

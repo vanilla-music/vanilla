@@ -47,7 +47,8 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 	private List<SongData> mObjects;
 	private SongData[] mAllObjects;
 	private ArrayFilter mFilter;
-	private SongData.Field mLimiter;
+	private int mLimiter;
+	private SongData mLimiterData;
 	private CharSequence mPublishedFilter;
 	private int mPublishedLimiter;
 
@@ -115,13 +116,13 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 
 	private class ArrayFilter extends Filter {
 		protected class ArrayFilterResults extends FilterResults {
-			public int limiterHash;
+			public int limiter;
 
-			public ArrayFilterResults(List<SongData> list, int limiterHash)
+			public ArrayFilterResults(List<SongData> list, int limiter)
 			{
 				values = list;
 				count = list.size();
-				this.limiterHash = limiterHash;
+				this.limiter = limiter;
 			}
 		}
 
@@ -129,14 +130,13 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 		protected FilterResults performFiltering(CharSequence filter)
 		{
 			List<SongData> list;
-			int limiterHash = mLimiter == null ? -1 : mLimiter.hashCode();
 
 			if (filter != null && filter.length() == 0)
 				filter = null;
 
-			if ((filter == null && mPublishedFilter == null || mPublishedFilter != null && mPublishedFilter.equals(filter)) && mPublishedLimiter == limiterHash) {
+			if ((filter == null && mPublishedFilter == null || mPublishedFilter != null && mPublishedFilter.equals(filter)) && mLimiter == mPublishedLimiter) {
 				list = mObjects;
-			} else if (filter == null && mLimiter == null) {
+			} else if (filter == null && mLimiter == -1) {
 				list = Arrays.asList(mAllObjects);
 			} else {
 				Matcher[] matchers = null;
@@ -147,8 +147,8 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 						matchers[i] = createMatcher(words[i]);
 				}
 
-				int limiterField = mLimiter == null ? -1 : mLimiter.field;
-				int limiterId = mLimiter == null ? -1 : mLimiter.data.getFieldId(limiterField);
+				int limiterField = limiterField(mLimiter);
+				int limiterId = limiterId(mLimiter);
 
 				int count = mAllObjects.length;
 				ArrayList<SongData> newValues = new ArrayList<SongData>();
@@ -158,7 +158,7 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 				for (int i = 0; i != count; ++i) {
 					SongData song = mAllObjects[i];
 
-					if (limiterField != -1 && song.getFieldId(limiterField) != limiterId)
+					if (mLimiter != -1 && song.getFieldId(limiterField) != limiterId)
 						continue;
 
 					if (filter != null) {
@@ -181,7 +181,7 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 				list = newValues;
 			}
 
-			return new ArrayFilterResults(list, limiterHash);
+			return new ArrayFilterResults(list, mLimiter);
 		}
 
 		@SuppressWarnings("unchecked")
@@ -190,7 +190,7 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 		{
 			mObjects = (List<SongData>)results.values;
 			mPublishedFilter = filter == null || filter.length() == 0 ? null : filter;
-			mPublishedLimiter = ((ArrayFilterResults)results).limiterHash;
+			mPublishedLimiter = ((ArrayFilterResults)results).limiter;
 
 			if (results.count == 0)
 				notifyDataSetInvalidated();
@@ -205,15 +205,44 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 		notifyDataSetInvalidated();
 	}
 
-	public void setLimiter(SongData.Field limiter)
+	public void setLimiter(int limiter, SongData data)
 	{
 		mLimiter = limiter;
+		mLimiterData = data;
 		getFilter().filter(mPublishedFilter);
 	}
 
-	public SongData.Field getLimiter()
+	public final int getLimiter()
 	{
 		return mLimiter;
+	}
+
+	public final int getLimiterField()
+	{
+		return limiterField(mLimiter);
+	}
+
+	public final SongData getLimiterData()
+	{
+		return mLimiterData;
+	}
+
+	private static final int FIELD_SHIFT = 29;
+	private static final int ID_MASK = ~(0x7 << FIELD_SHIFT);
+
+	public static int makeLimiter(int field, SongData data)
+	{
+		return (field << FIELD_SHIFT) + data.getFieldId(field);
+	}
+
+	public static int limiterField(int limiter)
+	{
+		return limiter >> FIELD_SHIFT;
+	}
+
+	public static int limiterId(int limiter)
+	{
+		return limiter & ID_MASK;
 	}
 
 	public int getCount()
