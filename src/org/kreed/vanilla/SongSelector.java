@@ -170,9 +170,12 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		SongData data = view.getExpanderData();
 		int field = view.getPrimaryField();
 		SongData.Field limiter = new SongData.Field(field, data);
+		int hashCode = limiter.hashCode();
 		for (int i = field; i != 3; ++i) {
 			MediaAdapter tabAdapter = getAdapter(i);
-			tabAdapter.hideAll();
+			SongData.Field tabLimiter = tabAdapter.getLimiter();
+			if (tabLimiter == null || tabLimiter.hashCode() != hashCode)
+				tabAdapter.hideAll();
 			tabAdapter.setLimiter(limiter);
 		}
 		mTabHost.setCurrentTab(field);
