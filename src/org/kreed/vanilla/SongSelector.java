@@ -168,7 +168,7 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 	public void onItemClick(AdapterView<?> list, View view, int pos, long id)
 	{
 		MediaAdapter adapter = (MediaAdapter)list.getAdapter();
-		SongData data = ((MediaView)view).getExpanderData();
+		SongData data = ((MediaAdapter.MediaView)view).getExpanderData();
 		if (data != null) {
 			int field = adapter.getPrimaryField();
 			SongData.Field limiter = new SongData.Field(field, data);

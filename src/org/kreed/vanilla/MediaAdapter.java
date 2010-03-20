@@ -26,6 +26,13 @@ import java.util.regex.Pattern;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
@@ -76,7 +83,7 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 		}
 
 		if (view == null)
-			view = new MediaView(mContext, mPrimaryField, mSecondaryField, mExpanderListener != null);
+			view = new MediaView(mContext);
 
 		view.updateMedia(get(position));
 
@@ -256,5 +263,105 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 		intent.putExtra("id", song.getFieldId(mPrimaryField));
 		intent.putExtra("title", song.getField(mPrimaryField));
 		return intent;
+	}
+
+	private static float mTextSize = -1;
+	private static Bitmap mExpander = null;
+
+	private int mViewHeight = -1;
+
+	public class MediaView extends View {
+		private SongData mData;
+		private boolean mExpanderPressed;
+
+		public MediaView(Context context)
+		{
+			super(context);
+
+			if (mExpander == null)
+				mExpander = BitmapFactory.decodeResource(context.getResources(), R.drawable.expander_arrow);
+			if (mTextSize == -1)
+				mTextSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, context.getResources().getDisplayMetrics());
+			if (mViewHeight == -1)
+				mViewHeight = measureHeight();
+		}
+
+		private int measureHeight()
+		{
+			int expanderHeight;
+			int textHeight;
+
+			if (mExpanderListener != null)
+				expanderHeight = mExpander.getHeight() + (int)mTextSize;
+			else
+				expanderHeight = 0;
+
+			if (mSecondaryField != -1)
+				textHeight = (int)(7 * mTextSize / 2);
+			else
+				textHeight = (int)(2 * mTextSize);
+
+			return Math.max(expanderHeight, textHeight);
+		}
+
+		@Override
+		protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
+		{
+			setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), mViewHeight);
+		}
+
+		@Override
+		public void onDraw(Canvas canvas)
+		{
+			if (mData == null)
+				return;
+
+			int width = getWidth();
+			int height = getHeight();
+			float padding = mTextSize / 2;
+
+			Paint paint = new Paint();
+			paint.setTextSize(mTextSize);
+			paint.setAntiAlias(true);
+
+			if (mExpanderListener != null) {
+				width -= padding * 3 + mExpander.getWidth();
+				canvas.drawBitmap(mExpander, width + padding * 2, (height - mExpander.getHeight()) / 2, paint);
+			}
+
+			canvas.clipRect(padding, 0, width - padding, height);
+
+			float allocatedHeight;
+
+			if (mSecondaryField != -1) {
+				allocatedHeight = height / 2 - padding * 3 / 2;
+
+				paint.setColor(Color.GRAY);
+				canvas.drawText(mData.getField(mSecondaryField), padding, height / 2 + padding / 2 + (allocatedHeight - mTextSize) / 2 - paint.ascent(), paint);
+			} else {
+				allocatedHeight = height - padding * 2;
+			}
+
+			paint.setColor(Color.WHITE);
+			canvas.drawText(mData.getField(mPrimaryField), padding, padding + (allocatedHeight - mTextSize) / 2 - paint.ascent(), paint);
+		}
+
+		public void updateMedia(SongData data)
+		{
+			mData = data;
+			invalidate();
+		}
+
+		public SongData getExpanderData()
+		{
+			return mExpanderPressed ? mData : null;
+		}
+
+		@Override
+		public boolean onTouchEvent(MotionEvent event)
+		{
+			mExpanderPressed = mExpanderListener != null && event.getX() > getWidth() - mExpander.getWidth() - 3 * mTextSize / 2;
+			return false;
+		}
 	}
 }
