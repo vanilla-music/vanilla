@@ -164,7 +164,6 @@ public class NowPlayingActivity extends PlaybackServiceActivity implements View.
 			if (state == PlaybackService.STATE_NORMAL)
 				mControlsBottom.setVisibility(View.VISIBLE);
 
-			mSeekBar.setEnabled(state == PlaybackService.STATE_PLAYING);
 			mPlayPauseButton.setImageResource(state == PlaybackService.STATE_PLAYING ? R.drawable.pause : R.drawable.play);
 			break;
 		case PlaybackService.STATE_NO_MEDIA:

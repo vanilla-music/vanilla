@@ -115,8 +115,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			if (mMediaPlayer == null)
 				return;
 			synchronized (mMediaPlayer) {
-				if (!mMediaPlayer.isPlaying())
-					return;
 				long position = (long)mMediaPlayer.getDuration() * progress / 1000;
 				mMediaPlayer.seekTo((int)position);
 			}
