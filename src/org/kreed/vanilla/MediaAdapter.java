@@ -63,15 +63,15 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 		mExpanderListener = expanderListener;
 	}
 
+	public final boolean hasExpanders()
+	{
+		return mExpanderListener != null;
+	}
+
 	@Override
 	public boolean hasStableIds()
 	{
 		return true;
-	}
-
-	public int getPrimaryField()
-	{
-		return mPrimaryField;
 	}
 
 	public View getView(int position, View convertView, ViewGroup parent)
@@ -346,21 +346,31 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 			canvas.drawText(mData.getField(mPrimaryField), padding, padding + (allocatedHeight - mTextSize) / 2 - paint.ascent(), paint);
 		}
 
-		public void updateMedia(SongData data)
+		public final void updateMedia(SongData data)
 		{
 			mData = data;
 			invalidate();
 		}
 
-		public SongData getExpanderData()
+		public final int getPrimaryField()
 		{
-			return mExpanderPressed ? mData : null;
+			return mPrimaryField;
+		}
+
+		public final SongData getExpanderData()
+		{
+			return mData;
+		}
+
+		public final boolean isExpanderPressed()
+		{
+			return mExpanderPressed;
 		}
 
 		@Override
 		public boolean onTouchEvent(MotionEvent event)
 		{
-			mExpanderPressed = mExpanderListener != null && event.getX() > getWidth() - mExpander.getWidth() - 3 * mTextSize / 2;
+			mExpanderPressed = event.getX() > getWidth() - mExpander.getWidth() - 3 * mTextSize / 2;
 			return false;
 		}
 	}

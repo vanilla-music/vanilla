@@ -165,22 +165,26 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		startService(intent);
 	}
 
+	private void expand(MediaAdapter.MediaView view)
+	{
+		SongData data = view.getExpanderData();
+		int field = view.getPrimaryField();
+		SongData.Field limiter = new SongData.Field(field, data);
+		for (int i = field; i != 3; ++i) {
+			MediaAdapter tabAdapter = getAdapter(i);
+			tabAdapter.hideAll();
+			tabAdapter.setLimiter(limiter);
+		}
+		mTabHost.setCurrentTab(field);
+	}
+
 	public void onItemClick(AdapterView<?> list, View view, int pos, long id)
 	{
-		MediaAdapter adapter = (MediaAdapter)list.getAdapter();
-		SongData data = ((MediaAdapter.MediaView)view).getExpanderData();
-		if (data != null) {
-			int field = adapter.getPrimaryField();
-			SongData.Field limiter = new SongData.Field(field, data);
-			for (int i = field; i != 3; ++i) {
-				MediaAdapter tabAdapter = getAdapter(i);
-				tabAdapter.hideAll();
-				tabAdapter.setLimiter(limiter);
-			}
-			mTabHost.setCurrentTab(field);
-		} else {
-			sendSongIntent(adapter.buildSongIntent(mDefaultAction, pos));
-		}
+		MediaAdapter.MediaView mediaView = (MediaAdapter.MediaView)view;
+		if (mediaView.isExpanderPressed())
+			expand(mediaView);
+		else
+			sendSongIntent(((MediaAdapter)list.getAdapter()).buildSongIntent(mDefaultAction, pos));
 	}
 
 	public void afterTextChanged(Editable editable)
@@ -258,6 +262,7 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 
 	private static final int MENU_PLAY = 0;
 	private static final int MENU_ENQUEUE = 1;
+	private static final int MENU_EXPAND = 2;
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo info)
@@ -266,11 +271,18 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		int pos = (int)((AdapterView.AdapterContextMenuInfo)info).position;
 		menu.add(0, MENU_PLAY, 0, R.string.play).setIntent(adapter.buildSongIntent(PlaybackService.ACTION_PLAY, pos));
 		menu.add(0, MENU_ENQUEUE, 0, R.string.enqueue).setIntent(adapter.buildSongIntent(PlaybackService.ACTION_ENQUEUE, pos));
+		if (adapter.hasExpanders())
+			menu.add(0, MENU_EXPAND, 0, R.string.expand);
 	}
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item)
 	{
+		if (item.getItemId() == MENU_EXPAND) {
+			expand((MediaAdapter.MediaView)((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).targetView);
+			return true;
+		}
+
 		Intent intent = item.getIntent();
 		if (mDefaultIsLastAction)
 			mDefaultAction = intent.getIntExtra("action", PlaybackService.ACTION_PLAY);
