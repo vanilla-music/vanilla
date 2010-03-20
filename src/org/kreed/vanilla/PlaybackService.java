@@ -77,7 +77,9 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 		public int getState()
 		{
-			return mState;
+			synchronized (mStateLock) {
+				return mState;
+			}
 		}
 
 		public int getPosition()
@@ -105,9 +107,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 		public void togglePlayback()
 		{
-			if (mHandler == null)
-				return;
-			mHandler.sendMessage(mHandler.obtainMessage(GO, 0, 0));
+			PlaybackService.this.togglePlayback();
 		}
 
 		public void seekToProgress(int progress)
@@ -223,10 +223,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			if (Intent.ACTION_HEADSET_PLUG.equals(action) && mHandler != null) {
 				boolean oldPlugged = mPlugged;
 				mPlugged = intent.getIntExtra("state", 0) != 0;
-				if (mPlugged != oldPlugged && (mHeadsetPause && !mPlugged || mHeadsetOnly && !isSpeakerOn()) && mMediaPlayer.isPlaying()) {
-					mMediaPlayer.pause();
-					mHandler.sendMessage(mHandler.obtainMessage(SET_STATE, STATE_NORMAL, 0));
-				}
+				if (mPlugged != oldPlugged && (mHeadsetPause && !mPlugged || mHeadsetOnly && !isSpeakerOn()))
+					updateState(STATE_NORMAL);
 			} else if (Intent.ACTION_MEDIA_SCANNER_FINISHED.equals(action)
 			        || Intent.ACTION_MEDIA_SCANNER_SCAN_FILE.equals(action)) {
 				mHandler.sendEmptyMessage(RETRIEVE_SONGS);
@@ -272,6 +270,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 	private Handler mHandler;
 	private MediaPlayer mMediaPlayer;
+	private boolean mMediaPlayerInitialized;
 	private Random mRandom;
 	private PowerManager.WakeLock mWakeLock;
 	private Notification mNotification;
@@ -284,6 +283,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private int mCurrentSong = 0;
 	private int mQueuePos = 0;
 	private int mState = STATE_NORMAL;
+	private Object mStateLock = new Object();
 	private boolean mPlayingBeforeCall;
 	private int mPendingSeek;
 	private Song mLastSongBroadcast;
@@ -294,7 +294,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private Method mStopForeground;
 
 	private static final int GO = 0;
-	private static final int SET_STATE = 1;
 	private static final int PREF_CHANGED = 3;
 	private static final int DO_ITEM = 4;
 	private static final int TRACK_CHANGED = 5;
@@ -406,13 +405,13 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		} else if ("headset_only".equals(key)) {
 			mHeadsetOnly = mSettings.getBoolean(key, false);
 			Log.d("VanillaMusic", "mp: " + mMediaPlayer);
-			if (mHeadsetOnly && isSpeakerOn() && mMediaPlayer.isPlaying())
-				pause();
+			if (mHeadsetOnly && isSpeakerOn())
+				updateState(STATE_NORMAL);
 		} else if ("remote_player".equals(key)) {
-			updateNotification();
+			updateNotification(getSong(0));
 		} else if ("notify_while_paused".equals(key)){
 			mNotifyWhilePaused = mSettings.getBoolean(key, true);
-			updateNotification();
+			updateNotification(getSong(0));
 			if (!mNotifyWhilePaused && mState != STATE_PLAYING)
 				stopForegroundCompat(true);
 		} else if ("scrobble".equals(key)) {
@@ -431,7 +430,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 			if (mScrobble) {
 				intent = new Intent("net.jjc1138.android.scrobbler.action.MUSIC_STATUS");
-				intent.putExtra("playing", mState == STATE_PLAYING);
+				intent.putExtra("playing", newState == STATE_PLAYING);
 				if (song != null)
 					intent.putExtra("id", song.id);
 				sendBroadcast(intent);
@@ -441,40 +440,66 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		}
 	}
 
-	public void updateState(int state)
+	public boolean updateState(int state)
 	{
-		Song song = getSong(0);
-		int oldState = mState;
-		mState = state;
+		synchronized (mStateLock) {
+			if (mState == STATE_NO_MEDIA)
+				return false;
 
-		if (song == null)
-			return;
+			Song song = getSong(0);
+			int oldState = mState;
+			mState = state;
 
-		broadcastChange(oldState, state, song);
+			if (song == null)
+				return false;
 
-		boolean cancelNotification = updateNotification();
+			broadcastChange(oldState, state, song);
 
-		if (mState != oldState) {
-			if (mState == STATE_PLAYING)
-				startForegroundCompat(NOTIFICATION_ID, mNotification);
+			boolean cancelNotification;
+			if (state != oldState || song != mLastSongBroadcast)
+				cancelNotification = updateNotification(song);
 			else
-				stopForegroundCompat(cancelNotification);
+				cancelNotification = false;
+
+			if (mState != oldState) {
+				if (mState == STATE_PLAYING) {
+					startForegroundCompat(NOTIFICATION_ID, mNotification);
+					if (mMediaPlayerInitialized) {
+						synchronized (mMediaPlayer) {
+							mMediaPlayer.start();
+						}
+					}
+				} else {
+					stopForegroundCompat(cancelNotification);
+					if (mMediaPlayerInitialized) {
+						synchronized (mMediaPlayer) {
+							mMediaPlayer.pause();
+						}
+					}
+				}
+
+				return true;
+			} else {
+				return false;
+			}
 		}
 	}
 
 	private void retrieveSongs()
 	{
 		mSongs = Song.getAllSongIds(null);
-		if (mSongs == null)
+		if (mSongs == null) {
 			updateState(STATE_NO_MEDIA);
-		else if (mState == STATE_NO_MEDIA)
-			updateState(STATE_NORMAL);
+		} else if (mState == STATE_NO_MEDIA) {
+			synchronized (mStateLock) {
+				mState = -1;
+				updateState(STATE_NORMAL);
+			}
+		}
 	}
 
-	private boolean updateNotification()
+	private boolean updateNotification(Song song)
 	{
-		Song song = getSong(0);
-
 		if (song == null || !mNotifyWhilePaused && mState == STATE_NORMAL) {
 			mNotificationManager.cancel(NOTIFICATION_ID);
 			return true;
@@ -482,7 +507,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 		mNotification = new SongNotification(song, mState == STATE_PLAYING);
 		mNotificationManager.notify(NOTIFICATION_ID, mNotification);
-
 		return false;
 	}
 
@@ -509,27 +533,14 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		return (mAudioManager.getRouting(mAudioManager.getMode()) & AudioManager.ROUTE_SPEAKER) != 0;
 	}
 
-	private void play()
+	private void togglePlayback()
 	{
-		if (mHeadsetOnly && isSpeakerOn())
-			return;
-
-		mMediaPlayer.start();
-		updateState(STATE_PLAYING);
-	}
-
-	private void pause()
-	{
-		mMediaPlayer.pause();
-		updateState(STATE_NORMAL);
-	}
-
-	private void setPlaying(boolean play)
-	{
-		if (play)
-			play();
-		else
-			pause();
+		synchronized (mStateLock) {
+			if (mState == STATE_PLAYING)
+				updateState(STATE_NORMAL);
+			else if (mState == STATE_NORMAL)
+				updateState(STATE_PLAYING);
+		}
 	}
 
 	private void setCurrentSong(int delta)
@@ -550,6 +561,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				mMediaPlayer.reset();
 				mMediaPlayer.setDataSource(song.path);
 				mMediaPlayer.prepare();
+				if (!mMediaPlayerInitialized)
+					mMediaPlayerInitialized = true;
 			}
 			if (mState == STATE_PLAYING)
 				mMediaPlayer.start();
@@ -687,8 +700,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				break;
 			case TRACK_CHANGED:
 				setCurrentSong(+1);
-				if (mState != STATE_PLAYING)
-					play();
+				updateState(STATE_PLAYING);
 				break;
 			case RELEASE_WAKE_LOCK:
 				if (mWakeLock != null && mWakeLock.isHeld())
@@ -700,25 +712,16 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			case CALL:
 				boolean inCall = message.arg1 == 1;
 				if (inCall) {
-					if (mState == STATE_PLAYING) {
-						mPlayingBeforeCall = true;
-						pause();
-					}
-				} else {
-					if (mPlayingBeforeCall) {
-						play();
-						mPlayingBeforeCall = false;
-					}
+					mPlayingBeforeCall = updateState(STATE_NORMAL);
+				} else if (mPlayingBeforeCall) {
+					updateState(STATE_PLAYING);
 				}
 				break;
 			case GO:
 				if (message.arg1 == 0)
-					setPlaying(!mMediaPlayer.isPlaying());
+					togglePlayback();
 				else
 					setCurrentSong(message.arg1);
-				break;
-			case SET_STATE:
-				updateState(message.arg1);
 				break;
 			case SAVE_STATE:
 				// For unexpected terminations: crashes, task killers, etc.
