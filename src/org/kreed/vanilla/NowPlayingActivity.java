@@ -34,7 +34,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -54,13 +53,12 @@ public class NowPlayingActivity extends PlaybackServiceActivity implements View.
 	private View mNextButton;
 	private SeekBar mSeekBar;
 	private TextView mSeekText;
-	private Button mReconnectButton;
 
 	private int mState;
 	private int mDuration;
 	private boolean mSeekBarTracking;
 
-	private static final int MENU_KILL = 0;
+	private static final int MENU_QUIT = 0;
 	private static final int MENU_PREFS = 2;
 	private static final int MENU_LIBRARY = 3;
 
@@ -116,8 +114,6 @@ public class NowPlayingActivity extends PlaybackServiceActivity implements View.
 
 	private void removeMessageOverlay()
 	{
-		mReconnectButton = null;
-
 		if (mMessageOverlay != null) {
 			mLayout.removeView(mMessageOverlay);
 			mMessageOverlay = null;
@@ -135,23 +131,6 @@ public class NowPlayingActivity extends PlaybackServiceActivity implements View.
 	protected void setState(int state)
 	{
 		mState = state;
-
-		if (mService == null) {
-			makeMessageOverlay();
-
-			RelativeLayout.LayoutParams layoutParams =
-				new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-				                              LinearLayout.LayoutParams.WRAP_CONTENT);
-			layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-
-			mReconnectButton = new Button(this);
-			mReconnectButton.setText(R.string.connect_to_service);
-			mReconnectButton.setLayoutParams(layoutParams);
-			mReconnectButton.setOnClickListener(this);
-			mMessageOverlay.addView(mReconnectButton);
-
-			return;
-		}
 
 		switch (state) {
 		case PlaybackService.STATE_PLAYING:
@@ -228,14 +207,13 @@ public class NowPlayingActivity extends PlaybackServiceActivity implements View.
 	{
 		menu.add(0, MENU_PREFS, 0, R.string.settings);
 		menu.add(0, MENU_LIBRARY, 0, R.string.library);
-		menu.add(0, MENU_KILL, 0, R.string.stop_service);
+		menu.add(0, MENU_QUIT, 0, R.string.quit);
 		return true;
 	}
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu)
 	{
-		menu.findItem(MENU_KILL).setEnabled(mService != null);
 		menu.findItem(MENU_LIBRARY).setEnabled(mState != PlaybackService.STATE_NO_MEDIA);
 		return true;
 	}
@@ -244,9 +222,8 @@ public class NowPlayingActivity extends PlaybackServiceActivity implements View.
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
 		switch (item.getItemId()) {
-		case MENU_KILL:
-			unbindService(this);
-			stopPlaybackService(this);
+		case MENU_QUIT:
+			quit(this);
 			break;
 		case MENU_PREFS:
 			startActivity(new Intent(this, PreferencesActivity.class));
@@ -339,8 +316,6 @@ public class NowPlayingActivity extends PlaybackServiceActivity implements View.
 
 				updateProgress();
 			}
-		} else if (view == mReconnectButton) {
-			bindPlaybackService(true);
 		} else {
 			try {
 				if (view == mNextButton)

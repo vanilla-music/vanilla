@@ -9,7 +9,7 @@
 	<string name="play">Play</string>
 	<string name="settings">Preferences</string>
 	<string name="library">Media Library</string>
-	<string name="stop_service">Stop Service</string>
+	<string name="quit">Stop and Exit</string>
 
 	<string name="enqueued">Enqueued %s</string>
 	<string name="playing">Playing %s</string>

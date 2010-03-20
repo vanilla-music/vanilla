@@ -22,12 +22,27 @@ import org.kreed.vanilla.R;
 
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+import android.view.KeyEvent;
 
 public class PreferencesActivity extends PreferenceActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		ContextApplication.addActivity(this);
 		addPreferencesFromResource(R.xml.preferences);
+	}
+
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
+		ContextApplication.removeActivity(this);
+	}
+
+	@Override
+	public boolean onKeyLongPress(int keyCode, KeyEvent event)
+	{
+		return PlaybackServiceActivity.handleKeyLongPress(this, keyCode);
 	}
 }

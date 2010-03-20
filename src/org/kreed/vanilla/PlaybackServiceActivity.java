@@ -25,20 +25,35 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 
 public abstract class PlaybackServiceActivity extends Activity implements ServiceConnection {
 	protected CoverView mCoverView;
 
 	@Override
+	public void onCreate(Bundle state)
+	{
+		super.onCreate(state);
+		ContextApplication.addActivity(this);
+	}
+
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
+		ContextApplication.removeActivity(this);
+	}
+
+	@Override
 	public void onStart()
 	{
 		super.onStart();
 
-		bindPlaybackService(false);
+		Intent intent = new Intent(this, PlaybackService.class);
+		startService(intent);
+		bindService(intent, this, Context.BIND_AUTO_CREATE);
 
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(PlaybackService.EVENT_CHANGED);
@@ -69,8 +84,7 @@ public abstract class PlaybackServiceActivity extends Activity implements Servic
 	{
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_BACK:
-			stopPlaybackService(activity);
-			activity.finish();
+			quit(activity);
 			return true;
 		}
 
@@ -83,29 +97,10 @@ public abstract class PlaybackServiceActivity extends Activity implements Servic
 		return handleKeyLongPress(this, keyCode);
 	}
 
-	protected void bindPlaybackService(boolean force)
+	protected static void quit(Activity activity)
 	{
-		if (!force) {
-			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-			if (prefs.getBoolean("explicit_stop", false)) {
-				setService(null);
-				return;
-			}
-		}
-
-		Intent intent = new Intent(this, PlaybackService.class);
-		startService(intent);
-		bindService(intent, this, Context.BIND_AUTO_CREATE);
-	}
-
-	protected static void stopPlaybackService(Activity activity)
-	{
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
-		SharedPreferences.Editor editor = prefs.edit();
-		editor.putBoolean("explicit_stop", true);
-		editor.commit();
-
 		activity.stopService(new Intent(activity, PlaybackService.class));
+		ContextApplication.finishAllActivities();
 	}
 
 	protected abstract void setState(int state);

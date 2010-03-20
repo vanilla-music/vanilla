@@ -18,19 +18,39 @@
 
 package org.kreed.vanilla;
 
+import java.util.ArrayList;
+
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 
 public class ContextApplication extends Application {
-	private static ContextApplication instance;
+	private static ContextApplication mInstance;
+	private static ArrayList<Activity> mActivities = new ArrayList<Activity>();
 
 	public ContextApplication()
 	{
-		instance = this;
+		mInstance = this;
 	}
 	
 	public static Context getContext()
 	{
-		return instance;
+		return mInstance;
+	}
+
+	public static void addActivity(Activity activity)
+	{
+		mActivities.add(activity);
+	}
+
+	public static void removeActivity(Activity activity)
+	{
+		mActivities.remove(activity);
+	}
+
+	public static void finishAllActivities()
+	{
+		for (int i = mActivities.size(); --i != -1; )
+			mActivities.remove(i).finish();
 	}
 }

@@ -389,10 +389,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 		telephonyManager.listen(mCallListener, PhoneStateListener.LISTEN_CALL_STATE);
 
-		SharedPreferences.Editor editor = mSettings.edit();
-		editor.putBoolean("explicit_stop", false);
-		editor.commit();
-
 		Looper.loop();
 	}
 

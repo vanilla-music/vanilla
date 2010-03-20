@@ -82,6 +82,8 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 	{
 		super.onCreate(icicle);
 
+		ContextApplication.addActivity(this);
+
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 		setContentView(R.layout.song_selector);
@@ -133,6 +135,13 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 				initializeList(R.id.song_list, songs, SongData.FIELD_TITLE, SongData.FIELD_ARTIST, null);
 			}
 		});
+	}
+
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
+		ContextApplication.removeActivity(this);
 	}
 
 	@Override
