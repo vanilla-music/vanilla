@@ -65,7 +65,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	public static final int STATE_NO_MEDIA = 1;
 	public static final int STATE_PLAYING = 2;
 
-	private boolean mStarted;
 	private int mPendingGo = -1;
 
 	public IPlaybackService.Stub mBinder = new IPlaybackService.Stub() {
@@ -138,7 +137,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 	private void go(int delta)
 	{
-		if (!mStarted) {
+		if (mHandler == null) {
 			Toast.makeText(this, R.string.starting, Toast.LENGTH_SHORT).show();
 			mPendingGo = delta;
 			return;
@@ -167,8 +166,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 		if (mHandler != null)
 			mHandler.sendMessage(mHandler.obtainMessage(DO_ITEM, intent));
-
-		mStarted = true;
 	}
 
 	@Override
