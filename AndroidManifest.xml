@@ -31,9 +31,6 @@
 			android:theme="@android:style/Theme.Dialog"
 			android:excludeFromRecents="true"
 			android:launchMode="singleInstance" />
-		<activity
-			android:name="SongSelector"
-			android:windowSoftInputMode="adjustResize" />
 		<service android:name="PlaybackService" />
 		<activity android:name="PreferencesActivity" />
 	</application>

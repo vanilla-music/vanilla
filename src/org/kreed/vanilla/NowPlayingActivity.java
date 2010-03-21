@@ -21,6 +21,7 @@ package org.kreed.vanilla;
 import org.kreed.vanilla.IPlaybackService;
 import org.kreed.vanilla.R;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Color;
@@ -57,6 +58,8 @@ public class NowPlayingActivity extends PlaybackServiceActivity implements View.
 	private int mState;
 	private int mDuration;
 	private boolean mSeekBarTracking;
+
+	private static final int SONG_SELECTOR = 8;
 
 	private static final int MENU_QUIT = 0;
 	private static final int MENU_PREFS = 2;
@@ -229,7 +232,7 @@ public class NowPlayingActivity extends PlaybackServiceActivity implements View.
 			startActivity(new Intent(this, PreferencesActivity.class));
 			break;
 		case MENU_LIBRARY:
-			onSearchRequested();
+			showDialog(SONG_SELECTOR);
 			break;
 		}
 
@@ -239,8 +242,16 @@ public class NowPlayingActivity extends PlaybackServiceActivity implements View.
 	@Override
 	public boolean onSearchRequested()
 	{
-		startActivity(new Intent(this, SongSelector.class));
+		showDialog(SONG_SELECTOR);
 		return false;
+	}
+
+	@Override
+	public Dialog onCreateDialog(int id)
+	{
+		if (id == SONG_SELECTOR)
+			return new SongSelector(this);
+		return null;
 	}
 
 	@Override

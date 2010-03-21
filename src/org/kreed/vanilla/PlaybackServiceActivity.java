@@ -80,11 +80,11 @@ public abstract class PlaybackServiceActivity extends Activity implements Servic
 		}
 	}
 
-	public static boolean handleKeyLongPress(Activity activity, int keyCode)
+	public static boolean handleKeyLongPress(Context context, int keyCode)
 	{
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_BACK:
-			quit(activity);
+			quit(context);
 			return true;
 		}
 
@@ -97,9 +97,9 @@ public abstract class PlaybackServiceActivity extends Activity implements Servic
 		return handleKeyLongPress(this, keyCode);
 	}
 
-	protected static void quit(Activity activity)
+	protected static void quit(Context context)
 	{
-		activity.stopService(new Intent(activity, PlaybackService.class));
+		context.stopService(new Intent(context, PlaybackService.class));
 		ContextApplication.finishAllActivities();
 	}
 

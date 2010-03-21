@@ -22,13 +22,13 @@ import java.util.Arrays;
 
 import org.kreed.vanilla.R;
 
-import android.app.TabActivity;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.PaintDrawable;
-import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.text.Editable;
@@ -40,7 +40,6 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Filter;
 import android.widget.LinearLayout;
@@ -49,7 +48,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class SongSelector extends TabActivity implements AdapterView.OnItemClickListener, TextWatcher, View.OnClickListener, TabHost.OnTabChangeListener, Filter.FilterListener {
+public class SongSelector extends Dialog implements AdapterView.OnItemClickListener, TextWatcher, View.OnClickListener, TabHost.OnTabChangeListener, Filter.FilterListener {
 	private TabHost mTabHost;
 	private TextView mTextFilter;
 	private View mClearButton;
@@ -74,24 +73,20 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 		ListView view = (ListView)findViewById(id);
 		view.setOnItemClickListener(this);
 		view.setOnCreateContextMenuListener(this);
-		view.setAdapter(new MediaAdapter(this, songs, lineA, lineB, expanderListener));
+		view.setAdapter(new MediaAdapter(getContext(), songs, lineA, lineB, expanderListener));
 	}
 
-	@Override
-	public void onCreate(Bundle icicle)
+	public SongSelector(Context context)
 	{
-		super.onCreate(icicle);
-
-		ContextApplication.addActivity(this);
-
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		super(context, android.R.style.Theme_Black_NoTitleBar);
 
 		setContentView(R.layout.song_selector);
 
-		mTabHost = getTabHost();
+		mTabHost = (TabHost)findViewById(android.R.id.tabhost);
+		mTabHost.setup();
 		mTabHost.setOnTabChangedListener(this);
 
-		Resources res = getResources();
+		Resources res = context.getResources();
 		mTabHost.addTab(mTabHost.newTabSpec("tab_artists").setIndicator(res.getText(R.string.artists), res.getDrawable(R.drawable.tab_artists)).setContent(R.id.artist_list));
 		mTabHost.addTab(mTabHost.newTabSpec("tab_albums").setIndicator(res.getText(R.string.albums), res.getDrawable(R.drawable.tab_albums)).setContent(R.id.album_list));
 		mTabHost.addTab(mTabHost.newTabSpec("tab_songs").setIndicator(res.getText(R.string.songs), res.getDrawable(R.drawable.tab_songs)).setContent(R.id.song_list));
@@ -104,7 +99,7 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 
 		mLimiterViews = (ViewGroup)findViewById(R.id.limiter_layout);
 
-		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this); 
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context); 
 		int inputType;
 		if (settings.getBoolean("phone_input", false))
 			inputType = InputType.TYPE_CLASS_PHONE;
@@ -138,13 +133,6 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 	}
 
 	@Override
-	public void onDestroy()
-	{
-		super.onDestroy();
-		ContextApplication.removeActivity(this);
-	}
-
-	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event)
 	{
 		if (super.onKeyDown(keyCode, event))
@@ -158,11 +146,11 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 	{
 		int action = intent.getIntExtra("action", PlaybackService.ACTION_PLAY) == PlaybackService.ACTION_PLAY ? R.string.playing : R.string.enqueued;
 		String title = intent.getStringExtra("title");
-		String text = getResources().getString(action, title);
-		Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+		String text = getContext().getResources().getString(action, title);
+		Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
 
 		intent.removeExtra("title");
-		startService(intent);
+		getContext().startService(intent);
 	}
 
 	private void expand(MediaAdapter.MediaView view)
@@ -228,7 +216,7 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 			PaintDrawable background = new PaintDrawable(Color.GRAY);
 			background.setCornerRadius(5);
 
-			TextView view = new TextView(this);
+			TextView view = new TextView(getContext());
 			view.setSingleLine();
 			view.setEllipsize(TextUtils.TruncateAt.MARQUEE);
 			view.setText(data.getField(i) + " | X");
@@ -306,6 +294,6 @@ public class SongSelector extends TabActivity implements AdapterView.OnItemClick
 	@Override
 	public boolean onKeyLongPress(int keyCode, KeyEvent event)
 	{
-		return PlaybackServiceActivity.handleKeyLongPress(this, keyCode);
+		return PlaybackServiceActivity.handleKeyLongPress(getContext(), keyCode);
 	}
 }
