@@ -23,7 +23,6 @@ import org.kreed.vanilla.R;
 
 import android.app.Dialog;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -121,13 +120,6 @@ public class NowPlayingActivity extends PlaybackServiceActivity implements View.
 			mLayout.removeView(mMessageOverlay);
 			mMessageOverlay = null;
 		}
-	}
-
-	@Override
-	public void unbindService(ServiceConnection connection)
-	{
-		super.unbindService(connection);
-		mHandler.sendEmptyMessage(UNSET_SERVICE);
 	}
 
 	@Override
@@ -344,7 +336,6 @@ public class NowPlayingActivity extends PlaybackServiceActivity implements View.
 
 	private static final int HIDE = 0;
 	private static final int UPDATE_PROGRESS = 1;
-	private static final int UNSET_SERVICE = 2;
 
 	private Handler mHandler = new Handler() {
 		public void handleMessage(Message message) {
@@ -356,9 +347,6 @@ public class NowPlayingActivity extends PlaybackServiceActivity implements View.
 				break;
 			case UPDATE_PROGRESS:
 				updateProgress();
-				break;
-			case UNSET_SERVICE:
-				setService(null);
 				break;
 			}
 		}
