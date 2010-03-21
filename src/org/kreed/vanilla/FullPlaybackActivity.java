@@ -143,26 +143,18 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 	@Override
 	protected void setService(IPlaybackService service)
 	{
-		if (service == mService)
-			return;
+		super.setService(service);
 
-		int state = mState;
+		mService = service;
 
 		if (service == null) {
 			mCoverView.clearSongs();
 		} else {
 			try {
-				mCoverView.setPlaybackService(service);
-				state = service.getState();
 				mDuration = service.getDuration();
 			} catch (RemoteException e) {
-				Log.i("VanillaMusic", "Failed to initialize connection to playback service", e);
-				return;
 			}
 		}
-
-		mService = service;
-		setState(state);
 	}
 
 	@Override

@@ -18,7 +18,6 @@
 
 package org.kreed.vanilla;
 
-import org.kreed.vanilla.IPlaybackService;
 import org.kreed.vanilla.R;
 
 import android.content.Context;
@@ -59,20 +58,6 @@ public class MiniPlaybackActivity extends PlaybackActivity implements View.OnCli
 		mPlayPauseButton.setOnClickListener(this);
 		mNextButton = findViewById(R.id.next);
 		mNextButton.setOnClickListener(this);
-	}
-
-	@Override
-	protected void setService(IPlaybackService service)
-	{
-		if (service == null) {
-			finish();
-		} else {
-			mCoverView.setPlaybackService(service);
-			try {
-				setState(service.getState());
-			} catch (RemoteException e) {
-			}
-		}
 	}
 
 	@Override

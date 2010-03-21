@@ -27,6 +27,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.view.KeyEvent;
 
 public abstract class PlaybackActivity extends Activity implements ServiceConnection {
@@ -98,7 +99,17 @@ public abstract class PlaybackActivity extends Activity implements ServiceConnec
 	}
 
 	protected abstract void setState(int state);
-	protected abstract void setService(IPlaybackService service);
+
+	protected void setService(IPlaybackService service)
+	{
+		if (service != null) {
+			mCoverView.setPlaybackService(service);
+			try {
+				setState(service.getState());
+			} catch (RemoteException e) {
+			}
+		}
+	}
 
 	public void onServiceConnected(ComponentName name, IBinder service)
 	{
