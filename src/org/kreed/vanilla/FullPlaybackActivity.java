@@ -147,9 +147,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 
 		mService = service;
 
-		if (service == null) {
-			mCoverView.clearSongs();
-		} else {
+		if (service != null) {
 			try {
 				mDuration = service.getDuration();
 			} catch (RemoteException e) {
