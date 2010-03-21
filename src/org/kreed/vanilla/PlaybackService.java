@@ -445,11 +445,11 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				return false;
 
 			Song song = getSong(0);
+			if (song == null && state == STATE_PLAYING)
+				return false;
+
 			int oldState = mState;
 			mState = state;
-
-			if (song == null)
-				return false;
 
 			broadcastChange(oldState, state, song);
 
@@ -499,7 +499,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private boolean updateNotification(Song song)
 	{
 		if (song == null || !mNotifyWhilePaused && mState == STATE_NORMAL) {
-			mNotificationManager.cancel(NOTIFICATION_ID);
+			if (mNotificationManager != null)
+				mNotificationManager.cancel(NOTIFICATION_ID);
 			return true;
 		}
 
