@@ -84,7 +84,7 @@ public class RemoteActivity extends PlaybackServiceActivity implements View.OnCl
 	public void onClick(View view)
 	{
 		if (view == mKillButton) {
-			quit(this);
+			ContextApplication.quit(this);
 		} else if (view == mOpenButton) {
 			startActivity(new Intent(this, NowPlayingActivity.class));
 			finish();

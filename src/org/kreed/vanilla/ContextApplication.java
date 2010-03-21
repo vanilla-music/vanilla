@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 
 public class ContextApplication extends Application {
 	private static ContextApplication mInstance;
@@ -48,8 +49,9 @@ public class ContextApplication extends Application {
 		mActivities.remove(activity);
 	}
 
-	public static void finishAllActivities()
+	public static void quit(Context context)
 	{
+		context.stopService(new Intent(context, PlaybackService.class));
 		for (int i = mActivities.size(); --i != -1; )
 			mActivities.remove(i).finish();
 	}

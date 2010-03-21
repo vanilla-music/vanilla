@@ -226,7 +226,7 @@ public class NowPlayingActivity extends PlaybackServiceActivity implements View.
 	{
 		switch (item.getItemId()) {
 		case MENU_QUIT:
-			quit(this);
+			ContextApplication.quit(this);
 			break;
 		case MENU_PREFS:
 			startActivity(new Intent(this, PreferencesActivity.class));
