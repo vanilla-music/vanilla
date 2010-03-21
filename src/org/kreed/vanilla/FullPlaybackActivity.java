@@ -42,8 +42,7 @@ import android.widget.TextView;
 
 public class FullPlaybackActivity extends PlaybackActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, View.OnFocusChangeListener {
 	private IPlaybackService mService;
-	
-	private ViewGroup mLayout;
+
 	private RelativeLayout mMessageOverlay;
 	private View mControlsTop;
 	private View mControlsBottom;
@@ -74,8 +73,6 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 		mCoverView = (CoverView)findViewById(R.id.cover_view);
 		mCoverView.setOnClickListener(this);
 
-		mLayout = (ViewGroup)mCoverView.getParent();
-
 		mControlsTop = findViewById(R.id.controls_top);
 		mControlsBottom = findViewById(R.id.controls_bottom);
 
@@ -96,36 +93,16 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 		mSeekBar.setOnFocusChangeListener(this);
 	}
 
-	private void makeMessageOverlay()
-	{
-		if (mMessageOverlay != null) {
-			mMessageOverlay.removeAllViews();
-			return;
-		}
-
-		ViewGroup.LayoutParams layoutParams =
-			new ViewGroup.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
-			                              LinearLayout.LayoutParams.FILL_PARENT);
-
-		mMessageOverlay = new RelativeLayout(this);
-		mMessageOverlay.setLayoutParams(layoutParams);
-		mMessageOverlay.setBackgroundColor(Color.BLACK);
-
-		mLayout.addView(mMessageOverlay);
-	}
-
-	private void removeMessageOverlay()
-	{
-		if (mMessageOverlay != null) {
-			mLayout.removeView(mMessageOverlay);
-			mMessageOverlay = null;
-		}
-	}
-
 	@Override
 	protected void setState(int state)
 	{
+		if (state == mState)
+			return;
+
 		mState = state;
+
+		if (mMessageOverlay != null)
+			mMessageOverlay.setVisibility(View.GONE);
 
 		switch (state) {
 		case PlaybackService.STATE_PLAYING:
@@ -133,19 +110,26 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 				mControlsBottom.setVisibility(View.GONE);
 			// fall through
 		case PlaybackService.STATE_NORMAL:
-			removeMessageOverlay();
-
 			if (state == PlaybackService.STATE_NORMAL)
 				mControlsBottom.setVisibility(View.VISIBLE);
 
 			mPlayPauseButton.setImageResource(state == PlaybackService.STATE_PLAYING ? R.drawable.pause : R.drawable.play);
 			break;
 		case PlaybackService.STATE_NO_MEDIA:
-			makeMessageOverlay();
+			if (mMessageOverlay == null) {
+				mMessageOverlay = new RelativeLayout(this);
+				mMessageOverlay.setBackgroundColor(Color.BLACK);
+				addContentView(mMessageOverlay,
+					new ViewGroup.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
+					                           LinearLayout.LayoutParams.FILL_PARENT));
+			} else {
+				mMessageOverlay.setVisibility(View.VISIBLE);
+				mMessageOverlay.removeAllViews();
+			}
 
 			RelativeLayout.LayoutParams layoutParams =
 				new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-				                              LinearLayout.LayoutParams.WRAP_CONTENT);
+				                                LinearLayout.LayoutParams.WRAP_CONTENT);
 			layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
 
 			TextView text = new TextView(this);
@@ -155,7 +139,6 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 			break;
 		}
 	}
-	
 
 	@Override
 	protected void setService(IPlaybackService service)
