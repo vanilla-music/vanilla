@@ -451,10 +451,11 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			int oldState = mState;
 			mState = state;
 
+			Song lastBroadcast = mLastSongBroadcast;
 			broadcastChange(oldState, state, song);
 
 			boolean cancelNotification;
-			if (state != oldState || song != mLastSongBroadcast)
+			if (state != oldState || song != lastBroadcast)
 				cancelNotification = updateNotification(song);
 			else
 				cancelNotification = false;
