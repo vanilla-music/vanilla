@@ -182,12 +182,9 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			saveState(true);
 
 		if (mMediaPlayer != null) {
-			MediaPlayer player = mMediaPlayer;
+			updateState(STATE_NORMAL);
+			mMediaPlayer.release();
 			mMediaPlayer = null;
-
-			if (player.isPlaying())
-				player.pause();
-			player.release();
 		}
 
 		try {
