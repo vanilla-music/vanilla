@@ -301,6 +301,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private Method mStopForeground;
 
 	private static final int GO = 0;
+	private static final int POST_CREATE = 1;
 	private static final int PREF_CHANGED = 3;
 	private static final int DO_ITEM = 4;
 	private static final int TRACK_CHANGED = 5;
@@ -390,16 +391,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		if (mPendingGo != -1)
 			mHandler.sendMessage(mHandler.obtainMessage(GO, mPendingGo, 0));
 
-		updateNotification(getSong(0));
-
-		IntentFilter filter = new IntentFilter();
-		filter.addAction(Intent.ACTION_HEADSET_PLUG);
-		filter.addAction(Intent.ACTION_MEDIA_SCANNER_FINISHED);
-		filter.addAction(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-		registerReceiver(mReceiver, filter);
-
-		TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-		telephonyManager.listen(mCallListener, PhoneStateListener.LISTEN_CALL_STATE);
+		mHandler.sendEmptyMessage(POST_CREATE);
 
 		Looper.loop();
 	}
@@ -746,6 +738,18 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 				mHandler.removeMessages(SAVE_STATE);
 				mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
+				break;
+			case POST_CREATE:
+				updateNotification(getSong(0));
+
+				IntentFilter filter = new IntentFilter();
+				filter.addAction(Intent.ACTION_HEADSET_PLUG);
+				filter.addAction(Intent.ACTION_MEDIA_SCANNER_FINISHED);
+				filter.addAction(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+				registerReceiver(mReceiver, filter);
+
+				TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+				telephonyManager.listen(mCallListener, PhoneStateListener.LISTEN_CALL_STATE);
 				break;
 			}
 		}
