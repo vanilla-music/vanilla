@@ -3,7 +3,8 @@
 	<string name="app_name">Vanilla Music</string>
 
 	<string name="no_songs">No songs found on your device.</string>
-	<string name="connect_to_service">Connect to Service</string>
+
+	<string name="starting">Starting up...</string>
 
 	<string name="enqueue">Enqueue</string>
 	<string name="play">Play</string>

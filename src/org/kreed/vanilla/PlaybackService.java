@@ -47,6 +47,7 @@ import android.preference.PreferenceManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.widget.Toast;
 
 public class PlaybackService extends Service implements Runnable, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, SharedPreferences.OnSharedPreferenceChangeListener {	
 	private static final int NOTIFICATION_ID = 2;
@@ -63,6 +64,9 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	public static final int STATE_NORMAL = 0;
 	public static final int STATE_NO_MEDIA = 1;
 	public static final int STATE_PLAYING = 2;
+
+	private boolean mStarted;
+	private int mPendingGo = -1;
 
 	public IPlaybackService.Stub mBinder = new IPlaybackService.Stub() {
 		public boolean isLoaded()
@@ -120,7 +124,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			}
 		}
 	};
-
 	@Override
 	public IBinder onBind(Intent intent)
 	{
@@ -133,11 +136,39 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		new Thread(this).start();
 	}
 
+	private void go(int delta)
+	{
+		if (!mStarted) {
+			Toast.makeText(this, R.string.starting, Toast.LENGTH_SHORT).show();
+			mPendingGo = delta;
+			return;
+		}
+
+		if (mHandler.hasMessages(GO)) {
+			mHandler.removeMessages(GO);
+			Intent launcher = new Intent(this, NowPlayingActivity.class);
+			launcher.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			startActivity(launcher);
+		} else {
+			mHandler.sendMessageDelayed(mHandler.obtainMessage(GO, delta, 0), 250);
+		}
+	}
+
 	@Override
 	public void onStart(Intent intent, int flags)
 	{
+		String action = intent.getAction();
+
+		if (TOGGLE_PLAYBACK.equals(action)) {
+			go(0);
+		} else if (NEXT_SONG.equals(action)) {
+			go(1);
+		}
+
 		if (mHandler != null)
 			mHandler.sendMessage(mHandler.obtainMessage(DO_ITEM, intent));
+
+		mStarted = true;
 	}
 
 	@Override
@@ -201,18 +232,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		}
 	}
 
-	private void go(int delta)
-	{
-		if (mHandler.hasMessages(GO)) {
-			mHandler.removeMessages(GO);
-			Intent launcher = new Intent(PlaybackService.this, NowPlayingActivity.class);
-			launcher.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			startActivity(launcher);
-		} else {
-			mHandler.sendMessageDelayed(mHandler.obtainMessage(GO, delta, 0), 250);
-		}
-	}
-
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context content, Intent intent)
@@ -226,10 +245,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			} else if (Intent.ACTION_MEDIA_SCANNER_FINISHED.equals(action)
 			        || Intent.ACTION_MEDIA_SCANNER_SCAN_FILE.equals(action)) {
 				mHandler.sendEmptyMessage(RETRIEVE_SONGS);
-			} else if (TOGGLE_PLAYBACK.equals(action)) {
-				go(0);
-			} else if (NEXT_SONG.equals(action)) {
-				go(1);
 			}
 		}
 	};
@@ -378,14 +393,15 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 		sendBroadcast(new Intent(EVENT_LOADED));
 
+		if (mPendingGo != -1)
+			mHandler.sendMessage(mHandler.obtainMessage(GO, mPendingGo, 0));
+
 		updateNotification(getSong(0));
 
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Intent.ACTION_HEADSET_PLUG);
 		filter.addAction(Intent.ACTION_MEDIA_SCANNER_FINISHED);
 		filter.addAction(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-		filter.addAction(TOGGLE_PLAYBACK);
-		filter.addAction(NEXT_SONG);
 		registerReceiver(mReceiver, filter);
 
 		TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);

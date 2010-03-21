@@ -64,8 +64,12 @@ public class OneCellWidget extends AppWidgetProvider {
 		RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.one_cell_widget);
 
 		views.setImageViewResource(R.id.play_pause, playing ? R.drawable.hidden_pause : R.drawable.hidden_play);
-		views.setOnClickPendingIntent(R.id.play_pause, PendingIntent.getBroadcast(context, 0, new Intent(PlaybackService.TOGGLE_PLAYBACK), 0));
-		views.setOnClickPendingIntent(R.id.next, PendingIntent.getBroadcast(context, 0, new Intent(PlaybackService.NEXT_SONG), 0));
+		Intent playPause = new Intent(context, PlaybackService.class);
+		playPause.setAction(PlaybackService.TOGGLE_PLAYBACK);
+		views.setOnClickPendingIntent(R.id.play_pause, PendingIntent.getService(context, 0, playPause, 0));
+		Intent next = new Intent(context, PlaybackService.class);
+		next.setAction(PlaybackService.NEXT_SONG);
+		views.setOnClickPendingIntent(R.id.next, PendingIntent.getService(context, 0, next, 0));
 
 		if (song == null) {
 			views.setImageViewResource(R.id.cover_view, R.drawable.icon);
