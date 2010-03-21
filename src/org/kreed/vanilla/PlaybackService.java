@@ -145,7 +145,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 		if (mHandler.hasMessages(GO)) {
 			mHandler.removeMessages(GO);
-			Intent launcher = new Intent(this, NowPlayingActivity.class);
+			Intent launcher = new Intent(this, FullPlaybackActivity.class);
 			launcher.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(launcher);
 		} else {

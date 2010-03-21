@@ -29,7 +29,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.view.KeyEvent;
 
-public abstract class PlaybackServiceActivity extends Activity implements ServiceConnection {
+public abstract class PlaybackActivity extends Activity implements ServiceConnection {
 	protected CoverView mCoverView;
 
 	@Override

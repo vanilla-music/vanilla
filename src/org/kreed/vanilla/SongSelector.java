@@ -294,6 +294,6 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 	@Override
 	public boolean onKeyLongPress(int keyCode, KeyEvent event)
 	{
-		return PlaybackServiceActivity.handleKeyLongPress(getContext(), keyCode);
+		return PlaybackActivity.handleKeyLongPress(getContext(), keyCode);
 	}
 }

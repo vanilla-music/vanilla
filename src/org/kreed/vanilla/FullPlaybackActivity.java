@@ -40,7 +40,7 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-public class NowPlayingActivity extends PlaybackServiceActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, View.OnFocusChangeListener {
+public class FullPlaybackActivity extends PlaybackActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, View.OnFocusChangeListener {
 	private IPlaybackService mService;
 	
 	private ViewGroup mLayout;
@@ -69,7 +69,7 @@ public class NowPlayingActivity extends PlaybackServiceActivity implements View.
 	{
 		super.onCreate(icicle);
 
-		setContentView(R.layout.now_playing);
+		setContentView(R.layout.full_playback);
 
 		mCoverView = (CoverView)findViewById(R.id.cover_view);
 		mCoverView.setOnClickListener(this);
