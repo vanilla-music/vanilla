@@ -179,6 +179,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			saveState(true);
 
 		if (mMediaPlayer != null) {
+			mSongTimeline = null;
 			updateState(STATE_NORMAL);
 			mMediaPlayer.release();
 			mMediaPlayer = null;
@@ -189,7 +190,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		} catch (IllegalArgumentException e) {
 			// we haven't registered the receiver yet
 		}
-		mNotificationManager.cancel(NOTIFICATION_ID);
 
 		if (mWakeLock != null && mWakeLock.isHeld())
 			mWakeLock.release();
@@ -499,7 +499,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 	private boolean updateNotification(Song song)
 	{
-		if (song == null || !mNotifyWhilePaused && mState == STATE_NORMAL) {
+		if (song == null || !mNotifyWhilePaused && mState == STATE_NORMAL || mState == STATE_NO_MEDIA) {
 			if (mNotificationManager != null)
 				mNotificationManager.cancel(NOTIFICATION_ID);
 			return true;
