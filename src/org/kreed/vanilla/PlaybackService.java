@@ -149,7 +149,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			launcher.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(launcher);
 		} else {
-			mHandler.sendMessageDelayed(mHandler.obtainMessage(GO, delta, 0), 250);
+			mHandler.sendMessageDelayed(mHandler.obtainMessage(GO, delta, 0), 400);
 		}
 	}
 
