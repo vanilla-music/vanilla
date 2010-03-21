@@ -378,6 +378,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 		sendBroadcast(new Intent(EVENT_LOADED));
 
+		updateNotification(getSong(0));
+
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Intent.ACTION_HEADSET_PLUG);
 		filter.addAction(Intent.ACTION_MEDIA_SCANNER_FINISHED);
