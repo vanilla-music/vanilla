@@ -78,7 +78,7 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 
 	public SongSelector(Context context)
 	{
-		super(context, android.R.style.Theme_Black_NoTitleBar);
+		super(context, android.R.style.Theme_NoTitleBar);
 
 		setContentView(R.layout.song_selector);
 
