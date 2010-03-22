@@ -173,9 +173,9 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-		menu.add(0, MENU_PREFS, 0, R.string.settings);
-		menu.add(0, MENU_LIBRARY, 0, R.string.library);
-		menu.add(0, MENU_QUIT, 0, R.string.quit);
+		menu.add(0, MENU_LIBRARY, 0, R.string.library).setIcon(android.R.drawable.ic_menu_add);
+		menu.add(0, MENU_PREFS, 0, R.string.settings).setIcon(android.R.drawable.ic_menu_preferences);
+		menu.add(0, MENU_QUIT, 0, R.string.quit).setIcon(android.R.drawable.ic_menu_close_clear_cancel);
 		return true;
 	}
 
@@ -251,7 +251,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 	{
 		if (mControlsTop.getVisibility() != View.VISIBLE)
 			return;
-		
+
 		int position = 0;
 		if (mService != null) {
 			try {
@@ -263,7 +263,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 		if (!mSeekBarTracking)
 			mSeekBar.setProgress(mDuration == 0 ? 0 : (int)(1000 * position / mDuration));
 		mSeekText.setText(stringForTime((int)position) + " / " + stringForTime(mDuration));
-		
+
 		long next = 1000 - position % 1000;
 		mHandler.removeMessages(UPDATE_PROGRESS);
 		mHandler.sendEmptyMessageDelayed(UPDATE_PROGRESS, next);

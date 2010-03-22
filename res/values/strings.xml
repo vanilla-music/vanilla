@@ -10,7 +10,7 @@
 	<string name="play">Play</string>
 	<string name="expand">Expand</string>
 	<string name="settings">Preferences</string>
-	<string name="library">Media Library</string>
+	<string name="library">Choose Songs</string>
 	<string name="quit">Stop and Exit</string>
 
 	<string name="enqueued">Enqueued %s</string>
