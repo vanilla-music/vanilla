@@ -29,6 +29,6 @@ interface IPlaybackService {
 	int getDuration();
 
 	void setCurrentSong(int delta);
-	void togglePlayback();
+	void toggleFlag(int flag);
 	void seekToProgress(int progress);
 }

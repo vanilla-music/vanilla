@@ -422,7 +422,7 @@ public class CoverView extends View {
 				switch (message.what) {
 				case GO:
 					if (message.arg1 == 0)
-						mService.togglePlayback();
+						mService.toggleFlag(PlaybackService.FLAG_PLAYING);
 					else
 						shiftCover(message.arg1);
 					break;

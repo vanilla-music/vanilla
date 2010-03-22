@@ -107,9 +107,9 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			PlaybackService.this.setCurrentSong(delta);
 		}
 
-		public void togglePlayback()
+		public void toggleFlag(int flag)
 		{
-			PlaybackService.this.togglePlayback();
+			PlaybackService.this.toggleFlag(flag);
 		}
 
 		public void seekToProgress(int progress)
@@ -536,13 +536,13 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		return (mAudioManager.getRouting(mAudioManager.getMode()) & AudioManager.ROUTE_SPEAKER) != 0;
 	}
 
-	private void togglePlayback()
+	private void toggleFlag(int flag)
 	{
 		synchronized (mStateLock) {
-			if ((mState & FLAG_PLAYING) == 0)
-				setFlag(FLAG_PLAYING);
+			if ((mState & flag) == 0)
+				setFlag(flag);
 			else
-				unsetFlag(FLAG_PLAYING);
+				unsetFlag(flag);
 		}
 	}
 
@@ -722,7 +722,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				break;
 			case GO:
 				if (message.arg1 == 0)
-					togglePlayback();
+					toggleFlag(FLAG_PLAYING);
 				else
 					setCurrentSong(message.arg1);
 				break;
