@@ -30,6 +30,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.PaintDrawable;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.InputType;
@@ -57,6 +58,9 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 
 	private int mDefaultAction;
 	private boolean mDefaultIsLastAction;
+
+	private long mLastId;
+	private long mLastTime;
 
 	private ListView getList(int tab)
 	{
@@ -173,10 +177,17 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 	public void onItemClick(AdapterView<?> list, View view, int pos, long id)
 	{
 		MediaAdapter.MediaView mediaView = (MediaAdapter.MediaView)view;
-		if (mediaView.isExpanderPressed())
+		if (mediaView.isExpanderPressed()) {
 			expand(mediaView);
-		else
-			sendSongIntent(((MediaAdapter)list.getAdapter()).buildSongIntent(mDefaultAction, pos));
+		} else {
+			if (id == mLastId && SystemClock.elapsedRealtime() - mLastTime < 500) {
+				dismiss();
+			} else {
+				sendSongIntent(((MediaAdapter)list.getAdapter()).buildSongIntent(mDefaultAction, pos));
+				mLastId = id;
+				mLastTime = SystemClock.elapsedRealtime();
+			}
+		}
 	}
 
 	public void afterTextChanged(Editable editable)
