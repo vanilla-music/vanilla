@@ -63,10 +63,10 @@ public class MiniPlaybackActivity extends PlaybackActivity implements View.OnCli
 	@Override
 	protected void setState(int state)
 	{
-		if (state == PlaybackService.STATE_NO_MEDIA)
+		if ((state & PlaybackService.FLAG_NO_MEDIA) != 0)
 			finish();
 
-		mPlayPauseButton.setImageResource(state == PlaybackService.STATE_PLAYING ? R.drawable.pause : R.drawable.play);
+		mPlayPauseButton.setImageResource((state & PlaybackService.FLAG_PLAYING) == 0 ? R.drawable.play : R.drawable.pause);
 	}
 
 	public void onClick(View view)

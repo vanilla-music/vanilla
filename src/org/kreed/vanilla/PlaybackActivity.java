@@ -60,8 +60,6 @@ public abstract class PlaybackActivity extends Activity implements ServiceConnec
 		filter.addAction(PlaybackService.EVENT_CHANGED);
 		filter.addAction(PlaybackService.EVENT_LOADED);
 		registerReceiver(mReceiver, filter);
-
-		setState(PlaybackService.STATE_NORMAL);
 	}
 
 	@Override

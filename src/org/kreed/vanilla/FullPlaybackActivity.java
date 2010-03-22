@@ -99,23 +99,13 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 		if (state == mState)
 			return;
 
+		Log.i("VanillaMusic", "state: " + state);
 		mState = state;
 
 		if (mMessageOverlay != null)
 			mMessageOverlay.setVisibility(View.GONE);
 
-		switch (state) {
-		case PlaybackService.STATE_PLAYING:
-			if (!mHandler.hasMessages(HIDE))
-				mControlsBottom.setVisibility(View.GONE);
-			// fall through
-		case PlaybackService.STATE_NORMAL:
-			if (state == PlaybackService.STATE_NORMAL)
-				mControlsBottom.setVisibility(View.VISIBLE);
-
-			mPlayPauseButton.setImageResource(state == PlaybackService.STATE_PLAYING ? R.drawable.pause : R.drawable.play);
-			break;
-		case PlaybackService.STATE_NO_MEDIA:
+		if ((mState & PlaybackService.FLAG_NO_MEDIA) != 0) {
 			if (mMessageOverlay == null) {
 				mMessageOverlay = new RelativeLayout(this);
 				mMessageOverlay.setBackgroundColor(Color.BLACK);
@@ -136,7 +126,15 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 			text.setText(R.string.no_songs);
 			text.setLayoutParams(layoutParams);
 			mMessageOverlay.addView(text);
-			break;
+		}
+
+		if ((mState & PlaybackService.FLAG_PLAYING) != 0) {
+			if (!mHandler.hasMessages(HIDE))
+				mControlsBottom.setVisibility(View.GONE);
+			mPlayPauseButton.setImageResource(R.drawable.pause);
+		} else {
+			mControlsBottom.setVisibility(View.VISIBLE);
+			mPlayPauseButton.setImageResource(R.drawable.play);
 		}
 	}
 
@@ -182,7 +180,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu)
 	{
-		menu.findItem(MENU_LIBRARY).setEnabled(mState != PlaybackService.STATE_NO_MEDIA);
+		menu.findItem(MENU_LIBRARY).setEnabled((mState & PlaybackService.FLAG_NO_MEDIA) != 0);
 		return true;
 	}
 
@@ -282,7 +280,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 		if (view == mCoverView) {
 			if (mControlsTop.getVisibility() == View.VISIBLE) {
 				mControlsTop.setVisibility(View.GONE);
-				if (mState == PlaybackService.STATE_PLAYING)
+				if ((mState & PlaybackService.FLAG_PLAYING) != 0)
 					mControlsBottom.setVisibility(View.GONE);
 			} else {
 				mControlsTop.setVisibility(View.VISIBLE);
@@ -315,7 +313,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 			switch (message.what) {
 			case HIDE:
 				mControlsTop.setVisibility(View.GONE);
-				if (mState == PlaybackService.STATE_PLAYING)
+				if ((mState & PlaybackService.FLAG_PLAYING) != 0)
 					mControlsBottom.setVisibility(View.GONE);
 				break;
 			case UPDATE_PROGRESS:

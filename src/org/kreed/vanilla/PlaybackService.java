@@ -61,9 +61,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	public static final int ACTION_PLAY = 0;
 	public static final int ACTION_ENQUEUE = 1;
 
-	public static final int STATE_NORMAL = 0;
-	public static final int STATE_NO_MEDIA = 1;
-	public static final int STATE_PLAYING = 2;
+	public static final int FLAG_NO_MEDIA = 0x2;
+	public static final int FLAG_PLAYING = 0x1;
 
 	private int mPendingGo = -1;
 
@@ -175,12 +174,12 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 		Log.d("VanillaMusic", "destroy");
 
-		if (mSongs != null)
+		if (mSongTimeline != null)
 			saveState(true);
 
 		if (mMediaPlayer != null) {
 			mSongTimeline = null;
-			updateState(STATE_NORMAL);
+			unsetFlag(FLAG_PLAYING);
 			mMediaPlayer.release();
 			mMediaPlayer = null;
 		}
@@ -235,7 +234,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				boolean oldPlugged = mPlugged;
 				mPlugged = intent.getIntExtra("state", 0) != 0;
 				if (mPlugged != oldPlugged && (mHeadsetPause && !mPlugged || mHeadsetOnly && !isSpeakerOn()))
-					updateState(STATE_NORMAL);
+					unsetFlag(FLAG_PLAYING);
 			} else if (Intent.ACTION_MEDIA_SCANNER_FINISHED.equals(action)
 			        || Intent.ACTION_MEDIA_SCANNER_SCAN_FILE.equals(action)) {
 				mHandler.sendEmptyMessage(RETRIEVE_SONGS);
@@ -287,9 +286,9 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 	private int[] mSongs;
 	private ArrayList<Song> mSongTimeline;
-	private int mCurrentSong = 0;
-	private int mQueuePos = 0;
-	private int mState = STATE_NORMAL;
+	private int mCurrentSong;
+	private int mQueuePos;
+	private int mState = 0x80;
 	private Object mStateLock = new Object();
 	private boolean mPlayingBeforeCall;
 	private int mPendingSeek;
@@ -382,7 +381,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 		mHandler = new MusicHandler();
 
-		setCurrentSong(0);
 		if (mPendingSeek != 0)
 			mMediaPlayer.seekTo(mPendingSeek);
 
@@ -404,13 +402,13 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			mHeadsetOnly = mSettings.getBoolean(key, false);
 			Log.d("VanillaMusic", "mp: " + mMediaPlayer);
 			if (mHeadsetOnly && isSpeakerOn())
-				updateState(STATE_NORMAL);
+				unsetFlag(FLAG_PLAYING);
 		} else if ("remote_player".equals(key)) {
 			updateNotification(getSong(0));
 		} else if ("notify_while_paused".equals(key)){
 			mNotifyWhilePaused = mSettings.getBoolean(key, true);
 			updateNotification(getSong(0));
-			if (!mNotifyWhilePaused && mState != STATE_PLAYING)
+			if (!mNotifyWhilePaused && (mState & FLAG_PLAYING) == 0)
 				stopForegroundCompat(true);
 		} else if ("scrobble".equals(key)) {
 			mScrobble = mSettings.getBoolean("scrobble", false);
@@ -428,7 +426,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 			if (mScrobble) {
 				intent = new Intent("net.jjc1138.android.scrobbler.action.MUSIC_STATUS");
-				intent.putExtra("playing", newState == STATE_PLAYING);
+				intent.putExtra("playing", (newState & FLAG_PLAYING) != 0);
 				if (song != null)
 					intent.putExtra("id", song.id);
 				sendBroadcast(intent);
@@ -438,74 +436,79 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		}
 	}
 
-	public boolean updateState(int state)
+	private boolean setFlag(int flag)
 	{
 		synchronized (mStateLock) {
-			if (mState == STATE_NO_MEDIA)
-				return false;
+			return updateState(mState | flag);
+		}
+	}
 
-			Song song = getSong(0);
-			if (song == null && state == STATE_PLAYING)
-				return false;
+	private boolean unsetFlag(int flag)
+	{
+		synchronized (mStateLock) {
+			return updateState(mState & ~flag);
+		}
+	}
 
-			int oldState = mState;
-			mState = state;
+	private boolean updateState(int state)
+	{
+		Song song = getSong(0);
+		if (song == null && (state & FLAG_PLAYING) != 0)
+			return false;
 
-			Song lastBroadcast = mLastSongBroadcast;
-			broadcastChange(oldState, state, song);
+		int oldState = mState;
+		mState = state;
 
-			boolean cancelNotification;
-			if (state != oldState || song != lastBroadcast)
-				cancelNotification = updateNotification(song);
-			else
-				cancelNotification = false;
+		Song lastBroadcast = mLastSongBroadcast;
+		broadcastChange(oldState, state, song);
 
-			if (mState != oldState) {
-				if (mState == STATE_PLAYING) {
-					startForegroundCompat(NOTIFICATION_ID, mNotification);
-					if (mMediaPlayerInitialized) {
-						synchronized (mMediaPlayer) {
-							mMediaPlayer.start();
-						}
-					}
-				} else {
-					stopForegroundCompat(cancelNotification);
-					if (mMediaPlayerInitialized) {
-						synchronized (mMediaPlayer) {
-							mMediaPlayer.pause();
-						}
+		boolean cancelNotification;
+		if (state != oldState || song != lastBroadcast)
+			cancelNotification = updateNotification(song);
+		else
+			cancelNotification = false;
+
+		if (mState != oldState) {
+			if ((state & FLAG_PLAYING) != 0) {
+				startForegroundCompat(NOTIFICATION_ID, mNotification);
+				if (mMediaPlayerInitialized) {
+					synchronized (mMediaPlayer) {
+						mMediaPlayer.start();
 					}
 				}
-
-				return true;
 			} else {
-				return false;
+				stopForegroundCompat(cancelNotification);
+				if (mMediaPlayerInitialized) {
+					synchronized (mMediaPlayer) {
+						mMediaPlayer.pause();
+					}
+				}
 			}
+
+			return true;
+		} else {
+			return false;
 		}
 	}
 
 	private void retrieveSongs()
 	{
 		mSongs = Song.getAllSongIds(null);
-		if (mSongs == null) {
-			updateState(STATE_NO_MEDIA);
-		} else if (mState == STATE_NO_MEDIA) {
-			synchronized (mStateLock) {
-				mState = -1;
-				updateState(STATE_NORMAL);
-			}
-		}
+		if (mSongs == null)
+			setFlag(FLAG_NO_MEDIA);
+		else if ((mState & FLAG_NO_MEDIA) != 0)
+			unsetFlag(FLAG_NO_MEDIA);
 	}
 
 	private boolean updateNotification(Song song)
 	{
-		if (song == null || !mNotifyWhilePaused && mState == STATE_NORMAL || mState == STATE_NO_MEDIA) {
+		if (song == null || !mNotifyWhilePaused && (mState & FLAG_PLAYING) == 0) {
 			if (mNotificationManager != null)
 				mNotificationManager.cancel(NOTIFICATION_ID);
 			return true;
 		}
 
-		mNotification = new SongNotification(song, mState == STATE_PLAYING);
+		mNotification = new SongNotification(song, (mState & FLAG_PLAYING) != 0);
 		mNotificationManager.notify(NOTIFICATION_ID, mNotification);
 		return false;
 	}
@@ -536,10 +539,10 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private void togglePlayback()
 	{
 		synchronized (mStateLock) {
-			if (mState == STATE_PLAYING)
-				updateState(STATE_NORMAL);
-			else if (mState == STATE_NORMAL)
-				updateState(STATE_PLAYING);
+			if ((mState & FLAG_PLAYING) == 0)
+				setFlag(FLAG_PLAYING);
+			else
+				unsetFlag(FLAG_PLAYING);
 		}
 	}
 
@@ -564,7 +567,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				if (!mMediaPlayerInitialized)
 					mMediaPlayerInitialized = true;
 			}
-			if (mState == STATE_PLAYING)
+			if ((mState & FLAG_PLAYING) != 0)
 				mMediaPlayer.start();
 			updateState(mState);
 		} catch (IOException e) {
@@ -700,7 +703,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				break;
 			case TRACK_CHANGED:
 				setCurrentSong(+1);
-				updateState(STATE_PLAYING);
+				setFlag(FLAG_PLAYING);
 				break;
 			case RELEASE_WAKE_LOCK:
 				if (mWakeLock != null && mWakeLock.isHeld())
@@ -712,9 +715,9 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			case CALL:
 				boolean inCall = message.arg1 == 1;
 				if (inCall) {
-					mPlayingBeforeCall = updateState(STATE_NORMAL);
+					mPlayingBeforeCall = unsetFlag(FLAG_PLAYING);
 				} else if (mPlayingBeforeCall) {
-					updateState(STATE_PLAYING);
+					setFlag(FLAG_PLAYING);
 				}
 				break;
 			case GO:
