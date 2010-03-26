@@ -30,7 +30,6 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.PaintDrawable;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.InputType;
@@ -59,8 +58,7 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 	private int mDefaultAction;
 	private boolean mDefaultIsLastAction;
 
-	private long mLastId;
-	private long mLastTime;
+	private long mLastPlayedId;
 
 	private ListView getList(int tab)
 	{
@@ -148,13 +146,18 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 
 	private void sendSongIntent(Intent intent)
 	{
-		int action = intent.getIntExtra("action", PlaybackService.ACTION_PLAY) == PlaybackService.ACTION_PLAY ? R.string.playing : R.string.enqueued;
+		int action = intent.getIntExtra("action", PlaybackService.ACTION_PLAY);
 		String title = intent.getStringExtra("title");
-		String text = getContext().getResources().getString(action, title);
+		intent.removeExtra("title");
+
+		int res = action == PlaybackService.ACTION_PLAY ? R.string.playing : R.string.enqueued;
+		String text = getContext().getResources().getString(res, title);
 		Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
 
-		intent.removeExtra("title");
 		getContext().startService(intent);
+
+		if (action == PlaybackService.ACTION_PLAY)
+			mLastPlayedId = intent.getIntExtra("id", -1);
 	}
 
 	private void expand(MediaAdapter.MediaView view)
@@ -177,17 +180,12 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 	public void onItemClick(AdapterView<?> list, View view, int pos, long id)
 	{
 		MediaAdapter.MediaView mediaView = (MediaAdapter.MediaView)view;
-		if (mediaView.isExpanderPressed()) {
+		if (mediaView.isExpanderPressed())
 			expand(mediaView);
-		} else {
-			if (id == mLastId && SystemClock.elapsedRealtime() - mLastTime < 500) {
-				dismiss();
-			} else {
-				sendSongIntent(((MediaAdapter)list.getAdapter()).buildSongIntent(mDefaultAction, pos));
-				mLastId = id;
-				mLastTime = SystemClock.elapsedRealtime();
-			}
-		}
+		else if (mDefaultAction == PlaybackService.ACTION_PLAY && id == mLastPlayedId)
+			dismiss();
+		else
+			sendSongIntent(((MediaAdapter)list.getAdapter()).buildSongIntent(mDefaultAction, pos));
 	}
 
 	public void afterTextChanged(Editable editable)
