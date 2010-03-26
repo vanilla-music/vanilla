@@ -180,7 +180,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu)
 	{
-		menu.findItem(MENU_LIBRARY).setEnabled((mState & PlaybackService.FLAG_NO_MEDIA) != 0);
+		menu.findItem(MENU_LIBRARY).setEnabled((mState & PlaybackService.FLAG_NO_MEDIA) == 0);
 		return true;
 	}
 
