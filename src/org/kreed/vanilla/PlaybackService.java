@@ -155,12 +155,13 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	@Override
 	public void onStart(Intent intent, int flags)
 	{
-		String action = intent.getAction();
+		if (intent != null) {
+			String action = intent.getAction();
 
-		if (TOGGLE_PLAYBACK.equals(action)) {
-			go(0);
-		} else if (NEXT_SONG.equals(action)) {
-			go(1);
+			if (TOGGLE_PLAYBACK.equals(action))
+				go(0);
+			else if (NEXT_SONG.equals(action))
+				go(1);
 		}
 
 		if (mHandler != null)
@@ -648,11 +649,11 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				loadPreference((String)message.obj);
 				break;
 			case DO_ITEM:
-				Intent intent = (Intent)message.obj;
-				int id = intent.getIntExtra("id", -1);
+				int id = message.obj == null ? -1 : ((Intent)message.obj).getIntExtra("id", -1);
 				if (id == -1) {
 					mQueuePos = 0;
 				} else {
+					Intent intent = (Intent)message.obj;
 					boolean enqueue = intent.getIntExtra("action", ACTION_PLAY) == ACTION_ENQUEUE;
 
 					int[] songs = Song.getAllSongIdsWith(intent.getIntExtra("type", SongData.FIELD_TITLE), id);
