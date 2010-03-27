@@ -382,13 +382,17 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 		mHandler = new MusicHandler();
 
+		int go = 0;
+		if (mPendingGo == 0)
+			mState |= FLAG_PLAYING;
+		else if (mPendingGo == 1)
+			go = 1;
+		setCurrentSong(go);
+
 		if (mPendingSeek != 0)
 			mMediaPlayer.seekTo(mPendingSeek);
 
 		sendBroadcast(new Intent(EVENT_LOADED));
-
-		if (mPendingGo != -1)
-			mHandler.sendMessage(mHandler.obtainMessage(GO, mPendingGo, 0));
 
 		mHandler.sendEmptyMessage(POST_CREATE);
 
