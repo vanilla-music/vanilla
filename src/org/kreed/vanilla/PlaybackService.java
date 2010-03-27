@@ -473,27 +473,25 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		else
 			cancelNotification = false;
 
-		if (mState != oldState) {
-			if ((state & FLAG_PLAYING) != 0) {
-				startForegroundCompat(NOTIFICATION_ID, mNotification);
-				if (mMediaPlayerInitialized) {
-					synchronized (mMediaPlayer) {
-						mMediaPlayer.start();
-					}
-				}
-			} else {
-				stopForegroundCompat(cancelNotification);
-				if (mMediaPlayerInitialized) {
-					synchronized (mMediaPlayer) {
-						mMediaPlayer.pause();
-					}
+		if ((state & FLAG_PLAYING) != 0 && (oldState & FLAG_PLAYING) == 0) {
+			startForegroundCompat(NOTIFICATION_ID, mNotification);
+			if (mMediaPlayerInitialized) {
+				synchronized (mMediaPlayer) {
+					mMediaPlayer.start();
 				}
 			}
-
-			return true;
+		} else if ((state & FLAG_PLAYING) == 0 && (oldState & FLAG_PLAYING) != 0) {
+			stopForegroundCompat(cancelNotification);
+			if (mMediaPlayerInitialized) {
+				synchronized (mMediaPlayer) {
+					mMediaPlayer.pause();
+				}
+			}
 		} else {
 			return false;
 		}
+
+		return true;
 	}
 
 	private void retrieveSongs()
