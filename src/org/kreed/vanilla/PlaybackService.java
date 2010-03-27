@@ -55,7 +55,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	public static final String TOGGLE_PLAYBACK = "org.kreed.vanilla.action.TOGGLE_PLAYBACK";
 	public static final String NEXT_SONG = "org.kreed.vanilla.action.NEXT_SONG";
 
-	public static final String EVENT_LOADED = "org.kreed.vanilla.event.LOADED";
+	public static final String EVENT_REPLACE_SONG = "org.kreed.vanilla.event.REPLACE_SONG";
 	public static final String EVENT_CHANGED = "org.kreed.vanilla.event.CHANGED";
 
 	public static final int ACTION_PLAY = 0;
@@ -392,7 +392,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		if (mPendingSeek != 0)
 			mMediaPlayer.seekTo(mPendingSeek);
 
-		sendBroadcast(new Intent(EVENT_LOADED));
+		sendBroadcast(new Intent(EVENT_REPLACE_SONG).putExtra("all", true));
 
 		mHandler.sendEmptyMessage(POST_CREATE);
 

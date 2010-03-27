@@ -456,8 +456,11 @@ public class CoverView extends View {
 	public void onReceive(Intent intent)
 	{
 		String action = intent.getAction();
-		if (PlaybackService.EVENT_LOADED.equals(action)) {
-			refreshSongs();
+		if (PlaybackService.EVENT_REPLACE_SONG.equals(action)) {
+			if (intent.getBooleanExtra("all", false))
+				refreshSongs();
+			else
+				mHandler.sendEmptyMessage(2);
 		} else if (PlaybackService.EVENT_CHANGED.equals(action)) {
 			Song currentSong = mSongs[STORE_SIZE / 2];
 			Song playingSong = intent.getParcelableExtra("song");

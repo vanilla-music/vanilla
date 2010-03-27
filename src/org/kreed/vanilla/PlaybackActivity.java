@@ -58,7 +58,7 @@ public abstract class PlaybackActivity extends Activity implements ServiceConnec
 
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(PlaybackService.EVENT_CHANGED);
-		filter.addAction(PlaybackService.EVENT_LOADED);
+		filter.addAction(PlaybackService.EVENT_REPLACE_SONG);
 		registerReceiver(mReceiver, filter);
 	}
 
