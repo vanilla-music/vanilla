@@ -281,16 +281,30 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 	@Override
 	public boolean onContextItemSelected(MenuItem item)
 	{
-		if (item.getItemId() == MENU_EXPAND) {
+		switch (item.getItemId()) {
+		case MENU_EXPAND:
 			expand((MediaAdapter.MediaView)((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).targetView);
-			return true;
+			break;
+		case MENU_PLAY:
+		case MENU_ENQUEUE:
+			Intent intent = item.getIntent();
+			if (mDefaultIsLastAction)
+				mDefaultAction = intent.getIntExtra("action", PlaybackService.ACTION_PLAY);
+			sendSongIntent(intent);
+			break;
+		default:
+			return false;
 		}
 
-		Intent intent = item.getIntent();
-		if (mDefaultIsLastAction)
-			mDefaultAction = intent.getIntExtra("action", PlaybackService.ACTION_PLAY);
-		sendSongIntent(intent);
 		return true;
+	}
+
+	// this is needed because due to some bug in Dialog, onContextItemSelected
+	// is not called when it should be
+	@Override
+	public boolean onMenuItemSelected(int featureId, MenuItem item)
+	{
+		return onContextItemSelected(item);
 	}
 
 	public void onFilterComplete(int count)
