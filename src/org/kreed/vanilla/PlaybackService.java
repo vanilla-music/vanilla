@@ -314,30 +314,24 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	{
 		Looper.prepare();
 
-		boolean stateLoaded = true;
-
 		PlaybackServiceState state = new PlaybackServiceState();
 		if (state.load(this)) {
 			Song song = new Song(state.savedIds[state.savedIndex]);
-			if (song.populate())
+			if (song.populate()) {
 				broadcastChange(mState, mState, song);
-			else
-				stateLoaded = false;
 
-			mSongTimeline = new ArrayList<Song>(state.savedIds.length);
-			mCurrentSong = state.savedIndex;
-			mPendingSeek = state.savedSeek;
+				mSongTimeline = new ArrayList<Song>(state.savedIds.length);
+				mCurrentSong = state.savedIndex;
+				mPendingSeek = state.savedSeek;
 
-			for (int i = 0; i != state.savedIds.length; ++i)
-				mSongTimeline.add(i == mCurrentSong ? song : new Song(state.savedIds[i]));
+				for (int i = 0; i != state.savedIds.length; ++i)
+					mSongTimeline.add(i == mCurrentSong ? song : new Song(state.savedIds[i]));
+			}
 		}
-
-		if (stateLoaded)
-			stateLoaded = mSongTimeline != null;
 
 		retrieveSongs();
 
-		if (!stateLoaded) {
+		if (mSongTimeline == null) {
 			mSongTimeline = new ArrayList<Song>();
 			broadcastChange(mState, mState, getSong(0));
 		}
