@@ -19,6 +19,7 @@
 package org.kreed.vanilla;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import android.app.Activity;
 import android.app.Application;
@@ -28,12 +29,20 @@ import android.content.Intent;
 public class ContextApplication extends Application {
 	private static ContextApplication mInstance;
 	private static ArrayList<Activity> mActivities;
+	private static Random mRandom;
 
 	public ContextApplication()
 	{
 		mInstance = this;
 	}
-	
+
+	public static Random getRandom()
+	{
+		if (mRandom == null)
+			mRandom = new Random();
+		return mRandom;
+	}
+
 	public static Context getContext()
 	{
 		return mInstance;

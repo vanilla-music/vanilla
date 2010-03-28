@@ -278,7 +278,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private Handler mHandler;
 	private MediaPlayer mMediaPlayer;
 	private boolean mMediaPlayerInitialized;
-	private Random mRandom;
 	private PowerManager.WakeLock mWakeLock;
 	private Notification mNotification;
 	private SharedPreferences mSettings;
@@ -314,8 +313,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	public void run()
 	{
 		Looper.prepare();
-
-		mRandom = new Random();
 
 		boolean stateLoaded = true;
 
@@ -598,7 +595,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 	private int randomSong()
 	{
-		return mSongs[mRandom.nextInt(mSongs.length)];
+		return mSongs[ContextApplication.getRandom().nextInt(mSongs.length)];
 	}
 
 	private Song getSong(int delta)
@@ -662,8 +659,9 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 					if (songs == null || songs.length == 0)
 						break;
 
+					Random random = ContextApplication.getRandom();
 					for (int i = songs.length; --i != 0; ) {
-						int j = mRandom.nextInt(i + 1);
+						int j = random.nextInt(i + 1);
 						int tmp = songs[j];
 						songs[j] = songs[i];
 						songs[i] = tmp;
