@@ -26,6 +26,8 @@ import android.os.Parcelable;
 import android.provider.MediaStore;
 
 public class Song implements Parcelable {
+	private static int[] mIds;
+
 	public int id;
 
 	public String path;
@@ -34,6 +36,11 @@ public class Song implements Parcelable {
 	public String title;
 	public String album;
 	public String artist;
+
+	public Song()
+	{
+		randomize();
+	}
 
 	public Song(int id)
 	{
@@ -125,6 +132,21 @@ public class Song implements Parcelable {
 		else if (type == SongData.FIELD_ARTIST)
 			return Song.getAllSongIds(MediaStore.Audio.Media.ARTIST_ID + "=" + id);
 		return null;
+	}
+
+	public static boolean retrieveSongs()
+	{
+		mIds = getAllSongIds(null);
+		return mIds != null;
+	}
+
+	public void randomize()
+	{
+		if (mIds == null) {
+			if (!retrieveSongs())
+				id = -1;
+		}
+		id = mIds[ContextApplication.getRandom().nextInt(mIds.length)];
 	}
 
 	public boolean equals(Song other)

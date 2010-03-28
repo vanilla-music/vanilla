@@ -284,7 +284,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private AudioManager mAudioManager;
 	private NotificationManager mNotificationManager;
 
-	private int[] mSongs;
 	private ArrayList<Song> mSongTimeline;
 	private int mCurrentSong;
 	private int mQueuePos;
@@ -328,8 +327,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 					mSongTimeline.add(i == mCurrentSong ? song : new Song(state.savedIds[i]));
 			}
 		}
-
-		retrieveSongs();
 
 		if (mSongTimeline == null) {
 			mSongTimeline = new ArrayList<Song>();
@@ -485,15 +482,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		return true;
 	}
 
-	private void retrieveSongs()
-	{
-		mSongs = Song.getAllSongIds(null);
-		if (mSongs == null)
-			setFlag(FLAG_NO_MEDIA);
-		else if ((mState & FLAG_NO_MEDIA) != 0)
-			unsetFlag(FLAG_NO_MEDIA);
-	}
-
 	private boolean updateNotification(Song song)
 	{
 		if (song == null || !mNotifyWhilePaused && (mState & FLAG_PLAYING) == 0) {
@@ -587,11 +575,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		return true;
 	}
 
-	private int randomSong()
-	{
-		return mSongs[ContextApplication.getRandom().nextInt(mSongs.length)];
-	}
-
 	private Song getSong(int delta)
 	{
 		if (mSongTimeline == null)
@@ -609,20 +592,19 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				return null;
 
 			if (pos == size) {
-				if (mSongs == null)
-					return null;
-				mSongTimeline.add(new Song(randomSong()));
+				song = new Song();
+				mSongTimeline.add(song);
+			} else {
+				song = mSongTimeline.get(pos);
 			}
-
-			song = mSongTimeline.get(pos);
 		}
 
 		if (!song.populate()) {
-			if (mSongs == null)
+			song.randomize();
+			if (!song.populate()) {
+				setFlag(FLAG_NO_MEDIA);
 				return null;
-			song.id = randomSong();
-			if (!song.populate())
-				return null;
+			}
 		}
 
 		return song;
@@ -705,7 +687,10 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 					mWakeLock.release();
 				break;
 			case RETRIEVE_SONGS:
-				retrieveSongs();
+				if (!Song.retrieveSongs())
+					setFlag(FLAG_NO_MEDIA);
+				else if ((mState & FLAG_NO_MEDIA) != 0)
+					unsetFlag(FLAG_NO_MEDIA);
 				break;
 			case CALL:
 				boolean inCall = message.arg1 == 1;
