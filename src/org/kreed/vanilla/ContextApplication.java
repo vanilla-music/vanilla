@@ -27,7 +27,7 @@ import android.content.Intent;
 
 public class ContextApplication extends Application {
 	private static ContextApplication mInstance;
-	private static ArrayList<Activity> mActivities = new ArrayList<Activity>();
+	private static ArrayList<Activity> mActivities;
 
 	public ContextApplication()
 	{
@@ -41,18 +41,23 @@ public class ContextApplication extends Application {
 
 	public static void addActivity(Activity activity)
 	{
+		if (mActivities == null)
+			mActivities = new ArrayList<Activity>();
 		mActivities.add(activity);
 	}
 
 	public static void removeActivity(Activity activity)
 	{
-		mActivities.remove(activity);
+		if (mActivities != null)
+			mActivities.remove(activity);
 	}
 
 	public static void quit(Context context)
 	{
 		context.stopService(new Intent(context, PlaybackService.class));
-		for (int i = mActivities.size(); --i != -1; )
-			mActivities.remove(i).finish();
+		if (mActivities != null) {
+			for (int i = mActivities.size(); --i != -1; )
+				mActivities.remove(i).finish();
+		}
 	}
 }
