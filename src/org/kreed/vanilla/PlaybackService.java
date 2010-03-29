@@ -412,8 +412,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	{
 		if (newState != oldState || song != mLastSongBroadcast) {
 			Intent intent = new Intent(EVENT_CHANGED);
-			intent.putExtra("oldState", oldState);
-			intent.putExtra("newState", newState);
+			intent.putExtra("state", newState);
 			intent.putExtra("song", song);
 			sendBroadcast(intent);
 

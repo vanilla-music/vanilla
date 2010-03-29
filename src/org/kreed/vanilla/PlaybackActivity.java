@@ -121,9 +121,7 @@ public abstract class PlaybackActivity extends Activity implements ServiceConnec
 
 	protected void onServiceChange(Intent intent)
 	{
-		int newState = intent.getIntExtra("newState", 0);
-		if (intent.getIntExtra("oldState", 0) != newState)
-			setState(newState);
+		setState(intent.getIntExtra("state", 0));
 	}
 
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
