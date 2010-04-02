@@ -244,9 +244,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				mPlugged = intent.getIntExtra("state", 0) != 0;
 				if (mPlugged != oldPlugged && (mHeadsetPause && !mPlugged || mHeadsetOnly && !isSpeakerOn()))
 					unsetFlag(FLAG_PLAYING);
-			} else if (Intent.ACTION_MEDIA_SCANNER_FINISHED.equals(action)
-			        || Intent.ACTION_MEDIA_SCANNER_SCAN_FILE.equals(action)) {
-				mHandler.sendEmptyMessage(RETRIEVE_SONGS);
 			}
 		}
 	};
@@ -312,7 +309,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private static final int DO_ITEM = 4;
 	private static final int TRACK_CHANGED = 5;
 	private static final int RELEASE_WAKE_LOCK = 6;
-	private static final int RETRIEVE_SONGS = 9;
 	private static final int CALL = 10;
 	private static final int SAVE_STATE = 12;
 	private static final int PROCESS_SONG = 13;
@@ -688,12 +684,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				if (mWakeLock != null && mWakeLock.isHeld())
 					mWakeLock.release();
 				break;
-			case RETRIEVE_SONGS:
-				if (!Song.retrieveSongs())
-					setFlag(FLAG_NO_MEDIA);
-				else if ((mState & FLAG_NO_MEDIA) != 0)
-					unsetFlag(FLAG_NO_MEDIA);
-				break;
 			case CALL:
 				boolean inCall = message.arg1 == 1;
 				if (inCall) {
@@ -731,8 +721,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 				IntentFilter filter = new IntentFilter();
 				filter.addAction(Intent.ACTION_HEADSET_PLUG);
-				filter.addAction(Intent.ACTION_MEDIA_SCANNER_FINISHED);
-				filter.addAction(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
 				registerReceiver(mReceiver, filter);
 
 				TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);

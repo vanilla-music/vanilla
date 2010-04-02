@@ -26,7 +26,14 @@ import android.os.Parcelable;
 import android.provider.MediaStore;
 
 public class Song implements Parcelable {
-	private static int[] mIds;
+	public static final String[] FILLED_PROJECTION = {
+		MediaStore.Audio.Media._ID,
+		MediaStore.Audio.Media.DATA,
+		MediaStore.Audio.Media.TITLE,
+		MediaStore.Audio.Media.ALBUM,
+		MediaStore.Audio.Media.ARTIST,
+		MediaStore.Audio.Media.ALBUM_ID
+		};
 
 	public int id;
 
@@ -54,42 +61,41 @@ public class Song implements Parcelable {
 		if (id == -1)
 			return false;
 
-		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-		String[] projection = {
-			MediaStore.Audio.Media.DATA,
-			MediaStore.Audio.Media.TITLE,
-			MediaStore.Audio.Media.ALBUM,
-			MediaStore.Audio.Media.ARTIST,
-			MediaStore.Audio.Media.ALBUM_ID
-			};
-		String selection = MediaStore.Audio.Media._ID + "==" + id;;
-
 		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
-		Cursor cursor = resolver.query(media, projection, selection, null, null);
+		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+		String selection = MediaStore.Audio.Media._ID + '=' + id;
+		Cursor cursor = resolver.query(media, FILLED_PROJECTION, selection, null, null);
 
-		if (cursor == null || !cursor.moveToNext()) {
-			id = -1;
-			return false;
-		}
+		id = -1;
 
-		path = cursor.getString(0);
-		title = cursor.getString(1);
-		album = cursor.getString(2);
-		artist = cursor.getString(3);
-		int albumId = cursor.getInt(4);
-		cursor.close();
-
-		media = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
-		String[] albumProjection = { MediaStore.Audio.Albums.ALBUM_ART };
-		String albumSelection = MediaStore.Audio.Albums._ID + "==" + albumId;
-
-		cursor = resolver.query(media, albumProjection, albumSelection, null, null);
-		if (cursor != null && cursor.moveToNext()) {
-			coverPath = cursor.getString(0);
+		if (cursor != null) {
+			if (cursor.moveToNext())
+				populate(resolver, cursor);
 			cursor.close();
 		}
 
-		return true;
+		return id != -1;
+	}
+
+	private void populate(ContentResolver resolver, Cursor cursor)
+	{
+		id = cursor.getInt(0);
+		path = cursor.getString(1);
+		title = cursor.getString(2);
+		album = cursor.getString(3);
+		artist = cursor.getString(4);
+		long albumId = cursor.getLong(5);
+
+		Uri media = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
+		String[] albumProjection = { MediaStore.Audio.Albums.ALBUM_ART };
+		String albumSelection = MediaStore.Audio.Albums._ID + '=' + albumId;
+
+		cursor = resolver.query(media, albumProjection, albumSelection, null, null);
+		if (cursor != null) {
+			if (cursor.moveToNext())
+				coverPath = cursor.getString(0);
+			cursor.close();
+		}
 	}
 
 	public static int[] getAllSongIds(String selection)
@@ -128,25 +134,26 @@ public class Song implements Parcelable {
 		if (type == SongData.FIELD_TITLE)
 			return new int[] { id };
 		else if (type == SongData.FIELD_ALBUM)
-			return Song.getAllSongIds(MediaStore.Audio.Media.ALBUM_ID + "=" + id);
+			return Song.getAllSongIds(MediaStore.Audio.Media.ALBUM_ID + '=' + id);
 		else if (type == SongData.FIELD_ARTIST)
-			return Song.getAllSongIds(MediaStore.Audio.Media.ARTIST_ID + "=" + id);
+			return Song.getAllSongIds(MediaStore.Audio.Media.ARTIST_ID + '=' + id);
 		return null;
-	}
-
-	public static boolean retrieveSongs()
-	{
-		mIds = getAllSongIds(null);
-		return mIds != null;
 	}
 
 	public void randomize()
 	{
-		if (mIds == null) {
-			if (!retrieveSongs())
-				id = -1;
+		id = -1;
+
+		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
+		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+		String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
+		Cursor cursor = resolver.query(media, FILLED_PROJECTION, selection, null, null);
+
+		if (cursor != null) {
+			if (cursor.moveToPosition(ContextApplication.getRandom().nextInt(cursor.getCount())))
+				populate(resolver, cursor);
+			cursor.close();
 		}
-		id = mIds[ContextApplication.getRandom().nextInt(mIds.length)];
 	}
 
 	public boolean equals(Song other)
