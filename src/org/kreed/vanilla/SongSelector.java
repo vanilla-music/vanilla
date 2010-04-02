@@ -101,7 +101,7 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 
 		mLimiterViews = (ViewGroup)findViewById(R.id.limiter_layout);
 
-		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context); 
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
 		int inputType;
 		if (settings.getBoolean("phone_input", false))
 			inputType = InputType.TYPE_CLASS_PHONE;
@@ -111,15 +111,7 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 			inputType = InputType.TYPE_CLASS_TEXT;
 		mTextFilter.setInputType(inputType);
 
-		String action = settings.getString("default_action", "Play");
-		if (action.equals("Last Used Action")) {
-			mDefaultIsLastAction = true;
-			mDefaultAction = PlaybackService.ACTION_PLAY;
-		} else if (action.equals("Enqueue")) {
-			mDefaultAction = PlaybackService.ACTION_ENQUEUE;
-		} else {
-			mDefaultAction = PlaybackService.ACTION_PLAY;
-		}
+		mDefaultAction = Integer.parseInt(settings.getString("default_action_int", "0"));
 
 		new Handler().post(new Runnable() {
 			public void run()
