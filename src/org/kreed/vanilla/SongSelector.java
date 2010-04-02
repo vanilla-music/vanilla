@@ -106,18 +106,6 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 
 		mLimiterViews = (ViewGroup)findViewById(R.id.limiter_layout);
 
-		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
-		int inputType;
-		if (settings.getBoolean("phone_input", false))
-			inputType = InputType.TYPE_CLASS_PHONE;
-		else if (!settings.getBoolean("filter_suggestions", false))
-			inputType = InputType.TYPE_TEXT_VARIATION_FILTER;
-		else
-			inputType = InputType.TYPE_CLASS_TEXT;
-		mTextFilter.setInputType(inputType);
-
-		mDefaultAction = Integer.parseInt(settings.getString("default_action_int", "0"));
-
 		new Handler().post(new Runnable() {
 			public void run()
 			{
@@ -129,6 +117,22 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 				initializeList(R.id.song_list, songs, SongData.FIELD_TITLE, SongData.FIELD_ARTIST, null);
 			}
 		});
+	}
+
+	@Override
+	public void onStart()
+	{
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
+		int inputType;
+		if (settings.getBoolean("phone_input", false))
+			inputType = InputType.TYPE_CLASS_PHONE;
+		else if (!settings.getBoolean("filter_suggestions", false))
+			inputType = InputType.TYPE_TEXT_VARIATION_FILTER;
+		else
+			inputType = InputType.TYPE_CLASS_TEXT;
+		mTextFilter.setInputType(inputType);
+
+		mDefaultAction = Integer.parseInt(settings.getString("default_action_int", "0"));
 	}
 
 	@Override
