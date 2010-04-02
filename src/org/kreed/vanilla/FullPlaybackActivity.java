@@ -99,7 +99,6 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 		if (state == mState)
 			return;
 
-		Log.i("VanillaMusic", "state: " + state);
 		mState = state;
 
 		if (mMessageOverlay != null)
