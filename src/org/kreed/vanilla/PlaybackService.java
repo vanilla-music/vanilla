@@ -622,21 +622,21 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				loadPreference((String)message.obj);
 				break;
 			case DO_ITEM:
-				int id = message.obj == null ? -1 : ((Intent)message.obj).getIntExtra("id", -1);
+				long id = message.obj == null ? -1 : ((Intent)message.obj).getLongExtra("id", -1);
 				if (id == -1) {
 					mQueuePos = 0;
 				} else {
 					Intent intent = (Intent)message.obj;
 					boolean enqueue = intent.getIntExtra("action", ACTION_PLAY) == ACTION_ENQUEUE;
 
-					int[] songs = Song.getAllSongIdsWith(intent.getIntExtra("type", SongData.FIELD_TITLE), id);
+					long[] songs = Song.getAllSongIdsWith(intent.getIntExtra("type", SongData.FIELD_TITLE), id);
 					if (songs == null || songs.length == 0)
 						break;
 
 					Random random = ContextApplication.getRandom();
 					for (int i = songs.length; --i != 0; ) {
 						int j = random.nextInt(i + 1);
-						int tmp = songs[j];
+						long tmp = songs[j];
 						songs[j] = songs[i];
 						songs[i] = tmp;
 					}

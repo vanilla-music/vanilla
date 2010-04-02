@@ -32,7 +32,7 @@ public class PlaybackServiceState {
 	private static final long STATE_FILE_MAGIC = 0x8a9d3f9fca31L;
 
 	public int savedIndex;
-	public int[] savedIds;
+	public long[] savedIds;
 	public int savedSeek;
 
 	public boolean load(Context context)
@@ -44,9 +44,9 @@ public class PlaybackServiceState {
 				int n = in.readInt();
 
 				if (n > 0) {
-					savedIds = new int[n];
+					savedIds = new long[n];
 					for (int i = 0; i != n; ++i)
-						savedIds[i] = in.readInt();
+						savedIds[i] = in.readLong();
 					savedSeek = in.readInt();
 
 					return true;
@@ -71,7 +71,7 @@ public class PlaybackServiceState {
 			int n = songs == null ? 0 : songs.size();
 			out.writeInt(n);
 			for (int i = 0; i != n; ++i)
-				out.writeInt(songs.get(i).id);
+				out.writeLong(songs.get(i).id);
 			out.writeInt(seek);
 			out.close();
 		} catch (IOException e) {

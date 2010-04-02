@@ -35,7 +35,7 @@ public class Song implements Parcelable {
 		MediaStore.Audio.Media.ALBUM_ID
 		};
 
-	public int id;
+	public long id;
 
 	public String path;
 	public String coverPath;
@@ -49,7 +49,7 @@ public class Song implements Parcelable {
 		randomize();
 	}
 
-	public Song(int id)
+	public Song(long id)
 	{
 		this.id = id;
 	}
@@ -79,7 +79,7 @@ public class Song implements Parcelable {
 
 	private void populate(ContentResolver resolver, Cursor cursor)
 	{
-		id = cursor.getInt(0);
+		id = cursor.getLong(0);
 		path = cursor.getString(1);
 		title = cursor.getString(2);
 		album = cursor.getString(3);
@@ -98,7 +98,7 @@ public class Song implements Parcelable {
 		}
 	}
 
-	public static int[] getAllSongIds(String selection)
+	public static long[] getAllSongIds(String selection)
 	{
 		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 		String[] projection = { MediaStore.Audio.Media._ID };
@@ -118,7 +118,7 @@ public class Song implements Parcelable {
 		if (count == 0)
 			return null;
 
-		int[] songs = new int[count];
+		long[] songs = new long[count];
 		while (--count != -1) {
 			if (!cursor.moveToNext())
 				return null;
@@ -129,10 +129,10 @@ public class Song implements Parcelable {
 		return songs;
 	}
 	
-	public static int[] getAllSongIdsWith(int type, int id)
+	public static long[] getAllSongIdsWith(int type, long id)
 	{
 		if (type == SongData.FIELD_TITLE)
-			return new int[] { id };
+			return new long[] { id };
 		else if (type == SongData.FIELD_ALBUM)
 			return Song.getAllSongIds(MediaStore.Audio.Media.ALBUM_ID + '=' + id);
 		else if (type == SongData.FIELD_ARTIST)
@@ -177,7 +177,7 @@ public class Song implements Parcelable {
 
 	public Song(Parcel in)
 	{
-		id = in.readInt();
+		id = in.readLong();
 		path = in.readString();
 		coverPath = in.readString();
 		title = in.readString();
@@ -187,7 +187,7 @@ public class Song implements Parcelable {
 
 	public void writeToParcel(Parcel out, int flags)
 	{
-		out.writeInt(id);
+		out.writeLong(id);
 		out.writeString(path);
 		out.writeString(coverPath);
 		out.writeString(title);

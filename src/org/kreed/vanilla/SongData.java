@@ -32,9 +32,9 @@ public class SongData {
 	public static final int FIELD_ALBUM = 2;
 	public static final int FIELD_TITLE = 3;
 
-	public int id;
-	public int albumId;
-	public int artistId;
+	public long id;
+	public long albumId;
+	public long artistId;
 
 	public String title;
 	public String album;
@@ -42,11 +42,11 @@ public class SongData {
 
 	private SongData(Cursor cursor)
 	{
-		id = cursor.getInt(0);
+		id = cursor.getLong(0);
 		title = cursor.getString(1);
-		albumId = cursor.getInt(2);
+		albumId = cursor.getLong(2);
 		album = cursor.getString(3);
-		artistId = cursor.getInt(4);
+		artistId = cursor.getLong(4);
 		artist = cursor.getString(5);
 	}
 
@@ -63,7 +63,7 @@ public class SongData {
 		return null;
 	}
 
-	public int getFieldId(int field)
+	public long getFieldId(int field)
 	{
 		switch (field) {
 		case FIELD_TITLE:
@@ -121,7 +121,7 @@ public class SongData {
 			return a.album.compareToIgnoreCase(b.album);
 		}
 
-		public int getId(SongData song)
+		public long getId(SongData song)
 		{
 			return song.albumId;
 		}
@@ -133,14 +133,14 @@ public class SongData {
 			return a.artist.compareToIgnoreCase(b.artist);
 		}
 
-		public int getId(SongData song)
+		public long getId(SongData song)
 		{
 			return song.artistId;
 		}
 	}
 
 	public static interface IdComparator extends Comparator<SongData> {
-		public int getId(SongData song);
+		public long getId(SongData song);
 	}
 
 	public static SongData[] filter(SongData[] songs, IdComparator comparator)
@@ -148,7 +148,7 @@ public class SongData {
 		SparseArray<SongData> albums = new SparseArray<SongData>(songs.length);
 		for (int i = songs.length; --i != -1; ) {
 			SongData song = songs[i];
-			int id = comparator.getId(song);
+			int id = (int)comparator.getId(song);
 			if (albums.get(id) == null)
 				albums.put(id, song);
 		}

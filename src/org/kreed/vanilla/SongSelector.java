@@ -164,7 +164,7 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 	{
 		int field = view.getPrimaryField();
 		SongData data = view.getExpanderData();
-		int limiter = MediaAdapter.makeLimiter(field, data);
+		long limiter = MediaAdapter.makeLimiter(field, data);
 
 		for (int i = field; i != 3; ++i) {
 			MediaAdapter adapter = getAdapter(i);
@@ -216,7 +216,7 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 
 		int field = adapter.getLimiterField();
 		SongData data = adapter.getLimiterData();
-		if (data == null)
+		if (field == -1)
 			return;
 
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -251,7 +251,7 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 		} else {
 			int field = (Integer)view.getTag() - 1;
 			SongData data = getAdapter(mTabHost.getCurrentTab()).getLimiterData();
-			int limiter = field == 0 ? -1 : MediaAdapter.makeLimiter(field, data);
+			long limiter = field == 0 ? -1 : MediaAdapter.makeLimiter(field, data);
 
 			for (int i = 3; --i != -1; ) {
 				MediaAdapter adapter = getAdapter(i);
