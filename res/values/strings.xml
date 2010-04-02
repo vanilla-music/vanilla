@@ -35,8 +35,8 @@
 	<string name="remote_player_summary_on">Clicking the notification will open a mini-player dialog</string>
 	<string name="remote_player_summary_off">Clicking the notification will open a the full player activity</string>
 
-	<string name="notify_while_paused_title">Persistent Notification</string>
-	<string name="notify_while_paused_summary">Always display the notification</string>
+	<string name="notification_mode_title">Notification Mode</string>
+	<string name="notification_mode_summary">When to show the notification</string>
 
 	<string name="phone_input_title">Use Phone Dialer Input</string>
 	<string name="phone_input_summary">Enter filter text using buttons 1-9, where 1 matches 1, a, b or c, etc</string>

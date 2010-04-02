@@ -15,17 +15,19 @@
 			android:summary="@string/headset_pause_summary" />
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/pref_notifications">
+		<ListPreference
+			android:key="notification_mode"
+			android:title="@string/notification_mode_title"
+			android:summary="@string/notification_mode_summary"
+			android:entries="@array/notification_mode_entries"
+			android:entryValues="@array/entry_values"
+			android:defaultValue="1" />
 		<CheckBoxPreference
 			android:key="remote_player"
 			android:title="@string/remote_player_title"
 			android:defaultValue="true"
 			android:summaryOn="@string/remote_player_summary_on"
 			android:summaryOff="@string/remote_player_summary_off" />
-		<CheckBoxPreference
-			android:key="notify_while_paused"
-			android:title="@string/notify_while_paused_title"
-			android:defaultValue="true"
-			android:summary="@string/notify_while_paused_summary" />
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/pref_song_selector">
 		<CheckBoxPreference

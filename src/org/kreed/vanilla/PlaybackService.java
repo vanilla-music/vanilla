@@ -64,6 +64,10 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	public static final int FLAG_NO_MEDIA = 0x2;
 	public static final int FLAG_PLAYING = 0x1;
 
+	public static final int NEVER = 0;
+	public static final int WHEN_PLAYING = 1;
+	public static final int ALWAYS = 2;
+
 	private int mPendingGo = -1;
 
 	public IPlaybackService.Stub mBinder = new IPlaybackService.Stub() {
@@ -122,6 +126,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			}
 		}
 	};
+
 	@Override
 	public IBinder onBind(Intent intent)
 	{
@@ -224,6 +229,9 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				Log.w("VanillaMusic", e);
 			}
 		}
+
+		if (cancelNotification && mNotificationManager != null)
+			mNotificationManager.cancel(NOTIFICATION_ID);
 	}
 
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -272,8 +280,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 	private boolean mHeadsetPause;
 	private boolean mHeadsetOnly;
-	private boolean mNotifyWhilePaused;
 	private boolean mScrobble;
+	private int mNotificationMode;
 
 	private Handler mHandler;
 	private MediaPlayer mMediaPlayer;
@@ -362,7 +370,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		mSettings.registerOnSharedPreferenceChangeListener(this);
 		mHeadsetPause = mSettings.getBoolean("headset_pause", true);
 		mHeadsetOnly = mSettings.getBoolean("headset_only", false);
-		mNotifyWhilePaused = mSettings.getBoolean("notify_while_paused", true);
+		mNotificationMode = Integer.parseInt(mSettings.getString("notification_mode", "1"));
 		mScrobble = mSettings.getBoolean("scrobble", false);
 
 		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
@@ -397,12 +405,11 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			if (mHeadsetOnly && isSpeakerOn())
 				unsetFlag(FLAG_PLAYING);
 		} else if ("remote_player".equals(key)) {
+			// the preference is loaded in SongNotification class
 			updateNotification(getSong(0));
-		} else if ("notify_while_paused".equals(key)){
-			mNotifyWhilePaused = mSettings.getBoolean(key, true);
+		} else if ("notification_mode".equals(key)){
+			mNotificationMode = Integer.parseInt(mSettings.getString("notification_mode", "1"));
 			updateNotification(getSong(0));
-			if (!mNotifyWhilePaused && (mState & FLAG_PLAYING) == 0)
-				stopForegroundCompat(true);
 		} else if ("scrobble".equals(key)) {
 			mScrobble = mSettings.getBoolean("scrobble", false);
 		}
@@ -454,21 +461,19 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		Song lastBroadcast = mLastSongBroadcast;
 		broadcastChange(oldState, state, song);
 
-		boolean cancelNotification;
 		if (state != oldState || song != lastBroadcast)
-			cancelNotification = updateNotification(song);
-		else
-			cancelNotification = false;
+			updateNotification(song);
 
 		if ((state & FLAG_PLAYING) != 0 && (oldState & FLAG_PLAYING) == 0) {
-			startForegroundCompat(NOTIFICATION_ID, mNotification);
+			if (mNotificationMode != NEVER)
+				startForegroundCompat(NOTIFICATION_ID, mNotification);
 			if (mMediaPlayerInitialized) {
 				synchronized (mMediaPlayer) {
 					mMediaPlayer.start();
 				}
 			}
 		} else if ((state & FLAG_PLAYING) == 0 && (oldState & FLAG_PLAYING) != 0) {
-			stopForegroundCompat(cancelNotification);
+			stopForegroundCompat(false);
 			if (mMediaPlayerInitialized) {
 				synchronized (mMediaPlayer) {
 					mMediaPlayer.pause();
@@ -481,17 +486,15 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		return true;
 	}
 
-	private boolean updateNotification(Song song)
+	private void updateNotification(Song song)
 	{
-		if (song == null || !mNotifyWhilePaused && (mState & FLAG_PLAYING) == 0) {
-			if (mNotificationManager != null)
-				mNotificationManager.cancel(NOTIFICATION_ID);
-			return true;
+		boolean shouldNotify = mNotificationMode == ALWAYS || mNotificationMode == WHEN_PLAYING && (mState & FLAG_PLAYING) != 0;
+		if (song != null && shouldNotify) {
+			mNotification = new SongNotification(song, (mState & FLAG_PLAYING) != 0);
+			mNotificationManager.notify(NOTIFICATION_ID, mNotification);
+		} else {
+			stopForegroundCompat(true);
 		}
-
-		mNotification = new SongNotification(song, (mState & FLAG_PLAYING) != 0);
-		mNotificationManager.notify(NOTIFICATION_ID, mNotification);
-		return false;
 	}
 
 	private boolean isSpeakerOn()
