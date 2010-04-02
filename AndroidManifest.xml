@@ -31,6 +31,11 @@
 				android:name="android.appwidget.provider"
 				android:resource="@xml/one_cell_widget" />
 		</receiver>
+    <receiver android:name="MediaButtonReceiver" >
+      <intent-filter android:priority="1000">
+        <action android:name="android.intent.action.MEDIA_BUTTON" />
+      </intent-filter>
+    </receiver>
 		<service android:name="PlaybackService" />
 		<activity android:name="PreferencesActivity" />
 	</application>
