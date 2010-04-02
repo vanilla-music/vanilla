@@ -59,7 +59,7 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 	private int mDefaultAction;
 	private boolean mDefaultIsLastAction;
 
-	private long mLastPlayedId;
+	private long mLastActedId;
 
 	private ListView getList(int tab)
 	{
@@ -157,8 +157,7 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 
 		getContext().startService(intent);
 
-		if (action == PlaybackService.ACTION_PLAY)
-			mLastPlayedId = intent.getIntExtra("id", -1);
+		mLastActedId = intent.getIntExtra("id", -1);
 	}
 
 	private void expand(MediaAdapter.MediaView view)
@@ -183,7 +182,7 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 		MediaAdapter.MediaView mediaView = (MediaAdapter.MediaView)view;
 		if (mediaView.isExpanderPressed())
 			expand(mediaView);
-		else if (mDefaultAction == PlaybackService.ACTION_PLAY && id == mLastPlayedId)
+		else if (id == mLastActedId)
 			dismiss();
 		else
 			sendSongIntent(((MediaAdapter)list.getAdapter()).buildSongIntent(mDefaultAction, pos));
