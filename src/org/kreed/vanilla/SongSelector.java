@@ -29,6 +29,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.PaintDrawable;
+import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.text.Editable;
@@ -81,14 +82,18 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 	public SongSelector(Context context)
 	{
 		super(context, android.R.style.Theme_NoTitleBar);
+	}
 
+	@Override
+	public void onCreate(Bundle state)
+	{
 		setContentView(R.layout.song_selector);
 
 		mTabHost = (TabHost)findViewById(android.R.id.tabhost);
 		mTabHost.setup();
 		mTabHost.setOnTabChangedListener(this);
 
-		Resources res = context.getResources();
+		Resources res = getContext().getResources();
 		mTabHost.addTab(mTabHost.newTabSpec("tab_artists").setIndicator(res.getText(R.string.artists), res.getDrawable(R.drawable.tab_artists)).setContent(R.id.artist_list));
 		mTabHost.addTab(mTabHost.newTabSpec("tab_albums").setIndicator(res.getText(R.string.albums), res.getDrawable(R.drawable.tab_albums)).setContent(R.id.album_list));
 		mTabHost.addTab(mTabHost.newTabSpec("tab_songs").setIndicator(res.getText(R.string.songs), res.getDrawable(R.drawable.tab_songs)).setContent(R.id.song_list));
@@ -101,7 +106,7 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 
 		mLimiterViews = (ViewGroup)findViewById(R.id.limiter_layout);
 
-		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
 		int inputType;
 		if (settings.getBoolean("phone_input", false))
 			inputType = InputType.TYPE_CLASS_PHONE;
