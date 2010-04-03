@@ -131,13 +131,16 @@ public class Song implements Parcelable {
 	
 	public static long[] getAllSongIdsWith(int type, long id)
 	{
-		if (type == SongData.FIELD_TITLE)
+		switch (type) {
+		case 3:
 			return new long[] { id };
-		else if (type == SongData.FIELD_ALBUM)
+		case 2:
 			return Song.getAllSongIds(MediaStore.Audio.Media.ALBUM_ID + '=' + id);
-		else if (type == SongData.FIELD_ARTIST)
+		case 1:
 			return Song.getAllSongIds(MediaStore.Audio.Media.ARTIST_ID + '=' + id);
-		return null;
+		default:
+			return null;
+		}
 	}
 
 	public void randomize()

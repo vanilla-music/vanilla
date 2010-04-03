@@ -18,50 +18,121 @@
 
 package org.kreed.vanilla;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.net.Uri;
+import android.provider.BaseColumns;
+import android.provider.MediaStore;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
-import android.widget.BaseAdapter;
+import android.widget.CursorAdapter;
 import android.widget.Filter;
-import android.widget.Filterable;
+import android.widget.FilterQueryProvider;
 
-public class MediaAdapter extends BaseAdapter implements Filterable {
-	private Context mContext;
-	private OnClickListener mExpanderListener;
+public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
+	public static final String[] ARTIST_FIELDS = { MediaStore.Audio.Artists.ARTIST };
+	public static final String[] ARTIST_FIELD_KEYS = { MediaStore.Audio.Artists.ARTIST_KEY };
+	public static final String[] ALBUM_FIELDS = { MediaStore.Audio.Albums.ARTIST, MediaStore.Audio.Albums.ALBUM };
+	// Why is there no artist_key column constant in the album MediaStore? The column does seem to exist.
+	public static final String[] ALBUM_FIELD_KEYS = { "artist_key", MediaStore.Audio.Albums.ALBUM_KEY };
+	public static final String[] SONG_FIELDS = { MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.TITLE };
+	public static final String[] SONG_FIELD_KEYS = { MediaStore.Audio.Media.ARTIST_KEY, MediaStore.Audio.Media.ALBUM_KEY, MediaStore.Audio.Media.TITLE_KEY };
 
-	private List<SongData> mObjects;
-	private SongData[] mAllObjects;
-	private ArrayFilter mFilter;
-	private long mLimiter;
-	private SongData mLimiterData;
-	private CharSequence mPublishedFilter;
-	private long mPublishedLimiter;
+	private Uri mStore;
+	private String[] mFields;
+	private String[] mFieldKeys;
+	private View.OnClickListener mExpanderListener;
+	private String mSelection;
+	private String[] mLimiter;
+	private CharSequence mConstraint;
 
-	private int mPrimaryField;
-	private int mSecondaryField;
-
-	public MediaAdapter(Context context, SongData[] allObjects, int primaryField, int secondaryField, View.OnClickListener expanderListener)
+	public MediaAdapter(Context context, Uri store, String[] fields, String[] fieldKeys, View.OnClickListener expanderListener, String selection)
 	{
-		mContext = context;
-		mAllObjects = allObjects;
-		mPrimaryField = primaryField;
-		mSecondaryField = secondaryField;
+		super(context, null, true);
+
+		mStore = store;
+		mFields = fields;
+		mFieldKeys = fieldKeys;
 		mExpanderListener = expanderListener;
+		mSelection = selection;
+
+		setFilterQueryProvider(this);
+
+		changeCursor(runQuery(null));
+	}
+
+	public void filter(CharSequence constraint, Filter.FilterListener listener)
+	{
+		mConstraint = constraint;
+		getFilter().filter(constraint, listener);
+	}
+
+	public Cursor runQuery(CharSequence constraint)
+	{
+		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
+
+		StringBuilder selection = new StringBuilder();
+		String[] selectionArgs;
+		String limiter;
+
+		if (mSelection != null)
+			selection.append(mSelection);
+
+		if (mLimiter != null) {
+			int i = Math.min(mLimiter.length, mFields.length) - 1;
+			if (selection.length() != 0)
+				selection.append(" AND ");
+			selection.append(mFields[i]);
+			selection.append(" = ?");
+			limiter = mLimiter[i];
+		} else {
+			limiter = null;
+		}
+
+		if (constraint != null && constraint.length() != 0) {
+			String[] constraints = constraint.toString().split("\\s+");
+			int size = constraints.length;
+			if (limiter != null)
+				++size;
+			selectionArgs = new String[size];
+			int i = 0;
+			if (limiter != null) {
+				selectionArgs[0] = limiter;
+				i = 1;
+			}
+			String keys = mFieldKeys[0];
+			for (int j = 1; j != mFieldKeys.length; ++j)
+				keys += "||" + mFieldKeys[j];
+			for (int j = 0; j != constraints.length; ++i, ++j) {
+				selectionArgs[i] = '%' + MediaStore.Audio.keyFor(constraints[j]) + '%';
+
+				if (j != 0 || selection.length() != 0)
+					selection.append(" AND ");
+                selection.append(keys);
+                selection.append(" LIKE ?");
+			}
+		} else {
+			if (limiter != null)
+				selectionArgs = new String[] { limiter };
+			else
+				selectionArgs = null;
+		}
+
+		String[] projection;
+		if (mFields.length == 1)
+			projection = new String[] { BaseColumns._ID, mFields[0] };
+		else
+			projection = new String[] { BaseColumns._ID, mFields[mFields.length - 1], mFields[0] };
+
+		return resolver.query(mStore, projection, selection.toString(), selectionArgs, mFieldKeys[mFieldKeys.length - 1]);
 	}
 
 	public final boolean hasExpanders()
@@ -69,231 +140,34 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 		return mExpanderListener != null;
 	}
 
-	@Override
-	public boolean hasStableIds()
-	{
-		return true;
-	}
-
-	public View getView(int position, View convertView, ViewGroup parent)
-	{
-		MediaView view = null;
-		try {
-			view = (MediaView)convertView;
-		} catch (ClassCastException e) {
-		}
-
-		if (view == null)
-			view = new MediaView(mContext);
-
-		view.updateMedia(get(position));
-
-		return view;
-	}
-
-	public Filter getFilter()
-	{
-		if (mFilter == null)
-			mFilter = new ArrayFilter();
-		return mFilter;
-	}
-
-	private static final String[] mRanges = { ".", "[2abc]", "[3def]", "[4ghi]", "[5jkl]", "[6mno]", "[7pqrs]", "[8tuv]", "[9wxyz]"};
-	private static Matcher createMatcher(String input)
-	{
-		String patternString = "";
-		for (int i = 0, end = input.length(); i != end; ++i) {
-			char c = input.charAt(i);
-			int value = c - '1';
-			if (value >= 0 && value < 9)
-				patternString += mRanges[value];
-			else
-				patternString += c;
-		}
-
-		return Pattern.compile(patternString, Pattern.CASE_INSENSITIVE).matcher("");
-	}
-
-	private class ArrayFilter extends Filter {
-		protected class ArrayFilterResults extends FilterResults {
-			public long limiter;
-
-			public ArrayFilterResults(List<SongData> list, long limiter)
-			{
-				values = list;
-				count = list.size();
-				this.limiter = limiter;
-			}
-		}
-
-		@Override
-		protected FilterResults performFiltering(CharSequence filter)
-		{
-			List<SongData> list;
-
-			if (filter != null && filter.length() == 0)
-				filter = null;
-
-			if ((filter == null && mPublishedFilter == null || mPublishedFilter != null && mPublishedFilter.equals(filter)) && mLimiter == mPublishedLimiter) {
-				list = mObjects;
-			} else if (filter == null && mLimiter == -1) {
-				list = Arrays.asList(mAllObjects);
-			} else {
-				Matcher[] matchers = null;
-				if (filter != null) {
-					String[] words = filter.toString().split("\\s+");
-					matchers = new Matcher[words.length];
-					for (int i = words.length; --i != -1; )
-						matchers[i] = createMatcher(words[i]);
-				}
-
-				int limiterField = limiterField(mLimiter);
-				long limiterId = limiterId(mLimiter);
-
-				int count = mAllObjects.length;
-				ArrayList<SongData> newValues = new ArrayList<SongData>();
-				newValues.ensureCapacity(count);
-
-			outer:
-				for (int i = 0; i != count; ++i) {
-					SongData song = mAllObjects[i];
-
-					if (mLimiter != -1 && song.getFieldId(limiterField) != limiterId)
-						continue;
-
-					if (filter != null) {
-						for (int j = matchers.length; --j != -1; ) {
-							if (matchers[j].reset(song.artist).find())
-								continue;
-							if (mPrimaryField > 1 && matchers[j].reset(song.album).find())
-								continue;
-							if (mPrimaryField > 2 && matchers[j].reset(song.title).find())
-								continue;
-							continue outer;
-						}
-					}
-
-					newValues.add(song);
-				}
-
-				newValues.trimToSize();
-
-				list = newValues;
-			}
-
-			return new ArrayFilterResults(list, mLimiter);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		protected void publishResults(CharSequence filter, FilterResults results)
-		{
-			mObjects = (List<SongData>)results.values;
-			mPublishedFilter = filter == null || filter.length() == 0 ? null : filter;
-			mPublishedLimiter = ((ArrayFilterResults)results).limiter;
-
-			if (results.count == 0)
-				notifyDataSetInvalidated();
-			else
-				notifyDataSetChanged();
-		}
-	}
-
-	public void hideAll()
-	{
-		mObjects = new ArrayList<SongData>();
-		notifyDataSetInvalidated();
-	}
-
-	public void setLimiter(long limiter, SongData data)
+	public final void setLimiter(String[] limiter)
 	{
 		mLimiter = limiter;
-		mLimiterData = data;
-		getFilter().filter(mPublishedFilter);
+		getFilter().filter(mConstraint);
 	}
 
-	public final long getLimiter()
+	public final String[] getLimiter()
 	{
 		return mLimiter;
 	}
 
-	public final int getLimiterField()
+	public final int getLimiterLength()
 	{
-		if (mLimiter == -1)
-			return -1;
-		return limiterField(mLimiter);
-	}
-
-	public final SongData getLimiterData()
-	{
-		return mLimiterData;
-	}
-
-	private static final int ID_SHIFT = 2;
-	private static final int FIELD_MASK = ~(~0 << ID_SHIFT);
-
-	public static long makeLimiter(int field, SongData data)
-	{
-		return (data.getFieldId(field) << ID_SHIFT) + (field & FIELD_MASK);
-	}
-
-	public static int limiterField(long limiter)
-	{
-		return (int)(limiter & FIELD_MASK);
-	}
-
-	public static long limiterId(long limiter)
-	{
-		return limiter >> ID_SHIFT;
-	}
-
-	public int getCount()
-	{
-		if (mObjects == null) {
-			if (mAllObjects == null)
-				return 0;
-			return mAllObjects.length;
-		}
-		return mObjects.size();
-	}
-
-	public SongData get(int i)
-	{
-		if (mObjects == null) {
-			if (mAllObjects == null)
-				return null;
-			return mAllObjects[i];
-		}
-		if (i >= mObjects.size())
-			return null;
-		return mObjects.get(i);
-	}
-
-	public Object getItem(int i)
-	{
-		return get(i);
-	}
-
-	public long getItemId(int i)
-	{
-		SongData song = get(i);
-		if (song == null)
+		if (mLimiter == null)
 			return 0;
-		return song.getFieldId(mPrimaryField);
+		return mLimiter.length;
 	}
 
-	public Intent buildSongIntent(int action, int pos)
+	@Override
+	public void bindView(View view, Context context, Cursor cursor)
 	{
-		SongData song = get(pos);
-		if (song == null)
-			return null;
+		((MediaView)view).updateMedia(cursor);
+	}
 
-		Intent intent = new Intent(mContext, PlaybackService.class);
-		intent.putExtra("type", mPrimaryField);
-		intent.putExtra("action", action);
-		intent.putExtra("id", song.getFieldId(mPrimaryField));
-		intent.putExtra("title", song.getField(mPrimaryField));
-		return intent;
+	@Override
+	public View newView(Context context, Cursor cursor, ViewGroup parent)
+	{
+		return new MediaView(context);
 	}
 
 	private static float mTextSize = -1;
@@ -302,7 +176,9 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 	private int mViewHeight = -1;
 
 	public class MediaView extends View {
-		private SongData mData;
+		private long mId;
+		private String mTitle;
+		private String mSubTitle;
 		private boolean mExpanderPressed;
 
 		public MediaView(Context context)
@@ -327,7 +203,7 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 			else
 				expanderHeight = 0;
 
-			if (mSecondaryField != -1)
+			if (mFields.length > 1)
 				textHeight = (int)(7 * mTextSize / 2);
 			else
 				textHeight = (int)(2 * mTextSize);
@@ -344,7 +220,7 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 		@Override
 		public void onDraw(Canvas canvas)
 		{
-			if (mData == null)
+			if (mTitle == null)
 				return;
 
 			int width = getWidth();
@@ -364,38 +240,64 @@ public class MediaAdapter extends BaseAdapter implements Filterable {
 
 			float allocatedHeight;
 
-			if (mSecondaryField != -1) {
+			if (mSubTitle != null) {
 				allocatedHeight = height / 2 - padding * 3 / 2;
 
 				paint.setColor(Color.GRAY);
-				canvas.drawText(mData.getField(mSecondaryField), padding, height / 2 + padding / 2 + (allocatedHeight - mTextSize) / 2 - paint.ascent(), paint);
+				canvas.drawText(mSubTitle, padding, height / 2 + padding / 2 + (allocatedHeight - mTextSize) / 2 - paint.ascent(), paint);
 			} else {
 				allocatedHeight = height - padding * 2;
 			}
 
 			paint.setColor(Color.WHITE);
-			canvas.drawText(mData.getField(mPrimaryField), padding, padding + (allocatedHeight - mTextSize) / 2 - paint.ascent(), paint);
+			canvas.drawText(mTitle, padding, padding + (allocatedHeight - mTextSize) / 2 - paint.ascent(), paint);
 		}
 
-		public final void updateMedia(SongData data)
+		public final int getFieldCount()
 		{
-			mData = data;
-			invalidate();
+			return mFields.length;
 		}
 
-		public final int getPrimaryField()
+		public final long getMediaId()
 		{
-			return mPrimaryField;
+			return mId;
 		}
 
-		public final SongData getExpanderData()
+		public final String getTitle()
 		{
-			return mData;
+			return mTitle;
 		}
 
 		public final boolean isExpanderPressed()
 		{
 			return mExpanderPressed;
+		}
+
+		public final void updateMedia(Cursor cursor)
+		{
+			mId = cursor.getLong(0);
+			mTitle = cursor.getString(1);
+			if (mFields.length > 1)
+				mSubTitle = cursor.getString(2);
+			invalidate();
+		}
+
+		public final String[] getLimiter()
+		{
+			ContentResolver resolver = ContextApplication.getContext().getContentResolver();
+			String selection = mFields[mFields.length - 1] + " = ?";
+			String[] selectionArgs = { mTitle };
+			String[] projection = new String[mFields.length + 1];
+			projection[0] = BaseColumns._ID;
+			System.arraycopy(mFields, 0, projection, 1, mFields.length);
+
+			Cursor cursor = resolver.query(mStore, projection, selection, selectionArgs, null);
+			cursor.moveToNext();
+			String[] result = new String[cursor.getColumnCount() - 1];
+			for (int i = result.length; --i != -1; )
+				result[i] = cursor.getString(i + 1);
+
+			return result;
 		}
 
 		@Override

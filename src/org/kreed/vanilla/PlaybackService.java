@@ -622,14 +622,14 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				loadPreference((String)message.obj);
 				break;
 			case DO_ITEM:
-				long id = message.obj == null ? -1 : ((Intent)message.obj).getLongExtra("id", -1);
+				Intent intent = (Intent)message.obj;
+				long id = message.obj == null ? -1 : intent.getLongExtra("id", -1);
 				if (id == -1) {
 					mQueuePos = 0;
 				} else {
-					Intent intent = (Intent)message.obj;
 					boolean enqueue = intent.getIntExtra("action", ACTION_PLAY) == ACTION_ENQUEUE;
 
-					long[] songs = Song.getAllSongIdsWith(intent.getIntExtra("type", SongData.FIELD_TITLE), id);
+					long[] songs = Song.getAllSongIdsWith(intent.getIntExtra("type", 3), id);
 					if (songs == null || songs.length == 0)
 						break;
 

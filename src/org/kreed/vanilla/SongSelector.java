@@ -18,8 +18,6 @@
 
 package org.kreed.vanilla;
 
-import java.util.Arrays;
-
 import org.kreed.vanilla.R;
 
 import android.app.Dialog;
@@ -29,9 +27,11 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.PaintDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -71,12 +71,12 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 		return (MediaAdapter)getList(tab).getAdapter();
 	}
 
-	private void initializeList(int id, SongData[] songs, int lineA, int lineB, View.OnClickListener expanderListener)
+	private void initializeList(int id, Uri store, String[] fields, String[] fieldKeys, View.OnClickListener expanderListener, String selection)
 	{
 		ListView view = (ListView)findViewById(id);
 		view.setOnItemClickListener(this);
 		view.setOnCreateContextMenuListener(this);
-		view.setAdapter(new MediaAdapter(getContext(), songs, lineA, lineB, expanderListener));
+		view.setAdapter(new MediaAdapter(getContext(), store, fields, fieldKeys, expanderListener, selection));
 	}
 
 	public SongSelector(Context context)
@@ -109,12 +109,9 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 		new Handler().post(new Runnable() {
 			public void run()
 			{
-				SongData[] songs = SongData.getAllSongData();
-
-				initializeList(R.id.artist_list, SongData.filter(songs, new SongData.ArtistComparator()), SongData.FIELD_ARTIST, -1, SongSelector.this);
-				initializeList(R.id.album_list, SongData.filter(songs, new SongData.AlbumComparator()), SongData.FIELD_ALBUM, SongData.FIELD_ARTIST, SongSelector.this);
-				Arrays.sort(songs, new SongData.TitleComparator());
-				initializeList(R.id.song_list, songs, SongData.FIELD_TITLE, SongData.FIELD_ARTIST, null);
+				initializeList(R.id.artist_list, MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, MediaAdapter.ARTIST_FIELDS, MediaAdapter.ARTIST_FIELD_KEYS, SongSelector.this, null);
+				initializeList(R.id.album_list, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, MediaAdapter.ALBUM_FIELDS, MediaAdapter.ALBUM_FIELD_KEYS,SongSelector.this, null);
+				initializeList(R.id.song_list, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaAdapter.SONG_FIELDS, MediaAdapter.SONG_FIELD_KEYS, null, MediaStore.Audio.Media.IS_MUSIC + "!=0");
 			}
 		});
 	}
@@ -145,36 +142,32 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 		return mTextFilter.onKeyDown(keyCode, event);
 	}
 
-	private void sendSongIntent(Intent intent)
+	private void sendSongIntent(MediaAdapter.MediaView view, int action)
 	{
-		int action = intent.getIntExtra("action", PlaybackService.ACTION_PLAY);
-		String title = intent.getStringExtra("title");
-		intent.removeExtra("title");
-
 		int res = action == PlaybackService.ACTION_PLAY ? R.string.playing : R.string.enqueued;
-		String text = getContext().getResources().getString(res, title);
+		String text = getContext().getResources().getString(res, view.getTitle());
 		Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
 
+		long id = view.getMediaId();
+		int field = view.getFieldCount();
+
+		Intent intent = new Intent(getContext(), PlaybackService.class);
+		intent.putExtra("type", field);
+		intent.putExtra("action", action);
+		intent.putExtra("id", id);
 		getContext().startService(intent);
 
-		mLastActedId = intent.getIntExtra("id", -1);
+		mLastActedId = id;
 	}
 
 	private void expand(MediaAdapter.MediaView view)
 	{
-		int field = view.getPrimaryField();
-		SongData data = view.getExpanderData();
-		long limiter = MediaAdapter.makeLimiter(field, data);
+		String[] limiter = view.getLimiter();
 
-		for (int i = field; i != 3; ++i) {
-			MediaAdapter adapter = getAdapter(i);
-			if (adapter.getLimiter() != limiter) {
-				adapter.hideAll();
-				adapter.setLimiter(limiter, data);
-			}
-		}
+		for (int i = limiter.length; i != 3; ++i)
+			getAdapter(i).setLimiter(limiter);
 
-		mTabHost.setCurrentTab(field);
+		mTabHost.setCurrentTab(limiter.length);
 	}
 
 	public void onItemClick(AdapterView<?> list, View view, int pos, long id)
@@ -185,7 +178,7 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 		else if (id == mLastActedId)
 			dismiss();
 		else
-			sendSongIntent(((MediaAdapter)list.getAdapter()).buildSongIntent(mDefaultAction, pos));
+			sendSongIntent(mediaView, mDefaultAction);
 	}
 
 	public void afterTextChanged(Editable editable)
@@ -200,7 +193,7 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 	{
 		MediaAdapter adapter = getAdapter(mTabHost.getCurrentTab());
 		if (adapter != null)
-			adapter.getFilter().filter(text, this);
+			adapter.filter(text, this);
 	}
 
 	private void updateLimiterViews()
@@ -214,21 +207,20 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 		if (adapter == null)
 			return;
 
-		int field = adapter.getLimiterField();
-		SongData data = adapter.getLimiterData();
-		if (field == -1)
+		String[] limiter = adapter.getLimiter();
+		if (limiter == null)
 			return;
 
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 		params.leftMargin = 5;
-		for (int i = SongData.FIELD_ARTIST; i <= field; ++i) {
+		for (int i = 0; i != limiter.length; ++i) {
 			PaintDrawable background = new PaintDrawable(Color.GRAY);
 			background.setCornerRadius(5);
 
 			TextView view = new TextView(getContext());
 			view.setSingleLine();
 			view.setEllipsize(TextUtils.TruncateAt.MARQUEE);
-			view.setText(data.getField(i) + " | X");
+			view.setText(limiter[i] + " | X");
 			view.setTextColor(Color.WHITE);
 			view.setBackgroundDrawable(background);
 			view.setLayoutParams(params);
@@ -249,14 +241,20 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 		if (view == mClearButton) {
 			mTextFilter.setText("");
 		} else {
-			int field = (Integer)view.getTag() - 1;
-			SongData data = getAdapter(mTabHost.getCurrentTab()).getLimiterData();
-			long limiter = field == 0 ? -1 : MediaAdapter.makeLimiter(field, data);
+			int i = (Integer)view.getTag();
+			String[] limiter;
+			if (i == 0) {
+				limiter = null;
+			} else {
+				String[] oldLimiter = getAdapter(mTabHost.getCurrentTab()).getLimiter();
+				limiter = new String[i];
+				System.arraycopy(oldLimiter, 0, limiter, 0, i);
+			}
 
-			for (int i = 3; --i != -1; ) {
-				MediaAdapter adapter = getAdapter(i);
-				if (adapter.getLimiterField() > field)
-					adapter.setLimiter(limiter, data);
+			for (int j = 3; --j != -1; ) {
+				MediaAdapter adapter = getAdapter(j);
+				if (adapter.getLimiterLength() > i)
+					adapter.setLimiter(limiter);
 			}
 
 			updateLimiterViews();
@@ -268,29 +266,30 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 	private static final int MENU_EXPAND = 2;
 
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo info)
+	public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo absInfo)
 	{
-		MediaAdapter adapter = (MediaAdapter)((ListView)view).getAdapter();
-		int pos = (int)((AdapterView.AdapterContextMenuInfo)info).position;
-		menu.add(0, MENU_PLAY, 0, R.string.play).setIntent(adapter.buildSongIntent(PlaybackService.ACTION_PLAY, pos));
-		menu.add(0, MENU_ENQUEUE, 0, R.string.enqueue).setIntent(adapter.buildSongIntent(PlaybackService.ACTION_ENQUEUE, pos));
-		if (adapter.hasExpanders())
+		menu.add(0, MENU_PLAY, 0, R.string.play);
+		menu.add(0, MENU_ENQUEUE, 0, R.string.enqueue);
+		if (((MediaAdapter)((ListView)view).getAdapter()).hasExpanders())
 			menu.add(0, MENU_EXPAND, 0, R.string.expand);
 	}
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item)
 	{
+		MediaAdapter.MediaView view = (MediaAdapter.MediaView)((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).targetView;
+		int action = PlaybackService.ACTION_PLAY;
 		switch (item.getItemId()) {
 		case MENU_EXPAND:
-			expand((MediaAdapter.MediaView)((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).targetView);
+			expand(view);
 			break;
-		case MENU_PLAY:
 		case MENU_ENQUEUE:
-			Intent intent = item.getIntent();
+			action = PlaybackService.ACTION_ENQUEUE;
+			// fall through
+		case MENU_PLAY:
 			if (mDefaultIsLastAction)
-				mDefaultAction = intent.getIntExtra("action", PlaybackService.ACTION_PLAY);
-			sendSongIntent(intent);
+				mDefaultAction = action;
+			sendSongIntent(view, action);
 			break;
 		default:
 			return false;
@@ -311,7 +310,7 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 	{
 		CharSequence text = mTextFilter.getText();
 		for (int i = 3; --i != -1; )
-			getAdapter(i).getFilter().filter(text);
+			getAdapter(i).filter(text, null);
 	}
 
 	@Override
