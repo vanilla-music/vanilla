@@ -25,31 +25,26 @@
 
 	<!-- Preferences -->
 	<string name="pref_output">Audio Output</string>
-	<string name="pref_notifications">Notifications</string>
-	<string name="pref_song_selector">Song Selector</string>
-	<string name="pref_misc">Miscellaneous Features</string>
-
 	<string name="headset_only_title">External Output Only</string>
 	<string name="headset_only_summary">Only play music through an external output (e.g. headphones, Bluetooth)</string>
-
 	<string name="headset_pause_title">Pause When Unplugged</string>
 	<string name="headset_pause_summary">Pause when the headphones are unplugged.</string>
 
+	<string name="pref_notifications">Notifications</string>
 	<string name="mini_player_title">Use Mini Player</string>
 	<string name="mini_player_summary">Open a mini player pop-up instead of the full player activity when the notification is clicked</string>
-
 	<string name="notification_mode_title">Notification Mode</string>
 	<string name="notification_mode_summary">When to show the notification</string>
 
-	<string name="selector_on_startup_title">Open on Startup</string>
-	<string name="selector_on_startup_summary">Open song selector on startup</string>
-
+	<string name="pref_song_selector">Song Selector</string>
 	<string name="filter_suggestions_title">Use Suggestions in Filter Text</string>
 	<string name="filter_suggestions_summary">Use text suggestions when editing the filter text</string>
-
+	<string name="selector_on_startup_title">Open on Startup</string>
+	<string name="selector_on_startup_summary">Open song selector on startup</string>
 	<string name="default_action_title">Default Action</string>
 	<string name="default_action_summary">What to do when an item is tapped</string>
 
+	<string name="pref_misc">Miscellaneous Features</string>
 	<string name="scrobble_title">Use ScrobbleDroid API</string>
 	<string name="scrobble_summary">Send song info to Last.FM scrobblers such as ScrobbleDroid and Simple Last.FM Scrobbler</string>
 </resources>
