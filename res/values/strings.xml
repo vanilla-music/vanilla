@@ -2,16 +2,19 @@
 <resources>
 	<string name="app_name">Vanilla Music</string>
 
+	<!-- Playback Activity (main screen) -->
 	<string name="no_songs">No songs found on your device.</string>
-
-	<string name="starting">Starting up...</string>
-
-	<string name="enqueue">Enqueue</string>
-	<string name="play">Play</string>
-	<string name="expand">Expand</string>
 	<string name="settings">Preferences</string>
 	<string name="library">Choose Songs</string>
 	<string name="quit">Stop and Exit</string>
+
+	<!-- Widgets -->
+	<string name="starting">Starting up...</string>
+
+	<!-- Song Chooser -->
+	<string name="enqueue">Enqueue</string>
+	<string name="play">Play</string>
+	<string name="expand">Expand</string>
 
 	<string name="enqueued">Enqueued %s</string>
 	<string name="playing">Playing %s</string>
@@ -20,6 +23,7 @@
 	<string name="albums">Albums</string>
 	<string name="songs">Songs</string>
 
+	<!-- Preferences -->
 	<string name="pref_output">Audio Output</string>
 	<string name="pref_notifications">Notifications</string>
 	<string name="pref_song_selector">Song Selector</string>
