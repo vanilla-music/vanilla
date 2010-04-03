@@ -23,11 +23,13 @@ import org.kreed.vanilla.R;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -67,6 +69,10 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 	public void onCreate(Bundle icicle)
 	{
 		super.onCreate(icicle);
+
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+		if (settings.getBoolean("selector_on_startup", false))
+			showDialog(SONG_SELECTOR);
 
 		setContentView(R.layout.full_playback);
 

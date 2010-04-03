@@ -41,6 +41,9 @@
 	<string name="notification_mode_title">Notification Mode</string>
 	<string name="notification_mode_summary">When to show the notification</string>
 
+	<string name="selector_on_startup_title">Open on Startup</string>
+	<string name="selector_on_startup_summary">Open song selector on startup</string>
+
 	<string name="filter_suggestions_title">Use Suggestions in Filter Text</string>
 	<string name="filter_suggestions_summary">Use text suggestions when editing the filter text</string>
 
