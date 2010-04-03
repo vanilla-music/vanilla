@@ -50,11 +50,10 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 	private String[] mFields;
 	private String[] mFieldKeys;
 	private View.OnClickListener mExpanderListener;
-	private String mSelection;
 	private String[] mLimiter;
 	private CharSequence mConstraint;
 
-	public MediaAdapter(Context context, Uri store, String[] fields, String[] fieldKeys, View.OnClickListener expanderListener, String selection)
+	public MediaAdapter(Context context, Uri store, String[] fields, String[] fieldKeys, View.OnClickListener expanderListener)
 	{
 		super(context, null, true);
 
@@ -62,7 +61,6 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 		mFields = fields;
 		mFieldKeys = fieldKeys;
 		mExpanderListener = expanderListener;
-		mSelection = selection;
 
 		setFilterQueryProvider(this);
 
@@ -75,6 +73,16 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 		getFilter().filter(constraint, listener);
 	}
 
+	protected String getDefaultSelection()
+	{
+		return null;
+	}
+
+	protected String getSortOrder()
+	{
+		return mFieldKeys[mFieldKeys.length - 1];
+	}
+
 	public Cursor runQuery(CharSequence constraint)
 	{
 		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
@@ -83,8 +91,9 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 		String[] selectionArgs;
 		String limiter;
 
-		if (mSelection != null)
-			selection.append(mSelection);
+		String defaultSelection = getDefaultSelection();
+		if (defaultSelection != null)
+			selection.append(defaultSelection);
 
 		if (mLimiter != null) {
 			int i = Math.min(mLimiter.length, mFields.length) - 1;
@@ -132,7 +141,7 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 		else
 			projection = new String[] { BaseColumns._ID, mFields[mFields.length - 1], mFields[0] };
 
-		return resolver.query(mStore, projection, selection.toString(), selectionArgs, mFieldKeys[mFieldKeys.length - 1]);
+		return resolver.query(mStore, projection, selection.toString(), selectionArgs, getSortOrder());
 	}
 
 	public final boolean hasExpanders()

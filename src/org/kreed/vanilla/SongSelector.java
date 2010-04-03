@@ -71,12 +71,12 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 		return (MediaAdapter)getList(tab).getAdapter();
 	}
 
-	private void initializeList(int id, Uri store, String[] fields, String[] fieldKeys, View.OnClickListener expanderListener, String selection)
+	private void initializeList(int id, Uri store, String[] fields, String[] fieldKeys, View.OnClickListener expanderListener)
 	{
 		ListView view = (ListView)findViewById(id);
 		view.setOnItemClickListener(this);
 		view.setOnCreateContextMenuListener(this);
-		view.setAdapter(new MediaAdapter(getContext(), store, fields, fieldKeys, expanderListener, selection));
+		view.setAdapter(new MediaAdapter(getContext(), store, fields, fieldKeys, expanderListener));
 	}
 
 	public SongSelector(Context context)
@@ -109,9 +109,13 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 		new Handler().post(new Runnable() {
 			public void run()
 			{
-				initializeList(R.id.artist_list, MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, MediaAdapter.ARTIST_FIELDS, MediaAdapter.ARTIST_FIELD_KEYS, SongSelector.this, null);
-				initializeList(R.id.album_list, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, MediaAdapter.ALBUM_FIELDS, MediaAdapter.ALBUM_FIELD_KEYS,SongSelector.this, null);
-				initializeList(R.id.song_list, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaAdapter.SONG_FIELDS, MediaAdapter.SONG_FIELD_KEYS, null, MediaStore.Audio.Media.IS_MUSIC + "!=0");
+				initializeList(R.id.artist_list, MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, MediaAdapter.ARTIST_FIELDS, MediaAdapter.ARTIST_FIELD_KEYS, SongSelector.this);
+				initializeList(R.id.album_list, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, MediaAdapter.ALBUM_FIELDS, MediaAdapter.ALBUM_FIELD_KEYS,SongSelector.this);
+
+				ListView view = (ListView)findViewById(R.id.song_list);
+				view.setOnItemClickListener(SongSelector.this);
+				view.setOnCreateContextMenuListener(SongSelector.this);
+				view.setAdapter(new SongMediaAdapter(getContext()));
 			}
 		});
 	}
