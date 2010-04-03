@@ -641,9 +641,13 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 						songs[i] = tmp;
 					}
 
+					boolean changed = false;
+
 					synchronized (mSongTimeline) {
 						if (enqueue) {
 							int i = mCurrentSong + mQueuePos + 1;
+							if (mQueuePos == 0)
+								changed = true;
 
 							for (int j = 0; j != songs.length; ++i, ++j) {
 								Song song = new Song(songs[j]);
@@ -666,11 +670,17 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 								mSongTimeline.addAll(queue);
 
 							mQueuePos += songs.length - 1;
+
+							if (songs.length > 1)
+								changed = true;
 						}
 					}
 
 					if (!enqueue)
 						mHandler.sendEmptyMessage(TRACK_CHANGED);
+
+					if (changed)
+						sendBroadcast(new Intent(EVENT_REPLACE_SONG));
 
 					mHandler.removeMessages(SAVE_STATE);
 					mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
