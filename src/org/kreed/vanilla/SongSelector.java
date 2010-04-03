@@ -163,10 +163,11 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 	{
 		String[] limiter = view.getLimiter();
 
-		for (int i = limiter.length; i != 3; ++i)
-			getAdapter(i).setLimiter(limiter);
-
+		getAdapter(limiter.length).setLimiter(limiter, false);
 		mTabHost.setCurrentTab(limiter.length);
+
+		for (int i = limiter.length + 1; i < 3; ++i)
+			getAdapter(i).setLimiter(limiter, true);
 	}
 
 	public void onItemClick(AdapterView<?> list, View view, int pos, long id)
@@ -253,7 +254,7 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 			for (int j = 3; --j != -1; ) {
 				MediaAdapter adapter = getAdapter(j);
 				if (adapter.getLimiterLength() > i)
-					adapter.setLimiter(limiter);
+					adapter.setLimiter(limiter, true);
 			}
 
 			updateLimiterViews();

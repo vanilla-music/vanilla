@@ -149,10 +149,13 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 		return mExpandable;
 	}
 
-	public final void setLimiter(String[] limiter)
+	public final void setLimiter(String[] limiter, boolean async)
 	{
 		mLimiter = limiter;
-		getFilter().filter(mConstraint);
+		if (async)
+			getFilter().filter(mConstraint);
+		else
+			changeCursor(runQuery(mConstraint));
 	}
 
 	public final String[] getLimiter()
