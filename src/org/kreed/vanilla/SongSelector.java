@@ -120,13 +120,7 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 	public void onStart()
 	{
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
-		int inputType;
-		if (settings.getBoolean("phone_input", false))
-			inputType = InputType.TYPE_CLASS_PHONE;
-		else if (!settings.getBoolean("filter_suggestions", false))
-			inputType = InputType.TYPE_TEXT_VARIATION_FILTER;
-		else
-			inputType = InputType.TYPE_CLASS_TEXT;
+		int inputType = settings.getBoolean("filter_suggestions", false) ? InputType.TYPE_CLASS_TEXT : InputType.TYPE_TEXT_VARIATION_FILTER;
 		mTextFilter.setInputType(inputType);
 
 		mDefaultAction = Integer.parseInt(settings.getString("default_action_int", "0"));

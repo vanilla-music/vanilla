@@ -38,9 +38,6 @@
 	<string name="notification_mode_title">Notification Mode</string>
 	<string name="notification_mode_summary">When to show the notification</string>
 
-	<string name="phone_input_title">Use Phone Dialer Input</string>
-	<string name="phone_input_summary">Enter filter text using buttons 1-9, where 1 matches 1, a, b or c, etc</string>
-
 	<string name="filter_suggestions_title">Use Suggestions in Filter Text</string>
 	<string name="filter_suggestions_summary">Use text suggestions when editing the filter text</string>
 
