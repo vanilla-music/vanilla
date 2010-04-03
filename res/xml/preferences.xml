@@ -24,11 +24,10 @@
 			android:defaultValue="1" />
 		<CheckBoxPreference
 			android:key="remote_player"
-			android:title="@string/remote_player_title"
-			android:defaultValue="true"
-			android:summaryOn="@string/remote_player_summary_on"
-			android:summaryOff="@string/remote_player_summary_off" />
-	</PreferenceCategory>
+			android:title="@string/mini_player_title"
+			android:summary="@string/mini_player_summary"
+			android:defaultValue="true" />
+		</PreferenceCategory>
 	<PreferenceCategory android:title="@string/pref_song_selector">
 		<CheckBoxPreference
 			android:key="filter_suggestions"

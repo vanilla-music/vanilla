@@ -35,9 +35,8 @@
 	<string name="headset_pause_title">Pause When Unplugged</string>
 	<string name="headset_pause_summary">Pause when the headphones are unplugged.</string>
 
-	<string name="remote_player_title">Use Remote Player</string>
-	<string name="remote_player_summary_on">Clicking the notification will open a mini-player dialog</string>
-	<string name="remote_player_summary_off">Clicking the notification will open a the full player activity</string>
+	<string name="mini_player_title">Use Mini Player</string>
+	<string name="mini_player_summary">Open a mini player pop-up instead of the full player activity when the notification is clicked</string>
 
 	<string name="notification_mode_title">Notification Mode</string>
 	<string name="notification_mode_summary">When to show the notification</string>
