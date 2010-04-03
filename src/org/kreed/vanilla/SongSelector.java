@@ -124,6 +124,7 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 		mTextFilter.setInputType(inputType);
 
 		mDefaultAction = Integer.parseInt(settings.getString("default_action_int", "0"));
+		mLastActedId = 0;
 	}
 
 	@Override
