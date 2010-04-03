@@ -24,7 +24,7 @@ import android.provider.MediaStore;
 public class SongMediaAdapter extends MediaAdapter {
 	public SongMediaAdapter(Context context)
 	{
-		super(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, SONG_FIELDS, SONG_FIELD_KEYS, null);
+		super(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, SONG_FIELDS, SONG_FIELD_KEYS, false);
 	}
 
 	@Override

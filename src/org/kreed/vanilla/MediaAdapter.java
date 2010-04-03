@@ -49,18 +49,18 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 	private Uri mStore;
 	private String[] mFields;
 	private String[] mFieldKeys;
-	private View.OnClickListener mExpanderListener;
+	private boolean mExpandable;
 	private String[] mLimiter;
 	private CharSequence mConstraint;
 
-	public MediaAdapter(Context context, Uri store, String[] fields, String[] fieldKeys, View.OnClickListener expanderListener)
+	public MediaAdapter(Context context, Uri store, String[] fields, String[] fieldKeys, boolean expandable)
 	{
 		super(context, null, true);
 
 		mStore = store;
 		mFields = fields;
 		mFieldKeys = fieldKeys;
-		mExpanderListener = expanderListener;
+		mExpandable = expandable;
 
 		setFilterQueryProvider(this);
 
@@ -146,7 +146,7 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 
 	public final boolean hasExpanders()
 	{
-		return mExpanderListener != null;
+		return mExpandable;
 	}
 
 	public final void setLimiter(String[] limiter)
@@ -207,7 +207,7 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 			int expanderHeight;
 			int textHeight;
 
-			if (mExpanderListener != null)
+			if (mExpandable)
 				expanderHeight = mExpander.getHeight() + (int)mTextSize;
 			else
 				expanderHeight = 0;
@@ -240,7 +240,7 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 			paint.setTextSize(mTextSize);
 			paint.setAntiAlias(true);
 
-			if (mExpanderListener != null) {
+			if (mExpandable) {
 				width -= padding * 3 + mExpander.getWidth();
 				canvas.drawBitmap(mExpander, width + padding * 2, (height - mExpander.getHeight()) / 2, paint);
 			}

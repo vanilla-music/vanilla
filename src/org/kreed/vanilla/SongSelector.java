@@ -71,12 +71,12 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 		return (MediaAdapter)getList(tab).getAdapter();
 	}
 
-	private void initializeList(int id, Uri store, String[] fields, String[] fieldKeys, View.OnClickListener expanderListener)
+	private void initializeList(int id, Uri store, String[] fields, String[] fieldKeys)
 	{
 		ListView view = (ListView)findViewById(id);
 		view.setOnItemClickListener(this);
 		view.setOnCreateContextMenuListener(this);
-		view.setAdapter(new MediaAdapter(getContext(), store, fields, fieldKeys, expanderListener));
+		view.setAdapter(new MediaAdapter(getContext(), store, fields, fieldKeys, true));
 	}
 
 	public SongSelector(Context context)
@@ -109,8 +109,8 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 		new Handler().post(new Runnable() {
 			public void run()
 			{
-				initializeList(R.id.artist_list, MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, MediaAdapter.ARTIST_FIELDS, MediaAdapter.ARTIST_FIELD_KEYS, SongSelector.this);
-				initializeList(R.id.album_list, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, MediaAdapter.ALBUM_FIELDS, MediaAdapter.ALBUM_FIELD_KEYS,SongSelector.this);
+				initializeList(R.id.artist_list, MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, MediaAdapter.ARTIST_FIELDS, MediaAdapter.ARTIST_FIELD_KEYS);
+				initializeList(R.id.album_list, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, MediaAdapter.ALBUM_FIELDS, MediaAdapter.ALBUM_FIELD_KEYS);
 
 				ListView view = (ListView)findViewById(R.id.song_list);
 				view.setOnItemClickListener(SongSelector.this);
