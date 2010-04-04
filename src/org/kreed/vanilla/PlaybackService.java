@@ -96,6 +96,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private Song mLastSongBroadcast;
 	private boolean mPlugged;
 	private ContentObserver mMediaObserver;
+	public Receiver mReceiver;
+	public InCallListener mCallListener;
 
 	private Method mIsWiredHeadsetOn;
 	private Method mStartForeground;
@@ -518,7 +520,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		PlaybackServiceState.saveState(this, mSongTimeline, mCurrentSong, savePosition && mMediaPlayer != null ? mMediaPlayer.getCurrentPosition() : 0);
 	}
 
-	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+	private class Receiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context content, Intent intent)
 		{
@@ -532,7 +534,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		}
 	};
 
-	private PhoneStateListener mCallListener = new PhoneStateListener() {
+	private class InCallListener extends PhoneStateListener {
 		@Override
 		public void onCallStateChanged(int state, String incomingNumber)
 		{
@@ -683,10 +685,12 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			case POST_CREATE:
 				updateNotification(getSong(0));
 
+				mReceiver = new Receiver();
 				IntentFilter filter = new IntentFilter();
 				filter.addAction(Intent.ACTION_HEADSET_PLUG);
 				registerReceiver(mReceiver, filter);
 
+				mCallListener = new InCallListener();
 				TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 				telephonyManager.listen(mCallListener, PhoneStateListener.LISTEN_CALL_STATE);
 				break;
