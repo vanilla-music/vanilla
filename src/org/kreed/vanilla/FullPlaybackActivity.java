@@ -70,9 +70,11 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 	{
 		super.onCreate(icicle);
 
-		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-		if (settings.getBoolean("selector_on_startup", false))
-			showDialog(SONG_SELECTOR);
+		if (icicle == null) {
+			SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+			if (settings.getBoolean("selector_on_startup", false))
+				showDialog(SONG_SELECTOR);
+		}
 
 		setContentView(R.layout.full_playback);
 
