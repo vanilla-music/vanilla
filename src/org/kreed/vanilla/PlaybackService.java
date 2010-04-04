@@ -532,8 +532,10 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			return;
 
 		Song song = getSong(delta);
-		if (song == null)
+		if (song == null) {
+			setFlag(FLAG_NO_MEDIA);
 			return;
+		}
 
 		synchronized (mSongTimeline) {
 			mCurrentSong += delta;
@@ -599,10 +601,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 		if (!song.populate()) {
 			song.randomize();
-			if (!song.populate()) {
-				setFlag(FLAG_NO_MEDIA);
+			if (!song.populate())
 				return null;
-			}
 		}
 
 		return song;
