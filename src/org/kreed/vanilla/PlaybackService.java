@@ -66,6 +66,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 	public static final int FLAG_NO_MEDIA = 0x2;
 	public static final int FLAG_PLAYING = 0x1;
+	public static final int ALL_FLAGS = FLAG_NO_MEDIA + FLAG_PLAYING;
 
 	public static final int NEVER = 0;
 	public static final int WHEN_PLAYING = 1;
@@ -335,6 +336,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 	private boolean updateState(int state)
 	{
+		state &= ALL_FLAGS;
+
 		if ((state & FLAG_NO_MEDIA) != 0)
 			state &= ~FLAG_PLAYING;
 
@@ -683,8 +686,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
 				break;
 			case POST_CREATE:
-				updateNotification(getSong(0));
-
 				mReceiver = new Receiver();
 				IntentFilter filter = new IntentFilter();
 				filter.addAction(Intent.ACTION_HEADSET_PLUG);
