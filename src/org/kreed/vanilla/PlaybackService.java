@@ -31,10 +31,12 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.database.ContentObserver;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -44,6 +46,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -92,6 +95,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private int mPendingGo = -1;
 	private Song mLastSongBroadcast;
 	private boolean mPlugged;
+	private ContentObserver mMediaObserver;
 
 	private Method mIsWiredHeadsetOn;
 	private Method mStartForeground;
@@ -203,7 +207,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		PlaybackServiceState state = new PlaybackServiceState();
 		if (state.load(this)) {
 			Song song = new Song(state.savedIds[state.savedIndex]);
-			if (song.populate()) {
+			if (song.populate(false)) {
 				broadcastChange(mState, mState, song);
 
 				mSongTimeline = new ArrayList<Song>(state.savedIds.length);
@@ -329,6 +333,9 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 	private boolean updateState(int state)
 	{
+		if ((state & FLAG_NO_MEDIA) != 0)
+			state &= ~FLAG_PLAYING;
+
 		Song song = getSong(0);
 		if (song == null && (state & FLAG_PLAYING) != 0)
 			return false;
@@ -341,6 +348,16 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 		if (state != oldState || song != lastBroadcast)
 			updateNotification(song);
+
+		if ((state & FLAG_NO_MEDIA) != 0 && (oldState & FLAG_NO_MEDIA) == 0) {
+			ContentResolver resolver = ContextApplication.getContext().getContentResolver();
+			mMediaObserver = new MediaContentObserver(mHandler);
+			resolver.registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, mMediaObserver);
+		} else if ((state & FLAG_NO_MEDIA) == 0 && (oldState & FLAG_NO_MEDIA) != 0) {
+			ContentResolver resolver = ContextApplication.getContext().getContentResolver();
+			resolver.unregisterContentObserver(mMediaObserver);
+			mMediaObserver = null;
+		}
 
 		if ((state & FLAG_PLAYING) != 0 && (oldState & FLAG_PLAYING) == 0) {
 			if (mNotificationMode != NEVER)
@@ -417,6 +434,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		if (song == null) {
 			setFlag(FLAG_NO_MEDIA);
 			return;
+		} else {
+			unsetFlag(FLAG_NO_MEDIA);
 		}
 
 		synchronized (mSongTimeline) {
@@ -453,7 +472,11 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	{
 		Log.e("VanillaMusic", "MediaPlayer error: " + what + " " + extra);
 		mMediaPlayer.reset();
-		mHandler.sendEmptyMessage(TRACK_CHANGED);
+		Song song = getSong(+1);
+		if (song != null && !song.populate(true))
+			setFlag(FLAG_NO_MEDIA);
+		else
+			mHandler.sendEmptyMessage(TRACK_CHANGED);
 		return true;
 	}
 
@@ -481,9 +504,9 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			}
 		}
 
-		if (!song.populate()) {
+		if (!song.populate(false)) {
 			song.randomize();
-			if (!song.populate())
+			if (!song.populate(false))
 				return null;
 		}
 
@@ -500,7 +523,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		public void onReceive(Context content, Intent intent)
 		{
 			String action = intent.getAction();
-			if (Intent.ACTION_HEADSET_PLUG.equals(action) && mHandler != null) {
+			if (Intent.ACTION_HEADSET_PLUG.equals(action)) {
 				boolean oldPlugged = mPlugged;
 				mPlugged = intent.getIntExtra("state", 0) != 0;
 				if (mPlugged != oldPlugged && (mHeadsetPause && !mPlugged || mHeadsetOnly && !isSpeakerOn()))
@@ -528,6 +551,19 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			}
 		}
 	};
+
+	private class MediaContentObserver extends ContentObserver {
+		public MediaContentObserver(Handler handler)
+		{
+			super(handler);
+		}
+
+		@Override
+		public void onChange(boolean selfChange)
+		{
+			setCurrentSong(0);
+		}
+	}
 
 	public void onSharedPreferenceChanged(SharedPreferences settings, String key)
 	{

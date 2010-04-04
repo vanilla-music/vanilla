@@ -35,7 +35,7 @@ public class OneCellWidget extends AppWidgetProvider {
 		Song song = null;
 		if (state.load(context)) {
 			song = new Song(state.savedIds[state.savedIndex]);
-			if (!song.populate())
+			if (!song.populate(false))
 				song = null;
 		}
 

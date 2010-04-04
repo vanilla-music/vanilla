@@ -54,9 +54,9 @@ public class Song implements Parcelable {
 		this.id = id;
 	}
 
-	public boolean populate()
+	public boolean populate(boolean force)
 	{
-		if (path != null)
+		if (path != null && !force)
 			return true;
 		if (id == -1)
 			return false;
