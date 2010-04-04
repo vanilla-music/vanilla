@@ -28,7 +28,9 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 
 public abstract class PlaybackActivity extends Activity implements ServiceConnection {
 	protected CoverView mCoverView;
@@ -94,6 +96,26 @@ public abstract class PlaybackActivity extends Activity implements ServiceConnec
 	public boolean onKeyLongPress(int keyCode, KeyEvent event)
 	{
 		return handleKeyLongPress(this, keyCode);
+	}
+
+	public void onClick(View view)
+	{
+		try {
+			switch (view.getId()) {
+			case R.id.next:
+				mCoverView.go(1);
+				break;
+			case R.id.play_pause:
+				mCoverView.go(0);
+				break;
+			case R.id.previous:
+				mCoverView.go(-1);
+				break;
+			}
+		} catch (RemoteException e) {
+			Log.e("VanillaMusic", "service dead", e);
+			setService(null);
+		}
 	}
 
 	protected abstract void setState(int state);

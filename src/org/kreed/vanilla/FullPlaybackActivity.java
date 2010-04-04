@@ -30,7 +30,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -49,9 +48,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 	private View mControlsTop;
 	private View mControlsBottom;
 
-	private View mPreviousButton;
 	private ImageView mPlayPauseButton;
-	private View mNextButton;
 	private SeekBar mSeekBar;
 	private TextView mSeekText;
 
@@ -84,15 +81,15 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 		mControlsTop = findViewById(R.id.controls_top);
 		mControlsBottom = findViewById(R.id.controls_bottom);
 
-		mPreviousButton = findViewById(R.id.previous);
-		mPreviousButton.setOnClickListener(this);
-		mPreviousButton.setOnFocusChangeListener(this);
+		View previousButton = findViewById(R.id.previous);
+		previousButton.setOnClickListener(this);
+		previousButton.setOnFocusChangeListener(this);
 		mPlayPauseButton = (ImageView)findViewById(R.id.play_pause);
 		mPlayPauseButton.setOnClickListener(this);
 		mPlayPauseButton.setOnFocusChangeListener(this);
-		mNextButton = findViewById(R.id.next);
-		mNextButton.setOnClickListener(this);
-		mNextButton.setOnFocusChangeListener(this);
+		View nextButton = findViewById(R.id.next);
+		nextButton.setOnClickListener(this);
+		nextButton.setOnFocusChangeListener(this);
 
 		mSeekText = (TextView)findViewById(R.id.seek_text);
 		mSeekBar = (SeekBar)findViewById(R.id.seek_bar);
@@ -313,17 +310,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 				updateProgress();
 			}
 		} else {
-			try {
-				if (view == mNextButton)
-					mCoverView.go(1);
-				else if (view == mPreviousButton)
-					mCoverView.go(-1);
-				else if (view == mPlayPauseButton)
-					mCoverView.go(0);
-			} catch (RemoteException e) {
-				Log.e("VanillaMusic", "service dead", e);
-				setService(null);
-			}
+			super.onClick(view);
 		}
 	}
 

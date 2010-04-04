@@ -23,9 +23,7 @@ import org.kreed.vanilla.R;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -34,9 +32,7 @@ import android.widget.ImageView;
 public class MiniPlaybackActivity extends PlaybackActivity implements View.OnClickListener {
 	private View mOpenButton;
 	private View mKillButton;
-	private View mPreviousButton;
 	private ImageView mPlayPauseButton;
-	private View mNextButton;
 
 	@Override
 	public void onCreate(Bundle state)
@@ -52,12 +48,12 @@ public class MiniPlaybackActivity extends PlaybackActivity implements View.OnCli
 		mOpenButton.setOnClickListener(this);
 		mKillButton = findViewById(R.id.kill_button);
 		mKillButton.setOnClickListener(this);
-		mPreviousButton = findViewById(R.id.previous);
-		mPreviousButton.setOnClickListener(this);
+		View previousButton = findViewById(R.id.previous);
+		previousButton.setOnClickListener(this);
 		mPlayPauseButton = (ImageView)findViewById(R.id.play_pause);
 		mPlayPauseButton.setOnClickListener(this);
-		mNextButton = findViewById(R.id.next);
-		mNextButton.setOnClickListener(this);
+		View nextButton = findViewById(R.id.next);
+		nextButton.setOnClickListener(this);
 	}
 
 	@Override
@@ -77,17 +73,7 @@ public class MiniPlaybackActivity extends PlaybackActivity implements View.OnCli
 			startActivity(new Intent(this, FullPlaybackActivity.class));
 			finish();
 		} else {
-			try {
-				if (view == mNextButton)
-					mCoverView.go(1);
-				else if (view == mPreviousButton)
-					mCoverView.go(-1);
-				else if (view == mPlayPauseButton)
-					mCoverView.go(0);
-			} catch (RemoteException e) {
-				Log.e("VanillaMusic", "service dead", e);
-				finish();
-			}
+			super.onClick(view);
 		}
 	}
 }
