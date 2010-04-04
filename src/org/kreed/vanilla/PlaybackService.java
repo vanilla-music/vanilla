@@ -68,70 +68,34 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	public static final int WHEN_PLAYING = 1;
 	public static final int ALWAYS = 2;
 
+	private boolean mHeadsetPause;
+	private boolean mHeadsetOnly;
+	private boolean mScrobble;
+	private int mNotificationMode;
+
+	private Handler mHandler;
+	private MediaPlayer mMediaPlayer;
+	private boolean mMediaPlayerInitialized;
+	private PowerManager.WakeLock mWakeLock;
+	private Notification mNotification;
+	private SharedPreferences mSettings;
+	private AudioManager mAudioManager;
+	private NotificationManager mNotificationManager;
+
+	private ArrayList<Song> mSongTimeline;
+	private int mCurrentSong;
+	private int mQueuePos;
+	private int mState = 0x80;
+	private Object mStateLock = new Object();
+	private boolean mPlayingBeforeCall;
+	private int mPendingSeek;
 	private int mPendingGo = -1;
+	private Song mLastSongBroadcast;
+	private boolean mPlugged;
 
-	public IPlaybackService.Stub mBinder = new IPlaybackService.Stub() {
-		public boolean isLoaded()
-		{
-			return mHandler != null;
-		}
-
-		public Song getSong(int delta)
-		{
-			return PlaybackService.this.getSong(delta);
-		}
-
-		public int getState()
-		{
-			synchronized (mStateLock) {
-				return mState;
-			}
-		}
-
-		public int getPosition()
-		{
-			if (mMediaPlayer == null)
-				return 0;
-			synchronized (mMediaPlayer) {
-				return mMediaPlayer.getCurrentPosition();
-			}
-		}
-
-		public int getDuration()
-		{
-			if (mMediaPlayer == null)
-				return 0;
-			synchronized (mMediaPlayer) {
-				return mMediaPlayer.getDuration();
-			}
-		}
-
-		public void setCurrentSong(int delta)
-		{
-			PlaybackService.this.setCurrentSong(delta);
-		}
-
-		public void toggleFlag(int flag)
-		{
-			PlaybackService.this.toggleFlag(flag);
-		}
-
-		public void seekToProgress(int progress)
-		{
-			if (mMediaPlayer == null)
-				return;
-			synchronized (mMediaPlayer) {
-				long position = (long)mMediaPlayer.getDuration() * progress / 1000;
-				mMediaPlayer.seekTo((int)position);
-			}
-		}
-	};
-
-	@Override
-	public IBinder onBind(Intent intent)
-	{
-		return mBinder;
-	}
+	private Method mIsWiredHeadsetOn;
+	private Method mStartForeground;
+	private Method mStopForeground;
 
 	@Override
 	public void onCreate()
@@ -177,8 +141,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	public void onDestroy()
 	{
 		super.onDestroy();
-
-		Log.d("VanillaMusic", "destroy");
 
 		if (mSongTimeline != null)
 			saveState(true);
@@ -233,85 +195,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		if (cancelNotification && mNotificationManager != null)
 			mNotificationManager.cancel(NOTIFICATION_ID);
 	}
-
-	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context content, Intent intent)
-		{
-			String action = intent.getAction();
-			if (Intent.ACTION_HEADSET_PLUG.equals(action) && mHandler != null) {
-				boolean oldPlugged = mPlugged;
-				mPlugged = intent.getIntExtra("state", 0) != 0;
-				if (mPlugged != oldPlugged && (mHeadsetPause && !mPlugged || mHeadsetOnly && !isSpeakerOn()))
-					unsetFlag(FLAG_PLAYING);
-			}
-		}
-	};
-
-	private PhoneStateListener mCallListener = new PhoneStateListener() {
-		@Override
-		public void onCallStateChanged(int state, String incomingNumber)
-		{
-			int inCall = -1;
-
-			switch (state) {
-			case TelephonyManager.CALL_STATE_RINGING:
-			case TelephonyManager.CALL_STATE_OFFHOOK:
-				inCall = 1;
-				break;
-			case TelephonyManager.CALL_STATE_IDLE:
-				inCall = 0;
-				break;
-			}
-
-			if (mHandler != null)
-				mHandler.sendMessage(mHandler.obtainMessage(CALL, inCall, 0));
-		}
-	};
-
-	public void onSharedPreferenceChanged(SharedPreferences settings, String key)
-	{
-		if (mHandler != null)
-			mHandler.sendMessage(mHandler.obtainMessage(PREF_CHANGED, key));
-	}
-
-	private boolean mHeadsetPause;
-	private boolean mHeadsetOnly;
-	private boolean mScrobble;
-	private int mNotificationMode;
-
-	private Handler mHandler;
-	private MediaPlayer mMediaPlayer;
-	private boolean mMediaPlayerInitialized;
-	private PowerManager.WakeLock mWakeLock;
-	private Notification mNotification;
-	private SharedPreferences mSettings;
-	private AudioManager mAudioManager;
-	private NotificationManager mNotificationManager;
-
-	private ArrayList<Song> mSongTimeline;
-	private int mCurrentSong;
-	private int mQueuePos;
-	private int mState = 0x80;
-	private Object mStateLock = new Object();
-	private boolean mPlayingBeforeCall;
-	private int mPendingSeek;
-	private Song mLastSongBroadcast;
-	private boolean mPlugged;
-
-	private Method mIsWiredHeadsetOn;
-	private Method mStartForeground;
-	private Method mStopForeground;
-
-	private static final int GO = 0;
-	private static final int POST_CREATE = 1;
-	private static final int PREF_CHANGED = 3;
-	private static final int DO_ITEM = 4;
-	private static final int TRACK_CHANGED = 5;
-	private static final int RELEASE_WAKE_LOCK = 6;
-	private static final int CALL = 10;
-	private static final int SAVE_STATE = 12;
-	private static final int PROCESS_SONG = 13;
 
 	public void run()
 	{
@@ -397,7 +280,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			mHeadsetPause = mSettings.getBoolean("headset_pause", true);
 		} else if ("headset_only".equals(key)) {
 			mHeadsetOnly = mSettings.getBoolean(key, false);
-			Log.d("VanillaMusic", "mp: " + mMediaPlayer);
 			if (mHeadsetOnly && isSpeakerOn())
 				unsetFlag(FLAG_PLAYING);
 		} else if ("remote_player".equals(key)) {
@@ -613,14 +495,58 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		PlaybackServiceState.saveState(this, mSongTimeline, mCurrentSong, savePosition && mMediaPlayer != null ? mMediaPlayer.getCurrentPosition() : 0);
 	}
 
+	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context content, Intent intent)
+		{
+			String action = intent.getAction();
+			if (Intent.ACTION_HEADSET_PLUG.equals(action) && mHandler != null) {
+				boolean oldPlugged = mPlugged;
+				mPlugged = intent.getIntExtra("state", 0) != 0;
+				if (mPlugged != oldPlugged && (mHeadsetPause && !mPlugged || mHeadsetOnly && !isSpeakerOn()))
+					unsetFlag(FLAG_PLAYING);
+			}
+		}
+	};
+
+	private PhoneStateListener mCallListener = new PhoneStateListener() {
+		@Override
+		public void onCallStateChanged(int state, String incomingNumber)
+		{
+			switch (state) {
+			case TelephonyManager.CALL_STATE_RINGING:
+			case TelephonyManager.CALL_STATE_OFFHOOK:
+				if (!mPlayingBeforeCall)
+					mPlayingBeforeCall = unsetFlag(FLAG_PLAYING);
+				break;
+			case TelephonyManager.CALL_STATE_IDLE:
+				if (mPlayingBeforeCall) {
+					setFlag(FLAG_PLAYING);
+					mPlayingBeforeCall = false;
+				}
+				break;
+			}
+		}
+	};
+
+	public void onSharedPreferenceChanged(SharedPreferences settings, String key)
+	{
+		loadPreference(key);
+	}
+
+	private static final int GO = 0;
+	private static final int POST_CREATE = 1;
+	private static final int DO_ITEM = 4;
+	private static final int TRACK_CHANGED = 5;
+	private static final int RELEASE_WAKE_LOCK = 6;
+	private static final int SAVE_STATE = 12;
+	private static final int PROCESS_SONG = 13;
+
 	private class MusicHandler extends Handler {
 		@Override
 		public void handleMessage(Message message)
 		{
 			switch (message.what) {
-			case PREF_CHANGED:
-				loadPreference((String)message.obj);
-				break;
 			case DO_ITEM:
 				Intent intent = (Intent)message.obj;
 				long id = message.obj == null ? -1 : intent.getLongExtra("id", -1);
@@ -694,14 +620,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				if (mWakeLock != null && mWakeLock.isHeld())
 					mWakeLock.release();
 				break;
-			case CALL:
-				boolean inCall = message.arg1 == 1;
-				if (inCall) {
-					mPlayingBeforeCall = unsetFlag(FLAG_PLAYING);
-				} else if (mPlayingBeforeCall) {
-					setFlag(FLAG_PLAYING);
-				}
-				break;
 			case GO:
 				if (message.arg1 == 0)
 					toggleFlag(FLAG_PLAYING);
@@ -738,5 +656,68 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				break;
 			}
 		}
+	}
+
+	public IPlaybackService.Stub mBinder = new IPlaybackService.Stub() {
+		public boolean isLoaded()
+		{
+			return mHandler != null;
+		}
+
+		public Song getSong(int delta)
+		{
+			return PlaybackService.this.getSong(delta);
+		}
+
+		public int getState()
+		{
+			synchronized (mStateLock) {
+				return mState;
+			}
+		}
+
+		public int getPosition()
+		{
+			if (mMediaPlayer == null)
+				return 0;
+			synchronized (mMediaPlayer) {
+				return mMediaPlayer.getCurrentPosition();
+			}
+		}
+
+		public int getDuration()
+		{
+			if (mMediaPlayer == null)
+				return 0;
+			synchronized (mMediaPlayer) {
+				return mMediaPlayer.getDuration();
+			}
+		}
+
+		public void setCurrentSong(int delta)
+		{
+			PlaybackService.this.setCurrentSong(delta);
+		}
+
+		public void toggleFlag(int flag)
+		{
+			PlaybackService.this.toggleFlag(flag);
+		}
+
+		public void seekToProgress(int progress)
+		{
+			if (mMediaPlayer == null)
+				return;
+			synchronized (mMediaPlayer) {
+				long position = (long)mMediaPlayer.getDuration() * progress / 1000;
+				mMediaPlayer.seekTo((int)position);
+			}
+		}
+	};
+
+	@Override
+	public IBinder onBind(Intent intent)
+	{
+		return mBinder;
 	}
 }
