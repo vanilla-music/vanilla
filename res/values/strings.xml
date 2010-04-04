@@ -7,6 +7,7 @@
 	<string name="settings">Preferences</string>
 	<string name="library">Choose Songs</string>
 	<string name="quit">Stop and Exit</string>
+	<string name="display_mode">Display Mode</string>
 
 	<!-- Widgets -->
 	<string name="starting">Starting up...</string>

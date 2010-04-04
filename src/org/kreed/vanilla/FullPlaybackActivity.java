@@ -62,6 +62,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 	private static final int SONG_SELECTOR = 8;
 
 	private static final int MENU_QUIT = 0;
+	private static final int MENU_DISPLAY = 1;
 	private static final int MENU_PREFS = 2;
 	private static final int MENU_LIBRARY = 3;
 
@@ -70,16 +71,15 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 	{
 		super.onCreate(icicle);
 
-		if (icicle == null) {
-			SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-			if (settings.getBoolean("selector_on_startup", false))
-				showDialog(SONG_SELECTOR);
-		}
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+		if (icicle == null && settings.getBoolean("selector_on_startup", false))
+			showDialog(SONG_SELECTOR);
 
 		setContentView(R.layout.full_playback);
 
 		mCoverView = (CoverView)findViewById(R.id.cover_view);
 		mCoverView.setOnClickListener(this);
+		mCoverView.setSeparateInfo(settings.getBoolean("separate_info", false));
 
 		mControlsTop = findViewById(R.id.controls_top);
 		mControlsBottom = findViewById(R.id.controls_bottom);
@@ -99,6 +99,17 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 		mSeekBar.setMax(1000);
 		mSeekBar.setOnSeekBarChangeListener(this);
 		mSeekBar.setOnFocusChangeListener(this);
+	}
+
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
+
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+		SharedPreferences.Editor editor = settings.edit();
+		editor.putBoolean("separate_info", mCoverView.hasSeparateInfo());
+		editor.commit();
 	}
 
 	@Override
@@ -178,6 +189,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
+		menu.add(0, MENU_DISPLAY, 0, R.string.display_mode).setIcon(android.R.drawable.ic_menu_gallery);
 		menu.add(0, MENU_LIBRARY, 0, R.string.library).setIcon(android.R.drawable.ic_menu_add);
 		menu.add(0, MENU_PREFS, 0, R.string.settings).setIcon(android.R.drawable.ic_menu_preferences);
 		menu.add(0, MENU_QUIT, 0, R.string.quit).setIcon(android.R.drawable.ic_menu_close_clear_cancel);
@@ -203,6 +215,9 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 			break;
 		case MENU_LIBRARY:
 			showDialog(SONG_SELECTOR);
+			break;
+		case MENU_DISPLAY:
+			mCoverView.toggleDisplayMode();
 			break;
 		}
 
