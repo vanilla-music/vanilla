@@ -268,6 +268,7 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo absInfo)
 	{
+		menu.setHeaderTitle(((MediaAdapter.MediaView)((AdapterView.AdapterContextMenuInfo)absInfo).targetView).getTitle());
 		menu.add(0, MENU_PLAY, 0, R.string.play);
 		menu.add(0, MENU_ENQUEUE, 0, R.string.enqueue);
 		if (((MediaAdapter)((ListView)view).getAdapter()).hasExpanders())
