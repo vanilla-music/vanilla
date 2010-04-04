@@ -64,7 +64,12 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 
 		setFilterQueryProvider(this);
 
-		changeCursor(runQuery(null));
+		requery();
+	}
+
+	public final void requery()
+	{
+		changeCursor(runQuery(mConstraint));
 	}
 
 	public void filter(CharSequence constraint, Filter.FilterListener listener)
@@ -155,7 +160,7 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 		if (async)
 			getFilter().filter(mConstraint);
 		else
-			changeCursor(runQuery(mConstraint));
+			requery();
 	}
 
 	public final String[] getLimiter()
@@ -168,6 +173,12 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 		if (mLimiter == null)
 			return 0;
 		return mLimiter.length;
+	}
+
+	@Override
+	protected void onContentChanged()
+	{
+		// do nothing; we implement this in SongSelector
 	}
 
 	@Override

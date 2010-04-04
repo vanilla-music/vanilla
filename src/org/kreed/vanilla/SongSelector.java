@@ -21,10 +21,12 @@ package org.kreed.vanilla;
 import org.kreed.vanilla.R;
 
 import android.app.Dialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.database.ContentObserver;
 import android.graphics.Color;
 import android.graphics.drawable.PaintDrawable;
 import android.net.Uri;
@@ -116,6 +118,9 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 				view.setOnItemClickListener(SongSelector.this);
 				view.setOnCreateContextMenuListener(SongSelector.this);
 				view.setAdapter(new SongMediaAdapter(getContext()));
+
+				ContentResolver resolver = ContextApplication.getContext().getContentResolver();
+				resolver.registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, mObserver);
 			}
 		});
 	}
@@ -319,4 +324,13 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 	{
 		return PlaybackActivity.handleKeyLongPress(getContext(), keyCode);
 	}
+
+	private ContentObserver mObserver = new ContentObserver(new Handler()) {
+		@Override
+		public void onChange(boolean selfChange)
+		{
+			for (int i = 0; i != 3; ++i)
+				getAdapter(i).requery();
+		}
+	};
 }
