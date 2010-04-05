@@ -302,8 +302,10 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			mScrobble = mSettings.getBoolean("scrobble", false);
 		} else if ("volume".equals(key)) {
 			float volume = mSettings.getFloat("volume", 1.0f);
-			synchronized (mMediaPlayer) {
-				mMediaPlayer.setVolume(volume, volume);
+			if (mMediaPlayer != null) {
+				synchronized (mMediaPlayer) {
+					mMediaPlayer.setVolume(volume, volume);
+				}
 			}
 		}
 	}
