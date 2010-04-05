@@ -258,6 +258,9 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		mHeadsetOnly = mSettings.getBoolean("headset_only", false);
 		mNotificationMode = Integer.parseInt(mSettings.getString("notification_mode", "1"));
 		mScrobble = mSettings.getBoolean("scrobble", false);
+		float volume = mSettings.getFloat("volume", 1.0f);
+		if (volume != 1.0f)
+			mMediaPlayer.setVolume(volume, volume);
 
 		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
 		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicSongChangeLock");
@@ -297,6 +300,11 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			updateNotification(getSong(0));
 		} else if ("scrobble".equals(key)) {
 			mScrobble = mSettings.getBoolean("scrobble", false);
+		} else if ("volume".equals(key)) {
+			float volume = mSettings.getFloat("volume", 1.0f);
+			synchronized (mMediaPlayer) {
+				mMediaPlayer.setVolume(volume, volume);
+			}
 		}
 	}
 

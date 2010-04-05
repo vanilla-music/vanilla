@@ -3,6 +3,10 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:persistent="true">
 	<PreferenceCategory android:title="@string/pref_output">
+		<org.kreed.vanilla.VolumePreference
+			android:key="volume"
+			android:title="@string/volume_title"
+			android:summary="@string/volume_summary" />
 		<CheckBoxPreference
 			android:key="headset_only"
 			android:title="@string/headset_only_title"
