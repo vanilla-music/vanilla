@@ -696,6 +696,10 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
 				break;
 			case POST_CREATE:
+				// Preload the receiver so we don't have an intial delay as it
+				// loads for the first button press
+				sendBroadcast(new Intent(Intent.ACTION_MEDIA_BUTTON));
+
 				mReceiver = new Receiver();
 				IntentFilter filter = new IntentFilter();
 				filter.addAction(Intent.ACTION_HEADSET_PLUG);
