@@ -131,6 +131,12 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			return;
 		}
 
+		if (delta != 0 && intent.hasExtra("autoplay")) {
+			synchronized (mStateLock) {
+				mState |= FLAG_PLAYING;
+			}
+		}
+
 		// check for double click
 		if (intent.hasExtra("double")) {
 			if (mHandler.hasMessages(GO)) {

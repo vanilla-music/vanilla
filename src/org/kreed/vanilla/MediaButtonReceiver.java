@@ -52,7 +52,7 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 
 	private static Intent getCommand(Context context, String action)
 	{
-		return new Intent(context, PlaybackService.class).setAction(action);
+		return new Intent(context, PlaybackService.class).setAction(action).putExtra("autoplay", true);
 	}
 
 	@Override
