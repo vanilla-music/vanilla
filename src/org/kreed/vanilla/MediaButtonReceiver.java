@@ -97,7 +97,7 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 				break;
 			case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
 				if (action == KeyEvent.ACTION_DOWN)
-					//context.startService(getCommand(context, PlaybackService.PREVIOUS_SONG));
+					context.startService(getCommand(context, PlaybackService.PREVIOUS_SONG));
 				break;
 			default:
 				return;

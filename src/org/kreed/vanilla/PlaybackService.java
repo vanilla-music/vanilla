@@ -57,6 +57,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 	public static final String TOGGLE_PLAYBACK = "org.kreed.vanilla.action.TOGGLE_PLAYBACK";
 	public static final String NEXT_SONG = "org.kreed.vanilla.action.NEXT_SONG";
+	public static final String PREVIOUS_SONG = "org.kreed.vanilla.action.PREVIOUS_SONG";
 
 	public static final String EVENT_REPLACE_SONG = "org.kreed.vanilla.event.REPLACE_SONG";
 	public static final String EVENT_CHANGED = "org.kreed.vanilla.event.CHANGED";
@@ -119,6 +120,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			delta = 0;
 		else if (NEXT_SONG.equals(action))
 			delta = 1;
+		else if (PREVIOUS_SONG.equals(action))
+			delta = -1;
 		else
 			return;
 
