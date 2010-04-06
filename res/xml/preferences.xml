@@ -8,6 +8,11 @@
 			android:title="@string/volume_title"
 			android:summary="@string/volume_summary" />
 		<CheckBoxPreference
+			android:key="media_button"
+			android:title="@string/media_button_title"
+			android:summary="@string/media_button_summary"
+			android:defaultValue="true" />
+		<CheckBoxPreference
 			android:key="headset_only"
 			android:title="@string/headset_only_title"
 			android:defaultValue="false"

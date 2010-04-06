@@ -27,9 +27,12 @@ import android.os.Handler;
 import android.os.Message;
 
 public class MediaButtonReceiver extends BroadcastReceiver {
+	public static final String ENABLE = "org.kreed.vanilla.action.ENABLE_RECEIVER";
+
 	private static final int MSG_MEDIA_CLICK = 2;
 	private static final int DOUBLE_CLICK_DELAY = 300;
 
+	private static boolean mEnabled = true;
 	private static boolean mIgnoreNextUp;
 
 	private static Handler mHandler = new Handler() {
@@ -55,7 +58,9 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent)
 	{
-		if (Intent.ACTION_MEDIA_BUTTON.equals(intent.getAction())) {
+		String intentAction = intent.getAction();
+
+		if (mEnabled && Intent.ACTION_MEDIA_BUTTON.equals(intentAction)) {
 			KeyEvent event = intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
 			if (event == null)
 				return;
@@ -104,6 +109,9 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 			}
 
 			abortBroadcast();
+		} else if (ENABLE.equals(intentAction)) {
+			// this approach does not seem elegant.
+			mEnabled = intent.getBooleanExtra("enabled", true);
 		}
 	}
 }

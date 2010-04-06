@@ -322,6 +322,9 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 					mMediaPlayer.setVolume(volume, volume);
 				}
 			}
+		} else if ("media_button".equals(key)) {
+			boolean value = mSettings.getBoolean("media_button", true);
+			sendBroadcast(new Intent(MediaButtonReceiver.ENABLE).putExtra("enabled", value));
 		}
 	}
 
@@ -711,6 +714,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
 				break;
 			case POST_CREATE:
+				loadPreference("media_button");
+
 				// Preload the receiver so we don't have an intial delay as it
 				// loads for the first button press
 				sendBroadcast(new Intent(Intent.ACTION_MEDIA_BUTTON));

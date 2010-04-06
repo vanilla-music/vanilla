@@ -34,6 +34,7 @@
 		<receiver android:name="MediaButtonReceiver" >
 			<intent-filter android:priority="1000">
 				<action android:name="android.intent.action.MEDIA_BUTTON" />
+				<action android:name="org.kreed.vanilla.action.ENABLE_RECEIVER" />
 			</intent-filter>
 		</receiver>
 		<service android:name="PlaybackService" />

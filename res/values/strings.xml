@@ -28,6 +28,8 @@
 	<string name="pref_output">Audio Output</string>
 	<string name="volume_title">Volume</string>
 	<string name="volume_summary">Music volume</string>
+	<string name="media_button_title">Use Headset Controls</string>
+	<string name="media_button_summary">Use the button on the headset. Single click for play/pause. Double click for next.</string>
 	<string name="headset_only_title">External Output Only</string>
 	<string name="headset_only_summary">Only play music through an external output (e.g. headphones, Bluetooth)</string>
 	<string name="headset_pause_title">Pause When Unplugged</string>
