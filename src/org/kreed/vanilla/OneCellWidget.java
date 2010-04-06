@@ -65,9 +65,11 @@ public class OneCellWidget extends AppWidgetProvider {
 
 		views.setImageViewResource(R.id.play_pause, playing ? R.drawable.hidden_pause : R.drawable.hidden_play);
 		Intent playPause = new Intent(context, PlaybackService.class);
+		playPause.putExtra("double", true);
 		playPause.setAction(PlaybackService.TOGGLE_PLAYBACK);
 		views.setOnClickPendingIntent(R.id.play_pause, PendingIntent.getService(context, 0, playPause, 0));
 		Intent next = new Intent(context, PlaybackService.class);
+		next.putExtra("double", true);
 		next.setAction(PlaybackService.NEXT_SONG);
 		views.setOnClickPendingIntent(R.id.next, PendingIntent.getService(context, 0, next, 0));
 

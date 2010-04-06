@@ -110,35 +110,47 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		new Thread(this).start();
 	}
 
-	private void go(int delta)
+	private void go(Intent intent)
 	{
+		String action = intent.getAction();
+		int delta = 0;
+
+		if (TOGGLE_PLAYBACK.equals(action))
+			delta = 0;
+		else if (NEXT_SONG.equals(action))
+			delta = 1;
+		else
+			return;
+
 		if (mHandler == null) {
 			Toast.makeText(this, R.string.starting, Toast.LENGTH_SHORT).show();
 			mPendingGo = delta;
 			return;
 		}
 
-		if (mHandler.hasMessages(GO)) {
-			mHandler.removeMessages(GO);
-			Intent launcher = new Intent(this, FullPlaybackActivity.class);
-			launcher.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			startActivity(launcher);
+		// check for double click
+		if (intent.hasExtra("double")) {
+			if (mHandler.hasMessages(GO)) {
+				mHandler.removeMessages(GO);
+				Intent launcher = new Intent(this, FullPlaybackActivity.class);
+				launcher.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(launcher);
+			} else {
+				mHandler.sendMessageDelayed(mHandler.obtainMessage(GO, delta, 0), 400);
+			}
 		} else {
-			mHandler.sendMessageDelayed(mHandler.obtainMessage(GO, delta, 0), 400);
+			if (delta == 0)
+				toggleFlag(FLAG_PLAYING);
+			else
+				setCurrentSong(delta);
 		}
 	}
 
 	@Override
 	public void onStart(Intent intent, int flags)
 	{
-		if (intent != null) {
-			String action = intent.getAction();
-
-			if (TOGGLE_PLAYBACK.equals(action))
-				go(0);
-			else if (NEXT_SONG.equals(action))
-				go(1);
-		}
+		if (intent != null)
+			go(intent);
 
 		if (mHandler != null)
 			mHandler.sendMessage(mHandler.obtainMessage(DO_ITEM, intent));
