@@ -105,6 +105,7 @@ public class PlaybackService extends Service implements Handler.Callback, MediaP
 	public InCallListener mCallListener;
 	private boolean mIgnoreNextUp;
 	private boolean mLoaded;
+	private boolean mInCall;
 
 	private Method mIsWiredHeadsetOn;
 	private Method mStartForeground;
@@ -558,6 +559,9 @@ public class PlaybackService extends Service implements Handler.Callback, MediaP
 
 	private boolean handleMediaKey(KeyEvent event)
 	{
+		if (mInCall)
+			return false;
+
 		int action = event.getAction();
 
 		switch (event.getKeyCode()) {
@@ -626,10 +630,12 @@ public class PlaybackService extends Service implements Handler.Callback, MediaP
 			switch (state) {
 			case TelephonyManager.CALL_STATE_RINGING:
 			case TelephonyManager.CALL_STATE_OFFHOOK:
+				mInCall = true;
 				if (!mPlayingBeforeCall)
 					mPlayingBeforeCall = unsetFlag(FLAG_PLAYING);
 				break;
 			case TelephonyManager.CALL_STATE_IDLE:
+				mInCall = false;
 				if (mPlayingBeforeCall) {
 					setFlag(FLAG_PLAYING);
 					mPlayingBeforeCall = false;

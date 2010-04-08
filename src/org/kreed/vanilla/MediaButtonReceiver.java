@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.content.BroadcastReceiver;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.telephony.TelephonyManager;
 
 public class MediaButtonReceiver extends BroadcastReceiver {
 	@Override
@@ -31,9 +32,12 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 		if (Intent.ACTION_MEDIA_BUTTON.equals(intent.getAction())) {
 			SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
 			if (settings.getBoolean("media_button", true)) {
-				intent.setClass(context, PlaybackService.class);
-				context.startService(intent);
-				abortBroadcast();
+				TelephonyManager telephonyManager = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+				if (telephonyManager.getCallState() == TelephonyManager.CALL_STATE_IDLE) {
+					intent.setClass(context, PlaybackService.class);
+					context.startService(intent);
+					abortBroadcast();
+				}
 			}
 		}
 	}
