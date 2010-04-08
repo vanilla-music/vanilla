@@ -41,6 +41,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
@@ -53,7 +54,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.Toast;
 
-public class PlaybackService extends Service implements Runnable, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, SharedPreferences.OnSharedPreferenceChangeListener {	
+public class PlaybackService extends Service implements Handler.Callback, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, SharedPreferences.OnSharedPreferenceChangeListener {	
 	private static final int NOTIFICATION_ID = 2;
 	private static final int DOUBLE_CLICK_DELAY = 400;
 
@@ -80,6 +81,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private boolean mScrobble;
 	private int mNotificationMode;
 
+	private Looper mLooper;
 	private Handler mHandler;
 	private MediaPlayer mMediaPlayer;
 	private boolean mMediaPlayerInitialized;
@@ -96,13 +98,13 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private Object mStateLock = new Object();
 	private boolean mPlayingBeforeCall;
 	private int mPendingSeek;
-	private int mPendingGo = -2;
 	private Song mLastSongBroadcast;
 	private boolean mPlugged;
 	private ContentObserver mMediaObserver;
 	public Receiver mReceiver;
 	public InCallListener mCallListener;
 	private boolean mIgnoreNextUp;
+	private boolean mLoaded;
 
 	private Method mIsWiredHeadsetOn;
 	private Method mStartForeground;
@@ -111,7 +113,11 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	@Override
 	public void onCreate()
 	{
-		new Thread(this).start();
+		HandlerThread thread = new HandlerThread("PlaybackService");
+		thread.start();
+		mLooper = thread.getLooper();
+		mHandler = new Handler(mLooper, this);
+		mHandler.sendEmptyMessage(CREATE);
 	}
 
 	@Override
@@ -119,12 +125,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	{
 		if (intent != null) {
 			String action = intent.getAction();
-
-			if (Intent.ACTION_MEDIA_BUTTON.equals(action)) {
-				handleMediaKey((KeyEvent)intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT));
-				return;
-			}
-
 			int delta;
 
 			if (TOGGLE_PLAYBACK.equals(action))
@@ -133,14 +133,23 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				delta = 1;
 			else if (PREVIOUS_SONG.equals(action))
 				delta = -1;
+			else if (Intent.ACTION_MEDIA_BUTTON.equals(action))
+				delta = 10;
 			else
-				return;
+				delta = -10;
 
-			go(delta, intent.getBooleanExtra("double", false), false);
+			if (delta != -10) {
+				if (!mLoaded)
+					Toast.makeText(this, R.string.starting, Toast.LENGTH_SHORT).show();
+	
+				if (delta == 10)
+					handleMediaKey((KeyEvent)intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT));
+				else
+					go(delta, intent.getBooleanExtra("double", false), false);
+			}
 		}
 
-		if (mHandler != null)
-			mHandler.sendMessage(mHandler.obtainMessage(DO_ITEM, intent));
+		mHandler.sendMessage(mHandler.obtainMessage(DO_ITEM, intent));
 	}
 
 	@Override
@@ -157,6 +166,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			mMediaPlayer.release();
 			mMediaPlayer = null;
 		}
+
+		mLooper.quit();
 
 		try {
 			unregisterReceiver(mReceiver);
@@ -202,10 +213,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 			mNotificationManager.cancel(NOTIFICATION_ID);
 	}
 
-	public void run()
+	private void initialize()
 	{
-		Looper.prepare();
-
 		PlaybackServiceState state = new PlaybackServiceState();
 		if (state.load(this)) {
 			Song song = new Song(state.savedIds[state.savedIndex]);
@@ -227,7 +236,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		}
 
 		mMediaPlayer = new MediaPlayer();
-
 		mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		mMediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
 		mMediaPlayer.setOnCompletionListener(this);
@@ -264,14 +272,9 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
 		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicSongChangeLock");
 
-		mHandler = new MusicHandler();
+		mLoaded = true;
 
-		int go = 0;
-		if (mPendingGo == 0)
-			mState |= FLAG_PLAYING;
-		else if (mPendingGo != -2)
-			go = mPendingGo;
-		setCurrentSong(go);
+		setCurrentSong(0);
 
 		if (mPendingSeek != 0)
 			mMediaPlayer.seekTo(mPendingSeek);
@@ -279,8 +282,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		sendBroadcast(new Intent(EVENT_REPLACE_SONG).putExtra("all", true));
 
 		mHandler.sendEmptyMessage(POST_CREATE);
-
-		Looper.loop();
 	}
 
 	private void loadPreference(String key)
@@ -536,12 +537,6 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 
 	private void go(int delta, boolean doubleLaunchesActivity, boolean autoPlay)
 	{
-		if (mHandler == null) {
-			Toast.makeText(this, R.string.starting, Toast.LENGTH_SHORT).show();
-			mPendingGo = delta;
-			return;
-		}
-
 		if (autoPlay) {
 			synchronized (mStateLock) {
 				mState |= FLAG_PLAYING;
@@ -549,20 +544,16 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		}
 
 		// check for double click
-		if (doubleLaunchesActivity) {
-			if (mHandler.hasMessages(GO)) {
-				mHandler.removeMessages(GO);
-				Intent launcher = new Intent(this, FullPlaybackActivity.class);
-				launcher.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				startActivity(launcher);
-			} else {
-				mHandler.sendMessageDelayed(mHandler.obtainMessage(GO, delta, 0), DOUBLE_CLICK_DELAY);
-			}
-		} else {
+		if (doubleLaunchesActivity && mHandler.hasMessages(GO)) {
+			mHandler.removeMessages(GO);
+			startActivity(new Intent(this, FullPlaybackActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+		} else if (!doubleLaunchesActivity && mLoaded) {
 			if (delta == 0)
 				toggleFlag(FLAG_PLAYING);
 			else
 				setCurrentSong(delta);
+		} else {
+			mHandler.sendMessageDelayed(mHandler.obtainMessage(GO, delta, 0), DOUBLE_CLICK_DELAY);
 		}
 	}
 
@@ -582,7 +573,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				break;
 			}
 
-			if (mHandler != null && mHandler.hasMessages(MEDIA_BUTTON)) {
+			if (mHandler.hasMessages(MEDIA_BUTTON)) {
 				// double press
 				if (action == KeyEvent.ACTION_DOWN) {
 					mHandler.removeMessages(MEDIA_BUTTON);
@@ -591,12 +582,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				}
 			} else {
 				// single press
-				if (action == KeyEvent.ACTION_UP) {
-					if (mHandler == null)
-						go(0, false, false);
-					else
-						mHandler.sendEmptyMessageDelayed(MEDIA_BUTTON, DOUBLE_CLICK_DELAY);
-				}
+				if (action == KeyEvent.ACTION_UP)
+					mHandler.sendEmptyMessageDelayed(MEDIA_BUTTON, DOUBLE_CLICK_DELAY);
 			}
 			break;
 		case KeyEvent.KEYCODE_MEDIA_NEXT:
@@ -689,132 +676,137 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private static final int GO = 0;
 	private static final int POST_CREATE = 1;
 	private static final int MEDIA_BUTTON = 2;
+	private static final int CREATE = 3;
 	private static final int DO_ITEM = 4;
 	private static final int TRACK_CHANGED = 5;
 	private static final int RELEASE_WAKE_LOCK = 6;
 	private static final int SAVE_STATE = 12;
 	private static final int PROCESS_SONG = 13;
 
-	private class MusicHandler extends Handler {
-		@Override
-		public void handleMessage(Message message)
-		{
-			switch (message.what) {
-			case DO_ITEM:
-				Intent intent = (Intent)message.obj;
-				long id = message.obj == null ? -1 : intent.getLongExtra("id", -1);
-				if (id == -1) {
-					mQueuePos = 0;
-				} else {
-					boolean enqueue = intent.getIntExtra("action", ACTION_PLAY) == ACTION_ENQUEUE;
+	public boolean handleMessage(Message message)
+	{
+		switch (message.what) {
+		case DO_ITEM:
+			Intent intent = (Intent)message.obj;
+			long id = message.obj == null ? -1 : intent.getLongExtra("id", -1);
+			if (id == -1) {
+				mQueuePos = 0;
+			} else {
+				boolean enqueue = intent.getIntExtra("action", ACTION_PLAY) == ACTION_ENQUEUE;
 
-					long[] songs = Song.getAllSongIdsWith(intent.getIntExtra("type", 3), id);
-					if (songs == null || songs.length == 0)
-						break;
+				long[] songs = Song.getAllSongIdsWith(intent.getIntExtra("type", 3), id);
+				if (songs == null || songs.length == 0)
+					break;
 
-					Random random = ContextApplication.getRandom();
-					for (int i = songs.length; --i != 0; ) {
-						int j = random.nextInt(i + 1);
-						long tmp = songs[j];
-						songs[j] = songs[i];
-						songs[i] = tmp;
-					}
-
-					boolean changed = false;
-
-					synchronized (mSongTimeline) {
-						if (enqueue) {
-							int i = mCurrentSong + mQueuePos + 1;
-							if (mQueuePos == 0)
-								changed = true;
-
-							for (int j = 0; j != songs.length; ++i, ++j) {
-								Song song = new Song(songs[j]);
-								if (i < mSongTimeline.size())
-									mSongTimeline.set(i, song);
-								else
-									mSongTimeline.add(song);
-							}
-
-							mQueuePos += songs.length;
-						} else {
-							List<Song> view = mSongTimeline.subList(mCurrentSong + 1, mSongTimeline.size());
-							List<Song> queue = mQueuePos == 0 ? null : new ArrayList<Song>(view);
-							view.clear();
-
-							for (int i = 0; i != songs.length; ++i)
-								mSongTimeline.add(new Song(songs[i]));
-
-							if (queue != null)
-								mSongTimeline.addAll(queue);
-
-							mQueuePos += songs.length - 1;
-
-							if (songs.length > 1)
-								changed = true;
-						}
-					}
-
-					if (!enqueue)
-						mHandler.sendEmptyMessage(TRACK_CHANGED);
-
-					if (changed)
-						sendBroadcast(new Intent(EVENT_REPLACE_SONG));
-
-					mHandler.removeMessages(SAVE_STATE);
-					mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
+				Random random = ContextApplication.getRandom();
+				for (int i = songs.length; --i != 0; ) {
+					int j = random.nextInt(i + 1);
+					long tmp = songs[j];
+					songs[j] = songs[i];
+					songs[i] = tmp;
 				}
-				break;
-			case MEDIA_BUTTON:
-				toggleFlag(FLAG_PLAYING);
-				break;
-			case TRACK_CHANGED:
-				setCurrentSong(+1);
-				setFlag(FLAG_PLAYING);
-				break;
-			case RELEASE_WAKE_LOCK:
-				if (mWakeLock != null && mWakeLock.isHeld())
-					mWakeLock.release();
-				break;
-			case GO:
-				if (message.arg1 == 0)
-					toggleFlag(FLAG_PLAYING);
-				else
-					setCurrentSong(message.arg1);
-				break;
-			case SAVE_STATE:
-				// For unexpected terminations: crashes, task killers, etc.
-				// In most cases onDestroy will handle this
-				saveState(false);
-				break;
-			case PROCESS_SONG:
-				getSong(+2);
+
+				boolean changed = false;
 
 				synchronized (mSongTimeline) {
-					while (mCurrentSong > 15) {
-						mSongTimeline.remove(0);
-						--mCurrentSong;
+					if (enqueue) {
+						int i = mCurrentSong + mQueuePos + 1;
+						if (mQueuePos == 0)
+							changed = true;
+
+						for (int j = 0; j != songs.length; ++i, ++j) {
+							Song song = new Song(songs[j]);
+							if (i < mSongTimeline.size())
+								mSongTimeline.set(i, song);
+							else
+								mSongTimeline.add(song);
+						}
+
+						mQueuePos += songs.length;
+					} else {
+						List<Song> view = mSongTimeline.subList(mCurrentSong + 1, mSongTimeline.size());
+						List<Song> queue = mQueuePos == 0 ? null : new ArrayList<Song>(view);
+						view.clear();
+
+						for (int i = 0; i != songs.length; ++i)
+							mSongTimeline.add(new Song(songs[i]));
+
+						if (queue != null)
+							mSongTimeline.addAll(queue);
+
+						mQueuePos += songs.length - 1;
+
+						if (songs.length > 1)
+							changed = true;
 					}
 				}
+
+				if (!enqueue)
+					mHandler.sendEmptyMessage(TRACK_CHANGED);
+
+				if (changed)
+					sendBroadcast(new Intent(EVENT_REPLACE_SONG));
 
 				mHandler.removeMessages(SAVE_STATE);
 				mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
-				break;
-			case POST_CREATE:
-				setupReceiver();
-
-				mCallListener = new InCallListener();
-				TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-				telephonyManager.listen(mCallListener, PhoneStateListener.LISTEN_CALL_STATE);
-				break;
 			}
+			break;
+		case MEDIA_BUTTON:
+			toggleFlag(FLAG_PLAYING);
+			break;
+		case TRACK_CHANGED:
+			setCurrentSong(+1);
+			setFlag(FLAG_PLAYING);
+			break;
+		case RELEASE_WAKE_LOCK:
+			if (mWakeLock != null && mWakeLock.isHeld())
+				mWakeLock.release();
+			break;
+		case GO:
+			if (message.arg1 == 0)
+				toggleFlag(FLAG_PLAYING);
+			else
+				setCurrentSong(message.arg1);
+			break;
+		case SAVE_STATE:
+			// For unexpected terminations: crashes, task killers, etc.
+			// In most cases onDestroy will handle this
+			saveState(false);
+			break;
+		case PROCESS_SONG:
+			getSong(+2);
+
+			synchronized (mSongTimeline) {
+				while (mCurrentSong > 15) {
+					mSongTimeline.remove(0);
+					--mCurrentSong;
+				}
+			}
+
+			mHandler.removeMessages(SAVE_STATE);
+			mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
+			break;
+		case CREATE:
+			initialize();
+			break;
+		case POST_CREATE:
+			setupReceiver();
+
+			mCallListener = new InCallListener();
+			TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+			telephonyManager.listen(mCallListener, PhoneStateListener.LISTEN_CALL_STATE);
+			break;
+		default:
+			return false;
 		}
+
+		return true;
 	}
 
 	public IPlaybackService.Stub mBinder = new IPlaybackService.Stub() {
 		public boolean isLoaded()
 		{
-			return mHandler != null;
+			return mLoaded;
 		}
 
 		public Song getSong(int delta)
