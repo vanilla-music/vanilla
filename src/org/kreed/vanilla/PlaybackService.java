@@ -115,6 +115,19 @@ public class PlaybackService extends Service implements Handler.Callback, MediaP
 	{
 		HandlerThread thread = new HandlerThread("PlaybackService");
 		thread.start();
+
+		PlaybackServiceState state = new PlaybackServiceState();
+		if (state.load(this)) {
+			mSongTimeline = new ArrayList<Song>(state.savedIds.length);
+			mCurrentSong = state.savedIndex;
+			mPendingSeek = state.savedSeek;
+
+			for (int i = 0; i != state.savedIds.length; ++i)
+				mSongTimeline.add(new Song(state.savedIds[i]));
+		} else {
+			mSongTimeline = new ArrayList<Song>();
+		}
+
 		mLooper = thread.getLooper();
 		mHandler = new Handler(mLooper, this);
 		mHandler.sendEmptyMessage(CREATE);
@@ -215,26 +228,6 @@ public class PlaybackService extends Service implements Handler.Callback, MediaP
 
 	private void initialize()
 	{
-		PlaybackServiceState state = new PlaybackServiceState();
-		if (state.load(this)) {
-			Song song = new Song(state.savedIds[state.savedIndex]);
-			if (song.populate(false)) {
-				broadcastChange(mState, mState, song);
-
-				mSongTimeline = new ArrayList<Song>(state.savedIds.length);
-				mCurrentSong = state.savedIndex;
-				mPendingSeek = state.savedSeek;
-
-				for (int i = 0; i != state.savedIds.length; ++i)
-					mSongTimeline.add(i == mCurrentSong ? song : new Song(state.savedIds[i]));
-			}
-		}
-
-		if (mSongTimeline == null) {
-			mSongTimeline = new ArrayList<Song>();
-			broadcastChange(mState, mState, getSong(0));
-		}
-
 		mMediaPlayer = new MediaPlayer();
 		mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		mMediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
@@ -279,8 +272,6 @@ public class PlaybackService extends Service implements Handler.Callback, MediaP
 		if (mPendingSeek != 0)
 			mMediaPlayer.seekTo(mPendingSeek);
 
-		sendBroadcast(new Intent(EVENT_REPLACE_SONG).putExtra("all", true));
-
 		mHandler.sendEmptyMessage(POST_CREATE);
 	}
 
@@ -310,6 +301,14 @@ public class PlaybackService extends Service implements Handler.Callback, MediaP
 		} else if ("media_button".equals(key)) {
 			setupReceiver();
 		}
+	}
+
+	private void broadcastReplaceSong(int delta)
+	{
+		Intent intent = new Intent(EVENT_REPLACE_SONG);
+		intent.putExtra("pos", delta);
+		intent.putExtra("song", getSong(delta));
+		sendBroadcast(intent);
 	}
 
 	public void broadcastChange(int oldState, int newState, Song song)
@@ -745,7 +744,7 @@ public class PlaybackService extends Service implements Handler.Callback, MediaP
 					mHandler.sendEmptyMessage(TRACK_CHANGED);
 
 				if (changed)
-					sendBroadcast(new Intent(EVENT_REPLACE_SONG));
+					broadcastReplaceSong(+1);
 
 				mHandler.removeMessages(SAVE_STATE);
 				mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
@@ -804,11 +803,6 @@ public class PlaybackService extends Service implements Handler.Callback, MediaP
 	}
 
 	public IPlaybackService.Stub mBinder = new IPlaybackService.Stub() {
-		public boolean isLoaded()
-		{
-			return mLoaded;
-		}
-
 		public Song getSong(int delta)
 		{
 			return PlaybackService.this.getSong(delta);

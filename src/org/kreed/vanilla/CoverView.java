@@ -80,12 +80,8 @@ public final class CoverView extends View {
 
 	public void setPlaybackService(IPlaybackService service)
 	{
-		try {
-			mService = service;
-			if (mService.isLoaded())
-				refreshSongs();
-		} catch (RemoteException e) {
-		}
+		mService = service;
+		refreshSongs();
 	}
 
 	private static void drawText(Canvas canvas, String text, float left, float top, float width, float maxWidth, Paint paint)
@@ -538,7 +534,6 @@ public final class CoverView extends View {
 
 	private static final int GO = 10;
 	private static final int SET_SONG = 11;
-	private static final int SET_COVER = 12;
 
 	private Handler mHandler = new Handler() {
 		public void handleMessage(Message message) {
@@ -557,17 +552,14 @@ public final class CoverView extends View {
 						mService = null;
 					}
 					break;
-				case SET_COVER:
-					mSongs[STORE_SIZE / 2] = (Song)message.obj;
-					createBitmap(STORE_SIZE / 2);
-					reset();
-					break;
 				default:
 					int i = message.what;
-					int delta = i - STORE_SIZE / 2;
-					mSongs[i] = mService.getSong(delta);
+					if (message.obj == null)
+						mSongs[i] = mService.getSong(i - STORE_SIZE / 2);
+					else
+						mSongs[i] = (Song)message.obj;
 					createBitmap(i);
-					if (delta == 0)
+					if (i == STORE_SIZE / 2)
 						reset();
 					break;
 				}
@@ -581,16 +573,13 @@ public final class CoverView extends View {
 	{
 		String action = intent.getAction();
 		if (PlaybackService.EVENT_REPLACE_SONG.equals(action)) {
-			if (intent.getBooleanExtra("all", false))
-				refreshSongs();
-			else
-				mHandler.sendEmptyMessage(2);
+			int i = STORE_SIZE / 2 + intent.getIntExtra("pos", 0);
+			Song song = intent.getParcelableExtra("song");
+			mHandler.sendMessage(mHandler.obtainMessage(i, song));
 		} else if (PlaybackService.EVENT_CHANGED.equals(action)) {
 			Song currentSong = mSongs[STORE_SIZE / 2];
 			Song playingSong = intent.getParcelableExtra("song");
-			if (currentSong == null)
-				mHandler.sendMessage(mHandler.obtainMessage(SET_COVER, playingSong));
-			else if (!currentSong.equals(playingSong))
+			if (currentSong == null || !currentSong.equals(playingSong))
 				refreshSongs();
 		}
 	}

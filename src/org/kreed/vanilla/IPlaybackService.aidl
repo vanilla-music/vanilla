@@ -21,8 +21,6 @@ package org.kreed.vanilla;
 import org.kreed.vanilla.Song;
 
 interface IPlaybackService {
-	boolean isLoaded();
-
 	Song getSong(int delta);
 	int getState();
 	int getPosition();
