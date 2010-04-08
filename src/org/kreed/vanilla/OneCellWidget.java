@@ -48,7 +48,7 @@ public class OneCellWidget extends AppWidgetProvider {
 	{
 		if (PlaybackService.EVENT_CHANGED.equals(intent.getAction())) {
 			Song song = intent.getParcelableExtra("song");
-			boolean playing = (intent.getIntExtra("newState", 0) & PlaybackService.FLAG_PLAYING) != 0;
+			boolean playing = (intent.getIntExtra("state", 0) & PlaybackService.FLAG_PLAYING) != 0;
 
 			ComponentName widget = new ComponentName(context, OneCellWidget.class);
 			RemoteViews views = createViews(context, song, playing, false);
