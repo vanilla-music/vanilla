@@ -50,10 +50,12 @@ import android.provider.MediaStore;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.widget.Toast;
 
 public class PlaybackService extends Service implements Runnable, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, SharedPreferences.OnSharedPreferenceChangeListener {	
 	private static final int NOTIFICATION_ID = 2;
+	private static final int DOUBLE_CLICK_DELAY = 400;
 
 	public static final String TOGGLE_PLAYBACK = "org.kreed.vanilla.action.TOGGLE_PLAYBACK";
 	public static final String NEXT_SONG = "org.kreed.vanilla.action.NEXT_SONG";
@@ -94,12 +96,13 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 	private Object mStateLock = new Object();
 	private boolean mPlayingBeforeCall;
 	private int mPendingSeek;
-	private int mPendingGo = -1;
+	private int mPendingGo = -2;
 	private Song mLastSongBroadcast;
 	private boolean mPlugged;
 	private ContentObserver mMediaObserver;
 	public Receiver mReceiver;
 	public InCallListener mCallListener;
+	private boolean mIgnoreNextUp;
 
 	private Method mIsWiredHeadsetOn;
 	private Method mStartForeground;
@@ -111,55 +114,30 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		new Thread(this).start();
 	}
 
-	private void go(Intent intent)
-	{
-		String action = intent.getAction();
-		int delta = 0;
-
-		if (TOGGLE_PLAYBACK.equals(action))
-			delta = 0;
-		else if (NEXT_SONG.equals(action))
-			delta = 1;
-		else if (PREVIOUS_SONG.equals(action))
-			delta = -1;
-		else
-			return;
-
-		if (mHandler == null) {
-			Toast.makeText(this, R.string.starting, Toast.LENGTH_SHORT).show();
-			mPendingGo = delta;
-			return;
-		}
-
-		if (delta != 0 && intent.hasExtra("autoplay")) {
-			synchronized (mStateLock) {
-				mState |= FLAG_PLAYING;
-			}
-		}
-
-		// check for double click
-		if (intent.hasExtra("double")) {
-			if (mHandler.hasMessages(GO)) {
-				mHandler.removeMessages(GO);
-				Intent launcher = new Intent(this, FullPlaybackActivity.class);
-				launcher.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				startActivity(launcher);
-			} else {
-				mHandler.sendMessageDelayed(mHandler.obtainMessage(GO, delta, 0), 400);
-			}
-		} else {
-			if (delta == 0)
-				toggleFlag(FLAG_PLAYING);
-			else
-				setCurrentSong(delta);
-		}
-	}
-
 	@Override
 	public void onStart(Intent intent, int flags)
 	{
-		if (intent != null)
-			go(intent);
+		if (intent != null) {
+			String action = intent.getAction();
+
+			if (Intent.ACTION_MEDIA_BUTTON.equals(action)) {
+				handleMediaKey((KeyEvent)intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT));
+				return;
+			}
+
+			int delta;
+
+			if (TOGGLE_PLAYBACK.equals(action))
+				delta = 0;
+			else if (NEXT_SONG.equals(action))
+				delta = 1;
+			else if (PREVIOUS_SONG.equals(action))
+				delta = -1;
+			else
+				return;
+
+			go(delta, intent.getBooleanExtra("double", false), false);
+		}
 
 		if (mHandler != null)
 			mHandler.sendMessage(mHandler.obtainMessage(DO_ITEM, intent));
@@ -291,8 +269,8 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		int go = 0;
 		if (mPendingGo == 0)
 			mState |= FLAG_PLAYING;
-		else if (mPendingGo == 1)
-			go = 1;
+		else if (mPendingGo != -2)
+			go = mPendingGo;
 		setCurrentSong(go);
 
 		if (mPendingSeek != 0)
@@ -329,8 +307,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				}
 			}
 		} else if ("media_button".equals(key)) {
-			boolean value = mSettings.getBoolean("media_button", true);
-			sendBroadcast(new Intent(MediaButtonReceiver.ENABLE).putExtra("enabled", value));
+			setupReceiver();
 		}
 	}
 
@@ -557,16 +534,101 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		PlaybackServiceState.saveState(this, mSongTimeline, mCurrentSong, savePosition && mMediaPlayer != null ? mMediaPlayer.getCurrentPosition() : 0);
 	}
 
+	private void go(int delta, boolean doubleLaunchesActivity, boolean autoPlay)
+	{
+		if (mHandler == null) {
+			Toast.makeText(this, R.string.starting, Toast.LENGTH_SHORT).show();
+			mPendingGo = delta;
+			return;
+		}
+
+		if (autoPlay) {
+			synchronized (mStateLock) {
+				mState |= FLAG_PLAYING;
+			}
+		}
+
+		// check for double click
+		if (doubleLaunchesActivity) {
+			if (mHandler.hasMessages(GO)) {
+				mHandler.removeMessages(GO);
+				Intent launcher = new Intent(this, FullPlaybackActivity.class);
+				launcher.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(launcher);
+			} else {
+				mHandler.sendMessageDelayed(mHandler.obtainMessage(GO, delta, 0), DOUBLE_CLICK_DELAY);
+			}
+		} else {
+			if (delta == 0)
+				toggleFlag(FLAG_PLAYING);
+			else
+				setCurrentSong(delta);
+		}
+	}
+
+	private boolean handleMediaKey(KeyEvent event)
+	{
+		int action = event.getAction();
+
+		switch (event.getKeyCode()) {
+		case KeyEvent.KEYCODE_HEADSETHOOK:
+		case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
+			// single quick press: pause/resume. 
+			// double press: next track
+			// long press: unused (could also do next track? open player?)
+
+			if (action == KeyEvent.ACTION_UP && mIgnoreNextUp) {
+				mIgnoreNextUp = false;
+				break;
+			}
+
+			if (mHandler != null && mHandler.hasMessages(MEDIA_BUTTON)) {
+				// double press
+				if (action == KeyEvent.ACTION_DOWN) {
+					mHandler.removeMessages(MEDIA_BUTTON);
+					mIgnoreNextUp = true;
+					go(1, false, true);
+				}
+			} else {
+				// single press
+				if (action == KeyEvent.ACTION_UP) {
+					if (mHandler == null)
+						go(0, false, false);
+					else
+						mHandler.sendEmptyMessageDelayed(MEDIA_BUTTON, DOUBLE_CLICK_DELAY);
+				}
+			}
+			break;
+		case KeyEvent.KEYCODE_MEDIA_NEXT:
+			if (action == KeyEvent.ACTION_DOWN)
+				go(1, false, true);
+			break;
+		case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+			if (action == KeyEvent.ACTION_DOWN)
+				go(-1, false, true);
+			break;
+		default:
+			return false;
+		}
+
+		return true;
+	}
+
 	private class Receiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context content, Intent intent)
 		{
 			String action = intent.getAction();
+
 			if (Intent.ACTION_HEADSET_PLUG.equals(action)) {
 				boolean oldPlugged = mPlugged;
 				mPlugged = intent.getIntExtra("state", 0) != 0;
 				if (mPlugged != oldPlugged && (mHeadsetPause && !mPlugged || mHeadsetOnly && !isSpeakerOn()))
 					unsetFlag(FLAG_PLAYING);
+			} else if (Intent.ACTION_MEDIA_BUTTON.equals(action)) {
+				KeyEvent event = intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
+				if (event != null && handleMediaKey(event))
+					abortBroadcast();
 			}
 		}
 	};
@@ -609,8 +671,24 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 		loadPreference(key);
 	}
 
+	private void setupReceiver()
+	{
+		if (mReceiver == null)
+			mReceiver = new Receiver();
+		else
+			unregisterReceiver(mReceiver);
+
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(Intent.ACTION_HEADSET_PLUG);
+		if (mSettings.getBoolean("media_button", true))
+			filter.addAction(Intent.ACTION_MEDIA_BUTTON);
+		filter.setPriority(2000);
+		registerReceiver(mReceiver, filter);
+	}
+
 	private static final int GO = 0;
 	private static final int POST_CREATE = 1;
+	private static final int MEDIA_BUTTON = 2;
 	private static final int DO_ITEM = 4;
 	private static final int TRACK_CHANGED = 5;
 	private static final int RELEASE_WAKE_LOCK = 6;
@@ -687,6 +765,9 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 					mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
 				}
 				break;
+			case MEDIA_BUTTON:
+				toggleFlag(FLAG_PLAYING);
+				break;
 			case TRACK_CHANGED:
 				setCurrentSong(+1);
 				setFlag(FLAG_PLAYING);
@@ -720,16 +801,7 @@ public class PlaybackService extends Service implements Runnable, MediaPlayer.On
 				mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
 				break;
 			case POST_CREATE:
-				loadPreference("media_button");
-
-				// Preload the receiver so we don't have an intial delay as it
-				// loads for the first button press
-				sendBroadcast(new Intent(Intent.ACTION_MEDIA_BUTTON));
-
-				mReceiver = new Receiver();
-				IntentFilter filter = new IntentFilter();
-				filter.addAction(Intent.ACTION_HEADSET_PLUG);
-				registerReceiver(mReceiver, filter);
+				setupReceiver();
 
 				mCallListener = new InCallListener();
 				TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
