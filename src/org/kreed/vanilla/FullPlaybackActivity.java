@@ -239,7 +239,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 			return true;
 		}
 
-		return false;
+		return super.onKeyUp(keyCode, event);
 	}
 
 	private String stringForTime(int ms)
