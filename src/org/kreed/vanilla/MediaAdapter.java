@@ -46,10 +46,10 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 	public static final String[] SONG_FIELDS = { MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.TITLE };
 	public static final String[] SONG_FIELD_KEYS = { MediaStore.Audio.Media.ARTIST_KEY, MediaStore.Audio.Media.ALBUM_KEY, MediaStore.Audio.Media.TITLE_KEY };
 
-	private Uri mStore;
-	private String[] mFields;
+	Uri mStore;
+	String[] mFields;
 	private String[] mFieldKeys;
-	private boolean mExpandable;
+	boolean mExpandable;
 	private String[] mLimiter;
 	private CharSequence mConstraint;
 
@@ -65,6 +65,11 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 		setFilterQueryProvider(this);
 
 		requery();
+
+		if (mExpander == null)
+			mExpander = BitmapFactory.decodeResource(context.getResources(), R.drawable.expander_arrow);
+		if (mTextSize == -1)
+			mTextSize = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, context.getResources().getDisplayMetrics());
 	}
 
 	public final void requery()
@@ -193,10 +198,10 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 		return new MediaView(context);
 	}
 
-	private static float mTextSize = -1;
-	private static Bitmap mExpander = null;
+	static int mTextSize = -1;
+	static Bitmap mExpander = null;
 
-	private int mViewHeight = -1;
+	int mViewHeight = -1;
 
 	public class MediaView extends View {
 		private long mId;
@@ -208,10 +213,6 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 		{
 			super(context);
 
-			if (mExpander == null)
-				mExpander = BitmapFactory.decodeResource(context.getResources(), R.drawable.expander_arrow);
-			if (mTextSize == -1)
-				mTextSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, context.getResources().getDisplayMetrics());
 			if (mViewHeight == -1)
 				mViewHeight = measureHeight();
 		}
@@ -248,7 +249,7 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 
 			int width = getWidth();
 			int height = getHeight();
-			float padding = mTextSize / 2;
+			int padding = mTextSize / 2;
 
 			Paint paint = new Paint();
 			paint.setTextSize(mTextSize);
@@ -261,7 +262,7 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 
 			canvas.clipRect(padding, 0, width - padding, height);
 
-			float allocatedHeight;
+			int allocatedHeight;
 
 			if (mSubTitle != null) {
 				allocatedHeight = height / 2 - padding * 3 / 2;
@@ -307,7 +308,7 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 
 		public final String[] getLimiter()
 		{
-			ContentResolver resolver = ContextApplication.getContext().getContentResolver();
+			ContentResolver resolver = getContext().getContentResolver();
 			String selection = mFields[mFields.length - 1] + " = ?";
 			String[] selectionArgs = { mTitle };
 			String[] projection = new String[mFields.length + 1];
