@@ -200,6 +200,7 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 
 	static int mTextSize = -1;
 	static Bitmap mExpander = null;
+	static Paint mPaint;
 
 	int mViewHeight = -1;
 
@@ -251,9 +252,13 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 			int height = getHeight();
 			int padding = mTextSize / 2;
 
-			Paint paint = new Paint();
-			paint.setTextSize(mTextSize);
-			paint.setAntiAlias(true);
+			if (mPaint == null) {
+				mPaint = new Paint();
+				mPaint.setTextSize(mTextSize);
+				mPaint.setAntiAlias(true);
+			}
+
+			Paint paint = mPaint;
 
 			if (mExpandable) {
 				width -= padding * 3 + mExpander.getWidth();
