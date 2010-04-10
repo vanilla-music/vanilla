@@ -312,26 +312,6 @@ public class PlaybackService extends Service implements Handler.Callback, MediaP
 		sendBroadcast(intent);
 	}
 
-	public void broadcastChange(int oldState, int newState, Song song)
-	{
-		if (newState != oldState || song != mLastSongBroadcast) {
-			Intent intent = new Intent(EVENT_CHANGED);
-			intent.putExtra("state", newState);
-			intent.putExtra("song", song);
-			sendBroadcast(intent);
-
-			if (mScrobble) {
-				intent = new Intent("net.jjc1138.android.scrobbler.action.MUSIC_STATUS");
-				intent.putExtra("playing", (newState & FLAG_PLAYING) != 0);
-				if (song != null)
-					intent.putExtra("id", song.id);
-				sendBroadcast(intent);
-			}
-
-			mLastSongBroadcast = song;
-		}
-	}
-
 	private boolean setFlag(int flag)
 	{
 		synchronized (mStateLock) {
@@ -360,11 +340,24 @@ public class PlaybackService extends Service implements Handler.Callback, MediaP
 		int oldState = mState;
 		mState = state;
 
-		Song lastBroadcast = mLastSongBroadcast;
-		broadcastChange(oldState, state, song);
+		if (state != oldState || song != mLastSongBroadcast) {
+			Intent intent = new Intent(EVENT_CHANGED);
+			intent.putExtra("state", state);
+			intent.putExtra("song", song);
+			sendBroadcast(intent);
 
-		if (state != oldState || song != lastBroadcast)
+			if (mScrobble) {
+				intent = new Intent("net.jjc1138.android.scrobbler.action.MUSIC_STATUS");
+				intent.putExtra("playing", (state & FLAG_PLAYING) != 0);
+				if (song != null)
+					intent.putExtra("id", song.id);
+				sendBroadcast(intent);
+			}
+
 			updateNotification(song);
+
+			mLastSongBroadcast = song;
+		}
 
 		if ((state & FLAG_NO_MEDIA) != 0 && (oldState & FLAG_NO_MEDIA) == 0) {
 			ContentResolver resolver = ContextApplication.getContext().getContentResolver();
