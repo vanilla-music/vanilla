@@ -99,17 +99,6 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 	}
 
 	@Override
-	public void onDestroy()
-	{
-		super.onDestroy();
-
-		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-		SharedPreferences.Editor editor = settings.edit();
-		editor.putBoolean("separate_info", mCoverView.hasSeparateInfo());
-		editor.commit();
-	}
-
-	@Override
 	protected void setState(int state)
 	{
 		if (state == mState)
@@ -208,6 +197,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 			break;
 		case MENU_DISPLAY:
 			mCoverView.toggleDisplayMode();
+			mHandler.sendEmptyMessage(SAVE_DISPLAY_MODE);
 			break;
 		}
 
@@ -309,6 +299,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 
 	private static final int HIDE = 0;
 	private static final int UPDATE_PROGRESS = 1;
+	private static final int SAVE_DISPLAY_MODE = 2;
 
 	private Handler mHandler = new Handler() {
 		public void handleMessage(Message message) {
@@ -320,6 +311,12 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 				break;
 			case UPDATE_PROGRESS:
 				updateProgress();
+				break;
+			case SAVE_DISPLAY_MODE:
+				SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(FullPlaybackActivity.this);
+				SharedPreferences.Editor editor = settings.edit();
+				editor.putBoolean("separate_info", mCoverView.hasSeparateInfo());
+				editor.commit();
 				break;
 			}
 		}
