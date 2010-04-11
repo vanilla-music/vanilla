@@ -42,8 +42,9 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class FullPlaybackActivity extends PlaybackActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, View.OnFocusChangeListener {
+public class FullPlaybackActivity extends PlaybackActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, View.OnFocusChangeListener, Handler.Callback {
 	private IPlaybackService mService;
+	private Handler mHandler = new Handler(this);
 
 	private RelativeLayout mMessageOverlay;
 	private View mControlsTop;
@@ -336,43 +337,47 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 	private static final int SAVE_DISPLAY_MODE = 2;
 	private static final int TOGGLE_FLAG = 3;
 
-	private Handler mHandler = new Handler() {
-		public void handleMessage(Message message) {
-			switch (message.what) {
-			case HIDE:
-				mControlsTop.setVisibility(View.GONE);
-				if ((mState & PlaybackService.FLAG_PLAYING) != 0)
-					mControlsBottom.setVisibility(View.GONE);
-				break;
-			case UPDATE_PROGRESS:
-				updateProgress();
-				break;
-			case SAVE_DISPLAY_MODE:
-				SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(FullPlaybackActivity.this);
-				SharedPreferences.Editor editor = settings.edit();
-				editor.putBoolean("separate_info", mCoverView.hasSeparateInfo());
-				editor.commit();
-				break;
-			case TOGGLE_FLAG:
-				int flag = message.arg1;
-				boolean enabling = (mState & flag) == 0;
-				int text = -1;
-				if (flag == PlaybackService.FLAG_SHUFFLE)
-					text = enabling ? R.string.shuffle_enabling : R.string.shuffle_disabling;
-				else if (flag == PlaybackService.FLAG_REPEAT)
-					text = enabling ? R.string.repeat_enabling : R.string.repeat_disabling;
+	public boolean handleMessage(Message message)
+	{
+		switch (message.what) {
+		case HIDE:
+			mControlsTop.setVisibility(View.GONE);
+			if ((mState & PlaybackService.FLAG_PLAYING) != 0)
+				mControlsBottom.setVisibility(View.GONE);
+			break;
+		case UPDATE_PROGRESS:
+			updateProgress();
+			break;
+		case SAVE_DISPLAY_MODE:
+			SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(FullPlaybackActivity.this);
+			SharedPreferences.Editor editor = settings.edit();
+			editor.putBoolean("separate_info", mCoverView.hasSeparateInfo());
+			editor.commit();
+			break;
+		case TOGGLE_FLAG:
+			int flag = message.arg1;
+			boolean enabling = (mState & flag) == 0;
+			int text = -1;
+			if (flag == PlaybackService.FLAG_SHUFFLE)
+				text = enabling ? R.string.shuffle_enabling : R.string.shuffle_disabling;
+			else if (flag == PlaybackService.FLAG_REPEAT)
+				text = enabling ? R.string.repeat_enabling : R.string.repeat_disabling;
 
-				if (text != -1)
-					Toast.makeText(FullPlaybackActivity.this, text, Toast.LENGTH_SHORT).show();
+			if (text != -1)
+				Toast.makeText(FullPlaybackActivity.this, text, Toast.LENGTH_SHORT).show();
 
-				try {
-					mService.toggleFlag(flag);
-				} catch (RemoteException e) {
-					setService(null);
-				}
+			try {
+				mService.toggleFlag(flag);
+			} catch (RemoteException e) {
+				setService(null);
 			}
+			break;
+		default:
+			return false;
 		}
-	};
+
+		return true;
+	}
 
 	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
 	{

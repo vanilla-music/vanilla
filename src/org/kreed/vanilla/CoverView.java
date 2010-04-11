@@ -42,7 +42,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.Scroller;
 
-public final class CoverView extends View {
+public final class CoverView extends View implements Handler.Callback {
 	private static final int STORE_SIZE = 3;
 	private static int SNAP_VELOCITY = -1;
 
@@ -57,6 +57,7 @@ public final class CoverView extends View {
 
 	private IPlaybackService mService;
 	private Scroller mScroller;
+	private Handler mHandler = new Handler(this);
 
 	private Song[] mSongs = new Song[3];
 	private Bitmap[] mBitmaps = new Bitmap[3];
@@ -558,35 +559,36 @@ public final class CoverView extends View {
 	private static final int GO = 10;
 	private static final int SET_SONG = 11;
 
-	private Handler mHandler = new Handler() {
-		public void handleMessage(Message message) {
-			try {
-				switch (message.what) {
-				case GO:
-					if (message.arg1 == 0)
-						mService.toggleFlag(PlaybackService.FLAG_PLAYING);
-					else
-						shiftCover(message.arg1);
-					break;
-				case SET_SONG:
-					mService.setCurrentSong(message.arg1);
-					break;
-				default:
-					int i = message.what;
-					if (message.obj == null)
-						mSongs[i] = mService.getSong(i - STORE_SIZE / 2);
-					else
-						mSongs[i] = (Song)message.obj;
-					createBitmap(i);
-					if (i == STORE_SIZE / 2)
-						reset();
-					break;
-				}
-			} catch (RemoteException e) {
-				mService = null;
+	public boolean handleMessage(Message message)
+	{
+		try {
+			switch (message.what) {
+			case GO:
+				if (message.arg1 == 0)
+					mService.toggleFlag(PlaybackService.FLAG_PLAYING);
+				else
+					shiftCover(message.arg1);
+				break;
+			case SET_SONG:
+				mService.setCurrentSong(message.arg1);
+				break;
+			default:
+				int i = message.what;
+				if (message.obj == null)
+					mSongs[i] = mService.getSong(i - STORE_SIZE / 2);
+				else
+					mSongs[i] = (Song)message.obj;
+				createBitmap(i);
+				if (i == STORE_SIZE / 2)
+					reset();
+				break;
 			}
+		} catch (RemoteException e) {
+			mService = null;
 		}
-	};
+
+		return true;
+	}
 
 	public void onReceive(Intent intent)
 	{
