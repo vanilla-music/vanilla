@@ -357,7 +357,8 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 		@Override
 		public boolean onTouchEvent(MotionEvent event)
 		{
-			mExpanderPressed = event.getX() > getWidth() - mExpander.getWidth() - 3 * mTextSize / 2;
+			if (mExpandable)
+				mExpanderPressed = event.getX() > getWidth() - mExpander.getWidth() - 3 * mTextSize / 2;
 			return false;
 		}
 	}
