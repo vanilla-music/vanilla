@@ -8,6 +8,10 @@
 	<string name="library">Choose Songs</string>
 	<string name="quit">Stop and Exit</string>
 	<string name="display_mode">Display Mode</string>
+	<string name="shuffle_enable">Enable Shuffle</string>
+	<string name="shuffle_disable">Disable Shuffle</string>
+	<string name="shuffle_enabling">Shuffle enabled for newly added songs</string>
+	<string name="shuffle_disabling">Shuffle disabled</string>
 
 	<!-- Widgets -->
 	<string name="starting">Starting up...</string>

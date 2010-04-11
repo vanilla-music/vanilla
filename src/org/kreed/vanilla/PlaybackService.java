@@ -70,7 +70,8 @@ public class PlaybackService extends Service implements Handler.Callback, MediaP
 
 	public static final int FLAG_NO_MEDIA = 0x2;
 	public static final int FLAG_PLAYING = 0x1;
-	public static final int ALL_FLAGS = FLAG_NO_MEDIA + FLAG_PLAYING;
+	public static final int FLAG_SHUFFLE = 0x4;
+	public static final int ALL_FLAGS = FLAG_NO_MEDIA + FLAG_PLAYING + FLAG_SHUFFLE;
 
 	public static final int NEVER = 0;
 	public static final int WHEN_PLAYING = 1;
@@ -529,12 +530,14 @@ public class PlaybackService extends Service implements Handler.Callback, MediaP
 		if (songs == null || songs.length == 0)
 			return;
 
-		Random random = ContextApplication.getRandom();
-		for (int i = songs.length; --i != 0; ) {
-			int j = random.nextInt(i + 1);
-			long tmp = songs[j];
-			songs[j] = songs[i];
-			songs[i] = tmp;
+		if ((mState & FLAG_SHUFFLE) != 0) {
+			Random random = ContextApplication.getRandom();
+			for (int i = songs.length; --i != 0; ) {
+				int j = random.nextInt(i + 1);
+				long tmp = songs[j];
+				songs[j] = songs[i];
+				songs[i] = tmp;
+			}
 		}
 
 		boolean changed = false;

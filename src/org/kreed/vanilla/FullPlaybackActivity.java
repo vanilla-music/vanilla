@@ -40,6 +40,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class FullPlaybackActivity extends PlaybackActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, View.OnFocusChangeListener {
 	private IPlaybackService mService;
@@ -62,6 +63,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 	private static final int MENU_DISPLAY = 1;
 	private static final int MENU_PREFS = 2;
 	private static final int MENU_LIBRARY = 3;
+	private static final int MENU_SHUFFLE = 4;
 
 	@Override
 	public void onCreate(Bundle icicle)
@@ -177,8 +179,17 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 	{
 		menu.add(0, MENU_DISPLAY, 0, R.string.display_mode).setIcon(android.R.drawable.ic_menu_gallery);
 		menu.add(0, MENU_LIBRARY, 0, R.string.library).setIcon(android.R.drawable.ic_menu_add);
+		menu.add(0, MENU_SHUFFLE, 0, R.string.shuffle_enable).setIcon(R.drawable.ic_menu_shuffle);
 		menu.add(0, MENU_PREFS, 0, R.string.settings).setIcon(android.R.drawable.ic_menu_preferences);
 		menu.add(0, MENU_QUIT, 0, R.string.quit).setIcon(android.R.drawable.ic_menu_close_clear_cancel);
+		return true;
+	}
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu)
+	{
+		boolean isShuffling = (mState & PlaybackService.FLAG_SHUFFLE) != 0;
+		menu.findItem(MENU_SHUFFLE).setTitle(isShuffling ? R.string.shuffle_disable : R.string.shuffle_enable);
 		return true;
 	}
 
@@ -188,6 +199,9 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 		switch (item.getItemId()) {
 		case MENU_QUIT:
 			ContextApplication.quit(this);
+			break;
+		case MENU_SHUFFLE:
+			mHandler.sendMessage(mHandler.obtainMessage(TOGGLE_FLAG, PlaybackService.FLAG_SHUFFLE, 0));
 			break;
 		case MENU_PREFS:
 			startActivity(new Intent(this, PreferencesActivity.class));
@@ -300,6 +314,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 	private static final int HIDE = 0;
 	private static final int UPDATE_PROGRESS = 1;
 	private static final int SAVE_DISPLAY_MODE = 2;
+	private static final int TOGGLE_FLAG = 3;
 
 	private Handler mHandler = new Handler() {
 		public void handleMessage(Message message) {
@@ -318,6 +333,21 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 				editor.putBoolean("separate_info", mCoverView.hasSeparateInfo());
 				editor.commit();
 				break;
+			case TOGGLE_FLAG:
+				int flag = message.arg1;
+				boolean enabling = (mState & flag) == 0;
+				int text = -1;
+				if (flag == PlaybackService.FLAG_SHUFFLE)
+					text = enabling ? R.string.shuffle_enabling : R.string.shuffle_disabling;
+
+				if (text != -1)
+					Toast.makeText(FullPlaybackActivity.this, text, Toast.LENGTH_SHORT).show();
+
+				try {
+					mService.toggleFlag(flag);
+				} catch (RemoteException e) {
+					setService(null);
+				}
 			}
 		}
 	};
