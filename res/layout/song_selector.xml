@@ -26,16 +26,19 @@
 					android:id="@+id/artist_list"
 					android:layout_width="fill_parent"
 					android:layout_height="fill_parent"
+					android:divider="@null"
 					android:fastScrollEnabled="true" />
 				<ListView
 					android:id="@+id/album_list"
 					android:layout_width="fill_parent"
 					android:layout_height="fill_parent"
+					android:divider="@null"
 					android:fastScrollEnabled="true" />
 				<ListView
 					android:id="@+id/song_list"
 					android:layout_width="fill_parent"
 					android:layout_height="fill_parent"
+					android:divider="@null"
 					android:fastScrollEnabled="true" />
 			</FrameLayout>
 		</LinearLayout>

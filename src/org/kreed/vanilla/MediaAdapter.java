@@ -212,6 +212,7 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 
 	int mViewHeight = -1;
 	RadialGradient mSeparatorGradient;
+	RadialGradient mDividerGradient;
 
 	public class MediaView extends View {
 		private long mId;
@@ -276,6 +277,7 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 				canvas.drawBitmap(expander, width + padding * 2, (height - expander.getHeight()) / 2, paint);
 			}
 
+			canvas.save();
 			canvas.clipRect(padding, 0, width - padding, height);
 
 			int allocatedHeight;
@@ -291,6 +293,16 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 
 			paint.setColor(Color.WHITE);
 			canvas.drawText(mTitle, padding, padding + (allocatedHeight - mTextSize) / 2 - paint.ascent(), paint);
+
+			width = getWidth();
+
+			if (mDividerGradient == null)
+				mDividerGradient = new RadialGradient(width / 2, height, width / 2, Color.WHITE, Color.BLACK, Shader.TileMode.CLAMP);
+
+			paint.setShader(mDividerGradient);
+			canvas.restore();
+			canvas.drawLine(0, height, width, height, paint);
+			paint.setShader(null);
 		}
 
 		public final int getFieldCount()
