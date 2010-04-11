@@ -94,7 +94,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	private NotificationManager mNotificationManager;
 
 	private ArrayList<Song> mSongTimeline;
-	int mCurrentSong;
+	int mTimelinePos;
 	private int mQueuePos;
 	int mState = 0x80;
 	Object mStateLock = new Object();
@@ -123,7 +123,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		PlaybackServiceState state = new PlaybackServiceState();
 		if (state.load(this)) {
 			mSongTimeline = new ArrayList<Song>(state.savedIds.length);
-			mCurrentSong = state.savedIndex;
+			mTimelinePos = state.savedIndex;
 			mPendingSeek = state.savedSeek;
 
 			for (int i = 0; i != state.savedIds.length; ++i)
@@ -347,7 +347,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			Intent intent = new Intent(EVENT_CHANGED);
 			intent.putExtra("state", state);
 			intent.putExtra("song", song);
-			intent.putExtra("pos", mCurrentSong);
+			intent.putExtra("pos", mTimelinePos);
 			sendBroadcast(intent);
 
 			if (mScrobble) {
@@ -465,11 +465,11 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		Song start = mRepeatStart;
 		synchronized (timeline) {
 			if ((song.flags & Song.FLAG_RANDOM) != 0 && start != null) {
-				int i = mCurrentSong + delta;
+				int i = mTimelinePos + delta;
 				while (--i != -1 && timeline.get(i) != start);
-				mCurrentSong = i;
+				mTimelinePos = i;
 			} else {
-				mCurrentSong += delta;
+				mTimelinePos += delta;
 			}
 		}
 
@@ -520,7 +520,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		Song song;
 
 		synchronized (timeline) {
-			int pos = mCurrentSong + delta;
+			int pos = mTimelinePos + delta;
 			if (pos < 0)
 				return null;
 
@@ -540,7 +540,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 					// We have reached a non-user-selected song; this song will
 					// repeated in setCurrentSong
 					Song start = mRepeatStart;
-					int i = mCurrentSong + delta;
+					int i = mTimelinePos + delta;
 					while (--i != -1 && timeline.get(i) != start);
 					song = timeline.get(i);
 				}
@@ -577,7 +577,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		synchronized (mSongTimeline) {
 			switch (action) {
 			case ACTION_ENQUEUE:
-				int i = mCurrentSong + mQueuePos + 1;
+				int i = mTimelinePos + mQueuePos + 1;
 				if (mQueuePos == 0)
 					changed = true;
 
@@ -592,7 +592,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				mQueuePos += songs.length;
 				break;
 			case ACTION_PLAY:
-				List<Song> view = mSongTimeline.subList(mCurrentSong + 1, mSongTimeline.size());
+				List<Song> view = mSongTimeline.subList(mTimelinePos + 1, mSongTimeline.size());
 				List<Song> queue = mQueuePos == 0 ? null : new ArrayList<Song>(view);
 				view.clear();
 
@@ -621,7 +621,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 	private void saveState(boolean savePosition)
 	{
-		PlaybackServiceState.saveState(this, mSongTimeline, mCurrentSong, savePosition && mMediaPlayer != null ? mMediaPlayer.getCurrentPosition() : 0);
+		PlaybackServiceState.saveState(this, mSongTimeline, mTimelinePos, savePosition && mMediaPlayer != null ? mMediaPlayer.getCurrentPosition() : 0);
 	}
 
 	private void go(int delta, boolean doubleLaunchesActivity, boolean autoPlay)
@@ -814,9 +814,9 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			getSong(+2);
 
 			synchronized (mSongTimeline) {
-				while (mCurrentSong > 15) {
+				while (mTimelinePos > 15) {
 					mSongTimeline.remove(0);
-					--mCurrentSong;
+					--mTimelinePos;
 				}
 			}
 
@@ -873,7 +873,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 		public int getTimelinePos()
 		{
-			return mCurrentSong;
+			return mTimelinePos;
 		}
 
 		public void setCurrentSong(int delta)
