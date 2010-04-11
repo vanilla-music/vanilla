@@ -523,6 +523,67 @@ public class PlaybackService extends Service implements Handler.Callback, MediaP
 		return song;
 	}
 
+	private void chooseSongs(long id, int type, int action)
+	{
+		long[] songs = Song.getAllSongIdsWith(type, id);
+		if (songs == null || songs.length == 0)
+			return;
+
+		Random random = ContextApplication.getRandom();
+		for (int i = songs.length; --i != 0; ) {
+			int j = random.nextInt(i + 1);
+			long tmp = songs[j];
+			songs[j] = songs[i];
+			songs[i] = tmp;
+		}
+
+		boolean changed = false;
+
+		synchronized (mSongTimeline) {
+			switch (action) {
+			case ACTION_ENQUEUE:
+				int i = mCurrentSong + mQueuePos + 1;
+				if (mQueuePos == 0)
+					changed = true;
+
+				for (int j = 0; j != songs.length; ++i, ++j) {
+					Song song = new Song(songs[j]);
+					if (i < mSongTimeline.size())
+						mSongTimeline.set(i, song);
+					else
+						mSongTimeline.add(song);
+				}
+
+				mQueuePos += songs.length;
+				break;
+			case ACTION_PLAY:
+				List<Song> view = mSongTimeline.subList(mCurrentSong + 1, mSongTimeline.size());
+				List<Song> queue = mQueuePos == 0 ? null : new ArrayList<Song>(view);
+				view.clear();
+
+				for (int j = 0; j != songs.length; ++j)
+					mSongTimeline.add(new Song(songs[j]));
+
+				if (queue != null)
+					mSongTimeline.addAll(queue);
+
+				mQueuePos += songs.length - 1;
+
+				if (songs.length > 1)
+					changed = true;
+
+				mHandler.sendEmptyMessage(TRACK_CHANGED);
+				break;
+			}
+		}
+
+		if (changed)
+			broadcastReplaceSong(+1);
+
+		mHandler.removeMessages(SAVE_STATE);
+		mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
+	}
+
 	private void saveState(boolean savePosition)
 	{
 		PlaybackServiceState.saveState(this, mSongTimeline, mCurrentSong, savePosition && mMediaPlayer != null ? mMediaPlayer.getCurrentPosition() : 0);
@@ -686,68 +747,11 @@ public class PlaybackService extends Service implements Handler.Callback, MediaP
 		switch (message.what) {
 		case DO_ITEM:
 			Intent intent = (Intent)message.obj;
-			long id = message.obj == null ? -1 : intent.getLongExtra("id", -1);
-			if (id == -1) {
+			long id;
+			if (intent == null || (id = intent.getLongExtra("id", -1)) == -1)
 				mQueuePos = 0;
-			} else {
-				boolean enqueue = intent.getIntExtra("action", ACTION_PLAY) == ACTION_ENQUEUE;
-
-				long[] songs = Song.getAllSongIdsWith(intent.getIntExtra("type", 3), id);
-				if (songs == null || songs.length == 0)
-					break;
-
-				Random random = ContextApplication.getRandom();
-				for (int i = songs.length; --i != 0; ) {
-					int j = random.nextInt(i + 1);
-					long tmp = songs[j];
-					songs[j] = songs[i];
-					songs[i] = tmp;
-				}
-
-				boolean changed = false;
-
-				synchronized (mSongTimeline) {
-					if (enqueue) {
-						int i = mCurrentSong + mQueuePos + 1;
-						if (mQueuePos == 0)
-							changed = true;
-
-						for (int j = 0; j != songs.length; ++i, ++j) {
-							Song song = new Song(songs[j]);
-							if (i < mSongTimeline.size())
-								mSongTimeline.set(i, song);
-							else
-								mSongTimeline.add(song);
-						}
-
-						mQueuePos += songs.length;
-					} else {
-						List<Song> view = mSongTimeline.subList(mCurrentSong + 1, mSongTimeline.size());
-						List<Song> queue = mQueuePos == 0 ? null : new ArrayList<Song>(view);
-						view.clear();
-
-						for (int i = 0; i != songs.length; ++i)
-							mSongTimeline.add(new Song(songs[i]));
-
-						if (queue != null)
-							mSongTimeline.addAll(queue);
-
-						mQueuePos += songs.length - 1;
-
-						if (songs.length > 1)
-							changed = true;
-					}
-				}
-
-				if (!enqueue)
-					mHandler.sendEmptyMessage(TRACK_CHANGED);
-
-				if (changed)
-					broadcastReplaceSong(+1);
-
-				mHandler.removeMessages(SAVE_STATE);
-				mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
-			}
+			else
+				chooseSongs(id, intent.getIntExtra("type", 3), intent.getIntExtra("action", ACTION_PLAY));
 			break;
 		case MEDIA_BUTTON:
 			toggleFlag(FLAG_PLAYING);
