@@ -130,10 +130,10 @@ public class Song implements Parcelable {
 			return null;
 
 		long[] songs = new long[count];
-		while (--count != -1) {
+		for (int i = 0; i != count; ++i) {
 			if (!cursor.moveToNext())
 				return null;
-			songs[count] = cursor.getInt(0);
+			songs[i] = cursor.getInt(0);
 		}
 
 		cursor.close();
