@@ -30,7 +30,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
@@ -52,9 +51,9 @@ public final class CoverView extends View {
 	private static int PADDING;
 	private static int TEXT_SIZE_MINI = -1;
 	private static int PADDING_MINI;
-	private static Drawable SONG_DRAWABLE;
-	private static Drawable ALBUM_DRAWABLE;
-	private static Drawable ARTIST_DRAWABLE;
+	private static Bitmap SONG_ICON;
+	private static Bitmap ALBUM_ICON;
+	private static Bitmap ARTIST_ICON;
 
 	private IPlaybackService mService;
 	private Scroller mScroller;
@@ -94,12 +93,18 @@ public final class CoverView extends View {
 		PADDING_MINI = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, metrics);
 	}
 
-	private static void loadDrawables()
+	private static void loadIcons()
 	{
 		Resources res = ContextApplication.getContext().getResources();
-		SONG_DRAWABLE = res.getDrawable(R.drawable.tab_songs_selected);
-		ALBUM_DRAWABLE = res.getDrawable(R.drawable.tab_albums_selected);
-		ARTIST_DRAWABLE = res.getDrawable(R.drawable.tab_artists_selected);
+		Bitmap bitmap = BitmapFactory.decodeResource(res, R.drawable.tab_songs_selected);
+		SONG_ICON = Bitmap.createScaledBitmap(bitmap, TEXT_SIZE, TEXT_SIZE, false);
+		bitmap.recycle();
+		bitmap = BitmapFactory.decodeResource(res, R.drawable.tab_albums_selected);
+		ALBUM_ICON = Bitmap.createScaledBitmap(bitmap, TEXT_SIZE, TEXT_SIZE, false);
+		bitmap.recycle();
+		bitmap = BitmapFactory.decodeResource(res, R.drawable.tab_artists_selected);
+		ARTIST_ICON = Bitmap.createScaledBitmap(bitmap, TEXT_SIZE, TEXT_SIZE, false);
+		bitmap.recycle();
 	}
 
 	public boolean hasSeparateInfo()
@@ -272,8 +277,8 @@ public final class CoverView extends View {
 
 		if (TEXT_SIZE == -1)
 			loadTextSizes();
-		if (SONG_DRAWABLE == null)
-			loadDrawables();
+		if (SONG_ICON == null)
+			loadIcons();
 
 		boolean horizontal = width > height;
 
@@ -331,7 +336,6 @@ public final class CoverView extends View {
 			cover = null;
 		}
 
-		Drawable drawable;
 		int top;
 		int left;
 
@@ -346,21 +350,15 @@ public final class CoverView extends View {
 		int maxWidth = boxWidth - padding * 3 - textSize;
 		paint.setARGB(255, 255, 255, 255);
 
-		drawable = SONG_DRAWABLE;
-		drawable.setBounds(left, top, left + textSize, top + textSize);
-		drawable.draw(canvas);
+		canvas.drawBitmap(SONG_ICON, left, top, paint);
 		drawText(canvas, title, left + padding + textSize, top, maxWidth, maxWidth, paint);
 		top += textSize + padding;
 
-		drawable = ALBUM_DRAWABLE;
-		drawable.setBounds(left, top, left + textSize, top + textSize);
-		drawable.draw(canvas);
+		canvas.drawBitmap(ALBUM_ICON, left, top, paint);
 		drawText(canvas, album, left + padding + textSize, top, maxWidth, maxWidth, paint);
 		top += textSize + padding;
 
-		drawable = ARTIST_DRAWABLE;
-		drawable.setBounds(left, top, left + textSize, top + textSize);
-		drawable.draw(canvas);
+		canvas.drawBitmap(ARTIST_ICON, left, top, paint);
 		drawText(canvas, artist, left + padding + textSize, top, maxWidth, maxWidth, paint);
 
 		return bitmap;
