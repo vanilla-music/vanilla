@@ -267,9 +267,6 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 	private static final int MENU_PLAY = 0;
 	private static final int MENU_ENQUEUE = 1;
 	private static final int MENU_EXPAND = 2;
-	private static final int MENU_PLAYBACK = 3;
-	private static final int MENU_PREFS = 4;
-	private static final int MENU_QUIT = 5;
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo absInfo)
@@ -308,30 +305,20 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-		menu.add(0, MENU_PLAYBACK, 0, R.string.playback_view).setIcon(android.R.drawable.ic_menu_gallery);
-		menu.add(0, MENU_PREFS, 0, R.string.settings).setIcon(android.R.drawable.ic_menu_preferences);
-		menu.add(0, MENU_QUIT, 0, R.string.quit).setIcon(android.R.drawable.ic_menu_close_clear_cancel);
+		((FullPlaybackActivity)getOwnerActivity()).fillMenu(menu, true);
 		return true;
+	}
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu)
+	{
+		return ((FullPlaybackActivity)getOwnerActivity()).onPrepareOptionsMenu(menu);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
-		switch (item.getItemId()) {
-		case MENU_QUIT:
-			ContextApplication.quit(getContext());
-			break;
-		case MENU_PREFS:
-			getContext().startActivity(new Intent(getContext(), PreferencesActivity.class));
-			break;
-		case MENU_PLAYBACK:
-			dismiss();
-			break;
-		default:
-			return false;
-		}
-
-		return true;
+		return ((FullPlaybackActivity)getOwnerActivity()).onOptionsItemSelected(item);
 	}
 
 	// onContextItemSelected and friends are not called when they should be. Do

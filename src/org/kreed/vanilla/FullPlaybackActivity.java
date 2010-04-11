@@ -64,6 +64,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 	private static final int MENU_PREFS = 2;
 	private static final int MENU_LIBRARY = 3;
 	private static final int MENU_SHUFFLE = 4;
+	private static final int MENU_PLAYBACK = 5;
 
 	@Override
 	public void onCreate(Bundle icicle)
@@ -174,14 +175,23 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 		}
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu)
+	public void fillMenu(Menu menu, boolean fromDialog)
 	{
-		menu.add(0, MENU_DISPLAY, 0, R.string.display_mode).setIcon(android.R.drawable.ic_menu_gallery);
-		menu.add(0, MENU_LIBRARY, 0, R.string.library).setIcon(android.R.drawable.ic_menu_add);
+		if (fromDialog) {
+			menu.add(0, MENU_PLAYBACK, 0, R.string.playback_view).setIcon(android.R.drawable.ic_menu_gallery);
+		} else {
+			menu.add(0, MENU_DISPLAY, 0, R.string.display_mode).setIcon(android.R.drawable.ic_menu_gallery);
+			menu.add(0, MENU_LIBRARY, 0, R.string.library).setIcon(android.R.drawable.ic_menu_add);
+		}
 		menu.add(0, MENU_SHUFFLE, 0, R.string.shuffle_enable).setIcon(R.drawable.ic_menu_shuffle);
 		menu.add(0, MENU_PREFS, 0, R.string.settings).setIcon(android.R.drawable.ic_menu_preferences);
 		menu.add(0, MENU_QUIT, 0, R.string.quit).setIcon(android.R.drawable.ic_menu_close_clear_cancel);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
+		fillMenu(menu, false);
 		return true;
 	}
 
@@ -205,6 +215,9 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 			break;
 		case MENU_PREFS:
 			startActivity(new Intent(this, PreferencesActivity.class));
+			break;
+		case MENU_PLAYBACK:
+			dismissDialog(SONG_SELECTOR);
 			break;
 		case MENU_LIBRARY:
 			showDialog(SONG_SELECTOR);
