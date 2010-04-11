@@ -54,7 +54,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.Toast;
 
-public class PlaybackService extends Service implements Handler.Callback, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, SharedPreferences.OnSharedPreferenceChangeListener {	
+public final class PlaybackService extends Service implements Handler.Callback, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, SharedPreferences.OnSharedPreferenceChangeListener {	
 	private static final int NOTIFICATION_ID = 2;
 	private static final int DOUBLE_CLICK_DELAY = 400;
 
@@ -78,14 +78,14 @@ public class PlaybackService extends Service implements Handler.Callback, MediaP
 	public static final int WHEN_PLAYING = 1;
 	public static final int ALWAYS = 2;
 
-	private boolean mHeadsetPause;
-	private boolean mHeadsetOnly;
+	boolean mHeadsetPause;
+	boolean mHeadsetOnly;
 	private boolean mScrobble;
 	private int mNotificationMode;
 
 	private Looper mLooper;
 	private Handler mHandler;
-	private MediaPlayer mMediaPlayer;
+	MediaPlayer mMediaPlayer;
 	private boolean mMediaPlayerInitialized;
 	private PowerManager.WakeLock mWakeLock;
 	private Notification mNotification;
@@ -94,20 +94,20 @@ public class PlaybackService extends Service implements Handler.Callback, MediaP
 	private NotificationManager mNotificationManager;
 
 	private ArrayList<Song> mSongTimeline;
-	private int mCurrentSong;
+	int mCurrentSong;
 	private int mQueuePos;
-	private int mState = 0x80;
-	private Object mStateLock = new Object();
-	private boolean mPlayingBeforeCall;
+	int mState = 0x80;
+	Object mStateLock = new Object();
+	boolean mPlayingBeforeCall;
 	private int mPendingSeek;
 	private Song mLastSongBroadcast;
-	private boolean mPlugged;
+	boolean mPlugged;
 	private ContentObserver mMediaObserver;
 	public Receiver mReceiver;
 	public InCallListener mCallListener;
 	private boolean mIgnoreNextUp;
 	private boolean mLoaded;
-	private boolean mInCall;
+	boolean mInCall;
 	private Song mRepeatStart;
 
 	private Method mIsWiredHeadsetOn;
@@ -315,14 +315,14 @@ public class PlaybackService extends Service implements Handler.Callback, MediaP
 		sendBroadcast(intent);
 	}
 
-	private boolean setFlag(int flag)
+	boolean setFlag(int flag)
 	{
 		synchronized (mStateLock) {
 			return updateState(mState | flag);
 		}
 	}
 
-	private boolean unsetFlag(int flag)
+	boolean unsetFlag(int flag)
 	{
 		synchronized (mStateLock) {
 			return updateState(mState & ~flag);
@@ -415,7 +415,7 @@ public class PlaybackService extends Service implements Handler.Callback, MediaP
 		}
 	}
 
-	private boolean isSpeakerOn()
+	boolean isSpeakerOn()
 	{
 		if (mAudioManager.isBluetoothA2dpOn() || mAudioManager.isBluetoothScoOn())
 			return false;
@@ -438,7 +438,7 @@ public class PlaybackService extends Service implements Handler.Callback, MediaP
 		return (mAudioManager.getRouting(mAudioManager.getMode()) & AudioManager.ROUTE_SPEAKER) != 0;
 	}
 
-	private void toggleFlag(int flag)
+	void toggleFlag(int flag)
 	{
 		synchronized (mStateLock) {
 			if ((mState & flag) == 0)
@@ -448,7 +448,7 @@ public class PlaybackService extends Service implements Handler.Callback, MediaP
 		}
 	}
 
-	private void setCurrentSong(int delta)
+	void setCurrentSong(int delta)
 	{
 		if (mMediaPlayer == null)
 			return;
@@ -511,7 +511,7 @@ public class PlaybackService extends Service implements Handler.Callback, MediaP
 		return true;
 	}
 
-	private Song getSong(int delta)
+	Song getSong(int delta)
 	{
 		if (mSongTimeline == null)
 			return null;
@@ -646,7 +646,7 @@ public class PlaybackService extends Service implements Handler.Callback, MediaP
 		}
 	}
 
-	private boolean handleMediaKey(KeyEvent event)
+	boolean handleMediaKey(KeyEvent event)
 	{
 		if (mInCall)
 			return false;
