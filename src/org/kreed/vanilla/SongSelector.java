@@ -65,14 +65,10 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 
 	private long mLastActedId;
 
-	private ListView getList(int tab)
-	{
-		return (ListView)mTabHost.getTabContentView().getChildAt(tab);
-	}
-
 	private MediaAdapter getAdapter(int tab)
 	{
-		return (MediaAdapter)getList(tab).getAdapter();
+		ListView list = (ListView)mTabHost.getTabContentView().getChildAt(tab);
+		return (MediaAdapter)list.getAdapter();
 	}
 
 	private void initializeList(int id, Uri store, String[] fields, String[] fieldKeys)
