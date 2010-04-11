@@ -25,6 +25,7 @@ interface IPlaybackService {
 	int getState();
 	int getPosition();
 	int getDuration();
+	int getTimelinePos();
 
 	void setCurrentSong(int delta);
 	void toggleFlag(int flag);

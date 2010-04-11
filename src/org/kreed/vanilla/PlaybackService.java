@@ -347,6 +347,7 @@ public class PlaybackService extends Service implements Handler.Callback, MediaP
 			Intent intent = new Intent(EVENT_CHANGED);
 			intent.putExtra("state", state);
 			intent.putExtra("song", song);
+			intent.putExtra("pos", mCurrentSong);
 			sendBroadcast(intent);
 
 			if (mScrobble) {
@@ -868,6 +869,11 @@ public class PlaybackService extends Service implements Handler.Callback, MediaP
 			synchronized (mMediaPlayer) {
 				return mMediaPlayer.getDuration();
 			}
+		}
+
+		public int getTimelinePos()
+		{
+			return mCurrentSong;
 		}
 
 		public void setCurrentSong(int delta)

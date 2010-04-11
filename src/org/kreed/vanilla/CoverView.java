@@ -60,6 +60,7 @@ public final class CoverView extends View {
 
 	private Song[] mSongs = new Song[3];
 	private Bitmap[] mBitmaps = new Bitmap[3];
+	private int mTimelinePos;
 	private VelocityTracker mVelocityTracker;
 	private float mLastMotionX;
 	private float mStartX;
@@ -120,6 +121,11 @@ public final class CoverView extends View {
 	public void setPlaybackService(IPlaybackService service)
 	{
 		mService = service;
+		try {
+			mTimelinePos = mService.getTimelinePos();
+		} catch (RemoteException e) {
+			mService = null;
+		}
 		refreshSongs();
 	}
 
@@ -399,6 +405,7 @@ public final class CoverView extends View {
 		System.arraycopy(mBitmaps, from, mBitmaps, to, STORE_SIZE - 1);
 		mSongs[i] = null;
 		mBitmaps[i] = null;
+		mTimelinePos += delta;
 		reset();
 		invalidate();
 
@@ -491,7 +498,7 @@ public final class CoverView extends View {
 			mLastMotionX = x;
 
 			if (deltaX < 0) {
-				int availableToScroll = scrollX - (mBitmaps[0] == null ? width : 0);
+				int availableToScroll = scrollX - (mBitmaps[0] == null || mTimelinePos == 0 ? width : 0);
 				if (availableToScroll > 0)
 					scrollBy(Math.max(-availableToScroll, deltaX), 0);
 			} else if (deltaX > 0) {
@@ -508,7 +515,7 @@ public final class CoverView extends View {
 				velocityTracker.computeCurrentVelocity(250);
 				int velocity = (int) velocityTracker.getXVelocity();
 
-				int min = mBitmaps[0] == null ? 1 : 0;
+				int min = mBitmaps[0] == null || mTimelinePos == 0 ? 1 : 0;
 				int max = mBitmaps[2] == null ? 1 : 2;
 				int nearestCover = (scrollX + width / 2) / width;
 				int whichCover = Math.max(min, Math.min(nearestCover, max));
@@ -591,6 +598,7 @@ public final class CoverView extends View {
 		} else if (PlaybackService.EVENT_CHANGED.equals(action)) {
 			Song currentSong = mSongs[STORE_SIZE / 2];
 			Song playingSong = intent.getParcelableExtra("song");
+			mTimelinePos = intent.getIntExtra("pos", 0);
 			if (currentSong == null || !currentSong.equals(playingSong))
 				refreshSongs();
 		}
