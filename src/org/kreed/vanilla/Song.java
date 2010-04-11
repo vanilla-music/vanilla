@@ -98,15 +98,26 @@ public class Song implements Parcelable {
 		}
 	}
 
-	public static long[] getAllSongIds(String selection)
+	public static long[] getAllSongIdsWith(int type, long id)
 	{
+		if (type == 3)
+			return new long[] { id };
+
+		String selection = "=" + id + " AND " + MediaStore.Audio.Media.IS_MUSIC + "!=0";
+
+		switch (type) {
+		case 2:
+			selection = MediaStore.Audio.Media.ALBUM_ID + selection;
+			break;
+		case 1:
+			selection = MediaStore.Audio.Media.ARTIST_ID + selection;
+			break;
+		default:
+			return null;
+		}
+
 		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 		String[] projection = { MediaStore.Audio.Media._ID };
-		String isMusic = MediaStore.Audio.Media.IS_MUSIC + "!=0";
-		if (selection == null)
-			selection = isMusic;
-		else
-			selection += " AND " + isMusic;
 
 		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
 		Cursor cursor = resolver.query(media, projection, selection, null, null);
@@ -127,20 +138,6 @@ public class Song implements Parcelable {
 
 		cursor.close();
 		return songs;
-	}
-	
-	public static long[] getAllSongIdsWith(int type, long id)
-	{
-		switch (type) {
-		case 3:
-			return new long[] { id };
-		case 2:
-			return Song.getAllSongIds(MediaStore.Audio.Media.ALBUM_ID + '=' + id);
-		case 1:
-			return Song.getAllSongIds(MediaStore.Audio.Media.ARTIST_ID + '=' + id);
-		default:
-			return null;
-		}
 	}
 
 	public void randomize()
