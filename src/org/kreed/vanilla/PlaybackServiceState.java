@@ -29,10 +29,11 @@ import android.util.Log;
 
 public class PlaybackServiceState {
 	private static final String STATE_FILE = "state";
-	private static final long STATE_FILE_MAGIC = 0x8a9d3f9fca31L;
+	private static final long STATE_FILE_MAGIC = 0x8a9d3f2fca31L;
 
 	public int savedIndex;
 	public long[] savedIds;
+	public int[] savedFlags;
 	public int savedSeek;
 
 	public boolean load(Context context)
@@ -45,8 +46,11 @@ public class PlaybackServiceState {
 
 				if (n > 0) {
 					savedIds = new long[n];
-					for (int i = 0; i != n; ++i)
+					savedFlags = new int[n];
+					for (int i = 0; i != n; ++i) {
 						savedIds[i] = in.readLong();
+						savedFlags[i] = in.readInt();
+					}
 					savedSeek = in.readInt();
 
 					return true;
@@ -70,8 +74,11 @@ public class PlaybackServiceState {
 			out.writeInt(index);
 			int n = songs == null ? 0 : songs.size();
 			out.writeInt(n);
-			for (int i = 0; i != n; ++i)
-				out.writeLong(songs.get(i).id);
+			for (int i = 0; i != n; ++i) {
+				Song song = songs.get(i);
+				out.writeLong(song.id);
+				out.writeInt(song.flags);
+			}
 			out.writeInt(seek);
 			out.close();
 		} catch (IOException e) {

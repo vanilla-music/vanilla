@@ -127,7 +127,7 @@ public class PlaybackService extends Service implements Handler.Callback, MediaP
 			mPendingSeek = state.savedSeek;
 
 			for (int i = 0; i != state.savedIds.length; ++i)
-				mSongTimeline.add(new Song(state.savedIds[i]));
+				mSongTimeline.add(new Song(state.savedIds[i], state.savedFlags[i]));
 		} else {
 			mSongTimeline = new ArrayList<Song>();
 		}

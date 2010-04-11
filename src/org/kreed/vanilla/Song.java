@@ -58,6 +58,12 @@ public class Song implements Parcelable {
 		this.id = id;
 	}
 
+	public Song(long id, int flags)
+	{
+		this.id = id;
+		this.flags = flags;
+	}
+
 	public boolean populate(boolean force)
 	{
 		if (path != null && !force)
