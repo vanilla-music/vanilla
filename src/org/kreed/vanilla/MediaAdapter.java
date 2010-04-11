@@ -20,12 +20,15 @@ package org.kreed.vanilla;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.RadialGradient;
+import android.graphics.Shader;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
@@ -66,10 +69,15 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 
 		requery();
 
-		if (mExpander == null)
-			mExpander = BitmapFactory.decodeResource(context.getResources(), R.drawable.expander_arrow);
-		if (mTextSize == -1)
-			mTextSize = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, context.getResources().getDisplayMetrics());
+		if (mPaint == null) {
+			Resources res = context.getResources();
+			mExpander = BitmapFactory.decodeResource(res, R.drawable.expander_arrow);
+			mTextSize = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, res.getDisplayMetrics());
+
+			mPaint = new Paint();
+			mPaint.setTextSize(mTextSize);
+			mPaint.setAntiAlias(true);
+		}
 	}
 
 	public final void requery()
@@ -198,11 +206,12 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 		return new MediaView(context);
 	}
 
-	static int mTextSize = -1;
-	static Bitmap mExpander = null;
+	static int mTextSize;
+	static Bitmap mExpander;
 	static Paint mPaint;
 
 	int mViewHeight = -1;
+	RadialGradient mSeparatorGradient;
 
 	public class MediaView extends View {
 		private long mId;
@@ -252,17 +261,19 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 			int height = getHeight();
 			int padding = mTextSize / 2;
 
-			if (mPaint == null) {
-				mPaint = new Paint();
-				mPaint.setTextSize(mTextSize);
-				mPaint.setAntiAlias(true);
-			}
-
 			Paint paint = mPaint;
 
 			if (mExpandable) {
-				width -= padding * 3 + mExpander.getWidth();
-				canvas.drawBitmap(mExpander, width + padding * 2, (height - mExpander.getHeight()) / 2, paint);
+				Bitmap expander = mExpander;
+				width -= padding * 3 + expander.getWidth();
+
+				if (mSeparatorGradient == null)
+					mSeparatorGradient = new RadialGradient(width, height / 2, height / 2, Color.WHITE, Color.BLACK, Shader.TileMode.CLAMP);
+
+				paint.setShader(mSeparatorGradient);
+				canvas.drawLine(width, 0, width, height, paint);
+				paint.setShader(null);
+				canvas.drawBitmap(expander, width + padding * 2, (height - expander.getHeight()) / 2, paint);
 			}
 
 			canvas.clipRect(padding, 0, width - padding, height);
