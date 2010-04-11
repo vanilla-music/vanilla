@@ -32,6 +32,7 @@ import android.graphics.drawable.PaintDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.text.Editable;
@@ -53,10 +54,13 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class SongSelector extends Dialog implements AdapterView.OnItemClickListener, TextWatcher, View.OnClickListener, TabHost.OnTabChangeListener, Filter.FilterListener {
+public class SongSelector extends Dialog implements AdapterView.OnItemClickListener, TextWatcher, View.OnClickListener, TabHost.OnTabChangeListener, Filter.FilterListener, Handler.Callback {
+	private static final int MSG_INIT = 0;
+
 	private TabHost mTabHost;
 	private TextView mTextFilter;
 	private View mClearButton;
+	private Handler mHandler = new Handler(this);
 
 	private ViewGroup mLimiterViews;
 
@@ -65,7 +69,7 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 
 	private long mLastActedId;
 
-	private MediaAdapter getAdapter(int tab)
+	MediaAdapter getAdapter(int tab)
 	{
 		ListView list = (ListView)mTabHost.getTabContentView().getChildAt(tab);
 		return (MediaAdapter)list.getAdapter();
@@ -106,21 +110,7 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 
 		mLimiterViews = (ViewGroup)findViewById(R.id.limiter_layout);
 
-		new Handler().post(new Runnable() {
-			public void run()
-			{
-				initializeList(R.id.artist_list, MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, MediaAdapter.ARTIST_FIELDS, MediaAdapter.ARTIST_FIELD_KEYS);
-				initializeList(R.id.album_list, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, MediaAdapter.ALBUM_FIELDS, MediaAdapter.ALBUM_FIELD_KEYS);
-
-				ListView view = (ListView)findViewById(R.id.song_list);
-				view.setOnItemClickListener(SongSelector.this);
-				view.setOnCreateContextMenuListener(SongSelector.this);
-				view.setAdapter(new SongMediaAdapter(getContext()));
-
-				ContentResolver resolver = ContextApplication.getContext().getContentResolver();
-				resolver.registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, mObserver);
-			}
-		});
+		mHandler.sendEmptyMessage(MSG_INIT);
 	}
 
 	@Override
@@ -349,7 +339,29 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 		return PlaybackActivity.handleKeyLongPress(getContext(), keyCode);
 	}
 
-	private ContentObserver mObserver = new ContentObserver(new Handler()) {
+	public boolean handleMessage(Message message)
+	{
+		switch (message.what) {
+		case MSG_INIT:
+			initializeList(R.id.artist_list, MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, MediaAdapter.ARTIST_FIELDS, MediaAdapter.ARTIST_FIELD_KEYS);
+			initializeList(R.id.album_list, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, MediaAdapter.ALBUM_FIELDS, MediaAdapter.ALBUM_FIELD_KEYS);
+
+			ListView view = (ListView)findViewById(R.id.song_list);
+			view.setOnItemClickListener(SongSelector.this);
+			view.setOnCreateContextMenuListener(SongSelector.this);
+			view.setAdapter(new SongMediaAdapter(getContext()));
+
+			ContentResolver resolver = ContextApplication.getContext().getContentResolver();
+			resolver.registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, mObserver);
+			break;
+		default:
+			return false;
+		}
+
+		return true;
+	}
+
+	private ContentObserver mObserver = new ContentObserver(mHandler) {
 		@Override
 		public void onChange(boolean selfChange)
 		{
