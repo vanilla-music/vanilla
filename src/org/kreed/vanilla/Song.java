@@ -26,6 +26,8 @@ import android.os.Parcelable;
 import android.provider.MediaStore;
 
 public class Song implements Parcelable {
+	public static final int FLAG_RANDOM = 0x1;
+
 	public static final String[] FILLED_PROJECTION = {
 		MediaStore.Audio.Media._ID,
 		MediaStore.Audio.Media.DATA,
@@ -43,6 +45,8 @@ public class Song implements Parcelable {
 	public String title;
 	public String album;
 	public String artist;
+
+	public int flags;
 
 	public Song()
 	{
@@ -150,8 +154,10 @@ public class Song implements Parcelable {
 		Cursor cursor = resolver.query(media, FILLED_PROJECTION, selection, null, null);
 
 		if (cursor != null) {
-			if (cursor.moveToPosition(ContextApplication.getRandom().nextInt(cursor.getCount())))
+			if (cursor.moveToPosition(ContextApplication.getRandom().nextInt(cursor.getCount()))) {
 				populate(resolver, cursor);
+				flags |= FLAG_RANDOM;
+			}
 			cursor.close();
 		}
 	}

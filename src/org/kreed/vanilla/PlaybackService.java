@@ -71,7 +71,8 @@ public class PlaybackService extends Service implements Handler.Callback, MediaP
 	public static final int FLAG_NO_MEDIA = 0x2;
 	public static final int FLAG_PLAYING = 0x1;
 	public static final int FLAG_SHUFFLE = 0x4;
-	public static final int ALL_FLAGS = FLAG_NO_MEDIA + FLAG_PLAYING + FLAG_SHUFFLE;
+	public static final int FLAG_REPEAT = 0x8;
+	public static final int ALL_FLAGS = FLAG_NO_MEDIA + FLAG_PLAYING + FLAG_SHUFFLE + FLAG_REPEAT;
 
 	public static final int NEVER = 0;
 	public static final int WHEN_PLAYING = 1;
@@ -107,6 +108,7 @@ public class PlaybackService extends Service implements Handler.Callback, MediaP
 	private boolean mIgnoreNextUp;
 	private boolean mLoaded;
 	private boolean mInCall;
+	private Song mRepeatStart;
 
 	private Method mIsWiredHeadsetOn;
 	private Method mStartForeground;
@@ -360,6 +362,15 @@ public class PlaybackService extends Service implements Handler.Callback, MediaP
 			mLastSongBroadcast = song;
 		}
 
+		// The current song is the starting point for repeated tracks
+		if ((state & FLAG_REPEAT) != 0 && (oldState & FLAG_REPEAT) == 0) {
+			mRepeatStart = song;
+			broadcastReplaceSong(+1);
+		} else if ((state & FLAG_REPEAT) == 0 && (oldState & FLAG_REPEAT) != 0) {
+			mRepeatStart = null;
+			broadcastReplaceSong(+1);
+		}
+
 		if ((state & FLAG_NO_MEDIA) != 0 && (oldState & FLAG_NO_MEDIA) == 0) {
 			ContentResolver resolver = ContextApplication.getContext().getContentResolver();
 			mMediaObserver = new MediaContentObserver(mHandler);
@@ -449,8 +460,16 @@ public class PlaybackService extends Service implements Handler.Callback, MediaP
 			unsetFlag(FLAG_NO_MEDIA);
 		}
 
-		synchronized (mSongTimeline) {
-			mCurrentSong += delta;
+		ArrayList<Song> timeline = mSongTimeline;
+		Song start = mRepeatStart;
+		synchronized (timeline) {
+			if ((song.flags & Song.FLAG_RANDOM) != 0 && start != null) {
+				int i = mCurrentSong + delta;
+				while (--i != -1 && timeline.get(i) != start);
+				mCurrentSong = i;
+			} else {
+				mCurrentSong += delta;
+			}
 		}
 
 		try {
@@ -496,22 +515,34 @@ public class PlaybackService extends Service implements Handler.Callback, MediaP
 		if (mSongTimeline == null)
 			return null;
 
+		ArrayList<Song> timeline = mSongTimeline;
 		Song song;
 
-		synchronized (mSongTimeline) {
+		synchronized (timeline) {
 			int pos = mCurrentSong + delta;
 			if (pos < 0)
 				return null;
 
-			int size = mSongTimeline.size();
+			int size = timeline.size();
 			if (pos > size)
 				return null;
 
 			if (pos == size) {
 				song = new Song();
-				mSongTimeline.add(song);
+				timeline.add(song);
 			} else {
-				song = mSongTimeline.get(pos);
+				song = timeline.get(pos);
+			}
+
+			if (mRepeatStart != null) {
+				if (delta == 1 && (song.flags & Song.FLAG_RANDOM) != 0) {
+					// We have reached a non-user-selected song; this song will
+					// repeated in setCurrentSong
+					Song start = mRepeatStart;
+					int i = mCurrentSong + delta;
+					while (--i != -1 && timeline.get(i) != start);
+					song = timeline.get(i);
+				}
 			}
 		}
 

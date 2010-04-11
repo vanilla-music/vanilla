@@ -65,6 +65,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 	private static final int MENU_LIBRARY = 3;
 	private static final int MENU_SHUFFLE = 4;
 	private static final int MENU_PLAYBACK = 5;
+	private static final int MENU_REPEAT = 6;
 
 	@Override
 	public void onCreate(Bundle icicle)
@@ -184,6 +185,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 			menu.add(0, MENU_LIBRARY, 0, R.string.library).setIcon(android.R.drawable.ic_menu_add);
 		}
 		menu.add(0, MENU_SHUFFLE, 0, R.string.shuffle_enable).setIcon(R.drawable.ic_menu_shuffle);
+		menu.add(0, MENU_REPEAT, 0, R.string.repeat_enable).setIcon(R.drawable.ic_menu_refresh);
 		menu.add(0, MENU_PREFS, 0, R.string.settings).setIcon(android.R.drawable.ic_menu_preferences);
 		menu.add(0, MENU_QUIT, 0, R.string.quit).setIcon(android.R.drawable.ic_menu_close_clear_cancel);
 	}
@@ -200,6 +202,8 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 	{
 		boolean isShuffling = (mState & PlaybackService.FLAG_SHUFFLE) != 0;
 		menu.findItem(MENU_SHUFFLE).setTitle(isShuffling ? R.string.shuffle_disable : R.string.shuffle_enable);
+		boolean isRepeating = (mState & PlaybackService.FLAG_REPEAT) != 0;
+		menu.findItem(MENU_REPEAT).setTitle(isRepeating ? R.string.repeat_disable : R.string.repeat_enable);
 		return true;
 	}
 
@@ -212,6 +216,9 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 			break;
 		case MENU_SHUFFLE:
 			mHandler.sendMessage(mHandler.obtainMessage(TOGGLE_FLAG, PlaybackService.FLAG_SHUFFLE, 0));
+			break;
+		case MENU_REPEAT:
+			mHandler.sendMessage(mHandler.obtainMessage(TOGGLE_FLAG, PlaybackService.FLAG_REPEAT, 0));
 			break;
 		case MENU_PREFS:
 			startActivity(new Intent(this, PreferencesActivity.class));
@@ -352,6 +359,8 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 				int text = -1;
 				if (flag == PlaybackService.FLAG_SHUFFLE)
 					text = enabling ? R.string.shuffle_enabling : R.string.shuffle_disabling;
+				else if (flag == PlaybackService.FLAG_REPEAT)
+					text = enabling ? R.string.repeat_enabling : R.string.repeat_disabling;
 
 				if (text != -1)
 					Toast.makeText(FullPlaybackActivity.this, text, Toast.LENGTH_SHORT).show();
