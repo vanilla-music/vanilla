@@ -40,9 +40,11 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Filter;
 import android.widget.LinearLayout;
@@ -269,6 +271,9 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 	private static final int MENU_PLAY = 0;
 	private static final int MENU_ENQUEUE = 1;
 	private static final int MENU_EXPAND = 2;
+	private static final int MENU_PLAYBACK = 3;
+	private static final int MENU_PREFS = 4;
+	private static final int MENU_QUIT = 5;
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo absInfo)
@@ -304,12 +309,48 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 		return true;
 	}
 
-	// this is needed because due to some bug in Dialog, onContextItemSelected
-	// is not called when it should be
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
+		menu.add(0, MENU_PLAYBACK, 0, R.string.playback_view).setIcon(android.R.drawable.ic_menu_gallery);
+		menu.add(0, MENU_PREFS, 0, R.string.settings).setIcon(android.R.drawable.ic_menu_preferences);
+		menu.add(0, MENU_QUIT, 0, R.string.quit).setIcon(android.R.drawable.ic_menu_close_clear_cancel);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch (item.getItemId()) {
+		case MENU_QUIT:
+			ContextApplication.quit(getContext());
+			break;
+		case MENU_PREFS:
+			getContext().startActivity(new Intent(getContext(), PreferencesActivity.class));
+			break;
+		case MENU_PLAYBACK:
+			dismiss();
+			break;
+		default:
+			return false;
+		}
+
+		return true;
+	}
+
+	// onContextItemSelected and friends are not called when they should be. Do
+	// so here to work around this bug.
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item)
 	{
-		return onContextItemSelected(item);
+		switch (featureId) {
+		case Window.FEATURE_CONTEXT_MENU:
+			return onContextItemSelected(item);
+		case Window.FEATURE_OPTIONS_PANEL:
+			return onOptionsItemSelected(item);
+		default:
+			return super.onMenuItemSelected(featureId, item);
+		}
 	}
 
 	public void onFilterComplete(int count)
