@@ -26,6 +26,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.RadialGradient;
 import android.graphics.Shader;
@@ -211,7 +212,7 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 	static Paint mPaint;
 
 	int mViewHeight = -1;
-	RadialGradient mSeparatorGradient;
+	DashPathEffect mDashEffect;
 	RadialGradient mDividerGradient;
 
 	public class MediaView extends View {
@@ -268,12 +269,13 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 				Bitmap expander = mExpander;
 				width -= padding * 3 + expander.getWidth();
 
-				if (mSeparatorGradient == null)
-					mSeparatorGradient = new RadialGradient(width, height / 2, height / 2, Color.WHITE, Color.BLACK, Shader.TileMode.CLAMP);
+				if (mDashEffect == null)
+					mDashEffect = new DashPathEffect(new float[] { 3, 3 }, 0);
 
-				paint.setShader(mSeparatorGradient);
-				canvas.drawLine(width, 0, width, height, paint);
-				paint.setShader(null);
+				paint.setColor(Color.GRAY);
+				paint.setPathEffect(mDashEffect); 
+				canvas.drawLine(width, padding, width, height - padding, paint);
+				paint.setPathEffect(null); 
 				canvas.drawBitmap(expander, width + padding * 2, (height - expander.getHeight()) / 2, paint);
 			}
 
