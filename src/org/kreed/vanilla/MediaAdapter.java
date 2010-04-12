@@ -267,7 +267,7 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 
 			if (mExpandable) {
 				Bitmap expander = mExpander;
-				width -= padding * 3 + expander.getWidth();
+				width -= padding * 4 + expander.getWidth();
 
 				if (mDashEffect == null)
 					mDashEffect = new DashPathEffect(new float[] { 3, 3 }, 0);
@@ -358,7 +358,7 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 		public boolean onTouchEvent(MotionEvent event)
 		{
 			if (mExpandable)
-				mExpanderPressed = event.getX() > getWidth() - mExpander.getWidth() - 3 * mTextSize / 2;
+				mExpanderPressed = event.getX() > getWidth() - mExpander.getWidth() - 2 * mTextSize;
 			return false;
 		}
 	}
