@@ -116,7 +116,11 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 	@Override
 	public void onStart()
 	{
-		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
+		// reset queue pos
+		Context context = getContext();
+		context.startService(new Intent(context, PlaybackService.class));
+
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
 		int inputType = settings.getBoolean("filter_suggestions", false) ? InputType.TYPE_CLASS_TEXT : InputType.TYPE_TEXT_VARIATION_FILTER;
 		mTextFilter.setInputType(inputType);
 
