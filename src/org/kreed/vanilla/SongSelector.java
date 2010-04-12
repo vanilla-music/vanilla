@@ -119,13 +119,19 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 		// reset queue pos
 		Context context = getContext();
 		context.startService(new Intent(context, PlaybackService.class));
+	}
 
-		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-		int inputType = settings.getBoolean("filter_suggestions", false) ? InputType.TYPE_CLASS_TEXT : InputType.TYPE_TEXT_VARIATION_FILTER;
-		mTextFilter.setInputType(inputType);
+	@Override
+	public void onWindowFocusChanged(boolean hasFocus)
+	{
+		if (hasFocus) {
+			SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
+			int inputType = settings.getBoolean("filter_suggestions", false) ? InputType.TYPE_CLASS_TEXT : InputType.TYPE_TEXT_VARIATION_FILTER;
+			mTextFilter.setInputType(inputType);
 
-		mDefaultAction = Integer.parseInt(settings.getString("default_action_int", "0"));
-		mLastActedId = 0;
+			mDefaultAction = Integer.parseInt(settings.getString("default_action_int", "0"));
+			mLastActedId = 0;
+		}
 	}
 
 	@Override
