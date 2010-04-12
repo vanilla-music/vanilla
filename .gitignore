@@ -1,3 +1,6 @@
 *.apk
 bin
 gen
+*.swp
+build.xml
+local.properties
