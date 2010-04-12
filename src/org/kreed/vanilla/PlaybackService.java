@@ -574,38 +574,30 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 		boolean changed = false;
 
-		synchronized (mSongTimeline) {
+		ArrayList<Song> timeline = mSongTimeline;
+		synchronized (timeline) {
 			switch (action) {
 			case ACTION_ENQUEUE:
 				int i = mTimelinePos + mQueuePos + 1;
+				if (i < timeline.size())
+					timeline.subList(i, timeline.size()).clear();
+
+				for (int j = 0; j != songs.length; ++j)
+					timeline.add(new Song(songs[j]));
+
 				if (mQueuePos == 0)
 					changed = true;
-
-				for (int j = 0; j != songs.length; ++i, ++j) {
-					Song song = new Song(songs[j]);
-					if (i < mSongTimeline.size())
-						mSongTimeline.set(i, song);
-					else
-						mSongTimeline.add(song);
-				}
-
 				mQueuePos += songs.length;
 				break;
 			case ACTION_PLAY:
-				List<Song> view = mSongTimeline.subList(mTimelinePos + 1, mSongTimeline.size());
-				List<Song> queue = mQueuePos == 0 ? null : new ArrayList<Song>(view);
-				view.clear();
+				timeline.subList(mTimelinePos + 1, timeline.size()).clear();
 
 				for (int j = 0; j != songs.length; ++j)
-					mSongTimeline.add(new Song(songs[j]));
-
-				if (queue != null)
-					mSongTimeline.addAll(queue);
-
-				mQueuePos += songs.length - 1;
+					timeline.add(new Song(songs[j]));
 
 				if (songs.length > 1)
 					changed = true;
+				mQueuePos += songs.length - 1;
 
 				mHandler.sendEmptyMessage(TRACK_CHANGED);
 				break;
