@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -109,6 +110,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	private boolean mLoaded;
 	boolean mInCall;
 	private Song mRepeatStart;
+	private ArrayList<Song> mRepeatedSongs;
 
 	private Method mIsWiredHeadsetOn;
 	private Method mStartForeground;
@@ -307,12 +309,17 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		}
 	}
 
-	private void broadcastReplaceSong(int delta)
+	private void broadcastReplaceSong(int delta, Song song)
 	{
 		Intent intent = new Intent(EVENT_REPLACE_SONG);
 		intent.putExtra("pos", delta);
-		intent.putExtra("song", getSong(delta));
+		intent.putExtra("song", song);
 		sendBroadcast(intent);
+	}
+
+	private void broadcastReplaceSong(int delta)
+	{
+		broadcastReplaceSong(delta, getSong(delta));
 	}
 
 	boolean setFlag(int flag)
@@ -365,6 +372,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 		// The current song is the starting point for repeated tracks
 		if ((state & FLAG_REPEAT) != 0 && (oldState & FLAG_REPEAT) == 0) {
+			song.flags &= ~Song.FLAG_RANDOM;
 			mRepeatStart = song;
 			broadcastReplaceSong(+1);
 		} else if ((state & FLAG_REPEAT) == 0 && (oldState & FLAG_REPEAT) != 0) {
@@ -448,6 +456,18 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		}
 	}
 
+	private ArrayList<Song> getShuffledRepeatedSongs(int end)
+	{
+		ArrayList<Song> songs = mRepeatedSongs;
+		if (songs == null) {
+			int start = mSongTimeline.lastIndexOf(mRepeatStart);
+			songs = new ArrayList<Song>(mSongTimeline.subList(start, end));
+			Collections.shuffle(songs, ContextApplication.getRandom());
+			mRepeatedSongs = songs;
+		}
+		return songs;
+	}
+
 	void setCurrentSong(int delta)
 	{
 		if (mMediaPlayer == null)
@@ -462,12 +482,20 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		}
 
 		ArrayList<Song> timeline = mSongTimeline;
-		Song start = mRepeatStart;
 		synchronized (timeline) {
-			if ((song.flags & Song.FLAG_RANDOM) != 0 && start != null) {
-				int i = mTimelinePos + delta;
-				while (--i != -1 && timeline.get(i) != start);
-				mTimelinePos = i;
+			if (delta == 1 && mRepeatStart != null && (timeline.get(mTimelinePos + 1).flags & Song.FLAG_RANDOM) != 0) {
+				if ((mState & FLAG_SHUFFLE) == 0) {
+					mTimelinePos = mSongTimeline.lastIndexOf(mRepeatStart);
+				} else {
+					int j = mTimelinePos + delta;
+					ArrayList<Song> songs = getShuffledRepeatedSongs(j);
+					for (int i = songs.size(); --i != -1 && --j != -1; )
+						mSongTimeline.set(j, songs.get(i));
+					mRepeatStart = songs.get(0);
+					mRepeatedSongs = null;
+					mTimelinePos = j;
+				}
+				song = getSong(0);
 			} else {
 				mTimelinePos += delta;
 			}
@@ -538,11 +566,11 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			if (mRepeatStart != null) {
 				if (delta == 1 && (song.flags & Song.FLAG_RANDOM) != 0) {
 					// We have reached a non-user-selected song; this song will
-					// repeated in setCurrentSong
-					Song start = mRepeatStart;
-					int i = mTimelinePos + delta;
-					while (--i != -1 && timeline.get(i) != start);
-					song = timeline.get(i);
+					// repeated in setCurrentSong so take alternative measures
+					if ((mState & FLAG_SHUFFLE) == 0)
+						song = mRepeatStart;
+					else
+						song = getShuffledRepeatedSongs(mTimelinePos + delta).get(0);
 				}
 			}
 		}
@@ -572,7 +600,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			}
 		}
 
-		boolean changed = false;
+		Song oldSong = getSong(+1);
 
 		ArrayList<Song> timeline = mSongTimeline;
 		synchronized (timeline) {
@@ -585,8 +613,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				for (int j = 0; j != songs.length; ++j)
 					timeline.add(new Song(songs[j]));
 
-				if (mQueuePos == 0)
-					changed = true;
 				mQueuePos += songs.length;
 				break;
 			case ACTION_PLAY:
@@ -595,8 +621,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				for (int j = 0; j != songs.length; ++j)
 					timeline.add(new Song(songs[j]));
 
-				if (songs.length > 1)
-					changed = true;
 				mQueuePos += songs.length - 1;
 
 				mHandler.sendEmptyMessage(TRACK_CHANGED);
@@ -604,8 +628,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			}
 		}
 
-		if (changed)
-			broadcastReplaceSong(+1);
+		mRepeatedSongs = null;
+		Song newSong = getSong(+1);
+		if (newSong != oldSong)
+			broadcastReplaceSong(+1, newSong);
 
 		mHandler.removeMessages(SAVE_STATE);
 		mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
