@@ -42,19 +42,20 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class FullPlaybackActivity extends PlaybackActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, View.OnFocusChangeListener, Handler.Callback {
+public class FullPlaybackActivity extends PlaybackActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, View.OnFocusChangeListener, Handler.Callback, CoverView.Callback {
 	private IPlaybackService mService;
 	private Handler mHandler = new Handler(this);
 
 	private RelativeLayout mMessageOverlay;
 	private View mControlsTop;
 	private View mControlsBottom;
+	private SongSelector mSongSelector;
 
 	private ImageView mPlayPauseButton;
 	private SeekBar mSeekBar;
 	private TextView mSeekText;
 
-	private int mState;
+	int mState;
 	private int mDuration;
 	private boolean mSeekBarTracking;
 
@@ -175,6 +176,9 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 				setService(null);
 			}
 		}
+
+		if (mSongSelector != null)
+			mSongSelector.change(intent);
 	}
 
 	public void fillMenu(Menu menu, boolean fromDialog)
@@ -249,8 +253,10 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 	@Override
 	public Dialog onCreateDialog(int id)
 	{
-		if (id == SONG_SELECTOR)
-			return new SongSelector(this);
+		if (id == SONG_SELECTOR) {
+			mSongSelector = new SongSelector(this);
+			return mSongSelector;
+		}
 		return null;
 	}
 
@@ -406,5 +412,11 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 	{
 		if (hasFocus)
 			sendHideMessage();
+	}
+
+	public void songChanged(Song song)
+	{
+		if (mSongSelector != null)
+			mSongSelector.updateSong(song);
 	}
 }

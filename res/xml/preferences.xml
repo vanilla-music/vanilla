@@ -48,6 +48,11 @@
 			android:title="@string/selector_on_startup_title"
 			android:summary="@string/selector_on_startup_summary"
 			android:defaultValue="false" />
+		<CheckBoxPreference
+			android:key="selector_status"
+			android:title="@string/selector_status_title"
+			android:summary="@string/selector_status_summary"
+			android:defaultValue="false" />
 		<ListPreference
 			android:key="default_action_int"
 			android:title="@string/default_action_title"

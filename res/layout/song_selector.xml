@@ -62,4 +62,9 @@
 			android:layout_alignParentRight="true"
 			android:src="@android:drawable/ic_menu_close_clear_cancel" />
 	</RelativeLayout>
+	<ViewStub
+		android:id="@+id/status_stub"
+		android:layout="@layout/song_status"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" />
 </LinearLayout>

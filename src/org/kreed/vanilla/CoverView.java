@@ -43,6 +43,10 @@ import android.view.ViewConfiguration;
 import android.widget.Scroller;
 
 public final class CoverView extends View implements Handler.Callback {
+	public static interface Callback {
+		void songChanged(Song song);
+	};
+
 	private static final int STORE_SIZE = 3;
 	private static int SNAP_VELOCITY = -1;
 
@@ -58,6 +62,7 @@ public final class CoverView extends View implements Handler.Callback {
 	private IPlaybackService mService;
 	private Scroller mScroller;
 	private Handler mHandler = new Handler(this);
+	private Callback mCallback;
 
 	private Song[] mSongs = new Song[3];
 	private Bitmap[] mBitmaps = new Bitmap[3];
@@ -109,9 +114,19 @@ public final class CoverView extends View implements Handler.Callback {
 		bitmap.recycle();
 	}
 
+	public Song getCurrentSong()
+	{
+		return mSongs[STORE_SIZE / 2];
+	}
+
 	public boolean hasSeparateInfo()
 	{
 		return mSeparateInfo;
+	}
+
+	public void setCallback(Callback callback)
+	{
+		mCallback = callback;
 	}
 
 	public void setSeparateInfo(boolean separate)
@@ -409,6 +424,9 @@ public final class CoverView extends View implements Handler.Callback {
 		mTimelinePos += delta;
 		reset();
 		invalidate();
+
+		if (mCallback != null)
+			mCallback.songChanged(mSongs[STORE_SIZE / 2]);
 
 		mHandler.sendMessage(mHandler.obtainMessage(SET_SONG, delta, 0));
 		mHandler.sendEmptyMessage(i);

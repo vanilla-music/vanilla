@@ -33,7 +33,7 @@ import android.view.KeyEvent;
 import android.view.View;
 
 public abstract class PlaybackActivity extends Activity implements ServiceConnection {
-	protected CoverView mCoverView;
+	CoverView mCoverView;
 
 	@Override
 	public void onCreate(Bundle state)

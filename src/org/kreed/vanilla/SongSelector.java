@@ -33,6 +33,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.text.Editable;
@@ -45,6 +46,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Filter;
@@ -54,14 +56,19 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import android.util.Log;
+
 public class SongSelector extends Dialog implements AdapterView.OnItemClickListener, TextWatcher, View.OnClickListener, TabHost.OnTabChangeListener, Filter.FilterListener, Handler.Callback {
 	private static final int MSG_INIT = 0;
+
+	private Handler mHandler = new Handler(this);
 
 	private TabHost mTabHost;
 	private TextView mTextFilter;
 	private View mClearButton;
-	private Handler mHandler = new Handler(this);
-
+	private View mStatus;
+	private TextView mStatusText;
+	private ControlButton mPlayPauseButton;
 	private ViewGroup mLimiterViews;
 
 	private int mDefaultAction;
@@ -128,6 +135,26 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 			SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
 			int inputType = settings.getBoolean("filter_suggestions", false) ? InputType.TYPE_CLASS_TEXT : InputType.TYPE_TEXT_VARIATION_FILTER;
 			mTextFilter.setInputType(inputType);
+
+			boolean status = settings.getBoolean("selector_status", false);
+			if (status && mStatus == null) {
+				mStatus = findViewById(R.id.status);
+				if (mStatus == null)
+					mStatus = ((ViewStub)findViewById(R.id.status_stub)).inflate();
+				mStatusText = (TextView)mStatus.findViewById(R.id.status_text);
+				mPlayPauseButton = (ControlButton)mStatus.findViewById(R.id.play_pause);
+				ControlButton next = (ControlButton)mStatus.findViewById(R.id.next);
+
+				mPlayPauseButton.setOnClickListener(this);
+				next.setOnClickListener(this);
+
+				FullPlaybackActivity owner = (FullPlaybackActivity)getOwnerActivity();
+				updateState(owner.mState);
+				updateSong(owner.mCoverView.getCurrentSong());
+			} else if (!status && mStatus != null) {
+				mStatus.setVisibility(View.GONE);
+				mStatus = null;
+			}
 
 			mDefaultAction = Integer.parseInt(settings.getString("default_action_int", "0"));
 			mLastActedId = 0;
@@ -241,8 +268,19 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 
 	public void onClick(View view)
 	{
+		int id = view.getId();
 		if (view == mClearButton) {
 			mTextFilter.setText("");
+		} else if (id == R.id.play_pause) {
+			try {
+				((FullPlaybackActivity)getOwnerActivity()).mCoverView.go(0);
+			} catch (RemoteException e) {
+			}
+		} else if (id == R.id.next) {
+			try {
+				((FullPlaybackActivity)getOwnerActivity()).mCoverView.go(1);
+			} catch (RemoteException e) {
+			}
 		} else {
 			int i = (Integer)view.getTag();
 			String[] limiter;
@@ -379,4 +417,26 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 				getAdapter(i).requery();
 		}
 	};
+
+	public void updateSong(Song song)
+	{
+		if (mStatusText != null)
+			mStatusText.setText(song == null ? getContext().getResources().getText(R.string.none) : song.title);
+	}
+
+	public void updateState(int state)
+	{
+		if (mPlayPauseButton != null) {
+			boolean playing = (state & PlaybackService.FLAG_PLAYING) != 0;
+			mPlayPauseButton.setImageResource(playing ? R.drawable.pause : R.drawable.play);
+		}
+	}
+
+	public void change(Intent intent)
+	{
+		if (PlaybackService.EVENT_CHANGED.equals(intent.getAction())) {
+			updateSong((Song)intent.getParcelableExtra("song"));
+			updateState(intent.getIntExtra("state", 0));
+		}
+	}
 }
