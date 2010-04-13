@@ -494,6 +494,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 					mTimelinePos = j;
 				}
 				song = getSong(0);
+				broadcastReplaceSong(-1);
 			} else {
 				mTimelinePos += delta;
 			}
