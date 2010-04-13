@@ -37,7 +37,7 @@ public class SongMediaAdapter extends MediaAdapter {
 	protected String getSortOrder()
 	{
 		if (getLimiter() != null && getLimiter().length == 2)
-			return null; // use default sort order (by track)
+			return MediaStore.Audio.Media.TRACK;
 		return super.getSortOrder();
 	}
 }
