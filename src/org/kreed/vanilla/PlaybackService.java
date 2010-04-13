@@ -829,7 +829,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			getSong(+2);
 
 			synchronized (mSongTimeline) {
-				while (mTimelinePos > 15) {
+				while (mTimelinePos > 15 && mRepeatStart > 0) {
 					mSongTimeline.remove(0);
 					--mTimelinePos;
 					--mRepeatStart;
