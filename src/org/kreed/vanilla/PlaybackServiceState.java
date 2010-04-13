@@ -29,12 +29,14 @@ import android.util.Log;
 
 public class PlaybackServiceState {
 	private static final String STATE_FILE = "state";
-	private static final long STATE_FILE_MAGIC = 0x8a9d3f2fca31L;
+	private static final long STATE_FILE_MAGIC = 0x8a9d3f2fca32L;
 
 	public int savedIndex;
 	public long[] savedIds;
 	public int[] savedFlags;
 	public int savedSeek;
+	public int savedState;
+	public int repeatStart;
 
 	public boolean load(Context context)
 	{
@@ -52,11 +54,12 @@ public class PlaybackServiceState {
 						savedFlags[i] = in.readInt();
 					}
 					savedSeek = in.readInt();
-
-					return true;
+					savedState = in.readInt();
+					repeatStart = in.readInt();
 				}
 
 				in.close();
+				return n > 0;
 			}
 		} catch (FileNotFoundException e) {
 		} catch (IOException e) {
@@ -66,7 +69,7 @@ public class PlaybackServiceState {
 		return false;
 	}
 
-	public static void saveState(Context context, List<Song> songs, int index, int seek)
+	public static void saveState(Context context, List<Song> songs, int index, int seek, int state, int repeatStart)
 	{
 		try {
 			DataOutputStream out = new DataOutputStream(context.openFileOutput(STATE_FILE, 0));
@@ -80,6 +83,8 @@ public class PlaybackServiceState {
 				out.writeInt(song.flags);
 			}
 			out.writeInt(seek);
+			out.writeInt(state);
+			out.writeInt(repeatStart);
 			out.close();
 		} catch (IOException e) {
 			Log.w("VanillaMusic", e);

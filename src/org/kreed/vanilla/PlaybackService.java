@@ -127,6 +127,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			mSongTimeline = new ArrayList<Song>(state.savedIds.length);
 			mTimelinePos = state.savedIndex;
 			mPendingSeek = state.savedSeek;
+			mState |= state.savedState;
+			mRepeatStart = state.repeatStart;
 
 			for (int i = 0; i != state.savedIds.length; ++i)
 				mSongTimeline.add(new Song(state.savedIds[i], state.savedFlags[i]));
@@ -636,7 +638,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 	private void saveState(boolean savePosition)
 	{
-		PlaybackServiceState.saveState(this, mSongTimeline, mTimelinePos, savePosition && mMediaPlayer != null ? mMediaPlayer.getCurrentPosition() : 0);
+		PlaybackServiceState.saveState(this, mSongTimeline, mTimelinePos, savePosition && mMediaPlayer != null ? mMediaPlayer.getCurrentPosition() : 0, mState & (FLAG_REPEAT + FLAG_SHUFFLE), mRepeatStart);
 	}
 
 	private void go(int delta, boolean doubleLaunchesActivity, boolean autoPlay)
