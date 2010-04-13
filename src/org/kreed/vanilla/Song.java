@@ -130,7 +130,8 @@ public class Song implements Parcelable {
 		String[] projection = { MediaStore.Audio.Media._ID };
 
 		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
-		Cursor cursor = resolver.query(media, projection, selection, null, null);
+		String sort = MediaStore.Audio.Media.ARTIST_KEY + ',' + MediaStore.Audio.Media.ALBUM_KEY + ',' + MediaStore.Audio.Media.TRACK;
+		Cursor cursor = resolver.query(media, projection, selection, null, sort);
 
 		if (cursor == null)
 			return null;
