@@ -771,10 +771,14 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 	private void setupReceiver()
 	{
-		if (mReceiver == null)
+		if (mReceiver == null) {
 			mReceiver = new Receiver();
-		else
-			unregisterReceiver(mReceiver);
+		} else {
+			try {
+				unregisterReceiver(mReceiver);
+			} catch (IllegalArgumentException e) {
+			}
+		}
 
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Intent.ACTION_HEADSET_PLUG);
