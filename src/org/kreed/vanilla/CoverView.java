@@ -170,7 +170,7 @@ public final class CoverView extends View implements Handler.Callback {
 		paint.setTextSize(textSize);
 
 		String title = song.title == null ? "" : song.title;
-		Bitmap cover = song.coverPath == null ? null : BitmapFactory.decodeFile(song.coverPath);
+		Bitmap cover = song.getCover();
 
 		int titleWidth = (int)paint.measureText(title);
 
@@ -218,7 +218,7 @@ public final class CoverView extends View implements Handler.Callback {
 		String title = song.title == null ? "" : song.title;
 		String album = song.album == null ? "" : song.album;
 		String artist = song.artist == null ? "" : song.artist;
-		Bitmap cover = song.coverPath == null ? null : BitmapFactory.decodeFile(song.coverPath);
+		Bitmap cover = song.getCover();
 
 		int titleSize = TEXT_SIZE_BIG;
 		int subSize = TEXT_SIZE;
@@ -310,7 +310,7 @@ public final class CoverView extends View implements Handler.Callback {
 		String title = song.title == null ? "" : song.title;
 		String album = song.album == null ? "" : song.album;
 		String artist = song.artist == null ? "" : song.artist;
-		Bitmap cover = song.coverPath == null ? null : BitmapFactory.decodeFile(song.coverPath);
+		Bitmap cover = song.getCover();
 
 		int textSize = TEXT_SIZE;
 		int padding = PADDING;

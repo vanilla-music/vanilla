@@ -18,10 +18,18 @@
 
 package org.kreed.vanilla;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Parcel;
+import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 
@@ -38,9 +46,9 @@ public class Song implements Parcelable {
 		};
 
 	public long id;
+	public long albumId;
 
 	public String path;
-	public String coverPath;
 
 	public String title;
 	public String album;
@@ -80,32 +88,21 @@ public class Song implements Parcelable {
 
 		if (cursor != null) {
 			if (cursor.moveToNext())
-				populate(resolver, cursor);
+				populate(cursor);
 			cursor.close();
 		}
 
 		return id != -1;
 	}
 
-	private void populate(ContentResolver resolver, Cursor cursor)
+	private void populate(Cursor cursor)
 	{
 		id = cursor.getLong(0);
 		path = cursor.getString(1);
 		title = cursor.getString(2);
 		album = cursor.getString(3);
 		artist = cursor.getString(4);
-		long albumId = cursor.getLong(5);
-
-		Uri media = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
-		String[] albumProjection = { MediaStore.Audio.Albums.ALBUM_ART };
-		String albumSelection = MediaStore.Audio.Albums._ID + '=' + albumId;
-
-		cursor = resolver.query(media, albumProjection, albumSelection, null, null);
-		if (cursor != null) {
-			if (cursor.moveToNext())
-				coverPath = cursor.getString(0);
-			cursor.close();
-		}
+		albumId = cursor.getLong(5);
 	}
 
 	public static long[] getAllSongIdsWith(int type, long id)
@@ -162,7 +159,7 @@ public class Song implements Parcelable {
 
 		if (cursor != null) {
 			if (cursor.moveToPosition(ContextApplication.getRandom().nextInt(cursor.getCount()))) {
-				populate(resolver, cursor);
+				populate(cursor);
 				flags |= FLAG_RANDOM;
 			}
 			cursor.close();
@@ -192,7 +189,6 @@ public class Song implements Parcelable {
 	{
 		id = in.readLong();
 		path = in.readString();
-		coverPath = in.readString();
 		title = in.readString();
 		album = in.readString();
 		artist = in.readString();
@@ -202,7 +198,6 @@ public class Song implements Parcelable {
 	{
 		out.writeLong(id);
 		out.writeString(path);
-		out.writeString(coverPath);
 		out.writeString(title);
 		out.writeString(album);
 		out.writeString(artist);
@@ -211,5 +206,47 @@ public class Song implements Parcelable {
 	public int describeContents()
 	{
 		return 0;
+	}
+
+	private static final Uri ARTWORK_URI = Uri.parse("content://media/external/audio/albumart");
+	private static final BitmapFactory.Options BITMAP_OPTIONS = new BitmapFactory.Options();
+	
+	static {
+		BITMAP_OPTIONS.inPreferredConfig = Bitmap.Config.RGB_565;
+		BITMAP_OPTIONS.inDither = false;
+	}
+
+	public Bitmap getCover()
+	{
+		if (id == -1)
+			return null;
+
+		Context context = ContextApplication.getContext();
+		ContentResolver res = context.getContentResolver();
+
+		Uri uri;
+		if (albumId < 0)
+			uri = ContentUris.withAppendedId(ARTWORK_URI, albumId);
+		else
+			uri = Uri.parse("content://media/external/audio/media/" + id + "/albumart");
+
+		Bitmap bitmap = null;
+		ParcelFileDescriptor parcel = null;
+
+		try {
+			parcel = res.openFileDescriptor(uri, "r");
+			if (parcel != null)
+				bitmap = BitmapFactory.decodeFileDescriptor(parcel.getFileDescriptor(), null, BITMAP_OPTIONS);
+		} catch (FileNotFoundException ex) {
+		} finally {
+			if (parcel != null) {
+				try {
+					parcel.close();
+				} catch (IOException e) {
+				}
+			}
+		}
+
+		return bitmap;
 	}
 }
