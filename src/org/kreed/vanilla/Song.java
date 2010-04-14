@@ -188,6 +188,7 @@ public class Song implements Parcelable {
 	public Song(Parcel in)
 	{
 		id = in.readLong();
+		albumId = in.readLong();
 		path = in.readString();
 		title = in.readString();
 		album = in.readString();
@@ -197,6 +198,7 @@ public class Song implements Parcelable {
 	public void writeToParcel(Parcel out, int flags)
 	{
 		out.writeLong(id);
+		out.writeLong(albumId);
 		out.writeString(path);
 		out.writeString(title);
 		out.writeString(album);
@@ -225,7 +227,7 @@ public class Song implements Parcelable {
 		ContentResolver res = context.getContentResolver();
 
 		Uri uri;
-		if (albumId < 0)
+		if (albumId < 1)
 			uri = ContentUris.withAppendedId(ARTWORK_URI, albumId);
 		else
 			uri = Uri.parse("content://media/external/audio/media/" + id + "/albumart");
