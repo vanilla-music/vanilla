@@ -56,8 +56,6 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import android.util.Log;
-
 public class SongSelector extends Dialog implements AdapterView.OnItemClickListener, TextWatcher, View.OnClickListener, TabHost.OnTabChangeListener, Filter.FilterListener, Handler.Callback {
 	private static final int MSG_INIT = 0;
 
