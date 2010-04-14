@@ -362,7 +362,7 @@ public final class CoverView extends View implements Handler.Callback {
 		int left;
 
 		if (horizontal) {
-			top = (height - boxHeight) / 2;
+			top = (bitmapHeight - boxHeight) / 2;
 			left = padding + coverWidth;
 		} else {
 			top = padding + coverHeight;
