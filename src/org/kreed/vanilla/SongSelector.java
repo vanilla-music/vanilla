@@ -172,6 +172,9 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 			else
 				dismiss();
 			return true;
+		case KeyEvent.KEYCODE_SEARCH:
+			dismiss();
+			return true;
 		default:
 			if (super.onKeyDown(keyCode, event))
 				return true;
