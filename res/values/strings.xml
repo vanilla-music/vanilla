@@ -40,7 +40,7 @@
 	<string name="volume_title">Volume</string>
 	<string name="volume_summary">Music volume</string>
 	<string name="media_button_title">Use Headset Controls</string>
-	<string name="media_button_summary">Use the button on the headset. Single click for play/pause. Double click for next.</string>
+	<string name="media_button_summary">Single click for play/pause. Double click for next.</string>
 	<string name="headset_only_title">External Output Only</string>
 	<string name="headset_only_summary">Only play music through an external output (e.g. headphones, Bluetooth)</string>
 	<string name="headset_pause_title">Pause When Unplugged</string>
@@ -48,7 +48,7 @@
 
 	<string name="pref_notifications">Notifications</string>
 	<string name="mini_player_title">Use Mini Player</string>
-	<string name="mini_player_summary">Open a mini player pop-up instead of the full player activity when the notification is clicked</string>
+	<string name="mini_player_summary">Launch a pop-up music control dialog when the notification is pressed</string>
 	<string name="notification_mode_title">Notification Mode</string>
 	<string name="notification_mode_summary">When to show the notification</string>
 
@@ -64,5 +64,5 @@
 
 	<string name="pref_misc">Miscellaneous Features</string>
 	<string name="scrobble_title">Use ScrobbleDroid API</string>
-	<string name="scrobble_summary">Send song info to Last.FM scrobblers such as ScrobbleDroid and Simple Last.FM Scrobbler</string>
+	<string name="scrobble_summary">Scrobble to Last.FM through ScrobbleDroid or Simple Last.FM Scrobbler</string>
 </resources>
