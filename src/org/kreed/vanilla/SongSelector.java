@@ -69,6 +69,7 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 	private ControlButton mPlayPauseButton;
 	private ViewGroup mLimiterViews;
 
+	private boolean mOnStartUp;
 	private int mDefaultAction;
 	private boolean mDefaultIsLastAction;
 
@@ -134,6 +135,8 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 			int inputType = settings.getBoolean("filter_suggestions", false) ? InputType.TYPE_CLASS_TEXT : InputType.TYPE_TEXT_VARIATION_FILTER;
 			mTextFilter.setInputType(inputType);
 
+			mOnStartUp = settings.getBoolean("selector_on_startup", false);
+
 			boolean status = settings.getBoolean("selector_status", false);
 			if (status && mStatus == null) {
 				mStatus = findViewById(R.id.status);
@@ -162,11 +165,20 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event)
 	{
-		if (super.onKeyDown(keyCode, event))
+		switch (keyCode) {
+		case KeyEvent.KEYCODE_BACK:
+			if (mOnStartUp)
+				getOwnerActivity().finish();
+			else
+				dismiss();
 			return true;
+		default:
+			if (super.onKeyDown(keyCode, event))
+				return true;
 
-		mTextFilter.requestFocus();
-		return mTextFilter.onKeyDown(keyCode, event);
+			mTextFilter.requestFocus();
+			return mTextFilter.onKeyDown(keyCode, event);
+		}
 	}
 
 	private void sendSongIntent(MediaAdapter.MediaView view, int action)
