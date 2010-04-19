@@ -237,6 +237,19 @@ public class Song implements Parcelable {
 			parcel = res.openFileDescriptor(uri, "r");
 			if (parcel != null)
 				bitmap = BitmapFactory.decodeFileDescriptor(parcel.getFileDescriptor(), null, BITMAP_OPTIONS);
+		} catch (IllegalStateException e) {
+			// The query failed, probably due to the lack of this content provider
+			// in Android 1.5; fall back to (delayed) MediaStore cache
+			Uri media = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
+			String[] albumProjection = { MediaStore.Audio.Albums.ALBUM_ART };
+			String albumSelection = MediaStore.Audio.Albums._ID + '=' + albumId;
+
+			Cursor cursor = res.query(media, albumProjection, albumSelection, null, null);
+			if (cursor != null) {
+				if (cursor.moveToNext())
+					bitmap = BitmapFactory.decodeFile(cursor.getString(0), BITMAP_OPTIONS);
+				cursor.close();
+			}
 		} catch (FileNotFoundException ex) {
 		} finally {
 			if (parcel != null) {
