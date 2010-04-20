@@ -42,7 +42,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class FullPlaybackActivity extends PlaybackActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, View.OnFocusChangeListener, Handler.Callback, CoverView.Callback {
+public class FullPlaybackActivity extends PlaybackActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, Handler.Callback, CoverView.Callback {
 	private IPlaybackService mService;
 	private Handler mHandler = new Handler(this);
 
@@ -89,19 +89,15 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 
 		View previousButton = findViewById(R.id.previous);
 		previousButton.setOnClickListener(this);
-		previousButton.setOnFocusChangeListener(this);
 		mPlayPauseButton = (ImageView)findViewById(R.id.play_pause);
 		mPlayPauseButton.setOnClickListener(this);
-		mPlayPauseButton.setOnFocusChangeListener(this);
 		View nextButton = findViewById(R.id.next);
 		nextButton.setOnClickListener(this);
-		nextButton.setOnFocusChangeListener(this);
 
 		mSeekText = (TextView)findViewById(R.id.seek_text);
 		mSeekBar = (SeekBar)findViewById(R.id.seek_bar);
 		mSeekBar.setMax(1000);
 		mSeekBar.setOnSeekBarChangeListener(this);
-		mSeekBar.setOnFocusChangeListener(this);
 	}
 
 	@Override
@@ -138,14 +134,10 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 			mMessageOverlay.addView(text);
 		}
 
-		if ((mState & PlaybackService.FLAG_PLAYING) != 0) {
-			if (!mHandler.hasMessages(HIDE))
-				mControlsBottom.setVisibility(View.GONE);
+		if ((mState & PlaybackService.FLAG_PLAYING) != 0)
 			mPlayPauseButton.setImageResource(R.drawable.pause);
-		} else {
-			mControlsBottom.setVisibility(View.VISIBLE);
+		else
 			mPlayPauseButton.setImageResource(R.drawable.play);
-		}
 	}
 
 	@Override
@@ -310,21 +302,12 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 		mHandler.sendEmptyMessageDelayed(UPDATE_PROGRESS, next);
 	}
 	
-	private void sendHideMessage()
-	{
-		mHandler.removeMessages(HIDE);
-		mHandler.sendEmptyMessageDelayed(HIDE, 3000);
-	}
-
 	public void onClick(View view)
 	{
-		sendHideMessage();
-
 		if (view == mCoverView) {
 			if (mControlsTop.getVisibility() == View.VISIBLE) {
 				mControlsTop.setVisibility(View.GONE);
-				if ((mState & PlaybackService.FLAG_PLAYING) != 0)
-					mControlsBottom.setVisibility(View.GONE);
+				mControlsBottom.setVisibility(View.GONE);
 			} else {
 				mControlsTop.setVisibility(View.VISIBLE);
 				mControlsBottom.setVisibility(View.VISIBLE);
@@ -338,7 +321,6 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 		}
 	}
 
-	private static final int HIDE = 0;
 	private static final int UPDATE_PROGRESS = 1;
 	private static final int SAVE_DISPLAY_MODE = 2;
 	private static final int TOGGLE_FLAG = 3;
@@ -346,11 +328,6 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 	public boolean handleMessage(Message message)
 	{
 		switch (message.what) {
-		case HIDE:
-			mControlsTop.setVisibility(View.GONE);
-			if ((mState & PlaybackService.FLAG_PLAYING) != 0)
-				mControlsBottom.setVisibility(View.GONE);
-			break;
 		case UPDATE_PROGRESS:
 			updateProgress();
 			break;
@@ -398,20 +375,12 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 
 	public void onStartTrackingTouch(SeekBar seekBar)
 	{
-		mHandler.removeMessages(HIDE);
 		mSeekBarTracking = true;
 	}
 
 	public void onStopTrackingTouch(SeekBar seekBar)
 	{
-		sendHideMessage();
 		mSeekBarTracking = false;
-	}
-
-	public void onFocusChange(View v, boolean hasFocus)
-	{
-		if (hasFocus)
-			sendHideMessage();
 	}
 
 	public void songChanged(Song song)
