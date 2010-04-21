@@ -165,7 +165,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				if (delta == 10)
 					handleMediaKey((KeyEvent)intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT));
 				else
-					go(delta, intent.getBooleanExtra("double", false), false);
+					go(delta, false);
 			}
 		}
 
@@ -640,7 +640,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		PlaybackServiceState.saveState(this, mSongTimeline, mTimelinePos, savePosition && mMediaPlayer != null ? mMediaPlayer.getCurrentPosition() : 0, mState & (FLAG_REPEAT + FLAG_SHUFFLE), mRepeatStart);
 	}
 
-	private void go(int delta, boolean doubleLaunchesActivity, boolean autoPlay)
+	private void go(int delta, boolean autoPlay)
 	{
 		if (autoPlay) {
 			synchronized (mStateLock) {
@@ -648,17 +648,13 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			}
 		}
 
-		// check for double click
-		if (doubleLaunchesActivity && mHandler.hasMessages(GO)) {
-			mHandler.removeMessages(GO);
-			startActivity(new Intent(this, FullPlaybackActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-		} else if (!doubleLaunchesActivity && mLoaded) {
+		if (mLoaded) {
 			if (delta == 0)
 				toggleFlag(FLAG_PLAYING);
 			else
 				setCurrentSong(delta);
 		} else {
-			mHandler.sendMessageDelayed(mHandler.obtainMessage(GO, delta, 0), DOUBLE_CLICK_DELAY);
+			mHandler.sendMessage(mHandler.obtainMessage(GO, delta, 0));
 		}
 	}
 
@@ -686,7 +682,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				if (action == KeyEvent.ACTION_DOWN) {
 					mHandler.removeMessages(MEDIA_BUTTON);
 					mIgnoreNextUp = true;
-					go(1, false, true);
+					go(1, true);
 				}
 			} else {
 				// single press
@@ -696,11 +692,11 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			break;
 		case KeyEvent.KEYCODE_MEDIA_NEXT:
 			if (action == KeyEvent.ACTION_DOWN)
-				go(1, false, true);
+				go(1, true);
 			break;
 		case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
 			if (action == KeyEvent.ACTION_DOWN)
-				go(-1, false, true);
+				go(-1, true);
 			break;
 		default:
 			return false;
