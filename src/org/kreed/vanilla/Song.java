@@ -19,7 +19,6 @@
 package org.kreed.vanilla;
 
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -213,7 +212,6 @@ public class Song implements Parcelable {
 		return 0;
 	}
 
-	private static final Uri ARTWORK_URI = Uri.parse("content://media/external/audio/albumart");
 	private static final BitmapFactory.Options BITMAP_OPTIONS = new BitmapFactory.Options();
 
 	static {
@@ -231,18 +229,12 @@ public class Song implements Parcelable {
 
 		Bitmap cover;
 
-		// If we have a valid album, try to get the album art from the media store cache
-		if (0 <= albumId) {
-			cover = getCoverFromMediaStoreCache(res);
+		// Query the MediaStore content provider first
+		cover = getCoverFromMediaFile(res);
 
-			if (cover == null) {
-				// Perhaps it hasn't been loaded yet, try to extract it directly from the file
-				cover = getCoverFromMediaFile(res);
-			}
-		} else {
-			// The android API doesn't allow files without albums to have their album art cached, so get the cover directly from the media file
-			cover = getCoverFromMediaFile(res);
-		}
+		// If that fails, try using MediaScanner directly
+		if (cover == null)
+			cover = getCoverFromMediaUsingMediaScanner(res);
 
 		// Load cover data from an alternate source here!
 
@@ -262,30 +254,14 @@ public class Song implements Parcelable {
 		Bitmap cover = null;
 
 		try {
-			Uri uri;
-
-			if (albumId < 1) {
-				uri = Uri.parse("content://media/external/audio/media/" + id + "/albumart");
-			} else {
-				uri = ContentUris.withAppendedId(ARTWORK_URI, albumId);
-			}
-
+			Uri uri = Uri.parse("content://media/external/audio/media/" + id + "/albumart");
 			ParcelFileDescriptor parcelFileDescriptor = resolver.openFileDescriptor(uri, "r");
 			if (parcelFileDescriptor != null) {
 				FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
 				cover = BitmapFactory.decodeFileDescriptor(fileDescriptor);
 			}
-
-			// If we couldn't get the cover, try loading it directly using the MediaScanner private API
-			if (cover == null) {
-				cover = getCoverFromMediaUsingMediaScanner(resolver);
-			}
 		} catch (IllegalStateException e) {
-			// Apparently we're on 1.5 and the Eclair way of doing things is unsupported, so use another undocumented API to do it
-			cover = getCoverFromMediaUsingMediaScanner(resolver);
 		} catch (FileNotFoundException e) {
-			// Couldn't fetch the cover, try fetching it using the private MediaScanner API
-			cover = getCoverFromMediaUsingMediaScanner(resolver);
 		}
 
 		return cover;
@@ -327,27 +303,5 @@ public class Song implements Parcelable {
 		}
 
 		return cover;
-	}
-
-	/**
-	 * Get the cover from the media store cache(this is the official way of doing things)
-	 *
-	 * @param resolver An instance of the content resolver for this app
-	 * @return The cover or null if there is no cover or the media scanner hasn't cached the file yet
-	 */
-	private Bitmap getCoverFromMediaStoreCache(ContentResolver resolver)
-	{
-		Uri media = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
-		String[] albumProjection = {MediaStore.Audio.Albums.ALBUM_ART};
-		String albumSelection = MediaStore.Audio.Albums._ID + '=' + albumId;
-
-		Cursor cursor = resolver.query(media, albumProjection, albumSelection, null, null);
-		if (cursor != null) {
-			if (cursor.moveToNext())
-				return BitmapFactory.decodeFile(cursor.getString(0), BITMAP_OPTIONS);
-			cursor.close();
-		}
-
-		return null;
 	}
 }
