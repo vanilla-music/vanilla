@@ -18,9 +18,6 @@
 
 package org.kreed.vanilla;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
@@ -32,6 +29,12 @@ import android.os.Parcel;
 import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
 import android.provider.MediaStore;
+
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 
 public class Song implements Parcelable {
 	public static final int FLAG_RANDOM = 0x1;
@@ -212,7 +215,7 @@ public class Song implements Parcelable {
 
 	private static final Uri ARTWORK_URI = Uri.parse("content://media/external/audio/albumart");
 	private static final BitmapFactory.Options BITMAP_OPTIONS = new BitmapFactory.Options();
-	
+
 	static {
 		BITMAP_OPTIONS.inPreferredConfig = Bitmap.Config.RGB_565;
 		BITMAP_OPTIONS.inDither = false;
@@ -226,42 +229,125 @@ public class Song implements Parcelable {
 		Context context = ContextApplication.getContext();
 		ContentResolver res = context.getContentResolver();
 
-		Uri uri;
-		if (albumId < 1)
-			uri = ContentUris.withAppendedId(ARTWORK_URI, albumId);
-		else
-			uri = Uri.parse("content://media/external/audio/media/" + id + "/albumart");
+		Bitmap cover;
 
-		Bitmap bitmap = null;
-		ParcelFileDescriptor parcel = null;
+		// If we have a valid album, try to get the album art from the media store cache
+		if (0 <= albumId) {
+			cover = getCoverFromMediaStoreCache(res);
 
-		try {
-			parcel = res.openFileDescriptor(uri, "r");
-			if (parcel != null)
-				bitmap = BitmapFactory.decodeFileDescriptor(parcel.getFileDescriptor(), null, BITMAP_OPTIONS);
-		} catch (IllegalStateException e) {
-			// The query failed, probably due to the lack of this content provider
-			// in Android 1.5; fall back to (delayed) MediaStore cache
-			Uri media = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
-			String[] albumProjection = { MediaStore.Audio.Albums.ALBUM_ART };
-			String albumSelection = MediaStore.Audio.Albums._ID + '=' + albumId;
-
-			Cursor cursor = res.query(media, albumProjection, albumSelection, null, null);
-			if (cursor != null) {
-				if (cursor.moveToNext())
-					bitmap = BitmapFactory.decodeFile(cursor.getString(0), BITMAP_OPTIONS);
-				cursor.close();
+			if (cover == null) {
+				// Perhaps it hasn't been loaded yet, try to extract it directly from the file
+				cover = getCoverFromMediaFile(res);
 			}
-		} catch (FileNotFoundException ex) {
-		} finally {
-			if (parcel != null) {
-				try {
-					parcel.close();
-				} catch (IOException e) {
-				}
-			}
+		} else {
+			// The android API doesn't allow files without albums to have their album art cached, so get the cover directly from the media file
+			cover = getCoverFromMediaFile(res);
 		}
 
-		return bitmap;
+		// Load cover data from an alternate source here!
+
+		return cover;
+	}
+
+	/**
+	 * Attempts to read the album art directly from a media file.
+	 *
+	 * @param resolver An instance of the content resolver for this app
+	 * @return The album art or null if no album art could be found
+	 */
+	private Bitmap getCoverFromMediaFile(ContentResolver resolver)
+	{
+		// Use undocumented API to extract the cover from the media file from Eclair
+		// See http://android.git.kernel.org/?p=platform/packages/apps/Music.git;a=blob;f=src/com/android/music/MusicUtils.java;h=d1aea0660009940a0160cb981f381e2115768845;hb=0749a3f1c11e052f97a3ba60fd624c9283ee7331#l986
+		Bitmap cover = null;
+
+		try {
+			Uri uri;
+
+			if (albumId < 1) {
+				uri = Uri.parse("content://media/external/audio/media/" + id + "/albumart");
+			} else {
+				uri = ContentUris.withAppendedId(ARTWORK_URI, albumId);
+			}
+
+			ParcelFileDescriptor parcelFileDescriptor = resolver.openFileDescriptor(uri, "r");
+			if (parcelFileDescriptor != null) {
+				FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+				cover = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+			}
+
+			// If we couldn't get the cover, try loading it directly using the MediaScanner private API
+			if (cover == null) {
+				cover = getCoverFromMediaUsingMediaScanner(resolver);
+			}
+		} catch (IllegalStateException e) {
+			// Apparently we're on 1.5 and the Eclair way of doing things is unsupported, so use another undocumented API to do it
+			cover = getCoverFromMediaUsingMediaScanner(resolver);
+		} catch (FileNotFoundException e) {
+			// Couldn't fetch the cover, try fetching it using the private MediaScanner API
+			cover = getCoverFromMediaUsingMediaScanner(resolver);
+		}
+
+		return cover;
+	}
+
+	/**
+	 * Obtain the cover from a media file using the private MediaScanner API
+	 *
+	 * @param resolver An instance of the content resolver for this app
+	 * @return The cover or null if there is no cover in the file or the API is unavailable
+	 */
+	private Bitmap getCoverFromMediaUsingMediaScanner(ContentResolver resolver)
+	{
+		Bitmap cover = null;
+
+		// This is a private API, so do everything using reflection
+		// see http://android.git.kernel.org/?p=platform/packages/apps/Music.git;a=blob;f=src/com/android/music/MusicUtils.java;h=ea2079435ca5e2c6834c9f6f02d07fe7621e0fd9;hb=aae2791ffdd8923d99242f2cf453eb66116fd6b6#l1044
+		try {
+			// Attempt to open the media file in read-only mode
+			Uri uri = Uri.fromFile(new File(path));
+			FileDescriptor fileDescriptor = resolver.openFileDescriptor(uri, "r").getFileDescriptor();
+
+			if (fileDescriptor != null) {
+				// Construct a MediaScanner
+				Class mediaScannerClass = Class.forName("android.media.MediaScanner");
+				Constructor mediaScannerConstructor = mediaScannerClass.getDeclaredConstructor(Context.class);
+				Object mediaScanner = mediaScannerConstructor.newInstance(ContextApplication.getContext());
+
+				// Call extractAlbumArt(fileDescriptor)
+				Method method = mediaScannerClass.getDeclaredMethod("extractAlbumArt", FileDescriptor.class);
+				byte[] artBinary = (byte[]) method.invoke(mediaScanner, fileDescriptor);
+
+				// Convert the album art to a bitmap
+				if (artBinary != null)
+					cover = BitmapFactory.decodeByteArray(artBinary, 0, artBinary.length, BITMAP_OPTIONS);
+			}
+		} catch (Exception e) {
+			// Swallow every exception and return an empty cover if we can't do it due to the API not being there anymore
+		}
+
+		return cover;
+	}
+
+	/**
+	 * Get the cover from the media store cache(this is the official way of doing things)
+	 *
+	 * @param resolver An instance of the content resolver for this app
+	 * @return The cover or null if there is no cover or the media scanner hasn't cached the file yet
+	 */
+	private Bitmap getCoverFromMediaStoreCache(ContentResolver resolver)
+	{
+		Uri media = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
+		String[] albumProjection = {MediaStore.Audio.Albums.ALBUM_ART};
+		String albumSelection = MediaStore.Audio.Albums._ID + '=' + albumId;
+
+		Cursor cursor = resolver.query(media, albumProjection, albumSelection, null, null);
+		if (cursor != null) {
+			if (cursor.moveToNext())
+				return BitmapFactory.decodeFile(cursor.getString(0), BITMAP_OPTIONS);
+			cursor.close();
+		}
+
+		return null;
 	}
 }
