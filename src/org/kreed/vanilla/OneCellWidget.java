@@ -39,7 +39,7 @@ public class OneCellWidget extends AppWidgetProvider {
 				song = null;
 		}
 
-		RemoteViews views = createViews(context, song, false, true);
+		RemoteViews views = createViews(context, song, false);
 		manager.updateAppWidget(ids, views);
 	}
 
@@ -51,7 +51,7 @@ public class OneCellWidget extends AppWidgetProvider {
 			boolean playing = (intent.getIntExtra("state", 0) & PlaybackService.FLAG_PLAYING) != 0;
 
 			ComponentName widget = new ComponentName(context, OneCellWidget.class);
-			RemoteViews views = createViews(context, song, playing, false);
+			RemoteViews views = createViews(context, song, playing);
 
 			AppWidgetManager.getInstance(context).updateAppWidget(widget, views);
 		} else {
@@ -59,7 +59,7 @@ public class OneCellWidget extends AppWidgetProvider {
 		}
 	}
 
-	public static RemoteViews createViews(Context context, Song song, boolean playing, boolean fromState)
+	public static RemoteViews createViews(Context context, Song song, boolean playing)
 	{
 		RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.one_cell_widget);
 
@@ -72,8 +72,7 @@ public class OneCellWidget extends AppWidgetProvider {
 		views.setOnClickPendingIntent(R.id.next, PendingIntent.getService(context, 0, next, 0));
 
 		if (song == null) {
-			if (fromState)
-				views.setImageViewResource(R.id.cover_view, R.drawable.icon);
+			views.setImageViewResource(R.id.cover_view, R.drawable.icon);
 		} else {
 			int size = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 72, context.getResources().getDisplayMetrics());
 			views.setImageViewBitmap(R.id.cover_view, CoverView.createMiniBitmap(song, size, size));
