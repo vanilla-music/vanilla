@@ -25,6 +25,7 @@
 	<string name="play">Play</string>
 	<string name="expand">Expand</string>
 	<string name="playback_view">Now Playing</string>
+	<string name="search">Search</string>
 
 	<string name="enqueued">Enqueued %s</string>
 	<string name="playing">Playing %s</string>

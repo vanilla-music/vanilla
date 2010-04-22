@@ -68,6 +68,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 	private static final int MENU_SHUFFLE = 4;
 	private static final int MENU_PLAYBACK = 5;
 	private static final int MENU_REPEAT = 6;
+	public static final int MENU_SEARCH = 7;
 
 	@Override
 	public void onCreate(Bundle icicle)
@@ -177,6 +178,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 	{
 		if (fromDialog) {
 			menu.add(0, MENU_PLAYBACK, 0, R.string.playback_view).setIcon(android.R.drawable.ic_menu_gallery);
+			menu.add(0, MENU_SEARCH, 0, R.string.search).setIcon(android.R.drawable.ic_menu_search);
 		} else {
 			menu.add(0, MENU_LIBRARY, 0, R.string.library).setIcon(android.R.drawable.ic_menu_add);
 			menu.add(0, MENU_DISPLAY, 0, R.string.display_mode).setIcon(android.R.drawable.ic_menu_gallery);

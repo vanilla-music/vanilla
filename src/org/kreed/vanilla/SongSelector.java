@@ -62,11 +62,16 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 	private Handler mHandler = new Handler(this);
 
 	private TabHost mTabHost;
+
+	private View mSearchBox;
+	private boolean mSearchBoxVisible;
 	private TextView mTextFilter;
 	private View mClearButton;
+
 	private View mStatus;
 	private TextView mStatusText;
 	private ControlButton mPlayPauseButton;
+
 	private ViewGroup mLimiterViews;
 
 	private boolean mOnStartUp;
@@ -107,6 +112,8 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 		mTabHost.addTab(mTabHost.newTabSpec("tab_artists").setIndicator(res.getText(R.string.artists), res.getDrawable(R.drawable.tab_artists)).setContent(R.id.artist_list));
 		mTabHost.addTab(mTabHost.newTabSpec("tab_albums").setIndicator(res.getText(R.string.albums), res.getDrawable(R.drawable.tab_albums)).setContent(R.id.album_list));
 		mTabHost.addTab(mTabHost.newTabSpec("tab_songs").setIndicator(res.getText(R.string.songs), res.getDrawable(R.drawable.tab_songs)).setContent(R.id.song_list));
+
+		mSearchBox = findViewById(R.id.search_box);
 
 		mTextFilter = (TextView)findViewById(R.id.filter_text);
 		mTextFilter.addTextChangedListener(this);
@@ -167,21 +174,32 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 	{
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_BACK:
-			if (mOnStartUp)
+			if (mSearchBoxVisible) {
+				mTextFilter.setText("");
+				setSearchBoxVisible(false);
+			} else if (mOnStartUp) {
 				getOwnerActivity().finish();
-			else
+			} else {
 				dismiss();
+			}
 			return true;
 		case KeyEvent.KEYCODE_SEARCH:
-			dismiss();
+			setSearchBoxVisible(!mSearchBoxVisible);
 			return true;
 		default:
 			if (super.onKeyDown(keyCode, event))
 				return true;
 
-			mTextFilter.requestFocus();
-			return mTextFilter.onKeyDown(keyCode, event);
+			if (mTextFilter.onKeyDown(keyCode, event)) {
+				if (!mSearchBoxVisible)
+					setSearchBoxVisible(true);
+				else
+					mTextFilter.requestFocus();
+				return true;
+			}
 		}
+
+		return false;
 	}
 
 	private void sendSongIntent(MediaAdapter.MediaView view, int action)
@@ -283,7 +301,10 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 	{
 		int id = view.getId();
 		if (view == mClearButton) {
-			mTextFilter.setText("");
+			if (mTextFilter.getText().length() == 0)
+				setSearchBoxVisible(false);
+			else
+				mTextFilter.setText("");
 		} else if (id == R.id.play_pause) {
 			try {
 				((FullPlaybackActivity)getOwnerActivity()).mCoverView.go(0);
@@ -369,6 +390,11 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
+		if (item.getItemId() == FullPlaybackActivity.MENU_SEARCH) {
+			setSearchBoxVisible(!mSearchBoxVisible);
+			return true;
+		}
+
 		return ((FullPlaybackActivity)getOwnerActivity()).onOptionsItemSelected(item);
 	}
 
@@ -451,5 +477,13 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 			updateSong((Song)intent.getParcelableExtra("song"));
 			updateState(intent.getIntExtra("state", 0));
 		}
+	}
+
+	private void setSearchBoxVisible(boolean visible)
+	{
+		mSearchBoxVisible = visible;
+		mSearchBox.setVisibility(visible ? View.VISIBLE : View.GONE);
+		if (visible)
+			mSearchBox.requestFocus();
 	}
 }
