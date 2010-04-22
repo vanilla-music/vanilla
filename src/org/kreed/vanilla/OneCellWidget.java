@@ -39,19 +39,20 @@ public class OneCellWidget extends AppWidgetProvider {
 				song = null;
 		}
 
-		RemoteViews views = createViews(context, song, false);
+		RemoteViews views = createViews(context, song, 0);
 		manager.updateAppWidget(ids, views);
 	}
 
 	@Override
 	public void onReceive(Context context, Intent intent)
 	{
-		if (PlaybackService.EVENT_CHANGED.equals(intent.getAction())) {
+		String action = intent.getAction();
+		if (PlaybackService.EVENT_CHANGED.equals(action) || PlaybackService.EVENT_REPLACE_SONG.equals(action)) {
 			Song song = intent.getParcelableExtra("song");
-			boolean playing = (intent.getIntExtra("state", 0) & PlaybackService.FLAG_PLAYING) != 0;
+			int state = intent.getIntExtra("state", -1);
 
 			ComponentName widget = new ComponentName(context, OneCellWidget.class);
-			RemoteViews views = createViews(context, song, playing);
+			RemoteViews views = createViews(context, song, state);
 
 			AppWidgetManager.getInstance(context).updateAppWidget(widget, views);
 		} else {
@@ -59,14 +60,19 @@ public class OneCellWidget extends AppWidgetProvider {
 		}
 	}
 
-	public static RemoteViews createViews(Context context, Song song, boolean playing)
+	public static RemoteViews createViews(Context context, Song song, int state)
 	{
 		RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.one_cell_widget);
 
-		views.setImageViewResource(R.id.play_pause, playing ? R.drawable.hidden_pause : R.drawable.hidden_play);
+		if (state != -1) {
+			boolean playing = (state & PlaybackService.FLAG_PLAYING) != 0;
+			views.setImageViewResource(R.id.play_pause, playing ? R.drawable.hidden_pause : R.drawable.hidden_play);
+		}
+
 		Intent playPause = new Intent(context, PlaybackService.class);
 		playPause.setAction(PlaybackService.TOGGLE_PLAYBACK);
 		views.setOnClickPendingIntent(R.id.play_pause, PendingIntent.getService(context, 0, playPause, 0));
+
 		Intent next = new Intent(context, PlaybackService.class);
 		next.setAction(PlaybackService.NEXT_SONG);
 		views.setOnClickPendingIntent(R.id.next, PendingIntent.getService(context, 0, next, 0));

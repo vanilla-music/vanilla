@@ -26,6 +26,7 @@
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
 				<action android:name="org.kreed.vanilla.event.CHANGED" />
+				<action android:name="org.kreed.vanilla.event.REPLACE_SONG" />
 			</intent-filter>
 			<meta-data
 				android:name="android.appwidget.provider"

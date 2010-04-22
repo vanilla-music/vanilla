@@ -147,16 +147,18 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			String action = intent.getAction();
 			int delta;
 
-			if (TOGGLE_PLAYBACK.equals(action))
+			if (TOGGLE_PLAYBACK.equals(action)) {
 				delta = 0;
-			else if (NEXT_SONG.equals(action))
+			} else if (NEXT_SONG.equals(action)) {
 				delta = 1;
-			else if (PREVIOUS_SONG.equals(action))
+				broadcastReplaceSong(0, getSong(+1));
+			} else if (PREVIOUS_SONG.equals(action)) {
 				delta = -1;
-			else if (Intent.ACTION_MEDIA_BUTTON.equals(action))
+			} else if (Intent.ACTION_MEDIA_BUTTON.equals(action)) {
 				delta = 10;
-			else
+			} else {
 				delta = -10;
+			}
 
 			if (delta != -10) {
 				if (!mLoaded)
