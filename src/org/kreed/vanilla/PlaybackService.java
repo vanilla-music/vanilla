@@ -360,7 +360,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	{
 		state &= ALL_FLAGS;
 
-		if ((state & FLAG_NO_MEDIA) != 0)
+		if ((state & FLAG_NO_MEDIA) != 0 || mHeadsetOnly && isSpeakerOn())
 			state &= ~FLAG_PLAYING;
 
 		Song song = getSong(0);
