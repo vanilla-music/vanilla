@@ -284,7 +284,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 
 	private void updateProgress()
 	{
-		if (mControlsTop.getVisibility() != View.VISIBLE)
+		if (mControlsTop.getVisibility() != View.VISIBLE || (mState & PlaybackService.FLAG_PLAYING) == 0)
 			return;
 
 		int position = 0;
