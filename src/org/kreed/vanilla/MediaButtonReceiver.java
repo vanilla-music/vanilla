@@ -21,23 +21,16 @@ package org.kreed.vanilla;
 import android.content.Context;
 import android.content.Intent;
 import android.content.BroadcastReceiver;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.telephony.TelephonyManager;
 
 public class MediaButtonReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent)
 	{
 		if (Intent.ACTION_MEDIA_BUTTON.equals(intent.getAction())) {
-			SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-			if (settings.getBoolean("media_button", true)) {
-				TelephonyManager telephonyManager = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
-				if (telephonyManager.getCallState() == TelephonyManager.CALL_STATE_IDLE) {
-					intent.setClass(context, PlaybackService.class);
-					context.startService(intent);
-					abortBroadcast();
-				}
+			if (!intent.getBooleanExtra("org.kreed.vanilla.resent", false)) {
+				intent.setClass(context, PlaybackService.class);
+				context.startService(intent);
+				abortBroadcast();
 			}
 		}
 	}

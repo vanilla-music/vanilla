@@ -31,11 +31,13 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.ContentObserver;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -82,6 +84,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	boolean mHeadsetOnly;
 	private boolean mScrobble;
 	private int mNotificationMode;
+	private byte mHeadsetControls = -1;
 
 	private Looper mLooper;
 	private Handler mHandler;
@@ -161,12 +164,22 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			}
 
 			if (delta != -10) {
-				if (!mLoaded)
+				boolean showLoading = !mLoaded;
+
+				if (delta == 10 && !handleMediaKey((KeyEvent)intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT))) {
+					// We aborted this broadcast in MediaButtonReceiver.
+					// Since we did not handle it, we should pass it on
+					// to others.
+					intent.setComponent(null);
+					intent.putExtra("org.kreed.vanilla.resent", true);
+					sendOrderedBroadcast(intent, null);
+					showLoading = false;
+				}
+
+				if (showLoading)
 					Toast.makeText(this, R.string.starting, Toast.LENGTH_SHORT).show();
-	
-				if (delta == 10)
-					handleMediaKey((KeyEvent)intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT));
-				else
+
+				if (delta != 10)
 					go(delta, false);
 			}
 		}
@@ -195,6 +208,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		} catch (IllegalArgumentException e) {
 			// we haven't registered the receiver yet
 		}
+
+		// Renable the external receiver
+		PackageManager manager = getPackageManager();
+		manager.setComponentEnabledSetting(new ComponentName(this, MediaButtonReceiver.class), PackageManager.COMPONENT_ENABLED_STATE_DEFAULT, PackageManager.DONT_KILL_APP);
 
 		if (mWakeLock != null && mWakeLock.isHeld())
 			mWakeLock.release();
@@ -260,9 +277,9 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			}
 		}
 
-		mSettings = PreferenceManager.getDefaultSharedPreferences(this);
+		if (mSettings == null)
+			mSettings = PreferenceManager.getDefaultSharedPreferences(this);
 		mSettings.registerOnSharedPreferenceChangeListener(this);
-		mHeadsetPause = mSettings.getBoolean("headset_pause", true);
 		mHeadsetOnly = mSettings.getBoolean("headset_only", false);
 		mNotificationMode = Integer.parseInt(mSettings.getString("notification_mode", "1"));
 		mScrobble = mSettings.getBoolean("scrobble", false);
@@ -307,6 +324,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				}
 			}
 		} else if ("media_button".equals(key)) {
+			mHeadsetControls = (byte)(mSettings.getBoolean("media_button", true) ? 1 : 0);
 			setupReceiver();
 		}
 	}
@@ -659,9 +677,22 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		}
 	}
 
+	/**
+	 * Return whether headset controls should be used, loading the preference
+	 * if necessary.
+	 */
+	private boolean useHeadsetControls()
+	{
+		if (mSettings == null)
+			mSettings = PreferenceManager.getDefaultSharedPreferences(this);
+		if (mHeadsetControls == -1)
+			mHeadsetControls = (byte)(mSettings.getBoolean("media_button", true) ? 1 : 0);
+		return mHeadsetControls == 1;
+	}
+
 	boolean handleMediaKey(KeyEvent event)
 	{
-		if (mInCall)
+		if (mInCall || !useHeadsetControls())
 			return false;
 
 		int action = event.getAction();
@@ -778,7 +809,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Intent.ACTION_HEADSET_PLUG);
-		if (mSettings.getBoolean("media_button", true))
+		if (useHeadsetControls())
 			filter.addAction(Intent.ACTION_MEDIA_BUTTON);
 		filter.setPriority(2000);
 		registerReceiver(mReceiver, filter);
@@ -845,7 +876,13 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			initialize();
 			break;
 		case POST_CREATE:
+			mHeadsetPause = mSettings.getBoolean("headset_pause", true);
 			setupReceiver();
+
+			// Don't receive broadcasts through the external receiver now that
+			// we get them in the Service's receiver
+			PackageManager manager = getPackageManager();
+			manager.setComponentEnabledSetting(new ComponentName(this, MediaButtonReceiver.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
 
 			mCallListener = new InCallListener();
 			TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
