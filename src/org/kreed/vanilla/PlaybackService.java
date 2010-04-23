@@ -715,7 +715,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			if (Intent.ACTION_HEADSET_PLUG.equals(action)) {
 				boolean oldPlugged = mPlugged;
 				mPlugged = intent.getIntExtra("state", 0) != 0;
-				if (mPlugged != oldPlugged && (mHeadsetPause && !mPlugged || mHeadsetOnly && !isSpeakerOn()))
+				if (mPlugged != oldPlugged && mHeadsetPause && !mPlugged || mHeadsetOnly && isSpeakerOn())
 					unsetFlag(FLAG_PLAYING);
 			} else if (Intent.ACTION_MEDIA_BUTTON.equals(action)) {
 				KeyEvent event = intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
