@@ -183,7 +183,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			saveState(true);
 
 		if (mMediaPlayer != null) {
-			mSongTimeline = null;
 			unsetFlag(FLAG_PLAYING);
 			mMediaPlayer.release();
 			mMediaPlayer = null;
