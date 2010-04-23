@@ -363,7 +363,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				intent = new Intent("net.jjc1138.android.scrobbler.action.MUSIC_STATUS");
 				intent.putExtra("playing", (state & FLAG_PLAYING) != 0);
 				if (song != null)
-					intent.putExtra("id", song.id);
+					intent.putExtra("id", (int)song.id);
 				sendBroadcast(intent);
 			}
 
