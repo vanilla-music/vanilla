@@ -58,6 +58,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 	int mState;
 	private int mDuration;
 	private boolean mSeekBarTracking;
+	private boolean mPaused;
 
 	private static final int SONG_SELECTOR = 8;
 
@@ -99,6 +100,21 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 		mSeekBar = (SeekBar)findViewById(R.id.seek_bar);
 		mSeekBar.setMax(1000);
 		mSeekBar.setOnSeekBarChangeListener(this);
+	}
+
+	@Override
+	public void onResume()
+	{
+		super.onResume();
+		mPaused = false;
+		updateProgress();
+	}
+
+	@Override
+	public void onPause()
+	{
+		super.onPause();
+		mPaused = true;
 	}
 
 	@Override
@@ -284,7 +300,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 
 	private void updateProgress()
 	{
-		if (mControlsTop.getVisibility() != View.VISIBLE || (mState & PlaybackService.FLAG_PLAYING) == 0)
+		if (mPaused || mControlsTop.getVisibility() != View.VISIBLE || (mState & PlaybackService.FLAG_PLAYING) == 0)
 			return;
 
 		int position = 0;
