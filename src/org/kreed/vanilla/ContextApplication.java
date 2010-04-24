@@ -44,6 +44,9 @@ public class ContextApplication extends Application {
 		mInstance = this;
 	}
 
+	/**
+	 * Returns a shared, application-wide Random instance.
+	 */
 	public static Random getRandom()
 	{
 		if (mRandom == null)
@@ -51,11 +54,19 @@ public class ContextApplication extends Application {
 		return mRandom;
 	}
 
+	/**
+	 * Provides an easy to access Context instance.
+	 */
 	public static Context getContext()
 	{
 		return mInstance;
 	}
 
+	/**
+	 * Add an Activity to the list of Activities.
+	 *
+	 * @param activity The Activity to be added
+	 */
 	public static void addActivity(Activity activity)
 	{
 		if (mActivities == null)
@@ -63,6 +74,11 @@ public class ContextApplication extends Application {
 		mActivities.add(activity);
 	}
 
+	/**
+	 * Remove an Activity from the list of Activities.
+	 *
+	 * @param activity The Activity to be removed
+	 */
 	public static void removeActivity(Activity activity)
 	{
 		if (mActivities != null)
@@ -88,6 +104,10 @@ public class ContextApplication extends Application {
 		}
 	}
 
+	/**
+	 * Stop the PlaybackService, if running, and close all Activities that
+	 * have been added with <code>addActivity</code>.
+	 */
 	public static void quit()
 	{
 		if (mActivities != null) {
