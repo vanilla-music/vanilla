@@ -35,10 +35,17 @@ import java.io.FileNotFoundException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
+/**
+ * Represents a Song backed by the MediaStore. Includes basic metadata and
+ * utilities to retrieve songs from the MediaStore.
+ */
 public class Song implements Parcelable {
+	/**
+	 * Indicates that this song was randomly selected from all songs.
+	 */
 	public static final int FLAG_RANDOM = 0x1;
 
-	public static final String[] FILLED_PROJECTION = {
+	private static final String[] FILLED_PROJECTION = {
 		MediaStore.Audio.Media._ID,
 		MediaStore.Audio.Media.DATA,
 		MediaStore.Audio.Media.TITLE,
@@ -47,33 +54,87 @@ public class Song implements Parcelable {
 		MediaStore.Audio.Media.ALBUM_ID
 		};
 
+	/**
+	 * Id of this song in the MediaStore
+	 */
 	public long id;
+	/**
+	 * Id of this song's album in the MediaStore
+	 */
 	public long albumId;
 
+	/**
+	 * Path to the data for this song
+	 */
 	public String path;
 
+	/**
+	 * Song title
+	 */
 	public String title;
+	/**
+	 * Album name
+	 */
 	public String album;
+	/**
+	 * Artist name
+	 */
 	public String artist;
 
+	/**
+	 * Song flags. Currently FLAG_RANDOM or 0.
+	 */
 	public int flags;
 
+	/**
+	 * Initialize the song with a randomly selected id. Call populate to fill
+	 * fields in the song.
+	 */
 	public Song()
 	{
 		randomize();
 	}
 
+	/**
+	 * Initialize the song with the specified id. Call populate to fill fields
+	 * in the song.
+	 */
 	public Song(long id)
 	{
 		this.id = id;
 	}
 
+	/**
+	 * Initialize the song with the specified id and flags. Call populate to
+	 * fill fields in the song.
+	 */
 	public Song(long id, int flags)
 	{
 		this.id = id;
 		this.flags = flags;
 	}
 
+	/**
+	 * Populate fields with data from the supplied cursor.
+	 *
+	 * @param cursor Cursor queried with FILLED_PROJECTION projection
+	 */
+	private void populate(Cursor cursor)
+	{
+		id = cursor.getLong(0);
+		path = cursor.getString(1);
+		title = cursor.getString(2);
+		album = cursor.getString(3);
+		artist = cursor.getString(4);
+		albumId = cursor.getLong(5);
+	}
+
+	/**
+	 * Query the MediaStore, if necessary, to fill this Song's fields.
+	 *
+	 * @param force Query even if fields have already been populated
+	 * @return true if fields have been populated, false otherwise
+	 */
 	public boolean populate(boolean force)
 	{
 		if (path != null && !force)
@@ -97,16 +158,34 @@ public class Song implements Parcelable {
 		return id != -1;
 	}
 
-	private void populate(Cursor cursor)
+	/**
+	 * Fill the fields with data from a random Song in the MediaStore
+	 */
+	public void randomize()
 	{
-		id = cursor.getLong(0);
-		path = cursor.getString(1);
-		title = cursor.getString(2);
-		album = cursor.getString(3);
-		artist = cursor.getString(4);
-		albumId = cursor.getLong(5);
+		id = -1;
+
+		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
+		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+		String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
+		Cursor cursor = resolver.query(media, FILLED_PROJECTION, selection, null, null);
+
+		if (cursor != null) {
+			if (cursor.moveToPosition(ContextApplication.getRandom().nextInt(cursor.getCount()))) {
+				populate(cursor);
+				flags |= FLAG_RANDOM;
+			}
+			cursor.close();
+		}
 	}
 
+	/**
+	 * Return an array containing all the song ids that match the specified parameters
+	 *
+	 * @param type Type the id represent. May be 1, 2 or 3, meaning artist,
+	 * album or song, respectively.
+	 * @param id Id of the element
+	 */
 	public static long[] getAllSongIdsWith(int type, long id)
 	{
 		if (type == 3)
@@ -148,24 +227,6 @@ public class Song implements Parcelable {
 
 		cursor.close();
 		return songs;
-	}
-
-	public void randomize()
-	{
-		id = -1;
-
-		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
-		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-		String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
-		Cursor cursor = resolver.query(media, FILLED_PROJECTION, selection, null, null);
-
-		if (cursor != null) {
-			if (cursor.moveToPosition(ContextApplication.getRandom().nextInt(cursor.getCount()))) {
-				populate(cursor);
-				flags |= FLAG_RANDOM;
-			}
-			cursor.close();
-		}
 	}
 
 	public boolean equals(Song other)
@@ -219,6 +280,11 @@ public class Song implements Parcelable {
 		BITMAP_OPTIONS.inDither = false;
 	}
 
+	/**
+	 * Query the album art for this song.
+	 *
+	 * @return The album art or null if no album art could be found
+	 */
 	public Bitmap getCover()
 	{
 		if (id == -1)
@@ -242,7 +308,8 @@ public class Song implements Parcelable {
 	}
 
 	/**
-	 * Attempts to read the album art directly from a media file.
+	 * Attempts to read the album art directly from a media file using the
+	 * media ContentProvider.
 	 *
 	 * @param resolver An instance of the content resolver for this app
 	 * @return The album art or null if no album art could be found
