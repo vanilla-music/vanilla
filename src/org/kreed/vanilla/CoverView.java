@@ -479,11 +479,11 @@ public final class CoverView extends View {
 			mLastMotionX = x;
 
 			if (deltaX < 0) {
-				int availableToScroll = scrollX - (mBitmaps[0] == null || mTimelinePos == 0 ? width : 0);
+				int availableToScroll = scrollX - (mTimelinePos == 0 ? width : 0);
 				if (availableToScroll > 0)
 					scrollBy(Math.max(-availableToScroll, deltaX), 0);
 			} else if (deltaX > 0) {
-				int availableToScroll = getWidth() * (mBitmaps[0] == null ? 1 : 2) - scrollX;
+				int availableToScroll = getWidth() * 2 - scrollX;
 				if (availableToScroll > 0)
 					scrollBy(Math.min(availableToScroll, deltaX), 0);
 			}
