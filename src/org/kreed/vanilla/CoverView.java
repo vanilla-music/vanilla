@@ -496,8 +496,8 @@ public final class CoverView extends View {
 				velocityTracker.computeCurrentVelocity(250);
 				int velocity = (int) velocityTracker.getXVelocity();
 
-				int min = mBitmaps[0] == null || mTimelinePos == 0 ? 1 : 0;
-				int max = mBitmaps[2] == null ? 1 : 2;
+				int min = mTimelinePos == 0 ? 1 : 0;
+				int max = 2;
 				int nearestCover = (scrollX + width / 2) / width;
 				int whichCover = Math.max(min, Math.min(nearestCover, max));
 
