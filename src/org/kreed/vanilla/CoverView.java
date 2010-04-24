@@ -137,11 +137,15 @@ public final class CoverView extends View implements Handler.Callback {
 	public void setPlaybackService(IPlaybackService service)
 	{
 		mService = service;
-		try {
-			mTimelinePos = mService.getTimelinePos();
-		} catch (RemoteException e) {
-			mService = null;
+
+		if (mService != null) {
+			try {
+				mTimelinePos = mService.getTimelinePos();
+			} catch (RemoteException e) {
+				mService = null;
+			}
 		}
+
 		refreshSongs();
 	}
 
@@ -428,7 +432,6 @@ public final class CoverView extends View implements Handler.Callback {
 		if (mCallback != null)
 			mCallback.songChanged(mSongs[STORE_SIZE / 2]);
 
-		mHandler.sendMessage(mHandler.obtainMessage(SET_SONG, delta, 0));
 		mHandler.sendEmptyMessage(i);
 	}
 
@@ -563,6 +566,7 @@ public final class CoverView extends View implements Handler.Callback {
 		return true;
 	}
 
+	@Override
 	public void computeScroll()
 	{
 		if (mScroller.computeScrollOffset()) {
@@ -575,20 +579,13 @@ public final class CoverView extends View implements Handler.Callback {
 	}
 
 	private static final int GO = 10;
-	private static final int SET_SONG = 11;
 
 	public boolean handleMessage(Message message)
 	{
 		try {
 			switch (message.what) {
 			case GO:
-				if (message.arg1 == 0)
-					mService.toggleFlag(PlaybackService.FLAG_PLAYING);
-				else
-					shiftCover(message.arg1);
-				break;
-			case SET_SONG:
-				mService.setCurrentSong(message.arg1);
+				shiftCover(message.arg1);
 				break;
 			default:
 				int i = message.what;

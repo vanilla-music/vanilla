@@ -20,9 +20,7 @@ package org.kreed.vanilla;
 
 import org.kreed.vanilla.R;
 
-import android.app.Dialog;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -31,9 +29,7 @@ import android.graphics.Color;
 import android.graphics.drawable.PaintDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
-import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.text.Editable;
@@ -47,7 +43,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Filter;
 import android.widget.LinearLayout;
@@ -56,11 +51,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class SongSelector extends Dialog implements AdapterView.OnItemClickListener, TextWatcher, View.OnClickListener, TabHost.OnTabChangeListener, Filter.FilterListener, Handler.Callback {
-	private static final int MSG_INIT = 0;
-
-	private Handler mHandler = new Handler(this);
-
+public class SongSelector extends PlaybackActivity implements AdapterView.OnItemClickListener, TextWatcher, View.OnClickListener, TabHost.OnTabChangeListener, Filter.FilterListener {
 	private TabHost mTabHost;
 
 	private View mSearchBox;
@@ -74,7 +65,6 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 
 	private ViewGroup mLimiterViews;
 
-	private boolean mOnStartUp;
 	private int mDefaultAction;
 	private boolean mDefaultIsLastAction;
 
@@ -91,24 +81,21 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 		ListView view = (ListView)findViewById(id);
 		view.setOnItemClickListener(this);
 		view.setOnCreateContextMenuListener(this);
-		view.setAdapter(new MediaAdapter(getContext(), store, fields, fieldKeys, true));
-	}
-
-	public SongSelector(Context context)
-	{
-		super(context, android.R.style.Theme_NoTitleBar);
+		view.setAdapter(new MediaAdapter(this, store, fields, fieldKeys, true));
 	}
 
 	@Override
 	public void onCreate(Bundle state)
 	{
+		super.onCreate(state);
+
 		setContentView(R.layout.song_selector);
 
 		mTabHost = (TabHost)findViewById(android.R.id.tabhost);
 		mTabHost.setup();
 		mTabHost.setOnTabChangedListener(this);
 
-		Resources res = getContext().getResources();
+		Resources res = getResources();
 		mTabHost.addTab(mTabHost.newTabSpec("tab_artists").setIndicator(res.getText(R.string.artists), res.getDrawable(R.drawable.tab_artists)).setContent(R.id.artist_list));
 		mTabHost.addTab(mTabHost.newTabSpec("tab_albums").setIndicator(res.getText(R.string.albums), res.getDrawable(R.drawable.tab_albums)).setContent(R.id.album_list));
 		mTabHost.addTab(mTabHost.newTabSpec("tab_songs").setIndicator(res.getText(R.string.songs), res.getDrawable(R.drawable.tab_songs)).setContent(R.id.song_list));
@@ -129,44 +116,30 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 	@Override
 	public void onStart()
 	{
-		// reset queue pos
-		Context context = getContext();
-		context.startService(new Intent(context, PlaybackService.class));
-	}
+		super.onStart();
 
-	@Override
-	public void onWindowFocusChanged(boolean hasFocus)
-	{
-		if (hasFocus) {
-			SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
-			int inputType = settings.getBoolean("filter_suggestions", false) ? InputType.TYPE_CLASS_TEXT : InputType.TYPE_TEXT_VARIATION_FILTER;
-			mTextFilter.setInputType(inputType);
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+		int inputType = settings.getBoolean("filter_suggestions", false) ? InputType.TYPE_CLASS_TEXT : InputType.TYPE_TEXT_VARIATION_FILTER;
+		mTextFilter.setInputType(inputType);
 
-			mOnStartUp = settings.getBoolean("selector_on_startup", false);
+		boolean status = settings.getBoolean("selector_status", false);
+		if (status && mStatus == null) {
+			mStatus = findViewById(R.id.status);
+			if (mStatus == null)
+				mStatus = ((ViewStub)findViewById(R.id.status_stub)).inflate();
+			mStatusText = (TextView)mStatus.findViewById(R.id.status_text);
+			mPlayPauseButton = (ControlButton)mStatus.findViewById(R.id.play_pause);
+			ControlButton next = (ControlButton)mStatus.findViewById(R.id.next);
 
-			boolean status = settings.getBoolean("selector_status", false);
-			if (status && mStatus == null) {
-				mStatus = findViewById(R.id.status);
-				if (mStatus == null)
-					mStatus = ((ViewStub)findViewById(R.id.status_stub)).inflate();
-				mStatusText = (TextView)mStatus.findViewById(R.id.status_text);
-				mPlayPauseButton = (ControlButton)mStatus.findViewById(R.id.play_pause);
-				ControlButton next = (ControlButton)mStatus.findViewById(R.id.next);
-
-				mPlayPauseButton.setOnClickListener(this);
-				next.setOnClickListener(this);
-
-				FullPlaybackActivity owner = (FullPlaybackActivity)getOwnerActivity();
-				updateState(owner.mState);
-				updateSong(owner.mCoverView.getCurrentSong());
-			} else if (!status && mStatus != null) {
-				mStatus.setVisibility(View.GONE);
-				mStatus = null;
-			}
-
-			mDefaultAction = Integer.parseInt(settings.getString("default_action_int", "0"));
-			mLastActedId = 0;
+			mPlayPauseButton.setOnClickListener(this);
+			next.setOnClickListener(this);
+		} else if (!status && mStatus != null) {
+			mStatus.setVisibility(View.GONE);
+			mStatus = null;
 		}
+
+		mDefaultAction = Integer.parseInt(settings.getString("default_action_int", "0"));
+		mLastActedId = 0;
 	}
 
 	@Override
@@ -177,10 +150,8 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 			if (mSearchBoxVisible) {
 				mTextFilter.setText("");
 				setSearchBoxVisible(false);
-			} else if (mOnStartUp) {
-				getOwnerActivity().finish();
 			} else {
-				dismiss();
+				finish();
 			}
 			return true;
 		case KeyEvent.KEYCODE_SEARCH:
@@ -205,17 +176,17 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 	private void sendSongIntent(MediaAdapter.MediaView view, int action)
 	{
 		int res = action == PlaybackService.ACTION_PLAY ? R.string.playing : R.string.enqueued;
-		String text = getContext().getResources().getString(res, view.getTitle());
-		Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
+		String text = getResources().getString(res, view.getTitle());
+		Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
 
 		long id = view.getMediaId();
 		int field = view.getFieldCount();
 
-		Intent intent = new Intent(getContext(), PlaybackService.class);
+		Intent intent = new Intent(this, PlaybackService.class);
 		intent.putExtra("type", field);
 		intent.putExtra("action", action);
 		intent.putExtra("id", id);
-		getContext().startService(intent);
+		startService(intent);
 
 		mLastActedId = id;
 	}
@@ -237,7 +208,7 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 		if (mediaView.isExpanderPressed())
 			expand(mediaView);
 		else if (id == mLastActedId)
-			dismiss();
+			finish();
 		else
 			sendSongIntent(mediaView, mDefaultAction);
 	}
@@ -278,7 +249,7 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 			PaintDrawable background = new PaintDrawable(Color.GRAY);
 			background.setCornerRadius(5);
 
-			TextView view = new TextView(getContext());
+			TextView view = new TextView(this);
 			view.setSingleLine();
 			view.setEllipsize(TextUtils.TruncateAt.MARQUEE);
 			view.setText(limiter[i] + " | X");
@@ -297,25 +268,15 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 		updateLimiterViews();
 	}
 
+	@Override
 	public void onClick(View view)
 	{
-		int id = view.getId();
 		if (view == mClearButton) {
 			if (mTextFilter.getText().length() == 0)
 				setSearchBoxVisible(false);
 			else
 				mTextFilter.setText("");
-		} else if (id == R.id.play_pause) {
-			try {
-				((FullPlaybackActivity)getOwnerActivity()).mCoverView.go(0);
-			} catch (RemoteException e) {
-			}
-		} else if (id == R.id.next) {
-			try {
-				((FullPlaybackActivity)getOwnerActivity()).mCoverView.go(1);
-			} catch (RemoteException e) {
-			}
-		} else {
+		} else if (view.getTag() != null) {
 			int i = (Integer)view.getTag();
 			String[] limiter;
 			if (i == 0) {
@@ -333,6 +294,8 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 			}
 
 			updateLimiterViews();
+		} else {
+			super.onClick(view);
 		}
 	}
 
@@ -373,43 +336,27 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 
 		return true;
 	}
-
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-		((FullPlaybackActivity)getOwnerActivity()).fillMenu(menu, true);
-		return true;
-	}
-
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu)
-	{
-		return ((FullPlaybackActivity)getOwnerActivity()).onPrepareOptionsMenu(menu);
+		menu.add(0, MENU_PLAYBACK, 0, R.string.playback_view).setIcon(android.R.drawable.ic_menu_gallery);
+		menu.add(0, MENU_SEARCH, 0, R.string.search).setIcon(android.R.drawable.ic_menu_search);
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
-		if (item.getItemId() == FullPlaybackActivity.MENU_SEARCH) {
+		switch (item.getItemId()) {
+		case MENU_SEARCH:
 			setSearchBoxVisible(!mSearchBoxVisible);
 			return true;
-		}
-
-		return ((FullPlaybackActivity)getOwnerActivity()).onOptionsItemSelected(item);
-	}
-
-	// onContextItemSelected and friends are not called when they should be. Do
-	// so here to work around this bug.
-	@Override
-	public boolean onMenuItemSelected(int featureId, MenuItem item)
-	{
-		switch (featureId) {
-		case Window.FEATURE_CONTEXT_MENU:
-			return onContextItemSelected(item);
-		case Window.FEATURE_OPTIONS_PANEL:
-			return onOptionsItemSelected(item);
+		case MENU_PLAYBACK:
+			startActivity(new Intent(this, FullPlaybackActivity.class));
+			return true;
 		default:
-			return super.onMenuItemSelected(featureId, item);
+			return super.onOptionsItemSelected(item);
 		}
 	}
 
@@ -423,9 +370,12 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 	@Override
 	public boolean onKeyLongPress(int keyCode, KeyEvent event)
 	{
-		return PlaybackActivity.handleKeyLongPress(getContext(), keyCode);
+		return PlaybackActivity.handleKeyLongPress(this, keyCode);
 	}
 
+	private static final int MSG_INIT = 10;
+
+	@Override
 	public boolean handleMessage(Message message)
 	{
 		switch (message.what) {
@@ -436,9 +386,9 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 			ListView view = (ListView)findViewById(R.id.song_list);
 			view.setOnItemClickListener(SongSelector.this);
 			view.setOnCreateContextMenuListener(SongSelector.this);
-			view.setAdapter(new SongMediaAdapter(getContext()));
+			view.setAdapter(new SongMediaAdapter(this));
 
-			ContentResolver resolver = ContextApplication.getContext().getContentResolver();
+			ContentResolver resolver = getContentResolver();
 			resolver.registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, mObserver);
 			break;
 		default:
@@ -457,33 +407,29 @@ public class SongSelector extends Dialog implements AdapterView.OnItemClickListe
 		}
 	};
 
-	public void updateSong(Song song)
-	{
-		if (mStatusText != null)
-			mStatusText.setText(song == null ? getContext().getResources().getText(R.string.none) : song.title);
-	}
-
-	public void updateState(int state)
-	{
-		if (mPlayPauseButton != null) {
-			boolean playing = (state & PlaybackService.FLAG_PLAYING) != 0;
-			mPlayPauseButton.setImageResource(playing ? R.drawable.pause : R.drawable.play);
-		}
-	}
-
-	public void change(Intent intent)
-	{
-		if (PlaybackService.EVENT_CHANGED.equals(intent.getAction())) {
-			updateSong((Song)intent.getParcelableExtra("song"));
-			updateState(intent.getIntExtra("state", 0));
-		}
-	}
-
 	private void setSearchBoxVisible(boolean visible)
 	{
 		mSearchBoxVisible = visible;
 		mSearchBox.setVisibility(visible ? View.VISIBLE : View.GONE);
 		if (visible)
 			mSearchBox.requestFocus();
+	}
+
+	@Override
+	protected void onServiceChange(Intent intent)
+	{
+		if (mStatusText != null) {
+			Song song = intent.getParcelableExtra("song");
+			mStatusText.setText(song == null ? getResources().getText(R.string.none) : song.title);
+		}
+	}
+
+	@Override
+	protected void setState(int state)
+	{
+		if (mPlayPauseButton != null) {
+			boolean playing = (state & PlaybackService.FLAG_PLAYING) != 0;
+			mPlayPauseButton.setImageResource(playing ? R.drawable.pause : R.drawable.play);
+		}
 	}
 }

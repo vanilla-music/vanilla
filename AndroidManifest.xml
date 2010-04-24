@@ -16,6 +16,9 @@
 			</intent-filter>
 		</activity>
 		<activity
+			android:name="SongSelector"
+			android:theme="@android:style/Theme.Black.NoTitleBar" />
+		<activity
 			android:name="MiniPlaybackActivity"
 			android:theme="@android:style/Theme.Dialog"
 			android:excludeFromRecents="true"

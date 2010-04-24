@@ -29,9 +29,11 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
 
+/**
+ * Playback activity that displays itself like a dialog, i.e. as a small window
+ * with a border. Includes a CoverView and control buttons.
+ */
 public class MiniPlaybackActivity extends PlaybackActivity implements View.OnClickListener {
-	private View mOpenButton;
-	private View mKillButton;
 	private ImageView mPlayPauseButton;
 
 	@Override
@@ -44,10 +46,10 @@ public class MiniPlaybackActivity extends PlaybackActivity implements View.OnCli
 
 		mCoverView = (CoverView)findViewById(R.id.cover_view);
 
-		mOpenButton = findViewById(R.id.open_button);
-		mOpenButton.setOnClickListener(this);
-		mKillButton = findViewById(R.id.kill_button);
-		mKillButton.setOnClickListener(this);
+		View openButton = findViewById(R.id.open_button);
+		openButton.setOnClickListener(this);
+		View killButton = findViewById(R.id.kill_button);
+		killButton.setOnClickListener(this);
 		View previousButton = findViewById(R.id.previous);
 		previousButton.setOnClickListener(this);
 		mPlayPauseButton = (ImageView)findViewById(R.id.play_pause);
@@ -65,23 +67,28 @@ public class MiniPlaybackActivity extends PlaybackActivity implements View.OnCli
 		mPlayPauseButton.setImageResource((state & PlaybackService.FLAG_PLAYING) == 0 ? R.drawable.play : R.drawable.pause);
 	}
 
+	@Override
 	public void onClick(View view)
 	{
-		if (view == mKillButton) {
+		switch (view.getId()) {
+		case R.id.kill_button:
 			ContextApplication.quit(this);
-		} else if (view == mOpenButton) {
+			break;
+		case R.id.open_button:
 			startActivity(new Intent(this, FullPlaybackActivity.class));
 			finish();
-		} else {
+			break;
+		default:
 			super.onClick(view);
 		}
 	}
 }
 
-/*
+/**
  * Custom layout that acts like a very simple vertical LinearLayout with
  * special case: CoverViews will be made square at all costs.
- * 
+ */
+/*
  * I would prefer this to be a nested class, but it does not seem like
  * Android's layout inflater supports referencing nested classes in XML.
  */

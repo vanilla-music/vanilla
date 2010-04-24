@@ -21,12 +21,10 @@ package org.kreed.vanilla;
 import org.kreed.vanilla.IPlaybackService;
 import org.kreed.vanilla.R;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
@@ -40,12 +38,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-public class FullPlaybackActivity extends PlaybackActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, Handler.Callback, CoverView.Callback {
-	private IPlaybackService mService;
-	private Handler mHandler = new Handler(this);
-
+public class FullPlaybackActivity extends PlaybackActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, CoverView.Callback {
 	private RelativeLayout mMessageOverlay;
 	private View mControlsTop;
 	private View mControlsBottom;
@@ -60,17 +54,6 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 	private boolean mSeekBarTracking;
 	private boolean mPaused;
 
-	private static final int SONG_SELECTOR = 8;
-
-	private static final int MENU_QUIT = 0;
-	private static final int MENU_DISPLAY = 1;
-	private static final int MENU_PREFS = 2;
-	private static final int MENU_LIBRARY = 3;
-	private static final int MENU_SHUFFLE = 4;
-	private static final int MENU_PLAYBACK = 5;
-	private static final int MENU_REPEAT = 6;
-	public static final int MENU_SEARCH = 7;
-
 	@Override
 	public void onCreate(Bundle icicle)
 	{
@@ -78,7 +61,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
 		if (icicle == null && settings.getBoolean("selector_on_startup", false))
-			showDialog(SONG_SELECTOR);
+			startActivity(new Intent(this, SongSelector.class));
 
 		setContentView(R.layout.full_playback);
 
@@ -162,8 +145,6 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 	{
 		super.setService(service);
 
-		mService = service;
-
 		if (service != null) {
 			try {
 				mDuration = service.getDuration();
@@ -180,94 +161,45 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 		if (mService != null) {
 			try {
 				mDuration = mService.getDuration();
-				mHandler.sendEmptyMessage(UPDATE_PROGRESS);
+				mHandler.sendEmptyMessage(MSG_UPDATE_PROGRESS);
 			} catch (RemoteException e) {
 				setService(null);
 			}
 		}
 
 		if (mSongSelector != null)
-			mSongSelector.change(intent);
-	}
-
-	public void fillMenu(Menu menu, boolean fromDialog)
-	{
-		if (fromDialog) {
-			menu.add(0, MENU_PLAYBACK, 0, R.string.playback_view).setIcon(android.R.drawable.ic_menu_gallery);
-			menu.add(0, MENU_SEARCH, 0, R.string.search).setIcon(android.R.drawable.ic_menu_search);
-		} else {
-			menu.add(0, MENU_LIBRARY, 0, R.string.library).setIcon(android.R.drawable.ic_menu_add);
-			menu.add(0, MENU_DISPLAY, 0, R.string.display_mode).setIcon(android.R.drawable.ic_menu_gallery);
-		}
-		menu.add(0, MENU_PREFS, 0, R.string.settings).setIcon(android.R.drawable.ic_menu_preferences);
-		menu.add(0, MENU_SHUFFLE, 0, R.string.shuffle_enable).setIcon(R.drawable.ic_menu_shuffle);
-		menu.add(0, MENU_REPEAT, 0, R.string.repeat_enable).setIcon(R.drawable.ic_menu_refresh);
-		menu.add(0, MENU_QUIT, 0, R.string.quit).setIcon(android.R.drawable.ic_menu_close_clear_cancel);
+			mSongSelector.onServiceChange(intent);
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-		fillMenu(menu, false);
-		return true;
-	}
-
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu)
-	{
-		boolean isShuffling = (mState & PlaybackService.FLAG_SHUFFLE) != 0;
-		menu.findItem(MENU_SHUFFLE).setTitle(isShuffling ? R.string.shuffle_disable : R.string.shuffle_enable);
-		boolean isRepeating = (mState & PlaybackService.FLAG_REPEAT) != 0;
-		menu.findItem(MENU_REPEAT).setTitle(isRepeating ? R.string.repeat_disable : R.string.repeat_enable);
-		return true;
+		menu.add(0, MENU_LIBRARY, 0, R.string.library).setIcon(android.R.drawable.ic_menu_add);
+		menu.add(0, MENU_DISPLAY, 0, R.string.display_mode).setIcon(android.R.drawable.ic_menu_gallery);
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
 		switch (item.getItemId()) {
-		case MENU_QUIT:
-			ContextApplication.quit(this);
-			break;
-		case MENU_SHUFFLE:
-			mHandler.sendMessage(mHandler.obtainMessage(TOGGLE_FLAG, PlaybackService.FLAG_SHUFFLE, 0));
-			break;
-		case MENU_REPEAT:
-			mHandler.sendMessage(mHandler.obtainMessage(TOGGLE_FLAG, PlaybackService.FLAG_REPEAT, 0));
-			break;
-		case MENU_PREFS:
-			startActivity(new Intent(this, PreferencesActivity.class));
-			break;
-		case MENU_PLAYBACK:
-			dismissDialog(SONG_SELECTOR);
-			break;
 		case MENU_LIBRARY:
-			showDialog(SONG_SELECTOR);
-			break;
+			startActivity(new Intent(this, SongSelector.class));
+			return true;
 		case MENU_DISPLAY:
 			mCoverView.toggleDisplayMode();
-			mHandler.sendEmptyMessage(SAVE_DISPLAY_MODE);
-			break;
+			mHandler.sendEmptyMessage(MSG_SAVE_DISPLAY_MODE);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
-
-		return true;
 	}
 
 	@Override
 	public boolean onSearchRequested()
 	{
-		showDialog(SONG_SELECTOR);
+		startActivity(new Intent(this, SongSelector.class));
 		return false;
-	}
-
-	@Override
-	public Dialog onCreateDialog(int id)
-	{
-		if (id == SONG_SELECTOR) {
-			mSongSelector = new SongSelector(this);
-			return mSongSelector;
-		}
-		return null;
 	}
 
 	@Override
@@ -283,6 +215,9 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 		return super.onKeyUp(keyCode, event);
 	}
 
+	/**
+	 * Converts a duration in milliseconds to [HH:]MM:SS
+	 */
 	private String stringForTime(int ms)
 	{
 		int seconds = ms / 1000;
@@ -298,6 +233,9 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 			return String.format("%02d:%02d", minutes, seconds);
 	}
 
+	/**
+	 * Update seek bar progress and schedule another update in one second
+	 */
 	private void updateProgress()
 	{
 		if (mPaused || mControlsTop.getVisibility() != View.VISIBLE || (mState & PlaybackService.FLAG_PLAYING) == 0)
@@ -315,11 +253,13 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 			mSeekBar.setProgress(mDuration == 0 ? 0 : (int)(1000 * position / mDuration));
 		mSeekText.setText(stringForTime((int)position) + " / " + stringForTime(mDuration));
 
+		// Try to update right when the duration increases by one second
 		long next = 1000 - position % 1000;
-		mHandler.removeMessages(UPDATE_PROGRESS);
-		mHandler.sendEmptyMessageDelayed(UPDATE_PROGRESS, next);
+		mHandler.removeMessages(MSG_UPDATE_PROGRESS);
+		mHandler.sendEmptyMessageDelayed(MSG_UPDATE_PROGRESS, next);
 	}
 	
+	@Override
 	public void onClick(View view)
 	{
 		if (view == mCoverView) {
@@ -339,45 +279,25 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 		}
 	}
 
-	private static final int UPDATE_PROGRESS = 1;
-	private static final int SAVE_DISPLAY_MODE = 2;
-	private static final int TOGGLE_FLAG = 3;
+	private static final int MSG_UPDATE_PROGRESS = 10;
+	private static final int MSG_SAVE_DISPLAY_MODE = 11;
 
+	@Override
 	public boolean handleMessage(Message message)
 	{
 		switch (message.what) {
-		case UPDATE_PROGRESS:
+		case MSG_UPDATE_PROGRESS:
 			updateProgress();
-			break;
-		case SAVE_DISPLAY_MODE:
+			return true;
+		case MSG_SAVE_DISPLAY_MODE:
 			SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(FullPlaybackActivity.this);
 			SharedPreferences.Editor editor = settings.edit();
 			editor.putBoolean("separate_info", mCoverView.hasSeparateInfo());
 			editor.commit();
-			break;
-		case TOGGLE_FLAG:
-			int flag = message.arg1;
-			boolean enabling = (mState & flag) == 0;
-			int text = -1;
-			if (flag == PlaybackService.FLAG_SHUFFLE)
-				text = enabling ? R.string.shuffle_enabling : R.string.shuffle_disabling;
-			else if (flag == PlaybackService.FLAG_REPEAT)
-				text = enabling ? R.string.repeat_enabling : R.string.repeat_disabling;
-
-			if (text != -1)
-				Toast.makeText(FullPlaybackActivity.this, text, Toast.LENGTH_SHORT).show();
-
-			try {
-				mService.toggleFlag(flag);
-			} catch (RemoteException e) {
-				setService(null);
-			}
-			break;
+			return true;
 		default:
-			return false;
+			return super.handleMessage(message);
 		}
-
-		return true;
 	}
 
 	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
