@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.view.KeyEvent;
@@ -31,7 +32,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -42,11 +42,9 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	private View mControlsTop;
 	private View mControlsBottom;
 
-	private ImageView mPlayPauseButton;
 	private SeekBar mSeekBar;
 	private TextView mSeekText;
 
-	int mState;
 	private int mDuration;
 	private boolean mSeekBarTracking;
 	private boolean mPaused;
@@ -63,15 +61,16 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 		setContentView(R.layout.full_playback);
 
 		mCoverView = (CoverView)findViewById(R.id.cover_view);
+		mCoverView.mHandler = mHandler;
 		mCoverView.setOnClickListener(this);
-		mCoverView.setSeparateInfo(settings.getBoolean("separate_info", false));
+		mCoverView.mSeparateInfo = settings.getBoolean("separate_info", false);
 
 		mControlsTop = findViewById(R.id.controls_top);
 		mControlsBottom = findViewById(R.id.controls_bottom);
 
 		View previousButton = findViewById(R.id.previous);
 		previousButton.setOnClickListener(this);
-		mPlayPauseButton = (ImageView)findViewById(R.id.play_pause);
+		mPlayPauseButton = (ControlButton)findViewById(R.id.play_pause);
 		mPlayPauseButton.setOnClickListener(this);
 		View nextButton = findViewById(R.id.next);
 		nextButton.setOnClickListener(this);
@@ -103,7 +102,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 		if (state == mState)
 			return;
 
-		mState = state;
+		super.setState(state);
 
 		if (mMessageOverlay != null)
 			mMessageOverlay.setVisibility(View.GONE);
@@ -130,11 +129,6 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 			text.setLayoutParams(layoutParams);
 			mMessageOverlay.addView(text);
 		}
-
-		if ((mState & PlaybackService.FLAG_PLAYING) != 0)
-			mPlayPauseButton.setImageResource(R.drawable.pause);
-		else
-			mPlayPauseButton.setImageResource(R.drawable.play);
 	}
 
 	@Override
@@ -152,7 +146,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 
 		if (PlaybackService.EVENT_CHANGED.equals(intent.getAction())) {
 			mDuration = ContextApplication.service.getDuration();
-			mHandler.sendEmptyMessage(MSG_UPDATE_PROGRESS);
+			mUiHandler.sendEmptyMessage(MSG_UPDATE_PROGRESS);
 		}
 	}
 
@@ -234,10 +228,10 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 
 		// Try to update right when the duration increases by one second
 		long next = 1000 - position % 1000;
-		mHandler.removeMessages(MSG_UPDATE_PROGRESS);
-		mHandler.sendEmptyMessageDelayed(MSG_UPDATE_PROGRESS, next);
+		mUiHandler.removeMessages(MSG_UPDATE_PROGRESS);
+		mUiHandler.sendEmptyMessageDelayed(MSG_UPDATE_PROGRESS, next);
 	}
-	
+
 	@Override
 	public void onClick(View view)
 	{
@@ -265,19 +259,28 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	public boolean handleMessage(Message message)
 	{
 		switch (message.what) {
-		case MSG_UPDATE_PROGRESS:
-			updateProgress();
-			return true;
 		case MSG_SAVE_DISPLAY_MODE:
 			SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(FullPlaybackActivity.this);
 			SharedPreferences.Editor editor = settings.edit();
-			editor.putBoolean("separate_info", mCoverView.hasSeparateInfo());
+			editor.putBoolean("separate_info", mCoverView.mSeparateInfo);
 			editor.commit();
 			return true;
 		default:
 			return super.handleMessage(message);
 		}
 	}
+
+	private Handler mUiHandler = new Handler() {
+		@Override
+		public void handleMessage(Message message)
+		{
+			switch (message.what) {
+			case MSG_UPDATE_PROGRESS:
+				updateProgress();
+				break;
+			}
+		}
+	};
 
 	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
 	{

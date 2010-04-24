@@ -22,6 +22,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Message;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -30,9 +32,11 @@ import android.view.View;
 import android.widget.Toast;
 
 public class PlaybackActivity extends Activity implements Handler.Callback, View.OnClickListener {
-	Handler mHandler = new Handler(this);
+	Handler mHandler;
+	Looper mLooper;
 
 	CoverView mCoverView;
+	ControlButton mPlayPauseButton;
 	int mState;
 
 	@Override
@@ -40,6 +44,12 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	{
 		super.onCreate(state);
 		ContextApplication.addActivity(this);
+
+		HandlerThread thread = new HandlerThread(getClass().getName());
+		thread.start();
+
+		mLooper = thread.getLooper();
+		mHandler = new Handler(mLooper, this);
 	}
 
 	@Override
@@ -47,6 +57,7 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	{
 		super.onDestroy();
 		ContextApplication.removeActivity(this);
+		mLooper.quit();
 	}
 
 	@Override
@@ -55,6 +66,8 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 		super.onStart();
 
 		startService(new Intent(this, PlaybackService.class));
+		if (ContextApplication.service != null)
+			onServiceReady();
 	}
 
 	public static boolean handleKeyLongPress(int keyCode)
@@ -78,30 +91,43 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	{
 		switch (view.getId()) {
 		case R.id.next:
+			mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_SONG, 1, 0));
 			if (mCoverView != null)
 				mCoverView.go(1);
-			mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_SONG, 1, 0));
 			break;
 		case R.id.play_pause:
 			mHandler.sendMessage(mHandler.obtainMessage(MSG_TOGGLE_FLAG, PlaybackService.FLAG_PLAYING, 0));
 			break;
 		case R.id.previous:
+			mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_SONG, -1, 0));
 			if (mCoverView != null)
 				mCoverView.go(-1);
-			mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_SONG, -1, 0));
 			break;
 		}
 	}
 
 	/**
-	 * Sets <code>mState</code> to <code>state</code>. Override to implement
-	 * further behavior in subclasses.
+	 * Updates <code>mState</code> and the play/pause button. Override to
+	 * implement further behavior in subclasses.
 	 *
 	 * @param state PlaybackService state
 	 */
 	protected void setState(int state)
 	{
+		if (mState == state)
+			return;
+
 		mState = state;
+
+		if (mPlayPauseButton != null) {
+			final int res = (mState & PlaybackService.FLAG_PLAYING) == 0 ? R.drawable.play : R.drawable.pause;
+			runOnUiThread(new Runnable() {
+				public void run()
+				{
+					mPlayPauseButton.setImageResource(res);
+				}
+			});
+		}
 	}
 
 	/**
@@ -112,7 +138,6 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	{
 		if (mCoverView != null)
 			mCoverView.initialize();
-
 		setState(ContextApplication.service.getState());
 	}
 

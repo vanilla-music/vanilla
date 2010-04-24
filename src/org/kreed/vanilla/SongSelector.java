@@ -27,7 +27,6 @@ import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Color;
 import android.graphics.drawable.PaintDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
 import android.preference.PreferenceManager;
@@ -60,8 +59,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	private View mClearButton;
 
 	private View mStatus;
-	private TextView mStatusText;
-	private ControlButton mPlayPauseButton;
+	TextView mStatusText;
 
 	private ViewGroup mLimiterViews;
 
@@ -74,14 +72,6 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	{
 		ListView list = (ListView)mTabHost.getTabContentView().getChildAt(tab);
 		return (MediaAdapter)list.getAdapter();
-	}
-
-	private void initializeList(int id, Uri store, String[] fields, String[] fieldKeys)
-	{
-		ListView view = (ListView)findViewById(id);
-		view.setOnItemClickListener(this);
-		view.setOnCreateContextMenuListener(this);
-		view.setAdapter(new MediaAdapter(this, store, fields, fieldKeys, true));
 	}
 
 	@Override
@@ -133,6 +123,11 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 
 			mPlayPauseButton.setOnClickListener(this);
 			next.setOnClickListener(this);
+
+			if (ContextApplication.service != null) {
+				setState(ContextApplication.service.getState());
+				onSongChange(ContextApplication.service.getSong(0));
+			}
 		} else if (!status && mStatus != null) {
 			mStatus.setVisibility(View.GONE);
 			mStatus = null;
@@ -376,6 +371,25 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 			getAdapter(i).filter(text, null);
 	}
 
+	/**
+	 * Hook up a ListView to this Activity and the supplied adapter
+	 *
+	 * @param id The id of the ListView
+	 * @param adapter The adapter to be used
+	 */
+	private void setupView(int id, final MediaAdapter adapter)
+	{
+		final ListView view = (ListView)findViewById(id);
+		view.setOnItemClickListener(this);
+		view.setOnCreateContextMenuListener(this);
+		runOnUiThread(new Runnable() {
+			public void run()
+			{
+				view.setAdapter(adapter);
+			}
+		});
+	}
+
 	private static final int MSG_INIT = 10;
 
 	@Override
@@ -383,13 +397,9 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	{
 		switch (message.what) {
 		case MSG_INIT:
-			initializeList(R.id.artist_list, MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, MediaAdapter.ARTIST_FIELDS, MediaAdapter.ARTIST_FIELD_KEYS);
-			initializeList(R.id.album_list, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, MediaAdapter.ALBUM_FIELDS, MediaAdapter.ALBUM_FIELD_KEYS);
-
-			ListView view = (ListView)findViewById(R.id.song_list);
-			view.setOnItemClickListener(SongSelector.this);
-			view.setOnCreateContextMenuListener(SongSelector.this);
-			view.setAdapter(new SongMediaAdapter(this));
+			setupView(R.id.artist_list, new MediaAdapter(this, MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, MediaAdapter.ARTIST_FIELDS, MediaAdapter.ARTIST_FIELD_KEYS, true));
+			setupView(R.id.album_list, new MediaAdapter(this, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, MediaAdapter.ALBUM_FIELDS, MediaAdapter.ALBUM_FIELD_KEYS, true));
+			setupView(R.id.song_list, new SongMediaAdapter(this));
 
 			ContentResolver resolver = getContentResolver();
 			resolver.registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, mObserver);
@@ -421,10 +431,16 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	/**
 	 * Call to update the status text for a newly-playing song.
 	 */
-	private void onSongChange(Song song)
+	private void onSongChange(final Song song)
 	{
-		if (mStatusText != null)
-			mStatusText.setText(song == null ? getResources().getText(R.string.none) : song.title);
+		if (mStatusText != null) {
+			runOnUiThread(new Runnable() {
+				public void run()
+				{
+					mStatusText.setText(song == null ? getResources().getText(R.string.none) : song.title);
+				}
+			});
+		}
 	}
 
 	@Override
@@ -433,15 +449,6 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		if (mStatusText != null) {
 			Song song = intent.getParcelableExtra("song");
 			onSongChange(song);
-		}
-	}
-
-	@Override
-	protected void setState(int state)
-	{
-		if (mPlayPauseButton != null) {
-			boolean playing = (state & PlaybackService.FLAG_PLAYING) != 0;
-			mPlayPauseButton.setImageResource(playing ? R.drawable.pause : R.drawable.play);
 		}
 	}
 }

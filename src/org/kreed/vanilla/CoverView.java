@@ -29,7 +29,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
-import android.os.Message;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -39,7 +38,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.Scroller;
 
-public final class CoverView extends View implements Handler.Callback {
+public final class CoverView extends View {
 	private static final int STORE_SIZE = 3;
 	private static int SNAP_VELOCITY = -1;
 
@@ -52,19 +51,26 @@ public final class CoverView extends View implements Handler.Callback {
 	private static Bitmap ALBUM_ICON;
 	private static Bitmap ARTIST_ICON;
 
-	private Scroller mScroller;
-	private Handler mHandler = new Handler(this);
+	/**
+	 * The Handler with which to do background work. Must be initialized by
+	 * the containing Activity.
+	 */
+	Handler mHandler;
+	/**
+	 * Whether or not to display song info on top of the cover art. Can be
+	 * initialized by the containing Activity.
+	 */
+	boolean mSeparateInfo;
 
 	private Song[] mSongs = new Song[3];
 	private Bitmap[] mBitmaps = new Bitmap[3];
 	private int mTimelinePos;
+	private Scroller mScroller;
 	private VelocityTracker mVelocityTracker;
 	private float mLastMotionX;
 	private float mStartX;
 	private float mStartY;
 	private int mTentativeCover = -1;
-
-	private boolean mSeparateInfo;
 
 	public CoverView(Context context, AttributeSet attributes)
 	{
@@ -103,21 +109,6 @@ public final class CoverView extends View implements Handler.Callback {
 		bitmap = BitmapFactory.decodeResource(res, R.drawable.tab_artists_selected);
 		ARTIST_ICON = Bitmap.createScaledBitmap(bitmap, TEXT_SIZE, TEXT_SIZE, false);
 		bitmap.recycle();
-	}
-
-	public Song getCurrentSong()
-	{
-		return mSongs[STORE_SIZE / 2];
-	}
-
-	public boolean hasSeparateInfo()
-	{
-		return mSeparateInfo;
-	}
-
-	public void setSeparateInfo(boolean separate)
-	{
-		mSeparateInfo = separate;
 	}
 
 	/**
@@ -377,18 +368,19 @@ public final class CoverView extends View implements Handler.Callback {
 			mBitmaps[i] = createSeparatedBitmap(mSongs[i], getWidth(), getHeight());
 		else
 			mBitmaps[i] = createOverlappingBitmap(mSongs[i], getWidth(), getHeight());
+		postInvalidate();
 		if (oldBitmap != null)
 			oldBitmap.recycle();
 	}
 
 	private void refreshSongs()
 	{
-		mHandler.sendEmptyMessage(1);
-		mHandler.sendEmptyMessage(2);
-		mHandler.sendEmptyMessage(0);
+		postLoadSong(1, null);
+		postLoadSong(2, null);
+		postLoadSong(0, null);
 	}
 
-	private void shiftCover(int delta)
+	public void go(int delta)
 	{
 		int i = delta > 0 ? STORE_SIZE - 1 : 0;
 
@@ -397,21 +389,16 @@ public final class CoverView extends View implements Handler.Callback {
 
 		int from = delta > 0 ? 1 : 0;
 		int to = delta > 0 ? 0 : 1;
-
 		System.arraycopy(mSongs, from, mSongs, to, STORE_SIZE - 1);
 		System.arraycopy(mBitmaps, from, mBitmaps, to, STORE_SIZE - 1);
 		mSongs[i] = null;
 		mBitmaps[i] = null;
+
+		postLoadSong(i, null);
+
 		mTimelinePos += delta;
 		reset();
 		invalidate();
-
-		mHandler.sendEmptyMessage(i);
-	}
-
-	public void go(int delta)
-	{
-		mHandler.sendMessage(mHandler.obtainMessage(GO, delta, 0));
 	}
 
 	public void reset()
@@ -419,7 +406,7 @@ public final class CoverView extends View implements Handler.Callback {
 		if (!mScroller.isFinished())
 			mScroller.abortAnimation();
 		scrollTo(getWidth(), 0);
-		invalidate();
+		postInvalidate();
 	}
 
 	private void regenerateBitmaps()
@@ -545,32 +532,34 @@ public final class CoverView extends View implements Handler.Callback {
 			scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
 			postInvalidate();
 		} else if (mTentativeCover != -1) {
-			shiftCover(mTentativeCover - 1);
+			int delta = mTentativeCover - 1;
 			mTentativeCover = -1;
+			mHandler.sendMessage(mHandler.obtainMessage(PlaybackActivity.MSG_SET_SONG, delta, 0));
+			go(delta);
 		}
 	}
 
-	private static final int GO = 10;
-
-	public boolean handleMessage(Message message)
+	/**
+	 * Load a song in the given position. If the song is null, queries the
+	 * PlaybackService for the song at that position.
+	 */
+	void loadSong(int i, Song song)
 	{
-		switch (message.what) {
-		case GO:
-			shiftCover(message.arg1);
-			break;
-		default:
-			int i = message.what;
-			if (message.obj == null)
-				mSongs[i] = ContextApplication.service.getSong(i - STORE_SIZE / 2);
-			else
-				mSongs[i] = (Song)message.obj;
-			createBitmap(i);
-			if (i == STORE_SIZE / 2)
-				reset();
-			break;
-		}
+		mSongs[i] = song == null ? ContextApplication.service.getSong(i - STORE_SIZE / 2) : song;
+		createBitmap(i);
+	}
 
-		return true;
+	/**
+	 * Post a Handler message to call loadSong.
+	 */
+	private void postLoadSong(final int i, final Song song)
+	{
+		mHandler.post(new Runnable() {
+			public void run()
+			{
+				loadSong(i, song);
+			}
+		});
 	}
 
 	/**
@@ -585,7 +574,7 @@ public final class CoverView extends View implements Handler.Callback {
 		if (PlaybackService.EVENT_REPLACE_SONG.equals(action)) {
 			int i = STORE_SIZE / 2 + intent.getIntExtra("pos", 0);
 			Song song = intent.getParcelableExtra("song");
-			mHandler.sendMessage(mHandler.obtainMessage(i, song));
+			postLoadSong(i, song);
 		} else if (PlaybackService.EVENT_CHANGED.equals(action)) {
 			Song currentSong = mSongs[STORE_SIZE / 2];
 			Song playingSong = intent.getParcelableExtra("song");

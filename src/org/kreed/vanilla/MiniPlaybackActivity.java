@@ -27,15 +27,12 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.ImageView;
 
 /**
  * Playback activity that displays itself like a dialog, i.e. as a small window
  * with a border. Includes a CoverView and control buttons.
  */
 public class MiniPlaybackActivity extends PlaybackActivity implements View.OnClickListener {
-	private ImageView mPlayPauseButton;
-
 	@Override
 	public void onCreate(Bundle state)
 	{
@@ -45,6 +42,7 @@ public class MiniPlaybackActivity extends PlaybackActivity implements View.OnCli
 		setContentView(R.layout.mini_playback);
 
 		mCoverView = (CoverView)findViewById(R.id.cover_view);
+		mCoverView.mHandler = mHandler;
 
 		View openButton = findViewById(R.id.open_button);
 		openButton.setOnClickListener(this);
@@ -52,19 +50,10 @@ public class MiniPlaybackActivity extends PlaybackActivity implements View.OnCli
 		killButton.setOnClickListener(this);
 		View previousButton = findViewById(R.id.previous);
 		previousButton.setOnClickListener(this);
-		mPlayPauseButton = (ImageView)findViewById(R.id.play_pause);
+		mPlayPauseButton = (ControlButton)findViewById(R.id.play_pause);
 		mPlayPauseButton.setOnClickListener(this);
 		View nextButton = findViewById(R.id.next);
 		nextButton.setOnClickListener(this);
-	}
-
-	@Override
-	protected void setState(int state)
-	{
-		if ((state & PlaybackService.FLAG_NO_MEDIA) != 0)
-			finish();
-
-		mPlayPauseButton.setImageResource((state & PlaybackService.FLAG_PLAYING) == 0 ? R.drawable.play : R.drawable.pause);
 	}
 
 	@Override
