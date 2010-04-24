@@ -26,10 +26,18 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 
+/**
+ * Subclass of Application that provides various static utility functions
+ */
 public class ContextApplication extends Application {
 	private static ContextApplication mInstance;
 	private static ArrayList<Activity> mActivities;
 	private static Random mRandom;
+
+	/**
+	 * The PlaybackService instance, if any.
+	 */
+	public static PlaybackService service;
 
 	public ContextApplication()
 	{
@@ -61,12 +69,31 @@ public class ContextApplication extends Application {
 			mActivities.remove(activity);
 	}
 
-	public static void quit(Context context)
+	/**
+	 * Send a broadcast to all PlaybackActivities that have been added with
+	 * addActivity.
+	 *
+	 * @param intent The intent to be sent as a broadcast
+	 */
+	public static void broadcast(Intent intent)
 	{
-		context.stopService(new Intent(context, PlaybackService.class));
+		ArrayList<Activity> list = mActivities;
+		if (list == null)
+			return;
+
+		for (int i = list.size(); --i != -1; ) {
+			Activity activity = list.get(i);
+			if (activity instanceof PlaybackActivity)
+				((PlaybackActivity)activity).receive(intent);
+		}
+	}
+
+	public static void quit()
+	{
 		if (mActivities != null) {
 			for (int i = mActivities.size(); --i != -1; )
 				mActivities.remove(i).finish();
 		}
+		mInstance.stopService(new Intent(mInstance, PlaybackService.class));
 	}
 }

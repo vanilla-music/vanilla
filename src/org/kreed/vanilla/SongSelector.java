@@ -51,7 +51,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class SongSelector extends PlaybackActivity implements AdapterView.OnItemClickListener, TextWatcher, View.OnClickListener, TabHost.OnTabChangeListener, Filter.FilterListener {
+public class SongSelector extends PlaybackActivity implements AdapterView.OnItemClickListener, TextWatcher, TabHost.OnTabChangeListener, Filter.FilterListener {
 	private TabHost mTabHost;
 
 	private View mSearchBox;
@@ -140,6 +140,15 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 
 		mDefaultAction = Integer.parseInt(settings.getString("default_action_int", "0"));
 		mLastActedId = 0;
+	}
+
+	@Override
+	protected void onServiceReady()
+	{
+		super.onServiceReady();
+
+		if (mStatusText != null)
+			onSongChange(ContextApplication.service.getSong(0));
 	}
 
 	@Override
@@ -367,12 +376,6 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 			getAdapter(i).filter(text, null);
 	}
 
-	@Override
-	public boolean onKeyLongPress(int keyCode, KeyEvent event)
-	{
-		return PlaybackActivity.handleKeyLongPress(this, keyCode);
-	}
-
 	private static final int MSG_INIT = 10;
 
 	@Override
@@ -415,12 +418,21 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 			mSearchBox.requestFocus();
 	}
 
+	/**
+	 * Call to update the status text for a newly-playing song.
+	 */
+	private void onSongChange(Song song)
+	{
+		if (mStatusText != null)
+			mStatusText.setText(song == null ? getResources().getText(R.string.none) : song.title);
+	}
+
 	@Override
-	protected void onServiceChange(Intent intent)
+	public void receive(Intent intent)
 	{
 		if (mStatusText != null) {
 			Song song = intent.getParcelableExtra("song");
-			mStatusText.setText(song == null ? getResources().getText(R.string.none) : song.title);
+			onSongChange(song);
 		}
 	}
 

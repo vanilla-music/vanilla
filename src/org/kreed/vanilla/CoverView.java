@@ -18,8 +18,6 @@
 
 package org.kreed.vanilla;
 
-import org.kreed.vanilla.IPlaybackService;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -32,7 +30,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Message;
-import android.os.RemoteException;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -43,10 +40,6 @@ import android.view.ViewConfiguration;
 import android.widget.Scroller;
 
 public final class CoverView extends View implements Handler.Callback {
-	public static interface Callback {
-		void songChanged(Song song);
-	};
-
 	private static final int STORE_SIZE = 3;
 	private static int SNAP_VELOCITY = -1;
 
@@ -59,10 +52,8 @@ public final class CoverView extends View implements Handler.Callback {
 	private static Bitmap ALBUM_ICON;
 	private static Bitmap ARTIST_ICON;
 
-	private IPlaybackService mService;
 	private Scroller mScroller;
 	private Handler mHandler = new Handler(this);
-	private Callback mCallback;
 
 	private Song[] mSongs = new Song[3];
 	private Bitmap[] mBitmaps = new Bitmap[3];
@@ -124,28 +115,17 @@ public final class CoverView extends View implements Handler.Callback {
 		return mSeparateInfo;
 	}
 
-	public void setCallback(Callback callback)
-	{
-		mCallback = callback;
-	}
-
 	public void setSeparateInfo(boolean separate)
 	{
 		mSeparateInfo = separate;
 	}
 
-	public void setPlaybackService(IPlaybackService service)
+	/**
+	 * Query the service for initial song info.
+	 */
+	public void initialize()
 	{
-		mService = service;
-
-		if (mService != null) {
-			try {
-				mTimelinePos = mService.getTimelinePos();
-			} catch (RemoteException e) {
-				mService = null;
-			}
-		}
-
+		mTimelinePos = ContextApplication.service.getTimelinePos();
 		refreshSongs();
 	}
 
@@ -410,9 +390,6 @@ public final class CoverView extends View implements Handler.Callback {
 
 	private void shiftCover(int delta)
 	{
-		if (mService == null)
-			return;
-
 		int i = delta > 0 ? STORE_SIZE - 1 : 0;
 
 		if (mSongs[i] == null)
@@ -429,16 +406,11 @@ public final class CoverView extends View implements Handler.Callback {
 		reset();
 		invalidate();
 
-		if (mCallback != null)
-			mCallback.songChanged(mSongs[STORE_SIZE / 2]);
-
 		mHandler.sendEmptyMessage(i);
 	}
 
-	public void go(int delta) throws RemoteException
+	public void go(int delta)
 	{
-		if (mService == null)
-			throw new RemoteException();
 		mHandler.sendMessage(mHandler.obtainMessage(GO, delta, 0));
 	}
 
@@ -582,30 +554,32 @@ public final class CoverView extends View implements Handler.Callback {
 
 	public boolean handleMessage(Message message)
 	{
-		try {
-			switch (message.what) {
-			case GO:
-				shiftCover(message.arg1);
-				break;
-			default:
-				int i = message.what;
-				if (message.obj == null)
-					mSongs[i] = mService.getSong(i - STORE_SIZE / 2);
-				else
-					mSongs[i] = (Song)message.obj;
-				createBitmap(i);
-				if (i == STORE_SIZE / 2)
-					reset();
-				break;
-			}
-		} catch (RemoteException e) {
-			mService = null;
+		switch (message.what) {
+		case GO:
+			shiftCover(message.arg1);
+			break;
+		default:
+			int i = message.what;
+			if (message.obj == null)
+				mSongs[i] = ContextApplication.service.getSong(i - STORE_SIZE / 2);
+			else
+				mSongs[i] = (Song)message.obj;
+			createBitmap(i);
+			if (i == STORE_SIZE / 2)
+				reset();
+			break;
 		}
 
 		return true;
 	}
 
-	public void onReceive(Intent intent)
+	/**
+	 * Handle an intent broadcasted by the PlaybackService. This must be called
+	 * to react to song changes in PlaybackService.
+	 *
+	 * @param intent The intent that was broadcast
+	 */
+	public void receive(Intent intent)
 	{
 		String action = intent.getAction();
 		if (PlaybackService.EVENT_REPLACE_SONG.equals(action)) {

@@ -43,6 +43,6 @@ public class PreferencesActivity extends PreferenceActivity {
 	@Override
 	public boolean onKeyLongPress(int keyCode, KeyEvent event)
 	{
-		return PlaybackActivity.handleKeyLongPress(this, keyCode);
+		return PlaybackActivity.handleKeyLongPress(keyCode);
 	}
 }

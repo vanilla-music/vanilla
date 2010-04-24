@@ -72,7 +72,7 @@ public class MiniPlaybackActivity extends PlaybackActivity implements View.OnCli
 	{
 		switch (view.getId()) {
 		case R.id.kill_button:
-			ContextApplication.quit(this);
+			ContextApplication.quit();
 			break;
 		case R.id.open_button:
 			startActivity(new Intent(this, FullPlaybackActivity.class));

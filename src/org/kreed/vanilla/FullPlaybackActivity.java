@@ -18,7 +18,6 @@
 
 package org.kreed.vanilla;
 
-import org.kreed.vanilla.IPlaybackService;
 import org.kreed.vanilla.R;
 
 import android.content.Intent;
@@ -26,7 +25,6 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Message;
-import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -39,11 +37,10 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-public class FullPlaybackActivity extends PlaybackActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, CoverView.Callback {
+public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.OnSeekBarChangeListener {
 	private RelativeLayout mMessageOverlay;
 	private View mControlsTop;
 	private View mControlsBottom;
-	private SongSelector mSongSelector;
 
 	private ImageView mPlayPauseButton;
 	private SeekBar mSeekBar;
@@ -141,34 +138,22 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 	}
 
 	@Override
-	protected void setService(IPlaybackService service)
+	protected void onServiceReady()
 	{
-		super.setService(service);
+		super.onServiceReady();
 
-		if (service != null) {
-			try {
-				mDuration = service.getDuration();
-			} catch (RemoteException e) {
-			}
-		}
+		mDuration = ContextApplication.service.getDuration();
 	}
 
 	@Override
-	protected void onServiceChange(Intent intent)
+	public void receive(Intent intent)
 	{
-		super.onServiceChange(intent);
+		super.receive(intent);
 
-		if (mService != null) {
-			try {
-				mDuration = mService.getDuration();
-				mHandler.sendEmptyMessage(MSG_UPDATE_PROGRESS);
-			} catch (RemoteException e) {
-				setService(null);
-			}
+		if (PlaybackService.EVENT_CHANGED.equals(intent.getAction())) {
+			mDuration = ContextApplication.service.getDuration();
+			mHandler.sendEmptyMessage(MSG_UPDATE_PROGRESS);
 		}
-
-		if (mSongSelector != null)
-			mSongSelector.onServiceChange(intent);
 	}
 
 	@Override
@@ -241,13 +226,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 		if (mPaused || mControlsTop.getVisibility() != View.VISIBLE || (mState & PlaybackService.FLAG_PLAYING) == 0)
 			return;
 
-		int position = 0;
-		if (mService != null) {
-			try {
-				position = mService.getPosition();
-			} catch (RemoteException e) {
-			}
-		}
+		int position = ContextApplication.service.getPosition();
 
 		if (!mSeekBarTracking)
 			mSeekBar.setProgress(mDuration == 0 ? 0 : (int)(1000 * position / mDuration));
@@ -302,13 +281,8 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 
 	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
 	{
-		if (!fromUser || mService == null)
-			return;
-
-		try {
-			mService.seekToProgress(progress);
-		} catch (RemoteException e) {
-		}
+		if (fromUser)
+			ContextApplication.service.seekToProgress(progress);
 	}
 
 	public void onStartTrackingTouch(SeekBar seekBar)
@@ -319,11 +293,5 @@ public class FullPlaybackActivity extends PlaybackActivity implements View.OnCli
 	public void onStopTrackingTouch(SeekBar seekBar)
 	{
 		mSeekBarTracking = false;
-	}
-
-	public void songChanged(Song song)
-	{
-		if (mSongSelector != null)
-			mSongSelector.updateSong(song);
 	}
 }

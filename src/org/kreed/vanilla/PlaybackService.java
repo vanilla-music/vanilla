@@ -25,8 +25,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
-import org.kreed.vanilla.IPlaybackService;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
@@ -66,6 +64,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 	public static final String EVENT_REPLACE_SONG = "org.kreed.vanilla.event.REPLACE_SONG";
 	public static final String EVENT_CHANGED = "org.kreed.vanilla.event.CHANGED";
+	public static final String EVENT_INITIALIZED = "org.kreed.vanilla.event.INITIALIZED";
 
 	public static final int ACTION_PLAY = 0;
 	public static final int ACTION_ENQUEUE = 1;
@@ -121,6 +120,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	@Override
 	public void onCreate()
 	{
+		ContextApplication.service = this;
+
 		HandlerThread thread = new HandlerThread("PlaybackService");
 		thread.start();
 
@@ -190,6 +191,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	@Override
 	public void onDestroy()
 	{
+		ContextApplication.service = null;
+
 		super.onDestroy();
 
 		if (mSongTimeline != null)
@@ -253,6 +256,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 	private void initialize()
 	{
+		sendBroadcast(new Intent(EVENT_INITIALIZED));
+
 		mMediaPlayer = new MediaPlayer();
 		mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		mMediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
@@ -327,6 +332,13 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			mHeadsetControls = (byte)(mSettings.getBoolean("media_button", true) ? 1 : 0);
 			setupReceiver();
 		}
+	}
+
+	@Override
+	public void sendBroadcast(Intent intent)
+	{
+		ContextApplication.broadcast(intent);
+		super.sendBroadcast(intent);
 	}
 
 	private void broadcastReplaceSong(int delta, Song song)
@@ -466,7 +478,12 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		return (mAudioManager.getRouting(mAudioManager.getMode()) & AudioManager.ROUTE_SPEAKER) != 0;
 	}
 
-	void toggleFlag(int flag)
+	/**
+	 * Toggle a flag in the state on or off
+	 *
+	 * @param flag The flag to be toggled (FLAG_PLAYING, FLAG_SHUFFLE, or FLAG_REPEAT)
+	 */
+	public void toggleFlag(int flag)
 	{
 		synchronized (mStateLock) {
 			if ((mState & flag) == 0)
@@ -487,7 +504,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		return songs;
 	}
 
-	void setCurrentSong(int delta)
+	/**
+	 * Move <code>delta</code> places away from the current song.
+	 */
+	public void setCurrentSong(int delta)
 	{
 		if (mMediaPlayer == null)
 			return;
@@ -558,7 +578,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		return true;
 	}
 
-	Song getSong(int delta)
+	/**
+	 * Returns the song <code>delta</code> places away from the current position.
+	 */
+	public Song getSong(int delta)
 	{
 		if (mSongTimeline == null)
 			return null;
@@ -895,66 +918,67 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		return true;
 	}
 
-	public IPlaybackService.Stub mBinder = new IPlaybackService.Stub() {
-		public Song getSong(int delta)
-		{
-			return PlaybackService.this.getSong(delta);
+	/**
+	 * Returns the current service state. The state comprises several individual
+	 * flags.
+	 */
+	public int getState()
+	{
+		synchronized (mStateLock) {
+			return mState;
 		}
+	}
 
-		public int getState()
-		{
-			synchronized (mStateLock) {
-				return mState;
-			}
+	/**
+	 * Returns the current position in current song in milliseconds.
+	 */
+	public int getPosition()
+	{
+		if (mMediaPlayer == null)
+			return 0;
+		synchronized (mMediaPlayer) {
+			return mMediaPlayer.getCurrentPosition();
 		}
+	}
 
-		public int getPosition()
-		{
-			if (mMediaPlayer == null)
-				return 0;
-			synchronized (mMediaPlayer) {
-				return mMediaPlayer.getCurrentPosition();
-			}
+	/**
+	 * Returns the duration of the current song in milliseconds.
+	 */
+	public int getDuration()
+	{
+		if (mMediaPlayer == null)
+			return 0;
+		synchronized (mMediaPlayer) {
+			return mMediaPlayer.getDuration();
 		}
+	}
 
-		public int getDuration()
-		{
-			if (mMediaPlayer == null)
-				return 0;
-			synchronized (mMediaPlayer) {
-				return mMediaPlayer.getDuration();
-			}
-		}
+	/**
+	 * Returns the position of the current song in the song timeline.
+	 */
+	public int getTimelinePos()
+	{
+		return mTimelinePos;
+	}
 
-		public int getTimelinePos()
-		{
-			return mTimelinePos;
+	/**
+	 * Seek to a position in the current song.
+	 *
+	 * @param progress Proportion of song completed (where 1000 is the end of the song)
+	 */
+	public void seekToProgress(int progress)
+	{
+		if (mMediaPlayer == null)
+			return;
+		synchronized (mMediaPlayer) {
+			long position = (long)mMediaPlayer.getDuration() * progress / 1000;
+			mMediaPlayer.seekTo((int)position);
 		}
-
-		public void setCurrentSong(int delta)
-		{
-			PlaybackService.this.setCurrentSong(delta);
-		}
-
-		public void toggleFlag(int flag)
-		{
-			PlaybackService.this.toggleFlag(flag);
-		}
-
-		public void seekToProgress(int progress)
-		{
-			if (mMediaPlayer == null)
-				return;
-			synchronized (mMediaPlayer) {
-				long position = (long)mMediaPlayer.getDuration() * progress / 1000;
-				mMediaPlayer.seekTo((int)position);
-			}
-		}
-	};
+	}
 
 	@Override
-	public IBinder onBind(Intent intent)
+	public IBinder onBind(Intent intents)
 	{
-		return mBinder;
+		return null;
 	}
 }

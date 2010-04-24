@@ -19,29 +19,20 @@
 package org.kreed.vanilla;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
-import android.os.RemoteException;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-public class PlaybackActivity extends Activity implements ServiceConnection, Handler.Callback {
+public class PlaybackActivity extends Activity implements Handler.Callback, View.OnClickListener {
 	Handler mHandler = new Handler(this);
 
 	CoverView mCoverView;
-	IPlaybackService mService;
 	int mState;
 
 	@Override
@@ -63,38 +54,14 @@ public class PlaybackActivity extends Activity implements ServiceConnection, Han
 	{
 		super.onStart();
 
-		Intent intent = new Intent(this, PlaybackService.class);
-		startService(intent);
-		bindService(intent, this, Context.BIND_AUTO_CREATE);
-
-		IntentFilter filter = new IntentFilter();
-		filter.addAction(PlaybackService.EVENT_CHANGED);
-		filter.addAction(PlaybackService.EVENT_REPLACE_SONG);
-		registerReceiver(mReceiver, filter);
+		startService(new Intent(this, PlaybackService.class));
 	}
 
-	@Override
-	public void onStop()
-	{
-		super.onStop();
-
-		try {
-			unbindService(this);
-		} catch (IllegalArgumentException e) {
-			// we have not registered the service yet
-		}
-		try {
-			unregisterReceiver(mReceiver);
-		} catch (IllegalArgumentException e) {
-			// we haven't registered the receiver yet
-		}
-	}
-
-	public static boolean handleKeyLongPress(Context context, int keyCode)
+	public static boolean handleKeyLongPress(int keyCode)
 	{
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_BACK:
-			ContextApplication.quit(context);
+			ContextApplication.quit();
 			return true;
 		}
 
@@ -104,30 +71,25 @@ public class PlaybackActivity extends Activity implements ServiceConnection, Han
 	@Override
 	public boolean onKeyLongPress(int keyCode, KeyEvent event)
 	{
-		return handleKeyLongPress(this, keyCode);
+		return handleKeyLongPress(keyCode);
 	}
 
 	public void onClick(View view)
 	{
-		try {
-			switch (view.getId()) {
-			case R.id.next:
-				if (mCoverView != null)
-					mCoverView.go(1);
-				mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_SONG, 1, 0));
-				break;
-			case R.id.play_pause:
-				mHandler.sendMessage(mHandler.obtainMessage(MSG_TOGGLE_FLAG, PlaybackService.FLAG_PLAYING, 0));
-				break;
-			case R.id.previous:
-				if (mCoverView != null)
-					mCoverView.go(-1);
-				mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_SONG, -1, 0));
-				break;
-			}
-		} catch (RemoteException e) {
-			Log.e("VanillaMusic", "service dead", e);
-			setService(null);
+		switch (view.getId()) {
+		case R.id.next:
+			if (mCoverView != null)
+				mCoverView.go(1);
+			mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_SONG, 1, 0));
+			break;
+		case R.id.play_pause:
+			mHandler.sendMessage(mHandler.obtainMessage(MSG_TOGGLE_FLAG, PlaybackService.FLAG_PLAYING, 0));
+			break;
+		case R.id.previous:
+			if (mCoverView != null)
+				mCoverView.go(-1);
+			mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_SONG, -1, 0));
+			break;
 		}
 	}
 
@@ -143,51 +105,33 @@ public class PlaybackActivity extends Activity implements ServiceConnection, Han
 	}
 
 	/**
-	 * Sets up components when the PlaybackService is bound to. Override to
-	 * implement further post-connection behavior.
-	 *
-	 * @param service PlaybackService interface
+	 * Sets up components when the PlaybackService is initialized and available to
+	 * interact with. Override to implement further post-initialization behavior.
 	 */
-	protected void setService(IPlaybackService service)
+	protected void onServiceReady()
 	{
-		mService = service;
-
 		if (mCoverView != null)
-			mCoverView.setPlaybackService(service);
+			mCoverView.initialize();
 
-		if (service != null) {
-			try {
-				setState(service.getState());
-			} catch (RemoteException e) {
-			}
-		}
+		setState(ContextApplication.service.getState());
 	}
 
-	public void onServiceConnected(ComponentName name, IBinder service)
+	/**
+	 * Called by PlaybackService when it broadcasts an intent.
+	 *
+	 * @param intent The intent that was broadcast.
+	 */
+	public void receive(Intent intent)
 	{
-		setService(IPlaybackService.Stub.asInterface(service));
-	}
+		String action = intent.getAction();
 
-	public void onServiceDisconnected(ComponentName name)
-	{
-		setService(null);
+		if (PlaybackService.EVENT_INITIALIZED.equals(action))
+			onServiceReady();
+		if (mCoverView != null)
+			mCoverView.receive(intent);
+		if (PlaybackService.EVENT_CHANGED.equals(action))
+			setState(intent.getIntExtra("state", 0));
 	}
-
-	protected void onServiceChange(Intent intent)
-	{
-		setState(intent.getIntExtra("state", 0));
-	}
-
-	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context context, Intent intent)
-		{
-			if (mCoverView != null)
-				mCoverView.onReceive(intent);
-			if (PlaybackService.EVENT_CHANGED.equals(intent.getAction()))
-				onServiceChange(intent);
-		}
-	};
 
 	static final int MENU_QUIT = 0;
 	static final int MENU_DISPLAY = 1;
@@ -223,7 +167,7 @@ public class PlaybackActivity extends Activity implements ServiceConnection, Han
 	{
 		switch (item.getItemId()) {
 		case MENU_QUIT:
-			ContextApplication.quit(this);
+			ContextApplication.quit();
 			return true;
 		case MENU_SHUFFLE:
 			mHandler.sendMessage(mHandler.obtainMessage(MSG_TOGGLE_FLAG, PlaybackService.FLAG_SHUFFLE, 0));
@@ -264,18 +208,10 @@ public class PlaybackActivity extends Activity implements ServiceConnection, Han
 			if (text != -1)
 				Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
 
-			try {
-				mService.toggleFlag(flag);
-			} catch (RemoteException e) {
-				setService(null);
-			}
+			ContextApplication.service.toggleFlag(flag);
 			break;
 		case MSG_SET_SONG:
-			try {
-				mService.setCurrentSong(message.arg1);
-			} catch (RemoteException e) {
-				setService(null);
-			}
+			ContextApplication.service.setCurrentSong(message.arg1);
 			break;
 		default:
 			return false;
