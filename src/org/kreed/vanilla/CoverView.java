@@ -20,18 +20,13 @@ package org.kreed.vanilla;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
-import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -41,15 +36,6 @@ import android.widget.Scroller;
 public final class CoverView extends View {
 	private static final int STORE_SIZE = 3;
 	private static int SNAP_VELOCITY = -1;
-
-	private static int TEXT_SIZE = -1;
-	private static int TEXT_SIZE_BIG;
-	private static int PADDING;
-	private static int TEXT_SIZE_MINI = -1;
-	private static int PADDING_MINI;
-	private static Bitmap SONG_ICON;
-	private static Bitmap ALBUM_ICON;
-	private static Bitmap ARTIST_ICON;
 
 	/**
 	 * The Handler with which to do background work. Must be initialized by
@@ -82,35 +68,6 @@ public final class CoverView extends View {
 			SNAP_VELOCITY = ViewConfiguration.get(context).getScaledMinimumFlingVelocity();
 	}
 
-	private static void loadTextSizes()
-	{
-		DisplayMetrics metrics = ContextApplication.getContext().getResources().getDisplayMetrics();
-		TEXT_SIZE = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, metrics);
-		TEXT_SIZE_BIG = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, metrics);
-		PADDING = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, metrics);
-	}
-
-	private static void loadMiniTextSizes()
-	{
-		DisplayMetrics metrics = ContextApplication.getContext().getResources().getDisplayMetrics();
-		TEXT_SIZE_MINI = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12, metrics);
-		PADDING_MINI = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, metrics);
-	}
-
-	private static void loadIcons()
-	{
-		Resources res = ContextApplication.getContext().getResources();
-		Bitmap bitmap = BitmapFactory.decodeResource(res, R.drawable.tab_songs_selected);
-		SONG_ICON = Bitmap.createScaledBitmap(bitmap, TEXT_SIZE, TEXT_SIZE, false);
-		bitmap.recycle();
-		bitmap = BitmapFactory.decodeResource(res, R.drawable.tab_albums_selected);
-		ALBUM_ICON = Bitmap.createScaledBitmap(bitmap, TEXT_SIZE, TEXT_SIZE, false);
-		bitmap.recycle();
-		bitmap = BitmapFactory.decodeResource(res, R.drawable.tab_artists_selected);
-		ARTIST_ICON = Bitmap.createScaledBitmap(bitmap, TEXT_SIZE, TEXT_SIZE, false);
-		bitmap.recycle();
-	}
-
 	/**
 	 * Query the service for initial song info.
 	 */
@@ -120,254 +77,13 @@ public final class CoverView extends View {
 		refreshSongs();
 	}
 
-	private static void drawText(Canvas canvas, String text, int left, int top, int width, int maxWidth, Paint paint)
-	{
-		canvas.save();
-		int offset = Math.max(0, maxWidth - width) / 2;
-		canvas.clipRect(left, top, left + maxWidth, top + paint.getTextSize() * 2);
-		canvas.drawText(text, left + offset, top - paint.ascent(), paint);
-		canvas.restore();
-	}
-
-	public static Bitmap createMiniBitmap(Song song, int width, int height)
-	{
-		if (song == null || width < 1 || height < 1)
-			return null;
-
-		if (TEXT_SIZE_MINI == -1)
-			loadMiniTextSizes();
-
-		int textSize = TEXT_SIZE_MINI;
-		int padding = PADDING_MINI;
-
-		Paint paint = new Paint();
-		paint.setAntiAlias(true);
-		paint.setTextSize(textSize);
-
-		String title = song.title == null ? "" : song.title;
-		Bitmap cover = song.getCover();
-
-		int titleWidth = (int)paint.measureText(title);
-
-		int boxWidth = width;
-		int boxHeight = Math.min(height, textSize + padding * 2);
-
-		Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
-		Canvas canvas = new Canvas(bitmap);
-
-		if (cover != null) {
-			canvas.drawBitmap(cover, null, new Rect(0, 0, width, height), paint);
-			cover.recycle();
-			cover = null;
-		}
-
-		int left = 0;
-		int top = height - boxHeight;
-		int right = width;
-		int bottom = height;
-
-		paint.setARGB(150, 0, 0, 0);
-		canvas.drawRect(left, top, right, bottom, paint);
-
-		int maxWidth = boxWidth - padding * 2;
-		paint.setARGB(255, 255, 255, 255);
-		top += padding;
-		left += padding;
-
-		drawText(canvas, title, left, top, titleWidth, maxWidth, paint);
-
-		return bitmap;
-	}
-
-	private static Bitmap createOverlappingBitmap(Song song, int width, int height)
-	{
-		if (song == null || width < 1 || height < 1)
-			return null;
-
-		if (TEXT_SIZE == -1)
-			loadTextSizes();
-
-		Paint paint = new Paint();
-		paint.setAntiAlias(true);
-
-		String title = song.title == null ? "" : song.title;
-		String album = song.album == null ? "" : song.album;
-		String artist = song.artist == null ? "" : song.artist;
-		Bitmap cover = song.getCover();
-
-		int titleSize = TEXT_SIZE_BIG;
-		int subSize = TEXT_SIZE;
-		int padding = PADDING;
-
-		paint.setTextSize(titleSize);
-		int titleWidth = (int)paint.measureText(title);
-		paint.setTextSize(subSize);
-		int albumWidth = (int)paint.measureText(album);
-		int artistWidth = (int)paint.measureText(artist);
-
-		int boxWidth = Math.min(width, Math.max(titleWidth, Math.max(artistWidth, albumWidth)) + padding * 2);
-		int boxHeight = Math.min(height, titleSize + subSize * 2 + padding * 4);
-
-		int coverWidth;
-		int coverHeight;
-
-		if (cover == null) {
-			coverWidth = 0;
-			coverHeight = 0;
-		} else {
-			coverWidth = cover.getWidth();
-			coverHeight = cover.getHeight();
-
-			float scale;
-			if ((float)coverWidth / coverHeight > (float)width / height)
-				scale = (float)width / coverWidth;
-			else
-				scale = (float)height / coverHeight;
-
-			coverWidth *= scale;
-			coverHeight *= scale;
-		}
-
-		int bitmapWidth = Math.max(coverWidth, boxWidth);
-		int bitmapHeight = Math.max(coverHeight, boxHeight);
-
-		Bitmap bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.RGB_565);
-		Canvas canvas = new Canvas(bitmap);
-
-		if (cover != null) {
-			Rect rect = new Rect(0, 0, bitmapWidth, bitmapHeight);
-			canvas.drawBitmap(cover, null, rect, paint);
-			cover.recycle();
-			cover = null;
-		}
-
-		int left = (bitmapWidth - boxWidth) / 2;
-		int top = (bitmapHeight - boxHeight) / 2;
-		int right = (bitmapWidth + boxWidth) / 2;
-		int bottom = (bitmapHeight + boxHeight) / 2;
-
-		paint.setARGB(150, 0, 0, 0);
-		canvas.drawRect(left, top, right, bottom, paint);
-
-		int maxWidth = boxWidth - padding * 2;
-		paint.setARGB(255, 255, 255, 255);
-		top += padding;
-		left += padding;
-
-		paint.setTextSize(titleSize);
-		drawText(canvas, title, left, top, titleWidth, maxWidth, paint);
-		top += titleSize + padding;
-
-		paint.setTextSize(subSize);
-		drawText(canvas, album, left, top, albumWidth, maxWidth, paint);
-		top += subSize + padding;
-
-		drawText(canvas, artist, left, top, artistWidth, maxWidth, paint);
-
-		return bitmap;
-	}
-
-	private static Bitmap createSeparatedBitmap(Song song, int width, int height)
-	{
-		if (song == null || width < 1 || height < 1)
-			return null;
-
-		if (TEXT_SIZE == -1)
-			loadTextSizes();
-		if (SONG_ICON == null)
-			loadIcons();
-
-		boolean horizontal = width > height;
-
-		Paint paint = new Paint();
-		paint.setAntiAlias(true);
-
-		String title = song.title == null ? "" : song.title;
-		String album = song.album == null ? "" : song.album;
-		String artist = song.artist == null ? "" : song.artist;
-		Bitmap cover = song.getCover();
-
-		int textSize = TEXT_SIZE;
-		int padding = PADDING;
-
-		int coverWidth;
-		int coverHeight;
-
-		if (cover == null) {
-			coverWidth = 0;
-			coverHeight = 0;
-		} else {
-			coverWidth = cover.getWidth();
-			coverHeight = cover.getHeight();
-
-			float scale;
-			if ((float)coverWidth / coverHeight > (float)width / height)
-				scale = (float)width / coverWidth;
-			else
-				scale = (float)height / coverHeight;
-
-			coverWidth *= scale;
-			coverHeight *= scale;
-		}
-
-		paint.setTextSize(textSize);
-		int titleWidth = (int)paint.measureText(title);
-		int albumWidth = (int)paint.measureText(album);
-		int artistWidth = (int)paint.measureText(artist);
-
-		int maxBoxWidth = horizontal ? width - coverWidth : width;
-		int maxBoxHeight = horizontal ? height : height - coverHeight;
-		int boxWidth = Math.min(maxBoxWidth, textSize + Math.max(titleWidth, Math.max(artistWidth, albumWidth)) + padding * 3);
-		int boxHeight = Math.min(maxBoxHeight, textSize * 3 + padding * 4);
-
-		int bitmapWidth = (int)(horizontal ? coverWidth + boxWidth : Math.max(coverWidth, boxWidth));
-		int bitmapHeight = (int)(horizontal ? Math.max(coverHeight, boxHeight) : coverHeight + boxHeight);
-
-		Bitmap bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.RGB_565);
-		Canvas canvas = new Canvas(bitmap);
-
-		if (cover != null) {
-			RectF rect = new RectF(0, 0, coverWidth, coverHeight);
-			canvas.drawBitmap(cover, null, rect, paint);
-			cover.recycle();
-			cover = null;
-		}
-
-		int top;
-		int left;
-
-		if (horizontal) {
-			top = (bitmapHeight - boxHeight) / 2;
-			left = padding + coverWidth;
-		} else {
-			top = padding + coverHeight;
-			left = padding;
-		}
-
-		int maxWidth = boxWidth - padding * 3 - textSize;
-		paint.setARGB(255, 255, 255, 255);
-
-		canvas.drawBitmap(SONG_ICON, left, top, paint);
-		drawText(canvas, title, left + padding + textSize, top, maxWidth, maxWidth, paint);
-		top += textSize + padding;
-
-		canvas.drawBitmap(ALBUM_ICON, left, top, paint);
-		drawText(canvas, album, left + padding + textSize, top, maxWidth, maxWidth, paint);
-		top += textSize + padding;
-
-		canvas.drawBitmap(ARTIST_ICON, left, top, paint);
-		drawText(canvas, artist, left + padding + textSize, top, maxWidth, maxWidth, paint);
-
-		return bitmap;
-	}
-
 	private void createBitmap(int i)
 	{
 		Bitmap oldBitmap = mBitmaps[i];
 		if (mSeparateInfo)
-			mBitmaps[i] = createSeparatedBitmap(mSongs[i], getWidth(), getHeight());
+			mBitmaps[i] = CoverBitmap.createSeparatedBitmap(mSongs[i], getWidth(), getHeight());
 		else
-			mBitmaps[i] = createOverlappingBitmap(mSongs[i], getWidth(), getHeight());
+			mBitmaps[i] = CoverBitmap.createOverlappingBitmap(mSongs[i], getWidth(), getHeight());
 		postInvalidate();
 		if (oldBitmap != null)
 			oldBitmap.recycle();

@@ -81,7 +81,7 @@ public class OneCellWidget extends AppWidgetProvider {
 			views.setImageViewResource(R.id.cover_view, R.drawable.icon);
 		} else {
 			int size = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 72, context.getResources().getDisplayMetrics());
-			views.setImageViewBitmap(R.id.cover_view, CoverView.createMiniBitmap(song, size, size));
+			views.setImageViewBitmap(R.id.cover_view, CoverBitmap.createCompactBitmap(song, size, size));
 		}
 
 		return views;
