@@ -24,16 +24,20 @@
 		android:label="@string/app_name"
 		android:name="ContextApplication">
 		<activity
-			android:name="FullPlaybackActivity"
-			android:theme="@style/NoBackground"
-			android:launchMode="singleTop" >
+			android:name="LaunchActivity"
+			android:theme="@style/NoBackground">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
 		<activity
+			android:name="FullPlaybackActivity"
+			android:theme="@style/NoBackground"
+			android:launchMode="singleTop" />
+		<activity
 			android:name="SongSelector"
+			android:launchMode="singleTop"
 			android:theme="@android:style/Theme.Black.NoTitleBar" />
 		<activity
 			android:name="MiniPlaybackActivity"

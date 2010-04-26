@@ -42,7 +42,7 @@ public class SongNotification extends Notification {
 		contentView = views;
 		icon = statusIcon;
 		flags |= Notification.FLAG_ONGOING_EVENT;
-		Intent intent = new Intent(context, remoteView ? MiniPlaybackActivity.class : FullPlaybackActivity.class);
+		Intent intent = new Intent(context, remoteView ? MiniPlaybackActivity.class : LaunchActivity.class);
 		contentIntent = PendingIntent.getActivity(context, 0, intent, 0);
 	}
 }

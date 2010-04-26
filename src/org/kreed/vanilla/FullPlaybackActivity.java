@@ -54,15 +54,13 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	{
 		super.onCreate(icicle);
 
-		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-		if (icicle == null && settings.getBoolean("selector_on_startup", false))
-			startActivity(new Intent(this, SongSelector.class));
-
 		setContentView(R.layout.full_playback);
 
 		mCoverView = (CoverView)findViewById(R.id.cover_view);
 		mCoverView.mHandler = mHandler;
 		mCoverView.setOnClickListener(this);
+
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
 		mCoverView.mSeparateInfo = settings.getBoolean("separate_info", false);
 
 		mControlsTop = findViewById(R.id.controls_top);
@@ -260,7 +258,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	{
 		switch (message.what) {
 		case MSG_SAVE_DISPLAY_MODE:
-			SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(FullPlaybackActivity.this);
+			SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
 			SharedPreferences.Editor editor = settings.edit();
 			editor.putBoolean("separate_info", mCoverView.mSeparateInfo);
 			editor.commit();
