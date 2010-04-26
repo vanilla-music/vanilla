@@ -124,9 +124,10 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 			mPlayPauseButton.setOnClickListener(this);
 			next.setOnClickListener(this);
 
-			if (ContextApplication.service != null) {
-				setState(ContextApplication.service.getState());
-				onSongChange(ContextApplication.service.getSong(0));
+			if (ContextApplication.hasService()) {
+				PlaybackService service = ContextApplication.getService();
+				setState(service.getState());
+				onSongChange(service.getSong(0));
 			}
 		} else if (!status && mStatus != null) {
 			mStatus.setVisibility(View.GONE);
@@ -143,7 +144,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		super.onServiceReady();
 
 		if (mStatusText != null)
-			onSongChange(ContextApplication.service.getSong(0));
+			onSongChange(ContextApplication.getService().getSong(0));
 	}
 
 	@Override

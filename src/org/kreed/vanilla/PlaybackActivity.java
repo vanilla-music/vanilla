@@ -65,9 +65,10 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	{
 		super.onStart();
 
-		startService(new Intent(this, PlaybackService.class));
-		if (ContextApplication.service != null)
+		if (ContextApplication.hasService())
 			onServiceReady();
+		else
+			startService(new Intent(this, PlaybackService.class));
 	}
 
 	public static boolean handleKeyLongPress(int keyCode)
@@ -138,7 +139,7 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	{
 		if (mCoverView != null)
 			mCoverView.initialize();
-		setState(ContextApplication.service.getState());
+		setState(ContextApplication.getService().getState());
 	}
 
 	/**
@@ -233,10 +234,10 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 			if (text != -1)
 				Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
 
-			ContextApplication.service.toggleFlag(flag);
+			ContextApplication.getService().toggleFlag(flag);
 			break;
 		case MSG_SET_SONG:
-			ContextApplication.service.setCurrentSong(message.arg1);
+			ContextApplication.getService().setCurrentSong(message.arg1);
 			break;
 		default:
 			return false;

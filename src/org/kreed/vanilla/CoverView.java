@@ -93,7 +93,7 @@ public final class CoverView extends View {
 	 */
 	public void initialize()
 	{
-		mTimelinePos = ContextApplication.service.getTimelinePos();
+		mTimelinePos = ContextApplication.getService().getTimelinePos();
 		querySongs(true);
 	}
 
@@ -341,9 +341,10 @@ public final class CoverView extends View {
 	 */
 	private void querySongs(boolean force)
 	{
+		PlaybackService service = ContextApplication.getService();
 		for (int i = STORE_SIZE; --i != -1; ) {
 			if (force || mSongs[i] == null)
-				setSong(i, ContextApplication.service.getSong(i - STORE_SIZE / 2));
+				setSong(i, service.getSong(i - STORE_SIZE / 2));
 		}
 	}
 

@@ -32,12 +32,8 @@ import android.content.Intent;
 public class ContextApplication extends Application {
 	private static ContextApplication mInstance;
 	private static ArrayList<Activity> mActivities;
+	private static PlaybackService mService;
 	private static Random mRandom;
-
-	/**
-	 * The PlaybackService instance, if any.
-	 */
-	public static PlaybackService service;
 
 	public ContextApplication()
 	{
@@ -60,6 +56,44 @@ public class ContextApplication extends Application {
 	public static Context getContext()
 	{
 		return mInstance;
+	}
+
+	/**
+	 * Return the PlaybackService instance, creating one if needed.
+	 */
+	public static PlaybackService getService()
+	{
+		if (mService == null) {
+			mInstance.startService(new Intent(mInstance, PlaybackService.class));
+			while (mService == null) {
+				try {
+					mInstance.wait();
+				} catch (InterruptedException e) {
+				}
+			}
+		}
+
+		return mService;
+	}
+
+	/**
+	 * Returns whether a PlaybackService instance is active.
+	 */
+	public static boolean hasService()
+	{
+		return mService != null;
+	}
+
+	/**
+	 * Set the PlaybackService instance to <code>service</code> and notify all
+	 * clients waiting for an instance.
+	 */
+	public static void setService(PlaybackService service)
+	{
+		mService = service;
+		synchronized (mInstance) {
+			mInstance.notifyAll();
+		}
 	}
 
 	/**

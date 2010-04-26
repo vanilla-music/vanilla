@@ -120,8 +120,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	@Override
 	public void onCreate()
 	{
-		ContextApplication.service = this;
-
 		HandlerThread thread = new HandlerThread("PlaybackService");
 		thread.start();
 
@@ -138,6 +136,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		} else {
 			mSongTimeline = new ArrayList<Song>();
 		}
+
+		ContextApplication.setService(this);
 
 		mLooper = thread.getLooper();
 		mHandler = new Handler(mLooper, this);
@@ -191,7 +191,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	@Override
 	public void onDestroy()
 	{
-		ContextApplication.service = null;
+		ContextApplication.setService(null);
 
 		super.onDestroy();
 
