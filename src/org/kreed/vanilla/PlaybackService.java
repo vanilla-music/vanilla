@@ -58,9 +58,9 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	private static final int NOTIFICATION_ID = 2;
 	private static final int DOUBLE_CLICK_DELAY = 400;
 
-	public static final String TOGGLE_PLAYBACK = "org.kreed.vanilla.action.TOGGLE_PLAYBACK";
-	public static final String NEXT_SONG = "org.kreed.vanilla.action.NEXT_SONG";
-	public static final String PREVIOUS_SONG = "org.kreed.vanilla.action.PREVIOUS_SONG";
+	public static final String ACTION_TOGGLE_PLAYBACK = "org.kreed.vanilla.action.TOGGLE_PLAYBACK";
+	public static final String ACTION_NEXT_SONG = "org.kreed.vanilla.action.NEXT_SONG";
+	public static final String ACTION_PREVIOUS_SONG = "org.kreed.vanilla.action.PREVIOUS_SONG";
 
 	public static final String EVENT_REPLACE_SONG = "org.kreed.vanilla.event.REPLACE_SONG";
 	public static final String EVENT_CHANGED = "org.kreed.vanilla.event.CHANGED";
@@ -151,12 +151,12 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			String action = intent.getAction();
 			int delta;
 
-			if (TOGGLE_PLAYBACK.equals(action)) {
+			if (ACTION_TOGGLE_PLAYBACK.equals(action)) {
 				delta = 0;
-			} else if (NEXT_SONG.equals(action)) {
+			} else if (ACTION_NEXT_SONG.equals(action)) {
 				delta = 1;
 				broadcastReplaceSong(0, getSong(+1));
-			} else if (PREVIOUS_SONG.equals(action)) {
+			} else if (ACTION_PREVIOUS_SONG.equals(action)) {
 				delta = -1;
 			} else if (Intent.ACTION_MEDIA_BUTTON.equals(action)) {
 				delta = 10;

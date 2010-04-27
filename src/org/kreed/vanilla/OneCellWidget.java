@@ -70,11 +70,11 @@ public class OneCellWidget extends AppWidgetProvider {
 		}
 
 		Intent playPause = new Intent(context, PlaybackService.class);
-		playPause.setAction(PlaybackService.TOGGLE_PLAYBACK);
+		playPause.setAction(PlaybackService.ACTION_TOGGLE_PLAYBACK);
 		views.setOnClickPendingIntent(R.id.play_pause, PendingIntent.getService(context, 0, playPause, 0));
 
 		Intent next = new Intent(context, PlaybackService.class);
-		next.setAction(PlaybackService.NEXT_SONG);
+		next.setAction(PlaybackService.ACTION_NEXT_SONG);
 		views.setOnClickPendingIntent(R.id.next, PendingIntent.getService(context, 0, next, 0));
 
 		if (song == null) {
