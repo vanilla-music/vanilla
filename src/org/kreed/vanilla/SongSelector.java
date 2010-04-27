@@ -63,7 +63,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 
 	private ViewGroup mLimiterViews;
 
-	private int mDefaultAction;
+	private String mDefaultAction;
 	private boolean mDefaultIsLastAction;
 
 	private long mLastActedId;
@@ -134,7 +134,9 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 			mStatus = null;
 		}
 
-		mDefaultAction = Integer.parseInt(settings.getString("default_action_int", "0"));
+		int action = Integer.parseInt(settings.getString("default_action_int", "0"));
+		mDefaultAction = action == 1 ? PlaybackService.ACTION_ENQUEUE_ITEMS : PlaybackService.ACTION_PLAY_ITEMS;
+		mDefaultIsLastAction = action == 2;
 		mLastActedId = 0;
 	}
 
@@ -156,6 +158,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 				mTextFilter.setText("");
 				setSearchBoxVisible(false);
 			} else {
+				sendFinishEnqueueing();
 				finish();
 			}
 			return true;
@@ -178,9 +181,9 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		return false;
 	}
 
-	private void sendSongIntent(MediaAdapter.MediaView view, int action)
+	private void sendSongIntent(MediaAdapter.MediaView view, String action)
 	{
-		int res = action == PlaybackService.ACTION_PLAY ? R.string.playing : R.string.enqueued;
+		int res = PlaybackService.ACTION_PLAY_ITEMS.equals(action) ? R.string.playing : R.string.enqueued;
 		String text = getResources().getString(res, view.getTitle());
 		Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
 
@@ -188,12 +191,22 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		int field = view.getFieldCount();
 
 		Intent intent = new Intent(this, PlaybackService.class);
+		intent.setAction(action);
 		intent.putExtra("type", field);
-		intent.putExtra("action", action);
 		intent.putExtra("id", id);
 		startService(intent);
 
 		mLastActedId = id;
+	}
+
+	/**
+	 * Tell the PlaybackService that we are finished enqueuing songs.
+	 */
+	private void sendFinishEnqueueing()
+	{
+		Intent intent = new Intent(this, PlaybackService.class);
+		intent.setAction(PlaybackService.ACTION_FINISH_ENQUEUEING);
+		startService(intent);
 	}
 
 	private void expand(MediaAdapter.MediaView view)
@@ -322,13 +335,13 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	public boolean onContextItemSelected(MenuItem item)
 	{
 		MediaAdapter.MediaView view = (MediaAdapter.MediaView)((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).targetView;
-		int action = PlaybackService.ACTION_PLAY;
+		String action = PlaybackService.ACTION_PLAY_ITEMS;
 		switch (item.getItemId()) {
 		case MENU_EXPAND:
 			expand(view);
 			break;
 		case MENU_ENQUEUE:
-			action = PlaybackService.ACTION_ENQUEUE;
+			action = PlaybackService.ACTION_ENQUEUE_ITEMS;
 			// fall through
 		case MENU_PLAY:
 			if (mDefaultIsLastAction)
@@ -358,6 +371,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 			setSearchBoxVisible(!mSearchBoxVisible);
 			return true;
 		case MENU_PLAYBACK:
+			sendFinishEnqueueing();
 			startActivity(new Intent(this, FullPlaybackActivity.class));
 			return true;
 		default:

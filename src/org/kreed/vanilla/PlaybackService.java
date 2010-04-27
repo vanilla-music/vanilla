@@ -61,13 +61,46 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	public static final String ACTION_TOGGLE_PLAYBACK = "org.kreed.vanilla.action.TOGGLE_PLAYBACK";
 	public static final String ACTION_NEXT_SONG = "org.kreed.vanilla.action.NEXT_SONG";
 	public static final String ACTION_PREVIOUS_SONG = "org.kreed.vanilla.action.PREVIOUS_SONG";
+	/*
+	 * Intent action that may be invoked through startService.
+	 *
+	 * Given a song or group of songs, play the first and enqueues the rest after
+	 * it.
+	 *
+	 * If FLAG_SHUFFLE is enabled, songs will be added to the song timeline in
+	 * random order, otherwise, songs will be ordered by album name and then
+	 * track number.
+	 *
+	 * Requires two extras: "type", which can be 1, 2, or 3, indicating artist,
+	 * album, or song respectively, and "id", which is the MediaStore id for the
+	 * song, album, or artist.
+	 */
+	public static final String ACTION_PLAY_ITEMS = "org.kreed.vanilla.action.PLAY_ITEMS";
+	/*
+	 * Intent action that may be invoked through startService.
+	 *
+	 * Enqueues a song or group of songs.
+	 *
+	 * The first song from the group will be placed in the timeline either
+	 * after the last enqueued song or after the playing song if the queue is
+	 * empty. If FLAG_SHUFFLE is enabled, songs will be added to the song
+	 * timeline in random order, otherwise, songs will be ordered by album name
+	 * and then track number.
+	 *
+	 * Requires two extras: "type", which can be 1, 2, or 3, indicating artist,
+	 * album, or song respectively, and "id", which is the MediaStore id for the
+	 * song, album, or artist.
+	 */
+	public static final String ACTION_ENQUEUE_ITEMS = "org.kreed.vanilla.action.ENQUEUE_ITEMS";
+	/*
+	 * Reset the position at which songs are enqueued, that is, new songs will
+	 * be placed directly after the playing song after this action is invoked.
+	 */
+	public static final String ACTION_FINISH_ENQUEUEING = "org.kreed.vanilla.action.FINISH_ENQUEUEING";
 
 	public static final String EVENT_REPLACE_SONG = "org.kreed.vanilla.event.REPLACE_SONG";
 	public static final String EVENT_CHANGED = "org.kreed.vanilla.event.CHANGED";
 	public static final String EVENT_INITIALIZED = "org.kreed.vanilla.event.INITIALIZED";
-
-	public static final int ACTION_PLAY = 0;
-	public static final int ACTION_ENQUEUE = 1;
 
 	public static final int FLAG_NO_MEDIA = 0x2;
 	public static final int FLAG_PLAYING = 0x1;
@@ -144,48 +177,62 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		mHandler.sendEmptyMessage(CREATE);
 	}
 
+	/*
+	 * Show a Toast that notifies the user the Service is starting up. Useful
+	 * to provide a quick reponse to play/pause and next events from widgets
+	 * when we must initialize the service before acting on the event.
+	 */
+	private void showStartupToast()
+	{
+		Toast.makeText(this, R.string.starting, Toast.LENGTH_SHORT).show();
+	}
+
 	@Override
 	public void onStart(Intent intent, int flags)
 	{
 		if (intent != null) {
 			String action = intent.getAction();
-			int delta;
+			int delta = -10;
 
 			if (ACTION_TOGGLE_PLAYBACK.equals(action)) {
 				delta = 0;
 			} else if (ACTION_NEXT_SONG.equals(action)) {
 				delta = 1;
+				// Preemptively broadcast an update in attempt to hasten UI
+				// feedback.
 				broadcastReplaceSong(0, getSong(+1));
 			} else if (ACTION_PREVIOUS_SONG.equals(action)) {
 				delta = -1;
 			} else if (Intent.ACTION_MEDIA_BUTTON.equals(action)) {
-				delta = 10;
-			} else {
-				delta = -10;
-			}
-
-			if (delta != -10) {
-				boolean showLoading = !mLoaded;
-
-				if (delta == 10 && !handleMediaKey((KeyEvent)intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT))) {
+				KeyEvent event = intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
+				boolean handled = handleMediaKey(event);
+				if (handled) {
+					if (!mLoaded)
+						showStartupToast();
+				} else {
 					// We aborted this broadcast in MediaButtonReceiver.
 					// Since we did not handle it, we should pass it on
 					// to others.
 					intent.setComponent(null);
+					// Make sure we don't try to handle this again.
 					intent.putExtra("org.kreed.vanilla.resent", true);
 					sendOrderedBroadcast(intent, null);
-					showLoading = false;
 				}
+			} else if (ACTION_PLAY_ITEMS.equals(action)) {
+				chooseSongs(false, intent.getIntExtra("type", 3), intent.getLongExtra("id", -1));
+			} else if (ACTION_ENQUEUE_ITEMS.equals(action)) {
+				chooseSongs(true, intent.getIntExtra("type", 3), intent.getLongExtra("id", -1));
+			} else if (ACTION_FINISH_ENQUEUEING.equals(action)) {
+				mQueuePos = 0;
+			}
 
-				if (showLoading)
-					Toast.makeText(this, R.string.starting, Toast.LENGTH_SHORT).show();
+			if (delta != -10) {
+				if (!mLoaded)
+					showStartupToast();
 
-				if (delta != 10)
-					go(delta, false);
+				go(delta, false);
 			}
 		}
-
-		mHandler.sendMessage(mHandler.obtainMessage(DO_ITEM, intent));
 	}
 
 	@Override
@@ -624,7 +671,18 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		return song;
 	}
 
-	private void chooseSongs(long id, int type, int action)
+	/*
+	 * Add a set of songs to the song timeline. There are two modes: play and
+	 * enqueue. Play will play the first song in the set immediately and enqueue
+	 * the remaining songs directly after it. Enqueue will place the set after
+	 * the last enqueued item or after the currently playing item if the queue
+	 * is empty.
+	 *
+	 * @param enqueue If true, enqueue the set. If false, play the set.
+	 * @param type 1, 2, or 3, indicating artist, album, or song, respectively.
+	 * @param id The MediaStore id of the artist, album, or song.
+	 */
+	private void chooseSongs(boolean enqueue, int type, long id)
 	{
 		long[] songs = Song.getAllSongIdsWith(type, id);
 		if (songs == null || songs.length == 0)
@@ -644,8 +702,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 		ArrayList<Song> timeline = mSongTimeline;
 		synchronized (timeline) {
-			switch (action) {
-			case ACTION_ENQUEUE:
+			if (enqueue) {
 				int i = mTimelinePos + mQueuePos + 1;
 				if (i < timeline.size())
 					timeline.subList(i, timeline.size()).clear();
@@ -654,8 +711,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 					timeline.add(new Song(songs[j]));
 
 				mQueuePos += songs.length;
-				break;
-			case ACTION_PLAY:
+			} else {
 				timeline.subList(mTimelinePos + 1, timeline.size()).clear();
 
 				for (int j = 0; j != songs.length; ++j)
@@ -664,7 +720,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				mQueuePos += songs.length - 1;
 
 				mHandler.sendEmptyMessage(TRACK_CHANGED);
-				break;
 			}
 		}
 
@@ -842,7 +897,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	private static final int POST_CREATE = 1;
 	private static final int MEDIA_BUTTON = 2;
 	private static final int CREATE = 3;
-	private static final int DO_ITEM = 4;
 	private static final int TRACK_CHANGED = 5;
 	private static final int RELEASE_WAKE_LOCK = 6;
 	private static final int SAVE_STATE = 12;
@@ -851,14 +905,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	public boolean handleMessage(Message message)
 	{
 		switch (message.what) {
-		case DO_ITEM:
-			Intent intent = (Intent)message.obj;
-			long id;
-			if (intent == null || (id = intent.getLongExtra("id", -1)) == -1)
-				mQueuePos = 0;
-			else
-				chooseSongs(id, intent.getIntExtra("type", 3), intent.getIntExtra("action", ACTION_PLAY));
-			break;
 		case MEDIA_BUTTON:
 			toggleFlag(FLAG_PLAYING);
 			break;
