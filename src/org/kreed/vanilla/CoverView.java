@@ -303,16 +303,21 @@ public final class CoverView extends View {
 		int[] timeline = mCacheTimeline;
 		int i = timeline.length;
 		while (--i != -1 && timeline[i] == 0);
-		if (i == timeline.length - 1) {
+		int j = i + 1;
+		while (--j != -1 && timeline[j] != id);
+		if (j != -1) {
+			System.arraycopy(timeline, j + 1, timeline, j, timeline.length - j - 1);
+		} else if (i == timeline.length - 1) {
 			int toRemove = timeline[0];
 			System.arraycopy(timeline, 1, timeline, 0, timeline.length - 1);
 			Bitmap bitmap = mBitmapCache.get(toRemove);
 			mBitmapCache.remove(toRemove);
 			if (bitmap != null)
 				bitmap.recycle();
-		} else {
-			++i;
 		}
+
+		if (i < timeline.length - 1)
+			++i;
 
 		timeline[i] = id;
 	}
