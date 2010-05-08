@@ -28,6 +28,7 @@ import android.database.ContentObserver;
 import android.graphics.Color;
 import android.graphics.drawable.PaintDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
@@ -417,7 +418,8 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 			setupView(R.id.song_list, new SongMediaAdapter(this));
 
 			ContentResolver resolver = getContentResolver();
-			resolver.registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, mObserver);
+			Observer observer = new Observer(mHandler);
+			resolver.registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, observer);
 			break;
 		default:
 			return false;
@@ -426,12 +428,22 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		return true;
 	}
 
-	private ContentObserver mObserver = new ContentObserver(mHandler) {
+	private class Observer extends ContentObserver {
+		public Observer(Handler handler)
+		{
+			super(handler);
+		}
+
 		@Override
 		public void onChange(boolean selfChange)
 		{
-			for (int i = 0; i != 3; ++i)
-				getAdapter(i).requery();
+			runOnUiThread(new Runnable() {
+				public void run()
+				{
+					for (int i = 0; i != 3; ++i)
+						getAdapter(i).requery();
+				}
+			});
 		}
 	};
 
