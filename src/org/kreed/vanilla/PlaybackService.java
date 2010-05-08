@@ -61,7 +61,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	public static final String ACTION_TOGGLE_PLAYBACK = "org.kreed.vanilla.action.TOGGLE_PLAYBACK";
 	public static final String ACTION_NEXT_SONG = "org.kreed.vanilla.action.NEXT_SONG";
 	public static final String ACTION_PREVIOUS_SONG = "org.kreed.vanilla.action.PREVIOUS_SONG";
-	/*
+	/**
 	 * Intent action that may be invoked through startService.
 	 *
 	 * Given a song or group of songs, play the first and enqueues the rest after
@@ -76,7 +76,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 * song, album, or artist.
 	 */
 	public static final String ACTION_PLAY_ITEMS = "org.kreed.vanilla.action.PLAY_ITEMS";
-	/*
+	/**
 	 * Intent action that may be invoked through startService.
 	 *
 	 * Enqueues a song or group of songs.
@@ -92,7 +92,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 * song, album, or artist.
 	 */
 	public static final String ACTION_ENQUEUE_ITEMS = "org.kreed.vanilla.action.ENQUEUE_ITEMS";
-	/*
+	/**
 	 * Reset the position at which songs are enqueued, that is, new songs will
 	 * be placed directly after the playing song after this action is invoked.
 	 */
@@ -177,7 +177,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		mHandler.sendEmptyMessage(CREATE);
 	}
 
-	/*
+	/**
 	 * Show a Toast that notifies the user the Service is starting up. Useful
 	 * to provide a quick reponse to play/pause and next events from widgets
 	 * when we must initialize the service before acting on the event.
@@ -671,7 +671,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		return song;
 	}
 
-	/*
+	/**
 	 * Add a set of songs to the song timeline. There are two modes: play and
 	 * enqueue. Play will play the first song in the set immediately and enqueue
 	 * the remaining songs directly after it. Enqueue will place the set after
