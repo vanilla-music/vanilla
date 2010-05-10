@@ -22,6 +22,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -126,8 +127,11 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 		}
 
 		if (constraint != null && constraint.length() != 0) {
-			String[] constraints = constraint.toString().split("\\s+");
-			int size = constraints.length;
+			String colKey = MediaStore.Audio.keyFor(constraint.toString());
+			String spaceColKey = DatabaseUtils.getCollationKey(" ");
+			String[] colKeys = colKey.split(spaceColKey);
+
+			int size = colKeys.length;
 			if (limiter != null)
 				++size;
 			selectionArgs = new String[size];
@@ -136,11 +140,13 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 				selectionArgs[0] = limiter;
 				i = 1;
 			}
+
 			String keys = mFieldKeys[0];
 			for (int j = 1; j != mFieldKeys.length; ++j)
 				keys += "||" + mFieldKeys[j];
-			for (int j = 0; j != constraints.length; ++i, ++j) {
-				selectionArgs[i] = '%' + MediaStore.Audio.keyFor(constraints[j]) + '%';
+
+			for (int j = 0; j != colKeys.length; ++i, ++j) {
+				selectionArgs[i] = '%' + colKeys[j] + '%';
 
 				if (j != 0 || selection.length() != 0)
 					selection.append(" AND ");
