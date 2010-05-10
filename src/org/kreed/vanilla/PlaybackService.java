@@ -21,9 +21,6 @@ package org.kreed.vanilla;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Random;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -54,7 +51,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.Toast;
 
-public final class PlaybackService extends Service implements Handler.Callback, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, SharedPreferences.OnSharedPreferenceChangeListener {	
+public final class PlaybackService extends Service implements Handler.Callback, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, SharedPreferences.OnSharedPreferenceChangeListener, SongTimeline.Callback {	
 	private static final int NOTIFICATION_ID = 2;
 	private static final int DOUBLE_CLICK_DELAY = 400;
 
@@ -128,9 +125,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	private AudioManager mAudioManager;
 	private NotificationManager mNotificationManager;
 
-	private ArrayList<Song> mSongTimeline;
-	int mTimelinePos;
-	private int mQueuePos;
+	SongTimeline mTimeline;
 	int mState = 0x80;
 	Object mStateLock = new Object();
 	boolean mPlayingBeforeCall;
@@ -143,8 +138,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	private boolean mIgnoreNextUp;
 	private boolean mLoaded;
 	boolean mInCall;
-	private int mRepeatStart = -1;
-	private ArrayList<Song> mRepeatedSongs;
 
 	private Method mIsWiredHeadsetOn;
 	private Method mStartForeground;
@@ -156,19 +149,13 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		HandlerThread thread = new HandlerThread("PlaybackService");
 		thread.start();
 
-		PlaybackServiceState state = new PlaybackServiceState();
-		if (state.load(this)) {
-			mSongTimeline = new ArrayList<Song>(state.savedIds.length);
-			mTimelinePos = state.savedIndex;
-			mPendingSeek = state.savedSeek;
-			mState |= state.savedState;
-			mRepeatStart = state.repeatStart;
-
-			for (int i = 0; i != state.savedIds.length; ++i)
-				mSongTimeline.add(new Song(state.savedIds[i], state.savedFlags[i]));
-		} else {
-			mSongTimeline = new ArrayList<Song>();
-		}
+		mTimeline = new SongTimeline();
+		mTimeline.setCallback(this);
+		mPendingSeek = mTimeline.loadState(this);
+		if (mTimeline.isRepeating())
+			mState |= FLAG_REPEAT;
+		if (mTimeline.isShuffling())
+			mState |= FLAG_SHUFFLE;
 
 		ContextApplication.setService(this);
 
@@ -179,7 +166,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 	/**
 	 * Show a Toast that notifies the user the Service is starting up. Useful
-	 * to provide a quick reponse to play/pause and next events from widgets
+	 * to provide a quick response to play/pause and next events from widgets
 	 * when we must initialize the service before acting on the event.
 	 */
 	private void showStartupToast()
@@ -219,11 +206,14 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 					sendOrderedBroadcast(intent, null);
 				}
 			} else if (ACTION_PLAY_ITEMS.equals(action)) {
-				chooseSongs(false, intent.getIntExtra("type", 3), intent.getLongExtra("id", -1));
+				mTimeline.chooseSongs(false, intent.getIntExtra("type", 3), intent.getLongExtra("id", -1));
+				mHandler.sendEmptyMessage(TRACK_CHANGED);
 			} else if (ACTION_ENQUEUE_ITEMS.equals(action)) {
-				chooseSongs(true, intent.getIntExtra("type", 3), intent.getLongExtra("id", -1));
+				mTimeline.chooseSongs(true, intent.getIntExtra("type", 3), intent.getLongExtra("id", -1));
+				mHandler.removeMessages(SAVE_STATE);
+				mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
 			} else if (ACTION_FINISH_ENQUEUEING.equals(action)) {
-				mQueuePos = 0;
+				mTimeline.finishEnqueueing();
 			}
 
 			if (delta != -10) {
@@ -242,10 +232,9 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 		super.onDestroy();
 
-		if (mSongTimeline != null)
-			saveState(true);
-
 		if (mMediaPlayer != null) {
+			mTimeline.saveState(this, mMediaPlayer.getCurrentPosition());
+
 			unsetFlag(FLAG_PLAYING);
 			mMediaPlayer.release();
 			mMediaPlayer = null;
@@ -259,7 +248,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			// we haven't registered the receiver yet
 		}
 
-		// Renable the external receiver
+		// Re-enable the external receiver
 		PackageManager manager = getPackageManager();
 		manager.setComponentEnabledSetting(new ComponentName(this, MediaButtonReceiver.class), PackageManager.COMPONENT_ENABLED_STATE_DEFAULT, PackageManager.DONT_KILL_APP);
 
@@ -303,7 +292,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 	private void initialize()
 	{
-		sendBroadcast(new Intent(EVENT_INITIALIZED));
+		ContextApplication.broadcast(new Intent(EVENT_INITIALIZED));
 
 		mMediaPlayer = new MediaPlayer();
 		mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -381,24 +370,12 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		}
 	}
 
-	@Override
-	public void sendBroadcast(Intent intent)
-	{
-		ContextApplication.broadcast(intent);
-		super.sendBroadcast(intent);
-	}
-
 	private void broadcastReplaceSong(int delta, Song song)
 	{
 		Intent intent = new Intent(EVENT_REPLACE_SONG);
 		intent.putExtra("pos", delta);
 		intent.putExtra("song", song);
-		sendBroadcast(intent);
-	}
-
-	private void broadcastReplaceSong(int delta)
-	{
-		broadcastReplaceSong(delta, getSong(delta));
+		ContextApplication.broadcast(intent);
 	}
 
 	boolean setFlag(int flag)
@@ -433,8 +410,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			Intent intent = new Intent(EVENT_CHANGED);
 			intent.putExtra("state", state);
 			intent.putExtra("song", song);
-			intent.putExtra("pos", mTimelinePos);
-			sendBroadcast(intent);
+			intent.putExtra("pos", mTimeline.getCurrentPosition());
+			ContextApplication.broadcast(intent);
 
 			if (mScrobble) {
 				intent = new Intent("net.jjc1138.android.scrobbler.action.MUSIC_STATUS");
@@ -449,15 +426,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			mLastSongBroadcast = song;
 		}
 
-		// The current song is the starting point for repeated tracks
-		if ((state & FLAG_REPEAT) != 0 && (oldState & FLAG_REPEAT) == 0) {
-			song.flags &= ~Song.FLAG_RANDOM;
-			mRepeatStart = mTimelinePos;
-			broadcastReplaceSong(+1);
-		} else if ((state & FLAG_REPEAT) == 0 && (oldState & FLAG_REPEAT) != 0) {
-			mRepeatStart = -1;
-			broadcastReplaceSong(+1);
-		}
+		mTimeline.setRepeat((state & FLAG_REPEAT) != 0);
+		mTimeline.setShuffle((state & FLAG_SHUFFLE) != 0);
 
 		if ((state & FLAG_NO_MEDIA) != 0 && (oldState & FLAG_NO_MEDIA) == 0) {
 			ContentResolver resolver = ContextApplication.getContext().getContentResolver();
@@ -540,17 +510,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		}
 	}
 
-	private ArrayList<Song> getShuffledRepeatedSongs(int end)
-	{
-		ArrayList<Song> songs = mRepeatedSongs;
-		if (songs == null) {
-			songs = new ArrayList<Song>(mSongTimeline.subList(mRepeatStart, end));
-			Collections.shuffle(songs, ContextApplication.getRandom());
-			mRepeatedSongs = songs;
-		}
-		return songs;
-	}
-
 	/**
 	 * Move <code>delta</code> places away from the current song.
 	 */
@@ -559,32 +518,12 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		if (mMediaPlayer == null)
 			return;
 
-		Song song = getSong(delta);
+		Song song = mTimeline.shiftCurrentSong(delta);
 		if (song == null) {
 			setFlag(FLAG_NO_MEDIA);
 			return;
-		} else {
+		} else if ((mState & FLAG_NO_MEDIA) != 0) {
 			unsetFlag(FLAG_NO_MEDIA);
-		}
-
-		ArrayList<Song> timeline = mSongTimeline;
-		synchronized (timeline) {
-			if (delta == 1 && mRepeatStart >= 0 && (timeline.get(mTimelinePos + 1).flags & Song.FLAG_RANDOM) != 0) {
-				if ((mState & FLAG_SHUFFLE) == 0) {
-					mTimelinePos = mRepeatStart;
-				} else {
-					int j = mTimelinePos + delta;
-					ArrayList<Song> songs = getShuffledRepeatedSongs(j);
-					for (int i = songs.size(); --i != -1 && --j != -1; )
-						mSongTimeline.set(j, songs.get(i));
-					mRepeatedSongs = null;
-					mTimelinePos = j;
-				}
-				song = getSong(0);
-				broadcastReplaceSong(-1);
-			} else {
-				mTimelinePos += delta;
-			}
 		}
 
 		try {
@@ -597,6 +536,9 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			}
 			if ((mState & FLAG_PLAYING) != 0)
 				mMediaPlayer.start();
+			// Ensure that we broadcast a change event even if we play the same
+			// song again.
+			mLastSongBroadcast = null;
 			updateState(mState);
 		} catch (IOException e) {
 			Log.e("VanillaMusic", "IOException", e);
@@ -626,115 +568,15 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	}
 
 	/**
-	 * Returns the song <code>delta</code> places away from the current position.
+	 * Returns the song <code>delta</code> places away from the current
+	 * position.
 	 */
 	public Song getSong(int delta)
 	{
-		if (mSongTimeline == null)
+		if (mTimeline == null)
 			return null;
 
-		ArrayList<Song> timeline = mSongTimeline;
-		Song song;
-
-		synchronized (timeline) {
-			int pos = mTimelinePos + delta;
-			if (pos < 0)
-				return null;
-
-			int size = timeline.size();
-			if (pos > size)
-				return null;
-
-			if (pos == size) {
-				song = new Song();
-				timeline.add(song);
-			} else {
-				song = timeline.get(pos);
-			}
-
-			if (delta == 1 && mRepeatStart >= 0 && (song.flags & Song.FLAG_RANDOM) != 0) {
-				// We have reached a non-user-selected song; this song will
-				// repeated in setCurrentSong so take alternative measures
-				if ((mState & FLAG_SHUFFLE) == 0)
-					song = timeline.get(mRepeatStart);
-				else
-					song = getShuffledRepeatedSongs(mTimelinePos + delta).get(0);
-			}
-		}
-
-		if (!song.populate(false)) {
-			song.randomize();
-			if (!song.populate(false))
-				return null;
-		}
-
-		return song;
-	}
-
-	/**
-	 * Add a set of songs to the song timeline. There are two modes: play and
-	 * enqueue. Play will play the first song in the set immediately and enqueue
-	 * the remaining songs directly after it. Enqueue will place the set after
-	 * the last enqueued item or after the currently playing item if the queue
-	 * is empty.
-	 *
-	 * @param enqueue If true, enqueue the set. If false, play the set.
-	 * @param type 1, 2, or 3, indicating artist, album, or song, respectively.
-	 * @param id The MediaStore id of the artist, album, or song.
-	 */
-	private void chooseSongs(boolean enqueue, int type, long id)
-	{
-		long[] songs = Song.getAllSongIdsWith(type, id);
-		if (songs == null || songs.length == 0)
-			return;
-
-		if ((mState & FLAG_SHUFFLE) != 0) {
-			Random random = ContextApplication.getRandom();
-			for (int i = songs.length; --i != 0; ) {
-				int j = random.nextInt(i + 1);
-				long tmp = songs[j];
-				songs[j] = songs[i];
-				songs[i] = tmp;
-			}
-		}
-
-		Song oldSong = getSong(+1);
-
-		ArrayList<Song> timeline = mSongTimeline;
-		synchronized (timeline) {
-			if (enqueue) {
-				int i = mTimelinePos + mQueuePos + 1;
-				if (i < timeline.size())
-					timeline.subList(i, timeline.size()).clear();
-
-				for (int j = 0; j != songs.length; ++j)
-					timeline.add(new Song(songs[j]));
-
-				mQueuePos += songs.length;
-			} else {
-				timeline.subList(mTimelinePos + 1, timeline.size()).clear();
-
-				for (int j = 0; j != songs.length; ++j)
-					timeline.add(new Song(songs[j]));
-
-				mQueuePos += songs.length - 1;
-
-				mHandler.sendEmptyMessage(TRACK_CHANGED);
-			}
-		}
-
-		mRepeatedSongs = null;
-		Song newSong = getSong(+1);
-		if (newSong != oldSong)
-			broadcastReplaceSong(+1, newSong);
-
-		mHandler.removeMessages(SAVE_STATE);
-		mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
-	}
-
-	private void saveState(boolean savePosition)
-	{
-		PlaybackServiceState.saveState(this, mSongTimeline, mTimelinePos, savePosition && mMediaPlayer != null ? mMediaPlayer.getCurrentPosition() : 0, mState & (FLAG_REPEAT + FLAG_SHUFFLE), mRepeatStart);
+		return mTimeline.getSong(delta);
 	}
 
 	private void go(int delta, boolean autoPlay)
@@ -925,19 +767,11 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		case SAVE_STATE:
 			// For unexpected terminations: crashes, task killers, etc.
 			// In most cases onDestroy will handle this
-			saveState(false);
+			mTimeline.saveState(this, 0);
 			break;
 		case PROCESS_SONG:
 			getSong(+2);
-
-			synchronized (mSongTimeline) {
-				while (mTimelinePos > 15 && mRepeatStart > 0) {
-					mSongTimeline.remove(0);
-					--mTimelinePos;
-					--mRepeatStart;
-				}
-			}
-
+			mTimeline.purge();
 			mHandler.removeMessages(SAVE_STATE);
 			mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
 			break;
@@ -1004,7 +838,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 */
 	public int getTimelinePos()
 	{
-		return mTimelinePos;
+		return mTimeline.getCurrentPosition();
 	}
 
 	/**
@@ -1026,5 +860,13 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	public IBinder onBind(Intent intents)
 	{
 		return null;
+	}
+
+	/**
+	 * Notify clients that a song in the timeline has been replaced.
+	 */
+	public void songReplaced(int delta, Song song)
+	{
+		broadcastReplaceSong(delta, song);
 	}
 }

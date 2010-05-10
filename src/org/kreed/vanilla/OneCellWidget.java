@@ -31,16 +31,14 @@ public class OneCellWidget extends AppWidgetProvider {
 	@Override
 	public void onUpdate(Context context, AppWidgetManager manager, int[] ids)
 	{
-		PlaybackServiceState state = new PlaybackServiceState();
-		Song song = null;
-		if (state.load(context)) {
-			song = new Song(state.savedIds[state.savedIndex]);
-			if (!song.populate(false))
-				song = null;
-		}
-
-		RemoteViews views = createViews(context, song, 0);
+		SongTimeline timeline = new SongTimeline();
+		timeline.loadState(context);
+		RemoteViews views = createViews(context, timeline.getSong(0), 0);
 		manager.updateAppWidget(ids, views);
+
+		// If we generated a new current song (because the PlaybackService has
+		// never been started), then we need to save the state.
+		timeline.saveState(context, 0);
 	}
 
 	@Override

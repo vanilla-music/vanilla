@@ -121,7 +121,7 @@ public class ContextApplication extends Application {
 
 	/**
 	 * Send a broadcast to all PlaybackActivities that have been added with
-	 * addActivity.
+	 * addActivity and then with Context.sendBroadcast.
 	 *
 	 * @param intent The intent to be sent as a broadcast
 	 */
@@ -136,6 +136,9 @@ public class ContextApplication extends Application {
 			if (activity instanceof PlaybackActivity)
 				((PlaybackActivity)activity).receive(intent);
 		}
+
+		if (mInstance != null)
+			mInstance.sendBroadcast(intent);
 	}
 
 	/**
