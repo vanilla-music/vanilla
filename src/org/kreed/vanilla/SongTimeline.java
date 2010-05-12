@@ -342,10 +342,14 @@ public final class SongTimeline {
 
 	/**
 	 * Add a set of songs to the song timeline. There are two modes: play and
-	 * enqueue. Play will play the first song in the set immediately and enqueue
-	 * the remaining songs directly after it. Enqueue will place the set after
-	 * the last enqueued item or after the currently playing item if the queue
-	 * is empty.
+	 * enqueue. Play will place the set immediately after the current song. (It
+	 * is assumed that client code will shift the current position and play the
+	 * first song of the set after a call to play). Enqueue will place the set
+	 * after the last enqueued song or after the currently playing song if no
+	 * items have been enqueued since the last call to finishEnqueueing.
+	 *
+	 * If shuffling is enabled, songs will be in random order. Otherwise songs
+	 * will be ordered by album and then by track number.
 	 *
 	 * @param enqueue If true, enqueue the set. If false, play the set.
 	 * @param type 1, 2, or 3, indicating artist, album, or song, respectively.
