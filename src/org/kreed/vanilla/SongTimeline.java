@@ -258,7 +258,15 @@ public final class SongTimeline {
 
 	/**
 	 * Returns the song <code>delta</code> places away from the current
-	 * position.
+	 * position. If there is no song at the given position, a random
+	 * song will be placed in that position.
+	 *
+	 * Note: This returns songs based on their position in the playback
+	 * sequence, not necessarily the stored timeline. When repeat is enabled,
+	 * the two will differ.
+	 *
+	 * @param delta The offset from the current position. Should be -1, 0, or
+	 * 1.
 	 */
 	public Song getSong(int delta)
 	{
