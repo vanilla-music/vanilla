@@ -60,11 +60,40 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 	 * media and what fields to display.
 	 */
 	int mType;
+	/**
+	 * The URI of the content provider backing this adapter.
+	 */
 	Uri mStore;
+	/**
+	 * The fields to use from the content provider. The last field will be
+	 * displayed in the MediaView, as will the first field if there are
+	 * multiple fields. Other fields will be used for searching.
+	 */
 	String[] mFields;
+	/**
+	 * The collation keys corresponding to each field. If provided, these are
+	 * used to speed up sorting and filtering.
+	 */
 	private String[] mFieldKeys;
+	/**
+	 * If true, show an expand arrow next the the text in each view.
+	 */
 	boolean mExpandable;
+	/**
+	 * A limiter is used for filtering. The intention is to restrict items
+	 * displayed in the list to only those of a specific artist or album, as
+	 * selected through an expander arrow in a broader MediaAdapter list.
+	 *
+	 * Each element in the limiter corresponds to a field in mFields. If
+	 * mLimiter is non-null, only songs containing the field matching the
+	 * last element of mLimiter will be displayed. Elements before the last
+	 * element are not used; they are present to make it more convenient to
+	 * display a UI representation of the limiter.
+	 */
 	private String[] mLimiter;
+	/**
+	 * The last constraint used in a call to filter.
+	 */
 	private CharSequence mConstraint;
 
 	/**
@@ -127,28 +156,64 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 		}
 	}
 
+	/**
+	 * Update the data in the adapter.
+	 */
 	public final void requery()
 	{
 		changeCursor(runQuery(mConstraint));
 	}
 
+	/**
+	 * Perform filtering on a background thread.
+	 *
+	 * @param constraint The terms to filter on, separated by spaces. Only
+	 * media that contain all of the terms (in any order) will be displayed
+	 * after filtering is complete.
+	 * @param listener A listener to be called when filtering is complete or
+	 * null.
+	 */
 	public void filter(CharSequence constraint, Filter.FilterListener listener)
 	{
 		mConstraint = constraint;
 		getFilter().filter(constraint, listener);
 	}
 
+	/**
+	 * Override getFilter to prevent access.
+	 */
+	@Override
+	public Filter getFilter()
+	{
+		throw new UnsupportedOperationException("Do not use getFilter directly. Call filter instead.");
+	}
+
+	/**
+	 * A query selection that should always be a part of the query. This is
+	 * useful if the content provider contains media that should be exluded.
+	 *
+	 * @return The selection, formatted as an SQL WHERE clause.
+	 */
 	protected String getDefaultSelection()
 	{
 		return null;
 	}
 
+	/**
+	 * Returns the sort order for queries. By default, sorts by the last field
+	 * in mFields, using the field keys if available.
+	 */
 	protected String getSortOrder()
 	{
 		String[] source = mFieldKeys == null ? mFields : mFieldKeys;
 		return source[source.length - 1];
 	}
 
+	/**
+	 * Query the content provider using the given constraint as a filter.
+	 *
+	 * @return The Cursor returned by the query.
+	 */
 	public Cursor runQuery(CharSequence constraint)
 	{
 		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
@@ -224,11 +289,25 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 		return resolver.query(mStore, projection, selection.toString(), selectionArgs, getSortOrder());
 	}
 
+	/**
+	 * Returns true if views has expander arrows displayed.
+	 */
 	public final boolean hasExpanders()
 	{
 		return mExpandable;
 	}
 
+	/**
+	 * Set the limiter for the adapter. A limiter is intended to restrict
+	 * displayed media to only those that are children of a given parent
+	 * media item.
+	 *
+	 * @param limiter An array with each element corresponding to a field in
+	 * this adapter. The last field in the array will be used as the limiter;
+	 * only media that are children of the media with the title of the last
+	 * element will be displayed.
+	 * @param async If true, update the adapter in the background.
+	 */
 	public final void setLimiter(String[] limiter, boolean async)
 	{
 		mLimiter = limiter;
@@ -238,11 +317,21 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 			requery();
 	}
 
+	/**
+	 * Returns the limiter currently active on this adapter or null if none are
+	 * active. The limiter is a list of titles, each corresponding to a field
+	 * in the fields in this adapter. The last field is the most specific. Only
+	 * media that are children of the media with the last element's title are
+	 * displayed.
+	 */
 	public final String[] getLimiter()
 	{
 		return mLimiter;
 	}
 
+	/**
+	 * Returns the length of the limiter or 0 if no limiter is active.
+	 */
 	public final int getLimiterLength()
 	{
 		if (mLimiter == null)
@@ -250,32 +339,77 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 		return mLimiter.length;
 	}
 
+	/**
+	 * Update the values in the given view.
+	 */
 	@Override
 	public void bindView(View view, Context context, Cursor cursor)
 	{
 		((MediaView)view).updateMedia(cursor);
 	}
 
+	/**
+	 * Generate a new view.
+	 */
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup parent)
 	{
 		return new MediaView(context);
 	}
 
+	/**
+	 * The text size used for the text in all views.
+	 */
 	static int mTextSize;
+	/**
+	 * The expander arrow bitmap used in all views that have expanders.
+	 */
 	static Bitmap mExpander;
+	/**
+	 * The paint object, cached for reuse.
+	 */
 	static Paint mPaint;
 
+	/**
+	 * The cached measured view height.
+	 */
 	int mViewHeight = -1;
+	/**
+	 * The cached dash effect that separates the expander arrow and the text.
+	 */
 	DashPathEffect mDashEffect;
+	/**
+	 * The cached divider gradient that separates each view from other views.
+	 */
 	RadialGradient mDividerGradient;
 
+	/**
+	 * Single view that paints one or two text fields and an optional arrow
+	 * to the right side.
+	 */
 	public class MediaView extends View {
+		/**
+		 * The MediaStore id of the media represented by this view.
+		 */
 		private long mId;
+		/**
+		 * The primary text field in the view, displayed on the upper line.
+		 */
 		private String mTitle;
+		/**
+		 * The secondary text field in the view, displayed on the lower line.
+		 */
 		private String mSubTitle;
+		/**
+		 * True if the last touch event was over the expander arrow.
+		 */
 		private boolean mExpanderPressed;
 
+		/**
+		 * Construct a MediaView.
+		 *
+		 * @param context A Context to use.
+		 */
 		public MediaView(Context context)
 		{
 			super(context);
@@ -284,6 +418,10 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 				mViewHeight = measureHeight();
 		}
 
+		/**
+		 * Measure the height. Ideally this is cached and should only be called
+		 * once.
+		 */
 		private int measureHeight()
 		{
 			int expanderHeight;
@@ -302,12 +440,18 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 			return Math.max(expanderHeight, textHeight);
 		}
 
+		/**
+		 * Request the cached height and maximum width from the layout.
+		 */
 		@Override
 		protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
 		{
 			setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), mViewHeight);
 		}
 
+		/**
+		 * Draw the view on the given canvas.
+		 */
 		@Override
 		public void onDraw(Canvas canvas)
 		{
@@ -362,11 +506,9 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 			paint.setShader(null);
 		}
 
-		public final int getFieldCount()
-		{
-			return mFields.length;
-		}
-
+		/**
+		 * Returns the MediaStore id of the media represented by this view.
+		 */
 		public final long getMediaId()
 		{
 			return mId;
@@ -381,16 +523,31 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 			return mType;
 		}
 
+		/**
+		 * Returns the title of this view, the primary/upper field.
+		 */
 		public final String getTitle()
 		{
 			return mTitle;
 		}
 
+		/**
+		 * Returns true if the expander arrow was pressed in the last touch
+		 * event.
+		 */
 		public final boolean isExpanderPressed()
 		{
 			return mExpanderPressed;
 		}
 
+		/**
+		 * Update the fields in this view with the data from the given Cursor.
+		 *
+		 * @param cursor A cursor moved to the correct position. The first
+		 * column must be the id of the media, the second the primary field.
+		 * If this adapter contains more than one field, the third column
+		 * must contain the secondary field.
+		 */
 		public final void updateMedia(Cursor cursor)
 		{
 			mId = cursor.getLong(0);
@@ -400,6 +557,12 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 			invalidate();
 		}
 
+		/**
+		 * Builds a limiter based off of the media represented by this view.
+		 *
+		 * @see MediaAdapter#getLimiter()
+		 * @see MediaAdapter#setLimiter(String[], boolean)
+		 */
 		public final String[] getLimiter()
 		{
 			ContentResolver resolver = getContext().getContentResolver();
@@ -418,6 +581,9 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 			return result;
 		}
 
+		/**
+		 * Update mExpanderPressed.
+		 */
 		@Override
 		public boolean onTouchEvent(MotionEvent event)
 		{
