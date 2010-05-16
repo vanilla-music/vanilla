@@ -21,10 +21,28 @@ package org.kreed.vanilla;
 import android.content.Context;
 import android.provider.MediaStore;
 
+/**
+ * Subclasses MediaAdapter to represent songs. Providers some song-specific
+ * logic over plain MediaAdapter: exclusion of non-music media files and
+ * better sorting inside albums.
+ */
 public class SongMediaAdapter extends MediaAdapter {
-	public SongMediaAdapter(Context context)
+	/**
+	 * Construct a MediaAdapter backed by MediaStore.Audio.Media.
+	 *
+	 * @param context A Context to use
+	 * @param expandable Whether an expander arrow should by shown to the right
+	 * of views
+	 * @param requery If true, automatically update the adapter when the
+	 * provider changes
+	 */
+	public SongMediaAdapter(Context context, boolean expandable, boolean requery)
 	{
-		super(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, SONG_FIELDS, SONG_FIELD_KEYS, false);
+		super(context,
+		      MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+		      new String[] { MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.TITLE },
+		      new String[] { MediaStore.Audio.Media.ARTIST_KEY, MediaStore.Audio.Media.ALBUM_KEY, MediaStore.Audio.Media.TITLE_KEY },
+		      expandable, requery);
 	}
 
 	@Override

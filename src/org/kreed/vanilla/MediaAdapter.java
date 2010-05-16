@@ -42,14 +42,28 @@ import android.widget.CursorAdapter;
 import android.widget.Filter;
 import android.widget.FilterQueryProvider;
 
+/**
+ * MediaAdapter provides an adapter backed by a MediaStore content provider.
+ * It generates simple one- or two-line text views to display each media
+ * element.
+ * 
+ * Filtering is supported, as is a more specific type of filtering referred to
+ * as limiting. Limiting is separate from filtering; a new filter will not
+ * erase an active filter. Limiting is intended to allow only media belonging
+ * to a specific group to be displayed, e.g. only songs from a certain artist.
+ * See MediaView.getLimiter and setLimiter for details.
+ */
 public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
-	public static final String[] ARTIST_FIELDS = { MediaStore.Audio.Artists.ARTIST };
-	public static final String[] ARTIST_FIELD_KEYS = { MediaStore.Audio.Artists.ARTIST_KEY };
-	public static final String[] ALBUM_FIELDS = { MediaStore.Audio.Albums.ARTIST, MediaStore.Audio.Albums.ALBUM };
-	// Why is there no artist_key column constant in the album MediaStore? The column does seem to exist.
-	public static final String[] ALBUM_FIELD_KEYS = { "artist_key", MediaStore.Audio.Albums.ALBUM_KEY };
-	public static final String[] SONG_FIELDS = { MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.TITLE };
-	public static final String[] SONG_FIELD_KEYS = { MediaStore.Audio.Media.ARTIST_KEY, MediaStore.Audio.Media.ALBUM_KEY, MediaStore.Audio.Media.TITLE_KEY };
+	/**
+	 * Type indicating that MediaStore.Audio.Artists should be used as the
+	 * provider backing this adapter.
+	 */
+	public static final int TYPE_ARTIST = 1;
+	/**
+	 * Type indicating that MediaStore.Audio.Albums should be used as the
+	 * adapter backing this adapter.
+	 */
+	public static final int TYPE_ALBUM = 2;
 
 	Uri mStore;
 	String[] mFields;
@@ -58,17 +72,18 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 	private String[] mLimiter;
 	private CharSequence mConstraint;
 
-	public MediaAdapter(Context context, Uri store, String[] fields, String[] fieldKeys, boolean expandable)
+	/**
+	 * Perform required setup during construction. See constructors for
+	 * details.
+	 */
+	private void init(Context context, Uri store, String[] fields, String[] fieldKeys, boolean expandable)
 	{
-		super(context, null, true);
-
 		mStore = store;
 		mFields = fields;
 		mFieldKeys = fieldKeys;
 		mExpandable = expandable;
 
 		setFilterQueryProvider(this);
-
 		requery();
 
 		if (mPaint == null) {
@@ -80,6 +95,65 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 			mPaint.setTextSize(mTextSize);
 			mPaint.setAntiAlias(true);
 		}
+	}
+
+	/**
+	 * Construct a MediaAdapter representing an arbitrary media content
+	 * provider.
+	 *
+	 * @param context A Context to use
+	 * @param store The external content uri of the provider
+	 * @param fields The fields to use in the provider. The last field will be
+	 * displayed as the first line in views. If more than one field is given,
+	 * the first field will be displayed as the bottom line.
+	 * @param fieldKeys The sorting keys corresponding to each field from
+	 * <code>fields</code>. Used for filtering.
+	 * @param expandable Whether an expand arrow should be shown to the right
+	 * of the views' text
+	 * @param requery If true, automatically update the adapter when the
+	 * provider backing it changes
+	 */
+	protected MediaAdapter(Context context, Uri store, String[] fields, String[] fieldKeys, boolean expandable, boolean requery)
+	{
+		super(context, null, requery);
+		init(context, store, fields, fieldKeys, expandable);
+	}
+
+	/**
+	 * Construct a MediaAdapter representing the given <code>type</code> of
+	 * media.
+	 *
+	 * @param context A Context to use
+	 * @param type The type of media; one of TYPE_ALBUM or TYPE_ARTIST
+	 * @param expandable Whether an expand arrow should be shown to the right
+	 * of the views' text
+	 * @param requery If true, automatically update the adapter when the
+	 * provider backing it changes
+	 */
+	public MediaAdapter(Context context, int type, boolean expandable, boolean requery)
+	{
+		super(context, null, requery);
+
+		Uri store;
+		String[] fields;
+		String[] fieldKeys;
+		switch (type) {
+		case TYPE_ARTIST:
+			store = MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI;
+			fields = new String[] { MediaStore.Audio.Artists.ARTIST };
+			fieldKeys = new String[] { MediaStore.Audio.Artists.ARTIST_KEY };
+			break;
+		case TYPE_ALBUM:
+			store = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
+			fields = new String[] { MediaStore.Audio.Albums.ARTIST, MediaStore.Audio.Albums.ALBUM };
+			// Why is there no artist_key column constant in the album MediaStore? The column does seem to exist.
+			fieldKeys = new String[] { "artist_key", MediaStore.Audio.Albums.ALBUM_KEY };
+			break;
+		default:
+			throw new IllegalArgumentException("Invalid value for type: " + type);
+		}
+
+		init(context, store, fields, fieldKeys, expandable);
 	}
 
 	public final void requery()
@@ -193,12 +267,6 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 		if (mLimiter == null)
 			return 0;
 		return mLimiter.length;
-	}
-
-	@Override
-	protected void onContentChanged()
-	{
-		// do nothing; we implement this in SongSelector
 	}
 
 	@Override

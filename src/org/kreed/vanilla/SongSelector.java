@@ -413,9 +413,9 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	{
 		switch (message.what) {
 		case MSG_INIT:
-			setupView(R.id.artist_list, new MediaAdapter(this, MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, MediaAdapter.ARTIST_FIELDS, MediaAdapter.ARTIST_FIELD_KEYS, true));
-			setupView(R.id.album_list, new MediaAdapter(this, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, MediaAdapter.ALBUM_FIELDS, MediaAdapter.ALBUM_FIELD_KEYS, true));
-			setupView(R.id.song_list, new SongMediaAdapter(this));
+			setupView(R.id.artist_list, new MediaAdapter(this, MediaAdapter.TYPE_ARTIST, true, false));
+			setupView(R.id.album_list, new MediaAdapter(this, MediaAdapter.TYPE_ALBUM, true, false));
+			setupView(R.id.song_list, new SongMediaAdapter(this, false, false));
 
 			ContentResolver resolver = getContentResolver();
 			Observer observer = new Observer(mHandler);
