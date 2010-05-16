@@ -26,7 +26,23 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.widget.RemoteViews;
 
+/**
+ * Notification subclass that provides information about the current song.
+ *
+ * To the left of the view is the application icon. If playback is paused a
+ * the application with a paused icon overlayed is displayed instead.
+ *
+ * To the right are two lines of text. The upper line is the song title; the
+ * lower line is the song artist.
+ */
 public class SongNotification extends Notification {
+	/**
+	 * Create a SongNotification. Call through the NotificationManager to
+	 * display it.
+	 *
+	 * @param song The Song to display information about.
+	 * @param playing True if music is playing.
+	 */
 	public SongNotification(Song song, boolean playing)
 	{
 		Context context = ContextApplication.getContext();
