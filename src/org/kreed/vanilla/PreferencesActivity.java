@@ -24,7 +24,13 @@ import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.view.KeyEvent;
 
+/**
+ * The preferences activity in which one can change application preferences.
+ */
 public class PreferencesActivity extends PreferenceActivity {
+	/**
+	 * Initialize the activity, loading the preference specifications.
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -40,6 +46,9 @@ public class PreferencesActivity extends PreferenceActivity {
 		ContextApplication.removeActivity(this);
 	}
 
+	/**
+	 * Implement the long-press-back-quits-application behavior.
+	 */
 	@Override
 	public boolean onKeyLongPress(int keyCode, KeyEvent event)
 	{

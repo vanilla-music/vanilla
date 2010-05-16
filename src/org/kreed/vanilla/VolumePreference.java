@@ -26,6 +26,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 
+/**
+ * A preference that provides a volume slider dialog.
+ *
+ * The position in the slider is saved as float ranging from 0 to 3 on a
+ * roughly exponential scale.
+ */
 public class VolumePreference extends DialogPreference implements SeekBar.OnSeekBarChangeListener {
 	public VolumePreference(Context context, AttributeSet attrs)
 	{
