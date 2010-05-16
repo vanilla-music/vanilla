@@ -69,13 +69,13 @@ public final class CoverBitmap {
 	private static void loadIcons()
 	{
 		Resources res = ContextApplication.getContext().getResources();
-		Bitmap bitmap = BitmapFactory.decodeResource(res, R.drawable.tab_songs_selected);
+		Bitmap bitmap = BitmapFactory.decodeResource(res, R.drawable.ic_tab_songs_selected);
 		SONG_ICON = Bitmap.createScaledBitmap(bitmap, TEXT_SIZE, TEXT_SIZE, false);
 		bitmap.recycle();
-		bitmap = BitmapFactory.decodeResource(res, R.drawable.tab_albums_selected);
+		bitmap = BitmapFactory.decodeResource(res, R.drawable.ic_tab_albums_selected);
 		ALBUM_ICON = Bitmap.createScaledBitmap(bitmap, TEXT_SIZE, TEXT_SIZE, false);
 		bitmap.recycle();
-		bitmap = BitmapFactory.decodeResource(res, R.drawable.tab_artists_selected);
+		bitmap = BitmapFactory.decodeResource(res, R.drawable.ic_tab_artists_selected);
 		ARTIST_ICON = Bitmap.createScaledBitmap(bitmap, TEXT_SIZE, TEXT_SIZE, false);
 		bitmap.recycle();
 	}
