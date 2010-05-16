@@ -45,6 +45,23 @@ public class Song implements Parcelable {
 	 */
 	public static final int FLAG_RANDOM = 0x1;
 
+	/**
+	 * Type indicating an id represents an artist.
+	 */
+	public static final int TYPE_ARTIST = 1;
+	/**
+	 * Type indicating an id represents an album.
+	 */
+	public static final int TYPE_ALBUM = 2;
+	/**
+	 * Type indicating an id represents a song.
+	 */
+	public static final int TYPE_SONG = 3;
+	/**
+	 * Type indicating an id represents a playlist.
+	 */
+	public static final int TYPE_PLAYLIST = 4;
+
 	private static final String[] FILLED_PROJECTION = {
 		MediaStore.Audio.Media._ID,
 		MediaStore.Audio.Media.DATA,
@@ -180,36 +197,77 @@ public class Song implements Parcelable {
 	}
 
 	/**
-	 * Return an array containing all the song ids that match the specified parameters
+	 * Return a cursor containing the ids of all the songs with artist or
+	 * album of the specified id.
 	 *
-	 * @param type Type the id represent. May be 1, 2 or 3, meaning artist,
-	 * album or song, respectively.
-	 * @param id Id of the element
+	 * @param resolver The ContentResolver to run the query with.
+	 * @param type TYPE_ARTIST or TYPE_ALBUM, indicating the the id represents
+	 * an artist or album
+	 * @param id The MediaStore id of the artist or album
 	 */
-	public static long[] getAllSongIdsWith(int type, long id)
+	private static Cursor getMediaCursor(ContentResolver resolver, int type, long id)
 	{
-		if (type == 3)
-			return new long[] { id };
-
-		String selection = "=" + id + " AND " + MediaStore.Audio.Media.IS_MUSIC + "!=0";
+		String selection = '=' + id + " AND " + MediaStore.Audio.Media.IS_MUSIC + "!=0";
 
 		switch (type) {
-		case 2:
-			selection = MediaStore.Audio.Media.ALBUM_ID + selection;
-			break;
-		case 1:
+		case TYPE_ARTIST:
 			selection = MediaStore.Audio.Media.ARTIST_ID + selection;
 			break;
+		case TYPE_ALBUM:
+			selection = MediaStore.Audio.Media.ALBUM_ID + selection;
+			break;
 		default:
-			return null;
+			throw new IllegalArgumentException("Invalid type specified: " + type);
 		}
+
 
 		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 		String[] projection = { MediaStore.Audio.Media._ID };
-
-		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
 		String sort = MediaStore.Audio.Media.ARTIST_KEY + ',' + MediaStore.Audio.Media.ALBUM_KEY + ',' + MediaStore.Audio.Media.TRACK;
-		Cursor cursor = resolver.query(media, projection, selection, null, sort);
+		return resolver.query(media, projection, selection, null, sort);
+	}
+
+	/**
+	 * Return a cursor containing the ids of all the songs in the playlist
+	 * with the given id.
+	 *
+	 * @param resolver The ContentResolver to run the query with.
+	 * @param id The id of the playlist in MediaStore.Audio.Playlists.
+	 */
+	private static Cursor getPlaylistCursor(ContentResolver resolver, long id)
+	{
+		Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", id);
+		String[] projection = new String[] { MediaStore.Audio.Playlists.Members.AUDIO_ID };
+		return resolver.query(uri, projection, null, null,
+		                      MediaStore.Audio.Playlists.Members.DEFAULT_SORT_ORDER);
+	}
+
+	/**
+	 * Return an array containing all the song ids that match the specified parameters
+	 *
+	 * @param type Type the id represents. Must be one of the Song.TYPE_*
+	 * constants.
+	 * @param id The id of the element in the MediaStore content provider for
+	 * the given type.
+	 */
+	public static long[] getAllSongIdsWith(int type, long id)
+	{
+		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
+		Cursor cursor;
+
+		switch (type) {
+		case TYPE_SONG:
+			return new long[] { id };
+		case TYPE_ARTIST:
+		case TYPE_ALBUM:
+			cursor = getMediaCursor(resolver, type, id);
+			break;
+		case TYPE_PLAYLIST:
+			cursor = getPlaylistCursor(resolver, id);
+			break;
+		default:
+			throw new IllegalArgumentException("Specified type not valid: " + type);
+		}
 
 		if (cursor == null)
 			return null;
@@ -222,7 +280,7 @@ public class Song implements Parcelable {
 		for (int i = 0; i != count; ++i) {
 			if (!cursor.moveToNext())
 				return null;
-			songs[i] = cursor.getInt(0);
+			songs[i] = cursor.getLong(0);
 		}
 
 		cursor.close();
@@ -353,8 +411,8 @@ public class Song implements Parcelable {
 
 			if (fileDescriptor != null) {
 				// Construct a MediaScanner
-				Class mediaScannerClass = Class.forName("android.media.MediaScanner");
-				Constructor mediaScannerConstructor = mediaScannerClass.getDeclaredConstructor(Context.class);
+				Class<?> mediaScannerClass = Class.forName("android.media.MediaScanner");
+				Constructor<?> mediaScannerConstructor = mediaScannerClass.getDeclaredConstructor(Context.class);
 				Object mediaScanner = mediaScannerConstructor.newInstance(ContextApplication.getContext());
 
 				// Call extractAlbumArt(fileDescriptor)

@@ -352,8 +352,10 @@ public final class SongTimeline {
 	 * will be ordered by album and then by track number.
 	 *
 	 * @param enqueue If true, enqueue the set. If false, play the set.
-	 * @param type 1, 2, or 3, indicating artist, album, or song, respectively.
-	 * @param id The MediaStore id of the artist, album, or song.
+	 * @param type The type represented by the id. Must be one of the
+	 * Song.FIELD_* constants.
+	 * @param id The id of the element in the MediaStore content provider for
+	 * the given type.
 	 */
 	public void chooseSongs(boolean enqueue, int type, long id)
 	{

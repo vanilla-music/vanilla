@@ -38,11 +38,7 @@ public class SongMediaAdapter extends MediaAdapter {
 	 */
 	public SongMediaAdapter(Context context, boolean expandable, boolean requery)
 	{
-		super(context,
-		      MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-		      new String[] { MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.TITLE },
-		      new String[] { MediaStore.Audio.Media.ARTIST_KEY, MediaStore.Audio.Media.ALBUM_KEY, MediaStore.Audio.Media.TITLE_KEY },
-		      expandable, requery);
+		super(context, Song.TYPE_SONG, expandable, requery);
 	}
 
 	@Override

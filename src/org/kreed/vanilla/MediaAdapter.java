@@ -55,16 +55,11 @@ import android.widget.FilterQueryProvider;
  */
 public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 	/**
-	 * Type indicating that MediaStore.Audio.Artists should be used as the
-	 * provider backing this adapter.
+	 * The type of media represented by this adapter. Must be one of the
+	 * Song.FIELD_* constants. Determines which content provider to query for
+	 * media and what fields to display.
 	 */
-	public static final int TYPE_ARTIST = 1;
-	/**
-	 * Type indicating that MediaStore.Audio.Albums should be used as the
-	 * adapter backing this adapter.
-	 */
-	public static final int TYPE_ALBUM = 2;
-
+	int mType;
 	Uri mStore;
 	String[] mFields;
 	private String[] mFieldKeys;
@@ -73,15 +68,50 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 	private CharSequence mConstraint;
 
 	/**
-	 * Perform required setup during construction. See constructors for
-	 * details.
+	 * Construct a MediaAdapter representing the given <code>type</code> of
+	 * media.
+	 *
+	 * @param context A Context to use
+	 * @param type The type of media to represent. Must be one of the
+	 * Song.TYPE_* constants. This determines which content provider to query
+	 * and what fields to display in the views.
+	 * @param expandable Whether an expand arrow should be shown to the right
+	 * of the views' text
+	 * @param requery If true, automatically update the adapter when the
+	 * provider backing it changes
 	 */
-	private void init(Context context, Uri store, String[] fields, String[] fieldKeys, boolean expandable)
+	public MediaAdapter(Context context, int type, boolean expandable, boolean requery)
 	{
-		mStore = store;
-		mFields = fields;
-		mFieldKeys = fieldKeys;
+		super(context, null, requery);
+
+		mType = type;
 		mExpandable = expandable;
+
+		switch (type) {
+		case Song.TYPE_ARTIST:
+			mStore = MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI;
+			mFields = new String[] { MediaStore.Audio.Artists.ARTIST };
+			mFieldKeys = new String[] { MediaStore.Audio.Artists.ARTIST_KEY };
+			break;
+		case Song.TYPE_ALBUM:
+			mStore = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
+			mFields = new String[] { MediaStore.Audio.Albums.ARTIST, MediaStore.Audio.Albums.ALBUM };
+			// Why is there no artist_key column constant in the album MediaStore? The column does seem to exist.
+			mFieldKeys = new String[] { "artist_key", MediaStore.Audio.Albums.ALBUM_KEY };
+			break;
+		case Song.TYPE_SONG:
+			mStore = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+			mFields = new String[] { MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.TITLE };
+			mFieldKeys = new String[] { MediaStore.Audio.Media.ARTIST_KEY, MediaStore.Audio.Media.ALBUM_KEY, MediaStore.Audio.Media.TITLE_KEY };
+			break;
+		case Song.TYPE_PLAYLIST:
+			mStore = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI;
+			mFields = new String[] { MediaStore.Audio.Playlists.NAME };
+			mFieldKeys = null;
+			break;
+		default:
+			throw new IllegalArgumentException("Invalid value for type: " + type);
+		}
 
 		setFilterQueryProvider(this);
 		requery();
@@ -95,65 +125,6 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 			mPaint.setTextSize(mTextSize);
 			mPaint.setAntiAlias(true);
 		}
-	}
-
-	/**
-	 * Construct a MediaAdapter representing an arbitrary media content
-	 * provider.
-	 *
-	 * @param context A Context to use
-	 * @param store The external content uri of the provider
-	 * @param fields The fields to use in the provider. The last field will be
-	 * displayed as the first line in views. If more than one field is given,
-	 * the first field will be displayed as the bottom line.
-	 * @param fieldKeys The sorting keys corresponding to each field from
-	 * <code>fields</code>. Used for filtering.
-	 * @param expandable Whether an expand arrow should be shown to the right
-	 * of the views' text
-	 * @param requery If true, automatically update the adapter when the
-	 * provider backing it changes
-	 */
-	protected MediaAdapter(Context context, Uri store, String[] fields, String[] fieldKeys, boolean expandable, boolean requery)
-	{
-		super(context, null, requery);
-		init(context, store, fields, fieldKeys, expandable);
-	}
-
-	/**
-	 * Construct a MediaAdapter representing the given <code>type</code> of
-	 * media.
-	 *
-	 * @param context A Context to use
-	 * @param type The type of media; one of TYPE_ALBUM or TYPE_ARTIST
-	 * @param expandable Whether an expand arrow should be shown to the right
-	 * of the views' text
-	 * @param requery If true, automatically update the adapter when the
-	 * provider backing it changes
-	 */
-	public MediaAdapter(Context context, int type, boolean expandable, boolean requery)
-	{
-		super(context, null, requery);
-
-		Uri store;
-		String[] fields;
-		String[] fieldKeys;
-		switch (type) {
-		case TYPE_ARTIST:
-			store = MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI;
-			fields = new String[] { MediaStore.Audio.Artists.ARTIST };
-			fieldKeys = new String[] { MediaStore.Audio.Artists.ARTIST_KEY };
-			break;
-		case TYPE_ALBUM:
-			store = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
-			fields = new String[] { MediaStore.Audio.Albums.ARTIST, MediaStore.Audio.Albums.ALBUM };
-			// Why is there no artist_key column constant in the album MediaStore? The column does seem to exist.
-			fieldKeys = new String[] { "artist_key", MediaStore.Audio.Albums.ALBUM_KEY };
-			break;
-		default:
-			throw new IllegalArgumentException("Invalid value for type: " + type);
-		}
-
-		init(context, store, fields, fieldKeys, expandable);
 	}
 
 	public final void requery()
@@ -174,7 +145,8 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 
 	protected String getSortOrder()
 	{
-		return mFieldKeys[mFieldKeys.length - 1];
+		String[] source = mFieldKeys == null ? mFields : mFieldKeys;
+		return source[source.length - 1];
 	}
 
 	public Cursor runQuery(CharSequence constraint)
@@ -201,11 +173,20 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 		}
 
 		if (constraint != null && constraint.length() != 0) {
-			String colKey = MediaStore.Audio.keyFor(constraint.toString());
-			String spaceColKey = DatabaseUtils.getCollationKey(" ");
-			String[] colKeys = colKey.split(spaceColKey);
+			String[] needles;
 
-			int size = colKeys.length;
+			// If we are using sorting keys, we need to change our constraint
+			// into a list of collation keys. Otherwise, just split the
+			// constraint with no modification.
+			if (mFieldKeys != null) {
+				String colKey = MediaStore.Audio.keyFor(constraint.toString());
+				String spaceColKey = DatabaseUtils.getCollationKey(" ");
+				needles = colKey.split(spaceColKey);
+			} else {
+				needles = constraint.toString().split("\\s+");
+			}
+
+			int size = needles.length;
 			if (limiter != null)
 				++size;
 			selectionArgs = new String[size];
@@ -215,23 +196,23 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 				i = 1;
 			}
 
-			String keys = mFieldKeys[0];
-			for (int j = 1; j != mFieldKeys.length; ++j)
-				keys += "||" + mFieldKeys[j];
+			String[] keySource = mFieldKeys == null ? mFields : mFieldKeys;
+			String keys = keySource[0];
+			for (int j = 1; j != keySource.length; ++j)
+				keys += "||" + keySource[j];
 
-			for (int j = 0; j != colKeys.length; ++i, ++j) {
-				selectionArgs[i] = '%' + colKeys[j] + '%';
+			for (int j = 0; j != needles.length; ++i, ++j) {
+				selectionArgs[i] = '%' + needles[j] + '%';
 
-				if (j != 0 || selection.length() != 0)
+				if (i != 0)
 					selection.append(" AND ");
-                selection.append(keys);
-                selection.append(" LIKE ?");
+				selection.append(keys);
+				selection.append(" LIKE ?");
 			}
+		} else if (limiter != null) {
+			selectionArgs = new String[] { limiter };
 		} else {
-			if (limiter != null)
-				selectionArgs = new String[] { limiter };
-			else
-				selectionArgs = null;
+			selectionArgs = null;
 		}
 
 		String[] projection;
@@ -389,6 +370,15 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 		public final long getMediaId()
 		{
 			return mId;
+		}
+
+		/**
+		 * Returns the type of media contained in the adapter containing this
+		 * view. Will be one of the Song.TYPE_* constants.
+		 */
+		public int getMediaType()
+		{
+			return mType;
 		}
 
 		public final String getTitle()

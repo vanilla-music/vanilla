@@ -57,6 +57,12 @@
 						android:layout_height="fill_parent"
 						android:divider="@null"
 						android:fastScrollEnabled="true" />
+					<ListView
+						android:id="@+id/playlist_list"
+						android:layout_width="fill_parent"
+						android:layout_height="fill_parent"
+						android:divider="@null"
+						android:fastScrollEnabled="true" />
 				</FrameLayout>
 			</LinearLayout>
 		</TabHost>

@@ -90,6 +90,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		mTabHost.addTab(mTabHost.newTabSpec("tab_artists").setIndicator(res.getText(R.string.artists), res.getDrawable(R.drawable.tab_artists)).setContent(R.id.artist_list));
 		mTabHost.addTab(mTabHost.newTabSpec("tab_albums").setIndicator(res.getText(R.string.albums), res.getDrawable(R.drawable.tab_albums)).setContent(R.id.album_list));
 		mTabHost.addTab(mTabHost.newTabSpec("tab_songs").setIndicator(res.getText(R.string.songs), res.getDrawable(R.drawable.tab_songs)).setContent(R.id.song_list));
+		mTabHost.addTab(mTabHost.newTabSpec("tab_playlists").setIndicator(res.getText(R.string.playlists), res.getDrawable(R.drawable.tab_playlists)).setContent(R.id.playlist_list));
 
 		mSearchBox = findViewById(R.id.search_box);
 
@@ -189,11 +190,10 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
 
 		long id = view.getMediaId();
-		int field = view.getFieldCount();
 
 		Intent intent = new Intent(this, PlaybackService.class);
 		intent.setAction(action);
-		intent.putExtra("type", field);
+		intent.putExtra("type", view.getMediaType());
 		intent.putExtra("id", id);
 		startService(intent);
 
@@ -413,9 +413,10 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	{
 		switch (message.what) {
 		case MSG_INIT:
-			setupView(R.id.artist_list, new MediaAdapter(this, MediaAdapter.TYPE_ARTIST, true, false));
-			setupView(R.id.album_list, new MediaAdapter(this, MediaAdapter.TYPE_ALBUM, true, false));
+			setupView(R.id.artist_list, new MediaAdapter(this, Song.TYPE_ARTIST, true, false));
+			setupView(R.id.album_list, new MediaAdapter(this, Song.TYPE_ALBUM, true, false));
 			setupView(R.id.song_list, new SongMediaAdapter(this, false, false));
+			setupView(R.id.playlist_list, new MediaAdapter(this, Song.TYPE_PLAYLIST, false, true));
 
 			ContentResolver resolver = getContentResolver();
 			Observer observer = new Observer(mHandler);
@@ -440,7 +441,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 			runOnUiThread(new Runnable() {
 				public void run()
 				{
-					for (int i = 0; i != 3; ++i)
+					for (int i = 0; i != 4; ++i)
 						getAdapter(i).requery();
 				}
 			});
