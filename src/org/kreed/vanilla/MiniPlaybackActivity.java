@@ -29,8 +29,9 @@ import android.view.ViewGroup;
 import android.view.Window;
 
 /**
- * Playback activity that displays itself like a dialog, i.e. as a small window
- * with a border. Includes a CoverView and control buttons.
+ * Compact playback activity that displays itself like a dialog. That is, the
+ * window is not fullscreen but only as large as it needs to be. Includes a
+ * CoverView and control buttons.
  */
 public class MiniPlaybackActivity extends PlaybackActivity implements View.OnClickListener {
 	@Override
