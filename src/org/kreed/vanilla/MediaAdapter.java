@@ -189,10 +189,13 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 	}
 
 	/**
-	 * A query selection that should always be a part of the query. This is
-	 * useful if the content provider contains media that should be exluded.
+	 * A query selection that should always be a part of the query. By default,
+	 * this returns null, meaning that no elements should be excluded. This
+	 * method may be overridden in subclasses to exclude certain media from the
+	 * adapter.
 	 *
-	 * @return The selection, formatted as an SQL WHERE clause.
+	 * @return The selection, formatted as an SQL WHERE clause or null for to
+	 * accept all media.
 	 */
 	protected String getDefaultSelection()
 	{
