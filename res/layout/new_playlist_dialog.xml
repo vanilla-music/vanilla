@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
+
+	This file is part of Vanilla Music Player.
+
+	Vanilla Music Player is free software; you can redistribute it and/or modify
+	it under the terms of the GNU Library General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or (at your
+	option) any later version.
+
+	Vanilla Music Player is distributed in the hope that it will be useful, but
+	WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+	or FITNESS FOR A PARTICULAR PURPOSE.
+
+	You should have received a copy of the GNU General Public License
+	along with this program. If not, see <http://www.gnu.org/licenses/>.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content">
+	<EditText
+		android:id="@+id/playlist_name"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:singleLine="true"
+		android:layout_marginBottom="8dip"
+		android:layout_marginLeft="8dip"
+		android:layout_marginRight="8dip">
+		<requestFocus />
+	</EditText>
+	<LinearLayout
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:paddingTop="6dip"
+		android:background="#fff" >
+		<Button android:id="@+id/create"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="@string/create"
+			android:singleLine="true" />
+		<Button android:id="@+id/cancel"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="@string/cancel"
+			android:singleLine="true" />
+	</LinearLayout>
+</LinearLayout>

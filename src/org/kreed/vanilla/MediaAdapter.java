@@ -176,7 +176,7 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 	public void filter(CharSequence constraint, Filter.FilterListener listener)
 	{
 		mConstraint = constraint;
-		getFilter().filter(constraint, listener);
+		super.getFilter().filter(constraint, listener);
 	}
 
 	/**
@@ -293,14 +293,6 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 	}
 
 	/**
-	 * Returns true if views has expander arrows displayed.
-	 */
-	public final boolean hasExpanders()
-	{
-		return mExpandable;
-	}
-
-	/**
 	 * Set the limiter for the adapter. A limiter is intended to restrict
 	 * displayed media to only those that are children of a given parent
 	 * media item.
@@ -315,7 +307,7 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 	{
 		mLimiter = limiter;
 		if (async)
-			getFilter().filter(mConstraint);
+			super.getFilter().filter(mConstraint);
 		else
 			requery();
 	}
@@ -541,6 +533,14 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 		public final boolean isExpanderPressed()
 		{
 			return mExpanderPressed;
+		}
+
+		/**
+		 * Returns true if views has expander arrows displayed.
+		 */
+		public final boolean hasExpanders()
+		{
+			return mExpandable;
 		}
 
 		/**

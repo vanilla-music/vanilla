@@ -40,6 +40,7 @@ import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
@@ -101,6 +102,11 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		mClearButton.setOnClickListener(this);
 
 		mLimiterViews = (ViewGroup)findViewById(R.id.limiter_layout);
+
+		setupView(R.id.artist_list, new MediaAdapter(this, Song.TYPE_ARTIST, true, false));
+		setupView(R.id.album_list, new MediaAdapter(this, Song.TYPE_ALBUM, true, false));
+		setupView(R.id.song_list, new SongMediaAdapter(this, false, false));
+		setupView(R.id.playlist_list, new MediaAdapter(this, Song.TYPE_PLAYLIST, false, true));
 
 		mHandler.sendEmptyMessage(MSG_INIT);
 	}
@@ -201,7 +207,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	}
 
 	/**
-	 * Tell the PlaybackService that we are finished enqueuing songs.
+	 * Tell the PlaybackService that we are finished enqueueing songs.
 	 */
 	private void sendFinishEnqueueing()
 	{
@@ -321,25 +327,64 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	private static final int MENU_PLAY = 0;
 	private static final int MENU_ENQUEUE = 1;
 	private static final int MENU_EXPAND = 2;
+	private static final int MENU_ADD_TO_PLAYLIST = 3;
+	private static final int MENU_NEW_PLAYLIST = 4;
 
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo absInfo)
+	public void onCreateContextMenu(ContextMenu menu, View listView, ContextMenu.ContextMenuInfo absInfo)
 	{
-		menu.setHeaderTitle(((MediaAdapter.MediaView)((AdapterView.AdapterContextMenuInfo)absInfo).targetView).getTitle());
+		MediaAdapter.MediaView view = (MediaAdapter.MediaView)((AdapterView.AdapterContextMenuInfo)absInfo).targetView;
+		int type = view.getMediaType();
+		int id = (int)view.getMediaId();
+
+		menu.setHeaderTitle(view.getTitle());
 		menu.add(0, MENU_PLAY, 0, R.string.play);
 		menu.add(0, MENU_ENQUEUE, 0, R.string.enqueue);
-		if (((MediaAdapter)((ListView)view).getAdapter()).hasExpanders())
+		SubMenu playlistMenu = menu.addSubMenu(0, MENU_ADD_TO_PLAYLIST, 0, R.string.add_to_playlist);
+		if (view.hasExpanders())
 			menu.add(0, MENU_EXPAND, 0, R.string.expand);
+
+		playlistMenu.add(type, MENU_NEW_PLAYLIST, id, R.string.new_playlist);
+		Song.Playlist[] playlists = Song.getPlaylists();
+		for (int i = 0; i != playlists.length; ++i)
+			playlistMenu.add(type, (int)playlists[i].id + 100, id, playlists[i].name);
 	}
 
+	/**
+	 * Add a set of songs to a playlists. Sets can be all songs from an artist,
+	 * album, playlist, or a single song. Displays a Toast notifying of
+	 * success.
+	 *
+	 * @param playlistId The MediaStore.Audio.Playlists id of the playlist to
+	 * be modified.
+	 * @param type The type of media the mediaId represents; one of the
+	 * Song.TYPE_* constants.
+	 * @param mediaId The MediaStore id of the element to be added.
+	 * @param title The title of the playlist being added to (used for the
+	 * Toast).
+	 */
+	private void addToPlaylist(long playlistId, int type, long mediaId, CharSequence title)
+	{
+		long[] ids = Song.getAllSongIdsWith(type, mediaId);
+		Song.addToPlaylist(playlistId, ids);
+
+		String message = getResources().getQuantityString(R.plurals.added_to_playlist, ids.length, ids.length, title);
+		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+	}
+	
 	@Override
 	public boolean onContextItemSelected(MenuItem item)
 	{
-		MediaAdapter.MediaView view = (MediaAdapter.MediaView)((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).targetView;
 		String action = PlaybackService.ACTION_PLAY_ITEMS;
-		switch (item.getItemId()) {
+		int id = item.getItemId();
+		final int type = item.getGroupId();
+		final int mediaId = item.getOrder();
+
+		switch (id) {
 		case MENU_EXPAND:
-			expand(view);
+			expand((MediaAdapter.MediaView)((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).targetView);
+			break;
+		case MENU_ADD_TO_PLAYLIST:
 			break;
 		case MENU_ENQUEUE:
 			action = PlaybackService.ACTION_ENQUEUE_ITEMS;
@@ -347,15 +392,24 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		case MENU_PLAY:
 			if (mDefaultIsLastAction)
 				mDefaultAction = action;
-			sendSongIntent(view, action);
+			sendSongIntent((MediaAdapter.MediaView)((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).targetView, action);
+			break;
+		case MENU_NEW_PLAYLIST:
+			NewPlaylistDialog dialog = new NewPlaylistDialog(this);
+			Message message = mHandler.obtainMessage(MSG_NEW_PLAYLIST, type, mediaId);
+			message.obj = dialog;
+			dialog.setDismissMessage(message);
+			dialog.show();
 			break;
 		default:
+			if (id > 100)
+				addToPlaylist(id - 100, type, mediaId, item.getTitle());
 			return false;
 		}
 
 		return true;
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
@@ -398,32 +452,41 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		final ListView view = (ListView)findViewById(id);
 		view.setOnItemClickListener(this);
 		view.setOnCreateContextMenuListener(this);
-		runOnUiThread(new Runnable() {
-			public void run()
-			{
-				view.setAdapter(adapter);
-			}
-		});
+		view.setAdapter(adapter);
 	}
 
+	/**
+	 * Perform the initialization that may be done in the background outside
+	 * of onCreate.
+	 */
 	private static final int MSG_INIT = 10;
+	/**
+	 * Call addToPlaylist with the paramaters from the given message. The
+	 * message must contain the type and id of the media to be added in
+	 * arg1 and arg2, respectively. The obj field must be a NewPlaylistDialog
+	 * that the name will be taken from.
+	 */
+	private static final int MSG_NEW_PLAYLIST = 11;
 
 	@Override
 	public boolean handleMessage(Message message)
 	{
 		switch (message.what) {
 		case MSG_INIT:
-			setupView(R.id.artist_list, new MediaAdapter(this, Song.TYPE_ARTIST, true, false));
-			setupView(R.id.album_list, new MediaAdapter(this, Song.TYPE_ALBUM, true, false));
-			setupView(R.id.song_list, new SongMediaAdapter(this, false, false));
-			setupView(R.id.playlist_list, new MediaAdapter(this, Song.TYPE_PLAYLIST, false, true));
-
 			ContentResolver resolver = getContentResolver();
 			Observer observer = new Observer(mHandler);
 			resolver.registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, observer);
 			break;
+		case MSG_NEW_PLAYLIST:
+			NewPlaylistDialog dialog = (NewPlaylistDialog)message.obj;
+			if (dialog.isAccepted()) {
+				String name = dialog.getText();
+				long playlistId = Song.createPlaylist(name);
+				addToPlaylist(playlistId, message.arg1, message.arg2, name);
+			}
+			break;
 		default:
-			return false;
+			return super.handleMessage(message);
 		}
 
 		return true;

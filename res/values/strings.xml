@@ -37,15 +37,27 @@
 	<!-- Widgets -->
 	<string name="starting">Starting up...</string>
 
+	<!-- New Playlist Dialog -->
+	<string name="choose_playlist_name">Choose Playlist Name</string>
+	<string name="create">Create</string>
+	<string name="overwrite">Overwrite</string>
+	<string name="cancel">Cancel</string>
+
 	<!-- Song Chooser -->
 	<string name="enqueue">Enqueue</string>
 	<string name="play">Play</string>
+	<string name="add_to_playlist">Add to Playlist...</string>
+	<string name="new_playlist">New Playlist...</string>
 	<string name="expand">Expand</string>
 	<string name="playback_view">Now Playing</string>
 	<string name="search">Search</string>
 
 	<string name="enqueued">Enqueued %s</string>
 	<string name="playing">Playing %s</string>
+	<plurals name="added_to_playlist">
+		<item quantity="one">1 song added to playlist %2$s.</item>
+		<item quantity="other">%d songs added to playlist %s.</item>
+	</plurals>
 
 	<string name="artists">Artists</string>
 	<string name="albums">Albums</string>
