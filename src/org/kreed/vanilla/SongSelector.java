@@ -103,10 +103,10 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 
 		mLimiterViews = (ViewGroup)findViewById(R.id.limiter_layout);
 
-		setupView(R.id.artist_list, new MediaAdapter(this, Song.TYPE_ARTIST, true, false));
-		setupView(R.id.album_list, new MediaAdapter(this, Song.TYPE_ALBUM, true, false));
+		setupView(R.id.artist_list, new MediaAdapter(this, MediaUtils.TYPE_ARTIST, true, false));
+		setupView(R.id.album_list, new MediaAdapter(this, MediaUtils.TYPE_ALBUM, true, false));
 		setupView(R.id.song_list, new SongMediaAdapter(this, false, false));
-		setupView(R.id.playlist_list, new MediaAdapter(this, Song.TYPE_PLAYLIST, false, true));
+		setupView(R.id.playlist_list, new MediaAdapter(this, MediaUtils.TYPE_PLAYLIST, false, true));
 
 		mHandler.sendEmptyMessage(MSG_INIT);
 	}
@@ -345,7 +345,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 			menu.add(0, MENU_EXPAND, 0, R.string.expand);
 
 		playlistMenu.add(type, MENU_NEW_PLAYLIST, id, R.string.new_playlist);
-		Song.Playlist[] playlists = Song.getPlaylists();
+		Playlist[] playlists = Playlist.getPlaylists();
 		for (int i = 0; i != playlists.length; ++i)
 			playlistMenu.add(type, (int)playlists[i].id + 100, id, playlists[i].name);
 	}
@@ -365,8 +365,8 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	 */
 	private void addToPlaylist(long playlistId, int type, long mediaId, CharSequence title)
 	{
-		long[] ids = Song.getAllSongIdsWith(type, mediaId);
-		Song.addToPlaylist(playlistId, ids);
+		long[] ids = MediaUtils.getAllSongIdsWith(type, mediaId);
+		Playlist.addToPlaylist(playlistId, ids);
 
 		String message = getResources().getQuantityString(R.plurals.added_to_playlist, ids.length, ids.length, title);
 		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
@@ -481,7 +481,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 			NewPlaylistDialog dialog = (NewPlaylistDialog)message.obj;
 			if (dialog.isAccepted()) {
 				String name = dialog.getText();
-				long playlistId = Song.createPlaylist(name);
+				long playlistId = Playlist.createPlaylist(name);
 				addToPlaylist(playlistId, message.arg1, message.arg2, name);
 			}
 			break;

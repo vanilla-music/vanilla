@@ -56,7 +56,7 @@ import android.widget.FilterQueryProvider;
 public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 	/**
 	 * The type of media represented by this adapter. Must be one of the
-	 * Song.FIELD_* constants. Determines which content provider to query for
+	 * MediaUtils.FIELD_* constants. Determines which content provider to query for
 	 * media and what fields to display.
 	 */
 	int mType;
@@ -117,23 +117,23 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 		mExpandable = expandable;
 
 		switch (type) {
-		case Song.TYPE_ARTIST:
+		case MediaUtils.TYPE_ARTIST:
 			mStore = MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI;
 			mFields = new String[] { MediaStore.Audio.Artists.ARTIST };
 			mFieldKeys = new String[] { MediaStore.Audio.Artists.ARTIST_KEY };
 			break;
-		case Song.TYPE_ALBUM:
+		case MediaUtils.TYPE_ALBUM:
 			mStore = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
 			mFields = new String[] { MediaStore.Audio.Albums.ARTIST, MediaStore.Audio.Albums.ALBUM };
 			// Why is there no artist_key column constant in the album MediaStore? The column does seem to exist.
 			mFieldKeys = new String[] { "artist_key", MediaStore.Audio.Albums.ALBUM_KEY };
 			break;
-		case Song.TYPE_SONG:
+		case MediaUtils.TYPE_SONG:
 			mStore = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 			mFields = new String[] { MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.TITLE };
 			mFieldKeys = new String[] { MediaStore.Audio.Media.ARTIST_KEY, MediaStore.Audio.Media.ALBUM_KEY, MediaStore.Audio.Media.TITLE_KEY };
 			break;
-		case Song.TYPE_PLAYLIST:
+		case MediaUtils.TYPE_PLAYLIST:
 			mStore = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI;
 			mFields = new String[] { MediaStore.Audio.Playlists.NAME };
 			mFieldKeys = null;

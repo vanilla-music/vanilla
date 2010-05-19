@@ -19,7 +19,6 @@
 package org.kreed.vanilla;
 
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -45,23 +44,6 @@ public class Song implements Parcelable {
 	 * Indicates that this song was randomly selected from all songs.
 	 */
 	public static final int FLAG_RANDOM = 0x1;
-
-	/**
-	 * Type indicating an id represents an artist.
-	 */
-	public static final int TYPE_ARTIST = 1;
-	/**
-	 * Type indicating an id represents an album.
-	 */
-	public static final int TYPE_ALBUM = 2;
-	/**
-	 * Type indicating an id represents a song.
-	 */
-	public static final int TYPE_SONG = 3;
-	/**
-	 * Type indicating an id represents a playlist.
-	 */
-	public static final int TYPE_PLAYLIST = 4;
 
 	private static final String[] FILLED_PROJECTION = {
 		MediaStore.Audio.Media._ID,
@@ -197,231 +179,6 @@ public class Song implements Parcelable {
 		}
 	}
 
-	/**
-	 * Return a cursor containing the ids of all the songs with artist or
-	 * album of the specified id.
-	 *
-	 * @param type TYPE_ARTIST or TYPE_ALBUM, indicating the the id represents
-	 * an artist or album
-	 * @param id The MediaStore id of the artist or album
-	 */
-	private static Cursor getMediaCursor(int type, long id)
-	{
-		String selection = "=" + id + " AND " + MediaStore.Audio.Media.IS_MUSIC + "!=0";
-
-		switch (type) {
-		case TYPE_ARTIST:
-			selection = MediaStore.Audio.Media.ARTIST_ID + selection;
-			break;
-		case TYPE_ALBUM:
-			selection = MediaStore.Audio.Media.ALBUM_ID + selection;
-			break;
-		default:
-			throw new IllegalArgumentException("Invalid type specified: " + type);
-		}
-
-		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
-		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-		String[] projection = { MediaStore.Audio.Media._ID };
-		String sort = MediaStore.Audio.Media.ARTIST_KEY + ',' + MediaStore.Audio.Media.ALBUM_KEY + ',' + MediaStore.Audio.Media.TRACK;
-		return resolver.query(media, projection, selection, null, sort);
-	}
-
-	/**
-	 * Return a cursor containing the ids of all the songs in the playlist
-	 * with the given id.
-	 *
-	 * @param id The id of the playlist in MediaStore.Audio.Playlists.
-	 */
-	private static Cursor getPlaylistCursor(long id)
-	{
-		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
-		Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", id);
-		String[] projection = new String[] { MediaStore.Audio.Playlists.Members.AUDIO_ID };
-		String sort = MediaStore.Audio.Playlists.Members.PLAY_ORDER;
-		return resolver.query(uri, projection, null, null, sort);
-	}
-
-	/**
-	 * Class simply containing metadata about a playlist.
-	 */
-	public static class Playlist {
-		/**
-		 * Create a Playlist with the given id and name.
-		 */
-		public Playlist(long id, String name)
-		{
-			this.id = id;
-			this.name = name;
-		}
-
-		/**
-		 * The MediaStore.Audio.Playlists id of the playlist.
-		 */
-		public long id;
-		/**
-		 * The name of the playlist.
-		 */
-		public String name;
-	}
-
-	/**
-	 * Queries all the playlists known to the MediaStore.
-	 *
-	 * @return An array of Playlists
-	 * @see Playlist
-	 */
-	public static Playlist[] getPlaylists()
-	{
-		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
-		Uri media = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI;
-		String[] projection = { MediaStore.Audio.Playlists._ID, MediaStore.Audio.Playlists.NAME };
-		String sort = MediaStore.Audio.Playlists.NAME;
-		Cursor cursor = resolver.query(media, projection, null, null, sort);
-
-		if (cursor == null)
-			return null;
-
-		int count = cursor.getCount();
-		if (count == 0)
-			return null;
-
-		Playlist[] playlists = new Playlist[count];
-		for (int i = 0; i != count; ++i) {
-			if (!cursor.moveToNext())
-				return null;
-			playlists[i] = new Playlist(cursor.getLong(0), cursor.getString(1));
-		}
-
-		cursor.close();
-		return playlists;
-	}
-
-	/**
-	 * Retrieves the id for a playlist with the given name.
-	 *
-	 * @param name The name of the playlist.
-	 * @return The id of the playlist, or -1 if there is no playlist with the
-	 * given name.
-	 */
-	public static long getPlaylist(String name)
-	{
-		long id = -1;
-
-		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
-		Cursor cursor = resolver.query(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
-			new String[] { MediaStore.Audio.Playlists._ID },
-			MediaStore.Audio.Playlists.NAME + "=?",
-			new String[] { name }, null);
-
-		if (cursor != null) {
-			if (cursor.moveToNext())
-				id = cursor.getLong(0);
-			cursor.close();
-		}
-
-		return id;
-	}
-
-	/**
-	 * Create a new playlist with the given name. If a playlist with the given
-	 * name already exists, it will be overwritten.
-	 *
-	 * @param name The name of the playlist.
-	 * @return The id of the new playlist.
-	 */
-	public static long createPlaylist(String name)
-	{
-		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
-		long id = getPlaylist(name);
-
-		if (id == -1) {
-			// We need to create a new playlist.
-			ContentValues values = new ContentValues(1);
-			values.put(MediaStore.Audio.Playlists.NAME, name);
-			Uri uri = resolver.insert(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, values);
-			id = Long.parseLong(uri.getLastPathSegment());
-		} else {
-			// We are overwriting an existing playlist. Clear existing songs.
-			Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", id);
-			resolver.delete(uri, null, null);
-		}
-
-		return id;
-	}
-
-	/**
-	 * Add the given set of song ids to the playlist with the given id.
-	 *
-	 * @param playlistId The MediaStore.Audio.Playlist id of the playlist to
-	 * modify.
-	 * @param toAdd The MediaStore ids of all the songs to be added to the
-	 * playlist.
-	 */
-	public static void addToPlaylist(long playlistId, long[] toAdd)
-	{
-		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
-		Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId);
-		String[] projection = new String[] { MediaStore.Audio.Playlists.Members.PLAY_ORDER };
-		Cursor cursor = resolver.query(uri, projection, null, null, null);
-		int base = 0;
-		if (cursor.moveToLast())
-			base = cursor.getInt(0) + 1;
-		cursor.close();
-
-		ContentValues[] values = new ContentValues[toAdd.length];
-		for (int i = 0; i != values.length; ++i) {
-		    values[i] = new ContentValues(1);
-		    values[i].put(MediaStore.Audio.Playlists.Members.PLAY_ORDER, Integer.valueOf(base + i));
-		    values[i].put(MediaStore.Audio.Playlists.Members.AUDIO_ID, toAdd[i]);
-		}
-		resolver.bulkInsert(uri, values);
-	}
-
-	/**
-	 * Return an array containing all the song ids that match the specified parameters
-	 *
-	 * @param type Type the id represents. Must be one of the Song.TYPE_*
-	 * constants.
-	 * @param id The id of the element in the MediaStore content provider for
-	 * the given type.
-	 */
-	public static long[] getAllSongIdsWith(int type, long id)
-	{
-		Cursor cursor;
-
-		switch (type) {
-		case TYPE_SONG:
-			return new long[] { id };
-		case TYPE_ARTIST:
-		case TYPE_ALBUM:
-			cursor = getMediaCursor(type, id);
-			break;
-		case TYPE_PLAYLIST:
-			cursor = getPlaylistCursor(id);
-			break;
-		default:
-			throw new IllegalArgumentException("Specified type not valid: " + type);
-		}
-
-		if (cursor == null)
-			return null;
-
-		int count = cursor.getCount();
-		if (count == 0)
-			return null;
-
-		long[] songs = new long[count];
-		for (int i = 0; i != count; ++i) {
-			if (!cursor.moveToNext())
-				return null;
-			songs[i] = cursor.getLong(0);
-		}
-
-		cursor.close();
-		return songs;
-	}
-
 	public boolean equals(Song other)
 	{
 		if (other == null)
@@ -518,7 +275,7 @@ public class Song implements Parcelable {
 			ParcelFileDescriptor parcelFileDescriptor = resolver.openFileDescriptor(uri, "r");
 			if (parcelFileDescriptor != null) {
 				FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-				cover = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+				cover = BitmapFactory.decodeFileDescriptor(fileDescriptor, null, BITMAP_OPTIONS);
 			}
 		} catch (IllegalStateException e) {
 		} catch (FileNotFoundException e) {

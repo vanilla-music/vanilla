@@ -92,7 +92,7 @@ public class NewPlaylistDialog extends Dialog implements TextWatcher, View.OnCli
 	{
 		// Update the action button based on whether there is an
 		// existing playlist with the given name.
-		int res = Song.getPlaylist(s.toString()) == -1 ? R.string.create : R.string.overwrite;
+		int res = Playlist.getPlaylist(s.toString()) == -1 ? R.string.create : R.string.overwrite;
 		mPositiveButton.setText(res);
 	}
 

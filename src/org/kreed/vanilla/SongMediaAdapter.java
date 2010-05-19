@@ -38,7 +38,7 @@ public class SongMediaAdapter extends MediaAdapter {
 	 */
 	public SongMediaAdapter(Context context, boolean expandable, boolean requery)
 	{
-		super(context, Song.TYPE_SONG, expandable, requery);
+		super(context, MediaUtils.TYPE_SONG, expandable, requery);
 	}
 
 	@Override

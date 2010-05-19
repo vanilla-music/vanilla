@@ -353,13 +353,13 @@ public final class SongTimeline {
 	 *
 	 * @param enqueue If true, enqueue the set. If false, play the set.
 	 * @param type The type represented by the id. Must be one of the
-	 * Song.FIELD_* constants.
+	 * MediaUtils.FIELD_* constants.
 	 * @param id The id of the element in the MediaStore content provider for
 	 * the given type.
 	 */
 	public void chooseSongs(boolean enqueue, int type, long id)
 	{
-		long[] songs = Song.getAllSongIdsWith(type, id);
+		long[] songs = MediaUtils.getAllSongIdsWith(type, id);
 		if (songs == null || songs.length == 0)
 			return;
 
