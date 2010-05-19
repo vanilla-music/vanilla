@@ -318,9 +318,9 @@ public final class SongTimeline {
 			}
 		}
 
-		if (!song.populate(false)) {
+		if (!song.query(false)) {
 			song.randomize();
-			if (!song.populate(false))
+			if (!song.query(false))
 				return null;
 		}
 

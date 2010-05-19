@@ -560,7 +560,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		Log.e("VanillaMusic", "MediaPlayer error: " + what + " " + extra);
 		mMediaPlayer.reset();
 		Song song = getSong(+1);
-		if (song != null && !song.populate(true))
+		if (song != null && !song.query(true))
 			setFlag(FLAG_NO_MEDIA);
 		else
 			mHandler.sendEmptyMessage(TRACK_CHANGED);

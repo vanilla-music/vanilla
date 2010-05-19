@@ -135,7 +135,7 @@ public class Song implements Parcelable {
 	 * @param force Query even if fields have already been populated
 	 * @return true if fields have been populated, false otherwise
 	 */
-	public boolean populate(boolean force)
+	public boolean query(boolean force)
 	{
 		if (path != null && !force)
 			return true;
