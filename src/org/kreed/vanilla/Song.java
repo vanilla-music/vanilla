@@ -268,7 +268,7 @@ public class Song implements Parcelable {
 			ParcelFileDescriptor parcelFileDescriptor = resolver.openFileDescriptor(uri, "r");
 			if (parcelFileDescriptor != null) {
 				FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-				cover = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+				cover = BitmapFactory.decodeFileDescriptor(fileDescriptor, null, BITMAP_OPTIONS);
 			}
 		} catch (IllegalStateException e) {
 		} catch (FileNotFoundException e) {
