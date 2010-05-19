@@ -179,13 +179,6 @@ public class Song implements Parcelable {
 		}
 	}
 
-	public boolean equals(Song other)
-	{
-		if (other == null)
-			return false;
-		return id == other.id;
-	}
-
 	public static Parcelable.Creator<Song> CREATOR = new Parcelable.Creator<Song>() {
 		public Song createFromParcel(Parcel in)
 		{
@@ -275,7 +268,7 @@ public class Song implements Parcelable {
 			ParcelFileDescriptor parcelFileDescriptor = resolver.openFileDescriptor(uri, "r");
 			if (parcelFileDescriptor != null) {
 				FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-				cover = BitmapFactory.decodeFileDescriptor(fileDescriptor, null, BITMAP_OPTIONS);
+				cover = BitmapFactory.decodeFileDescriptor(fileDescriptor);
 			}
 		} catch (IllegalStateException e) {
 		} catch (FileNotFoundException e) {
