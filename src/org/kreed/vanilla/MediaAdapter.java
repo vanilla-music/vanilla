@@ -272,7 +272,10 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 			for (int j = 0; j != needles.length; ++i, ++j) {
 				selectionArgs[i] = '%' + needles[j] + '%';
 
-				if (i != 0)
+				// If we have something in the selection (i.e. i > 0), we must
+				// have something in the selection, so we can skip the more
+				// costly direct check of the selection length.
+				if (i != 0 || selection.length() != 0)
 					selection.append(" AND ");
 				selection.append(keys);
 				selection.append(" LIKE ?");
