@@ -571,10 +571,21 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	private void onSongChange(final Song song)
 	{
 		if (mStatusText != null) {
+			Resources res = getResources();
+			CharSequence text;
+			if (song == null) {
+				text = res.getText(R.string.none);
+			} else {
+				String title = song.title == null ? res.getString(R.string.unknown) : song.title;
+				String artist = song.artist == null ? res.getString(R.string.unknown) : song.artist;
+				text = res.getString(R.string.title_by_artist, title, artist);
+			}
+
+			final CharSequence result = text;
 			runOnUiThread(new Runnable() {
 				public void run()
 				{
-					mStatusText.setText(song == null ? getResources().getText(R.string.none) : song.title);
+					mStatusText.setText(result);
 				}
 			});
 		}

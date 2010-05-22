@@ -72,6 +72,8 @@
 	<string name="playlists">Playlists</string>
 
 	<string name="none">None</string>
+	<string name="unknown">Unknown</string>
+	<string name="title_by_artist">%s by %s</string>
 
 	<!-- Preferences -->
 	<string name="pref_output">Audio Output</string>
