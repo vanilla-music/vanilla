@@ -90,7 +90,8 @@
 		<EditText
 			android:id="@+id/filter_text"
 			android:layout_width="fill_parent"
-			android:layout_height="wrap_content" />
+			android:layout_height="wrap_content"
+			android:inputType="textFilter" />
 		<org.kreed.vanilla.ControlButton
 			android:id="@+id/clear_button"
 			android:layout_width="wrap_content"

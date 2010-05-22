@@ -34,7 +34,6 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
@@ -122,9 +121,6 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		super.onStart();
 
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-		int inputType = settings.getBoolean("filter_suggestions", false) ? InputType.TYPE_CLASS_TEXT : InputType.TYPE_TEXT_VARIATION_FILTER;
-		mTextFilter.setInputType(inputType);
-
 		boolean showControls = settings.getBoolean("controls_in_selector", false);
 		if (showControls && mControls == null) {
 			mControls = findViewById(R.id.controls);

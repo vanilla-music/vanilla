@@ -56,11 +56,6 @@
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/pref_song_selector">
 		<CheckBoxPreference
-			android:key="filter_suggestions"
-			android:title="@string/filter_suggestions_title"
-			android:summary="@string/filter_suggestions_summary"
-			android:defaultValue="false" />
-		<CheckBoxPreference
 			android:key="selector_on_startup"
 			android:title="@string/selector_on_startup_title"
 			android:summary="@string/selector_on_startup_summary"
