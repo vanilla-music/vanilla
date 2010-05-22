@@ -16,27 +16,41 @@
 	You should have received a copy of the GNU General Public License
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
+<!-- There are a lot of LinearLayouts here. Ideally we would combine
+ a few into one RelativeLayout, but I am not sure how to make that
+ work with resorting to fixed dimensions. -->
 <LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/status"
+	android:id="@+id/controls"
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
 	android:orientation="horizontal">
-	<TextView
-		android:id="@+id/status_text"
-		android:textSize="16sp"
+	<ImageView
+		android:id="@+id/cover"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center"
-		android:layout_weight="1" />
-	<org.kreed.vanilla.ControlButton
-		android:id="@+id/play_pause"
+		android:src="@drawable/icon" />
+	<LinearLayout
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:src="@drawable/play" />
-	<org.kreed.vanilla.ControlButton
-		android:id="@+id/next"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:src="@drawable/next" />
+		android:layout_weight="1"
+		android:orientation="vertical">
+		<TextView
+			android:id="@+id/status_text"
+			android:text="@string/none"
+			android:textSize="16sp"
+			android:singleLine="true"
+			android:gravity="center"
+			android:layout_gravity="center"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content" />
+		<LinearLayout
+			android:orientation="horizontal"
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:layout_gravity="center">
+			<include layout="@layout/playback_buttons" />
+		</LinearLayout>
+	</LinearLayout>
 </LinearLayout>

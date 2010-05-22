@@ -122,9 +122,9 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 
 		boolean status = settings.getBoolean("selector_status", false);
 		if (status && mStatus == null) {
-			mStatus = findViewById(R.id.status);
+			mStatus = findViewById(R.id.controls);
 			if (mStatus == null)
-				mStatus = ((ViewStub)findViewById(R.id.status_stub)).inflate();
+				mStatus = ((ViewStub)findViewById(R.id.controls_stub)).inflate();
 			mStatusText = (TextView)mStatus.findViewById(R.id.status_text);
 			mPlayPauseButton = (ControlButton)mStatus.findViewById(R.id.play_pause);
 			ControlButton next = (ControlButton)mStatus.findViewById(R.id.next);
