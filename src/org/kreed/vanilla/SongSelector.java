@@ -233,7 +233,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		if (mediaView.isExpanderPressed())
 			expand(mediaView);
 		else if (id == mLastActedId)
-			finish();
+			startActivity(new Intent(this, FullPlaybackActivity.class));
 		else
 			sendSongIntent(mediaView, mDefaultAction);
 	}
