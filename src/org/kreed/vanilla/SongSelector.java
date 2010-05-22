@@ -569,6 +569,8 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	{
 		mSearchBoxVisible = visible;
 		mSearchBox.setVisibility(visible ? View.VISIBLE : View.GONE);
+		if (mControls != null)
+			mControls.setVisibility(visible ? View.GONE : View.VISIBLE);
 		if (visible)
 			mSearchBox.requestFocus();
 	}
