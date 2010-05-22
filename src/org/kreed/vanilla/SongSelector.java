@@ -132,6 +132,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 			mPlayPauseButton = (ControlButton)mControls.findViewById(R.id.play_pause);
 			ControlButton next = (ControlButton)mControls.findViewById(R.id.next);
 
+			mCover.setOnClickListener(this);
 			previous.setOnClickListener(this);
 			mPlayPauseButton.setOnClickListener(this);
 			next.setOnClickListener(this);
@@ -305,6 +306,8 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 				setSearchBoxVisible(false);
 			else
 				mTextFilter.setText("");
+		} else if (view == mCover) {
+			startActivity(new Intent(this, FullPlaybackActivity.class));
 		} else if (view.getTag() != null) {
 			int i = (Integer)view.getTag();
 			String[] limiter;
