@@ -66,9 +66,9 @@
 			android:summary="@string/selector_on_startup_summary"
 			android:defaultValue="false" />
 		<CheckBoxPreference
-			android:key="selector_status"
-			android:title="@string/selector_status_title"
-			android:summary="@string/selector_status_summary"
+			android:key="controls_in_selector"
+			android:title="@string/controls_in_selector_title"
+			android:summary="@string/controls_in_selector_summary"
 			android:defaultValue="false" />
 		<ListPreference
 			android:key="default_action_int"

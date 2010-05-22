@@ -25,6 +25,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.ContentObserver;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.PaintDrawable;
 import android.os.Bundle;
@@ -36,6 +37,8 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -46,6 +49,7 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.AdapterView;
 import android.widget.Filter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TabHost;
@@ -60,8 +64,9 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	private TextView mTextFilter;
 	private View mClearButton;
 
-	private View mStatus;
+	private View mControls;
 	TextView mStatusText;
+	ImageView mCover;
 
 	private ViewGroup mLimiterViews;
 
@@ -120,15 +125,18 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		int inputType = settings.getBoolean("filter_suggestions", false) ? InputType.TYPE_CLASS_TEXT : InputType.TYPE_TEXT_VARIATION_FILTER;
 		mTextFilter.setInputType(inputType);
 
-		boolean status = settings.getBoolean("selector_status", false);
-		if (status && mStatus == null) {
-			mStatus = findViewById(R.id.controls);
-			if (mStatus == null)
-				mStatus = ((ViewStub)findViewById(R.id.controls_stub)).inflate();
-			mStatusText = (TextView)mStatus.findViewById(R.id.status_text);
-			mPlayPauseButton = (ControlButton)mStatus.findViewById(R.id.play_pause);
-			ControlButton next = (ControlButton)mStatus.findViewById(R.id.next);
+		boolean showControls = settings.getBoolean("controls_in_selector", false);
+		if (showControls && mControls == null) {
+			mControls = findViewById(R.id.controls);
+			if (mControls == null)
+				mControls = ((ViewStub)findViewById(R.id.controls_stub)).inflate();
+			mStatusText = (TextView)mControls.findViewById(R.id.status_text);
+			mCover = (ImageView)mControls.findViewById(R.id.cover);
+			ControlButton previous = (ControlButton)mControls.findViewById(R.id.previous);
+			mPlayPauseButton = (ControlButton)mControls.findViewById(R.id.play_pause);
+			ControlButton next = (ControlButton)mControls.findViewById(R.id.next);
 
+			previous.setOnClickListener(this);
 			mPlayPauseButton.setOnClickListener(this);
 			next.setOnClickListener(this);
 
@@ -137,9 +145,9 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 				setState(service.getState());
 				onSongChange(service.getSong(0));
 			}
-		} else if (!status && mStatus != null) {
-			mStatus.setVisibility(View.GONE);
-			mStatus = null;
+		} else if (!showControls && mControls != null) {
+			mControls.setVisibility(View.GONE);
+			mControls = null;
 		}
 
 		int action = Integer.parseInt(settings.getString("default_action_int", "0"));
@@ -565,38 +573,47 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 			mSearchBox.requestFocus();
 	}
 
+	private static int mCoverSize = -1;
+
 	/**
-	 * Call to update the status text for a newly-playing song.
+	 * Call to update the status text for a newly-playing song. Should only be
+	 * called after the controls have been initialized.
 	 */
 	private void onSongChange(final Song song)
 	{
-		if (mStatusText != null) {
-			Resources res = getResources();
-			CharSequence text;
-			if (song == null) {
-				text = res.getText(R.string.none);
-			} else {
-				String title = song.title == null ? res.getString(R.string.unknown) : song.title;
-				String artist = song.artist == null ? res.getString(R.string.unknown) : song.artist;
-				text = res.getString(R.string.title_by_artist, title, artist);
-			}
-
-			final CharSequence result = text;
-			runOnUiThread(new Runnable() {
-				public void run()
-				{
-					mStatusText.setText(result);
-				}
-			});
+		Resources res = getResources();
+		CharSequence text;
+		if (song == null) {
+			text = res.getText(R.string.none);
+		} else {
+			String title = song.title == null ? res.getString(R.string.unknown) : song.title;
+			String artist = song.artist == null ? res.getString(R.string.unknown) : song.artist;
+			text = res.getString(R.string.title_by_artist, title, artist);
 		}
+
+		if (mCoverSize == -1) {
+			DisplayMetrics metrics = ContextApplication.getContext().getResources().getDisplayMetrics();
+			mCoverSize = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 64, metrics);
+		}
+
+		final CharSequence result = text;
+		final Bitmap cover = CoverBitmap.createScaledBitmap(song, mCoverSize);
+		runOnUiThread(new Runnable() {
+			public void run()
+			{
+				mStatusText.setText(result);
+				mCover.setImageBitmap(cover);
+				mCover.setVisibility(cover == null ? View.GONE : View.VISIBLE);
+			}
+		});
 	}
 
 	@Override
 	public void receive(Intent intent)
 	{
-		if (mStatusText != null) {
-			Song song = intent.getParcelableExtra("song");
-			onSongChange(song);
-		}
+		super.receive(intent);
+
+		if (mControls != null)
+			onSongChange((Song)intent.getParcelableExtra("song"));
 	}
 }

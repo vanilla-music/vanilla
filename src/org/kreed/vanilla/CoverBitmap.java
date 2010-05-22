@@ -102,6 +102,27 @@ public final class CoverBitmap {
 	}
 
 	/**
+	 * Scales a cover down to fit in a square of the specified size.
+	 *
+	 * @param song The Song to retrieve the cover from.
+	 * @param size The width/height of the square. Must be greater than zero.
+	 * @return The scaled Bitmap, or null if a cover could not be found.
+	 */
+	public static Bitmap createScaledBitmap(Song song, int size)
+	{
+		if (song == null || size < 1)
+			return null;
+
+		Bitmap cover = song.getCover();
+		int coverWidth = cover.getWidth();
+		int coverHeight = cover.getHeight();
+		float scale = coverWidth > coverHeight ? (float)size / coverWidth : (float)size / coverHeight;
+		coverWidth *= scale;
+		coverHeight *= scale;
+		return Bitmap.createScaledBitmap(cover, coverWidth, coverHeight, false);
+	}
+
+	/**
 	 * Create a compact image, displaying cover art with the song title
 	 * overlaid at the bottom edge.
 	 *

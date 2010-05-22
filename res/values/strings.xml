@@ -97,8 +97,8 @@
 	<string name="filter_suggestions_summary">Use text suggestions when editing the filter text</string>
 	<string name="selector_on_startup_title">Open on Startup</string>
 	<string name="selector_on_startup_summary">Open song selector on startup</string>
-	<string name="selector_status_title">Controls in Selector</string>
-	<string name="selector_status_summary">Show the currently playing song and media controls in the selector window</string>
+	<string name="controls_in_selector_title">Controls in Selector</string>
+	<string name="controls_in_selector_summary">Show the currently playing song and media controls in the selector window</string>
 	<string name="default_action_title">Default Action</string>
 	<string name="default_action_summary">What to do when an item is tapped</string>
 
