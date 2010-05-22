@@ -114,6 +114,9 @@ public final class CoverBitmap {
 			return null;
 
 		Bitmap cover = song.getCover();
+		if (cover == null)
+			return null;
+
 		int coverWidth = cover.getWidth();
 		int coverHeight = cover.getHeight();
 		float scale = coverWidth > coverHeight ? (float)size / coverWidth : (float)size / coverHeight;
