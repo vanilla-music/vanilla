@@ -49,6 +49,7 @@
 	<string name="add_to_playlist">Add to Playlist...</string>
 	<string name="new_playlist">New Playlist...</string>
 	<string name="expand">Expand</string>
+	<string name="delete">Delete</string>
 	<string name="playback_view">Now Playing</string>
 	<string name="search">Search</string>
 
@@ -57,6 +58,12 @@
 	<plurals name="added_to_playlist">
 		<item quantity="one">1 song added to playlist %2$s.</item>
 		<item quantity="other">%d songs added to playlist %s.</item>
+	</plurals>
+	<string name="deleting">Deleting...</string>
+	<string name="playlist_deleted">Playlist %s deleted.</string>
+	<plurals name="deleted">
+		<item quantity="one">1 song deleted.</item>
+		<item quantity="other">%d songs deleted.</item>
 	</plurals>
 
 	<string name="artists">Artists</string>

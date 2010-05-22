@@ -428,4 +428,54 @@ public final class SongTimeline {
 			mQueueOffset = 0;
 		}
 	}
+
+	/**
+	 * Remove the song with the given id from the timeline.
+	 *
+	 * @param id The MediaStore id of the song to remove.
+	 * @return True if the current song has changed.
+	 */
+	public boolean removeSong(long id)
+	{
+		synchronized (this) {
+			boolean changed = false;
+			ArrayList<Song> songs = mSongs;
+
+			int i = mCurrentPos;
+			Song oldPrevious = getSong(-1);
+			Song oldCurrent = getSong(0);
+			Song oldNext = getSong(+1);
+
+			while (--i != -1) {
+				if (Song.getId(songs.get(i)) == id) {
+					songs.remove(i);
+					--mCurrentPos;
+				}
+			}
+
+			for (i = mCurrentPos; i != songs.size(); ++i) {
+				if (Song.getId(songs.get(i)) == id)
+					songs.remove(i);
+			}
+
+			i = mCurrentPos;
+			Song previous = getSong(-1);
+			Song current = getSong(0);
+			Song next = getSong(+1);
+
+			if (mCallback != null) {
+				if (Song.getId(oldPrevious) != Song.getId(previous))
+					mCallback.songReplaced(-1, previous);
+				if (Song.getId(oldNext) != Song.getId(next))
+					mCallback.songReplaced(1, next);
+			}
+			if (Song.getId(oldCurrent) != Song.getId(current)) {
+				if (mCallback != null)
+					mCallback.songReplaced(0, current);
+				changed = true;
+			}
+
+			return changed;
+		}
+	}
 }

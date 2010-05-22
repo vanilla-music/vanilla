@@ -179,6 +179,19 @@ public class Song implements Parcelable {
 		}
 	}
 
+	/**
+	 * Get the id of the given song.
+	 *
+	 * @param song The Song to get the id from.
+	 * @return The id, or 0 if the given song is null.
+	 */
+	public static long getId(Song song)
+	{
+		if (song == null)
+			return 0;
+		return song.id;
+	}
+
 	public static Parcelable.Creator<Song> CREATOR = new Parcelable.Creator<Song>() {
 		public Song createFromParcel(Parcel in)
 		{

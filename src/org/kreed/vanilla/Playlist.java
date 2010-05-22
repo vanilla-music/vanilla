@@ -19,6 +19,7 @@
 package org.kreed.vanilla;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
@@ -158,5 +159,16 @@ public class Playlist {
 		    values[i].put(MediaStore.Audio.Playlists.Members.AUDIO_ID, toAdd[i]);
 		}
 		resolver.bulkInsert(uri, values);
+	}
+
+	/**
+	 * Delete the playlist with the given id.
+	 *
+	 * @param id The Media.Audio.Playlists id of the playlist.
+	 */
+	public static void deletePlaylist(long id)
+	{
+		Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, id);
+		ContextApplication.getContext().getContentResolver().delete(uri, null, null);
 	}
 }

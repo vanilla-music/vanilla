@@ -570,6 +570,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	/**
 	 * Returns the song <code>delta</code> places away from the current
 	 * position.
+	 *
+	 * @see SongTimeline#getSong(int)
 	 */
 	public Song getSong(int delta)
 	{
@@ -835,6 +837,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 	/**
 	 * Returns the position of the current song in the song timeline.
+	 *
+	 * @see SongTimeline#getCurrentPosition()
 	 */
 	public int getTimelinePos()
 	{
@@ -868,5 +872,19 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	public void songReplaced(int delta, Song song)
 	{
 		broadcastReplaceSong(delta, song);
+	}
+
+	/**
+	 * Remove the song with the given id from the timeline and advance to the
+	 * next song if the given song is currently playing.
+	 *
+	 * @param id The MediaStore id of the song to remove.
+	 * @see SongTimeline#removeSong(long)
+	 */
+	public void removeSong(long id)
+	{
+		boolean shouldAdvance = mTimeline.removeSong(id);
+		if (shouldAdvance)
+			setCurrentSong(0);
 	}
 }

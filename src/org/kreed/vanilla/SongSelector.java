@@ -329,6 +329,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	private static final int MENU_EXPAND = 2;
 	private static final int MENU_ADD_TO_PLAYLIST = 3;
 	private static final int MENU_NEW_PLAYLIST = 4;
+	private static final int MENU_DELETE = 5;
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View listView, ContextMenu.ContextMenuInfo absInfo)
@@ -343,11 +344,14 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		SubMenu playlistMenu = menu.addSubMenu(0, MENU_ADD_TO_PLAYLIST, 0, R.string.add_to_playlist);
 		if (view.hasExpanders())
 			menu.add(0, MENU_EXPAND, 0, R.string.expand);
+		menu.add(0, MENU_DELETE, 0, R.string.delete);
 
 		playlistMenu.add(type, MENU_NEW_PLAYLIST, id, R.string.new_playlist);
 		Playlist[] playlists = Playlist.getPlaylists();
-		for (int i = 0; i != playlists.length; ++i)
-			playlistMenu.add(type, (int)playlists[i].id + 100, id, playlists[i].name);
+		if (playlists != null) {
+			for (int i = 0; i != playlists.length; ++i)
+				playlistMenu.add(type, (int)playlists[i].id + 100, id, playlists[i].name);
+		}
 	}
 
 	/**
@@ -371,20 +375,40 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		String message = getResources().getQuantityString(R.plurals.added_to_playlist, ids.length, ids.length, title);
 		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 	}
-	
+
+	/**
+	 * Delete the media with the specified type and id and show a Toast
+	 * informing the user of this.
+	 *
+	 * @param type The type of media; one of the MediaUtils.TYPE_* constants.
+	 * @param id The MediaStore id of the media.
+	 * @param title The title of the playlist, to be displayed in the Toast.
+	 * Only used when deleting a playlist.
+	 */
+	private void delete(int type, long id, String title)
+	{
+		if (type == MediaUtils.TYPE_PLAYLIST) {
+			Playlist.deletePlaylist(id);
+			String message = getResources().getString(R.string.playlist_deleted, title);
+			Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+		} else {
+			int count = MediaUtils.deleteMedia(type, id);
+			String message = getResources().getQuantityString(R.plurals.deleted, count, count);
+			Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+		}
+	}
+
 	@Override
 	public boolean onContextItemSelected(MenuItem item)
 	{
 		String action = PlaybackService.ACTION_PLAY_ITEMS;
 		int id = item.getItemId();
-		final int type = item.getGroupId();
-		final int mediaId = item.getOrder();
+		int type = item.getGroupId();
+		int mediaId = item.getOrder();
 
 		switch (id) {
 		case MENU_EXPAND:
 			expand((MediaAdapter.MediaView)((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).targetView);
-			break;
-		case MENU_ADD_TO_PLAYLIST:
 			break;
 		case MENU_ENQUEUE:
 			action = PlaybackService.ACTION_ENQUEUE_ITEMS;
@@ -394,13 +418,24 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 				mDefaultAction = action;
 			sendSongIntent((MediaAdapter.MediaView)((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).targetView, action);
 			break;
-		case MENU_NEW_PLAYLIST:
+		case MENU_NEW_PLAYLIST: {
 			NewPlaylistDialog dialog = new NewPlaylistDialog(this);
 			Message message = mHandler.obtainMessage(MSG_NEW_PLAYLIST, type, mediaId);
 			message.obj = dialog;
 			dialog.setDismissMessage(message);
 			dialog.show();
 			break;
+		}
+		case MENU_DELETE: {
+			MediaAdapter.MediaView view = (MediaAdapter.MediaView)((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).targetView;
+			type = view.getMediaType();
+			if (type != MediaUtils.TYPE_PLAYLIST)
+				Toast.makeText(this, R.string.deleting, Toast.LENGTH_SHORT).show();
+			Message message = mHandler.obtainMessage(MSG_DELETE, type, (int)view.getMediaId());
+			message.obj = view.getTitle();
+			mHandler.sendMessage(message);
+			break;
+		}
 		default:
 			if (id > 100)
 				addToPlaylist(id - 100, type, mediaId, item.getTitle());
@@ -461,12 +496,20 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	 */
 	private static final int MSG_INIT = 10;
 	/**
-	 * Call addToPlaylist with the paramaters from the given message. The
+	 * Call addToPlaylist with the parameters from the given message. The
 	 * message must contain the type and id of the media to be added in
 	 * arg1 and arg2, respectively. The obj field must be a NewPlaylistDialog
 	 * that the name will be taken from.
 	 */
 	private static final int MSG_NEW_PLAYLIST = 11;
+	/**
+	 * Delete the songs in the set of media with the specified type and id,
+	 * given as arg1 and arg2, respectively. If type is a playlist, the
+	 * playlist itself will be deleted, not the songs it contains. The obj
+	 * field should contain the playlist name (as a String) if type is a
+	 * playlist.
+	 */
+	private static final int MSG_DELETE = 12;
 
 	@Override
 	public boolean handleMessage(Message message)
@@ -484,6 +527,9 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 				long playlistId = Playlist.createPlaylist(name);
 				addToPlaylist(playlistId, message.arg1, message.arg2, name);
 			}
+			break;
+		case MSG_DELETE:
+			delete(message.arg1, message.arg2, (String)message.obj);
 			break;
 		default:
 			return super.handleMessage(message);
