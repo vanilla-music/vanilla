@@ -104,6 +104,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	public static final int FLAG_SHUFFLE = 0x4;
 	public static final int FLAG_REPEAT = 0x8;
 	public static final int ALL_FLAGS = FLAG_NO_MEDIA + FLAG_PLAYING + FLAG_SHUFFLE + FLAG_REPEAT;
+	/**
+	 * The flags that are (usually) only toggled by user action.
+	 */
+	public static final int USER_MASK = FLAG_PLAYING + FLAG_SHUFFLE + FLAG_REPEAT;
 
 	public static final int NEVER = 0;
 	public static final int WHEN_PLAYING = 1;
@@ -114,6 +118,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	private boolean mScrobble;
 	private int mNotificationMode;
 	private byte mHeadsetControls = -1;
+	/**
+	 * The time to wait before considering the player idle.
+	 */
+	private int mIdleTimeout;
 
 	private Looper mLooper;
 	private Handler mHandler;
@@ -138,6 +146,15 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	private boolean mIgnoreNextUp;
 	private boolean mLoaded;
 	boolean mInCall;
+	/**
+	 * The volume set by the user in the preferences.
+	 */
+	private float mUserVolume = 1.0f;
+	/**
+	 * The actual volume of the media player. Will differ from the user volume
+	 * when fading the volume.
+	 */
+	private float mCurrentVolume = 1.0f;
 
 	private Method mIsWiredHeadsetOn;
 	private Method mStartForeground;
@@ -325,8 +342,11 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		mNotificationMode = Integer.parseInt(mSettings.getString("notification_mode", "1"));
 		mScrobble = mSettings.getBoolean("scrobble", false);
 		float volume = mSettings.getFloat("volume", 1.0f);
-		if (volume != 1.0f)
+		if (volume != 1.0f) {
+			mCurrentVolume = mUserVolume = volume;
 			mMediaPlayer.setVolume(volume, volume);
+		}
+		mIdleTimeout = mSettings.getBoolean("use_idle_timeout", false) ? mSettings.getInt("idle_timeout", 3600) : 0;
 
 		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
 		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicSongChangeLock");
@@ -359,6 +379,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			mScrobble = mSettings.getBoolean("scrobble", false);
 		} else if ("volume".equals(key)) {
 			float volume = mSettings.getFloat("volume", 1.0f);
+			mCurrentVolume = mUserVolume = volume;
 			if (mMediaPlayer != null) {
 				synchronized (mMediaPlayer) {
 					mMediaPlayer.setVolume(volume, volume);
@@ -367,6 +388,9 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		} else if ("media_button".equals(key)) {
 			mHeadsetControls = (byte)(mSettings.getBoolean("media_button", true) ? 1 : 0);
 			setupReceiver();
+		} else if ("use_idle_timeout".equals(key) || "idle_timeout".equals(key)) {
+			mIdleTimeout = mSettings.getBoolean("use_idle_timeout", false) ? mSettings.getInt("idle_timeout", 3600) : 0;
+			userActionTriggered();
 		}
 	}
 
@@ -378,21 +402,21 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		ContextApplication.broadcast(intent);
 	}
 
-	boolean setFlag(int flag)
+	void setFlag(int flag)
 	{
 		synchronized (mStateLock) {
-			return updateState(mState | flag);
+			updateState(mState | flag);
 		}
 	}
 
-	boolean unsetFlag(int flag)
+	void unsetFlag(int flag)
 	{
 		synchronized (mStateLock) {
-			return updateState(mState & ~flag);
+			updateState(mState & ~flag);
 		}
 	}
 
-	private boolean updateState(int state)
+	private void updateState(int state)
 	{
 		state &= ALL_FLAGS;
 
@@ -401,7 +425,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 		Song song = getSong(0);
 		if (song == null && (state & FLAG_PLAYING) != 0)
-			return false;
+			return;
 
 		int oldState = mState;
 		mState = state;
@@ -454,11 +478,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 					mMediaPlayer.pause();
 				}
 			}
-		} else {
-			return false;
 		}
 
-		return true;
+		if ((oldState & USER_MASK) != (state & USER_MASK))
+			userActionTriggered();
 	}
 
 	private void updateNotification(Song song)
@@ -543,6 +566,9 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		} catch (IOException e) {
 			Log.e("VanillaMusic", "IOException", e);
 		}
+
+		if (delta != 0)
+			userActionTriggered();
 
 		mHandler.sendEmptyMessage(PROCESS_SONG);
 	}
@@ -686,8 +712,12 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			case TelephonyManager.CALL_STATE_RINGING:
 			case TelephonyManager.CALL_STATE_OFFHOOK:
 				mInCall = true;
-				if (!mPlayingBeforeCall)
-					mPlayingBeforeCall = unsetFlag(FLAG_PLAYING);
+				if (!mPlayingBeforeCall) {
+					synchronized (mStateLock) {
+						if (mPlayingBeforeCall = (mState & FLAG_PLAYING) != 0)
+							unsetFlag(FLAG_PLAYING);
+					}
+				}
 				break;
 			case TelephonyManager.CALL_STATE_IDLE:
 				mInCall = false;
@@ -741,8 +771,21 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	private static final int POST_CREATE = 1;
 	private static final int MEDIA_BUTTON = 2;
 	private static final int CREATE = 3;
+	/**
+	 * This message is sent with a delay specified by a user preference. After
+	 * this delay, assuming no new IDLE_TIMEOUT messages cancel it, playback
+	 * will be stopped.
+	 */
+	private static final int IDLE_TIMEOUT = 4;
 	private static final int TRACK_CHANGED = 5;
 	private static final int RELEASE_WAKE_LOCK = 6;
+	/**
+	 * Decrease the volume gradually over five seconds, pausing when 0 is
+	 * reached.
+	 *
+	 * arg1 should be the progress in the fade as a percentage, 1-100.
+	 */
+	private static final int FADE_OUT = 7;
 	private static final int SAVE_STATE = 12;
 	private static final int PROCESS_SONG = 13;
 
@@ -792,6 +835,31 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			mCallListener = new InCallListener();
 			TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 			telephonyManager.listen(mCallListener, PhoneStateListener.LISTEN_CALL_STATE);
+			break;
+		case IDLE_TIMEOUT:
+			if ((mState & FLAG_PLAYING) != 0)
+				mHandler.sendMessage(mHandler.obtainMessage(FADE_OUT, 100, 0));
+			break;
+		case FADE_OUT:
+			int progress = message.arg1 - 1;
+			if (progress == 0) {
+				unsetFlag(FLAG_PLAYING);
+				mCurrentVolume = mUserVolume;
+			} else {
+				// Fade out on a x^4 curve. This produces a smoother
+				// transition, since we are using raw sound intensities which
+				// are heard by humans with a logarithmic scale. Don't fall
+				// below .01 though: past this, hearing this music becomes
+				// difficult or impossible.
+				mCurrentVolume = Math.max((float)(Math.pow(progress / 100f, 4) * mUserVolume), .01f);
+				
+				mHandler.sendMessageDelayed(mHandler.obtainMessage(FADE_OUT, progress, 0), 50);
+			}
+			if (mMediaPlayer != null) {
+				synchronized (mMediaPlayer) {
+					mMediaPlayer.setVolume(mCurrentVolume, mCurrentVolume);
+				}
+			}
 			break;
 		default:
 			return false;
@@ -886,5 +954,25 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		boolean shouldAdvance = mTimeline.removeSong(id);
 		if (shouldAdvance)
 			setCurrentSong(0);
+	}
+
+	/**
+	 * Resets the idle timeout countdown. Should be called by a user action
+	 * has been trigger (new song chosen or playback toggled).
+	 *
+	 * If an idle fade out is actually in progress, aborts it and resets the
+	 * volume.
+	 */
+	public void userActionTriggered()
+	{
+		mHandler.removeMessages(FADE_OUT);
+		mHandler.removeMessages(IDLE_TIMEOUT);
+		if (mIdleTimeout != 0)
+			mHandler.sendEmptyMessageDelayed(IDLE_TIMEOUT, mIdleTimeout * 1000);
+
+		if (mCurrentVolume != mUserVolume) {
+			mCurrentVolume = mUserVolume;
+			mMediaPlayer.setVolume(mCurrentVolume, mCurrentVolume);
+		}
 	}
 }

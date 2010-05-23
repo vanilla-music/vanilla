@@ -75,6 +75,16 @@
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/pref_misc">
 		<CheckBoxPreference
+			android:key="use_idle_timeout"
+			android:title="@string/use_idle_timeout_title"
+			android:summary="@string/use_idle_timeout_summary"
+			android:defaultValue="false" />
+		<org.kreed.vanilla.IdlePreference
+			android:key="idle_timeout"
+			android:title="@string/idle_timeout_title"
+			android:summary="@string/idle_timeout_summary"
+			android:dependency="use_idle_timeout" />
+		<CheckBoxPreference
 			android:key="scrobble"
 			android:title="@string/scrobble_title"
 			android:defaultValue="true"

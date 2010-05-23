@@ -76,6 +76,15 @@
 	<string name="title_by_artist">%s by %s</string>
 
 	<!-- Preferences -->
+	<plurals name="minutes">
+		<item quantity="one">1 minute</item>
+		<item quantity="other">%d minutes</item>
+	</plurals>
+	<plurals name="hours">
+		<item quantity="one">1 hour</item>
+		<item quantity="other">%d hours</item>
+	</plurals>
+
 	<string name="pref_output">Audio Output</string>
 	<string name="volume_title">Volume</string>
 	<string name="volume_summary">Music volume</string>
@@ -101,6 +110,10 @@
 	<string name="default_action_summary">What to do when an item is tapped</string>
 
 	<string name="pref_misc">Miscellaneous Features</string>
+	<string name="use_idle_timeout_title">Enable Idle Timeout</string>
+	<string name="use_idle_timeout_summary">When active, playback will be stopped after the given period of inactivity</string>
+	<string name="idle_timeout_title">Idle Timeout</string>
+	<string name="idle_timeout_summary">The amount of time that must pass before becoming idle</string>
 	<string name="scrobble_title">Use ScrobbleDroid API</string>
 	<string name="scrobble_summary">Scrobble to Last.FM through ScrobbleDroid or Simple Last.FM Scrobbler</string>
 </resources>

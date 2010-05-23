@@ -71,6 +71,14 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 			startService(new Intent(this, PlaybackService.class));
 	}
 
+	@Override
+	public void onResume()
+	{
+		super.onResume();
+		if (ContextApplication.hasService())
+			ContextApplication.getService().userActionTriggered();
+	}
+
 	public static boolean handleKeyLongPress(int keyCode)
 	{
 		switch (keyCode) {
