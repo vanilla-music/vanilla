@@ -28,6 +28,7 @@ import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.PaintDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -340,6 +341,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	private static final int MENU_ADD_TO_PLAYLIST = 3;
 	private static final int MENU_NEW_PLAYLIST = 4;
 	private static final int MENU_DELETE = 5;
+	private static final int MENU_EDIT = 6;
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View listView, ContextMenu.ContextMenuInfo absInfo)
@@ -351,6 +353,8 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		menu.setHeaderTitle(view.getTitle());
 		menu.add(0, MENU_PLAY, 0, R.string.play);
 		menu.add(0, MENU_ENQUEUE, 0, R.string.enqueue);
+		if (view.getMediaType() == MediaUtils.TYPE_PLAYLIST)
+			menu.add(0, MENU_EDIT, 0, R.string.edit);
 		SubMenu playlistMenu = menu.addSubMenu(0, MENU_ADD_TO_PLAYLIST, 0, R.string.add_to_playlist);
 		if (view.hasExpanders())
 			menu.add(0, MENU_EXPAND, 0, R.string.expand);
@@ -446,6 +450,13 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 			mHandler.sendMessage(message);
 			break;
 		}
+		case MENU_EDIT:
+			MediaAdapter.MediaView view = (MediaAdapter.MediaView)((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).targetView;
+			Intent intent = new Intent(Intent.ACTION_EDIT);
+			intent.setDataAndType(Uri.EMPTY, "vnd.android.cursor.dir/track");
+			intent.putExtra("playlist", String.valueOf(view.getMediaId()));
+			startActivity(intent);
+			break;
 		default:
 			if (id > 100)
 				addToPlaylist(id - 100, type, mediaId, item.getTitle());
