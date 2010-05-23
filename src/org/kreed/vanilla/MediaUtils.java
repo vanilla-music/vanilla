@@ -101,7 +101,6 @@ public class MediaUtils {
 	 */
 	public static long[] getAllSongIdsWith(int type, long id)
 	{
-		String[] projection = { MediaStore.Audio.Media._ID };
 		Cursor cursor;
 
 		switch (type) {
@@ -109,10 +108,10 @@ public class MediaUtils {
 			return new long[] { id };
 		case TYPE_ARTIST:
 		case TYPE_ALBUM:
-			cursor = getMediaCursor(type, id, projection);
+			cursor = getMediaCursor(type, id, new String[] { MediaStore.Audio.Media._ID });
 			break;
 		case TYPE_PLAYLIST:
-			cursor = getPlaylistCursor(id, projection);
+			cursor = getPlaylistCursor(id, new String[] { MediaStore.Audio.Playlists.Members.AUDIO_ID });
 			break;
 		default:
 			throw new IllegalArgumentException("Specified type not valid: " + type);
