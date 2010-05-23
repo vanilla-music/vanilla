@@ -27,6 +27,10 @@ import android.content.Intent;
 import android.util.TypedValue;
 import android.widget.RemoteViews;
 
+/**
+ * Provider for the smallish one cell widget. Handles updating for current
+ * PlaybackService state.
+ */
 public class OneCellWidget extends AppWidgetProvider {
 	@Override
 	public void onUpdate(Context context, AppWidgetManager manager, int[] ids)
@@ -41,11 +45,17 @@ public class OneCellWidget extends AppWidgetProvider {
 		timeline.saveState(context, 0);
 	}
 
-	@Override
-	public void onReceive(Context context, Intent intent)
+	/**
+	 * Receive a broadcast sent by the PlaybackService and update the widget
+	 * accordingly.
+	 *
+	 * @param intent The intent that was broadcast.
+	 */
+	public static void receive(Intent intent)
 	{
 		String action = intent.getAction();
 		if (PlaybackService.EVENT_CHANGED.equals(action) || PlaybackService.EVENT_REPLACE_SONG.equals(action)) {
+			Context context = ContextApplication.getContext();
 			Song song = intent.getParcelableExtra("song");
 			int state = intent.getIntExtra("state", -1);
 
@@ -53,11 +63,17 @@ public class OneCellWidget extends AppWidgetProvider {
 			RemoteViews views = createViews(context, song, state);
 
 			AppWidgetManager.getInstance(context).updateAppWidget(widget, views);
-		} else {
-			super.onReceive(context, intent);
 		}
 	}
 
+	/**
+	 * Create the RemoteViews that will be used to update the widget.
+	 *
+	 * @param context A Context to use.
+	 * @param song The current Song in PlaybackService.
+	 * @param state The current PlaybackService state.
+	 * @return A RemoteViews instance, ready to be sent with updateAppWidget.
+	 */
 	public static RemoteViews createViews(Context context, Song song, int state)
 	{
 		RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.one_cell_widget);

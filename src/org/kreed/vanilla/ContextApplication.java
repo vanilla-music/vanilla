@@ -127,14 +127,15 @@ public class ContextApplication extends Application {
 	 */
 	public static void broadcast(Intent intent)
 	{
-		ArrayList<Activity> list = mActivities;
-		if (list == null)
-			return;
+		OneCellWidget.receive(intent);
 
-		for (int i = list.size(); --i != -1; ) {
-			Activity activity = list.get(i);
-			if (activity instanceof PlaybackActivity)
-				((PlaybackActivity)activity).receive(intent);
+		ArrayList<Activity> list = mActivities;
+		if (list != null) {
+			for (int i = list.size(); --i != -1; ) {
+				Activity activity = list.get(i);
+				if (activity instanceof PlaybackActivity)
+					((PlaybackActivity)activity).receive(intent);
+			}
 		}
 
 		if (mInstance != null)
