@@ -240,7 +240,7 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 				text = enabling ? R.string.repeat_enabling : R.string.repeat_disabling;
 
 			if (text != -1)
-				Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, text, enabling ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT).show();
 
 			ContextApplication.getService().toggleFlag(flag);
 			break;

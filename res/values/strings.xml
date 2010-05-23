@@ -31,7 +31,7 @@
 	<string name="shuffle_disabling">Shuffle disabled</string>
 	<string name="repeat_enable">Enable Repeat</string>
 	<string name="repeat_disable">Disable Repeat</string>
-	<string name="repeat_enabling">Repeat enabled</string>
+	<string name="repeat_enabling">Repeat enabled. The current song and any songs you have added after it will be repeated.</string>
 	<string name="repeat_disabling">Repeat disabled</string>
 
 	<!-- Widgets -->
