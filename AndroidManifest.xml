@@ -19,7 +19,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="org.kreed.vanilla"
 	android:versionName="0.1"
-	android:versionCode="10"
+	android:versionCode="12"
 	android:installLocation="auto">
 	<application
 		android:icon="@drawable/icon"
