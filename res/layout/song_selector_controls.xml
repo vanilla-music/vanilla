@@ -29,8 +29,7 @@
 		android:id="@+id/cover"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_gravity="center"
-		android:src="@drawable/icon" />
+		android:layout_gravity="center" />
 	<LinearLayout
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
