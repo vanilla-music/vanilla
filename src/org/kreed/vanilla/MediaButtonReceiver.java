@@ -27,11 +27,8 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 	public void onReceive(Context context, Intent intent)
 	{
 		if (Intent.ACTION_MEDIA_BUTTON.equals(intent.getAction())) {
-			if (!intent.getBooleanExtra("org.kreed.vanilla.resent", false)) {
-				intent.setClass(context, PlaybackService.class);
-				context.startService(intent);
+			if (MediaButtonHandler.getInstance().process(intent))
 				abortBroadcast();
-			}
 		}
 	}
 }

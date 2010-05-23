@@ -48,12 +48,10 @@ import android.provider.MediaStore;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.widget.Toast;
 
 public final class PlaybackService extends Service implements Handler.Callback, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, SharedPreferences.OnSharedPreferenceChangeListener, SongTimeline.Callback {	
 	private static final int NOTIFICATION_ID = 2;
-	private static final int DOUBLE_CLICK_DELAY = 400;
 
 	public static final String ACTION_TOGGLE_PLAYBACK = "org.kreed.vanilla.action.TOGGLE_PLAYBACK";
 	public static final String ACTION_NEXT_SONG = "org.kreed.vanilla.action.NEXT_SONG";
@@ -117,7 +115,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	boolean mHeadsetOnly;
 	private boolean mScrobble;
 	private int mNotificationMode;
-	private byte mHeadsetControls = -1;
 	/**
 	 * The time to wait before considering the player idle.
 	 */
@@ -143,9 +140,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	private ContentObserver mMediaObserver;
 	public Receiver mReceiver;
 	public InCallListener mCallListener;
-	private boolean mIgnoreNextUp;
 	private boolean mLoaded;
-	boolean mInCall;
 	/**
 	 * The volume set by the user in the preferences.
 	 */
@@ -196,32 +191,16 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	{
 		if (intent != null) {
 			String action = intent.getAction();
-			int delta = -10;
 
 			if (ACTION_TOGGLE_PLAYBACK.equals(action)) {
-				delta = 0;
+				go(0, false);
 			} else if (ACTION_NEXT_SONG.equals(action)) {
-				delta = 1;
 				// Preemptively broadcast an update in attempt to hasten UI
 				// feedback.
 				broadcastReplaceSong(0, getSong(+1));
+				go(1, false);
 			} else if (ACTION_PREVIOUS_SONG.equals(action)) {
-				delta = -1;
-			} else if (Intent.ACTION_MEDIA_BUTTON.equals(action)) {
-				KeyEvent event = intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
-				boolean handled = handleMediaKey(event);
-				if (handled) {
-					if (!mLoaded)
-						showStartupToast();
-				} else {
-					// We aborted this broadcast in MediaButtonReceiver.
-					// Since we did not handle it, we should pass it on
-					// to others.
-					intent.setComponent(null);
-					// Make sure we don't try to handle this again.
-					intent.putExtra("org.kreed.vanilla.resent", true);
-					sendOrderedBroadcast(intent, null);
-				}
+				go(-1, false);
 			} else if (ACTION_PLAY_ITEMS.equals(action)) {
 				mTimeline.chooseSongs(false, intent.getIntExtra("type", 3), intent.getLongExtra("id", -1));
 				mHandler.sendEmptyMessage(TRACK_CHANGED);
@@ -231,13 +210,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
 			} else if (ACTION_FINISH_ENQUEUEING.equals(action)) {
 				mTimeline.finishEnqueueing();
-			}
-
-			if (delta != -10) {
-				if (!mLoaded)
-					showStartupToast();
-
-				go(delta, false);
 			}
 		}
 	}
@@ -386,7 +358,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				}
 			}
 		} else if ("media_button".equals(key)) {
-			mHeadsetControls = (byte)(mSettings.getBoolean("media_button", true) ? 1 : 0);
+			MediaButtonHandler.getInstance().setUseHeadsetControls(mSettings.getBoolean("media_button", true));
 			setupReceiver();
 		} else if ("use_idle_timeout".equals(key) || "idle_timeout".equals(key)) {
 			mIdleTimeout = mSettings.getBoolean("use_idle_timeout", false) ? mSettings.getInt("idle_timeout", 3600) : 0;
@@ -609,6 +581,9 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 	private void go(int delta, boolean autoPlay)
 	{
+		if (!mLoaded)
+			showStartupToast();
+
 		if (autoPlay) {
 			synchronized (mStateLock) {
 				mState |= FLAG_PLAYING;
@@ -625,66 +600,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		}
 	}
 
-	/**
-	 * Return whether headset controls should be used, loading the preference
-	 * if necessary.
-	 */
-	private boolean useHeadsetControls()
-	{
-		if (mSettings == null)
-			mSettings = PreferenceManager.getDefaultSharedPreferences(this);
-		if (mHeadsetControls == -1)
-			mHeadsetControls = (byte)(mSettings.getBoolean("media_button", true) ? 1 : 0);
-		return mHeadsetControls == 1;
-	}
-
-	boolean handleMediaKey(KeyEvent event)
-	{
-		if (mInCall || !useHeadsetControls())
-			return false;
-
-		int action = event.getAction();
-
-		switch (event.getKeyCode()) {
-		case KeyEvent.KEYCODE_HEADSETHOOK:
-		case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
-			// single quick press: pause/resume. 
-			// double press: next track
-			// long press: unused (could also do next track? open player?)
-
-			if (action == KeyEvent.ACTION_UP && mIgnoreNextUp) {
-				mIgnoreNextUp = false;
-				break;
-			}
-
-			if (mHandler.hasMessages(MEDIA_BUTTON)) {
-				// double press
-				if (action == KeyEvent.ACTION_DOWN) {
-					mHandler.removeMessages(MEDIA_BUTTON);
-					mIgnoreNextUp = true;
-					go(1, true);
-				}
-			} else {
-				// single press
-				if (action == KeyEvent.ACTION_UP)
-					mHandler.sendEmptyMessageDelayed(MEDIA_BUTTON, DOUBLE_CLICK_DELAY);
-			}
-			break;
-		case KeyEvent.KEYCODE_MEDIA_NEXT:
-			if (action == KeyEvent.ACTION_DOWN)
-				go(1, true);
-			break;
-		case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-			if (action == KeyEvent.ACTION_DOWN)
-				go(-1, true);
-			break;
-		default:
-			return false;
-		}
-
-		return true;
-	}
-
 	private class Receiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context content, Intent intent)
@@ -697,8 +612,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				if (mPlugged != oldPlugged && mHeadsetPause && !mPlugged || mHeadsetOnly && isSpeakerOn())
 					unsetFlag(FLAG_PLAYING);
 			} else if (Intent.ACTION_MEDIA_BUTTON.equals(action)) {
-				KeyEvent event = intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
-				if (event != null && handleMediaKey(event))
+				if (MediaButtonHandler.getInstance().process(intent))
 					abortBroadcast();
 			}
 		}
@@ -711,7 +625,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			switch (state) {
 			case TelephonyManager.CALL_STATE_RINGING:
 			case TelephonyManager.CALL_STATE_OFFHOOK:
-				mInCall = true;
+				MediaButtonHandler.getInstance().setInCall(true);
 				if (!mPlayingBeforeCall) {
 					synchronized (mStateLock) {
 						if (mPlayingBeforeCall = (mState & FLAG_PLAYING) != 0)
@@ -720,7 +634,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				}
 				break;
 			case TelephonyManager.CALL_STATE_IDLE:
-				mInCall = false;
+				MediaButtonHandler.getInstance().setInCall(false);
 				if (mPlayingBeforeCall) {
 					setFlag(FLAG_PLAYING);
 					mPlayingBeforeCall = false;
@@ -761,7 +675,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Intent.ACTION_HEADSET_PLUG);
-		if (useHeadsetControls())
+		if (MediaButtonHandler.getInstance().useHeadsetControls())
 			filter.addAction(Intent.ACTION_MEDIA_BUTTON);
 		filter.setPriority(2000);
 		registerReceiver(mReceiver, filter);
