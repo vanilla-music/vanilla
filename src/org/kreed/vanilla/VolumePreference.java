@@ -46,18 +46,13 @@ public class VolumePreference extends DialogPreference implements SeekBar.OnSeek
 
 		ViewGroup.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-		LinearLayout layout = new LinearLayout(getContext());
-		layout.setLayoutParams(params);
-
 		SeekBar seekBar = new SeekBar(getContext());
 		seekBar.setPadding(20, 20, 20, 20);
 		seekBar.setLayoutParams(params);
 		seekBar.setMax(1000);
 		seekBar.setProgress((int)(Math.pow(getPersistedFloat(1.0f) / 3, 0.25f) * 1000));
 		seekBar.setOnSeekBarChangeListener(this);
-		layout.addView(seekBar);
-
-		builder.setView(layout);
+		builder.setView(seekBar);
 	}
 
 	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
