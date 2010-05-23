@@ -171,4 +171,26 @@ public class Playlist {
 		Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, id);
 		ContextApplication.getContext().getContentResolver().delete(uri, null, null);
 	}
+
+	/**
+	 * Rename the playlist with the given id.
+	 *
+	 * @param id The Media.Audio.Playlists id of the playlist.
+	 * @param newName The new name for the playlist.
+	 */
+	public static void renamePlaylist(long id, String newName)
+	{
+		long existingId = getPlaylist(newName);
+		// We are already called the requested name; nothing to do.
+		if (existingId == id)
+			return;
+		// There is already a playlist with this name. Kill it.
+		if (existingId != -1)
+			deletePlaylist(existingId);
+
+		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
+		ContentValues values = new ContentValues(1);
+		values.put(MediaStore.Audio.Playlists.NAME, newName);
+		resolver.update(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, values, MediaStore.Audio.Playlists._ID + "=" + id, null);
+	}
 }

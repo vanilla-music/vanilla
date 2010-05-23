@@ -27,9 +27,7 @@
 		android:singleLine="true"
 		android:layout_marginBottom="8dip"
 		android:layout_marginLeft="8dip"
-		android:layout_marginRight="8dip">
-		<requestFocus />
-	</EditText>
+		android:layout_marginRight="8dip" />
 	<LinearLayout
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"

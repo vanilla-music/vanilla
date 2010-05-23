@@ -46,10 +46,31 @@ public class NewPlaylistDialog extends Dialog implements TextWatcher, View.OnCli
 	 * was clicked.
 	 */
 	private boolean mAccepted;
+	/**
+	 * The text to display initially. When the EditText contains this text, the
+	 * positive button will be disabled.
+	 */
+	private String mInitialText;
+	/**
+	 * The resource containing the string describing the default positive
+	 * action (e.g. "Create" or "Rename").
+	 */
+	private int mActionRes;
 
-	public NewPlaylistDialog(Context context)
+	/**
+	 * Create a NewPlaylistDialog.
+	 *
+	 * @param context A Context to use.
+	 * @param initialText The text to show initially. The positive button is
+	 * disabled when the EditText contains this text.
+	 * @param actionText A string resource describing the default positive
+	 * action (e.g. "Create").
+	 */
+	public NewPlaylistDialog(Context context, String initialText, int actionText)
 	{
 		super(context);
+		mInitialText = initialText;
+		mActionRes = actionText;
 	}
 
 	@Override
@@ -61,13 +82,16 @@ public class NewPlaylistDialog extends Dialog implements TextWatcher, View.OnCli
 
 		setTitle(R.string.choose_playlist_name);
 
+		mPositiveButton = (Button)findViewById(R.id.create);
+		mPositiveButton.setOnClickListener(this);
+		mPositiveButton.setText(mActionRes);
+		View negativeButton = findViewById(R.id.cancel);
+		negativeButton.setOnClickListener(this);
+
 		mText = (EditText)findViewById(R.id.playlist_name);
 		mText.addTextChangedListener(this);
-
-		mPositiveButton = (Button)findViewById(R.id.create);
-		View negativeButton = findViewById(R.id.cancel);
-		mPositiveButton.setOnClickListener(this);
-		negativeButton.setOnClickListener(this);
+		mText.setText(mInitialText);
+		mText.requestFocus();
 	}
 
 	/**
@@ -88,12 +112,18 @@ public class NewPlaylistDialog extends Dialog implements TextWatcher, View.OnCli
 		// do nothing
 	}
 
-	public void onTextChanged(CharSequence s, int start, int before, int count)
+	public void onTextChanged(CharSequence text, int start, int before, int count)
 	{
-		// Update the action button based on whether there is an
-		// existing playlist with the given name.
-		int res = Playlist.getPlaylist(s.toString()) == -1 ? R.string.create : R.string.overwrite;
-		mPositiveButton.setText(res);
+		String string = text.toString();
+		if (string.equals(mInitialText)) {
+			mPositiveButton.setEnabled(false);
+		} else {
+			mPositiveButton.setEnabled(true);
+			// Update the action button based on whether there is an
+			// existing playlist with the given name.
+			int res = Playlist.getPlaylist(string) == -1 ? mActionRes : R.string.overwrite;
+			mPositiveButton.setText(res);
+		}
 	}
 
 	/**

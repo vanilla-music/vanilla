@@ -47,6 +47,7 @@
 	<string name="enqueue">Enqueue</string>
 	<string name="play">Play</string>
 	<string name="edit">Edit</string>
+	<string name="rename">Rename</string>
 	<string name="add_to_playlist">Add to Playlist...</string>
 	<string name="new_playlist">New Playlist...</string>
 	<string name="expand">Expand</string>

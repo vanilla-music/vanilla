@@ -342,6 +342,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	private static final int MENU_NEW_PLAYLIST = 4;
 	private static final int MENU_DELETE = 5;
 	private static final int MENU_EDIT = 6;
+	private static final int MENU_RENAME_PLAYLIST = 7;
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View listView, ContextMenu.ContextMenuInfo absInfo)
@@ -353,8 +354,10 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		menu.setHeaderTitle(view.getTitle());
 		menu.add(0, MENU_PLAY, 0, R.string.play);
 		menu.add(0, MENU_ENQUEUE, 0, R.string.enqueue);
-		if (view.getMediaType() == MediaUtils.TYPE_PLAYLIST)
+		if (view.getMediaType() == MediaUtils.TYPE_PLAYLIST) {
+			menu.add(0, MENU_RENAME_PLAYLIST, 0, R.string.rename);
 			menu.add(0, MENU_EDIT, 0, R.string.edit);
+		}
 		SubMenu playlistMenu = menu.addSubMenu(0, MENU_ADD_TO_PLAYLIST, 0, R.string.add_to_playlist);
 		if (view.hasExpanders())
 			menu.add(0, MENU_EXPAND, 0, R.string.expand);
@@ -433,8 +436,17 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 			sendSongIntent((MediaAdapter.MediaView)((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).targetView, action);
 			break;
 		case MENU_NEW_PLAYLIST: {
-			NewPlaylistDialog dialog = new NewPlaylistDialog(this);
+			NewPlaylistDialog dialog = new NewPlaylistDialog(this, null, R.string.create);
 			Message message = mHandler.obtainMessage(MSG_NEW_PLAYLIST, type, mediaId);
+			message.obj = dialog;
+			dialog.setDismissMessage(message);
+			dialog.show();
+			break;
+		}
+		case MENU_RENAME_PLAYLIST: {
+			MediaAdapter.MediaView view = (MediaAdapter.MediaView)((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).targetView;
+			NewPlaylistDialog dialog = new NewPlaylistDialog(this, view.getTitle(), R.string.rename);
+			Message message = mHandler.obtainMessage(MSG_RENAME_PLAYLIST, view.getMediaType(), (int)view.getMediaId());
 			message.obj = dialog;
 			dialog.setDismissMessage(message);
 			dialog.show();
@@ -531,6 +543,13 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	 * playlist.
 	 */
 	private static final int MSG_DELETE = 12;
+	/**
+	 * Rename the playlist with the parameters from the given message. The
+	 * message must contain the type and id of the media to be added in
+	 * arg1 and arg2, respectively. The obj field must be a NewPlaylistDialog
+	 * that the name will be taken from.
+	 */
+	private static final int MSG_RENAME_PLAYLIST = 13;
 
 	@Override
 	public boolean handleMessage(Message message)
@@ -541,7 +560,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 			Observer observer = new Observer(mHandler);
 			resolver.registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, observer);
 			break;
-		case MSG_NEW_PLAYLIST:
+		case MSG_NEW_PLAYLIST: {
 			NewPlaylistDialog dialog = (NewPlaylistDialog)message.obj;
 			if (dialog.isAccepted()) {
 				String name = dialog.getText();
@@ -549,9 +568,15 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 				addToPlaylist(playlistId, message.arg1, message.arg2, name);
 			}
 			break;
+		}
 		case MSG_DELETE:
 			delete(message.arg1, message.arg2, (String)message.obj);
 			break;
+		case MSG_RENAME_PLAYLIST: {
+			NewPlaylistDialog dialog = (NewPlaylistDialog)message.obj;
+			if (dialog.isAccepted())
+				Playlist.renamePlaylist(message.arg2, dialog.getText());
+		}
 		default:
 			return super.handleMessage(message);
 		}
