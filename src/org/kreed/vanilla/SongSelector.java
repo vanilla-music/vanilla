@@ -167,7 +167,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	}
 
 	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event)
+	public boolean onKeyUp(int keyCode, KeyEvent event)
 	{
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_BACK:
@@ -178,21 +178,29 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 				sendFinishEnqueueing();
 				finish();
 			}
-			return true;
+			break;
 		case KeyEvent.KEYCODE_SEARCH:
 			setSearchBoxVisible(!mSearchBoxVisible);
-			return true;
+			break;
 		default:
-			if (super.onKeyDown(keyCode, event))
-				return true;
+			return false;
+		}
 
-			if (mTextFilter.onKeyDown(keyCode, event)) {
-				if (!mSearchBoxVisible)
-					setSearchBoxVisible(true);
-				else
-					mTextFilter.requestFocus();
-				return true;
-			}
+		return true;
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event)
+	{
+		if (super.onKeyDown(keyCode, event))
+			return true;
+
+		if (mTextFilter.onKeyDown(keyCode, event)) {
+			if (!mSearchBoxVisible)
+				setSearchBoxVisible(true);
+			else
+				mTextFilter.requestFocus();
+			return true;
 		}
 
 		return false;
