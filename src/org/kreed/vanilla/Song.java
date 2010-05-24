@@ -171,7 +171,8 @@ public class Song implements Parcelable {
 		Cursor cursor = resolver.query(media, FILLED_PROJECTION, selection, null, null);
 
 		if (cursor != null) {
-			if (cursor.moveToPosition(ContextApplication.getRandom().nextInt(cursor.getCount()))) {
+			int count = cursor.getCount();
+			if (count > 0 && cursor.moveToPosition(ContextApplication.getRandom().nextInt(count))) {
 				populate(cursor);
 				flags |= FLAG_RANDOM;
 			}
