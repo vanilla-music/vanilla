@@ -126,7 +126,17 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 		if (mState == state)
 			return;
 
+		int oldState = mState;
 		mState = state;
+
+		if ((oldState & PlaybackService.FLAG_SHUFFLE) == 0 && (state & PlaybackService.FLAG_SHUFFLE) != 0)
+			Toast.makeText(this, R.string.shuffle_enabling, Toast.LENGTH_LONG).show();
+		else if ((oldState & PlaybackService.FLAG_SHUFFLE) != 0 && (state & PlaybackService.FLAG_SHUFFLE) == 0)
+			Toast.makeText(this, R.string.shuffle_disabling, Toast.LENGTH_SHORT).show();
+		if ((oldState & PlaybackService.FLAG_REPEAT) == 0 && (state & PlaybackService.FLAG_REPEAT) != 0)
+			Toast.makeText(this, R.string.repeat_enabling, Toast.LENGTH_LONG).show();
+		else if ((oldState & PlaybackService.FLAG_REPEAT) != 0 && (state & PlaybackService.FLAG_REPEAT) == 0)
+			Toast.makeText(this, R.string.repeat_disabling, Toast.LENGTH_SHORT).show();
 
 		if (mPlayPauseButton != null) {
 			final int res = (mState & PlaybackService.FLAG_PLAYING) == 0 ? R.drawable.play : R.drawable.pause;
@@ -231,18 +241,7 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	{
 		switch (message.what) {
 		case MSG_TOGGLE_FLAG:
-			int flag = message.arg1;
-			boolean enabling = (mState & flag) == 0;
-			int text = -1;
-			if (flag == PlaybackService.FLAG_SHUFFLE)
-				text = enabling ? R.string.shuffle_enabling : R.string.shuffle_disabling;
-			else if (flag == PlaybackService.FLAG_REPEAT)
-				text = enabling ? R.string.repeat_enabling : R.string.repeat_disabling;
-
-			if (text != -1)
-				Toast.makeText(this, text, enabling ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT).show();
-
-			ContextApplication.getService().toggleFlag(flag);
+			ContextApplication.getService().toggleFlag(message.arg1);
 			break;
 		case MSG_SET_SONG:
 			ContextApplication.getService().setCurrentSong(message.arg1);
