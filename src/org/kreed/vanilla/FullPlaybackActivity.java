@@ -38,6 +38,12 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.OnSeekBarChangeListener {
+	/**
+	 * A Handler running on the UI thread, in contrast with mHandler which runs
+	 * on a worker thread.
+	 */
+	private Handler mUiHandler;
+
 	private RelativeLayout mMessageOverlay;
 	private View mControlsTop;
 	private View mControlsBottom;
@@ -55,6 +61,8 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 		super.onCreate(icicle);
 
 		setContentView(R.layout.full_playback);
+
+		mUiHandler = new Handler(this);
 
 		mCoverView = (CoverView)findViewById(R.id.cover_view);
 		mCoverView.mHandler = mHandler;
@@ -94,39 +102,60 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 		mPaused = true;
 	}
 
+	/**
+	 * Show the message view overlay, creating it if necessary and clearing
+	 * it of all content.
+	 */
+	void showMessageOverlay()
+	{
+		if (mMessageOverlay == null) {
+			mMessageOverlay = new RelativeLayout(this);
+			mMessageOverlay.setBackgroundColor(Color.BLACK);
+			addContentView(mMessageOverlay,
+				new ViewGroup.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
+				                           LinearLayout.LayoutParams.FILL_PARENT));
+		} else {
+			mMessageOverlay.setVisibility(View.VISIBLE);
+			mMessageOverlay.removeAllViews();
+		}
+	}
+
+	/**
+	 * Hide the message overlay, if it exists.
+	 */
+	void hideMessageOverlay()
+	{
+		if (mMessageOverlay != null)
+			mMessageOverlay.setVisibility(View.GONE);
+	}
+
+	/**
+	 * Show the no media message in the message overlay. The message overlay
+	 * must have been created with showMessageOverlay before this method is
+	 * called.
+	 */
+	void setNoMediaOverlayMessage()
+	{
+		RelativeLayout.LayoutParams layoutParams =
+			new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+			                                LinearLayout.LayoutParams.WRAP_CONTENT);
+		layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+
+		TextView text = new TextView(this);
+		text.setText(R.string.no_songs);
+		text.setLayoutParams(layoutParams);
+		mMessageOverlay.addView(text);
+	}
+
 	@Override
 	protected void setState(int state)
 	{
-		if (state == mState)
-			return;
+		if ((mState & PlaybackService.FLAG_NO_MEDIA) == 0 && (state & PlaybackService.FLAG_NO_MEDIA) != 0)
+			mUiHandler.sendEmptyMessage(MSG_SHOW_NO_MEDIA);
+		else if ((mState & PlaybackService.FLAG_NO_MEDIA) != 0 && (state & PlaybackService.FLAG_NO_MEDIA) == 0)
+			mUiHandler.sendEmptyMessage(MSG_HIDE_MESSAGE_OVERLAY);
 
 		super.setState(state);
-
-		if (mMessageOverlay != null)
-			mMessageOverlay.setVisibility(View.GONE);
-
-		if ((mState & PlaybackService.FLAG_NO_MEDIA) != 0) {
-			if (mMessageOverlay == null) {
-				mMessageOverlay = new RelativeLayout(this);
-				mMessageOverlay.setBackgroundColor(Color.BLACK);
-				addContentView(mMessageOverlay,
-					new ViewGroup.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
-					                           LinearLayout.LayoutParams.FILL_PARENT));
-			} else {
-				mMessageOverlay.setVisibility(View.VISIBLE);
-				mMessageOverlay.removeAllViews();
-			}
-
-			RelativeLayout.LayoutParams layoutParams =
-				new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-				                                LinearLayout.LayoutParams.WRAP_CONTENT);
-			layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-
-			TextView text = new TextView(this);
-			text.setText(R.string.no_songs);
-			text.setLayoutParams(layoutParams);
-			mMessageOverlay.addView(text);
-		}
 	}
 
 	@Override
@@ -250,8 +279,25 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 		}
 	}
 
+	/**
+	 * Update the seekbar progress with the current song progress. This must be
+	 * called on the UI Handler.
+	 */
 	private static final int MSG_UPDATE_PROGRESS = 10;
+	/**
+	 * Save the currently set CoverView display mode.
+	 *
+	 * @see CoverView#mSeparateInfo
+	 */
 	private static final int MSG_SAVE_DISPLAY_MODE = 11;
+	/**
+	 * The the no media overlay message. This must be called on the UI Handler.
+	 */
+	private static final int MSG_SHOW_NO_MEDIA = 12;
+	/**
+	 * Hide any overlay messages. This must be called on the UI Handler.
+	 */
+	private static final int MSG_HIDE_MESSAGE_OVERLAY = 13;
 
 	@Override
 	public boolean handleMessage(Message message)
@@ -262,23 +308,23 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 			SharedPreferences.Editor editor = settings.edit();
 			editor.putBoolean("separate_info", mCoverView.mSeparateInfo);
 			editor.commit();
-			return true;
+			break;
+		case MSG_UPDATE_PROGRESS:
+			updateProgress();
+			break;
+		case MSG_SHOW_NO_MEDIA:
+			showMessageOverlay();
+			setNoMediaOverlayMessage();
+			break;
+		case MSG_HIDE_MESSAGE_OVERLAY:
+			hideMessageOverlay();
+			break;
 		default:
 			return super.handleMessage(message);
 		}
-	}
 
-	private Handler mUiHandler = new Handler() {
-		@Override
-		public void handleMessage(Message message)
-		{
-			switch (message.what) {
-			case MSG_UPDATE_PROGRESS:
-				updateProgress();
-				break;
-			}
-		}
-	};
+		return true;
+	}
 
 	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
 	{
