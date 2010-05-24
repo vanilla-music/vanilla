@@ -216,6 +216,8 @@ public final class SongTimeline {
 	 * become the starting point for repeats, where the position is rewound to
 	 * when a repeat is engaged. A repeat is engaged when a randomly selected
 	 * song is encountered (i.e. a non-user-chosen song).
+	 *
+	 * The current song must be non-null.
 	 */
 	public void setRepeat(boolean repeat)
 	{

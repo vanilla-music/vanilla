@@ -398,6 +398,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		Song song = getSong(0);
 		if (song == null && (state & FLAG_PLAYING) != 0)
 			return;
+		if (song == null)
+			state &= ~FLAG_REPEAT;
 
 		int oldState = mState;
 		mState = state;
