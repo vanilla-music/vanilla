@@ -20,5 +20,6 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:minWidth="72dip"
 	android:minHeight="72dip"
+	android:configure="org.kreed.vanilla.OneCellWidgetConfigure"
 	android:initialLayout="@layout/one_cell_widget"
 	/>

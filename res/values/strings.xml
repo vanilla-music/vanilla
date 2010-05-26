@@ -36,6 +36,8 @@
 
 	<!-- Widgets -->
 	<string name="starting">Starting up...</string>
+	<string name="place_widget">Place Widget</string>
+	<string name="double_tap_widget">Double tap widget to open player (reduces responsiveness)</string>
 
 	<!-- New Playlist Dialog -->
 	<string name="choose_playlist_name">Choose Playlist Name</string>

@@ -24,6 +24,8 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.TypedValue;
 import android.widget.RemoteViews;
 
@@ -35,14 +37,25 @@ public class OneCellWidget extends AppWidgetProvider {
 	@Override
 	public void onUpdate(Context context, AppWidgetManager manager, int[] ids)
 	{
-		SongTimeline timeline = new SongTimeline();
-		timeline.loadState(context);
-		RemoteViews views = createViews(context, timeline.getSong(0), 0);
-		manager.updateAppWidget(ids, views);
+		Song song;
+		int state;
 
-		// If we generated a new current song (because the PlaybackService has
-		// never been started), then we need to save the state.
-		timeline.saveState(context, 0);
+		if (ContextApplication.hasService()) {
+			PlaybackService service = ContextApplication.getService();
+			song = service.getSong(0);
+			state = service.getState();
+		} else {
+			SongTimeline timeline = new SongTimeline();
+			timeline.loadState(context);
+			song = timeline.getSong(0);
+			state = 0;
+
+			// If we generated a new current song (because the PlaybackService has
+			// never been started), then we need to save the state.
+			timeline.saveState(context, 0);
+		}
+
+		updateWidget(context, manager, ids, song, state);
 	}
 
 	/**
@@ -59,45 +72,51 @@ public class OneCellWidget extends AppWidgetProvider {
 			Song song = intent.getParcelableExtra("song");
 			int state = intent.getIntExtra("state", -1);
 
-			ComponentName widget = new ComponentName(context, OneCellWidget.class);
-			RemoteViews views = createViews(context, song, state);
-
-			AppWidgetManager.getInstance(context).updateAppWidget(widget, views);
+			AppWidgetManager manager = AppWidgetManager.getInstance(context);
+			int[] ids = manager.getAppWidgetIds(new ComponentName(context, OneCellWidget.class));
+			updateWidget(context, manager, ids, song, state);
 		}
 	}
 
 	/**
-	 * Create the RemoteViews that will be used to update the widget.
+	 * Populate the widgets with the given ids with the given info.
 	 *
 	 * @param context A Context to use.
+	 * @param manager The AppWidgetManager that will be used to update the
+	 * widget.
+	 * @param ids An array containing the ids of all the widgets to update.
 	 * @param song The current Song in PlaybackService.
 	 * @param state The current PlaybackService state.
-	 * @return A RemoteViews instance, ready to be sent with updateAppWidget.
 	 */
-	public static RemoteViews createViews(Context context, Song song, int state)
+	public static void updateWidget(Context context, AppWidgetManager manager, int[] ids, Song song, int state)
 	{
-		RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.one_cell_widget);
+		for (int i = 0; i != ids.length; ++i) {
+			SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+			boolean doubleTap = settings.getBoolean("double_tap_" + ids[i], false);
 
-		if (state != -1) {
-			boolean playing = (state & PlaybackService.FLAG_PLAYING) != 0;
-			views.setImageViewResource(R.id.play_pause, playing ? R.drawable.hidden_pause : R.drawable.hidden_play);
+			RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.one_cell_widget);
+
+			if (state != -1) {
+				boolean playing = (state & PlaybackService.FLAG_PLAYING) != 0;
+				views.setImageViewResource(R.id.play_pause, playing ? R.drawable.hidden_pause : R.drawable.hidden_play);
+			}
+
+			Intent playPause = new Intent(context, PlaybackService.class);
+			playPause.setAction(doubleTap ? PlaybackService.ACTION_TOGGLE_PLAYBACK_DELAYED : PlaybackService.ACTION_TOGGLE_PLAYBACK);
+			views.setOnClickPendingIntent(R.id.play_pause, PendingIntent.getService(context, 0, playPause, 0));
+	
+			Intent next = new Intent(context, PlaybackService.class);
+			next.setAction(doubleTap ? PlaybackService.ACTION_NEXT_SONG_DELAYED : PlaybackService.ACTION_NEXT_SONG);
+			views.setOnClickPendingIntent(R.id.next, PendingIntent.getService(context, 0, next, 0));
+
+			if (song == null) {
+				views.setImageViewResource(R.id.cover_view, R.drawable.icon);
+			} else {
+				int size = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 72, context.getResources().getDisplayMetrics());
+				views.setImageViewBitmap(R.id.cover_view, CoverBitmap.createCompactBitmap(song, size, size));
+			}
+
+			manager.updateAppWidget(ids[i], views);
 		}
-
-		Intent playPause = new Intent(context, PlaybackService.class);
-		playPause.setAction(PlaybackService.ACTION_TOGGLE_PLAYBACK);
-		views.setOnClickPendingIntent(R.id.play_pause, PendingIntent.getService(context, 0, playPause, 0));
-
-		Intent next = new Intent(context, PlaybackService.class);
-		next.setAction(PlaybackService.ACTION_NEXT_SONG);
-		views.setOnClickPendingIntent(R.id.next, PendingIntent.getService(context, 0, next, 0));
-
-		if (song == null) {
-			views.setImageViewResource(R.id.cover_view, R.drawable.icon);
-		} else {
-			int size = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 72, context.getResources().getDisplayMetrics());
-			views.setImageViewBitmap(R.id.cover_view, CoverBitmap.createCompactBitmap(song, size, size));
-		}
-
-		return views;
 	}
 }

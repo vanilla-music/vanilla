@@ -53,8 +53,35 @@ import android.widget.Toast;
 public final class PlaybackService extends Service implements Handler.Callback, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, SharedPreferences.OnSharedPreferenceChangeListener, SongTimeline.Callback {	
 	private static final int NOTIFICATION_ID = 2;
 
+	/**
+	 * Action for startService: toggle playback on/off.
+	 */
 	public static final String ACTION_TOGGLE_PLAYBACK = "org.kreed.vanilla.action.TOGGLE_PLAYBACK";
+	/**
+	 * Action for startService: toggle playback on/off.
+	 *
+	 * Unlike {@link PlaybackService#ACTION_TOGGLE_PLAYBACK}, the toggle does
+	 * not occur immediately. Instead, it is delayed so that if two of these
+	 * actions are received within 400 ms, the playback activity is opened
+	 * instead.
+	 */
+	public static final String ACTION_TOGGLE_PLAYBACK_DELAYED = "org.kreed.vanilla.action.TOGGLE_PLAYBACK_DELAYED";
+	/**
+	 * Action for startService: advance to the next song.
+	 */
 	public static final String ACTION_NEXT_SONG = "org.kreed.vanilla.action.NEXT_SONG";
+	/**
+	 * Action for startService: advance to the next song.
+	 *
+	 * Unlike {@link PlaybackService#ACTION_NEXT_SONG}, the toggle does
+	 * not occur immediately. Instead, it is delayed so that if two of these
+	 * actions are received within 400 ms, the playback activity is opened
+	 * instead.
+	 */
+	public static final String ACTION_NEXT_SONG_DELAYED = "org.kreed.vanilla.action.NEXT_SONG_DELAYED";
+	/**
+	 * Action for startService: go back to the previous song.
+	 */
 	public static final String ACTION_PREVIOUS_SONG = "org.kreed.vanilla.action.PREVIOUS_SONG";
 	/**
 	 * Intent action that may be invoked through startService.
@@ -194,11 +221,25 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 			if (ACTION_TOGGLE_PLAYBACK.equals(action)) {
 				go(0, false);
+			} else if (ACTION_TOGGLE_PLAYBACK_DELAYED.equals(action)) {
+				if (mHandler.hasMessages(CALL_GO, Integer.valueOf(0))) {
+					mHandler.removeMessages(CALL_GO, Integer.valueOf(0));
+					startActivity(new Intent(this, FullPlaybackActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+				} else {
+					mHandler.sendMessageDelayed(mHandler.obtainMessage(CALL_GO, Integer.valueOf(0)), 400);
+				}
 			} else if (ACTION_NEXT_SONG.equals(action)) {
 				// Preemptively broadcast an update in attempt to hasten UI
 				// feedback.
 				broadcastReplaceSong(0, getSong(+1));
 				go(1, false);
+			} else if (ACTION_NEXT_SONG_DELAYED.equals(action)) {
+				if (mHandler.hasMessages(CALL_GO, Integer.valueOf(1))) {
+					mHandler.removeMessages(CALL_GO, Integer.valueOf(1));
+					startActivity(new Intent(this, FullPlaybackActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+				} else {
+					mHandler.sendMessageDelayed(mHandler.obtainMessage(CALL_GO, Integer.valueOf(1)), 400);
+				}
 			} else if (ACTION_PREVIOUS_SONG.equals(action)) {
 				go(-1, false);
 			} else if (ACTION_PLAY_ITEMS.equals(action)) {
@@ -279,6 +320,17 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			mNotificationManager.cancel(NOTIFICATION_ID);
 	}
 
+	/**
+	 * Return the SharedPreferences instance containing the PlaybackService
+	 * settings, creating it if necessary.
+	 */
+	private SharedPreferences getSettings()
+	{
+		if (mSettings == null)
+			mSettings = PreferenceManager.getDefaultSharedPreferences(this);
+		return mSettings;
+	}
+
 	private void initialize()
 	{
 		ContextApplication.broadcast(new Intent(EVENT_INITIALIZED));
@@ -307,18 +359,17 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			}
 		}
 
-		if (mSettings == null)
-			mSettings = PreferenceManager.getDefaultSharedPreferences(this);
-		mSettings.registerOnSharedPreferenceChangeListener(this);
-		mHeadsetOnly = mSettings.getBoolean("headset_only", false);
-		mNotificationMode = Integer.parseInt(mSettings.getString("notification_mode", "1"));
-		mScrobble = mSettings.getBoolean("scrobble", false);
-		float volume = mSettings.getFloat("volume", 1.0f);
+		SharedPreferences settings = getSettings();
+		settings.registerOnSharedPreferenceChangeListener(this);
+		mHeadsetOnly = settings.getBoolean("headset_only", false);
+		mNotificationMode = Integer.parseInt(settings.getString("notification_mode", "1"));
+		mScrobble = settings.getBoolean("scrobble", false);
+		float volume = settings.getFloat("volume", 1.0f);
 		if (volume != 1.0f) {
 			mCurrentVolume = mUserVolume = volume;
 			mMediaPlayer.setVolume(volume, volume);
 		}
-		mIdleTimeout = mSettings.getBoolean("use_idle_timeout", false) ? mSettings.getInt("idle_timeout", 3600) : 0;
+		mIdleTimeout = settings.getBoolean("use_idle_timeout", false) ? settings.getInt("idle_timeout", 3600) : 0;
 
 		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
 		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicSongChangeLock");
@@ -335,22 +386,23 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 	private void loadPreference(String key)
 	{
+		SharedPreferences settings = getSettings();
 		if ("headset_pause".equals(key)) {
-			mHeadsetPause = mSettings.getBoolean("headset_pause", true);
+			mHeadsetPause = settings.getBoolean("headset_pause", true);
 		} else if ("headset_only".equals(key)) {
-			mHeadsetOnly = mSettings.getBoolean(key, false);
+			mHeadsetOnly = settings.getBoolean(key, false);
 			if (mHeadsetOnly && isSpeakerOn())
 				unsetFlag(FLAG_PLAYING);
 		} else if ("remote_player".equals(key)) {
 			// the preference is loaded in SongNotification class
 			updateNotification(getSong(0));
 		} else if ("notification_mode".equals(key)){
-			mNotificationMode = Integer.parseInt(mSettings.getString("notification_mode", "1"));
+			mNotificationMode = Integer.parseInt(settings.getString("notification_mode", "1"));
 			updateNotification(getSong(0));
 		} else if ("scrobble".equals(key)) {
-			mScrobble = mSettings.getBoolean("scrobble", false);
+			mScrobble = settings.getBoolean("scrobble", false);
 		} else if ("volume".equals(key)) {
-			float volume = mSettings.getFloat("volume", 1.0f);
+			float volume = settings.getFloat("volume", 1.0f);
 			mCurrentVolume = mUserVolume = volume;
 			if (mMediaPlayer != null) {
 				synchronized (mMediaPlayer) {
@@ -358,10 +410,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				}
 			}
 		} else if ("media_button".equals(key)) {
-			MediaButtonHandler.getInstance().setUseHeadsetControls(mSettings.getBoolean("media_button", true));
+			MediaButtonHandler.getInstance().setUseHeadsetControls(settings.getBoolean("media_button", true));
 			setupReceiver();
 		} else if ("use_idle_timeout".equals(key) || "idle_timeout".equals(key)) {
-			mIdleTimeout = mSettings.getBoolean("use_idle_timeout", false) ? mSettings.getInt("idle_timeout", 3600) : 0;
+			mIdleTimeout = settings.getBoolean("use_idle_timeout", false) ? settings.getInt("idle_timeout", 3600) : 0;
 			userActionTriggered();
 		}
 	}
@@ -702,6 +754,12 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 * arg1 should be the progress in the fade as a percentage, 1-100.
 	 */
 	private static final int FADE_OUT = 7;
+	/**
+	 * Calls {@link PlaybackService#go(int, boolean)} with the given delta.
+	 *
+	 * obj should an Integer representing the delta to pass to go.
+	 */
+	private static final int CALL_GO = 8;
 	private static final int SAVE_STATE = 12;
 	private static final int PROCESS_SONG = 13;
 
@@ -718,6 +776,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		case RELEASE_WAKE_LOCK:
 			if (mWakeLock != null && mWakeLock.isHeld())
 				mWakeLock.release();
+			break;
+		case CALL_GO:
+			int delta = (Integer)message.obj;
+			go(delta, false);
 			break;
 		case GO:
 			if (message.arg1 == 0)

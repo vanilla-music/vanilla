@@ -42,7 +42,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	 * A Handler running on the UI thread, in contrast with mHandler which runs
 	 * on a worker thread.
 	 */
-	private Handler mUiHandler;
+	private Handler mUiHandler = new Handler(this);
 
 	private RelativeLayout mMessageOverlay;
 	private View mControlsTop;
@@ -61,8 +61,6 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 		super.onCreate(icicle);
 
 		setContentView(R.layout.full_playback);
-
-		mUiHandler = new Handler(this);
 
 		mCoverView = (CoverView)findViewById(R.id.cover_view);
 		mCoverView.mHandler = mHandler;
