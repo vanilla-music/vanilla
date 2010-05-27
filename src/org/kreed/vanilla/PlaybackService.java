@@ -423,7 +423,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		Intent intent = new Intent(EVENT_REPLACE_SONG);
 		intent.putExtra("pos", delta);
 		intent.putExtra("song", song);
-		ContextApplication.broadcast(intent);
+		mHandler.sendMessage(mHandler.obtainMessage(BROADCAST, intent));
 	}
 
 	void setFlag(int flag)
@@ -461,7 +461,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			intent.putExtra("state", state);
 			intent.putExtra("song", song);
 			intent.putExtra("pos", mTimeline.getCurrentPosition());
-			ContextApplication.broadcast(intent);
+			mHandler.sendMessage(mHandler.obtainMessage(BROADCAST, intent));
 
 			if (mScrobble) {
 				intent = new Intent("net.jjc1138.android.scrobbler.action.MUSIC_STATUS");
@@ -760,6 +760,14 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 * obj should an Integer representing the delta to pass to go.
 	 */
 	private static final int CALL_GO = 8;
+	/**
+	 * Broadcast the given intent with ContextApplication.
+	 *
+	 * obj should contain the intent to broadcast.
+	 *
+	 * @see ContextApplication#broadcast(Intent)
+	 */
+	private static final int BROADCAST = 9;
 	private static final int SAVE_STATE = 12;
 	private static final int PROCESS_SONG = 13;
 
@@ -838,6 +846,9 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 					mMediaPlayer.setVolume(mCurrentVolume, mCurrentVolume);
 				}
 			}
+			break;
+		case BROADCAST:
+			ContextApplication.broadcast((Intent)message.obj);
 			break;
 		default:
 			return false;
