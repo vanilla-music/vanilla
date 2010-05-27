@@ -224,7 +224,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			} else if (ACTION_TOGGLE_PLAYBACK_DELAYED.equals(action)) {
 				if (mHandler.hasMessages(CALL_GO, Integer.valueOf(0))) {
 					mHandler.removeMessages(CALL_GO, Integer.valueOf(0));
-					startActivity(new Intent(this, FullPlaybackActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+					startActivity(new Intent(this, LaunchActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 				} else {
 					mHandler.sendMessageDelayed(mHandler.obtainMessage(CALL_GO, Integer.valueOf(0)), 400);
 				}
@@ -236,7 +236,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			} else if (ACTION_NEXT_SONG_DELAYED.equals(action)) {
 				if (mHandler.hasMessages(CALL_GO, Integer.valueOf(1))) {
 					mHandler.removeMessages(CALL_GO, Integer.valueOf(1));
-					startActivity(new Intent(this, FullPlaybackActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+					startActivity(new Intent(this, LaunchActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 				} else {
 					mHandler.sendMessageDelayed(mHandler.obtainMessage(CALL_GO, Integer.valueOf(1)), 400);
 				}
