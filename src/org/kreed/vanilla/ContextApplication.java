@@ -128,6 +128,7 @@ public class ContextApplication extends Application {
 	public static void broadcast(Intent intent)
 	{
 		OneCellWidget.receive(intent);
+		FourLongWidget.receive(intent);
 
 		ArrayList<Activity> list = mActivities;
 		if (list != null) {

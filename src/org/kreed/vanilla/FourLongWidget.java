@@ -24,16 +24,17 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.util.TypedValue;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.view.View;
 import android.widget.RemoteViews;
 
 /**
- * Provider for the smallish one cell widget. Handles updating for current
- * PlaybackService state.
+ * Simple 1x4 widget to show currently playing song, album art, and play/pause,
+ * next, and previous buttons. Uses artwork from the default Android music
+ * widget.
  */
-public class OneCellWidget extends AppWidgetProvider {
+public class FourLongWidget extends AppWidgetProvider {
 	@Override
 	public void onUpdate(Context context, AppWidgetManager manager, int[] ids)
 	{
@@ -73,7 +74,7 @@ public class OneCellWidget extends AppWidgetProvider {
 			int state = intent.getIntExtra("state", -1);
 
 			AppWidgetManager manager = AppWidgetManager.getInstance(context);
-			int[] ids = manager.getAppWidgetIds(new ComponentName(context, OneCellWidget.class));
+			int[] ids = manager.getAppWidgetIds(new ComponentName(context, FourLongWidget.class));
 			updateWidget(context, manager, ids, song, state);
 		}
 	}
@@ -93,35 +94,54 @@ public class OneCellWidget extends AppWidgetProvider {
 		if (ids == null || ids.length == 0)
 			return;
 
-		for (int i = ids.length; --i != -1; ) {
-			SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-			boolean doubleTap = settings.getBoolean("double_tap_" + ids[i], false);
+		Resources res = context.getResources();
+		RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.four_long_widget);
 
-			RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.one_cell_widget);
+		Bitmap cover = null;
 
-			if (state != -1) {
-				boolean playing = (state & PlaybackService.FLAG_PLAYING) != 0;
-				views.setImageViewResource(R.id.play_pause, playing ? R.drawable.hidden_pause : R.drawable.hidden_play);
-			}
-
-			ComponentName service = new ComponentName(context, PlaybackService.class);
-
-			Intent playPause = new Intent(doubleTap ? PlaybackService.ACTION_TOGGLE_PLAYBACK_DELAYED : PlaybackService.ACTION_TOGGLE_PLAYBACK);
-			playPause.setComponent(service);
-			views.setOnClickPendingIntent(R.id.play_pause, PendingIntent.getService(context, 0, playPause, 0));
-	
-			Intent next = new Intent(doubleTap ? PlaybackService.ACTION_NEXT_SONG_DELAYED : PlaybackService.ACTION_NEXT_SONG);
-			next.setComponent(service);
-			views.setOnClickPendingIntent(R.id.next, PendingIntent.getService(context, 0, next, 0));
-
-			if (song == null) {
-				views.setImageViewResource(R.id.cover_view, R.drawable.icon);
-			} else {
-				int size = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 72, context.getResources().getDisplayMetrics());
-				views.setImageViewBitmap(R.id.cover_view, CoverBitmap.createCompactBitmap(song, size, size));
-			}
-
-			manager.updateAppWidget(ids[i], views);
+		if (song == null) {
+			views.setViewVisibility(R.id.title, View.GONE);
+			views.setTextViewText(R.id.artist, res.getText(R.string.no_songs));
+		} else {
+			views.setViewVisibility(R.id.title, View.VISIBLE);
+			views.setTextViewText(R.id.title, song.title);
+			views.setTextViewText(R.id.artist, song.artist);
+			cover = song.getCover();
 		}
+
+		if (cover == null) {
+			views.setViewVisibility(R.id.cover, View.GONE);
+		} else {
+			views.setViewVisibility(R.id.cover, View.VISIBLE);
+			views.setImageViewBitmap(R.id.cover, cover);
+		}
+
+		if (state != -1) {
+			boolean playing = (state & PlaybackService.FLAG_PLAYING) != 0;
+			views.setImageViewResource(R.id.play, playing ? R.drawable.pause : R.drawable.play);
+		}
+
+		Intent intent;
+		PendingIntent pendingIntent;
+
+		ComponentName service = new ComponentName(context, PlaybackService.class);
+
+		intent = new Intent(context, LaunchActivity.class);
+		pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+		views.setOnClickPendingIntent(R.id.layout, pendingIntent);
+
+		intent = new Intent(PlaybackService.ACTION_PREVIOUS_SONG).setComponent(service);
+		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+		views.setOnClickPendingIntent(R.id.previous, pendingIntent);
+
+		intent = new Intent(PlaybackService.ACTION_TOGGLE_PLAYBACK).setComponent(service);
+		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+		views.setOnClickPendingIntent(R.id.play, pendingIntent);
+
+		intent = new Intent(PlaybackService.ACTION_NEXT_SONG).setComponent(service);
+		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+		views.setOnClickPendingIntent(R.id.next, pendingIntent);
+
+		manager.updateAppWidget(ids, views);
 	}
 }

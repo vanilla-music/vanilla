@@ -63,6 +63,16 @@
 				<action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
 			</intent-filter>
 		</activity>
+		<receiver
+			android:name=".FourLongWidget"
+			android:label="Vanilla Music 1x4">
+			<intent-filter>
+				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+			</intent-filter>
+			<meta-data
+				android:name="android.appwidget.provider"
+				android:resource="@xml/four_long_widget" />
+		</receiver>
 		<receiver android:name="MediaButtonReceiver" >
 			<intent-filter android:priority="1000">
 				<action android:name="android.intent.action.MEDIA_BUTTON" />

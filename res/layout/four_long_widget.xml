@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
+
+	This file is part of Vanilla Music Player.
+
+	Vanilla Music Player is free software; you can redistribute it and/or modify
+	it under the terms of the GNU Library General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or (at your
+	option) any later version.
+
+	Vanilla Music Player is distributed in the hope that it will be useful, but
+	WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+	or FITNESS FOR A PARTICULAR PURPOSE.
+
+	You should have received a copy of the GNU General Public License
+	along with this program. If not, see <http://www.gnu.org/licenses/>.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/layout"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:orientation="horizontal"
+	android:clickable="true"
+	android:background="@drawable/appwidget_bg">
+	<ImageView
+		android:id="@+id/cover"
+		android:visibility="gone"
+		android:layout_width="wrap_content"
+		android:layout_height="fill_parent"
+		android:adjustViewBounds="true"
+		android:padding="4dip"
+		android:scaleType="fitCenter" />
+	<LinearLayout
+		android:orientation="vertical"
+		android:layout_width="0dip"
+		android:layout_height="fill_parent"
+		android:layout_weight="1">
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="0dip"
+			android:layout_weight="1"
+			android:layout_gravity="center"
+			android:orientation="vertical"
+			android:paddingLeft="8dip"
+			android:paddingRight="8dip">
+			<TextView
+				android:id="@+id/title"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:textColor="#fff"
+				android:textStyle="bold"
+				android:textSize="13dip"
+				android:singleLine="true"
+				android:fadingEdge="horizontal"
+				android:fadingEdgeLength="10dip"
+				android:ellipsize="none" />
+			<TextView
+				android:id="@+id/artist"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:textColor="#fff"
+				android:textSize="13dip"
+				android:singleLine="true"
+				android:fadingEdge="horizontal"
+				android:fadingEdgeLength="10dip"
+				android:ellipsize="none" />
+		</LinearLayout>
+		<ImageView
+			android:layout_height="1dip"
+			android:layout_width="fill_parent"
+			android:background="@drawable/appwidget_divider" />
+		<LinearLayout
+			android:orientation="horizontal"
+			android:layout_width="fill_parent"
+			android:layout_height="0dip"
+			android:layout_weight="1">
+			<ImageButton
+				android:id="@+id/previous"
+				android:background="@drawable/button_background"
+				android:layout_width="0dip"
+				android:layout_weight="1"
+				android:layout_height="fill_parent"
+				android:src="@drawable/previous"
+				android:scaleType="fitCenter" />
+			<ImageView
+				android:layout_width="1dip"
+				android:layout_height="fill_parent"
+				android:background="@drawable/appwidget_divider" />
+			<ImageButton
+				android:id="@+id/play"
+				android:background="@drawable/button_background"
+				android:layout_width="0dip"
+				android:layout_weight="1"
+				android:layout_height="fill_parent"
+				android:src="@drawable/play"
+				android:scaleType="fitCenter" />
+			<ImageView
+				android:layout_width="1dip"
+				android:layout_height="fill_parent"
+				android:background="@drawable/appwidget_divider" />
+			<ImageButton
+				android:id="@+id/next"
+				android:background="@drawable/button_background"
+				android:layout_width="0dip"
+				android:layout_weight="1"
+				android:layout_height="fill_parent"
+				android:src="@drawable/next"
+				android:scaleType="fitCenter" />
+		</LinearLayout>
+	</LinearLayout>
+</LinearLayout>
