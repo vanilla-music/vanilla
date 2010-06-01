@@ -113,6 +113,18 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		setupView(R.id.song_list, new SongMediaAdapter(this, false, false));
 		setupView(R.id.playlist_list, new MediaAdapter(this, MediaUtils.TYPE_PLAYLIST, false, true));
 
+		if (state != null) {
+			if (state.getBoolean("search_box_visible"))
+				setSearchBoxVisible(true);
+			int currentTab = state.getInt("current_tab", -1);
+			if (currentTab != -1)
+				mTabHost.setCurrentTab(currentTab);
+			mTextFilter.setText(state.getString("filter"));
+			for (int i = 0; i != 3; ++i)
+				getAdapter(i).setLimiter(state.getStringArray("limiter_" + i), true);
+			updateLimiterViews();
+		}
+
 		mHandler.sendEmptyMessage(MSG_INIT);
 	}
 
@@ -138,6 +150,9 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 			mPlayPauseButton.setOnClickListener(this);
 			next.setOnClickListener(this);
 
+			if (mSearchBoxVisible)
+				mControls.setVisibility(View.GONE);
+
 			if (ContextApplication.hasService()) {
 				PlaybackService service = ContextApplication.getService();
 				// Force the state to be updated, even if PlaybackActivity has
@@ -155,6 +170,16 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		mDefaultAction = action == 1 ? PlaybackService.ACTION_ENQUEUE_ITEMS : PlaybackService.ACTION_PLAY_ITEMS;
 		mDefaultIsLastAction = action == 2;
 		mLastActedId = 0;
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle out)
+	{
+		out.putBoolean("search_box_visible", mSearchBoxVisible);
+		out.putInt("current_tab", mTabHost.getCurrentTab());
+		out.putString("filter", mTextFilter.getText().toString());
+		for (int i = 0; i != 3; ++i)
+			out.putStringArray("limiter_" + i, getAdapter(i).getLimiter());
 	}
 
 	@Override
