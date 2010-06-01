@@ -284,12 +284,17 @@ public final class CoverView extends View {
 
 	/**
 	 * Generates a bitmap for the given Song and stores it in the cache.
+	 *
+	 * Prunes old bitmaps if the timeline becomes full.
 	 */
 	void generateBitmap(Song song)
 	{
 		int id = (int)song.id;
+		boolean created = false;
 
 		if (mBitmapCache.get(id) == null) {
+			created = true;
+
 			Bitmap bitmap;
 			if (mSeparateInfo)
 				bitmap = CoverBitmap.createSeparatedBitmap(song, getWidth(), getHeight());
@@ -301,25 +306,34 @@ public final class CoverView extends View {
 		}
 
 		int[] timeline = mCacheTimeline;
-		int i = timeline.length;
-		while (--i != -1 && timeline[i] == 0);
-		int j = i + 1;
-		while (--j != -1 && timeline[j] != id);
-		if (j != -1) {
-			System.arraycopy(timeline, j + 1, timeline, j, timeline.length - j - 1);
-		} else if (i == timeline.length - 1) {
+		int end = timeline.length;
+		while (end > 0 && timeline[end - 1] == 0)
+			--end;
+
+		if (!created) {
+			// If we already have a bitmap for the given song, erase the old
+			// id and make room for it at the end of the timeline.
+			int i = end;
+			while (--i != -1 && timeline[i] != id);
+			if (i != -1) {
+				System.arraycopy(timeline, i + 1, timeline, i, timeline.length - i - 1);
+				--end;
+			}
+		}
+
+		if (end == timeline.length) {
+			// If the timeline is full, erase the bitmap for the oldest song
+			// and make room for the new bitmap at the end of the timeline.
 			int toRemove = timeline[0];
 			System.arraycopy(timeline, 1, timeline, 0, timeline.length - 1);
 			Bitmap bitmap = mBitmapCache.get(toRemove);
 			mBitmapCache.remove(toRemove);
 			if (bitmap != null)
 				bitmap.recycle();
+			--end;
 		}
 
-		if (i < timeline.length - 1)
-			++i;
-
-		timeline[i] = id;
+		timeline[end] = id;
 	}
 
 	/**
