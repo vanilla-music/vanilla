@@ -57,6 +57,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class SongSelector extends PlaybackActivity implements AdapterView.OnItemClickListener, TextWatcher, TabHost.OnTabChangeListener, Filter.FilterListener {
+	/**
+	 * The number of tabs in the song selector.
+	 */
+	private static final int TAB_COUNT = 4;
+	/**
+	 * The number of tabs in the song selector that should be limited.
+	 */
+	private static final int LIMIT_COUNT = 3;
+
 	private TabHost mTabHost;
 
 	private View mSearchBox;
@@ -120,7 +129,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 			if (currentTab != -1)
 				mTabHost.setCurrentTab(currentTab);
 			mTextFilter.setText(state.getString("filter"));
-			for (int i = 0; i != 3; ++i)
+			for (int i = 0; i != LIMIT_COUNT; ++i)
 				getAdapter(i).setLimiter(state.getStringArray("limiter_" + i), true);
 			updateLimiterViews();
 		}
@@ -178,7 +187,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		out.putBoolean("search_box_visible", mSearchBoxVisible);
 		out.putInt("current_tab", mTabHost.getCurrentTab());
 		out.putString("filter", mTextFilter.getText().toString());
-		for (int i = 0; i != 3; ++i)
+		for (int i = 0; i != LIMIT_COUNT; ++i)
 			out.putStringArray("limiter_" + i, getAdapter(i).getLimiter());
 	}
 
@@ -265,7 +274,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		getAdapter(limiter.length).setLimiter(limiter, false);
 		mTabHost.setCurrentTab(limiter.length);
 
-		for (int i = limiter.length + 1; i < 3; ++i)
+		for (int i = limiter.length + 1; i < LIMIT_COUNT; ++i)
 			getAdapter(i).setLimiter(limiter, true);
 	}
 
@@ -356,7 +365,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 				System.arraycopy(oldLimiter, 0, limiter, 0, i);
 			}
 
-			for (int j = 3; --j != -1; ) {
+			for (int j = LIMIT_COUNT; --j != -1; ) {
 				MediaAdapter adapter = getAdapter(j);
 				if (adapter.getLimiterLength() > i)
 					adapter.setLimiter(limiter, true);
@@ -538,7 +547,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	public void onFilterComplete(int count)
 	{
 		CharSequence text = mTextFilter.getText();
-		for (int i = 3; --i != -1; )
+		for (int i = TAB_COUNT; --i != -1; )
 			getAdapter(i).filter(text, null);
 	}
 
@@ -629,7 +638,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 			runOnUiThread(new Runnable() {
 				public void run()
 				{
-					for (int i = 0; i != 4; ++i)
+					for (int i = 0; i != TAB_COUNT; ++i)
 						getAdapter(i).requery();
 				}
 			});
