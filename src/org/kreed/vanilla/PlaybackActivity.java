@@ -233,7 +233,10 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	 */
 	static final int MSG_TOGGLE_FLAG = 0;
 	/**
-	 * Tell PlaybackService to move to a song a position delta (passed as arg1).
+	 * Tell PlaybackService to change the current song.
+	 * 
+	 * arg1 should be the delta, -1 or 1, indicating the previous or next song,
+	 * respectively.
 	 */
 	static final int MSG_SET_SONG = 1;
 

@@ -63,8 +63,8 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 		setContentView(R.layout.full_playback);
 
 		mCoverView = (CoverView)findViewById(R.id.cover_view);
-		mCoverView.mHandler = mHandler;
 		mCoverView.setOnClickListener(this);
+		mCoverView.setupHandler(mLooper);
 
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
 		mCoverView.mSeparateInfo = settings.getBoolean("separate_info", false);

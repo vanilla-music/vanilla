@@ -43,7 +43,7 @@ public class MiniPlaybackActivity extends PlaybackActivity implements View.OnCli
 		setContentView(R.layout.mini_playback);
 
 		mCoverView = (CoverView)findViewById(R.id.cover_view);
-		mCoverView.mHandler = mHandler;
+		mCoverView.setupHandler(mLooper);
 
 		View openButton = findViewById(R.id.open_button);
 		openButton.setOnClickListener(this);
