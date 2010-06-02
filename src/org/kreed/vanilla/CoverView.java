@@ -76,6 +76,10 @@ public final class CoverView extends View implements Handler.Callback {
 	private float mStartX;
 	private float mStartY;
 	private int mTentativeCover = -1;
+	/**
+	 * Ignore the next pointer up event, for long presses.
+	 */
+	private boolean mIgnoreNextUp;
 
 	/**
 	 * Constructor intended to be called by inflating from XML.
@@ -212,6 +216,8 @@ public final class CoverView extends View implements Handler.Callback {
 			mVelocityTracker = VelocityTracker.obtain();
  		mVelocityTracker.addMovement(ev);
 
+		mHandler.removeMessages(MSG_LONG_CLICK);
+
  		float x = ev.getX();
  		int scrollX = getScrollX();
  		int width = getWidth();
@@ -224,6 +230,8 @@ public final class CoverView extends View implements Handler.Callback {
  			mStartX = x;
  			mStartY = ev.getY();
 			mLastMotionX = x;
+
+			mHandler.sendEmptyMessageDelayed(MSG_LONG_CLICK, ViewConfiguration.getLongPressTimeout());
 			break;
 		case MotionEvent.ACTION_MOVE:
 			int deltaX = (int) (mLastMotionX - x);
@@ -239,9 +247,14 @@ public final class CoverView extends View implements Handler.Callback {
 					scrollBy(Math.min(availableToScroll, deltaX), 0);
 			}
 			break;
-		 case MotionEvent.ACTION_UP:
+		case MotionEvent.ACTION_UP:
 			if (Math.abs(mStartX - x) + Math.abs(mStartY - ev.getY()) < 10) {
-				performClick();
+				// A long press was performed and thus the normal action should
+				// not be executed.
+				if (mIgnoreNextUp)
+					mIgnoreNextUp = false;
+				else
+					performClick();
 			} else {
 				VelocityTracker velocityTracker = mVelocityTracker;
 				velocityTracker.computeCurrentVelocity(250);
@@ -408,6 +421,12 @@ public final class CoverView extends View implements Handler.Callback {
 	 * respectively.
 	 */
 	static final int MSG_SET_SONG = 1;
+	/**
+	 * Perform a long click.
+	 *
+	 * @see View#performLongClick()
+	 */
+	private static final int MSG_LONG_CLICK = 2;
 
 	public boolean handleMessage(Message message)
 	{
@@ -417,6 +436,10 @@ public final class CoverView extends View implements Handler.Callback {
 			break;
 		case MSG_SET_SONG:
 			ContextApplication.getService().setCurrentSong(message.arg1);
+			break;
+		case MSG_LONG_CLICK:
+			mIgnoreNextUp = true;
+			performLongClick();
 			break;
 		default:
 			return false;

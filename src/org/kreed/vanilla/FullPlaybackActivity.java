@@ -37,7 +37,7 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.OnSeekBarChangeListener {
+public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.OnSeekBarChangeListener, View.OnLongClickListener {
 	/**
 	 * A Handler running on the UI thread, in contrast with mHandler which runs
 	 * on a worker thread.
@@ -64,6 +64,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 
 		mCoverView = (CoverView)findViewById(R.id.cover_view);
 		mCoverView.setOnClickListener(this);
+		mCoverView.setOnLongClickListener(this);
 		mCoverView.setupHandler(mLooper);
 
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
@@ -275,6 +276,16 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 		} else {
 			super.onClick(view);
 		}
+	}
+
+	public boolean onLongClick(View view)
+	{
+		if (view == mCoverView) {
+			mHandler.sendMessage(mHandler.obtainMessage(MSG_TOGGLE_FLAG, PlaybackService.FLAG_PLAYING, 0));
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
