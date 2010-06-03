@@ -165,8 +165,9 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 			if (ContextApplication.hasService()) {
 				PlaybackService service = ContextApplication.getService();
 				// Force the state to be updated, even if PlaybackActivity has
-				// already loaded it.
-				mState = -1;
+				// already loaded it. This is needed to set the proper image
+				// for the play/pause button.
+				mState = 0;
 				setState(service.getState());
 				onSongChange(service.getSong(0));
 			}
