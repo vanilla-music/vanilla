@@ -696,7 +696,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	{
 		super.receive(intent);
 
-		if (mControls != null)
+		if (mControls != null && PlaybackService.EVENT_CHANGED.equals(intent.getAction()))
 			onSongChange((Song)intent.getParcelableExtra("song"));
 	}
 }
