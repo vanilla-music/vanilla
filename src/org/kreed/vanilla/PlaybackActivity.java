@@ -29,7 +29,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 public class PlaybackActivity extends Activity implements Handler.Callback, View.OnClickListener {
 	Handler mHandler;
@@ -126,17 +125,7 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 		if (mState == state)
 			return;
 
-		int oldState = mState;
 		mState = state;
-
-		if ((oldState & PlaybackService.FLAG_SHUFFLE) == 0 && (state & PlaybackService.FLAG_SHUFFLE) != 0)
-			Toast.makeText(this, R.string.shuffle_enabling, Toast.LENGTH_LONG).show();
-		else if ((oldState & PlaybackService.FLAG_SHUFFLE) != 0 && (state & PlaybackService.FLAG_SHUFFLE) == 0)
-			Toast.makeText(this, R.string.shuffle_disabling, Toast.LENGTH_SHORT).show();
-		if ((oldState & PlaybackService.FLAG_REPEAT) == 0 && (state & PlaybackService.FLAG_REPEAT) != 0)
-			Toast.makeText(this, R.string.repeat_enabling, Toast.LENGTH_LONG).show();
-		else if ((oldState & PlaybackService.FLAG_REPEAT) != 0 && (state & PlaybackService.FLAG_REPEAT) == 0)
-			Toast.makeText(this, R.string.repeat_disabling, Toast.LENGTH_SHORT).show();
 
 		if (mPlayPauseButton != null) {
 			final int res = (mState & PlaybackService.FLAG_PLAYING) == 0 ? R.drawable.play : R.drawable.pause;

@@ -476,8 +476,21 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			mLastSongBroadcast = song;
 		}
 
-		mTimeline.setRepeat((state & FLAG_REPEAT) != 0);
-		mTimeline.setShuffle((state & FLAG_SHUFFLE) != 0);
+		if ((oldState & PlaybackService.FLAG_SHUFFLE) == 0 && (state & PlaybackService.FLAG_SHUFFLE) != 0) {
+			mTimeline.setShuffle(true);
+			Toast.makeText(this, R.string.shuffle_enabling, Toast.LENGTH_LONG).show();
+		} else if ((oldState & PlaybackService.FLAG_SHUFFLE) != 0 && (state & PlaybackService.FLAG_SHUFFLE) == 0) {
+			mTimeline.setShuffle(false);
+			Toast.makeText(this, R.string.shuffle_disabling, Toast.LENGTH_SHORT).show();
+		}
+
+		if ((oldState & PlaybackService.FLAG_REPEAT) == 0 && (state & PlaybackService.FLAG_REPEAT) != 0) {
+			mTimeline.setRepeat(true);
+			Toast.makeText(this, R.string.repeat_enabling, Toast.LENGTH_LONG).show();
+		} else if ((oldState & PlaybackService.FLAG_REPEAT) != 0 && (state & PlaybackService.FLAG_REPEAT) == 0) {
+			mTimeline.setRepeat(false);
+			Toast.makeText(this, R.string.repeat_disabling, Toast.LENGTH_SHORT).show();
+		}
 
 		if ((state & FLAG_NO_MEDIA) != 0 && (oldState & FLAG_NO_MEDIA) == 0) {
 			ContentResolver resolver = ContextApplication.getContext().getContentResolver();
