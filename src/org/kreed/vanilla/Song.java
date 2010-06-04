@@ -259,7 +259,9 @@ public class Song implements Parcelable {
 		if (cover == null)
 			cover = getCoverFromMediaUsingMediaScanner(res);
 
-		// Load cover data from an alternate source here!
+		// Fall back to the official, documented, slow way.
+		if (cover == null)
+			cover = getCoverFromMediaStoreCache(res);
 
 		return cover;
 	}
@@ -268,8 +270,8 @@ public class Song implements Parcelable {
 	 * Attempts to read the album art directly from a media file using the
 	 * media ContentProvider.
 	 *
-	 * @param resolver An instance of the content resolver for this app
-	 * @return The album art or null if no album art could be found
+	 * @param resolver A ContentResolver to use.
+	 * @return The album art or null if no album art could be found.
 	 */
 	private Bitmap getCoverFromMediaFile(ContentResolver resolver)
 	{
@@ -294,8 +296,9 @@ public class Song implements Parcelable {
 	/**
 	 * Obtain the cover from a media file using the private MediaScanner API
 	 *
-	 * @param resolver An instance of the content resolver for this app
-	 * @return The cover or null if there is no cover in the file or the API is unavailable
+	 * @param resolver A ContentResolver to use.
+	 * @return The cover or null if the file has no cover art or the art could
+	 * not be loaded using this method.
 	 */
 	private Bitmap getCoverFromMediaUsingMediaScanner(ContentResolver resolver)
 	{
@@ -327,5 +330,28 @@ public class Song implements Parcelable {
 		}
 
 		return cover;
+	}
+
+	/**
+	 * Get the cover from the media store cache, the documented way.
+	 *
+	 * @param resolver A ContentResolver to use.
+	 * @return The cover or null if the MediaStore has no cover for the given
+	 * song.
+	 */
+	private Bitmap getCoverFromMediaStoreCache(ContentResolver resolver)
+	{
+		Uri media = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
+		String[] albumProjection = {MediaStore.Audio.Albums.ALBUM_ART};
+		String albumSelection = MediaStore.Audio.Albums._ID + '=' + albumId;
+
+		Cursor cursor = resolver.query(media, albumProjection, albumSelection, null, null);
+		if (cursor != null) {
+			if (cursor.moveToNext())
+				return BitmapFactory.decodeFile(cursor.getString(0), BITMAP_OPTIONS);
+			cursor.close();
+		}
+
+		return null;
 	}
 }
