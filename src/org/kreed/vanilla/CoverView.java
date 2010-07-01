@@ -29,7 +29,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.AttributeSet;
-import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -62,12 +61,7 @@ public final class CoverView extends View implements Handler.Callback {
 	/**
 	 * Cache of cover bitmaps generated for songs. The song ids are the keys.
 	 */
-	private SparseArray<Bitmap> mBitmapCache = new SparseArray<Bitmap>();
-	/**
-	 * Stores the order of insertion of songs ids into the cache. This allows
-	 * for old bitmaps to be discarded.
-	 */
-	private int[] mCacheTimeline = new int[8];
+	private Cache<Bitmap> mBitmapCache = new Cache<Bitmap>(8);
 
 	private int mTimelinePos;
 	private Scroller mScroller;
@@ -147,7 +141,12 @@ public final class CoverView extends View implements Handler.Callback {
 	 */
 	private void regenerateBitmaps()
 	{
-		mBitmapCache.clear();
+		Object[] bitmaps = mBitmapCache.clear();
+		for (int i = bitmaps.length; --i != -1; ) {
+			if (bitmaps[i] != null)
+				((Bitmap)bitmaps[i]).recycle();
+			bitmaps[i] = null;
+		}
 		for (int i = STORE_SIZE; --i != -1; )
 			setSong(i, mSongs[i]);
 	}
@@ -315,51 +314,17 @@ public final class CoverView extends View implements Handler.Callback {
 	 */
 	private void generateBitmap(Song song)
 	{
-		int id = (int)song.id;
-		boolean created = false;
-
-		if (mBitmapCache.get(id) == null) {
-			created = true;
-
-			Bitmap bitmap;
+		Bitmap bitmap = mBitmapCache.get(song.id);
+		if (bitmap == null) {
 			if (mSeparateInfo)
 				bitmap = CoverBitmap.createSeparatedBitmap(song, getWidth(), getHeight());
 			else
 				bitmap = CoverBitmap.createOverlappingBitmap(song, getWidth(), getHeight());
-			mBitmapCache.put(id, bitmap);
-
+			mBitmapCache.put(song.id, bitmap);
 			postInvalidate();
+		} else {
+			mBitmapCache.touch(song.id);
 		}
-
-		int[] timeline = mCacheTimeline;
-		int end = timeline.length;
-		while (end > 0 && timeline[end - 1] == 0)
-			--end;
-
-		if (!created) {
-			// If we already have a bitmap for the given song, erase the old
-			// id and make room for it at the end of the timeline.
-			int i = end;
-			while (--i != -1 && timeline[i] != id);
-			if (i != -1) {
-				System.arraycopy(timeline, i + 1, timeline, i, timeline.length - i - 1);
-				--end;
-			}
-		}
-
-		if (end == timeline.length) {
-			// If the timeline is full, erase the bitmap for the oldest song
-			// and make room for the new bitmap at the end of the timeline.
-			int toRemove = timeline[0];
-			System.arraycopy(timeline, 1, timeline, 0, timeline.length - 1);
-			Bitmap bitmap = mBitmapCache.get(toRemove);
-			mBitmapCache.remove(toRemove);
-			if (bitmap != null)
-				bitmap.recycle();
-			--end;
-		}
-
-		timeline[end] = id;
 	}
 
 	/**
