@@ -162,11 +162,8 @@ public final class CoverBitmap {
 		Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
 		Canvas canvas = new Canvas(bitmap);
 
-		if (cover != null) {
+		if (cover != null)
 			canvas.drawBitmap(cover, null, new Rect(0, 0, width, height), paint);
-			cover.recycle();
-			cover = null;
-		}
 
 		int left = 0;
 		int top = height - boxHeight;
@@ -269,8 +266,6 @@ public final class CoverBitmap {
 		if (cover != null) {
 			Rect rect = new Rect(0, 0, bitmapWidth, bitmapHeight);
 			canvas.drawBitmap(cover, null, rect, paint);
-			cover.recycle();
-			cover = null;
 		}
 
 		int left = (bitmapWidth - boxWidth) / 2;
@@ -386,8 +381,6 @@ public final class CoverBitmap {
 		if (cover != null) {
 			RectF rect = new RectF(0, 0, coverWidth, coverHeight);
 			canvas.drawBitmap(cover, null, rect, paint);
-			cover.recycle();
-			cover = null;
 		}
 
 		int top;

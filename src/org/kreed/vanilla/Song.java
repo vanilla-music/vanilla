@@ -45,6 +45,11 @@ public class Song implements Parcelable {
 	 */
 	public static final int FLAG_RANDOM = 0x1;
 
+	/**
+	 * A cache of covers that have been loaded with getCover().
+	 */
+	private static final Cache<Bitmap> mCoverCache = new Cache<Bitmap>(10);
+
 	private static final String[] FILLED_PROJECTION = {
 		MediaStore.Audio.Media._ID,
 		MediaStore.Audio.Media.DATA,
@@ -247,12 +252,15 @@ public class Song implements Parcelable {
 		if (id == -1)
 			return null;
 
+		// Query the cache for the cover
+		Bitmap cover = mCoverCache.get(id);
+		if (cover != null)
+			return cover;
+
 		Context context = ContextApplication.getContext();
 		ContentResolver res = context.getContentResolver();
 
-		Bitmap cover;
-
-		// Query the MediaStore content provider first
+		// Query the MediaStore content provider
 		cover = getCoverFromMediaFile(res);
 
 		// If that fails, try using MediaScanner directly
@@ -262,6 +270,10 @@ public class Song implements Parcelable {
 		// Fall back to the official, documented, slow way.
 		if (cover == null)
 			cover = getCoverFromMediaStoreCache(res);
+
+		Bitmap deletedCover = mCoverCache.put(id, cover);
+		if (deletedCover != null)
+			deletedCover.recycle();
 
 		return cover;
 	}
