@@ -22,6 +22,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -192,10 +193,13 @@ public final class CoverBitmap {
 	 * @param song The song to display information for
 	 * @param width Maximum width of image
 	 * @param height Maximum height of image
+	 * @param bitmap A Bitmap to be drawn into. If null, a new Bitmap will be
+	 * created. If too small, will be recycled and a new Bitmap will be
+	 * created.
 	 * @return The image, or null if the song was null, or width or height
 	 * were less than 1
 	 */
-	public static Bitmap createOverlappingBitmap(Song song, int width, int height)
+	public static Bitmap createOverlappingBitmap(Song song, int width, int height, Bitmap bitmap)
 	{
 		if (song == null || width < 1 || height < 1)
 			return null;
@@ -247,7 +251,19 @@ public final class CoverBitmap {
 		int bitmapWidth = Math.max(coverWidth, boxWidth);
 		int bitmapHeight = Math.max(coverHeight, boxHeight);
 
-		Bitmap bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.RGB_565);
+		if (bitmap != null) {
+			if (bitmap.getHeight() < bitmapHeight || bitmap.getWidth() < bitmapWidth) {
+				bitmap.recycle();
+				bitmap = null;
+			} else {
+				bitmap.eraseColor(Color.BLACK);
+				bitmapHeight = bitmap.getHeight();
+				bitmapWidth = bitmap.getWidth();
+			}
+		}
+
+		if (bitmap == null)
+			bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.RGB_565);
 		Canvas canvas = new Canvas(bitmap);
 
 		if (cover != null) {
@@ -290,10 +306,13 @@ public final class CoverBitmap {
 	 * @param song The song to display information for
 	 * @param width Maximum width of image
 	 * @param height Maximum height of image
+	 * @param bitmap A Bitmap to be drawn into. If null, a new Bitmap will be
+	 * created. If too small, will be recycled and a new Bitmap will be
+	 * created.
 	 * @return The image, or null if the song was null, or width or height
 	 * were less than 1
 	 */
-	public static Bitmap createSeparatedBitmap(Song song, int width, int height)
+	public static Bitmap createSeparatedBitmap(Song song, int width, int height, Bitmap bitmap)
 	{
 		if (song == null || width < 1 || height < 1)
 			return null;
@@ -349,7 +368,19 @@ public final class CoverBitmap {
 		int bitmapWidth = (int)(horizontal ? coverWidth + boxWidth : Math.max(coverWidth, boxWidth));
 		int bitmapHeight = (int)(horizontal ? Math.max(coverHeight, boxHeight) : coverHeight + boxHeight);
 
-		Bitmap bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.RGB_565);
+		if (bitmap != null) {
+			if (bitmap.getHeight() < bitmapHeight || bitmap.getWidth() < bitmapWidth) {
+				bitmap.recycle();
+				bitmap = null;
+			} else {
+				bitmap.eraseColor(Color.BLACK);
+				bitmapHeight = bitmap.getHeight();
+				bitmapWidth = bitmap.getWidth();
+			}
+		}
+
+		if (bitmap == null)
+			bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.RGB_565);
 		Canvas canvas = new Canvas(bitmap);
 
 		if (cover != null) {

@@ -316,10 +316,11 @@ public final class CoverView extends View implements Handler.Callback {
 	{
 		Bitmap bitmap = mBitmapCache.get(song.id);
 		if (bitmap == null) {
+			bitmap = mBitmapCache.discardOldest();
 			if (mSeparateInfo)
-				bitmap = CoverBitmap.createSeparatedBitmap(song, getWidth(), getHeight());
+				bitmap = CoverBitmap.createSeparatedBitmap(song, getWidth(), getHeight(), bitmap);
 			else
-				bitmap = CoverBitmap.createOverlappingBitmap(song, getWidth(), getHeight());
+				bitmap = CoverBitmap.createOverlappingBitmap(song, getWidth(), getHeight(), bitmap);
 			mBitmapCache.put(song.id, bitmap);
 			postInvalidate();
 		} else {
