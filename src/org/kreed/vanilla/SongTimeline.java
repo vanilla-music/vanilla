@@ -292,12 +292,12 @@ public final class SongTimeline {
 			}
 
 			if (mRepeatStart != -1 && (song.flags & Song.FLAG_RANDOM) != 0) {
-				if (delta == 1) {
+				if (delta == 1 && mRepeatStart < mCurrentPos + 1) {
 					// We have reached a non-user-selected song; this song will
 					// repeated in shiftCurrentSong so take alternative
 					// measures
 					if (mShuffle)
-						song = getShuffledRepeatedSongs(mCurrentPos + delta).get(0);
+						song = getShuffledRepeatedSongs(mCurrentPos + 1).get(0);
 					else
 						song = timeline.get(mRepeatStart);
 				} else if (delta == 0 && mRepeatStart < mCurrentPos) {
