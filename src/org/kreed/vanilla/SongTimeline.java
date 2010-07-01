@@ -285,13 +285,13 @@ public final class SongTimeline {
 				return null;
 
 			if (pos == size) {
-				song = new Song();
+				song = Song.randomSong();
 				timeline.add(song);
 			} else {
 				song = timeline.get(pos);
 			}
 
-			if (mRepeatStart != -1 && (song.flags & Song.FLAG_RANDOM) != 0) {
+			if (song != null && mRepeatStart != -1 && (song.flags & Song.FLAG_RANDOM) != 0) {
 				if (delta == 1 && mRepeatStart < mCurrentPos + 1) {
 					// We have reached a non-user-selected song; this song will
 					// repeated in shiftCurrentSong so take alternative
@@ -320,9 +320,9 @@ public final class SongTimeline {
 			}
 		}
 
-		if (!song.query(false)) {
-			song.randomize();
-			if (!song.query(false))
+		if (song == null || !song.query(false)) {
+			song = Song.randomSong();
+			if (song == null || !song.query(false))
 				return null;
 		}
 

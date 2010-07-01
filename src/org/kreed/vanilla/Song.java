@@ -50,6 +50,11 @@ public class Song implements Parcelable {
 	 */
 	private static final Cache<Bitmap> mCoverCache = new Cache<Bitmap>(10);
 
+	/**
+	 * A cache of randomly selected songs.
+	 */
+	private static final Song[] mRandomSongs = new Song[5];
+
 	private static final String[] FILLED_PROJECTION = {
 		MediaStore.Audio.Media._ID,
 		MediaStore.Audio.Media.DATA,
@@ -92,12 +97,44 @@ public class Song implements Parcelable {
 	public int flags;
 
 	/**
-	 * Initialize the song with a randomly selected id. Call populate to fill
-	 * fields in the song.
+	 * Returns a song randomly selected from all the songs in the Android
+	 * MediaStore.
 	 */
-	public Song()
+	public static Song randomSong()
 	{
-		randomize();
+		Song[] songs = mRandomSongs;
+		// Checked for previously retrieved random songs.
+		for (int i = songs.length; --i != -1; ) {
+			if (songs[i] != null) {
+				Song song = songs[i];
+				songs[i] = null;
+				return song;
+			}
+		}
+
+		// We need to fetch more
+		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
+		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+		String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
+		Cursor cursor = resolver.query(media, FILLED_PROJECTION, selection, null, null);
+
+		if (cursor != null) {
+			int count = cursor.getCount();
+			if (count > 0) {
+				for (int i = songs.length; --i != -1; ) {		
+					if (cursor.moveToPosition(ContextApplication.getRandom().nextInt(count))) {
+						songs[i] = new Song(-1);
+						songs[i].populate(cursor);
+						songs[i].flags |= FLAG_RANDOM;
+					}
+				}
+			}
+			cursor.close();
+		}
+
+		Song song = songs[0];
+		songs[0] = null;
+		return song;
 	}
 
 	/**
@@ -161,28 +198,6 @@ public class Song implements Parcelable {
 		}
 
 		return id != -1;
-	}
-
-	/**
-	 * Fill the fields with data from a random Song in the MediaStore
-	 */
-	public void randomize()
-	{
-		id = -1;
-
-		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
-		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-		String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
-		Cursor cursor = resolver.query(media, FILLED_PROJECTION, selection, null, null);
-
-		if (cursor != null) {
-			int count = cursor.getCount();
-			if (count > 0 && cursor.moveToPosition(ContextApplication.getRandom().nextInt(count))) {
-				populate(cursor);
-				flags |= FLAG_RANDOM;
-			}
-			cursor.close();
-		}
 	}
 
 	/**
