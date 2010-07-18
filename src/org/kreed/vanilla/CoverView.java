@@ -314,6 +314,9 @@ public final class CoverView extends View implements Handler.Callback {
 	 */
 	private void generateBitmap(Song song)
 	{
+		if (song == null)
+			return;
+
 		Bitmap bitmap = mBitmapCache.get(song.id);
 		if (bitmap == null) {
 			bitmap = mBitmapCache.discardOldest();
