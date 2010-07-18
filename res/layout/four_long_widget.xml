@@ -66,10 +66,6 @@
 				android:fadingEdgeLength="10dip"
 				android:ellipsize="none" />
 		</LinearLayout>
-		<ImageView
-			android:layout_height="1dip"
-			android:layout_width="fill_parent"
-			android:background="@drawable/appwidget_divider" />
 		<LinearLayout
 			android:orientation="horizontal"
 			android:layout_width="fill_parent"
@@ -83,10 +79,6 @@
 				android:layout_height="fill_parent"
 				android:src="@drawable/previous"
 				android:scaleType="fitCenter" />
-			<ImageView
-				android:layout_width="1dip"
-				android:layout_height="fill_parent"
-				android:background="@drawable/appwidget_divider" />
 			<ImageButton
 				android:id="@+id/play"
 				android:background="@drawable/button_background"
@@ -95,10 +87,6 @@
 				android:layout_height="fill_parent"
 				android:src="@drawable/play"
 				android:scaleType="fitCenter" />
-			<ImageView
-				android:layout_width="1dip"
-				android:layout_height="fill_parent"
-				android:background="@drawable/appwidget_divider" />
 			<ImageButton
 				android:id="@+id/next"
 				android:background="@drawable/button_background"
