@@ -20,6 +20,7 @@ package org.kreed.vanilla;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -121,6 +122,8 @@ public final class SongTimeline {
 			}
 
 			in.close();
+		} catch (EOFException e) {
+			Log.w("VanillaMusic", "Failed to load state", e);
 		} catch (IOException e) {
 			Log.w("VanillaMusic", "Failed to load state", e);
 		}
@@ -150,8 +153,13 @@ public final class SongTimeline {
 
 				for (int i = 0; i != size; ++i) {
 					Song song = songs.get(i);
-					out.writeLong(song.id);
-					out.writeInt(song.flags);
+					if (song == null) {
+						out.writeLong(-1);
+						out.writeInt(-1);
+					} else {
+						out.writeLong(song.id);
+						out.writeInt(song.flags);
+					}
 				}
 
 				out.writeInt(mCurrentPos);
