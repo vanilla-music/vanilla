@@ -20,7 +20,6 @@
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
 	android:orientation="horizontal"
-	android:clickable="true"
 	android:layout_marginTop="5dip"
 	android:layout_marginBottom="5dip"
 	android:background="#B2191919">
