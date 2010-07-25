@@ -101,6 +101,8 @@ public class FourLongWidget extends AppWidgetProvider {
 
 		if (song == null) {
 			views.setViewVisibility(R.id.title, View.GONE);
+			views.setViewVisibility(R.id.next, View.GONE);
+			views.setViewVisibility(R.id.play_pause, View.GONE);
 			views.setTextViewText(R.id.artist, res.getText(R.string.no_songs));
 		} else {
 			views.setViewVisibility(R.id.title, View.VISIBLE);
@@ -118,7 +120,7 @@ public class FourLongWidget extends AppWidgetProvider {
 
 		if (state != -1) {
 			boolean playing = (state & PlaybackService.FLAG_PLAYING) != 0;
-			views.setImageViewResource(R.id.play, playing ? R.drawable.pause : R.drawable.play);
+			views.setImageViewResource(R.id.play_pause, playing ? R.drawable.pause_multi : R.drawable.play_multi);
 		}
 
 		Intent intent;
@@ -131,13 +133,9 @@ public class FourLongWidget extends AppWidgetProvider {
 		views.setOnClickPendingIntent(R.id.cover, pendingIntent);
 		views.setOnClickPendingIntent(R.id.text, pendingIntent);
 
-		intent = new Intent(PlaybackService.ACTION_PREVIOUS_SONG).setComponent(service);
-		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
-		views.setOnClickPendingIntent(R.id.previous, pendingIntent);
-
 		intent = new Intent(PlaybackService.ACTION_TOGGLE_PLAYBACK).setComponent(service);
 		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
-		views.setOnClickPendingIntent(R.id.play, pendingIntent);
+		views.setOnClickPendingIntent(R.id.play_pause, pendingIntent);
 
 		intent = new Intent(PlaybackService.ACTION_NEXT_SONG).setComponent(service);
 		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
