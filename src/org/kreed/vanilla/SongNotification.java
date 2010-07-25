@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 /**
@@ -37,6 +38,19 @@ import android.widget.RemoteViews;
  */
 public class SongNotification extends Notification {
 	/**
+	 * Notification click action: open LaunchActivity.
+	 */
+	private static final int ACTION_MAIN_ACTIVITY = 0;
+	/**
+	 * Notification click action: open MiniPlaybackActivity.
+	 */
+	private static final int ACTION_MINI_ACTIVITY = 1;
+	/**
+	 * Notification click action: skip to next song.
+	 */
+	private static final int ACTION_NEXT_SONG = 2;
+
+	/**
 	 * Create a SongNotification. Call through the NotificationManager to
 	 * display it.
 	 *
@@ -47,7 +61,7 @@ public class SongNotification extends Notification {
 	{
 		Context context = ContextApplication.getContext();
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-		boolean remoteView = prefs.getBoolean("remote_player", true);
+		int action = Integer.parseInt(prefs.getString("notification_action", "0"));
 		int statusIcon = playing ? R.drawable.status_icon : R.drawable.status_icon_paused;
 
 		RemoteViews views = new RemoteViews(ContextApplication.getContext().getPackageName(), R.layout.notification);
@@ -58,7 +72,28 @@ public class SongNotification extends Notification {
 		contentView = views;
 		icon = statusIcon;
 		flags |= Notification.FLAG_ONGOING_EVENT;
-		Intent intent = new Intent(context, remoteView ? MiniPlaybackActivity.class : LaunchActivity.class);
-		contentIntent = PendingIntent.getActivity(context, 0, intent, 0);
+
+		Intent intent;
+		switch (action) {
+		case ACTION_NEXT_SONG:
+			intent = new Intent(context, PlaybackService.class);
+			intent.setAction(PlaybackService.ACTION_NEXT_SONG_AUTOPLAY);
+			contentIntent = PendingIntent.getService(context, 0, intent, 0);
+			break;
+		case ACTION_MINI_ACTIVITY:
+			intent = new Intent(context, MiniPlaybackActivity.class);
+			contentIntent = PendingIntent.getActivity(context, 0, intent, 0);
+			break;
+		default:
+			Log.w("VanillaMusic", "Unknown value for notification_action: " + action + ". Resetting to 0.");
+			SharedPreferences.Editor editor = prefs.edit();
+			editor.putString("notification_action", "0");
+			editor.commit();
+			// fall through
+		case ACTION_MAIN_ACTIVITY:
+			intent = new Intent(context, LaunchActivity.class);
+			contentIntent = PendingIntent.getActivity(context, 0, intent, 0);
+			break;
+		}
 	}
 }

@@ -80,9 +80,23 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 */
 	public static final String ACTION_NEXT_SONG_DELAYED = "org.kreed.vanilla.action.NEXT_SONG_DELAYED";
 	/**
+	 * Action for startService: advance to the next song.
+	 *
+	 * Like ACTION_NEXT_SONG, but starts playing automatically if paused
+	 * when this is called.
+	 */
+	public static final String ACTION_NEXT_SONG_AUTOPLAY = "org.kreed.vanilla.action.NEXT_SONG_AUTOPLAY";
+	/**
 	 * Action for startService: go back to the previous song.
 	 */
 	public static final String ACTION_PREVIOUS_SONG = "org.kreed.vanilla.action.PREVIOUS_SONG";
+	/**
+	 * Action for startService: go back to the previous song.
+	 *
+	 * Like ACTION_PREVIOUS_SONG, but starts playing automatically if paused
+	 * when this is called.
+	 */
+	public static final String ACTION_PREVIOUS_SONG_AUTOPLAY = "org.kreed.vanilla.action.PREVIOUS_SONG_AUTOPLAY";
 	/**
 	 * Intent action that may be invoked through startService.
 	 *
@@ -233,6 +247,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				// feedback.
 				broadcastReplaceSong(0, getSong(+1));
 				go(1, false);
+			} else if (ACTION_NEXT_SONG_AUTOPLAY.equals(action)) {
+				go(1, true);
 			} else if (ACTION_NEXT_SONG_DELAYED.equals(action)) {
 				if (mHandler.hasMessages(CALL_GO, Integer.valueOf(1))) {
 					mHandler.removeMessages(CALL_GO, Integer.valueOf(1));
@@ -242,6 +258,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				}
 			} else if (ACTION_PREVIOUS_SONG.equals(action)) {
 				go(-1, false);
+			} else if (ACTION_PREVIOUS_SONG_AUTOPLAY.equals(action)) {
+				go(-1, true);
 			} else if (ACTION_PLAY_ITEMS.equals(action)) {
 				mTimeline.chooseSongs(false, intent.getIntExtra("type", 3), intent.getLongExtra("id", -1));
 				mHandler.sendEmptyMessage(TRACK_CHANGED);

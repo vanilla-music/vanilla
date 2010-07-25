@@ -48,11 +48,13 @@
 			android:entries="@array/notification_mode_entries"
 			android:entryValues="@array/entry_values"
 			android:defaultValue="1" />
-		<CheckBoxPreference
-			android:key="remote_player"
-			android:title="@string/mini_player_title"
-			android:summary="@string/mini_player_summary"
-			android:defaultValue="true" />
+		<ListPreference
+			android:key="notification_action"
+			android:title="@string/notification_action_title"
+			android:summary="@string/notification_action_summary"
+			android:entries="@array/notification_action_entries"
+			android:entryValues="@array/entry_values"
+			android:defaultValue="0" />
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/pref_song_selector">
 		<CheckBoxPreference

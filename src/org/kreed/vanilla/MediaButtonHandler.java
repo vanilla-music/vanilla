@@ -131,7 +131,6 @@ public class MediaButtonHandler implements Handler.Callback {
 		Context context = ContextApplication.getContext();
 		Intent intent = new Intent(context, PlaybackService.class);
 		intent.setAction(action);
-		intent.putExtra("autoplay", true);
 		context.startService(intent);
 	}
 
@@ -160,7 +159,7 @@ public class MediaButtonHandler implements Handler.Callback {
 				if (mHandler.hasMessages(MSG_SINGLE_PRESS_TIMEOUT)) {
 					// double click
 					mHandler.removeMessages(MSG_SINGLE_PRESS_TIMEOUT);
-					act(PlaybackService.ACTION_NEXT_SONG);
+					act(PlaybackService.ACTION_NEXT_SONG_AUTOPLAY);
 				} else {
 					mHandler.sendEmptyMessageDelayed(MSG_SINGLE_PRESS_TIMEOUT, DOUBLE_CLICK_DELAY);
 				}
@@ -168,11 +167,11 @@ public class MediaButtonHandler implements Handler.Callback {
 			break;
 		case KeyEvent.KEYCODE_MEDIA_NEXT:
 			if (action == KeyEvent.ACTION_DOWN)
-				act(PlaybackService.ACTION_NEXT_SONG);
+				act(PlaybackService.ACTION_NEXT_SONG_AUTOPLAY);
 			break;
 		case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
 			if (action == KeyEvent.ACTION_DOWN)
-				act(PlaybackService.ACTION_PREVIOUS_SONG);
+				act(PlaybackService.ACTION_PREVIOUS_SONG_AUTOPLAY);
 			break;
 		default:
 			return false;

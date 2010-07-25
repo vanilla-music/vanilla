@@ -27,6 +27,11 @@
 		<item>Show When Playing</item>
 		<item>Always Show</item>
 	</string-array>
+	<string-array name="notification_action_entries">
+		<item>Open Main Activity</item>
+		<item>Open Mini Player</item>
+		<item>Skip To Next Song</item>
+	</string-array>
 	<string-array name="entry_values">
 		<item>0</item>
 		<item>1</item>
