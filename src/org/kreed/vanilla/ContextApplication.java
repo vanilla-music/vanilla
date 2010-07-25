@@ -129,6 +129,7 @@ public class ContextApplication extends Application {
 	{
 		OneCellWidget.receive(intent);
 		FourLongWidget.receive(intent);
+		FourSquareWidget.receive(intent);
 
 		ArrayList<Activity> list = mActivities;
 		if (list != null) {
