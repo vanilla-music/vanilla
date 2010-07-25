@@ -329,7 +329,7 @@ public final class SongTimeline {
 		}
 
 		if (song == null || !song.query(false)) {
-			song = Song.randomSong();
+			song.copy(Song.randomSong());
 			if (song == null || !song.query(false))
 				return null;
 		}
