@@ -32,14 +32,14 @@
 			android:id="@+id/play_pause"
 			android:src="@drawable/hidden_play"
 			android:background="#0000"
-			android:layout_height="wrap_content"
+			android:layout_height="0px"
 			android:layout_width="fill_parent"
 			android:layout_weight="1" />
 		<ImageButton
 			android:id="@+id/next"
 			android:src="@drawable/hidden_next"
 			android:background="#0000"
-			android:layout_height="wrap_content"
+			android:layout_height="0px"
 			android:layout_width="fill_parent"
 			android:layout_weight="1" />
 	</LinearLayout>
