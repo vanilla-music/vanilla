@@ -49,7 +49,7 @@
 			android:shadowColor="#f000"
             android:shadowDx="0"
             android:shadowDy="0"
-            android:shadowRadius="3"
+            android:shadowRadius="5"
             android:textStyle="bold"
 			android:ellipsize="none"
 			android:singleLine="true" />
@@ -62,7 +62,7 @@
 			android:shadowColor="#f000"
             android:shadowDx="0"
             android:shadowDy="0"
-            android:shadowRadius="3"
+            android:shadowRadius="5"
 			android:textSize="15dip"
 			android:ellipsize="none"
 			android:singleLine="true" />
