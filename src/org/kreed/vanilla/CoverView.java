@@ -191,7 +191,10 @@ public final class CoverView extends View implements Handler.Callback {
 
 		for (int x = 0, i = 0; i != STORE_SIZE; ++i, x += width) {
 			if (mSongs[i] != null && clip.intersects(x, 0, x + width, height)) {
-				Bitmap bitmap = mBitmapCache.get((int)mSongs[i].id);
+				long id = mSongs[i].id;
+				if (id == -1)
+					continue;
+				Bitmap bitmap = mBitmapCache.get(id);
 				if (bitmap != null) {
 					int xOffset = (width - bitmap.getWidth()) / 2;
 					int yOffset = (height - bitmap.getHeight()) / 2;
@@ -314,7 +317,7 @@ public final class CoverView extends View implements Handler.Callback {
 	 */
 	private void generateBitmap(Song song)
 	{
-		if (song == null)
+		if (song == null || song.id == -1)
 			return;
 
 		Bitmap bitmap = mBitmapCache.get(song.id);
