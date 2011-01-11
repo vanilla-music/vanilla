@@ -18,8 +18,6 @@
 
 package org.kreed.vanilla;
 
-import org.kreed.vanilla.R;
-
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;

@@ -18,8 +18,6 @@
 
 package org.kreed.vanilla;
 
-import org.kreed.vanilla.R;
-
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.view.KeyEvent;
