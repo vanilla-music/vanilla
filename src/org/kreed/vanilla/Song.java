@@ -101,6 +101,20 @@ public class Song implements Parcelable {
 	public int flags;
 
 	/**
+	 * @return true if it's possible to retrieve any songs, otherwise false. For example, false
+	 * could be returned if there are no songs in the library.
+	 */
+	public static boolean isSongAvailable()
+	{
+		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
+		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+		String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
+		Cursor cursor = resolver.query(media, FILLED_PROJECTION, selection, null, null);
+
+		return cursor != null && cursor.getCount() > 0;
+	}
+	
+	/**
 	 * Returns a song randomly selected from all the songs in the Android
 	 * MediaStore.
 	 */
@@ -149,7 +163,7 @@ public class Song implements Parcelable {
 	{
 		this.id = id;
 	}
-
+	
 	/**
 	 * Initialize the song with the specified id and flags. Call populate to
 	 * fill fields in the song.
