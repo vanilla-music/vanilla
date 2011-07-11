@@ -565,7 +565,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 		Song song = mTimeline.shiftCurrentSong(delta);
 		if (song == null) {
-			setFlag(FLAG_NO_MEDIA);
+			if (Song.isSongAvailable())
+				setCurrentSong(+1); // we only encountered a bad song; skip it
+			else
+				setFlag(FLAG_NO_MEDIA); // we don't have any songs : /
 			return;
 		} else if ((mState & FLAG_NO_MEDIA) != 0) {
 			unsetFlag(FLAG_NO_MEDIA);

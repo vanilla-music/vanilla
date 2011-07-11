@@ -59,6 +59,10 @@ public class Song implements Parcelable {
 	 */
 	private static final Song[] mRandomSongs = new Song[5];
 
+	private static final String[] EMPTY_PROJECTION = {
+		MediaStore.Audio.Media._ID,
+		};
+
 	private static final String[] FILLED_PROJECTION = {
 		MediaStore.Audio.Media._ID,
 		MediaStore.Audio.Media.DATA,
@@ -109,11 +113,11 @@ public class Song implements Parcelable {
 		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
 		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 		String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
-		Cursor cursor = resolver.query(media, FILLED_PROJECTION, selection, null, null);
+		Cursor cursor = resolver.query(media, EMPTY_PROJECTION, selection, null, null);
 
 		return cursor != null && cursor.getCount() > 0;
 	}
-	
+
 	/**
 	 * Returns a song randomly selected from all the songs in the Android
 	 * MediaStore.

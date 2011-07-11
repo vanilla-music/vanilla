@@ -273,11 +273,11 @@ public final class SongTimeline {
 	/**
 	 * Returns the song <code>delta</code> places away from the current
 	 * position. If there is no song at the given position, a random
-	 * song will be placed in that position. Returns null if no songs are
-	 * available.
+	 * song will be placed in that position. Returns null if there is a problem
+	 * retrieving the song (caused by either an empty library or stale song id).
 	 *
 	 * Note: This returns songs based on their position in the playback
-	 * sequence, not necessarily the stored timeline. When repeat is enabled,
+	 * sequence, not their position in the stored timeline. When repeat is enabled,
 	 * the two will differ.
 	 *
 	 * @param delta The offset from the current position. Should be -1, 0, or
@@ -285,27 +285,23 @@ public final class SongTimeline {
 	 */
 	public Song getSong(int delta)
 	{
-		if (!Song.isSongAvailable())
-			return null;
-		
 		ArrayList<Song> timeline = mSongs;
-		Song song;
+		Song song = null;
 
 		synchronized (this) {
 			int pos = mCurrentPos + delta;
 			if (pos < 0)
 				return null;
 
-			int size = timeline.size();
-			if (pos > size)
-				return null;
-
-			if (pos == size) {
+			while (pos >= timeline.size()) {
 				song = Song.randomSong();
+				if (song == null)
+					return null;
 				timeline.add(song);
-			} else {
-				song = timeline.get(pos);
 			}
+
+			if (song == null)
+				song = timeline.get(pos);
 
 			if (song != null && mRepeatStart != -1 && (song.flags & Song.FLAG_RANDOM) != 0) {
 				if (delta == 1 && mRepeatStart < mCurrentPos + 1) {
@@ -336,15 +332,9 @@ public final class SongTimeline {
 			}
 		}
 
-		if (song == null)
+		if (!song.query(false))
+			// we have a stale song id
 			return null;
-		
-		if (!song.query(false)) {
-			song.copy(Song.randomSong());
-			
-			if (song == null || !song.query(false))
-				return null;
-		}
 
 		return song;
 	}
