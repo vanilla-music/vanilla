@@ -574,6 +574,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		if (mMediaPlayer == null)
 			return;
 
+		synchronized (mMediaPlayer) {
+			mMediaPlayer.stop();
+		}
+
 		Song song = mTimeline.shiftCurrentSong(delta);
 		if (song == null) {
 			if (Song.isSongAvailable())
