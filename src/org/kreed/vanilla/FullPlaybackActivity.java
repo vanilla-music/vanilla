@@ -245,6 +245,28 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 		return false;
 	}
 
+	public boolean onKeyDown(int keyCode, KeyEvent event)
+	{
+		switch (keyCode) {
+		case KeyEvent.KEYCODE_DPAD_RIGHT: {
+			View button = findViewById(R.id.next);
+			if (button != null)
+				button.requestFocus();
+			mHandler.sendMessage(mHandler.obtainMessage(PlaybackActivity.MSG_SET_SONG, 1, 0));
+			return true;
+			}
+		case KeyEvent.KEYCODE_DPAD_LEFT: {
+			View button = findViewById(R.id.previous);
+			if (button != null)
+				button.requestFocus();
+			mHandler.sendMessage(mHandler.obtainMessage(PlaybackActivity.MSG_SET_SONG, -1, 0));
+			return true;
+			}
+		}
+
+		return false;
+	}
+
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event)
 	{
