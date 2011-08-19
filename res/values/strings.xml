@@ -98,10 +98,8 @@ THE SOFTWARE.
 	<string name="volume_summary">Music volume</string>
 	<string name="media_button_title">Use Headset Controls</string>
 	<string name="media_button_summary">Single click for play/pause. Double click for next.</string>
-	<string name="headset_only_title">External Output Only</string>
-	<string name="headset_only_summary">Only play music through an external output (e.g. headphones, Bluetooth)</string>
-	<string name="headset_pause_title">Pause When Unplugged</string>
-	<string name="headset_pause_summary">Pause when the headphones are unplugged.</string>
+	<string name="headset_pause_title">Pause When Headset Disconnected</string>
+	<string name="headset_pause_summary">Pause when the headphones or Bluetooth device are disconnected.</string>
 
 	<string name="pref_notifications">Notifications</string>
 	<string name="notification_mode_title">Notification Mode</string>

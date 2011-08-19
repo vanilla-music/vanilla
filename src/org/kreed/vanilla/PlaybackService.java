@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -157,7 +157,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	public static final int ALWAYS = 2;
 
 	boolean mHeadsetPause;
-	boolean mHeadsetOnly;
 	private boolean mScrobble;
 	private int mNotificationMode;
 	/**
@@ -181,7 +180,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	boolean mPlayingBeforeCall;
 	private int mPendingSeek;
 	private Song mLastSongBroadcast;
-	boolean mPlugged;
 	private ContentObserver mMediaObserver;
 	public Receiver mReceiver;
 	public InCallListener mCallListener;
@@ -196,7 +194,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 */
 	private float mCurrentVolume = 1.0f;
 
-	private Method mIsWiredHeadsetOn;
 	private Method mStartForeground;
 	private Method mStopForeground;
 
@@ -373,17 +370,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			Log.d("VanillaMusic", "falling back to pre-2.0 Service APIs");
 		}
 
-		if (!"3".equals(Build.VERSION.SDK)) {
-			try {
-				mIsWiredHeadsetOn = mAudioManager.getClass().getMethod("isWiredHeadsetOn", (Class[])null);
-			} catch (NoSuchMethodException e) {
-				Log.d("VanillaMusic", "falling back to pre-1.6 AudioManager APIs");
-			}
-		}
-
 		SharedPreferences settings = getSettings();
 		settings.registerOnSharedPreferenceChangeListener(this);
-		mHeadsetOnly = settings.getBoolean("headset_only", false);
 		mNotificationMode = Integer.parseInt(settings.getString("notification_mode", "1"));
 		mScrobble = settings.getBoolean("scrobble", false);
 		float volume = settings.getFloat("volume", 1.0f);
@@ -411,10 +399,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		SharedPreferences settings = getSettings();
 		if ("headset_pause".equals(key)) {
 			mHeadsetPause = settings.getBoolean("headset_pause", true);
-		} else if ("headset_only".equals(key)) {
-			mHeadsetOnly = settings.getBoolean(key, false);
-			if (mHeadsetOnly && isSpeakerOn())
-				unsetFlag(FLAG_PLAYING);
 		} else if ("remote_player".equals(key)) {
 			// the preference is loaded in SongNotification class
 			updateNotification(getSong(0));
@@ -466,7 +450,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	{
 		state &= ALL_FLAGS;
 
-		if ((state & FLAG_NO_MEDIA) != 0 || mHeadsetOnly && isSpeakerOn())
+		if ((state & FLAG_NO_MEDIA) != 0)
 			state &= ~FLAG_PLAYING;
 
 		Song song = getSong(0);
@@ -554,29 +538,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		} else {
 			stopForegroundCompat(true);
 		}
-	}
-
-	boolean isSpeakerOn()
-	{
-		if (mAudioManager.isBluetoothA2dpOn() || mAudioManager.isBluetoothScoOn())
-			return false;
-
-		if (mIsWiredHeadsetOn != null) {
-			try {
-				if ((Boolean)mIsWiredHeadsetOn.invoke(mAudioManager, (Object[])null))
-					return false;
-			} catch (InvocationTargetException e) {
-				Log.w("VanillaMusic", e);
-			} catch (IllegalAccessException e) {
-				Log.w("VanillaMusic", e);
-			}
-		}
-
-		if (mPlugged)
-			return false;
-
-		// Why is there no true equivalent to this in Android 2.0?
-		return (mAudioManager.getRouting(mAudioManager.getMode()) & AudioManager.ROUTE_SPEAKER) != 0;
 	}
 
 	/**
@@ -695,10 +656,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		{
 			String action = intent.getAction();
 
-			if (Intent.ACTION_HEADSET_PLUG.equals(action)) {
-				boolean oldPlugged = mPlugged;
-				mPlugged = intent.getIntExtra("state", 0) != 0;
-				if (mPlugged != oldPlugged && mHeadsetPause && !mPlugged || mHeadsetOnly && isSpeakerOn())
+			if (AudioManager.ACTION_AUDIO_BECOMING_NOISY.equals(action)) {
+				if (mHeadsetPause)
 					unsetFlag(FLAG_PLAYING);
 			} else if (Intent.ACTION_MEDIA_BUTTON.equals(action)) {
 				if (MediaButtonHandler.getInstance().process(intent))
@@ -763,7 +722,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		}
 
 		IntentFilter filter = new IntentFilter();
-		filter.addAction(Intent.ACTION_HEADSET_PLUG);
+		filter.addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
 		if (MediaButtonHandler.getInstance().useHeadsetControls())
 			filter.addAction(Intent.ACTION_MEDIA_BUTTON);
 		filter.setPriority(2000);
