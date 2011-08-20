@@ -170,6 +170,13 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 			setState(intent.getIntExtra("state", 0));
 	}
 
+	/**
+	 * Called when the content of the media store has changed.
+	 */
+	public void onMediaChange()
+	{
+	}
+
 	static final int MENU_QUIT = 0;
 	static final int MENU_DISPLAY = 1;
 	static final int MENU_PREFS = 2;

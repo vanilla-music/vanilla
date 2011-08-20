@@ -29,6 +29,8 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.database.ContentObserver;
+import android.provider.MediaStore;
 
 /**
  * Subclass of Application that provides various static utility functions
@@ -43,6 +45,29 @@ public class ContextApplication extends Application {
 	{
 		mInstance = this;
 	}
+
+	@Override
+	public void onCreate()
+	{
+		getContentResolver().registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, mObserver);
+	}
+
+	private ContentObserver mObserver = new ContentObserver(null) {
+		@Override
+		public void onChange(boolean selfChange)
+		{
+			if (mService != null)
+				mService.onMediaChange();
+			ArrayList<Activity> list = mActivities;
+			if (list != null) {
+				for (int i = list.size(); --i != -1; ) {
+					Activity activity = list.get(i);
+					if (activity instanceof PlaybackActivity)
+						((PlaybackActivity)activity).onMediaChange();
+				}
+			}
+		}
+	};
 
 	/**
 	 * Returns a shared, application-wide Random instance.

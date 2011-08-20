@@ -26,7 +26,6 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.PaintDrawable;
@@ -135,8 +134,6 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 				getAdapter(i).setLimiter(state.getStringArray("limiter_" + i), true);
 			updateLimiterViews();
 		}
-
-		mHandler.sendEmptyMessage(MSG_INIT);
 	}
 
 	@Override
@@ -569,11 +566,6 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	}
 
 	/**
-	 * Perform the initialization that may be done in the background outside
-	 * of onCreate.
-	 */
-	private static final int MSG_INIT = 10;
-	/**
 	 * Call addToPlaylist with the parameters from the given message. The
 	 * message must contain the type and id of the media to be added in
 	 * arg1 and arg2, respectively. The obj field must be a NewPlaylistDialog
@@ -600,11 +592,6 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	public boolean handleMessage(Message message)
 	{
 		switch (message.what) {
-		case MSG_INIT:
-			ContentResolver resolver = getContentResolver();
-			Observer observer = new Observer(mHandler);
-			resolver.registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, observer);
-			break;
 		case MSG_NEW_PLAYLIST: {
 			NewPlaylistDialog dialog = (NewPlaylistDialog)message.obj;
 			if (dialog.isAccepted()) {
@@ -629,24 +616,17 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		return true;
 	}
 
-	private class Observer extends ContentObserver {
-		public Observer(Handler handler)
-		{
-			super(handler);
-		}
-
-		@Override
-		public void onChange(boolean selfChange)
-		{
-			runOnUiThread(new Runnable() {
-				public void run()
-				{
-					for (int i = 0; i != TAB_COUNT; ++i)
-						getAdapter(i).requery();
-				}
-			});
-		}
-	};
+	@Override
+	public void onMediaChange()
+	{
+		runOnUiThread(new Runnable() {
+			public void run()
+			{
+				for (int i = 0; i != TAB_COUNT; ++i)
+					getAdapter(i).requery();
+			}
+		});
+	}
 
 	private void setSearchBoxVisible(boolean visible)
 	{

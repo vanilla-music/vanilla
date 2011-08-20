@@ -37,7 +37,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.ContentObserver;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -184,7 +183,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	boolean mPlayingBeforeCall;
 	private int mPendingSeek;
 	private Song mLastSongBroadcast;
-	private ContentObserver mMediaObserver;
 	public Receiver mReceiver;
 	public InCallListener mCallListener;
 	private boolean mLoaded;
@@ -509,16 +507,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			Toast.makeText(this, R.string.repeat_disabling, Toast.LENGTH_SHORT).show();
 		}
 
-		if ((state & FLAG_NO_MEDIA) != 0 && (oldState & FLAG_NO_MEDIA) == 0) {
-			ContentResolver resolver = ContextApplication.getContext().getContentResolver();
-			mMediaObserver = new MediaContentObserver(mHandler);
-			resolver.registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, mMediaObserver);
-		} else if ((state & FLAG_NO_MEDIA) == 0 && (oldState & FLAG_NO_MEDIA) != 0) {
-			ContentResolver resolver = ContextApplication.getContext().getContentResolver();
-			resolver.unregisterContentObserver(mMediaObserver);
-			mMediaObserver = null;
-		}
-
 		if ((state & FLAG_PLAYING) != 0 && (oldState & FLAG_PLAYING) == 0) {
 			if (mNotificationMode != NEVER)
 				startForegroundCompat(NOTIFICATION_ID, mNotification);
@@ -628,8 +616,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	public boolean onError(MediaPlayer player, int what, int extra)
 	{
 		Log.e("VanillaMusic", "MediaPlayer error: " + what + " " + extra);
-		if (!Song.isSongAvailable())
-			setFlag(FLAG_NO_MEDIA);
 		return true;
 	}
 
@@ -710,21 +696,13 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		}
 	};
 
-	private class MediaContentObserver extends ContentObserver {
-		public MediaContentObserver(Handler handler)
-		{
-			super(handler);
-		}
-
-		@Override
-		public void onChange(boolean selfChange)
-		{
-			if (Song.isSongAvailable()) {
-				if ((mState & FLAG_NO_MEDIA) != 0)
-					setCurrentSong(0);
-			} else {
-				setFlag(FLAG_NO_MEDIA);
-			}
+	public void onMediaChange()
+	{
+		if (Song.isSongAvailable()) {
+			if ((mState & FLAG_NO_MEDIA) != 0)
+				setCurrentSong(0);
+		} else {
+			setFlag(FLAG_NO_MEDIA);
 		}
 	}
 
