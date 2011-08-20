@@ -37,6 +37,7 @@ THE SOFTWARE.
 	<string name="repeat_disable">Disable Repeat</string>
 	<string name="repeat_enabling">Repeat enabled. The current song and any songs you have added after it will be repeated.</string>
 	<string name="repeat_disabling">Repeat disabled</string>
+	<string name="song_load_failed">Failed to load song %s. It may be corrupt or missing.</string>
 
 	<!-- Widgets -->
 	<string name="starting">Starting up...</string>

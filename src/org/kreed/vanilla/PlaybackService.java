@@ -146,7 +146,11 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	public static final int FLAG_PLAYING = 0x1;
 	public static final int FLAG_SHUFFLE = 0x4;
 	public static final int FLAG_REPEAT = 0x8;
-	public static final int ALL_FLAGS = FLAG_NO_MEDIA + FLAG_PLAYING + FLAG_SHUFFLE + FLAG_REPEAT;
+	/**
+	 * Set when the current song is unplayable.
+	 */
+	public static final int FLAG_ERROR = 0x10;
+	public static final int ALL_FLAGS = FLAG_NO_MEDIA + FLAG_PLAYING + FLAG_SHUFFLE + FLAG_REPEAT + FLAG_ERROR;
 	/**
 	 * The flags that are (usually) only toggled by user action.
 	 */
@@ -454,6 +458,13 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			state &= ~FLAG_PLAYING;
 
 		Song song = getSong(0);
+
+		if ((state & FLAG_ERROR) != 0 && (state & FLAG_PLAYING) != 0) {
+			state &= ~FLAG_PLAYING;
+			String text = getResources().getString(R.string.song_load_failed, song == null ? null : song.path);
+			Toast.makeText(this, text, Toast.LENGTH_LONG).show();
+		}
+
 		if (song == null && (state & FLAG_PLAYING) != 0)
 			return;
 		if (song == null)
@@ -574,6 +585,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			unsetFlag(FLAG_NO_MEDIA);
 		}
 
+		// Ensure that we broadcast a change event even if we play the same
+		// song again.
+		mLastSongBroadcast = null;
+
 		try {
 			synchronized (mMediaPlayer) {
 				mMediaPlayer.reset();
@@ -584,11 +599,11 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			}
 			if ((mState & FLAG_PLAYING) != 0)
 				mMediaPlayer.start();
-			// Ensure that we broadcast a change event even if we play the same
-			// song again.
-			mLastSongBroadcast = null;
-			updateState(mState);
+			updateState(mState & ~FLAG_ERROR);
 		} catch (IOException e) {
+			// FLAG_PLAYING is set to force showing the Toast. updateState()
+			// will unset it.
+			updateState(mState | FLAG_PLAYING | FLAG_ERROR);
 			Log.e("VanillaMusic", "IOException", e);
 		}
 
@@ -609,12 +624,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	public boolean onError(MediaPlayer player, int what, int extra)
 	{
 		Log.e("VanillaMusic", "MediaPlayer error: " + what + " " + extra);
-		mMediaPlayer.reset();
-		Song song = getSong(+1);
-		if (song != null && !song.query(true))
+		if (!Song.isSongAvailable())
 			setFlag(FLAG_NO_MEDIA);
-		else
-			mHandler.sendEmptyMessage(TRACK_CHANGED);
 		return true;
 	}
 
@@ -704,7 +715,12 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		@Override
 		public void onChange(boolean selfChange)
 		{
-			setCurrentSong(0);
+			if (Song.isSongAvailable()) {
+				if ((mState & FLAG_NO_MEDIA) != 0)
+					setCurrentSong(0);
+			} else {
+				setFlag(FLAG_NO_MEDIA);
+			}
 		}
 	}
 
