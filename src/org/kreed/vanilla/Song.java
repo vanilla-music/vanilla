@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -55,9 +55,20 @@ public class Song implements Parcelable {
 	private static final Cache<Bitmap> mCoverCache = new Cache<Bitmap>(10);
 
 	/**
-	 * A cache of randomly selected songs.
+	 * Shuffled list of all ids in the library.
 	 */
-	private static final Song[] mRandomSongs = new Song[5];
+	private static long[] mAllSongs;
+	private static int mAllSongsIdx;
+
+	private static final int RANDOM_POPULATE_SIZE = 20;
+	private static Song[] mRandomCache = new Song[RANDOM_POPULATE_SIZE];
+	private static int mRandomCacheIdx;
+	private static int mRandomCacheEnd;
+
+	/**
+	 * Total number of songs in the music library. -1 means uninitialized.
+	 */
+	private static int mSongCount = -1;
 
 	private static final String[] EMPTY_PROJECTION = {
 		MediaStore.Audio.Media._ID,
@@ -110,12 +121,57 @@ public class Song implements Parcelable {
 	 */
 	public static boolean isSongAvailable()
 	{
+		if (mSongCount == -1) {
+			ContentResolver resolver = ContextApplication.getContext().getContentResolver();
+			Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+			String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
+			Cursor cursor = resolver.query(media, EMPTY_PROJECTION, selection, null, null);
+			mSongCount = cursor == null ? 0 : cursor.getCount();
+			if (cursor != null)
+				cursor.close();
+		}
+
+		return mSongCount != 0;
+	}
+
+	/**
+	 * Returns a shuffled array contaning the ids of all the songs on the
+	 * device's library.
+	 */
+	public static long[] loadAllSongs()
+	{
+		mAllSongsIdx = 0;
+		mRandomCacheEnd = -1;
+
 		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
 		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 		String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
 		Cursor cursor = resolver.query(media, EMPTY_PROJECTION, selection, null, null);
+		if (cursor == null || cursor.getCount() == 0) {
+			mSongCount = 0;
+			return null;
+		}
 
-		return cursor != null && cursor.getCount() > 0;
+		int count = cursor.getCount();
+		long[] ids = new long[count];
+		for (int i = 0; i != count; ++i) {
+			if (!cursor.moveToNext())
+				return null;
+			ids[i] = cursor.getLong(0);
+		}
+		mSongCount = count;
+		cursor.close();
+
+		MediaUtils.shuffle(ids);
+
+		return ids;
+	}
+
+	public static void onMediaChange()
+	{
+		mSongCount = -1;
+		// TODO: make reload optional?
+		mAllSongs = loadAllSongs();
 	}
 
 	/**
@@ -124,39 +180,69 @@ public class Song implements Parcelable {
 	 */
 	public static Song randomSong()
 	{
-		Song[] songs = mRandomSongs;
-		// Checked for previously retrieved random songs.
-		for (int i = songs.length; --i != -1; ) {
-			if (songs[i] != null) {
-				Song song = songs[i];
-				songs[i] = null;
-				return song;
-			}
+		long[] songs = mAllSongs;
+
+		if (songs == null) {
+			songs = loadAllSongs();
+			if (songs == null)
+				return null;
+			mAllSongs = songs;
+		} else if (mAllSongsIdx == mAllSongs.length) {
+			mAllSongsIdx = 0;
+			mRandomCacheEnd = -1;
+			MediaUtils.shuffle(mAllSongs);
 		}
 
-		// We need to fetch more
-		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
-		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-		String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
-		Cursor cursor = resolver.query(media, FILLED_PROJECTION, selection, null, null);
+		if (mAllSongsIdx >= mRandomCacheEnd) {
+			ContentResolver resolver = ContextApplication.getContext().getContentResolver();
+			Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 
-		if (cursor != null) {
+			StringBuilder selection = new StringBuilder("_ID IN (");
+
+			boolean first = true;
+			int end = Math.min(mAllSongsIdx + RANDOM_POPULATE_SIZE, mAllSongs.length);
+			for (int i = mAllSongsIdx; i != end; ++i) {
+				if (!first)
+					selection.append(",");
+
+				first = false;
+
+				selection.append(mAllSongs[i]);
+			}
+
+			selection.append(")");
+
+			Cursor cursor = resolver.query(media, FILLED_PROJECTION, selection.toString(), null, null);
+
+			if (cursor == null) {
+				mAllSongs = null;
+				return null;
+			}
+
 			int count = cursor.getCount();
 			if (count > 0) {
-				for (int i = songs.length; --i != -1; ) {		
-					if (cursor.moveToPosition(ContextApplication.getRandom().nextInt(count))) {
-						songs[i] = new Song(-1);
-						songs[i].populate(cursor);
-						songs[i].flags |= FLAG_RANDOM;
-					}
+				assert(count <= RANDOM_POPULATE_SIZE);
+
+				for (int i = 0; i != count; ++i) {
+					cursor.moveToNext();
+					Song newSong = new Song(-1);
+					newSong.populate(cursor);
+					newSong.flags |= FLAG_RANDOM;
+					mRandomCache[i] = newSong;
 				}
 			}
+
 			cursor.close();
+
+			mRandomCacheIdx = 0;
+			mRandomCacheEnd = mAllSongsIdx + count;
 		}
 
-		Song song = songs[0];
-		songs[0] = null;
-		return song;
+		Song result = mRandomCache[mRandomCacheIdx];
+		++mRandomCacheIdx;
+		++mAllSongsIdx;
+
+		return result;
 	}
 
 	/**
@@ -167,7 +253,7 @@ public class Song implements Parcelable {
 	{
 		this.id = id;
 	}
-	
+
 	/**
 	 * Initialize the song with the specified id and flags. Call populate to
 	 * fill fields in the song.

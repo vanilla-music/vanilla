@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -375,15 +375,8 @@ public final class SongTimeline {
 		if (songs == null || songs.length == 0)
 			return;
 
-		if (mShuffle) {
-			Random random = ContextApplication.getRandom();
-			for (int i = songs.length; --i != 0; ) {
-				int j = random.nextInt(i + 1);
-				long tmp = songs[j];
-				songs[j] = songs[i];
-				songs[i] = tmp;
-			}
-		}
+		if (mShuffle)
+			MediaUtils.shuffle(songs);
 
 		Song oldSong = getSong(+1);
 

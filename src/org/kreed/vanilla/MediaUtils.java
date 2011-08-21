@@ -23,6 +23,7 @@
 package org.kreed.vanilla;
 
 import java.io.File;
+import java.util.Random;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
@@ -172,5 +173,16 @@ public class MediaUtils {
 		}
 
 		return count;
+	}
+
+	public static void shuffle(long[] list)
+	{
+		Random random = ContextApplication.getRandom();
+		for (int i = list.length; --i != 0; ) {
+			int j = random.nextInt(i + 1);
+			long tmp = list[j];
+			list[j] = list[i];
+			list[i] = tmp;
+		}
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -56,6 +56,7 @@ public class ContextApplication extends Application {
 		@Override
 		public void onChange(boolean selfChange)
 		{
+			Song.onMediaChange();
 			if (mService != null)
 				mService.onMediaChange();
 			ArrayList<Activity> list = mActivities;
