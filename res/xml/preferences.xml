@@ -76,6 +76,11 @@ THE SOFTWARE.
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/pref_misc">
 		<CheckBoxPreference
+			android:key="disable_cover_art"
+			android:title="@string/disable_cover_art_title"
+			android:summary="@string/disable_cover_art_summary"
+			android:defaultValue="false" />
+		<CheckBoxPreference
 			android:key="use_idle_timeout"
 			android:title="@string/use_idle_timeout_title"
 			android:summary="@string/use_idle_timeout_summary"

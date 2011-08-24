@@ -55,6 +55,11 @@ public class Song implements Parcelable {
 	private static final Cache<Bitmap> mCoverCache = new Cache<Bitmap>(10);
 
 	/**
+	 * If true, will not attempt to load any cover art in getCover()
+	 */
+	public static boolean mDisableCoverArt = false;
+
+	/**
 	 * Shuffled list of all ids in the library.
 	 */
 	private static long[] mAllSongs;
@@ -393,7 +398,7 @@ public class Song implements Parcelable {
 	 */
 	public Bitmap getCover()
 	{
-		if (id == -1)
+		if (id == -1 || mDisableCoverArt)
 			return null;
 
 		// Query the cache for the cover

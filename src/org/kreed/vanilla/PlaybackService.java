@@ -416,6 +416,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			mMediaPlayer.setVolume(volume, volume);
 		}
 		mIdleTimeout = settings.getBoolean("use_idle_timeout", false) ? settings.getInt("idle_timeout", 3600) : 0;
+		Song.mDisableCoverArt = settings.getBoolean("disable_cover_art", false);
 
 		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
 		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicSongChangeLock");
@@ -456,6 +457,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		} else if ("use_idle_timeout".equals(key) || "idle_timeout".equals(key)) {
 			mIdleTimeout = settings.getBoolean("use_idle_timeout", false) ? settings.getInt("idle_timeout", 3600) : 0;
 			userActionTriggered();
+		} else if ("disable_cover_art".equals(key)) {
+			Song.mDisableCoverArt = settings.getBoolean("disable_cover_art", false);
 		}
 	}
 

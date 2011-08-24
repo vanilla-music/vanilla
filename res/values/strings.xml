@@ -117,6 +117,8 @@ THE SOFTWARE.
 	<string name="default_action_summary">What to do when an item is tapped</string>
 
 	<string name="pref_misc">Miscellaneous Features</string>
+	<string name="disable_cover_art_title">Disable Cover Art</string>
+	<string name="disable_cover_art_summary">Do not show cover art anywhere in the application</string>
 	<string name="use_idle_timeout_title">Enable Idle Timeout</string>
 	<string name="use_idle_timeout_summary">When active, playback will be stopped after the given period of inactivity</string>
 	<string name="idle_timeout_title">Idle Timeout</string>
