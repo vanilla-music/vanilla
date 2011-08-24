@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
+Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -85,13 +85,17 @@ THE SOFTWARE.
 	<string name="title_by_artist">%1$s by %2$s</string>
 
 	<!-- Preferences -->
+	<plurals name="seconds">
+		<item quantity="one">01 second</item>
+		<item quantity="other">%02d seconds</item>
+	</plurals>
 	<plurals name="minutes">
-		<item quantity="one">1 minute</item>
-		<item quantity="other">%d minutes</item>
+		<item quantity="one">01 minute</item>
+		<item quantity="other">%02d minutes</item>
 	</plurals>
 	<plurals name="hours">
-		<item quantity="one">1 hour</item>
-		<item quantity="other">%d hours</item>
+		<item quantity="one">01 hour</item>
+		<item quantity="other">%02d hours</item>
 	</plurals>
 
 	<string name="pref_output">Audio Output</string>

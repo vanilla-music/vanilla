@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -95,15 +95,21 @@ public class IdlePreference extends DialogPreference implements SeekBar.OnSeekBa
 	{
 		Resources res = getContext().getResources();
 		int value = mValue;
-		String text;
-		if (value >= 3570) {
-			int hours = (int)Math.round(value / 3600f);
-			text = res.getQuantityString(R.plurals.hours, hours, hours);
+		StringBuilder text = new StringBuilder();
+		if (value >= 3600) {
+			int hours = value / 3600;
+			text.append(res.getQuantityString(R.plurals.hours, hours, hours));
+			text.append(", ");
+			int minutes = value / 60 - hours * 60;
+			text.append(res.getQuantityString(R.plurals.minutes, minutes, minutes));
 		} else {
-			int minutes = (int)Math.round(value / 60f);
-			text = res.getQuantityString(R.plurals.minutes, minutes, minutes);
+			int minutes = value / 60;
+			text.append(res.getQuantityString(R.plurals.minutes, minutes, minutes));
+			text.append(", ");
+			int seconds = value - minutes * 60;
+			text.append(res.getQuantityString(R.plurals.seconds, seconds, seconds));
 		}
-		mValueText.setText(text);
+		mValueText.setText(text.toString());
 	}
 
 	@Override
@@ -115,7 +121,7 @@ public class IdlePreference extends DialogPreference implements SeekBar.OnSeekBa
 
 	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
 	{
-		// Approximate an exponential curve with x^4. Produces a value from 60-10860.
+		// Approximate an exponential curve with x^4. Produces a value from MIN-MAX.
 		if (fromUser) {
 			float value = seekBar.getProgress() / 1000.0f;
 			value *= value;
@@ -126,7 +132,7 @@ public class IdlePreference extends DialogPreference implements SeekBar.OnSeekBa
 	}
 
 	public void onStartTrackingTouch(SeekBar seekBar)
-	{		
+	{
 	}
 
 	public void onStopTrackingTouch(SeekBar seekBar)
