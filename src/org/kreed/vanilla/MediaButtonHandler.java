@@ -139,15 +139,10 @@ public class MediaButtonHandler implements Handler.Callback {
 	}
 
 	/**
-	 * Process a MediaButton broadcast.
-	 *
-	 * @param intent The intent that was broadcast
-	 * @return True if the intent was handled and the broadcast should be
-	 * aborted.
+	 * Process a media button key press.
 	 */
-	public boolean process(Intent intent)
+	public boolean processKey(KeyEvent event)
 	{
-		KeyEvent event = intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
 		if (event == null || isInCall() || !useHeadsetControls())
 			return false;
 
@@ -156,7 +151,7 @@ public class MediaButtonHandler implements Handler.Callback {
 		switch (event.getKeyCode()) {
 		case KeyEvent.KEYCODE_HEADSETHOOK:
 		case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
-			// single click: pause/resume. 
+			// single click: pause/resume.
 			// double click: next track
 
 			if (action == KeyEvent.ACTION_DOWN) {
@@ -182,6 +177,19 @@ public class MediaButtonHandler implements Handler.Callback {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Process a MediaButton broadcast.
+	 *
+	 * @param intent The intent that was broadcast
+	 * @return True if the intent was handled and the broadcast should be
+	 * aborted.
+	 */
+	public boolean process(Intent intent)
+	{
+		KeyEvent event = intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
+		return processKey(event);
 	}
 
 	/**

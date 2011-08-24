@@ -94,6 +94,34 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	}
 
 	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event)
+	{
+		switch (keyCode) {
+		case KeyEvent.KEYCODE_HEADSETHOOK:
+		case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
+		case KeyEvent.KEYCODE_MEDIA_NEXT:
+		case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+			return MediaButtonHandler.getInstance().processKey(event);
+		}
+
+		return super.onKeyDown(keyCode, event);
+	}
+
+	@Override
+	public boolean onKeyUp(int keyCode, KeyEvent event)
+	{
+		switch (keyCode) {
+		case KeyEvent.KEYCODE_HEADSETHOOK:
+		case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
+		case KeyEvent.KEYCODE_MEDIA_NEXT:
+		case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+			return MediaButtonHandler.getInstance().processKey(event);
+		}
+
+		return super.onKeyUp(keyCode, event);
+	}
+
+	@Override
 	public boolean onKeyLongPress(int keyCode, KeyEvent event)
 	{
 		return handleKeyLongPress(keyCode);
