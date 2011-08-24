@@ -26,7 +26,7 @@ THE SOFTWARE.
 	<!-- Playback Activity (main screen) -->
 	<string name="no_songs">No songs found on your device.</string>
 	<string name="settings">Preferences</string>
-	<string name="library">Choose Songs</string>
+	<string name="library">Library</string>
 	<string name="quit">Stop and Exit</string>
 	<string name="display_mode">Display Mode</string>
 	<string name="shuffle_enable">Enable Shuffle</string>
@@ -108,11 +108,11 @@ THE SOFTWARE.
 	<string name="notification_action_title">Notification Action</string>
 	<string name="notification_action_summary">What to do when the notification is pressed</string>
 
-	<string name="pref_song_selector">Song Selector</string>
+	<string name="pref_song_selector">Library View</string>
 	<string name="selector_on_startup_title">Open on Startup</string>
-	<string name="selector_on_startup_summary">Open song selector on startup</string>
-	<string name="controls_in_selector_title">Controls in Selector</string>
-	<string name="controls_in_selector_summary">Show the currently playing song and media controls in the selector window</string>
+	<string name="selector_on_startup_summary">Open library on startup</string>
+	<string name="controls_in_selector_title">Controls in Library</string>
+	<string name="controls_in_selector_summary">Show the currently playing song and media controls in the library view</string>
 	<string name="default_action_title">Default Action</string>
 	<string name="default_action_summary">What to do when an item is tapped</string>
 
