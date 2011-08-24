@@ -183,6 +183,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	private int mPendingSeek;
 	private Song mLastSongBroadcast;
 	public Receiver mReceiver;
+	public ComponentName mButtonReceiver;
 	public InCallListener mCallListener;
 	private boolean mLoaded;
 	/**
@@ -195,8 +196,23 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 */
 	private float mCurrentVolume = 1.0f;
 
-	private Method mStartForeground;
-	private Method mStopForeground;
+	private static Method mStartForeground;
+	private static Method mStopForeground;
+	private static Method mRegisterMediaButtonEventReceiver;
+	private static Method mUnregisterMediaButtonEventReceiver;
+
+	static {
+		try {
+			mStartForeground = Service.class.getMethod("startForeground", int.class, Notification.class);
+			mStopForeground = Service.class.getMethod("stopForeground", boolean.class);
+		} catch (NoSuchMethodException e) {
+		}
+		try {
+			mRegisterMediaButtonEventReceiver = AudioManager.class.getMethod("registerMediaButtonEventReceiver", ComponentName.class);
+			mUnregisterMediaButtonEventReceiver = AudioManager.class.getMethod("unregisterMediaButtonEventReceiver", ComponentName.class);
+		} catch (NoSuchMethodException nsme) {
+		}
+	}
 
 	@Override
 	public void onCreate()
@@ -214,6 +230,9 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 		ContextApplication.setService(this);
 
+		mAudioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+		mButtonReceiver = new ComponentName(getPackageName(), MediaButtonReceiver.class.getName());
+
 		mLooper = thread.getLooper();
 		mHandler = new Handler(mLooper, this);
 		mHandler.sendEmptyMessage(CREATE);
@@ -229,9 +248,27 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		Toast.makeText(this, R.string.starting, Toast.LENGTH_SHORT).show();
 	}
 
+	/**
+	 * Request focus on the media buttons from AudioManager.
+	 */
+	public void registerMediaButton()
+	{
+		if (mRegisterMediaButtonEventReceiver != null) {
+			try {
+				mRegisterMediaButtonEventReceiver.invoke(mAudioManager, mButtonReceiver);
+			} catch (InvocationTargetException e) {
+				Log.w("VanillaMusic", e);
+			} catch (IllegalAccessException e) {
+				Log.w("VanillaMusic", e);
+			}
+		}
+	}
+
 	@Override
 	public void onStart(Intent intent, int flags)
 	{
+		registerMediaButton();
+
 		if (intent != null) {
 			String action = intent.getAction();
 
@@ -291,6 +328,16 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		}
 
 		mLooper.quit();
+
+		if (mUnregisterMediaButtonEventReceiver != null) {
+			try {
+				mUnregisterMediaButtonEventReceiver.invoke(mAudioManager, mButtonReceiver);
+			} catch (InvocationTargetException e) {
+				Log.w("VanillaMusic", e);
+			} catch (IllegalAccessException e) {
+				Log.w("VanillaMusic", e);
+			}
+		}
 
 		try {
 			unregisterReceiver(mReceiver);
@@ -357,15 +404,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		mMediaPlayer.setOnCompletionListener(this);
 		mMediaPlayer.setOnErrorListener(this);
 
-		mAudioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
 		mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-
-		try {
-			mStartForeground = getClass().getMethod("startForeground", int.class, Notification.class);
-			mStopForeground = getClass().getMethod("stopForeground", boolean.class);
-		} catch (NoSuchMethodException e) {
-			Log.d("VanillaMusic", "falling back to pre-2.0 Service APIs");
-		}
 
 		SharedPreferences settings = getSettings();
 		settings.registerOnSharedPreferenceChangeListener(this);

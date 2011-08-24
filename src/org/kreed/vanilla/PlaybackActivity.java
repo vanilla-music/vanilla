@@ -78,8 +78,11 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	public void onResume()
 	{
 		super.onResume();
-		if (ContextApplication.hasService())
-			ContextApplication.getService().userActionTriggered();
+		if (ContextApplication.hasService()) {
+			PlaybackService service = ContextApplication.getService();
+			service.userActionTriggered();
+			service.registerMediaButton();
+		}
 	}
 
 	public static boolean handleKeyLongPress(int keyCode)
