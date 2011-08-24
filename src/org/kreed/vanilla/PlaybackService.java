@@ -36,7 +36,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -299,10 +298,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			// we haven't registered the receiver yet
 		}
 
-		// Re-enable the external receiver
-		PackageManager manager = getPackageManager();
-		manager.setComponentEnabledSetting(new ComponentName(this, MediaButtonReceiver.class), PackageManager.COMPONENT_ENABLED_STATE_DEFAULT, PackageManager.DONT_KILL_APP);
-
 		if (mWakeLock != null && mWakeLock.isHeld())
 			mWakeLock.release();
 	}
@@ -419,7 +414,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			}
 		} else if ("media_button".equals(key)) {
 			MediaButtonHandler.getInstance().setUseHeadsetControls(settings.getBoolean("media_button", true));
-			setupReceiver();
 		} else if ("use_idle_timeout".equals(key) || "idle_timeout".equals(key)) {
 			mIdleTimeout = settings.getBoolean("use_idle_timeout", false) ? settings.getInt("idle_timeout", 3600) : 0;
 			userActionTriggered();
@@ -663,9 +657,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			if (AudioManager.ACTION_AUDIO_BECOMING_NOISY.equals(action)) {
 				if (mHeadsetPause)
 					unsetFlag(FLAG_PLAYING);
-			} else if (Intent.ACTION_MEDIA_BUTTON.equals(action)) {
-				if (MediaButtonHandler.getInstance().process(intent))
-					abortBroadcast();
 			}
 		}
 	};
@@ -713,20 +704,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 	private void setupReceiver()
 	{
-		if (mReceiver == null) {
+		if (mReceiver == null)
 			mReceiver = new Receiver();
-		} else {
-			try {
-				unregisterReceiver(mReceiver);
-			} catch (IllegalArgumentException e) {
-			}
-		}
-
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
-		if (MediaButtonHandler.getInstance().useHeadsetControls())
-			filter.addAction(Intent.ACTION_MEDIA_BUTTON);
-		filter.setPriority(2000);
 		registerReceiver(mReceiver, filter);
 	}
 
@@ -807,11 +788,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		case POST_CREATE:
 			mHeadsetPause = mSettings.getBoolean("headset_pause", true);
 			setupReceiver();
-
-			// Don't receive broadcasts through the external receiver now that
-			// we get them in the Service's receiver
-			PackageManager manager = getPackageManager();
-			manager.setComponentEnabledSetting(new ComponentName(this, MediaButtonReceiver.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
 
 			mCallListener = new InCallListener();
 			TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);

@@ -88,7 +88,7 @@ THE SOFTWARE.
 				android:resource="@xml/four_square_widget" />
 		</receiver>
 		<receiver android:name="MediaButtonReceiver" >
-			<intent-filter android:priority="1000">
+			<intent-filter android:priority="999">
 				<action android:name="android.intent.action.MEDIA_BUTTON" />
 			</intent-filter>
 		</receiver>
