@@ -31,14 +31,12 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -46,7 +44,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -744,7 +741,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 	private static final int GO = 0;
 	private static final int POST_CREATE = 1;
-	private static final int MEDIA_BUTTON = 2;
 	private static final int CREATE = 3;
 	/**
 	 * This message is sent with a delay specified by a user preference. After
@@ -781,9 +777,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	public boolean handleMessage(Message message)
 	{
 		switch (message.what) {
-		case MEDIA_BUTTON:
-			toggleFlag(FLAG_PLAYING);
-			break;
 		case TRACK_CHANGED:
 			setCurrentSong(+1);
 			setFlag(FLAG_PLAYING);
