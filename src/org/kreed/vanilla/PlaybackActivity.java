@@ -278,7 +278,10 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 			ContextApplication.getService().toggleFlag(message.arg1);
 			break;
 		case MSG_SET_SONG:
-			ContextApplication.getService().setCurrentSong(message.arg1);
+			if (message.arg1 == 1)
+				ContextApplication.getService().nextSong();
+			else
+				ContextApplication.getService().previousSong();
 			break;
 		default:
 			return false;

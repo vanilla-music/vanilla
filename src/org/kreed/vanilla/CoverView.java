@@ -411,7 +411,10 @@ public final class CoverView extends View implements Handler.Callback {
 			generateBitmap((Song)message.obj);
 			break;
 		case MSG_SET_SONG:
-			ContextApplication.getService().setCurrentSong(message.arg1);
+			if (message.arg1 == 1)
+				ContextApplication.getService().nextSong();
+			else
+				ContextApplication.getService().previousSong();
 			break;
 		case MSG_LONG_CLICK:
 			mIgnoreNextUp = true;

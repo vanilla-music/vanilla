@@ -149,10 +149,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 */
 	public static final int FLAG_ERROR = 0x10;
 	public static final int ALL_FLAGS = FLAG_NO_MEDIA + FLAG_PLAYING + FLAG_SHUFFLE + FLAG_REPEAT + FLAG_ERROR;
-	/**
-	 * The flags that are (usually) only toggled by user action.
-	 */
-	public static final int USER_MASK = FLAG_PLAYING + FLAG_SHUFFLE + FLAG_REPEAT;
 
 	public static final int NEVER = 0;
 	public static final int WHEN_PLAYING = 1;
@@ -267,8 +263,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	@Override
 	public void onStart(Intent intent, int flags)
 	{
-		registerMediaButton();
-
 		if (intent != null) {
 			String action = intent.getAction();
 
@@ -309,6 +303,9 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			} else if (ACTION_FINISH_ENQUEUEING.equals(action)) {
 				mTimeline.finishEnqueueing();
 			}
+
+			userActionTriggered();
+			registerMediaButton();
 		}
 	}
 
@@ -470,14 +467,14 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		mHandler.sendMessage(mHandler.obtainMessage(BROADCAST, intent));
 	}
 
-	void setFlag(int flag)
+	private void setFlag(int flag)
 	{
 		synchronized (mStateLock) {
 			updateState(mState | flag);
 		}
 	}
 
-	void unsetFlag(int flag)
+	private void unsetFlag(int flag)
 	{
 		synchronized (mStateLock) {
 			updateState(mState & ~flag);
@@ -559,9 +556,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				}
 			}
 		}
-
-		if ((oldState & USER_MASK) != (state & USER_MASK))
-			userActionTriggered();
 	}
 
 	private void updateNotification(Song song)
@@ -578,22 +572,20 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	/**
 	 * Toggle a flag in the state on or off
 	 *
-	 * @param flag The flag to be toggled (FLAG_PLAYING, FLAG_SHUFFLE, or FLAG_REPEAT)
+	 * @param flag The flag to be toggled
 	 */
 	public void toggleFlag(int flag)
 	{
 		synchronized (mStateLock) {
-			if ((mState & flag) == 0)
-				setFlag(flag);
-			else
-				unsetFlag(flag);
+			updateState(mState ^ flag);
 		}
+		userActionTriggered();
 	}
 
 	/**
 	 * Move <code>delta</code> places away from the current song.
 	 */
-	public void setCurrentSong(int delta)
+	private void setCurrentSong(int delta)
 	{
 		if (mMediaPlayer == null)
 			return;
@@ -634,9 +626,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			updateState(mState | FLAG_PLAYING | FLAG_ERROR);
 			Log.e("VanillaMusic", "IOException", e);
 		}
-
-		if (delta != 0)
-			userActionTriggered();
 
 		mHandler.sendEmptyMessage(PROCESS_SONG);
 	}
@@ -845,13 +834,9 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				unsetFlag(FLAG_PLAYING);
 				mCurrentVolume = mUserVolume;
 			} else {
-				// Fade out on a x^4 curve. This produces a smoother
-				// transition, since we are using raw sound intensities which
-				// are heard by humans with a logarithmic scale. Don't fall
-				// below .01 though: past this, hearing this music becomes
-				// difficult or impossible.
+				// Approximate an exponential curve with x^4
+				// http://www.dr-lex.be/info-stuff/volumecontrols.html
 				mCurrentVolume = Math.max((float)(Math.pow(progress / 100f, 4) * mUserVolume), .01f);
-				
 				mHandler.sendMessageDelayed(mHandler.obtainMessage(FADE_OUT, progress, 0), 50);
 			}
 			if (mMediaPlayer != null) {
@@ -956,6 +941,24 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		boolean shouldAdvance = mTimeline.removeSong(id);
 		if (shouldAdvance)
 			setCurrentSong(0);
+	}
+
+	/**
+	 * Move to the next song in the queue.
+	 */
+	public void nextSong()
+	{
+		setCurrentSong(+1);
+		userActionTriggered();
+	}
+
+	/**
+	 * Move to the previous song in the queue.
+	 */
+	public void previousSong()
+	{
+		setCurrentSong(-1);
+		userActionTriggered();
 	}
 
 	/**
