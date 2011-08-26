@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 
@@ -43,6 +42,7 @@ public final class CoverBitmap {
 	private static int PADDING;
 	private static int TEXT_SIZE_COMPACT = -1;
 	private static int PADDING_COMPACT;
+	private static int TEXT_SPACE;
 	private static Bitmap SONG_ICON;
 	private static Bitmap ALBUM_ICON;
 	private static Bitmap ARTIST_ICON;
@@ -56,6 +56,7 @@ public final class CoverBitmap {
 		TEXT_SIZE = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, metrics);
 		TEXT_SIZE_BIG = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, metrics);
 		PADDING = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, metrics);
+		TEXT_SPACE = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 150, metrics);
 	}
 
 	/**
@@ -166,8 +167,20 @@ public final class CoverBitmap {
 		Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
 		Canvas canvas = new Canvas(bitmap);
 
-		if (cover != null)
-			canvas.drawBitmap(cover, null, new Rect(0, 0, width, height), paint);
+		if (cover != null) {
+			int coverWidth = cover.getWidth();
+			int coverHeight = cover.getHeight();
+
+			float scale = Math.min((float)width / coverWidth, (float)height / coverHeight);
+
+			coverWidth *= scale;
+			coverHeight *= scale;
+
+			int x = (width - coverWidth) / 2;
+			int y = (height - coverHeight) / 2;
+			Rect rect = new Rect(x, y, x + coverWidth, y + coverHeight);
+			canvas.drawBitmap(cover, null, rect, paint);
+		}
 
 		int left = 0;
 		int top = height - boxHeight;
@@ -239,11 +252,7 @@ public final class CoverBitmap {
 			coverWidth = cover.getWidth();
 			coverHeight = cover.getHeight();
 
-			float scale;
-			if ((float)coverWidth / coverHeight > (float)width / height)
-				scale = (float)width / coverWidth;
-			else
-				scale = (float)height / coverHeight;
+			float scale = Math.min((float)width / coverWidth, (float)height / coverHeight);
 
 			coverWidth *= scale;
 			coverHeight *= scale;
@@ -253,13 +262,11 @@ public final class CoverBitmap {
 		int bitmapHeight = Math.max(coverHeight, boxHeight);
 
 		if (bitmap != null) {
-			if (bitmap.getHeight() < bitmapHeight || bitmap.getWidth() < bitmapWidth) {
+			if (bitmap.getHeight() != bitmapHeight || bitmap.getWidth() != bitmapWidth) {
 				bitmap.recycle();
 				bitmap = null;
 			} else {
 				bitmap.eraseColor(Color.BLACK);
-				bitmapHeight = bitmap.getHeight();
-				bitmapWidth = bitmap.getWidth();
 			}
 		}
 
@@ -268,7 +275,9 @@ public final class CoverBitmap {
 		Canvas canvas = new Canvas(bitmap);
 
 		if (cover != null) {
-			Rect rect = new Rect(0, 0, bitmapWidth, bitmapHeight);
+			int x = (bitmapWidth - coverWidth) / 2;
+			int y = (bitmapHeight - coverHeight) / 2;
+			Rect rect = new Rect(x, y, x + coverWidth, y + coverHeight);
 			canvas.drawBitmap(cover, null, rect, paint);
 		}
 
@@ -344,11 +353,9 @@ public final class CoverBitmap {
 			coverWidth = cover.getWidth();
 			coverHeight = cover.getHeight();
 
-			float scale;
-			if ((float)coverWidth / coverHeight > (float)width / height)
-				scale = (float)width / coverWidth;
-			else
-				scale = (float)height / coverHeight;
+			int maxWidth = horizontal ? width - TEXT_SPACE : width;
+			int maxHeight = horizontal ? height : height - textSize * 3 - padding * 4;
+			float scale = Math.min((float)maxWidth / coverWidth, (float)maxHeight / coverHeight);
 
 			coverWidth *= scale;
 			coverHeight *= scale;
@@ -368,13 +375,11 @@ public final class CoverBitmap {
 		int bitmapHeight = (int)(horizontal ? Math.max(coverHeight, boxHeight) : coverHeight + boxHeight);
 
 		if (bitmap != null) {
-			if (bitmap.getHeight() < bitmapHeight || bitmap.getWidth() < bitmapWidth) {
+			if (bitmap.getHeight() != bitmapHeight || bitmap.getWidth() != bitmapWidth) {
 				bitmap.recycle();
 				bitmap = null;
 			} else {
 				bitmap.eraseColor(Color.BLACK);
-				bitmapHeight = bitmap.getHeight();
-				bitmapWidth = bitmap.getWidth();
 			}
 		}
 
@@ -383,7 +388,9 @@ public final class CoverBitmap {
 		Canvas canvas = new Canvas(bitmap);
 
 		if (cover != null) {
-			RectF rect = new RectF(0, 0, coverWidth, coverHeight);
+			int x = horizontal ? 0 : (bitmapWidth - coverWidth) / 2;
+			int y = horizontal ? (bitmapHeight - coverHeight) / 2 : 0;
+			Rect rect = new Rect(x, y, x + coverWidth, y + coverHeight);
 			canvas.drawBitmap(cover, null, rect, paint);
 		}
 
