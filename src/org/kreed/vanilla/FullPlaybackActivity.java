@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,6 +29,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,6 +41,10 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.OnSeekBarChangeListener, View.OnLongClickListener {
+	public static final int DISPLAY_INFO_OVERLAP = 0;
+	public static final int DISPLAY_INFO_BELOW = 1;
+	public static final int DISPLAY_INFO_WIDGETS = 2;
+
 	/**
 	 * A Handler running on the UI thread, in contrast with mHandler which runs
 	 * on a worker thread.
@@ -53,6 +58,10 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	private SeekBar mSeekBar;
 	private TextView mSeekText;
 
+	private TextView mTitle;
+	private TextView mAlbum;
+	private TextView mArtist;
+
 	private int mDuration;
 	private boolean mSeekBarTracking;
 	private boolean mPaused;
@@ -62,15 +71,37 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	{
 		super.onCreate(icicle);
 
-		setContentView(R.layout.full_playback);
-
-		mCoverView = (CoverView)findViewById(R.id.cover_view);
-		mCoverView.setOnClickListener(this);
-		mCoverView.setOnLongClickListener(this);
-		mCoverView.setupHandler(mLooper);
-
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-		mCoverView.mSeparateInfo = settings.getBoolean("separate_info", false);
+		int displayMode = Integer.parseInt(settings.getString("display_mode", "0"));
+
+		int layout = R.layout.full_playback;
+		int coverStyle = -1;
+
+		switch (displayMode) {
+		default:
+			Log.e("VanillaMusic", "Invalid display mode given. Defaulting to overlap");
+			// fall through
+		case DISPLAY_INFO_OVERLAP:
+			coverStyle = CoverBitmap.STYLE_OVERLAPPING_BOX;
+			break;
+		case DISPLAY_INFO_BELOW:
+			coverStyle = CoverBitmap.STYLE_INFO_BELOW;
+			break;
+		case DISPLAY_INFO_WIDGETS:
+			coverStyle = CoverBitmap.STYLE_NO_INFO_ZOOMED;
+			layout = R.layout.full_playback_alt;
+			break;
+		}
+
+		setContentView(layout);
+
+		CoverView coverView = (CoverView)findViewById(R.id.cover_view);
+
+		coverView.setCoverStyle(coverStyle);
+		coverView.setOnClickListener(this);
+		coverView.setOnLongClickListener(this);
+		coverView.setupHandler(mLooper);
+		mCoverView = coverView;
 
 		mControlsTop = findViewById(R.id.controls_top);
 		mControlsBottom = findViewById(R.id.controls_bottom);
@@ -81,6 +112,10 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 		mPlayPauseButton.setOnClickListener(this);
 		View nextButton = findViewById(R.id.next);
 		nextButton.setOnClickListener(this);
+
+		mTitle = (TextView)findViewById(R.id.title);
+		mAlbum = (TextView)findViewById(R.id.album);
+		mArtist = (TextView)findViewById(R.id.artist);
 
 		mSeekText = (TextView)findViewById(R.id.seek_text);
 		mSeekBar = (SeekBar)findViewById(R.id.seek_bar);
@@ -164,7 +199,10 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	{
 		super.onServiceReady();
 
-		mDuration = ContextApplication.getService().getDuration();
+		PlaybackService service = ContextApplication.getService();
+		if (mTitle != null)
+			mUiHandler.sendMessage(mUiHandler.obtainMessage(MSG_UPDATE_SONG, service.getSong(0)));
+		mDuration = service.getDuration();
 	}
 
 	@Override
@@ -173,6 +211,10 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 		super.receive(intent);
 
 		if (PlaybackService.EVENT_CHANGED.equals(intent.getAction())) {
+			if (mTitle != null) {
+				Song song = intent.getParcelableExtra("song");
+				mUiHandler.sendMessage(mUiHandler.obtainMessage(MSG_UPDATE_SONG, song));
+			}
 			mDuration = ContextApplication.getService().getDuration();
 			mUiHandler.sendEmptyMessage(MSG_UPDATE_PROGRESS);
 		}
@@ -182,7 +224,6 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
 		menu.add(0, MENU_LIBRARY, 0, R.string.library).setIcon(R.drawable.ic_menu_music_library);
-		menu.add(0, MENU_DISPLAY, 0, R.string.display_mode).setIcon(R.drawable.ic_menu_gallery);
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -192,10 +233,6 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 		switch (item.getItemId()) {
 		case MENU_LIBRARY:
 			startActivity(new Intent(this, SongSelector.class));
-			return true;
-		case MENU_DISPLAY:
-			mCoverView.toggleDisplayMode();
-			mHandler.sendEmptyMessage(MSG_SAVE_DISPLAY_MODE);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -215,7 +252,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_DPAD_CENTER:
 		case KeyEvent.KEYCODE_ENTER:
-			onClick(mCoverView);
+			toggleControls();
 			return true;
 		}
 
@@ -260,29 +297,39 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 		mUiHandler.sendEmptyMessageDelayed(MSG_UPDATE_PROGRESS, next);
 	}
 
+	/**
+	 * Toggles the visibility of the playback controls.
+	 */
+	private void toggleControls()
+	{
+		if (mControlsTop.getVisibility() == View.VISIBLE) {
+			mControlsTop.setVisibility(View.GONE);
+			mControlsBottom.setVisibility(View.GONE);
+		} else {
+			mControlsTop.setVisibility(View.VISIBLE);
+			mControlsBottom.setVisibility(View.VISIBLE);
+
+			mPlayPauseButton.requestFocus();
+
+			updateProgress();
+		}
+	}
+
 	@Override
 	public void onClick(View view)
 	{
-		if (view == mCoverView) {
-			if (mControlsTop.getVisibility() == View.VISIBLE) {
-				mControlsTop.setVisibility(View.GONE);
-				mControlsBottom.setVisibility(View.GONE);
-			} else {
-				mControlsTop.setVisibility(View.VISIBLE);
-				mControlsBottom.setVisibility(View.VISIBLE);
-
-				mPlayPauseButton.requestFocus();
-
-				updateProgress();
-			}
-		} else {
+		switch (view.getId()) {
+		case R.id.cover_view:
+			toggleControls();
+			break;
+		default:
 			super.onClick(view);
 		}
 	}
 
 	public boolean onLongClick(View view)
 	{
-		if (view == mCoverView) {
+		if (view.getId() == R.id.cover_view) {
 			mHandler.sendMessage(mHandler.obtainMessage(MSG_TOGGLE_FLAG, PlaybackService.FLAG_PLAYING, 0));
 			return true;
 		}
@@ -296,11 +343,9 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	 */
 	private static final int MSG_UPDATE_PROGRESS = 10;
 	/**
-	 * Save the currently set CoverView display mode.
-	 *
-	 * @see CoverView#mSeparateInfo
+	 * Update the metadata for the current song.
 	 */
-	private static final int MSG_SAVE_DISPLAY_MODE = 11;
+	private static final int MSG_UPDATE_SONG = 11;
 	/**
 	 * The the no media overlay message. This must be called on the UI Handler.
 	 */
@@ -314,15 +359,22 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	public boolean handleMessage(Message message)
 	{
 		switch (message.what) {
-		case MSG_SAVE_DISPLAY_MODE:
-			SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-			SharedPreferences.Editor editor = settings.edit();
-			editor.putBoolean("separate_info", mCoverView.mSeparateInfo);
-			editor.commit();
-			break;
 		case MSG_UPDATE_PROGRESS:
 			updateProgress();
 			break;
+		case MSG_UPDATE_SONG: {
+			Song song = (Song)message.obj;
+			if (song == null) {
+				mTitle.setText(null);
+				mAlbum.setText(null);
+				mArtist.setText(null);
+			} else {
+				mTitle.setText(song.title);
+				mAlbum.setText(song.album);
+				mArtist.setText(song.artist);
+			}
+			break;
+		}
 		case MSG_SHOW_NO_MEDIA:
 			showMessageOverlay();
 			setNoMediaOverlayMessage();

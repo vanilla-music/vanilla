@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -53,10 +53,10 @@ public final class CoverView extends View implements Handler.Callback {
 	 */
 	private Handler mHandler;
 	/**
-	 * Whether or not to display song info on top of the cover art. Can be
-	 * initialized by the containing Activity.
+	 * How to render cover art and metadata. One of
+	 * CoverBitmap.STYLE_*
 	 */
-	boolean mSeparateInfo;
+	private int mCoverStyle;
 
 	/**
 	 * The current set of songs: previous, current, and next.
@@ -101,6 +101,15 @@ public final class CoverView extends View implements Handler.Callback {
 	public void setupHandler(Looper looper)
 	{
 		mHandler = new Handler(looper, this);
+	}
+
+	/**
+	 * Set the cover style. Must be one of CoverBitmap.STYLE_. Will only apply
+	 * to bitmaps rendered after this method is called.
+	 */
+	public void setCoverStyle(int style)
+	{
+		mCoverStyle = style;
 	}
 
 	/**
@@ -153,15 +162,6 @@ public final class CoverView extends View implements Handler.Callback {
 		}
 		for (int i = STORE_SIZE; --i != -1; )
 			setSong(i, mSongs[i]);
-	}
-
-	/**
-	 * Toggle between separate and overlapping song info display modes.
-	 */
-	public void toggleDisplayMode()
-	{
-		mSeparateInfo = !mSeparateInfo;
-		regenerateBitmaps();
 	}
 
 	/**
@@ -326,12 +326,7 @@ public final class CoverView extends View implements Handler.Callback {
 
 		Bitmap bitmap = mBitmapCache.get(song.id);
 		if (bitmap == null) {
-			bitmap = mBitmapCache.discardOldest();
-			if (mSeparateInfo)
-				bitmap = CoverBitmap.createSeparatedBitmap(song, getWidth(), getHeight(), bitmap);
-			else
-				bitmap = CoverBitmap.createOverlappingBitmap(song, getWidth(), getHeight(), bitmap);
-			mBitmapCache.put(song.id, bitmap);
+			mBitmapCache.put(song.id, CoverBitmap.createBitmap(mCoverStyle, song, getWidth(), getHeight(), mBitmapCache.discardOldest()));
 			postInvalidate();
 		} else {
 			mBitmapCache.touch(song.id);

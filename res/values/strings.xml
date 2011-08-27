@@ -112,6 +112,12 @@ THE SOFTWARE.
 	<string name="notification_action_title">Notification Action</string>
 	<string name="notification_action_summary">What to do when the notification is pressed</string>
 
+	<string name="pref_playback_view">Playback View</string>
+	<string name="display_mode_title">Display Mode</string>
+	<string name="display_mode_summary">The appearance and position of the song art and info.</string>
+	<string name="disable_cover_art_title">Disable Cover Art</string>
+	<string name="disable_cover_art_summary">Do not show cover art anywhere in the application</string>
+
 	<string name="pref_song_selector">Library View</string>
 	<string name="selector_on_startup_title">Open on Startup</string>
 	<string name="selector_on_startup_summary">Open library on startup</string>
@@ -121,8 +127,6 @@ THE SOFTWARE.
 	<string name="default_action_summary">What to do when an item is tapped</string>
 
 	<string name="pref_misc">Miscellaneous Features</string>
-	<string name="disable_cover_art_title">Disable Cover Art</string>
-	<string name="disable_cover_art_summary">Do not show cover art anywhere in the application</string>
 	<string name="use_idle_timeout_title">Enable Idle Timeout</string>
 	<string name="use_idle_timeout_summary">When active, playback will be stopped after the given period of inactivity</string>
 	<string name="idle_timeout_title">Idle Timeout</string>

@@ -25,7 +25,9 @@ package org.kreed.vanilla;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
@@ -453,6 +455,12 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			userActionTriggered();
 		} else if ("disable_cover_art".equals(key)) {
 			Song.mDisableCoverArt = settings.getBoolean("disable_cover_art", false);
+		} else if ("display_mode".equals(key)) {
+			ArrayList<Activity> activities = ContextApplication.mActivities;
+			for (Activity activity : activities) {
+				if (activity instanceof FullPlaybackActivity)
+					activity.finish();
+			}
 		}
 	}
 

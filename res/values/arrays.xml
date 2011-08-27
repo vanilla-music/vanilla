@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
+Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -36,7 +36,15 @@ THE SOFTWARE.
 		<item>Open Mini Player</item>
 		<item>Skip To Next Song</item>
 	</string-array>
+	<string-array name="display_mode_entries">
+		<item>Info In Overlapping Box (default)</item>
+		<item>Info Below Cover Art</item>
+		<item>Info In Immobile Layer</item>
+	</string-array>
 	<string-array name="entry_values">
+		<!-- Note: even if this was an integer-array, these would be converted
+		     to strings anyway.
+		     http://code.google.com/p/android/issues/detail?id=2096 -->
 		<item>0</item>
 		<item>1</item>
 		<item>2</item>

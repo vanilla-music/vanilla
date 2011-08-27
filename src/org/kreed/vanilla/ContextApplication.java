@@ -37,7 +37,7 @@ import android.provider.MediaStore;
  */
 public class ContextApplication extends Application {
 	private static ContextApplication mInstance;
-	private static ArrayList<Activity> mActivities;
+	public static ArrayList<Activity> mActivities;
 	private static PlaybackService mService;
 	private static Random mRandom;
 

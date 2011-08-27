@@ -37,6 +37,21 @@ import android.util.TypedValue;
  * album art.
  */
 public final class CoverBitmap {
+	/**
+	 * Draw cover in background and a box with song info on top.
+	 */
+	public static final int STYLE_OVERLAPPING_BOX = 0;
+	/**
+	 * Draw cover on top or left with song info on bottom or right (depending
+	 * on orientation).
+	 */
+	public static final int STYLE_INFO_BELOW = 1;
+	/**
+	 * Draw no song info and zoom the cover so that it fills the entire bitmap
+	 * (preserving aspect ratio---some parts of the cover may be cut off).
+	 */
+	public static final int STYLE_NO_INFO_ZOOMED = 2;
+
 	private static int TEXT_SIZE = -1;
 	private static int TEXT_SIZE_BIG;
 	private static int PADDING;
@@ -201,19 +216,34 @@ public final class CoverBitmap {
 	}
 
 	/**
-	 * Create a normal image, displaying cover art with the song title, album
-	 * and artist overlaid in a box in the center.
+	 * Create an image representing the given song. Includes cover art and
+	 * possibly song title/artist/ablum, depending on the given style.
 	 *
+	 * @param style One of CoverBitmap.STYLE_*
 	 * @param song The song to display information for
 	 * @param width Maximum width of image
 	 * @param height Maximum height of image
 	 * @param bitmap A Bitmap to be drawn into. If null, a new Bitmap will be
-	 * created. If too small, will be recycled and a new Bitmap will be
-	 * created.
+	 * created. If the bitmap cannot be used, it will be recycled and a new
+	 * Bitmap created.
 	 * @return The image, or null if the song was null, or width or height
 	 * were less than 1
 	 */
-	public static Bitmap createOverlappingBitmap(Song song, int width, int height, Bitmap bitmap)
+	public static Bitmap createBitmap(int style, Song song, int width, int height, Bitmap bitmap)
+	{
+		switch (style) {
+		case STYLE_OVERLAPPING_BOX:
+			return createOverlappingBitmap(song, width, height, bitmap);
+		case STYLE_INFO_BELOW:
+			return createSeparatedBitmap(song, width, height, bitmap);
+		case STYLE_NO_INFO_ZOOMED:
+			return createZoomedBitmap(song, width, height, bitmap);
+		default:
+			throw new IllegalArgumentException("Invalid bitmap type given: " + style);
+		}
+	}
+
+	private static Bitmap createOverlappingBitmap(Song song, int width, int height, Bitmap bitmap)
 	{
 		if (song == null || width < 1 || height < 1)
 			return null;
@@ -307,20 +337,7 @@ public final class CoverBitmap {
 		return bitmap;
 	}
 
-	/**
-	 * Create a separated image, displaying cover art with the song title, album
-	 * and artist below or to the right of the cover art.
-	 *
-	 * @param song The song to display information for
-	 * @param width Maximum width of image
-	 * @param height Maximum height of image
-	 * @param bitmap A Bitmap to be drawn into. If null, a new Bitmap will be
-	 * created. If too small, will be recycled and a new Bitmap will be
-	 * created.
-	 * @return The image, or null if the song was null, or width or height
-	 * were less than 1
-	 */
-	public static Bitmap createSeparatedBitmap(Song song, int width, int height, Bitmap bitmap)
+	private static Bitmap createSeparatedBitmap(Song song, int width, int height, Bitmap bitmap)
 	{
 		if (song == null || width < 1 || height < 1)
 			return null;
@@ -418,6 +435,40 @@ public final class CoverBitmap {
 
 		canvas.drawBitmap(ARTIST_ICON, left, top, paint);
 		drawText(canvas, artist, left + padding + textSize, top, maxWidth, maxWidth, paint);
+
+		return bitmap;
+	}
+
+	private static Bitmap createZoomedBitmap(Song song, int width, int height, Bitmap bitmap)
+	{
+		if (song == null || width < 1 || height < 1)
+			return null;
+
+		Bitmap cover = song.getCover();
+		if (cover == null)
+			return null;
+
+		if (bitmap != null && (bitmap.getHeight() != height || bitmap.getWidth() != width)) {
+			bitmap.recycle();
+			bitmap = null;
+		}
+
+		if (bitmap == null)
+			bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+		Canvas canvas = new Canvas(bitmap);
+
+		int coverWidth = cover.getWidth();
+		int coverHeight = cover.getHeight();
+		int size = Math.max(width, height);
+		float scale = coverWidth < coverHeight ? (float)size / coverWidth : (float)size / coverHeight;
+
+		int srcWidth = (int)(Math.min(width, coverWidth * scale) / scale);
+		int srcHeight = (int)(Math.min(height, coverHeight * scale) / scale);
+		int xOffset = (coverWidth - srcWidth) / 2;
+		int yOffset = (coverHeight - srcHeight) / 2;
+		Rect src = new Rect(xOffset, yOffset, coverWidth - xOffset, coverHeight - yOffset);
+		Rect dest = new Rect(0, 0, width, height);
+		canvas.drawBitmap(cover, src, dest, null);
 
 		return bitmap;
 	}

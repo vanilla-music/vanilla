@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!--
-Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
+Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -55,6 +55,20 @@ THE SOFTWARE.
 			android:entryValues="@array/entry_values"
 			android:defaultValue="0" />
 	</PreferenceCategory>
+	<PreferenceCategory android:title="@string/pref_playback_view">
+		<ListPreference
+			android:key="display_mode"
+			android:title="@string/display_mode_title"
+			android:summary="@string/display_mode_summary"
+			android:entries="@array/display_mode_entries"
+			android:entryValues="@array/entry_values"
+			android:defaultValue="0" />
+		<CheckBoxPreference
+			android:key="disable_cover_art"
+			android:title="@string/disable_cover_art_title"
+			android:summary="@string/disable_cover_art_summary"
+			android:defaultValue="false" />
+	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/pref_song_selector">
 		<CheckBoxPreference
 			android:key="selector_on_startup"
@@ -75,11 +89,6 @@ THE SOFTWARE.
 			android:defaultValue="0" />
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/pref_misc">
-		<CheckBoxPreference
-			android:key="disable_cover_art"
-			android:title="@string/disable_cover_art_title"
-			android:summary="@string/disable_cover_art_summary"
-			android:defaultValue="false" />
 		<CheckBoxPreference
 			android:key="use_idle_timeout"
 			android:title="@string/use_idle_timeout_title"
