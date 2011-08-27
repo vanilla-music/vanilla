@@ -178,7 +178,7 @@ public class MediaUtils {
 	public static void shuffle(long[] list)
 	{
 		Random random = ContextApplication.getRandom();
-		for (int i = list.length; --i != 0; ) {
+		for (int i = list.length; --i != -1; ) {
 			int j = random.nextInt(i + 1);
 			long tmp = list[j];
 			list[j] = list[i];
