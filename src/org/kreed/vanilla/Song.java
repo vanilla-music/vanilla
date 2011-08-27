@@ -130,10 +130,12 @@ public class Song implements Parcelable {
 			ContentResolver resolver = ContextApplication.getContext().getContentResolver();
 			Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 			String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
-			Cursor cursor = resolver.query(media, EMPTY_PROJECTION, selection, null, null);
-			mSongCount = cursor == null ? 0 : cursor.getCount();
-			if (cursor != null)
+			Cursor cursor = resolver.query(media, new String[]{"count(_id)"}, selection, null, null);
+			if (cursor != null) {
+				cursor.moveToFirst();
+				mSongCount = cursor.getInt(0);
 				cursor.close();
+			}
 		}
 
 		return mSongCount != 0;
