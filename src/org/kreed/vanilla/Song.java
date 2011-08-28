@@ -85,7 +85,8 @@ public class Song implements Parcelable {
 		MediaStore.Audio.Media.TITLE,
 		MediaStore.Audio.Media.ALBUM,
 		MediaStore.Audio.Media.ARTIST,
-		MediaStore.Audio.Media.ALBUM_ID
+		MediaStore.Audio.Media.ALBUM_ID,
+		MediaStore.Audio.Media.DURATION
 		};
 
 	/**
@@ -114,6 +115,11 @@ public class Song implements Parcelable {
 	 * Artist name
 	 */
 	public String artist;
+
+	/**
+	 * Length of the song in milliseconds.
+	 */
+	public long duration;
 
 	/**
 	 * Song flags. Currently FLAG_RANDOM or 0.
@@ -284,6 +290,7 @@ public class Song implements Parcelable {
 		album = cursor.getString(3);
 		artist = cursor.getString(4);
 		albumId = cursor.getLong(5);
+		duration = cursor.getLong(6);
 	}
 
 	/**

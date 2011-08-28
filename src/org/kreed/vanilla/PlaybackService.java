@@ -888,18 +888,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	}
 
 	/**
-	 * Returns the duration of the current song in milliseconds.
-	 */
-	public int getDuration()
-	{
-		if (mMediaPlayer == null)
-			return 0;
-		synchronized (mMediaPlayer) {
-			return mMediaPlayer.getDuration();
-		}
-	}
-
-	/**
 	 * Returns the position of the current song in the song timeline.
 	 *
 	 * @see SongTimeline#getCurrentPosition()

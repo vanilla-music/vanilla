@@ -62,7 +62,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	private TextView mAlbum;
 	private TextView mArtist;
 
-	private int mDuration;
+	private long mDuration;
 	private boolean mSeekBarTracking;
 	private boolean mPaused;
 
@@ -204,10 +204,8 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	{
 		super.onServiceReady();
 
-		PlaybackService service = ContextApplication.getService();
-		if (mTitle != null)
-			mUiHandler.sendMessage(mUiHandler.obtainMessage(MSG_UPDATE_SONG, service.getSong(0)));
-		mDuration = service.getDuration();
+		Song song = ContextApplication.getService().getSong(0);
+		mUiHandler.sendMessage(mUiHandler.obtainMessage(MSG_UPDATE_SONG, song));
 	}
 
 	@Override
@@ -216,12 +214,8 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 		super.receive(intent);
 
 		if (PlaybackService.EVENT_CHANGED.equals(intent.getAction())) {
-			if (mTitle != null) {
-				Song song = intent.getParcelableExtra("song");
-				mUiHandler.sendMessage(mUiHandler.obtainMessage(MSG_UPDATE_SONG, song));
-			}
-			mDuration = ContextApplication.getService().getDuration();
-			mUiHandler.sendEmptyMessage(MSG_UPDATE_PROGRESS);
+			Song song = intent.getParcelableExtra("song");
+			mUiHandler.sendMessage(mUiHandler.obtainMessage(MSG_UPDATE_SONG, song));
 		}
 	}
 
@@ -267,9 +261,9 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	/**
 	 * Converts a duration in milliseconds to [HH:]MM:SS
 	 */
-	private String stringForTime(int ms)
+	private String stringForTime(long ms)
 	{
-		int seconds = ms / 1000;
+		int seconds = (int)(ms / 1000);
 
 		int hours = seconds / 3600;
 		seconds -= hours * 3600;
@@ -287,19 +281,18 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	 */
 	private void updateProgress()
 	{
-		if (mPaused || mControlsTop.getVisibility() != View.VISIBLE || (mState & PlaybackService.FLAG_PLAYING) == 0)
-			return;
-
-		int position = ContextApplication.getService().getPosition();
+		int position = ContextApplication.hasService() ? ContextApplication.getService().getPosition() : 0;
 
 		if (!mSeekBarTracking)
 			mSeekBar.setProgress(mDuration == 0 ? 0 : (int)(1000 * position / mDuration));
 		mSeekText.setText(stringForTime((int)position) + " / " + stringForTime(mDuration));
 
-		// Try to update right when the duration increases by one second
-		long next = 1000 - position % 1000;
-		mUiHandler.removeMessages(MSG_UPDATE_PROGRESS);
-		mUiHandler.sendEmptyMessageDelayed(MSG_UPDATE_PROGRESS, next);
+		if (!mPaused && mControlsTop.getVisibility() == View.VISIBLE && (mState & PlaybackService.FLAG_PLAYING) != 1) {
+			// Try to update right when the duration increases by one second
+			long next = 1000 - position % 1000;
+			mUiHandler.removeMessages(MSG_UPDATE_PROGRESS);
+			mUiHandler.sendEmptyMessageDelayed(MSG_UPDATE_PROGRESS, next);
+		}
 	}
 
 	/**
@@ -387,11 +380,14 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 				mTitle.setText(null);
 				mAlbum.setText(null);
 				mArtist.setText(null);
+				mDuration = 0;
 			} else {
 				mTitle.setText(song.title);
 				mAlbum.setText(song.album);
 				mArtist.setText(song.artist);
+				mDuration = song.duration;
 			}
+			updateProgress();
 			break;
 		}
 		case MSG_SHOW_NO_MEDIA:
