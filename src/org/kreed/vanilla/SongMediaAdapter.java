@@ -40,9 +40,9 @@ public class SongMediaAdapter extends MediaAdapter {
 	 * @param requery If true, automatically update the adapter when the
 	 * provider changes
 	 */
-	public SongMediaAdapter(Context context, boolean expandable, boolean requery)
+	public SongMediaAdapter(Context context, boolean expandable, boolean requery, MediaAdapter.Limiter limiter)
 	{
-		super(context, MediaUtils.TYPE_SONG, expandable, requery);
+		super(context, MediaUtils.TYPE_SONG, expandable, requery, limiter);
 	}
 
 	@Override
@@ -54,7 +54,8 @@ public class SongMediaAdapter extends MediaAdapter {
 	@Override
 	protected String getSortOrder()
 	{
-		if (getLimiter() != null && getLimiter().length == 2)
+		Limiter limiter = getLimiter();
+		if (limiter != null && limiter.type == MediaUtils.TYPE_ALBUM)
 			return MediaStore.Audio.Media.TRACK;
 		return super.getSortOrder();
 	}

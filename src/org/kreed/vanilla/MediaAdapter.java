@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -45,6 +45,7 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.Filter;
 import android.widget.FilterQueryProvider;
+import java.io.Serializable;
 
 /**
  * MediaAdapter provides an adapter backed by a MediaStore content provider.
@@ -87,14 +88,8 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 	 * A limiter is used for filtering. The intention is to restrict items
 	 * displayed in the list to only those of a specific artist or album, as
 	 * selected through an expander arrow in a broader MediaAdapter list.
-	 *
-	 * Each element in the limiter corresponds to a field in mFields. If
-	 * mLimiter is non-null, only songs containing the field matching the
-	 * last element of mLimiter will be displayed. Elements before the last
-	 * element are not used; they are present to make it more convenient to
-	 * display a UI representation of the limiter.
 	 */
-	private String[] mLimiter;
+	private Limiter mLimiter;
 	/**
 	 * The last constraint used in a call to filter.
 	 */
@@ -112,13 +107,15 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 	 * of the views' text
 	 * @param requery If true, automatically update the adapter when the
 	 * provider backing it changes
+	 * @param limiter An initial limiter to use
 	 */
-	public MediaAdapter(Context context, int type, boolean expandable, boolean requery)
+	public MediaAdapter(Context context, int type, boolean expandable, boolean requery, Limiter limiter)
 	{
 		super(context, null, requery);
 
 		mType = type;
 		mExpandable = expandable;
+		mLimiter = limiter;
 
 		switch (type) {
 		case MediaUtils.TYPE_ARTIST:
@@ -227,21 +224,15 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 
 		StringBuilder selection = new StringBuilder();
 		String[] selectionArgs;
-		String limiter;
 
 		String defaultSelection = getDefaultSelection();
 		if (defaultSelection != null)
 			selection.append(defaultSelection);
 
 		if (mLimiter != null) {
-			int i = Math.min(mLimiter.length, mFields.length) - 1;
 			if (selection.length() != 0)
 				selection.append(" AND ");
-			selection.append(mFields[i]);
-			selection.append(" = ?");
-			limiter = mLimiter[i];
-		} else {
-			limiter = null;
+			selection.append(mLimiter.selection);
 		}
 
 		if (constraint != null && constraint.length() != 0) {
@@ -259,14 +250,8 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 			}
 
 			int size = needles.length;
-			if (limiter != null)
-				++size;
 			selectionArgs = new String[size];
 			int i = 0;
-			if (limiter != null) {
-				selectionArgs[0] = limiter;
-				i = 1;
-			}
 
 			String[] keySource = mFieldKeys == null ? mFields : mFieldKeys;
 			String keys = keySource[0];
@@ -276,16 +261,14 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 			for (int j = 0; j != needles.length; ++i, ++j) {
 				selectionArgs[i] = '%' + needles[j] + '%';
 
-				// If we have something in the selection (i.e. i > 0), we must
-				// have something in the selection, so we can skip the more
+				// If we have something in the selection args (i.e. i > 0), we
+				// must have something in the selection, so we can skip the more
 				// costly direct check of the selection length.
 				if (i != 0 || selection.length() != 0)
 					selection.append(" AND ");
 				selection.append(keys);
 				selection.append(" LIKE ?");
 			}
-		} else if (limiter != null) {
-			selectionArgs = new String[] { limiter };
 		} else {
 			selectionArgs = null;
 		}
@@ -304,13 +287,10 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 	 * displayed media to only those that are children of a given parent
 	 * media item.
 	 *
-	 * @param limiter An array with each element corresponding to a field in
-	 * this adapter. The last field in the array will be used as the limiter;
-	 * only media that are children of the media with the title of the last
-	 * element will be displayed.
+	 * @param limiter The limiter, created by MediaView.getLimiter()
 	 * @param async If true, update the adapter in the background.
 	 */
-	public final void setLimiter(String[] limiter, boolean async)
+	public final void setLimiter(Limiter limiter, boolean async)
 	{
 		mLimiter = limiter;
 		if (async)
@@ -321,24 +301,11 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 
 	/**
 	 * Returns the limiter currently active on this adapter or null if none are
-	 * active. The limiter is a list of titles, each corresponding to a field
-	 * in the fields in this adapter. The last field is the most specific. Only
-	 * media that are children of the media with the last element's title are
-	 * displayed.
+	 * active.
 	 */
-	public final String[] getLimiter()
+	public final Limiter getLimiter()
 	{
 		return mLimiter;
-	}
-
-	/**
-	 * Returns the length of the limiter or 0 if no limiter is active.
-	 */
-	public final int getLimiterLength()
-	{
-		if (mLimiter == null)
-			return 0;
-		return mLimiter.length;
 	}
 
 	/**
@@ -573,22 +540,23 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 		 * @see MediaAdapter#getLimiter()
 		 * @see MediaAdapter#setLimiter(String[], boolean)
 		 */
-		public final String[] getLimiter()
+		public final Limiter getLimiter()
 		{
-			ContentResolver resolver = getContext().getContentResolver();
-			String selection = mFields[mFields.length - 1] + " = ?";
-			String[] selectionArgs = { mTitle };
-			String[] projection = new String[mFields.length + 1];
-			projection[0] = BaseColumns._ID;
-			System.arraycopy(mFields, 0, projection, 1, mFields.length);
-
-			Cursor cursor = resolver.query(mStore, projection, selection, selectionArgs, null);
-			cursor.moveToNext();
-			String[] result = new String[cursor.getColumnCount() - 1];
-			for (int i = result.length; --i != -1; )
-				result[i] = cursor.getString(i + 1);
-
-			return result;
+			String[] fields;
+			String field;
+			switch (mType) {
+			case MediaUtils.TYPE_ARTIST:
+				fields = new String[] { mTitle };
+				field = MediaStore.Audio.Media.ARTIST_ID;
+				break;
+			case MediaUtils.TYPE_ALBUM:
+				fields = new String[] { mSubTitle, mTitle };
+				field = MediaStore.Audio.Media.ALBUM_ID;
+				break;
+			default:
+				throw new IllegalStateException("getLimiter() is not supported for media type: " + mType);
+			}
+			return new Limiter(mId, mType, field, fields);
 		}
 
 		/**
@@ -600,6 +568,22 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 			if (mExpandable)
 				mExpanderPressed = event.getX() > getWidth() - mExpander.getWidth() - 2 * mTextSize;
 			return false;
+		}
+	}
+
+	/**
+	 * Limiter is a constraint for MediaAdapters used when a row is "expanded".
+	 */
+	public static class Limiter implements Serializable {
+		public final String[] names;
+		public final int type;
+		public final String selection;
+
+		public Limiter(long id, int type, String field, String[] names)
+		{
+			this.type = type;
+			this.names = names;
+			selection = String.format("%s=%d", field, id);
 		}
 	}
 }
