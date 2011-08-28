@@ -37,21 +37,21 @@ THE SOFTWARE.
 		<TextView
 			android:id="@+id/title"
 			android:layout_height="wrap_content"
-			android:layout_width="wrap_content"
-			android:layout_gravity="center"
+			android:layout_width="fill_parent"
+			android:gravity="center"
 			android:singleLine="true"
 			android:textStyle="bold" />
 		<TextView
 			android:id="@+id/artist"
 			android:layout_height="wrap_content"
-			android:layout_width="wrap_content"
-			android:layout_gravity="center"
+			android:layout_width="fill_parent"
+			android:gravity="center"
 			android:singleLine="true" />
 		<TextView
 			android:id="@+id/album"
 			android:layout_height="wrap_content"
-			android:layout_width="wrap_content"
-			android:layout_gravity="center"
+			android:layout_width="fill_parent"
+			android:gravity="center"
 			android:singleLine="true" />
 		<LinearLayout
 			android:id="@+id/controls_top"
