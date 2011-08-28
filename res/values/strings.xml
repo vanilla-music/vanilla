@@ -79,6 +79,7 @@ THE SOFTWARE.
 	<string name="albums">Albums</string>
 	<string name="songs">Songs</string>
 	<string name="playlists">Playlists</string>
+	<string name="genres">Genres</string>
 
 	<string name="none">None</string>
 	<string name="unknown">Unknown</string>

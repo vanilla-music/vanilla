@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -47,6 +47,10 @@ public class MediaUtils {
 	 * Type indicating an id represents a playlist.
 	 */
 	public static final int TYPE_PLAYLIST = 4;
+	/**
+	 * Type indicating ids represent genres.
+	 */
+	public static final int TYPE_GENRE = 5;
 
 	/**
 	 * Return a cursor containing the ids of all the songs with artist or
@@ -97,6 +101,23 @@ public class MediaUtils {
 	}
 
 	/**
+	 * Return a cursor containing the ids of all the songs in the genre
+	 * with the given id.
+	 *
+	 * @param id The id of the genre in MediaStore.Audio.Genres.
+	 * @param projection The columns to query.
+	 * @param selection The selection to pass to the query, or null.
+	 * @param selectionArgs The arguments to substitute into the selection.
+	 */
+	public static Cursor queryGenre(long id, String[] projection, String selection, String[] selectionArgs)
+	{
+		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
+		Uri uri = MediaStore.Audio.Genres.Members.getContentUri("external", id);
+		String sort = MediaStore.Audio.Genres.Members.TITLE_KEY;
+		return resolver.query(uri, projection, selection, selectionArgs, sort);
+	}
+
+	/**
 	 * Return an array containing all the song ids that match the specified parameters
 	 *
 	 * @param type Type the id represents. Must be one of the Song.TYPE_*
@@ -117,6 +138,10 @@ public class MediaUtils {
 			break;
 		case TYPE_PLAYLIST:
 			cursor = getPlaylistCursor(id, new String[] { MediaStore.Audio.Playlists.Members.AUDIO_ID });
+			break;
+		case TYPE_GENRE:
+			// NOTE: AUDIO_ID does not seem to work here, strangely.
+			cursor = queryGenre(id, new String[] { MediaStore.Audio.Genres.Members._ID }, null, null);
 			break;
 		default:
 			throw new IllegalArgumentException("Specified type not valid: " + type);

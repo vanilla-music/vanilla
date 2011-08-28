@@ -139,6 +139,11 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 			mFields = new String[] { MediaStore.Audio.Playlists.NAME };
 			mFieldKeys = null;
 			break;
+		case MediaUtils.TYPE_GENRE:
+			mStore = MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI;
+			mFields = new String[] { MediaStore.Audio.Genres.NAME };
+			mFieldKeys = null;
+			break;
 		default:
 			throw new IllegalArgumentException("Invalid value for type: " + type);
 		}
@@ -195,7 +200,7 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 	 * method may be overridden in subclasses to exclude certain media from the
 	 * adapter.
 	 *
-	 * @return The selection, formatted as an SQL WHERE clause or null for to
+	 * @return The selection, formatted as an SQL WHERE clause or null to
 	 * accept all media.
 	 */
 	protected String getDefaultSelection()
@@ -222,18 +227,18 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 	{
 		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
 
+		String[] projection;
+		if (mFields.length == 1)
+			projection = new String[] { BaseColumns._ID, mFields[0] };
+		else
+			projection = new String[] { BaseColumns._ID, mFields[mFields.length - 1], mFields[0] };
+
 		StringBuilder selection = new StringBuilder();
-		String[] selectionArgs;
+		String[] selectionArgs = null;
 
 		String defaultSelection = getDefaultSelection();
 		if (defaultSelection != null)
 			selection.append(defaultSelection);
-
-		if (mLimiter != null) {
-			if (selection.length() != 0)
-				selection.append(" AND ");
-			selection.append(mLimiter.selection);
-		}
 
 		if (constraint != null && constraint.length() != 0) {
 			String[] needles;
@@ -251,33 +256,36 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 
 			int size = needles.length;
 			selectionArgs = new String[size];
-			int i = 0;
 
 			String[] keySource = mFieldKeys == null ? mFields : mFieldKeys;
 			String keys = keySource[0];
 			for (int j = 1; j != keySource.length; ++j)
 				keys += "||" + keySource[j];
 
-			for (int j = 0; j != needles.length; ++i, ++j) {
-				selectionArgs[i] = '%' + needles[j] + '%';
+			for (int j = 0; j != needles.length; ++j) {
+				selectionArgs[j] = '%' + needles[j] + '%';
 
-				// If we have something in the selection args (i.e. i > 0), we
+				// If we have something in the selection args (i.e. j > 0), we
 				// must have something in the selection, so we can skip the more
 				// costly direct check of the selection length.
-				if (i != 0 || selection.length() != 0)
+				if (j != 0 || selection.length() != 0)
 					selection.append(" AND ");
 				selection.append(keys);
 				selection.append(" LIKE ?");
 			}
-		} else {
-			selectionArgs = null;
 		}
 
-		String[] projection;
-		if (mFields.length == 1)
-			projection = new String[] { BaseColumns._ID, mFields[0] };
-		else
-			projection = new String[] { BaseColumns._ID, mFields[mFields.length - 1], mFields[0] };
+		if (mLimiter != null) {
+			if (mLimiter.type == MediaUtils.TYPE_GENRE) {
+				// Genre is not standard metadata for MediaStore.Audio.Media.
+				// We have to query it through a separate provider. : /
+				return MediaUtils.queryGenre(mLimiter.id, projection,  selection.toString(), selectionArgs);
+			} else {
+				if (selection.length() != 0)
+					selection.append(" AND ");
+				selection.append(mLimiter.selection);
+			}
+		}
 
 		return resolver.query(mStore, projection, selection.toString(), selectionArgs, getSortOrder());
 	}
@@ -553,6 +561,10 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 				fields = new String[] { mSubTitle, mTitle };
 				field = MediaStore.Audio.Media.ALBUM_ID;
 				break;
+			case MediaUtils.TYPE_GENRE:
+				fields = new String[] { mTitle };
+				field = null;
+				break;
 			default:
 				throw new IllegalStateException("getLimiter() is not supported for media type: " + mType);
 			}
@@ -576,6 +588,7 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 	 */
 	public static class Limiter implements Serializable {
 		public final String[] names;
+		public final long id;
 		public final int type;
 		public final String selection;
 
@@ -583,7 +596,8 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 		{
 			this.type = type;
 			this.names = names;
-			selection = String.format("%s=%d", field, id);
+			this.id = id;
+			selection = field == null ? null : String.format("%s=%d", field, id);
 		}
 	}
 }

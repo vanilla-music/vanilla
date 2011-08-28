@@ -61,7 +61,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	/**
 	 * The number of tabs in the song selector.
 	 */
-	private static final int TAB_COUNT = 4;
+	private static final int TAB_COUNT = 5;
 
 	private TabHost mTabHost;
 
@@ -86,6 +86,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	private MediaAdapter mAlbumAdapter;
 	private MediaAdapter mSongAdapter;
 	private MediaAdapter mPlaylistAdapter;
+	private MediaAdapter mGenreAdapter;
 	private MediaAdapter mCurrentAdapter;
 
 	@Override
@@ -103,6 +104,8 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		mTabHost.addTab(mTabHost.newTabSpec("tab_albums").setIndicator(res.getText(R.string.albums), res.getDrawable(R.drawable.tab_albums)).setContent(R.id.album_list));
 		mTabHost.addTab(mTabHost.newTabSpec("tab_songs").setIndicator(res.getText(R.string.songs), res.getDrawable(R.drawable.tab_songs)).setContent(R.id.song_list));
 		mTabHost.addTab(mTabHost.newTabSpec("tab_playlists").setIndicator(res.getText(R.string.playlists), res.getDrawable(R.drawable.tab_playlists)).setContent(R.id.playlist_list));
+		// TODO: find/create genre icon
+		mTabHost.addTab(mTabHost.newTabSpec("tab_genres").setIndicator(res.getText(R.string.genres), res.getDrawable(R.drawable.tab_songs)).setContent(R.id.genre_list));
 
 		mSearchBox = findViewById(R.id.search_box);
 
@@ -118,7 +121,8 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		mAlbumAdapter = setupView(R.id.album_list, new MediaAdapter(this, MediaUtils.TYPE_ALBUM, true, false, state == null ? null : (MediaAdapter.Limiter)state.getSerializable("limiter_albums")));
 		mSongAdapter = setupView(R.id.song_list, new SongMediaAdapter(this, false, false, state == null ? null : (MediaAdapter.Limiter)state.getSerializable("limiter_songs")));
 		mPlaylistAdapter = setupView(R.id.playlist_list, new MediaAdapter(this, MediaUtils.TYPE_PLAYLIST, false, true, null));
-		mAdapters = new MediaAdapter[] { mArtistAdapter, mAlbumAdapter, mSongAdapter, mPlaylistAdapter };
+		mGenreAdapter = setupView(R.id.genre_list, new MediaAdapter(this, MediaUtils.TYPE_GENRE, true, false, state == null ? null : (MediaAdapter.Limiter)state.getSerializable("limiter_genres")));
+		mAdapters = new MediaAdapter[] { mArtistAdapter, mAlbumAdapter, mSongAdapter, mPlaylistAdapter, mGenreAdapter };
 
 		mTabHost.setOnTabChangedListener(this);
 
@@ -185,6 +189,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		out.putString("filter", mTextFilter.getText().toString());
 		out.putSerializable("limiter_albums", mAlbumAdapter.getLimiter());
 		out.putSerializable("limiter_songs", mSongAdapter.getLimiter());
+		out.putSerializable("limiter_genres", mGenreAdapter.getLimiter());
 	}
 
 	@Override
@@ -289,6 +294,10 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 			mAlbumAdapter.setLimiter(limiter, false);
 			mSongAdapter.setLimiter(limiter, true);
 			return 1;
+		case MediaUtils.TYPE_GENRE:
+			mAlbumAdapter.setLimiter(null, true);
+			mSongAdapter.setLimiter(limiter, false);
+			return 2;
 		default:
 			throw new IllegalArgumentException("Unsupported limiter type: " + limiter.type);
 		}
