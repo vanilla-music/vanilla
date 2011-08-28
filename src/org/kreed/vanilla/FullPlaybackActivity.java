@@ -395,14 +395,18 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 		case MSG_UPDATE_SONG: {
 			Song song = (Song)message.obj;
 			if (song == null) {
-				mTitle.setText(null);
-				mAlbum.setText(null);
-				mArtist.setText(null);
+				if (mTitle != null) {
+					mTitle.setText(null);
+					mAlbum.setText(null);
+					mArtist.setText(null);
+				}
 				mDuration = 0;
 			} else {
-				mTitle.setText(song.title);
-				mAlbum.setText(song.album);
-				mArtist.setText(song.artist);
+				if (mTitle != null) {
+					mTitle.setText(song.title);
+					mAlbum.setText(song.album);
+					mArtist.setText(song.artist);
+				}
 				mDuration = song.duration;
 			}
 			updateProgress();
