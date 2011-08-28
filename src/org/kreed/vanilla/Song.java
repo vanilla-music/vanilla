@@ -287,27 +287,6 @@ public class Song implements Parcelable {
 	}
 
 	/**
-	 * Copies the fields from the given Song to this Song.
-	 *
-	 * @param other The Song to copy from.
-	 */
-	public void copy(Song other)
-	{
-		if (other == null) {
-			id = -1;
-			return;
-		}
-
-		id = other.id;
-		albumId = other.albumId;
-		path = other.path;
-		title = other.title;
-		album = other.album;
-		artist = other.artist;
-		flags = other.flags;
-	}
-
-	/**
 	 * Query the MediaStore, if necessary, to fill this Song's fields.
 	 *
 	 * @param force Query even if fields have already been populated
