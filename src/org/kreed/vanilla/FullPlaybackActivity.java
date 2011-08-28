@@ -305,7 +305,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 			mSeekBar.setProgress(mDuration == 0 ? 0 : (int)(1000 * position / mDuration));
 		mSeekText.setText(stringForTime((int)position) + " / " + stringForTime(mDuration));
 
-		if (!mPaused && mControlsTop.getVisibility() == View.VISIBLE && (mState & PlaybackService.FLAG_PLAYING) != 1) {
+		if (!mPaused && mControlsTop.getVisibility() == View.VISIBLE && (mState & PlaybackService.FLAG_PLAYING) != 0) {
 			// Try to update right when the duration increases by one second
 			long next = 1000 - position % 1000;
 			mUiHandler.removeMessages(MSG_UPDATE_PROGRESS);
