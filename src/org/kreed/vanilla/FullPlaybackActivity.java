@@ -73,6 +73,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
 		int displayMode = Integer.parseInt(settings.getString("display_mode", "0"));
+		boolean hiddenControls = settings.getBoolean("hidden_controls", false);
 
 		int layout = R.layout.full_playback;
 		int coverStyle = -1;
@@ -105,6 +106,10 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 
 		mControlsTop = findViewById(R.id.controls_top);
 		mControlsBottom = findViewById(R.id.controls_bottom);
+		if (hiddenControls) {
+			mControlsTop.setVisibility(View.GONE);
+			mControlsBottom.setVisibility(View.GONE);
+		}
 
 		View previousButton = findViewById(R.id.previous);
 		previousButton.setOnClickListener(this);
@@ -313,6 +318,9 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 
 			updateProgress();
 		}
+
+		int hidden = mControlsTop.getVisibility() == View.VISIBLE ? 0 : 1;
+		mHandler.sendMessage(mHandler.obtainMessage(MSG_SAVE_CONTROLS, hidden, 0));
 	}
 
 	@Override
@@ -354,11 +362,22 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	 * Hide any overlay messages. This must be called on the UI Handler.
 	 */
 	private static final int MSG_HIDE_MESSAGE_OVERLAY = 13;
+	/**
+	 * Save the hidden_controls preference to storage.
+	 */
+	private static final int MSG_SAVE_CONTROLS = 14;
 
 	@Override
 	public boolean handleMessage(Message message)
 	{
 		switch (message.what) {
+		case MSG_SAVE_CONTROLS: {
+			SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+			SharedPreferences.Editor editor = settings.edit();
+			editor.putBoolean("hidden_controls", message.arg1 == 1);
+			editor.commit();
+			break;
+		}
 		case MSG_UPDATE_PROGRESS:
 			updateProgress();
 			break;
