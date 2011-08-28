@@ -176,7 +176,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	Object mStateLock = new Object();
 	boolean mPlayingBeforeCall;
 	private int mPendingSeek;
-	private Song mLastSongBroadcast;
 	public Receiver mReceiver;
 	public ComponentName mButtonReceiver;
 	public InCallListener mCallListener;
@@ -475,18 +474,25 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	private void setFlag(int flag)
 	{
 		synchronized (mStateLock) {
-			updateState(mState | flag);
+			updateState(mState | flag, false);
 		}
 	}
 
 	private void unsetFlag(int flag)
 	{
 		synchronized (mStateLock) {
-			updateState(mState & ~flag);
+			updateState(mState & ~flag, false);
 		}
 	}
 
-	private void updateState(int state)
+	/**
+	 * Modify the service state.
+	 *
+	 * @param state Union of PlaybackService.STATE_* flags
+	 * @param forceBroadcast Broadcast state/song update even if the state has
+	 * not changed.
+	 */
+	private void updateState(int state, boolean forceBroadcast)
 	{
 		state &= ALL_FLAGS;
 
@@ -509,7 +515,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		int oldState = mState;
 		mState = state;
 
-		if (state != oldState || song != mLastSongBroadcast) {
+		if (state != oldState || forceBroadcast) {
 			Intent intent = new Intent(EVENT_CHANGED);
 			intent.putExtra("state", state);
 			intent.putExtra("song", song);
@@ -525,39 +531,45 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			}
 
 			updateNotification(song);
-
-			mLastSongBroadcast = song;
 		}
 
-		if ((oldState & PlaybackService.FLAG_SHUFFLE) == 0 && (state & PlaybackService.FLAG_SHUFFLE) != 0) {
-			mTimeline.setShuffle(true);
-			Toast.makeText(this, R.string.shuffle_enabling, Toast.LENGTH_LONG).show();
-		} else if ((oldState & PlaybackService.FLAG_SHUFFLE) != 0 && (state & PlaybackService.FLAG_SHUFFLE) == 0) {
-			mTimeline.setShuffle(false);
-			Toast.makeText(this, R.string.shuffle_disabling, Toast.LENGTH_SHORT).show();
-		}
+		int toggled = oldState ^ state;
 
-		if ((oldState & PlaybackService.FLAG_REPEAT) == 0 && (state & PlaybackService.FLAG_REPEAT) != 0) {
-			mTimeline.setRepeat(true);
-			Toast.makeText(this, R.string.repeat_enabling, Toast.LENGTH_LONG).show();
-		} else if ((oldState & PlaybackService.FLAG_REPEAT) != 0 && (state & PlaybackService.FLAG_REPEAT) == 0) {
-			mTimeline.setRepeat(false);
-			Toast.makeText(this, R.string.repeat_disabling, Toast.LENGTH_SHORT).show();
-		}
-
-		if ((state & FLAG_PLAYING) != 0 && (oldState & FLAG_PLAYING) == 0) {
-			if (mNotificationMode != NEVER)
-				startForegroundCompat(NOTIFICATION_ID, mNotification);
-			if (mMediaPlayerInitialized) {
-				synchronized (mMediaPlayer) {
-					mMediaPlayer.start();
-				}
+		if ((toggled & FLAG_SHUFFLE) != 0) {
+			if ((state & FLAG_SHUFFLE) != 0) {
+				mTimeline.setShuffle(true);
+				Toast.makeText(this, R.string.shuffle_enabling, Toast.LENGTH_LONG).show();
+			} else {
+				mTimeline.setShuffle(false);
+				Toast.makeText(this, R.string.shuffle_disabling, Toast.LENGTH_SHORT).show();
 			}
-		} else if ((state & FLAG_PLAYING) == 0 && (oldState & FLAG_PLAYING) != 0) {
-			stopForegroundCompat(false);
-			if (mMediaPlayerInitialized) {
-				synchronized (mMediaPlayer) {
-					mMediaPlayer.pause();
+		}
+
+		if ((toggled & FLAG_REPEAT) != 0) {
+			if ((state & FLAG_REPEAT) != 0) {
+				mTimeline.setRepeat(true);
+				Toast.makeText(this, R.string.repeat_enabling, Toast.LENGTH_LONG).show();
+			} else {
+				mTimeline.setRepeat(false);
+				Toast.makeText(this, R.string.repeat_disabling, Toast.LENGTH_SHORT).show();
+			}
+		}
+
+		if ((toggled & FLAG_PLAYING) != 0) {
+			if ((state & FLAG_PLAYING) != 0) {
+				if (mNotificationMode != NEVER)
+					startForegroundCompat(NOTIFICATION_ID, mNotification);
+				if (mMediaPlayerInitialized) {
+					synchronized (mMediaPlayer) {
+						mMediaPlayer.start();
+					}
+				}
+			} else {
+				stopForegroundCompat(false);
+				if (mMediaPlayerInitialized) {
+					synchronized (mMediaPlayer) {
+						mMediaPlayer.pause();
+					}
 				}
 			}
 		}
@@ -582,7 +594,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	public void toggleFlag(int flag)
 	{
 		synchronized (mStateLock) {
-			updateState(mState ^ flag);
+			updateState(mState ^ flag, false);
 		}
 		userActionTriggered();
 	}
@@ -610,10 +622,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			unsetFlag(FLAG_NO_MEDIA);
 		}
 
-		// Ensure that we broadcast a change event even if we play the same
-		// song again.
-		mLastSongBroadcast = null;
-
 		try {
 			synchronized (mMediaPlayer) {
 				mMediaPlayer.reset();
@@ -624,11 +632,11 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			}
 			if ((mState & FLAG_PLAYING) != 0)
 				mMediaPlayer.start();
-			updateState(mState & ~FLAG_ERROR);
+			updateState(mState & ~FLAG_ERROR, true);
 		} catch (IOException e) {
 			// FLAG_PLAYING is set to force showing the Toast. updateState()
 			// will unset it.
-			updateState(mState | FLAG_PLAYING | FLAG_ERROR);
+			updateState(mState | FLAG_PLAYING | FLAG_ERROR, true);
 			Log.e("VanillaMusic", "IOException", e);
 		}
 
