@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,18 +29,22 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
+import android.os.SystemClock;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-public class PlaybackActivity extends Activity implements Handler.Callback, View.OnClickListener {
+public class PlaybackActivity extends Activity implements Handler.Callback, View.OnClickListener, CoverView.Callback {
 	Handler mHandler;
 	Looper mLooper;
 
 	CoverView mCoverView;
 	ControlButton mPlayPauseButton;
 	int mState;
+
+	private long mLastStateEvent;
+	private long mLastSongEvent;
 
 	@Override
 	public void onCreate(Bundle state)
@@ -130,21 +134,27 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 		return handleKeyLongPress(keyCode);
 	}
 
+	public void nextSong()
+	{
+		onSongChange(ContextApplication.getService().nextSong());
+	}
+
+	public void previousSong()
+	{
+		onSongChange(ContextApplication.getService().previousSong());
+	}
+
 	public void onClick(View view)
 	{
 		switch (view.getId()) {
 		case R.id.next:
-			mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_SONG, 1, 0));
-			if (mCoverView != null)
-				mCoverView.go(1);
+			nextSong();
 			break;
 		case R.id.play_pause:
-			mHandler.sendMessage(mHandler.obtainMessage(MSG_TOGGLE_FLAG, PlaybackService.FLAG_PLAYING, 0));
+			setState(ContextApplication.getService().toggleFlag(PlaybackService.FLAG_PLAYING));
 			break;
 		case R.id.previous:
-			mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_SONG, -1, 0));
-			if (mCoverView != null)
-				mCoverView.go(-1);
+			previousSong();
 			break;
 		}
 	}
@@ -157,13 +167,15 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	 */
 	protected void setState(int state)
 	{
+		mLastStateEvent = SystemClock.uptimeMillis();
+
 		if (mState == state)
 			return;
 
-		mState = state;
+		int toggled = mState ^ state;
 
-		if (mPlayPauseButton != null) {
-			final int res = (mState & PlaybackService.FLAG_PLAYING) == 0 ? R.drawable.play : R.drawable.pause;
+		if ((toggled & PlaybackService.FLAG_PLAYING) != 0 && mPlayPauseButton != null) {
+			final int res = (state & PlaybackService.FLAG_PLAYING) == 0 ? R.drawable.play : R.drawable.pause;
 			runOnUiThread(new Runnable() {
 				public void run()
 				{
@@ -171,6 +183,8 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 				}
 			});
 		}
+
+		mState = state;
 	}
 
 	/**
@@ -179,9 +193,25 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	 */
 	protected void onServiceReady()
 	{
-		if (mCoverView != null)
-			mCoverView.initialize();
-		setState(ContextApplication.getService().getState());
+		PlaybackService service = ContextApplication.getService();
+		onSongChange(service.getSong(0));
+		setState(service.getState());
+	}
+
+	/**
+	 * Called when the current song changes.
+	 */
+	protected void onSongChange(final Song song)
+	{
+		mLastSongEvent = SystemClock.uptimeMillis();
+		if (mCoverView != null) {
+			runOnUiThread(new Runnable() {
+				public void run()
+				{
+					mCoverView.setCurrentSong(song);
+				}
+			});
+		}
 	}
 
 	/**
@@ -193,12 +223,21 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	{
 		String action = intent.getAction();
 
-		if (PlaybackService.EVENT_INITIALIZED.equals(action))
-			onServiceReady();
+		if (PlaybackService.EVENT_CHANGED.equals(action)) {
+			long time = intent.getLongExtra("time", -1);
+			assert(time != -1);
+
+			int state = intent.getIntExtra("state", -1);
+			if (state != -1 && time > mLastStateEvent)
+				setState(state);
+
+			if (intent.hasExtra("song") && time > mLastSongEvent) {
+				Song song = intent.getParcelableExtra("song");
+				onSongChange(song);
+			}
+		}
 		if (mCoverView != null)
 			mCoverView.receive(intent);
-		if (PlaybackService.EVENT_CHANGED.equals(action))
-			setState(intent.getIntExtra("state", 0));
 	}
 
 	/**
@@ -245,10 +284,10 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 			ContextApplication.quit();
 			return true;
 		case MENU_SHUFFLE:
-			mHandler.sendMessage(mHandler.obtainMessage(MSG_TOGGLE_FLAG, PlaybackService.FLAG_SHUFFLE, 0));
+			setState(ContextApplication.getService().toggleFlag(PlaybackService.FLAG_SHUFFLE));
 			return true;
 		case MENU_REPEAT:
-			mHandler.sendMessage(mHandler.obtainMessage(MSG_TOGGLE_FLAG, PlaybackService.FLAG_REPEAT, 0));
+			setState(ContextApplication.getService().toggleFlag(PlaybackService.FLAG_REPEAT));
 			return true;
 		case MENU_PREFS:
 			startActivity(new Intent(this, PreferencesActivity.class));
@@ -258,35 +297,9 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 		}
 	}
 
-	/**
-	 * Tell PlaybackService to toggle a state flag (passed as arg1) and display
-	 * a message notifying that the flag was toggled.
-	 */
-	static final int MSG_TOGGLE_FLAG = 0;
-	/**
-	 * Tell PlaybackService to change the current song.
-	 * 
-	 * arg1 should be the delta, -1 or 1, indicating the previous or next song,
-	 * respectively.
-	 */
-	static final int MSG_SET_SONG = 1;
-
-	public boolean handleMessage(Message message)
+	@Override
+	public boolean handleMessage(Message msg)
 	{
-		switch (message.what) {
-		case MSG_TOGGLE_FLAG:
-			ContextApplication.getService().toggleFlag(message.arg1);
-			break;
-		case MSG_SET_SONG:
-			if (message.arg1 == 1)
-				ContextApplication.getService().nextSong();
-			else
-				ContextApplication.getService().previousSong();
-			break;
-		default:
-			return false;
-		}
-
-		return true;
+		return false;
 	}
 }

@@ -97,11 +97,9 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 		setContentView(layout);
 
 		CoverView coverView = (CoverView)findViewById(R.id.cover_view);
-
-		coverView.setCoverStyle(coverStyle);
+		coverView.setup(mLooper, this, coverStyle);
 		coverView.setOnClickListener(this);
 		coverView.setOnLongClickListener(this);
-		coverView.setupHandler(mLooper);
 		mCoverView = coverView;
 
 		mControlsTop = findViewById(R.id.controls_top);
@@ -189,34 +187,52 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	}
 
 	@Override
-	protected void setState(int state)
+	protected void setState(final int state)
 	{
-		if ((mState & PlaybackService.FLAG_NO_MEDIA) == 0 && (state & PlaybackService.FLAG_NO_MEDIA) != 0)
-			mUiHandler.sendEmptyMessage(MSG_SHOW_NO_MEDIA);
-		else if ((mState & PlaybackService.FLAG_NO_MEDIA) != 0 && (state & PlaybackService.FLAG_NO_MEDIA) == 0)
-			mUiHandler.sendEmptyMessage(MSG_HIDE_MESSAGE_OVERLAY);
+		int toggled = mState ^ state;
+
+		if ((toggled & PlaybackService.FLAG_NO_MEDIA) != 0) {
+			runOnUiThread(new Runnable() {
+				@Override
+				public void run()
+				{
+					if ((state & PlaybackService.FLAG_NO_MEDIA) != 0) {
+						showMessageOverlay();
+						setNoMediaOverlayMessage();
+					} else {
+						hideMessageOverlay();
+					}
+				}
+			});
+		}
 
 		super.setState(state);
 	}
 
 	@Override
-	protected void onServiceReady()
+	protected void onSongChange(final Song song)
 	{
-		super.onServiceReady();
-
-		Song song = ContextApplication.getService().getSong(0);
-		mUiHandler.sendMessage(mUiHandler.obtainMessage(MSG_UPDATE_SONG, song));
-	}
-
-	@Override
-	public void receive(Intent intent)
-	{
-		super.receive(intent);
-
-		if (PlaybackService.EVENT_CHANGED.equals(intent.getAction())) {
-			Song song = intent.getParcelableExtra("song");
-			mUiHandler.sendMessage(mUiHandler.obtainMessage(MSG_UPDATE_SONG, song));
+		mDuration = song == null ? 0 : song.duration;
+		if (mTitle != null) {
+			runOnUiThread(new Runnable() {
+				@Override
+				public void run()
+				{
+					if (song == null) {
+						mTitle.setText(null);
+						mAlbum.setText(null);
+						mArtist.setText(null);
+					} else {
+						mTitle.setText(song.title);
+						mAlbum.setText(song.album);
+						mArtist.setText(song.artist);
+					}
+				}
+			});
 		}
+		mUiHandler.sendEmptyMessage(MSG_UPDATE_PROGRESS);
+
+		super.onSongChange(song);
 	}
 
 	@Override
@@ -245,18 +261,17 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 		return false;
 	}
 
+	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event)
 	{
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_DPAD_RIGHT:
+			nextSong();
 			findViewById(R.id.next).requestFocus();
-			mHandler.sendMessage(mHandler.obtainMessage(PlaybackActivity.MSG_SET_SONG, 1, 0));
-			mCoverView.go(1);
 			return true;
 		case KeyEvent.KEYCODE_DPAD_LEFT:
+			previousSong();
 			findViewById(R.id.previous).requestFocus();
-			mHandler.sendMessage(mHandler.obtainMessage(PlaybackActivity.MSG_SET_SONG, -1, 0));
-			mCoverView.go(-1);
 			return true;
 		}
 
@@ -349,7 +364,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	public boolean onLongClick(View view)
 	{
 		if (view.getId() == R.id.cover_view) {
-			mHandler.sendMessage(mHandler.obtainMessage(MSG_TOGGLE_FLAG, PlaybackService.FLAG_PLAYING, 0));
+			setState(ContextApplication.getService().toggleFlag(PlaybackService.FLAG_PLAYING));
 			return true;
 		}
 
@@ -361,18 +376,6 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	 * called on the UI Handler.
 	 */
 	private static final int MSG_UPDATE_PROGRESS = 10;
-	/**
-	 * Update the metadata for the current song.
-	 */
-	private static final int MSG_UPDATE_SONG = 11;
-	/**
-	 * The the no media overlay message. This must be called on the UI Handler.
-	 */
-	private static final int MSG_SHOW_NO_MEDIA = 12;
-	/**
-	 * Hide any overlay messages. This must be called on the UI Handler.
-	 */
-	private static final int MSG_HIDE_MESSAGE_OVERLAY = 13;
 	/**
 	 * Save the hidden_controls preference to storage.
 	 */
@@ -391,33 +394,6 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 		}
 		case MSG_UPDATE_PROGRESS:
 			updateProgress();
-			break;
-		case MSG_UPDATE_SONG: {
-			Song song = (Song)message.obj;
-			if (song == null) {
-				if (mTitle != null) {
-					mTitle.setText(null);
-					mAlbum.setText(null);
-					mArtist.setText(null);
-				}
-				mDuration = 0;
-			} else {
-				if (mTitle != null) {
-					mTitle.setText(song.title);
-					mAlbum.setText(song.album);
-					mArtist.setText(song.artist);
-				}
-				mDuration = song.duration;
-			}
-			updateProgress();
-			break;
-		}
-		case MSG_SHOW_NO_MEDIA:
-			showMessageOverlay();
-			setNoMediaOverlayMessage();
-			break;
-		case MSG_HIDE_MESSAGE_OVERLAY:
-			hideMessageOverlay();
 			break;
 		default:
 			return super.handleMessage(message);

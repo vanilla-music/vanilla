@@ -74,7 +74,11 @@ public class FourLongWidget extends AppWidgetProvider {
 		String action = intent.getAction();
 		if (PlaybackService.EVENT_CHANGED.equals(action) || PlaybackService.EVENT_REPLACE_SONG.equals(action)) {
 			Context context = ContextApplication.getContext();
-			Song song = intent.getParcelableExtra("song");
+			Song song;
+			if (intent.hasExtra("song"))
+				song = intent.getParcelableExtra("song");
+			else
+				song = ContextApplication.getService().getSong(0);
 			int state = intent.getIntExtra("state", -1);
 
 			AppWidgetManager manager = AppWidgetManager.getInstance(context);

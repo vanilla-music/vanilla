@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -190,15 +190,6 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		out.putSerializable("limiter_albums", mAlbumAdapter.getLimiter());
 		out.putSerializable("limiter_songs", mSongAdapter.getLimiter());
 		out.putSerializable("limiter_genres", mGenreAdapter.getLimiter());
-	}
-
-	@Override
-	protected void onServiceReady()
-	{
-		super.onServiceReady();
-
-		if (mStatusText != null)
-			onSongChange(ContextApplication.getService().getSong(0));
 	}
 
 	@Override
@@ -677,12 +668,14 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 
 	private static int mCoverSize = -1;
 
-	/**
-	 * Call to update the status text for a newly-playing song. Should only be
-	 * called after the controls have been initialized.
-	 */
-	private void onSongChange(final Song song)
+	@Override
+	protected void onSongChange(final Song song)
 	{
+		super.onSongChange(song);
+
+		if (mStatusText == null)
+			return;
+
 		Resources res = getResources();
 		CharSequence text;
 		if (song == null) {
@@ -708,14 +701,5 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 				mCover.setVisibility(cover == null ? View.GONE : View.VISIBLE);
 			}
 		});
-	}
-
-	@Override
-	public void receive(Intent intent)
-	{
-		super.receive(intent);
-
-		if (mControls != null && PlaybackService.EVENT_CHANGED.equals(intent.getAction()))
-			onSongChange((Song)intent.getParcelableExtra("song"));
 	}
 }

@@ -58,6 +58,13 @@ public final class CoverView extends View implements Handler.Callback {
 	 */
 	private int mCoverStyle;
 
+	public interface Callback {
+		public void nextSong();
+		public void previousSong();
+	}
+
+	private Callback mCallback;
+
 	/**
 	 * The current set of songs: previous, current, and next.
 	 */
@@ -93,32 +100,18 @@ public final class CoverView extends View implements Handler.Callback {
 	}
 
 	/**
-	 * Setup the Handler to act on the given looper. This must be called before
+	 * Setup the Handler and callback. This must be called before
 	 * the CoverView is used.
 	 *
-	 * @param looper The Looper to use.
+	 * @param looper A looper created on a worker thread.
+	 * @param callback The callback for nextSong/previousSong
+	 * @param style One of CoverBitmap.STYLE_*
 	 */
-	public void setupHandler(Looper looper)
+	public void setup(Looper looper, Callback callback, int style)
 	{
 		mHandler = new Handler(looper, this);
-	}
-
-	/**
-	 * Set the cover style. Must be one of CoverBitmap.STYLE_. Will only apply
-	 * to bitmaps rendered after this method is called.
-	 */
-	public void setCoverStyle(int style)
-	{
+		mCallback = callback;
 		mCoverStyle = style;
-	}
-
-	/**
-	 * Query the service for initial song info.
-	 */
-	public void initialize()
-	{
-		mTimelinePos = ContextApplication.getService().getTimelinePos();
-		querySongs(true);
 	}
 
 	/**
@@ -126,7 +119,7 @@ public final class CoverView extends View implements Handler.Callback {
 	 *
 	 * @param delta -1 or 1, indicate the previous or next song, respectively
 	 */
-	public void go(int delta)
+	private void go(int delta)
 	{
 		int i = delta > 0 ? STORE_SIZE - 1 : 0;
 		int from = delta > 0 ? 1 : 0;
@@ -134,7 +127,6 @@ public final class CoverView extends View implements Handler.Callback {
 		System.arraycopy(mSongs, from, mSongs, to, STORE_SIZE - 1);
 		mSongs[i] = null;
 
-		mTimelinePos += delta;
 		resetScroll();
 		invalidate();
 	}
@@ -314,8 +306,11 @@ public final class CoverView extends View implements Handler.Callback {
 		} else if (mTentativeCover != -1) {
 			int delta = mTentativeCover - 1;
 			mTentativeCover = -1;
-			mHandler.sendMessage(mHandler.obtainMessage(PlaybackActivity.MSG_SET_SONG, delta, 0));
-			go(delta);
+			if (delta == 1)
+				mCallback.nextSong();
+			else
+				mCallback.previousSong();
+			resetScroll();
 		}
 	}
 
@@ -363,6 +358,22 @@ public final class CoverView extends View implements Handler.Callback {
 		}
 	}
 
+	public void setCurrentSong(Song song)
+	{
+		mTimelinePos = ContextApplication.getService().getTimelinePos();
+
+		for (int delta = -STORE_SIZE / 2; delta <= STORE_SIZE / 2; ++delta) {
+			if (mSongs[delta + STORE_SIZE / 2] == song) {
+				if (delta != 0)
+					go(delta);
+				querySongs(false);
+				return;
+			}
+		}
+
+		querySongs(true);
+	}
+
 	/**
 	 * Handle an intent broadcasted by the PlaybackService. This must be called
 	 * to react to song changes in PlaybackService.
@@ -375,12 +386,6 @@ public final class CoverView extends View implements Handler.Callback {
 		if (PlaybackService.EVENT_REPLACE_SONG.equals(action)) {
 			int i = STORE_SIZE / 2 + intent.getIntExtra("pos", 0);
 			setSong(i, (Song)intent.getParcelableExtra("song"));
-		} else if (PlaybackService.EVENT_CHANGED.equals(action)) {
-			mTimelinePos = intent.getIntExtra("pos", 0);
-			Song currentSong = mSongs[STORE_SIZE / 2];
-			Song playingSong = intent.getParcelableExtra("song");
-			boolean force = currentSong == null || !currentSong.equals(playingSong);
-			querySongs(force);
 		}
 	}
 
@@ -390,13 +395,6 @@ public final class CoverView extends View implements Handler.Callback {
 	 * obj must be the Song to generate a bitmap for.
 	 */
 	private static final int MSG_GENERATE_BITMAP = 0;
-	/**
-	 * Tell PlaybackService to change the current song.
-	 * 
-	 * arg1 should be the delta, -1 or 1, indicating the previous or next song,
-	 * respectively.
-	 */
-	static final int MSG_SET_SONG = 1;
 	/**
 	 * Perform a long click.
 	 *
@@ -409,12 +407,6 @@ public final class CoverView extends View implements Handler.Callback {
 		switch (message.what) {
 		case MSG_GENERATE_BITMAP:
 			generateBitmap((Song)message.obj);
-			break;
-		case MSG_SET_SONG:
-			if (message.arg1 == 1)
-				ContextApplication.getService().nextSong();
-			else
-				ContextApplication.getService().previousSong();
 			break;
 		case MSG_LONG_CLICK:
 			mIgnoreNextUp = true;

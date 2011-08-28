@@ -137,7 +137,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 	public static final String EVENT_REPLACE_SONG = "org.kreed.vanilla.event.REPLACE_SONG";
 	public static final String EVENT_CHANGED = "org.kreed.vanilla.event.CHANGED";
-	public static final String EVENT_INITIALIZED = "org.kreed.vanilla.event.INITIALIZED";
 
 	public static final int FLAG_NO_MEDIA = 0x2;
 	public static final int FLAG_PLAYING = 0x1;
@@ -391,8 +390,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 	private void initialize()
 	{
-		ContextApplication.broadcast(new Intent(EVENT_INITIALIZED));
-
 		mMediaPlayer = new MediaPlayer();
 		mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		mMediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
@@ -433,10 +430,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			mHeadsetPause = settings.getBoolean("headset_pause", true);
 		} else if ("remote_player".equals(key)) {
 			// the preference is loaded in SongNotification class
-			updateNotification(getSong(0));
+			updateNotification();
 		} else if ("notification_mode".equals(key)){
 			mNotificationMode = Integer.parseInt(settings.getString("notification_mode", "1"));
-			updateNotification(getSong(0));
+			updateNotification();
 		} else if ("scrobble".equals(key)) {
 			mScrobble = settings.getBoolean("scrobble", false);
 		} else if ("volume".equals(key)) {
@@ -474,14 +471,14 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	private void setFlag(int flag)
 	{
 		synchronized (mStateLock) {
-			updateState(mState | flag, false);
+			updateState(mState | flag);
 		}
 	}
 
 	private void unsetFlag(int flag)
 	{
 		synchronized (mStateLock) {
-			updateState(mState & ~flag, false);
+			updateState(mState & ~flag);
 		}
 	}
 
@@ -489,10 +486,9 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 * Modify the service state.
 	 *
 	 * @param state Union of PlaybackService.STATE_* flags
-	 * @param forceBroadcast Broadcast state/song update even if the state has
-	 * not changed.
+	 * @return The new state
 	 */
-	private void updateState(int state, boolean forceBroadcast)
+	private int updateState(int state)
 	{
 		state &= ALL_FLAGS;
 
@@ -508,32 +504,43 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		}
 
 		if (song == null && (state & FLAG_PLAYING) != 0)
-			return;
+			return state;
 		if (song == null)
 			state &= ~FLAG_REPEAT;
 
 		int oldState = mState;
 		mState = state;
 
-		if (state != oldState || forceBroadcast) {
-			Intent intent = new Intent(EVENT_CHANGED);
-			intent.putExtra("state", state);
-			intent.putExtra("song", song);
-			intent.putExtra("pos", mTimeline.getCurrentPosition());
-			mHandler.sendMessage(mHandler.obtainMessage(BROADCAST, intent));
-
-			if (mScrobble) {
-				intent = new Intent("net.jjc1138.android.scrobbler.action.MUSIC_STATUS");
-				intent.putExtra("playing", (state & FLAG_PLAYING) != 0);
-				if (song != null)
-					intent.putExtra("id", (int)song.id);
-				sendBroadcast(intent);
-			}
-
-			updateNotification(song);
+		if (state != oldState) {
+			mHandler.sendMessage(mHandler.obtainMessage(PROCESS_STATE, oldState, state));
+			mHandler.sendMessage(mHandler.obtainMessage(BROADCAST_CHANGE, state, 0));
 		}
 
+		return state;
+	}
+
+	private void processNewState(int oldState, int state)
+	{
 		int toggled = oldState ^ state;
+
+		if ((toggled & FLAG_PLAYING) != 0) {
+			if ((state & FLAG_PLAYING) != 0) {
+				if (mMediaPlayerInitialized) {
+					synchronized (mMediaPlayer) {
+						mMediaPlayer.start();
+					}
+				}
+				if (mNotificationMode != NEVER)
+					startForegroundCompat(NOTIFICATION_ID, mNotification);
+			} else {
+				if (mMediaPlayerInitialized) {
+					synchronized (mMediaPlayer) {
+						mMediaPlayer.pause();
+					}
+				}
+				stopForegroundCompat(false);
+			}
+		}
 
 		if ((toggled & FLAG_SHUFFLE) != 0) {
 			if ((state & FLAG_SHUFFLE) != 0) {
@@ -554,30 +561,42 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				Toast.makeText(this, R.string.repeat_disabling, Toast.LENGTH_SHORT).show();
 			}
 		}
-
-		if ((toggled & FLAG_PLAYING) != 0) {
-			if ((state & FLAG_PLAYING) != 0) {
-				if (mNotificationMode != NEVER)
-					startForegroundCompat(NOTIFICATION_ID, mNotification);
-				if (mMediaPlayerInitialized) {
-					synchronized (mMediaPlayer) {
-						mMediaPlayer.start();
-					}
-				}
-			} else {
-				stopForegroundCompat(false);
-				if (mMediaPlayerInitialized) {
-					synchronized (mMediaPlayer) {
-						mMediaPlayer.pause();
-					}
-				}
-			}
-		}
 	}
 
-	private void updateNotification(Song song)
+	private void broadcastChange(int state, Song song, long uptime)
+	{
+		updateNotification();
+
+		Intent intent = new Intent(EVENT_CHANGED);
+		if (state != -1)
+			intent.putExtra("state", state);
+		if (song != null)
+			intent.putExtra("song", song);
+		intent.putExtra("time", uptime);
+		ContextApplication.broadcast(intent);
+
+		if (mScrobble)
+			scrobble();
+	}
+
+	private void scrobble()
+	{
+		assert(mScrobble == true);
+
+		Song song = getSong(0);
+		int state = mState;
+
+		Intent intent = new Intent("net.jjc1138.android.scrobbler.action.MUSIC_STATUS");
+		intent.putExtra("playing", (state & FLAG_PLAYING) != 0);
+		if (song != null)
+			intent.putExtra("id", (int)song.id);
+		sendBroadcast(intent);
+	}
+
+	private void updateNotification()
 	{
 		boolean shouldNotify = mNotificationMode == ALWAYS || mNotificationMode == WHEN_PLAYING && (mState & FLAG_PLAYING) != 0;
+		Song song = getSong(0);
 		if (song != null && shouldNotify) {
 			mNotification = new SongNotification(song, (mState & FLAG_PLAYING) != 0);
 			mNotificationManager.notify(NOTIFICATION_ID, mNotification);
@@ -590,38 +609,56 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 * Toggle a flag in the state on or off
 	 *
 	 * @param flag The flag to be toggled
+	 * @return The new state
 	 */
-	public void toggleFlag(int flag)
+	public int toggleFlag(int flag)
 	{
+		int state;
 		synchronized (mStateLock) {
-			updateState(mState ^ flag, false);
+			state = updateState(mState ^ flag);
 		}
 		userActionTriggered();
+		return state;
 	}
 
 	/**
 	 * Move <code>delta</code> places away from the current song.
+	 *
+	 * @return The new current song
 	 */
-	private void setCurrentSong(int delta)
+	private Song setCurrentSong(int delta)
 	{
 		if (mMediaPlayer == null)
-			return;
+			return null;
 
 		synchronized (mMediaPlayer) {
-			mMediaPlayer.stop();
+			if (mMediaPlayer.isPlaying())
+				mMediaPlayer.stop();
 		}
 
 		Song song = mTimeline.shiftCurrentSong(delta);
 		if (song == null) {
-			if (Song.isSongAvailable())
-				setCurrentSong(+1); // we only encountered a bad song; skip it
-			else
+			if (Song.isSongAvailable()) {
+				return setCurrentSong(+1); // we only encountered a bad song; skip it
+			} else {
 				setFlag(FLAG_NO_MEDIA); // we don't have any songs : /
-			return;
+				return null;
+			}
 		} else if ((mState & FLAG_NO_MEDIA) != 0) {
 			unsetFlag(FLAG_NO_MEDIA);
 		}
 
+		mHandler.removeMessages(PROCESS_SONG);
+
+		mHandler.sendMessage(mHandler.obtainMessage(PROCESS_SONG, song));
+		Message msg = mHandler.obtainMessage(BROADCAST_CHANGE, -1, 0);
+		msg.obj = song;
+		mHandler.sendMessage(msg);
+		return song;
+	}
+
+	private void processSong(Song song)
+	{
 		try {
 			synchronized (mMediaPlayer) {
 				mMediaPlayer.reset();
@@ -632,15 +669,18 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			}
 			if ((mState & FLAG_PLAYING) != 0)
 				mMediaPlayer.start();
-			updateState(mState & ~FLAG_ERROR, true);
+			updateState(mState & ~FLAG_ERROR);
 		} catch (IOException e) {
 			// FLAG_PLAYING is set to force showing the Toast. updateState()
 			// will unset it.
-			updateState(mState | FLAG_PLAYING | FLAG_ERROR, true);
+			updateState(mState | FLAG_PLAYING | FLAG_ERROR);
 			Log.e("VanillaMusic", "IOException", e);
 		}
 
-		mHandler.sendEmptyMessage(PROCESS_SONG);
+		getSong(+2);
+		mTimeline.purge();
+		mHandler.removeMessages(SAVE_STATE);
+		mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
 	}
 
 	public void onCompletion(MediaPlayer player)
@@ -787,8 +827,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 * @see ContextApplication#broadcast(Intent)
 	 */
 	private static final int BROADCAST = 9;
+	private static final int BROADCAST_CHANGE = 10;
 	private static final int SAVE_STATE = 12;
 	private static final int PROCESS_SONG = 13;
+	private static final int PROCESS_STATE = 14;
 
 	public boolean handleMessage(Message message)
 	{
@@ -817,10 +859,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			mTimeline.saveState(this, 0);
 			break;
 		case PROCESS_SONG:
-			getSong(+2);
-			mTimeline.purge();
-			mHandler.removeMessages(SAVE_STATE);
-			mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
+			processSong((Song)message.obj);
 			break;
 		case CREATE:
 			initialize();
@@ -854,8 +893,14 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				}
 			}
 			break;
+		case PROCESS_STATE:
+			processNewState(message.arg1, message.arg2);
+			break;
 		case BROADCAST:
 			ContextApplication.broadcast((Intent)message.obj);
+			break;
+		case BROADCAST_CHANGE:
+			broadcastChange(message.arg1, (Song)message.obj, message.getWhen());
 			break;
 		default:
 			return false;
@@ -943,19 +988,21 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	/**
 	 * Move to the next song in the queue.
 	 */
-	public void nextSong()
+	public Song nextSong()
 	{
-		setCurrentSong(+1);
+		Song song = setCurrentSong(+1);
 		userActionTriggered();
+		return song;
 	}
 
 	/**
 	 * Move to the previous song in the queue.
 	 */
-	public void previousSong()
+	public Song previousSong()
 	{
-		setCurrentSong(-1);
+		Song song = setCurrentSong(-1);
 		userActionTriggered();
+		return song;
 	}
 
 	/**

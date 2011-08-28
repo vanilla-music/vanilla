@@ -38,11 +38,11 @@ public class MiniPlaybackActivity extends PlaybackActivity implements View.OnCli
 	{
 		super.onCreate(state);
 
-		requestWindowFeature(Window.FEATURE_NO_TITLE); 
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.mini_playback);
 
 		mCoverView = (CoverView)findViewById(R.id.cover_view);
-		mCoverView.setupHandler(mLooper);
+		mCoverView.setup(mLooper, this, CoverBitmap.STYLE_OVERLAPPING_BOX);
 
 		View openButton = findViewById(R.id.open_button);
 		openButton.setOnClickListener(this);
