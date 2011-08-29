@@ -413,10 +413,11 @@ public final class SongTimeline {
 	public void purge()
 	{
 		synchronized (this) {
-			while (mCurrentPos > 10 && mRepeatStart > 0) {
+			while (mCurrentPos > 10 && mRepeatStart != 0) {
 				mSongs.remove(0);
 				--mCurrentPos;
-				--mRepeatStart;
+				if (mRepeatStart > 0)
+					--mRepeatStart;
 			}
 		}
 	}
