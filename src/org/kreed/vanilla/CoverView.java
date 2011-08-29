@@ -244,7 +244,7 @@ public final class CoverView extends View implements Handler.Callback {
 					scrollBy(Math.min(availableToScroll, deltaX), 0);
 			}
 
-			if (Math.abs(mStartX - x) + Math.abs(mStartY - y) < 10)
+			if (Math.abs(mStartX - x) + Math.abs(mStartY - y) > 10)
 				mHandler.removeMessages(MSG_LONG_CLICK);
 			break;
 		}
