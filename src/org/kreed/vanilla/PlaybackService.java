@@ -32,7 +32,6 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -167,7 +166,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	private PowerManager.WakeLock mWakeLock;
 	private Notification mNotification;
 	private SharedPreferences mSettings;
-	private AudioManager mAudioManager;
 	private NotificationManager mNotificationManager;
 
 	SongTimeline mTimeline;
@@ -176,7 +174,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	boolean mPlayingBeforeCall;
 	private int mPendingSeek;
 	public Receiver mReceiver;
-	public ComponentName mButtonReceiver;
 	public InCallListener mCallListener;
 	private boolean mLoaded;
 	/**
@@ -191,19 +188,12 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 	private static Method mStartForeground;
 	private static Method mStopForeground;
-	private static Method mRegisterMediaButtonEventReceiver;
-	private static Method mUnregisterMediaButtonEventReceiver;
 
 	static {
 		try {
 			mStartForeground = Service.class.getMethod("startForeground", int.class, Notification.class);
 			mStopForeground = Service.class.getMethod("stopForeground", boolean.class);
 		} catch (NoSuchMethodException e) {
-		}
-		try {
-			mRegisterMediaButtonEventReceiver = AudioManager.class.getMethod("registerMediaButtonEventReceiver", ComponentName.class);
-			mUnregisterMediaButtonEventReceiver = AudioManager.class.getMethod("unregisterMediaButtonEventReceiver", ComponentName.class);
-		} catch (NoSuchMethodException nsme) {
 		}
 	}
 
@@ -223,9 +213,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 		ContextApplication.setService(this);
 
-		mAudioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-		mButtonReceiver = new ComponentName(getPackageName(), MediaButtonReceiver.class.getName());
-
 		mLooper = thread.getLooper();
 		mHandler = new Handler(mLooper, this);
 		mHandler.sendEmptyMessage(CREATE);
@@ -239,22 +226,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	private void showStartupToast()
 	{
 		Toast.makeText(this, R.string.starting, Toast.LENGTH_SHORT).show();
-	}
-
-	/**
-	 * Request focus on the media buttons from AudioManager.
-	 */
-	public void registerMediaButton()
-	{
-		if (mRegisterMediaButtonEventReceiver != null) {
-			try {
-				mRegisterMediaButtonEventReceiver.invoke(mAudioManager, mButtonReceiver);
-			} catch (InvocationTargetException e) {
-				Log.w("VanillaMusic", e);
-			} catch (IllegalAccessException e) {
-				Log.w("VanillaMusic", e);
-			}
-		}
 	}
 
 	@Override
@@ -302,7 +273,9 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			}
 
 			userActionTriggered();
-			registerMediaButton();
+			MediaButtonHandler buttons = MediaButtonHandler.getInstance();
+			if (buttons != null)
+				buttons.registerMediaButton();
 		}
 	}
 
@@ -323,15 +296,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 		mLooper.quit();
 
-		if (mUnregisterMediaButtonEventReceiver != null) {
-			try {
-				mUnregisterMediaButtonEventReceiver.invoke(mAudioManager, mButtonReceiver);
-			} catch (InvocationTargetException e) {
-				Log.w("VanillaMusic", e);
-			} catch (IllegalAccessException e) {
-				Log.w("VanillaMusic", e);
-			}
-		}
+		MediaButtonHandler.unregisterMediaButton();
 
 		try {
 			unregisterReceiver(mReceiver);
@@ -445,7 +410,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				}
 			}
 		} else if ("media_button".equals(key)) {
-			MediaButtonHandler.getInstance().setUseHeadsetControls(settings.getBoolean("media_button", true));
+			MediaButtonHandler.reloadPreference();
 		} else if ("use_idle_timeout".equals(key) || "idle_timeout".equals(key)) {
 			mIdleTimeout = settings.getBoolean("use_idle_timeout", false) ? settings.getInt("idle_timeout", 3600) : 0;
 			userActionTriggered();
@@ -751,8 +716,11 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		{
 			switch (state) {
 			case TelephonyManager.CALL_STATE_RINGING:
-			case TelephonyManager.CALL_STATE_OFFHOOK:
-				MediaButtonHandler.getInstance().setInCall(true);
+			case TelephonyManager.CALL_STATE_OFFHOOK: {
+				MediaButtonHandler buttons = MediaButtonHandler.getInstance();
+				if (buttons != null)
+					buttons.setInCall(true);
+
 				if (!mPlayingBeforeCall) {
 					synchronized (mStateLock) {
 						if (mPlayingBeforeCall = (mState & FLAG_PLAYING) != 0)
@@ -760,14 +728,19 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 					}
 				}
 				break;
-			case TelephonyManager.CALL_STATE_IDLE:
-				MediaButtonHandler.getInstance().setInCall(false);
+			}
+			case TelephonyManager.CALL_STATE_IDLE: {
+				MediaButtonHandler buttons = MediaButtonHandler.getInstance();
+				if (buttons != null)
+					buttons.setInCall(false);
+
 				if (mPlayingBeforeCall) {
 					setFlag(FLAG_PLAYING);
 					mPlayingBeforeCall = false;
 				}
 				break;
 			}
+		}
 		}
 	};
 

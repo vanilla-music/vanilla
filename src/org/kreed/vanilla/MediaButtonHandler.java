@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,13 +22,19 @@
 
 package org.kreed.vanilla;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.KeyEvent;
 
 /**
@@ -54,21 +60,30 @@ public class MediaButtonHandler implements Handler.Callback {
 	 * Whether the headset controls should be used. 1 for yes, 0 for no, -1 for
 	 * uninitialized.
 	 */
-	private byte mUseControls = -1;
+	private static int mUseControls = -1;
 	/**
 	 * Whether the phone is currently in a call. 1 for yes, 0 for no, -1 for
 	 * uninitialized.
 	 */
-	private byte mInCall = -1;
+	private int mInCall = -1;
+
+	private static AudioManager mAudioManager;
+	private static Method mRegisterMediaButtonEventReceiver;
+	private static Method mUnregisterMediaButtonEventReceiver;
+	public static ComponentName mButtonReceiver;
 
 	/**
 	 * Retrieve the MediaButtonHandler singleton, creating it if necessary.
+	 * Returns null if headset controls are not enabled.
 	 */
 	public static MediaButtonHandler getInstance()
 	{
-		if (mInstance == null)
-			mInstance = new MediaButtonHandler();
-		return mInstance;
+		if (useHeadsetControls()) {
+			if (mInstance == null)
+				mInstance = new MediaButtonHandler();
+			return mInstance;
+		}
+		return null;
 	}
 
 	/**
@@ -77,29 +92,44 @@ public class MediaButtonHandler implements Handler.Callback {
 	private MediaButtonHandler()
 	{
 		mHandler = new Handler(this);
+
+		Context context = ContextApplication.getContext();
+
+		mAudioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
+		mButtonReceiver = new ComponentName(context.getPackageName(), MediaButtonReceiver.class.getName());
+		try {
+			mRegisterMediaButtonEventReceiver = AudioManager.class.getMethod("registerMediaButtonEventReceiver", ComponentName.class);
+			mUnregisterMediaButtonEventReceiver = AudioManager.class.getMethod("unregisterMediaButtonEventReceiver", ComponentName.class);
+		} catch (NoSuchMethodException nsme) {
+			// Older Android; just use receiver priority
+		}
+	}
+
+	private static void loadPreference()
+	{
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(ContextApplication.getContext());
+		mUseControls = settings.getBoolean("media_button", true) ? 1 : 0;
+	}
+
+	public static void reloadPreference()
+	{
+		loadPreference();
+		if (useHeadsetControls()) {
+			getInstance().registerMediaButton();
+		} else {
+			unregisterMediaButton();
+		}
 	}
 
 	/**
 	 * Return whether headset controls should be used, loading the preference
 	 * if necessary.
 	 */
-	public boolean useHeadsetControls()
-	{	
-		if (mUseControls == -1) {
-			SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(ContextApplication.getContext());
-			mUseControls = (byte)(settings.getBoolean("media_button", true) ? 1 : 0);
-		}
-		return mUseControls == 1;
-	}
-
-	/**
-	 * Set the cached value for the headset controls preference.
-	 *
-	 * @param value True if controls should be used, false otherwise.
-	 */
-	public void setUseHeadsetControls(boolean value)
+	public static boolean useHeadsetControls()
 	{
-		mUseControls = (byte)(value ? 1 : 0);
+		if (mUseControls == -1)
+			loadPreference();
+		return mUseControls == 1;
 	}
 
 	/**
@@ -122,7 +152,7 @@ public class MediaButtonHandler implements Handler.Callback {
 	 */
 	public void setInCall(boolean value)
 	{
-		mInCall = (byte)(value ? 1 : 0);
+		mInCall = value ? 1 : 0;
 	}
 
 	/**
@@ -209,5 +239,38 @@ public class MediaButtonHandler implements Handler.Callback {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Request focus on the media buttons from AudioManager.
+	 */
+	public void registerMediaButton()
+	{
+		assert(mUseControls == 1);
+		if (mRegisterMediaButtonEventReceiver != null) {
+			try {
+				mRegisterMediaButtonEventReceiver.invoke(mAudioManager, mButtonReceiver);
+			} catch (InvocationTargetException e) {
+				Log.w("VanillaMusic", e);
+			} catch (IllegalAccessException e) {
+				Log.w("VanillaMusic", e);
+			}
+		}
+	}
+
+	/**
+	 * Unregister the media buttons from AudioManager.
+	 */
+	public static void unregisterMediaButton()
+	{
+		if (mUnregisterMediaButtonEventReceiver != null) {
+			try {
+				mUnregisterMediaButtonEventReceiver.invoke(mAudioManager, mButtonReceiver);
+			} catch (InvocationTargetException e) {
+				Log.w("VanillaMusic", e);
+			} catch (IllegalAccessException e) {
+				Log.w("VanillaMusic", e);
+			}
+		}
 	}
 }

@@ -85,7 +85,10 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 		if (ContextApplication.hasService()) {
 			PlaybackService service = ContextApplication.getService();
 			service.userActionTriggered();
-			service.registerMediaButton();
+
+			MediaButtonHandler buttons = MediaButtonHandler.getInstance();
+			if (buttons != null)
+				buttons.setInCall(false);
 		}
 	}
 
