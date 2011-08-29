@@ -164,7 +164,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	MediaPlayer mMediaPlayer;
 	private boolean mMediaPlayerInitialized;
 	private PowerManager.WakeLock mWakeLock;
-	private Notification mNotification;
 	private SharedPreferences mSettings;
 	private NotificationManager mNotificationManager;
 
@@ -398,6 +397,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			updateNotification();
 		} else if ("notification_mode".equals(key)){
 			mNotificationMode = Integer.parseInt(settings.getString("notification_mode", "1"));
+			// This is the only way to remove a notification created by
+			// startForeground(), even if we are not currently in foreground
+			// mode.
+			stopForegroundCompat(true);
 			updateNotification();
 		} else if ("scrobble".equals(key)) {
 			mScrobble = settings.getBoolean("scrobble", false);
@@ -496,14 +499,19 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 					}
 				}
 				if (mNotificationMode != NEVER)
-					startForegroundCompat(NOTIFICATION_ID, mNotification);
+					startForegroundCompat(NOTIFICATION_ID, new SongNotification(getSong(0), true));
 			} else {
 				if (mMediaPlayerInitialized) {
 					synchronized (mMediaPlayer) {
 						mMediaPlayer.pause();
 					}
 				}
-				stopForegroundCompat(false);
+				if (mNotificationMode == ALWAYS) {
+					stopForegroundCompat(false);
+					mNotificationManager.notify(NOTIFICATION_ID, new SongNotification(getSong(0), false));
+				} else {
+					stopForegroundCompat(true);
+				}
 			}
 		}
 
@@ -530,8 +538,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 	private void broadcastChange(int state, Song song, long uptime)
 	{
-		updateNotification();
-
 		Intent intent = new Intent(EVENT_CHANGED);
 		if (state != -1)
 			intent.putExtra("state", state);
@@ -560,14 +566,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 	private void updateNotification()
 	{
-		boolean shouldNotify = mNotificationMode == ALWAYS || mNotificationMode == WHEN_PLAYING && (mState & FLAG_PLAYING) != 0;
-		Song song = getSong(0);
-		if (song != null && shouldNotify) {
-			mNotification = new SongNotification(song, (mState & FLAG_PLAYING) != 0);
-			mNotificationManager.notify(NOTIFICATION_ID, mNotification);
-		} else {
-			stopForegroundCompat(true);
-		}
+		if (mNotificationMode == ALWAYS || mNotificationMode == WHEN_PLAYING && (mState & FLAG_PLAYING) != 0)
+			mNotificationManager.notify(NOTIFICATION_ID, new SongNotification(getSong(0), (mState & FLAG_PLAYING) != 0));
+		else
+			mNotificationManager.cancel(NOTIFICATION_ID);
 	}
 
 	/**
@@ -641,6 +643,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			updateState(mState | FLAG_PLAYING | FLAG_ERROR);
 			Log.e("VanillaMusic", "IOException", e);
 		}
+
+		updateNotification();
 
 		getSong(+2);
 		mTimeline.purge();
