@@ -30,8 +30,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
-import android.os.Handler;
-import android.os.Message;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -41,7 +40,7 @@ import android.view.KeyEvent;
  * Handle a provided MediaButton event and take the appropriate action in
  * PlaybackService.
  */
-public class MediaButtonHandler implements Handler.Callback {
+public class MediaButtonHandler {
 	/**
 	 * If another button event is received before this time in milliseconds
 	 * expires, the event with be considered a double click.
@@ -53,10 +52,6 @@ public class MediaButtonHandler implements Handler.Callback {
 	 */
 	private static MediaButtonHandler mInstance;
 	/**
-	 * The Handler for delayed processing.
-	 */
-	private Handler mHandler;
-	/**
 	 * Whether the headset controls should be used. 1 for yes, 0 for no, -1 for
 	 * uninitialized.
 	 */
@@ -66,6 +61,10 @@ public class MediaButtonHandler implements Handler.Callback {
 	 * uninitialized.
 	 */
 	private int mInCall = -1;
+	/**
+	 * Time of the last play/pause click. Used to detect double-clicks.
+	 */
+	private long mLastClickTime;
 
 	private static AudioManager mAudioManager;
 	private static Method mRegisterMediaButtonEventReceiver;
@@ -91,8 +90,6 @@ public class MediaButtonHandler implements Handler.Callback {
 	 */
 	private MediaButtonHandler()
 	{
-		mHandler = new Handler(this);
-
 		Context context = ContextApplication.getContext();
 
 		mAudioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
@@ -185,13 +182,12 @@ public class MediaButtonHandler implements Handler.Callback {
 			// double click: next track
 
 			if (action == KeyEvent.ACTION_DOWN) {
-				if (mHandler.hasMessages(MSG_SINGLE_PRESS_TIMEOUT)) {
-					// double click
-					mHandler.removeMessages(MSG_SINGLE_PRESS_TIMEOUT);
+				long time = SystemClock.uptimeMillis();
+				if (time - mLastClickTime < DOUBLE_CLICK_DELAY)
 					act(PlaybackService.ACTION_NEXT_SONG_AUTOPLAY);
-				} else {
-					mHandler.sendEmptyMessageDelayed(MSG_SINGLE_PRESS_TIMEOUT, DOUBLE_CLICK_DELAY);
-				}
+				else
+					act(PlaybackService.ACTION_TOGGLE_PLAYBACK);
+				mLastClickTime = time;
 			}
 			break;
 		case KeyEvent.KEYCODE_MEDIA_NEXT:
@@ -220,25 +216,6 @@ public class MediaButtonHandler implements Handler.Callback {
 	{
 		KeyEvent event = intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
 		return processKey(event);
-	}
-
-	/**
-	 * A delayed message that performs the single press action after the double
-	 * click period has expired.
-	 */
-	private static final int MSG_SINGLE_PRESS_TIMEOUT = 0;
-
-	public boolean handleMessage(Message message)
-	{
-		switch (message.what) {
-		case MSG_SINGLE_PRESS_TIMEOUT:
-			act(PlaybackService.ACTION_TOGGLE_PLAYBACK);
-			break;
-		default:
-			return false;
-		}
-
-		return true;
 	}
 
 	/**
