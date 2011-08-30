@@ -71,8 +71,8 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	private View mClearButton;
 
 	private View mControls;
-	TextView mStatusText;
-	ImageView mCover;
+	private TextView mStatusText;
+	private ImageView mCover;
 
 	private ViewGroup mLimiterViews;
 
@@ -686,20 +686,15 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 			text = res.getString(R.string.title_by_artist, title, artist);
 		}
 
+		mStatusText.setText(text);
+
 		if (mCoverSize == -1) {
 			DisplayMetrics metrics = ContextApplication.getContext().getResources().getDisplayMetrics();
 			mCoverSize = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 64, metrics);
 		}
 
-		final CharSequence result = text;
-		final Bitmap cover = CoverBitmap.createScaledBitmap(song, mCoverSize);
-		runOnUiThread(new Runnable() {
-			public void run()
-			{
-				mStatusText.setText(result);
-				mCover.setImageBitmap(cover);
-				mCover.setVisibility(cover == null ? View.GONE : View.VISIBLE);
-			}
-		});
+		Bitmap cover = CoverBitmap.createScaledBitmap(song, mCoverSize);
+		mCover.setImageBitmap(cover);
+		mCover.setVisibility(cover == null ? View.GONE : View.VISIBLE);
 	}
 }

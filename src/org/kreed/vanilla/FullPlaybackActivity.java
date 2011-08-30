@@ -145,7 +145,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	 * Show the message view overlay, creating it if necessary and clearing
 	 * it of all content.
 	 */
-	void showMessageOverlay()
+	private void showMessageOverlay()
 	{
 		if (mMessageOverlay == null) {
 			mMessageOverlay = new RelativeLayout(this);
@@ -162,7 +162,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	/**
 	 * Hide the message overlay, if it exists.
 	 */
-	void hideMessageOverlay()
+	private void hideMessageOverlay()
 	{
 		if (mMessageOverlay != null)
 			mMessageOverlay.setVisibility(View.GONE);
@@ -173,7 +173,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	 * must have been created with showMessageOverlay before this method is
 	 * called.
 	 */
-	void setNoMediaOverlayMessage()
+	private void setNoMediaOverlayMessage()
 	{
 		RelativeLayout.LayoutParams layoutParams =
 			new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -187,52 +187,40 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	}
 
 	@Override
-	protected void setState(final int state)
+	protected void onStateChange(int state, int toggled)
 	{
-		int toggled = mState ^ state;
+		super.onStateChange(state, toggled);
 
 		if ((toggled & PlaybackService.FLAG_NO_MEDIA) != 0) {
-			runOnUiThread(new Runnable() {
-				@Override
-				public void run()
-				{
-					if ((state & PlaybackService.FLAG_NO_MEDIA) != 0) {
-						showMessageOverlay();
-						setNoMediaOverlayMessage();
-					} else {
-						hideMessageOverlay();
-					}
-				}
-			});
+			if ((state & PlaybackService.FLAG_NO_MEDIA) != 0) {
+				showMessageOverlay();
+				setNoMediaOverlayMessage();
+			} else {
+				hideMessageOverlay();
+			}
 		}
-
-		super.setState(state);
 	}
 
 	@Override
 	protected void onSongChange(final Song song)
 	{
-		mDuration = song == null ? 0 : song.duration;
-		if (mTitle != null) {
-			runOnUiThread(new Runnable() {
-				@Override
-				public void run()
-				{
-					if (song == null) {
-						mTitle.setText(null);
-						mAlbum.setText(null);
-						mArtist.setText(null);
-					} else {
-						mTitle.setText(song.title);
-						mAlbum.setText(song.album);
-						mArtist.setText(song.artist);
-					}
-				}
-			});
-		}
-		mUiHandler.sendEmptyMessage(MSG_UPDATE_PROGRESS);
-
 		super.onSongChange(song);
+
+		mDuration = song == null ? 0 : song.duration;
+
+		if (mTitle != null) {
+			if (song == null) {
+				mTitle.setText(null);
+				mAlbum.setText(null);
+				mArtist.setText(null);
+			} else {
+				mTitle.setText(song.title);
+				mAlbum.setText(song.album);
+				mArtist.setText(song.artist);
+			}
+		}
+
+		updateProgress();
 	}
 
 	@Override

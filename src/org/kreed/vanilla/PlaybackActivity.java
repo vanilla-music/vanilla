@@ -36,13 +36,13 @@ import android.view.MenuItem;
 import android.view.View;
 
 public class PlaybackActivity extends Activity implements Handler.Callback, View.OnClickListener, CoverView.Callback {
-	Handler mHandler;
-	Looper mLooper;
+	protected Handler mHandler;
+	protected Looper mLooper;
 
-	CoverView mCoverView;
-	ControlButton mPlayPauseButton;
-	int mState;
+	protected CoverView mCoverView;
+	protected ControlButton mPlayPauseButton;
 
+	protected int mState;
 	private long mLastStateEvent;
 	private long mLastSongEvent;
 
@@ -139,12 +139,12 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 
 	public void nextSong()
 	{
-		onSongChange(ContextApplication.getService().nextSong());
+		setSong(ContextApplication.getService().nextSong());
 	}
 
 	public void previousSong()
 	{
-		onSongChange(ContextApplication.getService().previousSong());
+		setSong(ContextApplication.getService().previousSong());
 	}
 
 	public void onClick(View view)
@@ -163,31 +163,32 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	}
 
 	/**
-	 * Updates <code>mState</code> and the play/pause button. Override to
-	 * implement further behavior in subclasses.
+	 * Called when the PlaybackService state has changed.
 	 *
 	 * @param state PlaybackService state
+	 * @param toggled The flags that have changed from the previous state
 	 */
-	protected void setState(int state)
+	protected void onStateChange(int state, int toggled)
+	{
+		if ((toggled & PlaybackService.FLAG_PLAYING) != 0 && mPlayPauseButton != null)
+			mPlayPauseButton.setImageResource((state & PlaybackService.FLAG_PLAYING) == 0 ? R.drawable.play : R.drawable.pause);
+
+	}
+
+	protected void setState(final int state)
 	{
 		mLastStateEvent = SystemClock.uptimeMillis();
 
-		if (mState == state)
-			return;
-
-		int toggled = mState ^ state;
-
-		if ((toggled & PlaybackService.FLAG_PLAYING) != 0 && mPlayPauseButton != null) {
-			final int res = (state & PlaybackService.FLAG_PLAYING) == 0 ? R.drawable.play : R.drawable.pause;
+		if (mState != state) {
+			final int toggled = mState ^ state;
+			mState = state;
 			runOnUiThread(new Runnable() {
 				public void run()
 				{
-					mPlayPauseButton.setImageResource(res);
+					onStateChange(state, toggled);
 				}
 			});
 		}
-
-		mState = state;
 	}
 
 	/**
@@ -197,24 +198,30 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	protected void onServiceReady()
 	{
 		PlaybackService service = ContextApplication.getService();
-		onSongChange(service.getSong(0));
+		setSong(service.getSong(0));
 		setState(service.getState());
 	}
 
 	/**
 	 * Called when the current song changes.
+	 *
+	 * @param song The new song
 	 */
-	protected void onSongChange(final Song song)
+	protected void onSongChange(Song song)
+	{
+		if (mCoverView != null)
+			mCoverView.setCurrentSong(song);
+	}
+
+	protected void setSong(final Song song)
 	{
 		mLastSongEvent = SystemClock.uptimeMillis();
-		if (mCoverView != null) {
-			runOnUiThread(new Runnable() {
-				public void run()
-				{
-					mCoverView.setCurrentSong(song);
-				}
-			});
-		}
+		runOnUiThread(new Runnable() {
+			public void run()
+			{
+				onSongChange(song);
+			}
+		});
 	}
 
 	/**
@@ -236,7 +243,7 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 
 			if (intent.hasExtra("song") && time > mLastSongEvent) {
 				Song song = intent.getParcelableExtra("song");
-				onSongChange(song);
+				setSong(song);
 			}
 		}
 		if (mCoverView != null)
