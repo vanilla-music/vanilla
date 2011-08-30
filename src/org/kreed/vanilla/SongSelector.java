@@ -693,7 +693,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 			mCoverSize = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 64, metrics);
 		}
 
-		Bitmap cover = CoverBitmap.createScaledBitmap(song, mCoverSize);
+		Bitmap cover = CoverBitmap.createScaledBitmap(song, mCoverSize, mCoverSize);
 		mCover.setImageBitmap(cover);
 		mCover.setVisibility(cover == null ? View.GONE : View.VISIBLE);
 	}

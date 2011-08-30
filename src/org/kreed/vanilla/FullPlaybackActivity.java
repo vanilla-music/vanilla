@@ -44,6 +44,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	public static final int DISPLAY_INFO_OVERLAP = 0;
 	public static final int DISPLAY_INFO_BELOW = 1;
 	public static final int DISPLAY_INFO_WIDGETS = 2;
+	public static final int DISPLAY_INFO_WIDGETS_ZOOMED = 3;
 
 	/**
 	 * A Handler running on the UI thread, in contrast with mHandler which runs
@@ -89,6 +90,10 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 			coverStyle = CoverBitmap.STYLE_INFO_BELOW;
 			break;
 		case DISPLAY_INFO_WIDGETS:
+			coverStyle = CoverBitmap.STYLE_NO_INFO;
+			layout = R.layout.full_playback_alt;
+			break;
+		case DISPLAY_INFO_WIDGETS_ZOOMED:
 			coverStyle = CoverBitmap.STYLE_NO_INFO_ZOOMED;
 			layout = R.layout.full_playback_alt;
 			break;

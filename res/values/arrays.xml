@@ -40,6 +40,7 @@ THE SOFTWARE.
 		<item>Info In Overlapping Box (default)</item>
 		<item>Info Below Cover Art</item>
 		<item>Info In Immobile Layer</item>
+		<item>Info In Immobile Layer (Fullscreen Cover)</item>
 	</string-array>
 	<string-array name="entry_values">
 		<!-- Note: even if this was an integer-array, these would be converted
@@ -48,5 +49,6 @@ THE SOFTWARE.
 		<item>0</item>
 		<item>1</item>
 		<item>2</item>
+		<item>3</item>
 	</string-array>
 </resources>

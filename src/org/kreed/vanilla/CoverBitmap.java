@@ -47,10 +47,14 @@ public final class CoverBitmap {
 	 */
 	public static final int STYLE_INFO_BELOW = 1;
 	/**
+	 * Draw no song info, only the cover.
+	 */
+	public static final int STYLE_NO_INFO = 2;
+	/**
 	 * Draw no song info and zoom the cover so that it fills the entire bitmap
 	 * (preserving aspect ratio---some parts of the cover may be cut off).
 	 */
-	public static final int STYLE_NO_INFO_ZOOMED = 2;
+	public static final int STYLE_NO_INFO_ZOOMED = 3;
 
 	private static int TEXT_SIZE = -1;
 	private static int TEXT_SIZE_BIG;
@@ -120,30 +124,6 @@ public final class CoverBitmap {
 		canvas.clipRect(left, top, left + maxWidth, top + paint.getTextSize() * 2);
 		canvas.drawText(text, left + offset, top - paint.ascent(), paint);
 		canvas.restore();
-	}
-
-	/**
-	 * Scales a cover down to fit in a square of the specified size.
-	 *
-	 * @param song The Song to retrieve the cover from.
-	 * @param size The width/height of the square. Must be greater than zero.
-	 * @return The scaled Bitmap, or null if a cover could not be found.
-	 */
-	public static Bitmap createScaledBitmap(Song song, int size)
-	{
-		if (song == null || size < 1)
-			return null;
-
-		Bitmap cover = song.getCover();
-		if (cover == null)
-			return null;
-
-		int coverWidth = cover.getWidth();
-		int coverHeight = cover.getHeight();
-		float scale = coverWidth > coverHeight ? (float)size / coverWidth : (float)size / coverHeight;
-		coverWidth *= scale;
-		coverHeight *= scale;
-		return Bitmap.createScaledBitmap(cover, coverWidth, coverHeight, false);
 	}
 
 	/**
@@ -236,6 +216,8 @@ public final class CoverBitmap {
 			return createOverlappingBitmap(song, width, height, bitmap);
 		case STYLE_INFO_BELOW:
 			return createSeparatedBitmap(song, width, height, bitmap);
+		case STYLE_NO_INFO:
+			return createScaledBitmap(song, width, height);
 		case STYLE_NO_INFO_ZOOMED:
 			return createZoomedBitmap(song, width, height, bitmap);
 		default:
@@ -471,5 +453,32 @@ public final class CoverBitmap {
 		canvas.drawBitmap(cover, src, dest, null);
 
 		return bitmap;
+	}
+
+	/**
+	 * Scales a cover to fit in a rectangle of the given size. Aspect ratio is
+	 * preserved. At least one dimension of the result will match the provided
+	 * dimension exactly.
+	 *
+	 * @param song The song to display information for
+	 * @param width Maximum width of image
+	 * @param height Maximum height of image
+	 * @return The scaled Bitmap, or null if a cover could not be found.
+	 */
+	public static Bitmap createScaledBitmap(Song song, int width, int height)
+	{
+		if (song == null || width < 1 || height < 1)
+			return null;
+
+		Bitmap cover = song.getCover();
+		if (cover == null)
+			return null;
+
+		int coverWidth = cover.getWidth();
+		int coverHeight = cover.getHeight();
+		float scale = Math.min((float)width / coverWidth, (float)height / coverHeight);
+		coverWidth *= scale;
+		coverHeight *= scale;
+		return Bitmap.createScaledBitmap(cover, coverWidth, coverHeight, false);
 	}
 }
