@@ -112,6 +112,8 @@ THE SOFTWARE.
 	<string name="notification_mode_summary">When to show the notification</string>
 	<string name="notification_action_title">Notification Action</string>
 	<string name="notification_action_summary">What to do when the notification is pressed</string>
+	<string name="notification_invert_colour_title">Invert notification colour</string>
+	<string name="notification_invert_colour_summary">Use inverted colour for notifications</string>
 
 	<string name="pref_playback_view">Playback View</string>
 	<string name="display_mode_title">Display Mode</string>

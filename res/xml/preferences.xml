@@ -54,6 +54,11 @@ THE SOFTWARE.
 			android:entries="@array/notification_action_entries"
 			android:entryValues="@array/entry_values"
 			android:defaultValue="0" />
+		<CheckBoxPreference
+			android:key="notification_inverted_colour"
+			android:title="@string/notification_invert_colour_title"
+			android:summary="@string/notification_invert_colour_summary"
+			android:defaultValue="false" />
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/pref_playback_view">
 		<ListPreference

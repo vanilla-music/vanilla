@@ -27,6 +27,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.TypedArray;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -72,6 +73,17 @@ public class SongNotification extends Notification {
 		views.setImageViewResource(R.id.icon, statusIcon);
 		views.setTextViewText(R.id.title, song.title);
 		views.setTextViewText(R.id.artist, song.artist);
+
+		TypedArray array = ContextApplication.getContext().getTheme().obtainStyledAttributes(new int[] {
+				android.R.attr.textColorPrimary,
+				android.R.attr.textColorPrimaryInverse,
+			});
+		int color1 = array.getColor(0, 0xFF00FF);
+		int color2 = array.getColor(1, 0xFF00FF);
+		int color = prefs.getBoolean("notification_inverted_colour", true) ? color1: color2;
+		array.recycle();
+		views.setTextColor(R.id.title, color);
+		views.setTextColor(R.id.artist, color);
 
 		contentView = views;
 		icon = statusIcon;
