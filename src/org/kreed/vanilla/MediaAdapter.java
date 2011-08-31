@@ -587,6 +587,8 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 	 * Limiter is a constraint for MediaAdapters used when a row is "expanded".
 	 */
 	public static class Limiter implements Serializable {
+		private static final long serialVersionUID = -4729694243900202614L;
+
 		public final String[] names;
 		public final long id;
 		public final int type;
