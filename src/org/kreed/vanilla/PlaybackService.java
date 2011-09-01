@@ -425,7 +425,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				if (activity instanceof FullPlaybackActivity)
 					activity.finish();
 			}
-		} else if ("notification_inverted_colour".equals(key)) {
+		} else if ("notification_inverted_color".equals(key)) {
 			updateNotification();
 		}
 	}

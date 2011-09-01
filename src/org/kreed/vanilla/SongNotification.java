@@ -69,21 +69,18 @@ public class SongNotification extends Notification {
 		int action = Integer.parseInt(prefs.getString("notification_action", "0"));
 		int statusIcon = playing ? R.drawable.status_icon : R.drawable.status_icon_paused;
 
-		RemoteViews views = new RemoteViews(ContextApplication.getContext().getPackageName(), R.layout.notification);
+		RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.notification);
 		views.setImageViewResource(R.id.icon, statusIcon);
 		views.setTextViewText(R.id.title, song.title);
 		views.setTextViewText(R.id.artist, song.artist);
 
-		TypedArray array = ContextApplication.getContext().getTheme().obtainStyledAttributes(new int[] {
-				android.R.attr.textColorPrimary,
-				android.R.attr.textColorPrimaryInverse,
-			});
-		int color1 = array.getColor(0, 0xFF00FF);
-		int color2 = array.getColor(1, 0xFF00FF);
-		int color = prefs.getBoolean("notification_inverted_colour", true) ? color1: color2;
-		array.recycle();
-		views.setTextColor(R.id.title, color);
-		views.setTextColor(R.id.artist, color);
+		if (prefs.getBoolean("notification_inverted_color", false)) {
+			TypedArray array = context.getTheme().obtainStyledAttributes(new int[] { android.R.attr.textColorPrimary });
+			int color = array.getColor(0, 0xFF00FF);
+			array.recycle();
+			views.setTextColor(R.id.title, color);
+			views.setTextColor(R.id.artist, color);
+		}
 
 		contentView = views;
 		icon = statusIcon;
