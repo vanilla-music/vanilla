@@ -204,6 +204,9 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 				hideMessageOverlay();
 			}
 		}
+
+		if ((state & PlaybackService.FLAG_PLAYING) != 0)
+			updateProgress();
 	}
 
 	@Override
