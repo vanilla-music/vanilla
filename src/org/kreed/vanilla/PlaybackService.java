@@ -283,17 +283,16 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	{
 		ContextApplication.setService(null);
 
-		super.onDestroy();
+		mLooper.quit();
+
+		// clear the notification
+		stopForegroundCompat(true);
 
 		if (mMediaPlayer != null) {
 			mTimeline.saveState(this, mMediaPlayer.getCurrentPosition());
-
-			unsetFlag(FLAG_PLAYING);
 			mMediaPlayer.release();
 			mMediaPlayer = null;
 		}
-
-		mLooper.quit();
 
 		MediaButtonHandler.unregisterMediaButton();
 
@@ -305,6 +304,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 		if (mWakeLock != null && mWakeLock.isHeld())
 			mWakeLock.release();
+
+		super.onDestroy();
 	}
 
 	public void startForegroundCompat(int id, Notification notification)
