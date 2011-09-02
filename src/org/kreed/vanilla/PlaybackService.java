@@ -382,9 +382,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 		setCurrentSong(0);
 
-		if (mPendingSeek != 0)
-			mMediaPlayer.seekTo(mPendingSeek);
-
 		mHandler.sendEmptyMessage(POST_CREATE);
 	}
 
@@ -637,6 +634,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				if (!mMediaPlayerInitialized)
 					mMediaPlayerInitialized = true;
 			}
+
+			if (mPendingSeek != 0)
+				mMediaPlayer.seekTo(mPendingSeek);
+
 			if ((mState & FLAG_PLAYING) != 0)
 				mMediaPlayer.start();
 			updateState(mState & ~FLAG_ERROR);
