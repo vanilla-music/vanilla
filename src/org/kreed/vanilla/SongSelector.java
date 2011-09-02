@@ -124,6 +124,8 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		mGenreAdapter = setupView(R.id.genre_list, new MediaAdapter(this, MediaUtils.TYPE_GENRE, true, false, state == null ? null : (MediaAdapter.Limiter)state.getSerializable("limiter_genres")));
 		mAdapters = new MediaAdapter[] { mArtistAdapter, mAlbumAdapter, mSongAdapter, mPlaylistAdapter, mGenreAdapter };
 
+		mCurrentAdapter = mAdapters[mTabHost.getCurrentTab()];
+
 		mTabHost.setOnTabChangedListener(this);
 
 		if (state != null) {
