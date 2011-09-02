@@ -210,4 +210,15 @@ public class MediaUtils {
 			list[i] = tmp;
 		}
 	}
+
+	public static void shuffle(Song[] list)
+	{
+		Random random = ContextApplication.getRandom();
+		for (int i = list.length; --i != -1; ) {
+			int j = random.nextInt(i + 1);
+			Song tmp = list[j];
+			list[j] = list[i];
+			list[i] = tmp;
+		}
+	}
 }

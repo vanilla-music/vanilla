@@ -216,14 +216,14 @@ public class Song implements Parcelable {
 			int end = Math.min(mAllSongsIdx + RANDOM_POPULATE_SIZE, mAllSongs.length);
 			for (int i = mAllSongsIdx; i != end; ++i) {
 				if (!first)
-					selection.append(",");
+					selection.append(',');
 
 				first = false;
 
 				selection.append(mAllSongs[i]);
 			}
 
-			selection.append(")");
+			selection.append(')');
 
 			Cursor cursor = resolver.query(media, FILLED_PROJECTION, selection.toString(), null, null);
 
@@ -246,6 +246,9 @@ public class Song implements Parcelable {
 			}
 
 			cursor.close();
+
+			// The query will return sorted results; undo that
+			MediaUtils.shuffle(mRandomCache);
 
 			mRandomCacheIdx = 0;
 			mRandomCacheEnd = mAllSongsIdx + count;
