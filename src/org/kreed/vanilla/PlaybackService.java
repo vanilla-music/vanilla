@@ -639,8 +639,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 					mMediaPlayerInitialized = true;
 			}
 
-			if (mPendingSeek != 0)
+			if (mPendingSeek != 0) {
 				mMediaPlayer.seekTo(mPendingSeek);
+				mPendingSeek = 0;
+			}
 
 			if ((mState & FLAG_PLAYING) != 0)
 				mMediaPlayer.start();
