@@ -61,6 +61,8 @@ public final class CoverView extends View implements Handler.Callback {
 	public interface Callback {
 		public void nextSong();
 		public void previousSong();
+		public void upSwipe();
+		public void downSwipe();
 	}
 
 	private Callback mCallback;
@@ -78,6 +80,7 @@ public final class CoverView extends View implements Handler.Callback {
 	private Scroller mScroller;
 	private VelocityTracker mVelocityTracker;
 	private float mLastMotionX;
+	private float mLastMotionY;
 	private float mStartX;
 	private float mStartY;
 	private int mTentativeCover = -1;
@@ -227,37 +230,35 @@ public final class CoverView extends View implements Handler.Callback {
 			mStartX = x;
 			mStartY = y;
 			mLastMotionX = x;
+			mLastMotionY = y;
 
 			mHandler.sendEmptyMessageDelayed(MSG_LONG_CLICK, ViewConfiguration.getLongPressTimeout());
 			break;
 		case MotionEvent.ACTION_MOVE: {
-			int deltaX = (int) (mLastMotionX - x);
-			mLastMotionX = x;
+			float deltaX = mLastMotionX - x;
+			float deltaY = mLastMotionY - y;
 
-			if (deltaX < 0) {
-				int availableToScroll = scrollX - (mTimelinePos == 0 ? width : 0);
-				if (availableToScroll > 0)
-					scrollBy(Math.max(-availableToScroll, deltaX), 0);
-			} else if (deltaX > 0) {
-				int availableToScroll = getWidth() * 2 - scrollX;
-				if (availableToScroll > 0)
-					scrollBy(Math.min(availableToScroll, deltaX), 0);
+			if (Math.abs(deltaX) > Math.abs(deltaY)) {
+				if (deltaX < 0) {
+					int availableToScroll = scrollX - (mTimelinePos == 0 ? width : 0);
+					if (availableToScroll > 0)
+						scrollBy(Math.max(-availableToScroll, (int)deltaX), 0);
+				} else if (deltaX > 0) {
+					int availableToScroll = width * 2 - scrollX;
+					if (availableToScroll > 0)
+						scrollBy(Math.min(availableToScroll, (int)deltaX), 0);
+				}
 			}
 
 			if (Math.abs(mStartX - x) + Math.abs(mStartY - y) > 10)
 				mHandler.removeMessages(MSG_LONG_CLICK);
+
+			mLastMotionX = x;
+			mLastMotionY = y;
 			break;
 		}
 		case MotionEvent.ACTION_UP: {
 			mHandler.removeMessages(MSG_LONG_CLICK);
-			if (Math.abs(mStartX - x) + Math.abs(mStartY - y) < 10) {
-				// A long press was performed and thus the normal action should
-				// not be executed.
-				if (mIgnoreNextUp)
-					mIgnoreNextUp = false;
-				else
-					performClick();
-			}
 
 			VelocityTracker velocityTracker = mVelocityTracker;
 			velocityTracker.computeCurrentVelocity(250);
@@ -268,10 +269,28 @@ public final class CoverView extends View implements Handler.Callback {
 			int nearestCover = (scrollX + width / 2) / width;
 			int whichCover = Math.max(min, Math.min(nearestCover, max));
 
-			if (velocity > SNAP_VELOCITY && whichCover != min)
-				--whichCover;
-			else if (velocity < -SNAP_VELOCITY && whichCover != max)
-				++whichCover;
+			if (velocity > SNAP_VELOCITY)
+				whichCover = min;
+			else if (velocity < -SNAP_VELOCITY)
+				whichCover = max;
+
+			float diffX = Math.abs(mStartX - x);
+			float diffY = Math.abs(mStartY - y);
+			if (diffX + diffY < 10) {
+				// A long press was performed and thus the normal action should
+				// not be executed.
+				if (mIgnoreNextUp)
+					mIgnoreNextUp = false;
+				else
+					performClick();
+				whichCover = 1;
+			} else if (diffY > diffX) {
+				if (mStartY - y > 0)
+					mCallback.upSwipe();
+				else
+					mCallback.downSwipe();
+				whichCover = 1;
+			}
 
 			int newX = whichCover * width;
 			int delta = newX - scrollX;

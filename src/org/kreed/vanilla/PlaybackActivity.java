@@ -24,18 +24,31 @@ package org.kreed.vanilla;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 public class PlaybackActivity extends Activity implements Handler.Callback, View.OnClickListener, CoverView.Callback {
+	public static final int ACTION_NOTHING = 0;
+	public static final int ACTION_LIBRARY = 1;
+	public static final int ACTION_PLAY_PAUSE = 2;
+	public static final int ACTION_NEXT_SONG = 3;
+	public static final int ACTION_PREVIOUS_SONG = 4;
+	public static final int ACTION_REPEAT = 5;
+	public static final int ACTION_SHUFFLE = 6;
+
+	public static int mUpAction;
+	public static int mDownAction;
+
 	protected Handler mHandler;
 	protected Looper mLooper;
 
@@ -54,6 +67,10 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 
 		HandlerThread thread = new HandlerThread(getClass().getName());
 		thread.start();
+
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		mUpAction = Integer.parseInt(prefs.getString("swipe_up_action", "0"));
+		mDownAction = Integer.parseInt(prefs.getString("swipe_down_action", "0"));
 
 		mLooper = thread.getLooper();
 		mHandler = new Handler(mLooper, this);
@@ -147,6 +164,11 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 		setSong(ContextApplication.getService().previousSong());
 	}
 
+	public void playPause()
+	{
+		setState(ContextApplication.getService().toggleFlag(PlaybackService.FLAG_PLAYING));
+	}
+
 	public void onClick(View view)
 	{
 		switch (view.getId()) {
@@ -154,7 +176,7 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 			nextSong();
 			break;
 		case R.id.play_pause:
-			setState(ContextApplication.getService().toggleFlag(PlaybackService.FLAG_PLAYING));
+			playPause();
 			break;
 		case R.id.previous:
 			previousSong();
@@ -294,10 +316,10 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 			ContextApplication.quit();
 			return true;
 		case MENU_SHUFFLE:
-			setState(ContextApplication.getService().toggleFlag(PlaybackService.FLAG_SHUFFLE));
+			toggleShuffle();
 			return true;
 		case MENU_REPEAT:
-			setState(ContextApplication.getService().toggleFlag(PlaybackService.FLAG_REPEAT));
+			toggleRepeat();
 			return true;
 		case MENU_PREFS:
 			startActivity(new Intent(this, PreferencesActivity.class));
@@ -311,5 +333,69 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	public boolean handleMessage(Message msg)
 	{
 		return false;
+	}
+
+	/**
+	 * Toggle shuffle mode on/off
+	 */
+	public void toggleShuffle()
+	{
+		setState(ContextApplication.getService().toggleFlag(PlaybackService.FLAG_SHUFFLE));
+	}
+
+	/**
+	 * Toggle repeat mode on/off
+	 */
+	public void toggleRepeat()
+	{
+		setState(ContextApplication.getService().toggleFlag(PlaybackService.FLAG_REPEAT));
+	}
+
+	/**
+	 * Open the library activity.
+	 */
+	public void openLibrary()
+	{
+		startActivity(new Intent(this, SongSelector.class));
+	}
+
+	public void performAction(int action)
+	{
+		switch (action) {
+		case ACTION_NOTHING:
+			break;
+		case ACTION_LIBRARY:
+			openLibrary();
+			break;
+		case ACTION_PLAY_PAUSE:
+			playPause();
+			break;
+		case ACTION_NEXT_SONG:
+			nextSong();
+			break;
+		case ACTION_PREVIOUS_SONG:
+			previousSong();
+			break;
+		case ACTION_REPEAT:
+			toggleRepeat();
+			break;
+		case ACTION_SHUFFLE:
+			toggleShuffle();
+			break;
+		default:
+			throw new IllegalArgumentException("Invalid action: " + action);
+		}
+	}
+
+	@Override
+	public void upSwipe()
+	{
+		performAction(mUpAction);
+	}
+
+	@Override
+	public void downSwipe()
+	{
+		performAction(mDownAction);
 	}
 }

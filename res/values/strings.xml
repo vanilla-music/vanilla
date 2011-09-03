@@ -118,6 +118,10 @@ THE SOFTWARE.
 	<string name="pref_playback_view">Playback View</string>
 	<string name="display_mode_title">Display Mode</string>
 	<string name="display_mode_summary">The appearance and position of the song art and info.</string>
+	<string name="swipe_up_action_title">Swipe Up Action</string>
+	<string name="swipe_up_action_summary">What to do when a swipe up gesture is performed</string>
+	<string name="swipe_down_action_title">Swipe Down Action</string>
+	<string name="swipe_down_action_summary">What to do when a swipe down gesture is performed</string>
 	<string name="disable_cover_art_title">Disable Cover Art</string>
 	<string name="disable_cover_art_summary">Do not show cover art anywhere in the application</string>
 

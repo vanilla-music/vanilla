@@ -243,7 +243,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	{
 		switch (item.getItemId()) {
 		case MENU_LIBRARY:
-			startActivity(new Intent(this, SongSelector.class));
+			openLibrary();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -253,7 +253,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	@Override
 	public boolean onSearchRequested()
 	{
-		startActivity(new Intent(this, SongSelector.class));
+		openLibrary();
 		return false;
 	}
 
@@ -360,7 +360,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	public boolean onLongClick(View view)
 	{
 		if (view.getId() == R.id.cover_view) {
-			setState(ContextApplication.getService().toggleFlag(PlaybackService.FLAG_PLAYING));
+			playPause();
 			return true;
 		}
 

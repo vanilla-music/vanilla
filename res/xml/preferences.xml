@@ -68,6 +68,20 @@ THE SOFTWARE.
 			android:entries="@array/display_mode_entries"
 			android:entryValues="@array/entry_values"
 			android:defaultValue="0" />
+		<ListPreference
+			android:key="swipe_up_action"
+			android:title="@string/swipe_up_action_title"
+			android:summary="@string/swipe_up_action_summary"
+			android:entries="@array/swipe_action_entries"
+			android:entryValues="@array/entry_values"
+			android:defaultValue="0" />
+		<ListPreference
+			android:key="swipe_down_action"
+			android:title="@string/swipe_down_action_title"
+			android:summary="@string/swipe_down_action_summary"
+			android:entries="@array/swipe_action_entries"
+			android:entryValues="@array/entry_values"
+			android:defaultValue="0" />
 		<CheckBoxPreference
 			android:key="disable_cover_art"
 			android:title="@string/disable_cover_art_title"
