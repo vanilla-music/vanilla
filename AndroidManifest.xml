@@ -60,13 +60,6 @@ THE SOFTWARE.
 				android:name="android.appwidget.provider"
 				android:resource="@xml/one_cell_widget" />
 		</receiver>
-		<activity
-			android:name=".OneCellWidgetConfigure"
-			android:theme="@android:style/Theme.Dialog">
-			<intent-filter>
-				<action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
-			</intent-filter>
-		</activity>
 		<receiver
 			android:name=".FourLongWidget"
 			android:label="Vanilla Music 1x4">

@@ -101,35 +101,33 @@ public class OneCellWidget extends AppWidgetProvider {
 		if (ids == null || ids.length == 0)
 			return;
 
-		for (int i = ids.length; --i != -1; ) {
-			SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-			boolean doubleTap = settings.getBoolean("double_tap_" + ids[i], false);
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+		boolean doubleTap = settings.getBoolean("double_tap", false);
 
-			RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.one_cell_widget);
+		RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.one_cell_widget);
 
-			if (state != -1) {
-				boolean playing = (state & PlaybackService.FLAG_PLAYING) != 0;
-				views.setImageViewResource(R.id.play_pause, playing ? R.drawable.hidden_pause : R.drawable.hidden_play);
-			}
-
-			ComponentName service = new ComponentName(context, PlaybackService.class);
-
-			Intent playPause = new Intent(doubleTap ? PlaybackService.ACTION_TOGGLE_PLAYBACK_DELAYED : PlaybackService.ACTION_TOGGLE_PLAYBACK);
-			playPause.setComponent(service);
-			views.setOnClickPendingIntent(R.id.play_pause, PendingIntent.getService(context, 0, playPause, 0));
-	
-			Intent next = new Intent(doubleTap ? PlaybackService.ACTION_NEXT_SONG_DELAYED : PlaybackService.ACTION_NEXT_SONG);
-			next.setComponent(service);
-			views.setOnClickPendingIntent(R.id.next, PendingIntent.getService(context, 0, next, 0));
-
-			if (song == null) {
-				views.setImageViewResource(R.id.cover_view, R.drawable.icon);
-			} else {
-				int size = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 72, context.getResources().getDisplayMetrics());
-				views.setImageViewBitmap(R.id.cover_view, CoverBitmap.createCompactBitmap(song, size, size));
-			}
-
-			manager.updateAppWidget(ids[i], views);
+		if (state != -1) {
+			boolean playing = (state & PlaybackService.FLAG_PLAYING) != 0;
+			views.setImageViewResource(R.id.play_pause, playing ? R.drawable.hidden_pause : R.drawable.hidden_play);
 		}
+
+		ComponentName service = new ComponentName(context, PlaybackService.class);
+
+		Intent playPause = new Intent(doubleTap ? PlaybackService.ACTION_TOGGLE_PLAYBACK_DELAYED : PlaybackService.ACTION_TOGGLE_PLAYBACK);
+		playPause.setComponent(service);
+		views.setOnClickPendingIntent(R.id.play_pause, PendingIntent.getService(context, 0, playPause, 0));
+
+		Intent next = new Intent(doubleTap ? PlaybackService.ACTION_NEXT_SONG_DELAYED : PlaybackService.ACTION_NEXT_SONG);
+		next.setComponent(service);
+		views.setOnClickPendingIntent(R.id.next, PendingIntent.getService(context, 0, next, 0));
+
+		if (song == null) {
+			views.setImageViewResource(R.id.cover_view, R.drawable.icon);
+		} else {
+			int size = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 72, context.getResources().getDisplayMetrics());
+			views.setImageViewBitmap(R.id.cover_view, CoverBitmap.createCompactBitmap(song, size, size));
+		}
+
+		manager.updateAppWidget(ids, views);
 	}
 }
