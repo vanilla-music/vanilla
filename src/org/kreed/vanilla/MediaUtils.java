@@ -200,6 +200,11 @@ public class MediaUtils {
 		return count;
 	}
 
+	/**
+	 * Shuffle an array using Fisher-Yates algorithm.
+	 *
+	 * @param list The array. It will be shuffled in place.
+	 */
 	public static void shuffle(long[] list)
 	{
 		Random random = ContextApplication.getRandom();
@@ -211,10 +216,17 @@ public class MediaUtils {
 		}
 	}
 
-	public static void shuffle(Song[] list)
+	/**
+	 * Shuffle an array using Fisher-Yates algorithm.
+	 *
+	 * @param list The array. It will be shuffled in place.
+	 * @param end Only elements before this index will be shuffled.
+	 */
+	public static void shuffle(Song[] list, int end)
 	{
+		assert(end <= list.length && end >= 0);
 		Random random = ContextApplication.getRandom();
-		for (int i = list.length; --i != -1; ) {
+		for (int i = end; --i != -1; ) {
 			int j = random.nextInt(i + 1);
 			Song tmp = list[j];
 			list[j] = list[i];

@@ -248,7 +248,7 @@ public class Song implements Parcelable {
 			cursor.close();
 
 			// The query will return sorted results; undo that
-			MediaUtils.shuffle(mRandomCache);
+			MediaUtils.shuffle(mRandomCache, count);
 
 			mRandomCacheIdx = 0;
 			mRandomCacheEnd = mAllSongsIdx + count;
