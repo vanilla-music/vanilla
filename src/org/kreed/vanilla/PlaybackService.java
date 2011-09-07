@@ -50,7 +50,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
-public final class PlaybackService extends Service implements Handler.Callback, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, SharedPreferences.OnSharedPreferenceChangeListener, SongTimeline.Callback {	
+public final class PlaybackService extends Service implements Handler.Callback, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, SharedPreferences.OnSharedPreferenceChangeListener, SongTimeline.Callback {
 	private static final int NOTIFICATION_ID = 2;
 
 	/**
@@ -141,6 +141,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	public Receiver mReceiver;
 	public InCallListener mCallListener;
 	private boolean mLoaded;
+	private String mErrorMessage;
 	/**
 	 * The volume set by the user in the preferences.
 	 */
@@ -181,16 +182,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		mLooper = thread.getLooper();
 		mHandler = new Handler(mLooper, this);
 		mHandler.sendEmptyMessage(CREATE);
-	}
-
-	/**
-	 * Show a Toast that notifies the user the Service is starting up. Useful
-	 * to provide a quick response to play/pause and next events from widgets
-	 * when we must initialize the service before acting on the event.
-	 */
-	private void showStartupToast()
-	{
-		Toast.makeText(this, R.string.starting, Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
@@ -421,15 +412,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	{
 		state &= ALL_FLAGS;
 
-		if ((state & FLAG_NO_MEDIA) != 0)
+		if ((state & FLAG_NO_MEDIA) != 0 || (state & FLAG_ERROR) != 0)
 			state &= ~FLAG_PLAYING;
-
-		if ((state & FLAG_ERROR) != 0 && (state & FLAG_PLAYING) != 0) {
-			state &= ~FLAG_PLAYING;
-			Song song = mCurrentSong;
-			String text = getResources().getString(R.string.song_load_failed, song == null ? null : song.path);
-			Toast.makeText(this, text, Toast.LENGTH_LONG).show();
-		}
 
 		int oldState = mState;
 		mState = state;
@@ -470,25 +454,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			}
 		}
 
-		if ((toggled & FLAG_SHUFFLE) != 0) {
-			if ((state & FLAG_SHUFFLE) != 0) {
-				mTimeline.setShuffle(true);
-				Toast.makeText(this, R.string.shuffle_enabling, Toast.LENGTH_LONG).show();
-			} else {
-				mTimeline.setShuffle(false);
-				Toast.makeText(this, R.string.shuffle_disabling, Toast.LENGTH_SHORT).show();
-			}
-		}
-
-		if ((toggled & FLAG_REPEAT) != 0) {
-			if ((state & FLAG_REPEAT) != 0) {
-				mTimeline.setRepeat(true);
-				Toast.makeText(this, R.string.repeat_enabling, Toast.LENGTH_LONG).show();
-			} else {
-				mTimeline.setRepeat(false);
-				Toast.makeText(this, R.string.repeat_disabling, Toast.LENGTH_SHORT).show();
-			}
-		}
+		if ((toggled & FLAG_SHUFFLE) != 0)
+			mTimeline.setShuffle((state & FLAG_SHUFFLE) != 0);
+		if ((toggled & FLAG_REPEAT) != 0)
+			mTimeline.setRepeat((state & FLAG_REPEAT) != 0);
 	}
 
 	private void broadcastChange(int state, Song song, long uptime)
@@ -598,11 +567,15 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 			if ((mState & FLAG_PLAYING) != 0)
 				mMediaPlayer.start();
-			updateState(mState & ~FLAG_ERROR);
+
+			if ((mState & FLAG_ERROR) != 0) {
+				mErrorMessage = null;
+				updateState(mState & ~FLAG_ERROR);
+			}
 		} catch (IOException e) {
-			// FLAG_PLAYING is set to force showing the Toast. updateState()
-			// will unset it.
-			updateState(mState | FLAG_PLAYING | FLAG_ERROR);
+			mErrorMessage = getResources().getString(R.string.song_load_failed, song == null ? null : song.path);
+			updateState(mState | FLAG_ERROR);
+			Toast.makeText(this, mErrorMessage, Toast.LENGTH_LONG).show();
 			Log.e("VanillaMusic", "IOException", e);
 		}
 
@@ -644,9 +617,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 	private void go(int delta, boolean autoPlay)
 	{
-		if (!mLoaded)
-			showStartupToast();
-
 		if (autoPlay) {
 			synchronized (mStateLock) {
 				mState |= FLAG_PLAYING;
@@ -1053,5 +1023,13 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	public void finishEnqueueing()
 	{
 		mTimeline.finishEnqueueing();
+	}
+
+	/**
+	 * Return the error message set when FLAG_ERROR is set.
+	 */
+	public String getErrorMessage()
+	{
+		return mErrorMessage;
 	}
 }

@@ -171,7 +171,11 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 
 	public void playPause()
 	{
-		setState(ContextApplication.getService().toggleFlag(PlaybackService.FLAG_PLAYING));
+		PlaybackService service = ContextApplication.getService();
+		int state = service.toggleFlag(PlaybackService.FLAG_PLAYING);
+		if ((state & PlaybackService.FLAG_ERROR) != 0)
+			Toast.makeText(this, service.getErrorMessage(), Toast.LENGTH_LONG).show();
+		setState(state);
 	}
 
 	public void onClick(View view)
@@ -199,7 +203,6 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	{
 		if ((toggled & PlaybackService.FLAG_PLAYING) != 0 && mPlayPauseButton != null)
 			mPlayPauseButton.setImageResource((state & PlaybackService.FLAG_PLAYING) == 0 ? R.drawable.play : R.drawable.pause);
-
 	}
 
 	protected void setState(final int state)
@@ -347,7 +350,10 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	 */
 	public void toggleShuffle()
 	{
-		setState(ContextApplication.getService().toggleFlag(PlaybackService.FLAG_SHUFFLE));
+		int state = ContextApplication.getService().toggleFlag(PlaybackService.FLAG_SHUFFLE);
+		int res = (state & PlaybackService.FLAG_SHUFFLE) == 0 ? R.string.shuffle_disabling : R.string.shuffle_enabling;
+		Toast.makeText(this, res, Toast.LENGTH_LONG).show();
+		setState(state);
 	}
 
 	/**
@@ -355,7 +361,10 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	 */
 	public void toggleRepeat()
 	{
-		setState(ContextApplication.getService().toggleFlag(PlaybackService.FLAG_REPEAT));
+		int state = ContextApplication.getService().toggleFlag(PlaybackService.FLAG_REPEAT);
+		int res = (state & PlaybackService.FLAG_REPEAT) == 0 ? R.string.repeat_disabling : R.string.repeat_enabling;
+		Toast.makeText(this, res, Toast.LENGTH_LONG).show();
+		setState(state);
 	}
 
 	/**
