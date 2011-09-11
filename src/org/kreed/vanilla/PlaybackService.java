@@ -133,6 +133,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 	SongTimeline mTimeline;
 	int mState = 0x80;
+	private Song mCurrentSong;
+
 	Object mStateLock = new Object();
 	boolean mPlayingBeforeCall;
 	private int mPendingSeek;
@@ -422,17 +424,14 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		if ((state & FLAG_NO_MEDIA) != 0)
 			state &= ~FLAG_PLAYING;
 
-		Song song = getSong(0);
-
 		if ((state & FLAG_ERROR) != 0 && (state & FLAG_PLAYING) != 0) {
 			state &= ~FLAG_PLAYING;
+			Song song = mCurrentSong;
 			String text = getResources().getString(R.string.song_load_failed, song == null ? null : song.path);
 			Toast.makeText(this, text, Toast.LENGTH_LONG).show();
 		}
 
-		if (song == null && (state & FLAG_PLAYING) != 0)
-			return state;
-		if (song == null)
+		if (mCurrentSong == null)
 			state &= ~FLAG_REPEAT;
 
 		int oldState = mState;
@@ -458,7 +457,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 					}
 				}
 				if (mNotificationMode != NEVER)
-					startForegroundCompat(NOTIFICATION_ID, new SongNotification(getSong(0), true));
+					startForegroundCompat(NOTIFICATION_ID, new SongNotification(mCurrentSong, true));
 			} else {
 				if (mMediaPlayerInitialized) {
 					synchronized (mMediaPlayer) {
@@ -467,7 +466,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				}
 				if (mNotificationMode == ALWAYS) {
 					stopForegroundCompat(false);
-					mNotificationManager.notify(NOTIFICATION_ID, new SongNotification(getSong(0), false));
+					mNotificationManager.notify(NOTIFICATION_ID, new SongNotification(mCurrentSong, false));
 				} else {
 					stopForegroundCompat(true);
 				}
@@ -513,7 +512,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	{
 		assert(mScrobble == true);
 
-		Song song = getSong(0);
+		Song song = mCurrentSong;
 		int state = mState;
 
 		Intent intent = new Intent("net.jjc1138.android.scrobbler.action.MUSIC_STATUS");
@@ -525,8 +524,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 	private void updateNotification()
 	{
-		if (mNotificationMode == ALWAYS || mNotificationMode == WHEN_PLAYING && (mState & FLAG_PLAYING) != 0)
-			mNotificationManager.notify(NOTIFICATION_ID, new SongNotification(getSong(0), (mState & FLAG_PLAYING) != 0));
+		if ((mNotificationMode == ALWAYS || mNotificationMode == WHEN_PLAYING && (mState & FLAG_PLAYING) != 0) && mCurrentSong != null)
+			mNotificationManager.notify(NOTIFICATION_ID, new SongNotification(mCurrentSong, (mState & FLAG_PLAYING) != 0));
 		else
 			mNotificationManager.cancel(NOTIFICATION_ID);
 	}
@@ -563,6 +562,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		}
 
 		Song song = mTimeline.shiftCurrentSong(delta);
+		mCurrentSong = song;
 		if (song == null) {
 			if (Song.isSongAvailable()) {
 				return setCurrentSong(+1); // we only encountered a bad song; skip it
@@ -1017,7 +1017,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 */
 	public int enqueueFromCurrent(int type)
 	{
-		Song current = getSong(0);
+		Song current = mCurrentSong;
 		if (current == null)
 			return 0;
 
