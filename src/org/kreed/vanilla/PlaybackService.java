@@ -97,42 +97,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 * when this is called.
 	 */
 	public static final String ACTION_PREVIOUS_SONG_AUTOPLAY = "org.kreed.vanilla.action.PREVIOUS_SONG_AUTOPLAY";
-	/**
-	 * Intent action that may be invoked through startService.
-	 *
-	 * Given a song or group of songs, play the first and enqueues the rest after
-	 * it.
-	 *
-	 * If FLAG_SHUFFLE is enabled, songs will be added to the song timeline in
-	 * random order, otherwise, songs will be ordered by album name and then
-	 * track number.
-	 *
-	 * Requires two extras: "type", which can be 1, 2, or 3, indicating artist,
-	 * album, or song respectively, and "id", which is the MediaStore id for the
-	 * song, album, or artist.
-	 */
-	public static final String ACTION_PLAY_ITEMS = "org.kreed.vanilla.action.PLAY_ITEMS";
-	/**
-	 * Intent action that may be invoked through startService.
-	 *
-	 * Enqueues a song or group of songs.
-	 *
-	 * The first song from the group will be placed in the timeline either
-	 * after the last enqueued song or after the playing song if the queue is
-	 * empty. If FLAG_SHUFFLE is enabled, songs will be added to the song
-	 * timeline in random order, otherwise, songs will be ordered by album name
-	 * and then track number.
-	 *
-	 * Requires two extras: "type", which can be 1, 2, or 3, indicating artist,
-	 * album, or song respectively, and "id", which is the MediaStore id for the
-	 * song, album, or artist.
-	 */
-	public static final String ACTION_ENQUEUE_ITEMS = "org.kreed.vanilla.action.ENQUEUE_ITEMS";
-	/**
-	 * Reset the position at which songs are enqueued, that is, new songs will
-	 * be placed directly after the playing song after this action is invoked.
-	 */
-	public static final String ACTION_FINISH_ENQUEUEING = "org.kreed.vanilla.action.FINISH_ENQUEUEING";
 
 	public static final String EVENT_REPLACE_SONG = "org.kreed.vanilla.event.REPLACE_SONG";
 	public static final String EVENT_CHANGED = "org.kreed.vanilla.event.CHANGED";
@@ -260,15 +224,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				go(-1, false);
 			} else if (ACTION_PREVIOUS_SONG_AUTOPLAY.equals(action)) {
 				go(-1, true);
-			} else if (ACTION_PLAY_ITEMS.equals(action)) {
-				mTimeline.chooseSongs(false, intent.getIntExtra("type", 3), intent.getLongExtra("id", -1));
-				mHandler.sendEmptyMessage(TRACK_CHANGED);
-			} else if (ACTION_ENQUEUE_ITEMS.equals(action)) {
-				mTimeline.chooseSongs(true, intent.getIntExtra("type", 3), intent.getLongExtra("id", -1));
-				mHandler.removeMessages(SAVE_STATE);
-				mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
-			} else if (ACTION_FINISH_ENQUEUEING.equals(action)) {
-				mTimeline.finishEnqueueing();
 			}
 
 			userActionTriggered();
@@ -1010,5 +965,51 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			mCurrentVolume = mUserVolume;
 			mMediaPlayer.setVolume(mCurrentVolume, mCurrentVolume);
 		}
+	}
+
+	/**
+	 * Given a song or group of songs represented by the given type and id, play
+	 * the first and enqueues the rest after it.
+	 *
+	 * If FLAG_SHUFFLE is enabled, songs will be added to the song timeline in
+	 * random order, otherwise, songs will be ordered by album name and then
+	 * track number.
+	 *
+	 * @param type The media type, one of MediaUtils.TYPE_*
+	 * @param id The MediaStore id of the media
+	 * @return The song that is playing after this method is called
+	 */
+	public Song playSongs(int type, long id)
+	{
+		mTimeline.chooseSongs(false, type, id);
+		return setCurrentSong(+1);
+	}
+
+	/**
+	 * Enqueues a song or group of songs represented by the given type and id.
+	 *
+	 * The first song from the group will be placed in the timeline either
+	 * after the last enqueued song or after the playing song if the queue is
+	 * empty. If FLAG_SHUFFLE is enabled, songs will be added to the song
+	 * timeline in random order, otherwise, songs will be ordered by album name
+	 * and then track number.
+	 *
+	 * @param type The media type, one of MediaUtils.TYPE_*
+	 * @param id The MediaStore id of the media
+	 */
+	public void enqueueSongs(int type, long id)
+	{
+		mTimeline.chooseSongs(true, type, id);
+		mHandler.removeMessages(SAVE_STATE);
+		mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
+	}
+
+	/**
+	 * Reset the position at which songs are enqueued. That is, the next song
+	 * enqueued will be placed directly after the playing song.
+	 */
+	public void finishEnqueueing()
+	{
+		mTimeline.finishEnqueueing();
 	}
 }

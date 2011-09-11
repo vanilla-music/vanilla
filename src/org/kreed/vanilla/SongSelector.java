@@ -63,6 +63,10 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	 */
 	private static final int TAB_COUNT = 5;
 
+	private static final int ACTION_PLAY = 0;
+	private static final int ACTION_ENQUEUE = 1;
+	private static final int ACTION_LAST_USED = 2;
+
 	private TabHost mTabHost;
 
 	private View mSearchBox;
@@ -76,9 +80,9 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 
 	private ViewGroup mLimiterViews;
 
-	private String mDefaultAction;
-	private boolean mDefaultIsLastAction;
+	private int mDefaultAction;
 
+	private int mLastAction = ACTION_PLAY;
 	private long mLastActedId;
 
 	private MediaAdapter[] mAdapters;
@@ -177,9 +181,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 			mControls = null;
 		}
 
-		int action = Integer.parseInt(settings.getString("default_action_int", "0"));
-		mDefaultAction = action == 1 ? PlaybackService.ACTION_ENQUEUE_ITEMS : PlaybackService.ACTION_PLAY_ITEMS;
-		mDefaultIsLastAction = action == 2;
+		mDefaultAction = Integer.parseInt(settings.getString("default_action_int", "0"));
 		mLastActedId = 0;
 	}
 
@@ -203,7 +205,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 				mTextFilter.setText("");
 				setSearchBoxVisible(false);
 			} else {
-				sendFinishEnqueueing();
+				ContextApplication.getService().finishEnqueueing();
 				finish();
 			}
 			break;
@@ -234,31 +236,38 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		return false;
 	}
 
-	private void sendSongIntent(MediaAdapter.MediaView view, String action)
+	/**
+	 * Adds songs matching the type and id of the given view to the song timelime.
+	 *
+	 * @param view The MediaView to get type/id data from
+	 * @param action One of SongSelector.ACTION_*
+	 */
+	private void pickSongs(MediaAdapter.MediaView view, int action)
 	{
-		int res = PlaybackService.ACTION_PLAY_ITEMS.equals(action) ? R.string.playing : R.string.enqueued;
-		String text = getResources().getString(res, view.getTitle());
-		Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
-
+		PlaybackService service = ContextApplication.getService();
+		Resources res = getResources();
+		int type = view.getMediaType();
 		long id = view.getMediaId();
 
-		Intent intent = new Intent(this, PlaybackService.class);
-		intent.setAction(action);
-		intent.putExtra("type", view.getMediaType());
-		intent.putExtra("id", id);
-		startService(intent);
+		if (action == ACTION_LAST_USED)
+			action = mLastAction;
+		else
+			mLastAction = action;
+
+		switch (action) {
+		case ACTION_PLAY:
+			Toast.makeText(this, getString(R.string.playing, view.getTitle()), Toast.LENGTH_SHORT).show();
+			setSong(service.playSongs(type, id));
+			break;
+		case ACTION_ENQUEUE:
+			Toast.makeText(this, getString(R.string.enqueued, view.getTitle()), Toast.LENGTH_SHORT).show();
+			service.enqueueSongs(type, id);
+			break;
+		default:
+			return;
+		}
 
 		mLastActedId = id;
-	}
-
-	/**
-	 * Tell the PlaybackService that we are finished enqueueing songs.
-	 */
-	private void sendFinishEnqueueing()
-	{
-		Intent intent = new Intent(this, PlaybackService.class);
-		intent.setAction(PlaybackService.ACTION_FINISH_ENQUEUEING);
-		startService(intent);
 	}
 
 	private void expand(MediaAdapter.MediaView view)
@@ -304,7 +313,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		else if (id == mLastActedId)
 			startActivity(new Intent(this, FullPlaybackActivity.class));
 		else
-			sendSongIntent(mediaView, mDefaultAction);
+			pickSongs(mediaView, mDefaultAction);
 	}
 
 	public void afterTextChanged(Editable editable)
@@ -489,7 +498,6 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	@Override
 	public boolean onContextItemSelected(MenuItem item)
 	{
-		String action = PlaybackService.ACTION_PLAY_ITEMS;
 		int id = item.getItemId();
 		int type = item.getGroupId();
 		int mediaId = item.getOrder();
@@ -499,12 +507,10 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 			expand((MediaAdapter.MediaView)((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).targetView);
 			break;
 		case MENU_ENQUEUE:
-			action = PlaybackService.ACTION_ENQUEUE_ITEMS;
-			// fall through
+			pickSongs((MediaAdapter.MediaView)((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).targetView, ACTION_ENQUEUE);
+			break;
 		case MENU_PLAY:
-			if (mDefaultIsLastAction)
-				mDefaultAction = action;
-			sendSongIntent((MediaAdapter.MediaView)((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).targetView, action);
+			pickSongs((MediaAdapter.MediaView)((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).targetView, ACTION_PLAY);
 			break;
 		case MENU_NEW_PLAYLIST: {
 			NewPlaylistDialog dialog = new NewPlaylistDialog(this, null, R.string.create);
@@ -565,7 +571,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 			setSearchBoxVisible(!mSearchBoxVisible);
 			return true;
 		case MENU_PLAYBACK:
-			sendFinishEnqueueing();
+			ContextApplication.getService().finishEnqueueing();
 			startActivity(new Intent(this, FullPlaybackActivity.class));
 			return true;
 		default:
