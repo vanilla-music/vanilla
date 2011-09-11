@@ -36,6 +36,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 public class PlaybackActivity extends Activity implements Handler.Callback, View.OnClickListener, CoverView.Callback {
 	public static final int ACTION_NOTHING = 0;
@@ -45,6 +46,9 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	public static final int ACTION_PREVIOUS_SONG = 4;
 	public static final int ACTION_REPEAT = 5;
 	public static final int ACTION_SHUFFLE = 6;
+	public static final int ACTION_ENQUEUE_ALBUM = 7;
+	public static final int ACTION_ENQUEUE_ARTIST = 8;
+	public static final int ACTION_ENQUEUE_GENRE = 9;
 
 	public static int mUpAction;
 	public static int mDownAction;
@@ -359,6 +363,13 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 		startActivity(new Intent(this, SongSelector.class));
 	}
 
+	public void enqueue(int type)
+	{
+		int count = ContextApplication.getService().enqueueFromCurrent(type);
+		String text = getResources().getQuantityString(R.plurals.enqueued_count, count, count);
+		Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+	}
+
 	public void performAction(int action)
 	{
 		switch (action) {
@@ -381,6 +392,15 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 			break;
 		case ACTION_SHUFFLE:
 			toggleShuffle();
+			break;
+		case ACTION_ENQUEUE_ALBUM:
+			enqueue(MediaUtils.TYPE_ALBUM);
+			break;
+		case ACTION_ENQUEUE_ARTIST:
+			enqueue(MediaUtils.TYPE_ARTIST);
+			break;
+		case ACTION_ENQUEUE_GENRE:
+			enqueue(MediaUtils.TYPE_GENRE);
 			break;
 		default:
 			throw new IllegalArgumentException("Invalid action: " + action);

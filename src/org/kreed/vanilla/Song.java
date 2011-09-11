@@ -86,6 +86,7 @@ public class Song implements Parcelable {
 		MediaStore.Audio.Media.ALBUM,
 		MediaStore.Audio.Media.ARTIST,
 		MediaStore.Audio.Media.ALBUM_ID,
+		MediaStore.Audio.Media.ARTIST_ID,
 		MediaStore.Audio.Media.DURATION
 		};
 
@@ -97,6 +98,10 @@ public class Song implements Parcelable {
 	 * Id of this song's album in the MediaStore
 	 */
 	public long albumId;
+	/**
+	 * Id of this song's artist in the MediaStore
+	 */
+	public long artistId;
 
 	/**
 	 * Path to the data for this song
@@ -293,7 +298,8 @@ public class Song implements Parcelable {
 		album = cursor.getString(3);
 		artist = cursor.getString(4);
 		albumId = cursor.getLong(5);
-		duration = cursor.getLong(6);
+		artistId = cursor.getLong(6);
+		duration = cursor.getLong(7);
 	}
 
 	/**

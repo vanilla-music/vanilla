@@ -367,12 +367,15 @@ public final class SongTimeline {
 	 * MediaUtils.FIELD_* constants.
 	 * @param id The id of the element in the MediaStore content provider for
 	 * the given type.
+	 * @param selection An extra selection to be passed to the query. May be
+	 * null. Must not be used with type == TYPE_SONG or type == TYPE_PLAYLIST
+	 * @return The number of songs that were enqueued.
 	 */
-	public void chooseSongs(boolean enqueue, int type, long id)
+	public int chooseSongs(boolean enqueue, int type, long id, String selection)
 	{
-		long[] songs = MediaUtils.getAllSongIdsWith(type, id);
+		long[] songs = MediaUtils.getAllSongIdsWith(type, id, selection);
 		if (songs == null || songs.length == 0)
-			return;
+			return 0;
 
 		if (mShuffle)
 			MediaUtils.shuffle(songs);
@@ -404,6 +407,8 @@ public final class SongTimeline {
 		Song newSong = getSong(+1);
 		if (newSong != oldSong && mCallback != null)
 			mCallback.songReplaced(+1, newSong);
+
+		return songs.length;
 	}
 
 	/**

@@ -59,30 +59,39 @@ public class MediaUtils {
 	 * @param type One of the TYPE_* constants, excluding playlists.
 	 * @param id The MediaStore id of the artist or album.
 	 * @param projection The columns to query.
+	 * @param select An extra selection to pass to the query, or null.
 	 */
-	private static Cursor getMediaCursor(int type, long id, String[] projection)
+	private static Cursor getMediaCursor(int type, long id, String[] projection, String select)
 	{
 		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
 		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-		String selection;
+		StringBuilder selection = new StringBuilder();
 
 		switch (type) {
 		case TYPE_SONG:
-			selection = MediaStore.Audio.Media._ID;
+			selection.append(MediaStore.Audio.Media._ID);
 			break;
 		case TYPE_ARTIST:
-			selection = MediaStore.Audio.Media.ARTIST_ID;
+			selection.append(MediaStore.Audio.Media.ARTIST_ID);
 			break;
 		case TYPE_ALBUM:
-			selection = MediaStore.Audio.Media.ALBUM_ID;
+			selection.append(MediaStore.Audio.Media.ALBUM_ID);
 			break;
 		default:
 			throw new IllegalArgumentException("Invalid type specified: " + type);
 		}
 
-		selection += "=" + id + " AND " + MediaStore.Audio.Media.IS_MUSIC + "!=0";
+		selection.append('=');
+		selection.append(id);
+		selection.append(" AND is_music!=0");
+
+		if (select != null) {
+			selection.append(" AND ");
+			selection.append(select);
+		}
+
 		String sort = MediaStore.Audio.Media.ARTIST_KEY + ',' + MediaStore.Audio.Media.ALBUM_KEY + ',' + MediaStore.Audio.Media.TRACK;
-		return resolver.query(media, projection, selection, null, sort);
+		return resolver.query(media, projection, selection.toString(), null, sort);
 	}
 
 	/**
@@ -124,24 +133,28 @@ public class MediaUtils {
 	 * constants.
 	 * @param id The id of the element in the MediaStore content provider for
 	 * the given type.
+	 * @param selection An extra selection to be passed to the query. May be
+	 * null. Must not be used with type == TYPE_SONG or type == TYPE_PLAYLIST
 	 */
-	public static long[] getAllSongIdsWith(int type, long id)
+	public static long[] getAllSongIdsWith(int type, long id, String selection)
 	{
 		Cursor cursor;
 
 		switch (type) {
 		case TYPE_SONG:
+			assert(selection == null);
 			return new long[] { id };
 		case TYPE_ARTIST:
 		case TYPE_ALBUM:
-			cursor = getMediaCursor(type, id, new String[] { MediaStore.Audio.Media._ID });
+			cursor = getMediaCursor(type, id, new String[] { MediaStore.Audio.Media._ID }, selection);
 			break;
 		case TYPE_PLAYLIST:
+			assert(selection == null);
 			cursor = getPlaylistCursor(id, new String[] { MediaStore.Audio.Playlists.Members.AUDIO_ID });
 			break;
 		case TYPE_GENRE:
 			// NOTE: AUDIO_ID does not seem to work here, strangely.
-			cursor = queryGenre(id, new String[] { MediaStore.Audio.Genres.Members._ID }, null, null);
+			cursor = queryGenre(id, new String[] { MediaStore.Audio.Genres.Members._ID }, selection, null);
 			break;
 		default:
 			throw new IllegalArgumentException("Specified type not valid: " + type);
@@ -178,7 +191,7 @@ public class MediaUtils {
 
 		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
 		String[] projection = new String [] { MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DATA };
-		Cursor cursor = getMediaCursor(type, id, projection);
+		Cursor cursor = getMediaCursor(type, id, projection, null);
 
 		if (cursor != null) {
 			PlaybackService service = ContextApplication.hasService() ? ContextApplication.getService() : null;
@@ -198,6 +211,42 @@ public class MediaUtils {
 		}
 
 		return count;
+	}
+
+	/**
+	 * Query the MediaStore to determine the id of the genre the song belongs
+	 * to.
+	 */
+	public static long queryGenreForSong(long id)
+	{
+		// This is terribly inefficient, but it seems to be the only way to do
+		// this. Honeycomb introduced an API to query the genre of the song.
+		// We should look into it when ICS is released.
+
+		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
+
+		// query ids of all the genres
+		Uri uri = MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI;
+		String[] projection = { "_id" };
+		Cursor cursor = resolver.query(uri, projection, null, null, null);
+
+		if (cursor != null) {
+			String selection = "_id=" + id;
+			while (cursor.moveToNext()) {
+				// check if the given song belongs to this genre
+				long genreId = cursor.getLong(0);
+				Uri genreUri = MediaStore.Audio.Genres.Members.getContentUri("external", genreId);
+				Cursor c = resolver.query(genreUri, projection, selection, null, null);
+				if (c != null) {
+					if (c.getCount() == 1)
+						return genreId;
+					c.close();
+				}
+			}
+			cursor.close();
+		}
+
+		return -1;
 	}
 
 	/**

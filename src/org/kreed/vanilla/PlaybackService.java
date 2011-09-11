@@ -981,7 +981,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 */
 	public Song playSongs(int type, long id)
 	{
-		mTimeline.chooseSongs(false, type, id);
+		mTimeline.chooseSongs(false, type, id, null);
 		return setCurrentSong(+1);
 	}
 
@@ -999,9 +999,46 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 */
 	public void enqueueSongs(int type, long id)
 	{
-		mTimeline.chooseSongs(true, type, id);
+		mTimeline.chooseSongs(true, type, id, null);
 		mHandler.removeMessages(SAVE_STATE);
 		mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
+	}
+
+	/**
+	 * Enqueues all the songs with the same album/artist/genre as the current
+	 * song.
+	 *
+	 * This will clear the queue and place the first song from the group after
+	 * the playing song.
+	 *
+	 * @param type The media type, one of MediaUtils.TYPE_ALBUM, TYPE_ARTIST,
+	 * or TYPE_GENRE
+	 * @return The number of songs that were enqueued.
+	 */
+	public int enqueueFromCurrent(int type)
+	{
+		Song current = getSong(0);
+		if (current == null)
+			return 0;
+
+		long id = -1;
+		switch (type) {
+		case MediaUtils.TYPE_ARTIST:
+			id = current.artistId;
+			break;
+		case MediaUtils.TYPE_ALBUM:
+			id = current.albumId;
+			break;
+		case MediaUtils.TYPE_GENRE:
+			id = MediaUtils.queryGenreForSong(current.id);
+			break;
+		default:
+			throw new IllegalArgumentException("Unsupported media type: " + type);
+		}
+
+		String selection = "_id!=" + current.id;
+		int count = mTimeline.chooseSongs(false, type, id, selection);
+		return count;
 	}
 
 	/**

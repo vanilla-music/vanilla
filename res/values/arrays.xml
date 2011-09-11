@@ -50,6 +50,9 @@ THE SOFTWARE.
 		<item>Previous Song</item>
 		<item>Toggle Repeat</item>
 		<item>Toggle Shuffle</item>
+		<item>Enqueue Current Album</item>
+		<item>Enqueue Current Artist</item>
+		<item>Enqueue Current Genre</item>
 	</string-array>
 	<string-array name="entry_values">
 		<!-- Note: even if this was an integer-array, these would be converted
@@ -62,5 +65,8 @@ THE SOFTWARE.
 		<item>4</item>
 		<item>5</item>
 		<item>6</item>
+		<item>7</item>
+		<item>8</item>
+		<item>9</item>
 	</string-array>
 </resources>
