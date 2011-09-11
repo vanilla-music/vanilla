@@ -1042,6 +1042,14 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	}
 
 	/**
+	 * Clear the song queue.
+	 */
+	public void clearQueue()
+	{
+		mTimeline.clearQueue();
+	}
+
+	/**
 	 * Reset the position at which songs are enqueued. That is, the next song
 	 * enqueued will be placed directly after the playing song.
 	 */

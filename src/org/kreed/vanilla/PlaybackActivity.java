@@ -49,6 +49,7 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	public static final int ACTION_ENQUEUE_ALBUM = 7;
 	public static final int ACTION_ENQUEUE_ARTIST = 8;
 	public static final int ACTION_ENQUEUE_GENRE = 9;
+	public static final int ACTION_CLEAR_QUEUE = 10;
 
 	public static int mUpAction;
 	public static int mDownAction;
@@ -401,6 +402,10 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 			break;
 		case ACTION_ENQUEUE_GENRE:
 			enqueue(MediaUtils.TYPE_GENRE);
+			break;
+		case ACTION_CLEAR_QUEUE:
+			ContextApplication.getService().clearQueue();
+			Toast.makeText(this, R.string.queue_cleared, Toast.LENGTH_SHORT).show();
 			break;
 		default:
 			throw new IllegalArgumentException("Invalid action: " + action);

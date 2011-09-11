@@ -440,6 +440,19 @@ public final class SongTimeline {
 	}
 
 	/**
+	 * Clear the song queue.
+	 */
+	public void clearQueue()
+	{
+		synchronized (this) {
+			mSongs.subList(mCurrentPos + 1, mSongs.size()).clear();
+			mQueueOffset = 0;
+		}
+
+		mCallback.songReplaced(+1, getSong(+1));
+	}
+
+	/**
 	 * Remove the song with the given id from the timeline.
 	 *
 	 * @param id The MediaStore id of the song to remove.

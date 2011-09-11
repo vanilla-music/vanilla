@@ -53,6 +53,7 @@ THE SOFTWARE.
 		<item>Enqueue Current Album</item>
 		<item>Enqueue Current Artist</item>
 		<item>Enqueue Current Genre</item>
+		<item>Clear Queue</item>
 	</string-array>
 	<string-array name="entry_values">
 		<!-- Note: even if this was an integer-array, these would be converted
@@ -68,5 +69,6 @@ THE SOFTWARE.
 		<item>7</item>
 		<item>8</item>
 		<item>9</item>
+		<item>10</item>
 	</string-array>
 </resources>

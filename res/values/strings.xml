@@ -42,6 +42,7 @@ THE SOFTWARE.
 		<item quantity="one">1 song enqueued.</item>
 		<item quantity="other">%d songs enqueued.</item>
 	</plurals>
+	<string name="queue_cleared">Queue cleared.</string>
 
 	<!-- Widgets -->
 	<string name="starting">Starting up...</string>
