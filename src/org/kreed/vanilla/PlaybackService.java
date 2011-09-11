@@ -109,7 +109,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 * Set when the current song is unplayable.
 	 */
 	public static final int FLAG_ERROR = 0x10;
-	public static final int ALL_FLAGS = FLAG_NO_MEDIA + FLAG_PLAYING + FLAG_SHUFFLE + FLAG_REPEAT + FLAG_ERROR;
 
 	public static final int NEVER = 0;
 	public static final int WHEN_PLAYING = 1;
@@ -132,7 +131,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	private NotificationManager mNotificationManager;
 
 	SongTimeline mTimeline;
-	int mState = 0x80;
+	int mState;
 	private Song mCurrentSong;
 
 	Object mStateLock = new Object();
@@ -140,7 +139,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	private int mPendingSeek;
 	public Receiver mReceiver;
 	public InCallListener mCallListener;
-	private boolean mLoaded;
 	private String mErrorMessage;
 	/**
 	 * The volume set by the user in the preferences.
@@ -172,16 +170,43 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		mTimeline = new SongTimeline();
 		mTimeline.setCallback(this);
 		mPendingSeek = mTimeline.loadState(this);
-		if (mTimeline.isRepeating())
-			mState |= FLAG_REPEAT;
-		if (mTimeline.isShuffling())
-			mState |= FLAG_SHUFFLE;
 
-		ContextApplication.setService(this);
+		mMediaPlayer = new MediaPlayer();
+		mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+		mMediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
+		mMediaPlayer.setOnCompletionListener(this);
+		mMediaPlayer.setOnErrorListener(this);
+
+		mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+
+		SharedPreferences settings = getSettings();
+		settings.registerOnSharedPreferenceChangeListener(this);
+		mNotificationMode = Integer.parseInt(settings.getString("notification_mode", "1"));
+		mScrobble = settings.getBoolean("scrobble", false);
+		float volume = settings.getFloat("volume", 1.0f);
+		if (volume != 1.0f) {
+			mCurrentVolume = mUserVolume = volume;
+			mMediaPlayer.setVolume(volume, volume);
+		}
+		mIdleTimeout = settings.getBoolean("use_idle_timeout", false) ? settings.getInt("idle_timeout", 3600) : 0;
+		Song.mDisableCoverArt = settings.getBoolean("disable_cover_art", false);
+
+		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
+		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicSongChangeLock");
 
 		mLooper = thread.getLooper();
 		mHandler = new Handler(mLooper, this);
-		mHandler.sendEmptyMessage(CREATE);
+		mHandler.sendEmptyMessage(POST_CREATE);
+
+		int state = 0;
+		if (mTimeline.isRepeating())
+			state |= FLAG_REPEAT;
+		if (mTimeline.isShuffling())
+			state |= FLAG_SHUFFLE;
+		updateState(state);
+		setCurrentSong(0);
+
+		ContextApplication.setService(this);
 	}
 
 	@Override
@@ -301,38 +326,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		return mSettings;
 	}
 
-	private void initialize()
-	{
-		mMediaPlayer = new MediaPlayer();
-		mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-		mMediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
-		mMediaPlayer.setOnCompletionListener(this);
-		mMediaPlayer.setOnErrorListener(this);
-
-		mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-
-		SharedPreferences settings = getSettings();
-		settings.registerOnSharedPreferenceChangeListener(this);
-		mNotificationMode = Integer.parseInt(settings.getString("notification_mode", "1"));
-		mScrobble = settings.getBoolean("scrobble", false);
-		float volume = settings.getFloat("volume", 1.0f);
-		if (volume != 1.0f) {
-			mCurrentVolume = mUserVolume = volume;
-			mMediaPlayer.setVolume(volume, volume);
-		}
-		mIdleTimeout = settings.getBoolean("use_idle_timeout", false) ? settings.getInt("idle_timeout", 3600) : 0;
-		Song.mDisableCoverArt = settings.getBoolean("disable_cover_art", false);
-
-		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
-		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicSongChangeLock");
-
-		mLoaded = true;
-
-		setCurrentSong(0);
-
-		mHandler.sendEmptyMessage(POST_CREATE);
-	}
-
 	private void loadPreference(String key)
 	{
 		SharedPreferences settings = getSettings();
@@ -410,8 +403,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 */
 	private int updateState(int state)
 	{
-		state &= ALL_FLAGS;
-
 		if ((state & FLAG_NO_MEDIA) != 0 || (state & FLAG_ERROR) != 0)
 			state &= ~FLAG_PLAYING;
 
@@ -623,14 +614,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			}
 		}
 
-		if (mLoaded) {
-			if (delta == 0)
-				toggleFlag(FLAG_PLAYING);
-			else
-				setCurrentSong(delta);
-		} else {
-			mHandler.sendMessage(mHandler.obtainMessage(GO, delta, 0));
-		}
+		if (delta == 0)
+			toggleFlag(FLAG_PLAYING);
+		else
+			setCurrentSong(delta);
 	}
 
 	private class Receiver extends BroadcastReceiver {
@@ -704,9 +691,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		registerReceiver(mReceiver, filter);
 	}
 
-	private static final int GO = 0;
 	private static final int POST_CREATE = 1;
-	private static final int CREATE = 3;
 	/**
 	 * This message is sent with a delay specified by a user preference. After
 	 * this delay, assuming no new IDLE_TIMEOUT messages cancel it, playback
@@ -756,12 +741,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			int delta = (Integer)message.obj;
 			go(delta, false);
 			break;
-		case GO:
-			if (message.arg1 == 0)
-				toggleFlag(FLAG_PLAYING);
-			else
-				setCurrentSong(message.arg1);
-			break;
 		case SAVE_STATE:
 			// For unexpected terminations: crashes, task killers, etc.
 			// In most cases onDestroy will handle this
@@ -769,9 +748,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			break;
 		case PROCESS_SONG:
 			processSong((Song)message.obj);
-			break;
-		case CREATE:
-			initialize();
 			break;
 		case POST_CREATE:
 			mHeadsetPause = mSettings.getBoolean("headset_pause", true);
