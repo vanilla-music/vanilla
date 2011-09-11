@@ -97,7 +97,9 @@ public class ContextApplication extends Application {
 			mInstance.startService(new Intent(mInstance, PlaybackService.class));
 			while (mService == null) {
 				try {
-					mInstance.wait();
+					synchronized (mInstance) {
+						mInstance.wait();
+					}
 				} catch (InterruptedException e) {
 				}
 			}
