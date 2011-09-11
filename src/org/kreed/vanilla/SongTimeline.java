@@ -396,7 +396,7 @@ public final class SongTimeline {
 				for (int j = 0; j != songs.length; ++j)
 					timeline.add(new Song(songs[j]));
 
-				mQueueOffset += songs.length - 1;
+				mQueueOffset = songs.length - 1;
 			}
 		}
 
