@@ -238,10 +238,13 @@ public final class SongTimeline {
 
 		synchronized (this) {
 			if (repeat) {
+				Song song = getSong(0);
+				if (song == null)
+					return;
 				mRepeatStart = mCurrentPos;
 				// Ensure that we will at least repeat one song (the current song),
 				// even if all of our songs were selected randomly.
-				getSong(0).flags &= ~Song.FLAG_RANDOM;
+				song.flags &= ~Song.FLAG_RANDOM;
 			} else {
 				mRepeatStart = -1;
 				mRepeatedSongs = null;

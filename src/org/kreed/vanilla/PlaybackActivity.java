@@ -310,6 +310,8 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 		menu.findItem(MENU_SHUFFLE).setTitle(isShuffling ? R.string.shuffle_disable : R.string.shuffle_enable);
 		boolean isRepeating = (mState & PlaybackService.FLAG_REPEAT) != 0;
 		menu.findItem(MENU_REPEAT).setTitle(isRepeating ? R.string.repeat_disable : R.string.repeat_enable);
+		if ((mState & PlaybackService.FLAG_NO_MEDIA) != 0)
+			menu.findItem(MENU_REPEAT).setEnabled(false);
 		return true;
 	}
 

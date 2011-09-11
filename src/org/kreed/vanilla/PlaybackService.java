@@ -431,9 +431,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			Toast.makeText(this, text, Toast.LENGTH_LONG).show();
 		}
 
-		if (mCurrentSong == null)
-			state &= ~FLAG_REPEAT;
-
 		int oldState = mState;
 		mState = state;
 
