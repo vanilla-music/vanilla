@@ -23,12 +23,9 @@
 package org.kreed.vanilla;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -150,17 +147,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 */
 	private float mCurrentVolume = 1.0f;
 
-	private static Method mStartForeground;
-	private static Method mStopForeground;
-
-	static {
-		try {
-			mStartForeground = Service.class.getMethod("startForeground", int.class, Notification.class);
-			mStopForeground = Service.class.getMethod("stopForeground", boolean.class);
-		} catch (NoSuchMethodException e) {
-		}
-	}
-
 	@Override
 	public void onCreate()
 	{
@@ -258,7 +244,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		mLooper.quit();
 
 		// clear the notification
-		stopForegroundCompat(true);
+		stopForeground(true);
 
 		if (mMediaPlayer != null) {
 			mTimeline.saveState(this, mMediaPlayer.getCurrentPosition());
@@ -278,40 +264,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			mWakeLock.release();
 
 		super.onDestroy();
-	}
-
-	public void startForegroundCompat(int id, Notification notification)
-	{
-		if (mStartForeground == null) {
-			setForeground(true);
-			mNotificationManager.notify(id, notification);
-		} else {
-			try {
-				mStartForeground.invoke(this, Integer.valueOf(id), notification);
-			} catch (InvocationTargetException e) {
-				Log.w("VanillaMusic", e);
-			} catch (IllegalAccessException e) {
-				Log.w("VanillaMusic", e);
-			}
-		}
-	}
-
-	public void stopForegroundCompat(Boolean cancelNotification)
-	{
-		if (mStopForeground == null) {
-			setForeground(false);
-		} else {
-			try {
-				mStopForeground.invoke(this, cancelNotification);
-			} catch (InvocationTargetException e) {
-				Log.w("VanillaMusic", e);
-			} catch (IllegalAccessException e) {
-				Log.w("VanillaMusic", e);
-			}
-		}
-
-		if (cancelNotification && mNotificationManager != null)
-			mNotificationManager.cancel(NOTIFICATION_ID);
 	}
 
 	/**
@@ -338,7 +290,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			// This is the only way to remove a notification created by
 			// startForeground(), even if we are not currently in foreground
 			// mode.
-			stopForegroundCompat(true);
+			stopForeground(true);
 			updateNotification();
 		} else if ("scrobble".equals(key)) {
 			mScrobble = settings.getBoolean("scrobble", false);
@@ -428,7 +380,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 					}
 				}
 				if (mNotificationMode != NEVER)
-					startForegroundCompat(NOTIFICATION_ID, new SongNotification(mCurrentSong, true));
+					startForeground(NOTIFICATION_ID, new SongNotification(mCurrentSong, true));
 
 				if (mWakeLock != null)
 					mWakeLock.acquire();
@@ -439,10 +391,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 					}
 				}
 				if (mNotificationMode == ALWAYS) {
-					stopForegroundCompat(false);
+					stopForeground(false);
 					mNotificationManager.notify(NOTIFICATION_ID, new SongNotification(mCurrentSong, false));
 				} else {
-					stopForegroundCompat(true);
+					stopForeground(true);
 				}
 
 				if (mWakeLock != null && mWakeLock.isHeld())
