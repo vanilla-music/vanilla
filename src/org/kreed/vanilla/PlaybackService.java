@@ -115,6 +115,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	private boolean mScrobble;
 	private int mNotificationMode;
 	/**
+	 * If true, audio will not be played through the speaker.
+	 */
+	private boolean mHeadsetOnly;
+	/**
 	 * The time to wait before considering the player idle.
 	 */
 	private int mIdleTimeout;
@@ -126,6 +130,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	private PowerManager.WakeLock mWakeLock;
 	private SharedPreferences mSettings;
 	private NotificationManager mNotificationManager;
+	private AudioManager mAudioManager;
 
 	SongTimeline mTimeline;
 	int mState;
@@ -163,6 +168,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		mMediaPlayer.setOnErrorListener(this);
 
 		mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+		mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
 
 		SharedPreferences settings = getSettings();
 		settings.registerOnSharedPreferenceChangeListener(this);
@@ -175,6 +181,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		}
 		mIdleTimeout = settings.getBoolean("use_idle_timeout", false) ? settings.getInt("idle_timeout", 3600) : 0;
 		Song.mDisableCoverArt = settings.getBoolean("disable_cover_art", false);
+		mHeadsetOnly = settings.getBoolean("headset_only", false);
 
 		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
 		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicLock");
@@ -321,6 +328,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			PlaybackActivity.mUpAction = Integer.parseInt(settings.getString(key, "0"));
 		} else if ("swipe_down_action".equals(key)) {
 			PlaybackActivity.mDownAction = Integer.parseInt(settings.getString(key, "0"));
+		} else if ("headset_only".equals(key)) {
+			mHeadsetOnly = settings.getBoolean(key, false);
+			if (mHeadsetOnly && isSpeakerOn())
+				unsetFlag(FLAG_PLAYING);
 		}
 	}
 
@@ -347,6 +358,14 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	}
 
 	/**
+	 * Return true if audio would play through the speaker.
+	 */
+	private boolean isSpeakerOn()
+	{
+		return !mAudioManager.isWiredHeadsetOn() && !mAudioManager.isBluetoothA2dpOn() && !mAudioManager.isBluetoothScoOn();
+	}
+
+	/**
 	 * Modify the service state.
 	 *
 	 * @param state Union of PlaybackService.STATE_* flags
@@ -354,7 +373,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 */
 	private int updateState(int state)
 	{
-		if ((state & FLAG_NO_MEDIA) != 0 || (state & FLAG_ERROR) != 0)
+		if ((state & FLAG_NO_MEDIA) != 0 || (state & FLAG_ERROR) != 0 || (mHeadsetOnly && isSpeakerOn()))
 			state &= ~FLAG_PLAYING;
 
 		int oldState = mState;

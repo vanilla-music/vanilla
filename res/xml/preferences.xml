@@ -34,6 +34,11 @@ THE SOFTWARE.
 			android:summary="@string/media_button_summary"
 			android:defaultValue="true" />
 		<CheckBoxPreference
+			android:key="headset_only"
+			android:title="@string/headset_only_title"
+			android:defaultValue="false"
+			android:summary="@string/headset_only_summary" />
+		<CheckBoxPreference
 			android:key="headset_pause"
 			android:title="@string/headset_pause_title"
 			android:defaultValue="true"

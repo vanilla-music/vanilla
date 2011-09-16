@@ -92,5 +92,7 @@ THE SOFTWARE.
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+	<!-- This is needed for isWiredHeadsetOn() to work in some cases. (bug?) -->
+	<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 	<supports-screens android:smallScreens="true" />
 </manifest>
