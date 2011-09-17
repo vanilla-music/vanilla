@@ -38,10 +38,6 @@ THE SOFTWARE.
 	<string name="repeat_enabling">Repeat enabled. The current song and any songs you have added after it will be repeated.</string>
 	<string name="repeat_disabling">Repeat disabled</string>
 	<string name="song_load_failed">Failed to load song %s. It may be corrupt or missing.</string>
-	<plurals name="enqueued_count">
-		<item quantity="one">1 song enqueued.</item>
-		<item quantity="other">%d songs enqueued.</item>
-	</plurals>
 	<string name="queue_cleared">Queue cleared.</string>
 
 	<!-- Widgets -->
@@ -65,8 +61,14 @@ THE SOFTWARE.
 	<string name="playback_view">Now Playing</string>
 	<string name="search">Search</string>
 
-	<string name="enqueued">Enqueued %s</string>
-	<string name="playing">Playing %s</string>
+	<plurals name="playing">
+		<item quantity="one">1 song playing.</item>
+		<item quantity="other">%d songs playing.</item>
+	</plurals>
+	<plurals name="enqueued">
+		<item quantity="one">1 song enqueued.</item>
+		<item quantity="other">%d songs enqueued.</item>
+	</plurals>
 	<plurals name="added_to_playlist">
 		<item quantity="one">1 song added to playlist %2$s.</item>
 		<item quantity="other">%1$d songs added to playlist %2$s.</item>

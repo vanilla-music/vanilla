@@ -604,7 +604,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	{
 		if (mTimeline == null)
 			return null;
-
+		if (delta == 0)
+			return mCurrentSong;
 		return mTimeline.getSong(delta);
 	}
 
@@ -912,12 +913,13 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 *
 	 * @param type The media type, one of MediaUtils.TYPE_*
 	 * @param id The MediaStore id of the media
-	 * @return The song that is playing after this method is called
+	 * @return The number of songs that were enqueued.
 	 */
-	public Song playSongs(int type, long id)
+	public int playSongs(int type, long id)
 	{
-		mTimeline.chooseSongs(false, type, id, null);
-		return setCurrentSong(+1);
+		int count = mTimeline.chooseSongs(false, type, id, null);
+		setCurrentSong(+1);
+		return count;
 	}
 
 	/**
@@ -931,12 +933,14 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 *
 	 * @param type The media type, one of MediaUtils.TYPE_*
 	 * @param id The MediaStore id of the media
+	 * @return The number of songs that were enqueued.
 	 */
-	public void enqueueSongs(int type, long id)
+	public int enqueueSongs(int type, long id)
 	{
-		mTimeline.chooseSongs(true, type, id, null);
+		int count = mTimeline.chooseSongs(true, type, id, null);
 		mHandler.removeMessages(SAVE_STATE);
 		mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
+		return count;
 	}
 
 	/**

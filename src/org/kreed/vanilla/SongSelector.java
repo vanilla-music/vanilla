@@ -245,9 +245,10 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	private void pickSongs(MediaAdapter.MediaView view, int action)
 	{
 		PlaybackService service = ContextApplication.getService();
-		Resources res = getResources();
 		int type = view.getMediaType();
 		long id = view.getMediaId();
+		int count;
+		int text;
 
 		if (action == ACTION_LAST_USED)
 			action = mLastAction;
@@ -256,17 +257,19 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 
 		switch (action) {
 		case ACTION_PLAY:
-			Toast.makeText(this, getString(R.string.playing, view.getTitle()), Toast.LENGTH_SHORT).show();
-			setSong(service.playSongs(type, id));
+			count = service.playSongs(type, id);
+			text = R.plurals.playing;
 			break;
 		case ACTION_ENQUEUE:
-			Toast.makeText(this, getString(R.string.enqueued, view.getTitle()), Toast.LENGTH_SHORT).show();
-			service.enqueueSongs(type, id);
+			count = service.enqueueSongs(type, id);
+			text = R.plurals.enqueued;
 			break;
 		default:
 			return;
 		}
 
+		setSong(service.getSong(0));
+		Toast.makeText(this, getResources().getQuantityString(text, count, count), Toast.LENGTH_SHORT).show();
 		mLastActedId = id;
 	}
 

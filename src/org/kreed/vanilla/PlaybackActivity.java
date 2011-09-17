@@ -378,7 +378,7 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	public void enqueue(int type)
 	{
 		int count = ContextApplication.getService().enqueueFromCurrent(type);
-		String text = getResources().getQuantityString(R.plurals.enqueued_count, count, count);
+		String text = getResources().getQuantityString(R.plurals.enqueued, count, count);
 		Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
 	}
 
