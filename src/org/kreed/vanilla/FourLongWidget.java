@@ -40,22 +40,13 @@ public class FourLongWidget extends AppWidgetProvider {
 	@Override
 	public void onUpdate(Context context, AppWidgetManager manager, int[] ids)
 	{
-		Song song;
-		int state;
+		Song song = null;
+		int state = 0;
 
 		if (ContextApplication.hasService()) {
 			PlaybackService service = ContextApplication.getService();
 			song = service.getSong(0);
 			state = service.getState();
-		} else {
-			SongTimeline timeline = new SongTimeline();
-			timeline.loadState(context);
-			song = timeline.getSong(0);
-			state = 0;
-
-			// If we generated a new current song (because the PlaybackService has
-			// never been started), then we need to save the state.
-			timeline.saveState(context, 0);
 		}
 
 		updateWidget(context, manager, ids, song, state);
@@ -77,7 +68,11 @@ public class FourLongWidget extends AppWidgetProvider {
 				song = intent.getParcelableExtra("song");
 			else
 				song = ContextApplication.getService().getSong(0);
-			int state = intent.getIntExtra("state", -1);
+			int state;
+			if (intent.hasExtra("state"))
+				state = intent.getIntExtra("state", 0);
+			else
+				state = ContextApplication.getService().getState();
 
 			AppWidgetManager manager = AppWidgetManager.getInstance(context);
 			int[] ids = manager.getAppWidgetIds(new ComponentName(context, FourLongWidget.class));
@@ -102,10 +97,15 @@ public class FourLongWidget extends AppWidgetProvider {
 
 		RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.four_long_widget);
 
-		if (song == null) {
+		if ((state & PlaybackService.FLAG_NO_MEDIA) != 0) {
 			views.setViewVisibility(R.id.buttons, View.GONE);
 			views.setViewVisibility(R.id.title, View.GONE);
 			views.setInt(R.id.artist, "setText", R.string.no_songs);
+			views.setImageViewResource(R.id.cover, 0);
+		} else if (song == null) {
+			views.setViewVisibility(R.id.buttons, View.VISIBLE);
+			views.setViewVisibility(R.id.title, View.GONE);
+			views.setInt(R.id.artist, "setText", R.string.app_name);
 			views.setImageViewResource(R.id.cover, 0);
 		} else {
 			views.setViewVisibility(R.id.title, View.VISIBLE);
@@ -115,10 +115,8 @@ public class FourLongWidget extends AppWidgetProvider {
 			views.setImageViewUri(R.id.cover, song.getCoverUri());
 		}
 
-		if (state != -1) {
-			boolean playing = (state & PlaybackService.FLAG_PLAYING) != 0;
-			views.setImageViewResource(R.id.play_pause, playing ? R.drawable.pause_multi : R.drawable.play_multi);
-		}
+		boolean playing = (state & PlaybackService.FLAG_PLAYING) != 0;
+		views.setImageViewResource(R.id.play_pause, playing ? R.drawable.pause_multi : R.drawable.play_multi);
 
 		Intent intent;
 		PendingIntent pendingIntent;

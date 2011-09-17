@@ -40,22 +40,13 @@ public class OneCellWidget extends AppWidgetProvider {
 	@Override
 	public void onUpdate(Context context, AppWidgetManager manager, int[] ids)
 	{
-		Song song;
-		int state;
+		Song song = null;
+		int state = 0;
 
 		if (ContextApplication.hasService()) {
 			PlaybackService service = ContextApplication.getService();
 			song = service.getSong(0);
 			state = service.getState();
-		} else {
-			SongTimeline timeline = new SongTimeline();
-			timeline.loadState(context);
-			song = timeline.getSong(0);
-			state = 0;
-
-			// If we generated a new current song (because the PlaybackService has
-			// never been started), then we need to save the state.
-			timeline.saveState(context, 0);
 		}
 
 		updateWidget(context, manager, ids, song, state);
@@ -77,7 +68,11 @@ public class OneCellWidget extends AppWidgetProvider {
 				song = intent.getParcelableExtra("song");
 			else
 				song = ContextApplication.getService().getSong(0);
-			int state = intent.getIntExtra("state", -1);
+			int state;
+			if (intent.hasExtra("state"))
+				state = intent.getIntExtra("state", 0);
+			else
+				state = ContextApplication.getService().getState();
 
 			AppWidgetManager manager = AppWidgetManager.getInstance(context);
 			int[] ids = manager.getAppWidgetIds(new ComponentName(context, OneCellWidget.class));
@@ -105,10 +100,8 @@ public class OneCellWidget extends AppWidgetProvider {
 
 		RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.one_cell_widget);
 
-		if (state != -1) {
-			boolean playing = (state & PlaybackService.FLAG_PLAYING) != 0;
-			views.setImageViewResource(R.id.play_pause, playing ? R.drawable.hidden_pause : R.drawable.hidden_play);
-		}
+		boolean playing = (state & PlaybackService.FLAG_PLAYING) != 0;
+		views.setImageViewResource(R.id.play_pause, playing ? R.drawable.hidden_pause : R.drawable.hidden_play);
 
 		ComponentName service = new ComponentName(context, PlaybackService.class);
 
@@ -120,9 +113,12 @@ public class OneCellWidget extends AppWidgetProvider {
 		next.setComponent(service);
 		views.setOnClickPendingIntent(R.id.next, PendingIntent.getService(context, 0, next, 0));
 
-		if (song == null) {
+		if ((state & PlaybackService.FLAG_NO_MEDIA) != 0) {
 			views.setImageViewResource(R.id.cover, 0);
 			views.setInt(R.id.title, "setText", R.string.no_songs);
+		} else if (song == null) {
+			views.setImageViewResource(R.id.cover, 0);
+			views.setInt(R.id.title, "setText", R.string.app_name);
 		} else {
 			views.setImageViewUri(R.id.cover, song.getCoverUri());
 			views.setTextViewText(R.id.title, song.title);
