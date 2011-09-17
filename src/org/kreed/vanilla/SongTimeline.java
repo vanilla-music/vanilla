@@ -350,6 +350,8 @@ public final class SongTimeline {
 	{
 		synchronized (this) {
 			mCurrentPos += delta;
+			if (mQueueOffset > 0)
+				mQueueOffset -= 1;
 			return getSong(0);
 		}
 	}
@@ -402,7 +404,7 @@ public final class SongTimeline {
 				for (int j = 0; j != songs.length; ++j)
 					timeline.add(new Song(songs[j]));
 
-				mQueueOffset = songs.length - 1;
+				mQueueOffset = songs.length;
 			}
 		}
 
