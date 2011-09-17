@@ -159,10 +159,6 @@ public class ContextApplication extends Application {
 	 */
 	public static void broadcast(Intent intent)
 	{
-		OneCellWidget.receive(intent);
-		FourLongWidget.receive(intent);
-		FourSquareWidget.receive(intent);
-
 		ArrayList<Activity> list = mActivities;
 		if (list != null) {
 			for (int i = list.size(); --i != -1; ) {

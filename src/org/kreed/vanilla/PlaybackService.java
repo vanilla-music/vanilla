@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.Service;
+import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -190,6 +191,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		mHandler = new Handler(mLooper, this);
 		mHandler.sendEmptyMessage(POST_CREATE);
 
+		initWidgets();
+
 		int state = 0;
 		if (mTimeline.isRepeating())
 			state |= FLAG_REPEAT;
@@ -217,9 +220,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 					mHandler.sendMessageDelayed(mHandler.obtainMessage(CALL_GO, Integer.valueOf(0)), 400);
 				}
 			} else if (ACTION_NEXT_SONG.equals(action)) {
-				// Preemptively broadcast an update in attempt to hasten UI
-				// feedback.
-				broadcastReplaceSong(0, getSong(+1));
 				go(1, false);
 			} else if (ACTION_NEXT_SONG_AUTOPLAY.equals(action)) {
 				go(1, true);
@@ -437,8 +437,34 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		intent.putExtra("time", uptime);
 		ContextApplication.broadcast(intent);
 
+		updateWidgets();
+
 		if (mScrobble)
 			scrobble();
+	}
+
+	/**
+	 * Check if there are any instances of each widget.
+	 */
+	private void initWidgets()
+	{
+		AppWidgetManager manager = AppWidgetManager.getInstance(this);
+		OneCellWidget.checkEnabled(this, manager);
+		FourSquareWidget.checkEnabled(this, manager);
+		FourLongWidget.checkEnabled(this, manager);
+	}
+
+	/**
+	 * Update the widgets with the current song and state.
+	 */
+	private void updateWidgets()
+	{
+		AppWidgetManager manager = AppWidgetManager.getInstance(this);
+		Song song = mCurrentSong;
+		int state = mState;
+		OneCellWidget.updateWidget(this, manager, song, state);
+		FourLongWidget.updateWidget(this, manager, song, state);
+		FourSquareWidget.updateWidget(this, manager, song, state);
 	}
 
 	private void scrobble()

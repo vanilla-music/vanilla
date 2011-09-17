@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,10 +33,24 @@ import android.preference.PreferenceManager;
 import android.widget.RemoteViews;
 
 /**
- * Provider for the smallish one cell widget. Handles updating for current
- * PlaybackService state.
+ * 1x1 widget that shows title, album art, and hidden next and play/pause
+ * buttons.
  */
 public class OneCellWidget extends AppWidgetProvider {
+	private static boolean sEnabled;
+
+	@Override
+	public void onEnabled(Context context)
+	{
+		sEnabled = true;
+	}
+
+	@Override
+	public void onDisabled(Context context)
+	{
+		sEnabled = false;
+	}
+
 	@Override
 	public void onUpdate(Context context, AppWidgetManager manager, int[] ids)
 	{
@@ -49,35 +63,16 @@ public class OneCellWidget extends AppWidgetProvider {
 			state = service.getState();
 		}
 
-		updateWidget(context, manager, ids, song, state);
+		sEnabled = true;
+		updateWidget(context, manager, song, state);
 	}
 
 	/**
-	 * Receive a broadcast sent by the PlaybackService and update the widget
-	 * accordingly.
-	 *
-	 * @param intent The intent that was broadcast.
+	 * Check if there are any instances of this widget placed.
 	 */
-	public static void receive(Intent intent)
+	public static void checkEnabled(Context context, AppWidgetManager manager)
 	{
-		String action = intent.getAction();
-		if (PlaybackService.EVENT_CHANGED.equals(action) || PlaybackService.EVENT_REPLACE_SONG.equals(action)) {
-			Context context = ContextApplication.getContext();
-			Song song;
-			if (intent.hasExtra("song"))
-				song = intent.getParcelableExtra("song");
-			else
-				song = ContextApplication.getService().getSong(0);
-			int state;
-			if (intent.hasExtra("state"))
-				state = intent.getIntExtra("state", 0);
-			else
-				state = ContextApplication.getService().getState();
-
-			AppWidgetManager manager = AppWidgetManager.getInstance(context);
-			int[] ids = manager.getAppWidgetIds(new ComponentName(context, OneCellWidget.class));
-			updateWidget(context, manager, ids, song, state);
-		}
+		sEnabled = manager.getAppWidgetIds(new ComponentName(context, FourLongWidget.class)).length != 0;
 	}
 
 	/**
@@ -86,13 +81,12 @@ public class OneCellWidget extends AppWidgetProvider {
 	 * @param context A Context to use.
 	 * @param manager The AppWidgetManager that will be used to update the
 	 * widget.
-	 * @param ids An array containing the ids of all the widgets to update.
 	 * @param song The current Song in PlaybackService.
 	 * @param state The current PlaybackService state.
 	 */
-	public static void updateWidget(Context context, AppWidgetManager manager, int[] ids, Song song, int state)
+	public static void updateWidget(Context context, AppWidgetManager manager, Song song, int state)
 	{
-		if (ids == null || ids.length == 0)
+		if (!sEnabled)
 			return;
 
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
@@ -124,6 +118,6 @@ public class OneCellWidget extends AppWidgetProvider {
 			views.setTextViewText(R.id.title, song.title);
 		}
 
-		manager.updateAppWidget(ids, views);
+		manager.updateAppWidget(new ComponentName(context, OneCellWidget.class), views);
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,11 +32,24 @@ import android.view.View;
 import android.widget.RemoteViews;
 
 /**
- * Simple 1x4 widget to show currently playing song, album art, and play/pause,
- * next, and previous buttons. Uses artwork from the default Android music
- * widget.
+ * 2x2 widget that shows title, artist, a (hidden) play/pause button, a (hidden)
+ * next button, and cover art in the background.
  */
 public class FourSquareWidget extends AppWidgetProvider {
+	private static boolean sEnabled;
+
+	@Override
+	public void onEnabled(Context context)
+	{
+		sEnabled = true;
+	}
+
+	@Override
+	public void onDisabled(Context context)
+	{
+		sEnabled = false;
+	}
+
 	@Override
 	public void onUpdate(Context context, AppWidgetManager manager, int[] ids)
 	{
@@ -49,35 +62,16 @@ public class FourSquareWidget extends AppWidgetProvider {
 			state = service.getState();
 		}
 
-		updateWidget(context, manager, ids, song, state);
+		sEnabled = true;
+		updateWidget(context, manager, song, state);
 	}
 
 	/**
-	 * Receive a broadcast sent by the PlaybackService and update the widget
-	 * accordingly.
-	 *
-	 * @param intent The intent that was broadcast.
+	 * Check if there are any instances of this widget placed.
 	 */
-	public static void receive(Intent intent)
+	public static void checkEnabled(Context context, AppWidgetManager manager)
 	{
-		String action = intent.getAction();
-		if (PlaybackService.EVENT_CHANGED.equals(action) || PlaybackService.EVENT_REPLACE_SONG.equals(action)) {
-			Context context = ContextApplication.getContext();
-			Song song;
-			if (intent.hasExtra("song"))
-				song = intent.getParcelableExtra("song");
-			else
-				song = ContextApplication.getService().getSong(0);
-			int state;
-			if (intent.hasExtra("state"))
-				state = intent.getIntExtra("state", 0);
-			else
-				state = ContextApplication.getService().getState();
-
-			AppWidgetManager manager = AppWidgetManager.getInstance(context);
-			int[] ids = manager.getAppWidgetIds(new ComponentName(context, FourSquareWidget.class));
-			updateWidget(context, manager, ids, song, state);
-		}
+		sEnabled = manager.getAppWidgetIds(new ComponentName(context, FourSquareWidget.class)).length != 0;
 	}
 
 	/**
@@ -86,13 +80,12 @@ public class FourSquareWidget extends AppWidgetProvider {
 	 * @param context A Context to use.
 	 * @param manager The AppWidgetManager that will be used to update the
 	 * widget.
-	 * @param ids An array containing the ids of all the widgets to update.
 	 * @param song The current Song in PlaybackService.
 	 * @param state The current PlaybackService state.
 	 */
-	public static void updateWidget(Context context, AppWidgetManager manager, int[] ids, Song song, int state)
+	public static void updateWidget(Context context, AppWidgetManager manager, Song song, int state)
 	{
-		if (ids == null || ids.length == 0)
+		if (!sEnabled)
 			return;
 
 		RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.four_square_widget);
@@ -135,6 +128,6 @@ public class FourSquareWidget extends AppWidgetProvider {
 		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
 		views.setOnClickPendingIntent(R.id.next, pendingIntent);
 
-		manager.updateAppWidget(ids, views);
+		manager.updateAppWidget(new ComponentName(context, FourSquareWidget.class), views);
 	}
 }
