@@ -30,7 +30,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.TypedValue;
 import android.widget.RemoteViews;
 
 /**
@@ -122,10 +121,11 @@ public class OneCellWidget extends AppWidgetProvider {
 		views.setOnClickPendingIntent(R.id.next, PendingIntent.getService(context, 0, next, 0));
 
 		if (song == null) {
-			views.setImageViewResource(R.id.cover_view, R.drawable.icon);
+			views.setImageViewResource(R.id.cover, 0);
+			views.setInt(R.id.title, "setText", R.string.no_songs);
 		} else {
-			int size = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 72, context.getResources().getDisplayMetrics());
-			views.setImageViewBitmap(R.id.cover_view, CoverBitmap.createCompactBitmap(song, size, size));
+			views.setImageViewUri(R.id.cover, song.getCoverUri());
+			views.setTextViewText(R.id.title, song.title);
 		}
 
 		manager.updateAppWidget(ids, views);

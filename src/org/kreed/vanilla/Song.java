@@ -413,6 +413,20 @@ public class Song implements Parcelable {
 	}
 
 	/**
+	 * Return a URI describing where the cover art is stored, or null if this
+	 * song has not been populated.
+	 */
+	public Uri getCoverUri()
+	{
+		// Use undocumented API to extract the cover from the media file from Eclair
+		// See http://android.git.kernel.org/?p=platform/packages/apps/Music.git;a=blob;f=src/com/android/music/MusicUtils.java;h=d1aea0660009940a0160cb981f381e2115768845;hb=0749a3f1c11e052f97a3ba60fd624c9283ee7331#l986
+
+		if (id == -1)
+			return null;
+		return Uri.parse("content://media/external/audio/media/" + id + "/albumart");
+	}
+
+	/**
 	 * Attempts to read the album art directly from a media file using the
 	 * media ContentProvider.
 	 *
@@ -421,13 +435,10 @@ public class Song implements Parcelable {
 	 */
 	private Bitmap getCoverFromMediaFile(ContentResolver resolver)
 	{
-		// Use undocumented API to extract the cover from the media file from Eclair
-		// See http://android.git.kernel.org/?p=platform/packages/apps/Music.git;a=blob;f=src/com/android/music/MusicUtils.java;h=d1aea0660009940a0160cb981f381e2115768845;hb=0749a3f1c11e052f97a3ba60fd624c9283ee7331#l986
 		Bitmap cover = null;
 
 		try {
-			Uri uri = Uri.parse("content://media/external/audio/media/" + id + "/albumart");
-			ParcelFileDescriptor parcelFileDescriptor = resolver.openFileDescriptor(uri, "r");
+			ParcelFileDescriptor parcelFileDescriptor = resolver.openFileDescriptor(getCoverUri(), "r");
 			if (parcelFileDescriptor != null) {
 				FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
 				cover = BitmapFactory.decodeFileDescriptor(fileDescriptor, null, BITMAP_OPTIONS);

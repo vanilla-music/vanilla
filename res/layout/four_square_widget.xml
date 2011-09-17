@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
+Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,69 +29,75 @@ THE SOFTWARE.
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_centerInParent="true"
-		android:src="@drawable/black"
 		android:adjustViewBounds="true"
 		android:padding="5dip"
-		android:background="#B2191919"
 		android:scaleType="fitCenter" />
 	<LinearLayout
 		android:id="@+id/text"
-		android:layout_width="wrap_content"
+		android:layout_alignTop="@id/cover"
+		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		android:layout_alignTop="@+id/cover"
-		android:layout_alignLeft="@+id/cover"
-		android:layout_alignRight="@+id/cover"
 		android:layout_margin="10dip"
 		android:orientation="vertical">
 		<TextView
 			android:id="@+id/title"
+			android:visibility="gone"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
 			android:gravity="center"
 			android:textColor="#fff"
 			android:textSize="18dip"
 			android:shadowColor="#f000"
-            android:shadowDx="0"
-            android:shadowDy="0"
-            android:shadowRadius="5"
-            android:textStyle="bold"
-			android:ellipsize="none"
+			android:shadowDx="0"
+			android:shadowDy="0"
+			android:shadowRadius="5"
+			android:textStyle="bold"
+			android:ellipsize="marquee"
 			android:singleLine="true" />
 		<TextView
 			android:id="@+id/artist"
+			android:text="@string/app_name"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
 			android:gravity="center"
 			android:textColor="#fff"
 			android:shadowColor="#f000"
-            android:shadowDx="0"
-            android:shadowDy="0"
-            android:shadowRadius="5"
+			android:shadowDx="0"
+			android:shadowDy="0"
+			android:shadowRadius="5"
 			android:textSize="15dip"
-			android:ellipsize="none"
+			android:ellipsize="marquee"
 			android:singleLine="true" />
 	</LinearLayout>
 	<LinearLayout
 		android:id="@+id/buttons"
-		android:orientation="horizontal"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_alignBottom="@+id/cover"
-		android:layout_alignLeft="@+id/cover"
-		android:layout_alignRight="@+id/cover">
-		<ImageButton
-			android:id="@+id/play_pause"
-			android:src="@drawable/hidden_play"
-			android:background="#0000"
-			android:layout_height="wrap_content"
+		android:layout_height="fill_parent"
+		android:layout_width="fill_parent"
+		android:orientation="vertical">
+		<!-- A dummy view that takes up the top half of the widget -->
+		<LinearLayout
+			android:layout_height="0px"
 			android:layout_width="0px"
 			android:layout_weight="1" />
-		<ImageButton
-			android:id="@+id/next"
-			android:src="@drawable/hidden_next"
-			android:background="#0000"
-			android:layout_height="wrap_content"
-			android:layout_width="0px"
-			android:layout_weight="1" />
+		<LinearLayout
+			android:orientation="horizontal"
+			android:layout_width="fill_parent"
+			android:layout_height="0px"
+			android:layout_weight="1">
+			<ImageButton
+				android:id="@+id/play_pause"
+				android:src="@drawable/hidden_play"
+				android:background="@null"
+				android:layout_height="fill_parent"
+				android:layout_width="0px"
+				android:layout_weight="1" />
+			<ImageButton
+				android:id="@+id/next"
+				android:src="@drawable/hidden_next"
+				android:background="@null"
+				android:layout_height="fill_parent"
+				android:layout_width="0px"
+				android:layout_weight="1" />
+		</LinearLayout>
 	</LinearLayout>
 </RelativeLayout>

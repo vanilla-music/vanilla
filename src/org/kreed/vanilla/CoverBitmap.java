@@ -59,8 +59,6 @@ public final class CoverBitmap {
 	private static int TEXT_SIZE = -1;
 	private static int TEXT_SIZE_BIG;
 	private static int PADDING;
-	private static int TEXT_SIZE_COMPACT = -1;
-	private static int PADDING_COMPACT;
 	private static int TEXT_SPACE;
 	private static Bitmap SONG_ICON;
 	private static Bitmap ALBUM_ICON;
@@ -76,16 +74,6 @@ public final class CoverBitmap {
 		TEXT_SIZE_BIG = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, metrics);
 		PADDING = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, metrics);
 		TEXT_SPACE = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 150, metrics);
-	}
-
-	/**
-	 * Initialize the compact text size members.
-	 */
-	private static void loadMiniTextSizes()
-	{
-		DisplayMetrics metrics = ContextApplication.getContext().getResources().getDisplayMetrics();
-		TEXT_SIZE_COMPACT = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12, metrics);
-		PADDING_COMPACT = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, metrics);
 	}
 
 	/**
@@ -124,75 +112,6 @@ public final class CoverBitmap {
 		canvas.clipRect(left, top, left + maxWidth, top + paint.getTextSize() * 2);
 		canvas.drawText(text, left + offset, top - paint.ascent(), paint);
 		canvas.restore();
-	}
-
-	/**
-	 * Create a compact image, displaying cover art with the song title
-	 * overlaid at the bottom edge.
-	 *
-	 * @param song The song to display information for
-	 * @param width Desired width of image
-	 * @param height Desired height of image
-	 * @return The image, or null if the song was null, or width or height
-	 * were less than 1
-	 */
-	public static Bitmap createCompactBitmap(Song song, int width, int height)
-	{
-		if (song == null || width < 1 || height < 1)
-			return null;
-
-		if (TEXT_SIZE_COMPACT == -1)
-			loadMiniTextSizes();
-
-		int textSize = TEXT_SIZE_COMPACT;
-		int padding = PADDING_COMPACT;
-
-		Paint paint = new Paint();
-		paint.setAntiAlias(true);
-		paint.setTextSize(textSize);
-
-		String title = song.title == null ? "" : song.title;
-		Bitmap cover = song.getCover();
-
-		int titleWidth = (int)paint.measureText(title);
-
-		int boxWidth = width;
-		int boxHeight = Math.min(height, textSize + padding * 2);
-
-		Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
-		Canvas canvas = new Canvas(bitmap);
-
-		if (cover != null) {
-			int coverWidth = cover.getWidth();
-			int coverHeight = cover.getHeight();
-
-			float scale = Math.min((float)width / coverWidth, (float)height / coverHeight);
-
-			coverWidth *= scale;
-			coverHeight *= scale;
-
-			int x = (width - coverWidth) / 2;
-			int y = (height - coverHeight) / 2;
-			Rect rect = new Rect(x, y, x + coverWidth, y + coverHeight);
-			canvas.drawBitmap(cover, null, rect, paint);
-		}
-
-		int left = 0;
-		int top = height - boxHeight;
-		int right = width;
-		int bottom = height;
-
-		paint.setARGB(150, 0, 0, 0);
-		canvas.drawRect(left, top, right, bottom, paint);
-
-		int maxWidth = boxWidth - padding * 2;
-		paint.setARGB(255, 255, 255, 255);
-		top += padding;
-		left += padding;
-
-		drawText(canvas, title, left, top, titleWidth, maxWidth, paint);
-
-		return bitmap;
 	}
 
 	/**

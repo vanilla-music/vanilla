@@ -28,8 +28,6 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -102,30 +100,19 @@ public class FourLongWidget extends AppWidgetProvider {
 		if (ids == null || ids.length == 0)
 			return;
 
-		Resources res = context.getResources();
 		RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.four_long_widget);
 
-		Bitmap cover = null;
-
 		if (song == null) {
+			views.setViewVisibility(R.id.buttons, View.GONE);
 			views.setViewVisibility(R.id.title, View.GONE);
-			views.setViewVisibility(R.id.next, View.GONE);
-			views.setViewVisibility(R.id.play_pause, View.GONE);
-			views.setTextViewText(R.id.artist, res.getText(R.string.no_songs));
+			views.setInt(R.id.artist, "setText", R.string.no_songs);
+			views.setImageViewResource(R.id.cover, 0);
 		} else {
 			views.setViewVisibility(R.id.title, View.VISIBLE);
-			views.setViewVisibility(R.id.next, View.VISIBLE);
-			views.setViewVisibility(R.id.play_pause, View.VISIBLE);
+			views.setViewVisibility(R.id.buttons, View.VISIBLE);
 			views.setTextViewText(R.id.title, song.title);
 			views.setTextViewText(R.id.artist, song.artist);
-			cover = song.getCover();
-		}
-
-		if (cover == null) {
-			views.setViewVisibility(R.id.cover, View.GONE);
-		} else {
-			views.setViewVisibility(R.id.cover, View.VISIBLE);
-			views.setImageViewBitmap(R.id.cover, cover);
+			views.setImageViewUri(R.id.cover, song.getCoverUri());
 		}
 
 		if (state != -1) {

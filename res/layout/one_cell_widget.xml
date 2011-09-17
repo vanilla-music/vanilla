@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
+Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,9 +25,23 @@ THE SOFTWARE.
 	android:layout_height="fill_parent"
 	android:layout_width="fill_parent">
 	<ImageView
-		android:id="@+id/cover_view"
-		android:layout_height="fill_parent"
-		android:layout_width="fill_parent" />
+		android:id="@+id/cover"
+		android:layout_centerInParent="true"
+		android:layout_height="wrap_content"
+		android:layout_width="wrap_content" />
+	<TextView
+		android:id="@+id/title"
+		android:text="@string/app_name"
+		android:layout_alignBottom="@id/cover"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center"
+		android:textColor="#fff"
+		android:background="#a000"
+		android:textSize="12dip"
+		android:textStyle="bold"
+		android:ellipsize="marquee"
+		android:singleLine="true" />
 	<LinearLayout
 		android:layout_height="fill_parent"
 		android:layout_width="fill_parent"
@@ -35,14 +49,14 @@ THE SOFTWARE.
 		<ImageButton
 			android:id="@+id/play_pause"
 			android:src="@drawable/hidden_play"
-			android:background="#0000"
+			android:background="@null"
 			android:layout_height="0px"
 			android:layout_width="fill_parent"
 			android:layout_weight="1" />
 		<ImageButton
 			android:id="@+id/next"
 			android:src="@drawable/hidden_next"
-			android:background="#0000"
+			android:background="@null"
 			android:layout_height="0px"
 			android:layout_width="fill_parent"
 			android:layout_weight="1" />

@@ -29,7 +29,6 @@ THE SOFTWARE.
 	android:background="#B2191919">
 	<ImageView
 		android:id="@+id/cover"
-		android:visibility="gone"
 		android:layout_width="wrap_content"
 		android:layout_height="fill_parent"
 		android:adjustViewBounds="true"
@@ -46,6 +45,7 @@ THE SOFTWARE.
 		android:paddingRight="8dip">
 		<TextView
 			android:id="@+id/title"
+			android:visibility="gone"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
 			android:textColor="#fff"
@@ -56,6 +56,7 @@ THE SOFTWARE.
 			android:ellipsize="none" />
 		<TextView
 			android:id="@+id/artist"
+			android:text="@string/app_name"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
 			android:textColor="#fff"
@@ -66,6 +67,7 @@ THE SOFTWARE.
 			android:ellipsize="none" />
 	</LinearLayout>
 	<LinearLayout
+		android:id="@+id/buttons"
 		android:orientation="vertical"
 		android:layout_width="wrap_content"
 		android:layout_height="fill_parent">
