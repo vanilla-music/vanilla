@@ -469,7 +469,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	 */
 	private void addToPlaylist(long playlistId, int type, long mediaId, CharSequence title)
 	{
-		long[] ids = MediaUtils.getAllSongIdsWith(type, mediaId, null);
+		long[] ids = MediaUtils.getAllSongIdsWith(type, mediaId);
 		Playlist.addToPlaylist(playlistId, ids);
 
 		String message = getResources().getQuantityString(R.plurals.added_to_playlist, ids.length, ids.length, title);

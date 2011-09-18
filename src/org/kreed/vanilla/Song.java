@@ -72,11 +72,11 @@ public class Song implements Parcelable {
 	 */
 	private static int mSongCount = -1;
 
-	private static final String[] EMPTY_PROJECTION = {
+	public static final String[] EMPTY_PROJECTION = {
 		MediaStore.Audio.Media._ID,
 		};
 
-	private static final String[] FILLED_PROJECTION = {
+	public static final String[] FILLED_PROJECTION = {
 		MediaStore.Audio.Media._ID,
 		MediaStore.Audio.Media.DATA,
 		MediaStore.Audio.Media.TITLE,
@@ -85,6 +85,21 @@ public class Song implements Parcelable {
 		MediaStore.Audio.Media.ALBUM_ID,
 		MediaStore.Audio.Media.ARTIST_ID,
 		MediaStore.Audio.Media.DURATION
+		};
+
+	public static final String[] EMPTY_PLAYLIST_PROJECTION = {
+		MediaStore.Audio.Playlists.Members.AUDIO_ID,
+		};
+
+	public static final String[] FILLED_PLAYLIST_PROJECTION = {
+		MediaStore.Audio.Playlists.Members.AUDIO_ID,
+		MediaStore.Audio.Playlists.Members.DATA,
+		MediaStore.Audio.Playlists.Members.TITLE,
+		MediaStore.Audio.Playlists.Members.ALBUM,
+		MediaStore.Audio.Playlists.Members.ARTIST,
+		MediaStore.Audio.Playlists.Members.ALBUM_ID,
+		MediaStore.Audio.Playlists.Members.ARTIST_ID,
+		MediaStore.Audio.Playlists.Members.DURATION
 		};
 
 	/**
@@ -287,7 +302,7 @@ public class Song implements Parcelable {
 	 *
 	 * @param cursor Cursor queried with FILLED_PROJECTION projection
 	 */
-	private void populate(Cursor cursor)
+	public void populate(Cursor cursor)
 	{
 		id = cursor.getLong(0);
 		path = cursor.getString(1);

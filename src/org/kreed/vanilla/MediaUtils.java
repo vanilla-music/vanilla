@@ -127,7 +127,7 @@ public class MediaUtils {
 	}
 
 	/**
-	 * Return an array containing all the song ids that match the specified parameters
+	 * Returns a Cursor queried with the given information.
 	 *
 	 * @param type Type the id represents. Must be one of the Song.TYPE_*
 	 * constants.
@@ -136,30 +136,41 @@ public class MediaUtils {
 	 * @param selection An extra selection to be passed to the query. May be
 	 * null. Must not be used with type == TYPE_SONG or type == TYPE_PLAYLIST
 	 */
-	public static long[] getAllSongIdsWith(int type, long id, String selection)
+	public static Cursor query(int type, long id, String[] projection, String selection)
 	{
-		Cursor cursor;
-
 		switch (type) {
-		case TYPE_SONG:
-			assert(selection == null);
-			return new long[] { id };
 		case TYPE_ARTIST:
 		case TYPE_ALBUM:
-			cursor = getMediaCursor(type, id, new String[] { MediaStore.Audio.Media._ID }, selection);
-			break;
+		case TYPE_SONG:
+			return getMediaCursor(type, id, projection, selection);
 		case TYPE_PLAYLIST:
 			assert(selection == null);
-			cursor = getPlaylistCursor(id, new String[] { MediaStore.Audio.Playlists.Members.AUDIO_ID });
-			break;
+			return getPlaylistCursor(id, projection);
 		case TYPE_GENRE:
-			// NOTE: AUDIO_ID does not seem to work here, strangely.
-			cursor = queryGenre(id, new String[] { MediaStore.Audio.Genres.Members._ID }, selection, null);
-			break;
+			return queryGenre(id, projection, selection, null);
 		default:
 			throw new IllegalArgumentException("Specified type not valid: " + type);
 		}
+	}
 
+	/**
+	 * Return an array containing all the song ids that match the specified parameters
+	 *
+	 * @param type Type the id represents. Must be one of the Song.TYPE_*
+	 * constants.
+	 * @param id The id of the element in the MediaStore content provider for
+	 * the given type.
+	 */
+	public static long[] getAllSongIdsWith(int type, long id)
+	{
+		if (type == TYPE_SONG)
+			return new long[] { id };
+
+		Cursor cursor;
+		if (type == MediaUtils.TYPE_PLAYLIST)
+			cursor = query(type, id, Song.EMPTY_PLAYLIST_PROJECTION, null);
+		else
+			cursor = query(type, id, Song.EMPTY_PROJECTION, null);
 		if (cursor == null)
 			return null;
 

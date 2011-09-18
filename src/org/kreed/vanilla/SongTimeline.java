@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.util.Log;
 
 /**
@@ -378,12 +379,16 @@ public final class SongTimeline {
 	 */
 	public int chooseSongs(boolean enqueue, int type, long id, String selection)
 	{
-		long[] songs = MediaUtils.getAllSongIdsWith(type, id, selection);
-		if (songs == null || songs.length == 0)
+		Cursor cursor;
+		if (type == MediaUtils.TYPE_PLAYLIST)
+			cursor = MediaUtils.query(type, id, Song.FILLED_PLAYLIST_PROJECTION, selection);
+		else
+			cursor = MediaUtils.query(type, id, Song.FILLED_PROJECTION, selection);
+		if (cursor == null)
 			return 0;
-
-		if (mShuffle)
-			MediaUtils.shuffle(songs);
+		int count = cursor.getCount();
+		if (count == 0)
+			return 0;
 
 		Song oldSong = getSong(+1);
 
@@ -393,27 +398,31 @@ public final class SongTimeline {
 				int i = mCurrentPos + mQueueOffset + 1;
 				if (i < timeline.size())
 					timeline.subList(i, timeline.size()).clear();
-
-				for (int j = 0; j != songs.length; ++j)
-					timeline.add(new Song(songs[j]));
-
-				mQueueOffset += songs.length;
+				mQueueOffset += count;
 			} else {
 				timeline.subList(mCurrentPos + 1, timeline.size()).clear();
-
-				for (int j = 0; j != songs.length; ++j)
-					timeline.add(new Song(songs[j]));
-
-				mQueueOffset = songs.length;
+				mQueueOffset = count;
 			}
+
+			for (int j = 0; j != count; ++j) {
+				cursor.moveToNext();
+				Song song = new Song(-1);
+				song.populate(cursor);
+				timeline.add(song);
+			}
+
+			if (mShuffle)
+				Collections.shuffle(timeline.subList(timeline.size() - count, timeline.size()), ContextApplication.getRandom());
 		}
 
+		cursor.close();
 		mRepeatedSongs = null;
+
 		Song newSong = getSong(+1);
 		if (newSong != oldSong && mCallback != null)
 			mCallback.songReplaced(+1, newSong);
 
-		return songs.length;
+		return count;
 	}
 
 	/**
