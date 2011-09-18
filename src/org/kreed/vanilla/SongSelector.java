@@ -205,7 +205,6 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 				mTextFilter.setText("");
 				setSearchBoxVisible(false);
 			} else {
-				ContextApplication.getService().finishEnqueueing();
 				finish();
 			}
 			break;
@@ -247,7 +246,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		PlaybackService service = ContextApplication.getService();
 		int type = view.getMediaType();
 		long id = view.getMediaId();
-		int count;
+		int mode;
 		int text;
 
 		if (action == ACTION_LAST_USED)
@@ -257,18 +256,20 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 
 		switch (action) {
 		case ACTION_PLAY:
-			count = service.playSongs(type, id);
+			mode = SongTimeline.MODE_PLAY;
 			text = R.plurals.playing;
 			break;
 		case ACTION_ENQUEUE:
-			count = service.enqueueSongs(type, id);
+			mode = SongTimeline.MODE_ENQUEUE;
 			text = R.plurals.enqueued;
 			break;
 		default:
 			return;
 		}
 
+		int count = service.addSongs(mode, type, id);
 		setSong(service.getSong(0));
+
 		Toast.makeText(this, getResources().getQuantityString(text, count, count), Toast.LENGTH_SHORT).show();
 		mLastActedId = id;
 	}
@@ -574,7 +575,6 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 			setSearchBoxVisible(!mSearchBoxVisible);
 			return true;
 		case MENU_PLAYBACK:
-			ContextApplication.getService().finishEnqueueing();
 			startActivity(new Intent(this, FullPlaybackActivity.class));
 			return true;
 		default:

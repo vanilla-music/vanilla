@@ -50,6 +50,7 @@ THE SOFTWARE.
 		<item>Previous Song</item>
 		<item>Toggle Repeat</item>
 		<item>Toggle Shuffle</item>
+		<item>Toggle Random</item>
 		<item>Enqueue Current Album</item>
 		<item>Enqueue Current Artist</item>
 		<item>Enqueue Current Genre</item>
@@ -70,5 +71,6 @@ THE SOFTWARE.
 		<item>8</item>
 		<item>9</item>
 		<item>10</item>
+		<item>11</item>
 	</string-array>
 </resources>

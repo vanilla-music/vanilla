@@ -47,10 +47,11 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	public static final int ACTION_PREVIOUS_SONG = 4;
 	public static final int ACTION_REPEAT = 5;
 	public static final int ACTION_SHUFFLE = 6;
-	public static final int ACTION_ENQUEUE_ALBUM = 7;
-	public static final int ACTION_ENQUEUE_ARTIST = 8;
-	public static final int ACTION_ENQUEUE_GENRE = 9;
-	public static final int ACTION_CLEAR_QUEUE = 10;
+	public static final int ACTION_RANDOM = 7;
+	public static final int ACTION_ENQUEUE_ALBUM = 8;
+	public static final int ACTION_ENQUEUE_ARTIST = 9;
+	public static final int ACTION_ENQUEUE_GENRE = 10;
+	public static final int ACTION_CLEAR_QUEUE = 11;
 
 	public static int mUpAction;
 	public static int mDownAction;
@@ -175,7 +176,7 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	public void playPause()
 	{
 		PlaybackService service = ContextApplication.getService();
-		int state = service.toggleFlag(PlaybackService.FLAG_PLAYING);
+		int state = service.playPause();
 		if ((state & PlaybackService.FLAG_ERROR) != 0)
 			Toast.makeText(this, service.getErrorMessage(), Toast.LENGTH_LONG).show();
 		setState(state);
@@ -243,7 +244,7 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	protected void onSongChange(Song song)
 	{
 		if (mCoverView != null)
-			mCoverView.setCurrentSong(song);
+			mCoverView.querySongs();
 	}
 
 	protected void setSong(final Song song)
@@ -298,6 +299,7 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	static final int MENU_PLAYBACK = 5;
 	static final int MENU_REPEAT = 6;
 	static final int MENU_SEARCH = 7;
+	static final int MENU_RANDOM = 8;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
@@ -305,6 +307,7 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 		menu.add(0, MENU_PREFS, 0, R.string.settings).setIcon(R.drawable.ic_menu_preferences);
 		menu.add(0, MENU_SHUFFLE, 0, R.string.shuffle_enable).setIcon(R.drawable.ic_menu_shuffle);
 		menu.add(0, MENU_REPEAT, 0, R.string.repeat_enable).setIcon(R.drawable.ic_menu_refresh);
+		menu.add(0, MENU_RANDOM, 0, R.string.random_enable).setIcon(R.drawable.ic_menu_shuffle);
 		menu.add(0, MENU_QUIT, 0, R.string.quit).setIcon(R.drawable.ic_menu_close_clear_cancel);
 		return true;
 	}
@@ -312,12 +315,14 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu)
 	{
-		boolean isShuffling = (mState & PlaybackService.FLAG_SHUFFLE) != 0;
+		int state = mState;
+		boolean isShuffling = (state & PlaybackService.FLAG_SHUFFLE) != 0;
 		menu.findItem(MENU_SHUFFLE).setTitle(isShuffling ? R.string.shuffle_disable : R.string.shuffle_enable);
-		boolean isRepeating = (mState & PlaybackService.FLAG_REPEAT) != 0;
+		boolean isRepeating = (state & PlaybackService.FLAG_REPEAT) != 0;
 		menu.findItem(MENU_REPEAT).setTitle(isRepeating ? R.string.repeat_disable : R.string.repeat_enable);
-		if ((mState & PlaybackService.FLAG_NO_MEDIA) != 0)
-			menu.findItem(MENU_REPEAT).setEnabled(false);
+		boolean isRandom = (state & PlaybackService.FLAG_RANDOM) != 0;
+		// TODO: find icon (dice? arrow pointing in many directions?)
+		menu.findItem(MENU_RANDOM).setTitle(isRandom ? R.string.random_disable : R.string.random_enable);
 		return true;
 	}
 
@@ -333,6 +338,9 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 			return true;
 		case MENU_REPEAT:
 			toggleRepeat();
+			return true;
+		case MENU_RANDOM:
+			toggleRandom();
 			return true;
 		case MENU_PREFS:
 			startActivity(new Intent(this, PreferencesActivity.class));
@@ -353,9 +361,9 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	 */
 	public void toggleShuffle()
 	{
-		int state = ContextApplication.getService().toggleFlag(PlaybackService.FLAG_SHUFFLE);
+		int state = ContextApplication.getService().toggleShuffle();
 		int res = (state & PlaybackService.FLAG_SHUFFLE) == 0 ? R.string.shuffle_disabling : R.string.shuffle_enabling;
-		Toast.makeText(this, res, Toast.LENGTH_LONG).show();
+		Toast.makeText(this, res, Toast.LENGTH_SHORT).show();
 		setState(state);
 	}
 
@@ -364,9 +372,20 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	 */
 	public void toggleRepeat()
 	{
-		int state = ContextApplication.getService().toggleFlag(PlaybackService.FLAG_REPEAT);
+		int state = ContextApplication.getService().toggleRepeat();
 		int res = (state & PlaybackService.FLAG_REPEAT) == 0 ? R.string.repeat_disabling : R.string.repeat_enabling;
-		Toast.makeText(this, res, Toast.LENGTH_LONG).show();
+		Toast.makeText(this, res, Toast.LENGTH_SHORT).show();
+		setState(state);
+	}
+
+	/**
+	 * Toggle random mode on/off
+	 */
+	public void toggleRandom()
+	{
+		int state = ContextApplication.getService().toggleRandom();
+		int res = (state & PlaybackService.FLAG_RANDOM) == 0 ? R.string.random_disabling : R.string.random_enabling;
+		Toast.makeText(this, res, Toast.LENGTH_SHORT).show();
 		setState(state);
 	}
 
@@ -407,6 +426,9 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 			break;
 		case ACTION_SHUFFLE:
 			toggleShuffle();
+			break;
+		case ACTION_RANDOM:
+			toggleRandom();
 			break;
 		case ACTION_ENQUEUE_ALBUM:
 			enqueue(MediaUtils.TYPE_ALBUM);

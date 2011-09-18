@@ -76,7 +76,6 @@ public final class CoverView extends View implements Handler.Callback {
 	 */
 	private Cache<Bitmap> mBitmapCache = new Cache<Bitmap>(8);
 
-	private int mTimelinePos;
 	private Scroller mScroller;
 	private VelocityTracker mVelocityTracker;
 	private float mLastMotionX;
@@ -115,23 +114,6 @@ public final class CoverView extends View implements Handler.Callback {
 		mHandler = new Handler(looper, this);
 		mCallback = callback;
 		mCoverStyle = style;
-	}
-
-	/**
-	 * Move to the next or previous song.
-	 *
-	 * @param delta -1 or 1, indicate the previous or next song, respectively
-	 */
-	private void go(int delta)
-	{
-		int i = delta > 0 ? STORE_SIZE - 1 : 0;
-		int from = delta > 0 ? 1 : 0;
-		int to = delta > 0 ? 0 : 1;
-		System.arraycopy(mSongs, from, mSongs, to, STORE_SIZE - 1);
-		mSongs[i] = null;
-
-		resetScroll();
-		invalidate();
 	}
 
 	/**
@@ -240,7 +222,7 @@ public final class CoverView extends View implements Handler.Callback {
 
 			if (Math.abs(deltaX) > Math.abs(deltaY)) {
 				if (deltaX < 0) {
-					int availableToScroll = scrollX - (mTimelinePos == 0 ? width : 0);
+					int availableToScroll = scrollX - (mSongs[0] == null ? width : 0);
 					if (availableToScroll > 0)
 						scrollBy(Math.max(-availableToScroll, (int)deltaX), 0);
 				} else if (deltaX > 0) {
@@ -264,7 +246,7 @@ public final class CoverView extends View implements Handler.Callback {
 			velocityTracker.computeCurrentVelocity(250);
 			int velocity = (int) velocityTracker.getXVelocity();
 
-			int min = mTimelinePos == 0 ? 1 : 0;
+			int min = mSongs[0] == null ? 1 : 0;
 			int max = 2;
 			int nearestCover = (scrollX + width / 2) / width;
 			int whichCover = Math.max(min, Math.min(nearestCover, max));
@@ -364,33 +346,15 @@ public final class CoverView extends View implements Handler.Callback {
 	}
 
 	/**
-	 * Query current Song for all positions with null songs.
-	 *
-	 * @param force Query all songs, even those that are non-null
+	 * Query all songs. Must be called on the UI thread.
 	 */
-	private void querySongs(boolean force)
+	public void querySongs()
 	{
 		PlaybackService service = ContextApplication.getService();
-		for (int i = STORE_SIZE; --i != -1; ) {
-			if (force || mSongs[i] == null)
-				setSong(i, service.getSong(i - STORE_SIZE / 2));
-		}
-	}
-
-	public void setCurrentSong(Song song)
-	{
-		mTimelinePos = ContextApplication.getService().getTimelinePos();
-
-		for (int delta = -STORE_SIZE / 2; delta <= STORE_SIZE / 2; ++delta) {
-			if (mSongs[delta + STORE_SIZE / 2] == song) {
-				if (delta != 0)
-					go(delta);
-				querySongs(false);
-				return;
-			}
-		}
-
-		querySongs(true);
+		for (int i = STORE_SIZE; --i != -1; )
+			setSong(i, service.getSong(i - STORE_SIZE / 2));
+		resetScroll();
+		invalidate();
 	}
 
 	/**

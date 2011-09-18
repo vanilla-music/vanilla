@@ -99,14 +99,37 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	public static final String EVENT_REPLACE_SONG = "org.kreed.vanilla.event.REPLACE_SONG";
 	public static final String EVENT_CHANGED = "org.kreed.vanilla.event.CHANGED";
 
+	/**
+	 * Set when there is no media available on the device.
+	 */
 	public static final int FLAG_NO_MEDIA = 0x2;
+	/**
+	 * If set, music will play.
+	 */
 	public static final int FLAG_PLAYING = 0x1;
+	/**
+	 * If set, songs selected from the library and repeated songs will be in
+	 * random order.
+	 */
 	public static final int FLAG_SHUFFLE = 0x4;
+	/**
+	 * If set, will loop back to the beginning of the timeline when its end is
+	 * reached.
+	 */
 	public static final int FLAG_REPEAT = 0x8;
 	/**
 	 * Set when the current song is unplayable.
 	 */
 	public static final int FLAG_ERROR = 0x10;
+	/**
+	 * If set, random songs will be added to the timeline when its end is
+	 * reached. Overrides FLAG_REPEAT.
+	 */
+	public static final int FLAG_RANDOM = 0x20;
+	/**
+	 * Set when the user needs to select songs to play.
+	 */
+	public static final int FLAG_EMPTY_QUEUE = 0x40;
 
 	public static final int NEVER = 0;
 	public static final int WHEN_PLAYING = 1;
@@ -194,7 +217,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		initWidgets();
 
 		int state = 0;
-		if (mTimeline.isRepeating())
+		int finishAction = mTimeline.getFinishAction();
+		if (finishAction == SongTimeline.FINISH_RANDOM)
+			state |= FLAG_RANDOM;
+		else if (finishAction == SongTimeline.FINISH_REPEAT)
 			state |= FLAG_REPEAT;
 		if (mTimeline.isShuffling())
 			state |= FLAG_SHUFFLE;
@@ -335,14 +361,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		}
 	}
 
-	private void broadcastReplaceSong(int delta, Song song)
-	{
-		Intent intent = new Intent(EVENT_REPLACE_SONG);
-		intent.putExtra("pos", delta);
-		intent.putExtra("song", song);
-		mHandler.sendMessage(mHandler.obtainMessage(BROADCAST, intent));
-	}
-
 	private void setFlag(int flag)
 	{
 		synchronized (mStateLock) {
@@ -373,7 +391,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 */
 	private int updateState(int state)
 	{
-		if ((state & FLAG_NO_MEDIA) != 0 || (state & FLAG_ERROR) != 0 || (mHeadsetOnly && isSpeakerOn()))
+		if ((state & (FLAG_NO_MEDIA|FLAG_ERROR|FLAG_EMPTY_QUEUE)) != 0 || (mHeadsetOnly && isSpeakerOn()))
 			state &= ~FLAG_PLAYING;
 
 		int oldState = mState;
@@ -423,8 +441,16 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 		if ((toggled & FLAG_SHUFFLE) != 0)
 			mTimeline.setShuffle((state & FLAG_SHUFFLE) != 0);
-		if ((toggled & FLAG_REPEAT) != 0)
-			mTimeline.setRepeat((state & FLAG_REPEAT) != 0);
+		if ((toggled & (FLAG_REPEAT | FLAG_RANDOM)) != 0) {
+			int action;
+			if ((state & FLAG_RANDOM) != 0)
+				action = SongTimeline.FINISH_RANDOM;
+			else if ((state & FLAG_REPEAT) != 0)
+				action = SongTimeline.FINISH_REPEAT;
+			else
+				action = SongTimeline.FINISH_STOP;
+			mTimeline.setFinishAction(action);
+		}
 	}
 
 	private void broadcastChange(int state, Song song, long uptime)
@@ -490,19 +516,57 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	}
 
 	/**
-	 * Toggle a flag in the state on or off
+	 * If playing, pause. If paused, play.
 	 *
-	 * @param flag The flag to be toggled
-	 * @return The new state
+	 * @return The new state after this is called.
 	 */
-	public int toggleFlag(int flag)
+	public int playPause()
 	{
-		int state;
 		synchronized (mStateLock) {
-			state = updateState(mState ^ flag);
+			userActionTriggered();
+			// If trying to play with empty queue, enter random mode.
+			if ((mState & FLAG_PLAYING) == 0 && (mState & FLAG_EMPTY_QUEUE) != 0) {
+				updateState((mState | FLAG_RANDOM) & ~FLAG_REPEAT);
+				setCurrentSong(0);
+			}
+			return updateState(mState ^ FLAG_PLAYING);
 		}
-		userActionTriggered();
-		return state;
+	}
+
+	/**
+	 * Toggle random mode. Disables repeat mode.
+	 *
+	 * @return The new state after this is called.
+	 */
+	public int toggleRandom()
+	{
+		synchronized (mStateLock) {
+			return updateState((mState ^ FLAG_RANDOM) & ~FLAG_REPEAT);
+		}
+	}
+
+	/**
+	 * Toggle repeat mode. Disables random mode.
+	 *
+	 * @return The new state after this is called.
+	 */
+	public int toggleRepeat()
+	{
+		synchronized (mStateLock) {
+			return updateState((mState ^ FLAG_REPEAT) & ~FLAG_RANDOM);
+		}
+	}
+
+	/**
+	 * Toggle shuffle mode.
+	 *
+	 * @return The new state after this is called.
+	 */
+	public int toggleShuffle()
+	{
+		synchronized (mStateLock) {
+			return updateState(mState ^ FLAG_SHUFFLE);
+		}
 	}
 
 	/**
@@ -524,13 +588,28 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		mCurrentSong = song;
 		if (song == null) {
 			if (Song.isSongAvailable()) {
-				return setCurrentSong(+1); // we only encountered a bad song; skip it
+				// We either have a stale song id or have no songs in the
+				// the timeline. Clear the timeline to get rid of the possible
+				// stale song id.
+				mTimeline.clear();
+
+				if ((mState & FLAG_RANDOM) == 0) {
+					// Tell the user to pick some songs.
+					setFlag(FLAG_EMPTY_QUEUE);
+					return null;
+				} else {
+					// Add a random song to replace the stale one.
+					return setCurrentSong(0);
+				}
 			} else {
-				setFlag(FLAG_NO_MEDIA); // we don't have any songs : /
+				// we don't have any songs : /
+				setFlag(FLAG_NO_MEDIA);
 				return null;
 			}
 		} else if ((mState & FLAG_NO_MEDIA) != 0) {
 			unsetFlag(FLAG_NO_MEDIA);
+		} else if ((mState & FLAG_EMPTY_QUEUE) != 0) {
+			unsetFlag(FLAG_EMPTY_QUEUE);
 		}
 
 		mHandler.removeMessages(PROCESS_SONG);
@@ -574,17 +653,19 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 		updateNotification();
 
-		getSong(+2);
 		mTimeline.purge();
-		mHandler.removeMessages(SAVE_STATE);
-		mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
 	}
 
+	@Override
 	public void onCompletion(MediaPlayer player)
 	{
-		setCurrentSong(+1);
+		if (mTimeline.isEndOfQueue())
+			unsetFlag(FLAG_PLAYING);
+		else
+			setCurrentSong(+1);
 	}
 
+	@Override
 	public boolean onError(MediaPlayer player, int what, int extra)
 	{
 		Log.e("VanillaMusic", "MediaPlayer error: " + what + " " + extra);
@@ -615,7 +696,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		}
 
 		if (delta == 0)
-			toggleFlag(FLAG_PLAYING);
+			playPause();
 		else
 			setCurrentSong(delta);
 	}
@@ -808,16 +889,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	}
 
 	/**
-	 * Returns the position of the current song in the song timeline.
-	 *
-	 * @see SongTimeline#getCurrentPosition()
-	 */
-	public int getTimelinePos()
-	{
-		return mTimeline.getCurrentPosition();
-	}
-
-	/**
 	 * Seek to a position in the current song.
 	 *
 	 * @param progress Proportion of song completed (where 1000 is the end of the song)
@@ -838,12 +909,16 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		return null;
 	}
 
-	/**
-	 * Notify clients that a song in the timeline has been replaced.
-	 */
-	public void songReplaced(int delta, Song song)
+	@Override
+	public void activeSongReplaced(int delta, Song song)
 	{
-		broadcastReplaceSong(delta, song);
+		if (delta == 0)
+			setCurrentSong(0);
+
+		Intent intent = new Intent(EVENT_REPLACE_SONG);
+		intent.putExtra("pos", delta);
+		intent.putExtra("song", song);
+		mHandler.sendMessage(mHandler.obtainMessage(BROADCAST, intent));
 	}
 
 	/**
@@ -855,9 +930,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 */
 	public void removeSong(long id)
 	{
-		boolean shouldAdvance = mTimeline.removeSong(id);
-		if (shouldAdvance)
-			setCurrentSong(0);
+		mTimeline.removeSong(id);
 	}
 
 	/**
@@ -901,43 +974,18 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	}
 
 	/**
-	 * Given a song or group of songs represented by the given type and id, play
-	 * the first and enqueues the rest after it.
+	 * Add a song or group of songs represented by the given type and id to the
+	 * timeline.
 	 *
-	 * If FLAG_SHUFFLE is enabled, songs will be added to the song timeline in
-	 * random order, otherwise, songs will be ordered by album name and then
-	 * track number.
-	 *
+	 * @param mode One of SongTimeline.MODE_*. Tells whether to play the songs
+	 * immediately or enqueue them for later.
 	 * @param type The media type, one of MediaUtils.TYPE_*
 	 * @param id The MediaStore id of the media
 	 * @return The number of songs that were enqueued.
 	 */
-	public int playSongs(int type, long id)
+	public int addSongs(int mode, int type, long id)
 	{
-		int count = mTimeline.chooseSongs(false, type, id, null);
-		setCurrentSong(+1);
-		return count;
-	}
-
-	/**
-	 * Enqueues a song or group of songs represented by the given type and id.
-	 *
-	 * The first song from the group will be placed in the timeline either
-	 * after the last enqueued song or after the playing song if the queue is
-	 * empty. If FLAG_SHUFFLE is enabled, songs will be added to the song
-	 * timeline in random order, otherwise, songs will be ordered by album name
-	 * and then track number.
-	 *
-	 * @param type The media type, one of MediaUtils.TYPE_*
-	 * @param id The MediaStore id of the media
-	 * @return The number of songs that were enqueued.
-	 */
-	public int enqueueSongs(int type, long id)
-	{
-		int count = mTimeline.chooseSongs(true, type, id, null);
-		mHandler.removeMessages(SAVE_STATE);
-		mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
-		return count;
+		return mTimeline.addSongs(mode, type, id, null);
 	}
 
 	/**
@@ -957,7 +1005,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		if (current == null)
 			return 0;
 
-		long id = -1;
+		long id;
 		switch (type) {
 		case MediaUtils.TYPE_ARTIST:
 			id = current.artistId;
@@ -973,8 +1021,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		}
 
 		String selection = "_id!=" + current.id;
-		int count = mTimeline.chooseSongs(false, type, id, selection);
-		return count;
+		return mTimeline.addSongs(SongTimeline.MODE_PLAY_NEXT, type, id, selection);
 	}
 
 	/**
@@ -986,19 +1033,17 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	}
 
 	/**
-	 * Reset the position at which songs are enqueued. That is, the next song
-	 * enqueued will be placed directly after the playing song.
-	 */
-	public void finishEnqueueing()
-	{
-		mTimeline.finishEnqueueing();
-	}
-
-	/**
 	 * Return the error message set when FLAG_ERROR is set.
 	 */
 	public String getErrorMessage()
 	{
 		return mErrorMessage;
+	}
+
+	@Override
+	public void timelineChanged()
+	{
+		mHandler.removeMessages(SAVE_STATE);
+		mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
 	}
 }

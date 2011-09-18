@@ -22,7 +22,6 @@
 
 package org.kreed.vanilla;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -30,9 +29,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -53,6 +54,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	private Handler mUiHandler = new Handler(this);
 
 	private RelativeLayout mMessageOverlay;
+	private TextView mOverlayText;
 	private View mControlsTop;
 	private View mControlsBottom;
 
@@ -147,24 +149,6 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	}
 
 	/**
-	 * Show the message view overlay, creating it if necessary and clearing
-	 * it of all content.
-	 */
-	private void showMessageOverlay()
-	{
-		if (mMessageOverlay == null) {
-			mMessageOverlay = new RelativeLayout(this);
-			mMessageOverlay.setBackgroundColor(Color.BLACK);
-			addContentView(mMessageOverlay,
-				new ViewGroup.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
-				                           LinearLayout.LayoutParams.FILL_PARENT));
-		} else {
-			mMessageOverlay.setVisibility(View.VISIBLE);
-			mMessageOverlay.removeAllViews();
-		}
-	}
-
-	/**
 	 * Hide the message overlay, if it exists.
 	 */
 	private void hideMessageOverlay()
@@ -174,21 +158,44 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	}
 
 	/**
-	 * Show the no media message in the message overlay. The message overlay
-	 * must have been created with showMessageOverlay before this method is
-	 * called.
+	 * Show some text in a message overlay.
+	 *
+	 * @param text Resource id of the text to show.
 	 */
-	private void setNoMediaOverlayMessage()
+	private void showOverlayMessage(int text)
 	{
-		RelativeLayout.LayoutParams layoutParams =
-			new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-			                                LinearLayout.LayoutParams.WRAP_CONTENT);
-		layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+		if (mMessageOverlay == null) {
+			mMessageOverlay = new RelativeLayout(this) {
+				@Override
+				public boolean onTouchEvent(MotionEvent ev)
+				{
+					// Eat all touch events so they don't pass through to the
+					// CoverView
+					return true;
+				}
+			};
 
-		TextView text = new TextView(this);
-		text.setText(R.string.no_songs);
-		text.setLayoutParams(layoutParams);
-		mMessageOverlay.addView(text);
+			mMessageOverlay.setBackgroundColor(Color.BLACK);
+
+			RelativeLayout.LayoutParams layoutParams =
+				new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+												LinearLayout.LayoutParams.WRAP_CONTENT);
+			layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+			layoutParams.setMargins(20, 20, 20, 20);
+
+			mOverlayText = new TextView(this);
+			mOverlayText.setLayoutParams(layoutParams);
+			mOverlayText.setGravity(Gravity.CENTER);
+			mMessageOverlay.addView(mOverlayText);
+
+			addContentView(mMessageOverlay,
+				new ViewGroup.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
+				                           LinearLayout.LayoutParams.FILL_PARENT));
+		} else {
+			mMessageOverlay.setVisibility(View.VISIBLE);
+		}
+
+		mOverlayText.setText(text);
 	}
 
 	@Override
@@ -196,10 +203,11 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	{
 		super.onStateChange(state, toggled);
 
-		if ((toggled & PlaybackService.FLAG_NO_MEDIA) != 0) {
+		if ((toggled & (PlaybackService.FLAG_NO_MEDIA|PlaybackService.FLAG_EMPTY_QUEUE)) != 0) {
 			if ((state & PlaybackService.FLAG_NO_MEDIA) != 0) {
-				showMessageOverlay();
-				setNoMediaOverlayMessage();
+				showOverlayMessage(R.string.no_songs);
+			} else if ((state & PlaybackService.FLAG_EMPTY_QUEUE) != 0) {
+				showOverlayMessage(R.string.empty_queue);
 			} else {
 				hideMessageOverlay();
 			}

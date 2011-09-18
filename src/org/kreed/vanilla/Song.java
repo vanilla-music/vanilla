@@ -44,7 +44,7 @@ public class Song implements Parcelable {
 	/**
 	 * Indicates that this song was randomly selected from all songs.
 	 */
-	public static final int FLAG_RANDOM = 0x1;
+	private static final int FLAG_RANDOM = 0x1;
 
 	/**
 	 * A cache of covers that have been loaded with getCover().
@@ -200,8 +200,7 @@ public class Song implements Parcelable {
 	public static void onMediaChange()
 	{
 		mSongCount = -1;
-		// TODO: make reload optional?
-		mAllSongs = loadAllSongs();
+		mAllSongs = null;
 	}
 
 	/**
@@ -295,6 +294,14 @@ public class Song implements Parcelable {
 	{
 		this.id = id;
 		this.flags = flags;
+	}
+
+	/**
+	 * Return true if this song was retrieved from randomSong().
+	 */
+	public boolean isRandom()
+	{
+		return (flags & FLAG_RANDOM) != 0;
 	}
 
 	/**
@@ -463,5 +470,11 @@ public class Song implements Parcelable {
 		}
 
 		return cover;
+	}
+
+	@Override
+	public String toString()
+	{
+		return String.format("%d %s", id, path);
 	}
 }

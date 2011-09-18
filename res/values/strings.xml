@@ -25,18 +25,23 @@ THE SOFTWARE.
 
 	<!-- Playback Activity (main screen) -->
 	<string name="no_songs">No songs found on your device.</string>
+	<string name="empty_queue">No songs selected. Pick some from the library (search key) or enter random mode (in the menu).</string>
 	<string name="settings">Preferences</string>
 	<string name="library">Library</string>
 	<string name="quit">Stop and Exit</string>
 	<string name="display_mode">Display Mode</string>
 	<string name="shuffle_enable">Enable Shuffle</string>
 	<string name="shuffle_disable">Disable Shuffle</string>
-	<string name="shuffle_enabling">Shuffle enabled for newly added songs</string>
+	<string name="shuffle_enabling">Shuffle enabled</string>
 	<string name="shuffle_disabling">Shuffle disabled</string>
 	<string name="repeat_enable">Enable Repeat</string>
 	<string name="repeat_disable">Disable Repeat</string>
-	<string name="repeat_enabling">Repeat enabled. The current song and any songs you have added after it will be repeated.</string>
+	<string name="repeat_enabling">Repeat enabled</string>
 	<string name="repeat_disabling">Repeat disabled</string>
+	<string name="random_enable">Enable Random</string>
+	<string name="random_disable">Disable Random</string>
+	<string name="random_enabling">Random enabled</string>
+	<string name="random_disabling">Random disabled</string>
 	<string name="song_load_failed">Failed to load song %s. It may be corrupt or missing.</string>
 	<string name="queue_cleared">Queue cleared.</string>
 

@@ -40,6 +40,44 @@ import android.util.Log;
  */
 public final class SongTimeline {
 	/**
+	 * Stop playback.
+	 *
+	 * @see SongTimeline#setFinishAction(int)
+	 */
+	public static final int FINISH_STOP = 0;
+	/**
+	 * Repeat from the begining.
+	 *
+	 * @see SongTimeline#setFinishAction(int)
+	 */
+	public static final int FINISH_REPEAT = 1;
+	/**
+	 * Add random songs to the playlist.
+	 *
+	 * @see SongTimeline#setFinishAction(int)
+	 */
+	public static final int FINISH_RANDOM = 2;
+
+	/**
+	 * Clear the timeline and use only the provided songs.
+	 *
+	 * @see SongTimeline#addSongs(int,int,long,String)
+	 */
+	public static final int MODE_PLAY = 0;
+	/**
+	 * Clear the queue and add the songs after the current song.
+	 *
+	 * @see SongTimeline#addSongs(int,int,long,String)
+	 */
+	public static final int MODE_PLAY_NEXT = 1;
+	/**
+	 * Add the songs at the end of the timeline, clearing random songs.
+	 *
+	 * @see SongTimeline#addSongs(int,int,long,String)
+	 */
+	public static final int MODE_ENQUEUE = 2;
+
+	/**
 	 * Name of the state file.
 	 */
 	private static final String STATE_FILE = "state";
@@ -47,7 +85,7 @@ public final class SongTimeline {
 	 * Header for state file to help indicate if the file is in the right
 	 * format.
 	 */
-	private static final long STATE_FILE_MAGIC = 0x8a9d3f2fca33L;
+	private static final long STATE_FILE_MAGIC = 0x8f9d3a2fca33L;
 
 	/**
 	 * All the songs currently contained in the timeline. Each Song object
@@ -59,37 +97,40 @@ public final class SongTimeline {
 	 */
 	private int mCurrentPos;
 	/**
-	 * The distance from mCurrentPos at which songs will be enqueued by
-	 * chooseSongs. If 0, then songs will be enqueued at the position
-	 * immediately following the current song. If 1, there will be one
-	 * position between them, etc.
-	 */
-	private int mQueueOffset;
-	/**
-	 * When a repeat is engaged, this position will be rewound to.
-	 */
-	private int mRepeatStart = -1;
-	/**
-	 * The songs that will be repeated on the next repeat. We cache these so
-	 * that, if they need to be shuffled, they are only shuffled once.
-	 */
-	private ArrayList<Song> mRepeatedSongs;
-	/**
 	 * Whether shuffling is enabled. Shuffling will shuffle sets of songs
 	 * that are added with chooseSongs and shuffle sets of repeated songs.
 	 */
 	private boolean mShuffle;
+	/**
+	 * What to do when the end of the playlist is reached.
+	 * Must be one of SongTimeline.FINISH_*.
+	 */
+	private int mFinishAction;
+
+	// for shuffleAll()
+	private ArrayList<Song> mShuffledSongs;
+
+	// for saveActiveSongs()
+	private Song mSavedPrevious;
+	private Song mSavedCurrent;
+	private Song mSavedNext;
 
 	public interface Callback {
 		/**
-		 * Called when a song in the timeline has been replaced with a
-		 * different song.
+		 * Called when an active song in the timeline is replaced by a method
+		 * other than shiftCurrentSong()
 		 *
 		 * @param delta The distance from the current song. Will always be -1,
 		 * 0, or 1.
 		 * @param song The new song at the position
 		 */
-		public void songReplaced(int delta, Song song);
+		public void activeSongReplaced(int delta, Song song);
+
+		/**
+		 * Called when the timeline state has changed and should be saved to
+		 * storage.
+		 */
+		public void timelineChanged();
 	}
 	/**
 	 * The current Callback, if any.
@@ -99,7 +140,7 @@ public final class SongTimeline {
 	/**
 	 * Initializes the timeline with the state stored in the state file created
 	 * by a call to save state.
-	 * 
+	 *
 	 * @param context The Context to open the state file with
 	 * @return The optional extra data, or -1 if loading failed
 	 */
@@ -113,13 +154,13 @@ public final class SongTimeline {
 				int n = in.readInt();
 				if (n > 0) {
 					ArrayList<Song> songs = new ArrayList<Song>(n);
-		
+
 					for (int i = 0; i != n; ++i)
 						songs.add(new Song(in.readLong(), in.readInt()));
-		
+
 					mSongs = songs;
 					mCurrentPos = in.readInt();
-					mRepeatStart = in.readInt();
+					mFinishAction = in.readInt();
 					mShuffle = in.readBoolean();
 					extra = in.readInt();
 				}
@@ -167,7 +208,7 @@ public final class SongTimeline {
 				}
 
 				out.writeInt(mCurrentPos);
-				out.writeInt(mRepeatStart);
+				out.writeInt(mFinishAction);
 				out.writeBoolean(mShuffle);
 				out.writeInt(extra);
 			}
@@ -195,21 +236,13 @@ public final class SongTimeline {
 	}
 
 	/**
-	 * Return whether repeating is enabled.
+	 * Return the finish action.
+	 *
+	 * @see SongTimeline#setFinishAction(int)
 	 */
-	public boolean isRepeating()
+	public int getFinishAction()
 	{
-		return mRepeatStart != -1;
-	}
-
-	/**
-	 * Return the position of the current song (i.e. the playing song).
-	 */
-	public int getCurrentPosition()
-	{
-		synchronized (this) {
-			return mCurrentPos;
-		}
+		return mFinishAction;
 	}
 
 	/**
@@ -218,122 +251,89 @@ public final class SongTimeline {
 	 */
 	public void setShuffle(boolean shuffle)
 	{
+		saveActiveSongs();
 		mShuffle = shuffle;
+		broadcastChangedSongs();
+		changed();
 	}
 
 	/**
-	 * Set whether to repeat.
-	 * 
-	 * When called with true, repeat will be enabled and the current song will
-	 * become the starting point for repeats, where the position is rewound to
-	 * when a repeat is engaged. A repeat is engaged when a randomly selected
-	 * song is encountered (i.e. a non-user-chosen song).
-	 *
-	 * The current song must be non-null.
+	 * Set what to do when the end of the playlist is reached. Must be one of
+	 * SongTimeline.FINISH_* (stop, repeat, or add random song).
 	 */
-	public void setRepeat(boolean repeat)
+	public void setFinishAction(int action)
 	{
-		// Don't change anything if we are already doing what we want.
-		if (repeat == (mRepeatStart != -1))
-			return;
-
-		synchronized (this) {
-			if (repeat) {
-				Song song = getSong(0);
-				if (song == null)
-					return;
-				mRepeatStart = mCurrentPos;
-				// Ensure that we will at least repeat one song (the current song),
-				// even if all of our songs were selected randomly.
-				song.flags &= ~Song.FLAG_RANDOM;
-			} else {
-				mRepeatStart = -1;
-				mRepeatedSongs = null;
-			}
-
-			if (mCallback != null)
-				mCallback.songReplaced(+1, getSong(+1));
-		}
+		saveActiveSongs();
+		mFinishAction = action;
+		broadcastChangedSongs();
+		changed();
 	}
 
 	/**
-	 * Retrieves a shuffled list of the songs to be repeated. This caches the
-	 * results so that the repeated songs are shuffled only once.
+	 * Shuffle all the songs in the timeline, storing the result in
+	 * mShuffledSongs.
 	 *
-	 * @param end The position just after the last song to be included in the
-	 * repeated songs
+	 * @return The first song from the shuffled songs.
 	 */
-	private ArrayList<Song> getShuffledRepeatedSongs(int end)
+	private Song shuffleAll()
 	{
-		if (mRepeatedSongs == null) {
-			ArrayList<Song> songs = new ArrayList<Song>(mSongs.subList(mRepeatStart, end));
-			Collections.shuffle(songs, ContextApplication.getRandom());
-			mRepeatedSongs = songs;
-		}
-		return mRepeatedSongs;
+		ArrayList<Song> songs = new ArrayList<Song>(mSongs);
+		Collections.shuffle(songs, ContextApplication.getRandom());
+		mShuffledSongs = songs;
+		return songs.get(0);
 	}
 
 	/**
 	 * Returns the song <code>delta</code> places away from the current
-	 * position. If there is no song at the given position, a random
-	 * song will be placed in that position. Returns null if there is a problem
-	 * retrieving the song (caused by either an empty library or stale song id).
+	 * position. Returns null if there is a problem retrieving the song
+	 * (caused by either an empty library or stale song id).
 	 *
-	 * Note: This returns songs based on their position in the playback
-	 * sequence, not their position in the stored timeline. When repeat is enabled,
-	 * the two will differ.
-	 *
-	 * @param delta The offset from the current position. Should be -1, 0, or
-	 * 1.
+	 * @param delta The offset from the current position. Must be -1, 0, or 1.
 	 */
 	public Song getSong(int delta)
 	{
+		assert(delta >= -1 && delta <= 1);
+
 		ArrayList<Song> timeline = mSongs;
 		Song song = null;
 
 		synchronized (this) {
 			int pos = mCurrentPos + delta;
-			if (pos < 0)
-				return null;
+			int size = timeline.size();
 
-			while (pos >= timeline.size()) {
-				song = Song.randomSong();
-				if (song == null)
+			if (pos < 0) {
+				if (size == 0 || mFinishAction == FINISH_RANDOM)
 					return null;
-				timeline.add(song);
-			}
-
-			if (song == null)
-				song = timeline.get(pos);
-
-			if (song != null && mRepeatStart != -1 && (song.flags & Song.FLAG_RANDOM) != 0) {
-				if (delta == 1 && mRepeatStart < mCurrentPos + 1) {
-					// We have reached a non-user-selected song; this song will
-					// repeated in shiftCurrentSong so take alternative
-					// measures
-					if (mShuffle)
-						song = getShuffledRepeatedSongs(mCurrentPos + 1).get(0);
+				song = timeline.get(Math.max(0, size - 1));
+			} else if (pos > size) {
+				return null;
+			} else if (pos == size) {
+				switch (mFinishAction) {
+				case FINISH_STOP:
+				case FINISH_REPEAT:
+					if (size == 0)
+						// empty queue
+						return null;
+					else if (mShuffle)
+						song = shuffleAll();
 					else
-						song = timeline.get(mRepeatStart);
-				} else if (delta == 0 && mRepeatStart < mCurrentPos) {
-					// We have just been set to a position after the repeat
-					// where a repeat is necessary. Rewind to the repeat
-					// start, shuffling if needed
-					if (mShuffle) {
-						int j = mCurrentPos;
-						ArrayList<Song> songs = getShuffledRepeatedSongs(j);
-						for (int i = songs.size(); --i != -1 && --j != -1; )
-							timeline.set(j, songs.get(i));
-						mRepeatedSongs = null;
-					}
-
-					mCurrentPos = mRepeatStart;
-					song = timeline.get(mRepeatStart);
-					if (mCallback != null)
-						mCallback.songReplaced(-1, getSong(-1));
+						song = timeline.get(0);
+					break;
+				case FINISH_RANDOM:
+					song = Song.randomSong();
+					timeline.add(song);
+					break;
+				default:
+					throw new IllegalStateException("Invalid finish action: " + mFinishAction);
 				}
+			} else {
+				song = timeline.get(pos);
 			}
 		}
+
+		if (song == null)
+			// we have no songs in the library
+			return null;
 
 		if (!song.query(false))
 			// we have a stale song id
@@ -345,30 +345,45 @@ public final class SongTimeline {
 	/**
 	 * Shift the current song by <code>delta</code> places.
 	 *
+	 * @param delta The delta. Must be -1, 0, 1.
 	 * @return The Song at the new position
 	 */
 	public Song shiftCurrentSong(int delta)
 	{
+		assert(delta >= -1 && delta <= 1);
+
 		synchronized (this) {
-			mCurrentPos += delta;
-			if (mQueueOffset > 0)
-				mQueueOffset -= 1;
-			return getSong(0);
+			int pos = mCurrentPos + delta;
+
+			if (mFinishAction != FINISH_RANDOM && pos == mSongs.size()) {
+				if (mShuffle && mSongs.size() > 0) {
+					if (mShuffledSongs == null)
+						shuffleAll();
+					mSongs = mShuffledSongs;
+				}
+
+				pos = 0;
+			} else if (pos < 0) {
+				if (mFinishAction == FINISH_RANDOM)
+					pos = 0;
+				else
+					pos = Math.max(0, mSongs.size() - 1);
+			}
+
+			mCurrentPos = pos;
+			mShuffledSongs = null;
 		}
+
+		if (delta != 0)
+			changed();
+
+		return getSong(0);
 	}
 
 	/**
-	 * Add a set of songs to the song timeline. There are two modes: play and
-	 * enqueue. Play will place the set immediately after the current song. (It
-	 * is assumed that client code will shift the current position and play the
-	 * first song of the set after a call to play). Enqueue will place the set
-	 * after the last enqueued song or after the currently playing song if no
-	 * items have been enqueued since the last call to finishEnqueueing.
+	 * Add a set of songs to the song timeline.
 	 *
-	 * If shuffling is enabled, songs will be in random order. Otherwise songs
-	 * will be ordered by album and then by track number.
-	 *
-	 * @param enqueue If true, enqueue the set. If false, play the set.
+	 * @param mode How to add the songs. One of SongTimeline.MODE_*.
 	 * @param type The type represented by the id. Must be one of the
 	 * MediaUtils.FIELD_* constants.
 	 * @param id The id of the element in the MediaStore content provider for
@@ -377,7 +392,7 @@ public final class SongTimeline {
 	 * null. Must not be used with type == TYPE_SONG or type == TYPE_PLAYLIST
 	 * @return The number of songs that were enqueued.
 	 */
-	public int chooseSongs(boolean enqueue, int type, long id, String selection)
+	public int addSongs(int mode, int type, long id, String selection)
 	{
 		Cursor cursor;
 		if (type == MediaUtils.TYPE_PLAYLIST)
@@ -390,19 +405,31 @@ public final class SongTimeline {
 		if (count == 0)
 			return 0;
 
-		Song oldSong = getSong(+1);
-
 		ArrayList<Song> timeline = mSongs;
 		synchronized (this) {
-			if (enqueue) {
-				int i = mCurrentPos + mQueueOffset + 1;
-				if (i < timeline.size())
-					timeline.subList(i, timeline.size()).clear();
-				mQueueOffset += count;
-			} else {
-				timeline.subList(mCurrentPos + 1, timeline.size()).clear();
-				mQueueOffset = count;
+			saveActiveSongs();
+
+			switch (mode) {
+			case MODE_ENQUEUE: {
+				int i = timeline.size();
+				while (--i > mCurrentPos) {
+					if (timeline.get(i).isRandom())
+						timeline.remove(i);
+				}
+				break;
 			}
+			case MODE_PLAY_NEXT:
+				timeline.subList(mCurrentPos + 1, timeline.size()).clear();
+				break;
+			case MODE_PLAY:
+				timeline.clear();
+				mCurrentPos = 0;
+				break;
+			default:
+				throw new IllegalArgumentException("Invalid mode: " + mode);
+			}
+
+			int start = timeline.size();
 
 			for (int j = 0; j != count; ++j) {
 				cursor.moveToNext();
@@ -412,44 +439,31 @@ public final class SongTimeline {
 			}
 
 			if (mShuffle)
-				Collections.shuffle(timeline.subList(timeline.size() - count, timeline.size()), ContextApplication.getRandom());
+				Collections.shuffle(timeline.subList(start, timeline.size()), ContextApplication.getRandom());
+
+			broadcastChangedSongs();
 		}
 
 		cursor.close();
-		mRepeatedSongs = null;
 
-		Song newSong = getSong(+1);
-		if (newSong != oldSong && mCallback != null)
-			mCallback.songReplaced(+1, newSong);
+		changed();
 
 		return count;
 	}
 
 	/**
-	 * Removes any songs greater than 10 songs before the current song (unless
-	 * they are still necessary for repeating).
+	 * Removes any songs greater than 10 songs before the current song when in
+	 * random mode.
 	 */
 	public void purge()
 	{
 		synchronized (this) {
-			while (mCurrentPos > 10 && mRepeatStart != 0) {
-				mSongs.remove(0);
-				--mCurrentPos;
-				if (mRepeatStart > 0)
-					--mRepeatStart;
+			if (mFinishAction == FINISH_RANDOM) {
+				while (mCurrentPos > 10) {
+					mSongs.remove(0);
+					--mCurrentPos;
+				}
 			}
-		}
-	}
-
-	/**
-	 * Finish enqueueing songs for the current session. Newly enqueued songs
-	 * will be enqueued directly after the current song rather than after
-	 * previously enqueued songs.
-	 */
-	public void finishEnqueueing()
-	{
-		synchronized (this) {
-			mQueueOffset = 0;
 		}
 	}
 
@@ -459,60 +473,106 @@ public final class SongTimeline {
 	public void clearQueue()
 	{
 		synchronized (this) {
-			mSongs.subList(mCurrentPos + 1, mSongs.size()).clear();
-			mQueueOffset = 0;
+			if (mCurrentPos + 1 < mSongs.size())
+				mSongs.subList(mCurrentPos + 1, mSongs.size()).clear();
 		}
 
-		mCallback.songReplaced(+1, getSong(+1));
+		mCallback.activeSongReplaced(+1, getSong(+1));
+
+		changed();
+	}
+
+	/**
+	 * Save the active songs for use with broadcastChangedSongs().
+	 *
+	 * @see SongTimeline#broadcastChangedSongs()
+	 */
+	private void saveActiveSongs()
+	{
+		mSavedPrevious = getSong(-1);
+		mSavedCurrent = getSong(0);
+		mSavedNext = getSong(+1);
+	}
+
+	/**
+	 * Broadcast the active songs that have changed since the last call to
+	 * saveActiveSongs()
+	 *
+	 * @see SongTimeline#saveActiveSongs()
+	 */
+	private void broadcastChangedSongs()
+	{
+		Song previous = getSong(-1);
+		Song current = getSong(0);
+		Song next = getSong(+1);
+
+		if (mCallback != null) {
+			if (Song.getId(mSavedPrevious) != Song.getId(previous))
+				mCallback.activeSongReplaced(-1, previous);
+			if (Song.getId(mSavedNext) != Song.getId(next))
+				mCallback.activeSongReplaced(1, next);
+		}
+		if (Song.getId(mSavedCurrent) != Song.getId(current)) {
+			if (mCallback != null)
+				mCallback.activeSongReplaced(0, current);
+		}
 	}
 
 	/**
 	 * Remove the song with the given id from the timeline.
 	 *
 	 * @param id The MediaStore id of the song to remove.
-	 * @return True if the current song has changed.
 	 */
-	public boolean removeSong(long id)
+	public void removeSong(long id)
 	{
 		synchronized (this) {
-			boolean changed = false;
 			ArrayList<Song> songs = mSongs;
 
-			int i = mCurrentPos;
-			Song oldPrevious = getSong(-1);
-			Song oldCurrent = getSong(0);
-			Song oldNext = getSong(+1);
+			saveActiveSongs();
 
-			while (--i != -1) {
+			int i = mCurrentPos;
+			while (--i >= 0) {
 				if (Song.getId(songs.get(i)) == id) {
 					songs.remove(i);
 					--mCurrentPos;
 				}
 			}
 
-			for (i = mCurrentPos; i != songs.size(); ++i) {
+			for (i = mCurrentPos; i < songs.size(); ++i) {
 				if (Song.getId(songs.get(i)) == id)
 					songs.remove(i);
 			}
 
-			i = mCurrentPos;
-			Song previous = getSong(-1);
-			Song current = getSong(0);
-			Song next = getSong(+1);
+			broadcastChangedSongs();
+		}
 
-			if (mCallback != null) {
-				if (Song.getId(oldPrevious) != Song.getId(previous))
-					mCallback.songReplaced(-1, previous);
-				if (Song.getId(oldNext) != Song.getId(next))
-					mCallback.songReplaced(1, next);
-			}
-			if (Song.getId(oldCurrent) != Song.getId(current)) {
-				if (mCallback != null)
-					mCallback.songReplaced(0, current);
-				changed = true;
-			}
+		changed();
+	}
 
-			return changed;
+	/**
+	 * Broadcasts that the timeline state has changed.
+	 */
+	private void changed()
+	{
+		if (mCallback != null)
+			mCallback.timelineChanged();
+	}
+
+	/**
+	 * Return true if the finish action is to stop at the end of the queue and
+	 * the current song is the last in the queue.
+	 */
+	public boolean isEndOfQueue()
+	{
+		synchronized (this) {
+			return mFinishAction == FINISH_STOP && mCurrentPos == mSongs.size() - 1;
+		}
+	}
+
+	public void clear()
+	{
+		synchronized (this) {
+			mSongs.clear();
 		}
 	}
 }
