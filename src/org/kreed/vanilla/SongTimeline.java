@@ -28,9 +28,14 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.util.Log;
 
 /**
@@ -85,13 +90,13 @@ public final class SongTimeline {
 	 * Header for state file to help indicate if the file is in the right
 	 * format.
 	 */
-	private static final long STATE_FILE_MAGIC = 0x8f9d3a2fca33L;
+	private static final long STATE_FILE_MAGIC = 0xf89daa2fac33L;
 
 	/**
 	 * All the songs currently contained in the timeline. Each Song object
 	 * should be unique, even if it refers to the same media.
 	 */
-	private ArrayList<Song> mSongs = new ArrayList<Song>();
+	private ArrayList<Song> mSongs;
 	/**
 	 * The position of the current song (i.e. the playing song).
 	 */
@@ -138,6 +143,32 @@ public final class SongTimeline {
 	private Callback mCallback;
 
 	/**
+	 * Compares the ids of songs.
+	 */
+	public static class IdComparator implements Comparator<Song> {
+		@Override
+		public int compare(Song a, Song b)
+		{
+			if (a.id == b.id)
+				return 0;
+			if (a.id > b.id)
+				return 1;
+			return -1;
+		}
+	}
+
+	/**
+	 * Compares the flags of songs.
+	 */
+	public static class FlagComparator implements Comparator<Song> {
+		@Override
+		public int compare(Song a, Song b)
+		{
+			return a.flags - b.flags;
+		}
+	}
+
+	/**
 	 * Initializes the timeline with the state stored in the state file created
 	 * by a call to save state.
 	 *
@@ -149,29 +180,80 @@ public final class SongTimeline {
 		int extra = -1;
 
 		try {
-			DataInputStream in = new DataInputStream(context.openFileInput(STATE_FILE));
-			if (in.readLong() == STATE_FILE_MAGIC) {
-				int n = in.readInt();
-				if (n > 0) {
-					ArrayList<Song> songs = new ArrayList<Song>(n);
+			synchronized (this) {
+				DataInputStream in = new DataInputStream(context.openFileInput(STATE_FILE));
+				if (in.readLong() == STATE_FILE_MAGIC) {
+					int n = in.readInt();
+					if (n > 0) {
+						ArrayList<Song> songs = new ArrayList<Song>(n);
 
-					for (int i = 0; i != n; ++i)
-						songs.add(new Song(in.readLong(), in.readInt()));
+						// Fill the selection with the ids of all the saved songs
+						// and initialize the timeline with unpopulated songs.
+						StringBuilder selection = new StringBuilder("_ID IN (");
+						for (int i = 0; i != n; ++i) {
+							long id = in.readLong();
+							int flags = in.readInt();
+							// Add the index so we can sort
+							flags |= i << Song.FLAG_COUNT;
+							songs.add(new Song(id, flags));
 
-					mSongs = songs;
-					mCurrentPos = in.readInt();
+							if (i != 0)
+								selection.append(',');
+							selection.append(id);
+						}
+						selection.append(')');
+
+						// Sort songs by id---this is the order the query will
+						// return its results in.
+						Collections.sort(songs, new IdComparator());
+
+						ContentResolver resolver = context.getContentResolver();
+						Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+
+						Cursor cursor = resolver.query(media, Song.FILLED_PROJECTION, selection.toString(), null, "_id");
+						if (cursor != null) {
+							cursor.moveToNext();
+
+							// Loop through timeline entries, looking for a row
+							// that matches the id. One row may match multiple
+							// entries.
+							Iterator<Song> it = songs.iterator();
+							while (it.hasNext()) {
+								Song e = it.next();
+								while (cursor.getLong(0) < e.id)
+									cursor.moveToNext();
+								if (cursor.getLong(0) == e.id)
+									e.populate(cursor);
+								else
+									// We weren't able to query this song.
+									it.remove();
+							}
+
+							cursor.close();
+
+							// Revert to the order the songs were saved in.
+							Collections.sort(songs, new FlagComparator());
+
+							mSongs = songs;
+						}
+					}
+
+					mCurrentPos = Math.min(mSongs == null ? 0 : mSongs.size(), in.readInt());
 					mFinishAction = in.readInt();
 					mShuffle = in.readBoolean();
 					extra = in.readInt();
+
+					in.close();
 				}
 			}
-
-			in.close();
 		} catch (EOFException e) {
 			Log.w("VanillaMusic", "Failed to load state", e);
 		} catch (IOException e) {
 			Log.w("VanillaMusic", "Failed to load state", e);
 		}
+
+		if (mSongs == null)
+			mSongs = new ArrayList<Song>();
 
 		return extra;
 	}
@@ -200,7 +282,7 @@ public final class SongTimeline {
 					Song song = songs.get(i);
 					if (song == null) {
 						out.writeLong(-1);
-						out.writeInt(-1);
+						out.writeInt(0);
 					} else {
 						out.writeLong(song.id);
 						out.writeInt(song.flags);
@@ -285,8 +367,7 @@ public final class SongTimeline {
 
 	/**
 	 * Returns the song <code>delta</code> places away from the current
-	 * position. Returns null if there is a problem retrieving the song
-	 * (caused by either an empty library or stale song id).
+	 * position. Returns null if there is a problem retrieving the song.
 	 *
 	 * @param delta The offset from the current position. Must be -1, 0, or 1.
 	 */
@@ -333,10 +414,6 @@ public final class SongTimeline {
 
 		if (song == null)
 			// we have no songs in the library
-			return null;
-
-		if (!song.query(false))
-			// we have a stale song id
 			return null;
 
 		return song;
@@ -566,13 +643,6 @@ public final class SongTimeline {
 	{
 		synchronized (this) {
 			return mFinishAction == FINISH_STOP && mCurrentPos == mSongs.size() - 1;
-		}
-	}
-
-	public void clear()
-	{
-		synchronized (this) {
-			mSongs.clear();
 		}
 	}
 }

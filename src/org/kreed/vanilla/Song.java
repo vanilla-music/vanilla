@@ -43,6 +43,10 @@ public class Song {
 	 * Indicates that this song was randomly selected from all songs.
 	 */
 	private static final int FLAG_RANDOM = 0x1;
+	/**
+	 * The number of flags.
+	 */
+	public static final int FLAG_COUNT = 1;
 
 	/**
 	 * A cache of covers that have been loaded with getCover().
@@ -317,35 +321,6 @@ public class Song {
 		albumId = cursor.getLong(5);
 		artistId = cursor.getLong(6);
 		duration = cursor.getLong(7);
-	}
-
-	/**
-	 * Query the MediaStore, if necessary, to fill this Song's fields.
-	 *
-	 * @param force Query even if fields have already been populated
-	 * @return true if fields have been populated, false otherwise
-	 */
-	public boolean query(boolean force)
-	{
-		if (path != null && !force)
-			return true;
-		if (id == -1)
-			return false;
-
-		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
-		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-		String selection = MediaStore.Audio.Media._ID + '=' + id;
-		Cursor cursor = resolver.query(media, FILLED_PROJECTION, selection, null, null);
-
-		id = -1;
-
-		if (cursor != null) {
-			if (cursor.moveToNext())
-				populate(cursor);
-			cursor.close();
-		}
-
-		return id != -1;
 	}
 
 	/**

@@ -586,30 +586,24 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 		Song song = mTimeline.shiftCurrentSong(delta);
 		mCurrentSong = song;
-		if (song == null) {
+		if (song == null || song.id == -1 || song.path == null) {
 			if (Song.isSongAvailable()) {
-				// We either have a stale song id or have no songs in the
-				// the timeline. Clear the timeline to get rid of the possible
-				// stale song id.
-				mTimeline.clear();
-
-				if ((mState & FLAG_RANDOM) == 0) {
-					// Tell the user to pick some songs.
-					setFlag(FLAG_EMPTY_QUEUE);
-					return null;
-				} else {
-					// Add a random song to replace the stale one.
-					return setCurrentSong(0);
+				int flag = (mState & FLAG_RANDOM) == 0 ? FLAG_EMPTY_QUEUE : FLAG_ERROR;
+				synchronized (mStateLock) {
+					updateState((mState | flag) & ~FLAG_NO_MEDIA);
 				}
+				return null;
 			} else {
 				// we don't have any songs : /
-				setFlag(FLAG_NO_MEDIA);
+				synchronized (mStateLock) {
+					updateState((mState | FLAG_NO_MEDIA) & ~FLAG_EMPTY_QUEUE);
+				}
 				return null;
 			}
-		} else if ((mState & FLAG_NO_MEDIA) != 0) {
-			unsetFlag(FLAG_NO_MEDIA);
-		} else if ((mState & FLAG_EMPTY_QUEUE) != 0) {
-			unsetFlag(FLAG_EMPTY_QUEUE);
+		} else if ((mState & (FLAG_NO_MEDIA|FLAG_EMPTY_QUEUE)) != 0) {
+			synchronized (mStateLock) {
+				updateState(mState & ~(FLAG_EMPTY_QUEUE|FLAG_NO_MEDIA));
+			}
 		}
 
 		mHandler.removeMessages(PROCESS_SONG);
