@@ -34,22 +34,4 @@ THE SOFTWARE.
 		android:layout_width="wrap_content">
 		<include layout="@layout/playback_buttons" />
 	</LinearLayout>
-	<LinearLayout
-		android:orientation="horizontal"
-		android:layout_height="wrap_content"
-		android:layout_width="wrap_content">
-		<org.kreed.vanilla.ControlButton
-			android:id="@+id/open_button"
-			android:layout_height="wrap_content"
-			android:layout_width="wrap_content"
-			android:layout_marginLeft="15px"
-			android:src="@drawable/fullscreen" />
-		<org.kreed.vanilla.ControlButton
-			android:id="@+id/kill_button"
-			android:layout_height="wrap_content"
-			android:layout_width="wrap_content"
-			android:layout_marginLeft="25px"
-			android:layout_marginRight="15px"
-			android:src="@drawable/kill" />
-	</LinearLayout>
 </org.kreed.vanilla.MiniPlaybackActivityLayout>

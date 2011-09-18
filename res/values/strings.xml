@@ -28,7 +28,6 @@ THE SOFTWARE.
 	<string name="empty_queue">No songs selected. Pick some from the library (search key) or enter random mode (in the menu).</string>
 	<string name="settings">Preferences</string>
 	<string name="library">Library</string>
-	<string name="quit">Stop and Exit</string>
 	<string name="display_mode">Display Mode</string>
 	<string name="shuffle_enable">Enable Shuffle</string>
 	<string name="shuffle_disable">Disable Shuffle</string>

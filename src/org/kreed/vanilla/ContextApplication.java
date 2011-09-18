@@ -171,17 +171,4 @@ public class ContextApplication extends Application {
 		if (mInstance != null)
 			mInstance.sendBroadcast(intent);
 	}
-
-	/**
-	 * Stop the PlaybackService, if running, and close all Activities that
-	 * have been added with <code>addActivity</code>.
-	 */
-	public static void quit()
-	{
-		if (mActivities != null) {
-			for (int i = mActivities.size(); --i != -1; )
-				mActivities.remove(i).finish();
-		}
-		mInstance.stopService(new Intent(mInstance, PlaybackService.class));
-	}
 }

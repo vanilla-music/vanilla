@@ -32,7 +32,7 @@ import android.view.Window;
  * window is not fullscreen but only as large as it needs to be. Includes a
  * CoverView and control buttons.
  */
-public class MiniPlaybackActivity extends PlaybackActivity implements View.OnClickListener {
+public class MiniPlaybackActivity extends PlaybackActivity {
 	@Override
 	public void onCreate(Bundle state)
 	{
@@ -42,12 +42,9 @@ public class MiniPlaybackActivity extends PlaybackActivity implements View.OnCli
 		setContentView(R.layout.mini_playback);
 
 		mCoverView = (CoverView)findViewById(R.id.cover_view);
+		mCoverView.setOnClickListener(this);
 		mCoverView.setup(mLooper, this, CoverBitmap.STYLE_OVERLAPPING_BOX);
 
-		View openButton = findViewById(R.id.open_button);
-		openButton.setOnClickListener(this);
-		View killButton = findViewById(R.id.kill_button);
-		killButton.setOnClickListener(this);
 		View previousButton = findViewById(R.id.previous);
 		previousButton.setOnClickListener(this);
 		mPlayPauseButton = (ControlButton)findViewById(R.id.play_pause);
@@ -60,10 +57,7 @@ public class MiniPlaybackActivity extends PlaybackActivity implements View.OnCli
 	public void onClick(View view)
 	{
 		switch (view.getId()) {
-		case R.id.kill_button:
-			ContextApplication.quit();
-			break;
-		case R.id.open_button:
+		case R.id.cover_view:
 			startActivity(new Intent(this, FullPlaybackActivity.class));
 			finish();
 			break;

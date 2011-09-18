@@ -24,7 +24,6 @@ package org.kreed.vanilla;
 
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
-import android.view.KeyEvent;
 
 /**
  * The preferences activity in which one can change application preferences.
@@ -37,23 +36,6 @@ public class PreferencesActivity extends PreferenceActivity {
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		ContextApplication.addActivity(this);
 		addPreferencesFromResource(R.xml.preferences);
-	}
-
-	@Override
-	public void onDestroy()
-	{
-		super.onDestroy();
-		ContextApplication.removeActivity(this);
-	}
-
-	/**
-	 * Implement the long-press-back-quits-application behavior.
-	 */
-	@Override
-	public boolean onKeyLongPress(int keyCode, KeyEvent event)
-	{
-		return PlaybackActivity.handleKeyLongPress(keyCode);
 	}
 }

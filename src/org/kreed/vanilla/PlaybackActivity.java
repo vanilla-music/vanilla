@@ -118,17 +118,6 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 		}
 	}
 
-	public static boolean handleKeyLongPress(int keyCode)
-	{
-		switch (keyCode) {
-		case KeyEvent.KEYCODE_BACK:
-			ContextApplication.quit();
-			return true;
-		}
-
-		return false;
-	}
-
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event)
 	{
@@ -155,12 +144,6 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 		}
 
 		return super.onKeyUp(keyCode, event);
-	}
-
-	@Override
-	public boolean onKeyLongPress(int keyCode, KeyEvent event)
-	{
-		return handleKeyLongPress(keyCode);
 	}
 
 	public void nextSong()
@@ -291,7 +274,6 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	{
 	}
 
-	static final int MENU_QUIT = 0;
 	static final int MENU_DISPLAY = 1;
 	static final int MENU_PREFS = 2;
 	static final int MENU_LIBRARY = 3;
@@ -308,7 +290,6 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 		menu.add(0, MENU_SHUFFLE, 0, R.string.shuffle_enable).setIcon(R.drawable.ic_menu_shuffle);
 		menu.add(0, MENU_REPEAT, 0, R.string.repeat_enable).setIcon(R.drawable.ic_menu_refresh);
 		menu.add(0, MENU_RANDOM, 0, R.string.random_enable).setIcon(R.drawable.ic_menu_shuffle);
-		menu.add(0, MENU_QUIT, 0, R.string.quit).setIcon(R.drawable.ic_menu_close_clear_cancel);
 		return true;
 	}
 
@@ -330,9 +311,6 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
 		switch (item.getItemId()) {
-		case MENU_QUIT:
-			ContextApplication.quit();
-			return true;
 		case MENU_SHUFFLE:
 			toggleShuffle();
 			return true;
