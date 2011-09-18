@@ -270,6 +270,9 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		int count = service.addSongs(mode, type, id);
 		setSong(service.getSong(0));
 
+		if (action == ACTION_PLAY && (mState & PlaybackService.FLAG_PLAYING) == 0)
+			setState(service.setFlag(PlaybackService.FLAG_PLAYING));
+
 		Toast.makeText(this, getResources().getQuantityString(text, count, count), Toast.LENGTH_SHORT).show();
 		mLastActedId = id;
 	}

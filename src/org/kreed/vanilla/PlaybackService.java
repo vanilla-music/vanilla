@@ -363,17 +363,27 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		}
 	}
 
-	private void setFlag(int flag)
+	/**
+	 * Set a state flag.
+	 *
+	 * @return The new state.
+	 */
+	public int setFlag(int flag)
 	{
 		synchronized (mStateLock) {
-			updateState(mState | flag);
+			return updateState(mState | flag);
 		}
 	}
 
-	private void unsetFlag(int flag)
+	/**
+	 * Unset a state flag.
+	 *
+	 * @return The new state.
+	 */
+	public int unsetFlag(int flag)
 	{
 		synchronized (mStateLock) {
-			updateState(mState & ~flag);
+			return updateState(mState & ~flag);
 		}
 	}
 
