@@ -25,6 +25,7 @@ package org.kreed.vanilla;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -69,6 +70,8 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	{
 		super.onCreate(state);
 		ContextApplication.addActivity(this);
+
+		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
 		HandlerThread thread = new HandlerThread(getClass().getName());
 		thread.start();
