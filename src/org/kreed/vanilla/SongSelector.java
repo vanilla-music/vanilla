@@ -26,6 +26,7 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.content.SharedPreferences;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -49,7 +50,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.AdapterView;
-import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -57,7 +57,10 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class SongSelector extends PlaybackActivity implements AdapterView.OnItemClickListener, TextWatcher, TabHost.OnTabChangeListener, Filter.FilterListener {
+/**
+ * The library activity.
+ */
+public class SongSelector extends PlaybackActivity implements AdapterView.OnItemClickListener, TextWatcher, TabHost.OnTabChangeListener {
 	/**
 	 * The number of tabs in the song selector.
 	 */
@@ -93,6 +96,14 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	private MediaAdapter mGenreAdapter;
 	private MediaAdapter mCurrentAdapter;
 
+	private ContentObserver mPlaylistObserver = new ContentObserver(null) {
+		@Override
+		public void onChange(boolean selfChange)
+		{
+			runQuery(mPlaylistAdapter);
+		}
+	};
+
 	@Override
 	public void onCreate(Bundle state)
 	{
@@ -121,12 +132,14 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 
 		mLimiterViews = (ViewGroup)findViewById(R.id.limiter_layout);
 
-		mArtistAdapter = setupView(R.id.artist_list, new MediaAdapter(this, MediaUtils.TYPE_ARTIST, true, false, null));
-		mAlbumAdapter = setupView(R.id.album_list, new MediaAdapter(this, MediaUtils.TYPE_ALBUM, true, false, state == null ? null : (MediaAdapter.Limiter)state.getSerializable("limiter_albums")));
-		mSongAdapter = setupView(R.id.song_list, new SongMediaAdapter(this, false, false, state == null ? null : (MediaAdapter.Limiter)state.getSerializable("limiter_songs")));
-		mPlaylistAdapter = setupView(R.id.playlist_list, new MediaAdapter(this, MediaUtils.TYPE_PLAYLIST, false, true, null));
-		mGenreAdapter = setupView(R.id.genre_list, new MediaAdapter(this, MediaUtils.TYPE_GENRE, true, false, state == null ? null : (MediaAdapter.Limiter)state.getSerializable("limiter_genres")));
+		mArtistAdapter = setupView(R.id.artist_list, new MediaAdapter(this, MediaUtils.TYPE_ARTIST, true, null));
+		mAlbumAdapter = setupView(R.id.album_list, new MediaAdapter(this, MediaUtils.TYPE_ALBUM, true, state == null ? null : (MediaAdapter.Limiter)state.getSerializable("limiter_albums")));
+		mSongAdapter = setupView(R.id.song_list, new SongMediaAdapter(this, false, state == null ? null : (MediaAdapter.Limiter)state.getSerializable("limiter_songs")));
+		mPlaylistAdapter = setupView(R.id.playlist_list, new MediaAdapter(this, MediaUtils.TYPE_PLAYLIST, false, null));
+		mGenreAdapter = setupView(R.id.genre_list, new MediaAdapter(this, MediaUtils.TYPE_GENRE, true, state == null ? null : (MediaAdapter.Limiter)state.getSerializable("limiter_genres")));
 		mAdapters = new MediaAdapter[] { mArtistAdapter, mAlbumAdapter, mSongAdapter, mPlaylistAdapter, mGenreAdapter };
+
+		getContentResolver().registerContentObserver(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, true, mPlaylistObserver);
 
 		mCurrentAdapter = mAdapters[mTabHost.getCurrentTab()];
 
@@ -140,6 +153,9 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 				mTabHost.setCurrentTab(currentTab);
 			mTextFilter.setText(state.getString("filter"));
 		}
+
+		// query adapters
+		onMediaChange();
 	}
 
 	@Override
@@ -290,22 +306,27 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	private int setLimiter(MediaAdapter.Limiter limiter)
 	{
 		if (limiter == null) {
-			mAlbumAdapter.setLimiter(null, true);
-			mSongAdapter.setLimiter(null, true);
+			mAlbumAdapter.setLimiter(null);
+			mSongAdapter.setLimiter(null);
 			return -1;
 		}
 
 		switch (limiter.type) {
 		case MediaUtils.TYPE_ALBUM:
-			mSongAdapter.setLimiter(limiter, false);
+			// Clear the cursor so we don't have the old selection showing when
+			// we switch to that tab.
+			mSongAdapter.changeCursor(null);
+			mSongAdapter.setLimiter(limiter);
 			return 2;
 		case MediaUtils.TYPE_ARTIST:
-			mAlbumAdapter.setLimiter(limiter, false);
-			mSongAdapter.setLimiter(limiter, true);
+			mAlbumAdapter.changeCursor(null);
+			mAlbumAdapter.setLimiter(limiter);
+			mSongAdapter.setLimiter(limiter);
 			return 1;
 		case MediaUtils.TYPE_GENRE:
-			mAlbumAdapter.setLimiter(null, true);
-			mSongAdapter.setLimiter(limiter, false);
+			mSongAdapter.changeCursor(null);
+			mSongAdapter.setLimiter(limiter);
+			mAlbumAdapter.setLimiter(null);
 			return 2;
 		default:
 			throw new IllegalArgumentException("Unsupported limiter type: " + limiter.type);
@@ -334,8 +355,15 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	public void onTextChanged(CharSequence text, int start, int before, int count)
 	{
 		MediaAdapter adapter = mCurrentAdapter;
-		if (adapter != null)
-			adapter.filter(text, this);
+		if (adapter != null) {
+			String filter = text.toString();
+			adapter.filter(filter);
+
+			for (int i = TAB_COUNT; --i != -1; ) {
+				if (mAdapters[i] != adapter)
+					mAdapters[i].filter(filter);
+			}
+		}
 	}
 
 	private void updateLimiterViews()
@@ -585,13 +613,6 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		}
 	}
 
-	public void onFilterComplete(int count)
-	{
-		CharSequence text = mTextFilter.getText();
-		for (int i = TAB_COUNT; --i != -1; )
-			mAdapters[i].filter(text, null);
-	}
-
 	/**
 	 * Hook up a ListView to this Activity and the supplied adapter
 	 *
@@ -629,6 +650,11 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	 * that the name will be taken from.
 	 */
 	private static final int MSG_RENAME_PLAYLIST = 13;
+	/**
+	 * Called by MediaAdapters to requery their data on the worker thread.
+	 * obj will contain the MediaAdapter.
+	 */
+	public static final int MSG_RUN_QUERY = 14;
 
 	@Override
 	public boolean handleMessage(Message message)
@@ -650,7 +676,11 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 			NewPlaylistDialog dialog = (NewPlaylistDialog)message.obj;
 			if (dialog.isAccepted())
 				Playlist.renamePlaylist(this, message.arg2, dialog.getText());
+			break;
 		}
+		case MSG_RUN_QUERY:
+			((MediaAdapter)message.obj).runQuery();
+			break;
 		default:
 			return super.handleMessage(message);
 		}
@@ -658,16 +688,39 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		return true;
 	}
 
+	/**
+	 * Schedule a query to be run for the given adapter on the worker thread.
+	 *
+	 * @param adapter The adapter to run the query for.
+	 */
+	public void runQuery(MediaAdapter adapter)
+	{
+		mHandler.removeMessages(MSG_RUN_QUERY, adapter);
+		mHandler.sendMessage(mHandler.obtainMessage(MSG_RUN_QUERY, adapter));
+	}
+
+	/**
+	 * Update the given adapter with the given cursor on the UI thread.
+	 *
+	 * @param adapter The adapter to update.
+	 * @param cursor The cursor to update with.
+	 */
+	public void changeCursor(final MediaAdapter adapter, final Cursor cursor)
+	{
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run()
+			{
+				adapter.changeCursor(cursor);
+			}
+		});
+	}
+
 	@Override
 	public void onMediaChange()
 	{
-		runOnUiThread(new Runnable() {
-			public void run()
-			{
-				for (int i = 0; i != TAB_COUNT; ++i)
-					mAdapters[i].requery();
-			}
-		});
+		for (int i = 0; i != TAB_COUNT; ++i)
+			runQuery(mAdapters[i]);
 	}
 
 	private void setSearchBoxVisible(boolean visible)

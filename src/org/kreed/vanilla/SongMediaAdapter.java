@@ -22,7 +22,6 @@
 
 package org.kreed.vanilla;
 
-import android.content.Context;
 import android.provider.MediaStore;
 
 /**
@@ -34,15 +33,14 @@ public class SongMediaAdapter extends MediaAdapter {
 	/**
 	 * Construct a MediaAdapter backed by MediaStore.Audio.Media.
 	 *
-	 * @param context A Context to use
+	 * @param activity The activity that owns this adapter.
 	 * @param expandable Whether an expander arrow should by shown to the right
 	 * of views
-	 * @param requery If true, automatically update the adapter when the
-	 * provider changes
+	 * @param limiter An initial limiter to use.
 	 */
-	public SongMediaAdapter(Context context, boolean expandable, boolean requery, MediaAdapter.Limiter limiter)
+	public SongMediaAdapter(SongSelector activity, boolean expandable, MediaAdapter.Limiter limiter)
 	{
-		super(context, MediaUtils.TYPE_SONG, expandable, requery, limiter);
+		super(activity, MediaUtils.TYPE_SONG, expandable, limiter);
 	}
 
 	@Override

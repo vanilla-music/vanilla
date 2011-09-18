@@ -43,8 +43,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
-import android.widget.Filter;
-import android.widget.FilterQueryProvider;
 import java.io.Serializable;
 
 /**
@@ -58,9 +56,11 @@ import java.io.Serializable;
  * to a specific group to be displayed, e.g. only songs from a certain artist.
  * See MediaView.getLimiter and setLimiter for details.
  */
-public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
-	private Context mContext;
-
+public class MediaAdapter extends CursorAdapter {
+	/**
+	 * The activity that owns this adapter.
+	 */
+	private SongSelector mActivity;
 	/**
 	 * The type of media represented by this adapter. Must be one of the
 	 * MediaUtils.FIELD_* constants. Determines which content provider to query for
@@ -93,29 +93,27 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 	 */
 	private Limiter mLimiter;
 	/**
-	 * The last constraint used in a call to filter.
+	 * The constraint used for filtering, set by the search box.
 	 */
-	private CharSequence mConstraint;
+	private String mConstraint;
 
 	/**
 	 * Construct a MediaAdapter representing the given <code>type</code> of
 	 * media.
 	 *
-	 * @param context A Context to use
+	 * @param activity The activity that owns this adapter.
 	 * @param type The type of media to represent. Must be one of the
 	 * Song.TYPE_* constants. This determines which content provider to query
 	 * and what fields to display in the views.
 	 * @param expandable Whether an expand arrow should be shown to the right
 	 * of the views' text
-	 * @param requery If true, automatically update the adapter when the
-	 * provider backing it changes
 	 * @param limiter An initial limiter to use
 	 */
-	public MediaAdapter(Context context, int type, boolean expandable, boolean requery, Limiter limiter)
+	public MediaAdapter(SongSelector activity, int type, boolean expandable, Limiter limiter)
 	{
-		super(context, null, requery);
+		super(activity, null, false);
 
-		mContext = context;
+		mActivity = activity;
 		mType = type;
 		mExpandable = expandable;
 		mLimiter = limiter;
@@ -151,11 +149,8 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 			throw new IllegalArgumentException("Invalid value for type: " + type);
 		}
 
-		setFilterQueryProvider(this);
-		requery();
-
 		if (mPaint == null) {
-			Resources res = context.getResources();
+			Resources res = activity.getResources();
 			mExpander = BitmapFactory.decodeResource(res, R.drawable.expander_arrow);
 			mTextSize = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, res.getDisplayMetrics());
 
@@ -166,35 +161,16 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 	}
 
 	/**
-	 * Update the data in the adapter.
-	 */
-	public final void requery()
-	{
-		changeCursor(runQuery(mConstraint));
-	}
-
-	/**
 	 * Perform filtering on a background thread.
 	 *
 	 * @param constraint The terms to filter on, separated by spaces. Only
 	 * media that contain all of the terms (in any order) will be displayed
 	 * after filtering is complete.
-	 * @param listener A listener to be called when filtering is complete or
-	 * null.
 	 */
-	public void filter(CharSequence constraint, Filter.FilterListener listener)
+	public void filter(String constraint)
 	{
 		mConstraint = constraint;
-		super.getFilter().filter(constraint, listener);
-	}
-
-	/**
-	 * Override getFilter to prevent access.
-	 */
-	@Override
-	public Filter getFilter()
-	{
-		throw new UnsupportedOperationException("Do not use getFilter directly. Call filter instead.");
+		mActivity.runQuery(this);
 	}
 
 	/**
@@ -222,13 +198,12 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 	}
 
 	/**
-	 * Query the content provider using the given constraint as a filter.
-	 *
-	 * @return The Cursor returned by the query.
+	 * Query the backing content provider. Should be called on a background
+	 * thread.
 	 */
-	public Cursor runQuery(CharSequence constraint)
+	public void runQuery()
 	{
-		ContentResolver resolver = mContext.getContentResolver();
+		ContentResolver resolver = mActivity.getContentResolver();
 
 		String[] projection;
 		if (mFields.length == 1)
@@ -243,6 +218,7 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 		if (defaultSelection != null)
 			selection.append(defaultSelection);
 
+		String constraint = mConstraint;
 		if (constraint != null && constraint.length() != 0) {
 			String[] needles;
 
@@ -250,11 +226,11 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 			// into a list of collation keys. Otherwise, just split the
 			// constraint with no modification.
 			if (mFieldKeys != null) {
-				String colKey = MediaStore.Audio.keyFor(constraint.toString());
+				String colKey = MediaStore.Audio.keyFor(constraint);
 				String spaceColKey = DatabaseUtils.getCollationKey(" ");
 				needles = colKey.split(spaceColKey);
 			} else {
-				needles = constraint.toString().split("\\s+");
+				needles = constraint.split("\\s+");
 			}
 
 			int size = needles.length;
@@ -278,19 +254,23 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 			}
 		}
 
-		if (mLimiter != null) {
-			if (mLimiter.type == MediaUtils.TYPE_GENRE) {
-				// Genre is not standard metadata for MediaStore.Audio.Media.
-				// We have to query it through a separate provider. : /
-				return MediaUtils.queryGenre(mContext, mLimiter.id, projection,  selection.toString(), selectionArgs);
-			} else {
+		Cursor cursor;
+
+		if (mLimiter != null && mLimiter.type == MediaUtils.TYPE_GENRE) {
+			// Genre is not standard metadata for MediaStore.Audio.Media.
+			// We have to query it through a separate provider. : /
+			cursor = MediaUtils.queryGenre(mActivity, mLimiter.id, projection,  selection.toString(), selectionArgs);
+		} else {
+			if (mLimiter != null) {
 				if (selection.length() != 0)
 					selection.append(" AND ");
 				selection.append(mLimiter.selection);
 			}
+
+			cursor = resolver.query(mStore, projection, selection.toString(), selectionArgs, getSortOrder());
 		}
 
-		return resolver.query(mStore, projection, selection.toString(), selectionArgs, getSortOrder());
+		mActivity.changeCursor(this, cursor);
 	}
 
 	/**
@@ -299,15 +279,11 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 	 * media item.
 	 *
 	 * @param limiter The limiter, created by MediaView.getLimiter()
-	 * @param async If true, update the adapter in the background.
 	 */
-	public final void setLimiter(Limiter limiter, boolean async)
+	public final void setLimiter(Limiter limiter)
 	{
 		mLimiter = limiter;
-		if (async)
-			super.getFilter().filter(mConstraint);
-		else
-			requery();
+		mActivity.runQuery(this);
 	}
 
 	/**
@@ -549,7 +525,7 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 		 * Builds a limiter based off of the media represented by this view.
 		 *
 		 * @see MediaAdapter#getLimiter()
-		 * @see MediaAdapter#setLimiter(String[], boolean)
+		 * @see MediaAdapter#setLimiter(MediaAdapter.Limiter)
 		 */
 		public final Limiter getLimiter()
 		{
