@@ -173,7 +173,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 		mMediaPlayer = new MediaPlayer();
 		mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-		mMediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
 		mMediaPlayer.setOnCompletionListener(this);
 		mMediaPlayer.setOnErrorListener(this);
 
@@ -192,7 +191,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		Song.mDisableCoverArt = settings.getBoolean("disable_cover_art", false);
 
 		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
-		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicSongChangeLock");
+		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicLock");
 
 		mLooper = thread.getLooper();
 		mHandler = new Handler(mLooper, this);
@@ -430,6 +429,9 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				}
 				if (mNotificationMode != NEVER)
 					startForegroundCompat(NOTIFICATION_ID, new SongNotification(mCurrentSong, true));
+
+				if (mWakeLock != null)
+					mWakeLock.acquire();
 			} else {
 				if (mMediaPlayerInitialized) {
 					synchronized (mMediaPlayer) {
@@ -442,6 +444,9 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				} else {
 					stopForegroundCompat(true);
 				}
+
+				if (mWakeLock != null && mWakeLock.isHeld())
+					mWakeLock.release();
 			}
 		}
 
@@ -580,10 +585,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 	public void onCompletion(MediaPlayer player)
 	{
-		if (mWakeLock != null)
-			mWakeLock.acquire();
-		mHandler.sendEmptyMessage(TRACK_CHANGED);
-		mHandler.sendEmptyMessage(RELEASE_WAKE_LOCK);
+		setCurrentSong(+1);
 	}
 
 	public boolean onError(MediaPlayer player, int what, int extra)
@@ -698,8 +700,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 * will be stopped.
 	 */
 	private static final int IDLE_TIMEOUT = 4;
-	private static final int TRACK_CHANGED = 5;
-	private static final int RELEASE_WAKE_LOCK = 6;
 	/**
 	 * Decrease the volume gradually over five seconds, pausing when 0 is
 	 * reached.
@@ -729,14 +729,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	public boolean handleMessage(Message message)
 	{
 		switch (message.what) {
-		case TRACK_CHANGED:
-			setCurrentSong(+1);
-			setFlag(FLAG_PLAYING);
-			break;
-		case RELEASE_WAKE_LOCK:
-			if (mWakeLock != null && mWakeLock.isHeld())
-				mWakeLock.release();
-			break;
 		case CALL_GO:
 			int delta = (Integer)message.obj;
 			go(delta, false);
