@@ -210,6 +210,15 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	}
 
 	/**
+	 * Called by PlaybackService to update the state.
+	 */
+	public void setState(long uptime, int state)
+	{
+		if (uptime > mLastStateEvent)
+			setState(state);
+	}
+
+	/**
 	 * Sets up components when the PlaybackService is initialized and available to
 	 * interact with. Override to implement further post-initialization behavior.
 	 */
@@ -243,29 +252,22 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	}
 
 	/**
-	 * Called by PlaybackService when it broadcasts an intent.
-	 *
-	 * @param intent The intent that was broadcast.
+	 * Called by PlaybackService to update the current song.
 	 */
-	public void receive(Intent intent)
+	public void setSong(long uptime, Song song)
 	{
-		String action = intent.getAction();
+		if (uptime > mLastSongEvent)
+			setSong(song);
+	}
 
-		if (PlaybackService.EVENT_CHANGED.equals(action)) {
-			long time = intent.getLongExtra("time", -1);
-			assert(time != -1);
-
-			int state = intent.getIntExtra("state", -1);
-			if (state != -1 && time > mLastStateEvent)
-				setState(state);
-
-			if (intent.hasExtra("song") && time > mLastSongEvent) {
-				Song song = intent.getParcelableExtra("song");
-				setSong(song);
-			}
-		}
+	/**
+	 * Called by PlaybackService to update an active song (next, previous, or
+	 * current).
+	 */
+	public void replaceSong(int delta, Song song)
+	{
 		if (mCoverView != null)
-			mCoverView.receive(intent);
+			mCoverView.setSong(delta + 1, song);
 	}
 
 	/**

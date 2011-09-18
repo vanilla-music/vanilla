@@ -28,9 +28,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Parcel;
 import android.os.ParcelFileDescriptor;
-import android.os.Parcelable;
 import android.provider.MediaStore;
 
 import java.io.FileDescriptor;
@@ -40,7 +38,7 @@ import java.io.FileNotFoundException;
  * Represents a Song backed by the MediaStore. Includes basic metadata and
  * utilities to retrieve songs from the MediaStore.
  */
-public class Song implements Parcelable {
+public class Song {
 	/**
 	 * Indicates that this song was randomly selected from all songs.
 	 */
@@ -361,43 +359,6 @@ public class Song implements Parcelable {
 		if (song == null)
 			return 0;
 		return song.id;
-	}
-
-	public static Parcelable.Creator<Song> CREATOR = new Parcelable.Creator<Song>() {
-		public Song createFromParcel(Parcel in)
-		{
-			return new Song(in);
-		}
-
-		public Song[] newArray(int size)
-		{
-			return new Song[size];
-		}
-	};
-
-	public Song(Parcel in)
-	{
-		id = in.readLong();
-		albumId = in.readLong();
-		path = in.readString();
-		title = in.readString();
-		album = in.readString();
-		artist = in.readString();
-	}
-
-	public void writeToParcel(Parcel out, int flags)
-	{
-		out.writeLong(id);
-		out.writeLong(albumId);
-		out.writeString(path);
-		out.writeString(title);
-		out.writeString(album);
-		out.writeString(artist);
-	}
-
-	public int describeContents()
-	{
-		return 0;
 	}
 
 	private static final BitmapFactory.Options BITMAP_OPTIONS = new BitmapFactory.Options();

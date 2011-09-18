@@ -97,9 +97,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 */
 	public static final String ACTION_PREVIOUS_SONG_AUTOPLAY = "org.kreed.vanilla.action.PREVIOUS_SONG_AUTOPLAY";
 
-	public static final String EVENT_REPLACE_SONG = "org.kreed.vanilla.event.REPLACE_SONG";
-	public static final String EVENT_CHANGED = "org.kreed.vanilla.event.CHANGED";
-
 	/**
 	 * Set when there is no media available on the device.
 	 */
@@ -454,22 +451,19 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		}
 	}
 
-	private void broadcast(Intent intent)
-	{
-		ArrayList<PlaybackActivity> list = sActivities;
-		for (int i = list.size(); --i != -1; )
-			list.get(i).receive(intent);
-	}
-
 	private void broadcastChange(int state, Song song, long uptime)
 	{
-		Intent intent = new Intent(EVENT_CHANGED);
-		if (state != -1)
-			intent.putExtra("state", state);
-		if (song != null)
-			intent.putExtra("song", song);
-		intent.putExtra("time", uptime);
-		broadcast(intent);
+		if (state != -1) {
+			ArrayList<PlaybackActivity> list = sActivities;
+			for (int i = list.size(); --i != -1; )
+				list.get(i).setState(uptime, state);
+		}
+
+		if (song != null) {
+			ArrayList<PlaybackActivity> list = sActivities;
+			for (int i = list.size(); --i != -1; )
+				list.get(i).setSong(uptime, song);
+		}
 
 		updateWidgets();
 
@@ -801,14 +795,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 * obj should an Integer representing the delta to pass to go.
 	 */
 	private static final int CALL_GO = 8;
-	/**
-	 * Broadcast the given intent with ContextApplication.
-	 *
-	 * obj should contain the intent to broadcast.
-	 *
-	 * @see ContextApplication#broadcast(Intent)
-	 */
-	private static final int BROADCAST = 9;
 	private static final int BROADCAST_CHANGE = 10;
 	private static final int SAVE_STATE = 12;
 	private static final int PROCESS_SONG = 13;
@@ -859,9 +845,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			break;
 		case PROCESS_STATE:
 			processNewState(message.arg1, message.arg2);
-			break;
-		case BROADCAST:
-			broadcast((Intent)message.obj);
 			break;
 		case BROADCAST_CHANGE:
 			broadcastChange(message.arg1, (Song)message.obj, message.getWhen());
@@ -916,13 +899,12 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	@Override
 	public void activeSongReplaced(int delta, Song song)
 	{
+		ArrayList<PlaybackActivity> list = sActivities;
+		for (int i = list.size(); --i != -1; )
+			list.get(i).replaceSong(delta, song);
+
 		if (delta == 0)
 			setCurrentSong(0);
-
-		Intent intent = new Intent(EVENT_REPLACE_SONG);
-		intent.putExtra("pos", delta);
-		intent.putExtra("song", song);
-		mHandler.sendMessage(mHandler.obtainMessage(BROADCAST, intent));
 	}
 
 	/**

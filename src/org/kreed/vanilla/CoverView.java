@@ -23,7 +23,6 @@
 package org.kreed.vanilla;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -338,7 +337,7 @@ public final class CoverView extends View implements Handler.Callback {
 	 * Set the Song at position <code>i</code> to <code>song</code>, generating
 	 * the bitmap for it in the background if needed.
 	 */
-	private void setSong(int i, final Song song)
+	public void setSong(int i, Song song)
 	{
 		mSongs[i] = song;
 		if (song != null)
@@ -356,21 +355,6 @@ public final class CoverView extends View implements Handler.Callback {
 			setSong(i, service.getSong(i - STORE_SIZE / 2));
 		resetScroll();
 		invalidate();
-	}
-
-	/**
-	 * Handle an intent broadcasted by the PlaybackService. This must be called
-	 * to react to song changes in PlaybackService.
-	 *
-	 * @param intent The intent that was broadcast
-	 */
-	public void receive(Intent intent)
-	{
-		String action = intent.getAction();
-		if (PlaybackService.EVENT_REPLACE_SONG.equals(action)) {
-			int i = STORE_SIZE / 2 + intent.getIntExtra("pos", 0);
-			setSong(i, (Song)intent.getParcelableExtra("song"));
-		}
 	}
 
 	/**
