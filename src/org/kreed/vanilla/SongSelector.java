@@ -167,8 +167,8 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 			if (mSearchBoxVisible)
 				mControls.setVisibility(View.GONE);
 
-			if (ContextApplication.hasService()) {
-				PlaybackService service = ContextApplication.getService();
+			if (PlaybackService.hasInstance()) {
+				PlaybackService service = PlaybackService.get(this);
 				// Force the state to be updated, even if PlaybackActivity has
 				// already loaded it. This is needed to set the proper image
 				// for the play/pause button.
@@ -243,7 +243,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	 */
 	private void pickSongs(MediaAdapter.MediaView view, int action)
 	{
-		PlaybackService service = ContextApplication.getService();
+		PlaybackService service = PlaybackService.get(this);
 		int type = view.getMediaType();
 		long id = view.getMediaId();
 		int mode;
@@ -493,7 +493,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 			String message = getResources().getString(R.string.playlist_deleted, title);
 			Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 		} else {
-			int count = MediaUtils.deleteMedia(type, id);
+			int count = MediaUtils.deleteMedia(this, type, id);
 			String message = getResources().getQuantityString(R.plurals.deleted, count, count);
 			Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 		}

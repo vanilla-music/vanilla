@@ -347,10 +347,11 @@ public final class CoverView extends View implements Handler.Callback {
 
 	/**
 	 * Query all songs. Must be called on the UI thread.
+	 *
+	 * @param service Service to query from.
 	 */
-	public void querySongs()
+	public void querySongs(PlaybackService service)
 	{
-		PlaybackService service = ContextApplication.getService();
 		for (int i = STORE_SIZE; --i != -1; )
 			setSong(i, service.getSong(i - STORE_SIZE / 2));
 		resetScroll();

@@ -318,7 +318,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	 */
 	private void updateProgress()
 	{
-		int position = ContextApplication.hasService() ? ContextApplication.getService().getPosition() : 0;
+		int position = PlaybackService.hasInstance() ? PlaybackService.get(this).getPosition() : 0;
 
 		if (!mSeekBarTracking)
 			mSeekBar.setProgress(mDuration == 0 ? 0 : (int)(1000 * position / mDuration));
@@ -409,7 +409,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
 	{
 		if (fromUser)
-			ContextApplication.getService().seekToProgress(progress);
+			PlaybackService.get(this).seekToProgress(progress);
 	}
 
 	public void onStartTrackingTouch(SeekBar seekBar)

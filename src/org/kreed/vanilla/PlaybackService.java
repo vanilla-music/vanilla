@@ -25,7 +25,6 @@ package org.kreed.vanilla;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
@@ -34,6 +33,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.database.ContentObserver;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Handler;
@@ -43,6 +43,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -134,6 +135,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	public static final int NEVER = 0;
 	public static final int WHEN_PLAYING = 1;
 	public static final int ALWAYS = 2;
+
+	private static Object sWait = new Object();
+	private static PlaybackService sInstance;
+	private static ArrayList<PlaybackActivity> sActivities = new ArrayList<PlaybackActivity>();
 
 	boolean mHeadsetPause;
 	private boolean mScrobble;
@@ -227,7 +232,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		updateState(state);
 		setCurrentSong(0);
 
-		ContextApplication.setService(this);
+		sInstance = this;
+		synchronized (sWait) {
+			sWait.notifyAll();
+		}
 	}
 
 	@Override
@@ -272,7 +280,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	@Override
 	public void onDestroy()
 	{
-		ContextApplication.setService(null);
+		sInstance = null;
 
 		mLooper.quit();
 
@@ -340,8 +348,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		} else if ("disable_cover_art".equals(key)) {
 			Song.mDisableCoverArt = settings.getBoolean("disable_cover_art", false);
 		} else if ("display_mode".equals(key)) {
-			ArrayList<Activity> activities = ContextApplication.mActivities;
-			for (Activity activity : activities) {
+			ArrayList<PlaybackActivity> activities = sActivities;
+			for (PlaybackActivity activity : activities) {
 				if (activity instanceof FullPlaybackActivity)
 					activity.finish();
 			}
@@ -446,6 +454,13 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		}
 	}
 
+	private void broadcast(Intent intent)
+	{
+		ArrayList<PlaybackActivity> list = sActivities;
+		for (int i = list.size(); --i != -1; )
+			list.get(i).receive(intent);
+	}
+
 	private void broadcastChange(int state, Song song, long uptime)
 	{
 		Intent intent = new Intent(EVENT_CHANGED);
@@ -454,7 +469,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		if (song != null)
 			intent.putExtra("song", song);
 		intent.putExtra("time", uptime);
-		ContextApplication.broadcast(intent);
+		broadcast(intent);
 
 		updateWidgets();
 
@@ -745,6 +760,11 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		} else {
 			setFlag(FLAG_NO_MEDIA);
 		}
+
+		ArrayList<PlaybackActivity> list = sActivities;
+		for (int i = list.size(); --i != -1; )
+			list.get(i).onMediaChange();
+
 	}
 
 	public void onSharedPreferenceChanged(SharedPreferences settings, String key)
@@ -816,6 +836,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			mCallListener = new InCallListener();
 			TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 			telephonyManager.listen(mCallListener, PhoneStateListener.LISTEN_CALL_STATE);
+
+			getContentResolver().registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, mObserver);
 			break;
 		case IDLE_TIMEOUT:
 			if ((mState & FLAG_PLAYING) != 0)
@@ -839,7 +861,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			processNewState(message.arg1, message.arg2);
 			break;
 		case BROADCAST:
-			ContextApplication.broadcast((Intent)message.obj);
+			broadcast((Intent)message.obj);
 			break;
 		case BROADCAST_CHANGE:
 			broadcastChange(message.arg1, (Song)message.obj, message.getWhen());
@@ -1027,5 +1049,63 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	{
 		mHandler.removeMessages(SAVE_STATE);
 		mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
+	}
+
+	private ContentObserver mObserver = new ContentObserver(null) {
+		@Override
+		public void onChange(boolean selfChange)
+		{
+			Song.onMediaChange();
+			onMediaChange();
+		}
+	};
+
+	/**
+	 * Return the PlaybackService instance, creating one if needed.
+	 */
+	public static PlaybackService get(Context context)
+	{
+		if (sInstance == null) {
+			context.startService(new Intent(context, PlaybackService.class));
+
+			while (sInstance == null) {
+				try {
+					synchronized (sWait) {
+						sWait.wait();
+					}
+				} catch (InterruptedException e) {
+				}
+			}
+		}
+
+		return sInstance;
+	}
+
+	/**
+	 * Returns true if a PlaybackService instance is active.
+	 */
+	public static boolean hasInstance()
+	{
+		return sInstance != null;
+	}
+
+	/**
+	 * Add an Activity to the registered PlaybackActivities.
+	 *
+	 * @param activity The Activity to be added
+	 */
+	public static void addActivity(PlaybackActivity activity)
+	{
+		sActivities.add(activity);
+	}
+
+	/**
+	 * Remove an Activity from the registered PlaybackActivities
+	 *
+	 * @param activity The Activity to be removed
+	 */
+	public static void removeActivity(PlaybackActivity activity)
+	{
+		sActivities.remove(activity);
 	}
 }

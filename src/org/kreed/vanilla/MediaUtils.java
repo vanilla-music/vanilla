@@ -26,6 +26,7 @@ import java.io.File;
 import java.util.Random;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -192,20 +193,21 @@ public class MediaUtils {
 	/**
 	 * Delete all the songs in the given media set.
 	 *
+	 * @param context A context to use.
 	 * @param type One of the TYPE_* constants, excluding playlists.
 	 * @param id The MediaStore id of the media to delete.
 	 * @return The number of songs deleted.
 	 */
-	public static int deleteMedia(int type, long id)
+	public static int deleteMedia(Context context, int type, long id)
 	{
 		int count = 0;
 
-		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
+		ContentResolver resolver = context.getContentResolver();
 		String[] projection = new String [] { MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DATA };
 		Cursor cursor = getMediaCursor(type, id, projection, null);
 
 		if (cursor != null) {
-			PlaybackService service = ContextApplication.hasService() ? ContextApplication.getService() : null;
+			PlaybackService service = PlaybackService.hasInstance() ? PlaybackService.get(context) : null;
 
 			while (cursor.moveToNext()) {
 				if (new File(cursor.getString(1)).delete()) {

@@ -70,7 +70,8 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	public void onCreate(Bundle state)
 	{
 		super.onCreate(state);
-		ContextApplication.addActivity(this);
+
+		PlaybackService.addActivity(this);
 
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
@@ -88,9 +89,9 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	@Override
 	public void onDestroy()
 	{
-		super.onDestroy();
-		ContextApplication.removeActivity(this);
+		PlaybackService.removeActivity(this);
 		mLooper.quit();
+		super.onDestroy();
 	}
 
 	@Override
@@ -98,7 +99,7 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	{
 		super.onStart();
 
-		if (ContextApplication.hasService())
+		if (PlaybackService.hasInstance())
 			onServiceReady();
 		else
 			startService(new Intent(this, PlaybackService.class));
@@ -108,8 +109,8 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	public void onResume()
 	{
 		super.onResume();
-		if (ContextApplication.hasService()) {
-			PlaybackService service = ContextApplication.getService();
+		if (PlaybackService.hasInstance()) {
+			PlaybackService service = PlaybackService.get(this);
 			service.userActionTriggered();
 
 			MediaButtonHandler buttons = MediaButtonHandler.getInstance();
@@ -148,17 +149,17 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 
 	public void nextSong()
 	{
-		setSong(ContextApplication.getService().nextSong());
+		setSong(PlaybackService.get(this).nextSong());
 	}
 
 	public void previousSong()
 	{
-		setSong(ContextApplication.getService().previousSong());
+		setSong(PlaybackService.get(this).previousSong());
 	}
 
 	public void playPause()
 	{
-		PlaybackService service = ContextApplication.getService();
+		PlaybackService service = PlaybackService.get(this);
 		int state = service.playPause();
 		if ((state & PlaybackService.FLAG_ERROR) != 0)
 			Toast.makeText(this, service.getErrorMessage(), Toast.LENGTH_LONG).show();
@@ -214,7 +215,7 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	 */
 	protected void onServiceReady()
 	{
-		PlaybackService service = ContextApplication.getService();
+		PlaybackService service = PlaybackService.get(this);
 		setSong(service.getSong(0));
 		setState(service.getState());
 	}
@@ -227,7 +228,7 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	protected void onSongChange(Song song)
 	{
 		if (mCoverView != null)
-			mCoverView.querySongs();
+			mCoverView.querySongs(PlaybackService.get(this));
 	}
 
 	protected void setSong(final Song song)
@@ -339,7 +340,7 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	 */
 	public void toggleShuffle()
 	{
-		int state = ContextApplication.getService().toggleShuffle();
+		int state = PlaybackService.get(this).toggleShuffle();
 		int res = (state & PlaybackService.FLAG_SHUFFLE) == 0 ? R.string.shuffle_disabling : R.string.shuffle_enabling;
 		Toast.makeText(this, res, Toast.LENGTH_SHORT).show();
 		setState(state);
@@ -350,7 +351,7 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	 */
 	public void toggleRepeat()
 	{
-		int state = ContextApplication.getService().toggleRepeat();
+		int state = PlaybackService.get(this).toggleRepeat();
 		int res = (state & PlaybackService.FLAG_REPEAT) == 0 ? R.string.repeat_disabling : R.string.repeat_enabling;
 		Toast.makeText(this, res, Toast.LENGTH_SHORT).show();
 		setState(state);
@@ -361,7 +362,7 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	 */
 	public void toggleRandom()
 	{
-		int state = ContextApplication.getService().toggleRandom();
+		int state = PlaybackService.get(this).toggleRandom();
 		int res = (state & PlaybackService.FLAG_RANDOM) == 0 ? R.string.random_disabling : R.string.random_enabling;
 		Toast.makeText(this, res, Toast.LENGTH_SHORT).show();
 		setState(state);
@@ -377,7 +378,7 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 
 	public void enqueue(int type)
 	{
-		int count = ContextApplication.getService().enqueueFromCurrent(type);
+		int count = PlaybackService.get(this).enqueueFromCurrent(type);
 		String text = getResources().getQuantityString(R.plurals.enqueued, count, count);
 		Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
 	}
@@ -418,7 +419,7 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 			enqueue(MediaUtils.TYPE_GENRE);
 			break;
 		case ACTION_CLEAR_QUEUE:
-			ContextApplication.getService().clearQueue();
+			PlaybackService.get(this).clearQueue();
 			Toast.makeText(this, R.string.queue_cleared, Toast.LENGTH_SHORT).show();
 			break;
 		default:

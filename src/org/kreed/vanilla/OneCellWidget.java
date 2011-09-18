@@ -57,8 +57,8 @@ public class OneCellWidget extends AppWidgetProvider {
 		Song song = null;
 		int state = 0;
 
-		if (ContextApplication.hasService()) {
-			PlaybackService service = ContextApplication.getService();
+		if (PlaybackService.hasInstance()) {
+			PlaybackService service = PlaybackService.get(context);
 			song = service.getSong(0);
 			state = service.getState();
 		}
