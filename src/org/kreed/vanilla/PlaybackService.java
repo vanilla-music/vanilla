@@ -330,11 +330,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		} else if ("volume".equals(key)) {
 			float volume = settings.getFloat("volume", 1.0f);
 			mCurrentVolume = mUserVolume = volume;
-			if (mMediaPlayer != null) {
-				synchronized (mMediaPlayer) {
-					mMediaPlayer.setVolume(volume, volume);
-				}
-			}
+			if (mMediaPlayer != null)
+				mMediaPlayer.setVolume(volume, volume);
 		} else if ("media_button".equals(key)) {
 			MediaButtonHandler.reloadPreference();
 		} else if ("use_idle_timeout".equals(key) || "idle_timeout".equals(key)) {
@@ -411,22 +408,18 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 		if ((toggled & FLAG_PLAYING) != 0) {
 			if ((state & FLAG_PLAYING) != 0) {
-				if (mMediaPlayerInitialized) {
-					synchronized (mMediaPlayer) {
-						mMediaPlayer.start();
-					}
-				}
+				if (mMediaPlayerInitialized)
+					mMediaPlayer.start();
+
 				if (mNotificationMode != NEVER)
 					startForeground(NOTIFICATION_ID, new SongNotification(mCurrentSong, true));
 
 				if (mWakeLock != null)
 					mWakeLock.acquire();
 			} else {
-				if (mMediaPlayerInitialized) {
-					synchronized (mMediaPlayer) {
-						mMediaPlayer.pause();
-					}
-				}
+				if (mMediaPlayerInitialized)
+					mMediaPlayer.pause();
+
 				if (mNotificationMode == ALWAYS) {
 					stopForeground(false);
 					mNotificationManager.notify(NOTIFICATION_ID, new SongNotification(mCurrentSong, false));
@@ -579,10 +572,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		if (mMediaPlayer == null)
 			return null;
 
-		synchronized (mMediaPlayer) {
-			if (mMediaPlayer.isPlaying())
-				mMediaPlayer.stop();
-		}
+		if (mMediaPlayer.isPlaying())
+			mMediaPlayer.stop();
 
 		Song song = mTimeline.shiftCurrentSong(delta);
 		mCurrentSong = song;
@@ -624,13 +615,11 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	private void processSong(Song song)
 	{
 		try {
-			synchronized (mMediaPlayer) {
-				mMediaPlayer.reset();
-				mMediaPlayer.setDataSource(song.path);
-				mMediaPlayer.prepare();
-				if (!mMediaPlayerInitialized)
-					mMediaPlayerInitialized = true;
-			}
+			mMediaPlayerInitialized = false;
+			mMediaPlayer.reset();
+			mMediaPlayer.setDataSource(song.path);
+			mMediaPlayer.prepare();
+			mMediaPlayerInitialized = true;
 
 			if (mPendingSeek != 0) {
 				mMediaPlayer.seekTo(mPendingSeek);
@@ -843,11 +832,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				mCurrentVolume = Math.max((float)(Math.pow(progress / 100f, 4) * mUserVolume), .01f);
 				mHandler.sendMessageDelayed(mHandler.obtainMessage(FADE_OUT, progress, 0), 50);
 			}
-			if (mMediaPlayer != null) {
-				synchronized (mMediaPlayer) {
-					mMediaPlayer.setVolume(mCurrentVolume, mCurrentVolume);
-				}
-			}
+			if (mMediaPlayer != null)
+				mMediaPlayer.setVolume(mCurrentVolume, mCurrentVolume);
 			break;
 		case PROCESS_STATE:
 			processNewState(message.arg1, message.arg2);
@@ -881,11 +867,9 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 */
 	public int getPosition()
 	{
-		if (mMediaPlayer == null)
+		if (!mMediaPlayerInitialized)
 			return 0;
-		synchronized (mMediaPlayer) {
-			return mMediaPlayer.getCurrentPosition();
-		}
+		return mMediaPlayer.getCurrentPosition();
 	}
 
 	/**
@@ -895,12 +879,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 */
 	public void seekToProgress(int progress)
 	{
-		if (mMediaPlayer == null)
+		if (!mMediaPlayerInitialized)
 			return;
-		synchronized (mMediaPlayer) {
-			long position = (long)mMediaPlayer.getDuration() * progress / 1000;
-			mMediaPlayer.seekTo((int)position);
-		}
+		long position = (long)mMediaPlayer.getDuration() * progress / 1000;
+		mMediaPlayer.seekTo((int)position);
 	}
 
 	@Override
