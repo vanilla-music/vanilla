@@ -350,6 +350,12 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				if (activity instanceof FullPlaybackActivity)
 					activity.finish();
 			}
+		} else if ("controls_in_selector".equals(key)) {
+			ArrayList<PlaybackActivity> activities = sActivities;
+			for (PlaybackActivity activity : activities) {
+				if (activity instanceof SongSelector)
+					activity.finish();
+			}
 		} else if ("notification_inverted_color".equals(key)) {
 			updateNotification();
 		} else if ("swipe_up_action".equals(key)) {

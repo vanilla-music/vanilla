@@ -46,33 +46,23 @@ THE SOFTWARE.
 					<ListView
 						android:id="@+id/artist_list"
 						android:layout_width="fill_parent"
-						android:layout_height="fill_parent"
-						android:divider="@null"
-						android:fastScrollEnabled="true" />
+						android:layout_height="fill_parent" />
 					<ListView
 						android:id="@+id/album_list"
 						android:layout_width="fill_parent"
-						android:layout_height="fill_parent"
-						android:divider="@null"
-						android:fastScrollEnabled="true" />
+						android:layout_height="fill_parent" />
 					<ListView
 						android:id="@+id/song_list"
 						android:layout_width="fill_parent"
-						android:layout_height="fill_parent"
-						android:divider="@null"
-						android:fastScrollEnabled="true" />
+						android:layout_height="fill_parent" />
 					<ListView
 						android:id="@+id/playlist_list"
 						android:layout_width="fill_parent"
-						android:layout_height="fill_parent"
-						android:divider="@null"
-						android:fastScrollEnabled="true" />
+						android:layout_height="fill_parent" />
 					<ListView
 						android:id="@+id/genre_list"
 						android:layout_width="fill_parent"
-						android:layout_height="fill_parent"
-						android:divider="@null"
-						android:fastScrollEnabled="true" />
+						android:layout_height="fill_parent" />
 				</FrameLayout>
 			</LinearLayout>
 		</TabHost>
@@ -81,11 +71,6 @@ THE SOFTWARE.
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_gravity="bottom|left" />
-		<ViewStub
-			android:id="@+id/controls_stub"
-			android:layout="@layout/song_selector_controls"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content" />
 	</LinearLayout>
 	<RelativeLayout
 		android:id="@+id/search_box"
