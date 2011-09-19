@@ -59,6 +59,25 @@ public class MediaUtils {
 	private static Random sRandom;
 
 	/**
+	 * Shuffled list of all ids in the library.
+	 */
+	private static long[] sAllSongs;
+	private static int sAllSongsIdx;
+
+	/**
+	 * Query this many songs at a time from sAllSongs.
+	 */
+	private static final int RANDOM_POPULATE_SIZE = 20;
+	private static Song[] sRandomCache = new Song[RANDOM_POPULATE_SIZE];
+	private static int sRandomCacheIdx;
+	private static int sRandomCacheEnd;
+
+	/**
+	 * Total number of songs in the music library, or -1 for uninitialized.
+	 */
+	private static int sSongCount = -1;
+
+	/**
 	 * Returns a cached random instanced, creating it if necessary.
 	 */
 	public static Random getRandom()
@@ -314,5 +333,148 @@ public class MediaUtils {
 			list[j] = list[i];
 			list[i] = tmp;
 		}
+	}
+
+	/**
+	 * Determine if any songs are available from the library.
+	 *
+	 * @param context A context to use.
+	 * @return True if it's possible to retrieve any songs, false otherwise. For
+	 * example, false could be returned if there are no songs in the library.
+	 */
+	public static boolean isSongAvailable(Context context)
+	{
+		if (sSongCount == -1) {
+			ContentResolver resolver = context.getContentResolver();
+			Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+			String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
+			Cursor cursor = resolver.query(media, new String[]{"count(_id)"}, selection, null, null);
+			if (cursor == null) {
+				sSongCount = 0;
+			} else {
+				cursor.moveToFirst();
+				sSongCount = cursor.getInt(0);
+				cursor.close();
+			}
+		}
+
+		return sSongCount != 0;
+	}
+
+	/**
+	 * Returns a shuffled array contaning the ids of all the songs on the
+	 * device's library.
+	 *
+	 * @param context A context to use.
+	 */
+	public static long[] loadAllSongs(Context context)
+	{
+		sAllSongsIdx = 0;
+		sRandomCacheEnd = -1;
+
+		ContentResolver resolver = context.getContentResolver();
+		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+		String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
+		Cursor cursor = resolver.query(media, Song.EMPTY_PROJECTION, selection, null, null);
+		if (cursor == null || cursor.getCount() == 0) {
+			sSongCount = 0;
+			return null;
+		}
+
+		int count = cursor.getCount();
+		long[] ids = new long[count];
+		for (int i = 0; i != count; ++i) {
+			if (!cursor.moveToNext())
+				return null;
+			ids[i] = cursor.getLong(0);
+		}
+		sSongCount = count;
+		cursor.close();
+
+		MediaUtils.shuffle(ids);
+
+		return ids;
+	}
+
+	public static void onMediaChange()
+	{
+		sSongCount = -1;
+		sAllSongs = null;
+	}
+
+	/**
+	 * Returns a song randomly selected from all the songs in the Android
+	 * MediaStore.
+	 *
+	 * @param context A context to use.
+	 */
+	public static Song randomSong(Context context)
+	{
+		long[] songs = sAllSongs;
+
+		if (songs == null) {
+			songs = loadAllSongs(context);
+			if (songs == null)
+				return null;
+			sAllSongs = songs;
+		} else if (sAllSongsIdx == sAllSongs.length) {
+			sAllSongsIdx = 0;
+			sRandomCacheEnd = -1;
+			shuffle(sAllSongs);
+		}
+
+		if (sAllSongsIdx >= sRandomCacheEnd) {
+			ContentResolver resolver = context.getContentResolver();
+			Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+
+			StringBuilder selection = new StringBuilder("_ID IN (");
+
+			boolean first = true;
+			int end = Math.min(sAllSongsIdx + RANDOM_POPULATE_SIZE, sAllSongs.length);
+			for (int i = sAllSongsIdx; i != end; ++i) {
+				if (!first)
+					selection.append(',');
+
+				first = false;
+
+				selection.append(sAllSongs[i]);
+			}
+
+			selection.append(')');
+
+			Cursor cursor = resolver.query(media, Song.FILLED_PROJECTION, selection.toString(), null, null);
+
+			if (cursor == null) {
+				sAllSongs = null;
+				return null;
+			}
+
+			int count = cursor.getCount();
+			if (count > 0) {
+				assert(count <= RANDOM_POPULATE_SIZE);
+
+				for (int i = 0; i != count; ++i) {
+					cursor.moveToNext();
+					Song newSong = new Song(-1);
+					newSong.populate(cursor);
+					newSong.flags |= Song.FLAG_RANDOM;
+					sRandomCache[i] = newSong;
+				}
+			}
+
+			cursor.close();
+
+			// The query will return sorted results; undo that
+			shuffle(sRandomCache, count);
+
+			sRandomCacheIdx = 0;
+			sRandomCacheEnd = sAllSongsIdx + count;
+		}
+
+		Song result = sRandomCache[sRandomCacheIdx];
+		++sRandomCacheIdx;
+		++sAllSongsIdx;
+
+		return result;
 	}
 }
