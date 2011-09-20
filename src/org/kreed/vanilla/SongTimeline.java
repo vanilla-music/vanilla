@@ -92,6 +92,8 @@ public final class SongTimeline {
 	 */
 	private static final long STATE_FILE_MAGIC = 0xf89daa2fac33L;
 
+	private Context mContext;
+
 	/**
 	 * All the songs currently contained in the timeline. Each Song object
 	 * should be unique, even if it refers to the same media.
@@ -142,6 +144,11 @@ public final class SongTimeline {
 	 */
 	private Callback mCallback;
 
+	public SongTimeline(Context context)
+	{
+		mContext = context;
+	}
+
 	/**
 	 * Compares the ids of songs.
 	 */
@@ -172,16 +179,15 @@ public final class SongTimeline {
 	 * Initializes the timeline with the state stored in the state file created
 	 * by a call to save state.
 	 *
-	 * @param context The Context to open the state file with
 	 * @return The optional extra data, or -1 if loading failed
 	 */
-	public int loadState(Context context)
+	public int loadState()
 	{
 		int extra = -1;
 
 		try {
 			synchronized (this) {
-				DataInputStream in = new DataInputStream(context.openFileInput(STATE_FILE));
+				DataInputStream in = new DataInputStream(mContext.openFileInput(STATE_FILE));
 				if (in.readLong() == STATE_FILE_MAGIC) {
 					int n = in.readInt();
 					if (n > 0) {
@@ -207,7 +213,7 @@ public final class SongTimeline {
 						// return its results in.
 						Collections.sort(songs, new IdComparator());
 
-						ContentResolver resolver = context.getContentResolver();
+						ContentResolver resolver = mContext.getContentResolver();
 						Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 
 						Cursor cursor = resolver.query(media, Song.FILLED_PROJECTION, selection.toString(), null, "_id");
@@ -263,13 +269,12 @@ public final class SongTimeline {
 	 * This can be passed to the appropriate constructor to initialize the
 	 * timeline with this state.
 	 *
-	 * @param context The Context to open the state file with
 	 * @param extra Optional extra data to be included. Should not be -1.
 	 */
-	public void saveState(Context context, int extra)
+	public void saveState(int extra)
 	{
 		try {
-			DataOutputStream out = new DataOutputStream(context.openFileOutput(STATE_FILE, 0));
+			DataOutputStream out = new DataOutputStream(mContext.openFileOutput(STATE_FILE, 0));
 			out.writeLong(STATE_FILE_MAGIC);
 
 			synchronized (this) {
@@ -360,7 +365,7 @@ public final class SongTimeline {
 	private Song shuffleAll()
 	{
 		ArrayList<Song> songs = new ArrayList<Song>(mSongs);
-		Collections.shuffle(songs, ContextApplication.getRandom());
+		Collections.shuffle(songs, MediaUtils.getRandom());
 		mShuffledSongs = songs;
 		return songs.get(0);
 	}
@@ -401,7 +406,7 @@ public final class SongTimeline {
 						song = timeline.get(0);
 					break;
 				case FINISH_RANDOM:
-					song = Song.randomSong();
+					song = Song.randomSong(mContext);
 					timeline.add(song);
 					break;
 				default:
@@ -473,9 +478,9 @@ public final class SongTimeline {
 	{
 		Cursor cursor;
 		if (type == MediaUtils.TYPE_PLAYLIST)
-			cursor = MediaUtils.query(type, id, Song.FILLED_PLAYLIST_PROJECTION, selection);
+			cursor = MediaUtils.query(mContext, type, id, Song.FILLED_PLAYLIST_PROJECTION, selection);
 		else
-			cursor = MediaUtils.query(type, id, Song.FILLED_PROJECTION, selection);
+			cursor = MediaUtils.query(mContext, type, id, Song.FILLED_PROJECTION, selection);
 		if (cursor == null)
 			return 0;
 		int count = cursor.getCount();
@@ -516,7 +521,7 @@ public final class SongTimeline {
 			}
 
 			if (mShuffle)
-				Collections.shuffle(timeline.subList(start, timeline.size()), ContextApplication.getRandom());
+				Collections.shuffle(timeline.subList(start, timeline.size()), MediaUtils.getRandom());
 
 			broadcastChangedSongs();
 		}

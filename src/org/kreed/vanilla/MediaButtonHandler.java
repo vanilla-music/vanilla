@@ -56,6 +56,8 @@ public class MediaButtonHandler {
 	 * uninitialized.
 	 */
 	private static int mUseControls = -1;
+
+	private Context mContext;
 	/**
 	 * Whether the phone is currently in a call. 1 for yes, 0 for no, -1 for
 	 * uninitialized.
@@ -75,11 +77,11 @@ public class MediaButtonHandler {
 	 * Retrieve the MediaButtonHandler singleton, creating it if necessary.
 	 * Returns null if headset controls are not enabled.
 	 */
-	public static MediaButtonHandler getInstance()
+	public static MediaButtonHandler getInstance(Context context)
 	{
-		if (useHeadsetControls()) {
+		if (useHeadsetControls(context)) {
 			if (mInstance == null)
-				mInstance = new MediaButtonHandler();
+				mInstance = new MediaButtonHandler(context.getApplicationContext());
 			return mInstance;
 		}
 		return null;
@@ -88,10 +90,9 @@ public class MediaButtonHandler {
 	/**
 	 * Construct a MediaButtonHandler.
 	 */
-	private MediaButtonHandler()
+	private MediaButtonHandler(Context context)
 	{
-		Context context = ContextApplication.getContext();
-
+		mContext = context;
 		mAudioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
 		mButtonReceiver = new ComponentName(context.getPackageName(), MediaButtonReceiver.class.getName());
 		try {
@@ -102,17 +103,16 @@ public class MediaButtonHandler {
 		}
 	}
 
-	private static void loadPreference()
+	/**
+	 * Reload the preference and enable/disable buttons as appropriate.
+	 *
+	 * @param context A context to use.
+	 */
+	public static void reloadPreference(Context context)
 	{
-		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(ContextApplication.getContext());
-		mUseControls = settings.getBoolean("media_button", true) ? 1 : 0;
-	}
-
-	public static void reloadPreference()
-	{
-		loadPreference();
-		if (useHeadsetControls()) {
-			getInstance().registerMediaButton();
+		mUseControls = -1;
+		if (useHeadsetControls(context)) {
+			getInstance(context).registerMediaButton();
 		} else {
 			unregisterMediaButton();
 		}
@@ -121,11 +121,16 @@ public class MediaButtonHandler {
 	/**
 	 * Return whether headset controls should be used, loading the preference
 	 * if necessary.
+	 *
+	 * @param context A context to use.
 	 */
-	public static boolean useHeadsetControls()
+	public static boolean useHeadsetControls(Context context)
 	{
-		if (mUseControls == -1)
-			loadPreference();
+		if (mUseControls == -1) {
+			SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+			mUseControls = settings.getBoolean("media_button", true) ? 1 : 0;
+		}
+
 		return mUseControls == 1;
 	}
 
@@ -135,8 +140,7 @@ public class MediaButtonHandler {
 	private boolean isInCall()
 	{
 		if (mInCall == -1) {
-			Context context = ContextApplication.getContext();
-			TelephonyManager manager = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+			TelephonyManager manager = (TelephonyManager)mContext.getSystemService(Context.TELEPHONY_SERVICE);
 			mInCall = (byte)(manager.getCallState() == TelephonyManager.CALL_STATE_IDLE ? 0 : 1);
 		}
 		return mInCall == 1;
@@ -157,12 +161,11 @@ public class MediaButtonHandler {
 	 *
 	 * @param action One of the PlaybackService.ACTION_* actions.
 	 */
-	private static void act(String action)
+	private void act(String action)
 	{
-		Context context = ContextApplication.getContext();
-		Intent intent = new Intent(context, PlaybackService.class);
+		Intent intent = new Intent(mContext, PlaybackService.class);
 		intent.setAction(action);
-		context.startService(intent);
+		mContext.startService(intent);
 	}
 
 	/**
@@ -170,7 +173,7 @@ public class MediaButtonHandler {
 	 */
 	public boolean processKey(KeyEvent event)
 	{
-		if (event == null || isInCall() || !useHeadsetControls())
+		if (event == null || isInCall() || !useHeadsetControls(mContext))
 			return false;
 
 		int action = event.getAction();

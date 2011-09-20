@@ -27,8 +27,7 @@ THE SOFTWARE.
 	android:installLocation="auto">
 	<application
 		android:icon="@drawable/icon"
-		android:label="@string/app_name"
-		android:name="ContextApplication">
+		android:label="@string/app_name">
 		<activity
 			android:name="LaunchActivity"
 			android:theme="@style/NoBackground">

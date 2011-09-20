@@ -62,9 +62,8 @@ public class SongNotification extends Notification {
 	 * @param song The Song to display information about.
 	 * @param playing True if music is playing.
 	 */
-	public SongNotification(Song song, boolean playing)
+	public SongNotification(Context context, Song song, boolean playing)
 	{
-		Context context = ContextApplication.getContext();
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		int action = Integer.parseInt(prefs.getString("notification_action", "0"));
 		int statusIcon = playing ? R.drawable.status_icon : R.drawable.status_icon_paused;

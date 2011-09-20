@@ -31,7 +31,7 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 	public void onReceive(Context context, Intent intent)
 	{
 		if (Intent.ACTION_MEDIA_BUTTON.equals(intent.getAction())) {
-			boolean handled = MediaButtonHandler.getInstance().process(intent);
+			boolean handled = MediaButtonHandler.getInstance(context).process(intent);
 			if (handled && isOrderedBroadcast())
 				abortBroadcast();
 		}

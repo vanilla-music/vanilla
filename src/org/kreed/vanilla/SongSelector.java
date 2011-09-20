@@ -448,7 +448,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		menu.add(0, MENU_DELETE, 0, R.string.delete);
 
 		playlistMenu.add(type, MENU_NEW_PLAYLIST, id, R.string.new_playlist);
-		Playlist[] playlists = Playlist.getPlaylists();
+		Playlist[] playlists = Playlist.getPlaylists(this);
 		if (playlists != null) {
 			for (int i = 0; i != playlists.length; ++i)
 				playlistMenu.add(type, (int)playlists[i].id + 100, id, playlists[i].name);
@@ -470,8 +470,8 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	 */
 	private void addToPlaylist(long playlistId, int type, long mediaId, CharSequence title)
 	{
-		long[] ids = MediaUtils.getAllSongIdsWith(type, mediaId);
-		Playlist.addToPlaylist(playlistId, ids);
+		long[] ids = MediaUtils.getAllSongIdsWith(this, type, mediaId);
+		Playlist.addToPlaylist(this, playlistId, ids);
 
 		String message = getResources().getQuantityString(R.plurals.added_to_playlist, ids.length, ids.length, title);
 		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
@@ -489,7 +489,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	private void delete(int type, long id, String title)
 	{
 		if (type == MediaUtils.TYPE_PLAYLIST) {
-			Playlist.deletePlaylist(id);
+			Playlist.deletePlaylist(this, id);
 			String message = getResources().getString(R.string.playlist_deleted, title);
 			Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 		} else {
@@ -635,7 +635,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 			NewPlaylistDialog dialog = (NewPlaylistDialog)message.obj;
 			if (dialog.isAccepted()) {
 				String name = dialog.getText();
-				long playlistId = Playlist.createPlaylist(name);
+				long playlistId = Playlist.createPlaylist(this, name);
 				addToPlaylist(playlistId, message.arg1, message.arg2, name);
 			}
 			break;
@@ -646,7 +646,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		case MSG_RENAME_PLAYLIST: {
 			NewPlaylistDialog dialog = (NewPlaylistDialog)message.obj;
 			if (dialog.isAccepted())
-				Playlist.renamePlaylist(message.arg2, dialog.getText());
+				Playlist.renamePlaylist(this, message.arg2, dialog.getText());
 		}
 		default:
 			return super.handleMessage(message);
@@ -700,11 +700,11 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		mStatusText.setText(text);
 
 		if (mCoverSize == -1) {
-			DisplayMetrics metrics = ContextApplication.getContext().getResources().getDisplayMetrics();
+			DisplayMetrics metrics = getResources().getDisplayMetrics();
 			mCoverSize = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 64, metrics);
 		}
 
-		Bitmap cover = CoverBitmap.createScaledBitmap(song, mCoverSize, mCoverSize);
+		Bitmap cover = CoverBitmap.createScaledBitmap(this, song, mCoverSize, mCoverSize);
 		mCover.setImageBitmap(cover);
 		mCover.setVisibility(cover == null ? View.GONE : View.VISIBLE);
 	}

@@ -184,9 +184,9 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		HandlerThread thread = new HandlerThread("PlaybackService");
 		thread.start();
 
-		mTimeline = new SongTimeline();
+		mTimeline = new SongTimeline(this);
 		mTimeline.setCallback(this);
-		mPendingSeek = mTimeline.loadState(this);
+		mPendingSeek = mTimeline.loadState();
 
 		mMediaPlayer = new MediaPlayer();
 		mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -268,7 +268,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			}
 
 			userActionTriggered();
-			MediaButtonHandler buttons = MediaButtonHandler.getInstance();
+			MediaButtonHandler buttons = MediaButtonHandler.getInstance(this);
 			if (buttons != null)
 				buttons.registerMediaButton();
 		}
@@ -285,7 +285,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		stopForeground(true);
 
 		if (mMediaPlayer != null) {
-			mTimeline.saveState(this, mMediaPlayer.getCurrentPosition());
+			mTimeline.saveState(mMediaPlayer.getCurrentPosition());
 			mMediaPlayer.release();
 			mMediaPlayer = null;
 		}
@@ -338,7 +338,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			if (mMediaPlayer != null)
 				mMediaPlayer.setVolume(volume, volume);
 		} else if ("media_button".equals(key)) {
-			MediaButtonHandler.reloadPreference();
+			MediaButtonHandler.reloadPreference(this);
 		} else if ("use_idle_timeout".equals(key) || "idle_timeout".equals(key)) {
 			mIdleTimeout = settings.getBoolean("use_idle_timeout", false) ? settings.getInt("idle_timeout", 3600) : 0;
 			userActionTriggered();
@@ -417,7 +417,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 					mMediaPlayer.start();
 
 				if (mNotificationMode != NEVER)
-					startForeground(NOTIFICATION_ID, new SongNotification(mCurrentSong, true));
+					startForeground(NOTIFICATION_ID, new SongNotification(this, mCurrentSong, true));
 
 				if (mWakeLock != null)
 					mWakeLock.acquire();
@@ -427,7 +427,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 				if (mNotificationMode == ALWAYS) {
 					stopForeground(false);
-					mNotificationManager.notify(NOTIFICATION_ID, new SongNotification(mCurrentSong, false));
+					mNotificationManager.notify(NOTIFICATION_ID, new SongNotification(this, mCurrentSong, false));
 				} else {
 					stopForeground(true);
 				}
@@ -512,7 +512,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	private void updateNotification()
 	{
 		if ((mNotificationMode == ALWAYS || mNotificationMode == WHEN_PLAYING && (mState & FLAG_PLAYING) != 0) && mCurrentSong != null)
-			mNotificationManager.notify(NOTIFICATION_ID, new SongNotification(mCurrentSong, (mState & FLAG_PLAYING) != 0));
+			mNotificationManager.notify(NOTIFICATION_ID, new SongNotification(this, mCurrentSong, (mState & FLAG_PLAYING) != 0));
 		else
 			mNotificationManager.cancel(NOTIFICATION_ID);
 	}
@@ -587,7 +587,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		Song song = mTimeline.shiftCurrentSong(delta);
 		mCurrentSong = song;
 		if (song == null || song.id == -1 || song.path == null) {
-			if (Song.isSongAvailable()) {
+			if (Song.isSongAvailable(this)) {
 				int flag = (mState & FLAG_RANDOM) == 0 ? FLAG_EMPTY_QUEUE : FLAG_ERROR;
 				synchronized (mStateLock) {
 					updateState((mState | flag) & ~FLAG_NO_MEDIA);
@@ -713,7 +713,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			switch (state) {
 			case TelephonyManager.CALL_STATE_RINGING:
 			case TelephonyManager.CALL_STATE_OFFHOOK: {
-				MediaButtonHandler buttons = MediaButtonHandler.getInstance();
+				MediaButtonHandler buttons = MediaButtonHandler.getInstance(PlaybackService.this);
 				if (buttons != null)
 					buttons.setInCall(true);
 
@@ -726,7 +726,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				break;
 			}
 			case TelephonyManager.CALL_STATE_IDLE: {
-				MediaButtonHandler buttons = MediaButtonHandler.getInstance();
+				MediaButtonHandler buttons = MediaButtonHandler.getInstance(PlaybackService.this);
 				if (buttons != null)
 					buttons.setInCall(false);
 
@@ -742,7 +742,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 	public void onMediaChange()
 	{
-		if (Song.isSongAvailable()) {
+		if (Song.isSongAvailable(this)) {
 			if ((mState & FLAG_NO_MEDIA) != 0)
 				setCurrentSong(0);
 		} else {
@@ -804,7 +804,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		case SAVE_STATE:
 			// For unexpected terminations: crashes, task killers, etc.
 			// In most cases onDestroy will handle this
-			mTimeline.saveState(this, 0);
+			mTimeline.saveState(0);
 			break;
 		case PROCESS_SONG:
 			processSong((Song)message.obj);
@@ -994,7 +994,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			id = current.albumId;
 			break;
 		case MediaUtils.TYPE_GENRE:
-			id = MediaUtils.queryGenreForSong(current.id);
+			id = MediaUtils.queryGenreForSong(this, current.id);
 			break;
 		default:
 			throw new IllegalArgumentException("Unsupported media type: " + type);

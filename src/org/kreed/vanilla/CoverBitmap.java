@@ -22,6 +22,7 @@
 
 package org.kreed.vanilla;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -66,10 +67,12 @@ public final class CoverBitmap {
 
 	/**
 	 * Initialize the regular text size members.
+	 *
+	 * @param context A context to use.
 	 */
-	private static void loadTextSizes()
+	private static void loadTextSizes(Context context)
 	{
-		DisplayMetrics metrics = ContextApplication.getContext().getResources().getDisplayMetrics();
+		DisplayMetrics metrics = context.getResources().getDisplayMetrics();
 		TEXT_SIZE = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, metrics);
 		TEXT_SIZE_BIG = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, metrics);
 		PADDING = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, metrics);
@@ -78,10 +81,12 @@ public final class CoverBitmap {
 
 	/**
 	 * Initialize the icon bitmaps.
+	 *
+	 * @param context A context to use.
 	 */
-	private static void loadIcons()
+	private static void loadIcons(Context context)
 	{
-		Resources res = ContextApplication.getContext().getResources();
+		Resources res = context.getResources();
 		Bitmap bitmap = BitmapFactory.decodeResource(res, R.drawable.ic_tab_songs_selected);
 		SONG_ICON = Bitmap.createScaledBitmap(bitmap, TEXT_SIZE, TEXT_SIZE, false);
 		bitmap.recycle();
@@ -118,6 +123,7 @@ public final class CoverBitmap {
 	 * Create an image representing the given song. Includes cover art and
 	 * possibly song title/artist/ablum, depending on the given style.
 	 *
+	 * @param context A context to use.
 	 * @param style One of CoverBitmap.STYLE_*
 	 * @param song The song to display information for
 	 * @param width Maximum width of image
@@ -128,29 +134,29 @@ public final class CoverBitmap {
 	 * @return The image, or null if the song was null, or width or height
 	 * were less than 1
 	 */
-	public static Bitmap createBitmap(int style, Song song, int width, int height, Bitmap bitmap)
+	public static Bitmap createBitmap(Context context, int style, Song song, int width, int height, Bitmap bitmap)
 	{
 		switch (style) {
 		case STYLE_OVERLAPPING_BOX:
-			return createOverlappingBitmap(song, width, height, bitmap);
+			return createOverlappingBitmap(context, song, width, height, bitmap);
 		case STYLE_INFO_BELOW:
-			return createSeparatedBitmap(song, width, height, bitmap);
+			return createSeparatedBitmap(context, song, width, height, bitmap);
 		case STYLE_NO_INFO:
-			return createScaledBitmap(song, width, height);
+			return createScaledBitmap(context, song, width, height);
 		case STYLE_NO_INFO_ZOOMED:
-			return createZoomedBitmap(song, width, height, bitmap);
+			return createZoomedBitmap(context, song, width, height, bitmap);
 		default:
 			throw new IllegalArgumentException("Invalid bitmap type given: " + style);
 		}
 	}
 
-	private static Bitmap createOverlappingBitmap(Song song, int width, int height, Bitmap bitmap)
+	private static Bitmap createOverlappingBitmap(Context context, Song song, int width, int height, Bitmap bitmap)
 	{
 		if (song == null || width < 1 || height < 1)
 			return null;
 
 		if (TEXT_SIZE == -1)
-			loadTextSizes();
+			loadTextSizes(context);
 
 		Paint paint = new Paint();
 		paint.setAntiAlias(true);
@@ -158,7 +164,7 @@ public final class CoverBitmap {
 		String title = song.title == null ? "" : song.title;
 		String album = song.album == null ? "" : song.album;
 		String artist = song.artist == null ? "" : song.artist;
-		Bitmap cover = song.getCover();
+		Bitmap cover = song.getCover(context);
 
 		int titleSize = TEXT_SIZE_BIG;
 		int subSize = TEXT_SIZE;
@@ -238,15 +244,15 @@ public final class CoverBitmap {
 		return bitmap;
 	}
 
-	private static Bitmap createSeparatedBitmap(Song song, int width, int height, Bitmap bitmap)
+	private static Bitmap createSeparatedBitmap(Context context, Song song, int width, int height, Bitmap bitmap)
 	{
 		if (song == null || width < 1 || height < 1)
 			return null;
 
 		if (TEXT_SIZE == -1)
-			loadTextSizes();
+			loadTextSizes(context);
 		if (SONG_ICON == null)
-			loadIcons();
+			loadIcons(context);
 
 		boolean horizontal = width > height;
 
@@ -256,7 +262,7 @@ public final class CoverBitmap {
 		String title = song.title == null ? "" : song.title;
 		String album = song.album == null ? "" : song.album;
 		String artist = song.artist == null ? "" : song.artist;
-		Bitmap cover = song.getCover();
+		Bitmap cover = song.getCover(context);
 
 		int textSize = TEXT_SIZE;
 		int padding = PADDING;
@@ -340,12 +346,12 @@ public final class CoverBitmap {
 		return bitmap;
 	}
 
-	private static Bitmap createZoomedBitmap(Song song, int width, int height, Bitmap bitmap)
+	private static Bitmap createZoomedBitmap(Context context, Song song, int width, int height, Bitmap bitmap)
 	{
 		if (song == null || width < 1 || height < 1)
 			return null;
 
-		Bitmap cover = song.getCover();
+		Bitmap cover = song.getCover(context);
 		if (cover == null)
 			return null;
 
@@ -379,17 +385,18 @@ public final class CoverBitmap {
 	 * preserved. At least one dimension of the result will match the provided
 	 * dimension exactly.
 	 *
+	 * @param context A context to use.
 	 * @param song The song to display information for
 	 * @param width Maximum width of image
 	 * @param height Maximum height of image
 	 * @return The scaled Bitmap, or null if a cover could not be found.
 	 */
-	public static Bitmap createScaledBitmap(Song song, int width, int height)
+	public static Bitmap createScaledBitmap(Context context, Song song, int width, int height)
 	{
 		if (song == null || width < 1 || height < 1)
 			return null;
 
-		Bitmap cover = song.getCover();
+		Bitmap cover = song.getCover(context);
 		if (cover == null)
 			return null;
 

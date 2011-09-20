@@ -146,13 +146,16 @@ public class Song {
 	public int flags;
 
 	/**
-	 * @return true if it's possible to retrieve any songs, otherwise false. For example, false
-	 * could be returned if there are no songs in the library.
+	 * Determine if any songs are available from the library.
+	 *
+	 * @param context A context to use.
+	 * @return True if it's possible to retrieve any songs, false otherwise. For
+	 * example, false could be returned if there are no songs in the library.
 	 */
-	public static boolean isSongAvailable()
+	public static boolean isSongAvailable(Context context)
 	{
 		if (mSongCount == -1) {
-			ContentResolver resolver = ContextApplication.getContext().getContentResolver();
+			ContentResolver resolver = context.getContentResolver();
 			Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 			String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
 			Cursor cursor = resolver.query(media, new String[]{"count(_id)"}, selection, null, null);
@@ -169,13 +172,15 @@ public class Song {
 	/**
 	 * Returns a shuffled array contaning the ids of all the songs on the
 	 * device's library.
+	 *
+	 * @param context A context to use.
 	 */
-	public static long[] loadAllSongs()
+	public static long[] loadAllSongs(Context context)
 	{
 		mAllSongsIdx = 0;
 		mRandomCacheEnd = -1;
 
-		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
+		ContentResolver resolver = context.getContentResolver();
 		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 		String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
 		Cursor cursor = resolver.query(media, EMPTY_PROJECTION, selection, null, null);
@@ -208,13 +213,15 @@ public class Song {
 	/**
 	 * Returns a song randomly selected from all the songs in the Android
 	 * MediaStore.
+	 *
+	 * @param context A context to use.
 	 */
-	public static Song randomSong()
+	public static Song randomSong(Context context)
 	{
 		long[] songs = mAllSongs;
 
 		if (songs == null) {
-			songs = loadAllSongs();
+			songs = loadAllSongs(context);
 			if (songs == null)
 				return null;
 			mAllSongs = songs;
@@ -225,7 +232,7 @@ public class Song {
 		}
 
 		if (mAllSongsIdx >= mRandomCacheEnd) {
-			ContentResolver resolver = ContextApplication.getContext().getContentResolver();
+			ContentResolver resolver = context.getContentResolver();
 			Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 
 			StringBuilder selection = new StringBuilder("_ID IN (");
@@ -346,9 +353,10 @@ public class Song {
 	/**
 	 * Query the album art for this song.
 	 *
+	 * @param context A context to use.
 	 * @return The album art or null if no album art could be found
 	 */
-	public Bitmap getCover()
+	public Bitmap getCover(Context context)
 	{
 		if (id == -1 || mDisableCoverArt)
 			return null;
@@ -358,10 +366,17 @@ public class Song {
 		if (cover != null)
 			return cover;
 
-		Context context = ContextApplication.getContext();
 		ContentResolver res = context.getContentResolver();
 
-		cover = getCoverFromMediaFile(res);
+		try {
+			ParcelFileDescriptor parcelFileDescriptor = res.openFileDescriptor(getCoverUri(), "r");
+			if (parcelFileDescriptor != null) {
+				FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+				cover = BitmapFactory.decodeFileDescriptor(fileDescriptor, null, BITMAP_OPTIONS);
+			}
+		} catch (IllegalStateException e) {
+		} catch (FileNotFoundException e) {
+		}
 
 		Bitmap deletedCover = mCoverCache.put(id, cover);
 		if (deletedCover != null)
@@ -382,30 +397,6 @@ public class Song {
 		if (id == -1)
 			return null;
 		return Uri.parse("content://media/external/audio/media/" + id + "/albumart");
-	}
-
-	/**
-	 * Attempts to read the album art directly from a media file using the
-	 * media ContentProvider.
-	 *
-	 * @param resolver A ContentResolver to use.
-	 * @return The album art or null if no album art could be found.
-	 */
-	private Bitmap getCoverFromMediaFile(ContentResolver resolver)
-	{
-		Bitmap cover = null;
-
-		try {
-			ParcelFileDescriptor parcelFileDescriptor = resolver.openFileDescriptor(getCoverUri(), "r");
-			if (parcelFileDescriptor != null) {
-				FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-				cover = BitmapFactory.decodeFileDescriptor(fileDescriptor, null, BITMAP_OPTIONS);
-			}
-		} catch (IllegalStateException e) {
-		} catch (FileNotFoundException e) {
-		}
-
-		return cover;
 	}
 
 	@Override

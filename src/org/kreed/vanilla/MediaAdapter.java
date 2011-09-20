@@ -51,7 +51,7 @@ import java.io.Serializable;
  * MediaAdapter provides an adapter backed by a MediaStore content provider.
  * It generates simple one- or two-line text views to display each media
  * element.
- * 
+ *
  * Filtering is supported, as is a more specific type of filtering referred to
  * as limiting. Limiting is separate from filtering; a new filter will not
  * erase an active filter. Limiting is intended to allow only media belonging
@@ -59,6 +59,8 @@ import java.io.Serializable;
  * See MediaView.getLimiter and setLimiter for details.
  */
 public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
+	private Context mContext;
+
 	/**
 	 * The type of media represented by this adapter. Must be one of the
 	 * MediaUtils.FIELD_* constants. Determines which content provider to query for
@@ -113,6 +115,7 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 	{
 		super(context, null, requery);
 
+		mContext = context;
 		mType = type;
 		mExpandable = expandable;
 		mLimiter = limiter;
@@ -225,7 +228,7 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 	 */
 	public Cursor runQuery(CharSequence constraint)
 	{
-		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
+		ContentResolver resolver = mContext.getContentResolver();
 
 		String[] projection;
 		if (mFields.length == 1)
@@ -279,7 +282,7 @@ public class MediaAdapter extends CursorAdapter implements FilterQueryProvider {
 			if (mLimiter.type == MediaUtils.TYPE_GENRE) {
 				// Genre is not standard metadata for MediaStore.Audio.Media.
 				// We have to query it through a separate provider. : /
-				return MediaUtils.queryGenre(mLimiter.id, projection,  selection.toString(), selectionArgs);
+				return MediaUtils.queryGenre(mContext, mLimiter.id, projection,  selection.toString(), selectionArgs);
 			} else {
 				if (selection.length() != 0)
 					selection.append(" AND ");

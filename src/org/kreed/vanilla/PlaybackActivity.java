@@ -113,7 +113,7 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 			PlaybackService service = PlaybackService.get(this);
 			service.userActionTriggered();
 
-			MediaButtonHandler buttons = MediaButtonHandler.getInstance();
+			MediaButtonHandler buttons = MediaButtonHandler.getInstance(this);
 			if (buttons != null)
 				buttons.setInCall(false);
 		}
@@ -127,7 +127,7 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 		case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
 		case KeyEvent.KEYCODE_MEDIA_NEXT:
 		case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-			return MediaButtonHandler.getInstance().processKey(event);
+			return MediaButtonHandler.getInstance(this).processKey(event);
 		}
 
 		return super.onKeyDown(keyCode, event);
@@ -141,7 +141,7 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 		case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
 		case KeyEvent.KEYCODE_MEDIA_NEXT:
 		case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-			return MediaButtonHandler.getInstance().processKey(event);
+			return MediaButtonHandler.getInstance(this).processKey(event);
 		}
 
 		return super.onKeyUp(keyCode, event);

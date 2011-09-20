@@ -54,17 +54,33 @@ public class MediaUtils {
 	public static final int TYPE_GENRE = 5;
 
 	/**
+	 * Cached random instance.
+	 */
+	private static Random sRandom;
+
+	/**
+	 * Returns a cached random instanced, creating it if necessary.
+	 */
+	public static Random getRandom()
+	{
+		if (sRandom == null)
+			sRandom = new Random();
+		return sRandom;
+	}
+
+	/**
 	 * Return a cursor containing the ids of all the songs with artist or
 	 * album of the specified id.
 	 *
+	 * @param context A context to use.
 	 * @param type One of the TYPE_* constants, excluding playlists.
 	 * @param id The MediaStore id of the artist or album.
 	 * @param projection The columns to query.
 	 * @param select An extra selection to pass to the query, or null.
 	 */
-	private static Cursor getMediaCursor(int type, long id, String[] projection, String select)
+	private static Cursor getMediaCursor(Context context, int type, long id, String[] projection, String select)
 	{
-		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
+		ContentResolver resolver = context.getContentResolver();
 		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 		StringBuilder selection = new StringBuilder();
 
@@ -99,12 +115,13 @@ public class MediaUtils {
 	 * Return a cursor containing the ids of all the songs in the playlist
 	 * with the given id.
 	 *
+	 * @param context A context to use.
 	 * @param id The id of the playlist in MediaStore.Audio.Playlists.
 	 * @param projection The columns to query.
 	 */
-	private static Cursor getPlaylistCursor(long id, String[] projection)
+	private static Cursor getPlaylistCursor(Context context, long id, String[] projection)
 	{
-		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
+		ContentResolver resolver = context.getContentResolver();
 		Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", id);
 		String sort = MediaStore.Audio.Playlists.Members.PLAY_ORDER;
 		return resolver.query(uri, projection, null, null, sort);
@@ -114,14 +131,15 @@ public class MediaUtils {
 	 * Return a cursor containing the ids of all the songs in the genre
 	 * with the given id.
 	 *
+	 * @param context A context to use.
 	 * @param id The id of the genre in MediaStore.Audio.Genres.
 	 * @param projection The columns to query.
 	 * @param selection The selection to pass to the query, or null.
 	 * @param selectionArgs The arguments to substitute into the selection.
 	 */
-	public static Cursor queryGenre(long id, String[] projection, String selection, String[] selectionArgs)
+	public static Cursor queryGenre(Context context, long id, String[] projection, String selection, String[] selectionArgs)
 	{
-		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
+		ContentResolver resolver = context.getContentResolver();
 		Uri uri = MediaStore.Audio.Genres.Members.getContentUri("external", id);
 		String sort = MediaStore.Audio.Genres.Members.TITLE_KEY;
 		return resolver.query(uri, projection, selection, selectionArgs, sort);
@@ -130,6 +148,7 @@ public class MediaUtils {
 	/**
 	 * Returns a Cursor queried with the given information.
 	 *
+	 * @param context A context to use.
 	 * @param type Type the id represents. Must be one of the Song.TYPE_*
 	 * constants.
 	 * @param id The id of the element in the MediaStore content provider for
@@ -137,18 +156,18 @@ public class MediaUtils {
 	 * @param selection An extra selection to be passed to the query. May be
 	 * null. Must not be used with type == TYPE_SONG or type == TYPE_PLAYLIST
 	 */
-	public static Cursor query(int type, long id, String[] projection, String selection)
+	public static Cursor query(Context context, int type, long id, String[] projection, String selection)
 	{
 		switch (type) {
 		case TYPE_ARTIST:
 		case TYPE_ALBUM:
 		case TYPE_SONG:
-			return getMediaCursor(type, id, projection, selection);
+			return getMediaCursor(context, type, id, projection, selection);
 		case TYPE_PLAYLIST:
 			assert(selection == null);
-			return getPlaylistCursor(id, projection);
+			return getPlaylistCursor(context, id, projection);
 		case TYPE_GENRE:
-			return queryGenre(id, projection, selection, null);
+			return queryGenre(context, id, projection, selection, null);
 		default:
 			throw new IllegalArgumentException("Specified type not valid: " + type);
 		}
@@ -157,21 +176,22 @@ public class MediaUtils {
 	/**
 	 * Return an array containing all the song ids that match the specified parameters
 	 *
+	 * @param context A context to use.
 	 * @param type Type the id represents. Must be one of the Song.TYPE_*
 	 * constants.
 	 * @param id The id of the element in the MediaStore content provider for
 	 * the given type.
 	 */
-	public static long[] getAllSongIdsWith(int type, long id)
+	public static long[] getAllSongIdsWith(Context context, int type, long id)
 	{
 		if (type == TYPE_SONG)
 			return new long[] { id };
 
 		Cursor cursor;
 		if (type == MediaUtils.TYPE_PLAYLIST)
-			cursor = query(type, id, Song.EMPTY_PLAYLIST_PROJECTION, null);
+			cursor = query(context, type, id, Song.EMPTY_PLAYLIST_PROJECTION, null);
 		else
-			cursor = query(type, id, Song.EMPTY_PROJECTION, null);
+			cursor = query(context, type, id, Song.EMPTY_PROJECTION, null);
 		if (cursor == null)
 			return null;
 
@@ -204,7 +224,7 @@ public class MediaUtils {
 
 		ContentResolver resolver = context.getContentResolver();
 		String[] projection = new String [] { MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DATA };
-		Cursor cursor = getMediaCursor(type, id, projection, null);
+		Cursor cursor = getMediaCursor(context, type, id, projection, null);
 
 		if (cursor != null) {
 			PlaybackService service = PlaybackService.hasInstance() ? PlaybackService.get(context) : null;
@@ -230,13 +250,13 @@ public class MediaUtils {
 	 * Query the MediaStore to determine the id of the genre the song belongs
 	 * to.
 	 */
-	public static long queryGenreForSong(long id)
+	public static long queryGenreForSong(Context context, long id)
 	{
 		// This is terribly inefficient, but it seems to be the only way to do
 		// this. Honeycomb introduced an API to query the genre of the song.
 		// We should look into it when ICS is released.
 
-		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
+		ContentResolver resolver = context.getContentResolver();
 
 		// query ids of all the genres
 		Uri uri = MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI;
@@ -269,7 +289,7 @@ public class MediaUtils {
 	 */
 	public static void shuffle(long[] list)
 	{
-		Random random = ContextApplication.getRandom();
+		Random random = getRandom();
 		for (int i = list.length; --i != -1; ) {
 			int j = random.nextInt(i + 1);
 			long tmp = list[j];
@@ -287,7 +307,7 @@ public class MediaUtils {
 	public static void shuffle(Song[] list, int end)
 	{
 		assert(end <= list.length && end >= 0);
-		Random random = ContextApplication.getRandom();
+		Random random = getRandom();
 		for (int i = end; --i != -1; ) {
 			int j = random.nextInt(i + 1);
 			Song tmp = list[j];

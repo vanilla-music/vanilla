@@ -25,6 +25,7 @@ package org.kreed.vanilla;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -56,11 +57,12 @@ public class Playlist {
 	/**
 	 * Queries all the playlists known to the MediaStore.
 	 *
+	 * @param context A context to use.
 	 * @return An array of Playlists
 	 */
-	public static Playlist[] getPlaylists()
+	public static Playlist[] getPlaylists(Context context)
 	{
-		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
+		ContentResolver resolver = context.getContentResolver();
 		Uri media = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI;
 		String[] projection = { MediaStore.Audio.Playlists._ID, MediaStore.Audio.Playlists.NAME };
 		String sort = MediaStore.Audio.Playlists.NAME;
@@ -87,15 +89,16 @@ public class Playlist {
 	/**
 	 * Retrieves the id for a playlist with the given name.
 	 *
+	 * @param context A context to use.
 	 * @param name The name of the playlist.
 	 * @return The id of the playlist, or -1 if there is no playlist with the
 	 * given name.
 	 */
-	public static long getPlaylist(String name)
+	public static long getPlaylist(Context context, String name)
 	{
 		long id = -1;
 
-		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
+		ContentResolver resolver = context.getContentResolver();
 		Cursor cursor = resolver.query(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
 			new String[] { MediaStore.Audio.Playlists._ID },
 			MediaStore.Audio.Playlists.NAME + "=?",
@@ -114,13 +117,14 @@ public class Playlist {
 	 * Create a new playlist with the given name. If a playlist with the given
 	 * name already exists, it will be overwritten.
 	 *
+	 * @param context A context to use.
 	 * @param name The name of the playlist.
 	 * @return The id of the new playlist.
 	 */
-	public static long createPlaylist(String name)
+	public static long createPlaylist(Context context, String name)
 	{
-		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
-		long id = getPlaylist(name);
+		ContentResolver resolver = context.getContentResolver();
+		long id = getPlaylist(context, name);
 
 		if (id == -1) {
 			// We need to create a new playlist.
@@ -140,14 +144,15 @@ public class Playlist {
 	/**
 	 * Add the given set of song ids to the playlist with the given id.
 	 *
+	 * @param context A context to use.
 	 * @param playlistId The MediaStore.Audio.Playlist id of the playlist to
 	 * modify.
 	 * @param toAdd The MediaStore ids of all the songs to be added to the
 	 * playlist.
 	 */
-	public static void addToPlaylist(long playlistId, long[] toAdd)
+	public static void addToPlaylist(Context context, long playlistId, long[] toAdd)
 	{
-		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
+		ContentResolver resolver = context.getContentResolver();
 		Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId);
 		String[] projection = new String[] { MediaStore.Audio.Playlists.Members.PLAY_ORDER };
 		Cursor cursor = resolver.query(uri, projection, null, null, null);
@@ -168,31 +173,33 @@ public class Playlist {
 	/**
 	 * Delete the playlist with the given id.
 	 *
+	 * @param context A context to use.
 	 * @param id The Media.Audio.Playlists id of the playlist.
 	 */
-	public static void deletePlaylist(long id)
+	public static void deletePlaylist(Context context, long id)
 	{
 		Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, id);
-		ContextApplication.getContext().getContentResolver().delete(uri, null, null);
+		context.getContentResolver().delete(uri, null, null);
 	}
 
 	/**
 	 * Rename the playlist with the given id.
 	 *
+	 * @param context A context to use.
 	 * @param id The Media.Audio.Playlists id of the playlist.
 	 * @param newName The new name for the playlist.
 	 */
-	public static void renamePlaylist(long id, String newName)
+	public static void renamePlaylist(Context context, long id, String newName)
 	{
-		long existingId = getPlaylist(newName);
+		long existingId = getPlaylist(context, newName);
 		// We are already called the requested name; nothing to do.
 		if (existingId == id)
 			return;
 		// There is already a playlist with this name. Kill it.
 		if (existingId != -1)
-			deletePlaylist(existingId);
+			deletePlaylist(context, existingId);
 
-		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
+		ContentResolver resolver = context.getContentResolver();
 		ContentValues values = new ContentValues(1);
 		values.put(MediaStore.Audio.Playlists.NAME, newName);
 		resolver.update(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, values, MediaStore.Audio.Playlists._ID + "=" + id, null);
