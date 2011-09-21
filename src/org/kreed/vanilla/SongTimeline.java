@@ -333,14 +333,29 @@ public final class SongTimeline {
 	}
 
 	/**
-	 * Set whether shuffling is enabled. Shuffling will shuffle sets of songs
-	 * that are added with chooseSongs and shuffle sets of repeated songs.
+	 * Set whether shuffling is enabled. Will shuffle the current set of songs
+	 * when enabling shuffling if random mode is not enabled.
 	 */
 	public void setShuffle(boolean shuffle)
 	{
-		saveActiveSongs();
-		mShuffle = shuffle;
-		broadcastChangedSongs();
+		if (shuffle == mShuffle)
+			return;
+
+		synchronized (this) {
+			saveActiveSongs();
+			mShuffle = shuffle;
+			if (shuffle && mFinishAction != FINISH_RANDOM) {
+				shuffleAll();
+				ArrayList<Song> songs = mShuffledSongs;
+				mShuffledSongs = null;
+				int i = songs.indexOf(mSavedCurrent);
+				songs.set(i, songs.get(mCurrentPos));
+				songs.set(mCurrentPos, mSavedCurrent);
+				mSongs = songs;
+			}
+			broadcastChangedSongs();
+		}
+
 		changed();
 	}
 
