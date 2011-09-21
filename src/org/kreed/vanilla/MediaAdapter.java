@@ -49,7 +49,7 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	/**
 	 * The activity that owns this adapter.
 	 */
-	private SongSelector mActivity;
+	private LibraryActivity mActivity;
 	/**
 	 * The type of media represented by this adapter. Must be one of the
 	 * MediaUtils.FIELD_* constants. Determines which content provider to query for
@@ -112,7 +112,7 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	 * @param hasHeader Wether this view has a header row.
 	 * @param limiter An initial limiter to use
 	 */
-	public MediaAdapter(SongSelector activity, int type, boolean expandable, boolean hasHeader, Limiter limiter)
+	public MediaAdapter(LibraryActivity activity, int type, boolean expandable, boolean hasHeader, Limiter limiter)
 	{
 		super(activity, null, false);
 

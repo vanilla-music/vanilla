@@ -55,9 +55,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 /**
- * The library activity.
+ * The library activity where songs to play can be selected from the library.
  */
-public class SongSelector extends PlaybackActivity implements AdapterView.OnItemClickListener, TextWatcher, TabHost.OnTabChangeListener {
+public class LibraryActivity extends PlaybackActivity implements AdapterView.OnItemClickListener, TextWatcher, TabHost.OnTabChangeListener {
 	/**
 	 * The number of tabs in the song selector.
 	 */
@@ -260,8 +260,8 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	 * Adds songs matching the data from the given intent to the song timelime.
 	 *
 	 * @param intent An intent created with
-	 * {@link SongSelector#createClickIntent(MediaAdapter,MediaView)}.
-	 * @param action One of SongSelector.ACTION_*
+	 * {@link LibraryActivity#createClickIntent(MediaAdapter,MediaView)}.
+	 * @param action One of LibraryActivity.ACTION_*
 	 */
 	private void pickSongs(Intent intent, int action)
 	{
@@ -285,7 +285,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	 * from the view and switching to the appropriate tab.
 	 *
 	 * @param intent An intent created with
-	 * {@link SongSelector#createClickIntent(MediaAdapter,MediaView)}.
+	 * {@link LibraryActivity#createClickIntent(MediaAdapter,MediaView)}.
 	 */
 	private void expand(Intent intent)
 	{
@@ -465,7 +465,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	 * Builds a media query based off the data stored in the given intent.
 	 *
 	 * @param intent An intent created with
-	 * {@link SongSelector#createClickIntent(MediaAdapter,MediaView)}.
+	 * {@link LibraryActivity#createClickIntent(MediaAdapter,MediaView)}.
 	 * @param empty If true, use the empty projection (only query id).
 	 */
 	private QueryTask buildQueryFromIntent(Intent intent, boolean empty)
@@ -537,7 +537,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	 *
 	 * @param playlistId The id of the playlist to add to.
 	 * @param intent An intent created with
-	 * {@link SongSelector#createClickIntent(MediaAdapter,MediaView)}.
+	 * {@link LibraryActivity#createClickIntent(MediaAdapter,MediaView)}.
 	 */
 	private void addToPlaylist(long playlistId, Intent intent)
 	{
@@ -553,7 +553,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	 * informing the user of this.
 	 *
 	 * @param intent An intent created with
-	 * {@link SongSelector#createClickIntent(MediaAdapter,MediaView)}.
+	 * {@link LibraryActivity#createClickIntent(MediaAdapter,MediaView)}.
 	 */
 	private void delete(Intent intent)
 	{

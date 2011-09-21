@@ -34,7 +34,7 @@ import android.preference.PreferenceManager;
  */
 public class LaunchActivity extends Activity {
 	/**
-	 * Launch either the PlaybackActivity or SongSelector, depending on user
+	 * Launch either the PlaybackActivity or LibraryActivity, depending on user
 	 * settings.
 	 */
 	@Override
@@ -44,7 +44,7 @@ public class LaunchActivity extends Activity {
 
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
 		boolean selector = settings.getBoolean("selector_on_startup", false);
-		startActivity(new Intent(this, selector ? SongSelector.class : FullPlaybackActivity.class));
+		startActivity(new Intent(this, selector ? LibraryActivity.class : FullPlaybackActivity.class));
 		finish();
 	}
 }

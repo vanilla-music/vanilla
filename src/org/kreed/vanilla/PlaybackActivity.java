@@ -375,7 +375,7 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	 */
 	public void openLibrary()
 	{
-		startActivity(new Intent(this, SongSelector.class));
+		startActivity(new Intent(this, LibraryActivity.class));
 	}
 
 	public void enqueue(int type)

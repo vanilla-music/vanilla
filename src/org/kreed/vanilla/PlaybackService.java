@@ -353,7 +353,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		} else if ("controls_in_selector".equals(key)) {
 			ArrayList<PlaybackActivity> activities = sActivities;
 			for (PlaybackActivity activity : activities) {
-				if (activity instanceof SongSelector)
+				if (activity instanceof LibraryActivity)
 					activity.finish();
 			}
 		} else if ("notification_inverted_color".equals(key)) {
