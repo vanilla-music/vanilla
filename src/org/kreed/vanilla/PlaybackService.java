@@ -22,6 +22,9 @@
 
 package org.kreed.vanilla;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -50,6 +53,20 @@ import android.util.Log;
 import android.widget.Toast;
 
 public final class PlaybackService extends Service implements Handler.Callback, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, SharedPreferences.OnSharedPreferenceChangeListener, SongTimeline.Callback {
+	/**
+	 * Name of the state file.
+	 */
+	private static final String STATE_FILE = "state";
+	/**
+	 * Header for state file to help indicate if the file is in the right
+	 * format.
+	 */
+	private static final long STATE_FILE_MAGIC = 0x1533574DC74B6ECL;
+	/**
+	 * State file version that indicates data order.
+	 */
+	private static final int STATE_VERSION = 1;
+
 	private static final int NOTIFICATION_ID = 2;
 
 	/**
@@ -186,7 +203,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 		mTimeline = new SongTimeline(this);
 		mTimeline.setCallback(this);
-		mPendingSeek = mTimeline.loadState();
+		int state = loadState();
 
 		mMediaPlayer = new MediaPlayer();
 		mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -218,14 +235,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 		initWidgets();
 
-		int state = 0;
-		int finishAction = mTimeline.getFinishAction();
-		if (finishAction == SongTimeline.FINISH_RANDOM)
-			state |= FLAG_RANDOM;
-		else if (finishAction == SongTimeline.FINISH_REPEAT)
-			state |= FLAG_REPEAT;
-		if (mTimeline.isShuffling())
-			state |= FLAG_SHUFFLE;
 		updateState(state);
 		setCurrentSong(0);
 
@@ -285,7 +294,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		stopForeground(true);
 
 		if (mMediaPlayer != null) {
-			mTimeline.saveState(mMediaPlayer.getCurrentPosition());
+			saveState(mMediaPlayer.getCurrentPosition());
 			mMediaPlayer.release();
 			mMediaPlayer = null;
 		}
@@ -826,7 +835,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		case SAVE_STATE:
 			// For unexpected terminations: crashes, task killers, etc.
 			// In most cases onDestroy will handle this
-			mTimeline.saveState(0);
+			saveState(0);
 			break;
 		case PROCESS_SONG:
 			processSong((Song)message.obj);
@@ -1134,5 +1143,61 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	public static void removeActivity(PlaybackActivity activity)
 	{
 		sActivities.remove(activity);
+	}
+
+	/**
+	 * Initializes the service state, loading songs saved from the disk into the
+	 * song timeline.
+	 *
+	 * @return The loaded value for mState.
+	 */
+	public int loadState()
+	{
+		int state = 0;
+
+		try {
+			DataInputStream in = new DataInputStream(openFileInput(STATE_FILE));
+
+			if (in.readLong() == STATE_FILE_MAGIC && in.readInt() == STATE_VERSION) {
+				mPendingSeek = in.readInt();
+				mTimeline.readState(in);
+
+				int finishAction = mTimeline.getFinishAction();
+				if (finishAction == SongTimeline.FINISH_RANDOM)
+					state |= FLAG_RANDOM;
+				else if (finishAction == SongTimeline.FINISH_REPEAT)
+					state |= FLAG_REPEAT;
+				if (mTimeline.isShuffling())
+					state |= FLAG_SHUFFLE;
+			}
+
+			in.close();
+		} catch (EOFException e) {
+			Log.w("VanillaMusic", "Failed to load state", e);
+		} catch (IOException e) {
+			Log.w("VanillaMusic", "Failed to load state", e);
+		}
+
+		return state;
+	}
+
+	/**
+	 * Save the service state to disk.
+	 *
+	 * @param pendingSeek The pendingSeek to store. Should be the current
+	 * MediaPlayer position or 0.
+	 */
+	public void saveState(int pendingSeek)
+	{
+		try {
+			DataOutputStream out = new DataOutputStream(openFileOutput(STATE_FILE, 0));
+			out.writeLong(STATE_FILE_MAGIC);
+			out.writeInt(STATE_VERSION);
+			out.writeInt(pendingSeek);
+			mTimeline.writeState(out);
+			out.close();
+		} catch (IOException e) {
+			Log.w("VanillaMusic", "Failed to save state", e);
+		}
 	}
 }

@@ -36,7 +36,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.util.Log;
 
 /**
  * Represents a series of songs that can be moved through backward or forward.
@@ -82,23 +81,12 @@ public final class SongTimeline {
 	 */
 	public static final int MODE_ENQUEUE = 2;
 
-	/**
-	 * Name of the state file.
-	 */
-	private static final String STATE_FILE = "state";
-	/**
-	 * Header for state file to help indicate if the file is in the right
-	 * format.
-	 */
-	private static final long STATE_FILE_MAGIC = 0xf89daa2fac33L;
-
 	private Context mContext;
-
 	/**
 	 * All the songs currently contained in the timeline. Each Song object
 	 * should be unique, even if it refers to the same media.
 	 */
-	private ArrayList<Song> mSongs;
+	private ArrayList<Song> mSongs = new ArrayList<Song>();
 	/**
 	 * The position of the current song (i.e. the playing song).
 	 */
@@ -176,133 +164,104 @@ public final class SongTimeline {
 	}
 
 	/**
-	 * Initializes the timeline with the state stored in the state file created
-	 * by a call to save state.
+	 * Initializes the timeline with data read from the stream. Data should have
+	 * been saved by a call to {@link SongTimeline#writeState(DataOutputStream)}.
 	 *
-	 * @return The optional extra data, or -1 if loading failed
+	 * @param in The stream to read from.
 	 */
-	public int loadState()
+	public void readState(DataInputStream in) throws IOException, EOFException
 	{
-		int extra = -1;
+		synchronized (this) {
+			int n = in.readInt();
+			if (n > 0) {
+				ArrayList<Song> songs = new ArrayList<Song>(n);
 
-		try {
-			synchronized (this) {
-				DataInputStream in = new DataInputStream(mContext.openFileInput(STATE_FILE));
-				if (in.readLong() == STATE_FILE_MAGIC) {
-					int n = in.readInt();
-					if (n > 0) {
-						ArrayList<Song> songs = new ArrayList<Song>(n);
+				// Fill the selection with the ids of all the saved songs
+				// and initialize the timeline with unpopulated songs.
+				StringBuilder selection = new StringBuilder("_ID IN (");
+				for (int i = 0; i != n; ++i) {
+					long id = in.readLong();
+					int flags = in.readInt();
+					// Add the index so we can sort
+					flags |= i << Song.FLAG_COUNT;
+					songs.add(new Song(id, flags));
 
-						// Fill the selection with the ids of all the saved songs
-						// and initialize the timeline with unpopulated songs.
-						StringBuilder selection = new StringBuilder("_ID IN (");
-						for (int i = 0; i != n; ++i) {
-							long id = in.readLong();
-							int flags = in.readInt();
-							// Add the index so we can sort
-							flags |= i << Song.FLAG_COUNT;
-							songs.add(new Song(id, flags));
+					if (i != 0)
+						selection.append(',');
+					selection.append(id);
+				}
+				selection.append(')');
 
-							if (i != 0)
-								selection.append(',');
-							selection.append(id);
-						}
-						selection.append(')');
+				// Sort songs by id---this is the order the query will
+				// return its results in.
+				Collections.sort(songs, new IdComparator());
 
-						// Sort songs by id---this is the order the query will
-						// return its results in.
-						Collections.sort(songs, new IdComparator());
+				ContentResolver resolver = mContext.getContentResolver();
+				Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 
-						ContentResolver resolver = mContext.getContentResolver();
-						Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+				Cursor cursor = resolver.query(media, Song.FILLED_PROJECTION, selection.toString(), null, "_id");
+				if (cursor != null) {
+					cursor.moveToNext();
 
-						Cursor cursor = resolver.query(media, Song.FILLED_PROJECTION, selection.toString(), null, "_id");
-						if (cursor != null) {
+					// Loop through timeline entries, looking for a row
+					// that matches the id. One row may match multiple
+					// entries.
+					Iterator<Song> it = songs.iterator();
+					while (it.hasNext()) {
+						Song e = it.next();
+						while (cursor.getLong(0) < e.id)
 							cursor.moveToNext();
-
-							// Loop through timeline entries, looking for a row
-							// that matches the id. One row may match multiple
-							// entries.
-							Iterator<Song> it = songs.iterator();
-							while (it.hasNext()) {
-								Song e = it.next();
-								while (cursor.getLong(0) < e.id)
-									cursor.moveToNext();
-								if (cursor.getLong(0) == e.id)
-									e.populate(cursor);
-								else
-									// We weren't able to query this song.
-									it.remove();
-							}
-
-							cursor.close();
-
-							// Revert to the order the songs were saved in.
-							Collections.sort(songs, new FlagComparator());
-
-							mSongs = songs;
-						}
+						if (cursor.getLong(0) == e.id)
+							e.populate(cursor);
+						else
+							// We weren't able to query this song.
+							it.remove();
 					}
 
-					mCurrentPos = Math.min(mSongs == null ? 0 : mSongs.size(), in.readInt());
-					mFinishAction = in.readInt();
-					mShuffle = in.readBoolean();
-					extra = in.readInt();
+					cursor.close();
 
-					in.close();
+					// Revert to the order the songs were saved in.
+					Collections.sort(songs, new FlagComparator());
+
+					mSongs = songs;
 				}
 			}
-		} catch (EOFException e) {
-			Log.w("VanillaMusic", "Failed to load state", e);
-		} catch (IOException e) {
-			Log.w("VanillaMusic", "Failed to load state", e);
+
+			mCurrentPos = Math.min(mSongs == null ? 0 : mSongs.size(), in.readInt());
+			mFinishAction = in.readInt();
+			mShuffle = in.readBoolean();
 		}
-
-		if (mSongs == null)
-			mSongs = new ArrayList<Song>();
-
-		return extra;
 	}
 
 	/**
-	 * Returns a byte array representing the current state of the timeline.
-	 * This can be passed to the appropriate constructor to initialize the
-	 * timeline with this state.
+	 * Writes the current songs and state to the given stream.
 	 *
-	 * @param extra Optional extra data to be included. Should not be -1.
+	 * @param out The stream to write to.
 	 */
-	public void saveState(int extra)
+	public void writeState(DataOutputStream out) throws IOException
 	{
-		try {
-			DataOutputStream out = new DataOutputStream(mContext.openFileOutput(STATE_FILE, 0));
-			out.writeLong(STATE_FILE_MAGIC);
+		// Must update PlaybackService.STATE_VERSION when changing behavior
+		// here.
+		synchronized (this) {
+			ArrayList<Song> songs = mSongs;
 
-			synchronized (this) {
-				ArrayList<Song> songs = mSongs;
+			int size = songs.size();
+			out.writeInt(size);
 
-				int size = songs.size();
-				out.writeInt(size);
-
-				for (int i = 0; i != size; ++i) {
-					Song song = songs.get(i);
-					if (song == null) {
-						out.writeLong(-1);
-						out.writeInt(0);
-					} else {
-						out.writeLong(song.id);
-						out.writeInt(song.flags);
-					}
+			for (int i = 0; i != size; ++i) {
+				Song song = songs.get(i);
+				if (song == null) {
+					out.writeLong(-1);
+					out.writeInt(0);
+				} else {
+					out.writeLong(song.id);
+					out.writeInt(song.flags);
 				}
-
-				out.writeInt(mCurrentPos);
-				out.writeInt(mFinishAction);
-				out.writeBoolean(mShuffle);
-				out.writeInt(extra);
 			}
 
-			out.close();
-		} catch (IOException e) {
-			Log.w("VanillaMusic", "Failed to save state", e);
+			out.writeInt(mCurrentPos);
+			out.writeInt(mFinishAction);
+			out.writeBoolean(mShuffle);
 		}
 	}
 
