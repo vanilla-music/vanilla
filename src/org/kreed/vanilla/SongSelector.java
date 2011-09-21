@@ -106,6 +106,8 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	{
 		super.onCreate(state);
 
+		MediaView.init(this);
+
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
 		if (settings.getBoolean("controls_in_selector", false)) {
 			setContentView(R.layout.song_selector_controls);
@@ -147,11 +149,12 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 
 		mLimiterViews = (ViewGroup)findViewById(R.id.limiter_layout);
 
-		mArtistAdapter = setupView(R.id.artist_list, new MediaAdapter(this, MediaUtils.TYPE_ARTIST, true, null));
-		mAlbumAdapter = setupView(R.id.album_list, new MediaAdapter(this, MediaUtils.TYPE_ALBUM, true, state == null ? null : (MediaAdapter.Limiter)state.getSerializable("limiter_albums")));
-		mSongAdapter = setupView(R.id.song_list, new MediaAdapter(this, MediaUtils.TYPE_SONG, false, state == null ? null : (MediaAdapter.Limiter)state.getSerializable("limiter_songs")));
-		mPlaylistAdapter = setupView(R.id.playlist_list, new MediaAdapter(this, MediaUtils.TYPE_PLAYLIST, false, null));
-		mGenreAdapter = setupView(R.id.genre_list, new MediaAdapter(this, MediaUtils.TYPE_GENRE, true, state == null ? null : (MediaAdapter.Limiter)state.getSerializable("limiter_genres")));
+		mArtistAdapter = setupView(R.id.artist_list, MediaUtils.TYPE_ARTIST, true, null);
+		mAlbumAdapter = setupView(R.id.album_list, MediaUtils.TYPE_ALBUM, true, state == null ? null : (MediaAdapter.Limiter)state.getSerializable("limiter_albums"));
+		mSongAdapter = setupView(R.id.song_list, MediaUtils.TYPE_SONG, false, state == null ? null : (MediaAdapter.Limiter)state.getSerializable("limiter_songs"));
+		mPlaylistAdapter = setupView(R.id.playlist_list, MediaUtils.TYPE_PLAYLIST, false, null);
+		mGenreAdapter = setupView(R.id.genre_list, MediaUtils.TYPE_GENRE, true, state == null ? null : (MediaAdapter.Limiter)state.getSerializable("limiter_genres"));
+		// These should be in the same order as MediaUtils.TYPE_*
 		mAdapters = new MediaAdapter[] { mArtistAdapter, mAlbumAdapter, mSongAdapter, mPlaylistAdapter, mGenreAdapter };
 
 		getContentResolver().registerContentObserver(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, true, mPlaylistObserver);
@@ -239,7 +242,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	 * @param view The MediaView to get type/id data from
 	 * @param action One of SongSelector.ACTION_*
 	 */
-	private void pickSongs(MediaAdapter.MediaView view, int action)
+	private void pickSongs(MediaView view, int action)
 	{
 		PlaybackService service = PlaybackService.get(this);
 		int type = view.getMediaType();
@@ -275,9 +278,15 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		mLastActedId = id;
 	}
 
-	private void expand(MediaAdapter.MediaView view)
+	/**
+	 * "Expand" the view by setting the limiter from the given view and
+	 * switching to the appropriate tab.
+	 *
+	 * @param view The view to expand from.
+	 */
+	private void expand(MediaView view)
 	{
-		mTabHost.setCurrentTab(setLimiter(view.getLimiter()));
+		mTabHost.setCurrentTab(setLimiter(view.getOwner().getLimiter(view)));
 	}
 
 	/**
@@ -317,7 +326,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 
 	public void onItemClick(AdapterView<?> list, View view, int pos, long id)
 	{
-		MediaAdapter.MediaView mediaView = (MediaAdapter.MediaView)view;
+		MediaView mediaView = (MediaView)view;
 		if (mediaView.isExpanderPressed())
 			expand(mediaView);
 		else if (id == mLastActedId)
@@ -444,7 +453,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View listView, ContextMenu.ContextMenuInfo absInfo)
 	{
-		MediaAdapter.MediaView view = (MediaAdapter.MediaView)((AdapterView.AdapterContextMenuInfo)absInfo).targetView;
+		MediaView view = (MediaView)((AdapterView.AdapterContextMenuInfo)absInfo).targetView;
 		int type = view.getMediaType();
 		int id = (int)view.getMediaId();
 
@@ -521,13 +530,13 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 
 		switch (id) {
 		case MENU_EXPAND:
-			expand((MediaAdapter.MediaView)((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).targetView);
+			expand((MediaView)((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).targetView);
 			break;
 		case MENU_ENQUEUE:
-			pickSongs((MediaAdapter.MediaView)((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).targetView, ACTION_ENQUEUE);
+			pickSongs((MediaView)((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).targetView, ACTION_ENQUEUE);
 			break;
 		case MENU_PLAY:
-			pickSongs((MediaAdapter.MediaView)((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).targetView, ACTION_PLAY);
+			pickSongs((MediaView)((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).targetView, ACTION_PLAY);
 			break;
 		case MENU_NEW_PLAYLIST: {
 			NewPlaylistDialog dialog = new NewPlaylistDialog(this, null, R.string.create);
@@ -538,7 +547,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 			break;
 		}
 		case MENU_RENAME_PLAYLIST: {
-			MediaAdapter.MediaView view = (MediaAdapter.MediaView)((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).targetView;
+			MediaView view = (MediaView)((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).targetView;
 			NewPlaylistDialog dialog = new NewPlaylistDialog(this, view.getTitle(), R.string.rename);
 			Message message = mHandler.obtainMessage(MSG_RENAME_PLAYLIST, view.getMediaType(), (int)view.getMediaId());
 			message.obj = dialog;
@@ -547,7 +556,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 			break;
 		}
 		case MENU_DELETE: {
-			MediaAdapter.MediaView view = (MediaAdapter.MediaView)((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).targetView;
+			MediaView view = (MediaView)((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).targetView;
 			type = view.getMediaType();
 			if (type != MediaUtils.TYPE_PLAYLIST)
 				Toast.makeText(this, R.string.deleting, Toast.LENGTH_SHORT).show();
@@ -557,7 +566,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 			break;
 		}
 		case MENU_EDIT:
-			MediaAdapter.MediaView view = (MediaAdapter.MediaView)((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).targetView;
+			MediaView view = (MediaView)((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).targetView;
 			Intent intent = new Intent(Intent.ACTION_EDIT);
 			intent.setDataAndType(Uri.EMPTY, "vnd.android.cursor.dir/track");
 			intent.putExtra("playlist", String.valueOf(view.getMediaId()));
@@ -599,17 +608,22 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	 * Hook up a ListView to this Activity and the supplied adapter
 	 *
 	 * @param id The id of the ListView
-	 * @param adapter The adapter to be used
+	 * @param type The media type for the adapter.
+	 * @param expandable True if the rows are expandable.
+	 * @param limiter The initial limiter to set on the adapter.
 	 */
-	private MediaAdapter setupView(int id, MediaAdapter adapter)
+	private MediaAdapter setupView(int id, int type, boolean expandable, MediaAdapter.Limiter limiter)
 	{
 		ListView view = (ListView)findViewById(id);
 		view.setOnItemClickListener(this);
 		view.setOnCreateContextMenuListener(this);
-		view.setAdapter(adapter);
 		view.setCacheColorHint(Color.BLACK);
 		view.setDivider(null);
 		view.setFastScrollEnabled(true);
+
+		MediaAdapter adapter = new MediaAdapter(this, type, expandable, limiter);
+		view.setAdapter(adapter);
+
 		return adapter;
 	}
 

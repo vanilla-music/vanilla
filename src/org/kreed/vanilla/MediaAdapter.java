@@ -24,22 +24,11 @@ package org.kreed.vanilla;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.DashPathEffect;
-import android.graphics.Paint;
-import android.graphics.RadialGradient;
-import android.graphics.Shader;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
-import android.util.TypedValue;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
@@ -55,7 +44,7 @@ import java.io.Serializable;
  * as limiting. Limiting is separate from filtering; a new filter will not
  * erase an active filter. Limiting is intended to allow only media belonging
  * to a specific group to be displayed, e.g. only songs from a certain artist.
- * See MediaView.getLimiter and setLimiter for details.
+ * See getLimiter and setLimiter for details.
  */
 public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	/**
@@ -67,17 +56,17 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	 * MediaUtils.FIELD_* constants. Determines which content provider to query for
 	 * media and what fields to display.
 	 */
-	int mType;
+	private int mType;
 	/**
 	 * The URI of the content provider backing this adapter.
 	 */
-	Uri mStore;
+	private Uri mStore;
 	/**
 	 * The fields to use from the content provider. The last field will be
 	 * displayed in the MediaView, as will the first field if there are
 	 * multiple fields. Other fields will be used for searching.
 	 */
-	String[] mFields;
+	private String[] mFields;
 	/**
 	 * The collation keys corresponding to each field. If provided, these are
 	 * used to speed up sorting and filtering.
@@ -86,7 +75,7 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	/**
 	 * If true, show an expand arrow next the the text in each view.
 	 */
-	boolean mExpandable;
+	private boolean mExpandable;
 	/**
 	 * A limiter is used for filtering. The intention is to restrict items
 	 * displayed in the list to only those of a specific artist or album, as
@@ -153,16 +142,6 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 			break;
 		default:
 			throw new IllegalArgumentException("Invalid value for type: " + type);
-		}
-
-		if (mPaint == null) {
-			Resources res = activity.getResources();
-			mExpander = BitmapFactory.decodeResource(res, R.drawable.expander_arrow);
-			mTextSize = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, res.getDisplayMetrics());
-
-			mPaint = new Paint();
-			mPaint.setTextSize(mTextSize);
-			mPaint.setAntiAlias(true);
 		}
 	}
 
@@ -264,6 +243,15 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	}
 
 	/**
+	 * Return the type of media represented by this adapter. One of
+	 * MediaUtils.TYPE_*.
+	 */
+	public int getMediaType()
+	{
+		return mType;
+	}
+
+	/**
 	 * Set the limiter for the adapter. A limiter is intended to restrict
 	 * displayed media to only those that are children of a given parent
 	 * media item.
@@ -283,6 +271,42 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	public final Limiter getLimiter()
 	{
 		return mLimiter;
+	}
+
+	/**
+	 * Builds a limiter based off of the media represented by the given row.
+	 *
+	 * @param view The row to create the limiter from.
+	 * @see MediaAdapter#getLimiter()
+	 * @see MediaAdapter#setLimiter(MediaAdapter.Limiter)
+	 */
+	public Limiter getLimiter(MediaView view)
+	{
+		long id = view.getMediaId();
+		String[] fields;
+		String selection = null;
+
+		switch (mType) {
+		case MediaUtils.TYPE_ARTIST: {
+			fields = new String[] { view.getTitle() };
+			String field = MediaStore.Audio.Media.ARTIST_ID;
+			selection = String.format("%s=%d", field, id);
+			break;
+		}
+		case MediaUtils.TYPE_ALBUM: {
+			fields = new String[] { view.getSubTitle(), view.getTitle() };
+			String field = MediaStore.Audio.Media.ALBUM_ID;
+			selection = String.format("%s=%d", field, id);
+			break;
+		}
+		case MediaUtils.TYPE_GENRE:
+			fields = new String[] { view.getTitle() };
+			break;
+		default:
+			throw new IllegalStateException("getLimiter() is not supported for media type: " + mType);
+		}
+
+		return new MediaAdapter.Limiter(id, mType, selection, fields);
 	}
 
 	@Override
@@ -317,7 +341,7 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	@Override
 	public void bindView(View view, Context context, Cursor cursor)
 	{
-		((MediaView)view).updateMedia(cursor);
+		((MediaView)view).updateMedia(cursor, mFields.length > 1);
 	}
 
 	/**
@@ -326,256 +350,7 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup parent)
 	{
-		return new MediaView(context);
-	}
-
-	/**
-	 * The text size used for the text in all views.
-	 */
-	static int mTextSize;
-	/**
-	 * The expander arrow bitmap used in all views that have expanders.
-	 */
-	static Bitmap mExpander;
-	/**
-	 * The paint object, cached for reuse.
-	 */
-	static Paint mPaint;
-
-	/**
-	 * The cached measured view height.
-	 */
-	int mViewHeight = -1;
-	/**
-	 * The cached dash effect that separates the expander arrow and the text.
-	 */
-	DashPathEffect mDashEffect;
-	/**
-	 * The cached divider gradient that separates each view from other views.
-	 */
-	RadialGradient mDividerGradient;
-
-	/**
-	 * Single view that paints one or two text fields and an optional arrow
-	 * to the right side.
-	 */
-	public class MediaView extends View {
-		/**
-		 * The MediaStore id of the media represented by this view.
-		 */
-		private long mId;
-		/**
-		 * The primary text field in the view, displayed on the upper line.
-		 */
-		private String mTitle;
-		/**
-		 * The secondary text field in the view, displayed on the lower line.
-		 */
-		private String mSubTitle;
-		/**
-		 * True if the last touch event was over the expander arrow.
-		 */
-		private boolean mExpanderPressed;
-
-		/**
-		 * Construct a MediaView.
-		 *
-		 * @param context A Context to use.
-		 */
-		public MediaView(Context context)
-		{
-			super(context);
-
-			if (mViewHeight == -1)
-				mViewHeight = measureHeight();
-		}
-
-		/**
-		 * Measure the height. Ideally this is cached and should only be called
-		 * once.
-		 */
-		private int measureHeight()
-		{
-			int expanderHeight;
-			int textHeight;
-
-			if (mExpandable)
-				expanderHeight = mExpander.getHeight() + (int)mTextSize;
-			else
-				expanderHeight = 0;
-
-			if (mFields.length > 1)
-				textHeight = (int)(7 * mTextSize / 2);
-			else
-				textHeight = (int)(2 * mTextSize);
-
-			return Math.max(expanderHeight, textHeight);
-		}
-
-		/**
-		 * Request the cached height and maximum width from the layout.
-		 */
-		@Override
-		protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
-		{
-			setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), mViewHeight);
-		}
-
-		/**
-		 * Draw the view on the given canvas.
-		 */
-		@Override
-		public void onDraw(Canvas canvas)
-		{
-			if (mTitle == null)
-				return;
-
-			int width = getWidth();
-			int height = getHeight();
-			int padding = mTextSize / 2;
-
-			Paint paint = mPaint;
-
-			if (mExpandable) {
-				Bitmap expander = mExpander;
-				width -= padding * 4 + expander.getWidth();
-
-				if (mDashEffect == null)
-					mDashEffect = new DashPathEffect(new float[] { 3, 3 }, 0);
-
-				paint.setColor(Color.GRAY);
-				paint.setPathEffect(mDashEffect); 
-				canvas.drawLine(width, padding, width, height - padding, paint);
-				paint.setPathEffect(null); 
-				canvas.drawBitmap(expander, width + padding * 2, (height - expander.getHeight()) / 2, paint);
-			}
-
-			canvas.save();
-			canvas.clipRect(padding, 0, width - padding, height);
-
-			int allocatedHeight;
-
-			if (mSubTitle != null) {
-				allocatedHeight = height / 2 - padding * 3 / 2;
-
-				paint.setColor(Color.GRAY);
-				canvas.drawText(mSubTitle, padding, height / 2 + padding / 2 + (allocatedHeight - mTextSize) / 2 - paint.ascent(), paint);
-			} else {
-				allocatedHeight = height - padding * 2;
-			}
-
-			paint.setColor(Color.WHITE);
-			canvas.drawText(mTitle, padding, padding + (allocatedHeight - mTextSize) / 2 - paint.ascent(), paint);
-
-			width = getWidth();
-
-			if (mDividerGradient == null)
-				mDividerGradient = new RadialGradient(width / 2, height, width / 2, Color.WHITE, Color.BLACK, Shader.TileMode.CLAMP);
-
-			paint.setShader(mDividerGradient);
-			canvas.restore();
-			canvas.drawLine(0, height, width, height, paint);
-			paint.setShader(null);
-		}
-
-		/**
-		 * Returns the MediaStore id of the media represented by this view.
-		 */
-		public final long getMediaId()
-		{
-			return mId;
-		}
-
-		/**
-		 * Returns the type of media contained in the adapter containing this
-		 * view. Will be one of the Song.TYPE_* constants.
-		 */
-		public int getMediaType()
-		{
-			return mType;
-		}
-
-		/**
-		 * Returns the title of this view, the primary/upper field.
-		 */
-		public final String getTitle()
-		{
-			return mTitle;
-		}
-
-		/**
-		 * Returns true if the expander arrow was pressed in the last touch
-		 * event.
-		 */
-		public final boolean isExpanderPressed()
-		{
-			return mExpanderPressed;
-		}
-
-		/**
-		 * Returns true if views has expander arrows displayed.
-		 */
-		public final boolean hasExpanders()
-		{
-			return mExpandable;
-		}
-
-		/**
-		 * Update the fields in this view with the data from the given Cursor.
-		 *
-		 * @param cursor A cursor moved to the correct position. The first
-		 * column must be the id of the media, the second the primary field.
-		 * If this adapter contains more than one field, the third column
-		 * must contain the secondary field.
-		 */
-		public final void updateMedia(Cursor cursor)
-		{
-			mId = cursor.getLong(0);
-			mTitle = cursor.getString(1);
-			if (mFields.length > 1)
-				mSubTitle = cursor.getString(2);
-			invalidate();
-		}
-
-		/**
-		 * Builds a limiter based off of the media represented by this view.
-		 *
-		 * @see MediaAdapter#getLimiter()
-		 * @see MediaAdapter#setLimiter(MediaAdapter.Limiter)
-		 */
-		public final Limiter getLimiter()
-		{
-			String[] fields;
-			String field;
-			switch (mType) {
-			case MediaUtils.TYPE_ARTIST:
-				fields = new String[] { mTitle };
-				field = MediaStore.Audio.Media.ARTIST_ID;
-				break;
-			case MediaUtils.TYPE_ALBUM:
-				fields = new String[] { mSubTitle, mTitle };
-				field = MediaStore.Audio.Media.ALBUM_ID;
-				break;
-			case MediaUtils.TYPE_GENRE:
-				fields = new String[] { mTitle };
-				field = null;
-				break;
-			default:
-				throw new IllegalStateException("getLimiter() is not supported for media type: " + mType);
-			}
-			return new Limiter(mId, mType, field, fields);
-		}
-
-		/**
-		 * Update mExpanderPressed.
-		 */
-		@Override
-		public boolean onTouchEvent(MotionEvent event)
-		{
-			if (mExpandable)
-				mExpanderPressed = event.getX() > getWidth() - mExpander.getWidth() - 2 * mTextSize;
-			return false;
-		}
+		return new MediaView(context, this, mExpandable);
 	}
 
 	/**
@@ -589,12 +364,12 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 		public final int type;
 		public final String selection;
 
-		public Limiter(long id, int type, String field, String[] names)
+		public Limiter(long id, int type, String selection, String[] names)
 		{
 			this.type = type;
 			this.names = names;
 			this.id = id;
-			selection = field == null ? null : String.format("%s=%d", field, id);
+			this.selection = selection;
 		}
 	}
 }
