@@ -149,7 +149,7 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 
 		mArtistAdapter = setupView(R.id.artist_list, new MediaAdapter(this, MediaUtils.TYPE_ARTIST, true, null));
 		mAlbumAdapter = setupView(R.id.album_list, new MediaAdapter(this, MediaUtils.TYPE_ALBUM, true, state == null ? null : (MediaAdapter.Limiter)state.getSerializable("limiter_albums")));
-		mSongAdapter = setupView(R.id.song_list, new SongMediaAdapter(this, false, state == null ? null : (MediaAdapter.Limiter)state.getSerializable("limiter_songs")));
+		mSongAdapter = setupView(R.id.song_list, new MediaAdapter(this, MediaUtils.TYPE_SONG, false, state == null ? null : (MediaAdapter.Limiter)state.getSerializable("limiter_songs")));
 		mPlaylistAdapter = setupView(R.id.playlist_list, new MediaAdapter(this, MediaUtils.TYPE_PLAYLIST, false, null));
 		mGenreAdapter = setupView(R.id.genre_list, new MediaAdapter(this, MediaUtils.TYPE_GENRE, true, state == null ? null : (MediaAdapter.Limiter)state.getSerializable("limiter_genres")));
 		mAdapters = new MediaAdapter[] { mArtistAdapter, mAlbumAdapter, mSongAdapter, mPlaylistAdapter, mGenreAdapter };

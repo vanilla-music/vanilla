@@ -180,36 +180,16 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	}
 
 	/**
-	 * A query selection that should always be a part of the query. By default,
-	 * this returns null, meaning that no elements should be excluded. This
-	 * method may be overridden in subclasses to exclude certain media from the
-	 * adapter.
-	 *
-	 * @return The selection, formatted as an SQL WHERE clause or null to
-	 * accept all media.
-	 */
-	protected String getDefaultSelection()
-	{
-		return null;
-	}
-
-	/**
-	 * Returns the sort order for queries. By default, sorts by the last field
-	 * in mFields, using the field keys if available.
-	 */
-	protected String getSortOrder()
-	{
-		String[] source = mFieldKeys == null ? mFields : mFieldKeys;
-		return source[source.length - 1];
-	}
-
-	/**
 	 * Query the backing content provider. Should be called on a background
 	 * thread.
 	 */
 	public void runQuery()
 	{
 		ContentResolver resolver = mActivity.getContentResolver();
+		Cursor cursor;
+
+		String constraint = mConstraint;
+		Limiter limiter = mLimiter;
 
 		String[] projection;
 		if (mFields.length == 1)
@@ -220,11 +200,17 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 		StringBuilder selection = new StringBuilder();
 		String[] selectionArgs = null;
 
-		String defaultSelection = getDefaultSelection();
-		if (defaultSelection != null)
-			selection.append(defaultSelection);
+		String sort;
+		if (mLimiter != null && mLimiter.type == MediaUtils.TYPE_ALBUM)
+			sort = MediaStore.Audio.Media.TRACK;
+		else if (mFieldKeys == null)
+			sort = mFields[mFields.length - 1];
+		else
+			sort = mFieldKeys[mFieldKeys.length - 1];
 
-		String constraint = mConstraint;
+		if (mType == MediaUtils.TYPE_SONG)
+			selection.append("is_music!=0");
+
 		if (constraint != null && constraint.length() != 0) {
 			String[] needles;
 
@@ -260,20 +246,18 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 			}
 		}
 
-		Cursor cursor;
-
-		if (mLimiter != null && mLimiter.type == MediaUtils.TYPE_GENRE) {
+		if (limiter != null && limiter.type == MediaUtils.TYPE_GENRE) {
 			// Genre is not standard metadata for MediaStore.Audio.Media.
 			// We have to query it through a separate provider. : /
 			cursor = MediaUtils.queryGenre(mActivity, mLimiter.id, projection,  selection.toString(), selectionArgs);
 		} else {
-			if (mLimiter != null) {
+			if (limiter != null) {
 				if (selection.length() != 0)
 					selection.append(" AND ");
 				selection.append(mLimiter.selection);
 			}
 
-			cursor = resolver.query(mStore, projection, selection.toString(), selectionArgs, getSortOrder());
+			cursor = resolver.query(mStore, projection, selection.toString(), selectionArgs, sort);
 		}
 
 		mActivity.changeCursor(this, cursor);
