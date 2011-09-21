@@ -228,7 +228,8 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 		if (limiter != null && limiter.type == MediaUtils.TYPE_GENRE) {
 			// Genre is not standard metadata for MediaStore.Audio.Media.
 			// We have to query it through a separate provider. : /
-			cursor = MediaUtils.queryGenre(mActivity, mLimiter.id, projection,  selection.toString(), selectionArgs);
+			QueryTask query = MediaUtils.buildGenreQuery(mLimiter.id, projection,  selection.toString(), selectionArgs);
+			cursor = query.runQuery(resolver);
 		} else {
 			if (limiter != null) {
 				if (selection.length() != 0)

@@ -66,6 +66,8 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	private static final int ACTION_PLAY = 0;
 	private static final int ACTION_ENQUEUE = 1;
 	private static final int ACTION_LAST_USED = 2;
+	private static final int[] modeForAction =
+		{ SongTimeline.MODE_PLAY, SongTimeline.MODE_ENQUEUE };
 
 	private TabHost mTabHost;
 
@@ -244,38 +246,19 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 	 */
 	private void pickSongs(MediaView view, int action)
 	{
-		PlaybackService service = PlaybackService.get(this);
 		int type = view.getMediaType();
 		long id = view.getMediaId();
-		int mode;
-		int text;
 
 		if (action == ACTION_LAST_USED)
 			action = mLastAction;
 		else
 			mLastAction = action;
 
-		switch (action) {
-		case ACTION_PLAY:
-			mode = SongTimeline.MODE_PLAY;
-			text = R.plurals.playing;
-			break;
-		case ACTION_ENQUEUE:
-			mode = SongTimeline.MODE_ENQUEUE;
-			text = R.plurals.enqueued;
-			break;
-		default:
-			return;
-		}
-
-		int count = service.addSongs(mode, type, id);
-		setSong(service.getSong(0));
-
-		if (action == ACTION_PLAY && (mState & PlaybackService.FLAG_PLAYING) == 0)
-			setState(service.setFlag(PlaybackService.FLAG_PLAYING));
-
-		Toast.makeText(this, getResources().getQuantityString(text, count, count), Toast.LENGTH_SHORT).show();
-		mLastActedId = id;
+		int mode = modeForAction[action];
+		String[] projection = type == MediaUtils.TYPE_PLAYLIST ?
+			Song.FILLED_PLAYLIST_PROJECTION : Song.FILLED_PROJECTION;
+		QueryTask query = MediaUtils.buildQuery(type, id, projection, null);
+		PlaybackService.get(this).addSongs(mode, query);
 	}
 
 	/**

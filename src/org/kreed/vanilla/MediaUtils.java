@@ -88,18 +88,17 @@ public class MediaUtils {
 	}
 
 	/**
-	 * Return a cursor containing the ids of all the songs with artist or
-	 * album of the specified id.
+	 * Builds a query that will return all the songs represented by the given
+	 * parameters.
 	 *
-	 * @param context A context to use.
-	 * @param type One of the TYPE_* constants, excluding playlists.
-	 * @param id The MediaStore id of the artist or album.
+	 * @param type MediaUtils.TYPE_ARTIST, TYPE_ALBUM, or TYPE_SONG.
+	 * @param id The MediaStore id of the song, artist, or album.
 	 * @param projection The columns to query.
 	 * @param select An extra selection to pass to the query, or null.
+	 * @return The initialized query.
 	 */
-	private static Cursor getMediaCursor(Context context, int type, long id, String[] projection, String select)
+	public static QueryTask buildMediaQuery(int type, long id, String[] projection, String select)
 	{
-		ContentResolver resolver = context.getContentResolver();
 		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 		StringBuilder selection = new StringBuilder();
 
@@ -127,47 +126,44 @@ public class MediaUtils {
 		}
 
 		String sort = MediaStore.Audio.Media.ARTIST_KEY + ',' + MediaStore.Audio.Media.ALBUM_KEY + ',' + MediaStore.Audio.Media.TRACK;
-		return resolver.query(media, projection, selection.toString(), null, sort);
+		return new QueryTask(media, projection, selection.toString(), null, sort);
 	}
 
 	/**
-	 * Return a cursor containing the ids of all the songs in the playlist
-	 * with the given id.
+	 * Builds a query that will return all the songs in the playlist with the
+	 * given id.
 	 *
-	 * @param context A context to use.
 	 * @param id The id of the playlist in MediaStore.Audio.Playlists.
 	 * @param projection The columns to query.
+	 * @param selection The selection to pass to the query, or null.
+	 * @return The initialized query.
 	 */
-	private static Cursor getPlaylistCursor(Context context, long id, String[] projection)
+	public static QueryTask buildPlaylistQuery(long id, String[] projection, String selection)
 	{
-		ContentResolver resolver = context.getContentResolver();
 		Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", id);
 		String sort = MediaStore.Audio.Playlists.Members.PLAY_ORDER;
-		return resolver.query(uri, projection, null, null, sort);
+		return new QueryTask(uri, projection, selection, null, sort);
 	}
 
 	/**
-	 * Return a cursor containing the ids of all the songs in the genre
-	 * with the given id.
+	 * Builds a query that will return all the songs in the genre with the
+	 * given id.
 	 *
-	 * @param context A context to use.
 	 * @param id The id of the genre in MediaStore.Audio.Genres.
 	 * @param projection The columns to query.
 	 * @param selection The selection to pass to the query, or null.
 	 * @param selectionArgs The arguments to substitute into the selection.
 	 */
-	public static Cursor queryGenre(Context context, long id, String[] projection, String selection, String[] selectionArgs)
+	public static QueryTask buildGenreQuery(long id, String[] projection, String selection, String[] selectionArgs)
 	{
-		ContentResolver resolver = context.getContentResolver();
 		Uri uri = MediaStore.Audio.Genres.Members.getContentUri("external", id);
 		String sort = MediaStore.Audio.Genres.Members.TITLE_KEY;
-		return resolver.query(uri, projection, selection, selectionArgs, sort);
+		return new QueryTask(uri, projection, selection, selectionArgs, sort);
 	}
 
 	/**
-	 * Returns a Cursor queried with the given information.
+	 * Builds a query with the given information.
 	 *
-	 * @param context A context to use.
 	 * @param type Type the id represents. Must be one of the Song.TYPE_*
 	 * constants.
 	 * @param id The id of the element in the MediaStore content provider for
@@ -175,25 +171,24 @@ public class MediaUtils {
 	 * @param selection An extra selection to be passed to the query. May be
 	 * null. Must not be used with type == TYPE_SONG or type == TYPE_PLAYLIST
 	 */
-	public static Cursor query(Context context, int type, long id, String[] projection, String selection)
+	public static QueryTask buildQuery(int type, long id, String[] projection, String selection)
 	{
 		switch (type) {
 		case TYPE_ARTIST:
 		case TYPE_ALBUM:
 		case TYPE_SONG:
-			return getMediaCursor(context, type, id, projection, selection);
+			return buildMediaQuery(type, id, projection, selection);
 		case TYPE_PLAYLIST:
-			assert(selection == null);
-			return getPlaylistCursor(context, id, projection);
+			return buildPlaylistQuery(id, projection, selection);
 		case TYPE_GENRE:
-			return queryGenre(context, id, projection, selection, null);
+			return buildGenreQuery(id, projection, selection, null);
 		default:
 			throw new IllegalArgumentException("Specified type not valid: " + type);
 		}
 	}
 
 	/**
-	 * Return an array containing all the song ids that match the specified parameters
+	 * Return an array containing all the song ids that match the specified parameters. Should be run on a background thread.
 	 *
 	 * @param context A context to use.
 	 * @param type Type the id represents. Must be one of the Song.TYPE_*
@@ -206,11 +201,9 @@ public class MediaUtils {
 		if (type == TYPE_SONG)
 			return new long[] { id };
 
-		Cursor cursor;
-		if (type == MediaUtils.TYPE_PLAYLIST)
-			cursor = query(context, type, id, Song.EMPTY_PLAYLIST_PROJECTION, null);
-		else
-			cursor = query(context, type, id, Song.EMPTY_PROJECTION, null);
+		String[] projection = type == MediaUtils.TYPE_PLAYLIST ?
+			Song.EMPTY_PLAYLIST_PROJECTION : Song.EMPTY_PROJECTION;
+		Cursor cursor = buildQuery(type, id, projection, null).runQuery(context.getContentResolver());
 		if (cursor == null)
 			return null;
 
@@ -230,7 +223,8 @@ public class MediaUtils {
 	}
 
 	/**
-	 * Delete all the songs in the given media set.
+	 * Delete all the songs in the given media set. Should be run on a
+	 * background thread.
 	 *
 	 * @param context A context to use.
 	 * @param type One of the TYPE_* constants, excluding playlists.
@@ -243,7 +237,7 @@ public class MediaUtils {
 
 		ContentResolver resolver = context.getContentResolver();
 		String[] projection = new String [] { MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DATA };
-		Cursor cursor = getMediaCursor(context, type, id, projection, null);
+		Cursor cursor = buildQuery(type, id, projection, null).runQuery(resolver);
 
 		if (cursor != null) {
 			PlaybackService service = PlaybackService.hasInstance() ? PlaybackService.get(context) : null;

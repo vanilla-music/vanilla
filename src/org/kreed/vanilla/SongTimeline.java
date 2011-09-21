@@ -66,19 +66,19 @@ public final class SongTimeline {
 	/**
 	 * Clear the timeline and use only the provided songs.
 	 *
-	 * @see SongTimeline#addSongs(int,int,long,String)
+	 * @see SongTimeline#addSongs(int,Cursor)
 	 */
 	public static final int MODE_PLAY = 0;
 	/**
 	 * Clear the queue and add the songs after the current song.
 	 *
-	 * @see SongTimeline#addSongs(int,int,long,String)
+	 * @see SongTimeline#addSongs(int,Cursor)
 	 */
 	public static final int MODE_PLAY_NEXT = 1;
 	/**
 	 * Add the songs at the end of the timeline, clearing random songs.
 	 *
-	 * @see SongTimeline#addSongs(int,int,long,String)
+	 * @see SongTimeline#addSongs(int,Cursor)
 	 */
 	public static final int MODE_ENQUEUE = 2;
 
@@ -463,24 +463,14 @@ public final class SongTimeline {
 	}
 
 	/**
-	 * Add a set of songs to the song timeline.
+	 * Add the songs from the given cursor to the song timeline.
 	 *
 	 * @param mode How to add the songs. One of SongTimeline.MODE_*.
-	 * @param type The type represented by the id. Must be one of the
-	 * MediaUtils.FIELD_* constants.
-	 * @param id The id of the element in the MediaStore content provider for
-	 * the given type.
-	 * @param selection An extra selection to be passed to the query. May be
-	 * null. Must not be used with type == TYPE_SONG or type == TYPE_PLAYLIST
-	 * @return The number of songs that were enqueued.
+	 * @param cursor The cursor to fill from.
+	 * @return The number of songs that were added.
 	 */
-	public int addSongs(int mode, int type, long id, String selection)
+	public int addSongs(int mode, Cursor cursor)
 	{
-		Cursor cursor;
-		if (type == MediaUtils.TYPE_PLAYLIST)
-			cursor = MediaUtils.query(mContext, type, id, Song.FILLED_PLAYLIST_PROJECTION, selection);
-		else
-			cursor = MediaUtils.query(mContext, type, id, Song.FILLED_PROJECTION, selection);
 		if (cursor == null)
 			return 0;
 		int count = cursor.getCount();
@@ -514,7 +504,7 @@ public final class SongTimeline {
 			int start = timeline.size();
 
 			for (int j = 0; j != count; ++j) {
-				cursor.moveToNext();
+				cursor.moveToPosition(j);
 				Song song = new Song(-1);
 				song.populate(cursor);
 				timeline.add(song);

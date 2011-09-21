@@ -787,6 +787,12 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 	private static final int POST_CREATE = 1;
 	/**
+	 * Run the given query and add the results to the timeline.
+	 *
+	 * obj is the QueryTask. arg1 is the add mode (one of SongTimeline.MODE_*)
+	 */
+	private static final int QUERY = 2;
+	/**
 	 * This message is sent with a delay specified by a user preference. After
 	 * this delay, assuming no new IDLE_TIMEOUT messages cancel it, playback
 	 * will be stopped.
@@ -824,6 +830,9 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			break;
 		case PROCESS_SONG:
 			processSong((Song)message.obj);
+			break;
+		case QUERY:
+			runQuery(message.arg1, (QueryTask)message.obj);
 			break;
 		case POST_CREATE:
 			mHeadsetPause = mSettings.getBoolean("headset_pause", true);
@@ -970,18 +979,45 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	}
 
 	/**
-	 * Add a song or group of songs represented by the given type and id to the
-	 * timeline.
+	 * Run the query and add the results to the timeline. Should be called in the
+	 * worker thread.
+	 */
+	public void runQuery(int mode, QueryTask query)
+	{
+		int count = mTimeline.addSongs(mode, query.runQuery(getContentResolver()));
+
+		int text;
+
+		switch (mode) {
+		case SongTimeline.MODE_PLAY:
+			text = R.plurals.playing;
+			break;
+		case SongTimeline.MODE_PLAY_NEXT:
+		case SongTimeline.MODE_ENQUEUE:
+			text = R.plurals.enqueued;
+			break;
+		default:
+			return;
+		}
+
+		if (mode == SongTimeline.MODE_PLAY && count != 0 && (mState & FLAG_PLAYING) == 0)
+			setFlag(FLAG_PLAYING);
+
+		Toast.makeText(this, getResources().getQuantityString(text, count, count), Toast.LENGTH_SHORT).show();
+	}
+
+	/**
+	 * Run the query in the background and add the results to the timeline.
 	 *
 	 * @param mode One of SongTimeline.MODE_*. Tells whether to play the songs
 	 * immediately or enqueue them for later.
-	 * @param type The media type, one of MediaUtils.TYPE_*
-	 * @param id The MediaStore id of the media
-	 * @return The number of songs that were enqueued.
+	 * @param query The query.
 	 */
-	public int addSongs(int mode, int type, long id)
+	public void addSongs(int mode, QueryTask query)
 	{
-		return mTimeline.addSongs(mode, type, id, null);
+		Message msg = mHandler.obtainMessage(QUERY, query);
+		msg.arg1 = mode;
+		mHandler.sendMessage(msg);
 	}
 
 	/**
@@ -993,13 +1029,12 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 *
 	 * @param type The media type, one of MediaUtils.TYPE_ALBUM, TYPE_ARTIST,
 	 * or TYPE_GENRE
-	 * @return The number of songs that were enqueued.
 	 */
-	public int enqueueFromCurrent(int type)
+	public void enqueueFromCurrent(int type)
 	{
 		Song current = mCurrentSong;
 		if (current == null)
-			return 0;
+			return;
 
 		long id;
 		switch (type) {
@@ -1017,7 +1052,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		}
 
 		String selection = "_id!=" + current.id;
-		return mTimeline.addSongs(SongTimeline.MODE_PLAY_NEXT, type, id, selection);
+		addSongs(SongTimeline.MODE_PLAY_NEXT, MediaUtils.buildQuery(type, id, Song.FILLED_PROJECTION, selection));
 	}
 
 	/**
