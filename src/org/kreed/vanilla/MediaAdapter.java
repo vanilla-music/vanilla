@@ -22,7 +22,6 @@
 
 package org.kreed.vanilla;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -90,6 +89,15 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	 * The section indexer, for the letter pop-up when scrolling.
 	 */
 	private MusicAlphabetIndexer mIndexer;
+	/**
+	 * True if this adapter should have a special MediaView with custom text in
+	 * the first row.
+	 */
+	private boolean mHasHeader;
+	/**
+	 * The text to show in the header.
+	 */
+	private String mHeaderText;
 
 	/**
 	 * Construct a MediaAdapter representing the given <code>type</code> of
@@ -101,15 +109,17 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	 * and what fields to display in the views.
 	 * @param expandable Whether an expand arrow should be shown to the right
 	 * of the views' text
+	 * @param hasHeader Wether this view has a header row.
 	 * @param limiter An initial limiter to use
 	 */
-	public MediaAdapter(SongSelector activity, int type, boolean expandable, Limiter limiter)
+	public MediaAdapter(SongSelector activity, int type, boolean expandable, boolean hasHeader, Limiter limiter)
 	{
 		super(activity, null, false);
 
 		mActivity = activity;
 		mType = type;
 		mExpandable = expandable;
+		mHasHeader = hasHeader;
 		mLimiter = limiter;
 		mIndexer = new MusicAlphabetIndexer(1);
 
@@ -145,6 +155,75 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 		}
 	}
 
+	@Override
+	public int getCount()
+	{
+		int count = super.getCount();
+		if (count == 0)
+			return 0;
+		else if (mHasHeader)
+			return count + 1;
+		else
+			return count;
+	}
+
+	@Override
+	public Object getItem(int pos)
+	{
+		if (mHasHeader) {
+			if (pos == 0)
+				return null;
+			else
+				pos -= 1;
+		}
+
+		return super.getItem(pos);
+	}
+
+	@Override
+	public long getItemId(int pos)
+	{
+		if (mHasHeader) {
+			if (pos == 0)
+				return -1;
+			else
+				pos -= 1;
+		}
+
+		return super.getItemId(pos);
+	}
+
+	@Override
+	public View getView(int pos, View convertView, ViewGroup parent)
+	{
+		if (mHasHeader) {
+			if (pos == 0) {
+				MediaView view;
+				if (convertView == null)
+					view = new MediaView(mActivity, mExpandable);
+				else
+					view = (MediaView)convertView;
+				view.makeHeader(mHeaderText);
+				return view;
+			} else {
+				pos -= 1;
+			}
+		}
+
+		return super.getView(pos, convertView, parent);
+	}
+
+	/**
+	 * Modify the header text to be shown in the first row.
+	 *
+	 * @param text The new text.
+	 */
+	public void setHeaderText(String text)
+	{
+		mHeaderText = text;
+		notifyDataSetChanged();
+	}
+
 	/**
 	 * Perform filtering on a background thread.
 	 *
@@ -159,14 +238,13 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	}
 
 	/**
-	 * Query the backing content provider. Should be called on a background
-	 * thread.
+	 * Build the query to be run with runQuery().
+	 *
+	 * @param forceMusicCheck Force the is_music check to be added to the
+	 * selection.
 	 */
-	public void runQuery()
+	public QueryTask buildQuery(boolean forceMusicCheck)
 	{
-		ContentResolver resolver = mActivity.getContentResolver();
-		Cursor cursor;
-
 		String constraint = mConstraint;
 		Limiter limiter = mLimiter;
 
@@ -187,7 +265,7 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 		else
 			sort = mFieldKeys[mFieldKeys.length - 1];
 
-		if (mType == MediaUtils.TYPE_SONG)
+		if (mType == MediaUtils.TYPE_SONG || forceMusicCheck)
 			selection.append("is_music!=0");
 
 		if (constraint != null && constraint.length() != 0) {
@@ -228,8 +306,7 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 		if (limiter != null && limiter.type == MediaUtils.TYPE_GENRE) {
 			// Genre is not standard metadata for MediaStore.Audio.Media.
 			// We have to query it through a separate provider. : /
-			QueryTask query = MediaUtils.buildGenreQuery(mLimiter.id, projection,  selection.toString(), selectionArgs);
-			cursor = query.runQuery(resolver);
+			return MediaUtils.buildGenreQuery(mLimiter.id, projection,  selection.toString(), selectionArgs);
 		} else {
 			if (limiter != null) {
 				if (selection.length() != 0)
@@ -237,10 +314,8 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 				selection.append(mLimiter.selection);
 			}
 
-			cursor = resolver.query(mStore, projection, selection.toString(), selectionArgs, sort);
+			return new QueryTask(mStore, projection, selection.toString(), selectionArgs, sort);
 		}
-
-		mActivity.changeCursor(this, cursor);
 	}
 
 	/**
@@ -257,7 +332,7 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	 * displayed media to only those that are children of a given parent
 	 * media item.
 	 *
-	 * @param limiter The limiter, created by MediaView.getLimiter()
+	 * @param limiter The limiter, created by {@link MediaAdapter#getLimiter(long)}.
 	 */
 	public final void setLimiter(Limiter limiter)
 	{
@@ -277,31 +352,39 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	/**
 	 * Builds a limiter based off of the media represented by the given row.
 	 *
-	 * @param view The row to create the limiter from.
+	 * @param id The id of the row.
 	 * @see MediaAdapter#getLimiter()
 	 * @see MediaAdapter#setLimiter(MediaAdapter.Limiter)
 	 */
-	public Limiter getLimiter(MediaView view)
+	public Limiter getLimiter(long id)
 	{
-		long id = view.getMediaId();
 		String[] fields;
 		String selection = null;
 
+		Cursor cursor = getCursor();
+		if (cursor == null)
+			return null;
+		for (int i = 0, count = cursor.getCount(); i != count; ++i) {
+			cursor.moveToPosition(i);
+			if (cursor.getLong(0) == id)
+				break;
+		}
+
 		switch (mType) {
 		case MediaUtils.TYPE_ARTIST: {
-			fields = new String[] { view.getTitle() };
+			fields = new String[] { cursor.getString(1) };
 			String field = MediaStore.Audio.Media.ARTIST_ID;
 			selection = String.format("%s=%d", field, id);
 			break;
 		}
 		case MediaUtils.TYPE_ALBUM: {
-			fields = new String[] { view.getSubTitle(), view.getTitle() };
+			fields = new String[] { cursor.getString(2), cursor.getString(1) };
 			String field = MediaStore.Audio.Media.ALBUM_ID;
 			selection = String.format("%s=%d", field, id);
 			break;
 		}
 		case MediaUtils.TYPE_GENRE:
-			fields = new String[] { view.getTitle() };
+			fields = new String[] { cursor.getString(1) };
 			break;
 		default:
 			throw new IllegalStateException("getLimiter() is not supported for media type: " + mType);
@@ -326,7 +409,13 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	@Override
 	public int getPositionForSection(int section)
 	{
-		return mIndexer.getPositionForSection(section);
+		int offset = 0;
+		if (mHasHeader) {
+			if (section == 0)
+				return 0;
+			offset = 1;
+		}
+		return offset + mIndexer.getPositionForSection(section);
 	}
 
 	@Override
@@ -351,7 +440,7 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup parent)
 	{
-		return new MediaView(context, this, mExpandable);
+		return new MediaView(context, mExpandable);
 	}
 
 	/**

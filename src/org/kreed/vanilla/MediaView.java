@@ -77,10 +77,6 @@ public final class MediaView extends View {
 	}
 
 	/**
-	 * The MediaAdapter that owns this view.
-	 */
-	private MediaAdapter mOwner;
-	/**
 	 * The MediaStore id of the media represented by this view.
 	 */
 	private long mId;
@@ -104,19 +100,21 @@ public final class MediaView extends View {
 	 * The cached measured view height.
 	 */
 	private int mViewHeight;
+	/**
+	 * True if this view is a header. Will override expandable setting to false.
+	 */
+	private boolean mIsHeader;
 
 	/**
 	 * Construct a MediaView.
 	 *
 	 * @param context A Context to use.
-	 * @param owner The MediaAdapter that owns this view.
 	 * @param expandable True if the expander should be shown.
 	 */
-	public MediaView(Context context, MediaAdapter owner, boolean expandable)
+	public MediaView(Context context, boolean expandable)
 	{
 		super(context);
 
-		mOwner = owner;
 		mExpandable = expandable;
 
 		mViewHeight = (int)(7 * sTextSize / 2);
@@ -148,7 +146,7 @@ public final class MediaView extends View {
 
 		Paint paint = sPaint;
 
-		if (mExpandable) {
+		if (mExpandable && !mIsHeader) {
 			Bitmap expander = sExpander;
 			width -= padding * 4 + expander.getWidth();
 
@@ -189,24 +187,6 @@ public final class MediaView extends View {
 	}
 
 	/**
-	 * Returns the MediaAdapter that owns this view.
-	 */
-	public MediaAdapter getOwner()
-	{
-		return mOwner;
-	}
-
-	/**
-	 * Returns the type of media this view represents.
-	 *
-	 * @return One of MediaUtils.TYPE_*.
-	 */
-	public int getMediaType()
-	{
-		return mOwner.getMediaType();
-	}
-
-	/**
 	 * Returns the MediaStore id of the media represented by this view.
 	 */
 	public long getMediaId()
@@ -220,14 +200,6 @@ public final class MediaView extends View {
 	public String getTitle()
 	{
 		return mTitle;
-	}
-
-	/**
-	 * Returns the secondary text in the view, displayed on the lower line.
-	 */
-	public String getSubTitle()
-	{
-		return mSubTitle;
 	}
 
 	/**
@@ -248,6 +220,18 @@ public final class MediaView extends View {
 	}
 
 	/**
+	 * Set this view to be a header (custom text, never expandable).
+	 *
+	 * @param text The text to show.
+	 */
+	public void makeHeader(String text)
+	{
+		mIsHeader = true;
+		mTitle = text;
+		mSubTitle = null;
+	}
+
+	/**
 	 * Update the fields in this view with the data from the given Cursor.
 	 *
 	 * @param cursor A cursor moved to the correct position. The first
@@ -258,6 +242,7 @@ public final class MediaView extends View {
 	 */
 	public void updateMedia(Cursor cursor, boolean useSecondary)
 	{
+		mIsHeader = false;
 		mId = cursor.getLong(0);
 		mTitle = cursor.getString(1);
 		if (useSecondary)
@@ -266,12 +251,20 @@ public final class MediaView extends View {
 	}
 
 	/**
+	 * Returns true if the view is set to be a "Play/Enqueue All" header.
+	 */
+	public boolean isHeader()
+	{
+		return mIsHeader;
+	}
+
+	/**
 	 * Update mExpanderPressed.
 	 */
 	@Override
 	public boolean onTouchEvent(MotionEvent event)
 	{
-		if (mExpandable)
+		if (mExpandable && !mIsHeader)
 			mExpanderPressed = event.getX() > getWidth() - sExpander.getWidth() - 2 * sTextSize;
 		return false;
 	}

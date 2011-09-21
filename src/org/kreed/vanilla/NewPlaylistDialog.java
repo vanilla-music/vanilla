@@ -24,6 +24,7 @@ package org.kreed.vanilla;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -60,6 +61,10 @@ public class NewPlaylistDialog extends Dialog implements TextWatcher, View.OnCli
 	 * action (e.g. "Create" or "Rename").
 	 */
 	private int mActionRes;
+	/**
+	 * An intent that is simply stored in the dialog.
+	 */
+	private Intent mIntent;
 
 	/**
 	 * Create a NewPlaylistDialog.
@@ -69,12 +74,14 @@ public class NewPlaylistDialog extends Dialog implements TextWatcher, View.OnCli
 	 * disabled when the EditText contains this text.
 	 * @param actionText A string resource describing the default positive
 	 * action (e.g. "Create").
+	 * @param intent An optional intent to store with the dialog.
 	 */
-	public NewPlaylistDialog(Context context, String initialText, int actionText)
+	public NewPlaylistDialog(Context context, String initialText, int actionText, Intent intent)
 	{
 		super(context);
 		mInitialText = initialText;
 		mActionRes = actionText;
+		mIntent = intent;
 	}
 
 	@Override
@@ -104,6 +111,14 @@ public class NewPlaylistDialog extends Dialog implements TextWatcher, View.OnCli
 	public String getText()
 	{
 		return mText.getText().toString();
+	}
+
+	/**
+	 * Returns the stored intent.
+	 */
+	public Intent getIntent()
+	{
+		return mIntent;
 	}
 
 	public void afterTextChanged(Editable s)

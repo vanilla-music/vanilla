@@ -50,6 +50,26 @@ public class QueryTask {
 	}
 
 	/**
+	 * Modify the uri of the pending query.
+	 *
+	 * @param uri The new uri.
+	 */
+	public void setUri(Uri uri)
+	{
+		mUri = uri;
+	}
+
+	/**
+	 * Modify the projection of the pending query.
+	 *
+	 * @param projection The new projection.
+	 */
+	public void setProjection(String[] projection)
+	{
+		mProjection = projection;
+	}
+
+	/**
 	 * Run the query. Should be called on a background thread.
 	 *
 	 * @param resolver The ContentResolver to query with.

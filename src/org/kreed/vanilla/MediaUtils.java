@@ -188,41 +188,6 @@ public class MediaUtils {
 	}
 
 	/**
-	 * Return an array containing all the song ids that match the specified parameters. Should be run on a background thread.
-	 *
-	 * @param context A context to use.
-	 * @param type Type the id represents. Must be one of the Song.TYPE_*
-	 * constants.
-	 * @param id The id of the element in the MediaStore content provider for
-	 * the given type.
-	 */
-	public static long[] getAllSongIdsWith(Context context, int type, long id)
-	{
-		if (type == TYPE_SONG)
-			return new long[] { id };
-
-		String[] projection = type == MediaUtils.TYPE_PLAYLIST ?
-			Song.EMPTY_PLAYLIST_PROJECTION : Song.EMPTY_PROJECTION;
-		Cursor cursor = buildQuery(type, id, projection, null).runQuery(context.getContentResolver());
-		if (cursor == null)
-			return null;
-
-		int count = cursor.getCount();
-		if (count == 0)
-			return null;
-
-		long[] songs = new long[count];
-		for (int i = 0; i != count; ++i) {
-			if (!cursor.moveToNext())
-				return null;
-			songs[i] = cursor.getLong(0);
-		}
-
-		cursor.close();
-		return songs;
-	}
-
-	/**
 	 * Delete all the songs in the given media set. Should be run on a
 	 * background thread.
 	 *

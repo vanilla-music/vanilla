@@ -142,17 +142,23 @@ public class Playlist {
 	}
 
 	/**
-	 * Add the given set of song ids to the playlist with the given id.
+	 * Run the given query and add the results to the given playlist. Should be
+	 * run on a background thread.
 	 *
 	 * @param context A context to use.
 	 * @param playlistId The MediaStore.Audio.Playlist id of the playlist to
 	 * modify.
-	 * @param toAdd The MediaStore ids of all the songs to be added to the
-	 * playlist.
+	 * @param query The query to run. The audio id should be the first column.
+	 * @return The number of songs that were added to the playlist.
 	 */
-	public static void addToPlaylist(Context context, long playlistId, long[] toAdd)
+	public static int addToPlaylist(Context context, long playlistId, QueryTask query)
 	{
+		if (playlistId == -1)
+			return 0;
+
 		ContentResolver resolver = context.getContentResolver();
+
+		// Find the greatest PLAY_ORDER in the playlist
 		Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId);
 		String[] projection = new String[] { MediaStore.Audio.Playlists.Members.PLAY_ORDER };
 		Cursor cursor = resolver.query(uri, projection, null, null, null);
@@ -161,13 +167,25 @@ public class Playlist {
 			base = cursor.getInt(0) + 1;
 		cursor.close();
 
-		ContentValues[] values = new ContentValues[toAdd.length];
-		for (int i = 0; i != values.length; ++i) {
-		    values[i] = new ContentValues(1);
-		    values[i].put(MediaStore.Audio.Playlists.Members.PLAY_ORDER, Integer.valueOf(base + i));
-		    values[i].put(MediaStore.Audio.Playlists.Members.AUDIO_ID, toAdd[i]);
+		Cursor from = query.runQuery(resolver);
+		if (from == null)
+			return 0;
+
+		int count = from.getCount();
+		if (count > 0) {
+			ContentValues[] values = new ContentValues[count];
+			for (int i = 0; i != count; ++i) {
+				from.moveToPosition(i);
+				values[i] = new ContentValues(1);
+				values[i].put(MediaStore.Audio.Playlists.Members.PLAY_ORDER, Integer.valueOf(base + i));
+				values[i].put(MediaStore.Audio.Playlists.Members.AUDIO_ID, from.getLong(0));
+			}
+			resolver.bulkInsert(uri, values);
 		}
-		resolver.bulkInsert(uri, values);
+
+		from.close();
+
+		return count;
 	}
 
 	/**

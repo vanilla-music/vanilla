@@ -93,6 +93,9 @@ THE SOFTWARE.
 	<string name="none">None</string>
 	<string name="unknown">Unknown</string>
 	<string name="title_by_artist">%1$s by %2$s</string>
+	<string name="play_all">Play All</string>
+	<string name="enqueue_all">Enqueue All</string>
+	<string name="all_songs">All Songs</string>
 
 	<!-- Preferences -->
 	<plurals name="seconds">
