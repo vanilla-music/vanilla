@@ -604,14 +604,18 @@ public class SongSelector extends PlaybackActivity implements AdapterView.OnItem
 		case MENU_ADD_TO_PLAYLIST: {
 			SubMenu playlistMenu = item.getSubMenu();
 			playlistMenu.add(0, MENU_NEW_PLAYLIST, 0, R.string.new_playlist).setIntent(intent);
-			Playlist[] playlists = Playlist.getPlaylists(this);
-			if (playlists != null) {
-				for (int i = 0; i != playlists.length; ++i) {
+			Cursor cursor = Playlist.queryPlaylists(this);
+			if (cursor != null) {
+				for (int i = 0, count = cursor.getCount(); i != count; ++i) {
+					cursor.moveToPosition(i);
+					long id = cursor.getLong(0);
+					String name = cursor.getString(1);
 					Intent copy = new Intent(intent);
-					copy.putExtra("playlist", playlists[i].id);
-					copy.putExtra("playlistName", playlists[i].name);
-					playlistMenu.add(0, MENU_SELECT_PLAYLIST, 0, playlists[i].name).setIntent(copy);
+					copy.putExtra("playlist", id);
+					copy.putExtra("playlistName", name);
+					playlistMenu.add(0, MENU_SELECT_PLAYLIST, 0, name).setIntent(copy);
 				}
+				cursor.close();
 			}
 			break;
 		}

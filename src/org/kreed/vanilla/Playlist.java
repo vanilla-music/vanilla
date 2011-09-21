@@ -31,59 +31,22 @@ import android.net.Uri;
 import android.provider.MediaStore;
 
 /**
- * Instances of this class simply provide a basic representation of a playlist
- * (currently only the id and name). The class also provides various playlist-
- * related static utility functions.
+ * Provides various playlist-related utility functions.
  */
 public class Playlist {
-	/**
-	 * Create a Playlist with the given id and name.
-	 */
-	public Playlist(long id, String name)
-	{
-		this.id = id;
-		this.name = name;
-	}
-
-	/**
-	 * The MediaStore.Audio.Playlists id of the playlist.
-	 */
-	public long id;
-	/**
-	 * The name of the playlist.
-	 */
-	public String name;
-
 	/**
 	 * Queries all the playlists known to the MediaStore.
 	 *
 	 * @param context A context to use.
-	 * @return An array of Playlists
+	 * @return The queried cursor.
 	 */
-	public static Playlist[] getPlaylists(Context context)
+	public static Cursor queryPlaylists(Context context)
 	{
 		ContentResolver resolver = context.getContentResolver();
 		Uri media = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI;
 		String[] projection = { MediaStore.Audio.Playlists._ID, MediaStore.Audio.Playlists.NAME };
 		String sort = MediaStore.Audio.Playlists.NAME;
-		Cursor cursor = resolver.query(media, projection, null, null, sort);
-
-		if (cursor == null)
-			return null;
-
-		int count = cursor.getCount();
-		if (count == 0)
-			return null;
-
-		Playlist[] playlists = new Playlist[count];
-		for (int i = 0; i != count; ++i) {
-			if (!cursor.moveToNext())
-				return null;
-			playlists[i] = new Playlist(cursor.getLong(0), cursor.getString(1));
-		}
-
-		cursor.close();
-		return playlists;
+		return resolver.query(media, projection, null, null, sort);
 	}
 
 	/**
