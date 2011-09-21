@@ -43,6 +43,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.SectionIndexer;
 import java.io.Serializable;
 
 /**
@@ -56,7 +57,7 @@ import java.io.Serializable;
  * to a specific group to be displayed, e.g. only songs from a certain artist.
  * See MediaView.getLimiter and setLimiter for details.
  */
-public class MediaAdapter extends CursorAdapter {
+public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	/**
 	 * The activity that owns this adapter.
 	 */
@@ -96,6 +97,10 @@ public class MediaAdapter extends CursorAdapter {
 	 * The constraint used for filtering, set by the search box.
 	 */
 	private String mConstraint;
+	/**
+	 * The section indexer, for the letter pop-up when scrolling.
+	 */
+	private MusicAlphabetIndexer mIndexer;
 
 	/**
 	 * Construct a MediaAdapter representing the given <code>type</code> of
@@ -117,6 +122,7 @@ public class MediaAdapter extends CursorAdapter {
 		mType = type;
 		mExpandable = expandable;
 		mLimiter = limiter;
+		mIndexer = new MusicAlphabetIndexer(1);
 
 		switch (type) {
 		case MediaUtils.TYPE_ARTIST:
@@ -293,6 +299,32 @@ public class MediaAdapter extends CursorAdapter {
 	public final Limiter getLimiter()
 	{
 		return mLimiter;
+	}
+
+	@Override
+	public void changeCursor(Cursor cursor)
+	{
+		super.changeCursor(cursor);
+		mIndexer.setCursor(cursor);
+	}
+
+	@Override
+	public Object[] getSections()
+	{
+		return mIndexer.getSections();
+	}
+
+	@Override
+	public int getPositionForSection(int section)
+	{
+		return mIndexer.getPositionForSection(section);
+	}
+
+	@Override
+	public int getSectionForPosition(int position)
+	{
+		// never called by FastScroller
+		return 0;
 	}
 
 	/**
