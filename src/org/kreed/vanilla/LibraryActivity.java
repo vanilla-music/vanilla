@@ -112,7 +112,7 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
 		if (settings.getBoolean("controls_in_selector", false)) {
-			setContentView(R.layout.song_selector_controls);
+			setContentView(R.layout.library_withcontrols);
 
 			mControls = findViewById(R.id.controls);
 
@@ -127,7 +127,7 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 			mPlayPauseButton.setOnClickListener(this);
 			next.setOnClickListener(this);
 		} else {
-			setContentView(R.layout.song_selector);
+			setContentView(R.layout.library_nocontrols);
 		}
 
 		mTabHost = (TabHost)findViewById(android.R.id.tabhost);

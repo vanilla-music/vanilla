@@ -21,57 +21,51 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
-	<LinearLayout
-		android:id="@+id/selector_layout"
+	<TabHost
+		android:id="@android:id/tabhost"
 		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
-		android:orientation="vertical">
-		<TabHost
-			android:id="@android:id/tabhost"
+		android:layout_height="0px"
+		android:layout_weight="1">
+		<LinearLayout
+			android:orientation="vertical"
 			android:layout_width="fill_parent"
-			android:layout_height="0px"
-			android:layout_weight="1">
-			<LinearLayout
-				android:orientation="vertical"
+			android:layout_height="fill_parent">
+			<TabWidget
+				android:id="@android:id/tabs"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content" />
+			<FrameLayout
+				android:id="@android:id/tabcontent"
 				android:layout_width="fill_parent"
 				android:layout_height="fill_parent">
-				<TabWidget
-					android:id="@android:id/tabs"
+				<ListView
+					android:id="@+id/artist_list"
 					android:layout_width="fill_parent"
-					android:layout_height="wrap_content" />
-				<FrameLayout
-					android:id="@android:id/tabcontent"
+					android:layout_height="fill_parent" />
+				<ListView
+					android:id="@+id/album_list"
 					android:layout_width="fill_parent"
-					android:layout_height="fill_parent">
-					<ListView
-						android:id="@+id/artist_list"
-						android:layout_width="fill_parent"
-						android:layout_height="fill_parent" />
-					<ListView
-						android:id="@+id/album_list"
-						android:layout_width="fill_parent"
-						android:layout_height="fill_parent" />
-					<ListView
-						android:id="@+id/song_list"
-						android:layout_width="fill_parent"
-						android:layout_height="fill_parent" />
-					<ListView
-						android:id="@+id/playlist_list"
-						android:layout_width="fill_parent"
-						android:layout_height="fill_parent" />
-					<ListView
-						android:id="@+id/genre_list"
-						android:layout_width="fill_parent"
-						android:layout_height="fill_parent" />
-				</FrameLayout>
-			</LinearLayout>
-		</TabHost>
-		<LinearLayout
-			android:id="@+id/limiter_layout"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_gravity="bottom|left" />
-	</LinearLayout>
+					android:layout_height="fill_parent" />
+				<ListView
+					android:id="@+id/song_list"
+					android:layout_width="fill_parent"
+					android:layout_height="fill_parent" />
+				<ListView
+					android:id="@+id/playlist_list"
+					android:layout_width="fill_parent"
+					android:layout_height="fill_parent" />
+				<ListView
+					android:id="@+id/genre_list"
+					android:layout_width="fill_parent"
+					android:layout_height="fill_parent" />
+			</FrameLayout>
+		</LinearLayout>
+	</TabHost>
+	<LinearLayout
+		android:id="@+id/limiter_layout"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="bottom|left" />
 	<RelativeLayout
 		android:id="@+id/search_box"
 		android:layout_width="fill_parent"
