@@ -302,8 +302,14 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 		int state = mState;
 		boolean isShuffling = (state & PlaybackService.FLAG_SHUFFLE) != 0;
 		menu.findItem(MENU_SHUFFLE).setTitle(isShuffling ? R.string.shuffle_disable : R.string.shuffle_enable);
-		boolean isRepeating = (state & PlaybackService.FLAG_REPEAT) != 0;
-		menu.findItem(MENU_REPEAT).setTitle(isRepeating ? R.string.repeat_disable : R.string.repeat_enable);
+		int repeatRes;
+		if ((state & PlaybackService.FLAG_REPEAT) != 0)
+			repeatRes = R.string.repeat_current;
+		else if ((state & PlaybackService.FLAG_REPEAT_CURRENT) != 0)
+			repeatRes = R.string.repeat_disable;
+		else
+			repeatRes = R.string.repeat_enable;
+		menu.findItem(MENU_REPEAT).setTitle(repeatRes);
 		boolean isRandom = (state & PlaybackService.FLAG_RANDOM) != 0;
 		// TODO: find icon (dice? arrow pointing in many directions?)
 		menu.findItem(MENU_RANDOM).setTitle(isRandom ? R.string.random_disable : R.string.random_enable);
@@ -318,7 +324,7 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 			toggleShuffle();
 			return true;
 		case MENU_REPEAT:
-			toggleRepeat();
+			cycleRepeat();
 			return true;
 		case MENU_RANDOM:
 			toggleRandom();
@@ -349,12 +355,18 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	}
 
 	/**
-	 * Toggle repeat mode on/off
+	 * Cycle repeat mode.
 	 */
-	public void toggleRepeat()
+	public void cycleRepeat()
 	{
-		int state = PlaybackService.get(this).toggleRepeat();
-		int res = (state & PlaybackService.FLAG_REPEAT) == 0 ? R.string.repeat_disabling : R.string.repeat_enabling;
+		int state = PlaybackService.get(this).cycleRepeat();
+		int res;
+		if ((state & PlaybackService.FLAG_REPEAT) != 0)
+			res = R.string.repeat_enabling;
+		else if ((state & PlaybackService.FLAG_REPEAT_CURRENT) != 0)
+			res = R.string.repeat_current_enabling;
+		else
+			res = R.string.repeat_disabling;
 		Toast.makeText(this, res, Toast.LENGTH_SHORT).show();
 		setState(state);
 	}
@@ -401,7 +413,7 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 			previousSong();
 			break;
 		case ACTION_REPEAT:
-			toggleRepeat();
+			cycleRepeat();
 			break;
 		case ACTION_SHUFFLE:
 			toggleShuffle();

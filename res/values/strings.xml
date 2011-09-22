@@ -34,8 +34,10 @@ THE SOFTWARE.
 	<string name="shuffle_enabling">Shuffle enabled</string>
 	<string name="shuffle_disabling">Shuffle disabled</string>
 	<string name="repeat_enable">Enable Repeat</string>
+	<string name="repeat_current">Repeat Song</string>
 	<string name="repeat_disable">Disable Repeat</string>
-	<string name="repeat_enabling">Repeat enabled</string>
+	<string name="repeat_enabling">Repeating all songs</string>
+	<string name="repeat_current_enabling">Repeating current song</string>
 	<string name="repeat_disabling">Repeat disabled</string>
 	<string name="random_enable">Enable Random</string>
 	<string name="random_disable">Disable Random</string>

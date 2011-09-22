@@ -65,7 +65,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	/**
 	 * State file version that indicates data order.
 	 */
-	private static final int STATE_VERSION = 1;
+	private static final int STATE_VERSION = 2;
 
 	private static final int NOTIFICATION_ID = 2;
 
@@ -145,6 +145,11 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 * Set when the user needs to select songs to play.
 	 */
 	public static final int FLAG_EMPTY_QUEUE = 0x40;
+	/**
+	 * If set, replay the current song when the end of the song is reached
+	 * instead of advancing to the next song.
+	 */
+	public static final int FLAG_REPEAT_CURRENT = 0x80;
 
 	public static final int NEVER = 0;
 	public static final int WHEN_PLAYING = 1;
@@ -573,14 +578,21 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	}
 
 	/**
-	 * Toggle repeat mode. Disables random mode.
+	 * Cycle repeat mode. Disables random mode.
 	 *
 	 * @return The new state after this is called.
 	 */
-	public int toggleRepeat()
+	public int cycleRepeat()
 	{
 		synchronized (mStateLock) {
-			return updateState((mState ^ FLAG_REPEAT) & ~FLAG_RANDOM);
+			int state = mState & ~FLAG_RANDOM;
+			if ((state & FLAG_REPEAT_CURRENT) != 0)
+				state &= ~(FLAG_REPEAT|FLAG_REPEAT_CURRENT);
+			else if ((state & FLAG_REPEAT) == 0)
+				state |= FLAG_REPEAT;
+			else if ((state & FLAG_REPEAT) != 0)
+				state = (state | FLAG_REPEAT_CURRENT) & ~FLAG_REPEAT;;
+			return updateState(state);
 		}
 	}
 
@@ -678,6 +690,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	{
 		if (mTimeline.isEndOfQueue())
 			unsetFlag(FLAG_PLAYING);
+		else if ((mState & FLAG_REPEAT_CURRENT) != 0)
+			setCurrentSong(0);
 		else
 			setCurrentSong(+1);
 	}
@@ -1160,6 +1174,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 			if (in.readLong() == STATE_FILE_MAGIC && in.readInt() == STATE_VERSION) {
 				mPendingSeek = in.readInt();
+				int savedState = in.readInt();
 				mTimeline.readState(in);
 
 				int finishAction = mTimeline.getFinishAction();
@@ -1169,6 +1184,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 					state |= FLAG_REPEAT;
 				if (mTimeline.isShuffling())
 					state |= FLAG_SHUFFLE;
+				state |= savedState & FLAG_REPEAT_CURRENT;
 			}
 
 			in.close();
@@ -1194,6 +1210,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			out.writeLong(STATE_FILE_MAGIC);
 			out.writeInt(STATE_VERSION);
 			out.writeInt(pendingSeek);
+			out.writeInt(mState);
 			mTimeline.writeState(out);
 			out.close();
 		} catch (IOException e) {
