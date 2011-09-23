@@ -114,7 +114,10 @@ public class OneCellWidget extends AppWidgetProvider {
 			views.setImageViewResource(R.id.cover, 0);
 			views.setInt(R.id.title, "setText", R.string.app_name);
 		} else {
-			views.setImageViewUri(R.id.cover, song.getCoverUri());
+			if (Song.mDisableCoverArt)
+				views.setImageViewResource(R.id.cover, 0);
+			else
+				views.setImageViewUri(R.id.cover, song.getCoverUri());
 			views.setTextViewText(R.id.title, song.title);
 		}
 

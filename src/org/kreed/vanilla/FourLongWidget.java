@@ -105,7 +105,10 @@ public class FourLongWidget extends AppWidgetProvider {
 			views.setViewVisibility(R.id.buttons, View.VISIBLE);
 			views.setTextViewText(R.id.title, song.title);
 			views.setTextViewText(R.id.artist, song.artist);
-			views.setImageViewUri(R.id.cover, song.getCoverUri());
+			if (Song.mDisableCoverArt)
+				views.setImageViewResource(R.id.cover, 0);
+			else
+				views.setImageViewUri(R.id.cover, song.getCoverUri());
 		}
 
 		boolean playing = (state & PlaybackService.FLAG_PLAYING) != 0;
