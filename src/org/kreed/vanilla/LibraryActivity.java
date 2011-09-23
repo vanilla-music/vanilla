@@ -801,8 +801,12 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 				cover = song.getCover(this);
 			}
 
-			mCover.setImageBitmap(cover);
-			mCover.setVisibility(cover == null ? View.GONE : View.VISIBLE);
+			if (Song.mDisableCoverArt)
+				mCover.setVisibility(View.GONE);
+			else if (cover == null)
+				mCover.setImageResource(R.drawable.albumart_mp_unknown_list);
+			else
+				mCover.setImageBitmap(cover);
 		}
 	}
 
