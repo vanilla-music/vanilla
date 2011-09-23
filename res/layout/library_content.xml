@@ -21,46 +21,118 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
-	<TabHost
-		android:id="@android:id/tabhost"
+	<LinearLayout
+		android:orientation="vertical"
+		android:layout_weight="1"
 		android:layout_width="fill_parent"
-		android:layout_height="0px"
-		android:layout_weight="1">
-		<LinearLayout
-			android:orientation="vertical"
+		android:layout_height="0px">
+		<TabWidget
+			android:id="@+id/tab_widget"
+			android:tabStripEnabled="false"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" >
+			<TextView
+				android:id="@+id/artist_tab"
+				android:focusable="true"
+				android:background="@drawable/buttonbar"
+				android:drawableTop="@drawable/ic_tab_artists"
+				android:text="@string/artists"
+				android:textAppearance="?android:attr/textAppearanceSmall"
+				android:textColor="@color/tab_indicator_text"
+				android:paddingTop="7dip"
+				android:paddingBottom="2dip"
+				android:gravity="center"
+				android:layout_weight="1"
+				android:layout_width="0px"
+				android:layout_height="64dip" />
+			<TextView
+				android:id="@+id/album_tab"
+				android:focusable="true"
+				android:background="@drawable/buttonbar"
+				android:drawableTop="@drawable/ic_tab_albums"
+				android:text="@string/albums"
+				android:textAppearance="?android:attr/textAppearanceSmall"
+				android:textColor="@color/tab_indicator_text"
+				android:paddingTop="7dip"
+				android:paddingBottom="2dip"
+				android:gravity="center"
+				android:layout_weight="1"
+				android:layout_width="0px"
+				android:layout_height="64dip" />
+			<TextView
+				android:id="@+id/song_tab"
+				android:focusable="true"
+				android:background="@drawable/buttonbar"
+				android:drawableTop="@drawable/ic_tab_songs"
+				android:text="@string/songs"
+				android:textAppearance="?android:attr/textAppearanceSmall"
+				android:textColor="@color/tab_indicator_text"
+				android:paddingTop="7dip"
+				android:paddingBottom="2dip"
+				android:gravity="center"
+				android:layout_weight="1"
+				android:layout_width="0px"
+				android:layout_height="64dip" />
+			<TextView
+				android:id="@+id/playlist_tab"
+				android:focusable="true"
+				android:background="@drawable/buttonbar"
+				android:drawableTop="@drawable/ic_tab_playlists"
+				android:text="@string/playlists"
+				android:textAppearance="?android:attr/textAppearanceSmall"
+				android:textColor="@color/tab_indicator_text"
+				android:paddingTop="7dip"
+				android:paddingBottom="2dip"
+				android:gravity="center"
+				android:layout_weight="1"
+				android:layout_width="0px"
+				android:layout_height="64dip" />
+			<TextView
+				android:id="@+id/genre_tab"
+				android:focusable="true"
+				android:background="@drawable/buttonbar"
+				android:drawableTop="@drawable/ic_tab_songs"
+				android:text="@string/genres"
+				android:textAppearance="?android:attr/textAppearanceSmall"
+				android:textColor="@color/tab_indicator_text"
+				android:paddingTop="7dip"
+				android:paddingBottom="2dip"
+				android:gravity="center"
+				android:layout_weight="1"
+				android:layout_width="0px"
+				android:layout_height="64dip" />
+		</TabWidget>
+		<FrameLayout
+			android:id="@+id/lists"
 			android:layout_width="fill_parent"
 			android:layout_height="fill_parent">
-			<TabWidget
-				android:id="@android:id/tabs"
+			<ListView
+				android:id="@+id/artist_list"
+				android:visibility="gone"
 				android:layout_width="fill_parent"
-				android:layout_height="wrap_content" />
-			<FrameLayout
-				android:id="@android:id/tabcontent"
+				android:layout_height="fill_parent" />
+			<ListView
+				android:id="@+id/album_list"
+				android:visibility="gone"
 				android:layout_width="fill_parent"
-				android:layout_height="fill_parent">
-				<ListView
-					android:id="@+id/artist_list"
-					android:layout_width="fill_parent"
-					android:layout_height="fill_parent" />
-				<ListView
-					android:id="@+id/album_list"
-					android:layout_width="fill_parent"
-					android:layout_height="fill_parent" />
-				<ListView
-					android:id="@+id/song_list"
-					android:layout_width="fill_parent"
-					android:layout_height="fill_parent" />
-				<ListView
-					android:id="@+id/playlist_list"
-					android:layout_width="fill_parent"
-					android:layout_height="fill_parent" />
-				<ListView
-					android:id="@+id/genre_list"
-					android:layout_width="fill_parent"
-					android:layout_height="fill_parent" />
-			</FrameLayout>
-		</LinearLayout>
-	</TabHost>
+				android:layout_height="fill_parent" />
+			<ListView
+				android:id="@+id/song_list"
+				android:visibility="gone"
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent" />
+			<ListView
+				android:id="@+id/playlist_list"
+				android:visibility="gone"
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent" />
+			<ListView
+				android:id="@+id/genre_list"
+				android:visibility="gone"
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent" />
+		</FrameLayout>
+	</LinearLayout>
 	<LinearLayout
 		android:id="@+id/limiter_layout"
 		android:layout_width="wrap_content"
@@ -89,3 +161,4 @@ THE SOFTWARE.
 			android:src="@android:drawable/ic_menu_close_clear_cancel" />
 	</RelativeLayout>
 </merge>
+
