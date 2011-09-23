@@ -138,6 +138,10 @@ THE SOFTWARE.
 	<string name="swipe_up_action_summary">What to do when a swipe up gesture is performed</string>
 	<string name="swipe_down_action_title">Swipe Down Action</string>
 	<string name="swipe_down_action_summary">What to do when a swipe down gesture is performed</string>
+	<string name="cover_press_action_title">Cover Tap Action</string>
+	<string name="cover_press_action_summary">What to do when the cover is tapped</string>
+	<string name="cover_longpress_action_title">Cover Long Press Action</string>
+	<string name="cover_longpress_action_summary">What to do when the cover is long-pressed</string>
 	<string name="disable_cover_art_title">Disable Cover Art</string>
 	<string name="disable_cover_art_summary">Do not show cover art anywhere in the application</string>
 

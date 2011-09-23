@@ -55,6 +55,7 @@ THE SOFTWARE.
 		<item>Enqueue Current Artist</item>
 		<item>Enqueue Current Genre</item>
 		<item>Clear Queue</item>
+		<item>Toggle Controls</item>
 	</string-array>
 	<string-array name="entry_values">
 		<!-- Note: even if this was an integer-array, these would be converted
@@ -72,5 +73,6 @@ THE SOFTWARE.
 		<item>9</item>
 		<item>10</item>
 		<item>11</item>
+		<item>12</item>
 	</string-array>
 </resources>

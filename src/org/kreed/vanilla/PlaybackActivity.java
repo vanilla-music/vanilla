@@ -39,7 +39,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-public class PlaybackActivity extends Activity implements Handler.Callback, View.OnClickListener, CoverView.Callback {
+public class PlaybackActivity extends Activity
+	implements Handler.Callback,
+	           View.OnClickListener,
+	           View.OnLongClickListener,
+	           CoverView.Callback
+{
 	public static final int ACTION_NOTHING = 0;
 	public static final int ACTION_LIBRARY = 1;
 	public static final int ACTION_PLAY_PAUSE = 2;
@@ -52,9 +57,12 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	public static final int ACTION_ENQUEUE_ARTIST = 9;
 	public static final int ACTION_ENQUEUE_GENRE = 10;
 	public static final int ACTION_CLEAR_QUEUE = 11;
+	public static final int ACTION_TOGGLE_CONTROLS = 12;
 
-	public static int mUpAction;
-	public static int mDownAction;
+	private int mUpAction;
+	private int mDownAction;
+	private int mCoverPressAction;
+	private int mCoverLongPressAction;
 
 	protected Handler mHandler;
 	protected Looper mLooper;
@@ -78,10 +86,6 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 		HandlerThread thread = new HandlerThread(getClass().getName());
 		thread.start();
 
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		mUpAction = Integer.parseInt(prefs.getString("swipe_up_action", "0"));
-		mDownAction = Integer.parseInt(prefs.getString("swipe_down_action", "0"));
-
 		mLooper = thread.getLooper();
 		mHandler = new Handler(mLooper, this);
 	}
@@ -103,6 +107,12 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 			onServiceReady();
 		else
 			startService(new Intent(this, PlaybackService.class));
+
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		mUpAction = Integer.parseInt(prefs.getString("swipe_up_action", "0"));
+		mDownAction = Integer.parseInt(prefs.getString("swipe_down_action", "0"));
+		mCoverPressAction = Integer.parseInt(prefs.getString("cover_press_action", "12"));
+		mCoverLongPressAction = Integer.parseInt(prefs.getString("cover_longpress_action", "2"));
 	}
 
 	@Override
@@ -166,6 +176,7 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 		setState(state);
 	}
 
+	@Override
 	public void onClick(View view)
 	{
 		switch (view.getId()) {
@@ -178,7 +189,21 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 		case R.id.previous:
 			previousSong();
 			break;
+		case R.id.cover_view:
+			performAction(mCoverPressAction);
+			break;
 		}
+	}
+
+	@Override
+	public boolean onLongClick(View view)
+	{
+		if (view.getId() == R.id.cover_view) {
+			performAction(mCoverLongPressAction);
+			return true;
+		}
+
+		return false;
 	}
 
 	/**

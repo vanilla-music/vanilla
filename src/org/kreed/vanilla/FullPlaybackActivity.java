@@ -41,7 +41,7 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.OnSeekBarChangeListener, View.OnLongClickListener {
+public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.OnSeekBarChangeListener {
 	public static final int DISPLAY_INFO_OVERLAP = 0;
 	public static final int DISPLAY_INFO_BELOW = 1;
 	public static final int DISPLAY_INFO_WIDGETS = 2;
@@ -353,28 +353,6 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 		mHandler.sendMessage(mHandler.obtainMessage(MSG_SAVE_CONTROLS, hidden, 0));
 	}
 
-	@Override
-	public void onClick(View view)
-	{
-		switch (view.getId()) {
-		case R.id.cover_view:
-			toggleControls();
-			break;
-		default:
-			super.onClick(view);
-		}
-	}
-
-	public boolean onLongClick(View view)
-	{
-		if (view.getId() == R.id.cover_view) {
-			playPause();
-			return true;
-		}
-
-		return false;
-	}
-
 	/**
 	 * Update the seekbar progress with the current song progress. This must be
 	 * called on the UI Handler.
@@ -420,5 +398,14 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	public void onStopTrackingTouch(SeekBar seekBar)
 	{
 		mSeekBarTracking = false;
+	}
+
+	@Override
+	public void performAction(int action)
+	{
+		if (action == PlaybackActivity.ACTION_TOGGLE_CONTROLS)
+			toggleControls();
+		else
+			super.performAction(action);
 	}
 }

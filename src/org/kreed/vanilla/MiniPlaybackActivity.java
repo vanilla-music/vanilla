@@ -43,6 +43,7 @@ public class MiniPlaybackActivity extends PlaybackActivity {
 
 		mCoverView = (CoverView)findViewById(R.id.cover_view);
 		mCoverView.setOnClickListener(this);
+		mCoverView.setOnLongClickListener(this);
 		mCoverView.setup(mLooper, this, CoverBitmap.STYLE_OVERLAPPING_BOX);
 
 		View previousButton = findViewById(R.id.previous);

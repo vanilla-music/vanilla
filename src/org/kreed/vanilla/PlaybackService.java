@@ -372,10 +372,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			}
 		} else if ("notification_inverted_color".equals(key)) {
 			updateNotification();
-		} else if ("swipe_up_action".equals(key)) {
-			PlaybackActivity.mUpAction = Integer.parseInt(settings.getString(key, "0"));
-		} else if ("swipe_down_action".equals(key)) {
-			PlaybackActivity.mDownAction = Integer.parseInt(settings.getString(key, "0"));
 		} else if ("headset_only".equals(key)) {
 			mHeadsetOnly = settings.getBoolean(key, false);
 			if (mHeadsetOnly && isSpeakerOn())
