@@ -81,6 +81,26 @@ public final class SongTimeline {
 	 */
 	public static final int MODE_ENQUEUE = 2;
 
+	/**
+	 * Disable shuffle.
+	 *
+	 * @see SongTimeline#setShuffleMode(int)
+	 */
+	public static final int SHUFFLE_NONE = 0;
+	/**
+	 * Randomize order of songs.
+	 *
+	 * @see SongTimeline#setShuffleMode(int)
+	 */
+	public static final int SHUFFLE_SONGS = 1;
+	/**
+	 * Randomize order of albums, preserving the order of tracks inside the
+	 * albums.
+	 *
+	 * @see SongTimeline#setShuffleMode(int)
+	 */
+	public static final int SHUFFLE_ALBUMS = 2;
+
 	private Context mContext;
 	/**
 	 * All the songs currently contained in the timeline. Each Song object
@@ -92,10 +112,9 @@ public final class SongTimeline {
 	 */
 	private int mCurrentPos;
 	/**
-	 * Whether shuffling is enabled. Shuffling will shuffle sets of songs
-	 * that are added with chooseSongs and shuffle sets of repeated songs.
+	 * How to shuffle/whether to shuffle. One of SongTimeline.SHUFFLE_*.
 	 */
-	private boolean mShuffle;
+	private int mShuffleMode;
 	/**
 	 * What to do when the end of the playlist is reached.
 	 * Must be one of SongTimeline.FINISH_*.
@@ -229,7 +248,7 @@ public final class SongTimeline {
 
 			mCurrentPos = Math.min(mSongs == null ? 0 : mSongs.size(), in.readInt());
 			mFinishAction = in.readInt();
-			mShuffle = in.readBoolean();
+			mShuffleMode = in.readInt();
 		}
 	}
 
@@ -261,7 +280,7 @@ public final class SongTimeline {
 
 			out.writeInt(mCurrentPos);
 			out.writeInt(mFinishAction);
-			out.writeBoolean(mShuffle);
+			out.writeInt(mShuffleMode);
 		}
 	}
 
@@ -274,11 +293,13 @@ public final class SongTimeline {
 	}
 
 	/**
-	 * Return whether shuffling is enabled.
+	 * Return the current shuffle mode.
+	 *
+	 * @return The shuffle mode. One of SongTimeline.SHUFFLE_*.
 	 */
-	public boolean isShuffling()
+	public int getShuffleMode()
 	{
-		return mShuffle;
+		return mShuffleMode;
 	}
 
 	/**
@@ -292,25 +313,25 @@ public final class SongTimeline {
 	}
 
 	/**
-	 * Set whether shuffling is enabled. Will shuffle the current set of songs
-	 * when enabling shuffling if random mode is not enabled.
+	 * Set how to shuffle. Will shuffle the current set of songs when enabling
+	 * shuffling if random mode is not enabled.
+	 *
+	 * @param mode One of SongTimeline.MODE_*
 	 */
-	public void setShuffle(boolean shuffle)
+	public void setShuffleMode(int mode)
 	{
-		if (shuffle == mShuffle)
+		if (mode == mShuffleMode)
 			return;
 
 		synchronized (this) {
 			saveActiveSongs();
-			mShuffle = shuffle;
 			mShuffledSongs = null;
-			if (shuffle && mFinishAction != FINISH_RANDOM) {
+			mShuffleMode = mode;
+			if (mode != SHUFFLE_NONE && mFinishAction != FINISH_RANDOM && mSongs.size() != 0) {
 				shuffleAll();
 				ArrayList<Song> songs = mShuffledSongs;
 				mShuffledSongs = null;
-				int i = songs.indexOf(mSavedCurrent);
-				songs.set(i, songs.get(mCurrentPos));
-				songs.set(mCurrentPos, mSavedCurrent);
+				mCurrentPos = songs.indexOf(mSavedCurrent);
 				mSongs = songs;
 			}
 			broadcastChangedSongs();
@@ -343,7 +364,7 @@ public final class SongTimeline {
 			return mShuffledSongs.get(0);
 
 		ArrayList<Song> songs = new ArrayList<Song>(mSongs);
-		Collections.shuffle(songs, MediaUtils.getRandom());
+		MediaUtils.shuffle(songs, mShuffleMode == SHUFFLE_ALBUMS);
 		mShuffledSongs = songs;
 		return songs.get(0);
 	}
@@ -378,7 +399,7 @@ public final class SongTimeline {
 					if (size == 0)
 						// empty queue
 						return null;
-					else if (mShuffle)
+					else if (mShuffleMode != SHUFFLE_NONE)
 						song = shuffleAll();
 					else
 						song = timeline.get(0);
@@ -416,7 +437,7 @@ public final class SongTimeline {
 			int pos = mCurrentPos + delta;
 
 			if (mFinishAction != FINISH_RANDOM && pos == mSongs.size()) {
-				if (mShuffle && mSongs.size() > 0) {
+				if (mShuffleMode != SHUFFLE_NONE && mSongs.size() > 0) {
 					if (mShuffledSongs == null)
 						shuffleAll();
 					mSongs = mShuffledSongs;
@@ -488,8 +509,8 @@ public final class SongTimeline {
 				timeline.add(song);
 			}
 
-			if (mShuffle)
-				Collections.shuffle(timeline.subList(start, timeline.size()), MediaUtils.getRandom());
+			if (mShuffleMode != SHUFFLE_NONE)
+				MediaUtils.shuffle(timeline.subList(start, timeline.size()), mShuffleMode == SHUFFLE_ALBUMS);
 
 			broadcastChangedSongs();
 		}

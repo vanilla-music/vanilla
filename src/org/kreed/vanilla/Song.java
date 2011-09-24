@@ -38,7 +38,7 @@ import java.io.FileNotFoundException;
  * Represents a Song backed by the MediaStore. Includes basic metadata and
  * utilities to retrieve songs from the MediaStore.
  */
-public class Song {
+public class Song implements Comparable<Song> {
 	/**
 	 * Indicates that this song was randomly selected from all songs.
 	 */
@@ -61,6 +61,7 @@ public class Song {
 		MediaStore.Audio.Media.ALBUM_ID,
 		MediaStore.Audio.Media.ARTIST_ID,
 		MediaStore.Audio.Media.DURATION,
+		MediaStore.Audio.Media.TRACK,
 	};
 
 	public static final String[] EMPTY_PLAYLIST_PROJECTION = {
@@ -76,6 +77,7 @@ public class Song {
 		MediaStore.Audio.Playlists.Members.ALBUM_ID,
 		MediaStore.Audio.Playlists.Members.ARTIST_ID,
 		MediaStore.Audio.Playlists.Members.DURATION,
+		MediaStore.Audio.Media.TRACK,
 	};
 
 	/**
@@ -123,6 +125,10 @@ public class Song {
 	 * Length of the song in milliseconds.
 	 */
 	public long duration;
+	/**
+	 * The position of the song in its album.
+	 */
+	public int trackNumber;
 
 	/**
 	 * Song flags. Currently FLAG_RANDOM or 0.
@@ -171,6 +177,7 @@ public class Song {
 		albumId = cursor.getLong(5);
 		artistId = cursor.getLong(6);
 		duration = cursor.getLong(7);
+		trackNumber = cursor.getInt(8);
 	}
 
 	/**
@@ -245,6 +252,19 @@ public class Song {
 	@Override
 	public String toString()
 	{
-		return String.format("%d %s", id, path);
+		return String.format("%d %d", id, albumId);
+	}
+
+	/**
+	 * Compares the album ids of the two songs; if equal, compares track order.
+	 */
+	@Override
+	public int compareTo(Song other)
+	{
+		if (albumId == other.albumId)
+			return trackNumber - other.trackNumber;
+		if (albumId > other.albumId)
+			return 1;
+		return -1;
 	}
 }

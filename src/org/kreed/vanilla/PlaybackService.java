@@ -65,7 +65,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	/**
 	 * State file version that indicates data order.
 	 */
-	private static final int STATE_VERSION = 2;
+	private static final int STATE_VERSION = 3;
 
 	private static final int NOTIFICATION_ID = 2;
 
@@ -115,18 +115,13 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	public static final String ACTION_PREVIOUS_SONG_AUTOPLAY = "org.kreed.vanilla.action.PREVIOUS_SONG_AUTOPLAY";
 
 	/**
-	 * Set when there is no media available on the device.
-	 */
-	public static final int FLAG_NO_MEDIA = 0x2;
-	/**
 	 * If set, music will play.
 	 */
 	public static final int FLAG_PLAYING = 0x1;
 	/**
-	 * If set, songs selected from the library and repeated songs will be in
-	 * random order.
+	 * Set when there is no media available on the device.
 	 */
-	public static final int FLAG_SHUFFLE = 0x4;
+	public static final int FLAG_NO_MEDIA = 0x2;
 	/**
 	 * If set, will loop back to the beginning of the timeline when its end is
 	 * reached.
@@ -150,6 +145,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 * instead of advancing to the next song.
 	 */
 	public static final int FLAG_REPEAT_CURRENT = 0x80;
+	/**
+	 * These two bits will be one of SongTimeline.SHUFFLE_*.
+	 */
+	public static final int MASK_SHUFFLE = 0x100 | 0x200;
 
 	public static final int NEVER = 0;
 	public static final int WHEN_PLAYING = 1;
@@ -463,8 +462,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			}
 		}
 
-		if ((toggled & FLAG_SHUFFLE) != 0)
-			mTimeline.setShuffle((state & FLAG_SHUFFLE) != 0);
+		if ((toggled & MASK_SHUFFLE) != 0)
+			mTimeline.setShuffleMode(shuffleMode(state));
 		if ((toggled & (FLAG_REPEAT | FLAG_RANDOM)) != 0) {
 			int action;
 			if ((state & FLAG_RANDOM) != 0)
@@ -593,14 +592,15 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	}
 
 	/**
-	 * Toggle shuffle mode.
+	 * Cycle shuffle mode.
 	 *
 	 * @return The new state after this is called.
 	 */
-	public int toggleShuffle()
+	public int cycleShuffle()
 	{
 		synchronized (mStateLock) {
-			return updateState(mState ^ FLAG_SHUFFLE);
+			int step = (mState & MASK_SHUFFLE) == 0x200 ? 0x200 : 0x100;
+			return updateState(mState + step);
 		}
 	}
 
@@ -1178,8 +1178,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 					state |= FLAG_RANDOM;
 				else if (finishAction == SongTimeline.FINISH_REPEAT)
 					state |= FLAG_REPEAT;
-				if (mTimeline.isShuffling())
-					state |= FLAG_SHUFFLE;
+				state |= mTimeline.getShuffleMode() << 8;
 				state |= savedState & FLAG_REPEAT_CURRENT;
 			}
 
@@ -1212,5 +1211,15 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		} catch (IOException e) {
 			Log.w("VanillaMusic", "Failed to save state", e);
 		}
+	}
+
+	/**
+	 * Returns the shuffle mode for the given state.
+	 *
+	 * @return The shuffle mode. One of SongTimeline.SHUFFLE_*.
+	 */
+	public static int shuffleMode(int state)
+	{
+		return (state & MASK_SHUFFLE) >> 8;
 	}
 }

@@ -31,8 +31,10 @@ THE SOFTWARE.
 	<string name="display_mode">Display Mode</string>
 	<string name="shuffle_enable">Enable Shuffle</string>
 	<string name="shuffle_disable">Disable Shuffle</string>
-	<string name="shuffle_enabling">Shuffle enabled</string>
-	<string name="shuffle_disabling">Shuffle disabled</string>
+	<string name="shuffle_albums">Shuffle Albums</string>
+	<string name="shuffle_songs_enabled">Song shuffle enabled</string>
+	<string name="shuffle_albums_enabled">Album shuffle enabled</string>
+	<string name="shuffle_disabled">Shuffle disabled</string>
 	<string name="repeat_enable">Enable Repeat</string>
 	<string name="repeat_current">Repeat Song</string>
 	<string name="repeat_disable">Disable Repeat</string>
