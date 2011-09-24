@@ -76,7 +76,7 @@ THE SOFTWARE.
 			android:layout_width="fill_parent"
 			android:layout_height="0px"
 			android:layout_weight="1"
-			android:src="@drawable/play_multi"
+			android:src="@drawable/play"
 			android:padding="5dip"
 			android:background="#0000"
 			android:scaleType="fitCenter" />
@@ -86,7 +86,7 @@ THE SOFTWARE.
 			android:layout_height="0px"
 			android:layout_weight="1"
 			android:padding="5dip"
-			android:src="@drawable/next_multi"
+			android:src="@drawable/next"
 			android:background="#0000"
 			android:scaleType="fitCenter" />
 	</LinearLayout>

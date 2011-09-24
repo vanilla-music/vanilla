@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
+Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,9 +29,32 @@ THE SOFTWARE.
 		android:layout_height="wrap_content"
 		android:layout_width="wrap_content" />
 	<LinearLayout
-		android:orientation="horizontal"
 		android:layout_height="wrap_content"
-		android:layout_width="wrap_content">
-		<include layout="@layout/playback_buttons" />
+		android:layout_width="wrap_content"
+		android:orientation="horizontal">
+		<ImageButton
+			android:id="@+id/previous"
+			android:layout_height="wrap_content"
+			android:layout_width="0px"
+			android:layout_weight="1"
+			android:background="@null"
+			android:scaleType="fitCenter"
+			android:src="@drawable/previous" />
+		<ImageButton
+			android:id="@+id/play_pause"
+			android:layout_height="wrap_content"
+			android:layout_width="0px"
+			android:layout_weight="1"
+			android:background="@null"
+			android:scaleType="fitCenter"
+			android:src="@drawable/play" />
+		<ImageButton
+			android:id="@+id/next"
+			android:layout_height="wrap_content"
+			android:layout_width="0px"
+			android:layout_weight="1"
+			android:background="@null"
+			android:scaleType="fitCenter"
+			android:src="@drawable/next" />
 	</LinearLayout>
 </org.kreed.vanilla.MiniPlaybackActivityLayout>

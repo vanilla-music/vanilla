@@ -47,6 +47,7 @@ import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -121,7 +122,7 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 			mStatusText = (TextView)mControls.findViewById(R.id.status_text);
 			mCover = (ImageView)mControls.findViewById(R.id.cover);
 			View previous = mControls.findViewById(R.id.previous);
-			mPlayPauseButton = (ControlButton)mControls.findViewById(R.id.play_pause);
+			mPlayPauseButton = (ImageButton)mControls.findViewById(R.id.play_pause);
 			View next = mControls.findViewById(R.id.next);
 
 			mCover.setOnClickListener(this);

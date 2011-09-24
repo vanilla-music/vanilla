@@ -37,6 +37,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 public class PlaybackActivity extends Activity
@@ -68,7 +69,7 @@ public class PlaybackActivity extends Activity
 	protected Looper mLooper;
 
 	protected CoverView mCoverView;
-	protected ControlButton mPlayPauseButton;
+	protected ImageButton mPlayPauseButton;
 
 	protected int mState;
 	private long mLastStateEvent;
