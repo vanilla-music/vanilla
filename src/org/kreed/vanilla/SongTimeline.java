@@ -303,6 +303,7 @@ public final class SongTimeline {
 		synchronized (this) {
 			saveActiveSongs();
 			mShuffle = shuffle;
+			mShuffledSongs = null;
 			if (shuffle && mFinishAction != FINISH_RANDOM) {
 				shuffleAll();
 				ArrayList<Song> songs = mShuffledSongs;
@@ -338,6 +339,9 @@ public final class SongTimeline {
 	 */
 	private Song shuffleAll()
 	{
+		if (mShuffledSongs != null)
+			return mShuffledSongs.get(0);
+
 		ArrayList<Song> songs = new ArrayList<Song>(mSongs);
 		Collections.shuffle(songs, MediaUtils.getRandom());
 		mShuffledSongs = songs;
