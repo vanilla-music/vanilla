@@ -26,8 +26,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -162,15 +160,14 @@ public final class CoverView extends View implements Handler.Callback {
 	{
 		super.onDraw(canvas);
 
-		Rect clip = canvas.getClipBounds();
-		Paint paint = new Paint();
 		int width = getWidth();
 		int height = getHeight();
+		int scrollX = getScrollX();
 
 		canvas.drawColor(Color.BLACK);
 
 		for (int x = 0, i = 0; i != STORE_SIZE; ++i, x += width) {
-			if (mSongs[i] != null && clip.intersects(x, 0, x + width, height)) {
+			if (mSongs[i] != null && scrollX + width > x && scrollX < x + width) {
 				long id = mSongs[i].id;
 				if (id == -1)
 					continue;
@@ -178,7 +175,7 @@ public final class CoverView extends View implements Handler.Callback {
 				if (bitmap != null) {
 					int xOffset = (width - bitmap.getWidth()) / 2;
 					int yOffset = (height - bitmap.getHeight()) / 2;
-					canvas.drawBitmap(bitmap, x + xOffset, yOffset, paint);
+					canvas.drawBitmap(bitmap, x + xOffset, yOffset, null);
 				}
 			}
 		}
