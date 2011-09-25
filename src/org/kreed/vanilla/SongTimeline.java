@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.ListIterator;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -601,21 +602,17 @@ public final class SongTimeline {
 	public void removeSong(long id)
 	{
 		synchronized (this) {
-			ArrayList<Song> songs = mSongs;
-
 			saveActiveSongs();
 
-			int i = mCurrentPos;
-			while (--i >= 0) {
-				if (Song.getId(songs.get(i)) == id) {
-					songs.remove(i);
-					--mCurrentPos;
+			ArrayList<Song> songs = mSongs;
+			ListIterator<Song> it = songs.listIterator();
+			while (it.hasNext()) {
+				int i = it.nextIndex();
+				if (Song.getId(it.next()) == id) {
+					if (i < mCurrentPos)
+						--mCurrentPos;
+					it.remove();
 				}
-			}
-
-			for (i = mCurrentPos; i < songs.size(); ++i) {
-				if (Song.getId(songs.get(i)) == id)
-					songs.remove(i);
 			}
 
 			broadcastChangedSongs();
