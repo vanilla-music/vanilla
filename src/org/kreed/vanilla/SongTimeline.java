@@ -220,21 +220,23 @@ public final class SongTimeline {
 
 				Cursor cursor = resolver.query(media, Song.FILLED_PROJECTION, selection.toString(), null, "_id");
 				if (cursor != null) {
-					cursor.moveToNext();
+					if (cursor.getCount() != 0) {
+						cursor.moveToNext();
 
-					// Loop through timeline entries, looking for a row
-					// that matches the id. One row may match multiple
-					// entries.
-					Iterator<Song> it = songs.iterator();
-					while (it.hasNext()) {
-						Song e = it.next();
-						while (cursor.getLong(0) < e.id)
-							cursor.moveToNext();
-						if (cursor.getLong(0) == e.id)
-							e.populate(cursor);
-						else
-							// We weren't able to query this song.
-							it.remove();
+						// Loop through timeline entries, looking for a row
+						// that matches the id. One row may match multiple
+						// entries.
+						Iterator<Song> it = songs.iterator();
+						while (it.hasNext()) {
+							Song e = it.next();
+							while (cursor.getLong(0) < e.id && !cursor.isLast())
+								cursor.moveToNext();
+							if (cursor.getLong(0) == e.id)
+								e.populate(cursor);
+							else
+								// We weren't able to query this song.
+								it.remove();
+						}
 					}
 
 					cursor.close();
