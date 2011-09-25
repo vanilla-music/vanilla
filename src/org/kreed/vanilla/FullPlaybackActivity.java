@@ -27,6 +27,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -65,9 +66,21 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	private TextView mAlbum;
 	private TextView mArtist;
 
+	/**
+	 * Current song duration in milliseconds.
+	 */
 	private long mDuration;
+	/**
+	 * Current song duration in human-readable form.
+	 */
+	private String mDurationString;
 	private boolean mSeekBarTracking;
 	private boolean mPaused;
+
+	/**
+	 * Cached StringBuilder for formatting track position.
+	 */
+	private StringBuilder mTimeBuilder = new StringBuilder();
 
 	@Override
 	public void onCreate(Bundle icicle)
@@ -131,6 +144,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 		mSeekBar = (SeekBar)findViewById(R.id.seek_bar);
 		mSeekBar.setMax(1000);
 		mSeekBar.setOnSeekBarChangeListener(this);
+		setDuration(0);
 	}
 
 	@Override
@@ -222,7 +236,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	{
 		super.onSongChange(song);
 
-		mDuration = song == null ? 0 : song.duration;
+		setDuration(song == null ? 0 : song.duration);
 
 		if (mTitle != null) {
 			if (song == null) {
@@ -237,6 +251,17 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 		}
 
 		updateProgress();
+	}
+
+	/**
+	 * Update the current song duration fields.
+	 *
+	 * @param duration The new duration, in milliseconds.
+	 */
+	private void setDuration(long duration)
+	{
+		mDuration = duration;
+		mDurationString = DateUtils.formatElapsedTime(mTimeBuilder, duration / 1000);
 	}
 
 	@Override
@@ -296,33 +321,24 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	}
 
 	/**
-	 * Converts a duration in milliseconds to [HH:]MM:SS
-	 */
-	private String stringForTime(long ms)
-	{
-		int seconds = (int)(ms / 1000);
-
-		int hours = seconds / 3600;
-		seconds -= hours * 3600;
-		int minutes = seconds / 60;
-		seconds -= minutes * 60;
-
-		if (hours > 0)
-			return String.format("%d:%02d:%02d", hours, minutes, seconds);
-		else
-			return String.format("%02d:%02d", minutes, seconds);
-	}
-
-	/**
 	 * Update seek bar progress and schedule another update in one second
 	 */
 	private void updateProgress()
 	{
 		int position = PlaybackService.hasInstance() ? PlaybackService.get(this).getPosition() : 0;
 
-		if (!mSeekBarTracking)
-			mSeekBar.setProgress(mDuration == 0 ? 0 : (int)(1000 * position / mDuration));
-		mSeekText.setText(stringForTime((int)position) + " / " + stringForTime(mDuration));
+		if (!mSeekBarTracking) {
+			long duration = mDuration;
+			mSeekBar.setProgress(duration == 0 ? 0 : (int)(1000 * position / duration));
+		}
+
+		StringBuilder builder = mTimeBuilder;
+		String current = DateUtils.formatElapsedTime(builder, position / 1000);
+		builder.setLength(0);
+		builder.append(current);
+		builder.append(" / ");
+		builder.append(mDurationString);
+		mSeekText.setText(builder.toString());
 
 		if (!mPaused && mControlsTop.getVisibility() == View.VISIBLE && (mState & PlaybackService.FLAG_PLAYING) != 0) {
 			// Try to update right when the duration increases by one second
