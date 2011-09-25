@@ -33,7 +33,7 @@ import android.widget.SeekBar;
 /**
  * A preference that provides a volume slider dialog.
  *
- * The position in the slider is saved as float ranging from 0 to 3 on a
+ * The position in the slider is saved as float ranging from 0 to 1 on a
  * roughly exponential scale.
  */
 public class VolumePreference extends DialogPreference implements SeekBar.OnSeekBarChangeListener {
@@ -54,24 +54,24 @@ public class VolumePreference extends DialogPreference implements SeekBar.OnSeek
 		seekBar.setPadding(20, 20, 20, 20);
 		seekBar.setLayoutParams(params);
 		seekBar.setMax(1000);
-		seekBar.setProgress((int)(Math.pow(getPersistedFloat(1.0f) / 3, 0.25f) * 1000));
+		seekBar.setProgress((int)(Math.pow(getPersistedFloat(1.0f), 0.25f) * 1000));
 		seekBar.setOnSeekBarChangeListener(this);
 		builder.setView(seekBar);
 	}
 
 	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
 	{
-		// Approximate an exponential curve with x^4. Produces a value from 0.0 - 3.0.
+		// Approximate an exponential curve with x^4. Produces a value from 0.0 - 1.0.
 		if (fromUser && shouldPersist()) {
 			float value = seekBar.getProgress() / 1000.0f;
 			value *= value;
 			value *= value;
-			persistFloat(value * 3);
+			persistFloat(value);
 		}
 	}
 
 	public void onStartTrackingTouch(SeekBar seekBar)
-	{		
+	{
 	}
 
 	public void onStopTrackingTouch(SeekBar seekBar)
