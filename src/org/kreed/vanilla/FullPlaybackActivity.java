@@ -96,7 +96,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 
 		switch (displayMode) {
 		default:
-			Log.e("VanillaMusic", "Invalid display mode given. Defaulting to overlap");
+			Log.w("VanillaMusic", "Invalid display mode given. Defaulting to overlap.");
 			// fall through
 		case DISPLAY_INFO_OVERLAP:
 			coverStyle = CoverBitmap.STYLE_OVERLAPPING_BOX;

@@ -96,10 +96,7 @@ public class SongNotification extends Notification {
 			contentIntent = PendingIntent.getActivity(context, 0, intent, 0);
 			break;
 		default:
-			Log.w("VanillaMusic", "Unknown value for notification_action: " + action + ". Resetting to 0.");
-			SharedPreferences.Editor editor = prefs.edit();
-			editor.putString("notification_action", "0");
-			editor.commit();
+			Log.w("VanillaMusic", "Unknown value for notification_action. Defaulting to 0.");
 			// fall through
 		case ACTION_MAIN_ACTIVITY:
 			intent = new Intent(context, LaunchActivity.class);
