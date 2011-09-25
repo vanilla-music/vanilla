@@ -406,6 +406,8 @@ public final class SongTimeline {
 					break;
 				case FINISH_RANDOM:
 					song = MediaUtils.randomSong(mContext);
+					if (song == null)
+						return null;
 					timeline.add(song);
 					break;
 				default:
