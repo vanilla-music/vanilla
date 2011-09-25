@@ -541,7 +541,7 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 	private void addToPlaylist(long playlistId, Intent intent)
 	{
 		QueryTask query = buildQueryFromIntent(intent, true);
-		int count = Playlist.addToPlaylist(this, playlistId, query);
+		int count = Playlist.addToPlaylist(getContentResolver(), playlistId, query);
 
 		String message = getResources().getQuantityString(R.plurals.added_to_playlist, count, count, intent.getStringExtra("playlistName"));
 		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
@@ -559,8 +559,9 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 		int type = intent.getIntExtra("type", 1);
 		long id = intent.getLongExtra("id", -1);
 
+		ContentResolver resolver = getContentResolver();
 		if (type == MediaUtils.TYPE_PLAYLIST) {
-			Playlist.deletePlaylist(this, id);
+			Playlist.deletePlaylist(resolver, id);
 			String message = getResources().getString(R.string.playlist_deleted, intent.getStringExtra("title"));
 			Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 		} else {
@@ -603,7 +604,7 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 		case MENU_ADD_TO_PLAYLIST: {
 			SubMenu playlistMenu = item.getSubMenu();
 			playlistMenu.add(0, MENU_NEW_PLAYLIST, 0, R.string.new_playlist).setIntent(intent);
-			Cursor cursor = Playlist.queryPlaylists(this);
+			Cursor cursor = Playlist.queryPlaylists(getContentResolver());
 			if (cursor != null) {
 				for (int i = 0, count = cursor.getCount(); i != count; ++i) {
 					cursor.moveToPosition(i);
@@ -717,7 +718,7 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 			NewPlaylistDialog dialog = (NewPlaylistDialog)message.obj;
 			if (dialog.isAccepted()) {
 				String name = dialog.getText();
-				long playlistId = Playlist.createPlaylist(this, name);
+				long playlistId = Playlist.createPlaylist(getContentResolver(), name);
 				Intent intent = dialog.getIntent();
 				intent.putExtra("playlistName", name);
 				addToPlaylist(playlistId, intent);
@@ -731,7 +732,7 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 			NewPlaylistDialog dialog = (NewPlaylistDialog)message.obj;
 			if (dialog.isAccepted()) {
 				long playlistId = dialog.getIntent().getLongExtra("id", -1);
-				Playlist.renamePlaylist(this, playlistId, dialog.getText());
+				Playlist.renamePlaylist(getContentResolver(), playlistId, dialog.getText());
 			}
 			break;
 		}

@@ -405,7 +405,7 @@ public final class SongTimeline {
 						song = timeline.get(0);
 					break;
 				case FINISH_RANDOM:
-					song = MediaUtils.randomSong(mContext);
+					song = MediaUtils.randomSong(mContext.getContentResolver());
 					if (song == null)
 						return null;
 					timeline.add(song);

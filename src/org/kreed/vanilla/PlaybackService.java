@@ -623,7 +623,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		Song song = mTimeline.shiftCurrentSong(delta);
 		mCurrentSong = song;
 		if (song == null || song.id == -1 || song.path == null) {
-			if (MediaUtils.isSongAvailable(this)) {
+			if (MediaUtils.isSongAvailable(getContentResolver())) {
 				int flag = (mState & FLAG_RANDOM) == 0 ? FLAG_EMPTY_QUEUE : FLAG_ERROR;
 				synchronized (mStateLock) {
 					updateState((mState | flag) & ~FLAG_NO_MEDIA);
@@ -780,7 +780,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 	public void onMediaChange()
 	{
-		if (MediaUtils.isSongAvailable(this)) {
+		if (MediaUtils.isSongAvailable(getContentResolver())) {
 			if ((mState & FLAG_NO_MEDIA) != 0)
 				setCurrentSong(0);
 		} else {
@@ -1067,7 +1067,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			id = current.albumId;
 			break;
 		case MediaUtils.TYPE_GENRE:
-			id = MediaUtils.queryGenreForSong(this, current.id);
+			id = MediaUtils.queryGenreForSong(getContentResolver(), current.id);
 			break;
 		default:
 			throw new IllegalArgumentException("Unsupported media type: " + type);

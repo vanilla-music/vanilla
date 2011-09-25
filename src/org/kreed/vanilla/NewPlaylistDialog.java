@@ -23,6 +23,7 @@
 package org.kreed.vanilla;
 
 import android.app.Dialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -140,7 +141,8 @@ public class NewPlaylistDialog extends Dialog implements TextWatcher, View.OnCli
 			mPositiveButton.setEnabled(true);
 			// Update the action button based on whether there is an
 			// existing playlist with the given name.
-			int res = Playlist.getPlaylist(getContext(), string) == -1 ? mActionRes : R.string.overwrite;
+			ContentResolver resolver = getContext().getContentResolver();
+			int res = Playlist.getPlaylist(resolver, string) == -1 ? mActionRes : R.string.overwrite;
 			mPositiveButton.setText(res);
 		}
 	}

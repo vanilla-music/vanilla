@@ -229,14 +229,15 @@ public class MediaUtils {
 	/**
 	 * Query the MediaStore to determine the id of the genre the song belongs
 	 * to.
+	 *
+	 * @param resolver A ContentResolver to use.
+	 * @param id The id of the song to query the genre for.
 	 */
-	public static long queryGenreForSong(Context context, long id)
+	public static long queryGenreForSong(ContentResolver resolver, long id)
 	{
 		// This is terribly inefficient, but it seems to be the only way to do
 		// this. Honeycomb introduced an API to query the genre of the song.
 		// We should look into it when ICS is released.
-
-		ContentResolver resolver = context.getContentResolver();
 
 		// query ids of all the genres
 		Uri uri = MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI;
@@ -380,14 +381,13 @@ public class MediaUtils {
 	/**
 	 * Determine if any songs are available from the library.
 	 *
-	 * @param context A context to use.
+	 * @param resolver A ContentResolver to use.
 	 * @return True if it's possible to retrieve any songs, false otherwise. For
 	 * example, false could be returned if there are no songs in the library.
 	 */
-	public static boolean isSongAvailable(Context context)
+	public static boolean isSongAvailable(ContentResolver resolver)
 	{
 		if (sSongCount == -1) {
-			ContentResolver resolver = context.getContentResolver();
 			Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 			String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
 			Cursor cursor = resolver.query(media, new String[]{"count(_id)"}, selection, null, null);
@@ -407,14 +407,13 @@ public class MediaUtils {
 	 * Returns a shuffled array contaning the ids of all the songs on the
 	 * device's library.
 	 *
-	 * @param context A context to use.
+	 * @param resolver A ContentResolver to use.
 	 */
-	public static long[] loadAllSongs(Context context)
+	public static long[] queryAllSongs(ContentResolver resolver)
 	{
 		sAllSongsIdx = 0;
 		sRandomCacheEnd = -1;
 
-		ContentResolver resolver = context.getContentResolver();
 		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 		String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
 		Cursor cursor = resolver.query(media, Song.EMPTY_PROJECTION, selection, null, null);
@@ -433,7 +432,7 @@ public class MediaUtils {
 		sSongCount = count;
 		cursor.close();
 
-		MediaUtils.shuffle(ids);
+		shuffle(ids);
 
 		return ids;
 	}
@@ -448,14 +447,14 @@ public class MediaUtils {
 	 * Returns a song randomly selected from all the songs in the Android
 	 * MediaStore.
 	 *
-	 * @param context A context to use.
+	 * @param resolver A ContentResolver to use.
 	 */
-	public static Song randomSong(Context context)
+	public static Song randomSong(ContentResolver resolver)
 	{
 		long[] songs = sAllSongs;
 
 		if (songs == null) {
-			songs = loadAllSongs(context);
+			songs = queryAllSongs(resolver);
 			if (songs == null)
 				return null;
 			sAllSongs = songs;
@@ -466,7 +465,6 @@ public class MediaUtils {
 		}
 
 		if (sAllSongsIdx >= sRandomCacheEnd) {
-			ContentResolver resolver = context.getContentResolver();
 			Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 
 			StringBuilder selection = new StringBuilder("_ID IN (");
