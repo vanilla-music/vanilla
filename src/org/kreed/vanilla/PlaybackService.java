@@ -22,21 +22,17 @@
 
 package org.kreed.vanilla;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.EOFException;
-import java.io.IOException;
-import java.util.ArrayList;
-
 import android.app.NotificationManager;
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.ContentObserver;
+import android.database.Cursor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Handler;
@@ -51,6 +47,12 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.EOFException;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 
 public final class PlaybackService extends Service implements Handler.Callback, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, SharedPreferences.OnSharedPreferenceChangeListener, SongTimeline.Callback {
 	/**
@@ -949,15 +951,36 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	}
 
 	/**
-	 * Remove the song with the given id from the timeline and advance to the
-	 * next song if the given song is currently playing.
+	 * Delete all the songs in the given media set. Should be run on a
+	 * background thread.
 	 *
-	 * @param id The MediaStore id of the song to remove.
-	 * @see SongTimeline#removeSong(long)
+	 * @param type One of the TYPE_* constants, excluding playlists.
+	 * @param id The MediaStore id of the media to delete.
+	 * @return The number of songs deleted.
 	 */
-	public void removeSong(long id)
+	public int deleteMedia(int type, long id)
 	{
-		mTimeline.removeSong(id);
+		int count = 0;
+
+		ContentResolver resolver = getContentResolver();
+		String[] projection = new String [] { MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DATA };
+		Cursor cursor = MediaUtils.buildQuery(type, id, projection, null).runQuery(resolver);
+
+		if (cursor != null) {
+			while (cursor.moveToNext()) {
+				if (new File(cursor.getString(1)).delete()) {
+					long songId = cursor.getLong(0);
+					String where = MediaStore.Audio.Media._ID + '=' + songId;
+					resolver.delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, where, null);
+					mTimeline.removeSong(songId);
+					++count;
+				}
+			}
+
+			cursor.close();
+		}
+
+		return count;
 	}
 
 	/**

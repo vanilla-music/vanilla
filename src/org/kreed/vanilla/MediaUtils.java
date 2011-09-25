@@ -23,11 +23,9 @@
 package org.kreed.vanilla;
 
 import android.content.ContentResolver;
-import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
-import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -187,43 +185,6 @@ public class MediaUtils {
 		default:
 			throw new IllegalArgumentException("Specified type not valid: " + type);
 		}
-	}
-
-	/**
-	 * Delete all the songs in the given media set. Should be run on a
-	 * background thread.
-	 *
-	 * @param context A context to use.
-	 * @param type One of the TYPE_* constants, excluding playlists.
-	 * @param id The MediaStore id of the media to delete.
-	 * @return The number of songs deleted.
-	 */
-	public static int deleteMedia(Context context, int type, long id)
-	{
-		int count = 0;
-
-		ContentResolver resolver = context.getContentResolver();
-		String[] projection = new String [] { MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DATA };
-		Cursor cursor = buildQuery(type, id, projection, null).runQuery(resolver);
-
-		if (cursor != null) {
-			PlaybackService service = PlaybackService.hasInstance() ? PlaybackService.get(context) : null;
-
-			while (cursor.moveToNext()) {
-				if (new File(cursor.getString(1)).delete()) {
-					long songId = cursor.getLong(0);
-					String where = MediaStore.Audio.Media._ID + '=' + songId;
-					resolver.delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, where, null);
-					if (service != null)
-						service.removeSong(songId);
-					++count;
-				}
-			}
-
-			cursor.close();
-		}
-
-		return count;
 	}
 
 	/**

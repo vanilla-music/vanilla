@@ -559,13 +559,12 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 		int type = intent.getIntExtra("type", 1);
 		long id = intent.getLongExtra("id", -1);
 
-		ContentResolver resolver = getContentResolver();
 		if (type == MediaUtils.TYPE_PLAYLIST) {
-			Playlist.deletePlaylist(resolver, id);
+			Playlist.deletePlaylist(getContentResolver(), id);
 			String message = getResources().getString(R.string.playlist_deleted, intent.getStringExtra("title"));
 			Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 		} else {
-			int count = MediaUtils.deleteMedia(this, type, id);
+			int count = PlaybackService.get(this).deleteMedia(type, id);
 			String message = getResources().getQuantityString(R.plurals.deleted, count, count);
 			Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 		}
