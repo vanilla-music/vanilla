@@ -27,7 +27,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -75,7 +74,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	{
 		super.onCreate(icicle);
 
-		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+		SharedPreferences settings = PlaybackService.getSettings(this);
 		int displayMode = Integer.parseInt(settings.getString("display_mode", "0"));
 		boolean hiddenControls = settings.getBoolean("hidden_controls", false);
 
@@ -369,7 +368,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	{
 		switch (message.what) {
 		case MSG_SAVE_CONTROLS: {
-			SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+			SharedPreferences settings = PlaybackService.getSettings(this);
 			SharedPreferences.Editor editor = settings.edit();
 			editor.putBoolean("hidden_controls", message.arg1 == 1);
 			editor.commit();

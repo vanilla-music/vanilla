@@ -34,7 +34,6 @@ import android.graphics.drawable.PaintDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -113,7 +112,7 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 
 		MediaView.init(this);
 
-		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+		SharedPreferences settings = PlaybackService.getSettings(this);
 		if (settings.getBoolean("controls_in_selector", false)) {
 			setContentView(R.layout.library_withcontrols);
 
@@ -185,7 +184,7 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 	{
 		super.onStart();
 
-		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+		SharedPreferences settings = PlaybackService.getSettings(this);
 		mDefaultAction = Integer.parseInt(settings.getString("default_action_int", "0"));
 		mLastActedId = -2;
 		updateHeaders();

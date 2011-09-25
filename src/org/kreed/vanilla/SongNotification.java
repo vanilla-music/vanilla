@@ -28,7 +28,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -64,7 +63,7 @@ public class SongNotification extends Notification {
 	 */
 	public SongNotification(Context context, Song song, boolean playing)
 	{
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+		SharedPreferences prefs = PlaybackService.getSettings(context);
 		int action = Integer.parseInt(prefs.getString("notification_action", "0"));
 		int statusIcon = playing ? R.drawable.status_icon : R.drawable.status_icon_paused;
 

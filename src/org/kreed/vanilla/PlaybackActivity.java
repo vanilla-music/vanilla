@@ -32,7 +32,6 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.os.SystemClock;
-import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -109,7 +108,7 @@ public class PlaybackActivity extends Activity
 		else
 			startService(new Intent(this, PlaybackService.class));
 
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		SharedPreferences prefs = PlaybackService.getSettings(this);
 		mUpAction = Integer.parseInt(prefs.getString("swipe_up_action", "0"));
 		mDownAction = Integer.parseInt(prefs.getString("swipe_down_action", "0"));
 		mCoverPressAction = Integer.parseInt(prefs.getString("cover_press_action", "12"));

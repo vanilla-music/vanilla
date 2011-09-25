@@ -157,6 +157,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	private static Object sWait = new Object();
 	private static PlaybackService sInstance;
 	private static ArrayList<PlaybackActivity> sActivities = new ArrayList<PlaybackActivity>();
+	/**
+	 * Cached app-wide SharedPreferences instance.
+	 */
+	private static SharedPreferences sSettings;
 
 	boolean mHeadsetPause;
 	private boolean mScrobble;
@@ -175,7 +179,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	MediaPlayer mMediaPlayer;
 	private boolean mMediaPlayerInitialized;
 	private PowerManager.WakeLock mWakeLock;
-	private SharedPreferences mSettings;
 	private NotificationManager mNotificationManager;
 	private AudioManager mAudioManager;
 
@@ -217,7 +220,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 		mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
 
-		SharedPreferences settings = getSettings();
+		SharedPreferences settings = getSettings(this);
 		settings.registerOnSharedPreferenceChangeListener(this);
 		mNotificationMode = Integer.parseInt(settings.getString("notification_mode", "1"));
 		mScrobble = settings.getBoolean("scrobble", false);
@@ -321,16 +324,16 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 * Return the SharedPreferences instance containing the PlaybackService
 	 * settings, creating it if necessary.
 	 */
-	private SharedPreferences getSettings()
+	public static SharedPreferences getSettings(Context context)
 	{
-		if (mSettings == null)
-			mSettings = PreferenceManager.getDefaultSharedPreferences(this);
-		return mSettings;
+		if (sSettings == null)
+			sSettings = PreferenceManager.getDefaultSharedPreferences(context);
+		return sSettings;
 	}
 
 	private void loadPreference(String key)
 	{
-		SharedPreferences settings = getSettings();
+		SharedPreferences settings = getSettings(this);
 		if ("headset_pause".equals(key)) {
 			mHeadsetPause = settings.getBoolean("headset_pause", true);
 		} else if ("remote_player".equals(key)) {
@@ -854,7 +857,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			runQuery(message.arg1, (QueryTask)message.obj);
 			break;
 		case POST_CREATE:
-			mHeadsetPause = mSettings.getBoolean("headset_pause", true);
+			mHeadsetPause = getSettings(this).getBoolean("headset_pause", true);
 			setupReceiver();
 
 			mCallListener = new InCallListener();

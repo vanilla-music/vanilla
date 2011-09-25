@@ -31,7 +31,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.SystemClock;
-import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -127,7 +126,7 @@ public class MediaButtonHandler {
 	public static boolean useHeadsetControls(Context context)
 	{
 		if (mUseControls == -1) {
-			SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+			SharedPreferences settings = PlaybackService.getSettings(context);
 			mUseControls = settings.getBoolean("media_button", true) ? 1 : 0;
 		}
 

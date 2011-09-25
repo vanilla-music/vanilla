@@ -29,7 +29,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.widget.RemoteViews;
 
 /**
@@ -89,7 +88,7 @@ public class OneCellWidget extends AppWidgetProvider {
 		if (!sEnabled)
 			return;
 
-		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+		SharedPreferences settings = PlaybackService.getSettings(context);
 		boolean doubleTap = settings.getBoolean("double_tap", false);
 
 		RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.one_cell_widget);

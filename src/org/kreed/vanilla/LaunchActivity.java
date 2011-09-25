@@ -26,7 +26,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 
 /**
  * Very simple activity that simply launches the appropriate Activity based on
@@ -42,7 +41,7 @@ public class LaunchActivity extends Activity {
 	{
 		super.onCreate(state);
 
-		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+		SharedPreferences settings = PlaybackService.getSettings(this);
 		boolean selector = settings.getBoolean("selector_on_startup", false);
 		startActivity(new Intent(this, selector ? LibraryActivity.class : FullPlaybackActivity.class));
 		finish();
