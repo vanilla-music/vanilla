@@ -138,28 +138,31 @@ THE SOFTWARE.
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="bottom|left" />
-	<RelativeLayout
+	<LinearLayout
 		android:id="@+id/search_box"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:layout_gravity="bottom"
 		android:paddingTop="4dip"
 		android:paddingLeft="4dip"
-		android:paddingRight="4dip"
 		android:visibility="gone"
 		android:background="@drawable/search_background">
 		<EditText
 			android:id="@+id/filter_text"
-			android:layout_width="fill_parent"
+			android:layout_width="0px"
 			android:layout_height="wrap_content"
+			android:layout_weight="1"
 			android:inputType="textFilter" />
 		<ImageButton
 			android:id="@+id/clear_button"
+			android:scaleType="fitCenter"
+			android:paddingLeft="4dip"
+			android:paddingRight="4dip"
+			android:paddingBottom="4dip"
 			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_alignParentRight="true"
+			android:layout_height="fill_parent"
 			android:background="@null"
-			android:src="@drawable/ic_menu_close_clear_cancel" />
-	</RelativeLayout>
+			android:src="@drawable/close" />
+	</LinearLayout>
 </merge>
 
