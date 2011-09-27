@@ -227,9 +227,6 @@ public final class CoverView extends View implements Handler.Callback {
 				}
 			}
 
-			if (Math.abs(mStartX - x) + Math.abs(mStartY - y) > 10)
-				mHandler.removeMessages(MSG_LONG_CLICK);
-
 			mLastMotionX = x;
 			mLastMotionY = y;
 			break;
@@ -373,8 +370,10 @@ public final class CoverView extends View implements Handler.Callback {
 			generateBitmap((Song)message.obj);
 			break;
 		case MSG_LONG_CLICK:
-			mIgnoreNextUp = true;
-			performLongClick();
+			if (Math.abs(mStartX - mLastMotionX) + Math.abs(mStartY - mLastMotionY) < 10) {
+				mIgnoreNextUp = true;
+				performLongClick();
+			}
 			break;
 		default:
 			return false;
