@@ -166,6 +166,11 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 	boolean mHeadsetPause;
 	private boolean mScrobble;
+	/**
+	 * If true, emulate the music status broadcasts sent by the stock android
+	 * music player.
+	 */
+	private boolean mStockBroadcast;
 	private int mNotificationMode;
 	/**
 	 * If true, audio will not be played through the speaker.
@@ -234,6 +239,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		mIdleTimeout = settings.getBoolean("use_idle_timeout", false) ? settings.getInt("idle_timeout", 3600) : 0;
 		Song.mDisableCoverArt = settings.getBoolean("disable_cover_art", false);
 		mHeadsetOnly = settings.getBoolean("headset_only", false);
+		mStockBroadcast = settings.getBoolean("stock_broadcast", false);
 
 		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
 		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicLock");
@@ -380,6 +386,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			mHeadsetOnly = settings.getBoolean(key, false);
 			if (mHeadsetOnly && isSpeakerOn())
 				unsetFlag(FLAG_PLAYING);
+		} else if ("stock_broadcast".equals(key)) {
+			mStockBroadcast = settings.getBoolean(key, false);
 		}
 	}
 
@@ -497,6 +505,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 		updateWidgets();
 
+		if (mStockBroadcast)
+			stockMusicBroadcast();
 		if (mScrobble)
 			scrobble();
 	}
@@ -525,15 +535,29 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		FourSquareWidget.updateWidget(this, manager, song, state);
 	}
 
+	/**
+	 * Send a broadcast emulating that of the stock music player.
+	 */
+	private void stockMusicBroadcast()
+	{
+		Song song = mCurrentSong;
+		Intent intent = new Intent("com.android.music.playstatechanged");
+		intent.putExtra("playing", (mState & FLAG_PLAYING) != 0);
+		if (song != null) {
+			intent.putExtra("track", song.title);
+			intent.putExtra("album", song.album);
+			intent.putExtra("artist", song.artist);
+			intent.putExtra("songid", song.id);
+			intent.putExtra("albumid", song.albumId);
+		}
+		sendBroadcast(intent);
+	}
+
 	private void scrobble()
 	{
-		assert(mScrobble == true);
-
 		Song song = mCurrentSong;
-		int state = mState;
-
 		Intent intent = new Intent("net.jjc1138.android.scrobbler.action.MUSIC_STATUS");
-		intent.putExtra("playing", (state & FLAG_PLAYING) != 0);
+		intent.putExtra("playing", (mState & FLAG_PLAYING) != 0);
 		if (song != null)
 			intent.putExtra("id", (int)song.id);
 		sendBroadcast(intent);

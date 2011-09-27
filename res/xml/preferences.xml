@@ -147,5 +147,10 @@ THE SOFTWARE.
 			android:title="@string/scrobble_title"
 			android:defaultValue="true"
 			android:summary="@string/scrobble_summary" />
+		<CheckBoxPreference
+			android:key="stock_broadcast"
+			android:title="@string/stock_broadcast_title"
+			android:summary="@string/stock_broadcast_summary"
+			android:defaultValue="false" />
 	</PreferenceCategory>
 </PreferenceScreen>
