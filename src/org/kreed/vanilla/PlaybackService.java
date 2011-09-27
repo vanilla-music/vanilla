@@ -177,6 +177,15 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 */
 	private boolean mHeadsetOnly;
 	/**
+	 * If true, start playing when the headset is plugged in.
+	 */
+	private boolean mHeadsetPlay;
+	/**
+	 * True if the initial broadcast sent when registering HEADSET_PLUG has
+	 * been receieved.
+	 */
+	private boolean mPlugInitialized;
+	/**
 	 * The time to wait before considering the player idle.
 	 */
 	private int mIdleTimeout;
@@ -240,6 +249,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		Song.mDisableCoverArt = settings.getBoolean("disable_cover_art", false);
 		mHeadsetOnly = settings.getBoolean("headset_only", false);
 		mStockBroadcast = settings.getBoolean("stock_broadcast", false);
+		mHeadsetPlay = settings.getBoolean("headset_play", false);
 
 		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
 		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicLock");
@@ -388,6 +398,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				unsetFlag(FLAG_PLAYING);
 		} else if ("stock_broadcast".equals(key)) {
 			mStockBroadcast = settings.getBoolean(key, false);
+		} else if ("headset_play".equals(key)) {
+			mHeadsetPlay = settings.getBoolean(key, false);
 		}
 	}
 
@@ -766,6 +778,11 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			if (AudioManager.ACTION_AUDIO_BECOMING_NOISY.equals(action)) {
 				if (mHeadsetPause)
 					unsetFlag(FLAG_PLAYING);
+			} else if (Intent.ACTION_HEADSET_PLUG.equals(action)) {
+				if (mHeadsetPlay && mPlugInitialized && intent.getIntExtra("state", 0) == 1)
+					setFlag(FLAG_PLAYING);
+				else if (!mPlugInitialized)
+					mPlugInitialized = true;
 			}
 		}
 	};
@@ -830,6 +847,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			mReceiver = new Receiver();
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
+		filter.addAction(Intent.ACTION_HEADSET_PLUG);
 		registerReceiver(mReceiver, filter);
 	}
 

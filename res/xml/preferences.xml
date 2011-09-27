@@ -43,6 +43,11 @@ THE SOFTWARE.
 			android:title="@string/headset_pause_title"
 			android:defaultValue="true"
 			android:summary="@string/headset_pause_summary" />
+		<CheckBoxPreference
+			android:key="headset_play"
+			android:title="@string/headset_play_title"
+			android:summary="@string/headset_play_summary"
+			android:defaultValue="false" />
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/pref_notifications">
 		<ListPreference

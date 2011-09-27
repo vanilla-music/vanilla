@@ -124,6 +124,8 @@ THE SOFTWARE.
 	<string name="headset_only_summary">Only play music through an external output (e.g. headphones, Bluetooth)</string>
 	<string name="headset_pause_title">Pause When Unplugged</string>
 	<string name="headset_pause_summary">Pause when the headphones are unplugged.</string>
+	<string name="headset_play_title">Play When Plugged</string>
+	<string name="headset_play_summary">Play when the headphones are plugged in. (Only works when the service is running.)</string>
 
 	<string name="pref_notifications">Notifications</string>
 	<string name="notification_mode_title">Notification Mode</string>
