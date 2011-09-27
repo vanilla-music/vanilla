@@ -76,6 +76,14 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 */
 	public static final String ACTION_TOGGLE_PLAYBACK = "org.kreed.vanilla.action.TOGGLE_PLAYBACK";
 	/**
+	 * Action for startService: start playback if paused.
+	 */
+	public static final String ACTION_PLAY = "org.kreed.vanilla.action.PLAY";
+	/**
+	 * Action for startService: pause playback if playing.
+	 */
+	public static final String ACTION_PAUSE = "org.kreed.vanilla.action.PAUSE";
+	/**
 	 * Action for startService: toggle playback on/off.
 	 *
 	 * Unlike {@link PlaybackService#ACTION_TOGGLE_PLAYBACK}, the toggle does
@@ -299,9 +307,12 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				go(-1, false);
 			} else if (ACTION_PREVIOUS_SONG_AUTOPLAY.equals(action)) {
 				go(-1, true);
+			} else if (ACTION_PLAY.equals(action)) {
+				play();
+			} else if (ACTION_PAUSE.equals(action)) {
+				pause();
 			}
 
-			userActionTriggered();
 			MediaButtonHandler buttons = MediaButtonHandler.getInstance(this);
 			if (buttons != null)
 				buttons.registerMediaButton();
@@ -584,6 +595,39 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	}
 
 	/**
+	 * Start playing if currently paused.
+	 *
+	 * @return The new state after this is called.
+	 */
+	public int play()
+	{
+		synchronized (mStateLock) {
+			if ((mState & FLAG_EMPTY_QUEUE) != 0) {
+				updateState((mState | FLAG_RANDOM) & ~FLAG_REPEAT);
+				setCurrentSong(0);
+			}
+
+			int state = updateState(mState | FLAG_PLAYING);
+			userActionTriggered();
+			return state;
+		}
+	}
+
+	/**
+	 * Pause if currently playing.
+	 *
+	 * @return The new state after this is called.
+	 */
+	public int pause()
+	{
+		synchronized (mStateLock) {
+			int state = updateState(mState & ~FLAG_PLAYING);
+			userActionTriggered();
+			return state;
+		}
+	}
+
+	/**
 	 * If playing, pause. If paused, play.
 	 *
 	 * @return The new state after this is called.
@@ -591,13 +635,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	public int playPause()
 	{
 		synchronized (mStateLock) {
-			userActionTriggered();
-			// If trying to play with empty queue, enter random mode.
-			if ((mState & FLAG_PLAYING) == 0 && (mState & FLAG_EMPTY_QUEUE) != 0) {
-				updateState((mState | FLAG_RANDOM) & ~FLAG_REPEAT);
-				setCurrentSong(0);
-			}
-			return updateState(mState ^ FLAG_PLAYING);
+			if ((mState & FLAG_PLAYING) != 0)
+				return pause();
+			else
+				return play();
 		}
 	}
 
@@ -767,6 +808,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			playPause();
 		else
 			setCurrentSong(delta);
+
+		userActionTriggered();
 	}
 
 	private class Receiver extends BroadcastReceiver {

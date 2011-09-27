@@ -84,7 +84,15 @@ THE SOFTWARE.
 				<action android:name="android.intent.action.MEDIA_BUTTON" />
 			</intent-filter>
 		</receiver>
-		<service android:name="PlaybackService" />
+		<service android:name="PlaybackService">
+			<intent-filter>
+				<action android:name="org.kreed.vanilla.action.PLAY" />
+				<action android:name="org.kreed.vanilla.action.PAUSE" />
+				<action android:name="org.kreed.vanilla.action.TOGGLE_PLAYBACK" />
+				<action android:name="org.kreed.vanilla.action.NEXT_SONG" />
+				<action android:name="org.kreed.vanilla.action.PREVIOUS_SONG" />
+			</intent-filter>
+		</service>
 		<activity android:name="PreferencesActivity" />
 	</application>
 	<uses-sdk android:minSdkVersion="5" android:targetSdkVersion="10" />
