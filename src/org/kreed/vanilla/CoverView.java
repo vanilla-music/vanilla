@@ -68,6 +68,10 @@ public final class CoverView extends View implements Handler.Callback {
 	 */
 	private Song[] mSongs = new Song[3];
 	/**
+	 * The covers for the current songs: 0 = previous, 1 = current, and 2 = next.
+	 */
+	private Bitmap[] mBitmaps = new Bitmap[3];
+	/**
 	 * Cache of cover bitmaps generated for songs. The song ids are the keys.
 	 */
 	private Cache<Bitmap> mBitmapCache = new Cache<Bitmap>(8);
@@ -166,16 +170,11 @@ public final class CoverView extends View implements Handler.Callback {
 		canvas.drawColor(Color.BLACK);
 
 		for (int x = 0, i = 0; i != 3; ++i, x += width) {
-			if (mSongs[i] != null && scrollX + width > x && scrollX < x + width) {
-				long id = mSongs[i].id;
-				if (id == -1)
-					continue;
-				Bitmap bitmap = mBitmapCache.get(id);
-				if (bitmap != null) {
-					int xOffset = (width - bitmap.getWidth()) / 2;
-					int yOffset = (height - bitmap.getHeight()) / 2;
-					canvas.drawBitmap(bitmap, x + xOffset, yOffset, null);
-				}
+			Bitmap bitmap = mBitmaps[i];
+			if (bitmap != null && scrollX + width > x && scrollX < x + width) {
+				int xOffset = (width - bitmap.getWidth()) / 2;
+				int yOffset = (height - bitmap.getHeight()) / 2;
+				canvas.drawBitmap(bitmap, x + xOffset, yOffset, null);
 			}
 		}
 	}
@@ -307,20 +306,25 @@ public final class CoverView extends View implements Handler.Callback {
 	}
 
 	/**
-	 * Generates a bitmap for the given Song and stores it in the cache.
+	 * Generates a bitmap for the given song if the cache does not contain one
+	 * for it, or moves the bitmap to the top of the cache if it does.
 	 *
-	 * Prunes old bitmaps if the timeline becomes full.
+	 * @param i The position of the song in mSongs.
 	 */
-	private void generateBitmap(Song song)
+	private void generateBitmap(int i)
 	{
+		Song song = mSongs[i];
 		if (song == null || song.id == -1)
 			return;
 
 		Bitmap bitmap = mBitmapCache.get(song.id);
 		if (bitmap == null) {
-			mBitmapCache.put(song.id, CoverBitmap.createBitmap(getContext(), mCoverStyle, song, getWidth(), getHeight(), mBitmapCache.discardOldest()));
+			bitmap = CoverBitmap.createBitmap(getContext(), mCoverStyle, song, getWidth(), getHeight(), mBitmapCache.discardOldest());
+			mBitmaps[i] = bitmap;
+			mBitmapCache.put(song.id, bitmap);
 			postInvalidate();
 		} else {
+			mBitmaps[i] = bitmap;
 			mBitmapCache.touch(song.id);
 		}
 	}
@@ -332,8 +336,12 @@ public final class CoverView extends View implements Handler.Callback {
 	public void setSong(int i, Song song)
 	{
 		mSongs[i] = song;
-		if (song != null)
-			mHandler.sendMessage(mHandler.obtainMessage(MSG_GENERATE_BITMAP, song));
+		if (song == null) {
+			mBitmaps[i] = null;
+		} else {
+			mBitmaps[i] = mBitmapCache.get(song.id);
+			mHandler.sendMessage(mHandler.obtainMessage(MSG_GENERATE_BITMAP, i, 0));
+		}
 	}
 
 	/**
@@ -366,7 +374,7 @@ public final class CoverView extends View implements Handler.Callback {
 	{
 		switch (message.what) {
 		case MSG_GENERATE_BITMAP:
-			generateBitmap((Song)message.obj);
+			generateBitmap(message.arg1);
 			break;
 		case MSG_LONG_CLICK:
 			if (Math.abs(mStartX - mLastMotionX) + Math.abs(mStartY - mLastMotionY) < 10) {
