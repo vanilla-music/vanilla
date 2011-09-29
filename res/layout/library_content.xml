@@ -44,7 +44,8 @@ THE SOFTWARE.
 				android:gravity="center"
 				android:layout_weight="1"
 				android:layout_width="0px"
-				android:layout_height="64dip" />
+				android:layout_height="64dip"
+				android:singleLine="true" />
 			<TextView
 				android:id="@+id/album_tab"
 				android:focusable="true"
@@ -58,7 +59,8 @@ THE SOFTWARE.
 				android:gravity="center"
 				android:layout_weight="1"
 				android:layout_width="0px"
-				android:layout_height="64dip" />
+				android:layout_height="64dip"
+				android:singleLine="true" />
 			<TextView
 				android:id="@+id/song_tab"
 				android:focusable="true"
@@ -72,7 +74,8 @@ THE SOFTWARE.
 				android:gravity="center"
 				android:layout_weight="1"
 				android:layout_width="0px"
-				android:layout_height="64dip" />
+				android:layout_height="64dip"
+				android:singleLine="true" />
 			<TextView
 				android:id="@+id/playlist_tab"
 				android:focusable="true"
@@ -86,7 +89,8 @@ THE SOFTWARE.
 				android:gravity="center"
 				android:layout_weight="1"
 				android:layout_width="0px"
-				android:layout_height="64dip" />
+				android:layout_height="64dip"
+				android:singleLine="true" />
 			<TextView
 				android:id="@+id/genre_tab"
 				android:focusable="true"
@@ -100,7 +104,8 @@ THE SOFTWARE.
 				android:gravity="center"
 				android:layout_weight="1"
 				android:layout_width="0px"
-				android:layout_height="64dip" />
+				android:layout_height="64dip"
+				android:singleLine="true" />
 		</TabWidget>
 		<FrameLayout
 			android:id="@+id/lists"
