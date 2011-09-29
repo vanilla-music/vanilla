@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+-->
+<resources>
+	<string name="app_name">Vanilla Music</string>
+
+	<!-- Playback Activity (main screen) -->
+	<string name="no_songs">V zariadení neboli nájdené žiadne skladby.</string>
+	<string name="empty_queue">Neboli vybrané žiadne skladby. Vyberte niektorú z knižnice (vyhľadávaním) alebo zvoľte náhodný výber (cez menu).</string>
+	<string name="settings">Nastavenia</string>
+	<string name="library">Knižnica</string>
+	<string name="display_mode">Režim zobrazenia</string>
+	<string name="shuffle_enable">Náhodné poradie</string>
+	<string name="shuffle_disable">Vypnúť náhodné poradie</string>
+	<string name="shuffle_albums">Náhodné poradie albumov</string>
+	<string name="shuffle_songs_enabled">Náhodné poradie skladieb</string>
+	<string name="shuffle_albums_enabled">Náhodné poradie albumov povolené.</string>
+	<string name="shuffle_disabled">Náhodné poradie vypnuté</string>
+	<string name="repeat_enable">Opakovanie</string>
+	<string name="repeat_current">Opakovať aktuálnu skladbu</string>
+	<string name="repeat_disable">Vypnúť opakovanie</string>
+	<string name="repeat_enabling">Opakovanie všetkých skladieb</string>
+	<string name="repeat_current_enabling">Opakovanie aktuálnej skladby</string>
+	<string name="repeat_disabling">Opakovanie vypnuté</string>
+	<string name="random_enable">Náhodný výber</string>
+	<string name="random_disable">Vypnúť náhodný výber</string>
+	<string name="random_enabling">Náhodný výber zapnutý.</string>
+	<string name="random_disabling">Náhodný výber vypnutý.</string>
+	<string name="song_load_failed">Načítanie skladby %s zlyhalo. Môže byť poškodená, alebo chýba.</string>
+	<string name="queue_cleared">Zoznam vymazaný.</string>
+
+	<!-- Widgets -->
+	<string name="starting">Spúštanie…</string>
+
+	<!-- New Playlist Dialog -->
+	<string name="choose_playlist_name">Vyberte názov zoznamu skladieb</string>
+	<string name="create">Vytvoriť</string>
+	<string name="overwrite">Prepísať</string>
+	<string name="cancel">Zrušiť</string>
+
+	<!-- Song Chooser -->
+	<string name="enqueue">Zaradiť do zoznamu</string>
+	<string name="play">Prehrať</string>
+	<string name="edit">Upraviť</string>
+	<string name="rename">Premenovať</string>
+	<string name="add_to_playlist">Pridať do zoznamu skladieb…</string>
+	<string name="new_playlist">Nový zoznam skladieb…</string>
+	<string name="expand">Rozšíriť</string>
+	<string name="delete">Odstrániť</string>
+	<string name="playback_view">Práve sa prehráva</string>
+	<string name="search">Hľadať</string>
+
+	<plurals name="playing">
+		<item quantity="one">1 prehrávaná skladba.</item>
+		<item quantity="few">%d prehrávané skladby.</item>
+		<item quantity="other">%d prehrávaných skladieb.</item>
+	</plurals>
+	<plurals name="enqueued">
+		<item quantity="one">1 pridaná skladba.</item>
+		<item quantity="few">%d pridané skladby.</item>
+		<item quantity="other">%d pridaných skladieb.</item>
+	</plurals>
+	<plurals name="added_to_playlist">
+		<item quantity="one">1 skladba pridaná do zoznamu skladieb %2$s.</item>
+		<item quantity="few">%1$d skladby pridané do zoznamu skladieb %2$s.</item>		
+		<item quantity="other">%1$d skladieb pridaných do zoznamu skladieb %2$s.</item>
+	</plurals>
+	<string name="deleting">Odstraňuje sa…</string>
+	<string name="playlist_deleted">Zoznam skladieb %s odstránený.</string>
+	<plurals name="deleted">
+		<item quantity="one">1 skladba odstránená.</item>
+		<item quantity="few">%d skladby odstránené.</item>
+		<item quantity="other">%d skladieb odstránených.</item>
+	</plurals>
+
+	<string name="artists">Interpreti</string>
+	<string name="albums">Albumy</string>
+	<string name="songs">Skladby</string>
+	<string name="playlists">Zoznamy skladieb</string>
+	<string name="genres">Žánre</string>
+
+	<string name="none">Nič</string>
+	<string name="unknown">Neznáme</string>
+	<string name="title_by_artist">%1$s od %2$s</string>
+	<string name="play_all">Prehrať všetko</string>
+	<string name="enqueue_all">Pridať do zoznamu všetko</string>
+	<string name="all_songs">Všetky skladby</string>
+
+	<!-- Preferences -->
+	<plurals name="seconds">
+		<item quantity="one">01 sekunda</item>
+		<item quantity="few">%02d sekundy</item>
+		<item quantity="other">%02d sekúnd</item>
+	</plurals>
+	<plurals name="minutes">
+		<item quantity="one">01 minúta</item>
+		<item quantity="few">%02d minúty</item>
+		<item quantity="other">%02d minút</item>
+	</plurals>
+	<plurals name="hours">
+		<item quantity="one">01 hodina</item>
+		<item quantity="few">%02d hodiny</item>
+		<item quantity="other">%02d hodín</item>
+	</plurals>
+
+	<string name="pref_output">Zvukový výstup</string>
+	<string name="volume_title">Hlasitosť</string>
+	<string name="volume_summary">Hlasitosť hudby</string>
+	<string name="media_button_title">Použiť ovládanie náhlavnej súpravy</string>
+	<string name="media_button_summary">Jedným stlačením prehrať/pozastaviť. Dvojitým stlačením nasledujúca.</string>
+	<string name="headset_only_title">Iba externý výstup</string>
+	<string name="headset_only_summary">Prehrá hudbu iba cez externý výstup (napríklad sluchátka, Bluetooth).</string>
+	<string name="headset_pause_title">Pozastaviť pri odpojení</string>
+	<string name="headset_pause_summary">Pozastaví prehrávanie keď odpojíte sluchátka.</string>
+	<string name="headset_play_title">Prehrať po pripojení</string>
+	<string name="headset_play_summary">Spustí prehrávanie keď zapojíte sluchátka. Funguje iba keď beží služba.</string>
+
+	<string name="pref_notifications">Upozornenia</string>
+	<string name="notification_mode_title">Režim upozornení</string>
+	<string name="notification_mode_summary">Kedy zobraziť upozornenie.</string>
+	<string name="notification_action_title">Akcia upozornenia</string>
+	<string name="notification_action_summary">Čo spraviť keď je na upozornenie ťuknuté.</string>
+	<string name="notification_invert_color_title">Invertovať farbu oznámenia</string>
+	<string name="notification_invert_color_summary">Použije biely text namiesto čierneho.</string>
+
+	<string name="pref_playback_view">Zobrazenie prehrávania</string>
+	<string name="display_mode_title">Režim zobrazenia</string>
+	<string name="display_mode_summary">Vzhľad a pozícia grafiky skladby a informácií.</string>
+	<string name="swipe_up_action_title">Akcia prejedním prstu nahor</string>
+	<string name="swipe_up_action_summary">Čo spraviť, keď prejdete prstom nahor.</string>
+	<string name="swipe_down_action_title">Prejdením prstom nadol</string>
+	<string name="swipe_down_action_summary">Čo spraviť keď prejdete prstom nadol.</string>
+	<string name="cover_press_action_title">Akcia pri ťuknutí na obal</string>
+	<string name="cover_press_action_summary">Čo spraviť, keď ťuknete na obal albumu.</string>
+	<string name="cover_longpress_action_title">Akcia pri podržaní na obale</string>
+	<string name="cover_longpress_action_summary">Čo spraviť, keď ťuknete a podržíte na obal albumu.</string>
+	<string name="disable_cover_art_title">Vypnúť obal albumu</string>
+	<string name="disable_cover_art_summary">Nebude zobrazovať obal albumu nikde v aplikácii.</string>
+
+	<string name="pref_song_selector">Zobrazenie knižnice</string>
+	<string name="selector_on_startup_title">Otvoriť po spustení</string>
+	<string name="selector_on_startup_summary">Po spustení otvorí knižnicu.</string>
+	<string name="controls_in_selector_title">Ovládanie v knižnici</string>
+	<string name="controls_in_selector_summary">V knižnici zobrazí aktuálne prehrávanú skladbu a ovládanie prehrávania.</string>
+	<string name="default_action_title">Predvolená akcia</string>
+	<string name="default_action_summary">Čo spraviť, keď ťuknete na položku.</string>
+
+	<string name="pref_misc">Ostatné funkcie</string>
+	<string name="use_idle_timeout_title">Povoliť časový limit nečinnosti</string>
+	<string name="use_idle_timeout_summary">Keď je povolené, prehrávanie sa zastaví po danom čase nečinnosti.</string>
+	<string name="idle_timeout_title">Časový limit nečinnosti</string>
+	<string name="idle_timeout_summary">Čas, ktorý musí ubehnúť pred prejdením do nečinnosti.</string>
+	<string name="double_tap_title">Dvojité ťuknutie na miniaplikáciu</string>
+	<string name="double_tap_summary">Dvojité ťuknutie na 1×1 miniaplikáciu otvorí prehrávač. Vytvorí oneskorenie 0,4 sekúnd pred tým, ako miniaplikácia reaguje na akciu.</string>
+	<string name="scrobble_title">Použiť ScrobbleDroid API</string>
+	<string name="scrobble_summary">Scrobble prístup k Last.FM cez ScrobbleDroid alebo Simple Last.FM Scrobbler.</string>
+	<string name="stock_broadcast_title">Tváriť sa ako originálny prehrávač</string>
+	<string name="stock_broadcast_summary">Tvári sa ako originálny prehrávač hudby posielaním vysielania pre umožnenie spolupráce s ovládaniami, miniaplikáciami zamykania obrazovky.</string>
+</resources>
