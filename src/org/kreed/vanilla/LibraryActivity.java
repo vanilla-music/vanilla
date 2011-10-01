@@ -140,7 +140,7 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 		mArtistAdapter = setupView(R.id.artist_list, MediaUtils.TYPE_ARTIST, true, true, null);
 		mAlbumAdapter = setupView(R.id.album_list, MediaUtils.TYPE_ALBUM, true, true, state == null ? null : (MediaAdapter.Limiter)state.getSerializable("limiter_albums"));
 		mSongAdapter = setupView(R.id.song_list, MediaUtils.TYPE_SONG, false, true, state == null ? null : (MediaAdapter.Limiter)state.getSerializable("limiter_songs"));
-		mPlaylistAdapter = setupView(R.id.playlist_list, MediaUtils.TYPE_PLAYLIST, false, false, null);
+		mPlaylistAdapter = setupView(R.id.playlist_list, MediaUtils.TYPE_PLAYLIST, true, false, null);
 		mGenreAdapter = setupView(R.id.genre_list, MediaUtils.TYPE_GENRE, true, false, state == null ? null : (MediaAdapter.Limiter)state.getSerializable("limiter_genres"));
 		// These should be in the same order as MediaUtils.TYPE_*
 		mAdapters = new MediaAdapter[] { mArtistAdapter, mAlbumAdapter, mSongAdapter, mPlaylistAdapter, mGenreAdapter };
@@ -267,7 +267,7 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 
 		int mode = modeForAction[action];
 		QueryTask query = buildQueryFromIntent(intent, false);
-		PlaybackService.get(this).addSongs(mode, query);
+		PlaybackService.get(this).addSongs(mode, query, 0);
 
 		mLastActedId = intent.getLongExtra("id", -1);
 
@@ -334,12 +334,17 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 	public void onItemClick(AdapterView<?> list, View view, int pos, long id)
 	{
 		MediaView mediaView = (MediaView)view;
-		if (mediaView.isExpanderPressed())
-			expand(createClickIntent((MediaAdapter)list.getAdapter(), mediaView));
-		else if (id == mLastActedId)
+		MediaAdapter adapter = (MediaAdapter)list.getAdapter();
+		if (mediaView.isRightBitmapPressed()) {
+			if (adapter == mPlaylistAdapter)
+				editPlaylist(mediaView.getMediaId(), mediaView.getTitle());
+			else
+				expand(createClickIntent(adapter, mediaView));
+		} else if (id == mLastActedId) {
 			startActivity(new Intent(this, FullPlaybackActivity.class));
-		else
-			pickSongs(createClickIntent((MediaAdapter)list.getAdapter(), mediaView), mDefaultAction);
+		} else {
+			pickSongs(createClickIntent(adapter, mediaView), mDefaultAction);
+		}
 	}
 
 	public void afterTextChanged(Editable editable)
@@ -450,7 +455,6 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 		Intent intent = new Intent();
 		intent.putExtra("type", adapter.getMediaType());
 		intent.putExtra("id", view.getMediaId());
-		intent.putExtra("isHeader", view.isHeader());
 		intent.putExtra("title", view.getTitle());
 		return intent;
 	}
@@ -472,13 +476,12 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 		else
 			projection = empty ? Song.EMPTY_PROJECTION : Song.FILLED_PROJECTION;
 
+		long id = intent.getLongExtra("id", -1);
 		QueryTask query;
-		if (intent.getBooleanExtra("isHeader", false)) {
+		if (id == MediaView.HEADER_ID)
 			query = mAdapters[type - 1].buildSongQuery(projection);
-		} else {
-			long id = intent.getLongExtra("id", -1);
+		else
 			query = MediaUtils.buildQuery(type, id, projection, null);
-		}
 
 		return query;
 	}
@@ -503,7 +506,9 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 		// as worked is performed in the background.
 		Intent intent = createClickIntent(adapter, view);
 
-		if (view.isHeader())
+		boolean isHeader = view.getMediaId() == MediaView.HEADER_ID;
+
+		if (isHeader)
 			menu.setHeaderTitle(getString(R.string.all_songs));
 		else
 			menu.setHeaderTitle(view.getTitle());
@@ -515,9 +520,9 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 			menu.add(0, MENU_EDIT, 0, R.string.edit).setIntent(intent);
 		}
 		menu.addSubMenu(0, MENU_ADD_TO_PLAYLIST, 0, R.string.add_to_playlist).getItem().setIntent(intent);
-		if (view.hasExpanders())
+		if (adapter != mPlaylistAdapter && adapter != mSongAdapter)
 			menu.add(0, MENU_EXPAND, 0, R.string.expand).setIntent(intent);
-		if (!view.isHeader())
+		if (!isHeader)
 			menu.add(0, MENU_DELETE, 0, R.string.delete).setIntent(intent);
 	}
 
@@ -536,6 +541,17 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 
 		String message = getResources().getQuantityString(R.plurals.added_to_playlist, count, count, intent.getStringExtra("playlistName"));
 		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+	}
+
+	/**
+	 * Open the playlist editor for the playlist with the given id.
+	 */
+	private void editPlaylist(long playlistId, String title)
+	{
+		Intent launch = new Intent(this, PlaylistActivity.class);
+		launch.putExtra("playlist", playlistId);
+		launch.putExtra("title", title);
+		startActivity(launch);
 	}
 
 	/**
@@ -609,13 +625,9 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 			}
 			break;
 		}
-		case MENU_EDIT: {
-			Intent launch = new Intent(Intent.ACTION_EDIT);
-			launch.setDataAndType(Uri.EMPTY, "vnd.android.cursor.dir/track");
-			launch.putExtra("playlist", String.valueOf(intent.getLongExtra("id", 0)));
-			startActivity(launch);
+		case MENU_EDIT:
+			editPlaylist(intent.getLongExtra("id", 0), intent.getStringExtra("title"));
 			break;
-		}
 		case MENU_SELECT_PLAYLIST:
 			mHandler.sendMessage(mHandler.obtainMessage(MSG_ADD_TO_PLAYLIST, intent));
 			break;

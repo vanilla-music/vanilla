@@ -110,7 +110,8 @@ THE SOFTWARE.
 		<FrameLayout
 			android:id="@+id/lists"
 			android:layout_width="fill_parent"
-			android:layout_height="fill_parent">
+			android:layout_height="0px"
+			android:layout_weight="1">
 			<ListView
 				android:id="@+id/artist_list"
 				android:visibility="gone"

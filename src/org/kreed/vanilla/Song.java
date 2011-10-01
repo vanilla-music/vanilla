@@ -77,7 +77,7 @@ public class Song implements Comparable<Song> {
 		MediaStore.Audio.Playlists.Members.ALBUM_ID,
 		MediaStore.Audio.Playlists.Members.ARTIST_ID,
 		MediaStore.Audio.Playlists.Members.DURATION,
-		MediaStore.Audio.Media.TRACK,
+		MediaStore.Audio.Playlists.Members.TRACK,
 	};
 
 	/**

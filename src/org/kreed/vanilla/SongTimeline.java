@@ -74,21 +74,28 @@ public final class SongTimeline {
 	/**
 	 * Clear the timeline and use only the provided songs.
 	 *
-	 * @see SongTimeline#addSongs(int,Cursor)
+	 * @see SongTimeline#addSongs(int,Cursor,int)
 	 */
 	public static final int MODE_PLAY = 0;
 	/**
 	 * Clear the queue and add the songs after the current song.
 	 *
-	 * @see SongTimeline#addSongs(int,Cursor)
+	 * @see SongTimeline#addSongs(int,Cursor,int)
 	 */
 	public static final int MODE_PLAY_NEXT = 1;
 	/**
 	 * Add the songs at the end of the timeline, clearing random songs.
 	 *
-	 * @see SongTimeline#addSongs(int,Cursor)
+	 * @see SongTimeline#addSongs(int,Cursor,int)
 	 */
 	public static final int MODE_ENQUEUE = 2;
+	/**
+	 * Like play mode, but make the current position point to the song at
+	 * the given position.
+	 *
+	 * @see SongTimeline#addSongs(int,Cursor,int)
+	 */
+	public static final int MODE_PLAY_JUMP_TO = 3;
 
 	/**
 	 * Disable shuffle.
@@ -479,9 +486,10 @@ public final class SongTimeline {
 	 *
 	 * @param mode How to add the songs. One of SongTimeline.MODE_*.
 	 * @param cursor The cursor to fill from.
+	 * @param jumpTo The position to jump to for MODE_PLAY_JUMP_TO.
 	 * @return The number of songs that were added.
 	 */
-	public int addSongs(int mode, Cursor cursor)
+	public int addSongs(int mode, Cursor cursor, int jumpTo)
 	{
 		if (cursor == null)
 			return 0;
@@ -506,6 +514,7 @@ public final class SongTimeline {
 				timeline.subList(mCurrentPos + 1, timeline.size()).clear();
 				break;
 			case MODE_PLAY:
+			case MODE_PLAY_JUMP_TO:
 				timeline.clear();
 				mCurrentPos = 0;
 				break;
@@ -515,15 +524,21 @@ public final class SongTimeline {
 
 			int start = timeline.size();
 
+			Song jumpSong = null;
 			for (int j = 0; j != count; ++j) {
 				cursor.moveToPosition(j);
 				Song song = new Song(-1);
 				song.populate(cursor);
 				timeline.add(song);
+				if (j == jumpTo)
+					jumpSong = song;
 			}
 
 			if (mShuffleMode != SHUFFLE_NONE)
 				MediaUtils.shuffle(timeline.subList(start, timeline.size()), mShuffleMode == SHUFFLE_ALBUMS);
+
+			if (mode == MODE_PLAY_JUMP_TO && jumpSong != null)
+				mCurrentPos = timeline.indexOf(jumpSong);
 
 			broadcastChangedSongs();
 		}

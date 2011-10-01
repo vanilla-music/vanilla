@@ -133,9 +133,10 @@ public class Playlist {
 			ContentValues[] values = new ContentValues[count];
 			for (int i = 0; i != count; ++i) {
 				from.moveToPosition(i);
-				values[i] = new ContentValues(1);
-				values[i].put(MediaStore.Audio.Playlists.Members.PLAY_ORDER, Integer.valueOf(base + i));
-				values[i].put(MediaStore.Audio.Playlists.Members.AUDIO_ID, from.getLong(0));
+				ContentValues value = new ContentValues(2);
+				value.put(MediaStore.Audio.Playlists.Members.PLAY_ORDER, Integer.valueOf(base + i));
+				value.put(MediaStore.Audio.Playlists.Members.AUDIO_ID, from.getLong(0));
+				values[i] = value;
 			}
 			resolver.bulkInsert(uri, values);
 		}

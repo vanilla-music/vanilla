@@ -21,11 +21,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
 <resources>
-	<style name="Dialog" parent="android:style/Theme.Dialog" />
-	<style name="NoTitle" parent="android:style/Theme">
+	<style name="Dialog" parent="android:Theme.Dialog" />
+	<style name="Theme" parent="android:Theme" />
+	<style name="Black" parent="Theme">
+        <item name="android:colorBackground">@android:color/black</item>
+        <item name="android:windowBackground">@android:color/black</item>
+	</style>
+	<style name="NoTitle" parent="Theme">
 		<item name="android:windowNoTitle">true</item>
 	</style>
-	<style name="NoBackground" parent="style/NoTitle">
+	<style name="NoBackground" parent="Theme">
+		<item name="android:windowNoTitle">true</item>
 		<item name="android:windowBackground">@null</item>
 	</style>
 	<string-array name="entry_values">

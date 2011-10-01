@@ -955,7 +955,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			processSong((Song)message.obj);
 			break;
 		case QUERY:
-			runQuery(message.arg1, (QueryTask)message.obj);
+			runQuery(message.arg1, (QueryTask)message.obj, message.arg2);
 			break;
 		case POST_CREATE:
 			mHeadsetPause = getSettings(this).getBoolean("headset_pause", true);
@@ -1125,15 +1125,22 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	/**
 	 * Run the query and add the results to the timeline. Should be called in the
 	 * worker thread.
+	 *
+	 * @param mode How to add songs. Passed to
+	 * {@link SongTimeline#addSongs(int, android.database.Cursor, int)}
+	 * @param query The query to run.
+	 * @param jumpTo Passed to
+	 * {@link SongTimeline#addSongs(int, android.database.Cursor, int)}
 	 */
-	public void runQuery(int mode, QueryTask query)
+	public void runQuery(int mode, QueryTask query, int jumpTo)
 	{
-		int count = mTimeline.addSongs(mode, query.runQuery(getContentResolver()));
+		int count = mTimeline.addSongs(mode, query.runQuery(getContentResolver()), jumpTo);
 
 		int text;
 
 		switch (mode) {
 		case SongTimeline.MODE_PLAY:
+		case SongTimeline.MODE_PLAY_JUMP_TO:
 			text = R.plurals.playing;
 			break;
 		case SongTimeline.MODE_PLAY_NEXT:
@@ -1144,7 +1151,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			return;
 		}
 
-		if (mode == SongTimeline.MODE_PLAY && count != 0 && (mState & FLAG_PLAYING) == 0)
+		if ((mode == SongTimeline.MODE_PLAY || mode == SongTimeline.MODE_PLAY_JUMP_TO) && count != 0 && (mState & FLAG_PLAYING) == 0)
 			setFlag(FLAG_PLAYING);
 
 		Toast.makeText(this, getResources().getQuantityString(text, count, count), Toast.LENGTH_SHORT).show();
@@ -1156,10 +1163,12 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 * @param mode One of SongTimeline.MODE_*. Tells whether to play the songs
 	 * immediately or enqueue them for later.
 	 * @param query The query.
+	 * @param jumpTo Passed to
+	 * {@link SongTimeline#addSongs(int, android.database.Cursor, int)}
 	 */
-	public void addSongs(int mode, QueryTask query)
+	public void addSongs(int mode, QueryTask query, int jumpTo)
 	{
-		mHandler.sendMessage(mHandler.obtainMessage(QUERY, mode, 0, query));
+		mHandler.sendMessage(mHandler.obtainMessage(QUERY, mode, jumpTo, query));
 	}
 
 	/**
@@ -1194,7 +1203,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		}
 
 		String selection = "_id!=" + current.id;
-		addSongs(SongTimeline.MODE_PLAY_NEXT, MediaUtils.buildQuery(type, id, Song.FILLED_PROJECTION, selection));
+		addSongs(SongTimeline.MODE_PLAY_NEXT, MediaUtils.buildQuery(type, id, Song.FILLED_PROJECTION, selection), 0);
 	}
 
 	/**

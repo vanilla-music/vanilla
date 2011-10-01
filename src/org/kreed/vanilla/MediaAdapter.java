@@ -223,7 +223,7 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 			if (pos == 0) {
 				MediaView view;
 				if (convertView == null)
-					view = new MediaView(mContext, mExpandable);
+					view = new MediaView(mContext, null, mExpandable ? MediaView.sExpander : null);
 				else
 					view = (MediaView)convertView;
 				view.makeHeader(mHeaderText);
@@ -508,7 +508,7 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup parent)
 	{
-		return new MediaView(context, mExpandable);
+		return new MediaView(mContext, null, mExpandable ? MediaView.sExpander : null);
 	}
 
 	/**

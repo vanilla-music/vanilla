@@ -43,9 +43,15 @@ import android.view.View;
  */
 public final class MediaView extends View {
 	/**
+	 * Views that have been made into a header by
+	 * {@link MediaView#makeHeader(String)} will be given this id.
+	 */
+	public static final long HEADER_ID = -1;
+
+	/**
 	 * The expander arrow bitmap used in all views that have expanders.
 	 */
-	private static Bitmap sExpander;
+	public static Bitmap sExpander;
 	/**
 	 * The paint object, cached for reuse.
 	 */
@@ -77,6 +83,19 @@ public final class MediaView extends View {
 	}
 
 	/**
+	 * The cached measured view height.
+	 */
+	private final int mViewHeight;
+	/**
+	 * An optional bitmap to display on the left of the view.
+	 */
+	private final Bitmap mLeftBitmap;
+	/**
+	 * An optional bitmap to display on the right of the view.
+	 */
+	private final Bitmap mRightBitmap;
+
+	/**
 	 * The MediaStore id of the media represented by this view.
 	 */
 	private long mId;
@@ -89,37 +108,47 @@ public final class MediaView extends View {
 	 */
 	private String mSubTitle;
 	/**
-	 * True if the last touch event was over the expander arrow.
+	 * True to show the bitmaps, false to hide them. Defaults to true.
 	 */
-	private boolean mExpanderPressed;
+	private boolean mShowBitmaps = true;
+
+	private boolean mBottomGravity;
 	/**
-	 * True if the expander should be shown.
+	 * The x coordinate of the last touch event.
 	 */
-	private final boolean mExpandable;
-	/**
-	 * The cached measured view height.
-	 */
-	private int mViewHeight;
-	/**
-	 * True if this view is a header. Will override expandable setting to false.
-	 */
-	private boolean mIsHeader;
+	private int mTouchX;
 
 	/**
 	 * Construct a MediaView.
 	 *
 	 * @param context A Context to use.
-	 * @param expandable True if the expander should be shown.
+	 * @param leftBitmap An optional bitmap to be shown in the left side of
+	 * the view.
+	 * @param rightBitmap An optional bitmap to be shown in the right side of
+	 * the view.
 	 */
-	public MediaView(Context context, boolean expandable)
+	public MediaView(Context context, Bitmap leftBitmap, Bitmap rightBitmap)
 	{
 		super(context);
+		mLeftBitmap = leftBitmap;
+		mRightBitmap = rightBitmap;
 
-		mExpandable = expandable;
+		int height = 7 * sTextSize / 2;
+		if (mLeftBitmap != null)
+			height = Math.max(height, mLeftBitmap.getHeight() + sTextSize);
+		if (mRightBitmap != null)
+			height = Math.max(height, mRightBitmap.getHeight() + sTextSize);
+		mViewHeight = height;
+	}
 
-		mViewHeight = 7 * sTextSize / 2;
-		if (expandable)
-			mViewHeight = Math.max(mViewHeight, sExpander.getHeight() + sTextSize);
+	/**
+	 * Set whether to show the left and right bitmaps. By default, will show them.
+	 *
+	 * @param show If false, do not show the bitmaps.
+	 */
+	public void setShowBitmaps(boolean show)
+	{
+		mShowBitmaps = show;
 	}
 
 	/**
@@ -128,7 +157,10 @@ public final class MediaView extends View {
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
 	{
-		setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), mViewHeight);
+		if (MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.EXACTLY)
+			setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.getSize(heightMeasureSpec));
+		else
+			setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), mViewHeight);
 	}
 
 	/**
@@ -141,13 +173,17 @@ public final class MediaView extends View {
 			return;
 
 		int width = getWidth();
-		int height = getHeight();
+		int height = mViewHeight;
 		int padding = sTextSize / 2;
+		int xOffset = 0;
+
+		if (mBottomGravity)
+			canvas.translate(0, getHeight() - mViewHeight);
 
 		Paint paint = sPaint;
 
-		if (mExpandable && !mIsHeader) {
-			Bitmap expander = sExpander;
+		if (mShowBitmaps && mRightBitmap != null) {
+			Bitmap expander = mRightBitmap;
 			width -= padding * 4 + expander.getWidth();
 
 			paint.setColor(Color.GRAY);
@@ -156,6 +192,12 @@ public final class MediaView extends View {
 			paint.setPathEffect(null);
 
 			canvas.drawBitmap(expander, width + padding * 2, (height - expander.getHeight()) / 2, paint);
+		}
+
+		if (mShowBitmaps && mLeftBitmap != null) {
+			Bitmap expander = mLeftBitmap;
+			canvas.drawBitmap(expander, 0, (height - expander.getHeight()) / 2, paint);
+			xOffset = expander.getWidth();
 		}
 
 		canvas.save();
@@ -167,13 +209,13 @@ public final class MediaView extends View {
 			allocatedHeight = height / 2 - padding * 3 / 2;
 
 			paint.setColor(Color.GRAY);
-			canvas.drawText(mSubTitle, padding, height / 2 + padding / 2 + (allocatedHeight - sTextSize) / 2 - paint.ascent(), paint);
+			canvas.drawText(mSubTitle, xOffset + padding, height / 2 + padding / 2 + (allocatedHeight - sTextSize) / 2 - paint.ascent(), paint);
 		} else {
 			allocatedHeight = height - padding * 2;
 		}
 
 		paint.setColor(Color.WHITE);
-		canvas.drawText(mTitle, padding, padding + (allocatedHeight - sTextSize) / 2 - paint.ascent(), paint);
+		canvas.drawText(mTitle, xOffset + padding, padding + (allocatedHeight - sTextSize) / 2 - paint.ascent(), paint);
 		canvas.restore();
 
 		width = getWidth();
@@ -184,6 +226,27 @@ public final class MediaView extends View {
 		paint.setShader(sDividerGradient);
 		canvas.drawLine(0, height - 1, width, height - 1, paint);
 		paint.setShader(null);
+	}
+
+	/**
+	 * Set the gravity of the view (top or bottom), determing which edge to
+	 * align the content to.
+	 *
+	 * @param bottom True for bottom gravity; false for top gravity.
+	 */
+	public void setBottomGravity(boolean bottom)
+	{
+		mBottomGravity = bottom;
+	}
+
+	/**
+	 * Returns the desired height for this view.
+	 *
+	 * @return The measured view height.
+	 */
+	public int getPreferredHeight()
+	{
+		return mViewHeight;
 	}
 
 	/**
@@ -203,20 +266,11 @@ public final class MediaView extends View {
 	}
 
 	/**
-	 * Returns true if the expander arrow was pressed in the last touch
-	 * event.
+	 * Returns true if the right bitmap was pressed in the last touch event.
 	 */
-	public boolean isExpanderPressed()
+	public boolean isRightBitmapPressed()
 	{
-		return mExpanderPressed;
-	}
-
-	/**
-	 * Returns true if views has expander arrows displayed.
-	 */
-	public boolean hasExpanders()
-	{
-		return mExpandable;
+		return mRightBitmap != null && mShowBitmaps && mTouchX > getWidth() - mRightBitmap.getWidth() - 2 * sTextSize;
 	}
 
 	/**
@@ -226,7 +280,8 @@ public final class MediaView extends View {
 	 */
 	public void makeHeader(String text)
 	{
-		mIsHeader = true;
+		mShowBitmaps = false;
+		mId = HEADER_ID;
 		mTitle = text;
 		mSubTitle = null;
 	}
@@ -242,7 +297,7 @@ public final class MediaView extends View {
 	 */
 	public void updateMedia(Cursor cursor, boolean useSecondary)
 	{
-		mIsHeader = false;
+		mShowBitmaps = true;
 		mId = cursor.getLong(0);
 		mTitle = cursor.getString(1);
 		if (useSecondary)
@@ -251,20 +306,12 @@ public final class MediaView extends View {
 	}
 
 	/**
-	 * Returns true if the view is set to be a "Play/Enqueue All" header.
-	 */
-	public boolean isHeader()
-	{
-		return mIsHeader;
-	}
-
-	/**
 	 * Update mExpanderPressed.
 	 */
 	@Override
 	public boolean onTouchEvent(MotionEvent event)
 	{
-		mExpanderPressed = mExpandable && !mIsHeader && event.getX() > getWidth() - sExpander.getWidth() - 2 * sTextSize;
+		mTouchX = (int)event.getX();
 		return false;
 	}
 }
