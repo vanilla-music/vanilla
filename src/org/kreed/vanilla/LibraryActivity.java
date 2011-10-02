@@ -479,11 +479,7 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 
 		QueryTask query;
 		if (intent.getBooleanExtra("isHeader", false)) {
-			query = mAdapters[type - 1].buildQuery(true);
-			query.setProjection(projection);
-			// we want to query songs, not albums or artists
-			if (type != MediaUtils.TYPE_SONG)
-				query.setUri(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
+			query = mAdapters[type - 1].buildSongQuery(projection);
 		} else {
 			long id = intent.getLongExtra("id", -1);
 			query = MediaUtils.buildQuery(type, id, projection, null);
@@ -737,7 +733,7 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 		}
 		case MSG_RUN_QUERY: {
 			final MediaAdapter adapter = (MediaAdapter)message.obj;
-			QueryTask query = adapter.buildQuery(false);
+			QueryTask query = adapter.buildQuery();
 			final Cursor cursor = query.runQuery(getContentResolver());
 			runOnUiThread(new Runnable() {
 				@Override

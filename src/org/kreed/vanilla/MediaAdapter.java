@@ -72,6 +72,10 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	 */
 	private String[] mFieldKeys;
 	/**
+	 * The columns to query from the content provider.
+	 */
+	private String[] mProjection;
+	/**
 	 * If true, show an expand arrow next the the text in each view.
 	 */
 	private boolean mExpandable;
@@ -98,6 +102,10 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	 * The text to show in the header.
 	 */
 	private String mHeaderText;
+	/**
+	 * The sort order for use with buildSongQuery().
+	 */
+	private String mSongSort;
 
 	/**
 	 * Construct a MediaAdapter representing the given <code>type</code> of
@@ -128,12 +136,14 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 			mStore = MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI;
 			mFields = new String[] { MediaStore.Audio.Artists.ARTIST };
 			mFieldKeys = new String[] { MediaStore.Audio.Artists.ARTIST_KEY };
+			mSongSort = MediaUtils.DEFAULT_SORT;
 			break;
 		case MediaUtils.TYPE_ALBUM:
 			mStore = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
 			mFields = new String[] { MediaStore.Audio.Albums.ARTIST, MediaStore.Audio.Albums.ALBUM };
 			// Why is there no artist_key column constant in the album MediaStore? The column does seem to exist.
 			mFieldKeys = new String[] { "artist_key", MediaStore.Audio.Albums.ALBUM_KEY };
+			mSongSort = "album_key,track";
 			break;
 		case MediaUtils.TYPE_SONG:
 			mStore = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
@@ -153,6 +163,11 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 		default:
 			throw new IllegalArgumentException("Invalid value for type: " + type);
 		}
+
+		if (mFields.length == 1)
+			mProjection = new String[] { BaseColumns._ID, mFields[0] };
+		else
+			mProjection = new String[] { BaseColumns._ID, mFields[mFields.length - 1], mFields[0] };
 	}
 
 	@Override
@@ -240,19 +255,14 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	/**
 	 * Build the query to be run with runQuery().
 	 *
+	 * @param projection The columns to query.
 	 * @param forceMusicCheck Force the is_music check to be added to the
 	 * selection.
 	 */
-	public QueryTask buildQuery(boolean forceMusicCheck)
+	public QueryTask buildQuery(String[] projection, boolean forceMusicCheck)
 	{
 		String constraint = mConstraint;
 		Limiter limiter = mLimiter;
-
-		String[] projection;
-		if (mFields.length == 1)
-			projection = new String[] { BaseColumns._ID, mFields[0] };
-		else
-			projection = new String[] { BaseColumns._ID, mFields[mFields.length - 1], mFields[0] };
 
 		StringBuilder selection = new StringBuilder();
 		String[] selectionArgs = null;
@@ -316,6 +326,31 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 
 			return new QueryTask(mStore, projection, selection.toString(), selectionArgs, sort);
 		}
+	}
+
+	/**
+	 * Build a query to populate the adapter with. The result should be set with
+	 * changeCursor().
+	 */
+	public QueryTask buildQuery()
+	{
+		return buildQuery(mProjection, false);
+	}
+
+	/**
+	 * Build a query for all the songs represented by this adapter, for adding
+	 * to the timeline.
+	 *
+	 * @param projection The columns to query.
+	 */
+	public QueryTask buildSongQuery(String[] projection)
+	{
+		QueryTask query = buildQuery(projection, true);
+		if (mType != MediaUtils.TYPE_SONG) {
+			query.setUri(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
+			query.setSortOrder(mSongSort);
+		}
+		return query;
 	}
 
 	/**

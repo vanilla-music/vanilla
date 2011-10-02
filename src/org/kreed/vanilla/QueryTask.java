@@ -70,6 +70,24 @@ public class QueryTask {
 	}
 
 	/**
+	 * Return the sort order of the pending query.
+	 */
+	public String getSortOrder()
+	{
+		return mSortOrder;
+	}
+
+	/**
+	 * Modify the sort order of the pending query.
+	 *
+	 * @param sortOrder The new sort order.
+	 */
+	public void setSortOrder(String sortOrder)
+	{
+		mSortOrder = sortOrder;
+	}
+
+	/**
 	 * Run the query. Should be called on a background thread.
 	 *
 	 * @param resolver The ContentResolver to query with.

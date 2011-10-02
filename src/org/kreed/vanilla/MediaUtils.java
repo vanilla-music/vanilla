@@ -54,6 +54,12 @@ public class MediaUtils {
 	public static final int TYPE_GENRE = 5;
 
 	/**
+	 * The default sort order for media queries. First artist, then album, then
+	 * track number.
+	 */
+	public static final String DEFAULT_SORT = "artist_key,album_key,track";
+
+	/**
 	 * Cached random instance.
 	 */
 	private static Random sRandom;
@@ -125,8 +131,7 @@ public class MediaUtils {
 			selection.append(select);
 		}
 
-		String sort = MediaStore.Audio.Media.ARTIST_KEY + ',' + MediaStore.Audio.Media.ALBUM_KEY + ',' + MediaStore.Audio.Media.TRACK;
-		return new QueryTask(media, projection, selection.toString(), null, sort);
+		return new QueryTask(media, projection, selection.toString(), null, DEFAULT_SORT);
 	}
 
 	/**

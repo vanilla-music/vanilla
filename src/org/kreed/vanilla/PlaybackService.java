@@ -724,9 +724,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		mHandler.removeMessages(PROCESS_SONG);
 
 		mHandler.sendMessage(mHandler.obtainMessage(PROCESS_SONG, song));
-		Message msg = mHandler.obtainMessage(BROADCAST_CHANGE, -1, 0);
-		msg.obj = song;
-		mHandler.sendMessage(msg);
+		mHandler.sendMessage(mHandler.obtainMessage(BROADCAST_CHANGE, -1, 0, song));
 		return song;
 	}
 
@@ -1145,9 +1143,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 */
 	public void addSongs(int mode, QueryTask query)
 	{
-		Message msg = mHandler.obtainMessage(QUERY, query);
-		msg.arg1 = mode;
-		mHandler.sendMessage(msg);
+		mHandler.sendMessage(mHandler.obtainMessage(QUERY, mode, 0, query));
 	}
 
 	/**
