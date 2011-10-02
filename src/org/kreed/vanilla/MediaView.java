@@ -264,8 +264,7 @@ public final class MediaView extends View {
 	@Override
 	public boolean onTouchEvent(MotionEvent event)
 	{
-		if (mExpandable && !mIsHeader)
-			mExpanderPressed = event.getX() > getWidth() - sExpander.getWidth() - 2 * sTextSize;
+		mExpanderPressed = mExpandable && !mIsHeader && event.getX() > getWidth() - sExpander.getWidth() - 2 * sTextSize;
 		return false;
 	}
 }
