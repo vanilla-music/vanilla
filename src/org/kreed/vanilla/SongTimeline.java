@@ -201,9 +201,8 @@ public final class SongTimeline {
 				StringBuilder selection = new StringBuilder("_ID IN (");
 				for (int i = 0; i != n; ++i) {
 					long id = in.readLong();
-					int flags = in.readInt();
-					// Add the index so we can sort
-					flags |= i << Song.FLAG_COUNT;
+					// Add the index to the flags so we can sort
+					int flags = (in.readInt() & ~(~0 << Song.FLAG_COUNT)) | (i << Song.FLAG_COUNT);
 					songs.add(new Song(id, flags));
 
 					if (i != 0)
