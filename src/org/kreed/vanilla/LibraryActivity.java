@@ -58,11 +58,6 @@ import android.widget.Toast;
  * The library activity where songs to play can be selected from the library.
  */
 public class LibraryActivity extends PlaybackActivity implements AdapterView.OnItemClickListener, TextWatcher {
-	/**
-	 * The number of tabs in the song selector.
-	 */
-	private static final int TAB_COUNT = 5;
-
 	private static final int ACTION_PLAY = 0;
 	private static final int ACTION_ENQUEUE = 1;
 	private static final int ACTION_LAST_USED = 2;
@@ -101,7 +96,7 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 		@Override
 		public void onChange(boolean selfChange)
 		{
-			runQuery(mPlaylistAdapter);
+			requestRequery(mPlaylistAdapter);
 		}
 	};
 
@@ -174,9 +169,6 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 
 		if (state != null)
 			mTextFilter.setText(state.getString("filter"));
-
-		// query adapters
-		onMediaChange();
 	}
 
 	@Override
@@ -302,32 +294,37 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 	 */
 	private int setLimiter(MediaAdapter.Limiter limiter)
 	{
+		int tab;
+
 		if (limiter == null) {
 			mAlbumAdapter.setLimiter(null);
 			mSongAdapter.setLimiter(null);
-			return -1;
+			tab = -1;
+		} else {
+			switch (limiter.type) {
+			case MediaUtils.TYPE_ALBUM:
+				mSongAdapter.setLimiter(limiter);
+				requestRequery(mSongAdapter);
+				return 2;
+			case MediaUtils.TYPE_ARTIST:
+				mAlbumAdapter.setLimiter(limiter);
+				mSongAdapter.setLimiter(limiter);
+				tab = 1;
+				break;
+			case MediaUtils.TYPE_GENRE:
+				mSongAdapter.setLimiter(limiter);
+				mAlbumAdapter.setLimiter(null);
+				tab = 2;
+				break;
+			default:
+				throw new IllegalArgumentException("Unsupported limiter type: " + limiter.type);
+			}
 		}
 
-		switch (limiter.type) {
-		case MediaUtils.TYPE_ALBUM:
-			// Clear the cursor so we don't have the old selection showing when
-			// we switch to that tab.
-			mSongAdapter.changeCursor(null);
-			mSongAdapter.setLimiter(limiter);
-			return 2;
-		case MediaUtils.TYPE_ARTIST:
-			mAlbumAdapter.changeCursor(null);
-			mAlbumAdapter.setLimiter(limiter);
-			mSongAdapter.setLimiter(limiter);
-			return 1;
-		case MediaUtils.TYPE_GENRE:
-			mSongAdapter.changeCursor(null);
-			mSongAdapter.setLimiter(limiter);
-			mAlbumAdapter.setLimiter(null);
-			return 2;
-		default:
-			throw new IllegalArgumentException("Unsupported limiter type: " + limiter.type);
-		}
+		requestRequery(mSongAdapter);
+		requestRequery(mAlbumAdapter);
+
+		return tab;
 	}
 
 	public void onItemClick(AdapterView<?> list, View view, int pos, long id)
@@ -351,15 +348,10 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 
 	public void onTextChanged(CharSequence text, int start, int before, int count)
 	{
-		MediaAdapter adapter = mCurrentAdapter;
-		if (adapter != null) {
-			String filter = text.toString();
-			adapter.filter(filter);
-
-			for (int i = TAB_COUNT; --i != -1; ) {
-				if (mAdapters[i] != adapter)
-					mAdapters[i].filter(filter);
-			}
+		String filter = text.toString();
+		for (MediaAdapter adapter : mAdapters) {
+			adapter.setFilter(filter);
+			requestRequery(adapter);
 		}
 	}
 
@@ -752,6 +744,23 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 	}
 
 	/**
+	 * Requery the given adapter. If it is the current adapter, requery
+	 * immediately. Otherwise, mark the adapter as needing a requery and requery
+	 * when its tab is selected.
+	 */
+	public void requestRequery(MediaAdapter adapter)
+	{
+		if (adapter == mCurrentAdapter) {
+			runQuery(adapter);
+		} else {
+			adapter.requestRequery();
+			// Clear the data for non-visible adapters (so we don't show the old
+			// data briefly when we later switch to that adapter)
+			adapter.changeCursor(null);
+		}
+	}
+
+	/**
 	 * Schedule a query to be run for the given adapter on the worker thread.
 	 *
 	 * @param adapter The adapter to run the query for.
@@ -765,8 +774,8 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 	@Override
 	public void onMediaChange()
 	{
-		for (int i = 0; i != TAB_COUNT; ++i)
-			runQuery(mAdapters[i]);
+		for (MediaAdapter adapter : mAdapters)
+			requestRequery(adapter);
 	}
 
 	private void setSearchBoxVisible(boolean visible)
@@ -811,7 +820,10 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 	 */
 	private void setCurrentTab(int i)
 	{
-		mCurrentAdapter = mAdapters[i];
+		MediaAdapter adapter = mAdapters[i];
+		mCurrentAdapter = adapter;
+		if (adapter.isRequeryNeeded())
+			runQuery(adapter);
 		mTabWidget.setCurrentTab(i);
 		mLists.getChildAt(mCurrentTab).setVisibility(View.GONE);
 		mLists.getChildAt(i).setVisibility(View.VISIBLE);

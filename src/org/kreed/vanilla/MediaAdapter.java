@@ -47,9 +47,9 @@ import java.io.Serializable;
  */
 public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	/**
-	 * The activity that owns this adapter.
+	 * A context to use.
 	 */
-	private LibraryActivity mActivity;
+	private Context mContext;
 	/**
 	 * The type of media represented by this adapter. Must be one of the
 	 * MediaUtils.FIELD_* constants. Determines which content provider to query for
@@ -106,12 +106,16 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	 * The sort order for use with buildSongQuery().
 	 */
 	private String mSongSort;
+	/**
+	 * True if the data is stale and the query should be re-run.
+	 */
+	private boolean mNeedsRequery;
 
 	/**
 	 * Construct a MediaAdapter representing the given <code>type</code> of
 	 * media.
 	 *
-	 * @param activity The activity that owns this adapter.
+	 * @param context A context to use.
 	 * @param type The type of media to represent. Must be one of the
 	 * Song.TYPE_* constants. This determines which content provider to query
 	 * and what fields to display in the views.
@@ -120,16 +124,17 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	 * @param hasHeader Wether this view has a header row.
 	 * @param limiter An initial limiter to use
 	 */
-	public MediaAdapter(LibraryActivity activity, int type, boolean expandable, boolean hasHeader, Limiter limiter)
+	public MediaAdapter(Context context, int type, boolean expandable, boolean hasHeader, Limiter limiter)
 	{
-		super(activity, null, false);
+		super(context, null, false);
 
-		mActivity = activity;
+		mContext = context;
 		mType = type;
 		mExpandable = expandable;
 		mHasHeader = hasHeader;
 		mLimiter = limiter;
 		mIndexer = new MusicAlphabetIndexer(1);
+		mNeedsRequery = true;
 
 		switch (type) {
 		case MediaUtils.TYPE_ARTIST:
@@ -215,7 +220,7 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 			if (pos == 0) {
 				MediaView view;
 				if (convertView == null)
-					view = new MediaView(mActivity, mExpandable);
+					view = new MediaView(mContext, mExpandable);
 				else
 					view = (MediaView)convertView;
 				view.makeHeader(mHeaderText);
@@ -240,16 +245,33 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	}
 
 	/**
-	 * Perform filtering on a background thread.
+	 * Returns true if the data is stale and should be requeried.
+	 */
+	public boolean isRequeryNeeded()
+	{
+		return mNeedsRequery;
+	}
+
+	/**
+	 * Mark the current data as requiring a requery.
+	 */
+	public void requestRequery()
+	{
+		mNeedsRequery = true;
+	}
+
+	/**
+	 * Set a new filter.
 	 *
-	 * @param constraint The terms to filter on, separated by spaces. Only
+	 * The data should be requeried after calling this.
+	 *
+	 * @param filter The terms to filter on, separated by spaces. Only
 	 * media that contain all of the terms (in any order) will be displayed
 	 * after filtering is complete.
 	 */
-	public void filter(String constraint)
+	public void setFilter(String filter)
 	{
-		mConstraint = constraint;
-		mActivity.runQuery(this);
+		mConstraint = filter;
 	}
 
 	/**
@@ -334,6 +356,7 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	 */
 	public QueryTask buildQuery()
 	{
+		mNeedsRequery = false;
 		return buildQuery(mProjection, false);
 	}
 
@@ -363,16 +386,18 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	}
 
 	/**
-	 * Set the limiter for the adapter. A limiter is intended to restrict
-	 * displayed media to only those that are children of a given parent
-	 * media item.
+	 * Set the limiter for the adapter.
+	 *
+	 * A limiter is intended to restrict displayed media to only those that are
+	 * children of a given parent media item.
+	 *
+	 * The data should be requeried after calling this.
 	 *
 	 * @param limiter The limiter, created by {@link MediaAdapter#getLimiter(long)}.
 	 */
 	public final void setLimiter(Limiter limiter)
 	{
 		mLimiter = limiter;
-		mActivity.runQuery(this);
 	}
 
 	/**
