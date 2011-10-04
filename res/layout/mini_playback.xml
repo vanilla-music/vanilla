@@ -20,17 +20,21 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<org.kreed.vanilla.MiniPlaybackActivityLayout
+<LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
 	android:layout_height="wrap_content"
 	android:layout_width="wrap_content">
 	<org.kreed.vanilla.CoverView
 		android:id="@+id/cover_view"
-		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:layout_weight="1"
+		android:layout_height="0px"
 		android:layout_width="wrap_content" />
 	<LinearLayout
+		android:layout_gravity="center"
 		android:layout_height="wrap_content"
-		android:layout_width="wrap_content"
+		android:layout_width="match_parent"
 		android:orientation="horizontal">
 		<ImageButton
 			android:id="@+id/previous"
@@ -57,4 +61,4 @@ THE SOFTWARE.
 			android:scaleType="fitCenter"
 			android:src="@drawable/next" />
 	</LinearLayout>
-</org.kreed.vanilla.MiniPlaybackActivityLayout>
+</LinearLayout>

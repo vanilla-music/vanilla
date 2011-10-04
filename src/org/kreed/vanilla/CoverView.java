@@ -388,4 +388,25 @@ public final class CoverView extends View implements Handler.Callback {
 
 		return true;
 	}
+
+	@Override
+	protected void onMeasure(int widthSpec, int heightSpec)
+	{
+		// This implementation only tries to handle two cases: use in the
+		// FullPlaybackActivity, where we want to fill the whole screen,
+		// and use in the MiniPlaybackActivity, where we want to be square.
+
+		int width = View.MeasureSpec.getSize(widthSpec);
+		int height = View.MeasureSpec.getSize(heightSpec);
+
+		if (View.MeasureSpec.getMode(widthSpec) == View.MeasureSpec.EXACTLY
+			&& View.MeasureSpec.getMode(heightSpec) == View.MeasureSpec.EXACTLY) {
+			// FullPlaybackActivity: fill screen
+			setMeasuredDimension(width, height);
+		} else {
+			// MiniPlaybackActivity: be square
+			int size = Math.min(width, height);
+			setMeasuredDimension(size, size);
+		}
+	}
 }
