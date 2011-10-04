@@ -22,6 +22,11 @@
 
 package org.kreed.vanilla;
 
+import android.content.ContentResolver;
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.MediaStore;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
@@ -31,12 +36,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.ListIterator;
-
-import android.content.ContentResolver;
-import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
-import android.provider.MediaStore;
+import junit.framework.Assert;
 
 /**
  * Represents a series of songs that can be moved through backward or forward.
@@ -379,7 +379,7 @@ public final class SongTimeline {
 	 */
 	public Song getSong(int delta)
 	{
-		assert(delta >= -1 && delta <= 1);
+		Assert.assertTrue(delta >= -1 && delta <= 1);
 
 		ArrayList<Song> timeline = mSongs;
 		Song song = null;
@@ -435,7 +435,7 @@ public final class SongTimeline {
 	 */
 	public Song shiftCurrentSong(int delta)
 	{
-		assert(delta >= -1 && delta <= 1);
+		Assert.assertTrue(delta >= -1 && delta <= 1);
 
 		synchronized (this) {
 			int pos = mCurrentPos + delta;

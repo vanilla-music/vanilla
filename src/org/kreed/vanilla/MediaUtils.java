@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import junit.framework.Assert;
 
 public class MediaUtils {
 	/**
@@ -253,7 +254,7 @@ public class MediaUtils {
 	 */
 	public static void shuffle(Song[] list, int end)
 	{
-		assert(end <= list.length && end >= 0);
+		Assert.assertTrue(end <= list.length && end >= 0);
 		Random random = getRandom();
 		for (int i = end; --i != -1; ) {
 			int j = random.nextInt(i + 1);
@@ -457,7 +458,7 @@ public class MediaUtils {
 
 			int count = cursor.getCount();
 			if (count > 0) {
-				assert(count <= RANDOM_POPULATE_SIZE);
+				Assert.assertTrue(count <= RANDOM_POPULATE_SIZE);
 
 				for (int i = 0; i != count; ++i) {
 					cursor.moveToNext();

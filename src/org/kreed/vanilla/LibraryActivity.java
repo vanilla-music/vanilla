@@ -53,6 +53,7 @@ import android.widget.ListView;
 import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
+import junit.framework.Assert;
 
 /**
  * The library activity where songs to play can be selected from the library.
@@ -411,7 +412,7 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 				if (i == 1) {
 					// generate the artist limiter (we need to query the artist id)
 					MediaAdapter.Limiter limiter = mSongAdapter.getLimiter();
-					assert(limiter.type == MediaUtils.TYPE_ALBUM);
+					Assert.assertEquals(MediaUtils.TYPE_ALBUM, limiter.type);
 
 					ContentResolver resolver = getContentResolver();
 					Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;

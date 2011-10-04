@@ -22,9 +22,6 @@
 
 package org.kreed.vanilla;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -34,6 +31,9 @@ import android.os.SystemClock;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.KeyEvent;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import junit.framework.Assert;
 
 /**
  * Handle a provided MediaButton event and take the appropriate action in
@@ -225,7 +225,7 @@ public class MediaButtonHandler {
 	 */
 	public void registerMediaButton()
 	{
-		assert(mUseControls == 1);
+		Assert.assertEquals(mUseControls, 1);
 		if (mRegisterMediaButtonEventReceiver != null) {
 			try {
 				mRegisterMediaButtonEventReceiver.invoke(mAudioManager, mButtonReceiver);
