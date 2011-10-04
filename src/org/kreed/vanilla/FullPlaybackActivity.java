@@ -33,12 +33,10 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -54,7 +52,6 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	 */
 	private Handler mUiHandler = new Handler(this);
 
-	private RelativeLayout mMessageOverlay;
 	private TextView mOverlayText;
 	private View mControlsTop;
 	private View mControlsBottom;
@@ -167,8 +164,8 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	 */
 	private void hideMessageOverlay()
 	{
-		if (mMessageOverlay != null)
-			mMessageOverlay.setVisibility(View.GONE);
+		if (mOverlayText != null)
+			mOverlayText.setVisibility(View.GONE);
 	}
 
 	/**
@@ -178,35 +175,20 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	 */
 	private void showOverlayMessage(int text)
 	{
-		if (mMessageOverlay == null) {
-			mMessageOverlay = new RelativeLayout(this) {
-				@Override
-				public boolean onTouchEvent(MotionEvent ev)
-				{
-					// Eat all touch events so they don't pass through to the
-					// CoverView
-					return true;
-				}
-			};
-
-			mMessageOverlay.setBackgroundColor(Color.BLACK);
-
-			RelativeLayout.LayoutParams layoutParams =
-				new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-												LinearLayout.LayoutParams.WRAP_CONTENT);
-			layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-			layoutParams.setMargins(20, 20, 20, 20);
-
-			mOverlayText = new TextView(this);
-			mOverlayText.setLayoutParams(layoutParams);
-			mOverlayText.setGravity(Gravity.CENTER);
-			mMessageOverlay.addView(mOverlayText);
-
-			addContentView(mMessageOverlay,
+		if (mOverlayText == null) {
+			TextView view = new TextView(this);
+			view.setBackgroundColor(Color.BLACK);
+			view.setTextColor(Color.WHITE);
+			view.setGravity(Gravity.CENTER);
+			view.setPadding(25, 25, 25, 25);
+			// Make the view clickable so it eats touch events
+			view.setClickable(true);
+			addContentView(view,
 				new ViewGroup.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
 				                           LinearLayout.LayoutParams.FILL_PARENT));
+			mOverlayText = view;
 		} else {
-			mMessageOverlay.setVisibility(View.VISIBLE);
+			mOverlayText.setVisibility(View.VISIBLE);
 		}
 
 		mOverlayText.setText(text);
