@@ -176,6 +176,6 @@ public class Playlist {
 
 		ContentValues values = new ContentValues(1);
 		values.put(MediaStore.Audio.Playlists.NAME, newName);
-		resolver.update(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, values, MediaStore.Audio.Playlists._ID + "=" + id, null);
+		resolver.update(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, values, "_id=" + id, null);
 	}
 }

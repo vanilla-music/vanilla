@@ -164,9 +164,9 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	public static final int WHEN_PLAYING = 1;
 	public static final int ALWAYS = 2;
 
-	private static Object sWait = new Object();
+	private static final Object sWait = new Object();
 	private static PlaybackService sInstance;
-	private static ArrayList<PlaybackActivity> sActivities = new ArrayList<PlaybackActivity>();
+	private static final ArrayList<PlaybackActivity> sActivities = new ArrayList<PlaybackActivity>(5);
 	/**
 	 * Cached app-wide SharedPreferences instance.
 	 */
@@ -210,7 +210,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	int mState;
 	private Song mCurrentSong;
 
-	Object mStateLock = new Object();
+	private final Object mStateLock = new Object();
 	boolean mPlayingBeforeCall;
 	private int mPendingSeek;
 	public Receiver mReceiver;
@@ -416,25 +416,21 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 	/**
 	 * Set a state flag.
-	 *
-	 * @return The new state.
 	 */
-	public int setFlag(int flag)
+	public void setFlag(int flag)
 	{
 		synchronized (mStateLock) {
-			return updateState(mState | flag);
+			updateState(mState | flag);
 		}
 	}
 
 	/**
 	 * Unset a state flag.
-	 *
-	 * @return The new state.
 	 */
-	public int unsetFlag(int flag)
+	public void unsetFlag(int flag)
 	{
 		synchronized (mStateLock) {
-			return updateState(mState & ~flag);
+			updateState(mState & ~flag);
 		}
 	}
 
@@ -668,7 +664,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			else if ((state & FLAG_REPEAT) == 0)
 				state |= FLAG_REPEAT;
 			else if ((state & FLAG_REPEAT) != 0)
-				state = (state | FLAG_REPEAT_CURRENT) & ~FLAG_REPEAT;;
+				state = (state | FLAG_REPEAT_CURRENT) & ~FLAG_REPEAT;
 			return updateState(state);
 		}
 	}
@@ -752,7 +748,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				updateState(mState & ~FLAG_ERROR);
 			}
 		} catch (IOException e) {
-			mErrorMessage = getResources().getString(R.string.song_load_failed, song == null ? null : song.path);
+			mErrorMessage = getResources().getString(R.string.song_load_failed, song.path);
 			updateState(mState | FLAG_ERROR);
 			Toast.makeText(this, mErrorMessage, Toast.LENGTH_LONG).show();
 			Log.e("VanillaMusic", "IOException", e);
@@ -777,7 +773,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	@Override
 	public boolean onError(MediaPlayer player, int what, int extra)
 	{
-		Log.e("VanillaMusic", "MediaPlayer error: " + what + " " + extra);
+		Log.e("VanillaMusic", "MediaPlayer error: " + what + ' ' + extra);
 		return true;
 	}
 
@@ -828,7 +824,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 					mPlugInitialized = true;
 			}
 		}
-	};
+	}
 
 	private class InCallListener extends PhoneStateListener {
 		@Override
@@ -862,7 +858,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			}
 		}
 		}
-	};
+	}
 
 	public void onMediaChange()
 	{
@@ -1206,7 +1202,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
 	}
 
-	private ContentObserver mObserver = new ContentObserver(null) {
+	private final ContentObserver mObserver = new ContentObserver(null) {
 		@Override
 		public void onChange(boolean selfChange)
 		{
@@ -1228,7 +1224,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 					synchronized (sWait) {
 						sWait.wait();
 					}
-				} catch (InterruptedException e) {
+				} catch (InterruptedException ignored) {
 				}
 			}
 		}

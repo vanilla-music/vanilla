@@ -36,12 +36,12 @@ public class Cache<E> {
 	/**
 	 * The keys contained in the cache, stored in the order of insertion.
 	 */
-	private long[] mKeys;
+	private final long[] mKeys;
 	/**
 	 * The values contained in the cache, stored in a location corresponding
 	 * to the keys in mKeys.
 	 */
-	private Object[] mValues;
+	private final Object[] mValues;
 
 	/**
 	 * Create a Cache.
@@ -61,7 +61,7 @@ public class Cache<E> {
 	 *
 	 * @return The number of items in the cache.
 	 */
-	public int count()
+	private int count()
 	{
 		long[] keys = mKeys;
 		int count = keys.length;

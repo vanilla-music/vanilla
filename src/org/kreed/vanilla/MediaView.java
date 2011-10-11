@@ -95,7 +95,7 @@ public final class MediaView extends View {
 	/**
 	 * True if the expander should be shown.
 	 */
-	private boolean mExpandable;
+	private final boolean mExpandable;
 	/**
 	 * The cached measured view height.
 	 */
@@ -117,7 +117,7 @@ public final class MediaView extends View {
 
 		mExpandable = expandable;
 
-		mViewHeight = (int)(7 * sTextSize / 2);
+		mViewHeight = 7 * sTextSize / 2;
 		if (expandable)
 			mViewHeight = Math.max(mViewHeight, sExpander.getHeight() + sTextSize);
 	}

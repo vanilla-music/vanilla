@@ -295,8 +295,8 @@ public final class CoverBitmap {
 		int boxWidth = Math.min(maxBoxWidth, textSize + Math.max(titleWidth, Math.max(artistWidth, albumWidth)) + padding * 3);
 		int boxHeight = Math.min(maxBoxHeight, textSize * 3 + padding * 4);
 
-		int bitmapWidth = (int)(horizontal ? coverWidth + boxWidth : Math.max(coverWidth, boxWidth));
-		int bitmapHeight = (int)(horizontal ? Math.max(coverHeight, boxHeight) : coverHeight + boxHeight);
+		int bitmapWidth = horizontal ? coverWidth + boxWidth : Math.max(coverWidth, boxWidth);
+		int bitmapHeight = horizontal ? Math.max(coverHeight, boxHeight) : coverHeight + boxHeight;
 
 		if (bitmap != null) {
 			if (bitmap.getHeight() != bitmapHeight || bitmap.getWidth() != bitmapWidth) {
@@ -391,7 +391,7 @@ public final class CoverBitmap {
 	 * @param height Maximum height of image
 	 * @return The scaled Bitmap, or null if a cover could not be found.
 	 */
-	public static Bitmap createScaledBitmap(Context context, Song song, int width, int height)
+	private static Bitmap createScaledBitmap(Context context, Song song, int width, int height)
 	{
 		if (song == null || width < 1 || height < 1)
 			return null;

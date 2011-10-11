@@ -50,7 +50,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	 * A Handler running on the UI thread, in contrast with mHandler which runs
 	 * on a worker thread.
 	 */
-	private Handler mUiHandler = new Handler(this);
+	private final Handler mUiHandler = new Handler(this);
 
 	private TextView mOverlayText;
 	private View mControlsTop;
@@ -77,7 +77,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	/**
 	 * Cached StringBuilder for formatting track position.
 	 */
-	private StringBuilder mTimeBuilder = new StringBuilder();
+	private final StringBuilder mTimeBuilder = new StringBuilder();
 
 	@Override
 	public void onCreate(Bundle icicle)
@@ -89,7 +89,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 		boolean hiddenControls = settings.getBoolean("hidden_controls", false);
 
 		int layout = R.layout.full_playback;
-		int coverStyle = -1;
+		int coverStyle;
 
 		switch (displayMode) {
 		default:

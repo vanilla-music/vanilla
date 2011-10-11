@@ -56,16 +56,16 @@ public class NewPlaylistDialog extends Dialog implements TextWatcher, View.OnCli
 	 * The text to display initially. When the EditText contains this text, the
 	 * positive button will be disabled.
 	 */
-	private String mInitialText;
+	private final String mInitialText;
 	/**
 	 * The resource containing the string describing the default positive
 	 * action (e.g. "Create" or "Rename").
 	 */
-	private int mActionRes;
+	private final int mActionRes;
 	/**
 	 * An intent that is simply stored in the dialog.
 	 */
-	private Intent mIntent;
+	private final Intent mIntent;
 
 	/**
 	 * Create a NewPlaylistDialog.

@@ -56,7 +56,7 @@ public class MediaButtonHandler {
 	 */
 	private static int mUseControls = -1;
 
-	private Context mContext;
+	private final Context mContext;
 	/**
 	 * Whether the phone is currently in a call. 1 for yes, 0 for no, -1 for
 	 * uninitialized.
@@ -67,10 +67,10 @@ public class MediaButtonHandler {
 	 */
 	private long mLastClickTime;
 
-	private static AudioManager mAudioManager;
+	private static final AudioManager mAudioManager;
 	private static Method mRegisterMediaButtonEventReceiver;
 	private static Method mUnregisterMediaButtonEventReceiver;
-	public static ComponentName mButtonReceiver;
+	public static final ComponentName mButtonReceiver;
 
 	/**
 	 * Retrieve the MediaButtonHandler singleton, creating it if necessary.

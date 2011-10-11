@@ -302,7 +302,6 @@ public class PlaybackActivity extends Activity
 	{
 	}
 
-	static final int MENU_DISPLAY = 1;
 	static final int MENU_PREFS = 2;
 	static final int MENU_LIBRARY = 3;
 	static final int MENU_SHUFFLE = 4;

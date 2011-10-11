@@ -30,9 +30,8 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
-
+import android.util.Log;
 import java.io.FileDescriptor;
-import java.io.FileNotFoundException;
 
 /**
  * Represents a Song backed by the MediaStore. Includes basic metadata and
@@ -224,8 +223,8 @@ public class Song implements Comparable<Song> {
 				FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
 				cover = BitmapFactory.decodeFileDescriptor(fileDescriptor, null, BITMAP_OPTIONS);
 			}
-		} catch (IllegalStateException e) {
-		} catch (FileNotFoundException e) {
+		} catch (Exception e) {
+			Log.d("VanillaMusic", "Failed to load cover art for " + path, e);
 		}
 
 		Bitmap deletedCover = mCoverCache.put(id, cover);

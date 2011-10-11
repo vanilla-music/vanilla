@@ -66,17 +66,17 @@ public final class CoverView extends View implements Handler.Callback {
 	/**
 	 * The current set of songs: 0 = previous, 1 = current, and 2 = next.
 	 */
-	private Song[] mSongs = new Song[3];
+	private final Song[] mSongs = new Song[3];
 	/**
 	 * The covers for the current songs: 0 = previous, 1 = current, and 2 = next.
 	 */
-	private Bitmap[] mBitmaps = new Bitmap[3];
+	private final Bitmap[] mBitmaps = new Bitmap[3];
 	/**
 	 * Cache of cover bitmaps generated for songs. The song ids are the keys.
 	 */
-	private Cache<Bitmap> mBitmapCache = new Cache<Bitmap>(8);
+	private final Cache<Bitmap> mBitmapCache = new Cache<Bitmap>(8);
 
-	private Scroller mScroller;
+	private final Scroller mScroller;
 	private VelocityTracker mVelocityTracker;
 	private float mLastMotionX;
 	private float mLastMotionY;
@@ -358,7 +358,7 @@ public final class CoverView extends View implements Handler.Callback {
 	}
 
 	/**
-	 * Call {@link CoverView#generateBitmap(Song)} for the given song.
+	 * Call {@link CoverView#generateBitmap(int)} for the song at the given index.
 	 *
 	 * obj must be the Song to generate a bitmap for.
 	 */

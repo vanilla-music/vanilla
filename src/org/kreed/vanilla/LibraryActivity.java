@@ -93,7 +93,7 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 	private MediaAdapter mGenreAdapter;
 	private MediaAdapter mCurrentAdapter;
 
-	private ContentObserver mPlaylistObserver = new ContentObserver(null) {
+	private final ContentObserver mPlaylistObserver = new ContentObserver(null) {
 		@Override
 		public void onChange(boolean selfChange)
 		{
@@ -374,10 +374,9 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 		params.leftMargin = 5;
+		PaintDrawable background = new PaintDrawable(Color.GRAY);
+		background.setCornerRadius(5);
 		for (int i = 0; i != limiter.length; ++i) {
-			PaintDrawable background = new PaintDrawable(Color.GRAY);
-			background.setCornerRadius(5);
-
 			TextView view = new TextView(this);
 			view.setSingleLine();
 			view.setEllipsize(TextUtils.TruncateAt.MARQUEE);
@@ -687,11 +686,11 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 	 * Called by MediaAdapters to requery their data on the worker thread.
 	 * obj will contain the MediaAdapter.
 	 */
-	public static final int MSG_RUN_QUERY = 14;
+	private static final int MSG_RUN_QUERY = 14;
 	/**
 	 * Call addToPlaylist with data from the intent in obj.
 	 */
-	public static final int MSG_ADD_TO_PLAYLIST = 15;
+	private static final int MSG_ADD_TO_PLAYLIST = 15;
 
 	@Override
 	public boolean handleMessage(Message message)
@@ -766,7 +765,7 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 	 *
 	 * @param adapter The adapter to run the query for.
 	 */
-	public void runQuery(MediaAdapter adapter)
+	private void runQuery(MediaAdapter adapter)
 	{
 		mHandler.removeMessages(MSG_RUN_QUERY, adapter);
 		mHandler.sendMessage(mHandler.obtainMessage(MSG_RUN_QUERY, adapter));

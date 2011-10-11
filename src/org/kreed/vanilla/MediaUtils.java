@@ -75,7 +75,7 @@ public class MediaUtils {
 	 * Query this many songs at a time from sAllSongs.
 	 */
 	private static final int RANDOM_POPULATE_SIZE = 20;
-	private static Song[] sRandomCache = new Song[RANDOM_POPULATE_SIZE];
+	private static final Song[] sRandomCache = new Song[RANDOM_POPULATE_SIZE];
 	private static int sRandomCacheIdx;
 	private static int sRandomCacheEnd;
 

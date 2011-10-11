@@ -31,9 +31,9 @@ import android.net.Uri;
  */
 public class QueryTask {
 	private Uri mUri;
-	private String[] mProjection;
-	private String mSelection;
-	private String[] mSelectionArgs;
+	private final String[] mProjection;
+	private final String mSelection;
+	private final String[] mSelectionArgs;
 	private String mSortOrder;
 
 	/**
@@ -57,24 +57,6 @@ public class QueryTask {
 	public void setUri(Uri uri)
 	{
 		mUri = uri;
-	}
-
-	/**
-	 * Modify the projection of the pending query.
-	 *
-	 * @param projection The new projection.
-	 */
-	public void setProjection(String[] projection)
-	{
-		mProjection = projection;
-	}
-
-	/**
-	 * Return the sort order of the pending query.
-	 */
-	public String getSortOrder()
-	{
-		return mSortOrder;
 	}
 
 	/**

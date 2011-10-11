@@ -40,8 +40,8 @@ import android.widget.TextView;
  * (6 hours). The values range on an approximately exponential scale.
  */
 public class IdlePreference extends DialogPreference implements SeekBar.OnSeekBarChangeListener {
-	private static int MIN = 60;
-	private static int MAX = 21600;
+	private static final int MIN = 60;
+	private static final int MAX = 21600;
 
 	/**
 	 * The current idle timeout displayed on the slider. Will not be persisted

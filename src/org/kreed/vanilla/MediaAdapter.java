@@ -33,6 +33,7 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.SectionIndexer;
 import java.io.Serializable;
+import java.util.regex.Pattern;
 
 /**
  * MediaAdapter provides an adapter backed by a MediaStore content provider.
@@ -46,16 +47,18 @@ import java.io.Serializable;
  * See getLimiter and setLimiter for details.
  */
 public class MediaAdapter extends CursorAdapter implements SectionIndexer {
+	private static final Pattern SPACE_SPLIT = Pattern.compile("\\s+");
+
 	/**
 	 * A context to use.
 	 */
-	private Context mContext;
+	private final Context mContext;
 	/**
 	 * The type of media represented by this adapter. Must be one of the
 	 * MediaUtils.FIELD_* constants. Determines which content provider to query for
 	 * media and what fields to display.
 	 */
-	private int mType;
+	private final int mType;
 	/**
 	 * The URI of the content provider backing this adapter.
 	 */
@@ -78,7 +81,7 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	/**
 	 * If true, show an expand arrow next the the text in each view.
 	 */
-	private boolean mExpandable;
+	private final boolean mExpandable;
 	/**
 	 * A limiter is used for filtering. The intention is to restrict items
 	 * displayed in the list to only those of a specific artist or album, as
@@ -92,12 +95,12 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	/**
 	 * The section indexer, for the letter pop-up when scrolling.
 	 */
-	private MusicAlphabetIndexer mIndexer;
+	private final MusicAlphabetIndexer mIndexer;
 	/**
 	 * True if this adapter should have a special MediaView with custom text in
 	 * the first row.
 	 */
-	private boolean mHasHeader;
+	private final boolean mHasHeader;
 	/**
 	 * The text to show in the header.
 	 */
@@ -290,7 +293,7 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 		String[] selectionArgs = null;
 
 		String sort;
-		if (mLimiter != null && mLimiter.type == MediaUtils.TYPE_ALBUM)
+		if (limiter != null && limiter.type == MediaUtils.TYPE_ALBUM)
 			sort = MediaStore.Audio.Media.TRACK;
 		else if (mFieldKeys == null)
 			sort = mFields[mFields.length - 1];
@@ -302,6 +305,7 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 
 		if (constraint != null && constraint.length() != 0) {
 			String[] needles;
+			String[] keySource;
 
 			// If we are using sorting keys, we need to change our constraint
 			// into a list of collation keys. Otherwise, just split the
@@ -310,17 +314,21 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 				String colKey = MediaStore.Audio.keyFor(constraint);
 				String spaceColKey = DatabaseUtils.getCollationKey(" ");
 				needles = colKey.split(spaceColKey);
+				keySource = mFieldKeys;
 			} else {
-				needles = constraint.split("\\s+");
+				needles = SPACE_SPLIT.split(constraint);
+				keySource = mFields;
 			}
 
 			int size = needles.length;
 			selectionArgs = new String[size];
 
-			String[] keySource = mFieldKeys == null ? mFields : mFieldKeys;
-			String keys = keySource[0];
-			for (int j = 1; j != keySource.length; ++j)
-				keys += "||" + keySource[j];
+			StringBuilder keys = new StringBuilder(20);
+			keys.append(keySource[0]);
+			for (int j = 1; j != keySource.length; ++j) {
+				keys.append("||");
+				keys.append(keySource[j]);
+			}
 
 			for (int j = 0; j != needles.length; ++j) {
 				selectionArgs[j] = '%' + needles[j] + '%';
@@ -338,12 +346,12 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 		if (limiter != null && limiter.type == MediaUtils.TYPE_GENRE) {
 			// Genre is not standard metadata for MediaStore.Audio.Media.
 			// We have to query it through a separate provider. : /
-			return MediaUtils.buildGenreQuery(mLimiter.id, projection,  selection.toString(), selectionArgs);
+			return MediaUtils.buildGenreQuery(limiter.id, projection,  selection.toString(), selectionArgs);
 		} else {
 			if (limiter != null) {
 				if (selection.length() != 0)
 					selection.append(" AND ");
-				selection.append(mLimiter.selection);
+				selection.append(limiter.selection);
 			}
 
 			return new QueryTask(mStore, projection, selection.toString(), selectionArgs, sort);

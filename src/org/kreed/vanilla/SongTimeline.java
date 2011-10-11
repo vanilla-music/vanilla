@@ -29,7 +29,6 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.EOFException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -102,12 +101,12 @@ public final class SongTimeline {
 	 */
 	public static final int SHUFFLE_ALBUMS = 2;
 
-	private Context mContext;
+	private final Context mContext;
 	/**
 	 * All the songs currently contained in the timeline. Each Song object
 	 * should be unique, even if it refers to the same media.
 	 */
-	private ArrayList<Song> mSongs = new ArrayList<Song>();
+	private ArrayList<Song> mSongs = new ArrayList<Song>(12);
 	/**
 	 * The position of the current song (i.e. the playing song).
 	 */
@@ -189,7 +188,7 @@ public final class SongTimeline {
 	 *
 	 * @param in The stream to read from.
 	 */
-	public void readState(DataInputStream in) throws IOException, EOFException
+	public void readState(DataInputStream in) throws IOException
 	{
 		synchronized (this) {
 			int n = in.readInt();
@@ -329,7 +328,7 @@ public final class SongTimeline {
 			saveActiveSongs();
 			mShuffledSongs = null;
 			mShuffleMode = mode;
-			if (mode != SHUFFLE_NONE && mFinishAction != FINISH_RANDOM && mSongs.size() != 0) {
+			if (mode != SHUFFLE_NONE && mFinishAction != FINISH_RANDOM && !mSongs.isEmpty()) {
 				shuffleAll();
 				ArrayList<Song> songs = mShuffledSongs;
 				mShuffledSongs = null;
@@ -382,7 +381,7 @@ public final class SongTimeline {
 		Assert.assertTrue(delta >= -1 && delta <= 1);
 
 		ArrayList<Song> timeline = mSongs;
-		Song song = null;
+		Song song;
 
 		synchronized (this) {
 			int pos = mCurrentPos + delta;
@@ -441,7 +440,7 @@ public final class SongTimeline {
 			int pos = mCurrentPos + delta;
 
 			if (mFinishAction != FINISH_RANDOM && pos == mSongs.size()) {
-				if (mShuffleMode != SHUFFLE_NONE && mSongs.size() > 0) {
+				if (mShuffleMode != SHUFFLE_NONE && !mSongs.isEmpty()) {
 					if (mShuffledSongs == null)
 						shuffleAll();
 					mSongs = mShuffledSongs;
