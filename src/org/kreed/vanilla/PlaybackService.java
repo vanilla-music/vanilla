@@ -284,7 +284,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			String action = intent.getAction();
 
 			if (ACTION_TOGGLE_PLAYBACK.equals(action)) {
-				go(0, false);
+				playPause();
 			} else if (ACTION_TOGGLE_PLAYBACK_DELAYED.equals(action)) {
 				if (mHandler.hasMessages(CALL_GO, Integer.valueOf(0))) {
 					mHandler.removeMessages(CALL_GO, Integer.valueOf(0));
@@ -293,9 +293,11 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 					mHandler.sendMessageDelayed(mHandler.obtainMessage(CALL_GO, Integer.valueOf(0)), 400);
 				}
 			} else if (ACTION_NEXT_SONG.equals(action)) {
-				go(1, false);
+				setCurrentSong(1);
+				userActionTriggered();
 			} else if (ACTION_NEXT_SONG_AUTOPLAY.equals(action)) {
-				go(1, true);
+				setCurrentSong(1);
+				play();
 			} else if (ACTION_NEXT_SONG_DELAYED.equals(action)) {
 				if (mHandler.hasMessages(CALL_GO, Integer.valueOf(1))) {
 					mHandler.removeMessages(CALL_GO, Integer.valueOf(1));
@@ -304,9 +306,11 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 					mHandler.sendMessageDelayed(mHandler.obtainMessage(CALL_GO, Integer.valueOf(1)), 400);
 				}
 			} else if (ACTION_PREVIOUS_SONG.equals(action)) {
-				go(-1, false);
+				setCurrentSong(-1);
+				userActionTriggered();
 			} else if (ACTION_PREVIOUS_SONG_AUTOPLAY.equals(action)) {
-				go(-1, true);
+				setCurrentSong(-1);
+				play();
 			} else if (ACTION_PLAY.equals(action)) {
 				play();
 			} else if (ACTION_PAUSE.equals(action)) {
@@ -790,22 +794,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		return mTimeline.getSong(delta);
 	}
 
-	private void go(int delta, boolean autoPlay)
-	{
-		if (autoPlay) {
-			synchronized (mStateLock) {
-				mState |= FLAG_PLAYING;
-			}
-		}
-
-		if (delta == 0)
-			playPause();
-		else
-			setCurrentSong(delta);
-
-		userActionTriggered();
-	}
-
 	private class Receiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context content, Intent intent)
@@ -905,9 +893,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 */
 	private static final int FADE_OUT = 7;
 	/**
-	 * Calls {@link PlaybackService#go(int, boolean)} with the given delta.
-	 *
-	 * obj should an Integer representing the delta to pass to go.
+	 * If arg1 is 0, calls {@link PlaybackService#playPause()}.
+	 * Otherwise, calls {@link PlaybackService#setCurrentSong(int)} with arg1.
 	 */
 	private static final int CALL_GO = 8;
 	private static final int BROADCAST_CHANGE = 10;
@@ -919,8 +906,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	{
 		switch (message.what) {
 		case CALL_GO:
-			int delta = (Integer)message.obj;
-			go(delta, false);
+			if (message.arg1 == 0)
+				playPause();
+			else
+				setCurrentSong(message.arg1);
 			break;
 		case SAVE_STATE:
 			// For unexpected terminations: crashes, task killers, etc.
