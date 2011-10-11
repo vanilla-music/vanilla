@@ -322,11 +322,12 @@ public final class CoverView extends View implements Handler.Callback {
 			bitmap = CoverBitmap.createBitmap(getContext(), mCoverStyle, song, getWidth(), getHeight(), mBitmapCache.discardOldest());
 			mBitmaps[i] = bitmap;
 			mBitmapCache.put(song.id, bitmap);
-			postInvalidate();
 		} else {
 			mBitmaps[i] = bitmap;
 			mBitmapCache.touch(song.id);
 		}
+
+		postInvalidate();
 	}
 
 	/**
