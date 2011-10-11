@@ -681,8 +681,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	public int cycleShuffle()
 	{
 		synchronized (mStateLock) {
-			int step = (mState & MASK_SHUFFLE) == 0x200 ? 0x200 : 0x100;
-			return updateState(mState + step);
+			int state = mState;
+			int step = (state & MASK_SHUFFLE) == 0x200 ? 0x200 : 0x100;
+			state = (state & ~MASK_SHUFFLE) | ((state + step) & MASK_SHUFFLE);
+			return updateState(state);
 		}
 	}
 
