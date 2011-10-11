@@ -313,9 +313,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				pause();
 			}
 
-			MediaButtonHandler buttons = MediaButtonHandler.getInstance(this);
-			if (buttons != null)
-				buttons.registerMediaButton();
+			MediaButtonReceiver.registerMediaButton(this);
 		}
 	}
 
@@ -335,7 +333,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			mMediaPlayer = null;
 		}
 
-		MediaButtonHandler.unregisterMediaButton();
+		MediaButtonReceiver.unregisterMediaButton(this);
 
 		try {
 			unregisterReceiver(mReceiver);
@@ -383,7 +381,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			if (mMediaPlayer != null)
 				mMediaPlayer.setVolume(volume, volume);
 		} else if ("media_button".equals(key)) {
-			MediaButtonHandler.reloadPreference(this);
+			MediaButtonReceiver.reloadPreference(this);
 		} else if ("use_idle_timeout".equals(key) || "idle_timeout".equals(key)) {
 			mIdleTimeout = settings.getBoolean("use_idle_timeout", false) ? settings.getInt("idle_timeout", 3600) : 0;
 			userActionTriggered();
@@ -833,9 +831,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			switch (state) {
 			case TelephonyManager.CALL_STATE_RINGING:
 			case TelephonyManager.CALL_STATE_OFFHOOK: {
-				MediaButtonHandler buttons = MediaButtonHandler.getInstance(PlaybackService.this);
-				if (buttons != null)
-					buttons.setInCall(true);
+				MediaButtonReceiver.setInCall(true);
 
 				if (!mPlayingBeforeCall) {
 					synchronized (mStateLock) {
@@ -846,9 +842,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				break;
 			}
 			case TelephonyManager.CALL_STATE_IDLE: {
-				MediaButtonHandler buttons = MediaButtonHandler.getInstance(PlaybackService.this);
-				if (buttons != null)
-					buttons.setInCall(false);
+				MediaButtonReceiver.setInCall(false);
 
 				if (mPlayingBeforeCall) {
 					setFlag(FLAG_PLAYING);

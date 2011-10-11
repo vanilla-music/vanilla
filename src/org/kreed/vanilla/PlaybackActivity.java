@@ -119,13 +119,11 @@ public class PlaybackActivity extends Activity
 	public void onResume()
 	{
 		super.onResume();
+		MediaButtonReceiver.registerMediaButton(this);
+		MediaButtonReceiver.setInCall(false);
 		if (PlaybackService.hasInstance()) {
 			PlaybackService service = PlaybackService.get(this);
 			service.userActionTriggered();
-
-			MediaButtonHandler buttons = MediaButtonHandler.getInstance(this);
-			if (buttons != null)
-				buttons.setInCall(false);
 		}
 	}
 
@@ -137,7 +135,7 @@ public class PlaybackActivity extends Activity
 		case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
 		case KeyEvent.KEYCODE_MEDIA_NEXT:
 		case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-			return MediaButtonHandler.getInstance(this).processKey(event);
+			return MediaButtonReceiver.processKey(this, event);
 		}
 
 		return super.onKeyDown(keyCode, event);
@@ -151,7 +149,7 @@ public class PlaybackActivity extends Activity
 		case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
 		case KeyEvent.KEYCODE_MEDIA_NEXT:
 		case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-			return MediaButtonHandler.getInstance(this).processKey(event);
+			return MediaButtonReceiver.processKey(this, event);
 		}
 
 		return super.onKeyUp(keyCode, event);
