@@ -27,7 +27,8 @@ THE SOFTWARE.
 	android:installLocation="auto">
 	<application
 		android:icon="@drawable/icon"
-		android:label="@string/app_name">
+		android:label="@string/app_name"
+		android:backupAgent="PreferencesBackupAgent">
 		<activity
 			android:name="LaunchActivity"
 			android:theme="@style/NoBackground">
@@ -94,6 +95,9 @@ THE SOFTWARE.
 			</intent-filter>
 		</service>
 		<activity android:name="PreferencesActivity" />
+		<meta-data
+			android:name="com.google.android.backup.api_key"
+			android:value="AEdPqrEAAAAIH6Xcxa4hn6sHN1m4jMpi4MFFFMP5sv3XhFuWeA" />
 	</application>
 	<uses-sdk android:minSdkVersion="5" android:targetSdkVersion="10" />
 	<uses-permission android:name="android.permission.WAKE_LOCK" />

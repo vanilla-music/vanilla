@@ -24,6 +24,7 @@ package org.kreed.vanilla;
 
 import android.app.NotificationManager;
 import android.app.Service;
+import android.app.backup.BackupManager;
 import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
@@ -35,6 +36,7 @@ import android.database.ContentObserver;
 import android.database.Cursor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -414,6 +416,9 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		} else if ("headset_play".equals(key)) {
 			mHeadsetPlay = settings.getBoolean(key, false);
 		}
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO)
+			new BackupManager(this).dataChanged();
 	}
 
 	/**
