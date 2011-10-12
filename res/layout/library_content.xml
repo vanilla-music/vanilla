@@ -99,7 +99,7 @@ THE SOFTWARE.
 				android:id="@+id/genre_tab"
 				android:focusable="true"
 				android:background="@drawable/buttonbar"
-				android:drawableTop="@drawable/ic_tab_songs"
+				android:drawableTop="@drawable/ic_tab_genres"
 				android:text="@string/genres"
 				android:textAppearance="?android:attr/textAppearanceSmall"
 				android:textColor="@color/tab_indicator_text"

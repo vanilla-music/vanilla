@@ -314,7 +314,7 @@ public class PlaybackActivity extends Activity
 		menu.add(0, MENU_PREFS, 0, R.string.settings).setIcon(R.drawable.ic_menu_preferences);
 		menu.add(0, MENU_SHUFFLE, 0, R.string.shuffle_enable).setIcon(R.drawable.ic_menu_shuffle);
 		menu.add(0, MENU_REPEAT, 0, R.string.repeat_enable).setIcon(R.drawable.ic_menu_refresh);
-		menu.add(0, MENU_RANDOM, 0, R.string.random_enable).setIcon(R.drawable.ic_menu_shuffle);
+		menu.add(0, MENU_RANDOM, 0, R.string.random_enable).setIcon(R.drawable.ic_menu_random);
 		return true;
 	}
 
@@ -348,7 +348,6 @@ public class PlaybackActivity extends Activity
 		menu.findItem(MENU_REPEAT).setTitle(repeatRes);
 
 		boolean isRandom = (state & PlaybackService.FLAG_RANDOM) != 0;
-		// TODO: find icon (dice? arrow pointing in many directions?)
 		menu.findItem(MENU_RANDOM).setTitle(isRandom ? R.string.random_disable : R.string.random_enable);
 
 		return true;
