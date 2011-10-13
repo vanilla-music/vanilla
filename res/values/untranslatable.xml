@@ -25,4 +25,22 @@ THE SOFTWARE.
         <item name="android:windowBackground">@null</item>
         <item name="android:windowNoTitle">true</item>
     </style>
+	<string-array name="entry_values">
+		<!-- Note: even if this was an integer-array, these would be converted
+		     to strings anyway.
+		     http://code.google.com/p/android/issues/detail?id=2096 -->
+		<item>0</item>
+		<item>1</item>
+		<item>2</item>
+		<item>3</item>
+		<item>4</item>
+		<item>5</item>
+		<item>6</item>
+		<item>7</item>
+		<item>8</item>
+		<item>9</item>
+		<item>10</item>
+		<item>11</item>
+		<item>12</item>
+	</string-array>
 </resources>

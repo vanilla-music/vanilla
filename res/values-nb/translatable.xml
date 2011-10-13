@@ -168,4 +168,41 @@ THE SOFTWARE.
 	<string name="scrobble_summary">Scrobble til Last.FM via ScrobbleDroid eller Simple Last.FM Scrobbler</string>
 	<string name="stock_broadcast_title">Emuler Innebygd Sendinger</string>
 	<string name="stock_broadcast_summary">Send sendinger som emulerer den innebygde spilleren til å fungere med tredjeparts låseskjermer, widgets, etc.</string>
+
+	<string-array name="default_action_entries">
+		<item>Spill</item>
+		<item>Kø</item>
+		<item>Siste Brukte Handling</item>
+	</string-array>
+	<string-array name="notification_mode_entries">
+		<item>Aldri Vis</item>
+		<item>Vis Ved Avspilling</item>
+		<item>Alltid Vis</item>
+	</string-array>
+	<string-array name="notification_action_entries">
+		<item>Åpne Hoved Aktivitet</item>
+		<item>Åpne Mini Spiller</item>
+		<item>Hopp Til Neste Låt</item>
+	</string-array>
+	<string-array name="display_mode_entries">
+		<item>Info i overlappende Boks (standard)</item>
+		<item>Info Under Cover Bilde</item>
+		<item>Info I Stadig Lag</item>
+		<item>Info I Stadig Lag (Fullskjerm Cover)</item>
+	</string-array>
+	<string-array name="swipe_action_entries">
+		<item>Gjør Ingenting</item>
+		<item>Åpne Bibliotek</item>
+		<item>Spill/Pause</item>
+		<item>Neste Låt</item>
+		<item>Forrige Låt</item>
+		<item>Ters Gjenta</item>
+		<item>Ters Stokke</item>
+		<item>Ters Tilfeldig</item>
+		<item>Kø Aktuelle Album</item>
+		<item>Kø Aktuelle Artist</item>
+		<item>Kø Aktuelle Gjanger</item>
+		<item>Tøm Kø</item>
+		<item>Ters Medieknapper</item>
+	</string-array>
 </resources>

@@ -81,7 +81,7 @@ THE SOFTWARE.
 	</plurals>
 	<plurals name="added_to_playlist">
 		<item quantity="one">1 skladba pridaná do zoznamu skladieb %2$s.</item>
-		<item quantity="few">%1$d skladby pridané do zoznamu skladieb %2$s.</item>		
+		<item quantity="few">%1$d skladby pridané do zoznamu skladieb %2$s.</item>
 		<item quantity="other">%1$d skladieb pridaných do zoznamu skladieb %2$s.</item>
 	</plurals>
 	<string name="deleting">Odstraňuje sa…</string>
@@ -175,4 +175,41 @@ THE SOFTWARE.
 	<string name="scrobble_summary">Scrobble prístup k Last.FM cez ScrobbleDroid alebo Simple Last.FM Scrobbler.</string>
 	<string name="stock_broadcast_title">Tváriť sa ako originálny prehrávač</string>
 	<string name="stock_broadcast_summary">Tvári sa ako originálny prehrávač hudby posielaním vysielania pre umožnenie spolupráce s ovládaniami, miniaplikáciami zamykania obrazovky.</string>
+
+	<string-array name="default_action_entries">
+		<item>Prehrať</item>
+		<item>Zaradiť do zoznamu</item>
+		<item>Naposledy použitá akcia</item>
+	</string-array>
+	<string-array name="notification_mode_entries">
+		<item>Nikdy nezobraziť</item>
+		<item>Zobraziť počas prehrávania</item>
+		<item>Vždy zobraziť</item>
+	</string-array>
+	<string-array name="notification_action_entries">
+		<item>Otvoriť hlavnú činnosť</item>
+		<item>Otvoriť mini prehrávač</item>
+		<item>Preskočiť na ďalšiu skladbu</item>
+	</string-array>
+	<string-array name="display_mode_entries">
+		<item>Informácie v prekrývajúcom ráme (predvolené)</item>
+		<item>Informácie pod obalom</item>
+		<item>Informácie vo vrstve Immobile</item>
+		<item>Informácie vo vrstve Immobile (obal na celej obrazovke)</item>
+	</string-array>
+	<string-array name="swipe_action_entries">
+		<item>Nerobiť nič</item>
+		<item>Otvoriť knižnicu</item>
+		<item>Prehrať/Pozastaviť</item>
+		<item>Nasledujúca skladba</item>
+		<item>Predchádzajúca skladba</item>
+		<item>Prepnúť opakovanie</item>
+		<item>Prepnúť náhodné usporiadanie</item>
+		<item>Prepnúť náhodný výber</item>
+		<item>Pridať do zoznamu aktuálny album</item>
+		<item>Pridať do zoznamu aktuálneho interpreta</item>
+		<item>Pridať do zoznamu aktuálny žáner</item>
+		<item>Vymazať zoznam</item>
+		<item>Prepnúť ovládanie</item>
+	</string-array>
 </resources>
