@@ -36,6 +36,8 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -113,6 +115,12 @@ public class PlaybackActivity extends Activity
 		mDownAction = Integer.parseInt(prefs.getString("swipe_down_action", "0"));
 		mCoverPressAction = Integer.parseInt(prefs.getString("cover_press_action", "12"));
 		mCoverLongPressAction = Integer.parseInt(prefs.getString("cover_longpress_action", "2"));
+
+		Window window = getWindow();
+		if (prefs.getBoolean("disable_lockscreen", false))
+			window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+		else
+			window.clearFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
 	}
 
 	@Override

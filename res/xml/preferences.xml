@@ -133,6 +133,11 @@ THE SOFTWARE.
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/pref_misc">
 		<CheckBoxPreference
+			android:key="disable_lockscreen"
+			android:title="@string/disable_lockscreen_title"
+			android:summary="@string/disable_lockscreen_summary"
+			android:defaultValue="false" />
+		<CheckBoxPreference
 			android:key="use_idle_timeout"
 			android:title="@string/use_idle_timeout_title"
 			android:summary="@string/use_idle_timeout_summary"
