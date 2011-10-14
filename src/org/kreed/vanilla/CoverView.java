@@ -24,6 +24,7 @@ package org.kreed.vanilla;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Handler;
@@ -75,6 +76,10 @@ public final class CoverView extends View implements Handler.Callback {
 	 * Cache of cover bitmaps generated for songs. The song ids are the keys.
 	 */
 	private final Cache<Bitmap> mBitmapCache = new Cache<Bitmap>(8);
+	/**
+	 * Cover art to use when a song has no cover art in no info display styles.
+	 */
+	private Bitmap mDefaultCover;
 
 	private final Scroller mScroller;
 	private VelocityTracker mVelocityTracker;
@@ -127,6 +132,32 @@ public final class CoverView extends View implements Handler.Callback {
 	}
 
 	/**
+	 * Create the cover to show when a song has no cover art. Only used in the
+	 * no info modes.
+	 *
+	 * @return The default cover, now also stored in mDefaultCover.
+	 */
+	private Bitmap generateDefaultCover()
+	{
+		int style = mCoverStyle;
+		Bitmap result = null;
+
+		if (style == CoverBitmap.STYLE_NO_INFO || style == CoverBitmap.STYLE_NO_INFO_ZOOMED) {
+			Bitmap def = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.default_cover);
+			int width = getWidth();
+			int height = getHeight();
+
+			if (style == CoverBitmap.STYLE_NO_INFO)
+				result = CoverBitmap.createScaledBitmap(def, width, height, null);
+			else
+				result = CoverBitmap.createZoomedBitmap(def, width, height, null);
+		}
+
+		mDefaultCover = result;
+		return result;
+	}
+
+	/**
 	 * Recreate all the necessary cached bitmaps.
 	 */
 	private void regenerateBitmaps()
@@ -137,6 +168,7 @@ public final class CoverView extends View implements Handler.Callback {
 				((Bitmap)bitmaps[i]).recycle();
 			bitmaps[i] = null;
 		}
+		mDefaultCover = null;
 		for (int i = 3; --i != -1; )
 			setSong(i, mSongs[i]);
 	}
@@ -317,12 +349,21 @@ public final class CoverView extends View implements Handler.Callback {
 		if (song == null || song.id == -1)
 			return;
 
-		Bitmap bitmap = CoverBitmap.createBitmap(getContext(), mCoverStyle, song, getWidth(), getHeight(), mBitmapCache.discardOldest());
-		if (bitmap != null) {
-			mBitmaps[i] = bitmap;
-			mBitmapCache.put(song.id, bitmap);
-			postInvalidate();
+		Bitmap reuse = mBitmapCache.discardOldest();
+		if (reuse == mDefaultCover)
+			reuse = null;
+
+		int style = mCoverStyle;
+		Bitmap bitmap = CoverBitmap.createBitmap(getContext(), style, song, getWidth(), getHeight(), reuse);
+		if (bitmap == null && (style == CoverBitmap.STYLE_NO_INFO || style == CoverBitmap.STYLE_NO_INFO_ZOOMED)) {
+			bitmap = mDefaultCover;
+			if (bitmap == null)
+				bitmap = generateDefaultCover();
 		}
+
+		mBitmaps[i] = bitmap;
+		mBitmapCache.put(song.id, bitmap);
+		postInvalidate();
 	}
 
 	/**

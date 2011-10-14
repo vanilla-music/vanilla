@@ -136,15 +136,18 @@ public final class CoverBitmap {
 	 */
 	public static Bitmap createBitmap(Context context, int style, Song song, int width, int height, Bitmap bitmap)
 	{
+		if (song == null)
+			return null;
+
 		switch (style) {
 		case STYLE_OVERLAPPING_BOX:
 			return createOverlappingBitmap(context, song, width, height, bitmap);
 		case STYLE_INFO_BELOW:
 			return createSeparatedBitmap(context, song, width, height, bitmap);
 		case STYLE_NO_INFO:
-			return createScaledBitmap(context, song, width, height, bitmap);
+			return createScaledBitmap(song.getCover(context), width, height, bitmap);
 		case STYLE_NO_INFO_ZOOMED:
-			return createZoomedBitmap(context, song, width, height, bitmap);
+			return createZoomedBitmap(song.getCover(context), width, height, bitmap);
 		default:
 			throw new IllegalArgumentException("Invalid bitmap type given: " + style);
 		}
@@ -152,7 +155,7 @@ public final class CoverBitmap {
 
 	private static Bitmap createOverlappingBitmap(Context context, Song song, int width, int height, Bitmap bitmap)
 	{
-		if (song == null || width < 1 || height < 1)
+		if (width < 1 || height < 1)
 			return null;
 
 		if (TEXT_SIZE == -1)
@@ -246,7 +249,7 @@ public final class CoverBitmap {
 
 	private static Bitmap createSeparatedBitmap(Context context, Song song, int width, int height, Bitmap bitmap)
 	{
-		if (song == null || width < 1 || height < 1)
+		if (width < 1 || height < 1)
 			return null;
 
 		if (TEXT_SIZE == -1)
@@ -346,69 +349,76 @@ public final class CoverBitmap {
 		return bitmap;
 	}
 
-	private static Bitmap createZoomedBitmap(Context context, Song song, int width, int height, Bitmap bitmap)
+	/**
+	 * Scales a bitmap to completely fill a rectangle of the given size. Aspect
+	 * ratio is preserved, thus, parts of the image will be cut off if the
+	 * aspect ratio of the rectangle does not match that of the source bitmap.
+	 *
+	 * @param source The source bitmap.
+	 * @param width Width of the result
+	 * @param height Height of the result
+	 * @param reuse A bitmap to store the result in if possible
+	 * @return The zoomed bitmap.
+	 */
+	public static Bitmap createZoomedBitmap(Bitmap source, int width, int height, Bitmap reuse)
 	{
-		if (song == null || width < 1 || height < 1)
+		if (source == null || width < 1 || height < 1)
 			return null;
 
-		Bitmap cover = song.getCover(context);
-		if (cover == null)
-			return null;
+		Bitmap bitmap = null;
 
-		if (bitmap != null && (bitmap.getHeight() != height || bitmap.getWidth() != width)) {
-			bitmap.recycle();
-			bitmap = null;
+		if (reuse != null) {
+			if (reuse.getHeight() == height && reuse.getWidth() == width)
+				bitmap = reuse;
+			else
+				reuse.recycle();
 		}
 
 		if (bitmap == null)
 			bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
 		Canvas canvas = new Canvas(bitmap);
 
-		int coverWidth = cover.getWidth();
-		int coverHeight = cover.getHeight();
+		int sourceWidth = source.getWidth();
+		int sourceHeight = source.getHeight();
 		int size = Math.max(width, height);
-		float scale = coverWidth < coverHeight ? (float)size / coverWidth : (float)size / coverHeight;
+		float scale = sourceWidth < sourceHeight ? (float)size / sourceWidth : (float)size / sourceHeight;
 
-		int srcWidth = (int)(Math.min(width, coverWidth * scale) / scale);
-		int srcHeight = (int)(Math.min(height, coverHeight * scale) / scale);
-		int xOffset = (coverWidth - srcWidth) / 2;
-		int yOffset = (coverHeight - srcHeight) / 2;
-		Rect src = new Rect(xOffset, yOffset, coverWidth - xOffset, coverHeight - yOffset);
+		int srcWidth = (int)(Math.min(width, sourceWidth * scale) / scale);
+		int srcHeight = (int)(Math.min(height, sourceHeight * scale) / scale);
+		int xOffset = (sourceWidth - srcWidth) / 2;
+		int yOffset = (sourceHeight - srcHeight) / 2;
+		Rect src = new Rect(xOffset, yOffset, sourceWidth - xOffset, sourceHeight - yOffset);
 		Rect dest = new Rect(0, 0, width, height);
-		canvas.drawBitmap(cover, src, dest, null);
+		canvas.drawBitmap(source, src, dest, null);
 
 		return bitmap;
 	}
 
 	/**
-	 * Scales a cover to fit in a rectangle of the given size. Aspect ratio is
+	 * Scales a bitmap to fit in a rectangle of the given size. Aspect ratio is
 	 * preserved. At least one dimension of the result will match the provided
 	 * dimension exactly.
 	 *
-	 * @param context A context to use.
-	 * @param song The song to display information for
+	 * @param source The source bitmap.
 	 * @param width Maximum width of image
 	 * @param height Maximum height of image
-	 * @param bitmap A bitmap that will simply be recycled.
-	 * @return The scaled Bitmap, or null if a cover could not be found.
+	 * @param reuse A bitmap that will simply be recycled. (This method does not
+	 * support reuse.)
+	 * @return The scaled bitmap.
 	 */
-	private static Bitmap createScaledBitmap(Context context, Song song, int width, int height, Bitmap bitmap)
+	public static Bitmap createScaledBitmap(Bitmap source, int width, int height, Bitmap reuse)
 	{
-		if (song == null || width < 1 || height < 1)
+		if (source == null || width < 1 || height < 1)
 			return null;
 
-		if (bitmap != null)
-			bitmap.recycle();
+		if (reuse != null)
+			reuse.recycle();
 
-		Bitmap cover = song.getCover(context);
-		if (cover == null)
-			return null;
-
-		int coverWidth = cover.getWidth();
-		int coverHeight = cover.getHeight();
-		float scale = Math.min((float)width / coverWidth, (float)height / coverHeight);
-		coverWidth *= scale;
-		coverHeight *= scale;
-		return Bitmap.createScaledBitmap(cover, coverWidth, coverHeight, false);
+		int sourceWidth = source.getWidth();
+		int sourceHeight = source.getHeight();
+		float scale = Math.min((float)width / sourceWidth, (float)height / sourceHeight);
+		sourceWidth *= scale;
+		sourceHeight *= scale;
+		return Bitmap.createScaledBitmap(source, sourceWidth, sourceHeight, false);
 	}
 }
