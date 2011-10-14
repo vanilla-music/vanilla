@@ -142,7 +142,7 @@ public final class CoverBitmap {
 		case STYLE_INFO_BELOW:
 			return createSeparatedBitmap(context, song, width, height, bitmap);
 		case STYLE_NO_INFO:
-			return createScaledBitmap(context, song, width, height);
+			return createScaledBitmap(context, song, width, height, bitmap);
 		case STYLE_NO_INFO_ZOOMED:
 			return createZoomedBitmap(context, song, width, height, bitmap);
 		default:
@@ -389,12 +389,16 @@ public final class CoverBitmap {
 	 * @param song The song to display information for
 	 * @param width Maximum width of image
 	 * @param height Maximum height of image
+	 * @param bitmap A bitmap that will simply be recycled.
 	 * @return The scaled Bitmap, or null if a cover could not be found.
 	 */
-	private static Bitmap createScaledBitmap(Context context, Song song, int width, int height)
+	private static Bitmap createScaledBitmap(Context context, Song song, int width, int height, Bitmap bitmap)
 	{
 		if (song == null || width < 1 || height < 1)
 			return null;
+
+		if (bitmap != null)
+			bitmap.recycle();
 
 		Bitmap cover = song.getCover(context);
 		if (cover == null)
