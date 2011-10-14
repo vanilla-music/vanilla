@@ -317,17 +317,12 @@ public final class CoverView extends View implements Handler.Callback {
 		if (song == null || song.id == -1)
 			return;
 
-		Bitmap bitmap = mBitmapCache.get(song.id);
-		if (bitmap == null) {
-			bitmap = CoverBitmap.createBitmap(getContext(), mCoverStyle, song, getWidth(), getHeight(), mBitmapCache.discardOldest());
+		Bitmap bitmap = CoverBitmap.createBitmap(getContext(), mCoverStyle, song, getWidth(), getHeight(), mBitmapCache.discardOldest());
+		if (bitmap != null) {
 			mBitmaps[i] = bitmap;
 			mBitmapCache.put(song.id, bitmap);
-		} else {
-			mBitmaps[i] = bitmap;
-			mBitmapCache.touch(song.id);
+			postInvalidate();
 		}
-
-		postInvalidate();
 	}
 
 	/**
@@ -340,8 +335,14 @@ public final class CoverView extends View implements Handler.Callback {
 		if (song == null) {
 			mBitmaps[i] = null;
 		} else {
-			mBitmaps[i] = mBitmapCache.get(song.id);
-			mHandler.sendMessage(mHandler.obtainMessage(MSG_GENERATE_BITMAP, i, 0));
+			Bitmap bitmap = mBitmapCache.get(song.id);
+			if (bitmap != null) {
+				mBitmaps[i] = bitmap;
+				mBitmapCache.touch(song.id);
+			} else {
+				mBitmaps[i] = null;
+				mHandler.sendMessage(mHandler.obtainMessage(MSG_GENERATE_BITMAP, i, 0));
+			}
 		}
 	}
 
@@ -352,8 +353,10 @@ public final class CoverView extends View implements Handler.Callback {
 	 */
 	public void querySongs(PlaybackService service)
 	{
-		for (int i = 3; --i != -1; )
-			setSong(i, service.getSong(i - 1));
+		mHandler.removeMessages(MSG_GENERATE_BITMAP);
+		setSong(1, service.getSong(0));
+		setSong(2, service.getSong(1));
+		setSong(0, service.getSong(-1));
 		resetScroll();
 		invalidate();
 	}
