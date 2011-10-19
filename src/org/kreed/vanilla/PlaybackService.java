@@ -280,7 +280,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	}
 
 	@Override
-	public void onStart(Intent intent, int flags)
+	public int onStartCommand(Intent intent, int flags, int startId)
 	{
 		if (intent != null) {
 			String action = intent.getAction();
@@ -321,6 +321,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 			MediaButtonReceiver.registerMediaButton(this);
 		}
+
+		return START_NOT_STICKY;
 	}
 
 	@Override
