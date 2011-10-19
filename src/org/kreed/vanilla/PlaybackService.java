@@ -393,18 +393,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			userActionTriggered();
 		} else if ("disable_cover_art".equals(key)) {
 			Song.mDisableCoverArt = settings.getBoolean("disable_cover_art", false);
-		} else if ("display_mode".equals(key)) {
-			ArrayList<PlaybackActivity> activities = sActivities;
-			for (PlaybackActivity activity : activities) {
-				if (activity instanceof FullPlaybackActivity)
-					activity.finish();
-			}
-		} else if ("controls_in_selector".equals(key)) {
-			ArrayList<PlaybackActivity> activities = sActivities;
-			for (PlaybackActivity activity : activities) {
-				if (activity instanceof LibraryActivity)
-					activity.finish();
-			}
 		} else if ("notification_inverted_color".equals(key)) {
 			updateNotification();
 		} else if ("headset_only".equals(key)) {

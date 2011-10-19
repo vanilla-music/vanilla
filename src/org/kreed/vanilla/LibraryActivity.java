@@ -178,6 +178,10 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 		super.onStart();
 
 		SharedPreferences settings = PlaybackService.getSettings(this);
+		if (settings.getBoolean("controls_in_selector", false) != (mControls != null)) {
+			finish();
+			startActivity(new Intent(this, LibraryActivity.class));
+		}
 		mDefaultAction = Integer.parseInt(settings.getString("default_action_int", "0"));
 		mLastActedId = -2;
 		updateHeaders();

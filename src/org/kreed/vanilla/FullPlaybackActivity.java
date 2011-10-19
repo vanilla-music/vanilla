@@ -22,6 +22,7 @@
 
 package org.kreed.vanilla;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -75,6 +76,11 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	private boolean mPaused;
 
 	/**
+	 * The current display mode, which determines layout and cover render style.
+	 */
+	private int mDisplayMode;
+
+	/**
 	 * Cached StringBuilder for formatting track position.
 	 */
 	private final StringBuilder mTimeBuilder = new StringBuilder();
@@ -87,6 +93,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 		SharedPreferences settings = PlaybackService.getSettings(this);
 		int displayMode = Integer.parseInt(settings.getString("display_mode", "0"));
 		boolean hiddenControls = settings.getBoolean("hidden_controls", false);
+		mDisplayMode = displayMode;
 
 		int layout = R.layout.full_playback;
 		int coverStyle;
@@ -142,6 +149,18 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 		mSeekBar.setMax(1000);
 		mSeekBar.setOnSeekBarChangeListener(this);
 		setDuration(0);
+	}
+
+	@Override
+	public void onStart()
+	{
+		super.onStart();
+
+		SharedPreferences settings = PlaybackService.getSettings(this);
+		if (mDisplayMode != Integer.parseInt(settings.getString("display_mode", "0"))) {
+			finish();
+			startActivity(new Intent(this, FullPlaybackActivity.class));
+		}
 	}
 
 	@Override
