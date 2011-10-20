@@ -22,6 +22,7 @@
 
 package org.kreed.vanilla;
 
+import junit.framework.Assert;
 import java.util.Arrays;
 
 /**
@@ -94,9 +95,6 @@ public class Cache<E> {
 	@SuppressWarnings("unchecked")
 	public E get(long key)
 	{
-		if (key < 0)
-			throw new IllegalArgumentException("Keys must be non-negative.");
-
 		int i = indexOf(key);
 		return i == -1 ? null : (E)mValues[i];
 	}
@@ -109,9 +107,6 @@ public class Cache<E> {
 	 */
 	public void touch(long key)
 	{
-		if (key < 0)
-			throw new IllegalArgumentException("Keys must be non-negative.");
-
 		long[] keys = mKeys;
 		Object[] values = mValues;
 
@@ -142,32 +137,26 @@ public class Cache<E> {
 			return null;
 
 		E removed = (E)mValues[0];
-		System.arraycopy(mKeys, 1, mKeys, 0, count - 1);
-		System.arraycopy(mValues, 1, mValues, 0, count - 1);
+		System.arraycopy(mKeys, 1, mKeys, 0, mKeys.length - 1);
+		System.arraycopy(mValues, 1, mValues, 0, mKeys.length - 1);
 		mKeys[mKeys.length - 1] = -1;
 
 		return removed;
 	}
 
 	/**
-	 * Insert an item into the cache. If the cache is full, the oldest item
-	 * will be discarded.
+	 * Insert an item into the cache. Cache must not be full.
 	 *
 	 * @param key The key to place the item at. Must be a duplicate of an
 	 * existing key in the cache.
 	 * @param value The item.
-	 * @return The discarded item, or null if no items were discarded.
 	 */
-	public E put(long key, E value)
+	public void put(long key, E value)
 	{
-		if (key < 0)
-			throw new IllegalArgumentException("Keys must be non-negative.");
-		
-		E discarded = discardOldest();
 		int count = count();
+		Assert.assertFalse(count == mKeys.length); // must not be full
 		mKeys[count] = key;
 		mValues[count] = value;
-		return discarded;
 	}
 
 	/**
