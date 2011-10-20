@@ -22,16 +22,9 @@
 
 package org.kreed.vanilla;
 
-import android.content.ContentResolver;
-import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
-import android.util.Log;
-import java.io.FileDescriptor;
 
 /**
  * Represents a Song backed by the MediaStore. Includes basic metadata and
@@ -78,11 +71,6 @@ public class Song implements Comparable<Song> {
 		MediaStore.Audio.Playlists.Members.DURATION,
 		MediaStore.Audio.Media.TRACK,
 	};
-
-	/**
-	 * A cache of covers that have been loaded with getCover().
-	 */
-	private static final Cache<Bitmap> mCoverCache = new Cache<Bitmap>(10);
 
 	/**
 	 * If true, will not attempt to load any cover art in getCover()
@@ -190,48 +178,6 @@ public class Song implements Comparable<Song> {
 		if (song == null)
 			return 0;
 		return song.id;
-	}
-
-	private static final BitmapFactory.Options BITMAP_OPTIONS = new BitmapFactory.Options();
-
-	static {
-		BITMAP_OPTIONS.inPreferredConfig = Bitmap.Config.RGB_565;
-		BITMAP_OPTIONS.inDither = false;
-	}
-
-	/**
-	 * Query the album art for this song.
-	 *
-	 * @param context A context to use.
-	 * @return The album art or null if no album art could be found
-	 */
-	public Bitmap getCover(Context context)
-	{
-		if (id == -1 || mDisableCoverArt)
-			return null;
-
-		// Query the cache for the cover
-		Bitmap cover = mCoverCache.get(id);
-		if (cover != null)
-			return cover;
-
-		ContentResolver res = context.getContentResolver();
-
-		try {
-			ParcelFileDescriptor parcelFileDescriptor = res.openFileDescriptor(getCoverUri(), "r");
-			if (parcelFileDescriptor != null) {
-				FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-				cover = BitmapFactory.decodeFileDescriptor(fileDescriptor, null, BITMAP_OPTIONS);
-			}
-		} catch (Exception e) {
-			Log.d("VanillaMusic", "Failed to load cover art for " + path, e);
-		}
-
-		Bitmap deletedCover = mCoverCache.put(id, cover);
-		if (deletedCover != null)
-			deletedCover.recycle();
-
-		return cover;
 	}
 
 	/**

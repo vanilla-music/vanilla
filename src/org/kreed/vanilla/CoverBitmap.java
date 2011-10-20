@@ -22,6 +22,7 @@
 
 package org.kreed.vanilla;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -30,8 +31,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.net.Uri;
+import android.os.ParcelFileDescriptor;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
+import java.io.FileDescriptor;
 
 /**
  * Class containing utility functions to create Bitmaps display song info and
@@ -145,9 +150,9 @@ public final class CoverBitmap {
 		case STYLE_INFO_BELOW:
 			return createSeparatedBitmap(context, song, width, height, bitmap);
 		case STYLE_NO_INFO:
-			return createScaledBitmap(song.getCover(context), width, height, bitmap);
+			return createScaledBitmap(getCover(context, song), width, height, bitmap);
 		case STYLE_NO_INFO_ZOOMED:
-			return createZoomedBitmap(song.getCover(context), width, height, bitmap);
+			return createZoomedBitmap(getCover(context, song), width, height, bitmap);
 		default:
 			throw new IllegalArgumentException("Invalid bitmap type given: " + style);
 		}
@@ -167,7 +172,7 @@ public final class CoverBitmap {
 		String title = song.title == null ? "" : song.title;
 		String album = song.album == null ? "" : song.album;
 		String artist = song.artist == null ? "" : song.artist;
-		Bitmap cover = song.getCover(context);
+		Bitmap cover = getCover(context, song);
 
 		int titleSize = TEXT_SIZE_BIG;
 		int subSize = TEXT_SIZE;
@@ -219,6 +224,7 @@ public final class CoverBitmap {
 			int y = (bitmapHeight - coverHeight) / 2;
 			Rect rect = new Rect(x, y, x + coverWidth, y + coverHeight);
 			canvas.drawBitmap(cover, null, rect, paint);
+			cover.recycle();
 		}
 
 		int left = (bitmapWidth - boxWidth) / 2;
@@ -265,7 +271,7 @@ public final class CoverBitmap {
 		String title = song.title == null ? "" : song.title;
 		String album = song.album == null ? "" : song.album;
 		String artist = song.artist == null ? "" : song.artist;
-		Bitmap cover = song.getCover(context);
+		Bitmap cover = getCover(context, song);
 
 		int textSize = TEXT_SIZE;
 		int padding = PADDING;
@@ -319,6 +325,7 @@ public final class CoverBitmap {
 			int y = horizontal ? (bitmapHeight - coverHeight) / 2 : 0;
 			Rect rect = new Rect(x, y, x + coverWidth, y + coverHeight);
 			canvas.drawBitmap(cover, null, rect, paint);
+			cover.recycle();
 		}
 
 		int top;
@@ -354,7 +361,7 @@ public final class CoverBitmap {
 	 * ratio is preserved, thus, parts of the image will be cut off if the
 	 * aspect ratio of the rectangle does not match that of the source bitmap.
 	 *
-	 * @param source The source bitmap.
+	 * @param source The source bitmap. Will be recycled.
 	 * @param width Width of the result
 	 * @param height Height of the result
 	 * @param reuse A bitmap to store the result in if possible
@@ -390,6 +397,7 @@ public final class CoverBitmap {
 		Rect src = new Rect(xOffset, yOffset, sourceWidth - xOffset, sourceHeight - yOffset);
 		Rect dest = new Rect(0, 0, width, height);
 		canvas.drawBitmap(source, src, dest, null);
+		source.recycle();
 
 		return bitmap;
 	}
@@ -399,7 +407,7 @@ public final class CoverBitmap {
 	 * preserved. At least one dimension of the result will match the provided
 	 * dimension exactly.
 	 *
-	 * @param source The source bitmap.
+	 * @param source The source bitmap. Will be recycled.
 	 * @param width Maximum width of image
 	 * @param height Maximum height of image
 	 * @param reuse A bitmap that will simply be recycled. (This method does not
@@ -419,6 +427,47 @@ public final class CoverBitmap {
 		float scale = Math.min((float)width / sourceWidth, (float)height / sourceHeight);
 		sourceWidth *= scale;
 		sourceHeight *= scale;
-		return Bitmap.createScaledBitmap(source, sourceWidth, sourceHeight, false);
+		Bitmap result = Bitmap.createScaledBitmap(source, sourceWidth, sourceHeight, false);
+		source.recycle();
+		return result;
+	}
+
+
+	private static final BitmapFactory.Options BITMAP_OPTIONS = new BitmapFactory.Options();
+
+	static {
+		BITMAP_OPTIONS.inPreferredConfig = Bitmap.Config.RGB_565;
+		BITMAP_OPTIONS.inDither = false;
+	}
+
+	/**
+	 * Query the album art the given song.
+	 *
+	 * @param context A context to use.
+	 * @param song The song to query the cover art for.
+	 * @return The album art or null if no album art could be found
+	 */
+	public static Bitmap getCover(Context context, Song song)
+	{
+		if (song == null || song.id == -1 || Song.mDisableCoverArt)
+			return null;
+
+		Uri uri = song.getCoverUri();
+		if (uri == null)
+			return null;
+
+		ContentResolver res = context.getContentResolver();
+
+		try {
+			ParcelFileDescriptor parcelFileDescriptor = res.openFileDescriptor(uri, "r");
+			if (parcelFileDescriptor != null) {
+				FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+				return BitmapFactory.decodeFileDescriptor(fileDescriptor, null, BITMAP_OPTIONS);
+			}
+		} catch (Exception e) {
+			Log.d("VanillaMusic", "Failed to load cover art for " + song.path, e);
+		}
+
+		return null;
 	}
 }

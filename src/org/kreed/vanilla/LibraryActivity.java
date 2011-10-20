@@ -28,7 +28,6 @@ import android.content.res.Resources;
 import android.content.SharedPreferences;
 import android.database.ContentObserver;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.PaintDrawable;
 import android.net.Uri;
@@ -798,7 +797,7 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 		super.onSongChange(song);
 
 		if (mStatusText != null) {
-			Bitmap cover = null;
+			Uri cover = null;
 
 			if (song == null) {
 				mStatusText.setText(R.string.none);
@@ -807,7 +806,7 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 				String title = song.title == null ? res.getString(R.string.unknown) : song.title;
 				String artist = song.artist == null ? res.getString(R.string.unknown) : song.artist;
 				mStatusText.setText(res.getString(R.string.title_by_artist, title, artist));
-				cover = song.getCover(this);
+				cover = song.getCoverUri();
 			}
 
 			if (Song.mDisableCoverArt)
@@ -815,7 +814,7 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 			else if (cover == null)
 				mCover.setImageResource(R.drawable.albumart_mp_unknown_list);
 			else
-				mCover.setImageBitmap(cover);
+				mCover.setImageURI(cover);
 		}
 	}
 
