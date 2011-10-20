@@ -36,6 +36,7 @@ THE SOFTWARE.
 		android:orientation="vertical">
 		<TextView
 			android:id="@+id/title"
+			android:ellipsize="marquee"
 			android:layout_height="wrap_content"
 			android:layout_width="fill_parent"
 			android:gravity="center"
@@ -43,39 +44,45 @@ THE SOFTWARE.
 			android:textStyle="bold" />
 		<TextView
 			android:id="@+id/artist"
-			android:layout_height="wrap_content"
-			android:layout_width="fill_parent"
-			android:gravity="center"
-			android:singleLine="true" />
-		<TextView
-			android:id="@+id/album"
+			android:ellipsize="marquee"
 			android:layout_height="wrap_content"
 			android:layout_width="fill_parent"
 			android:gravity="center"
 			android:singleLine="true" />
 		<LinearLayout
-			android:id="@+id/controls_top"
 			android:layout_height="wrap_content"
 			android:layout_width="fill_parent"
 			android:orientation="horizontal">
-			<SeekBar
-				android:id="@+id/seek_bar"
-				android:layout_height="wrap_content"
-				android:layout_width="0px"
-				android:layout_gravity="center"
-				android:paddingTop="5px"
-				android:paddingBottom="5px"
-				android:paddingLeft="15px"
-				android:paddingRight="15px"
-				android:layout_weight="1" />
 			<TextView
-				android:id="@+id/seek_text"
+				android:id="@+id/elapsed"
 				android:layout_height="wrap_content"
 				android:layout_width="wrap_content"
-				android:layout_gravity="center"
-				android:layout_marginRight="15px"
-				android:text="0:00 / 0:00" />
+				android:gravity="bottom"
+				android:textSize="10sp"
+				android:text="00:00" />
+			<TextView
+				android:id="@+id/album"
+				android:ellipsize="marquee"
+				android:layout_height="wrap_content"
+				android:layout_width="0px"
+				android:layout_weight="1"
+				android:layout_marginLeft="2dip"
+				android:layout_marginRight="2dip"
+				android:gravity="center"
+				android:singleLine="true" />
+			<TextView
+				android:id="@+id/duration"
+				android:layout_height="wrap_content"
+				android:layout_width="wrap_content"
+				android:gravity="bottom"
+				android:textSize="10sp"
+				android:text="00:00" />
 		</LinearLayout>
+		<SeekBar
+			android:id="@+id/seek_bar"
+			android:layout_height="wrap_content"
+			android:layout_width="fill_parent"
+			android:padding="5px" />
 	</LinearLayout>
 	<LinearLayout
 		android:id="@+id/controls_bottom"

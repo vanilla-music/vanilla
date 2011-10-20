@@ -54,24 +54,25 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	private final Handler mUiHandler = new Handler(this);
 
 	private TextView mOverlayText;
-	private View mControlsTop;
 	private View mControlsBottom;
 
 	private SeekBar mSeekBar;
-	private TextView mSeekText;
+	private TextView mElapsedView;
+	private TextView mDurationView;
 
 	private TextView mTitle;
 	private TextView mAlbum;
 	private TextView mArtist;
 
 	/**
+	 * True if the controls are visible (play, next, seek bar, etc).
+	 */
+	private boolean mControlsVisible;
+
+	/**
 	 * Current song duration in milliseconds.
 	 */
 	private long mDuration;
-	/**
-	 * Current song duration in human-readable form.
-	 */
-	private String mDurationString;
 	private boolean mSeekBarTracking;
 	private boolean mPaused;
 
@@ -92,7 +93,6 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 
 		SharedPreferences settings = PlaybackService.getSettings(this);
 		int displayMode = Integer.parseInt(settings.getString("display_mode", "0"));
-		boolean hiddenControls = settings.getBoolean("hidden_controls", false);
 		mDisplayMode = displayMode;
 
 		int layout = R.layout.full_playback;
@@ -126,13 +126,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 		coverView.setOnLongClickListener(this);
 		mCoverView = coverView;
 
-		mControlsTop = findViewById(R.id.controls_top);
 		mControlsBottom = findViewById(R.id.controls_bottom);
-		if (hiddenControls) {
-			mControlsTop.setVisibility(View.GONE);
-			mControlsBottom.setVisibility(View.GONE);
-		}
-
 		View previousButton = findViewById(R.id.previous);
 		previousButton.setOnClickListener(this);
 		mPlayPauseButton = (ImageButton)findViewById(R.id.play_pause);
@@ -144,10 +138,13 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 		mAlbum = (TextView)findViewById(R.id.album);
 		mArtist = (TextView)findViewById(R.id.artist);
 
-		mSeekText = (TextView)findViewById(R.id.seek_text);
+		mElapsedView = (TextView)findViewById(R.id.elapsed);
+		mDurationView = (TextView)findViewById(R.id.duration);
 		mSeekBar = (SeekBar)findViewById(R.id.seek_bar);
 		mSeekBar.setMax(1000);
 		mSeekBar.setOnSeekBarChangeListener(this);
+
+		setControlsVisible(settings.getBoolean("visible_controls", true));
 		setDuration(0);
 	}
 
@@ -262,7 +259,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	private void setDuration(long duration)
 	{
 		mDuration = duration;
-		mDurationString = DateUtils.formatElapsedTime(mTimeBuilder, duration / 1000);
+		mDurationView.setText(DateUtils.formatElapsedTime(mTimeBuilder, duration / 1000));
 	}
 
 	@Override
@@ -314,7 +311,8 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_DPAD_CENTER:
 		case KeyEvent.KEYCODE_ENTER:
-			toggleControls();
+			setControlsVisible(!mControlsVisible);
+			mHandler.sendEmptyMessage(MSG_SAVE_CONTROLS);
 			return true;
 		}
 
@@ -333,15 +331,9 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 			mSeekBar.setProgress(duration == 0 ? 0 : (int)(1000 * position / duration));
 		}
 
-		StringBuilder builder = mTimeBuilder;
-		String current = DateUtils.formatElapsedTime(builder, position / 1000);
-		builder.setLength(0);
-		builder.append(current);
-		builder.append(" / ");
-		builder.append(mDurationString);
-		mSeekText.setText(builder.toString());
+		mElapsedView.setText(DateUtils.formatElapsedTime(mTimeBuilder, position / 1000));
 
-		if (!mPaused && mControlsTop.getVisibility() == View.VISIBLE && (mState & PlaybackService.FLAG_PLAYING) != 0) {
+		if (!mPaused && mControlsVisible && (mState & PlaybackService.FLAG_PLAYING) != 0) {
 			// Try to update right when the duration increases by one second
 			long next = 1000 - position % 1000;
 			mUiHandler.removeMessages(MSG_UPDATE_PROGRESS);
@@ -352,22 +344,19 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	/**
 	 * Toggles the visibility of the playback controls.
 	 */
-	private void toggleControls()
+	private void setControlsVisible(boolean visible)
 	{
-		if (mControlsTop.getVisibility() == View.VISIBLE) {
-			mControlsTop.setVisibility(View.GONE);
-			mControlsBottom.setVisibility(View.GONE);
-		} else {
-			mControlsTop.setVisibility(View.VISIBLE);
-			mControlsBottom.setVisibility(View.VISIBLE);
+		int mode = visible ? View.VISIBLE : View.GONE;
+		mSeekBar.setVisibility(mode);
+		mElapsedView.setVisibility(mode);
+		mDurationView.setVisibility(mode);
+		mControlsBottom.setVisibility(mode);
+		mControlsVisible = visible;
 
+		if (visible) {
 			mPlayPauseButton.requestFocus();
-
 			updateProgress();
 		}
-
-		int hidden = mControlsTop.getVisibility() == View.VISIBLE ? 0 : 1;
-		mHandler.sendMessage(mHandler.obtainMessage(MSG_SAVE_CONTROLS, hidden, 0));
 	}
 
 	/**
@@ -387,7 +376,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 		case MSG_SAVE_CONTROLS: {
 			SharedPreferences settings = PlaybackService.getSettings(this);
 			SharedPreferences.Editor editor = settings.edit();
-			editor.putBoolean("hidden_controls", message.arg1 == 1);
+			editor.putBoolean("visible_controls", mControlsVisible);
 			editor.commit();
 			break;
 		}
@@ -420,9 +409,11 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	@Override
 	public void performAction(int action)
 	{
-		if (action == PlaybackActivity.ACTION_TOGGLE_CONTROLS)
-			toggleControls();
-		else
+		if (action == PlaybackActivity.ACTION_TOGGLE_CONTROLS) {
+			setControlsVisible(!mControlsVisible);
+			mHandler.sendEmptyMessage(MSG_SAVE_CONTROLS);
+		} else {
 			super.performAction(action);
+		}
 	}
 }

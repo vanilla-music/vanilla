@@ -32,6 +32,12 @@ THE SOFTWARE.
 		android:layout_gravity="top"
 		android:background="#a000"
 		android:orientation="horizontal">
+		<TextView
+			android:id="@+id/elapsed"
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:layout_gravity="center"
+			android:text="00:00" />
 		<SeekBar
 			android:id="@+id/seek_bar"
 			android:layout_height="wrap_content"
@@ -43,12 +49,11 @@ THE SOFTWARE.
 			android:paddingRight="15px"
 			android:layout_weight="1" />
 		<TextView
-			android:id="@+id/seek_text"
+			android:id="@+id/duration"
 			android:layout_height="wrap_content"
 			android:layout_width="wrap_content"
 			android:layout_gravity="center"
-			android:layout_marginRight="15px"
-			android:text="0:00 / 0:00" />
+			android:text="00:00" />
 	</LinearLayout>
 	<LinearLayout
 		android:id="@+id/controls_bottom"
