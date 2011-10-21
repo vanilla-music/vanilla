@@ -251,6 +251,8 @@ public final class CoverView extends View implements Handler.Callback {
 			velocityTracker.computeCurrentVelocity(250);
 			int velocityX = (int) velocityTracker.getXVelocity();
 			int velocityY = (int) velocityTracker.getYVelocity();
+			int mvx = Math.abs(velocityX);
+			int mvy = Math.abs(velocityY);
 
 			int min = mSongs[0] == null ? 1 : 0;
 			int max = 2;
@@ -265,14 +267,18 @@ public final class CoverView extends View implements Handler.Callback {
 				else
 					performClick();
 				whichCover = 1;
-			} else if (velocityX > sSnapVelocity) {
-				whichCover = min;
-			} else if (velocityX < -sSnapVelocity) {
-				whichCover = max;
-			} else if (velocityY < -sSnapVelocity) {
-				mCallback.upSwipe();
-			} else if (velocityY > sSnapVelocity) {
-				mCallback.downSwipe();
+			} else if (mvx > sSnapVelocity || mvy > sSnapVelocity) {
+				if (mvy > mvx) {
+					if (velocityY > 0)
+						mCallback.downSwipe();
+					else
+						mCallback.upSwipe();
+				} else {
+					if (velocityX > 0)
+						whichCover = min;
+					else
+						whichCover = max;
+				}
 			} else {
 				int nearestCover = (scrollX + width / 2) / width;
 				whichCover = Math.max(min, Math.min(nearestCover, max));
