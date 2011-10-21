@@ -33,14 +33,21 @@ THE SOFTWARE.
 		<item>1</item>
 		<item>2</item>
 		<item>3</item>
-		<item>4</item>
-		<item>5</item>
-		<item>6</item>
-		<item>7</item>
-		<item>8</item>
-		<item>9</item>
-		<item>10</item>
-		<item>11</item>
-		<item>12</item>
+	</string-array>
+	<string-array name="swipe_action_values">
+		<!-- This must match the order of swipe_action_entries exactly and
+		     contain only values from PlaybackActivity.Action enum. -->
+		<item>Nothing</item>
+		<item>Library</item>
+		<item>PlayPause</item>
+		<item>NextSong</item>
+		<item>PreviousSong</item>
+		<item>Repeat</item>
+		<item>Shuffle</item>
+		<item>EnqueueAlbum</item>
+		<item>EnqueueArtist</item>
+		<item>EnqueueGenre</item>
+		<item>ClearQueue</item>
+		<item>ToggleControls</item>
 	</string-array>
 </resources>

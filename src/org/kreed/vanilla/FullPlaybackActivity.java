@@ -41,7 +41,13 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.OnSeekBarChangeListener {
+/**
+ * The primary playback screen with playback controls and large cover display.
+ */
+public class FullPlaybackActivity extends PlaybackActivity
+	implements SeekBar.OnSeekBarChangeListener
+	         , View.OnLongClickListener
+{
 	public static final int DISPLAY_INFO_OVERLAP = 0;
 	public static final int DISPLAY_INFO_BELOW = 1;
 	public static final int DISPLAY_INFO_WIDGETS = 2;
@@ -83,6 +89,9 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	 * The current display mode, which determines layout and cover render style.
 	 */
 	private int mDisplayMode;
+
+	private Action mCoverPressAction;
+	private Action mCoverLongPressAction;
 
 	/**
 	 * Cached StringBuilder for formatting track position.
@@ -166,6 +175,9 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 			finish();
 			startActivity(new Intent(this, FullPlaybackActivity.class));
 		}
+
+		mCoverPressAction = getAction(settings, "cover_press_action", Action.ToggleControls);
+		mCoverLongPressAction = getAction(settings, "cover_longpress_action", Action.PlayPause);
 	}
 
 	@Override
@@ -209,8 +221,8 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 			view.setClickable(true);
 			view.setOnClickListener(this);
 			addContentView(view,
-				new ViewGroup.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
-				                           LinearLayout.LayoutParams.FILL_PARENT));
+					new ViewGroup.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
+							LinearLayout.LayoutParams.FILL_PARENT));
 			mOverlayText = view;
 		} else {
 			mOverlayText.setVisibility(View.VISIBLE);
@@ -447,9 +459,9 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	}
 
 	@Override
-	public void performAction(int action)
+	public void performAction(Action action)
 	{
-		if (action == PlaybackActivity.ACTION_TOGGLE_CONTROLS) {
+		if (action == Action.ToggleControls) {
 			setControlsVisible(!mControlsVisible);
 			mHandler.sendEmptyMessage(MSG_SAVE_CONTROLS);
 		} else {
@@ -466,6 +478,9 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 		}
 
 		switch (view.getId()) {
+		case R.id.cover_view:
+			performAction(mCoverPressAction);
+			break;
 		case R.id.end_action:
 			cycleFinishAction();
 			break;
@@ -476,5 +491,16 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 			super.onClick(view);
 			break;
 		}
+	}
+
+	@Override
+	public boolean onLongClick(View view)
+	{
+		if (view.getId() == R.id.cover_view) {
+			performAction(mCoverLongPressAction);
+			return true;
+		}
+
+		return false;
 	}
 }

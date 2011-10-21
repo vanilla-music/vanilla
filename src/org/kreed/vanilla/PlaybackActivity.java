@@ -41,29 +41,33 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+/**
+ * Base activity for activities that contain playback controls. Handles
+ * communication with the PlaybackService and response to state and song
+ * changes.
+ */
 public class PlaybackActivity extends Activity
 	implements Handler.Callback,
 	           View.OnClickListener,
-	           View.OnLongClickListener,
 	           CoverView.Callback
 {
-	public static final int ACTION_NOTHING = 0;
-	public static final int ACTION_LIBRARY = 1;
-	public static final int ACTION_PLAY_PAUSE = 2;
-	public static final int ACTION_NEXT_SONG = 3;
-	public static final int ACTION_PREVIOUS_SONG = 4;
-	public static final int ACTION_REPEAT = 5;
-	public static final int ACTION_SHUFFLE = 6;
-	public static final int ACTION_ENQUEUE_ALBUM = 8;
-	public static final int ACTION_ENQUEUE_ARTIST = 9;
-	public static final int ACTION_ENQUEUE_GENRE = 10;
-	public static final int ACTION_CLEAR_QUEUE = 11;
-	public static final int ACTION_TOGGLE_CONTROLS = 12;
+	enum Action {
+		Nothing,
+		Library,
+		PlayPause,
+		NextSong,
+		PreviousSong,
+		Repeat,
+		Shuffle,
+		EnqueueAlbum,
+		EnqueueArtist,
+		EnqueueGenre,
+		ClearQueue,
+		ToggleControls,
+	}
 
-	private int mUpAction;
-	private int mDownAction;
-	private int mCoverPressAction;
-	private int mCoverLongPressAction;
+	private Action mUpAction;
+	private Action mDownAction;
 
 	protected Handler mHandler;
 	protected Looper mLooper;
@@ -99,6 +103,26 @@ public class PlaybackActivity extends Activity
 		super.onDestroy();
 	}
 
+	/**
+	 * Retrieve an action from the given SharedPreferences.
+	 *
+	 * @param prefs The SharedPreferences instance to load from.
+	 * @param key The preference key.
+	 * @param def The value to return if the key is not found or cannot be loaded.
+	 * @return An action
+	 */
+	public static Action getAction(SharedPreferences prefs, String key, Action def)
+	{
+		try {
+			String pref = prefs.getString(key, null);
+			if (pref == null)
+				return def;
+			return Enum.valueOf(Action.class, pref);
+		} catch (Exception e) {
+			return def;
+		}
+	}
+
 	@Override
 	public void onStart()
 	{
@@ -110,10 +134,8 @@ public class PlaybackActivity extends Activity
 			startService(new Intent(this, PlaybackService.class));
 
 		SharedPreferences prefs = PlaybackService.getSettings(this);
-		mUpAction = Integer.parseInt(prefs.getString("swipe_up_action", "0"));
-		mDownAction = Integer.parseInt(prefs.getString("swipe_down_action", "0"));
-		mCoverPressAction = Integer.parseInt(prefs.getString("cover_press_action", "12"));
-		mCoverLongPressAction = Integer.parseInt(prefs.getString("cover_longpress_action", "2"));
+		mUpAction = getAction(prefs, "swipe_up_action", Action.Nothing);
+		mDownAction = getAction(prefs, "swipe_down_action", Action.Nothing);
 
 		Window window = getWindow();
 		if (prefs.getBoolean("disable_lockscreen", false))
@@ -194,21 +216,7 @@ public class PlaybackActivity extends Activity
 		case R.id.previous:
 			previousSong();
 			break;
-		case R.id.cover_view:
-			performAction(mCoverPressAction);
-			break;
 		}
-	}
-
-	@Override
-	public boolean onLongClick(View view)
-	{
-		if (view.getId() == R.id.cover_view) {
-			performAction(mCoverLongPressAction);
-			return true;
-		}
-
-		return false;
 	}
 
 	/**
@@ -366,39 +374,39 @@ public class PlaybackActivity extends Activity
 		PlaybackService.get(this).enqueueFromCurrent(type);
 	}
 
-	public void performAction(int action)
+	public void performAction(Action action)
 	{
 		switch (action) {
-		case ACTION_NOTHING:
+		case Nothing:
 			break;
-		case ACTION_LIBRARY:
+		case Library:
 			openLibrary();
 			break;
-		case ACTION_PLAY_PAUSE:
+		case PlayPause:
 			playPause();
 			break;
-		case ACTION_NEXT_SONG:
+		case NextSong:
 			nextSong();
 			break;
-		case ACTION_PREVIOUS_SONG:
+		case PreviousSong:
 			previousSong();
 			break;
-		case ACTION_REPEAT:
+		case Repeat:
 			cycleFinishAction();
 			break;
-		case ACTION_SHUFFLE:
+		case Shuffle:
 			cycleShuffle();
 			break;
-		case ACTION_ENQUEUE_ALBUM:
+		case EnqueueAlbum:
 			enqueue(MediaUtils.TYPE_ALBUM);
 			break;
-		case ACTION_ENQUEUE_ARTIST:
+		case EnqueueArtist:
 			enqueue(MediaUtils.TYPE_ARTIST);
 			break;
-		case ACTION_ENQUEUE_GENRE:
+		case EnqueueGenre:
 			enqueue(MediaUtils.TYPE_GENRE);
 			break;
-		case ACTION_CLEAR_QUEUE:
+		case ClearQueue:
 			PlaybackService.get(this).clearQueue();
 			Toast.makeText(this, R.string.queue_cleared, Toast.LENGTH_SHORT).show();
 			break;

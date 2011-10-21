@@ -178,6 +178,7 @@ THE SOFTWARE.
 		<item>Info In Immobile Layer (Fullscreen Cover)</item>
 	</string-array>
 	<string-array name="swipe_action_entries">
+		<!-- This must match the order of swipe_action_values exactly -->
 		<item>Do Nothing</item>
 		<item>Open Library</item>
 		<item>Play/Pause</item>
@@ -185,7 +186,6 @@ THE SOFTWARE.
 		<item>Previous Song</item>
 		<item>Toggle Repeat</item>
 		<item>Toggle Shuffle</item>
-		<item>Toggle Random</item>
 		<item>Enqueue Current Album</item>
 		<item>Enqueue Current Artist</item>
 		<item>Enqueue Current Genre</item>

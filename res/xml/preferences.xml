@@ -83,29 +83,29 @@ THE SOFTWARE.
 			android:title="@string/swipe_up_action_title"
 			android:summary="@string/swipe_up_action_summary"
 			android:entries="@array/swipe_action_entries"
-			android:entryValues="@array/entry_values"
-			android:defaultValue="0" />
+			android:entryValues="@array/swipe_action_values"
+			android:defaultValue="Nothing" />
 		<ListPreference
 			android:key="swipe_down_action"
 			android:title="@string/swipe_down_action_title"
 			android:summary="@string/swipe_down_action_summary"
 			android:entries="@array/swipe_action_entries"
-			android:entryValues="@array/entry_values"
-			android:defaultValue="0" />
+			android:entryValues="@array/swipe_action_values"
+			android:defaultValue="Nothing" />
 		<ListPreference
 			android:key="cover_press_action"
 			android:title="@string/cover_press_action_title"
 			android:summary="@string/cover_press_action_summary"
 			android:entries="@array/swipe_action_entries"
-			android:entryValues="@array/entry_values"
-			android:defaultValue="12" />
+			android:entryValues="@array/swipe_action_values"
+			android:defaultValue="ToggleControls" />
 		<ListPreference
 			android:key="cover_longpress_action"
 			android:title="@string/cover_longpress_action_title"
 			android:summary="@string/cover_longpress_action_summary"
 			android:entries="@array/swipe_action_entries"
-			android:entryValues="@array/entry_values"
-			android:defaultValue="2" />
+			android:entryValues="@array/swipe_action_values"
+			android:defaultValue="PlayPause" />
 		<CheckBoxPreference
 			android:key="disable_cover_art"
 			android:title="@string/disable_cover_art_title"
