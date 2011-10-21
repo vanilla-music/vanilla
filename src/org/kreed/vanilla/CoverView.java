@@ -94,6 +94,12 @@ public final class CoverView extends View implements Handler.Callback {
 	private boolean mIgnoreNextUp;
 
 	/**
+	 * If true, querySongs was called before the view initialized and should
+	 * be called when initialization finishes.
+	 */
+	private boolean mPendingQuery;
+
+	/**
 	 * Constructor intended to be called by inflating from XML.
 	 */
 	public CoverView(Context context, AttributeSet attributes)
@@ -157,34 +163,13 @@ public final class CoverView extends View implements Handler.Callback {
 		return result;
 	}
 
-	/**
-	 * Recreate all the necessary cached bitmaps.
-	 */
-	private void regenerateBitmaps()
-	{
-		Object[] bitmaps = mBitmapCache.clear();
-		for (int i = bitmaps.length; --i != -1; ) {
-			if (bitmaps[i] != null)
-				((Bitmap)bitmaps[i]).recycle();
-			bitmaps[i] = null;
-		}
-		mDefaultCover = null;
-		for (int i = 3; --i != -1; )
-			setSong(i, mSongs[i]);
-	}
-
-	/**
-	 * Recreate the cover art views and reset the scroll position whenever the
-	 * size of this view changes.
-	 */
 	@Override
 	protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight)
 	{
-		if (width == 0 || height == 0)
-			return;
-
-		regenerateBitmaps();
-		resetScroll();
+		if (mPendingQuery && width != 0 && height != 0) {
+			mPendingQuery = false;
+			querySongs(PlaybackService.get(getContext()));
+		}
 	}
 
 	/**
@@ -394,6 +379,11 @@ public final class CoverView extends View implements Handler.Callback {
 	 */
 	public void querySongs(PlaybackService service)
 	{
+		if (getWidth() == 0 || getHeight() == 0) {
+			mPendingQuery = true;
+			return;
+		}
+
 		mHandler.removeMessages(MSG_GENERATE_BITMAP);
 		setSong(1, service.getSong(0));
 		setSong(2, service.getSong(1));
