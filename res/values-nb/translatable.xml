@@ -29,22 +29,7 @@ THE SOFTWARE.
 	<string name="settings">Instillinger</string>
 	<string name="library">Bibliotek</string>
 	<string name="display_mode">Visningsmodus</string>
-	<string name="shuffle_enable">Aktiver Stokker</string>
-	<string name="shuffle_disable">Deaktiver Stokker</string>
-	<string name="shuffle_albums">Stokke Album</string>
-	<string name="shuffle_songs_enabled">Låt stokker aktivert</string>
-	<string name="shuffle_albums_enabled">Album stokker aktivert</string>
-	<string name="shuffle_disabled">Stokker deaktivert</string>
-	<string name="repeat_enable">Aktiver Gjenta</string>
-	<string name="repeat_current">Gjenta låt</string>
-	<string name="repeat_disable">Deaktiver Gjenta</string>
-	<string name="repeat_enabling">Gjenta alle låter</string>
-	<string name="repeat_current_enabling">Gjenta nåværende låt</string>
-	<string name="repeat_disabling">Gjenta deaktivert</string>
-	<string name="random_enable">Aktiver Tilfeldig</string>
-	<string name="random_disable">Deaktiver Tilfeldig</string>
 	<string name="random_enabling">Tilfeldig aktivert</string>
-	<string name="random_disabling">Tilfeldig deaktivert</string>
 	<string name="song_load_failed">Kunne ikke laste låt %s. Den kan være skadet eller mangler.</string>
 	<string name="queue_cleared">Kø ryddet.</string>
 
