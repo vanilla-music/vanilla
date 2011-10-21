@@ -207,6 +207,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 			view.setPadding(25, 25, 25, 25);
 			// Make the view clickable so it eats touch events
 			view.setClickable(true);
+			view.setOnClickListener(this);
 			addContentView(view,
 				new ViewGroup.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
 				                           LinearLayout.LayoutParams.FILL_PARENT));
@@ -459,6 +460,11 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	@Override
 	public void onClick(View view)
 	{
+		if (view == mOverlayText && (mState & PlaybackService.FLAG_EMPTY_QUEUE) != 0) {
+			setState(PlaybackService.get(this).setFinishAction(SongTimeline.FINISH_RANDOM));
+			return;
+		}
+
 		switch (view.getId()) {
 		case R.id.end_action:
 			cycleFinishAction();
