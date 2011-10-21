@@ -30,6 +30,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.format.DateUtils;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -158,8 +159,10 @@ public class FullPlaybackActivity extends PlaybackActivity
 
 		mShuffleButton = (ImageButton)findViewById(R.id.shuffle);
 		mShuffleButton.setOnClickListener(this);
+		registerForContextMenu(mShuffleButton);
 		mEndButton = (ImageButton)findViewById(R.id.end_action);
 		mEndButton.setOnClickListener(this);
+		registerForContextMenu(mEndButton);
 
 		setControlsVisible(settings.getBoolean("visible_controls", true));
 		setDuration(0);
@@ -502,5 +505,35 @@ public class FullPlaybackActivity extends PlaybackActivity
 		}
 
 		return false;
+	}
+
+	private static final int GROUP_SHUFFLE = 0;
+	private static final int GROUP_FINISH = 1;
+
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo)
+	{
+		if (view == mShuffleButton) {
+			menu.add(GROUP_SHUFFLE, SongTimeline.SHUFFLE_NONE, 0, R.string.no_shuffle);
+			menu.add(GROUP_SHUFFLE, SongTimeline.SHUFFLE_SONGS, 0, R.string.shuffle_songs);
+			menu.add(GROUP_SHUFFLE, SongTimeline.SHUFFLE_ALBUMS, 0, R.string.shuffle_albums);
+		} else if (view == mEndButton) {
+		    menu.add(GROUP_FINISH, SongTimeline.FINISH_STOP, 0, R.string.no_repeat);
+			menu.add(GROUP_FINISH, SongTimeline.FINISH_REPEAT, 0, R.string.repeat);
+			menu.add(GROUP_FINISH, SongTimeline.FINISH_REPEAT_CURRENT, 0, R.string.repeat_current_song);
+			menu.add(GROUP_FINISH, SongTimeline.FINISH_RANDOM, 0, R.string.random);
+		}
+	}
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item)
+	{
+		int group = item.getGroupId();
+		int id = item.getItemId();
+		if (group == GROUP_SHUFFLE)
+			setState(PlaybackService.get(this).setShuffleMode(id));
+		else if (group == GROUP_FINISH)
+			setState(PlaybackService.get(this).setFinishAction(id));
+		return true;
 	}
 }
