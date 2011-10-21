@@ -43,11 +43,11 @@ THE SOFTWARE.
 			android:launchMode="singleTop" />
 		<activity
 			android:name="LibraryActivity"
-			android:launchMode="singleTop"
-			android:theme="@android:style/Theme.Black.NoTitleBar" />
+			android:theme="@style/NoTitle"
+			android:launchMode="singleTop" />
 		<activity
 			android:name="MiniPlaybackActivity"
-			android:theme="@android:style/Theme.Dialog"
+			android:theme="@style/Dialog"
 			android:excludeFromRecents="true"
 			android:launchMode="singleInstance" />
 		<receiver
@@ -99,11 +99,10 @@ THE SOFTWARE.
 			android:name="com.google.android.backup.api_key"
 			android:value="AEdPqrEAAAAIH6Xcxa4hn6sHN1m4jMpi4MFFFMP5sv3XhFuWeA" />
 	</application>
-	<uses-sdk android:minSdkVersion="5" android:targetSdkVersion="10" />
+	<uses-sdk android:minSdkVersion="5" android:targetSdkVersion="14" />
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 	<!-- This is needed for isWiredHeadsetOn() to work in some cases. (bug?) -->
 	<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-	<supports-screens android:smallScreens="true" />
 </manifest>

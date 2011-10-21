@@ -21,36 +21,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
 <resources>
-	<style name="Dialog" parent="android:style/Theme.Dialog" />
-	<style name="NoTitle" parent="android:style/Theme">
+	<style name="Dialog" parent="android:style/Theme.DeviceDefault.Dialog" />
+	<style name="NoTitle" parent="android:style/Theme.DeviceDefault">
 		<item name="android:windowNoTitle">true</item>
 	</style>
-	<style name="NoBackground" parent="style/NoTitle">
-		<item name="android:windowBackground">@null</item>
-	</style>
-	<string-array name="entry_values">
-		<!-- Note: even if this was an integer-array, these would be converted
-		     to strings anyway.
-		     http://code.google.com/p/android/issues/detail?id=2096 -->
-		<item>0</item>
-		<item>1</item>
-		<item>2</item>
-		<item>3</item>
-	</string-array>
-	<string-array name="swipe_action_values">
-		<!-- This must match the order of swipe_action_entries exactly and
-		     contain only values from PlaybackActivity.Action enum. -->
-		<item>Nothing</item>
-		<item>Library</item>
-		<item>PlayPause</item>
-		<item>NextSong</item>
-		<item>PreviousSong</item>
-		<item>Repeat</item>
-		<item>Shuffle</item>
-		<item>EnqueueAlbum</item>
-		<item>EnqueueArtist</item>
-		<item>EnqueueGenre</item>
-		<item>ClearQueue</item>
-		<item>ToggleControls</item>
-	</string-array>
 </resources>
