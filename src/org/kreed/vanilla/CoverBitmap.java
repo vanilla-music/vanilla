@@ -22,7 +22,6 @@
 
 package org.kreed.vanilla;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -31,12 +30,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.net.Uri;
-import android.os.ParcelFileDescriptor;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
-import java.io.FileDescriptor;
 
 /**
  * Class containing utility functions to create Bitmaps display song info and
@@ -414,41 +409,5 @@ public final class CoverBitmap {
 		Bitmap result = Bitmap.createScaledBitmap(source, sourceWidth, sourceHeight, false);
 		source.recycle();
 		return result;
-	}
-
-
-	private static final BitmapFactory.Options BITMAP_OPTIONS = new BitmapFactory.Options();
-
-	static {
-		BITMAP_OPTIONS.inPreferredConfig = Bitmap.Config.RGB_565;
-		BITMAP_OPTIONS.inDither = false;
-	}
-
-	/**
-	 * Query the album art the given song.
-	 *
-	 * @param context A context to use.
-	 * @param song The song to query the cover art for.
-	 * @return The album art or null if no album art could be found
-	 */
-	public static Bitmap getCover(Context context, Song song)
-	{
-		Uri uri = song.getCoverUri();
-		if (uri == null)
-			return null;
-
-		ContentResolver res = context.getContentResolver();
-
-		try {
-			ParcelFileDescriptor parcelFileDescriptor = res.openFileDescriptor(uri, "r");
-			if (parcelFileDescriptor != null) {
-				FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-				return BitmapFactory.decodeFileDescriptor(fileDescriptor, null, BITMAP_OPTIONS);
-			}
-		} catch (Exception e) {
-			Log.d("VanillaMusic", "Failed to load cover art for " + song.path, e);
-		}
-
-		return null;
 	}
 }

@@ -337,7 +337,7 @@ public final class CoverView extends View implements Handler.Callback {
 
 		int style = mCoverStyle;
 		Context context = getContext();
-		Bitmap cover = CoverBitmap.getCover(context, song);
+		Bitmap cover = song.getCover(context);
 
 		Bitmap bitmap;
 		if (cover == null && (style == CoverBitmap.STYLE_NO_INFO || style == CoverBitmap.STYLE_NO_INFO_ZOOMED)) {

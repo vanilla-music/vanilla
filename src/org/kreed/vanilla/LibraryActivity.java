@@ -806,7 +806,7 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 				String title = song.title == null ? res.getString(R.string.unknown) : song.title;
 				String artist = song.artist == null ? res.getString(R.string.unknown) : song.artist;
 				mStatusText.setText(res.getString(R.string.title_by_artist, title, artist));
-				cover = song.getCoverUri();
+				cover = song.hasCover(this) ? song.getCoverUri() : null;
 			}
 
 			if (Song.mDisableCoverArt)
