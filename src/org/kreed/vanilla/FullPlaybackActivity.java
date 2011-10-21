@@ -236,15 +236,21 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 		if ((state & PlaybackService.FLAG_PLAYING) != 0)
 			updateProgress();
 
-		if ((toggled & (PlaybackService.FLAG_REPEAT|PlaybackService.FLAG_REPEAT_CURRENT|PlaybackService.FLAG_RANDOM)) != 0) {
-			if ((state & PlaybackService.FLAG_REPEAT) != 0)
-				mEndButton.setImageResource(R.drawable.repeat_active);
-			else if ((state & PlaybackService.FLAG_REPEAT_CURRENT) != 0)
-				mEndButton.setImageResource(R.drawable.repeat_current_active);
-			else if ((state & PlaybackService.FLAG_RANDOM) != 0)
-				mEndButton.setImageResource(R.drawable.random_active);
-			else
+		if ((toggled & PlaybackService.MASK_FINISH) != 0) {
+			switch (PlaybackService.finishAction(state)) {
+			case SongTimeline.FINISH_STOP:
 				mEndButton.setImageResource(R.drawable.repeat_inactive);
+				break;
+			case SongTimeline.FINISH_REPEAT:
+				mEndButton.setImageResource(R.drawable.repeat_active);
+				break;
+			case SongTimeline.FINISH_REPEAT_CURRENT:
+				mEndButton.setImageResource(R.drawable.repeat_current_active);
+				break;
+			case SongTimeline.FINISH_RANDOM:
+				mEndButton.setImageResource(R.drawable.random_active);
+				break;
+			}
 		}
 
 		if ((toggled & PlaybackService.MASK_SHUFFLE) != 0) {
@@ -455,10 +461,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	{
 		switch (view.getId()) {
 		case R.id.end_action:
-			if ((mState & (PlaybackService.FLAG_REPEAT_CURRENT|PlaybackService.FLAG_RANDOM)) != 0)
-				toggleRandom();
-			else
-				cycleRepeat();
+			cycleFinishAction();
 			break;
 		case R.id.shuffle:
 			cycleShuffle();

@@ -73,7 +73,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	/**
 	 * State file version that indicates data order.
 	 */
-	private static final int STATE_VERSION = 3;
+	private static final int STATE_VERSION = 4;
 
 	private static final int NOTIFICATION_ID = 2;
 
@@ -139,32 +139,39 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 */
 	public static final int FLAG_NO_MEDIA = 0x2;
 	/**
-	 * If set, will loop back to the beginning of the timeline when its end is
-	 * reached.
-	 */
-	public static final int FLAG_REPEAT = 0x8;
-	/**
 	 * Set when the current song is unplayable.
 	 */
-	public static final int FLAG_ERROR = 0x10;
-	/**
-	 * If set, random songs will be added to the timeline when its end is
-	 * reached. Overrides FLAG_REPEAT.
-	 */
-	public static final int FLAG_RANDOM = 0x20;
+	public static final int FLAG_ERROR = 0x4;
 	/**
 	 * Set when the user needs to select songs to play.
 	 */
-	public static final int FLAG_EMPTY_QUEUE = 0x40;
+	public static final int FLAG_EMPTY_QUEUE = 0x8;
+	public static final int SHIFT_FINISH = 4;
 	/**
-	 * If set, replay the current song when the end of the song is reached
-	 * instead of advancing to the next song.
+	 * These two bits will be one of SongTimeline.FINISH_*.
 	 */
-	public static final int FLAG_REPEAT_CURRENT = 0x80;
+	public static final int MASK_FINISH = 0x3 << SHIFT_FINISH;
+	public static final int SHIFT_SHUFFLE = 6;
 	/**
 	 * These two bits will be one of SongTimeline.SHUFFLE_*.
 	 */
-	public static final int MASK_SHUFFLE = 0x100 | 0x200;
+	public static final int MASK_SHUFFLE = 0x3 << SHIFT_SHUFFLE;
+
+	/**
+	 * The PlaybackService state, indicating if the service is playing,
+	 * repeating, etc.
+	 *
+	 * The format of this is 0b00000000_00000000_00000000_ffeedcba,
+	 * where each bit is:
+	 *     a: {@link PlaybackService#FLAG_PLAYING}
+	 *     b: {@link PlaybackService#FLAG_NO_MEDIA}
+	 *     c: {@link PlaybackService#FLAG_ERROR}
+	 *     d: {@link PlaybackService#FLAG_EMPTY_QUEUE}
+	 *     ee: {@link PlaybackService#MASK_FINISH}
+	 *     ff: {@link PlaybackService#MASK_SHUFFLE}
+	 */
+	int mState;
+	private final Object mStateLock = new Object[0];
 
 	public static final int NEVER = 0;
 	public static final int WHEN_PLAYING = 1;
@@ -235,10 +242,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	private AudioManager mAudioManager;
 
 	SongTimeline mTimeline;
-	int mState;
 	private Song mCurrentSong;
 
-	private final Object mStateLock = new Object();
 	boolean mPlayingBeforeCall;
 	private int mPendingSeek;
 	public Receiver mReceiver;
@@ -524,16 +529,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 		if ((toggled & MASK_SHUFFLE) != 0)
 			mTimeline.setShuffleMode(shuffleMode(state));
-		if ((toggled & (FLAG_REPEAT | FLAG_RANDOM)) != 0) {
-			int action;
-			if ((state & FLAG_RANDOM) != 0)
-				action = SongTimeline.FINISH_RANDOM;
-			else if ((state & FLAG_REPEAT) != 0)
-				action = SongTimeline.FINISH_REPEAT;
-			else
-				action = SongTimeline.FINISH_STOP;
-			mTimeline.setFinishAction(action);
-		}
+		if ((toggled & MASK_FINISH) != 0)
+			mTimeline.setFinishAction(finishAction(state));
 	}
 
 	private void broadcastChange(int state, Song song, long uptime)
@@ -627,8 +624,9 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	{
 		synchronized (mStateLock) {
 			if ((mState & FLAG_EMPTY_QUEUE) != 0) {
-				updateState((mState | FLAG_RANDOM) & ~FLAG_REPEAT);
+				setFinishAction(SongTimeline.FINISH_RANDOM);
 				setCurrentSong(0);
+				Toast.makeText(this, R.string.random_enabling, Toast.LENGTH_SHORT).show();
 			}
 
 			int state = updateState(mState | FLAG_PLAYING);
@@ -666,15 +664,17 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		}
 	}
 
+
 	/**
-	 * Toggle random mode. Disables repeat mode.
+	 * Change the end action (e.g. repeat, random).
 	 *
+	 * @param action The new action. One of SongTimeline.FINISH_*.
 	 * @return The new state after this is called.
 	 */
-	public int toggleRandom()
+	public int setFinishAction(int action)
 	{
 		synchronized (mStateLock) {
-			return updateState((mState ^ FLAG_RANDOM) & ~(FLAG_REPEAT|FLAG_REPEAT_CURRENT));
+			return updateState((mState & ~MASK_FINISH) | (action << SHIFT_FINISH));
 		}
 	}
 
@@ -683,17 +683,26 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 *
 	 * @return The new state after this is called.
 	 */
-	public int cycleRepeat()
+	public int cycleFinishAction()
 	{
 		synchronized (mStateLock) {
-			int state = mState & ~FLAG_RANDOM;
-			if ((state & FLAG_REPEAT_CURRENT) != 0)
-				state &= ~(FLAG_REPEAT|FLAG_REPEAT_CURRENT);
-			else if ((state & FLAG_REPEAT) == 0)
-				state |= FLAG_REPEAT;
-			else if ((state & FLAG_REPEAT) != 0)
-				state = (state | FLAG_REPEAT_CURRENT) & ~FLAG_REPEAT;
-			return updateState(state);
+			int mode = finishAction(mState) + 1;
+			if (mode > SongTimeline.FINISH_RANDOM)
+				mode = SongTimeline.FINISH_STOP;
+			return setFinishAction(mode);
+		}
+	}
+
+	/**
+	 * Change the shuffle mode.
+	 *
+	 * @param mode The new mode. One of SongTimeline.SHUFFLE_*.
+	 * @return The new state after this is called.
+	 */
+	public int setShuffleMode(int mode)
+	{
+		synchronized (mStateLock) {
+			return updateState((mState & ~MASK_SHUFFLE) | (mode << SHIFT_SHUFFLE));
 		}
 	}
 
@@ -705,10 +714,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	public int cycleShuffle()
 	{
 		synchronized (mStateLock) {
-			int state = mState;
-			int step = (state & MASK_SHUFFLE) == 0x200 ? 0x200 : 0x100;
-			state = (state & ~MASK_SHUFFLE) | ((state + step) & MASK_SHUFFLE);
-			return updateState(state);
+			int mode = shuffleMode(mState) + 1;
+			if (mode > SongTimeline.SHUFFLE_ALBUMS)
+				mode = SongTimeline.SHUFFLE_NONE;
+			return setShuffleMode(mode);
 		}
 	}
 
@@ -729,7 +738,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		mCurrentSong = song;
 		if (song == null || song.id == -1 || song.path == null) {
 			if (MediaUtils.isSongAvailable(getContentResolver())) {
-				int flag = (mState & FLAG_RANDOM) == 0 ? FLAG_EMPTY_QUEUE : FLAG_ERROR;
+				int flag = finishAction(mState) == SongTimeline.FINISH_RANDOM ? FLAG_ERROR : FLAG_EMPTY_QUEUE;
 				synchronized (mStateLock) {
 					updateState((mState | flag) & ~FLAG_NO_MEDIA);
 				}
@@ -790,10 +799,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	@Override
 	public void onCompletion(MediaPlayer player)
 	{
-		if (mTimeline.isEndOfQueue())
-			unsetFlag(FLAG_PLAYING);
-		else if ((mState & FLAG_REPEAT_CURRENT) != 0)
+		if (finishAction(mState) == SongTimeline.FINISH_REPEAT_CURRENT)
 			setCurrentSong(0);
+		else if (mTimeline.isEndOfQueue())
+			unsetFlag(FLAG_PLAYING);
 		else
 			setCurrentSong(+1);
 	}
@@ -1284,16 +1293,9 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 			if (in.readLong() == STATE_FILE_MAGIC && in.readInt() == STATE_VERSION) {
 				mPendingSeek = in.readInt();
-				int savedState = in.readInt();
 				mTimeline.readState(in);
-
-				int finishAction = mTimeline.getFinishAction();
-				if (finishAction == SongTimeline.FINISH_RANDOM)
-					state |= FLAG_RANDOM;
-				else if (finishAction == SongTimeline.FINISH_REPEAT)
-					state |= FLAG_REPEAT;
-				state |= mTimeline.getShuffleMode() << 8;
-				state |= savedState & FLAG_REPEAT_CURRENT;
+				state |= mTimeline.getShuffleMode() << SHIFT_SHUFFLE;
+				state |= mTimeline.getFinishAction() << SHIFT_FINISH;
 			}
 
 			in.close();
@@ -1319,7 +1321,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			out.writeLong(STATE_FILE_MAGIC);
 			out.writeInt(STATE_VERSION);
 			out.writeInt(pendingSeek);
-			out.writeInt(mState);
 			mTimeline.writeState(out);
 			out.close();
 		} catch (IOException e) {
@@ -1330,11 +1331,23 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	/**
 	 * Returns the shuffle mode for the given state.
 	 *
+	 * @param state The PlaybackService state to process.
 	 * @return The shuffle mode. One of SongTimeline.SHUFFLE_*.
 	 */
 	public static int shuffleMode(int state)
 	{
-		return (state & MASK_SHUFFLE) >> 8;
+		return (state & MASK_SHUFFLE) >> SHIFT_SHUFFLE;
+	}
+
+	/**
+	 * Returns the finish action for the given state.
+	 *
+	 * @param state The PlaybackService state to process.
+	 * @return The finish action. One of SongTimeline.FINISH_*.
+	 */
+	public static int finishAction(int state)
+	{
+		return (state & MASK_FINISH) >> SHIFT_FINISH;
 	}
 
 	/**

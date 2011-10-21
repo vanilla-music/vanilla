@@ -29,6 +29,7 @@ THE SOFTWARE.
 	<string name="settings">Settings</string>
 	<string name="library">Library</string>
 	<string name="display_mode">Display Mode</string>
+	<string name="random_enabling">Random enabled</string>
 	<string name="song_load_failed">Failed to load song %s. It may be corrupt or missing.</string>
 	<string name="queue_cleared">Queue cleared.</string>
 

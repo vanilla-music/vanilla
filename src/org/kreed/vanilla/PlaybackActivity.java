@@ -54,7 +54,6 @@ public class PlaybackActivity extends Activity
 	public static final int ACTION_PREVIOUS_SONG = 4;
 	public static final int ACTION_REPEAT = 5;
 	public static final int ACTION_SHUFFLE = 6;
-	public static final int ACTION_RANDOM = 7;
 	public static final int ACTION_ENQUEUE_ALBUM = 8;
 	public static final int ACTION_ENQUEUE_ARTIST = 9;
 	public static final int ACTION_ENQUEUE_GENRE = 10;
@@ -347,19 +346,11 @@ public class PlaybackActivity extends Activity
 	}
 
 	/**
-	 * Cycle repeat mode.
+	 * Cycle the finish action.
 	 */
-	public void cycleRepeat()
+	public void cycleFinishAction()
 	{
-		setState(PlaybackService.get(this).cycleRepeat());
-	}
-
-	/**
-	 * Toggle random mode on/off
-	 */
-	public void toggleRandom()
-	{
-		setState(PlaybackService.get(this).toggleRandom());
+		setState(PlaybackService.get(this).cycleFinishAction());
 	}
 
 	/**
@@ -393,13 +384,10 @@ public class PlaybackActivity extends Activity
 			previousSong();
 			break;
 		case ACTION_REPEAT:
-			cycleRepeat();
+			cycleFinishAction();
 			break;
 		case ACTION_SHUFFLE:
 			cycleShuffle();
-			break;
-		case ACTION_RANDOM:
-			toggleRandom();
 			break;
 		case ACTION_ENQUEUE_ALBUM:
 			enqueue(MediaUtils.TYPE_ALBUM);

@@ -56,11 +56,20 @@ public final class SongTimeline {
 	 */
 	public static final int FINISH_REPEAT = 1;
 	/**
+	 * Repeat the current song. This behavior is implemented entirely in
+	 * {@link PlaybackService#onCompletion(android.media.MediaPlayer)};
+	 * pressing the next or previous buttons will advance the song as normal;
+	 * only allowing the song to play until the end will repeat it.
+	 *
+	 * @see SongTimeline#setFinishAction(int)
+	 */
+	public static final int FINISH_REPEAT_CURRENT = 2;
+	/**
 	 * Add random songs to the playlist.
 	 *
 	 * @see SongTimeline#setFinishAction(int)
 	 */
-	public static final int FINISH_RANDOM = 2;
+	public static final int FINISH_RANDOM = 3;
 
 	/**
 	 * Clear the timeline and use only the provided songs.
@@ -397,6 +406,7 @@ public final class SongTimeline {
 				switch (mFinishAction) {
 				case FINISH_STOP:
 				case FINISH_REPEAT:
+				case FINISH_REPEAT_CURRENT:
 					if (size == 0)
 						// empty queue
 						return null;
