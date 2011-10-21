@@ -149,14 +149,11 @@ public final class CoverView extends View implements Handler.Callback {
 		Bitmap result = null;
 
 		if (style == CoverBitmap.STYLE_NO_INFO || style == CoverBitmap.STYLE_NO_INFO_ZOOMED) {
-			Bitmap def = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.default_cover);
+			Context context = getContext();
+			Bitmap def = BitmapFactory.decodeResource(context.getResources(), R.drawable.default_cover);
 			int width = getWidth();
 			int height = getHeight();
-
-			if (style == CoverBitmap.STYLE_NO_INFO)
-				result = CoverBitmap.createScaledBitmap(def, width, height, null);
-			else
-				result = CoverBitmap.createZoomedBitmap(def, width, height, null);
+			result = CoverBitmap.createBitmap(context, style, def, null, width, height, null);
 		}
 
 		mDefaultCover = result;
@@ -339,11 +336,16 @@ public final class CoverView extends View implements Handler.Callback {
 			reuse = null;
 
 		int style = mCoverStyle;
-		Bitmap bitmap = CoverBitmap.createBitmap(getContext(), style, song, getWidth(), getHeight(), reuse);
-		if (bitmap == null && (style == CoverBitmap.STYLE_NO_INFO || style == CoverBitmap.STYLE_NO_INFO_ZOOMED)) {
+		Context context = getContext();
+		Bitmap cover = CoverBitmap.getCover(context, song);
+
+		Bitmap bitmap;
+		if (cover == null && (style == CoverBitmap.STYLE_NO_INFO || style == CoverBitmap.STYLE_NO_INFO_ZOOMED)) {
 			bitmap = mDefaultCover;
 			if (bitmap == null)
 				bitmap = generateDefaultCover();
+		} else {
+			bitmap = CoverBitmap.createBitmap(context, style, cover, song, getWidth(), getHeight(), reuse);
 		}
 
 		mBitmaps[i] = bitmap;

@@ -130,39 +130,34 @@ public final class CoverBitmap {
 	 *
 	 * @param context A context to use.
 	 * @param style One of CoverBitmap.STYLE_*
-	 * @param song The song to display information for
+	 * @param coverArt The cover art for the song.
+	 * @param song Title and other data are taken from here for info modes.
 	 * @param width Maximum width of image
 	 * @param height Maximum height of image
-	 * @param bitmap A Bitmap to be drawn into. If null, a new Bitmap will be
+	 * @param reuse A Bitmap to be drawn into. If null, a new Bitmap will be
 	 * created. If the bitmap cannot be used, it will be recycled and a new
 	 * Bitmap created.
 	 * @return The image, or null if the song was null, or width or height
 	 * were less than 1
 	 */
-	public static Bitmap createBitmap(Context context, int style, Song song, int width, int height, Bitmap bitmap)
+	public static Bitmap createBitmap(Context context, int style, Bitmap coverArt, Song song, int width, int height, Bitmap reuse)
 	{
-		if (song == null)
-			return null;
-
 		switch (style) {
 		case STYLE_OVERLAPPING_BOX:
-			return createOverlappingBitmap(context, song, width, height, bitmap);
+			return createOverlappingBitmap(context, coverArt, song, width, height, reuse);
 		case STYLE_INFO_BELOW:
-			return createSeparatedBitmap(context, song, width, height, bitmap);
+			return createSeparatedBitmap(context, coverArt, song, width, height, reuse);
 		case STYLE_NO_INFO:
-			return createScaledBitmap(getCover(context, song), width, height, bitmap);
+			return createScaledBitmap(coverArt, width, height, reuse);
 		case STYLE_NO_INFO_ZOOMED:
-			return createZoomedBitmap(getCover(context, song), width, height, bitmap);
+			return createZoomedBitmap(coverArt, width, height, reuse);
 		default:
 			throw new IllegalArgumentException("Invalid bitmap type given: " + style);
 		}
 	}
 
-	private static Bitmap createOverlappingBitmap(Context context, Song song, int width, int height, Bitmap bitmap)
+	private static Bitmap createOverlappingBitmap(Context context, Bitmap cover, Song song, int width, int height, Bitmap bitmap)
 	{
-		if (width < 1 || height < 1)
-			return null;
-
 		if (TEXT_SIZE == -1)
 			loadTextSizes(context);
 
@@ -172,7 +167,6 @@ public final class CoverBitmap {
 		String title = song.title == null ? "" : song.title;
 		String album = song.album == null ? "" : song.album;
 		String artist = song.artist == null ? "" : song.artist;
-		Bitmap cover = getCover(context, song);
 
 		int titleSize = TEXT_SIZE_BIG;
 		int subSize = TEXT_SIZE;
@@ -253,11 +247,8 @@ public final class CoverBitmap {
 		return bitmap;
 	}
 
-	private static Bitmap createSeparatedBitmap(Context context, Song song, int width, int height, Bitmap bitmap)
+	private static Bitmap createSeparatedBitmap(Context context, Bitmap cover, Song song, int width, int height, Bitmap bitmap)
 	{
-		if (width < 1 || height < 1)
-			return null;
-
 		if (TEXT_SIZE == -1)
 			loadTextSizes(context);
 		if (SONG_ICON == null)
@@ -271,7 +262,6 @@ public final class CoverBitmap {
 		String title = song.title == null ? "" : song.title;
 		String album = song.album == null ? "" : song.album;
 		String artist = song.artist == null ? "" : song.artist;
-		Bitmap cover = getCover(context, song);
 
 		int textSize = TEXT_SIZE;
 		int padding = PADDING;
@@ -367,11 +357,8 @@ public final class CoverBitmap {
 	 * @param reuse A bitmap to store the result in if possible
 	 * @return The zoomed bitmap.
 	 */
-	public static Bitmap createZoomedBitmap(Bitmap source, int width, int height, Bitmap reuse)
+	private static Bitmap createZoomedBitmap(Bitmap source, int width, int height, Bitmap reuse)
 	{
-		if (source == null || width < 1 || height < 1)
-			return null;
-
 		Bitmap bitmap = null;
 
 		if (reuse != null) {
@@ -414,11 +401,8 @@ public final class CoverBitmap {
 	 * support reuse.)
 	 * @return The scaled bitmap.
 	 */
-	public static Bitmap createScaledBitmap(Bitmap source, int width, int height, Bitmap reuse)
+	private static Bitmap createScaledBitmap(Bitmap source, int width, int height, Bitmap reuse)
 	{
-		if (source == null || width < 1 || height < 1)
-			return null;
-
 		if (reuse != null)
 			reuse.recycle();
 
@@ -449,9 +433,6 @@ public final class CoverBitmap {
 	 */
 	public static Bitmap getCover(Context context, Song song)
 	{
-		if (song == null || song.id == -1 || Song.mDisableCoverArt)
-			return null;
-
 		Uri uri = song.getCoverUri();
 		if (uri == null)
 			return null;
