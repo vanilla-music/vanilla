@@ -310,54 +310,13 @@ public class PlaybackActivity extends Activity
 
 	static final int MENU_PREFS = 2;
 	static final int MENU_LIBRARY = 3;
-	static final int MENU_SHUFFLE = 4;
 	static final int MENU_PLAYBACK = 5;
-	static final int MENU_REPEAT = 6;
 	static final int MENU_SEARCH = 7;
-	static final int MENU_RANDOM = 8;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
 		menu.add(0, MENU_PREFS, 0, R.string.settings).setIcon(R.drawable.ic_menu_preferences);
-		menu.add(0, MENU_SHUFFLE, 0, R.string.shuffle_enable).setIcon(R.drawable.ic_menu_shuffle);
-		menu.add(0, MENU_REPEAT, 0, R.string.repeat_enable).setIcon(R.drawable.ic_menu_refresh);
-		menu.add(0, MENU_RANDOM, 0, R.string.random_enable).setIcon(R.drawable.ic_menu_random);
-		return true;
-	}
-
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu)
-	{
-		int state = mState;
-
-		int shuffleRes;
-		switch (PlaybackService.shuffleMode(state)) {
-		default:
-		case SongTimeline.SHUFFLE_NONE:
-			shuffleRes = R.string.shuffle_enable;
-			break;
-		case SongTimeline.SHUFFLE_SONGS:
-			shuffleRes = R.string.shuffle_albums;
-			break;
-		case SongTimeline.SHUFFLE_ALBUMS:
-			shuffleRes = R.string.shuffle_disable;
-			break;
-		}
-		menu.findItem(MENU_SHUFFLE).setTitle(shuffleRes);
-
-		int repeatRes;
-		if ((state & PlaybackService.FLAG_REPEAT) != 0)
-			repeatRes = R.string.repeat_current;
-		else if ((state & PlaybackService.FLAG_REPEAT_CURRENT) != 0)
-			repeatRes = R.string.repeat_disable;
-		else
-			repeatRes = R.string.repeat_enable;
-		menu.findItem(MENU_REPEAT).setTitle(repeatRes);
-
-		boolean isRandom = (state & PlaybackService.FLAG_RANDOM) != 0;
-		menu.findItem(MENU_RANDOM).setTitle(isRandom ? R.string.random_disable : R.string.random_enable);
-
 		return true;
 	}
 
@@ -365,15 +324,6 @@ public class PlaybackActivity extends Activity
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
 		switch (item.getItemId()) {
-		case MENU_SHUFFLE:
-			cycleShuffle();
-			return true;
-		case MENU_REPEAT:
-			cycleRepeat();
-			return true;
-		case MENU_RANDOM:
-			toggleRandom();
-			return true;
 		case MENU_PREFS:
 			startActivity(new Intent(this, PreferencesActivity.class));
 			return true;
@@ -389,26 +339,11 @@ public class PlaybackActivity extends Activity
 	}
 
 	/**
-	 * Toggle shuffle mode on/off
+	 * Cycle shuffle mode.
 	 */
 	public void cycleShuffle()
 	{
-		int state = PlaybackService.get(this).cycleShuffle();
-		int shuffleRes;
-		switch (PlaybackService.shuffleMode(state)) {
-		default:
-		case SongTimeline.SHUFFLE_NONE:
-			shuffleRes = R.string.shuffle_disabled;
-			break;
-		case SongTimeline.SHUFFLE_SONGS:
-			shuffleRes = R.string.shuffle_songs_enabled;
-			break;
-		case SongTimeline.SHUFFLE_ALBUMS:
-			shuffleRes = R.string.shuffle_albums_enabled;
-			break;
-		}
-		Toast.makeText(this, shuffleRes, Toast.LENGTH_SHORT).show();
-		setState(state);
+		setState(PlaybackService.get(this).cycleShuffle());
 	}
 
 	/**
@@ -416,16 +351,7 @@ public class PlaybackActivity extends Activity
 	 */
 	public void cycleRepeat()
 	{
-		int state = PlaybackService.get(this).cycleRepeat();
-		int res;
-		if ((state & PlaybackService.FLAG_REPEAT) != 0)
-			res = R.string.repeat_enabling;
-		else if ((state & PlaybackService.FLAG_REPEAT_CURRENT) != 0)
-			res = R.string.repeat_current_enabling;
-		else
-			res = R.string.repeat_disabling;
-		Toast.makeText(this, res, Toast.LENGTH_SHORT).show();
-		setState(state);
+		setState(PlaybackService.get(this).cycleRepeat());
 	}
 
 	/**
@@ -433,10 +359,7 @@ public class PlaybackActivity extends Activity
 	 */
 	public void toggleRandom()
 	{
-		int state = PlaybackService.get(this).toggleRandom();
-		int res = (state & PlaybackService.FLAG_RANDOM) == 0 ? R.string.random_disabling : R.string.random_enabling;
-		Toast.makeText(this, res, Toast.LENGTH_SHORT).show();
-		setState(state);
+		setState(PlaybackService.get(this).toggleRandom());
 	}
 
 	/**

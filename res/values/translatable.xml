@@ -29,22 +29,6 @@ THE SOFTWARE.
 	<string name="settings">Settings</string>
 	<string name="library">Library</string>
 	<string name="display_mode">Display Mode</string>
-	<string name="shuffle_enable">Enable Shuffle</string>
-	<string name="shuffle_disable">Disable Shuffle</string>
-	<string name="shuffle_albums">Shuffle Albums</string>
-	<string name="shuffle_songs_enabled">Song shuffle enabled</string>
-	<string name="shuffle_albums_enabled">Album shuffle enabled</string>
-	<string name="shuffle_disabled">Shuffle disabled</string>
-	<string name="repeat_enable">Enable Repeat</string>
-	<string name="repeat_current">Repeat Song</string>
-	<string name="repeat_disable">Disable Repeat</string>
-	<string name="repeat_enabling">Repeating all songs</string>
-	<string name="repeat_current_enabling">Repeating current song</string>
-	<string name="repeat_disabling">Repeat disabled</string>
-	<string name="random_enable">Enable Random</string>
-	<string name="random_disable">Disable Random</string>
-	<string name="random_enabling">Random enabled</string>
-	<string name="random_disabling">Random disabled</string>
 	<string name="song_load_failed">Failed to load song %s. It may be corrupt or missing.</string>
 	<string name="queue_cleared">Queue cleared.</string>
 

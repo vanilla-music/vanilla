@@ -64,6 +64,9 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	private TextView mAlbum;
 	private TextView mArtist;
 
+	private ImageButton mShuffleButton;
+	private ImageButton mEndButton;
+
 	/**
 	 * True if the controls are visible (play, next, seek bar, etc).
 	 */
@@ -143,6 +146,11 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 		mSeekBar = (SeekBar)findViewById(R.id.seek_bar);
 		mSeekBar.setMax(1000);
 		mSeekBar.setOnSeekBarChangeListener(this);
+
+		mShuffleButton = (ImageButton)findViewById(R.id.shuffle);
+		mShuffleButton.setOnClickListener(this);
+		mEndButton = (ImageButton)findViewById(R.id.end_action);
+		mEndButton.setOnClickListener(this);
 
 		setControlsVisible(settings.getBoolean("visible_controls", true));
 		setDuration(0);
@@ -227,6 +235,31 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 
 		if ((state & PlaybackService.FLAG_PLAYING) != 0)
 			updateProgress();
+
+		if ((toggled & (PlaybackService.FLAG_REPEAT|PlaybackService.FLAG_REPEAT_CURRENT|PlaybackService.FLAG_RANDOM)) != 0) {
+			if ((state & PlaybackService.FLAG_REPEAT) != 0)
+				mEndButton.setImageResource(R.drawable.repeat_active);
+			else if ((state & PlaybackService.FLAG_REPEAT_CURRENT) != 0)
+				mEndButton.setImageResource(R.drawable.repeat_current_active);
+			else if ((state & PlaybackService.FLAG_RANDOM) != 0)
+				mEndButton.setImageResource(R.drawable.random_active);
+			else
+				mEndButton.setImageResource(R.drawable.repeat_inactive);
+		}
+
+		if ((toggled & PlaybackService.MASK_SHUFFLE) != 0) {
+			switch (PlaybackService.shuffleMode(state)) {
+			case SongTimeline.SHUFFLE_NONE:
+				mShuffleButton.setImageResource(R.drawable.shuffle_inactive);
+				break;
+			case SongTimeline.SHUFFLE_SONGS:
+				mShuffleButton.setImageResource(R.drawable.shuffle_active);
+				break;
+			case SongTimeline.SHUFFLE_ALBUMS:
+				mShuffleButton.setImageResource(R.drawable.shuffle_album_active);
+				break;
+			}
+		}
 	}
 
 	@Override
@@ -414,6 +447,25 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 			mHandler.sendEmptyMessage(MSG_SAVE_CONTROLS);
 		} else {
 			super.performAction(action);
+		}
+	}
+
+	@Override
+	public void onClick(View view)
+	{
+		switch (view.getId()) {
+		case R.id.end_action:
+			if ((mState & (PlaybackService.FLAG_REPEAT_CURRENT|PlaybackService.FLAG_RANDOM)) != 0)
+				toggleRandom();
+			else
+				cycleRepeat();
+			break;
+		case R.id.shuffle:
+			cycleShuffle();
+			break;
+		default:
+			super.onClick(view);
+			break;
 		}
 	}
 }

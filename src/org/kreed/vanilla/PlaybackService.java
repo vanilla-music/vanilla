@@ -674,7 +674,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	public int toggleRandom()
 	{
 		synchronized (mStateLock) {
-			return updateState((mState ^ FLAG_RANDOM) & ~FLAG_REPEAT);
+			return updateState((mState ^ FLAG_RANDOM) & ~(FLAG_REPEAT|FLAG_REPEAT_CURRENT));
 		}
 	}
 
