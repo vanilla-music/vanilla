@@ -53,4 +53,40 @@ THE SOFTWARE.
 		<item>ClearQueue</item>
 		<item>ToggleControls</item>
 	</string-array>
+	<string-array name="swipe_action_entries">
+		<!-- This must match the order of swipe_action_values exactly -->
+		<item>@string/do_nothing</item>
+		<item>@string/open_library</item>
+		<item>@string/play_pause</item>
+		<item>@string/next_song</item>
+		<item>@string/previous_song</item>
+		<item>@string/cycle_repeat_mode</item>
+		<item>@string/cycle_shuffle_mode</item>
+		<item>@string/enqueue_current_album</item>
+		<item>@string/enqueue_current_artist</item>
+		<item>@string/enqueue_current_genre</item>
+		<item>@string/clear_queue</item>
+		<item>@string/toggle_controls</item>
+	</string-array>
+	<string-array name="default_action_entries">
+		<item>@string/play</item>
+		<item>@string/enqueue</item>
+		<item>@string/last_used_action</item>
+	</string-array>
+	<string-array name="notification_mode_entries">
+		<item>@string/never_show</item>
+		<item>@string/show_when_playing</item>
+		<item>@string/always_show</item>
+	</string-array>
+	<string-array name="notification_action_entries">
+		<item>@string/open_main_activity</item>
+		<item>@string/open_mini_popup</item>
+		<item>@string/skip_to_next_song</item>
+	</string-array>
+	<string-array name="display_mode_entries">
+		<item>@string/info_on_cover</item>
+		<item>@string/info_below_cover</item>
+		<item>@string/fixed_info</item>
+		<item>@string/fixed_info_fullscreen</item>
+	</string-array>
 </resources>
