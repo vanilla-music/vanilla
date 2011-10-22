@@ -105,7 +105,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 		super.onCreate(icicle);
 
 		SharedPreferences settings = PlaybackService.getSettings(this);
-		int displayMode = Integer.parseInt(settings.getString("display_mode", "0"));
+		int displayMode = Integer.parseInt(settings.getString("display_mode", "2"));
 		mDisplayMode = displayMode;
 
 		int layout = R.layout.full_playback;
@@ -174,7 +174,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 		super.onStart();
 
 		SharedPreferences settings = PlaybackService.getSettings(this);
-		if (mDisplayMode != Integer.parseInt(settings.getString("display_mode", "0"))) {
+		if (mDisplayMode != Integer.parseInt(settings.getString("display_mode", "2"))) {
 			finish();
 			startActivity(new Intent(this, FullPlaybackActivity.class));
 		}

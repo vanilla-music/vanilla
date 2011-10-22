@@ -77,7 +77,7 @@ THE SOFTWARE.
 			android:summary="@string/display_mode_summary"
 			android:entries="@array/display_mode_entries"
 			android:entryValues="@array/entry_values"
-			android:defaultValue="0" />
+			android:defaultValue="2" />
 		<ListPreference
 			android:key="swipe_up_action"
 			android:title="@string/swipe_up_action_title"
