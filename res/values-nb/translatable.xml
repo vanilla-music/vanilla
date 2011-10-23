@@ -28,13 +28,9 @@ THE SOFTWARE.
 	<string name="empty_queue">Ingen låter valgt. Plukk noen fra biblioteket (søk tast) eller gå inn i tilfeldig-modus(i menyen).</string>
 	<string name="settings">Instillinger</string>
 	<string name="library">Bibliotek</string>
-	<string name="display_mode">Visningsmodus</string>
 	<string name="random_enabling">Tilfeldig aktivert</string>
 	<string name="song_load_failed">Kunne ikke laste låt %s. Den kan være skadet eller mangler.</string>
 	<string name="queue_cleared">Kø ryddet.</string>
-
-	<!-- Widgets -->
-	<string name="starting">Oppstart...</string>
 
 	<!-- New Playlist Dialog -->
 	<string name="choose_playlist_name">Velg Spilleliste Navn</string>
@@ -66,7 +62,6 @@ THE SOFTWARE.
 		<item quantity="one">1 låt lagt til spilleliste %2$s.</item>
 		<item quantity="other">%1$d låter lagt til spilleliste %2$s.</item>
 	</plurals>
-	<string name="deleting">Sletter...</string>
 	<string name="playlist_deleted">Spilleliste %s slettet.</string>
 	<plurals name="deleted">
 		<item quantity="one">1 låt slettet.</item>

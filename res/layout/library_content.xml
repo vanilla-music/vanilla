@@ -32,7 +32,6 @@ THE SOFTWARE.
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content" >
 			<TextView
-				android:id="@+id/artist_tab"
 				android:focusable="true"
 				android:background="@drawable/buttonbar"
 				android:drawableTop="@drawable/ic_tab_artists"
@@ -48,7 +47,6 @@ THE SOFTWARE.
 				android:ellipsize="marquee"
 				android:singleLine="true" />
 			<TextView
-				android:id="@+id/album_tab"
 				android:focusable="true"
 				android:background="@drawable/buttonbar"
 				android:drawableTop="@drawable/ic_tab_albums"
@@ -64,7 +62,6 @@ THE SOFTWARE.
 				android:ellipsize="marquee"
 				android:singleLine="true" />
 			<TextView
-				android:id="@+id/song_tab"
 				android:focusable="true"
 				android:background="@drawable/buttonbar"
 				android:drawableTop="@drawable/ic_tab_songs"
@@ -80,7 +77,6 @@ THE SOFTWARE.
 				android:ellipsize="marquee"
 				android:singleLine="true" />
 			<TextView
-				android:id="@+id/playlist_tab"
 				android:focusable="true"
 				android:background="@drawable/buttonbar"
 				android:drawableTop="@drawable/ic_tab_playlists"
@@ -96,7 +92,6 @@ THE SOFTWARE.
 				android:ellipsize="marquee"
 				android:singleLine="true" />
 			<TextView
-				android:id="@+id/genre_tab"
 				android:focusable="true"
 				android:background="@drawable/buttonbar"
 				android:drawableTop="@drawable/ic_tab_genres"

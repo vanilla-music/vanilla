@@ -28,7 +28,6 @@ THE SOFTWARE.
 	<string name="empty_queue">No songs selected. Pick some from the library (search key) or enter random mode by tapping this message.</string>
 	<string name="settings">Settings</string>
 	<string name="library">Library</string>
-	<string name="display_mode">Display Mode</string>
 	<string name="no_shuffle">No shuffle</string>
 	<string name="shuffle_songs">Shuffle songs</string>
 	<string name="shuffle_albums">Shuffle albums</string>
@@ -39,9 +38,6 @@ THE SOFTWARE.
 	<string name="random_enabling">Random enabled</string>
 	<string name="song_load_failed">Failed to load song %s. It may be corrupt or missing.</string>
 	<string name="queue_cleared">Queue cleared.</string>
-
-	<!-- Widgets -->
-	<string name="starting">Starting up...</string>
 
 	<!-- New Playlist Dialog -->
 	<string name="choose_playlist_name">Choose Playlist Name</string>
@@ -73,7 +69,6 @@ THE SOFTWARE.
 		<item quantity="one">1 song added to playlist %2$s.</item>
 		<item quantity="other">%1$d songs added to playlist %2$s.</item>
 	</plurals>
-	<string name="deleting">Deleting...</string>
 	<string name="playlist_deleted">Playlist %s deleted.</string>
 	<plurals name="deleted">
 		<item quantity="one">1 song deleted.</item>

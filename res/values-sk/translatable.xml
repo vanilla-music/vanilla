@@ -28,13 +28,9 @@ THE SOFTWARE.
 	<string name="empty_queue">Neboli vybrané žiadne skladby. Vyberte niektorú z knižnice (vyhľadávaním) alebo zvoľte náhodný výber (cez menu).</string>
 	<string name="settings">Nastavenia</string>
 	<string name="library">Knižnica</string>
-	<string name="display_mode">Režim zobrazenia</string>
 	<string name="random_enabling">Náhodný výber zapnutý.</string>
 	<string name="song_load_failed">Načítanie skladby %s zlyhalo. Môže byť poškodená, alebo chýba.</string>
 	<string name="queue_cleared">Zoznam vymazaný.</string>
-
-	<!-- Widgets -->
-	<string name="starting">Spúštanie…</string>
 
 	<!-- New Playlist Dialog -->
 	<string name="choose_playlist_name">Vyberte názov zoznamu skladieb</string>
@@ -69,7 +65,6 @@ THE SOFTWARE.
 		<item quantity="few">%1$d skladby pridané do zoznamu skladieb %2$s.</item>
 		<item quantity="other">%1$d skladieb pridaných do zoznamu skladieb %2$s.</item>
 	</plurals>
-	<string name="deleting">Odstraňuje sa…</string>
 	<string name="playlist_deleted">Zoznam skladieb %s odstránený.</string>
 	<plurals name="deleted">
 		<item quantity="one">1 skladba odstránená.</item>

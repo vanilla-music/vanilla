@@ -158,15 +158,4 @@ public class Cache<E> {
 		mKeys[count] = key;
 		mValues[count] = value;
 	}
-
-	/**
-	 * Clear the keys and return the values to be cleared by the caller.
-	 *
-	 * @return The values in the cache, untouched.
-	 */
-	public Object[] clear()
-	{
-		Arrays.fill(mKeys, -1);
-		return mValues;
-	}
 }
