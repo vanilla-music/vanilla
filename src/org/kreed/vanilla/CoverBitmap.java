@@ -28,8 +28,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
+import android.graphics.Shader;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 
@@ -409,5 +412,48 @@ public final class CoverBitmap {
 		Bitmap result = Bitmap.createScaledBitmap(source, sourceWidth, sourceHeight, false);
 		source.recycle();
 		return result;
+	}
+
+	/**
+	 * Generate the default cover (a rendition of a CD). Returns a square iamge.
+	 * Both dimensions are the lesser of width and height.
+	 *
+	 * @param width The max width
+	 * @param height The max height
+	 * @return The default cover.
+	 */
+	public static Bitmap generateDefaultCover(int width, int height)
+	{
+		int size = Math.min(width, height);
+		int halfSize = size / 2;
+		int eightSize = size / 8;
+
+		Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.RGB_565);
+		LinearGradient gradient = new LinearGradient(size, 0, 0, size, 0xff646464, 0xff464646, Shader.TileMode.CLAMP);
+		RectF oval = new RectF(eightSize, 0, size - eightSize, size);
+
+		Paint paint = new Paint();
+		paint.setAntiAlias(true);
+
+		Canvas canvas = new Canvas(bitmap);
+		canvas.rotate(-45, halfSize, halfSize);
+
+		paint.setShader(gradient);
+		canvas.translate(size / 20, size / 20);
+		canvas.scale(0.9f, 0.9f);
+		canvas.drawOval(oval, paint);
+
+		paint.setShader(null);
+		paint.setColor(0xff000000);
+		canvas.translate(size / 3, size / 3);
+		canvas.scale(0.333f, 0.333f);
+		canvas.drawOval(oval, paint);
+
+		paint.setShader(gradient);
+		canvas.translate(size / 3, size / 3);
+		canvas.scale(0.333f, 0.333f);
+		canvas.drawOval(oval, paint);
+
+		return bitmap;
 	}
 }

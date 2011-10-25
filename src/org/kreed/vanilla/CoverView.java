@@ -24,7 +24,6 @@ package org.kreed.vanilla;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Handler;
@@ -135,29 +134,6 @@ public final class CoverView extends View implements Handler.Callback {
 		if (!mScroller.isFinished())
 			mScroller.abortAnimation();
 		scrollTo(getWidth(), 0);
-	}
-
-	/**
-	 * Create the cover to show when a song has no cover art. Only used in the
-	 * no info modes.
-	 *
-	 * @return The default cover, now also stored in mDefaultCover.
-	 */
-	private Bitmap generateDefaultCover()
-	{
-		int style = mCoverStyle;
-		Bitmap result = null;
-
-		if (style == CoverBitmap.STYLE_NO_INFO || style == CoverBitmap.STYLE_NO_INFO_ZOOMED) {
-			Context context = getContext();
-			Bitmap def = BitmapFactory.decodeResource(context.getResources(), R.drawable.default_cover);
-			int width = getWidth();
-			int height = getHeight();
-			result = CoverBitmap.createBitmap(context, style, def, null, width, height, null);
-		}
-
-		mDefaultCover = result;
-		return result;
 	}
 
 	@Override
@@ -344,14 +320,16 @@ public final class CoverView extends View implements Handler.Callback {
 		int style = mCoverStyle;
 		Context context = getContext();
 		Bitmap cover = song.getCover(context);
+		int width = getWidth();
+		int height = getHeight();
 
 		Bitmap bitmap;
 		if (cover == null && (style == CoverBitmap.STYLE_NO_INFO || style == CoverBitmap.STYLE_NO_INFO_ZOOMED)) {
+			if (mDefaultCover == null)
+				mDefaultCover = CoverBitmap.generateDefaultCover(width, height);
 			bitmap = mDefaultCover;
-			if (bitmap == null)
-				bitmap = generateDefaultCover();
 		} else {
-			bitmap = CoverBitmap.createBitmap(context, style, cover, song, getWidth(), getHeight(), reuse);
+			bitmap = CoverBitmap.createBitmap(context, style, cover, song, width, height, reuse);
 		}
 
 		mBitmaps[i] = bitmap;
