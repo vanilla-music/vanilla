@@ -3,3 +3,5 @@ Vanilla Music Player is a music player for Android
 To build, assuming you have the Android SDK installed and in your path:
 	android update project --name VanillaMusic --path .
 	ant debug (or ant release)
+
+Javadocs can be generated using 'ant doc'

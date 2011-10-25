@@ -2,7 +2,6 @@
 bin
 gen
 .*
-build.xml
 local.properties
 *.ipr
 *.iws
