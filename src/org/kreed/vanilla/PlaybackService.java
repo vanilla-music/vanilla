@@ -37,6 +37,10 @@ import android.content.res.TypedArray;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -70,6 +74,7 @@ public final class PlaybackService extends Service
 	         , MediaPlayer.OnErrorListener
 	         , SharedPreferences.OnSharedPreferenceChangeListener
 	         , SongTimeline.Callback
+	         , SensorEventListener
 {
 	/**
 	 * Name of the state file.
@@ -269,6 +274,10 @@ public final class PlaybackService extends Service
 	private PowerManager.WakeLock mWakeLock;
 	private NotificationManager mNotificationManager;
 	private AudioManager mAudioManager;
+	/**
+	 * The SensorManager service.
+	 */
+	private SensorManager mSensorManager;
 
 	SongTimeline mTimeline;
 	private Song mCurrentSong;
@@ -308,6 +317,32 @@ public final class PlaybackService extends Service
 	 */
 	private boolean mDuckedLoss;
 
+	/**
+	 * Minimum time in milliseconds between shake actions.
+	 */
+	private static final int MIN_SHAKE_PERIOD = 500;
+
+	/**
+	 * Magnitude of last sensed acceleration.
+	 */
+	private float mAccelLast;
+	/**
+	 * Filtered acceleration used for shake detection.
+	 */
+	private float mAccelFiltered;
+	/**
+	 * Elapsed realtime of last shake action.
+	 */
+	private long mLastShakeTime;
+	/**
+	 * Minimum jerk required for shake.
+	 */
+	private float mShakeThreshold;
+	/**
+	 * What to do when an accelerometer shake is detected.
+	 */
+	private Action mShakeAction;
+
 	@Override
 	public void onCreate()
 	{
@@ -325,6 +360,7 @@ public final class PlaybackService extends Service
 
 		mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 		mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
+		mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
 			CompatFroyo.createAudioFocus();
@@ -347,6 +383,8 @@ public final class PlaybackService extends Service
 		mInvertNotification = settings.getBoolean("notification_inverted_color", false);
 		mNotificationAction = createNotificationAction(settings);
 		mHeadsetPause = getSettings(this).getBoolean("headset_pause", true);
+		mShakeAction = settings.getBoolean("enable_shake", false) ? Action.getAction(settings, "shake_action", Action.NextSong) : Action.Nothing;
+		mShakeThreshold = settings.getInt("shake_threshold", 80) / 10.0f;
 
 		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
 		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicLock");
@@ -380,6 +418,10 @@ public final class PlaybackService extends Service
 		synchronized (sWait) {
 			sWait.notifyAll();
 		}
+
+		mAccelFiltered = 0.0f;
+		mAccelLast = SensorManager.GRAVITY_EARTH;
+		setupSensor();
 	}
 
 	@Override
@@ -456,6 +498,9 @@ public final class PlaybackService extends Service
 			// we haven't registered the receiver yet
 		}
 
+		if (mShakeAction != Action.Nothing)
+			mSensorManager.unregisterListener(this);
+
 		if (mWakeLock != null && mWakeLock.isHeld())
 			mWakeLock.release();
 
@@ -471,6 +516,17 @@ public final class PlaybackService extends Service
 		if (sSettings == null)
 			sSettings = PreferenceManager.getDefaultSharedPreferences(context);
 		return sSettings;
+	}
+
+	/**
+	 * Setup the accelerometer.
+	 */
+	private void setupSensor()
+	{
+		if (mShakeAction == Action.Nothing || (mState & FLAG_PLAYING) == 0)
+			mSensorManager.unregisterListener(this);
+		else
+			mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_UI);
 	}
 
 	private void loadPreference(String key)
@@ -515,6 +571,11 @@ public final class PlaybackService extends Service
 			mStockBroadcast = settings.getBoolean(key, false);
 		} else if ("headset_play".equals(key)) {
 			mHeadsetPlay = settings.getBoolean(key, false);
+		} else if ("enable_shake".equals(key) || "shake_action".equals(key)) {
+			mShakeAction = settings.getBoolean("enable_shake", false) ? Action.getAction(settings, "shake_action", Action.NextSong) : Action.Nothing;
+			setupSensor();
+		} else if ("shake_threshold".equals(key)) {
+			mShakeThreshold = settings.getInt("shake_threshold", 80) / 10.0f;
 		}
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
@@ -603,6 +664,8 @@ public final class PlaybackService extends Service
 				if (mWakeLock != null && mWakeLock.isHeld())
 					mWakeLock.release();
 			}
+
+			setupSensor();
 		}
 
 		if ((toggled & FLAG_NO_MEDIA) != 0 && (state & FLAG_NO_MEDIA) != 0) {
@@ -1545,6 +1608,116 @@ public final class PlaybackService extends Service
 				setFlag(FLAG_PLAYING);
 			}
 			break;
+		}
+	}
+
+	@Override
+	public void onSensorChanged(SensorEvent se)
+	{
+		double x = se.values[0];
+		double y = se.values[1];
+		double z = se.values[2];
+
+		float accel = (float)Math.sqrt(x*x + y*y + z*z);
+		float delta = accel - mAccelLast;
+		mAccelLast = accel;
+
+		float filtered = mAccelFiltered * 0.9f + delta;
+		mAccelFiltered = filtered;
+
+		if (filtered > mShakeThreshold) {
+			long now = SystemClock.elapsedRealtime();
+			if (now - mLastShakeTime > MIN_SHAKE_PERIOD) {
+				mLastShakeTime = now;
+				performAction(mShakeAction, null);
+			}
+		}
+	}
+
+	@Override
+	public void onAccuracyChanged(Sensor sensor, int accuracy)
+	{
+	}
+
+	/**
+	 * Execute the given action.
+	 *
+	 * @param action The action to execute.
+	 * @param receiver Optional. If non-null, update the PlaybackActivity with
+	 * new song or state from the executed action. The activity will still be
+	 * updated by the broadcast if not passed here; passing it just makes the
+	 * update immediate.
+	 */
+	public void performAction(Action action, PlaybackActivity receiver)
+	{
+		switch (action) {
+		case Nothing:
+			break;
+		case Library:
+			Intent intent = new Intent(this, LibraryActivity.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			startActivity(intent);
+			break;
+		case PlayPause: {
+			int state = playPause();
+			if (receiver != null)
+				receiver.setState(state);
+			break;
+		}
+		case NextSong: {
+			Song song = shiftCurrentSong(SongTimeline.SHIFT_NEXT_SONG);
+			if (receiver != null)
+				receiver.setSong(song);
+			break;
+		}
+		case PreviousSong: {
+			Song song = shiftCurrentSong(SongTimeline.SHIFT_PREVIOUS_SONG);
+			if (receiver != null)
+				receiver.setSong(song);
+			break;
+		}
+		case NextAlbum: {
+			Song song = shiftCurrentSong(SongTimeline.SHIFT_NEXT_ALBUM);
+			if (receiver != null)
+				receiver.setSong(song);
+			break;
+		}
+		case PreviousAlbum: {
+			Song song = shiftCurrentSong(SongTimeline.SHIFT_PREVIOUS_ALBUM);
+			if (receiver != null)
+				receiver.setSong(song);
+			break;
+		}
+		case Repeat: {
+			int state = cycleFinishAction();
+			if (receiver != null)
+				receiver.setState(state);
+			break;
+		}
+		case Shuffle: {
+			int state = cycleShuffle();
+			if (receiver != null)
+				receiver.setState(state);
+			break;
+		}
+		case EnqueueAlbum:
+			enqueueFromCurrent(MediaUtils.TYPE_ALBUM);
+			break;
+		case EnqueueArtist:
+			enqueueFromCurrent(MediaUtils.TYPE_ARTIST);
+			break;
+		case EnqueueGenre:
+			enqueueFromCurrent(MediaUtils.TYPE_GENRE);
+			break;
+		case ClearQueue:
+			clearQueue();
+			Toast.makeText(this, R.string.queue_cleared, Toast.LENGTH_SHORT).show();
+			break;
+		case ToggleControls:
+			// Handled in FullPlaybackActivity.performAction
+			break;
+		default:
+			throw new IllegalArgumentException("Invalid action: " + action);
 		}
 	}
 }

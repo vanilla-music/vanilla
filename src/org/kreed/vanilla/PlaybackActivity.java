@@ -52,23 +52,6 @@ public class PlaybackActivity extends Activity
 	           View.OnClickListener,
 	           CoverView.Callback
 {
-	enum Action {
-		Nothing,
-		Library,
-		PlayPause,
-		NextSong,
-		PreviousSong,
-		NextAlbum,
-		PreviousAlbum,
-		Repeat,
-		Shuffle,
-		EnqueueAlbum,
-		EnqueueArtist,
-		EnqueueGenre,
-		ClearQueue,
-		ToggleControls,
-	}
-
 	private Action mUpAction;
 	private Action mDownAction;
 
@@ -119,26 +102,6 @@ public class PlaybackActivity extends Activity
 		super.onDestroy();
 	}
 
-	/**
-	 * Retrieve an action from the given SharedPreferences.
-	 *
-	 * @param prefs The SharedPreferences instance to load from.
-	 * @param key The preference key.
-	 * @param def The value to return if the key is not found or cannot be loaded.
-	 * @return An action
-	 */
-	public static Action getAction(SharedPreferences prefs, String key, Action def)
-	{
-		try {
-			String pref = prefs.getString(key, null);
-			if (pref == null)
-				return def;
-			return Enum.valueOf(Action.class, pref);
-		} catch (Exception e) {
-			return def;
-		}
-	}
-
 	@Override
 	public void onStart()
 	{
@@ -150,8 +113,8 @@ public class PlaybackActivity extends Activity
 			startService(new Intent(this, PlaybackService.class));
 
 		SharedPreferences prefs = PlaybackService.getSettings(this);
-		mUpAction = getAction(prefs, "swipe_up_action", Action.Nothing);
-		mDownAction = getAction(prefs, "swipe_down_action", Action.Nothing);
+		mUpAction = Action.getAction(prefs, "swipe_up_action", Action.Nothing);
+		mDownAction = Action.getAction(prefs, "swipe_down_action", Action.Nothing);
 
 		Window window = getWindow();
 		if (prefs.getBoolean("disable_lockscreen", false))
@@ -411,63 +374,16 @@ public class PlaybackActivity extends Activity
 		PlaybackService.get(this).enqueueFromCurrent(type);
 	}
 
-	public void performAction(Action action)
-	{
-		switch (action) {
-		case Nothing:
-			break;
-		case Library:
-			openLibrary(null);
-			break;
-		case PlayPause:
-			playPause();
-			break;
-		case NextSong:
-			shiftCurrentSong(SongTimeline.SHIFT_NEXT_SONG);
-			break;
-		case PreviousSong:
-			shiftCurrentSong(SongTimeline.SHIFT_PREVIOUS_SONG);
-			break;
-		case NextAlbum:
-			shiftCurrentSong(SongTimeline.SHIFT_NEXT_ALBUM);
-			break;
-		case PreviousAlbum:
-			shiftCurrentSong(SongTimeline.SHIFT_PREVIOUS_ALBUM);
-			break;
-		case Repeat:
-			cycleFinishAction();
-			break;
-		case Shuffle:
-			cycleShuffle();
-			break;
-		case EnqueueAlbum:
-			enqueue(MediaUtils.TYPE_ALBUM);
-			break;
-		case EnqueueArtist:
-			enqueue(MediaUtils.TYPE_ARTIST);
-			break;
-		case EnqueueGenre:
-			enqueue(MediaUtils.TYPE_GENRE);
-			break;
-		case ClearQueue:
-			PlaybackService.get(this).clearQueue();
-			Toast.makeText(this, R.string.queue_cleared, Toast.LENGTH_SHORT).show();
-			break;
-		default:
-			throw new IllegalArgumentException("Invalid action: " + action);
-		}
-	}
-
 	@Override
 	public void upSwipe()
 	{
-		performAction(mUpAction);
+		PlaybackService.get(this).performAction(mUpAction, this);
 	}
 
 	@Override
 	public void downSwipe()
 	{
-		performAction(mDownAction);
+		PlaybackService.get(this).performAction(mDownAction, this);
 	}
 
 	private static final int GROUP_SHUFFLE = 100;

@@ -177,8 +177,8 @@ public class FullPlaybackActivity extends PlaybackActivity
 			startActivity(new Intent(this, FullPlaybackActivity.class));
 		}
 
-		mCoverPressAction = getAction(settings, "cover_press_action", Action.ToggleControls);
-		mCoverLongPressAction = getAction(settings, "cover_longpress_action", Action.PlayPause);
+		mCoverPressAction = Action.getAction(settings, "cover_press_action", Action.ToggleControls);
+		mCoverLongPressAction = Action.getAction(settings, "cover_longpress_action", Action.PlayPause);
 	}
 
 	@Override
@@ -435,14 +435,13 @@ public class FullPlaybackActivity extends PlaybackActivity
 		mSeekBarTracking = false;
 	}
 
-	@Override
 	public void performAction(Action action)
 	{
 		if (action == Action.ToggleControls) {
 			setControlsVisible(!mControlsVisible);
 			mHandler.sendEmptyMessage(MSG_SAVE_CONTROLS);
 		} else {
-			super.performAction(action);
+			PlaybackService.get(this).performAction(action, this);
 		}
 	}
 

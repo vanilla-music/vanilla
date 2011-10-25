@@ -123,6 +123,27 @@ THE SOFTWARE.
 			android:entryValues="@array/entry_values"
 			android:defaultValue="3" />
 	</PreferenceCategory>
+	<PreferenceCategory android:title="@string/pref_shake">
+		<CheckBoxPreference
+			android:key="enable_shake"
+			android:title="@string/enable_shake_title"
+			android:summary="@string/enable_shake_summary"
+			android:defaultValue="false" />
+		<org.kreed.vanilla.ListPreferenceSummary
+			android:key="shake_action"
+			android:title="@string/shake_action_title"
+			android:entries="@array/swipe_action_entries"
+			android:entryValues="@array/swipe_action_values"
+			android:defaultValue="NextSong"
+			android:dependency="enable_shake" />
+		<!-- Might be nice to show something indicating the current shake force for this preference. -->
+		<org.kreed.vanilla.ShakeThresholdPreference
+			android:key="shake_threshold"
+			android:negativeButtonText="@null"
+			android:dialogLayout="@layout/shake_pref"
+			android:title="@string/shake_threshold_title"
+			android:dependency="enable_shake" />
+	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/pref_misc">
 		<CheckBoxPreference
 			android:key="disable_lockscreen"
