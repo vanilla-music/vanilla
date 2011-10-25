@@ -20,95 +20,22 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<TabHost
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/tab_host"
+	android:layout_height="fill_parent"
+	android:layout_width="fill_parent"
+	android:layout_weight="1">
 	<LinearLayout
 		android:orientation="vertical"
-		android:layout_weight="1"
 		android:layout_width="fill_parent"
-		android:layout_height="0px">
+		android:layout_height="fill_parent">
 		<TabWidget
-			android:id="@+id/tab_widget"
-			android:tabStripEnabled="false"
+			android:id="@android:id/tabs"
 			android:layout_width="fill_parent"
-			android:layout_height="wrap_content" >
-			<TextView
-				android:focusable="true"
-				android:background="@drawable/buttonbar"
-				android:drawableTop="@drawable/ic_tab_artists"
-				android:text="@string/artists"
-				android:textAppearance="?android:attr/textAppearanceSmall"
-				android:textColor="@color/tab_indicator_text"
-				android:paddingTop="7dip"
-				android:paddingBottom="2dip"
-				android:gravity="center"
-				android:layout_weight="1"
-				android:layout_width="0px"
-				android:layout_height="64dip"
-				android:ellipsize="marquee"
-				android:singleLine="true" />
-			<TextView
-				android:focusable="true"
-				android:background="@drawable/buttonbar"
-				android:drawableTop="@drawable/ic_tab_albums"
-				android:text="@string/albums"
-				android:textAppearance="?android:attr/textAppearanceSmall"
-				android:textColor="@color/tab_indicator_text"
-				android:paddingTop="7dip"
-				android:paddingBottom="2dip"
-				android:gravity="center"
-				android:layout_weight="1"
-				android:layout_width="0px"
-				android:layout_height="64dip"
-				android:ellipsize="marquee"
-				android:singleLine="true" />
-			<TextView
-				android:focusable="true"
-				android:background="@drawable/buttonbar"
-				android:drawableTop="@drawable/ic_tab_songs"
-				android:text="@string/songs"
-				android:textAppearance="?android:attr/textAppearanceSmall"
-				android:textColor="@color/tab_indicator_text"
-				android:paddingTop="7dip"
-				android:paddingBottom="2dip"
-				android:gravity="center"
-				android:layout_weight="1"
-				android:layout_width="0px"
-				android:layout_height="64dip"
-				android:ellipsize="marquee"
-				android:singleLine="true" />
-			<TextView
-				android:focusable="true"
-				android:background="@drawable/buttonbar"
-				android:drawableTop="@drawable/ic_tab_playlists"
-				android:text="@string/playlists"
-				android:textAppearance="?android:attr/textAppearanceSmall"
-				android:textColor="@color/tab_indicator_text"
-				android:paddingTop="7dip"
-				android:paddingBottom="2dip"
-				android:gravity="center"
-				android:layout_weight="1"
-				android:layout_width="0px"
-				android:layout_height="64dip"
-				android:ellipsize="marquee"
-				android:singleLine="true" />
-			<TextView
-				android:focusable="true"
-				android:background="@drawable/buttonbar"
-				android:drawableTop="@drawable/ic_tab_genres"
-				android:text="@string/genres"
-				android:textAppearance="?android:attr/textAppearanceSmall"
-				android:textColor="@color/tab_indicator_text"
-				android:paddingTop="7dip"
-				android:paddingBottom="2dip"
-				android:gravity="center"
-				android:layout_weight="1"
-				android:layout_width="0px"
-				android:layout_height="64dip"
-				android:ellipsize="marquee"
-				android:singleLine="true" />
-		</TabWidget>
+			android:layout_height="wrap_content" />
 		<FrameLayout
-			android:id="@+id/lists"
+			android:id="@android:id/tabcontent"
 			android:layout_width="fill_parent"
 			android:layout_height="0px"
 			android:layout_weight="1">
@@ -170,5 +97,5 @@ THE SOFTWARE.
 			android:background="@null"
 			android:src="@drawable/close" />
 	</LinearLayout>
-</merge>
+</TabHost>
 

@@ -29,8 +29,10 @@ import android.content.SharedPreferences;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.provider.MediaStore;
@@ -49,7 +51,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TabWidget;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 import junit.framework.Assert;
@@ -57,16 +59,19 @@ import junit.framework.Assert;
 /**
  * The library activity where songs to play can be selected from the library.
  */
-public class LibraryActivity extends PlaybackActivity implements AdapterView.OnItemClickListener, TextWatcher {
+public class LibraryActivity
+	extends PlaybackActivity
+	implements AdapterView.OnItemClickListener
+	         , TextWatcher
+	         , TabHost.OnTabChangeListener
+{
 	private static final int ACTION_PLAY = 0;
 	private static final int ACTION_ENQUEUE = 1;
 	private static final int ACTION_LAST_USED = 2;
 	private static final int[] modeForAction =
 		{ SongTimeline.MODE_PLAY, SongTimeline.MODE_ENQUEUE };
 
-	private TabWidget mTabWidget;
-	private ViewGroup mLists;
-	private int mCurrentTab;
+	private TabHost mTabHost;
 
 	private View mSearchBox;
 	private boolean mSearchBoxVisible;
@@ -124,7 +129,7 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 			mPlayPauseButton.setOnClickListener(this);
 			next.setOnClickListener(this);
 		} else {
-			setContentView(R.layout.library_nocontrols);
+			setContentView(R.layout.library_content);
 		}
 
 		mSearchBox = findViewById(R.id.search_box);
@@ -137,38 +142,35 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 
 		mLimiterViews = (ViewGroup)findViewById(R.id.limiter_layout);
 
-		mArtistAdapter = setupView(R.id.artist_list, MediaUtils.TYPE_ARTIST, true, true, null);
-		mAlbumAdapter = setupView(R.id.album_list, MediaUtils.TYPE_ALBUM, true, true, state == null ? null : (MediaAdapter.Limiter)state.getSerializable("limiter_albums"));
-		mSongAdapter = setupView(R.id.song_list, MediaUtils.TYPE_SONG, false, true, state == null ? null : (MediaAdapter.Limiter)state.getSerializable("limiter_songs"));
-		mPlaylistAdapter = setupView(R.id.playlist_list, MediaUtils.TYPE_PLAYLIST, true, false, null);
-		mGenreAdapter = setupView(R.id.genre_list, MediaUtils.TYPE_GENRE, true, false, state == null ? null : (MediaAdapter.Limiter)state.getSerializable("limiter_genres"));
+		mTabHost = (TabHost)findViewById(R.id.tab_host);
+		mTabHost.setup();
+
+		mArtistAdapter = setupView(R.id.artist_list, MediaUtils.TYPE_ARTIST, R.string.artists, R.drawable.ic_tab_artists, true, true, null);
+		mAlbumAdapter = setupView(R.id.album_list, MediaUtils.TYPE_ALBUM, R.string.albums, R.drawable.ic_tab_albums, true, true, state == null ? null : (MediaAdapter.Limiter)state.getSerializable("limiter_albums"));
+		mSongAdapter = setupView(R.id.song_list, MediaUtils.TYPE_SONG, R.string.songs, R.drawable.ic_tab_songs, false, true, state == null ? null : (MediaAdapter.Limiter)state.getSerializable("limiter_songs"));
+		mPlaylistAdapter = setupView(R.id.playlist_list, MediaUtils.TYPE_PLAYLIST, R.string.playlists, R.drawable.ic_tab_playlists, true, false, null);
+		mGenreAdapter = setupView(R.id.genre_list, MediaUtils.TYPE_GENRE, R.string.genres, R.drawable.ic_tab_genres, true, false, state == null ? null : (MediaAdapter.Limiter)state.getSerializable("limiter_genres"));
 		// These should be in the same order as MediaUtils.TYPE_*
 		mAdapters = new MediaAdapter[] { mArtistAdapter, mAlbumAdapter, mSongAdapter, mPlaylistAdapter, mGenreAdapter };
-
-		mLists = (ViewGroup)findViewById(R.id.lists);
-		TabWidget tabWidget = (TabWidget)findViewById(R.id.tab_widget);
-		tabWidget.setCurrentTab(0);
-		mTabWidget = tabWidget;
-		for (int i = 0, count = tabWidget.getTabCount(); i != count; ++i) {
-			View view = tabWidget.getChildTabViewAt(i);
-			view.setOnClickListener(this);
-			view.setTag(i);
-		}
 
 		getContentResolver().registerContentObserver(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, true, mPlaylistObserver);
 
 		int currentTab = 0;
+		String filter = null;
 
 		if (state != null) {
 			if (state.getBoolean("search_box_visible"))
 				setSearchBoxVisible(true);
 			currentTab = state.getInt("current_tab", 0);
+			filter = state.getString("filter");
 		}
 
-		setCurrentTab(currentTab);
+		mTabHost.setCurrentTab(currentTab);
+		mTabHost.setOnTabChangedListener(this);
+		onTabChanged(null);
 
-		if (state != null)
-			mTextFilter.setText(state.getString("filter"));
+		if (filter != null)
+			mTextFilter.setText(filter);
 	}
 
 	@Override
@@ -190,7 +192,7 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 	protected void onSaveInstanceState(Bundle out)
 	{
 		out.putBoolean("search_box_visible", mSearchBoxVisible);
-		out.putInt("current_tab", mCurrentTab);
+		out.putInt("current_tab", mTabHost.getCurrentTab());
 		out.putString("filter", mTextFilter.getText().toString());
 		out.putSerializable("limiter_albums", mAlbumAdapter.getLimiter());
 		out.putSerializable("limiter_songs", mSongAdapter.getLimiter());
@@ -288,7 +290,7 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 	{
 		int type = intent.getIntExtra("type", 1);
 		long id = intent.getLongExtra("id", -1);
-		setCurrentTab(setLimiter(mAdapters[type - 1].getLimiter(id)));
+		mTabHost.setCurrentTab(setLimiter(mAdapters[type - 1].getLimiter(id)));
 	}
 
 	/**
@@ -410,35 +412,31 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 		} else if (view == mCover) {
 			startActivity(new Intent(this, FullPlaybackActivity.class));
 		} else if (view.getTag() != null) {
+			// a limiter view was clicked
 			int i = (Integer)view.getTag();
-			if (view.getParent() instanceof TabWidget) {
-				// a tab was clicked
-				setCurrentTab(i);
-			} else {
-				// a limiter view was clicked
-				if (i == 1) {
-					// generate the artist limiter (we need to query the artist id)
-					MediaAdapter.Limiter limiter = mSongAdapter.getLimiter();
-					Assert.assertEquals(MediaUtils.TYPE_ALBUM, limiter.type);
 
-					ContentResolver resolver = getContentResolver();
-					Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-					String[] projection = new String[] { MediaStore.Audio.Media.ARTIST_ID };
-					Cursor cursor = resolver.query(uri, projection, limiter.selection, null, null);
-					if (cursor != null) {
-						if (cursor.moveToNext()) {
-							setLimiter(mArtistAdapter.getLimiter(cursor.getLong(0)));
-							updateLimiterViews();
-							cursor.close();
-							return;
-						}
+			if (i == 1) {
+				// generate the artist limiter (we need to query the artist id)
+				MediaAdapter.Limiter limiter = mSongAdapter.getLimiter();
+				Assert.assertEquals(MediaUtils.TYPE_ALBUM, limiter.type);
+
+				ContentResolver resolver = getContentResolver();
+				Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+				String[] projection = new String[] { MediaStore.Audio.Media.ARTIST_ID };
+				Cursor cursor = resolver.query(uri, projection, limiter.selection, null, null);
+				if (cursor != null) {
+					if (cursor.moveToNext()) {
+						setLimiter(mArtistAdapter.getLimiter(cursor.getLong(0)));
+						updateLimiterViews();
 						cursor.close();
+						return;
 					}
+					cursor.close();
 				}
-
-				setLimiter(null);
-				updateLimiterViews();
 			}
+
+			setLimiter(null);
+			updateLimiterViews();
 		} else {
 			super.onClick(view);
 		}
@@ -664,11 +662,13 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 	 *
 	 * @param id The id of the ListView
 	 * @param type The media type for the adapter.
+	 * @param label The text to show on the tab.
+	 * @param icon The icon to show on the tab.
 	 * @param expandable True if the rows are expandable.
 	 * @param hasHeader True if the view should have a header row.
 	 * @param limiter The initial limiter to set on the adapter.
 	 */
-	private MediaAdapter setupView(int id, int type, boolean expandable, boolean hasHeader, MediaAdapter.Limiter limiter)
+	private MediaAdapter setupView(int id, int type, int label, int icon, boolean expandable, boolean hasHeader, MediaAdapter.Limiter limiter)
 	{
 		ListView view = (ListView)findViewById(id);
 		view.setOnItemClickListener(this);
@@ -679,6 +679,14 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 
 		MediaAdapter adapter = new MediaAdapter(this, type, expandable, hasHeader, limiter);
 		view.setAdapter(adapter);
+
+		Resources res = getResources();
+		String labelRes = res.getString(label);
+		Drawable iconRes = res.getDrawable(icon);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+			mTabHost.addTab(mTabHost.newTabSpec(labelRes).setIndicator(null, iconRes).setContent(id));
+		else
+			mTabHost.addTab(mTabHost.newTabSpec(labelRes).setIndicator(labelRes, iconRes).setContent(id));
 
 		return adapter;
 	}
@@ -830,19 +838,13 @@ public class LibraryActivity extends PlaybackActivity implements AdapterView.OnI
 		}
 	}
 
-	/**
-	 * Switch to the tab at the given index.
-	 */
-	private void setCurrentTab(int i)
+	@Override
+	public void onTabChanged(String tag)
 	{
-		MediaAdapter adapter = mAdapters[i];
+		MediaAdapter adapter = mAdapters[mTabHost.getCurrentTab()];
 		mCurrentAdapter = adapter;
 		if (adapter.isRequeryNeeded())
 			runQuery(adapter);
-		mTabWidget.setCurrentTab(i);
-		mLists.getChildAt(mCurrentTab).setVisibility(View.GONE);
-		mLists.getChildAt(i).setVisibility(View.VISIBLE);
-		mCurrentTab = i;
 		updateLimiterViews();
 	}
 }

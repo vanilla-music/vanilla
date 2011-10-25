@@ -21,6 +21,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
 <resources>
-	<style name="Dialog" parent="android:Theme.DeviceDefault.Dialog" />
-	<style name="Theme" parent="android:Theme.DeviceDefault" />
+	<style name="Dialog" parent="android:Theme.Holo.Dialog" />
+	<style name="Theme" parent="android:Theme.Holo" />
 </resources>
