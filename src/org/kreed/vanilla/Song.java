@@ -201,10 +201,15 @@ public class Song implements Comparable<Song> {
 	public boolean hasCover(Context context)
 	{
 		if (hasCover == -1) {
-			try {
-				hasCover = context.getContentResolver().openFileDescriptor(getCoverUri(), "r") == null ? 0 : 1;
-			} catch (FileNotFoundException e) {
+			Uri uri = getCoverUri();
+			if (uri == null) {
 				hasCover = 0;
+			} else {
+				try {
+					hasCover = context.getContentResolver().openFileDescriptor(uri, "r") == null ? 0 : 1;
+				} catch (FileNotFoundException e) {
+					hasCover = 0;
+				}
 			}
 		}
 		return hasCover == 1;
@@ -219,7 +224,7 @@ public class Song implements Comparable<Song> {
 		// Use undocumented API to extract the cover from the media file from Eclair
 		// See http://android.git.kernel.org/?p=platform/packages/apps/Music.git;a=blob;f=src/com/android/music/MusicUtils.java;h=d1aea0660009940a0160cb981f381e2115768845;hb=0749a3f1c11e052f97a3ba60fd624c9283ee7331#l986
 
-		if (id == -1 || hasCover == 0)
+		if (id == -1 || hasCover == 0 || mDisableCoverArt)
 			return null;
 		return Uri.parse("content://media/external/audio/media/" + id + "/albumart");
 	}
