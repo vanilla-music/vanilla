@@ -41,6 +41,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -114,10 +115,12 @@ public class LibraryActivity
 		super.onCreate(state);
 
 		MediaView.init(this);
+		setContentView(R.layout.library_content);
 
 		SharedPreferences settings = PlaybackService.getSettings(this);
 		if (settings.getBoolean("controls_in_selector", false)) {
-			setContentView(R.layout.library_withcontrols);
+			ViewGroup content = (ViewGroup)findViewById(R.id.content);
+			LayoutInflater.from(this).inflate(R.layout.library_controls, content, true);
 
 			mControls = findViewById(R.id.controls);
 
@@ -138,8 +141,6 @@ public class LibraryActivity
 			mEndButton = (ImageButton)findViewById(R.id.end_action);
 			mEndButton.setOnClickListener(this);
 			registerForContextMenu(mEndButton);
-		} else {
-			setContentView(R.layout.library_content);
 		}
 
 		mSearchBox = findViewById(R.id.search_box);
