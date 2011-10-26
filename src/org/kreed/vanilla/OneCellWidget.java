@@ -29,6 +29,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.widget.RemoteViews;
 
 /**
@@ -113,10 +114,11 @@ public class OneCellWidget extends AppWidgetProvider {
 			views.setImageViewResource(R.id.cover, 0);
 			views.setInt(R.id.title, "setText", R.string.app_name);
 		} else {
-			if (Song.mDisableCoverArt)
+			Uri uri = song.getCoverUri();
+			if (uri == null)
 				views.setImageViewResource(R.id.cover, 0);
 			else
-				views.setImageViewUri(R.id.cover, song.getCoverUri());
+				views.setImageViewUri(R.id.cover, uri);
 			views.setTextViewText(R.id.title, song.title);
 		}
 
