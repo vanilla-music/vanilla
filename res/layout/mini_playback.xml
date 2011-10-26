@@ -37,6 +37,14 @@ THE SOFTWARE.
 		android:layout_width="match_parent"
 		android:orientation="horizontal">
 		<ImageButton
+			android:id="@+id/shuffle"
+			android:layout_height="wrap_content"
+			android:layout_width="0px"
+			android:layout_weight="1"
+			android:background="@null"
+			android:scaleType="fitCenter"
+			android:src="@drawable/shuffle_inactive" />
+		<ImageButton
 			android:id="@+id/previous"
 			android:layout_height="wrap_content"
 			android:layout_width="0px"
@@ -60,5 +68,13 @@ THE SOFTWARE.
 			android:background="@null"
 			android:scaleType="fitCenter"
 			android:src="@drawable/next" />
+		<ImageButton
+			android:id="@+id/end_action"
+			android:layout_height="wrap_content"
+			android:layout_width="0px"
+			android:layout_weight="1"
+			android:background="@null"
+			android:scaleType="fitCenter"
+			android:src="@drawable/repeat_inactive" />
 	</LinearLayout>
 </LinearLayout>

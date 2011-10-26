@@ -131,6 +131,13 @@ public class LibraryActivity
 			previous.setOnClickListener(this);
 			mPlayPauseButton.setOnClickListener(this);
 			next.setOnClickListener(this);
+
+			mShuffleButton = (ImageButton)findViewById(R.id.shuffle);
+			mShuffleButton.setOnClickListener(this);
+			registerForContextMenu(mShuffleButton);
+			mEndButton = (ImageButton)findViewById(R.id.end_action);
+			mEndButton.setOnClickListener(this);
+			registerForContextMenu(mEndButton);
 		} else {
 			setContentView(R.layout.library_content);
 		}
@@ -527,6 +534,11 @@ public class LibraryActivity
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View listView, ContextMenu.ContextMenuInfo absInfo)
 	{
+		if (!(listView instanceof ListView)) {
+			super.onCreateContextMenu(menu, listView, absInfo);
+			return;
+		}
+
 		MediaAdapter adapter = (MediaAdapter)((ListView)listView).getAdapter();
 		MediaView view = (MediaView)((AdapterView.AdapterContextMenuInfo)absInfo).targetView;
 
@@ -613,6 +625,9 @@ public class LibraryActivity
 	@Override
 	public boolean onContextItemSelected(MenuItem item)
 	{
+		if (item.getGroupId() != 0)
+			return super.onContextItemSelected(item);
+
 		Intent intent = item.getIntent();
 
 		switch (item.getItemId()) {

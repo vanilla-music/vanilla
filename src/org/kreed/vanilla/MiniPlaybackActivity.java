@@ -52,6 +52,13 @@ public class MiniPlaybackActivity extends PlaybackActivity {
 		mPlayPauseButton.setOnClickListener(this);
 		View nextButton = findViewById(R.id.next);
 		nextButton.setOnClickListener(this);
+
+		mShuffleButton = (ImageButton)findViewById(R.id.shuffle);
+		mShuffleButton.setOnClickListener(this);
+		registerForContextMenu(mShuffleButton);
+		mEndButton = (ImageButton)findViewById(R.id.end_action);
+		mEndButton.setOnClickListener(this);
+		registerForContextMenu(mEndButton);
 	}
 
 	@Override

@@ -32,6 +32,7 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.os.SystemClock;
+import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -74,6 +75,8 @@ public class PlaybackActivity extends Activity
 
 	protected CoverView mCoverView;
 	protected ImageButton mPlayPauseButton;
+	protected ImageButton mShuffleButton;
+	protected ImageButton mEndButton;
 
 	protected int mState;
 	private long mLastStateEvent;
@@ -216,6 +219,12 @@ public class PlaybackActivity extends Activity
 		case R.id.previous:
 			previousSong();
 			break;
+		case R.id.end_action:
+			cycleFinishAction();
+			break;
+		case R.id.shuffle:
+			cycleShuffle();
+			break;
 		}
 	}
 
@@ -229,6 +238,37 @@ public class PlaybackActivity extends Activity
 	{
 		if ((toggled & PlaybackService.FLAG_PLAYING) != 0 && mPlayPauseButton != null)
 			mPlayPauseButton.setImageResource((state & PlaybackService.FLAG_PLAYING) == 0 ? R.drawable.play : R.drawable.pause);
+
+		if ((toggled & PlaybackService.MASK_FINISH) != 0 && mShuffleButton != null) {
+			switch (PlaybackService.finishAction(state)) {
+			case SongTimeline.FINISH_STOP:
+				mEndButton.setImageResource(R.drawable.repeat_inactive);
+				break;
+			case SongTimeline.FINISH_REPEAT:
+				mEndButton.setImageResource(R.drawable.repeat_active);
+				break;
+			case SongTimeline.FINISH_REPEAT_CURRENT:
+				mEndButton.setImageResource(R.drawable.repeat_current_active);
+				break;
+			case SongTimeline.FINISH_RANDOM:
+				mEndButton.setImageResource(R.drawable.random_active);
+				break;
+			}
+		}
+
+		if ((toggled & PlaybackService.MASK_SHUFFLE) != 0 && mEndButton != null) {
+			switch (PlaybackService.shuffleMode(state)) {
+			case SongTimeline.SHUFFLE_NONE:
+				mShuffleButton.setImageResource(R.drawable.shuffle_inactive);
+				break;
+			case SongTimeline.SHUFFLE_SONGS:
+				mShuffleButton.setImageResource(R.drawable.shuffle_active);
+				break;
+			case SongTimeline.SHUFFLE_ALBUMS:
+				mShuffleButton.setImageResource(R.drawable.shuffle_album_active);
+				break;
+			}
+		}
 	}
 
 	protected void setState(final int state)
@@ -425,5 +465,35 @@ public class PlaybackActivity extends Activity
 	public void downSwipe()
 	{
 		performAction(mDownAction);
+	}
+
+	private static final int GROUP_SHUFFLE = 100;
+	private static final int GROUP_FINISH = 101;
+
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo)
+	{
+		if (view == mShuffleButton) {
+			menu.add(GROUP_SHUFFLE, SongTimeline.SHUFFLE_NONE, 0, R.string.no_shuffle);
+			menu.add(GROUP_SHUFFLE, SongTimeline.SHUFFLE_SONGS, 0, R.string.shuffle_songs);
+			menu.add(GROUP_SHUFFLE, SongTimeline.SHUFFLE_ALBUMS, 0, R.string.shuffle_albums);
+		} else if (view == mEndButton) {
+		    menu.add(GROUP_FINISH, SongTimeline.FINISH_STOP, 0, R.string.no_repeat);
+			menu.add(GROUP_FINISH, SongTimeline.FINISH_REPEAT, 0, R.string.repeat);
+			menu.add(GROUP_FINISH, SongTimeline.FINISH_REPEAT_CURRENT, 0, R.string.repeat_current_song);
+			menu.add(GROUP_FINISH, SongTimeline.FINISH_RANDOM, 0, R.string.random);
+		}
+	}
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item)
+	{
+		int group = item.getGroupId();
+		int id = item.getItemId();
+		if (group == GROUP_SHUFFLE)
+			setState(PlaybackService.get(this).setShuffleMode(id));
+		else if (group == GROUP_FINISH)
+			setState(PlaybackService.get(this).setFinishAction(id));
+		return true;
 	}
 }
