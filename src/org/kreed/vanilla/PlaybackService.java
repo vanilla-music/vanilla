@@ -1396,11 +1396,20 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 */
 	public Notification createNotification(Song song, int state)
 	{
-		int statusIcon = (state & FLAG_PLAYING) != 0 ? R.drawable.status_icon : R.drawable.status_icon_paused;
+		boolean playing = (state & FLAG_PLAYING) != 0;
 
 		RemoteViews views = new RemoteViews(getPackageName(), R.layout.notification);
-		views.setImageViewResource(R.id.icon, statusIcon);
-		views.setTextViewText(R.id.title, song.title);
+
+		if (!Song.mDisableCoverArt && song.hasCover(this)) {
+			views.setImageViewUri(R.id.icon, song.getCoverUri());
+		} else {
+			views.setImageViewResource(R.id.icon, R.drawable.icon);
+		}
+		if (playing) {
+			views.setTextViewText(R.id.title, song.title);
+		} else {
+			views.setTextViewText(R.id.title, getResources().getString(R.string.notification_title_paused, song.title));
+		}
 		views.setTextViewText(R.id.artist, song.artist);
 
 		if (mInvertNotification) {
@@ -1413,7 +1422,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 		Notification notification = new Notification();
 		notification.contentView = views;
-		notification.icon = statusIcon;
+		notification.icon = playing ? R.drawable.status_icon : R.drawable.status_icon_paused;
 		notification.flags |= Notification.FLAG_ONGOING_EVENT;
 		notification.contentIntent = mNotificationAction;
 		return notification;

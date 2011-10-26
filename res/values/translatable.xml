@@ -89,6 +89,9 @@ THE SOFTWARE.
 	<string name="enqueue_all">Enqueue All</string>
 	<string name="all_songs">All Songs</string>
 
+	<!-- Notification -->
+	<string name="notification_title_paused">%s (Paused)</string>
+
 	<!-- Preferences -->
 	<plurals name="seconds">
 		<item quantity="one">01 second</item>
