@@ -139,7 +139,7 @@ public class PlaylistActivity extends Activity
 				mAdapter.remove(id);
 			} else if (!mEditing) {
 				QueryTask query = MediaUtils.buildPlaylistQuery(mPlaylistId, Song.FILLED_PLAYLIST_PROJECTION, null);
-				PlaybackService.get(this).addSongs(SongTimeline.MODE_PLAY_JUMP_TO, query, position - mListView.getHeaderViewsCount());
+				PlaybackService.get(this).addSongs(SongTimeline.MODE_PLAY_POS_FIRST, query, position - mListView.getHeaderViewsCount());
 			}
 		}
 	}

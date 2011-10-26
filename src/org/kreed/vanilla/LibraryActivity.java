@@ -68,8 +68,11 @@ public class LibraryActivity
 	private static final int ACTION_PLAY = 0;
 	private static final int ACTION_ENQUEUE = 1;
 	private static final int ACTION_LAST_USED = 2;
+	private static final int ACTION_PLAY_ALL = 3;
+	private static final int ACTION_ENQUEUE_ALL = 4;
 	private static final int[] modeForAction =
-		{ SongTimeline.MODE_PLAY, SongTimeline.MODE_ENQUEUE };
+		{ SongTimeline.MODE_PLAY, SongTimeline.MODE_ENQUEUE, -1,
+		  SongTimeline.MODE_PLAY_ID_FIRST, SongTimeline.MODE_ENQUEUE_ID_FIRST };
 
 	private TabHost mTabHost;
 
@@ -248,7 +251,7 @@ public class LibraryActivity
 		if (action == ACTION_LAST_USED)
 			action = mLastAction;
 
-		int res = action == ACTION_ENQUEUE ? R.string.enqueue_all : R.string.play_all;
+		int res = action == ACTION_ENQUEUE || action == ACTION_ENQUEUE_ALL ? R.string.enqueue_all : R.string.play_all;
 		String text = getString(res);
 		mArtistAdapter.setHeaderText(text);
 		mAlbumAdapter.setHeaderText(text);
@@ -267,11 +270,28 @@ public class LibraryActivity
 		if (action == ACTION_LAST_USED)
 			action = mLastAction;
 
-		int mode = modeForAction[action];
-		QueryTask query = buildQueryFromIntent(intent, false);
-		PlaybackService.get(this).addSongs(mode, query, 0);
+		long id = intent.getLongExtra("id", -1);
 
-		mLastActedId = intent.getLongExtra("id", -1);
+		boolean all = false;
+		int mode = action;
+		if (action == ACTION_PLAY_ALL || action == ACTION_ENQUEUE_ALL) {
+			MediaAdapter adapter = mCurrentAdapter;
+			boolean notPlayAllAdapter = (adapter != mSongAdapter && adapter != mAlbumAdapter
+					&& adapter != mArtistAdapter) || id == MediaView.HEADER_ID;
+			if (mode == ACTION_ENQUEUE_ALL && notPlayAllAdapter) {
+				mode = ACTION_ENQUEUE;
+			} else if (mode == ACTION_PLAY_ALL && notPlayAllAdapter) {
+				mode = ACTION_PLAY;
+			} else {
+				all = true;
+			}
+		}
+		mode = modeForAction[mode];
+
+		QueryTask query = buildQueryFromIntent(intent, false, all);
+		PlaybackService.get(this).addSongs(mode, query, intent.getIntExtra("type", -1));
+
+		mLastActedId = id;
 
 		if (mDefaultAction == ACTION_LAST_USED && mLastAction != action) {
 			mLastAction = action;
@@ -333,6 +353,7 @@ public class LibraryActivity
 		return tab;
 	}
 
+	@Override
 	public void onItemClick(AdapterView<?> list, View view, int pos, long id)
 	{
 		MediaView mediaView = (MediaView)view;
@@ -349,14 +370,17 @@ public class LibraryActivity
 		}
 	}
 
+	@Override
 	public void afterTextChanged(Editable editable)
 	{
 	}
 
+	@Override
 	public void beforeTextChanged(CharSequence s, int start, int count, int after)
 	{
 	}
 
+	@Override
 	public void onTextChanged(CharSequence text, int start, int before, int count)
 	{
 		String filter = text.toString();
@@ -463,8 +487,10 @@ public class LibraryActivity
 	 * @param intent An intent created with
 	 * {@link LibraryActivity#createClickIntent(MediaAdapter,MediaView)}.
 	 * @param empty If true, use the empty projection (only query id).
+	 * @param all If true query all songs in the adapter; otherwise query based
+	 * on the row selected.
 	 */
-	private QueryTask buildQueryFromIntent(Intent intent, boolean empty)
+	private QueryTask buildQueryFromIntent(Intent intent, boolean empty, boolean all)
 	{
 		int type = intent.getIntExtra("type", 1);
 
@@ -476,10 +502,12 @@ public class LibraryActivity
 
 		long id = intent.getLongExtra("id", -1);
 		QueryTask query;
-		if (id == MediaView.HEADER_ID)
+		if (all || id == MediaView.HEADER_ID) {
 			query = mAdapters[type - 1].buildSongQuery(projection);
-		else
+			query.setExtra(id);
+		} else {
 			query = MediaUtils.buildQuery(type, id, projection, null);
+		}
 
 		return query;
 	}
@@ -493,6 +521,8 @@ public class LibraryActivity
 	private static final int MENU_EDIT = 6;
 	private static final int MENU_RENAME_PLAYLIST = 7;
 	private static final int MENU_SELECT_PLAYLIST = 8;
+	private static final int MENU_PLAY_ALL = 9;
+	private static final int MENU_ENQUEUE_ALL = 10;
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View listView, ContextMenu.ContextMenuInfo absInfo)
@@ -505,6 +535,7 @@ public class LibraryActivity
 		Intent intent = createClickIntent(adapter, view);
 
 		boolean isHeader = view.getMediaId() == MediaView.HEADER_ID;
+		boolean isAllAdapter = adapter == mArtistAdapter || adapter == mAlbumAdapter || adapter == mSongAdapter;
 
 		if (isHeader)
 			menu.setHeaderTitle(getString(R.string.all_songs));
@@ -512,7 +543,11 @@ public class LibraryActivity
 			menu.setHeaderTitle(view.getTitle());
 
 		menu.add(0, MENU_PLAY, 0, R.string.play).setIntent(intent);
+		if (isAllAdapter)
+			menu.add(0, MENU_PLAY_ALL, 0, R.string.play_all).setIntent(intent);
 		menu.add(0, MENU_ENQUEUE, 0, R.string.enqueue).setIntent(intent);
+		if (isAllAdapter)
+			menu.add(0, MENU_ENQUEUE_ALL, 0, R.string.enqueue_all).setIntent(intent);
 		if (adapter == mPlaylistAdapter) {
 			menu.add(0, MENU_RENAME_PLAYLIST, 0, R.string.rename).setIntent(intent);
 			menu.add(0, MENU_EDIT, 0, R.string.edit).setIntent(intent);
@@ -534,7 +569,7 @@ public class LibraryActivity
 	 */
 	private void addToPlaylist(long playlistId, Intent intent)
 	{
-		QueryTask query = buildQueryFromIntent(intent, true);
+		QueryTask query = buildQueryFromIntent(intent, true, false);
 		int count = Playlist.addToPlaylist(getContentResolver(), playlistId, query);
 
 		String message = getResources().getQuantityString(R.plurals.added_to_playlist, count, count, intent.getStringExtra("playlistName"));
@@ -589,6 +624,12 @@ public class LibraryActivity
 			break;
 		case MENU_PLAY:
 			pickSongs(intent, ACTION_PLAY);
+			break;
+		case MENU_PLAY_ALL:
+			pickSongs(intent, ACTION_PLAY_ALL);
+			break;
+		case MENU_ENQUEUE_ALL:
+			pickSongs(intent, ACTION_ENQUEUE_ALL);
 			break;
 		case MENU_NEW_PLAYLIST: {
 			NewPlaylistDialog dialog = new NewPlaylistDialog(this, null, R.string.create, intent);

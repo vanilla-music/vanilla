@@ -35,6 +35,7 @@ public class QueryTask {
 	private final String mSelection;
 	private final String[] mSelectionArgs;
 	private String mSortOrder;
+	private long mExtra;
 
 	/**
 	 * Create the tasks. All arguments are passed directly to
@@ -67,6 +68,27 @@ public class QueryTask {
 	public void setSortOrder(String sortOrder)
 	{
 		mSortOrder = sortOrder;
+	}
+
+	/**
+	 * Store some extra data with this query. This data is not used at all by
+	 * when running the query.
+	 *
+	 * @param extra The extra data
+	 */
+	public void setExtra(long extra)
+	{
+		mExtra = extra;
+	}
+
+	/**
+	 * Retrieve the extra data stored by {@link QueryTask#setExtra(long)}
+	 *
+	 * @return The extra data
+	 */
+	public long getExtra()
+	{
+		return mExtra;
 	}
 
 	/**

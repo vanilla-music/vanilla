@@ -74,28 +74,57 @@ public final class SongTimeline {
 	/**
 	 * Clear the timeline and use only the provided songs.
 	 *
-	 * @see SongTimeline#addSongs(int,Cursor,int)
+	 * @see SongTimeline#addSongs(int, android.database.Cursor, int, long)
 	 */
 	public static final int MODE_PLAY = 0;
 	/**
 	 * Clear the queue and add the songs after the current song.
 	 *
-	 * @see SongTimeline#addSongs(int,Cursor,int)
+	 * @see SongTimeline#addSongs(int, android.database.Cursor, int, long)
 	 */
 	public static final int MODE_PLAY_NEXT = 1;
 	/**
 	 * Add the songs at the end of the timeline, clearing random songs.
 	 *
-	 * @see SongTimeline#addSongs(int,Cursor,int)
+	 * @see SongTimeline#addSongs(int, android.database.Cursor, int, long)
 	 */
 	public static final int MODE_ENQUEUE = 2;
 	/**
-	 * Like play mode, but make the current position point to the song at
-	 * the given position.
+	 * Like play mode, but make the song at the given position play first by
+	 * removing the songs before the given position in the query and appending
+	 * them to the end of the queue.
 	 *
-	 * @see SongTimeline#addSongs(int,Cursor,int)
+	 * Pass the position in the integer argument.
+	 *
+	 * @see SongTimeline#addSongs(int, android.database.Cursor, int, long)
 	 */
-	public static final int MODE_PLAY_JUMP_TO = 3;
+	public static final int MODE_PLAY_POS_FIRST = 3;
+	/**
+	 * Like play mode, but make the song with the given id play first by
+	 * removing the songs before the song in the query and appending
+	 * them to the end of the queue. If there are multiple songs with
+	 * the given id, picks the first song with that id.
+	 *
+	 * Pass the id in the long argument and the type of the id (one of
+	 * MediaUtils.TYPE_ARTIST, TYPE_ALBUM or TYPE_SONG) in the integer
+	 * argument.
+	 *
+	 * @see SongTimeline#addSongs(int, android.database.Cursor, int, long)
+	 */
+	public static final int MODE_PLAY_ID_FIRST = 4;
+	/**
+	 * Like enqueue mode, but make the song with the given id play first by
+	 * removing the songs before the song in the query and appending
+	 * them to the end of the queue. If there are multiple songs with
+	 * the given id, picks the first song with that id.
+	 *
+	 * Pass the id in the long argument and the type of the id (one of
+	 * MediaUtils.TYPE_ARTIST, TYPE_ALBUM or TYPE_SONG) in the integer
+	 * argument.
+	 *
+	 * @see SongTimeline#addSongs(int, android.database.Cursor, int, long)
+	 */
+	public static final int MODE_ENQUEUE_ID_FIRST = 5;
 
 	/**
 	 * Disable shuffle.
@@ -486,10 +515,13 @@ public final class SongTimeline {
 	 *
 	 * @param mode How to add the songs. One of SongTimeline.MODE_*.
 	 * @param cursor The cursor to fill from.
-	 * @param jumpTo The position to jump to for MODE_PLAY_JUMP_TO.
+	 * @param i The integer argument. See individual mode documentation for
+	 * usage.
+	 * @param l The long argument. See individual mode documentation for
+	 * usage.
 	 * @return The number of songs that were added.
 	 */
-	public int addSongs(int mode, Cursor cursor, int jumpTo)
+	public int addSongs(int mode, Cursor cursor, int i, long l)
 	{
 		if (cursor == null)
 			return 0;
@@ -502,11 +534,12 @@ public final class SongTimeline {
 			saveActiveSongs();
 
 			switch (mode) {
-			case MODE_ENQUEUE: {
-				int i = timeline.size();
-				while (--i > mCurrentPos) {
-					if (timeline.get(i).isRandom())
-						timeline.remove(i);
+			case MODE_ENQUEUE:
+			case MODE_ENQUEUE_ID_FIRST: {
+				int j = timeline.size();
+				while (--j > mCurrentPos) {
+					if (timeline.get(j).isRandom())
+						timeline.remove(j);
 				}
 				break;
 			}
@@ -514,7 +547,8 @@ public final class SongTimeline {
 				timeline.subList(mCurrentPos + 1, timeline.size()).clear();
 				break;
 			case MODE_PLAY:
-			case MODE_PLAY_JUMP_TO:
+			case MODE_PLAY_POS_FIRST:
+			case MODE_PLAY_ID_FIRST:
 				timeline.clear();
 				mCurrentPos = 0;
 				break;
@@ -530,15 +564,42 @@ public final class SongTimeline {
 				Song song = new Song(-1);
 				song.populate(cursor);
 				timeline.add(song);
-				if (j == jumpTo)
-					jumpSong = song;
+
+				if (jumpSong == null) {
+					if (mode == MODE_PLAY_POS_FIRST && j == i) {
+						jumpSong = song;
+					} else if (mode == MODE_PLAY_ID_FIRST || mode == MODE_ENQUEUE_ID_FIRST) {
+						long id;
+						switch (i) {
+						case MediaUtils.TYPE_ARTIST:
+							id = song.artistId;
+							break;
+						case MediaUtils.TYPE_ALBUM:
+							id = song.albumId;
+							break;
+						case MediaUtils.TYPE_SONG:
+							id = song.id;
+							break;
+						default:
+							throw new IllegalArgumentException("Unsupported id type: " + i);
+						}
+						if (id == l)
+							jumpSong = song;
+					}
+				}
 			}
 
 			if (mShuffleMode != SHUFFLE_NONE)
 				MediaUtils.shuffle(timeline.subList(start, timeline.size()), mShuffleMode == SHUFFLE_ALBUMS);
 
-			if (mode == MODE_PLAY_JUMP_TO && jumpSong != null)
-				mCurrentPos = timeline.indexOf(jumpSong);
+			if (jumpSong != null) {
+				int jumpPos = timeline.indexOf(jumpSong);
+				if (jumpPos != start) {
+					// Get the sublist twice to avoid a ConcurrentModificationException.
+					timeline.addAll(timeline.subList(start, jumpPos));
+					timeline.subList(start, jumpPos).clear();
+				}
+			}
 
 			broadcastChangedSongs();
 		}

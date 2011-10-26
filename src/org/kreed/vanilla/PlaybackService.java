@@ -1127,32 +1127,33 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 * worker thread.
 	 *
 	 * @param mode How to add songs. Passed to
-	 * {@link SongTimeline#addSongs(int, android.database.Cursor, int)}
+	 * {@link SongTimeline#addSongs(int, android.database.Cursor, int, long)}
 	 * @param query The query to run.
 	 * @param jumpTo Passed to
-	 * {@link SongTimeline#addSongs(int, android.database.Cursor, int)}
+	 * {@link SongTimeline#addSongs(int, android.database.Cursor, int, long)}
 	 */
 	public void runQuery(int mode, QueryTask query, int jumpTo)
 	{
-		int count = mTimeline.addSongs(mode, query.runQuery(getContentResolver()), jumpTo);
+		int count = mTimeline.addSongs(mode, query.runQuery(getContentResolver()), jumpTo, query.getExtra());
 
 		int text;
 
 		switch (mode) {
 		case SongTimeline.MODE_PLAY:
-		case SongTimeline.MODE_PLAY_JUMP_TO:
+		case SongTimeline.MODE_PLAY_POS_FIRST:
+		case SongTimeline.MODE_PLAY_ID_FIRST:
 			text = R.plurals.playing;
+			if (count != 0 && (mState & FLAG_PLAYING) == 0)
+				setFlag(FLAG_PLAYING);
 			break;
 		case SongTimeline.MODE_PLAY_NEXT:
 		case SongTimeline.MODE_ENQUEUE:
+		case SongTimeline.MODE_ENQUEUE_ID_FIRST:
 			text = R.plurals.enqueued;
 			break;
 		default:
-			return;
+			throw new IllegalArgumentException("Invalid add mode: " + mode);
 		}
-
-		if ((mode == SongTimeline.MODE_PLAY || mode == SongTimeline.MODE_PLAY_JUMP_TO) && count != 0 && (mState & FLAG_PLAYING) == 0)
-			setFlag(FLAG_PLAYING);
 
 		Toast.makeText(this, getResources().getQuantityString(text, count, count), Toast.LENGTH_SHORT).show();
 	}
@@ -1164,7 +1165,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 * immediately or enqueue them for later.
 	 * @param query The query.
 	 * @param jumpTo Passed to
-	 * {@link SongTimeline#addSongs(int, android.database.Cursor, int)}
+	 * {@link SongTimeline#addSongs(int, android.database.Cursor, int, long)}
 	 */
 	public void addSongs(int mode, QueryTask query, int jumpTo)
 	{
