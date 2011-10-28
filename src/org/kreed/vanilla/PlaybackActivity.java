@@ -249,41 +249,14 @@ public class PlaybackActivity extends Activity
 	 */
 	protected void onStateChange(int state, int toggled)
 	{
-		if ((toggled & PlaybackService.FLAG_PLAYING) != 0 && mPlayPauseButton != null)
+		if ((toggled & PlaybackService.FLAG_PLAYING) != 0 && mPlayPauseButton != null) {
 			mPlayPauseButton.setImageResource((state & PlaybackService.FLAG_PLAYING) == 0 ? R.drawable.play : R.drawable.pause);
-
-		if ((toggled & PlaybackService.MASK_FINISH) != 0 && mShuffleButton != null) {
-			switch (PlaybackService.finishAction(state)) {
-			case SongTimeline.FINISH_STOP:
-				mEndButton.setImageResource(R.drawable.repeat_inactive);
-				break;
-			case SongTimeline.FINISH_REPEAT:
-				mEndButton.setImageResource(R.drawable.repeat_active);
-				break;
-			case SongTimeline.FINISH_REPEAT_CURRENT:
-				mEndButton.setImageResource(R.drawable.repeat_current_active);
-				break;
-			case SongTimeline.FINISH_STOP_CURRENT:
-				mEndButton.setImageResource(R.drawable.stop_current_active);
-				break;
-			case SongTimeline.FINISH_RANDOM:
-				mEndButton.setImageResource(R.drawable.random_active);
-				break;
-			}
 		}
-
-		if ((toggled & PlaybackService.MASK_SHUFFLE) != 0 && mEndButton != null) {
-			switch (PlaybackService.shuffleMode(state)) {
-			case SongTimeline.SHUFFLE_NONE:
-				mShuffleButton.setImageResource(R.drawable.shuffle_inactive);
-				break;
-			case SongTimeline.SHUFFLE_SONGS:
-				mShuffleButton.setImageResource(R.drawable.shuffle_active);
-				break;
-			case SongTimeline.SHUFFLE_ALBUMS:
-				mShuffleButton.setImageResource(R.drawable.shuffle_album_active);
-				break;
-			}
+		if ((toggled & PlaybackService.MASK_FINISH) != 0 && mEndButton != null) {
+			mEndButton.setImageResource(SongTimeline.FINISH_ICONS[PlaybackService.finishAction(state)]);
+		}
+		if ((toggled & PlaybackService.MASK_SHUFFLE) != 0 && mShuffleButton != null) {
+			mShuffleButton.setImageResource(SongTimeline.SHUFFLE_ICONS[PlaybackService.shuffleMode(state)]);
 		}
 	}
 

@@ -48,6 +48,7 @@ THE SOFTWARE.
 		android:orientation="vertical" >
 		<ImageButton
 			android:id="@+id/play_pause"
+			android:adjustViewBounds="true"
 			android:src="@drawable/hidden_play"
 			android:background="@null"
 			android:layout_height="0px"
@@ -55,6 +56,7 @@ THE SOFTWARE.
 			android:layout_weight="1" />
 		<ImageButton
 			android:id="@+id/next"
+			android:adjustViewBounds="true"
 			android:src="@drawable/hidden_next"
 			android:background="@null"
 			android:layout_height="0px"

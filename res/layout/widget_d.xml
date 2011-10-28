@@ -28,75 +28,83 @@ THE SOFTWARE.
 		android:id="@+id/cover"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
+		android:adjustViewBounds="true"
 		android:scaleType="fitCenter" />
 	<LinearLayout
+		android:background="#a000"
 		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
-		android:layout_margin="5dip"
+		android:layout_height="wrap_content"
+		android:layout_gravity="bottom|center_horizontal"
 		android:orientation="vertical">
-		<LinearLayout
-			android:id="@+id/text"
+		<TextView
+			android:id="@+id/title"
+			android:textSize="16sp"
+			android:textColor="#ffff"
+			android:textStyle="bold"
+			android:singleLine="true"
+			android:ellipsize="marquee"
+			android:gravity="center"
 			android:layout_width="fill_parent"
-			android:layout_height="0px"
-			android:layout_weight="1"
-			android:layout_margin="5dip"
-			android:orientation="vertical">
-			<TextView
-				android:id="@+id/title"
-				android:visibility="gone"
-				android:layout_width="fill_parent"
-				android:layout_height="0px"
-				android:layout_weight="1"
-				android:gravity="center_horizontal|bottom"
-				android:textColor="#fff"
-				android:textSize="18dip"
-				android:shadowColor="#f000"
-				android:shadowDx="0"
-				android:shadowDy="0"
-				android:shadowRadius="5"
-				android:textStyle="bold"
-				android:ellipsize="marquee"
-				android:singleLine="true" />
-			<TextView
-				android:id="@+id/artist"
-				android:text="@string/app_name"
-				android:layout_width="fill_parent"
-				android:layout_height="0px"
-				android:layout_weight="1"
-				android:gravity="center_horizontal|top"
-				android:textColor="#fff"
-				android:shadowColor="#f000"
-				android:shadowDx="0"
-				android:shadowDy="0"
-				android:shadowRadius="5"
-				android:textSize="15dip"
-				android:ellipsize="marquee"
-				android:singleLine="true" />
-		</LinearLayout>
+			android:layout_height="wrap_content" />
+		<TextView
+			android:id="@+id/artist"
+			android:textSize="14sp"
+			android:textColor="#ffff"
+			android:singleLine="true"
+			android:ellipsize="marquee"
+			android:gravity="center"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" />
 		<LinearLayout
 			android:id="@+id/buttons"
 			android:orientation="horizontal"
 			android:layout_width="fill_parent"
-			android:layout_height="0px"
-			android:layout_weight="1">
+			android:layout_height="wrap_content">
+			<ImageButton
+				android:id="@+id/shuffle"
+				android:adjustViewBounds="true"
+				android:layout_height="fill_parent"
+				android:layout_width="0px"
+				android:layout_weight="1"
+				android:background="@null"
+				android:scaleType="fitCenter"
+				android:src="@drawable/shuffle_inactive" />
+			<ImageButton
+				android:id="@+id/previous"
+				android:adjustViewBounds="true"
+				android:layout_height="fill_parent"
+				android:layout_width="0px"
+				android:layout_weight="1"
+				android:background="@null"
+				android:scaleType="fitCenter"
+				android:src="@drawable/previous" />
 			<ImageButton
 				android:id="@+id/play_pause"
 				android:adjustViewBounds="true"
-				android:src="@drawable/hidden_play"
-				android:scaleType="centerInside"
-				android:background="@null"
 				android:layout_height="fill_parent"
 				android:layout_width="0px"
-				android:layout_weight="1" />
+				android:layout_weight="1"
+				android:background="@null"
+				android:scaleType="fitCenter"
+				android:src="@drawable/play" />
 			<ImageButton
 				android:id="@+id/next"
 				android:adjustViewBounds="true"
-				android:src="@drawable/hidden_next"
-				android:scaleType="centerInside"
-				android:background="@null"
 				android:layout_height="fill_parent"
 				android:layout_width="0px"
-				android:layout_weight="1" />
+				android:layout_weight="1"
+				android:background="@null"
+				android:scaleType="fitCenter"
+				android:src="@drawable/next" />
+			<ImageButton
+				android:id="@+id/end_action"
+				android:adjustViewBounds="true"
+				android:layout_height="fill_parent"
+				android:layout_width="0px"
+				android:layout_weight="1"
+				android:background="@null"
+				android:scaleType="fitCenter"
+				android:src="@drawable/repeat_inactive" />
 		</LinearLayout>
 	</LinearLayout>
 </FrameLayout>

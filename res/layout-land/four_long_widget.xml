@@ -65,30 +65,22 @@ THE SOFTWARE.
 			android:fadingEdgeLength="10dip"
 			android:ellipsize="none" />
 	</LinearLayout>
-	<LinearLayout
-		android:id="@+id/buttons"
-		android:orientation="vertical"
+	<ImageButton
+		android:id="@+id/play_pause"
+		android:adjustViewBounds="true"
 		android:layout_width="wrap_content"
-		android:layout_height="fill_parent">
-		<ImageButton
-			android:id="@+id/play_pause"
-			android:adjustViewBounds="true"
-			android:layout_width="fill_parent"
-			android:layout_height="0px"
-			android:layout_weight="1"
-			android:src="@drawable/play"
-			android:padding="5dip"
-			android:background="@null"
-			android:scaleType="centerInside" />
-		<ImageButton
-			android:id="@+id/next"
-			android:adjustViewBounds="true"
-			android:layout_width="fill_parent"
-			android:layout_height="0px"
-			android:layout_weight="1"
-			android:padding="5dip"
-			android:src="@drawable/next"
-			android:background="@null"
-			android:scaleType="centerInside" />
-	</LinearLayout>
+		android:layout_height="fill_parent"
+		android:src="@drawable/play"
+		android:padding="5dip"
+		android:background="@null"
+		android:scaleType="centerInside" />
+	<ImageButton
+		android:id="@+id/next"
+		android:adjustViewBounds="true"
+		android:layout_width="wrap_content"
+		android:layout_height="fill_parent"
+		android:padding="5dip"
+		android:src="@drawable/next"
+		android:background="@null"
+		android:scaleType="centerInside" />
 </LinearLayout>

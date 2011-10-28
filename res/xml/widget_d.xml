@@ -3,5 +3,5 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:minWidth="110dip"
 	android:minHeight="110dip"
-	android:initialLayout="@layout/four_square_widget"
+	android:initialLayout="@layout/widget_d"
 	android:resizeMode="horizontal|vertical" />

@@ -139,6 +139,16 @@ public final class PlaybackService extends Service
 	public static final String ACTION_PREVIOUS_SONG_AUTOPLAY = "org.kreed.vanilla.action.PREVIOUS_SONG_AUTOPLAY";
 
 	/**
+	 * Change the shuffle mode.
+	 */
+	public static final String ACTION_CYCLE_SHUFFLE = "org.kreed.vanilla.CYCLE_SHUFFLE";
+
+	/**
+	 * Change the repeat mode.
+	 */
+	public static final String ACTION_CYCLE_REPEAT = "org.kreed.vanilla.CYCLE_REPEAT";
+
+	/**
 	 * If set, music will play.
 	 */
 	public static final int FLAG_PLAYING = 0x1;
@@ -358,6 +368,10 @@ public final class PlaybackService extends Service
 				play();
 			} else if (ACTION_PAUSE.equals(action)) {
 				pause();
+			} else if (ACTION_CYCLE_REPEAT.equals(action)) {
+				cycleFinishAction();
+			} else if (ACTION_CYCLE_SHUFFLE.equals(action)) {
+				cycleShuffle();
 			}
 
 			MediaButtonReceiver.registerMediaButton(this);
@@ -573,6 +587,7 @@ public final class PlaybackService extends Service
 		OneCellWidget.checkEnabled(this, manager);
 		FourSquareWidget.checkEnabled(this, manager);
 		FourLongWidget.checkEnabled(this, manager);
+		WidgetD.checkEnabled(this, manager);
 	}
 
 	/**
@@ -586,6 +601,7 @@ public final class PlaybackService extends Service
 		OneCellWidget.updateWidget(this, manager, song, state);
 		FourLongWidget.updateWidget(this, manager, song, state);
 		FourSquareWidget.updateWidget(this, manager, song, state);
+		WidgetD.updateWidget(this, manager, song, state);
 	}
 
 	/**

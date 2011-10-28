@@ -81,6 +81,12 @@ public final class SongTimeline {
 	public static final int FINISH_RANDOM = 4;
 
 	/**
+	 * Icons corresponding to each of the finish actions.
+	 */
+	public static final int[] FINISH_ICONS =
+		{ R.drawable.repeat_inactive, R.drawable.repeat_active, R.drawable.repeat_current_active, R.drawable.stop_current_active, R.drawable.random_active };
+
+	/**
 	 * Clear the timeline and use only the provided songs.
 	 *
 	 * @see SongTimeline#addSongs(int, android.database.Cursor, int, long)
@@ -154,6 +160,13 @@ public final class SongTimeline {
 	 * @see SongTimeline#setShuffleMode(int)
 	 */
 	public static final int SHUFFLE_ALBUMS = 2;
+
+	/**
+	 * Icons corresponding to each of the shuffle actions.
+	 */
+	public static final int[] SHUFFLE_ICONS =
+		{ R.drawable.shuffle_inactive, R.drawable.shuffle_active, R.drawable.shuffle_album_active };
+
 
 	private final Context mContext;
 	/**
