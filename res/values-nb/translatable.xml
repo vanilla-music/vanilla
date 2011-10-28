@@ -76,7 +76,6 @@ THE SOFTWARE.
 
 	<string name="none">Ingen</string>
 	<string name="unknown">Ukjent</string>
-	<string name="title_by_artist">%1$s etter %2$s</string>
 	<string name="play_all">Soill Alt</string>
 	<string name="enqueue_all">Kø Alt</string>
 	<string name="all_songs">Alle Låter</string>

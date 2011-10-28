@@ -83,7 +83,8 @@ public class LibraryActivity
 	private View mClearButton;
 
 	private View mControls;
-	private TextView mStatusText;
+	private TextView mTitle;
+	private TextView mArtist;
 	private ImageView mCover;
 
 	private ViewGroup mLimiterViews;
@@ -124,7 +125,8 @@ public class LibraryActivity
 
 			mControls = findViewById(R.id.controls);
 
-			mStatusText = (TextView)mControls.findViewById(R.id.status_text);
+			mTitle = (TextView)mControls.findViewById(R.id.title);
+			mArtist = (TextView)mControls.findViewById(R.id.artist);
 			mCover = (ImageView)mControls.findViewById(R.id.cover);
 			View previous = mControls.findViewById(R.id.previous);
 			mPlayPauseButton = (ImageButton)mControls.findViewById(R.id.play_pause);
@@ -873,16 +875,18 @@ public class LibraryActivity
 	{
 		super.onSongChange(song);
 
-		if (mStatusText != null) {
+		if (mTitle != null) {
 			Uri cover = null;
 
 			if (song == null) {
-				mStatusText.setText(R.string.none);
+				mTitle.setText(R.string.none);
+				mArtist.setText(null);
 			} else {
 				Resources res = getResources();
 				String title = song.title == null ? res.getString(R.string.unknown) : song.title;
 				String artist = song.artist == null ? res.getString(R.string.unknown) : song.artist;
-				mStatusText.setText(res.getString(R.string.title_by_artist, title, artist));
+				mTitle.setText(title);
+				mArtist.setText(artist);
 				cover = song.hasCover(this) ? song.getCoverUri() : null;
 			}
 

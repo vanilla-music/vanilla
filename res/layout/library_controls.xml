@@ -20,7 +20,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<RelativeLayout
+<LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/controls"
 	android:background="@drawable/music_bottom_playback_bg"
@@ -29,75 +29,73 @@ THE SOFTWARE.
 	<ImageView
 		android:id="@+id/cover"
 		android:scaleType="fitCenter"
-		android:maxWidth="80dip"
 		android:layout_width="80dip"
 		android:layout_height="fill_parent"
 		android:layout_gravity="center" />
 	<LinearLayout
-		android:id="@+id/state_buttons"
-		android:orientation="vertical"
 		android:layout_height="fill_parent"
-		android:layout_width="wrap_content"
-		android:layout_alignParentRight="true">
-		<ImageButton
-			android:id="@+id/shuffle"
-			android:layout_height="0px"
-			android:layout_width="fill_parent"
-			android:layout_weight="1"
-			android:background="@null"
-			android:scaleType="fitCenter"
-			android:src="@drawable/shuffle_inactive" />
-		<ImageButton
-			android:id="@+id/end_action"
-			android:layout_height="0px"
-			android:layout_width="fill_parent"
-			android:layout_weight="1"
-			android:background="@null"
-			android:scaleType="fitCenter"
-			android:src="@drawable/repeat_inactive" />
-	</LinearLayout>
-	<TextView
-		android:id="@+id/status_text"
-		android:text="@string/none"
-		android:textSize="16sp"
-		android:singleLine="true"
-		android:ellipsize="marquee"
-		android:gravity="center"
 		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:layout_toRightOf="@id/cover"
-		android:layout_toLeftOf="@id/state_buttons" />
-	<LinearLayout
-		android:orientation="horizontal"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:layout_below="@id/status_text"
-		android:layout_toRightOf="@id/cover"
-		android:layout_alignParentBottom="true"
-		android:layout_toLeftOf="@id/state_buttons" >
-		<ImageButton
-			android:id="@+id/previous"
-			android:layout_height="wrap_content"
-			android:layout_width="0px"
-			android:layout_weight="1"
-			android:background="@null"
-			android:scaleType="fitCenter"
-			android:src="@drawable/previous" />
-		<ImageButton
-			android:id="@+id/play_pause"
-			android:layout_height="wrap_content"
-			android:layout_width="0px"
-			android:layout_weight="1"
-			android:background="@null"
-			android:scaleType="fitCenter"
-			android:src="@drawable/play" />
-		<ImageButton
-			android:id="@+id/next"
-			android:layout_height="wrap_content"
-			android:layout_width="0px"
-			android:layout_weight="1"
-			android:background="@null"
-			android:scaleType="fitCenter"
-			android:src="@drawable/next" />
+		android:orientation="vertical">
+		<TextView
+			android:id="@+id/title"
+			android:textSize="14sp"
+			android:singleLine="true"
+			android:ellipsize="marquee"
+			android:gravity="center"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" />
+		<TextView
+			android:id="@+id/artist"
+			android:textSize="12sp"
+			android:singleLine="true"
+			android:ellipsize="marquee"
+			android:gravity="center"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" />
+		<LinearLayout
+			android:orientation="horizontal"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent">
+			<ImageButton
+				android:id="@+id/shuffle"
+				android:layout_height="fill_parent"
+				android:layout_width="0px"
+				android:layout_weight="1"
+				android:background="@null"
+				android:scaleType="fitCenter"
+				android:src="@drawable/shuffle_inactive" />
+			<ImageButton
+				android:id="@+id/previous"
+				android:layout_height="fill_parent"
+				android:layout_width="0px"
+				android:layout_weight="1"
+				android:background="@null"
+				android:scaleType="fitCenter"
+				android:src="@drawable/previous" />
+			<ImageButton
+				android:id="@+id/play_pause"
+				android:layout_height="fill_parent"
+				android:layout_width="0px"
+				android:layout_weight="1"
+				android:background="@null"
+				android:scaleType="fitCenter"
+				android:src="@drawable/play" />
+			<ImageButton
+				android:id="@+id/next"
+				android:layout_height="fill_parent"
+				android:layout_width="0px"
+				android:layout_weight="1"
+				android:background="@null"
+				android:scaleType="fitCenter"
+				android:src="@drawable/next" />
+			<ImageButton
+				android:id="@+id/end_action"
+				android:layout_height="fill_parent"
+				android:layout_width="0px"
+				android:layout_weight="1"
+				android:background="@null"
+				android:scaleType="fitCenter"
+				android:src="@drawable/repeat_inactive" />
+		</LinearLayout>
 	</LinearLayout>
-</RelativeLayout>
+</LinearLayout>
