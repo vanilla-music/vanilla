@@ -26,6 +26,13 @@ THE SOFTWARE.
 	android:background="@drawable/music_bottom_playback_bg"
 	android:layout_width="fill_parent"
 	android:layout_height="80dip">
+	<TextView
+		android:id="@+id/empty_queue"
+		android:gravity="center"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:text="@string/empty_queue"
+		android:visibility="gone" />
 	<ImageView
 		android:id="@+id/cover"
 		android:scaleType="fitCenter"

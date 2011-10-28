@@ -86,6 +86,7 @@ public class LibraryActivity
 	private TextView mTitle;
 	private TextView mArtist;
 	private ImageView mCover;
+	private View mEmptyQueue;
 
 	private ViewGroup mLimiterViews;
 
@@ -143,6 +144,9 @@ public class LibraryActivity
 			mEndButton = (ImageButton)findViewById(R.id.end_action);
 			mEndButton.setOnClickListener(this);
 			registerForContextMenu(mEndButton);
+
+			mEmptyQueue = findViewById(R.id.empty_queue);
+			mEmptyQueue.setOnClickListener(this);
 		}
 
 		mSearchBox = findViewById(R.id.search_box);
@@ -445,6 +449,8 @@ public class LibraryActivity
 				mTextFilter.setText("");
 		} else if (view == mCover) {
 			startActivity(new Intent(this, FullPlaybackActivity.class));
+		} else if (view == mEmptyQueue) {
+			setState(PlaybackService.get(this).setFinishAction(SongTimeline.FINISH_RANDOM));
 		} else if (view.getTag() != null) {
 			// a limiter view was clicked
 			int i = (Integer)view.getTag();
@@ -865,9 +871,23 @@ public class LibraryActivity
 		mSearchBoxVisible = visible;
 		mSearchBox.setVisibility(visible ? View.VISIBLE : View.GONE);
 		if (mControls != null)
-			mControls.setVisibility(visible ? View.GONE : View.VISIBLE);
+			mControls.setVisibility(visible || (mState & PlaybackService.FLAG_NO_MEDIA) != 0 ? View.GONE : View.VISIBLE);
 		if (visible)
 			mSearchBox.requestFocus();
+	}
+
+	@Override
+	protected void onStateChange(int state, int toggled)
+	{
+		super.onStateChange(state, toggled);
+
+		if ((toggled & PlaybackService.FLAG_NO_MEDIA) != 0) {
+			// update visibility of controls
+			setSearchBoxVisible(mSearchBoxVisible);
+		}
+		if ((toggled & PlaybackService.FLAG_EMPTY_QUEUE) != 0 && mEmptyQueue != null) {
+			mEmptyQueue.setVisibility((state & PlaybackService.FLAG_EMPTY_QUEUE) == 0 ? View.GONE : View.VISIBLE);
+		}
 	}
 
 	@Override
