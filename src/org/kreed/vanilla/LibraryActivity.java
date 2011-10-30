@@ -375,6 +375,17 @@ public class LibraryActivity
 		return tab;
 	}
 
+	/**
+	 * Open the playback activity and close any activities above it in the
+	 * stack.
+	 */
+	public void openPlaybackActivity()
+	{
+		Intent intent = new Intent(this, FullPlaybackActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		startActivity(intent);
+	}
+
 	@Override
 	public void onItemClick(AdapterView<?> list, View view, int pos, long id)
 	{
@@ -386,7 +397,7 @@ public class LibraryActivity
 			else
 				expand(createClickIntent(adapter, mediaView));
 		} else if (id == mLastActedId) {
-			startActivity(new Intent(this, FullPlaybackActivity.class));
+			openPlaybackActivity();
 		} else {
 			pickSongs(createClickIntent(adapter, mediaView), mDefaultAction);
 		}
@@ -456,7 +467,7 @@ public class LibraryActivity
 			else
 				mTextFilter.setText("");
 		} else if (view == mCover) {
-			startActivity(new Intent(this, FullPlaybackActivity.class));
+			openPlaybackActivity();
 		} else if (view == mEmptyQueue) {
 			setState(PlaybackService.get(this).setFinishAction(SongTimeline.FINISH_RANDOM));
 		} else if (view.getTag() != null) {
@@ -724,7 +735,7 @@ public class LibraryActivity
 			setSearchBoxVisible(!mSearchBoxVisible);
 			return true;
 		case MENU_PLAYBACK:
-			startActivity(new Intent(this, FullPlaybackActivity.class));
+			openPlaybackActivity();
 			return true;
 		case MENU_SORT: {
 			MediaAdapter adapter = mCurrentAdapter;

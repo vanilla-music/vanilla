@@ -187,11 +187,13 @@ public class PlaybackActivity extends Activity
 		return super.onKeyUp(keyCode, event);
 	}
 
+	@Override
 	public void nextSong()
 	{
 		setSong(PlaybackService.get(this).nextSong());
 	}
 
+	@Override
 	public void previousSong()
 	{
 		setSong(PlaybackService.get(this).previousSong());
@@ -279,6 +281,7 @@ public class PlaybackActivity extends Activity
 			final int toggled = mState ^ state;
 			mState = state;
 			runOnUiThread(new Runnable() {
+				@Override
 				public void run()
 				{
 					onStateChange(state, toggled);
@@ -322,6 +325,7 @@ public class PlaybackActivity extends Activity
 	{
 		mLastSongEvent = SystemClock.uptimeMillis();
 		runOnUiThread(new Runnable() {
+			@Override
 			public void run()
 			{
 				onSongChange(song);
@@ -407,7 +411,9 @@ public class PlaybackActivity extends Activity
 	 */
 	public void openLibrary()
 	{
-		startActivity(new Intent(this, LibraryActivity.class));
+		Intent intent = new Intent(this, LibraryActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		startActivity(intent);
 	}
 
 	public void enqueue(int type)
