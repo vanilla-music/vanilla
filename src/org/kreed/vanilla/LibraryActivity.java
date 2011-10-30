@@ -36,6 +36,7 @@ import android.graphics.drawable.PaintDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.text.Editable;
@@ -112,7 +113,7 @@ public class LibraryActivity
 		@Override
 		public void onChange(boolean selfChange)
 		{
-			requestRequery(mPlaylistAdapter);
+			mUiHandler.sendMessage(mUiHandler.obtainMessage(MSG_REQUEST_REQUERY, mPlaylistAdapter));
 		}
 	};
 
@@ -837,6 +838,11 @@ public class LibraryActivity
 	 * Save the sort mode for the adapter passed in obj.
 	 */
 	private static final int MSG_SAVE_SORT = 16;
+	/**
+	 * Call {@link LibraryActivity#requestRequery(MediaAdapter)} on the adapter
+	 * passed in obj.
+	 */
+	private static final int MSG_REQUEST_REQUERY = 17;
 
 	@Override
 	public boolean handleMessage(Message message)
@@ -889,6 +895,9 @@ public class LibraryActivity
 			editor.commit();
 			break;
 		}
+		case MSG_REQUEST_REQUERY:
+			requestRequery((MediaAdapter)message.obj);
+			break;
 		default:
 			return super.handleMessage(message);
 		}
@@ -900,6 +909,8 @@ public class LibraryActivity
 	 * Requery the given adapter. If it is the current adapter, requery
 	 * immediately. Otherwise, mark the adapter as needing a requery and requery
 	 * when its tab is selected.
+	 *
+	 * Must be called on the UI thread.
 	 */
 	public void requestRequery(MediaAdapter adapter)
 	{
@@ -927,8 +938,10 @@ public class LibraryActivity
 	@Override
 	public void onMediaChange()
 	{
-		for (MediaAdapter adapter : mAdapters)
-			requestRequery(adapter);
+		Handler handler = mUiHandler;
+		for (MediaAdapter adapter : mAdapters) {
+			handler.sendMessage(handler.obtainMessage(MSG_REQUEST_REQUERY, adapter));
+		}
 	}
 
 	private void setSearchBoxVisible(boolean visible)

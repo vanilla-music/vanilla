@@ -26,7 +26,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -52,12 +51,6 @@ public class FullPlaybackActivity extends PlaybackActivity
 	public static final int DISPLAY_INFO_BELOW = 1;
 	public static final int DISPLAY_INFO_WIDGETS = 2;
 	public static final int DISPLAY_INFO_WIDGETS_ZOOMED = 3;
-
-	/**
-	 * A Handler running on the UI thread, in contrast with mHandler which runs
-	 * on a worker thread.
-	 */
-	private final Handler mUiHandler = new Handler(this);
 
 	private TextView mOverlayText;
 	private View mControlsBottom;
@@ -410,17 +403,20 @@ public class FullPlaybackActivity extends PlaybackActivity
 		return true;
 	}
 
+	@Override
 	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
 	{
 		if (fromUser)
 			PlaybackService.get(this).seekToProgress(progress);
 	}
 
+	@Override
 	public void onStartTrackingTouch(SeekBar seekBar)
 	{
 		mSeekBarTracking = true;
 	}
 
+	@Override
 	public void onStopTrackingTouch(SeekBar seekBar)
 	{
 		mSeekBarTracking = false;

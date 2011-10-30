@@ -70,7 +70,18 @@ public class PlaybackActivity extends Activity
 	private Action mUpAction;
 	private Action mDownAction;
 
+	/**
+	 * A Handler running on the UI thread, in contrast with mHandler which runs
+	 * on a worker thread.
+	 */
+	protected final Handler mUiHandler = new Handler(this);
+	/**
+	 * A Handler running on a worker thread.
+	 */
 	protected Handler mHandler;
+	/**
+	 * The looper for the worker thread.
+	 */
 	protected Looper mLooper;
 
 	protected CoverView mCoverView;
