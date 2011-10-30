@@ -441,9 +441,10 @@ public class LibraryActivity
 
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 		params.leftMargin = 5;
-		PaintDrawable background = new PaintDrawable(Color.GRAY);
-		background.setCornerRadius(5);
 		for (int i = 0; i != limiter.length; ++i) {
+			PaintDrawable background = new PaintDrawable(Color.GRAY);
+			background.setCornerRadius(5);
+
 			TextView view = new TextView(this);
 			view.setSingleLine();
 			view.setEllipsize(TextUtils.TruncateAt.MARQUEE);
