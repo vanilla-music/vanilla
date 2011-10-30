@@ -45,6 +45,8 @@ THE SOFTWARE.
 	<string name="overwrite">Overwrite</string>
 	<string name="cancel">Cancel</string>
 
+	<string name="delete_playlist">Delete playlist %s?</string>
+
 	<!-- Library -->
 	<string name="enqueue">Enqueue</string>
 	<string name="play">Play</string>

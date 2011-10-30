@@ -23,6 +23,8 @@
 package org.kreed.vanilla;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -40,12 +42,14 @@ import android.widget.Button;
 public class PlaylistActivity extends Activity
 	implements View.OnClickListener
 	         , AbsListView.OnItemClickListener
+	         , DialogInterface.OnClickListener
 {
 	private Looper mLooper;
 	private DragListView mListView;
 	private PlaylistAdapter mAdapter;
 
 	private long mPlaylistId;
+	private String mPlaylistName;
 	private boolean mEditing;
 
 	private Button mEditButton;
@@ -95,9 +99,11 @@ public class PlaylistActivity extends Activity
 	public void onNewIntent(Intent intent)
 	{
 		long id = intent.getLongExtra("playlist", 0);
+		String title = intent.getStringExtra("title");
 		mAdapter.setPlaylistId(id);
-		setTitle(intent.getStringExtra("title"));
+		setTitle(title);
 		mPlaylistId = id;
+		mPlaylistName = title;
 	}
 
 	/**
@@ -123,10 +129,15 @@ public class PlaylistActivity extends Activity
 		case R.id.edit:
 			setEditing(!mEditing);
 			break;
-		case R.id.delete:
-			Playlist.deletePlaylist(getContentResolver(), mPlaylistId);
-			finish();
+		case R.id.delete: {
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			String message = getResources().getString(R.string.delete_playlist, mPlaylistName);
+			builder.setMessage(message);
+			builder.setPositiveButton(R.string.delete, this);
+			builder.setNegativeButton(R.string.cancel, this);
+			builder.show();
 			break;
+		}
 		}
 	}
 
@@ -142,5 +153,15 @@ public class PlaylistActivity extends Activity
 				PlaybackService.get(this).addSongs(SongTimeline.MODE_PLAY_POS_FIRST, query, position - mListView.getHeaderViewsCount());
 			}
 		}
+	}
+
+	@Override
+	public void onClick(DialogInterface dialog, int which)
+	{
+		if (which == DialogInterface.BUTTON_POSITIVE) {
+			Playlist.deletePlaylist(getContentResolver(), mPlaylistId);
+			finish();
+		}
+		dialog.dismiss();
 	}
 }
