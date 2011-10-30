@@ -586,7 +586,7 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	public int getDefaultSortMode()
 	{
 		Limiter limiter = mLimiter;
-		if (limiter != null && limiter.type == MediaUtils.TYPE_SONG)
+		if (limiter != null && limiter.type == MediaUtils.TYPE_ALBUM)
 			return 1; // artist,album,track
 		return 0;
 	}
