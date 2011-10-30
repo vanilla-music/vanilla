@@ -34,6 +34,10 @@ import junit.framework.Assert;
 
 public class MediaUtils {
 	/**
+	 * A special invalid media type.
+	 */
+	public static final int TYPE_INVALID = 0;
+	/**
 	 * Type indicating an id represents an artist.
 	 */
 	public static final int TYPE_ARTIST = 1;
@@ -159,11 +163,11 @@ public class MediaUtils {
 	 * @param projection The columns to query.
 	 * @param selection The selection to pass to the query, or null.
 	 * @param selectionArgs The arguments to substitute into the selection.
+	 * @param sort The sort order.
 	 */
-	public static QueryTask buildGenreQuery(long id, String[] projection, String selection, String[] selectionArgs)
+	public static QueryTask buildGenreQuery(long id, String[] projection, String selection, String[] selectionArgs, String sort)
 	{
 		Uri uri = MediaStore.Audio.Genres.Members.getContentUri("external", id);
-		String sort = MediaStore.Audio.Genres.Members.TITLE_KEY;
 		return new QueryTask(uri, projection, selection, selectionArgs, sort);
 	}
 
@@ -187,7 +191,7 @@ public class MediaUtils {
 		case TYPE_PLAYLIST:
 			return buildPlaylistQuery(id, projection, selection);
 		case TYPE_GENRE:
-			return buildGenreQuery(id, projection, selection, null);
+			return buildGenreQuery(id, projection, selection, null,  MediaStore.Audio.Genres.Members.TITLE_KEY);
 		default:
 			throw new IllegalArgumentException("Specified type not valid: " + type);
 		}

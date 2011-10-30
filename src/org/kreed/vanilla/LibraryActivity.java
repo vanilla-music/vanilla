@@ -361,6 +361,9 @@ public class LibraryActivity
 			}
 		}
 
+		loadSortOrder(mSongAdapter);
+		loadSortOrder(mArtistAdapter);
+
 		requestRequery(mSongAdapter);
 		requestRequery(mAlbumAdapter);
 
@@ -702,20 +705,40 @@ public class LibraryActivity
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-		menu.add(0, MENU_PLAYBACK, 0, R.string.playback_view).setIcon(R.drawable.ic_menu_gallery);
+		menu.addSubMenu(0, MENU_SORT, 0, R.string.sort_by).setIcon(R.drawable.ic_menu_sort_alphabetically);
 		menu.add(0, MENU_SEARCH, 0, R.string.search).setIcon(R.drawable.ic_menu_search);
+		menu.add(0, MENU_PLAYBACK, 0, R.string.playback_view).setIcon(R.drawable.ic_menu_gallery);
 		return super.onCreateOptionsMenu(menu);
 	}
+
+	public static final int GROUP_SORT = 100;
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
+		if (item.getGroupId() == GROUP_SORT) {
+			MediaAdapter adapter = mCurrentAdapter;
+			ListView view = (ListView)mTabHost.getCurrentView();
+			int i = item.getItemId();
+			adapter.setSortMode(i);
+			requestRequery(adapter);
+			// Force a new FastScroller to be created so the scroll section
+			// are updated.
+			view.setFastScrollEnabled(false);
+			view.setFastScrollEnabled(true);
+			mHandler.sendMessage(mHandler.obtainMessage(MSG_SAVE_SORT, adapter));
+			return true;
+		}
+
 		switch (item.getItemId()) {
 		case MENU_SEARCH:
 			setSearchBoxVisible(!mSearchBoxVisible);
 			return true;
 		case MENU_PLAYBACK:
 			startActivity(new Intent(this, FullPlaybackActivity.class));
+			return true;
+		case MENU_SORT:
+			mCurrentAdapter.buildSortMenu(item.getSubMenu());
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -744,6 +767,7 @@ public class LibraryActivity
 
 		MediaAdapter adapter = new MediaAdapter(this, type, expandable, hasHeader, limiter);
 		view.setAdapter(adapter);
+		loadSortOrder(adapter);
 
 		Resources res = getResources();
 		String labelRes = res.getString(label);
@@ -779,6 +803,10 @@ public class LibraryActivity
 	 * Call addToPlaylist with data from the intent in obj.
 	 */
 	private static final int MSG_ADD_TO_PLAYLIST = 15;
+	/**
+	 * Save the sort mode for the adapter passed in obj.
+	 */
+	private static final int MSG_SAVE_SORT = 16;
 
 	@Override
 	public boolean handleMessage(Message message)
@@ -822,6 +850,13 @@ public class LibraryActivity
 					adapter.changeCursor(cursor);
 				}
 			});
+			break;
+		}
+		case MSG_SAVE_SORT: {
+			MediaAdapter adapter = (MediaAdapter)message.obj;
+			SharedPreferences.Editor editor = PlaybackService.getSettings(this).edit();
+			editor.putInt(String.format("sort_%d_%d", adapter.getMediaType(), adapter.getLimiterType()), adapter.getSortMode());
+			editor.commit();
 			break;
 		}
 		default:
@@ -927,5 +962,19 @@ public class LibraryActivity
 		if (adapter.isRequeryNeeded())
 			runQuery(adapter);
 		updateLimiterViews();
+	}
+
+	/**
+	 * Set the saved sort mode for the given adapter. The adapter should
+	 * be re-queried after calling this.
+	 *
+	 * @param adapter The adapter to load for.
+	 */
+	private void loadSortOrder(MediaAdapter adapter)
+	{
+		String key = String.format("sort_%d_%d", adapter.getMediaType(), adapter.getLimiterType());
+		int def = adapter.getDefaultSortMode();
+		int sort = PlaybackService.getSettings(this).getInt(key, def);
+		adapter.setSortMode(sort);
 	}
 }

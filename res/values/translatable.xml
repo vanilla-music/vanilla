@@ -55,6 +55,7 @@ THE SOFTWARE.
 	<string name="expand">Expand</string>
 	<string name="delete">Delete</string>
 	<string name="playback_view">Now Playing</string>
+	<string name="sort_by">Sort By</string>
 	<string name="search">Search</string>
 	<string name="done">Done</string>
 
@@ -87,6 +88,15 @@ THE SOFTWARE.
 	<string name="play_all">Play All</string>
 	<string name="enqueue_all">Enqueue All</string>
 	<string name="all_songs">All Songs</string>
+
+	<string name="name">Name</string>
+	<string name="number_of_tracks">Number of tracks</string>
+	<string name="year">Year</string>
+	<string name="date_added">Date added</string>
+	<string name="artist_album">Artist, album</string>
+	<string name="artist_album_track">Artist, album, track no.</string>
+	<string name="artist_album_title">Artist, album, title</string>
+	<string name="artist_year">Artist, year</string>
 
 	<!-- Notification -->
 	<string name="notification_title_paused">%s (Paused)</string>
