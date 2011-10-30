@@ -33,6 +33,10 @@ import android.os.SystemClock;
 import android.telephony.TelephonyManager;
 import android.view.KeyEvent;
 
+/**
+ * Receives media button events and calls to PlaybackService to respond
+ * appropriately.
+ */
 public class MediaButtonReceiver extends BroadcastReceiver {
 		/**
 	 * If another button event is received before this time in milliseconds
@@ -175,7 +179,7 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 
 		AudioManager audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
 		ComponentName receiver = new ComponentName(context.getPackageName(), MediaButtonReceiver.class.getName());
-		audioManager.registerMediaButtonEventReceiver(receiver);
+		CompatFroyo.registerMediaButtonEventReceiver(audioManager, receiver);
 	}
 
 	/**
@@ -190,7 +194,7 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 
 		AudioManager audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
 		ComponentName receiver = new ComponentName(context.getPackageName(), MediaButtonReceiver.class.getName());
-		audioManager.unregisterMediaButtonEventReceiver(receiver);
+		CompatFroyo.unregisterMediaButtonEventReceiver(audioManager, receiver);
 	}
 
 	@Override

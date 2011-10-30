@@ -22,7 +22,6 @@
 
 package org.kreed.vanilla;
 
-import android.app.backup.BackupManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -60,7 +59,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public final class PlaybackService extends Service implements Handler.Callback, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, SharedPreferences.OnSharedPreferenceChangeListener, SongTimeline.Callback {
+/**
+ * Handles music playback and pretty much all the other work.
+ */
+public final class PlaybackService extends Service
+	implements Handler.Callback
+	         , MediaPlayer.OnCompletionListener
+	         , MediaPlayer.OnErrorListener
+	         , SharedPreferences.OnSharedPreferenceChangeListener
+	         , SongTimeline.Callback
+{
 	/**
 	 * Name of the state file.
 	 */
@@ -443,8 +451,9 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			mHeadsetPlay = settings.getBoolean(key, false);
 		}
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO)
-			new BackupManager(this).dataChanged();
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
+			CompatFroyo.dataChanged(this);
+		}
 	}
 
 	/**
@@ -892,6 +901,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 	}
 
+	@Override
 	public void onSharedPreferenceChanged(SharedPreferences settings, String key)
 	{
 		loadPreference(key);
@@ -937,6 +947,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	private static final int PROCESS_SONG = 13;
 	private static final int PROCESS_STATE = 14;
 
+	@Override
 	public boolean handleMessage(Message message)
 	{
 		switch (message.what) {
