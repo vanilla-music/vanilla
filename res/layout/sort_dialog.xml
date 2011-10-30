@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
+Copyright (C) 2011 Christopher Eby <kreed@kreed.org>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,10 +20,24 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<resources>
-	<style name="Dialog" parent="android:Theme.Holo.Dialog" />
-	<style name="Theme" parent="android:Theme.Holo" />
-	<style name="AlertDialogItem">
-		<item name="android:textColor">?android:textColorAlertDialogListItem</item>
-	</style>
-</resources>
+<RadioGroup
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/sort_direction"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:orientation="horizontal">
+	<RadioButton
+		style="@style/AlertDialogItem"
+		android:id="@+id/ascending"
+		android:text="@string/ascending"
+		android:layout_width="0px"
+		android:layout_height="fill_parent"
+		android:layout_weight="1" />
+	<RadioButton
+		style="@style/AlertDialogItem"
+		android:id="@+id/descending"
+		android:text="@string/descending"
+		android:layout_width="0px"
+		android:layout_height="fill_parent"
+		android:layout_weight="1" />
+</RadioGroup>

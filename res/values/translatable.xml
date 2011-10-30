@@ -98,6 +98,9 @@ THE SOFTWARE.
 	<string name="artist_album_title">Artist, album, title</string>
 	<string name="artist_year">Artist, year</string>
 
+	<string name="ascending">Ascending</string>
+	<string name="descending">Descending</string>
+
 	<!-- Notification -->
 	<string name="notification_title_paused">%s (Paused)</string>
 

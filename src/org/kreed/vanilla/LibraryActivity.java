@@ -22,7 +22,9 @@
 
 package org.kreed.vanilla;
 
+import android.app.AlertDialog;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.content.SharedPreferences;
@@ -52,6 +54,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioGroup;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,6 +68,8 @@ public class LibraryActivity
 	implements AdapterView.OnItemClickListener
 	         , TextWatcher
 	         , TabHost.OnTabChangeListener
+	         , DialogInterface.OnClickListener
+	         , DialogInterface.OnDismissListener
 {
 	private static final int ACTION_PLAY = 0;
 	private static final int ACTION_ENQUEUE = 1;
@@ -711,25 +716,9 @@ public class LibraryActivity
 		return super.onCreateOptionsMenu(menu);
 	}
 
-	public static final int GROUP_SORT = 100;
-
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
-		if (item.getGroupId() == GROUP_SORT) {
-			MediaAdapter adapter = mCurrentAdapter;
-			ListView view = (ListView)mTabHost.getCurrentView();
-			int i = item.getItemId();
-			adapter.setSortMode(i);
-			requestRequery(adapter);
-			// Force a new FastScroller to be created so the scroll section
-			// are updated.
-			view.setFastScrollEnabled(false);
-			view.setFastScrollEnabled(true);
-			mHandler.sendMessage(mHandler.obtainMessage(MSG_SAVE_SORT, adapter));
-			return true;
-		}
-
 		switch (item.getItemId()) {
 		case MENU_SEARCH:
 			setSearchBoxVisible(!mSearchBoxVisible);
@@ -737,9 +726,38 @@ public class LibraryActivity
 		case MENU_PLAYBACK:
 			startActivity(new Intent(this, FullPlaybackActivity.class));
 			return true;
-		case MENU_SORT:
-			mCurrentAdapter.buildSortMenu(item.getSubMenu());
+		case MENU_SORT: {
+			MediaAdapter adapter = mCurrentAdapter;
+			int mode = adapter.getSortMode();
+			int check;
+			if (mode < 0) {
+				check = R.id.descending;
+				mode = ~mode;
+			} else {
+				check = R.id.ascending;
+			}
+
+			int[] itemIds = adapter.getSortEntries();
+			String[] items = new String[itemIds.length];
+			Resources res = getResources();
+			for (int i = itemIds.length; --i != -1; ) {
+				items[i] = res.getString(itemIds[i]);
+			}
+
+			RadioGroup header = (RadioGroup)getLayoutInflater().inflate(R.layout.sort_dialog, null);
+			header.check(check);
+
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle(R.string.sort_by);
+			builder.setSingleChoiceItems(items, mode + 1, this); // add 1 for header
+			builder.setNeutralButton(R.string.done, null);
+
+			AlertDialog dialog = builder.create();
+			dialog.getListView().addHeaderView(header);
+			dialog.setOnDismissListener(this);
+			dialog.show();
 			return true;
+		}
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -976,5 +994,35 @@ public class LibraryActivity
 		int def = adapter.getDefaultSortMode();
 		int sort = PlaybackService.getSettings(this).getInt(key, def);
 		adapter.setSortMode(sort);
+	}
+
+	@Override
+	public void onClick(DialogInterface dialog, int which)
+	{
+		dialog.dismiss();
+	}
+
+	@Override
+	public void onDismiss(DialogInterface dialog)
+	{
+		ListView list = ((AlertDialog)dialog).getListView();
+		// subtract 1 for header
+		int which = list.getCheckedItemPosition() - 1;
+
+		RadioGroup group = (RadioGroup)list.findViewById(R.id.sort_direction);
+		if (group.getCheckedRadioButtonId() == R.id.descending)
+			which = ~which;
+
+		MediaAdapter adapter = mCurrentAdapter;
+		adapter.setSortMode(which);
+		requestRequery(adapter);
+
+		// Force a new FastScroller to be created so the scroll sections
+		// are updated.
+		ListView view = (ListView)mTabHost.getCurrentView();
+		view.setFastScrollEnabled(false);
+		view.setFastScrollEnabled(true);
+
+		mHandler.sendMessage(mHandler.obtainMessage(MSG_SAVE_SORT, adapter));
 	}
 }

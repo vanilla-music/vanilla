@@ -34,6 +34,9 @@ THE SOFTWARE.
 		<item name="android:windowNoTitle">true</item>
 		<item name="android:windowBackground">@null</item>
 	</style>
+	<style name="AlertDialogItem">
+		<item name="android:textColor">@android:color/primary_text_light</item>
+	</style>
 	<string-array name="entry_values">
 		<!-- Note: even if this was an integer-array, these would be converted
 		     to strings anyway.

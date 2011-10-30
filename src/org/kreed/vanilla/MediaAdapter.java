@@ -28,7 +28,6 @@ import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
-import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
@@ -114,8 +113,20 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	 * True if the data is stale and the query should be re-run.
 	 */
 	private boolean mNeedsRequery;
+	/**
+	 * The human-readable descriptions for each sort mode.
+	 */
 	private int[] mSortEntries;
+	/**
+	 * An array ORDER BY expressions for each sort mode. %1$s is replaced by
+	 * ASC or DESC as appropriate before being passed to the query.
+	 */
 	private String[] mSortValues;
+	/**
+	 * The index of the current of the current sort mode in mSortValues, or
+	 * the inverse of the index (in which case sort should be descending
+	 * instead of ascending).
+	 */
 	private int mSortMode;
 
 	/**
@@ -150,7 +161,7 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 			mFieldKeys = new String[] { MediaStore.Audio.Artists.ARTIST_KEY };
 			mSongSort = MediaUtils.DEFAULT_SORT;
 			mSortEntries = new int[] { R.string.name, R.string.number_of_tracks };
-			mSortValues = new String[] { "artist_key", "number_of_tracks" };
+			mSortValues = new String[] { "artist_key %1$s", "number_of_tracks %1$s,artist_key %1$s" };
 			break;
 		case MediaUtils.TYPE_ALBUM:
 			mStore = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
@@ -159,28 +170,28 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 			mFieldKeys = new String[] { "artist_key", MediaStore.Audio.Albums.ALBUM_KEY };
 			mSongSort = "album_key,track";
 			mSortEntries = new int[] { R.string.name, R.string.artist_album, R.string.year, R.string.number_of_tracks };
-			mSortValues = new String[] { "album_key", "artist_key,album_key", "minyear", "numsongs" };
+			mSortValues = new String[] { "album_key %1$s", "artist_key %1$s,album_key %1$s", "minyear %1$s,album_key %1$s", "numsongs %1$s,album_key %1$s" };
 			break;
 		case MediaUtils.TYPE_SONG:
 			mStore = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 			mFields = new String[] { MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.TITLE };
 			mFieldKeys = new String[] { MediaStore.Audio.Media.ARTIST_KEY, MediaStore.Audio.Media.ALBUM_KEY, MediaStore.Audio.Media.TITLE_KEY };
 			mSortEntries = new int[] { R.string.name, R.string.artist_album_track, R.string.artist_album_title, R.string.artist_year, R.string.year };
-			mSortValues = new String[] { "title_key", "artist_key,album_key,track", "artist_key,album_key,title_key", "artist_key,year", "year" };
+			mSortValues = new String[] { "title_key %1$s", "artist_key %1$s,album_key %1$s,track %1$s", "artist_key %1$s,album_key %1$s,title_key %1$s", "artist_key %1$s,year %1$s,track %1$s", "year %1$s,title_key %1$s" };
 			break;
 		case MediaUtils.TYPE_PLAYLIST:
 			mStore = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI;
 			mFields = new String[] { MediaStore.Audio.Playlists.NAME };
 			mFieldKeys = null;
 			mSortEntries = new int[] { R.string.name, R.string.date_added };
-			mSortValues = new String[] { "name", "date_added" };
+			mSortValues = new String[] { "name %1$s", "date_added %1$s" };
 			break;
 		case MediaUtils.TYPE_GENRE:
 			mStore = MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI;
 			mFields = new String[] { MediaStore.Audio.Genres.NAME };
 			mFieldKeys = null;
 			mSortEntries = new int[] { R.string.name };
-			mSortValues = new String[] { "name" };
+			mSortValues = new String[] { "name %1$s" };
 			break;
 		default:
 			throw new IllegalArgumentException("Invalid value for type: " + type);
@@ -306,7 +317,15 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 		StringBuilder selection = new StringBuilder();
 		String[] selectionArgs = null;
 
-		String sort = mSortValues[mSortMode];
+		int mode = mSortMode;
+		String sortDir;
+		if (mode < 0) {
+			mode = ~mode;
+			sortDir = "DESC";
+		} else {
+			sortDir = "ASC";
+		}
+		String sort = String.format(mSortValues[mode], sortDir);
 
 		if (mType == MediaUtils.TYPE_SONG || forceMusicCheck)
 			selection.append("is_music!=0");
@@ -538,23 +557,22 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	}
 
 	/**
-	 * Build a menu of sort modes appropriate for this adapter.
+	 * Return the available sort modes for this adapter.
 	 *
-	 * @param menu The menu the items will be added to.
+	 * @return An array containing the resource ids of the sort mode strings.
 	 */
-	public void buildSortMenu(SubMenu menu)
+	public int[] getSortEntries()
 	{
-		int[] entries = mSortEntries;
-		menu.clear();
-		for (int i = 0; i != entries.length; ++i)
-			menu.add(LibraryActivity.GROUP_SORT, i, 0, entries[i]);
+		return mSortEntries;
 	}
 
 	/**
 	 * Set the sorting mode. The adapter should be re-queried after changing
 	 * this.
 	 *
-	 * @param i The index of the sort mode.
+	 * @param i The index of the sort mode in the sort entries array. If this
+	 * is negative, the inverse of the index will be used and sort order will
+	 * be reversed.
 	 */
 	public void setSortMode(int i)
 	{
