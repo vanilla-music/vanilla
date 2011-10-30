@@ -350,6 +350,7 @@ public class LibraryActivity
 			switch (limiter.type) {
 			case MediaUtils.TYPE_ALBUM:
 				mSongAdapter.setLimiter(limiter);
+				loadSortOrder(mSongAdapter);
 				requestRequery(mSongAdapter);
 				return 2;
 			case MediaUtils.TYPE_ARTIST:
@@ -368,7 +369,7 @@ public class LibraryActivity
 		}
 
 		loadSortOrder(mSongAdapter);
-		loadSortOrder(mArtistAdapter);
+		loadSortOrder(mAlbumAdapter);
 
 		requestRequery(mSongAdapter);
 		requestRequery(mAlbumAdapter);
