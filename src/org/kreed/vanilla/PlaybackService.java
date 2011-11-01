@@ -158,8 +158,8 @@ public final class PlaybackService extends Service
 	/**
 	 * These two bits will be one of SongTimeline.FINISH_*.
 	 */
-	public static final int MASK_FINISH = 0x3 << SHIFT_FINISH;
-	public static final int SHIFT_SHUFFLE = 6;
+	public static final int MASK_FINISH = 0x7 << SHIFT_FINISH;
+	public static final int SHIFT_SHUFFLE = 7;
 	/**
 	 * These two bits will be one of SongTimeline.SHUFFLE_*.
 	 */
@@ -169,14 +169,14 @@ public final class PlaybackService extends Service
 	 * The PlaybackService state, indicating if the service is playing,
 	 * repeating, etc.
 	 *
-	 * The format of this is 0b00000000_00000000_00000000_ffeedcba,
+	 * The format of this is 0b00000000_00000000_00000000f_feeedcba,
 	 * where each bit is:
-	 *     a: {@link PlaybackService#FLAG_PLAYING}
-	 *     b: {@link PlaybackService#FLAG_NO_MEDIA}
-	 *     c: {@link PlaybackService#FLAG_ERROR}
-	 *     d: {@link PlaybackService#FLAG_EMPTY_QUEUE}
-	 *     ee: {@link PlaybackService#MASK_FINISH}
-	 *     ff: {@link PlaybackService#MASK_SHUFFLE}
+	 *     a:   {@link PlaybackService#FLAG_PLAYING}
+	 *     b:   {@link PlaybackService#FLAG_NO_MEDIA}
+	 *     c:   {@link PlaybackService#FLAG_ERROR}
+	 *     d:   {@link PlaybackService#FLAG_EMPTY_QUEUE}
+	 *     eee: {@link PlaybackService#MASK_FINISH}
+	 *     ff:  {@link PlaybackService#MASK_SHUFFLE}
 	 */
 	int mState;
 	private final Object mStateLock = new Object[0];
@@ -808,12 +808,16 @@ public final class PlaybackService extends Service
 	@Override
 	public void onCompletion(MediaPlayer player)
 	{
-		if (finishAction(mState) == SongTimeline.FINISH_REPEAT_CURRENT)
+		if (finishAction(mState) == SongTimeline.FINISH_REPEAT_CURRENT) {
 			setCurrentSong(0);
-		else if (mTimeline.isEndOfQueue())
+		} else if (finishAction(mState) == SongTimeline.FINISH_STOP_CURRENT) {
 			unsetFlag(FLAG_PLAYING);
-		else
 			setCurrentSong(+1);
+		} else if (mTimeline.isEndOfQueue()) {
+			unsetFlag(FLAG_PLAYING);
+		} else {
+			setCurrentSong(+1);
+		}
 	}
 
 	@Override

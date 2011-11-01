@@ -263,6 +263,9 @@ public class PlaybackActivity extends Activity
 			case SongTimeline.FINISH_REPEAT_CURRENT:
 				mEndButton.setImageResource(R.drawable.repeat_current_active);
 				break;
+			case SongTimeline.FINISH_STOP_CURRENT:
+				mEndButton.setImageResource(R.drawable.stop_current_active);
+				break;
 			case SongTimeline.FINISH_RANDOM:
 				mEndButton.setImageResource(R.drawable.random_active);
 				break;
@@ -499,6 +502,7 @@ public class PlaybackActivity extends Activity
 		    menu.add(GROUP_FINISH, SongTimeline.FINISH_STOP, 0, R.string.no_repeat);
 			menu.add(GROUP_FINISH, SongTimeline.FINISH_REPEAT, 0, R.string.repeat);
 			menu.add(GROUP_FINISH, SongTimeline.FINISH_REPEAT_CURRENT, 0, R.string.repeat_current_song);
+			menu.add(GROUP_FINISH, SongTimeline.FINISH_STOP_CURRENT, 0, R.string.stop_current_song);
 			menu.add(GROUP_FINISH, SongTimeline.FINISH_RANDOM, 0, R.string.random);
 		}
 	}

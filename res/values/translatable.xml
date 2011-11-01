@@ -34,6 +34,7 @@ THE SOFTWARE.
 	<string name="no_repeat">No repeat</string>
 	<string name="repeat">Repeat</string>
 	<string name="repeat_current_song">Repeat current song</string>
+	<string name="stop_current_song">Stop after current song</string>
 	<string name="random">Random</string>
 	<string name="random_enabling">Random enabled</string>
 	<string name="song_load_failed">Failed to load song %s. It may be corrupt or missing.</string>
