@@ -82,21 +82,20 @@ THE SOFTWARE.
 
 	<!-- Preferences -->
 	<plurals name="seconds">
-		<item quantity="one">01 sekund</item>
-		<item quantity="other">%02d sekunder</item>
+		<item quantity="one">1 sekund</item>
+		<item quantity="other">%d sekunder</item>
 	</plurals>
 	<plurals name="minutes">
-		<item quantity="one">01 minutt</item>
-		<item quantity="other">%02d minutter</item>
+		<item quantity="one">1 minutt</item>
+		<item quantity="other">%d minutter</item>
 	</plurals>
 	<plurals name="hours">
-		<item quantity="one">01 time</item>
-		<item quantity="other">%02d timer</item>
+		<item quantity="one">1 time</item>
+		<item quantity="other">%d timer</item>
 	</plurals>
 
 	<string name="pref_output">Lydutgang</string>
 	<string name="volume_title">Volum</string>
-	<string name="volume_summary">Musill volum</string>
 	<string name="media_button_title">Bruk Hodetelefon Knapper</string>
 	<string name="media_button_summary">Ett tapp for spille / pause. Dobbeltapp for neste.</string>
 	<string name="headset_only_title">Kun Ekstern Lydutgang</string>
@@ -108,23 +107,16 @@ THE SOFTWARE.
 
 	<string name="pref_notifications">Varsler</string>
 	<string name="notification_mode_title">Varselmodus</string>
-	<string name="notification_mode_summary">Når skal varsler vises</string>
 	<string name="notification_action_title">Varsel Handling</string>
-	<string name="notification_action_summary">Hva skjer når varselet er trykket</string>
 	<string name="notification_invert_color_title">Inverter Varsling Farge</string>
 	<string name="notification_invert_color_summary">Bruk hvit tekst i stedet for svart tekst</string>
 
 	<string name="pref_playback_view">Avspill Visning</string>
 	<string name="display_mode_title">Visningsmodus</string>
-	<string name="display_mode_summary">Utseendet og plasseringen av låten bilde og info.</string>
 	<string name="swipe_up_action_title">Sveip Opp Handling</string>
-	<string name="swipe_up_action_summary">Hva skjer når en sveip opp gest er utført</string>
 	<string name="swipe_down_action_title">Sveip Ned Handling</string>
-	<string name="swipe_down_action_summary">Hva skjer når en sveip ned gest er utført</string>
 	<string name="cover_press_action_title">Cover Tapp Handling</string>
-	<string name="cover_press_action_summary">Hva skjer når coveret er tappet på</string>
 	<string name="cover_longpress_action_title">Lang Cover Trykk Handling</string>
-	<string name="cover_longpress_action_summary">Hva skjer når coveret er lenge trykket på</string>
 	<string name="disable_cover_art_title">Deaktiver Cover bilde</string>
 	<string name="disable_cover_art_summary">Ikke vis cover bilde noen steder i programmet</string>
 
@@ -134,13 +126,11 @@ THE SOFTWARE.
 	<string name="controls_in_selector_title">Medieknapper i Bibliotek</string>
 	<string name="controls_in_selector_summary">Vis låten som spilles og mediekontrollene i biblioteket</string>
 	<string name="default_action_title">Standard Handling</string>
-	<string name="default_action_summary">Hva skjer når et element blir tappet på</string>
 
 	<string name="pref_misc">Diverse Egenskaper</string>
 	<string name="use_idle_timeout_title">Aktiver Tomgang</string>
 	<string name="use_idle_timeout_summary">Når aktiv, blir avspillingen stoppet etter en gitt periode med inaktivitet</string>
 	<string name="idle_timeout_title">Tomgang</string>
-	<string name="idle_timeout_summary">Mengde tid som må passere før det blir tomgang</string>
 	<string name="double_tap_title">Dobbeltapp Widget</string>
 	<string name="double_tap_summary">Dobbeltapping på 1x1 widget vil åpne spilleren. Forvent en 400ms forsinkelse før widgeten reagerer på handlingen.</string>
 	<string name="scrobble_title">Bruk ScrobbleDroid API</string>

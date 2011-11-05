@@ -37,9 +37,17 @@ import android.widget.SeekBar;
  * roughly exponential scale.
  */
 public class VolumePreference extends DialogPreference implements SeekBar.OnSeekBarChangeListener {
+	private static final float DEFAULT_VALUE = 1.0f;
+
 	public VolumePreference(Context context, AttributeSet attrs)
 	{
 		super(context, attrs);
+	}
+
+	@Override
+	public CharSequence getSummary()
+	{
+		return String.format("%.0f%%", Math.pow(getPersistedFloat(DEFAULT_VALUE), 0.33f) * 100);
 	}
 
 	@Override
@@ -53,27 +61,33 @@ public class VolumePreference extends DialogPreference implements SeekBar.OnSeek
 		SeekBar seekBar = new SeekBar(getContext());
 		seekBar.setPadding(20, 20, 20, 20);
 		seekBar.setLayoutParams(params);
-		seekBar.setMax(1000);
-		seekBar.setProgress((int)(Math.pow(getPersistedFloat(1.0f), 0.25f) * 1000));
+		seekBar.setMax(100);
+		seekBar.setProgress((int)(Math.pow(getPersistedFloat(DEFAULT_VALUE), 0.33f) * 100));
 		seekBar.setOnSeekBarChangeListener(this);
 		builder.setView(seekBar);
 	}
 
+	@Override
 	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
 	{
-		// Approximate an exponential curve with x^4. Produces a value from 0.0 - 1.0.
+		// Approximate an exponential curve with x^3. Produces a value from 0.0 - 1.0.
 		if (fromUser && shouldPersist()) {
-			float value = seekBar.getProgress() / 1000.0f;
-			value *= value;
-			value *= value;
-			persistFloat(value);
+			persistFloat((float)Math.pow(seekBar.getProgress() / 100.0f, 3));
 		}
 	}
 
+	@Override
+	protected void onDialogClosed(boolean positiveResult)
+	{
+		notifyChanged();
+	}
+
+	@Override
 	public void onStartTrackingTouch(SeekBar seekBar)
 	{
 	}
 
+	@Override
 	public void onStopTrackingTouch(SeekBar seekBar)
 	{
 	}

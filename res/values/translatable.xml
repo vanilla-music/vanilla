@@ -109,21 +109,20 @@ THE SOFTWARE.
 
 	<!-- Preferences -->
 	<plurals name="seconds">
-		<item quantity="one">01 second</item>
-		<item quantity="other">%02d seconds</item>
+		<item quantity="one">1 second</item>
+		<item quantity="other">%d seconds</item>
 	</plurals>
 	<plurals name="minutes">
-		<item quantity="one">01 minute</item>
-		<item quantity="other">%02d minutes</item>
+		<item quantity="one">1 minute</item>
+		<item quantity="other">%d minutes</item>
 	</plurals>
 	<plurals name="hours">
-		<item quantity="one">01 hour</item>
-		<item quantity="other">%02d hours</item>
+		<item quantity="one">1 hour</item>
+		<item quantity="other">%d hours</item>
 	</plurals>
 
 	<string name="pref_output">Audio Output</string>
 	<string name="volume_title">Volume</string>
-	<string name="volume_summary">Music volume</string>
 	<string name="media_button_title">Use Headset Controls</string>
 	<string name="media_button_summary">Single click for play/pause. Double click for next.</string>
 	<string name="headset_only_title">External Output Only</string>
@@ -135,23 +134,16 @@ THE SOFTWARE.
 
 	<string name="pref_notifications">Notifications</string>
 	<string name="notification_mode_title">Notification Mode</string>
-	<string name="notification_mode_summary">When to show the notification</string>
 	<string name="notification_action_title">Notification Action</string>
-	<string name="notification_action_summary">What to do when the notification is pressed</string>
 	<string name="notification_invert_color_title">Invert Notification Color</string>
 	<string name="notification_invert_color_summary">Use white text instead of black text</string>
 
 	<string name="pref_playback_view">Playback View</string>
 	<string name="display_mode_title">Display Mode</string>
-	<string name="display_mode_summary">The appearance and position of the song art and info.</string>
 	<string name="swipe_up_action_title">Swipe Up Action</string>
-	<string name="swipe_up_action_summary">What to do when a swipe up gesture is performed</string>
 	<string name="swipe_down_action_title">Swipe Down Action</string>
-	<string name="swipe_down_action_summary">What to do when a swipe down gesture is performed</string>
 	<string name="cover_press_action_title">Cover Tap Action</string>
-	<string name="cover_press_action_summary">What to do when the cover is tapped</string>
 	<string name="cover_longpress_action_title">Cover Long Press Action</string>
-	<string name="cover_longpress_action_summary">What to do when the cover is long-pressed</string>
 	<string name="disable_cover_art_title">Disable Cover Art</string>
 	<string name="disable_cover_art_summary">Do not show cover art anywhere in the application</string>
 
@@ -161,7 +153,6 @@ THE SOFTWARE.
 	<string name="controls_in_selector_title">Controls in Library</string>
 	<string name="controls_in_selector_summary">Show the currently playing song and media controls in the library view</string>
 	<string name="default_action_title">Default Action</string>
-	<string name="default_action_summary">What to do when an item is tapped</string>
 
 	<string name="pref_misc">Miscellaneous Features</string>
 	<string name="disable_lockscreen_title">Disable Lockscreen</string>
@@ -169,7 +160,6 @@ THE SOFTWARE.
 	<string name="use_idle_timeout_title">Enable Idle Timeout</string>
 	<string name="use_idle_timeout_summary">When active, playback will be stopped after the given period of inactivity</string>
 	<string name="idle_timeout_title">Idle Timeout</string>
-	<string name="idle_timeout_summary">The amount of time that must pass before becoming idle</string>
 	<string name="double_tap_title">Double Tap Widget</string>
 	<string name="double_tap_summary">Double-tapping the 1x1 widget will open the player. Incurs a 400ms delay before the widget responds to actions.</string>
 	<string name="scrobble_title">Use ScrobbleDroid API</string>

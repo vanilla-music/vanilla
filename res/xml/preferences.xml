@@ -26,8 +26,7 @@ THE SOFTWARE.
 	<PreferenceCategory android:title="@string/pref_output">
 		<org.kreed.vanilla.VolumePreference
 			android:key="volume"
-			android:title="@string/volume_title"
-			android:summary="@string/volume_summary" />
+			android:title="@string/volume_title" />
 		<CheckBoxPreference
 			android:key="media_button"
 			android:title="@string/media_button_title"
@@ -50,17 +49,15 @@ THE SOFTWARE.
 			android:defaultValue="false" />
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/pref_notifications">
-		<ListPreference
+		<org.kreed.vanilla.ListPreferenceSummary
 			android:key="notification_mode"
 			android:title="@string/notification_mode_title"
-			android:summary="@string/notification_mode_summary"
 			android:entries="@array/notification_mode_entries"
 			android:entryValues="@array/entry_values"
 			android:defaultValue="1" />
-		<ListPreference
+		<org.kreed.vanilla.ListPreferenceSummary
 			android:key="notification_action"
 			android:title="@string/notification_action_title"
-			android:summary="@string/notification_action_summary"
 			android:entries="@array/notification_action_entries"
 			android:entryValues="@array/entry_values"
 			android:defaultValue="0" />
@@ -71,38 +68,33 @@ THE SOFTWARE.
 			android:defaultValue="false" />
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/pref_playback_view">
-		<ListPreference
+		<org.kreed.vanilla.ListPreferenceSummary
 			android:key="display_mode"
 			android:title="@string/display_mode_title"
-			android:summary="@string/display_mode_summary"
 			android:entries="@array/display_mode_entries"
 			android:entryValues="@array/entry_values"
 			android:defaultValue="2" />
-		<ListPreference
+		<org.kreed.vanilla.ListPreferenceSummary
 			android:key="swipe_up_action"
 			android:title="@string/swipe_up_action_title"
-			android:summary="@string/swipe_up_action_summary"
 			android:entries="@array/swipe_action_entries"
 			android:entryValues="@array/swipe_action_values"
 			android:defaultValue="Nothing" />
-		<ListPreference
+		<org.kreed.vanilla.ListPreferenceSummary
 			android:key="swipe_down_action"
 			android:title="@string/swipe_down_action_title"
-			android:summary="@string/swipe_down_action_summary"
 			android:entries="@array/swipe_action_entries"
 			android:entryValues="@array/swipe_action_values"
 			android:defaultValue="Nothing" />
-		<ListPreference
+		<org.kreed.vanilla.ListPreferenceSummary
 			android:key="cover_press_action"
 			android:title="@string/cover_press_action_title"
-			android:summary="@string/cover_press_action_summary"
 			android:entries="@array/swipe_action_entries"
 			android:entryValues="@array/swipe_action_values"
 			android:defaultValue="ToggleControls" />
-		<ListPreference
+		<org.kreed.vanilla.ListPreferenceSummary
 			android:key="cover_longpress_action"
 			android:title="@string/cover_longpress_action_title"
-			android:summary="@string/cover_longpress_action_summary"
 			android:entries="@array/swipe_action_entries"
 			android:entryValues="@array/swipe_action_values"
 			android:defaultValue="PlayPause" />
@@ -123,10 +115,9 @@ THE SOFTWARE.
 			android:title="@string/controls_in_selector_title"
 			android:summary="@string/controls_in_selector_summary"
 			android:defaultValue="false" />
-		<ListPreference
+		<org.kreed.vanilla.ListPreferenceSummary
 			android:key="default_action_int"
 			android:title="@string/default_action_title"
-			android:summary="@string/default_action_summary"
 			android:entries="@array/default_action_entries"
 			android:entryValues="@array/entry_values"
 			android:defaultValue="0" />
@@ -145,7 +136,6 @@ THE SOFTWARE.
 		<org.kreed.vanilla.IdlePreference
 			android:key="idle_timeout"
 			android:title="@string/idle_timeout_title"
-			android:summary="@string/idle_timeout_summary"
 			android:dependency="use_idle_timeout" />
 		<CheckBoxPreference
 			android:key="double_tap"

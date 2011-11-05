@@ -40,6 +40,7 @@ import android.widget.TextView;
  * (6 hours). The values range on an approximately exponential scale.
  */
 public class IdlePreference extends DialogPreference implements SeekBar.OnSeekBarChangeListener {
+	private static final int DEFAULT_VALUE = 3600;
 	private static final int MIN = 60;
 	private static final int MAX = 21600;
 
@@ -59,12 +60,18 @@ public class IdlePreference extends DialogPreference implements SeekBar.OnSeekBa
 	}
 
 	@Override
+	public CharSequence getSummary()
+	{
+		return formatTime(getPersistedInt(DEFAULT_VALUE));
+	}
+
+	@Override
 	protected void onPrepareDialogBuilder(Builder builder)
 	{
 		Context context = getContext();
 		ViewGroup.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-		mValue = getPersistedInt(3600);
+		mValue = getPersistedInt(DEFAULT_VALUE);
 
 		LinearLayout layout = new LinearLayout(context);
 		layout.setOrientation(LinearLayout.VERTICAL);
@@ -89,12 +96,14 @@ public class IdlePreference extends DialogPreference implements SeekBar.OnSeekBa
 	}
 
 	/**
-	 * Update the text view with the current value.
+	 * Format seconds into a human-readable time description.
+	 *
+	 * @param value The time, in seconds.
+	 * @return A human-readable string, such as "1 hour, 21 minutes"
 	 */
-	private void updateText()
+	private String formatTime(int value)
 	{
 		Resources res = getContext().getResources();
-		int value = mValue;
 		StringBuilder text = new StringBuilder();
 		if (value >= 3600) {
 			int hours = value / 3600;
@@ -109,16 +118,27 @@ public class IdlePreference extends DialogPreference implements SeekBar.OnSeekBa
 			int seconds = value - minutes * 60;
 			text.append(res.getQuantityString(R.plurals.seconds, seconds, seconds));
 		}
-		mValueText.setText(text.toString());
+		return text.toString();
+	}
+
+	/**
+	 * Update the text view with the current value.
+	 */
+	private void updateText()
+	{
+		mValueText.setText(formatTime(mValue));
 	}
 
 	@Override
 	protected void onDialogClosed(boolean positiveResult)
 	{
-		if (positiveResult && shouldPersist())
+		if (positiveResult && shouldPersist()) {
 			persistInt(mValue);
+			notifyChanged();
+		}
 	}
 
+	@Override
 	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
 	{
 		// Approximate an exponential curve with x^4. Produces a value from MIN-MAX.
@@ -131,10 +151,12 @@ public class IdlePreference extends DialogPreference implements SeekBar.OnSeekBa
 		}
 	}
 
+	@Override
 	public void onStartTrackingTouch(SeekBar seekBar)
 	{
 	}
 
+	@Override
 	public void onStopTrackingTouch(SeekBar seekBar)
 	{
 	}

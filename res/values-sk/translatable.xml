@@ -86,24 +86,23 @@ THE SOFTWARE.
 
 	<!-- Preferences -->
 	<plurals name="seconds">
-		<item quantity="one">01 sekunda</item>
-		<item quantity="few">%02d sekundy</item>
-		<item quantity="other">%02d sekúnd</item>
+		<item quantity="one">1 sekunda</item>
+		<item quantity="few">%d sekundy</item>
+		<item quantity="other">%d sekúnd</item>
 	</plurals>
 	<plurals name="minutes">
-		<item quantity="one">01 minúta</item>
-		<item quantity="few">%02d minúty</item>
-		<item quantity="other">%02d minút</item>
+		<item quantity="one">1 minúta</item>
+		<item quantity="few">%d minúty</item>
+		<item quantity="other">%d minút</item>
 	</plurals>
 	<plurals name="hours">
-		<item quantity="one">01 hodina</item>
-		<item quantity="few">%02d hodiny</item>
-		<item quantity="other">%02d hodín</item>
+		<item quantity="one">1 hodina</item>
+		<item quantity="few">%d hodiny</item>
+		<item quantity="other">%d hodín</item>
 	</plurals>
 
 	<string name="pref_output">Zvukový výstup</string>
 	<string name="volume_title">Hlasitosť</string>
-	<string name="volume_summary">Hlasitosť hudby</string>
 	<string name="media_button_title">Použiť ovládanie náhlavnej súpravy</string>
 	<string name="media_button_summary">Jedným stlačením prehrať/pozastaviť. Dvojitým stlačením nasledujúca.</string>
 	<string name="headset_only_title">Iba externý výstup</string>
@@ -115,23 +114,16 @@ THE SOFTWARE.
 
 	<string name="pref_notifications">Upozornenia</string>
 	<string name="notification_mode_title">Režim upozornení</string>
-	<string name="notification_mode_summary">Kedy zobraziť upozornenie.</string>
 	<string name="notification_action_title">Akcia upozornenia</string>
-	<string name="notification_action_summary">Čo spraviť keď je na upozornenie ťuknuté.</string>
 	<string name="notification_invert_color_title">Invertovať farbu oznámenia</string>
 	<string name="notification_invert_color_summary">Použije biely text namiesto čierneho.</string>
 
 	<string name="pref_playback_view">Zobrazenie prehrávania</string>
 	<string name="display_mode_title">Režim zobrazenia</string>
-	<string name="display_mode_summary">Vzhľad a pozícia grafiky skladby a informácií.</string>
 	<string name="swipe_up_action_title">Akcia prejedním prstu nahor</string>
-	<string name="swipe_up_action_summary">Čo spraviť, keď prejdete prstom nahor.</string>
 	<string name="swipe_down_action_title">Prejdením prstom nadol</string>
-	<string name="swipe_down_action_summary">Čo spraviť keď prejdete prstom nadol.</string>
 	<string name="cover_press_action_title">Akcia pri ťuknutí na obal</string>
-	<string name="cover_press_action_summary">Čo spraviť, keď ťuknete na obal albumu.</string>
 	<string name="cover_longpress_action_title">Akcia pri podržaní na obale</string>
-	<string name="cover_longpress_action_summary">Čo spraviť, keď ťuknete a podržíte na obal albumu.</string>
 	<string name="disable_cover_art_title">Vypnúť obal albumu</string>
 	<string name="disable_cover_art_summary">Nebude zobrazovať obal albumu nikde v aplikácii.</string>
 
@@ -141,13 +133,11 @@ THE SOFTWARE.
 	<string name="controls_in_selector_title">Ovládanie v knižnici</string>
 	<string name="controls_in_selector_summary">V knižnici zobrazí aktuálne prehrávanú skladbu a ovládanie prehrávania.</string>
 	<string name="default_action_title">Predvolená akcia</string>
-	<string name="default_action_summary">Čo spraviť, keď ťuknete na položku.</string>
 
 	<string name="pref_misc">Ostatné funkcie</string>
 	<string name="use_idle_timeout_title">Povoliť časový limit nečinnosti</string>
 	<string name="use_idle_timeout_summary">Keď je povolené, prehrávanie sa zastaví po danom čase nečinnosti.</string>
 	<string name="idle_timeout_title">Časový limit nečinnosti</string>
-	<string name="idle_timeout_summary">Čas, ktorý musí ubehnúť pred prejdením do nečinnosti.</string>
 	<string name="double_tap_title">Dvojité ťuknutie na miniaplikáciu</string>
 	<string name="double_tap_summary">Dvojité ťuknutie na 1×1 miniaplikáciu otvorí prehrávač. Vytvorí oneskorenie 0,4 sekúnd pred tým, ako miniaplikácia reaguje na akciu.</string>
 	<string name="scrobble_title">Použiť ScrobbleDroid API</string>
