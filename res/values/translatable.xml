@@ -74,17 +74,19 @@ THE SOFTWARE.
 		<item quantity="one">1 song added to playlist %2$s.</item>
 		<item quantity="other">%1$d songs added to playlist %2$s.</item>
 	</plurals>
-	<string name="playlist_deleted">Playlist %s deleted.</string>
+	<string name="deleted">%s deleted.</string>
 	<plurals name="deleted">
 		<item quantity="one">1 song deleted.</item>
 		<item quantity="other">%d songs deleted.</item>
 	</plurals>
+	<string name="delete_file_failed">Failed to delete %s.</string>
 
 	<string name="artists">Artists</string>
 	<string name="albums">Albums</string>
 	<string name="songs">Songs</string>
 	<string name="playlists">Playlists</string>
 	<string name="genres">Genres</string>
+	<string name="files">Files</string>
 
 	<string name="none">None</string>
 	<string name="unknown">Unknown</string>

@@ -24,14 +24,19 @@ package org.kreed.vanilla;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.provider.MediaStore;
+import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import junit.framework.Assert;
 
+/**
+ * Provides some static Song/MediaStore-related utility functions.
+ */
 public class MediaUtils {
 	/**
 	 * A special invalid media type.
@@ -57,6 +62,11 @@ public class MediaUtils {
 	 * Type indicating ids represent genres.
 	 */
 	public static final int TYPE_GENRE = 5;
+	/**
+	 * Special type for files and folders. Most methods do not accept this type
+	 * since files have no MediaStore id and require special handling.
+	 */
+	public static final int TYPE_FILE = 6;
 
 	/**
 	 * The default sort order for media queries. First artist, then album, then
@@ -487,5 +497,43 @@ public class MediaUtils {
 		++sAllSongsIdx;
 
 		return result;
+	}
+
+	/**
+	 * Delete the given file or directory recursively.
+	 *
+	 * @return True if successful; false otherwise.
+	 */
+	public static boolean deleteFile(File file)
+	{
+		File[] children = file.listFiles();
+		if (children != null) {
+			for (File child : children) {
+				deleteFile(child);
+			}
+		}
+		return file.delete();
+	}
+
+	/**
+	 * Build a query that will contain all the media under the given path.
+	 *
+	 * @param path The path, e.g. /mnt/sdcard/music/
+	 * @param projection The columns to query
+	 * @return The initialized query.
+	 */
+	public static QueryTask buildFileQuery(String path, String[] projection)
+	{
+		// It would be better to use selectionArgs to pass path here, but there
+		// doesn't appear to be any way to pass the * when using it.
+		StringBuilder selection = new StringBuilder();
+		selection.append("_data GLOB ");
+		DatabaseUtils.appendEscapedSQLString(selection, path);
+		 // delete the quotation mark added by the escape method
+		selection.deleteCharAt(selection.length() - 1);
+		selection.append("*' AND is_music!=0");
+
+		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+		return new QueryTask(media, projection, selection.toString(), null, DEFAULT_SORT);
 	}
 }

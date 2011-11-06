@@ -266,6 +266,14 @@ public final class MediaView extends View {
 	}
 
 	/**
+	 * Returns true if the view has a right bitmap that is visible.
+	 */
+	public boolean hasRightBitmap()
+	{
+		return mRightBitmap != null && mShowBitmaps;
+	}
+
+	/**
 	 * Returns true if the right bitmap was pressed in the last touch event.
 	 */
 	public boolean isRightBitmapPressed()
@@ -302,6 +310,19 @@ public final class MediaView extends View {
 		mTitle = cursor.getString(1);
 		if (useSecondary)
 			mSubTitle = cursor.getString(2);
+		invalidate();
+	}
+
+	/**
+	 * Set the id and title in this view.
+	 *
+	 * @param id The new id.
+	 * @param title The new title for the view.
+	 */
+	public void setData(long id, String title)
+	{
+		mId = id;
+		mTitle = title;
 		invalidate();
 	}
 

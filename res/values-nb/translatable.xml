@@ -62,7 +62,6 @@ THE SOFTWARE.
 		<item quantity="one">1 låt lagt til spilleliste %2$s.</item>
 		<item quantity="other">%1$d låter lagt til spilleliste %2$s.</item>
 	</plurals>
-	<string name="playlist_deleted">Spilleliste %s slettet.</string>
 	<plurals name="deleted">
 		<item quantity="one">1 låt slettet.</item>
 		<item quantity="other">%d låter slettet.</item>

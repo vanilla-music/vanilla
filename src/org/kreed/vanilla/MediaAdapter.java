@@ -32,7 +32,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.SectionIndexer;
-import java.io.Serializable;
 import java.util.regex.Pattern;
 
 /**
@@ -46,7 +45,7 @@ import java.util.regex.Pattern;
  * to a specific group to be displayed, e.g. only songs from a certain artist.
  * See getLimiter and setLimiter for details.
  */
-public class MediaAdapter extends CursorAdapter implements SectionIndexer {
+public class MediaAdapter extends CursorAdapter implements SectionIndexer, LibraryAdapter {
 	private static final Pattern SPACE_SPLIT = Pattern.compile("\\s+");
 
 	/**
@@ -110,10 +109,6 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	 */
 	private String mSongSort;
 	/**
-	 * True if the data is stale and the query should be re-run.
-	 */
-	private boolean mNeedsRequery;
-	/**
 	 * The human-readable descriptions for each sort mode.
 	 */
 	private int[] mSortEntries;
@@ -152,7 +147,6 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 		mHasHeader = hasHeader;
 		mLimiter = limiter;
 		mIndexer = new MusicAlphabetIndexer(1);
-		mNeedsRequery = true;
 
 		switch (type) {
 		case MediaUtils.TYPE_ARTIST:
@@ -272,31 +266,7 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 		notifyDataSetChanged();
 	}
 
-	/**
-	 * Returns true if the data is stale and should be requeried.
-	 */
-	public boolean isRequeryNeeded()
-	{
-		return mNeedsRequery;
-	}
-
-	/**
-	 * Mark the current data as requiring a requery.
-	 */
-	public void requestRequery()
-	{
-		mNeedsRequery = true;
-	}
-
-	/**
-	 * Set a new filter.
-	 *
-	 * The data should be requeried after calling this.
-	 *
-	 * @param filter The terms to filter on, separated by spaces. Only
-	 * media that contain all of the terms (in any order) will be displayed
-	 * after filtering is complete.
-	 */
+	@Override
 	public void setFilter(String filter)
 	{
 		mConstraint = filter;
@@ -373,26 +343,28 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 		if (limiter != null && limiter.type == MediaUtils.TYPE_GENRE) {
 			// Genre is not standard metadata for MediaStore.Audio.Media.
 			// We have to query it through a separate provider. : /
-			return MediaUtils.buildGenreQuery(limiter.id, projection,  selection.toString(), selectionArgs, sort);
+			return MediaUtils.buildGenreQuery((Long)limiter.data, projection,  selection.toString(), selectionArgs, sort);
 		} else {
 			if (limiter != null) {
 				if (selection.length() != 0)
 					selection.append(" AND ");
-				selection.append(limiter.selection);
+				selection.append(limiter.data);
 			}
 
 			return new QueryTask(mStore, projection, selection.toString(), selectionArgs, sort);
 		}
 	}
 
-	/**
-	 * Build a query to populate the adapter with. The result should be set with
-	 * changeCursor().
-	 */
-	public QueryTask buildQuery()
+	@Override
+	public Object query()
 	{
-		mNeedsRequery = false;
-		return buildQuery(mProjection, false);
+		return buildQuery(mProjection, false).runQuery(mContext.getContentResolver());
+	}
+
+	@Override
+	public void commitQuery(Object data)
+	{
+		changeCursor((Cursor)data);
 	}
 
 	/**
@@ -413,50 +385,35 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 		return query;
 	}
 
-	/**
-	 * Return the type of media represented by this adapter. One of
-	 * MediaUtils.TYPE_*.
-	 */
+	@Override
+	public void clear()
+	{
+		changeCursor(null);
+	}
+
+	@Override
 	public int getMediaType()
 	{
 		return mType;
 	}
 
-	/**
-	 * Set the limiter for the adapter.
-	 *
-	 * A limiter is intended to restrict displayed media to only those that are
-	 * children of a given parent media item.
-	 *
-	 * The data should be requeried after calling this.
-	 *
-	 * @param limiter The limiter, created by {@link MediaAdapter#getLimiter(long)}.
-	 */
-	public final void setLimiter(Limiter limiter)
+	@Override
+	public void setLimiter(Limiter limiter)
 	{
 		mLimiter = limiter;
 	}
 
-	/**
-	 * Returns the limiter currently active on this adapter or null if none are
-	 * active.
-	 */
-	public final Limiter getLimiter()
+	@Override
+	public Limiter getLimiter()
 	{
 		return mLimiter;
 	}
 
-	/**
-	 * Builds a limiter based off of the media represented by the given row.
-	 *
-	 * @param id The id of the row.
-	 * @see MediaAdapter#getLimiter()
-	 * @see MediaAdapter#setLimiter(MediaAdapter.Limiter)
-	 */
-	public Limiter getLimiter(long id)
+	@Override
+	public Limiter buildLimiter(long id)
 	{
 		String[] fields;
-		String selection = null;
+		Object data;
 
 		Cursor cursor = getCursor();
 		if (cursor == null)
@@ -468,26 +425,23 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 		}
 
 		switch (mType) {
-		case MediaUtils.TYPE_ARTIST: {
+		case MediaUtils.TYPE_ARTIST:
 			fields = new String[] { cursor.getString(1) };
-			String field = MediaStore.Audio.Media.ARTIST_ID;
-			selection = String.format("%s=%d", field, id);
+			data = String.format("%s=%d", MediaStore.Audio.Media.ARTIST_ID, id);
 			break;
-		}
-		case MediaUtils.TYPE_ALBUM: {
+		case MediaUtils.TYPE_ALBUM:
 			fields = new String[] { cursor.getString(2), cursor.getString(1) };
-			String field = MediaStore.Audio.Media.ALBUM_ID;
-			selection = String.format("%s=%d", field, id);
+			data = String.format("%s=%d",  MediaStore.Audio.Media.ALBUM_ID, id);
 			break;
-		}
 		case MediaUtils.TYPE_GENRE:
 			fields = new String[] { cursor.getString(1) };
+			data = id;
 			break;
 		default:
 			throw new IllegalStateException("getLimiter() is not supported for media type: " + mType);
 		}
 
-		return new MediaAdapter.Limiter(id, mType, selection, fields);
+		return new Limiter(mType, fields, data);
 	}
 
 	@Override
@@ -597,25 +551,5 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer {
 	public int getSortMode()
 	{
 		return mSortMode;
-	}
-
-	/**
-	 * Limiter is a constraint for MediaAdapters used when a row is "expanded".
-	 */
-	public static class Limiter implements Serializable {
-		private static final long serialVersionUID = -4729694243900202614L;
-
-		public final String[] names;
-		public final long id;
-		public final int type;
-		public final String selection;
-
-		public Limiter(long id, int type, String selection, String[] names)
-		{
-			this.type = type;
-			this.names = names;
-			this.id = id;
-			this.selection = selection;
-		}
 	}
 }

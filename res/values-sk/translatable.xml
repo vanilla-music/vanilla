@@ -65,7 +65,6 @@ THE SOFTWARE.
 		<item quantity="few">%1$d skladby pridané do zoznamu skladieb %2$s.</item>
 		<item quantity="other">%1$d skladieb pridaných do zoznamu skladieb %2$s.</item>
 	</plurals>
-	<string name="playlist_deleted">Zoznam skladieb %s odstránený.</string>
 	<plurals name="deleted">
 		<item quantity="one">1 skladba odstránená.</item>
 		<item quantity="few">%d skladby odstránené.</item>

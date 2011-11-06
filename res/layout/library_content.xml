@@ -65,12 +65,21 @@ THE SOFTWARE.
 				android:visibility="gone"
 				android:layout_width="fill_parent"
 				android:layout_height="fill_parent" />
+			<ListView
+				android:id="@+id/file_list"
+				android:visibility="gone"
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent" />
 		</FrameLayout>
-		<LinearLayout
-			android:id="@+id/limiter_layout"
-			android:layout_width="wrap_content"
+		<HorizontalScrollView
+		    android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
-			android:layout_gravity="bottom|left" />
+			android:layout_gravity="bottom|left">
+		    <LinearLayout
+				android:id="@+id/limiter_layout"
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent" />
+		</HorizontalScrollView>
 		<LinearLayout
 			android:id="@+id/search_box"
 			android:layout_width="fill_parent"
