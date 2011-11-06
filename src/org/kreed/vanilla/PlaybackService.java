@@ -1149,7 +1149,13 @@ public final class PlaybackService extends Service
 	 */
 	public void runQuery(int mode, QueryTask query, int jumpTo)
 	{
-		int count = mTimeline.addSongs(mode, query.runQuery(getContentResolver()), jumpTo, query.getExtra());
+		Cursor cursor = query.runQuery(getContentResolver());
+		if (cursor == null) {
+			return;
+		}
+
+		int count = mTimeline.addSongs(mode, cursor, jumpTo, query.getExtra());
+		cursor.close();
 
 		int text;
 

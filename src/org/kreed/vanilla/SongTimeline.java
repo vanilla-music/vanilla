@@ -614,8 +614,6 @@ public final class SongTimeline {
 			broadcastChangedSongs();
 		}
 
-		cursor.close();
-
 		changed();
 
 		return count;
