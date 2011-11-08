@@ -77,7 +77,7 @@ THE SOFTWARE.
 			android:layout_gravity="bottom|left">
 		    <LinearLayout
 				android:id="@+id/limiter_layout"
-				android:layout_width="fill_parent"
+				android:layout_width="wrap_content"
 				android:layout_height="fill_parent" />
 		</HorizontalScrollView>
 		<LinearLayout

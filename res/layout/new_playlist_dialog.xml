@@ -26,6 +26,7 @@ THE SOFTWARE.
 	android:layout_height="wrap_content">
 	<EditText
 		android:id="@+id/playlist_name"
+		android:inputType="text"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:singleLine="true"

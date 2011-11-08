@@ -57,8 +57,7 @@ THE SOFTWARE.
 				android:layout_width="wrap_content"
 				android:gravity="bottom"
 				android:textSize="10sp"
-				android:paddingLeft="5dip"
-				android:text="00:00" />
+				android:paddingLeft="5dip" />
 			<TextView
 				android:id="@+id/album"
 				android:ellipsize="marquee"
@@ -75,8 +74,7 @@ THE SOFTWARE.
 				android:layout_width="wrap_content"
 				android:gravity="bottom"
 				android:textSize="10sp"
-				android:paddingRight="5dip"
-				android:text="00:00" />
+				android:paddingRight="5dip" />
 		</LinearLayout>
 		<SeekBar
 			android:id="@+id/seek_bar"
