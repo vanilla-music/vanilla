@@ -216,7 +216,6 @@ public final class CoverBitmap {
 			int y = (bitmapHeight - coverHeight) / 2;
 			Rect rect = new Rect(x, y, x + coverWidth, y + coverHeight);
 			canvas.drawBitmap(cover, null, rect, paint);
-			cover.recycle();
 		}
 
 		int left = (bitmapWidth - boxWidth) / 2;
@@ -313,7 +312,6 @@ public final class CoverBitmap {
 			int y = horizontal ? (bitmapHeight - coverHeight) / 2 : 0;
 			Rect rect = new Rect(x, y, x + coverWidth, y + coverHeight);
 			canvas.drawBitmap(cover, null, rect, paint);
-			cover.recycle();
 		}
 
 		int top;
@@ -382,7 +380,6 @@ public final class CoverBitmap {
 		Rect src = new Rect(xOffset, yOffset, sourceWidth - xOffset, sourceHeight - yOffset);
 		Rect dest = new Rect(0, 0, width, height);
 		canvas.drawBitmap(source, src, dest, null);
-		source.recycle();
 
 		return bitmap;
 	}
@@ -409,9 +406,7 @@ public final class CoverBitmap {
 		float scale = Math.min((float)width / sourceWidth, (float)height / sourceHeight);
 		sourceWidth *= scale;
 		sourceHeight *= scale;
-		Bitmap result = Bitmap.createScaledBitmap(source, sourceWidth, sourceHeight, false);
-		source.recycle();
-		return result;
+		return Bitmap.createScaledBitmap(source, sourceWidth, sourceHeight, false);
 	}
 
 	/**

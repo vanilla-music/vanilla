@@ -29,7 +29,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
+import android.graphics.Bitmap;
 import android.widget.RemoteViews;
 
 /**
@@ -108,18 +108,18 @@ public class OneCellWidget extends AppWidgetProvider {
 		views.setOnClickPendingIntent(R.id.next, PendingIntent.getService(context, 0, next, 0));
 
 		if ((state & PlaybackService.FLAG_NO_MEDIA) != 0) {
-			views.setImageViewResource(R.id.cover, 0);
 			views.setInt(R.id.title, "setText", R.string.no_songs);
-		} else if (song == null) {
 			views.setImageViewResource(R.id.cover, 0);
+		} else if (song == null) {
 			views.setInt(R.id.title, "setText", R.string.app_name);
+			views.setImageViewResource(R.id.cover, 0);
 		} else {
-			Uri uri = song.getCoverUri();
-			if (uri == null)
+			views.setTextViewText(R.id.title, song.title);
+			Bitmap cover = song.getCover(context);
+			if (cover == null)
 				views.setImageViewResource(R.id.cover, 0);
 			else
-				views.setImageViewUri(R.id.cover, uri);
-			views.setTextViewText(R.id.title, song.title);
+				views.setImageViewBitmap(R.id.cover, cover);
 		}
 
 		manager.updateAppWidget(new ComponentName(context, OneCellWidget.class), views);

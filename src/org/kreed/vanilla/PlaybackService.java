@@ -36,6 +36,7 @@ import android.content.res.TypedArray;
 import android.content.SharedPreferences;
 import android.database.ContentObserver;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -1437,10 +1438,11 @@ public final class PlaybackService extends Service
 
 		RemoteViews views = new RemoteViews(getPackageName(), R.layout.notification);
 
-		if (!Song.mDisableCoverArt && song.hasCover(this)) {
-			views.setImageViewUri(R.id.icon, song.getCoverUri());
-		} else {
+		Bitmap cover = song.getCover(this);
+		if (cover == null) {
 			views.setImageViewResource(R.id.icon, R.drawable.icon);
+		} else {
+			views.setImageViewBitmap(R.id.icon, cover);
 		}
 		if (playing) {
 			views.setTextViewText(R.id.title, song.title);

@@ -32,7 +32,6 @@ import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.util.Log;
 import java.io.FileDescriptor;
-import java.io.FileNotFoundException;
 
 /**
  * Represents a Song backed by the MediaStore. Includes basic metadata and
@@ -79,6 +78,11 @@ public class Song implements Comparable<Song> {
 		MediaStore.Audio.Playlists.Members.DURATION,
 		MediaStore.Audio.Playlists.Members.TRACK,
 	};
+
+	/**
+	 * A cache of 8 covers.
+	 */
+	private static final Cache<Bitmap> sCoverCache = new Cache<Bitmap>(8);
 
 	/**
 	 * If true, will not attempt to load any cover art in getCover()
@@ -131,9 +135,10 @@ public class Song implements Comparable<Song> {
 	public int flags;
 
 	/**
-	 * 1 if this song has cover art in the MediaStore, 0 if not, -1 if uninitialized.
+	 * If true, this song has no cover art. If false, this song may or may not
+	 * have cover art.
 	 */
-	public int hasCover = -1;
+	public boolean noCover;
 
 	/**
 	 * Initialize the song with the specified id. Call populate to fill fields
@@ -193,42 +198,6 @@ public class Song implements Comparable<Song> {
 		return song.id;
 	}
 
-	/**
-	 * Returns true if this song has cover art stored in the MediaStore.
-	 *
-	 * @param context A context to use to query the MediaStore
-	 */
-	public boolean hasCover(Context context)
-	{
-		if (hasCover == -1) {
-			Uri uri = getCoverUri();
-			if (uri == null) {
-				hasCover = 0;
-			} else {
-				try {
-					hasCover = context.getContentResolver().openFileDescriptor(uri, "r") == null ? 0 : 1;
-				} catch (FileNotFoundException e) {
-					hasCover = 0;
-				}
-			}
-		}
-		return hasCover == 1;
-	}
-
-	/**
-	 * Return a URI describing where the cover art is stored, or null if this
-	 * song has not been populated.
-	 */
-	public Uri getCoverUri()
-	{
-		// Use undocumented API to extract the cover from the media file from Eclair
-		// See http://android.git.kernel.org/?p=platform/packages/apps/Music.git;a=blob;f=src/com/android/music/MusicUtils.java;h=d1aea0660009940a0160cb981f381e2115768845;hb=0749a3f1c11e052f97a3ba60fd624c9283ee7331#l986
-
-		if (id == -1 || hasCover == 0 || mDisableCoverArt)
-			return null;
-		return Uri.parse("content://media/external/audio/media/" + id + "/albumart");
-	}
-
 	private static final BitmapFactory.Options BITMAP_OPTIONS = new BitmapFactory.Options();
 
 	static {
@@ -244,23 +213,34 @@ public class Song implements Comparable<Song> {
 	 */
 	public Bitmap getCover(Context context)
 	{
-		Uri uri = getCoverUri();
-		if (uri == null)
+		if (mDisableCoverArt || id == -1 || noCover)
 			return null;
 
+		Bitmap cover = sCoverCache.get(id);
+		if (cover != null) {
+			return cover;
+		}
+
+		Uri uri =  Uri.parse("content://media/external/audio/media/" + id + "/albumart");
 		ContentResolver res = context.getContentResolver();
-		hasCover = 0;
 		try {
 			ParcelFileDescriptor parcelFileDescriptor = res.openFileDescriptor(uri, "r");
 			if (parcelFileDescriptor != null) {
-				hasCover = 1;
 				FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-				return BitmapFactory.decodeFileDescriptor(fileDescriptor, null, BITMAP_OPTIONS);
+				cover = BitmapFactory.decodeFileDescriptor(fileDescriptor, null, BITMAP_OPTIONS);
+				if (cover != null) {
+					Bitmap discarded = sCoverCache.discardOldest();
+					if (discarded != null)
+						discarded.recycle();
+					sCoverCache.put(id, cover);
+					return cover;
+				}
 			}
 		} catch (Exception e) {
 			Log.d("VanillaMusic", "Failed to load cover art for " + path, e);
 		}
 
+		noCover = true;
 		return null;
 	}
 

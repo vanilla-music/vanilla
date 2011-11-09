@@ -31,6 +31,7 @@ import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.net.Uri;
@@ -1073,7 +1074,7 @@ public class LibraryActivity
 		super.onSongChange(song);
 
 		if (mTitle != null) {
-			Uri cover = null;
+			Bitmap cover = null;
 
 			if (song == null) {
 				mTitle.setText(R.string.none);
@@ -1084,7 +1085,7 @@ public class LibraryActivity
 				String artist = song.artist == null ? res.getString(R.string.unknown) : song.artist;
 				mTitle.setText(title);
 				mArtist.setText(artist);
-				cover = song.hasCover(this) ? song.getCoverUri() : null;
+				cover = song.getCover(this);
 			}
 
 			if (Song.mDisableCoverArt)
@@ -1092,7 +1093,7 @@ public class LibraryActivity
 			else if (cover == null)
 				mCover.setImageResource(R.drawable.albumart_mp_unknown_list);
 			else
-				mCover.setImageURI(cover);
+				mCover.setImageBitmap(cover);
 		}
 	}
 
