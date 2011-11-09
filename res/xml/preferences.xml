@@ -121,6 +121,12 @@ THE SOFTWARE.
 			android:entries="@array/default_action_entries"
 			android:entryValues="@array/entry_values"
 			android:defaultValue="0" />
+		<org.kreed.vanilla.ListPreferenceSummary
+			android:key="default_playlist_action"
+			android:title="@string/default_playlist_action_title"
+			android:entries="@array/default_action_entries"
+			android:entryValues="@array/entry_values"
+			android:defaultValue="3" />
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/pref_misc">
 		<CheckBoxPreference

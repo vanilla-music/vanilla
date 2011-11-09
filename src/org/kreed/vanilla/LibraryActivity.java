@@ -30,8 +30,8 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.net.Uri;
@@ -76,11 +76,11 @@ public class LibraryActivity
 	         , DialogInterface.OnClickListener
 	         , DialogInterface.OnDismissListener
 {
-	private static final int ACTION_PLAY = 0;
-	private static final int ACTION_ENQUEUE = 1;
-	private static final int ACTION_LAST_USED = 2;
-	private static final int ACTION_PLAY_ALL = 3;
-	private static final int ACTION_ENQUEUE_ALL = 4;
+	public static final int ACTION_PLAY = 0;
+	public static final int ACTION_ENQUEUE = 1;
+	public static final int ACTION_LAST_USED = 2;
+	public static final int ACTION_PLAY_ALL = 3;
+	public static final int ACTION_ENQUEUE_ALL = 4;
 	private static final int[] modeForAction =
 		{ SongTimeline.MODE_PLAY, SongTimeline.MODE_ENQUEUE, -1,
 		  SongTimeline.MODE_PLAY_ID_FIRST, SongTimeline.MODE_ENQUEUE_ID_FIRST };

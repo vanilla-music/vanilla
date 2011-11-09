@@ -140,6 +140,16 @@ public final class SongTimeline {
 	 * @see SongTimeline#addSongs(int, android.database.Cursor, int, long)
 	 */
 	public static final int MODE_ENQUEUE_ID_FIRST = 5;
+	/**
+	 * Like enqueue mode, but make the song at the given position play first by
+	 * removing the songs before the given position in the query and appending
+	 * them to the end of the queue.
+	 *
+	 * Pass the position in the integer argument.
+	 *
+	 * @see SongTimeline#addSongs(int, android.database.Cursor, int, long)
+	 */
+	public static final int MODE_ENQUEUE_POS_FIRST = 6;
 
 	/**
 	 * Disable shuffle.
@@ -558,6 +568,7 @@ public final class SongTimeline {
 
 			switch (mode) {
 			case MODE_ENQUEUE:
+			case MODE_ENQUEUE_POS_FIRST:
 			case MODE_ENQUEUE_ID_FIRST: {
 				int j = timeline.size();
 				while (--j > mCurrentPos) {
@@ -589,7 +600,7 @@ public final class SongTimeline {
 				timeline.add(song);
 
 				if (jumpSong == null) {
-					if (mode == MODE_PLAY_POS_FIRST && j == i) {
+					if ((mode == MODE_PLAY_POS_FIRST || mode == MODE_ENQUEUE_POS_FIRST) && j == i) {
 						jumpSong = song;
 					} else if (mode == MODE_PLAY_ID_FIRST || mode == MODE_ENQUEUE_ID_FIRST) {
 						long id;

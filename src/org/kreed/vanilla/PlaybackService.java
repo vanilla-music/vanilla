@@ -32,8 +32,8 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.TypedArray;
 import android.content.SharedPreferences;
+import android.content.res.TypedArray;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -1187,6 +1187,7 @@ public final class PlaybackService extends Service
 		case SongTimeline.MODE_PLAY_NEXT:
 		case SongTimeline.MODE_ENQUEUE:
 		case SongTimeline.MODE_ENQUEUE_ID_FIRST:
+		case SongTimeline.MODE_ENQUEUE_POS_FIRST:
 			text = R.plurals.enqueued;
 			break;
 		default:

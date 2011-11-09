@@ -111,6 +111,7 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 	{
 		MediaView mediaView = (MediaView)view;
 		mediaView.updateMedia(cursor, true);
+		mediaView.setTag(cursor.getLong(3));
 		mediaView.setShowBitmaps(mEditable);
 	}
 

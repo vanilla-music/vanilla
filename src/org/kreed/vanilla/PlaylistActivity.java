@@ -26,11 +26,14 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.HandlerThread;
 import android.os.Looper;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -44,13 +47,43 @@ public class PlaylistActivity extends Activity
 	         , AbsListView.OnItemClickListener
 	         , DialogInterface.OnClickListener
 {
+	/**
+	 * The SongTimeline play mode corresponding to each
+	 * LibraryActivity.ACTION_*
+	 */
+	private static final int[] MODE_FOR_ACTION =
+		{ SongTimeline.MODE_PLAY, SongTimeline.MODE_ENQUEUE, -1,
+		  SongTimeline.MODE_PLAY_POS_FIRST, SongTimeline.MODE_ENQUEUE_POS_FIRST };
+
+	/**
+	 * An event loop running on a worker thread.
+	 */
 	private Looper mLooper;
 	private DragListView mListView;
 	private PlaylistAdapter mAdapter;
 
+	/**
+	 * The id of the playlist this activity is currently viewing.
+	 */
 	private long mPlaylistId;
+	/**
+	 * The name of the playlist this activity is currently viewing.
+	 */
 	private String mPlaylistName;
+	/**
+	 * If true, then playlists songs can be dragged to reorder.
+	 */
 	private boolean mEditing;
+
+	/**
+	 * The item click action specified in the preferences.
+	 */
+	private int mDefaultAction;
+	/**
+	 * The last action used from the context menu, used to implement
+	 * LAST_USED_ACTION action.
+	 */
+	private int mLastAction = LibraryActivity.ACTION_PLAY;
 
 	private Button mEditButton;
 	private Button mDeleteButton;
@@ -72,6 +105,7 @@ public class PlaylistActivity extends Activity
 		view.setDivider(null);
 		view.setFastScrollEnabled(true);
 		view.setOnItemClickListener(this);
+		view.setOnCreateContextMenuListener(this);
 		mListView = view;
 
 		View header = LayoutInflater.from(this).inflate(R.layout.playlist_buttons, null);
@@ -86,6 +120,14 @@ public class PlaylistActivity extends Activity
 		view.setAdapter(mAdapter);
 
 		onNewIntent(getIntent());
+	}
+
+	@Override
+	public void onStart()
+	{
+		super.onStart();
+		SharedPreferences settings = PlaybackService.getSettings(this);
+		mDefaultAction = Integer.parseInt(settings.getString("default_playlist_action", "0"));
 	}
 
 	@Override
@@ -141,6 +183,74 @@ public class PlaylistActivity extends Activity
 		}
 	}
 
+	private static final int MENU_PLAY = LibraryActivity.ACTION_PLAY;
+	private static final int MENU_PLAY_ALL = LibraryActivity.ACTION_PLAY_ALL;
+	private static final int MENU_ENQUEUE = LibraryActivity.ACTION_ENQUEUE;
+	private static final int MENU_ENQUEUE_ALL = LibraryActivity.ACTION_ENQUEUE_ALL;
+	private static final int MENU_REMOVE = -1;
+
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View listView, ContextMenu.ContextMenuInfo absInfo)
+	{
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)absInfo;
+		Intent intent = new Intent();
+		intent.putExtra("id", info.id);
+		intent.putExtra("position", info.position);
+		intent.putExtra("audioId", (Long)((MediaView)info.targetView).getTag());
+
+		menu.add(0, MENU_PLAY, 0, R.string.play).setIntent(intent);
+		menu.add(0, MENU_PLAY_ALL, 0, R.string.play_all).setIntent(intent);
+		menu.add(0, MENU_ENQUEUE, 0, R.string.enqueue).setIntent(intent);
+		menu.add(0, MENU_ENQUEUE_ALL, 0, R.string.enqueue_all).setIntent(intent);
+		menu.add(0, MENU_REMOVE, 0, R.string.remove).setIntent(intent);
+	}
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item)
+	{
+		int itemId = item.getItemId();
+		Intent intent = item.getIntent();
+
+		if (itemId == MENU_REMOVE) {
+			mAdapter.remove(intent.getLongExtra("id", -1));
+		} else {
+			performAction(itemId, intent.getIntExtra("position", -1), intent.getLongExtra("audioId", -1));
+		}
+
+		return true;
+	}
+
+	/**
+	 * Perform the specified action on the adapter row with the given id and
+	 * position.
+	 *
+	 * @param action One of LibraryActivity.ACTION_*.
+	 * @param position The position in the adapter.
+	 * @param audioId The id of the selected song, for PLAY/ENQUEUE.
+	 */
+	private void performAction(int action, int position, long audioId)
+	{
+		if (action == LibraryActivity.ACTION_LAST_USED)
+			action = mLastAction;
+
+		switch (action) {
+		case LibraryActivity.ACTION_PLAY:
+		case LibraryActivity.ACTION_ENQUEUE: {
+			QueryTask query = MediaUtils.buildMediaQuery(MediaUtils.TYPE_SONG, audioId, Song.FILLED_PROJECTION, null);
+			PlaybackService.get(this).addSongs(MODE_FOR_ACTION[action], query, 0);
+			break;
+		}
+		case LibraryActivity.ACTION_PLAY_ALL:
+		case LibraryActivity.ACTION_ENQUEUE_ALL: {
+			QueryTask query = MediaUtils.buildPlaylistQuery(mPlaylistId, Song.FILLED_PLAYLIST_PROJECTION, null);
+			PlaybackService.get(this).addSongs(MODE_FOR_ACTION[action], query, position - mListView.getHeaderViewsCount());
+			break;
+		}
+		}
+
+		mLastAction = action;
+	}
+
 	@Override
 	public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
 	{
@@ -149,8 +259,7 @@ public class PlaylistActivity extends Activity
 			if (mediaView.isRightBitmapPressed()) {
 				mAdapter.remove(id);
 			} else if (!mEditing) {
-				QueryTask query = MediaUtils.buildPlaylistQuery(mPlaylistId, Song.FILLED_PLAYLIST_PROJECTION, null);
-				PlaybackService.get(this).addSongs(SongTimeline.MODE_PLAY_POS_FIRST, query, position - mListView.getHeaderViewsCount());
+				performAction(mDefaultAction, position, (Long)mediaView.getTag());
 			}
 		}
 	}
