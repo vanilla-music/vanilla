@@ -33,8 +33,8 @@ import android.view.View;
 import android.widget.RemoteViews;
 
 /**
- * 2x2 widget that shows title, artist, a (hidden) play/pause button, a (hidden)
- * next button, and cover art in the background.
+ * 2x2 widget that shows cover art in the background and playback controls in
+ * a semi-transparent widget on top of the cover.
  */
 public class WidgetD extends AppWidgetProvider {
 	private static boolean sEnabled;

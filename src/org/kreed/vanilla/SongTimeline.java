@@ -38,9 +38,8 @@ import java.util.ListIterator;
 import junit.framework.Assert;
 
 /**
- * Represents a series of songs that can be moved through backward or forward.
- * Automatically handles the fetching of new (random) songs when a song does not
- * exist at a requested position.
+ * Contains the list of currently playing songs, implements repeat and shuffle
+ * support, and contains methods to fetch more songs from the MediaStore.
  */
 public final class SongTimeline {
 	/**
@@ -50,7 +49,7 @@ public final class SongTimeline {
 	 */
 	public static final int FINISH_STOP = 0;
 	/**
-	 * Repeat from the begining.
+	 * Repeat from the beginning.
 	 *
 	 * @see SongTimeline#setFinishAction(int)
 	 */
@@ -206,6 +205,9 @@ public final class SongTimeline {
 	private Song mSavedCurrent;
 	private Song mSavedNext;
 
+	/**
+	 * Interface to respond to timeline changes.
+	 */
 	public interface Callback {
 		/**
 		 * Called when an active song in the timeline is replaced by a method
