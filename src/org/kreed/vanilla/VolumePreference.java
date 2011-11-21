@@ -26,9 +26,11 @@ import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 /**
  * A preference that provides a volume slider dialog.
@@ -38,6 +40,10 @@ import android.widget.SeekBar;
  */
 public class VolumePreference extends DialogPreference implements SeekBar.OnSeekBarChangeListener {
 	private static final float DEFAULT_VALUE = 1.0f;
+	/**
+	 * The view to display the current volume percentage.
+	 */
+	private TextView mPercent;
 
 	public VolumePreference(Context context, AttributeSet attrs)
 	{
@@ -56,15 +62,32 @@ public class VolumePreference extends DialogPreference implements SeekBar.OnSeek
 		// setting is applied instantly; no way to cancel
 		builder.setNegativeButton(null, null);
 
-		ViewGroup.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+		Context context = getContext();
 
-		SeekBar seekBar = new SeekBar(getContext());
-		seekBar.setPadding(20, 20, 20, 20);
-		seekBar.setLayoutParams(params);
-		seekBar.setMax(100);
+		LinearLayout layout = new LinearLayout(context);
+		layout.setOrientation(LinearLayout.VERTICAL);
+
+		TextView percent = new TextView(context);
+		percent.setText(getSummary());
+		percent.setGravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT);
+		percent.setPadding(10, 0, 10, 0);
+		layout.addView(percent);
+		mPercent = percent;
+
+		SeekBar seekBar = new SeekBar(context);
+		seekBar.setPadding(20, 10, 20, 10);
+		seekBar.setMax(150);
 		seekBar.setProgress((int)(Math.pow(getPersistedFloat(DEFAULT_VALUE), 0.33f) * 100));
 		seekBar.setOnSeekBarChangeListener(this);
-		builder.setView(seekBar);
+		layout.addView(seekBar);
+
+		TextView message = new TextView(context);
+		message.setText(R.string.volume_warning);
+		message.setGravity(Gravity.CENTER_VERTICAL);
+		message.setPadding(10, 0, 10, 0);
+		layout.addView(message);
+
+		builder.setView(layout);
 	}
 
 	@Override
@@ -73,6 +96,7 @@ public class VolumePreference extends DialogPreference implements SeekBar.OnSeek
 		// Approximate an exponential curve with x^3. Produces a value from 0.0 - 1.0.
 		if (fromUser && shouldPersist()) {
 			persistFloat((float)Math.pow(seekBar.getProgress() / 100.0f, 3));
+			mPercent.setText(getSummary());
 		}
 	}
 

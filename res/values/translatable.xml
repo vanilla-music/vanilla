@@ -111,6 +111,8 @@ THE SOFTWARE.
 	<string name="notification_title_paused">%s (Paused)</string>
 
 	<!-- Preferences -->
+	<string name="volume_warning">Note: volume does not increase past 100% on some devices</string>
+
 	<plurals name="seconds">
 		<item quantity="one">1 second</item>
 		<item quantity="other">%d seconds</item>
