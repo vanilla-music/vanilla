@@ -27,7 +27,6 @@ import android.content.Context;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
 import android.view.Gravity;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -96,7 +95,7 @@ public class VolumePreference extends DialogPreference implements SeekBar.OnSeek
 		// Approximate an exponential curve with x^3. Produces a value from 0.0 - 1.0.
 		if (fromUser && shouldPersist()) {
 			persistFloat((float)Math.pow(seekBar.getProgress() / 100.0f, 3));
-			mPercent.setText(getSummary());
+			mPercent.setText(progress + "%");
 		}
 	}
 
