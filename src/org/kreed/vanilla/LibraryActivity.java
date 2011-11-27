@@ -220,6 +220,8 @@ public class LibraryActivity
 
 		if (filter != null)
 			mTextFilter.setText(filter);
+
+		onNewIntent(getIntent());
 	}
 
 	@Override
@@ -235,6 +237,21 @@ public class LibraryActivity
 		mDefaultAction = Integer.parseInt(settings.getString("default_action_int", "0"));
 		mLastActedId = -2;
 		updateHeaders();
+	}
+
+	@Override
+	public void onNewIntent(Intent intent)
+	{
+		if (intent == null)
+			return;
+
+		long albumId = intent.getLongExtra("albumId", -1);
+		if (albumId != -1) {
+			String[] fields = { intent.getStringExtra("artist"), intent.getStringExtra("album") };
+			String data = String.format("album_id=%d", albumId);
+			Limiter limiter = new Limiter(MediaUtils.TYPE_ALBUM, fields, data);
+			setLimiter(limiter, true);
+		}
 	}
 
 	@Override
@@ -356,12 +373,7 @@ public class LibraryActivity
 	{
 		int type = intent.getIntExtra("type", 1);
 		long id = intent.getLongExtra("id", -1);
-		int tab = setLimiter(mAdapters[type - 1].buildLimiter(id));
-		if (tab == -1 || mTabHost.getCurrentTab() == tab) {
-			updateLimiterViews();
-		} else {
-			mTabHost.setCurrentTab(tab);
-		}
+		setLimiter(mAdapters[type - 1].buildLimiter(id), true);
 	}
 
 	/**
@@ -382,14 +394,16 @@ public class LibraryActivity
 			requestRequery(mSongAdapter);
 			requestRequery(mAlbumAdapter);
 		}
+		updateLimiterViews();
 	}
 
 	/**
 	 * Update the adapters with the given limiter.
 	 *
-	 * @return The tab to "expand" to
+	 * @param switchTab If true, will switch to the tab appropriate for
+	 * expanding a row.
 	 */
-	private int setLimiter(Limiter limiter)
+	private void setLimiter(Limiter limiter, boolean switchTab)
 	{
 		int tab;
 
@@ -398,32 +412,40 @@ public class LibraryActivity
 			mSongAdapter.setLimiter(limiter);
 			loadSortOrder(mSongAdapter);
 			requestRequery(mSongAdapter);
-			return 2;
+			tab = 2;
+			break;
 		case MediaUtils.TYPE_ARTIST:
 			mAlbumAdapter.setLimiter(limiter);
 			mSongAdapter.setLimiter(limiter);
+			loadSortOrder(mSongAdapter);
+			loadSortOrder(mAlbumAdapter);
+			requestRequery(mSongAdapter);
+			requestRequery(mAlbumAdapter);
 			tab = 1;
 			break;
 		case MediaUtils.TYPE_GENRE:
 			mSongAdapter.setLimiter(limiter);
 			mAlbumAdapter.setLimiter(null);
+			loadSortOrder(mSongAdapter);
+			loadSortOrder(mAlbumAdapter);
+			requestRequery(mSongAdapter);
+			requestRequery(mAlbumAdapter);
 			tab = 2;
 			break;
 		case MediaUtils.TYPE_FILE:
 			mFilesAdapter.setLimiter(limiter);
 			requestRequery(mFilesAdapter);
-			return 5;
+			tab = 5;
+			break;
 		default:
 			throw new IllegalArgumentException("Unsupported limiter type: " + limiter.type);
 		}
 
-		loadSortOrder(mSongAdapter);
-		loadSortOrder(mAlbumAdapter);
-
-		requestRequery(mSongAdapter);
-		requestRequery(mAlbumAdapter);
-
-		return tab;
+		if (switchTab && mTabHost.getCurrentTab() != tab) {
+			mTabHost.setCurrentTab(tab);
+		} else {
+			updateLimiterViews();
+		}
 	}
 
 	/**
@@ -535,7 +557,7 @@ public class LibraryActivity
 				Cursor cursor = resolver.query(uri, projection, limiter.data.toString(), null, null);
 				if (cursor != null) {
 					if (cursor.moveToNext()) {
-						setLimiter(mArtistAdapter.buildLimiter(cursor.getLong(0)));
+						setLimiter(mArtistAdapter.buildLimiter(cursor.getLong(0)), false);
 					}
 					cursor.close();
 				}
@@ -546,12 +568,10 @@ public class LibraryActivity
 				while (--diff != -1) {
 					file = file.getParentFile();
 				}
-				setLimiter(FileSystemAdapter.buildLimiter(file));
+				setLimiter(FileSystemAdapter.buildLimiter(file), false);
 			} else {
 				clearLimiter(type);
 			}
-
-			updateLimiterViews();
 		} else {
 			super.onClick(view);
 		}

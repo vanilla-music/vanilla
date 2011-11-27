@@ -87,6 +87,10 @@ public class FullPlaybackActivity extends PlaybackActivity
 	 * Cached StringBuilder for formatting track position.
 	 */
 	private final StringBuilder mTimeBuilder = new StringBuilder();
+	/**
+	 * The currently playing song.
+	 */
+	private Song mCurrentSong;
 
 	@Override
 	public void onCreate(Bundle icicle)
@@ -135,6 +139,9 @@ public class FullPlaybackActivity extends PlaybackActivity
 		mPlayPauseButton.setOnClickListener(this);
 		View nextButton = findViewById(R.id.next);
 		nextButton.setOnClickListener(this);
+
+		View controlsTop = findViewById(R.id.controls_top);
+		controlsTop.setOnClickListener(this);
 
 		mTitle = (TextView)findViewById(R.id.title);
 		mAlbum = (TextView)findViewById(R.id.album);
@@ -243,7 +250,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 	}
 
 	@Override
-	protected void onSongChange(final Song song)
+	protected void onSongChange(Song song)
 	{
 		super.onSongChange(song);
 
@@ -261,6 +268,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 			}
 		}
 
+		mCurrentSong = song;
 		updateProgress();
 	}
 
@@ -287,7 +295,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 	{
 		switch (item.getItemId()) {
 		case MENU_LIBRARY:
-			openLibrary();
+			openLibrary(null);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -297,7 +305,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 	@Override
 	public boolean onSearchRequested()
 	{
-		openLibrary();
+		openLibrary(null);
 		return false;
 	}
 
@@ -440,6 +448,8 @@ public class FullPlaybackActivity extends PlaybackActivity
 			setState(PlaybackService.get(this).setFinishAction(SongTimeline.FINISH_RANDOM));
 		} else if (view == mCoverView) {
 			performAction(mCoverPressAction);
+		} else if (view.getId() == R.id.controls_top) {
+			openLibrary(mCurrentSong);
 		} else {
 			super.onClick(view);
 		}

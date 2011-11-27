@@ -395,11 +395,18 @@ public class PlaybackActivity extends Activity
 
 	/**
 	 * Open the library activity.
+	 *
+	 * @param song If non-null, will open the library focused on this song.
 	 */
-	public void openLibrary()
+	public void openLibrary(Song song)
 	{
 		Intent intent = new Intent(this, LibraryActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		if (song != null) {
+			intent.putExtra("albumId", song.albumId);
+			intent.putExtra("album", song.album);
+			intent.putExtra("artist", song.artist);
+		}
 		startActivity(intent);
 	}
 
@@ -414,7 +421,7 @@ public class PlaybackActivity extends Activity
 		case Nothing:
 			break;
 		case Library:
-			openLibrary();
+			openLibrary(null);
 			break;
 		case PlayPause:
 			playPause();
