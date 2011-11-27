@@ -314,11 +314,11 @@ public class FullPlaybackActivity extends PlaybackActivity
 	{
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_DPAD_RIGHT:
-			nextSong();
+			shiftCurrentSong(SongTimeline.SHIFT_NEXT_SONG);
 			findViewById(R.id.next).requestFocus();
 			return true;
 		case KeyEvent.KEYCODE_DPAD_LEFT:
-			previousSong();
+			shiftCurrentSong(SongTimeline.SHIFT_PREVIOUS_SONG);
 			findViewById(R.id.previous).requestFocus();
 			return true;
 		}

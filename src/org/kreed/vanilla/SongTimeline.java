@@ -176,6 +176,30 @@ public final class SongTimeline {
 	public static final int[] SHUFFLE_ICONS =
 		{ R.drawable.shuffle_inactive, R.drawable.shuffle_active, R.drawable.shuffle_album_active };
 
+	/**
+	 * Move current position to the previous album.
+	 *
+	 * @see SongTimeline#shiftCurrentSong(int)
+	 */
+	public static final int SHIFT_PREVIOUS_ALBUM = -2;
+	/**
+	 * Move current position to the previous song.
+	 *
+	 * @see SongTimeline#shiftCurrentSong(int)
+	 */
+	public static final int SHIFT_PREVIOUS_SONG = -1;
+	/**
+	 * Move current position to the next song.
+	 *
+	 * @see SongTimeline#shiftCurrentSong(int)
+	 */
+	public static final int SHIFT_NEXT_SONG = 1;
+	/**
+	 * Move current position to the next album.
+	 *
+	 * @see SongTimeline#shiftCurrentSong(int)
+	 */
+	public static final int SHIFT_NEXT_ALBUM = 2;
 
 	private final Context mContext;
 	/**
@@ -473,11 +497,12 @@ public final class SongTimeline {
 			} else if (pos > size) {
 				return null;
 			} else if (pos == size) {
-				switch (mFinishAction) {
-				case FINISH_STOP:
-				case FINISH_REPEAT:
-				case FINISH_REPEAT_CURRENT:
-				case FINISH_STOP_CURRENT:
+				if (mFinishAction == FINISH_RANDOM) {
+					song = MediaUtils.randomSong(mContext.getContentResolver());
+					if (song == null)
+						return null;
+					timeline.add(song);
+				} else {
 					if (size == 0)
 						// empty queue
 						return null;
@@ -485,15 +510,6 @@ public final class SongTimeline {
 						song = shuffleAll();
 					else
 						song = timeline.get(0);
-					break;
-				case FINISH_RANDOM:
-					song = MediaUtils.randomSong(mContext.getContentResolver());
-					if (song == null)
-						return null;
-					timeline.add(song);
-					break;
-				default:
-					throw new IllegalStateException("Invalid finish action: " + mFinishAction);
 				}
 			} else {
 				song = timeline.get(pos);
@@ -508,40 +524,58 @@ public final class SongTimeline {
 	}
 
 	/**
-	 * Shift the current song by <code>delta</code> places.
+	 * Internal implementation for shiftCurrentSong. Does all the work except
+	 * broadcasting the timeline change: updates mCurrentPos and handles
+	 * shuffling, repeating, and random mode.
 	 *
-	 * @param delta The delta. Must be -1, 0, 1.
+	 * @param delta -1 to move to the previous song or 1 for the next.
+	 */
+	private void shiftCurrentSongInternal(int delta)
+	{
+		int pos = mCurrentPos + delta;
+
+		if (mFinishAction != FINISH_RANDOM && pos == mSongs.size()) {
+			if (mShuffleMode != SHUFFLE_NONE && !mSongs.isEmpty()) {
+				if (mShuffledSongs == null)
+					shuffleAll();
+				mSongs = mShuffledSongs;
+			}
+
+			pos = 0;
+		} else if (pos < 0) {
+			if (mFinishAction == FINISH_RANDOM)
+				pos = 0;
+			else
+				pos = Math.max(0, mSongs.size() - 1);
+		}
+
+		mCurrentPos = pos;
+		mShuffledSongs = null;
+	}
+
+	/**
+	 * Move to the next or previous song or album.
+	 *
+	 * @param delta One of SongTimeline.SHIFT_*.
 	 * @return The Song at the new position
 	 */
 	public Song shiftCurrentSong(int delta)
 	{
-		Assert.assertTrue(delta >= -1 && delta <= 1);
-
 		synchronized (this) {
-			int pos = mCurrentPos + delta;
-
-			if (mFinishAction != FINISH_RANDOM && pos == mSongs.size()) {
-				if (mShuffleMode != SHUFFLE_NONE && !mSongs.isEmpty()) {
-					if (mShuffledSongs == null)
-						shuffleAll();
-					mSongs = mShuffledSongs;
-				}
-
-				pos = 0;
-			} else if (pos < 0) {
-				if (mFinishAction == FINISH_RANDOM)
-					pos = 0;
-				else
-					pos = Math.max(0, mSongs.size() - 1);
+			if (delta == SHIFT_PREVIOUS_SONG || delta == SHIFT_NEXT_SONG) {
+				shiftCurrentSongInternal(delta);
+			} else {
+				Song song = getSong(0);
+				long currentAlbum = song.albumId;
+				long currentSong = song.id;
+				delta = delta > 0 ? 1 : -1;
+				do {
+					shiftCurrentSongInternal(delta);
+					song = getSong(0);
+				} while (currentAlbum == song.albumId && currentSong != song.id);
 			}
-
-			mCurrentPos = pos;
-			mShuffledSongs = null;
 		}
-
-		if (delta != 0)
-			changed();
-
+		changed();
 		return getSong(0);
 	}
 

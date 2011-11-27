@@ -58,6 +58,8 @@ public class PlaybackActivity extends Activity
 		PlayPause,
 		NextSong,
 		PreviousSong,
+		NextAlbum,
+		PreviousAlbum,
 		Repeat,
 		Shuffle,
 		EnqueueAlbum,
@@ -199,15 +201,9 @@ public class PlaybackActivity extends Activity
 	}
 
 	@Override
-	public void nextSong()
+	public void shiftCurrentSong(int delta)
 	{
-		setSong(PlaybackService.get(this).nextSong());
-	}
-
-	@Override
-	public void previousSong()
-	{
-		setSong(PlaybackService.get(this).previousSong());
+		setSong(PlaybackService.get(this).shiftCurrentSong(delta));
 	}
 
 	public void playPause()
@@ -224,13 +220,13 @@ public class PlaybackActivity extends Activity
 	{
 		switch (view.getId()) {
 		case R.id.next:
-			nextSong();
+			shiftCurrentSong(SongTimeline.SHIFT_NEXT_SONG);
 			break;
 		case R.id.play_pause:
 			playPause();
 			break;
 		case R.id.previous:
-			previousSong();
+			shiftCurrentSong(SongTimeline.SHIFT_PREVIOUS_SONG);
 			break;
 		case R.id.end_action:
 			cycleFinishAction();
@@ -427,10 +423,16 @@ public class PlaybackActivity extends Activity
 			playPause();
 			break;
 		case NextSong:
-			nextSong();
+			shiftCurrentSong(SongTimeline.SHIFT_NEXT_SONG);
 			break;
 		case PreviousSong:
-			previousSong();
+			shiftCurrentSong(SongTimeline.SHIFT_PREVIOUS_SONG);
+			break;
+		case NextAlbum:
+			shiftCurrentSong(SongTimeline.SHIFT_NEXT_ALBUM);
+			break;
+		case PreviousAlbum:
+			shiftCurrentSong(SongTimeline.SHIFT_PREVIOUS_ALBUM);
 			break;
 		case Repeat:
 			cycleFinishAction();

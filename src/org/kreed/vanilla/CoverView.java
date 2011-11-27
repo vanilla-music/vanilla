@@ -65,13 +65,11 @@ public final class CoverView extends View implements Handler.Callback {
 	 */
 	public interface Callback {
 		/**
-		 * Called after the view has scrolled to the next (right) cover.
+		 * Called after the view has scrolled to the next or previous cover.
+		 *
+		 * @param delta -1 for the previous cover, 1 for the next.
 		 */
-		public void nextSong();
-		/**
-		 * Called after the view has scrolled to the previous (left) cover.
-		 */
-		public void previousSong();
+		public void shiftCurrentSong(int delta);
 		/**
 		 * Called when the user has swiped up on the view.
 		 */
@@ -422,6 +420,7 @@ public final class CoverView extends View implements Handler.Callback {
 	 */
 	private static final int MSG_SCROLL = 3;
 
+	@Override
 	public boolean handleMessage(Message message)
 	{
 		switch (message.what) {
@@ -446,12 +445,8 @@ public final class CoverView extends View implements Handler.Callback {
 				invalidateCovers();
 				mUiHandler.sendEmptyMessage(MSG_SCROLL);
 			} else if (mTentativeCover != -1) {
-				int delta = mTentativeCover - 1;
+				mCallback.shiftCurrentSong(mTentativeCover - 1);
 				mTentativeCover = -1;
-				if (delta == 1)
-					mCallback.nextSong();
-				else
-					mCallback.previousSong();
 				resetScroll();
 			}
 			break;

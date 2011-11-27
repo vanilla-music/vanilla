@@ -748,8 +748,11 @@ public final class PlaybackService extends Service
 	}
 
 	/**
-	 * Move <code>delta</code> places away from the current song.
+	 * Move to the next or previous song or album in the timeline.
 	 *
+	 * @param delta One of SongTimeline.SHIFT_*. 0 can also be passed to
+	 * initialize the current song with media player, notification,
+	 * broadcasts, etc.
 	 * @return The new current song
 	 */
 	private Song setCurrentSong(int delta)
@@ -760,7 +763,11 @@ public final class PlaybackService extends Service
 		if (mMediaPlayer.isPlaying())
 			mMediaPlayer.stop();
 
-		Song song = mTimeline.shiftCurrentSong(delta);
+		Song song;
+		if (delta == 0)
+			song = mTimeline.getSong(0);
+		else
+			song = mTimeline.shiftCurrentSong(delta);
 		mCurrentSong = song;
 		if (song == null || song.id == -1 || song.path == null) {
 			if (MediaUtils.isSongAvailable(getContentResolver())) {
@@ -1115,21 +1122,14 @@ public final class PlaybackService extends Service
 	}
 
 	/**
-	 * Move to the next song in the queue.
+	 * Move to next or previous song or album in the queue.
+	 *
+	 * @param delta One of SongTimeline.SHIFT_*.
+	 * @return The new current song.
 	 */
-	public Song nextSong()
+	public Song shiftCurrentSong(int delta)
 	{
-		Song song = setCurrentSong(+1);
-		userActionTriggered();
-		return song;
-	}
-
-	/**
-	 * Move to the previous song in the queue.
-	 */
-	public Song previousSong()
-	{
-		Song song = setCurrentSong(-1);
+		Song song = setCurrentSong(delta);
 		userActionTriggered();
 		return song;
 	}

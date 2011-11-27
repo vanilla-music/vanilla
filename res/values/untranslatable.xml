@@ -55,6 +55,8 @@ THE SOFTWARE.
 		<item>PlayPause</item>
 		<item>NextSong</item>
 		<item>PreviousSong</item>
+		<item>NextAlbum</item>
+		<item>PreviousAlbum</item>
 		<item>Repeat</item>
 		<item>Shuffle</item>
 		<item>EnqueueAlbum</item>
@@ -70,6 +72,8 @@ THE SOFTWARE.
 		<item>@string/play_pause</item>
 		<item>@string/next_song</item>
 		<item>@string/previous_song</item>
+		<item>@string/next_album</item>
+		<item>@string/previous_album</item>
 		<item>@string/cycle_repeat_mode</item>
 		<item>@string/cycle_shuffle_mode</item>
 		<item>@string/enqueue_current_album</item>
