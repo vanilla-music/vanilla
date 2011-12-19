@@ -221,7 +221,7 @@ public final class MediaView extends View {
 		width = getWidth();
 
 		if (sDividerGradient == null)
-			sDividerGradient = new RadialGradient(width / 2, 1, width / 2, Color.WHITE, Color.BLACK, Shader.TileMode.CLAMP);
+			sDividerGradient = new RadialGradient(width / 2, 1, width / 2, Color.WHITE, Color.TRANSPARENT, Shader.TileMode.CLAMP);
 
 		paint.setShader(sDividerGradient);
 		canvas.drawLine(0, height - 1, width, height - 1, paint);
