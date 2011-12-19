@@ -30,6 +30,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -46,6 +47,10 @@ public final class CoverView extends View implements Handler.Callback {
 	 * flings.
 	 */
 	private static int sSnapVelocity = -1;
+	/**
+	 * Display metrics, used for scaling.
+	 */
+	private static DisplayMetrics sDisplayMetrics;
 	/**
 	 * The Handler with which to do background work. Will be null until
 	 * setupHandler is called.
@@ -152,8 +157,10 @@ public final class CoverView extends View implements Handler.Callback {
 
 		mScroller = new Scroller(context);
 
-		if (sSnapVelocity == -1)
+		if (sSnapVelocity == -1) {
 			sSnapVelocity = ViewConfiguration.get(context).getScaledMinimumFlingVelocity();
+			sDisplayMetrics = context.getResources().getDisplayMetrics();
+		}
 	}
 
 	/**
@@ -306,7 +313,7 @@ public final class CoverView extends View implements Handler.Callback {
 
 			int newX = whichCover * width;
 			int delta = newX - scrollX;
-			mScroller.startScroll(scrollX, 0, delta, 0, Math.abs(delta) * 2);
+			mScroller.startScroll(scrollX, 0, delta, 0, (int)(Math.abs(delta) * 2 / sDisplayMetrics.density));
 			if (whichCover != 1)
 				mTentativeCover = whichCover;
 
