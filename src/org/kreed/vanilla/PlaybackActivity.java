@@ -158,6 +158,7 @@ public class PlaybackActivity extends Activity
 			window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
 		else
 			window.clearFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+		window.addFlags(0x08000000); // show menu key on ICS
 	}
 
 	@Override
