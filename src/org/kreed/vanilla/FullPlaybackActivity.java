@@ -345,7 +345,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 	 */
 	private void updateProgress()
 	{
-		int position = PlaybackService.hasInstance() ? PlaybackService.get(this).getPosition() : 0;
+		long position = PlaybackService.hasInstance() ? PlaybackService.get(this).getPosition() : 0;
 
 		if (!mSeekBarTracking) {
 			long duration = mDuration;
