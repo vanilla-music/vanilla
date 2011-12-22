@@ -105,7 +105,7 @@ public class Cache<E> {
 	 *
 	 * @param key The key of the item to touch.
 	 */
-	public void touch(long key)
+	public synchronized void touch(long key)
 	{
 		long[] keys = mKeys;
 		Object[] values = mValues;
@@ -129,7 +129,7 @@ public class Cache<E> {
 	 * @return The item that was discarded, or null if the cache is not full.
 	 */
 	@SuppressWarnings("unchecked")
-	public E discardOldest()
+	public synchronized E discardOldest()
 	{
 		int count = count();
 		// Cache is not full.
@@ -151,7 +151,7 @@ public class Cache<E> {
 	 * existing key in the cache.
 	 * @param value The item.
 	 */
-	public void put(long key, E value)
+	public synchronized void put(long key, E value)
 	{
 		int count = count();
 		Assert.assertFalse(count == mKeys.length); // must not be full
