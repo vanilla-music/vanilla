@@ -24,8 +24,7 @@ THE SOFTWARE.
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/tab_host"
 	android:layout_height="fill_parent"
-	android:layout_width="fill_parent"
-	android:layout_weight="1">
+	android:layout_width="fill_parent">
 	<LinearLayout
 		android:id="@+id/content"
 		android:orientation="vertical"
