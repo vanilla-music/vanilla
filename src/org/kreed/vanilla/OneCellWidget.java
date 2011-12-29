@@ -30,6 +30,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.view.View;
 import android.widget.RemoteViews;
 
 /**
@@ -109,17 +110,19 @@ public class OneCellWidget extends AppWidgetProvider {
 
 		if ((state & PlaybackService.FLAG_NO_MEDIA) != 0) {
 			views.setInt(R.id.title, "setText", R.string.no_songs);
-			views.setImageViewResource(R.id.cover, 0);
+			views.setViewVisibility(R.id.cover, View.GONE);
 		} else if (song == null) {
 			views.setInt(R.id.title, "setText", R.string.app_name);
-			views.setImageViewResource(R.id.cover, 0);
+			views.setViewVisibility(R.id.cover, View.GONE);
 		} else {
 			views.setTextViewText(R.id.title, song.title);
 			Bitmap cover = song.getCover(context);
-			if (cover == null)
-				views.setImageViewResource(R.id.cover, 0);
-			else
+			if (cover == null) {
+				views.setViewVisibility(R.id.cover, View.GONE);
+			} else {
+				views.setViewVisibility(R.id.cover, View.VISIBLE);
 				views.setImageViewBitmap(R.id.cover, cover);
+			}
 		}
 
 		manager.updateAppWidget(new ComponentName(context, OneCellWidget.class), views);

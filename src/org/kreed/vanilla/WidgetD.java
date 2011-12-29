@@ -94,23 +94,25 @@ public class WidgetD extends AppWidgetProvider {
 		if ((state & PlaybackService.FLAG_NO_MEDIA) != 0) {
 			views.setViewVisibility(R.id.buttons, View.GONE);
 			views.setViewVisibility(R.id.title, View.GONE);
+			views.setViewVisibility(R.id.cover, View.GONE);
 			views.setInt(R.id.artist, "setText", R.string.no_songs);
-			views.setImageViewResource(R.id.cover, 0);
 		} else if (song == null) {
 			views.setViewVisibility(R.id.buttons, View.VISIBLE);
 			views.setViewVisibility(R.id.title, View.GONE);
+			views.setViewVisibility(R.id.cover, View.GONE);
 			views.setInt(R.id.artist, "setText", R.string.app_name);
-			views.setImageViewResource(R.id.cover, 0);
 		} else {
 			views.setViewVisibility(R.id.title, View.VISIBLE);
 			views.setViewVisibility(R.id.buttons, View.VISIBLE);
 			views.setTextViewText(R.id.title, song.title);
 			views.setTextViewText(R.id.artist, song.artist);
 			Bitmap cover = song.getCover(context);
-			if (cover == null)
-				views.setImageViewResource(R.id.cover, 0);
-			else
+			if (cover == null) {
+				views.setViewVisibility(R.id.cover, View.GONE);
+			} else {
+				views.setViewVisibility(R.id.cover, View.VISIBLE);
 				views.setImageViewBitmap(R.id.cover, cover);
+			}
 		}
 
 		boolean playing = (state & PlaybackService.FLAG_PLAYING) != 0;
