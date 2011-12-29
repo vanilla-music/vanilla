@@ -141,7 +141,8 @@ public class FullPlaybackActivity extends PlaybackActivity
 		nextButton.setOnClickListener(this);
 
 		View controlsTop = findViewById(R.id.controls_top);
-		controlsTop.setOnClickListener(this);
+		if (controlsTop != null)
+			controlsTop.setOnClickListener(this);
 
 		mTitle = (TextView)findViewById(R.id.title);
 		mAlbum = (TextView)findViewById(R.id.album);
