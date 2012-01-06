@@ -216,8 +216,11 @@ public final class PlaybackService extends Service
 	 */
 	private static final long IDLE_GRACE_PERIOD = 60000;
 
-	private static final Object sWait = new Object();
-	private static PlaybackService sInstance;
+	private static final Object sWait = new Object[0];
+	/**
+	 * The appplication-wide instance of the PlaybackService.
+	 */
+	public static PlaybackService sInstance;
 	private static final ArrayList<PlaybackActivity> sActivities = new ArrayList<PlaybackActivity>(5);
 	/**
 	 * Cached app-wide SharedPreferences instance.
@@ -300,6 +303,10 @@ public final class PlaybackService extends Service
 	 * indicates that no timeout has occurred.
 	 */
 	private long mIdleStart = -1;
+	/**
+	 * True if the last audio focus loss can be ducked.
+	 */
+	private boolean mDuckedLoss;
 
 	@Override
 	public void onCreate()
@@ -319,6 +326,10 @@ public final class PlaybackService extends Service
 		mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 		mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
 
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
+			CompatFroyo.createAudioFocus();
+		}
+
 		SharedPreferences settings = getSettings(this);
 		settings.registerOnSharedPreferenceChangeListener(this);
 		mNotificationMode = Integer.parseInt(settings.getString("notification_mode", "1"));
@@ -335,13 +346,26 @@ public final class PlaybackService extends Service
 		mHeadsetPlay = settings.getBoolean("headset_play", false);
 		mInvertNotification = settings.getBoolean("notification_inverted_color", false);
 		mNotificationAction = createNotificationAction(settings);
+		mHeadsetPause = getSettings(this).getBoolean("headset_pause", true);
 
 		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
 		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicLock");
 
+		mCallListener = new InCallListener();
+		TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+		telephonyManager.listen(mCallListener, PhoneStateListener.LISTEN_CALL_STATE);
+
+		mReceiver = new Receiver();
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
+		filter.addAction(Intent.ACTION_HEADSET_PLUG);
+		filter.addAction(Intent.ACTION_SCREEN_ON);
+		registerReceiver(mReceiver, filter);
+
+		getContentResolver().registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, mObserver);
+
 		mLooper = thread.getLooper();
 		mHandler = new Handler(mLooper, this);
-		mHandler.sendEmptyMessage(POST_CREATE);
 
 		initWidgets();
 
@@ -556,6 +580,9 @@ public final class PlaybackService extends Service
 				if (mNotificationMode != NEVER)
 					startForeground(NOTIFICATION_ID, createNotification(mCurrentSong, mState));
 
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
+					CompatFroyo.requestAudioFocus(mAudioManager);
+				}
 				if (mWakeLock != null)
 					mWakeLock.acquire();
 			} else {
@@ -968,18 +995,6 @@ public final class PlaybackService extends Service
 		loadPreference(key);
 	}
 
-	private void setupReceiver()
-	{
-		if (mReceiver == null)
-			mReceiver = new Receiver();
-		IntentFilter filter = new IntentFilter();
-		filter.addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
-		filter.addAction(Intent.ACTION_HEADSET_PLUG);
-		filter.addAction(Intent.ACTION_SCREEN_ON);
-		registerReceiver(mReceiver, filter);
-	}
-
-	private static final int POST_CREATE = 1;
 	/**
 	 * Run the given query and add the results to the timeline.
 	 *
@@ -1029,16 +1044,6 @@ public final class PlaybackService extends Service
 			break;
 		case QUERY:
 			runQuery(message.arg1, (QueryTask)message.obj, message.arg2);
-			break;
-		case POST_CREATE:
-			mHeadsetPause = getSettings(this).getBoolean("headset_pause", true);
-			setupReceiver();
-
-			mCallListener = new InCallListener();
-			TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-			telephonyManager.listen(mCallListener, PhoneStateListener.LISTEN_CALL_STATE);
-
-			getContentResolver().registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, mObserver);
 			break;
 		case IDLE_TIMEOUT:
 			if ((mState & FLAG_PLAYING) != 0)
@@ -1510,5 +1515,27 @@ public final class PlaybackService extends Service
 		notification.flags |= Notification.FLAG_ONGOING_EVENT;
 		notification.contentIntent = mNotificationAction;
 		return notification;
+	}
+
+	public void onAudioFocusChange(int type)
+	{
+		Log.d("VanillaMusic", "audio focus change: " + type);
+		switch (type) {
+		case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+			mDuckedLoss = (mState & FLAG_PLAYING) != 0;
+			unsetFlag(FLAG_PLAYING);
+			break;
+		case AudioManager.AUDIOFOCUS_LOSS:
+		case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+			mDuckedLoss = false;
+			unsetFlag(FLAG_PLAYING);
+			break;
+		case AudioManager.AUDIOFOCUS_GAIN:
+			if (mDuckedLoss) {
+				mDuckedLoss = false;
+				setFlag(FLAG_PLAYING);
+			}
+			break;
+		}
 	}
 }
