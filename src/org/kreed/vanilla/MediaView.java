@@ -29,7 +29,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.RadialGradient;
 import android.graphics.Shader;
@@ -57,10 +56,6 @@ public final class MediaView extends View {
 	 */
 	private static Paint sPaint;
 	/**
-	 * The cached dash effect that separates the expander arrow and the text.
-	 */
-	private static DashPathEffect sDashEffect;
-	/**
 	 * The cached divider gradient that separates each view from other views.
 	 */
 	private static RadialGradient sDividerGradient;
@@ -74,7 +69,6 @@ public final class MediaView extends View {
 		Resources res = context.getResources();
 		sExpander = BitmapFactory.decodeResource(res, R.drawable.expander_arrow);
 		sTextSize = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, res.getDisplayMetrics());
-		sDashEffect = new DashPathEffect(new float[] { 3, 3 }, 0);
 		sDividerGradient = null;
 
 		sPaint = new Paint();
@@ -187,7 +181,6 @@ public final class MediaView extends View {
 			width -= padding * 4 + expander.getWidth();
 
 			paint.setColor(Color.GRAY);
-			paint.setPathEffect(sDashEffect);
 			canvas.drawLine(width, padding, width, height - padding, paint);
 			paint.setPathEffect(null);
 
