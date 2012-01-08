@@ -32,14 +32,14 @@ import android.database.ContentObserver;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -55,12 +55,13 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioGroup;
-import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.viewpagerindicator.TabPageIndicator;
 import java.io.File;
 import java.io.IOException;
 import junit.framework.Assert;
@@ -72,9 +73,9 @@ public class LibraryActivity
 	extends PlaybackActivity
 	implements AdapterView.OnItemClickListener
 	         , TextWatcher
-	         , TabHost.OnTabChangeListener
 	         , DialogInterface.OnClickListener
 	         , DialogInterface.OnDismissListener
+	         , ViewPager.OnPageChangeListener
 {
 	public static final int ACTION_PLAY = 0;
 	public static final int ACTION_ENQUEUE = 1;
@@ -87,8 +88,7 @@ public class LibraryActivity
 		{ SongTimeline.MODE_PLAY, SongTimeline.MODE_ENQUEUE, -1,
 		  SongTimeline.MODE_PLAY_ID_FIRST, SongTimeline.MODE_ENQUEUE_ID_FIRST };
 
-	private TabHost mTabHost;
-
+	private ViewPager mViewPager;
 	private View mSearchBox;
 	private boolean mSearchBoxVisible;
 	private TextView mTextFilter;
@@ -100,6 +100,7 @@ public class LibraryActivity
 	private ImageView mCover;
 	private View mEmptyQueue;
 
+	private HorizontalScrollView mLimiterScroller;
 	private ViewGroup mLimiterViews;
 
 	private int mDefaultAction;
@@ -123,6 +124,15 @@ public class LibraryActivity
 	 * Each adapter, in the same order as MediaUtils.TYPE_*.
 	 */
 	final LibraryAdapter[] mAdapters = new LibraryAdapter[ADAPTER_COUNT];
+	/**
+	 * The human-readable title for each page.
+	 */
+	public static final int[] TITLES = { R.string.artists, R.string.albums, R.string.songs,
+	                                     R.string.playlists, R.string.genres, R.string.files };
+	/**
+	 * Limiters that should be passed to an adapter constructor.
+	 */
+	public final Limiter[] mPendingLimiters = new Limiter[ADAPTER_COUNT];
 	MediaAdapter mArtistAdapter;
 	MediaAdapter mAlbumAdapter;
 	MediaAdapter mSongAdapter;
@@ -135,7 +145,103 @@ public class LibraryActivity
 		@Override
 		public void onChange(boolean selfChange)
 		{
-			postRequestRequery(mPlaylistAdapter);
+			if (mPlaylistAdapter != null) {
+				postRequestRequery(mPlaylistAdapter);
+			}
+		}
+	};
+
+	private final PagerAdapter mPagerAdapter = new PagerAdapter() {
+		@Override
+		public Object instantiateItem(ViewGroup container, int position)
+		{
+			ListView view = mLists[position];
+
+			if (view == null) {
+				LibraryAdapter adapter;
+
+				switch (position) {
+				case 0:
+					adapter = mArtistAdapter = new MediaAdapter(LibraryActivity.this, MediaUtils.TYPE_ARTIST, true, true, null);
+					mArtistAdapter.setHeaderText(getHeaderText());
+					break;
+				case 1:
+					adapter = mAlbumAdapter = new MediaAdapter(LibraryActivity.this, MediaUtils.TYPE_ALBUM, true, true, mPendingLimiters[position]);
+					mAlbumAdapter.setHeaderText(getHeaderText());
+					break;
+				case 2:
+					adapter = mSongAdapter = new MediaAdapter(LibraryActivity.this, MediaUtils.TYPE_SONG, false, true, mPendingLimiters[position]);
+					mSongAdapter.setHeaderText(getHeaderText());
+					break;
+				case 3:
+					adapter = mPlaylistAdapter = new MediaAdapter(LibraryActivity.this, MediaUtils.TYPE_PLAYLIST, true, false, null);
+					break;
+				case 4:
+					adapter = mGenreAdapter = new MediaAdapter(LibraryActivity.this, MediaUtils.TYPE_GENRE, true, false, null);
+					break;
+				case 5:
+					adapter = mFilesAdapter = new FileSystemAdapter(LibraryActivity.this, mPendingLimiters[position]);
+					break;
+				default:
+					throw new IllegalArgumentException("Invalid position: " + position);
+				}
+
+				view = new ListView(LibraryActivity.this);
+				view.setOnItemClickListener(LibraryActivity.this);
+				view.setOnCreateContextMenuListener(LibraryActivity.this);
+				view.setDivider(null);
+				view.setFastScrollEnabled(true);
+
+				view.setAdapter(adapter);
+				if (position != 5)
+					loadSortOrder((MediaAdapter)adapter);
+
+				String filter = mTextFilter.getText().toString();
+				if (filter.length() != 0) {
+					adapter.setFilter(filter);
+				}
+
+				mAdapters[position] = adapter;
+				mLists[position] = view;
+				mRequeryNeeded[position] = true;
+
+				if (mCurrentAdapter == null && mViewPager.getCurrentItem() == position) {
+					// Special case: for first time initialization onPageSelected
+					// is not called (for initial position = 0) or called before
+					// the adapter is initialized (for all other initial positions).
+					// So do required work here.
+					mCurrentAdapter = adapter;
+					updateLimiterViews();
+				}
+			}
+
+			requeryIfNeeded(position);
+			container.addView(view);
+			return view;
+		}
+
+		@Override
+		public void destroyItem(ViewGroup container, int position, Object object)
+		{
+			container.removeView(mLists[position]);
+		}
+
+		@Override
+		public CharSequence getPageTitle(int position)
+		{
+			return getResources().getText(TITLES[position]);
+		}
+
+		@Override
+		public int getCount()
+		{
+			return ADAPTER_COUNT;
+		}
+
+		@Override
+		public boolean isViewFromObject(View view, Object object)
+		{
+			return view == object;
 		}
 	};
 
@@ -185,43 +291,17 @@ public class LibraryActivity
 		mClearButton = findViewById(R.id.clear_button);
 		mClearButton.setOnClickListener(this);
 
+		mLimiterScroller = (HorizontalScrollView)findViewById(R.id.limiter_scroller);
 		mLimiterViews = (ViewGroup)findViewById(R.id.limiter_layout);
 
-		mTabHost = (TabHost)findViewById(R.id.tab_host);
-		mTabHost.setup();
+		mViewPager = (ViewPager)findViewById(R.id.pager);
+		mViewPager.setAdapter(mPagerAdapter);
 
-		mArtistAdapter = new MediaAdapter(this, MediaUtils.TYPE_ARTIST, true, true, null);
-		mAlbumAdapter = new MediaAdapter(this, MediaUtils.TYPE_ALBUM, true, true, state == null ? null : (Limiter)state.getSerializable("limiter_albums"));
-		mSongAdapter = new MediaAdapter(this, MediaUtils.TYPE_SONG, false, true, state == null ? null : (Limiter)state.getSerializable("limiter_songs"));
-		mPlaylistAdapter = new MediaAdapter(this, MediaUtils.TYPE_PLAYLIST, true, false, null);
-		mGenreAdapter = new MediaAdapter(this, MediaUtils.TYPE_GENRE, true, false, null);
-		mFilesAdapter = new FileSystemAdapter(this, state == null ? null : (Limiter)state.getSerializable("limiter_files"));
-
-		setupView(0, R.id.artist_list, R.string.artists, R.drawable.ic_tab_artists, mArtistAdapter);
-		setupView(1, R.id.album_list, R.string.albums, R.drawable.ic_tab_albums, mAlbumAdapter);
-		setupView(2, R.id.song_list, R.string.songs, R.drawable.ic_tab_songs, mSongAdapter);
-		setupView(3, R.id.playlist_list, R.string.playlists, R.drawable.ic_tab_playlists, mPlaylistAdapter);
-		setupView(4, R.id.genre_list, R.string.genres, R.drawable.ic_tab_genres, mGenreAdapter);
-		setupView(5, R.id.file_list, R.string.files, R.drawable.ic_tab_files, mFilesAdapter);
+		TabPageIndicator tabs = (TabPageIndicator)findViewById(R.id.tabs);
+		tabs.setViewPager(mViewPager);
+		tabs.setOnPageChangeListener(this);
 
 		getContentResolver().registerContentObserver(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, true, mPlaylistObserver);
-
-		int currentTab = 0;
-		String filter = null;
-
-		if (state != null) {
-			if (state.getBoolean("search_box_visible"))
-				setSearchBoxVisible(true);
-			currentTab = state.getInt("current_tab", 0);
-			filter = state.getString("filter");
-		}
-
-		mTabHost.setCurrentTab(currentTab);
-		mTabHost.setOnTabChangedListener(this);
-		onTabChanged(null);
-
-		if (filter != null)
-			mTextFilter.setText(filter);
 
 		onNewIntent(getIntent());
 	}
@@ -257,14 +337,28 @@ public class LibraryActivity
 	}
 
 	@Override
+	public void onRestoreInstanceState(Bundle in)
+	{
+		super.onRestoreInstanceState(in);
+		if (in.getBoolean("search_box_visible"))
+			setSearchBoxVisible(true);
+		mPendingLimiters[1] = (Limiter)in.getSerializable("limiter_albums");
+		mPendingLimiters[2] = (Limiter)in.getSerializable("limiter_songs");
+		mPendingLimiters[5] = (Limiter)in.getSerializable("limiter_files");
+	}
+
+	@Override
 	protected void onSaveInstanceState(Bundle out)
 	{
+		super.onSaveInstanceState(out);
+
 		out.putBoolean("search_box_visible", mSearchBoxVisible);
-		out.putInt("current_tab", mTabHost.getCurrentTab());
-		out.putString("filter", mTextFilter.getText().toString());
-		out.putSerializable("limiter_albums", mAlbumAdapter.getLimiter());
-		out.putSerializable("limiter_songs", mSongAdapter.getLimiter());
-		out.putSerializable("limiter_files", mFilesAdapter.getLimiter());
+		if (mAlbumAdapter != null)
+			out.putSerializable("limiter_albums", mAlbumAdapter.getLimiter());
+		if (mSongAdapter != null)
+			out.putSerializable("limiter_songs", mSongAdapter.getLimiter());
+		if (mFilesAdapter != null)
+			out.putSerializable("limiter_files", mFilesAdapter.getLimiter());
 	}
 
 	@Override
@@ -307,20 +401,30 @@ public class LibraryActivity
 	}
 
 	/**
+	 * Returns either "Play All" or "Enqueue All", depending on the current
+	 * default action.
+	 */
+	private String getHeaderText()
+	{
+		int action = mDefaultAction;
+		if (action == ACTION_LAST_USED)
+			action = mLastAction;
+		return getString(action == ACTION_ENQUEUE || action == ACTION_ENQUEUE_ALL ? R.string.enqueue_all : R.string.play_all);
+	}
+
+	/**
 	 * Update the first row of the lists with the appropriate action (play all
 	 * or enqueue all).
 	 */
 	private void updateHeaders()
 	{
-		int action = mDefaultAction;
-		if (action == ACTION_LAST_USED)
-			action = mLastAction;
-
-		int res = action == ACTION_ENQUEUE || action == ACTION_ENQUEUE_ALL ? R.string.enqueue_all : R.string.play_all;
-		String text = getString(res);
-		mArtistAdapter.setHeaderText(text);
-		mAlbumAdapter.setHeaderText(text);
-		mSongAdapter.setHeaderText(text);
+		String text = getHeaderText();
+		if (mArtistAdapter != null)
+			mArtistAdapter.setHeaderText(text);
+		if (mAlbumAdapter != null)
+			mAlbumAdapter.setHeaderText(text);
+		if (mSongAdapter != null)
+			mSongAdapter.setHeaderText(text);
 	}
 
 	/**
@@ -386,15 +490,27 @@ public class LibraryActivity
 	private void clearLimiter(int type)
 	{
 		if (type == MediaUtils.TYPE_FILE) {
-			mFilesAdapter.setLimiter(null);
-			requestRequery(mFilesAdapter);
+			if (mFilesAdapter == null) {
+				mPendingLimiters[5] = null;
+			} else {
+				mFilesAdapter.setLimiter(null);
+				requestRequery(mFilesAdapter);
+			}
 		} else {
-			mAlbumAdapter.setLimiter(null);
-			mSongAdapter.setLimiter(null);
-			loadSortOrder(mSongAdapter);
-			loadSortOrder(mAlbumAdapter);
-			requestRequery(mSongAdapter);
-			requestRequery(mAlbumAdapter);
+			if (mAlbumAdapter == null) {
+				mPendingLimiters[1] = null;
+			} else {
+				mAlbumAdapter.setLimiter(null);
+				loadSortOrder(mAlbumAdapter);
+				requestRequery(mAlbumAdapter);
+			}
+			if (mSongAdapter == null) {
+				mPendingLimiters[2] = null;
+			} else {
+				mSongAdapter.setLimiter(null);
+				loadSortOrder(mSongAdapter);
+				requestRequery(mSongAdapter);
+			}
 		}
 		updateLimiterViews();
 	}
@@ -411,40 +527,64 @@ public class LibraryActivity
 
 		switch (limiter.type) {
 		case MediaUtils.TYPE_ALBUM:
-			mSongAdapter.setLimiter(limiter);
-			loadSortOrder(mSongAdapter);
-			requestRequery(mSongAdapter);
+			if (mSongAdapter == null) {
+				mPendingLimiters[2] = limiter;
+			} else {
+				mSongAdapter.setLimiter(limiter);
+				loadSortOrder(mSongAdapter);
+				requestRequery(mSongAdapter);
+			}
 			tab = 2;
 			break;
 		case MediaUtils.TYPE_ARTIST:
-			mAlbumAdapter.setLimiter(limiter);
-			mSongAdapter.setLimiter(limiter);
-			loadSortOrder(mSongAdapter);
-			loadSortOrder(mAlbumAdapter);
-			requestRequery(mSongAdapter);
-			requestRequery(mAlbumAdapter);
+			if (mAlbumAdapter == null) {
+				mPendingLimiters[1] = limiter;
+			} else {
+				mAlbumAdapter.setLimiter(limiter);
+				loadSortOrder(mAlbumAdapter);
+				requestRequery(mAlbumAdapter);
+			}
+			if (mSongAdapter == null) {
+				mPendingLimiters[2] = limiter;
+			} else {
+				mSongAdapter.setLimiter(limiter);
+				loadSortOrder(mSongAdapter);
+				requestRequery(mSongAdapter);
+			}
 			tab = 1;
 			break;
 		case MediaUtils.TYPE_GENRE:
-			mSongAdapter.setLimiter(limiter);
-			mAlbumAdapter.setLimiter(null);
-			loadSortOrder(mSongAdapter);
-			loadSortOrder(mAlbumAdapter);
-			requestRequery(mSongAdapter);
-			requestRequery(mAlbumAdapter);
+			if (mAlbumAdapter == null) {
+				mPendingLimiters[1] = limiter;
+			} else {
+				mAlbumAdapter.setLimiter(limiter);
+				loadSortOrder(mAlbumAdapter);
+				requestRequery(mAlbumAdapter);
+			}
+			if (mSongAdapter == null) {
+				mPendingLimiters[2] = null;
+			} else {
+				mSongAdapter.setLimiter(limiter);
+				loadSortOrder(mSongAdapter);
+				requestRequery(mSongAdapter);
+			}
 			tab = 2;
 			break;
 		case MediaUtils.TYPE_FILE:
-			mFilesAdapter.setLimiter(limiter);
-			requestRequery(mFilesAdapter);
+			if (mFilesAdapter == null) {
+				mPendingLimiters[5] = limiter;
+			} else {
+				mFilesAdapter.setLimiter(limiter);
+				requestRequery(mFilesAdapter);
+			}
 			tab = 5;
 			break;
 		default:
 			throw new IllegalArgumentException("Unsupported limiter type: " + limiter.type);
 		}
 
-		if (switchTab && mTabHost.getCurrentTab() != tab) {
-			mTabHost.setCurrentTab(tab);
+		if (switchTab && mViewPager.getCurrentItem() != tab) {
+			mViewPager.setCurrentItem(tab);
 		} else {
 			updateLimiterViews();
 		}
@@ -499,44 +639,44 @@ public class LibraryActivity
 	{
 		String filter = text.toString();
 		for (LibraryAdapter adapter : mAdapters) {
-			adapter.setFilter(filter);
-			requestRequery(adapter);
+			if (adapter != null) {
+				adapter.setFilter(filter);
+				requestRequery(adapter);
+			}
 		}
 	}
 
 	private void updateLimiterViews()
 	{
-		if (mLimiterViews == null)
-			return;
-
 		mLimiterViews.removeAllViews();
 
 		LibraryAdapter adapter = mCurrentAdapter;
-		if (adapter == null)
-			return;
+		Limiter limiterData;
+		if (adapter != null && (limiterData = adapter.getLimiter()) != null) {
+			String[] limiter = limiterData.names;
 
-		Limiter limiterData = adapter.getLimiter();
-		if (limiterData == null)
-			return;
-		String[] limiter = limiterData.names;
+			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+			params.leftMargin = 5;
+			for (int i = 0; i != limiter.length; ++i) {
+				PaintDrawable background = new PaintDrawable(Color.GRAY);
+				background.setCornerRadius(5);
 
-		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-		params.leftMargin = 5;
-		for (int i = 0; i != limiter.length; ++i) {
-			PaintDrawable background = new PaintDrawable(Color.GRAY);
-			background.setCornerRadius(5);
+				TextView view = new TextView(this);
+				view.setSingleLine();
+				view.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+				view.setText(limiter[i] + " | X");
+				view.setTextColor(Color.WHITE);
+				view.setBackgroundDrawable(background);
+				view.setLayoutParams(params);
+				view.setPadding(5, 2, 5, 2);
+				view.setTag(i);
+				view.setOnClickListener(this);
+				mLimiterViews.addView(view);
+			}
 
-			TextView view = new TextView(this);
-			view.setSingleLine();
-			view.setEllipsize(TextUtils.TruncateAt.MARQUEE);
-			view.setText(limiter[i] + " | X");
-			view.setTextColor(Color.WHITE);
-			view.setBackgroundDrawable(background);
-			view.setLayoutParams(params);
-			view.setPadding(5, 2, 5, 2);
-			view.setTag(i);
-			view.setOnClickListener(this);
-			mLimiterViews.addView(view);
+			mLimiterScroller.setVisibility(View.VISIBLE);
+		} else {
+			mLimiterScroller.setVisibility(View.GONE);
 		}
 	}
 
@@ -892,40 +1032,6 @@ public class LibraryActivity
 	}
 
 	/**
-	 * Hook up a ListView to this Activity and the supplied adapter
-	 *
-	 * @param index Where to put the view and adapter in mLists/mAdapters.
-	 * @param id The id of the ListView
-	 * @param adapter The adapter to hook up.
-	 * @param label The text to show on the tab.
-	 * @param icon The icon to show on the tab.
-	 */
-	private void setupView(int index, int id, int label, int icon, LibraryAdapter adapter)
-	{
-		ListView view = (ListView)findViewById(id);
-		view.setOnItemClickListener(this);
-		view.setOnCreateContextMenuListener(this);
-		view.setDivider(null);
-		view.setFastScrollEnabled(true);
-
-		view.setAdapter(adapter);
-		if (adapter instanceof MediaAdapter)
-			loadSortOrder((MediaAdapter)adapter);
-
-		Resources res = getResources();
-		String labelRes = res.getString(label);
-		Drawable iconRes = res.getDrawable(icon);
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-			mTabHost.addTab(mTabHost.newTabSpec(labelRes).setIndicator(null, iconRes).setContent(id));
-		else
-			mTabHost.addTab(mTabHost.newTabSpec(labelRes).setIndicator(labelRes, iconRes).setContent(id));
-
-		mAdapters[index] = adapter;
-		mLists[index] = view;
-		mRequeryNeeded[index] = true;
-	}
-
-	/**
 	 * Call addToPlaylist with the results from a NewPlaylistDialog stored in
 	 * obj.
 	 */
@@ -1055,7 +1161,9 @@ public class LibraryActivity
 	public void onMediaChange()
 	{
 		for (LibraryAdapter adapter : mAdapters) {
-			postRequestRequery(adapter);
+			if (adapter != null) {
+				postRequestRequery(adapter);
+			}
 		}
 	}
 
@@ -1124,17 +1232,6 @@ public class LibraryActivity
 		}
 	}
 
-	@Override
-	public void onTabChanged(String tag)
-	{
-		LibraryAdapter adapter = mAdapters[mTabHost.getCurrentTab()];
-		mCurrentAdapter = adapter;
-		if (mRequeryNeeded[adapter.getMediaType() - 1]) {
-			runQuery(adapter);
-		}
-		updateLimiterViews();
-	}
-
 	/**
 	 * Set the saved sort mode for the given adapter. The adapter should
 	 * be re-queried after calling this.
@@ -1173,10 +1270,45 @@ public class LibraryActivity
 
 		// Force a new FastScroller to be created so the scroll sections
 		// are updated.
-		ListView view = (ListView)mTabHost.getCurrentView();
+		ListView view = mLists[mViewPager.getCurrentItem()];
 		view.setFastScrollEnabled(false);
 		view.setFastScrollEnabled(true);
 
 		mHandler.sendMessage(mHandler.obtainMessage(MSG_SAVE_SORT, adapter));
+	}
+
+	/**
+	 * Requery the adapter at the given position if it exists and needs a requery.
+	 *
+	 * @param position An index in mAdapters.
+	 */
+	public void requeryIfNeeded(int position)
+	{
+		LibraryAdapter adapter = mAdapters[position];
+		if (adapter != null && mRequeryNeeded[position]) {
+			runQuery(adapter);
+		}
+	}
+
+	@Override
+	public void onPageScrollStateChanged(int arg0)
+	{
+	}
+
+	@Override
+	public void onPageScrolled(int arg0, float arg1, int arg2)
+	{
+	}
+
+	@Override
+	public void onPageSelected(int position)
+	{
+		mCurrentAdapter = mAdapters[position];
+		requeryIfNeeded(position);
+		if (position < ADAPTER_COUNT - 1)
+			requeryIfNeeded(position + 1);
+		if (position > 0)
+			requeryIfNeeded(position - 1);
+		updateLimiterViews();
 	}
 }
