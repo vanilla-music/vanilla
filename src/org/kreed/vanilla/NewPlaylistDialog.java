@@ -30,6 +30,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -89,6 +90,8 @@ public class NewPlaylistDialog extends Dialog implements TextWatcher, View.OnCli
 	protected void onCreate(Bundle state)
 	{
 		super.onCreate(state);
+
+		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
 		setContentView(R.layout.new_playlist_dialog);
 
