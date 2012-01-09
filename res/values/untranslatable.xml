@@ -23,10 +23,6 @@ THE SOFTWARE.
 <resources>
 	<style name="Dialog" parent="android:Theme.Dialog" />
 	<style name="Theme" parent="android:Theme" />
-	<style name="Black" parent="Theme">
-        <item name="android:colorBackground">@android:color/black</item>
-        <item name="android:windowBackground">@android:color/black</item>
-	</style>
 	<style name="NoTitle" parent="Theme">
 		<item name="android:windowNoTitle">true</item>
 	</style>

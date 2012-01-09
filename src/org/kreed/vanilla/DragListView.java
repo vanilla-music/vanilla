@@ -18,7 +18,6 @@ package org.kreed.vanilla;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.PixelFormat;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -301,9 +300,9 @@ public class DragListView extends ListView implements Handler.Callback {
 				| WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
 				| WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
 				| WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS;
-		mWindowParams.format = PixelFormat.TRANSLUCENT;
 		mWindowParams.windowAnimations = 0;
 
+		item.setDrawingCacheBackgroundColor(0xff005500);
 		item.buildDrawingCache();
 		// Create a copy of the drawing cache so that it does not get recycled
 		// by the framework when the list tries to clean up memory

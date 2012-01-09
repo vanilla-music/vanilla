@@ -53,8 +53,7 @@ THE SOFTWARE.
 			android:launchMode="singleTop" />
 		<activity
 			android:name="PlaylistActivity"
-			android:launchMode="singleTask"
-			android:theme="@style/Black" />
+			android:launchMode="singleTask" />
 		<activity
 			android:name="MiniPlaybackActivity"
 			android:theme="@style/Dialog"
