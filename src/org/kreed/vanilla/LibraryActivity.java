@@ -897,7 +897,6 @@ public class LibraryActivity
 		ListView view = (ListView)findViewById(id);
 		view.setOnItemClickListener(this);
 		view.setOnCreateContextMenuListener(this);
-		view.setCacheColorHint(Color.BLACK);
 		view.setDivider(null);
 		view.setFastScrollEnabled(true);
 

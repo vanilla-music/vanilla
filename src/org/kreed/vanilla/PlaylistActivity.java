@@ -101,7 +101,6 @@ public class PlaylistActivity extends Activity
 		setContentView(R.layout.playlist_activity);
 
 		DragListView view = (DragListView)findViewById(R.id.playlist);
-		view.setCacheColorHint(Color.BLACK);
 		view.setDivider(null);
 		view.setFastScrollEnabled(true);
 		view.setOnItemClickListener(this);
