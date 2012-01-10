@@ -892,6 +892,8 @@ public final class PlaybackService extends Service
 					setFlag(FLAG_PLAYING);
 				else if (!mPlugInitialized)
 					mPlugInitialized = true;
+			} else if (Intent.ACTION_SCREEN_ON.equals(action)) {
+				userActionTriggered();
 			}
 		}
 	}
@@ -954,6 +956,7 @@ public final class PlaybackService extends Service
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
 		filter.addAction(Intent.ACTION_HEADSET_PLUG);
+		filter.addAction(Intent.ACTION_SCREEN_ON);
 		registerReceiver(mReceiver, filter);
 	}
 
