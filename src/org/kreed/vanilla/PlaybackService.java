@@ -46,6 +46,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.PowerManager;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.telephony.PhoneStateListener;
@@ -209,6 +210,12 @@ public final class PlaybackService extends Service
 	 */
 	private static final int NOT_ACTION_NEXT_SONG = 2;
 
+	/**
+	 * If a user action is triggered within this time (in ms) after the
+	 * idle time fade-out occurs, playback will be resumed.
+	 */
+	private static final long IDLE_GRACE_PERIOD = 60000;
+
 	private static final Object sWait = new Object();
 	private static PlaybackService sInstance;
 	private static final ArrayList<PlaybackActivity> sActivities = new ArrayList<PlaybackActivity>(5);
@@ -277,6 +284,11 @@ public final class PlaybackService extends Service
 	 * when fading the volume.
 	 */
 	private float mCurrentVolume = 1.0f;
+	/**
+	 * Elapsed realtime at which playback was paused by idle timeout. -1
+	 * indicates that no timeout has occurred.
+	 */
+	private long mIdleStart = -1;
 
 	@Override
 	public void onCreate()
@@ -1013,6 +1025,7 @@ public final class PlaybackService extends Service
 		case FADE_OUT:
 			int progress = message.arg1 - 1;
 			if (progress == 0) {
+				mIdleStart = SystemClock.elapsedRealtime();
 				unsetFlag(FLAG_PLAYING);
 				mCurrentVolume = mUserVolume;
 			} else {
@@ -1136,7 +1149,7 @@ public final class PlaybackService extends Service
 
 	/**
 	 * Resets the idle timeout countdown. Should be called by a user action
-	 * has been trigger (new song chosen or playback toggled).
+	 * has been triggered (new song chosen or playback toggled).
 	 *
 	 * If an idle fade out is actually in progress, aborts it and resets the
 	 * volume.
@@ -1147,6 +1160,12 @@ public final class PlaybackService extends Service
 		mHandler.removeMessages(IDLE_TIMEOUT);
 		if (mIdleTimeout != 0)
 			mHandler.sendEmptyMessageDelayed(IDLE_TIMEOUT, mIdleTimeout * 1000);
+
+		long idleStart = mIdleStart;
+		if (idleStart != -1 && SystemClock.elapsedRealtime() - idleStart < IDLE_GRACE_PERIOD) {
+			mIdleStart = -1;
+			setFlag(FLAG_PLAYING);
+		}
 
 		if (mCurrentVolume != mUserVolume) {
 			mCurrentVolume = mUserVolume;
