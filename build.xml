@@ -82,12 +82,12 @@
     <!-- version-tag: 1 -->
     <import file="${sdk.dir}/tools/ant/build.xml" />
 
-
-    <target name="doc" depends="-setup">
+    <target name="doc" depends="-build-setup, -code-gen">
         <javadoc
             destdir="doc"
-            sourcepath="${source.dir}"
+            sourcepath="${source.absolute.dir}:${gen.absolute.dir}"
             bootclasspathref="android.target.classpath"
+            classpathref="jar.libs.ref"
             access="private" />
     </target>
 </project>
