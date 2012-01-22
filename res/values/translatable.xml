@@ -53,8 +53,8 @@ THE SOFTWARE.
 	<string name="play">Play</string>
 	<string name="edit">Edit</string>
 	<string name="rename">Rename</string>
-	<string name="add_to_playlist">Add to Playlist...</string>
-	<string name="new_playlist">New Playlist...</string>
+	<string name="add_to_playlist">Add to Playlist…</string>
+	<string name="new_playlist">New Playlist…</string>
 	<string name="expand">Expand</string>
 	<string name="delete">Delete</string>
 	<string name="playback_view">Now Playing</string>
@@ -62,6 +62,7 @@ THE SOFTWARE.
 	<string name="search">Search</string>
 	<string name="done">Done</string>
 	<string name="remove">Remove</string>
+	<string name="clear_search">Clear search</string>
 
 	<plurals name="playing">
 		<item quantity="one">1 song playing.</item>

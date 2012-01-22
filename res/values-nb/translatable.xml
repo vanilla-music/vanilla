@@ -43,8 +43,8 @@ THE SOFTWARE.
 	<string name="play">Spill</string>
 	<string name="edit">Endre</string>
 	<string name="rename">Gi nytt navn</string>
-	<string name="add_to_playlist">Legg til spilleliste...</string>
-	<string name="new_playlist">Ny Spilleliste...</string>
+	<string name="add_to_playlist">Legg til spilleliste…</string>
+	<string name="new_playlist">Ny Spilleliste…</string>
 	<string name="expand">Utvid</string>
 	<string name="delete">Slett</string>
 	<string name="playback_view">Spilles Nå</string>

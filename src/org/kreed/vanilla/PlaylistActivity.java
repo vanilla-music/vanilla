@@ -194,7 +194,7 @@ public class PlaylistActivity extends Activity
 		Intent intent = new Intent();
 		intent.putExtra("id", info.id);
 		intent.putExtra("position", info.position);
-		intent.putExtra("audioId", (Long)((MediaView)info.targetView).getTag());
+		intent.putExtra("audioId", (Long)info.targetView.getTag());
 
 		menu.add(0, MENU_PLAY, 0, R.string.play).setIntent(intent);
 		menu.add(0, MENU_PLAY_ALL, 0, R.string.play_all).setIntent(intent);

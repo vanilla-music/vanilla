@@ -53,7 +53,8 @@ THE SOFTWARE.
 			android:background="@null"
 			android:layout_height="0px"
 			android:layout_width="fill_parent"
-			android:layout_weight="1" />
+			android:layout_weight="1"
+			android:contentDescription="@string/play_pause" />
 		<ImageButton
 			android:id="@+id/next"
 			android:adjustViewBounds="true"
@@ -61,6 +62,7 @@ THE SOFTWARE.
 			android:background="@null"
 			android:layout_height="0px"
 			android:layout_width="fill_parent"
-			android:layout_weight="1" />
+			android:layout_weight="1"
+			android:contentDescription="@string/next_song" />
 	</LinearLayout>
 </RelativeLayout>

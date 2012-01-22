@@ -68,7 +68,8 @@ THE SOFTWARE.
 				android:layout_weight="1"
 				android:background="@null"
 				android:scaleType="fitCenter"
-				android:src="@drawable/shuffle_inactive" />
+				android:src="@drawable/shuffle_inactive"
+				android:contentDescription="@string/cycle_shuffle_mode" />
 			<ImageButton
 				android:id="@+id/previous"
 				android:adjustViewBounds="true"
@@ -77,7 +78,8 @@ THE SOFTWARE.
 				android:layout_weight="1"
 				android:background="@null"
 				android:scaleType="fitCenter"
-				android:src="@drawable/previous" />
+				android:src="@drawable/previous"
+				android:contentDescription="@string/previous_song" />
 			<ImageButton
 				android:id="@+id/play_pause"
 				android:adjustViewBounds="true"
@@ -86,7 +88,8 @@ THE SOFTWARE.
 				android:layout_weight="1"
 				android:background="@null"
 				android:scaleType="fitCenter"
-				android:src="@drawable/play" />
+				android:src="@drawable/play"
+				android:contentDescription="@string/play_pause" />
 			<ImageButton
 				android:id="@+id/next"
 				android:adjustViewBounds="true"
@@ -95,7 +98,8 @@ THE SOFTWARE.
 				android:layout_weight="1"
 				android:background="@null"
 				android:scaleType="fitCenter"
-				android:src="@drawable/next" />
+				android:src="@drawable/next"
+				android:contentDescription="@string/next_song" />
 			<ImageButton
 				android:id="@+id/end_action"
 				android:adjustViewBounds="true"
@@ -104,7 +108,8 @@ THE SOFTWARE.
 				android:layout_weight="1"
 				android:background="@null"
 				android:scaleType="fitCenter"
-				android:src="@drawable/repeat_inactive" />
+				android:src="@drawable/repeat_inactive"
+				android:contentDescription="@string/cycle_repeat_mode" />
 		</LinearLayout>
 	</LinearLayout>
 </FrameLayout>

@@ -79,7 +79,8 @@ THE SOFTWARE.
 			android:src="@drawable/play"
 			android:padding="5dip"
 			android:background="@null"
-			android:scaleType="centerInside" />
+			android:scaleType="centerInside"
+			android:contentDescription="@string/play_pause" />
 		<ImageButton
 			android:id="@+id/next"
 			android:adjustViewBounds="true"
@@ -89,6 +90,7 @@ THE SOFTWARE.
 			android:padding="5dip"
 			android:src="@drawable/next"
 			android:background="@null"
-			android:scaleType="centerInside" />
+			android:scaleType="centerInside"
+			android:contentDescription="@string/next_song" />
 	</LinearLayout>
 </LinearLayout>
