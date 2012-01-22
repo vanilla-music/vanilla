@@ -83,7 +83,7 @@ public final class PlaybackService extends Service
 	/**
 	 * State file version that indicates data order.
 	 */
-	private static final int STATE_VERSION = 4;
+	private static final int STATE_VERSION = 5;
 
 	private static final int NOTIFICATION_ID = 2;
 
@@ -271,7 +271,18 @@ public final class PlaybackService extends Service
 	private Song mCurrentSong;
 
 	boolean mPlayingBeforeCall;
+	/**
+	 * Stores the saved position in the current song from saved state. Should
+	 * be seeked to when the song is loaded into MediaPlayer. Used only during
+	 * initialization. The song that the saved position is for is stored in
+	 * {@link #mPendingSeekSong}.
+	 */
 	private int mPendingSeek;
+	/**
+	 * The id of the song that the mPendingSeek position is for. -1 indicates
+	 * an invalid song. Value is undefined when mPendingSeek is 0.
+	 */
+	private long mPendingSeekSong;
 	public Receiver mReceiver;
 	public InCallListener mCallListener;
 	private String mErrorMessage;
@@ -563,6 +574,14 @@ public final class PlaybackService extends Service
 			}
 		}
 
+		if ((toggled & FLAG_NO_MEDIA) != 0 && (state & FLAG_NO_MEDIA) != 0) {
+			Song song = mCurrentSong;
+			if (song != null && mMediaPlayerInitialized) {
+				mPendingSeek = mMediaPlayer.getCurrentPosition();
+				mPendingSeekSong = song.id;
+			}
+		}
+
 		if ((toggled & MASK_SHUFFLE) != 0)
 			mTimeline.setShuffleMode(shuffleMode(state));
 		if ((toggled & MASK_FINISH) != 0)
@@ -817,7 +836,7 @@ public final class PlaybackService extends Service
 			mMediaPlayer.prepare();
 			mMediaPlayerInitialized = true;
 
-			if (mPendingSeek != 0) {
+			if (mPendingSeek != 0 && mPendingSeekSong == song.id) {
 				mMediaPlayer.seekTo(mPendingSeek);
 				mPendingSeek = 0;
 			}
@@ -1364,6 +1383,7 @@ public final class PlaybackService extends Service
 
 			if (in.readLong() == STATE_FILE_MAGIC && in.readInt() == STATE_VERSION) {
 				mPendingSeek = in.readInt();
+				mPendingSeekSong = in.readLong();
 				mTimeline.readState(in);
 				state |= mTimeline.getShuffleMode() << SHIFT_SHUFFLE;
 				state |= mTimeline.getFinishAction() << SHIFT_FINISH;
@@ -1389,9 +1409,11 @@ public final class PlaybackService extends Service
 	{
 		try {
 			DataOutputStream out = new DataOutputStream(openFileOutput(STATE_FILE, 0));
+			Song song = mCurrentSong;
 			out.writeLong(STATE_FILE_MAGIC);
 			out.writeInt(STATE_VERSION);
 			out.writeInt(pendingSeek);
+			out.writeLong(song == null ? -1 : song.id);
 			mTimeline.writeState(out);
 			out.close();
 		} catch (IOException e) {
