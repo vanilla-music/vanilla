@@ -43,9 +43,14 @@ public class Song implements Comparable<Song> {
 	 */
 	public static final int FLAG_RANDOM = 0x1;
 	/**
+	 * If set, this song has no cover art. If not set, this song may or may not
+	 * have cover art.
+	 */
+	public static final int FLAG_NO_COVER = 0x2;
+	/**
 	 * The number of flags.
 	 */
-	public static final int FLAG_COUNT = 1;
+	public static final int FLAG_COUNT = 2;
 
 	public static final String[] EMPTY_PROJECTION = {
 		MediaStore.Audio.Media._ID,
@@ -130,15 +135,9 @@ public class Song implements Comparable<Song> {
 	public int trackNumber;
 
 	/**
-	 * Song flags. Currently FLAG_RANDOM or 0.
+	 * Song flags. Currently {@link #FLAG_RANDOM} or {@link FLAG_NO_COVER}.
 	 */
 	public int flags;
-
-	/**
-	 * If true, this song has no cover art. If false, this song may or may not
-	 * have cover art.
-	 */
-	public boolean noCover;
 
 	/**
 	 * Initialize the song with the specified id. Call populate to fill fields
@@ -213,7 +212,7 @@ public class Song implements Comparable<Song> {
 	 */
 	public Bitmap getCover(Context context)
 	{
-		if (mDisableCoverArt || id == -1 || noCover)
+		if (mDisableCoverArt || id == -1 || (flags & FLAG_NO_COVER) != 0)
 			return null;
 
 		Bitmap cover = sCoverCache.get(id);
@@ -240,7 +239,7 @@ public class Song implements Comparable<Song> {
 			Log.d("VanillaMusic", "Failed to load cover art for " + path, e);
 		}
 
-		noCover = true;
+		flags |= FLAG_NO_COVER;
 		return null;
 	}
 
