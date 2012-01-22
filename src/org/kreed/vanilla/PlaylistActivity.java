@@ -27,7 +27,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -257,7 +256,7 @@ public class PlaylistActivity extends Activity
 			MediaView mediaView = (MediaView)view;
 			if (mediaView.isRightBitmapPressed()) {
 				mAdapter.remove(id);
-			} else if (!mEditing) {
+			} else if (!mEditing && mDefaultAction != LibraryActivity.ACTION_DO_NOTHING) {
 				performAction(mDefaultAction, position, (Long)mediaView.getTag());
 			}
 		}

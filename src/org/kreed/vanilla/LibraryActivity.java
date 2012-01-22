@@ -81,6 +81,8 @@ public class LibraryActivity
 	public static final int ACTION_LAST_USED = 2;
 	public static final int ACTION_PLAY_ALL = 3;
 	public static final int ACTION_ENQUEUE_ALL = 4;
+	public static final int ACTION_DO_NOTHING = 5;
+	public static final int ACTION_EXPAND = 6;
 	private static final int[] modeForAction =
 		{ SongTimeline.MODE_PLAY, SongTimeline.MODE_ENQUEUE, -1,
 		  SongTimeline.MODE_PLAY_ID_FIRST, SongTimeline.MODE_ENQUEUE_ID_FIRST };
@@ -464,15 +466,21 @@ public class LibraryActivity
 	{
 		MediaView mediaView = (MediaView)view;
 		LibraryAdapter adapter = (LibraryAdapter)list.getAdapter();
-		if (mediaView.isRightBitmapPressed()) {
+		int action = mDefaultAction;
+		if (mediaView.isRightBitmapPressed() || (action == ACTION_EXPAND && mediaView.hasRightBitmap())) {
 			if (adapter == mPlaylistAdapter)
 				editPlaylist(mediaView.getMediaId(), mediaView.getTitle());
 			else
 				expand(createClickIntent(adapter, mediaView));
 		} else if (id == mLastActedId) {
 			openPlaybackActivity();
-		} else {
-			pickSongs(createClickIntent(adapter, mediaView), mDefaultAction);
+		} else if (action != ACTION_DO_NOTHING) {
+			if (action == ACTION_EXPAND) {
+				// default to playing when trying to expand something that can't
+				// be expanded
+				action = ACTION_PLAY;
+			}
+			pickSongs(createClickIntent(adapter, mediaView), action);
 		}
 	}
 
