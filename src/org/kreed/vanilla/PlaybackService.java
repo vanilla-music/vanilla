@@ -89,7 +89,7 @@ public final class PlaybackService extends Service
 	/**
 	 * State file version that indicates data order.
 	 */
-	private static final int STATE_VERSION = 5;
+	private static final int STATE_VERSION = 6;
 
 	private static final int NOTIFICATION_ID = 2;
 
@@ -1199,7 +1199,7 @@ public final class PlaybackService extends Service
 			processSong((Song)message.obj);
 			break;
 		case QUERY:
-			runQuery(message.arg1, (QueryTask)message.obj, message.arg2);
+			runQuery((QueryTask)message.obj);
 			break;
 		case IDLE_TIMEOUT:
 			if ((mState & FLAG_PLAYING) != 0) {
@@ -1365,25 +1365,15 @@ public final class PlaybackService extends Service
 	 * Run the query and add the results to the timeline. Should be called in the
 	 * worker thread.
 	 *
-	 * @param mode How to add songs. Passed to
-	 * {@link SongTimeline#addSongs(int, android.database.Cursor, int, long)}
 	 * @param query The query to run.
-	 * @param jumpTo Passed to
-	 * {@link SongTimeline#addSongs(int, android.database.Cursor, int, long)}
 	 */
-	public void runQuery(int mode, QueryTask query, int jumpTo)
+	public void runQuery(QueryTask query)
 	{
-		Cursor cursor = query.runQuery(getContentResolver());
-		if (cursor == null) {
-			return;
-		}
-
-		int count = mTimeline.addSongs(mode, cursor, jumpTo, query.getExtra());
-		cursor.close();
+		int count = mTimeline.addSongs(this, query);
 
 		int text;
 
-		switch (mode) {
+		switch (query.mode) {
 		case SongTimeline.MODE_PLAY:
 		case SongTimeline.MODE_PLAY_POS_FIRST:
 		case SongTimeline.MODE_PLAY_ID_FIRST:
@@ -1398,7 +1388,7 @@ public final class PlaybackService extends Service
 			text = R.plurals.enqueued;
 			break;
 		default:
-			throw new IllegalArgumentException("Invalid add mode: " + mode);
+			throw new IllegalArgumentException("Invalid add mode: " + query.mode);
 		}
 
 		Toast.makeText(this, getResources().getQuantityString(text, count, count), Toast.LENGTH_SHORT).show();
@@ -1407,15 +1397,11 @@ public final class PlaybackService extends Service
 	/**
 	 * Run the query in the background and add the results to the timeline.
 	 *
-	 * @param mode One of SongTimeline.MODE_*. Tells whether to play the songs
-	 * immediately or enqueue them for later.
 	 * @param query The query.
-	 * @param jumpTo Passed to
-	 * {@link SongTimeline#addSongs(int, android.database.Cursor, int, long)}
 	 */
-	public void addSongs(int mode, QueryTask query, int jumpTo)
+	public void addSongs(QueryTask query)
 	{
-		mHandler.sendMessage(mHandler.obtainMessage(QUERY, mode, jumpTo, query));
+		mHandler.sendMessage(mHandler.obtainMessage(QUERY, query));
 	}
 
 	/**
@@ -1450,7 +1436,9 @@ public final class PlaybackService extends Service
 		}
 
 		String selection = "_id!=" + current.id;
-		addSongs(SongTimeline.MODE_PLAY_NEXT, MediaUtils.buildQuery(type, id, Song.FILLED_PROJECTION, selection), 0);
+		QueryTask query = MediaUtils.buildQuery(type, id, Song.FILLED_PROJECTION, selection);
+		query.mode = SongTimeline.MODE_PLAY_NEXT;
+		addSongs(query);
 	}
 
 	/**

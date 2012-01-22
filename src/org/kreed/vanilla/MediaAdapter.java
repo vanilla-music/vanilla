@@ -333,11 +333,12 @@ public class MediaAdapter
 	public QueryTask buildSongQuery(String[] projection)
 	{
 		QueryTask query = buildQuery(projection, true);
+		query.type = mType;
 		if (mType != MediaUtils.TYPE_SONG) {
-			query.setUri(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
+			query.uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 			// Would be better to match the sort order in the adapter. This
 			// is likely to require significantly more work though.
-			query.setSortOrder(mSongSort);
+			query.sortOrder = mSongSort;
 		}
 		return query;
 	}

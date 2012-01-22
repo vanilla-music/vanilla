@@ -151,7 +151,9 @@ public class MediaUtils {
 			selection.append(select);
 		}
 
-		return new QueryTask(media, projection, selection.toString(), null, DEFAULT_SORT);
+		QueryTask result = new QueryTask(media, projection, selection.toString(), null, DEFAULT_SORT);
+		result.type = type;
+		return result;
 	}
 
 	/**
@@ -167,7 +169,10 @@ public class MediaUtils {
 	{
 		Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", id);
 		String sort = MediaStore.Audio.Playlists.Members.PLAY_ORDER;
-		return new QueryTask(uri, projection, selection, null, sort);
+		QueryTask result = new QueryTask(uri, projection, selection, null, sort);
+		result.type = TYPE_PLAYLIST;
+		result.id = id;
+		return result;
 	}
 
 	/**
@@ -183,7 +188,9 @@ public class MediaUtils {
 	public static QueryTask buildGenreQuery(long id, String[] projection, String selection, String[] selectionArgs, String sort)
 	{
 		Uri uri = MediaStore.Audio.Genres.Members.getContentUri("external", id);
-		return new QueryTask(uri, projection, selection, selectionArgs, sort);
+		QueryTask result = new QueryTask(uri, projection, selection, selectionArgs, sort);
+		result.type = TYPE_GENRE;
+		return result;
 	}
 
 	/**
@@ -544,6 +551,8 @@ public class MediaUtils {
 		selection.append("*' AND is_music!=0");
 
 		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-		return new QueryTask(media, projection, selection.toString(), null, DEFAULT_SORT);
+		QueryTask result = new QueryTask(media, projection, selection.toString(), null, DEFAULT_SORT);
+		result.type = TYPE_FILE;
+		return result;
 	}
 }

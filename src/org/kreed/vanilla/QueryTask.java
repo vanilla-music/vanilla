@@ -30,12 +30,33 @@ import android.net.Uri;
  * Represents a pending query.
  */
 public class QueryTask {
-	private Uri mUri;
-	private final String[] mProjection;
-	private final String mSelection;
-	private final String[] mSelectionArgs;
-	private String mSortOrder;
-	private long mExtra;
+	public Uri uri;
+	public final String[] projection;
+	public final String selection;
+	public final String[] selectionArgs;
+	public String sortOrder;
+
+	/**
+	 * Used for {@link SongTimeline#addSongs(android.content.Context, QueryTask)}.
+	 * One of SongTimeline.MODE_*.
+	 */
+	public int mode;
+
+	/**
+	 * Id of the group being queried.
+	 */
+	public long id;
+
+	/**
+	 * Type of the group being query. One of MediaUtils.TYPE_*.
+	 */
+	public int type;
+
+	/**
+	 * Data. Required value depends on value of mode. See individual mode
+	 * documentation for details.
+	 */
+	public long data;
 
 	/**
 	 * Create the tasks. All arguments are passed directly to
@@ -43,52 +64,11 @@ public class QueryTask {
 	 */
 	public QueryTask(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder)
 	{
-		mUri = uri;
-		mProjection = projection;
-		mSelection = selection;
-		mSelectionArgs = selectionArgs;
-		mSortOrder = sortOrder;
-	}
-
-	/**
-	 * Modify the uri of the pending query.
-	 *
-	 * @param uri The new uri.
-	 */
-	public void setUri(Uri uri)
-	{
-		mUri = uri;
-	}
-
-	/**
-	 * Modify the sort order of the pending query.
-	 *
-	 * @param sortOrder The new sort order.
-	 */
-	public void setSortOrder(String sortOrder)
-	{
-		mSortOrder = sortOrder;
-	}
-
-	/**
-	 * Store some extra data with this query. This data is not used at all by
-	 * when running the query.
-	 *
-	 * @param extra The extra data
-	 */
-	public void setExtra(long extra)
-	{
-		mExtra = extra;
-	}
-
-	/**
-	 * Retrieve the extra data stored by {@link QueryTask#setExtra(long)}
-	 *
-	 * @return The extra data
-	 */
-	public long getExtra()
-	{
-		return mExtra;
+		this.uri = uri;
+		this.projection = projection;
+		this.selection = selection;
+		this.selectionArgs = selectionArgs;
+		this.sortOrder = sortOrder;
 	}
 
 	/**
@@ -98,6 +78,6 @@ public class QueryTask {
 	 */
 	public Cursor runQuery(ContentResolver resolver)
 	{
-		return resolver.query(mUri, mProjection, mSelection, mSelectionArgs, mSortOrder);
+		return resolver.query(uri, projection, selection, selectionArgs, sortOrder);
 	}
 }

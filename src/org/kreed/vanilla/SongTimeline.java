@@ -88,19 +88,19 @@ public final class SongTimeline {
 	/**
 	 * Clear the timeline and use only the provided songs.
 	 *
-	 * @see SongTimeline#addSongs(int, android.database.Cursor, int, long)
+	 * @see SongTimeline#addSongs(Context, QueryTask)
 	 */
 	public static final int MODE_PLAY = 0;
 	/**
 	 * Clear the queue and add the songs after the current song.
 	 *
-	 * @see SongTimeline#addSongs(int, android.database.Cursor, int, long)
+	 * @see SongTimeline#addSongs(Context, QueryTask)
 	 */
 	public static final int MODE_PLAY_NEXT = 1;
 	/**
 	 * Add the songs at the end of the timeline, clearing random songs.
 	 *
-	 * @see SongTimeline#addSongs(int, android.database.Cursor, int, long)
+	 * @see SongTimeline#addSongs(Context, QueryTask)
 	 */
 	public static final int MODE_ENQUEUE = 2;
 	/**
@@ -108,9 +108,9 @@ public final class SongTimeline {
 	 * removing the songs before the given position in the query and appending
 	 * them to the end of the queue.
 	 *
-	 * Pass the position in the integer argument.
+	 * Pass the position in QueryTask.data.
 	 *
-	 * @see SongTimeline#addSongs(int, android.database.Cursor, int, long)
+	 * @see SongTimeline#addSongs(Context, QueryTask)
 	 */
 	public static final int MODE_PLAY_POS_FIRST = 3;
 	/**
@@ -119,11 +119,9 @@ public final class SongTimeline {
 	 * them to the end of the queue. If there are multiple songs with
 	 * the given id, picks the first song with that id.
 	 *
-	 * Pass the id in the long argument and the type of the id (one of
-	 * MediaUtils.TYPE_ARTIST, TYPE_ALBUM or TYPE_SONG) in the integer
-	 * argument.
+	 * Pass the id in QueryTask.data.
 	 *
-	 * @see SongTimeline#addSongs(int, android.database.Cursor, int, long)
+	 * @see SongTimeline#addSongs(Context, QueryTask)
 	 */
 	public static final int MODE_PLAY_ID_FIRST = 4;
 	/**
@@ -132,11 +130,9 @@ public final class SongTimeline {
 	 * them to the end of the queue. If there are multiple songs with
 	 * the given id, picks the first song with that id.
 	 *
-	 * Pass the id in the long argument and the type of the id (one of
-	 * MediaUtils.TYPE_ARTIST, TYPE_ALBUM or TYPE_SONG) in the integer
-	 * argument.
+	 * Pass the id in QueryTask.data.
 	 *
-	 * @see SongTimeline#addSongs(int, android.database.Cursor, int, long)
+	 * @see SongTimeline#addSongs(Context, QueryTask)
 	 */
 	public static final int MODE_ENQUEUE_ID_FIRST = 5;
 	/**
@@ -144,9 +140,9 @@ public final class SongTimeline {
 	 * removing the songs before the given position in the query and appending
 	 * them to the end of the queue.
 	 *
-	 * Pass the position in the integer argument.
+	 * Pass the position in QueryTask.data.
 	 *
-	 * @see SongTimeline#addSongs(int, android.database.Cursor, int, long)
+	 * @see SongTimeline#addSongs(Context, QueryTask)
 	 */
 	public static final int MODE_ENQUEUE_POS_FIRST = 6;
 
@@ -303,8 +299,11 @@ public final class SongTimeline {
 				StringBuilder selection = new StringBuilder("_ID IN (");
 				for (int i = 0; i != n; ++i) {
 					long id = in.readLong();
+					if (id == -1)
+						continue;
+
 					// Add the index to the flags so we can sort
-					int flags = (in.readInt() & ~(~0 << Song.FLAG_COUNT)) | (i << Song.FLAG_COUNT);
+					int flags = in.readInt() & ~(~0 << Song.FLAG_COUNT) | i << Song.FLAG_COUNT;
 					songs.add(new Song(id, flags));
 
 					if (i != 0)
@@ -375,7 +374,6 @@ public final class SongTimeline {
 				Song song = songs.get(i);
 				if (song == null) {
 					out.writeLong(-1);
-					out.writeInt(0);
 				} else {
 					out.writeLong(song.id);
 					out.writeInt(song.flags);
@@ -580,23 +578,29 @@ public final class SongTimeline {
 	}
 
 	/**
-	 * Add the songs from the given cursor to the song timeline.
+	 * Run the given query and add the results to the song timeline.
 	 *
-	 * @param mode How to add the songs. One of SongTimeline.MODE_*.
-	 * @param cursor The cursor to fill from.
-	 * @param i The integer argument. See individual mode documentation for
-	 * usage.
-	 * @param l The long argument. See individual mode documentation for
-	 * usage.
+	 * @param context A context to use.
+	 * @param query The query to be run. The mode variable must be initialized
+	 * to one of SongTimeline.MODE_*. The type and data variables may also need
+	 * to be initialized depending on the given mode.
 	 * @return The number of songs that were added.
 	 */
-	public int addSongs(int mode, Cursor cursor, int i, long l)
+	public int addSongs(Context context, QueryTask query)
 	{
-		if (cursor == null)
+		Cursor cursor = query.runQuery(context.getContentResolver());
+		if (cursor == null) {
 			return 0;
+		}
+
 		int count = cursor.getCount();
-		if (count == 0)
+		if (count == 0) {
 			return 0;
+		}
+
+		int mode = query.mode;
+		int type = query.type;
+		long data = query.data;
 
 		ArrayList<Song> timeline = mSongs;
 		synchronized (this) {
@@ -636,11 +640,11 @@ public final class SongTimeline {
 				timeline.add(song);
 
 				if (jumpSong == null) {
-					if ((mode == MODE_PLAY_POS_FIRST || mode == MODE_ENQUEUE_POS_FIRST) && j == i) {
+					if ((mode == MODE_PLAY_POS_FIRST || mode == MODE_ENQUEUE_POS_FIRST) && j == data) {
 						jumpSong = song;
 					} else if (mode == MODE_PLAY_ID_FIRST || mode == MODE_ENQUEUE_ID_FIRST) {
 						long id;
-						switch (i) {
+						switch (type) {
 						case MediaUtils.TYPE_ARTIST:
 							id = song.artistId;
 							break;
@@ -651,9 +655,9 @@ public final class SongTimeline {
 							id = song.id;
 							break;
 						default:
-							throw new IllegalArgumentException("Unsupported id type: " + i);
+							throw new IllegalArgumentException("Unsupported id type: " + type);
 						}
-						if (id == l)
+						if (id == data)
 							jumpSong = song;
 					}
 				}

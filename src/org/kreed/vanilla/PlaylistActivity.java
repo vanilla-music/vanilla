@@ -232,13 +232,16 @@ public class PlaylistActivity extends Activity
 		case LibraryActivity.ACTION_PLAY:
 		case LibraryActivity.ACTION_ENQUEUE: {
 			QueryTask query = MediaUtils.buildMediaQuery(MediaUtils.TYPE_SONG, audioId, Song.FILLED_PROJECTION, null);
-			PlaybackService.get(this).addSongs(MODE_FOR_ACTION[action], query, 0);
+			query.mode = MODE_FOR_ACTION[action];
+			PlaybackService.get(this).addSongs(query);
 			break;
 		}
 		case LibraryActivity.ACTION_PLAY_ALL:
 		case LibraryActivity.ACTION_ENQUEUE_ALL: {
 			QueryTask query = MediaUtils.buildPlaylistQuery(mPlaylistId, Song.FILLED_PLAYLIST_PROJECTION, null);
-			PlaybackService.get(this).addSongs(MODE_FOR_ACTION[action], query, position - mListView.getHeaderViewsCount());
+			query.mode = MODE_FOR_ACTION[action];
+			query.data = position - mListView.getHeaderViewsCount();
+			PlaybackService.get(this).addSongs(query);
 			break;
 		}
 		}

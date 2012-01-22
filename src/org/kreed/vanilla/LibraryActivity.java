@@ -435,10 +435,10 @@ public class LibraryActivity
 				all = true;
 			}
 		}
-		mode = modeForAction[mode];
 
 		QueryTask query = buildQueryFromIntent(intent, false, all);
-		PlaybackService.get(this).addSongs(mode, query, intent.getIntExtra("type", MediaUtils.TYPE_INVALID));
+		query.mode = modeForAction[mode];
+		PlaybackService.get(this).addSongs(query);
 
 		mLastActedId = id;
 
@@ -650,7 +650,7 @@ public class LibraryActivity
 			query = MediaUtils.buildFileQuery(intent.getStringExtra("file"), projection);
 		} else if (all || id == LibraryAdapter.HEADER_ID) {
 			query = ((MediaAdapter)mPagerAdapter.mAdapters[type]).buildSongQuery(projection);
-			query.setExtra(id);
+			query.data = id;
 		} else {
 			query = MediaUtils.buildQuery(type, id, projection, null);
 		}
