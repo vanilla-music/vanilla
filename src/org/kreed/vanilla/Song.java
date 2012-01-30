@@ -135,7 +135,7 @@ public class Song implements Comparable<Song> {
 	public int trackNumber;
 
 	/**
-	 * Song flags. Currently {@link #FLAG_RANDOM} or {@link FLAG_NO_COVER}.
+	 * Song flags. Currently {@link #FLAG_RANDOM} or {@link #FLAG_NO_COVER}.
 	 */
 	public int flags;
 
