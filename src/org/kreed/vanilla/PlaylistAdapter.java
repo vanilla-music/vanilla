@@ -26,18 +26,18 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.res.Resources;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.TextView;
 
 /**
  * CursorAdapter backed by MediaStore playlists.
@@ -54,12 +54,12 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 	private final Context mContext;
 	private final Handler mWorkerHandler;
 	private final Handler mUiHandler;
+	private final LayoutInflater mInflater;
+	private final Drawable mExpander;
 
 	private long mPlaylistId;
 
 	private boolean mEditable;
-	private final Bitmap mDragBitmap;
-	private final Bitmap mDeleteBitmap;
 
 	/**
 	 * Create a playlist adapter.
@@ -74,10 +74,8 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 		mContext = context;
 		mUiHandler = new Handler(this);
 		mWorkerHandler = new Handler(worker, this);
-
-		Resources res = context.getResources();
-		mDragBitmap = BitmapFactory.decodeResource(res, R.drawable.grabber);
-		mDeleteBitmap = BitmapFactory.decodeResource(res, R.drawable.close);
+		mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		mExpander = context.getResources().getDrawable(R.drawable.grabber);
 	}
 
 	/**
@@ -109,10 +107,10 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 	@Override
 	public void bindView(View view, Context context, Cursor cursor)
 	{
-		MediaView mediaView = (MediaView)view;
-		mediaView.updateMedia(cursor, true);
-		mediaView.setTag(cursor.getLong(3));
-		mediaView.setShowBitmaps(mEditable);
+		TextView textView = (TextView)view;
+		textView.setText(cursor.getString(1));
+		textView.setCompoundDrawablesWithIntrinsicBounds(mEditable ? mExpander : null, null, null, null);
+		textView.setTag(cursor.getLong(3));
 	}
 
 	/**
@@ -121,7 +119,7 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup parent)
 	{
-		return new MediaView(context, mDragBitmap, mDeleteBitmap);
+		return mInflater.inflate(R.layout.playlist_row, null);
 	}
 
 	/**

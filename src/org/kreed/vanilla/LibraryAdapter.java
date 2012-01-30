@@ -22,6 +22,8 @@
 
 package org.kreed.vanilla;
 
+import android.content.Intent;
+import android.view.View;
 import android.widget.ListAdapter;
 
 /**
@@ -97,4 +99,39 @@ public interface LibraryAdapter extends ListAdapter {
 	 * Must be called on the UI thread.
 	 */
 	public void clear();
+
+	/**
+	 * Creates the row data used by LibraryActivity.
+	 */
+	public Intent createData(View row);
+
+	/**
+	 * Extra for row data: media id. type: long.
+	 */
+	public static final String DATA_ID = "id";
+	/**
+	 * Special id for {@link #DATA_ID}: the row represented is a header view.
+	 */
+	public static final long HEADER_ID = -1;
+	/**
+	 * Special id for {@link #DATA_ID}: invalid id.
+	 */
+	public static final long INVALID_ID = -2;
+	/**
+	 * Extra for row data: media title. type: String.
+	 */
+	public static final String DATA_TITLE = "title";
+	/**
+	 * Extra for row data: media type. type: int. One of MediaUtils.TYPE_*.
+	 */
+	public static final String DATA_TYPE = "type";
+	/**
+	 * Extra for row data: canonical file path. type: String. Only present if
+	 * type is {@link MediaUtils.TYPE_FILE}.
+	 */
+	public static final String DATA_FILE = "file";
+	/**
+	 * Extra for row data: if true, row has expander arrow. type: boolean.
+	 */
+	public static final String DATA_EXPANDABLE = "expandable";
 }

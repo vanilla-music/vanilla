@@ -130,7 +130,7 @@ public class FourLongWidget extends AppWidgetProvider {
 		intent.setAction(Intent.ACTION_MAIN);
 		pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 		views.setOnClickPendingIntent(R.id.cover, pendingIntent);
-		views.setOnClickPendingIntent(R.id.text, pendingIntent);
+		views.setOnClickPendingIntent(R.id.text_layout, pendingIntent);
 
 		intent = new Intent(PlaybackService.ACTION_TOGGLE_PLAYBACK).setComponent(service);
 		pendingIntent = PendingIntent.getService(context, 0, intent, 0);

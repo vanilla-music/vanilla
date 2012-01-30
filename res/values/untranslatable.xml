@@ -33,6 +33,8 @@ THE SOFTWARE.
 	<style name="AlertDialogItem">
 		<item name="android:textColor">@android:color/primary_text_light</item>
 	</style>
+	<!-- Color used in LibraryActivity list dividers -->
+	<color name="divider_color">#f444</color>
 	<string-array name="entry_values">
 		<!-- Note: even if this was an integer-array, these would be converted
 		     to strings anyway.

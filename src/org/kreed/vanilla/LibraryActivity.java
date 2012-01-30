@@ -41,7 +41,6 @@ import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -51,7 +50,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -62,7 +60,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.viewpagerindicator.TabPageIndicator;
 import java.io.File;
-import java.io.IOException;
 import junit.framework.Assert;
 
 /**
@@ -70,8 +67,7 @@ import junit.framework.Assert;
  */
 public class LibraryActivity
 	extends PlaybackActivity
-	implements AdapterView.OnItemClickListener
-	         , TextWatcher
+	implements TextWatcher
 	         , DialogInterface.OnClickListener
 	         , DialogInterface.OnDismissListener
 {
@@ -161,7 +157,6 @@ public class LibraryActivity
 			checkForLaunch(getIntent());
 		}
 
-		MediaView.init(this);
 		setContentView(R.layout.library_content);
 
 		mSearchBox = findViewById(R.id.search_box);
@@ -245,7 +240,7 @@ public class LibraryActivity
 			startActivity(new Intent(this, LibraryActivity.class));
 		}
 		mDefaultAction = Integer.parseInt(settings.getString("default_action_int", "0"));
-		mLastActedId = -2;
+		mLastActedId = LibraryAdapter.INVALID_ID;
 		updateHeaders();
 	}
 
@@ -368,13 +363,13 @@ public class LibraryActivity
 	 */
 	private void pickSongs(Intent intent, int action)
 	{
-		long id = intent.getLongExtra("id", -1);
+		long id = intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
 
 		boolean all = false;
 		int mode = action;
 		if (action == ACTION_PLAY_ALL || action == ACTION_ENQUEUE_ALL) {
 			int type = mCurrentAdapter.getMediaType();
-			boolean notPlayAllAdapter = type > MediaUtils.TYPE_SONG || id == MediaView.HEADER_ID;
+			boolean notPlayAllAdapter = type > MediaUtils.TYPE_SONG || id == LibraryAdapter.HEADER_ID;
 			if (mode == ACTION_ENQUEUE_ALL && notPlayAllAdapter) {
 				mode = ACTION_ENQUEUE;
 			} else if (mode == ACTION_PLAY_ALL && notPlayAllAdapter) {
@@ -406,7 +401,7 @@ public class LibraryActivity
 	private void expand(Intent intent)
 	{
 		int type = intent.getIntExtra("type", 1);
-		long id = intent.getLongExtra("id", -1);
+		long id = intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
 		int tab = mPagerAdapter.setLimiter(mPagerAdapter.mAdapters[type - 1].buildLimiter(id));
 		if (tab == mViewPager.getCurrentItem())
 			updateLimiterViews();
@@ -423,20 +418,20 @@ public class LibraryActivity
 		startActivity(new Intent(this, FullPlaybackActivity.class));
 	}
 
-	@Override
-	public void onItemClick(AdapterView<?> list, View view, int pos, long id)
+	/**
+	 * Called by LibraryAdapters when a row has been clicked.
+	 *
+	 * @param row The data for the row that was clicked.
+	 */
+	public void onItemClicked(Intent rowData)
 	{
-		MediaView mediaView = (MediaView)view;
-		LibraryAdapter adapter = (LibraryAdapter)list.getAdapter();
 		int action = mDefaultAction;
 		if (action == ACTION_LAST_USED)
 			action = mLastAction;
-		if (mediaView.isRightBitmapPressed() || action == ACTION_EXPAND && mediaView.hasRightBitmap()) {
-			if (adapter.getMediaType() == MediaUtils.TYPE_PLAYLIST)
-				editPlaylist(mediaView.getMediaId(), mediaView.getTitle());
-			else
-				expand(createClickIntent(adapter, mediaView));
-		} else if (id == mLastActedId) {
+
+		if (action == ACTION_EXPAND && rowData.getBooleanExtra(LibraryAdapter.DATA_EXPANDABLE, false)) {
+			onItemExpanded(rowData);
+		} else if (rowData.getLongExtra(LibraryAdapter.DATA_ID, LibraryAdapter.INVALID_ID) == mLastActedId) {
 			openPlaybackActivity();
 		} else if (action != ACTION_DO_NOTHING) {
 			if (action == ACTION_EXPAND) {
@@ -444,8 +439,22 @@ public class LibraryActivity
 				// be expanded
 				action = ACTION_PLAY;
 			}
-			pickSongs(createClickIntent(adapter, mediaView), action);
+			pickSongs(rowData, action);
 		}
+	}
+
+	/**
+	 * Called by LibraryAdapters when a row's expand arrow has been clicked.
+	 *
+	 * @param row The data for the row that was clicked.
+	 */
+	public void onItemExpanded(Intent rowData)
+	{
+		int type = rowData.getIntExtra(LibraryAdapter.DATA_TYPE, -1);
+		if (type == MediaUtils.TYPE_PLAYLIST)
+			editPlaylist(rowData);
+		else
+			expand(rowData);
 	}
 
 	@Override
@@ -551,34 +560,6 @@ public class LibraryActivity
 	}
 
 	/**
-	 * Creates an intent based off of the media represented by the given view.
-	 *
-	 * @param adapter The adapter that owns the view.
-	 * @param view The MediaView to build from.
-	 */
-	private static Intent createClickIntent(LibraryAdapter adapter, MediaView view)
-	{
-		int type = adapter.getMediaType();
-		long id = view.getMediaId();
-		Intent intent = new Intent();
-		intent.putExtra("type", type);
-		intent.putExtra("id", id);
-		intent.putExtra("title", view.getTitle());
-		if (type == MediaUtils.TYPE_FILE) {
-			File file = (File)adapter.getItem((int)id);
-			String path;
-			try {
-				path = file.getCanonicalPath();
-			} catch (IOException e) {
-				path = file.getAbsolutePath();
-				Log.e("VanillaMusic", "Failed to canonicalize path", e);
-			}
-			intent.putExtra("file", path);
-		}
-		return intent;
-	}
-
-	/**
 	 * Builds a media query based off the data stored in the given intent.
 	 *
 	 * @param intent An intent created with
@@ -597,11 +578,11 @@ public class LibraryActivity
 		else
 			projection = empty ? Song.EMPTY_PROJECTION : Song.FILLED_PROJECTION;
 
-		long id = intent.getLongExtra("id", -1);
+		long id = intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
 		QueryTask query;
 		if (type == MediaUtils.TYPE_FILE) {
 			query = MediaUtils.buildFileQuery(intent.getStringExtra("file"), projection);
-		} else if (all || id == MediaView.HEADER_ID) {
+		} else if (all || id == LibraryAdapter.HEADER_ID) {
 			query = ((MediaAdapter)mPagerAdapter.mAdapters[type - 1]).buildSongQuery(projection);
 			query.setExtra(id);
 		} else {
@@ -617,53 +598,44 @@ public class LibraryActivity
 	private static final int MENU_ADD_TO_PLAYLIST = 3;
 	private static final int MENU_NEW_PLAYLIST = 4;
 	private static final int MENU_DELETE = 5;
-	private static final int MENU_EDIT = 6;
 	private static final int MENU_RENAME_PLAYLIST = 7;
 	private static final int MENU_SELECT_PLAYLIST = 8;
 	private static final int MENU_PLAY_ALL = 9;
 	private static final int MENU_ENQUEUE_ALL = 10;
 
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View listView, ContextMenu.ContextMenuInfo absInfo)
+	/**
+	 * Creates a context menu for an adapter row.
+	 *
+	 * @param menu The menu to create.
+	 * @param rowData Data for the adapter row.
+	 */
+	public void onCreateContextMenu(ContextMenu menu, Intent rowData)
 	{
-		if (!(listView instanceof ListView)) {
-			super.onCreateContextMenu(menu, listView, absInfo);
-			return;
-		}
-
-		LibraryAdapter adapter = (LibraryAdapter)((ListView)listView).getAdapter();
-		MediaView view = (MediaView)((AdapterView.AdapterContextMenuInfo)absInfo).targetView;
-
-		// Store view data in intent to avoid problems when the view data changes
-		// as worked is performed in the background.
-		Intent intent = createClickIntent(adapter, view);
-
-		boolean isHeader = view.getMediaId() == MediaView.HEADER_ID;
-		int type = adapter.getMediaType();
-		boolean isAllAdapter = type <= MediaUtils.TYPE_SONG;
-
-		if (isHeader)
+		if (rowData.getLongExtra(LibraryAdapter.DATA_ID, LibraryAdapter.INVALID_ID) == LibraryAdapter.HEADER_ID) {
 			menu.setHeaderTitle(getString(R.string.all_songs));
-		else
-			menu.setHeaderTitle(view.getTitle());
+			menu.add(0, MENU_PLAY_ALL, 0, R.string.play_all).setIntent(rowData);
+			menu.add(0, MENU_ENQUEUE_ALL, 0, R.string.enqueue_all).setIntent(rowData);
+			menu.addSubMenu(0, MENU_ADD_TO_PLAYLIST, 0, R.string.add_to_playlist).getItem().setIntent(rowData);
+		} else {
+			int type = rowData.getIntExtra(LibraryAdapter.DATA_TYPE, -1);
+			boolean isAllAdapter = type <= MediaUtils.TYPE_SONG;
 
-		if (!isHeader)
-			menu.add(0, MENU_PLAY, 0, R.string.play).setIntent(intent);
-		if (isAllAdapter)
-			menu.add(0, MENU_PLAY_ALL, 0, R.string.play_all).setIntent(intent);
-		if (!isHeader)
-			menu.add(0, MENU_ENQUEUE, 0, R.string.enqueue).setIntent(intent);
-		if (isAllAdapter)
-			menu.add(0, MENU_ENQUEUE_ALL, 0, R.string.enqueue_all).setIntent(intent);
-		if (type == MediaUtils.TYPE_PLAYLIST) {
-			menu.add(0, MENU_RENAME_PLAYLIST, 0, R.string.rename).setIntent(intent);
-			menu.add(0, MENU_EDIT, 0, R.string.edit).setIntent(intent);
+			menu.setHeaderTitle(rowData.getStringExtra(LibraryAdapter.DATA_TITLE));
+			menu.add(0, MENU_PLAY, 0, R.string.play).setIntent(rowData);
+			if (isAllAdapter)
+				menu.add(0, MENU_PLAY_ALL, 0, R.string.play_all).setIntent(rowData);
+			menu.add(0, MENU_ENQUEUE, 0, R.string.enqueue).setIntent(rowData);
+			if (isAllAdapter)
+				menu.add(0, MENU_ENQUEUE_ALL, 0, R.string.enqueue_all).setIntent(rowData);
+			if (type == MediaUtils.TYPE_PLAYLIST) {
+				menu.add(0, MENU_RENAME_PLAYLIST, 0, R.string.rename).setIntent(rowData);
+				menu.add(0, MENU_EXPAND, 0, R.string.edit).setIntent(rowData);
+			} else if (rowData.getBooleanExtra(LibraryAdapter.DATA_EXPANDABLE, false)) {
+				menu.add(0, MENU_EXPAND, 0, R.string.expand).setIntent(rowData);
+			}
+			menu.addSubMenu(0, MENU_ADD_TO_PLAYLIST, 0, R.string.add_to_playlist).getItem().setIntent(rowData);
+			menu.add(0, MENU_DELETE, 0, R.string.delete).setIntent(rowData);
 		}
-		menu.addSubMenu(0, MENU_ADD_TO_PLAYLIST, 0, R.string.add_to_playlist).getItem().setIntent(intent);
-		if (view.hasRightBitmap())
-			menu.add(0, MENU_EXPAND, 0, R.string.expand).setIntent(intent);
-		if (!isHeader)
-			menu.add(0, MENU_DELETE, 0, R.string.delete).setIntent(intent);
 	}
 
 	/**
@@ -686,11 +658,11 @@ public class LibraryActivity
 	/**
 	 * Open the playlist editor for the playlist with the given id.
 	 */
-	private void editPlaylist(long playlistId, String title)
+	private void editPlaylist(Intent rowData)
 	{
 		Intent launch = new Intent(this, PlaylistActivity.class);
-		launch.putExtra("playlist", playlistId);
-		launch.putExtra("title", title);
+		launch.putExtra("playlist", rowData.getLongExtra(LibraryAdapter.DATA_ID, LibraryAdapter.INVALID_ID));
+		launch.putExtra("title", rowData.getStringExtra(LibraryAdapter.DATA_TITLE));
 		startActivity(launch);
 	}
 
@@ -789,9 +761,6 @@ public class LibraryActivity
 			}
 			break;
 		}
-		case MENU_EDIT:
-			editPlaylist(intent.getLongExtra("id", 0), intent.getStringExtra("title"));
-			break;
 		case MENU_SELECT_PLAYLIST:
 			mHandler.sendMessage(mHandler.obtainMessage(MSG_ADD_TO_PLAYLIST, intent));
 			break;
@@ -1038,7 +1007,7 @@ public class LibraryActivity
 	public void onAdapterSelected(LibraryAdapter adapter)
 	{
 		mCurrentAdapter = adapter;
-		mLastActedId = -2;
+		mLastActedId = LibraryAdapter.INVALID_ID;
 		updateLimiterViews();
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			CompatHoneycomb.selectTab(this, mViewPager.getCurrentItem());

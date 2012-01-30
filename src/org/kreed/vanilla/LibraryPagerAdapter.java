@@ -22,9 +22,9 @@
 
 package org.kreed.vanilla;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.ContentObserver;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -33,14 +33,25 @@ import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 /**
  * PagerAdapter that manages the library media ListViews.
  */
-public class LibraryPagerAdapter extends PagerAdapter implements Handler.Callback, ViewPager.OnPageChangeListener {
+public class LibraryPagerAdapter
+	extends PagerAdapter
+	implements Handler.Callback
+	         , ViewPager.OnPageChangeListener
+	         , View.OnCreateContextMenuListener
+	         , AdapterView.OnItemClickListener
+{
 	/**
 	 * The number of adapters/lists (determines array sizes).
 	 */
@@ -63,10 +74,6 @@ public class LibraryPagerAdapter extends PagerAdapter implements Handler.Callbac
 	 * Each adapter, in the same order as MediaUtils.TYPE_*.
 	 */
 	public final LibraryAdapter[] mAdapters = new LibraryAdapter[ADAPTER_COUNT];
-	/**
-	 * The artist adapter instance, also stored at mAdapters[0].
-	 */
-	private MediaAdapter mArtistAdapter;
 	/**
 	 * The album adapter instance, also stored at mAdapters[1].
 	 */
@@ -125,6 +132,9 @@ public class LibraryPagerAdapter extends PagerAdapter implements Handler.Callbac
 	 * song limiters.
 	 */
 	private String mHeaderText;
+	private TextView mArtistHeader;
+	private TextView mAlbumHeader;
+	private TextView mSongHeader;
 	/**
 	 * The current filter text, or null if none.
 	 */
@@ -163,28 +173,30 @@ public class LibraryPagerAdapter extends PagerAdapter implements Handler.Callbac
 
 		if (view == null) {
 			LibraryActivity activity = mActivity;
+			LayoutInflater inflater = activity.getLayoutInflater();
 			LibraryAdapter adapter;
+			TextView header = null;
 
 			switch (position) {
 			case 0:
-				adapter = mArtistAdapter = new MediaAdapter(activity, MediaUtils.TYPE_ARTIST, true, true, null);
-				mArtistAdapter.setHeaderText(mHeaderText);
+				adapter = new MediaAdapter(activity, MediaUtils.TYPE_ARTIST, null);
+				mArtistHeader = header = (TextView)inflater.inflate(R.layout.library_row, null);
 				break;
 			case 1:
-				adapter = mAlbumAdapter = new MediaAdapter(activity, MediaUtils.TYPE_ALBUM, true, true, mPendingAlbumLimiter);
+				adapter = mAlbumAdapter = new MediaAdapter(activity, MediaUtils.TYPE_ALBUM, mPendingAlbumLimiter);
 				mPendingAlbumLimiter = null;
-				mAlbumAdapter.setHeaderText(mHeaderText);
+				mAlbumHeader = header = (TextView)inflater.inflate(R.layout.library_row, null);
 				break;
 			case 2:
-				adapter = mSongAdapter = new MediaAdapter(activity, MediaUtils.TYPE_SONG, false, true, mPendingSongLimiter);
+				adapter = mSongAdapter = new MediaAdapter(activity, MediaUtils.TYPE_SONG, mPendingSongLimiter);
 				mPendingSongLimiter = null;
-				mSongAdapter.setHeaderText(mHeaderText);
+				mSongHeader = header = (TextView)inflater.inflate(R.layout.library_row, null);
 				break;
 			case 3:
-				adapter = mPlaylistAdapter = new MediaAdapter(activity, MediaUtils.TYPE_PLAYLIST, true, false, null);
+				adapter = mPlaylistAdapter = new MediaAdapter(activity, MediaUtils.TYPE_PLAYLIST, null);
 				break;
 			case 4:
-				adapter = new MediaAdapter(activity, MediaUtils.TYPE_GENRE, true, false, null);
+				adapter = new MediaAdapter(activity, MediaUtils.TYPE_GENRE, null);
 				break;
 			case 5:
 				adapter = mFilesAdapter = new FileSystemAdapter(activity, mPendingFileLimiter);
@@ -194,15 +206,14 @@ public class LibraryPagerAdapter extends PagerAdapter implements Handler.Callbac
 				throw new IllegalArgumentException("Invalid position: " + position);
 			}
 
-			view = new ListView(activity);
-			view.setOnItemClickListener(activity);
-			view.setOnCreateContextMenuListener(activity);
-			view.setDivider(null);
-			view.setFastScrollEnabled(true);
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-				CompatHoneycomb.setFastScrollAlwaysVisible(view, true);
+			view = (ListView)inflater.inflate(R.layout.listview, null);
+			view.setOnCreateContextMenuListener(this);
+			view.setOnItemClickListener(this);
+			if (header != null) {
+				header.setText(mHeaderText);
+				header.setTag(position + 1);
+				view.addHeaderView(header);
 			}
-			view.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_INSET);
 
 			view.setAdapter(adapter);
 			if (position != 5)
@@ -294,12 +305,12 @@ public class LibraryPagerAdapter extends PagerAdapter implements Handler.Callbac
 	 */
 	public void setHeaderText(String text)
 	{
-		if (mArtistAdapter != null)
-			mArtistAdapter.setHeaderText(text);
-		if (mAlbumAdapter != null)
-			mAlbumAdapter.setHeaderText(text);
-		if (mSongAdapter != null)
-			mSongAdapter.setHeaderText(text);
+		if (mArtistHeader != null)
+			mArtistHeader.setText(text);
+		if (mAlbumHeader != null)
+			mAlbumHeader.setText(text);
+		if (mSongHeader != null)
+			mSongHeader.setText(text);
 		mHeaderText = text;
 	}
 
@@ -631,5 +642,33 @@ public class LibraryPagerAdapter extends PagerAdapter implements Handler.Callbac
 		//   makes tab bar and limiter updates look bad
 		// So we use both.
 		setPrimaryItem(null, position, null);
+	}
+
+	/**
+	 * Creates the row data used by LibraryActivity.
+	 */
+	private Intent createHeaderIntent(View header)
+	{
+		int type = (Integer)header.getTag();
+		Intent intent = new Intent();
+		intent.putExtra(LibraryAdapter.DATA_ID, LibraryAdapter.HEADER_ID);
+		intent.putExtra(LibraryAdapter.DATA_TYPE, type);
+		return intent;
+	}
+
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View view, ContextMenuInfo menuInfo)
+	{
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
+		View targetView = info.targetView;
+		Intent intent = info.id == -1 ? createHeaderIntent(targetView) : mCurrentAdapter.createData(targetView);
+		mActivity.onCreateContextMenu(menu, intent);
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> list, View view, int position, long id)
+	{
+		Intent intent = id == -1 ? createHeaderIntent(view) : mCurrentAdapter.createData(view);
+		mActivity.onItemClicked(intent);
 	}
 }

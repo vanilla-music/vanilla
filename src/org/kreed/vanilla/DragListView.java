@@ -18,6 +18,7 @@ package org.kreed.vanilla;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -28,14 +29,13 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.os.Handler;
 
 /**
  * A ListView that supports dragging to reorder its elements.
  *
  * This implementation has some restrictions:
  *     Footers are unsupported
- *     All non-header views must be MediaViews of uniform height
+ *     All non-header views must have the same height
  *     The adapter must be a PlaylistAdapter
  *
  * Dragging disabled by default. Enable it with
@@ -45,19 +45,55 @@ import android.os.Handler;
  * HACKY. : /
  */
 public class DragListView extends ListView implements Handler.Callback {
+	/**
+	 * Sent to scroll the list up or down when the dragged view is near the
+	 * top or bottom of the list.
+	 */
 	private static final int MSG_SCROLL = 0;
-
+	/**
+	 * Height of each row in dip.
+	 */
+	private static final int ROW_HEIGHT = 44;
+	/**
+	 * Padding for each row in dip.
+	 */
+	private static final int PADDING = 3;
+	/**
+	 * Background color of row while it is being dragged.
+	 */
+	public static final int DRAG_COLOR = 0xff005500;
+	/**
+	 * A handler running on the UI thread.
+	 */
 	private final Handler mHandler = new Handler(this);
+	/**
+	 * The system window manager instance.
+	 */
+	private WindowManager mWindowManager;
+	/**
+	 * The adapter that will be called to move/remove rows.
+	 */
 	private PlaylistAdapter mAdapter;
-
 	/**
 	 * True to allow dragging; false otherwise.
 	 */
 	private boolean mEditable;
-
+	/**
+	 * Scaled height of each row in pixels.
+	 */
+	private final int mRowHeight;
+	/**
+	 * The view that is actually dragged around during a drag. (The original
+	 * view is hidden).
+	 */
 	private ImageView mDragView;
+	/**
+	 * A copy of the dragged row's scrolling cache that is shown in mDragView.
+	 */
 	private Bitmap mDragBitmap;
-	private WindowManager mWindowManager;
+	/**
+	 * Window params for the drag view window. Used to move the window around.
+	 */
 	private WindowManager.LayoutParams mWindowParams;
 	/**
 	 * At which position is the item currently being dragged. Note that this
@@ -78,20 +114,33 @@ public class DragListView extends ListView implements Handler.Callback {
 	 */
 	private int mYOffset;
 	/**
-	 * The height of the view being dragged.
-	 */
-	private int mDragHeight;
-	/**
 	 * The y coordinate of the top of the drag view after the last motion
 	 * event.
 	 */
 	private int mLastMotionY;
+	/**
+	 * Default padding for rows.
+	 */
+	private final int mPadding;
 
 	public DragListView(Context context, AttributeSet attrs)
 	{
 		super(context, attrs);
+
+		float density = context.getResources().getDisplayMetrics().density;
+		mPadding = (int)(PADDING * density);
+		mRowHeight = (int)(ROW_HEIGHT * density);
 	}
 
+	/**
+	 * This should be called instead of
+	 * {@link ListView#setAdapter(android.widget.ListAdapter)}.
+	 * DragListView requires a PlaylistAdapter to handle move/remove callbacks
+	 * from dragging.
+	 *
+	 * @param adapter The adapter to use. Will be passed to
+	 * {@link ListView#setAdapter(android.widget.ListAdapter)}.
+	 */
 	public void setAdapter(PlaylistAdapter adapter)
 	{
 		super.setAdapter(adapter);
@@ -121,7 +170,7 @@ public class DragListView extends ListView implements Handler.Callback {
 				stopDragging();
 
 				int x = (int)ev.getX();
-				// The left half of the item is the grabber for dragging the item
+				// The left quarter of the item is the grabber for dragging the item
 				if (x < getWidth() / 4) {
 					int item = pointToPosition(x, (int)ev.getY());
 					if (item != AdapterView.INVALID_POSITION && item >= getHeaderViewsCount()) {
@@ -174,6 +223,8 @@ public class DragListView extends ListView implements Handler.Callback {
 			params.height = 0;
 			view.setLayoutParams(params);
 			view.setVisibility(View.VISIBLE);
+			int padding = mPadding;
+			view.setPadding(padding, padding, padding, padding);
 		}
 	}
 
@@ -202,17 +253,24 @@ public class DragListView extends ListView implements Handler.Callback {
 		View dragSrcView = getChildAt(mSrcDragPos - firstVisibile);
 
 		int start = firstVisibile < headerCount ? headerCount - firstVisibile : 0;
-		for (int i = start; i != childCount; ++i) {
-			MediaView view = (MediaView)getChildAt(i);
+		int padding = mPadding;
+		int rowHeight = mRowHeight;
+		int nextHeight = rowHeight;
 
-			int height = 0;
+		for (int i = start; i != childCount; ++i) {
+			View view = getChildAt(i);
+
+			int height = nextHeight;
+			nextHeight = rowHeight;
 			int visibility = View.VISIBLE;
-			boolean gravity = true;
+			int paddingBottom = padding;
+			int paddingTop = padding;
 
 			if (view == dragSrcView) {
 				if (mDragPos == mSrcDragPos) {
 					// hovering over the original location: show empty space
 					visibility = View.INVISIBLE;
+					height += 1;
 				} else {
 					// not hovering over it: show nothing
 					// Ideally the item would be completely gone, but neither
@@ -220,19 +278,20 @@ public class DragListView extends ListView implements Handler.Callback {
 					// has the desired effect.
 					height = 1;
 				}
+				nextHeight -= 1;
 			} else if (i == childNum) {
 				// hovering over this row; expand it to "make room" for the
 				// dragged item
-				height = view.getPreferredHeight() * 2;
+				paddingTop += height;
+				height *= 2;
 			} else if (childNum == childCount && i == childCount - 1) {
-				// hovering over the bottom of the list: we need to show the
-				// expanded area at the bottom of the view, so set the gravity
-				// to top
-				height = view.getPreferredHeight() * 2;
-				gravity = false;
+				// hovering over the bottom of the list: we need to "make room"
+				// at the bottom
+				paddingBottom += height;
+				height *= 2;
 			}
 
-			view.setBottomGravity(gravity);
+			view.setPadding(padding, paddingTop, padding, paddingBottom);
 			view.setVisibility(visibility);
 			ViewGroup.LayoutParams params = view.getLayoutParams();
 			params.height = height;
@@ -252,7 +311,7 @@ public class DragListView extends ListView implements Handler.Callback {
 		// This assumes uniform height for all non-header rows
 		int firstVisible = getFirstVisiblePosition();
 		int topPos = Math.max(getHeaderViewsCount(), firstVisible);
-		int dragHeight = mDragHeight;
+		int dragHeight = mRowHeight;
 		View view = getChildAt(topPos - firstVisible);
 		int viewMiddle = view.getTop() + dragHeight / 2;
 		int dragPos = Math.min(getCount() - 1, topPos + Math.max(0, y - viewMiddle + dragHeight) / dragHeight);
@@ -302,11 +361,13 @@ public class DragListView extends ListView implements Handler.Callback {
 				| WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS;
 		mWindowParams.windowAnimations = 0;
 
+		int color = item.getDrawingCacheBackgroundColor();
 		item.setDrawingCacheBackgroundColor(0xff005500);
 		item.buildDrawingCache();
 		// Create a copy of the drawing cache so that it does not get recycled
 		// by the framework when the list tries to clean up memory
 		Bitmap bitmap = Bitmap.createBitmap(item.getDrawingCache());
+		item.setDrawingCacheBackgroundColor(color);
 		item.destroyDrawingCache();
 		mDragBitmap = bitmap;
 
@@ -319,7 +380,6 @@ public class DragListView extends ListView implements Handler.Callback {
 		mWindowManager.addView(view, mWindowParams);
 		mDragView = view;
 
-		mDragHeight = bitmap.getHeight();
 		mSrcDragPos = row;
 		// Force expansion on next motion event
 		mDragPos = INVALID_POSITION;

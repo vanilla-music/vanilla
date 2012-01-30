@@ -23,15 +23,23 @@
 package org.kreed.vanilla;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.graphics.Color;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.ImageView;
 import android.widget.SectionIndexer;
+import android.widget.TextView;
 import java.util.regex.Pattern;
 
 /**
@@ -45,13 +53,22 @@ import java.util.regex.Pattern;
  * to a specific group to be displayed, e.g. only songs from a certain artist.
  * See getLimiter and setLimiter for details.
  */
-public class MediaAdapter extends CursorAdapter implements SectionIndexer, LibraryAdapter {
+public class MediaAdapter
+	extends CursorAdapter
+	implements SectionIndexer
+	         , LibraryAdapter
+	         , View.OnClickListener
+{
 	private static final Pattern SPACE_SPLIT = Pattern.compile("\\s+");
 
 	/**
 	 * A context to use.
 	 */
-	private final Context mContext;
+	private final LibraryActivity mActivity;
+	/**
+	 * A LayoutInflater to use.
+	 */
+	private final LayoutInflater mInflater;
 	/**
 	 * The type of media represented by this adapter. Must be one of the
 	 * MediaUtils.FIELD_* constants. Determines which content provider to query for
@@ -78,10 +95,6 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer, Libra
 	 */
 	private String[] mProjection;
 	/**
-	 * If true, show an expand arrow next the the text in each view.
-	 */
-	private final boolean mExpandable;
-	/**
 	 * A limiter is used for filtering. The intention is to restrict items
 	 * displayed in the list to only those of a specific artist or album, as
 	 * selected through an expander arrow in a broader MediaAdapter list.
@@ -99,15 +112,6 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer, Libra
 	 * The sections used by the indexer.
 	 */
 	private Object[] mSections;
-	/**
-	 * True if this adapter should have a special MediaView with custom text in
-	 * the first row.
-	 */
-	private final boolean mHasHeader;
-	/**
-	 * The text to show in the header.
-	 */
-	private String mHeaderText;
 	/**
 	 * The sort order for use with buildSongQuery().
 	 */
@@ -127,30 +131,32 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer, Libra
 	 * instead of ascending).
 	 */
 	private int mSortMode;
+	/**
+	 * The layout used for each row.
+	 */
+	private int mLayout;
 
 	/**
 	 * Construct a MediaAdapter representing the given <code>type</code> of
 	 * media.
 	 *
-	 * @param context A context to use.
+	 * @param activity The LibraryActivity that will contain this adapter.
 	 * @param type The type of media to represent. Must be one of the
 	 * Song.TYPE_* constants. This determines which content provider to query
 	 * and what fields to display in the views.
 	 * @param expandable Whether an expand arrow should be shown to the right
 	 * of the views' text
-	 * @param hasHeader Whether this view has a header row.
 	 * @param limiter An initial limiter to use
 	 */
-	public MediaAdapter(Context context, int type, boolean expandable, boolean hasHeader, Limiter limiter)
+	public MediaAdapter(LibraryActivity activity, int type, Limiter limiter)
 	{
-		super(context, null, false);
+		super(activity, null, false);
 
-		mContext = context;
+		mActivity = activity;
 		mType = type;
-		mExpandable = expandable;
-		mHasHeader = hasHeader;
 		mLimiter = limiter;
 		mIndexer = new MusicAlphabetIndexer(1);
+		mInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 		switch (type) {
 		case MediaUtils.TYPE_ARTIST:
@@ -160,6 +166,7 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer, Libra
 			mSongSort = MediaUtils.DEFAULT_SORT;
 			mSortEntries = new int[] { R.string.name, R.string.number_of_tracks };
 			mSortValues = new String[] { "artist_key %1$s", "number_of_tracks %1$s,artist_key %1$s" };
+			mLayout = R.layout.library_row_expandable;
 			break;
 		case MediaUtils.TYPE_ALBUM:
 			mStore = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
@@ -169,6 +176,7 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer, Libra
 			mSongSort = "album_key,track";
 			mSortEntries = new int[] { R.string.name, R.string.artist_album, R.string.year, R.string.number_of_tracks };
 			mSortValues = new String[] { "album_key %1$s", "artist_key %1$s,album_key %1$s", "minyear %1$s,album_key %1$s", "numsongs %1$s,album_key %1$s" };
+			mLayout = R.layout.library_row_expandable;
 			break;
 		case MediaUtils.TYPE_SONG:
 			mStore = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
@@ -176,6 +184,7 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer, Libra
 			mFieldKeys = new String[] { MediaStore.Audio.Media.ARTIST_KEY, MediaStore.Audio.Media.ALBUM_KEY, MediaStore.Audio.Media.TITLE_KEY };
 			mSortEntries = new int[] { R.string.name, R.string.artist_album_track, R.string.artist_album_title, R.string.artist_year, R.string.year };
 			mSortValues = new String[] { "title_key %1$s", "artist_key %1$s,album_key %1$s,track %1$s", "artist_key %1$s,album_key %1$s,title_key %1$s", "artist_key %1$s,year %1$s,track %1$s", "year %1$s,title_key %1$s" };
+			mLayout = R.layout.library_row;
 			break;
 		case MediaUtils.TYPE_PLAYLIST:
 			mStore = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI;
@@ -183,6 +192,7 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer, Libra
 			mFieldKeys = null;
 			mSortEntries = new int[] { R.string.name, R.string.date_added };
 			mSortValues = new String[] { "name %1$s", "date_added %1$s" };
+			mLayout = R.layout.library_row_expandable;
 			break;
 		case MediaUtils.TYPE_GENRE:
 			mStore = MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI;
@@ -190,6 +200,7 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer, Libra
 			mFieldKeys = null;
 			mSortEntries = new int[] { R.string.name };
 			mSortValues = new String[] { "name %1$s" };
+			mLayout = R.layout.library_row_expandable;
 			break;
 		default:
 			throw new IllegalArgumentException("Invalid value for type: " + type);
@@ -199,75 +210,6 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer, Libra
 			mProjection = new String[] { BaseColumns._ID, mFields[0] };
 		else
 			mProjection = new String[] { BaseColumns._ID, mFields[mFields.length - 1], mFields[0] };
-	}
-
-	@Override
-	public int getCount()
-	{
-		int count = super.getCount();
-		if (count == 0)
-			return 0;
-		else if (mHasHeader)
-			return count + 1;
-		else
-			return count;
-	}
-
-	@Override
-	public Object getItem(int pos)
-	{
-		if (mHasHeader) {
-			if (pos == 0)
-				return null;
-			else
-				pos -= 1;
-		}
-
-		return super.getItem(pos);
-	}
-
-	@Override
-	public long getItemId(int pos)
-	{
-		if (mHasHeader) {
-			if (pos == 0)
-				return -1;
-			else
-				pos -= 1;
-		}
-
-		return super.getItemId(pos);
-	}
-
-	@Override
-	public View getView(int pos, View convertView, ViewGroup parent)
-	{
-		if (mHasHeader) {
-			if (pos == 0) {
-				MediaView view;
-				if (convertView == null)
-					view = new MediaView(mContext, null, mExpandable ? MediaView.sExpander : null);
-				else
-					view = (MediaView)convertView;
-				view.makeHeader(mHeaderText);
-				return view;
-			} else {
-				pos -= 1;
-			}
-		}
-
-		return super.getView(pos, convertView, parent);
-	}
-
-	/**
-	 * Modify the header text to be shown in the first row.
-	 *
-	 * @param text The new text.
-	 */
-	public void setHeaderText(String text)
-	{
-		mHeaderText = text;
-		notifyDataSetChanged();
 	}
 
 	@Override
@@ -362,7 +304,7 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer, Libra
 	@Override
 	public Object query()
 	{
-		return buildQuery(mProjection, false).runQuery(mContext.getContentResolver());
+		return buildQuery(mProjection, false).runQuery(mActivity.getContentResolver());
 	}
 
 	@Override
@@ -474,14 +416,7 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer, Libra
 			return 0;
 		if (section == getSections().length)
 			return getCount();
-
-		int offset = 0;
-		if (mHasHeader) {
-			if (section == 0)
-				return 0;
-			offset = 1;
-		}
-		return offset + mIndexer.getPositionForSection(section);
+		return mIndexer.getPositionForSection(section);
 	}
 
 	@Override
@@ -489,14 +424,14 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer, Libra
 	{
 		if (mSortMode != 0)
 			return 0;
-
-		if (mHasHeader) {
-			if (position == 0)
-				return 0;
-			else
-				position -= 1;
-		}
 		return mIndexer.getSectionForPosition(position);
+	}
+
+	private static class ViewHolder {
+		public long id;
+		public String title;
+		public TextView text;
+		public ImageView arrow;
 	}
 
 	/**
@@ -505,7 +440,22 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer, Libra
 	@Override
 	public void bindView(View view, Context context, Cursor cursor)
 	{
-		((MediaView)view).updateMedia(cursor, mFields.length > 1);
+		ViewHolder holder = (ViewHolder)view.getTag();
+		holder.id = cursor.getLong(0);
+		if (mFields.length > 1) {
+			String line1 = cursor.getString(1);
+			String line2 = cursor.getString(2);
+			SpannableStringBuilder sb = new SpannableStringBuilder(line1);
+			sb.append('\n');
+			sb.append(line2);
+			sb.setSpan(new ForegroundColorSpan(Color.GRAY), line1.length() + 1, sb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+			holder.text.setText(sb);
+			holder.title = line1;
+		} else {
+			String title = cursor.getString(1);
+			holder.text.setText(title);
+			holder.title = title;
+		}
 	}
 
 	/**
@@ -514,7 +464,22 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer, Libra
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup parent)
 	{
-		return new MediaView(mContext, null, mExpandable ? MediaView.sExpander : null);
+		int layout = mLayout;
+		View view = mInflater.inflate(layout, null);
+		ViewHolder holder = new ViewHolder();
+		view.setTag(holder);
+
+		if (layout == R.layout.library_row_expandable) {
+			holder.text = (TextView)view.findViewById(R.id.text);
+			holder.arrow = (ImageView)view.findViewById(R.id.arrow);
+			holder.arrow.setOnClickListener(this);
+		} else {
+			holder.text = (TextView)view;
+			view.setLongClickable(true);
+		}
+
+		holder.text.setOnClickListener(this);
+		return view;
 	}
 
 	/**
@@ -573,5 +538,31 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer, Libra
 	public int getSortMode()
 	{
 		return mSortMode;
+	}
+
+	@Override
+	public Intent createData(View view)
+	{
+		ViewHolder holder = (ViewHolder)view.getTag();
+		Intent intent = new Intent();
+		intent.putExtra(LibraryAdapter.DATA_TYPE, mType);
+		intent.putExtra(LibraryAdapter.DATA_ID, holder.id);
+		intent.putExtra(LibraryAdapter.DATA_TITLE, holder.title);
+		intent.putExtra(LibraryAdapter.DATA_EXPANDABLE, mType != MediaUtils.TYPE_SONG);
+		return intent;
+	}
+
+	@Override
+	public void onClick(View view)
+	{
+		int id = view.getId();
+		if (mLayout == R.layout.library_row_expandable)
+			view = (View)view.getParent();
+		Intent intent = createData(view);
+		if (id == R.id.arrow) {
+			mActivity.onItemExpanded(intent);
+		} else {
+			mActivity.onItemClicked(intent);
+		}
 	}
 }

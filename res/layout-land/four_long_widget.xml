@@ -34,7 +34,7 @@ THE SOFTWARE.
 		android:scaleType="fitCenter"
 		android:contentDescription="@string/cover_art" />
 	<LinearLayout
-		android:id="@+id/text"
+		android:id="@+id/text_layout"
 		android:layout_width="0px"
 		android:layout_height="wrap_content"
 		android:layout_weight="1"

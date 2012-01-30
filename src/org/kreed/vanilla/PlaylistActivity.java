@@ -95,13 +95,9 @@ public class PlaylistActivity extends Activity
 		HandlerThread thread = new HandlerThread(getClass().getName());
 		thread.start();
 
-		MediaView.init(this);
-
 		setContentView(R.layout.playlist_activity);
 
 		DragListView view = (DragListView)findViewById(R.id.playlist);
-		view.setDivider(null);
-		view.setFastScrollEnabled(true);
 		view.setOnItemClickListener(this);
 		view.setOnCreateContextMenuListener(this);
 		mListView = view;
@@ -111,7 +107,7 @@ public class PlaylistActivity extends Activity
 		mEditButton.setOnClickListener(this);
 		mDeleteButton = (Button)header.findViewById(R.id.delete);
 		mDeleteButton.setOnClickListener(this);
-		view.addHeaderView(header);
+		view.addHeaderView(header, null, false);
 
 		mLooper = thread.getLooper();
 		mAdapter = new PlaylistAdapter(this, mLooper);
@@ -252,13 +248,8 @@ public class PlaylistActivity extends Activity
 	@Override
 	public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
 	{
-		if (view instanceof MediaView) {
-			MediaView mediaView = (MediaView)view;
-			if (mediaView.isRightBitmapPressed()) {
-				mAdapter.remove(id);
-			} else if (!mEditing && mDefaultAction != LibraryActivity.ACTION_DO_NOTHING) {
-				performAction(mDefaultAction, position, (Long)mediaView.getTag());
-			}
+		if (!mEditing && mDefaultAction != LibraryActivity.ACTION_DO_NOTHING) {
+			performAction(mDefaultAction, position, (Long)view.getTag());
 		}
 	}
 
