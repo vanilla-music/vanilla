@@ -129,10 +129,10 @@ THE SOFTWARE.
 
 	<string name="pref_output">Audio Output</string>
 	<string name="volume_title">Volume</string>
-	<string name="media_button_title">Use Headset Controls</string>
-	<string name="media_button_summary">Single click for play/pause. Double click for next.</string>
+	<string name="media_button_title">Headset/Bluetooth Controls</string>
+	<string name="media_button_summary">This is also required for ICS lockscreen controls.</string>
 	<string name="headset_only_title">External Output Only</string>
-	<string name="headset_only_summary">Only play music through an external output (e.g. headphones, Bluetooth)</string>
+	<string name="headset_only_summary">Prevents music from being played through the speakers.</string>
 	<string name="headset_pause_title">Pause When Unplugged</string>
 	<string name="headset_pause_summary">Pause when the headphones are unplugged.</string>
 	<string name="headset_play_title">Play When Plugged</string>

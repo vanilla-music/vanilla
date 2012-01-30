@@ -153,6 +153,14 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 			if (action == KeyEvent.ACTION_DOWN)
 				act = PlaybackService.ACTION_PREVIOUS_SONG_AUTOPLAY;
 			break;
+		case KeyEvent.KEYCODE_MEDIA_PLAY:
+			if (action == KeyEvent.ACTION_DOWN)
+				act = PlaybackService.ACTION_PLAY;
+			break;
+		case KeyEvent.KEYCODE_MEDIA_PAUSE:
+			if (action == KeyEvent.ACTION_DOWN)
+				act = PlaybackService.ACTION_PAUSE;
+			break;
 		default:
 			return false;
 		}
