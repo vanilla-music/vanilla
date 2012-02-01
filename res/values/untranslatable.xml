@@ -23,7 +23,7 @@ THE SOFTWARE.
 <resources>
 	<style name="Dialog" parent="android:Theme.Dialog" />
 	<style name="Theme" parent="android:Theme" />
-	<style name="NoTitle" parent="Theme">
+	<style name="Library" parent="Theme">
 		<item name="android:windowNoTitle">true</item>
 	</style>
 	<style name="NoBackground" parent="Theme">

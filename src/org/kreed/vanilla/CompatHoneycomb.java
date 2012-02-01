@@ -1,0 +1,121 @@
+/*
+ * Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+package org.kreed.vanilla;
+
+import android.app.ActionBar;
+import android.app.ActionBar.Tab;
+import android.app.Activity;
+import android.app.FragmentTransaction;
+import android.view.MenuItem;
+import android.view.View;
+
+/**
+ * Framework methods only in Honeycomb or above go here.
+ */
+public class CompatHoneycomb implements ActionBar.TabListener {
+	/**
+	 * The LibraryActivity to callback to when a tab is selected.
+	 */
+	private final LibraryActivity mActivity;
+
+	private CompatHoneycomb(LibraryActivity activity)
+	{
+		mActivity = activity;
+	}
+
+	/**
+	 * Add ActionBar tabs for LibraryActivity.
+	 *
+	 * @param activity The activity to add to.
+	 * @return The custom view in the ActionBar (for current song info).
+	 */
+	public static View addActionBarTabs(LibraryActivity activity)
+	{
+		ActionBar ab = activity.getActionBar();
+		CompatHoneycomb listener = new CompatHoneycomb(activity);
+		ab.addTab(ab.newTab()
+			.setText(R.string.artists)
+			.setTabListener(listener));
+		ab.addTab(ab.newTab()
+			.setText(R.string.albums)
+			.setTabListener(listener));
+		ab.addTab(ab.newTab()
+			.setText(R.string.songs)
+			.setTabListener(listener));
+		ab.addTab(ab.newTab()
+			.setText(R.string.playlists)
+			.setTabListener(listener));
+		ab.addTab(ab.newTab()
+			.setText(R.string.genres)
+			.setTabListener(listener));
+		ab.addTab(ab.newTab()
+			.setText(R.string.files)
+			.setTabListener(listener));
+		ab.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		return ab.getCustomView();
+	}
+
+	/**
+	 * Call {@link MenuItem#setActionView(View)} on the given MenuItem.
+	 */
+	public static void setActionView(MenuItem item, View view)
+	{
+		item.setActionView(view);
+	}
+
+	/**
+	 * Call {@link MenuItem#setShowAsAction(int)} on the given MenuItem.
+	 */
+	public static void setShowAsAction(MenuItem item, int mode)
+	{
+		item.setShowAsAction(mode);
+	}
+
+	/**
+	 * Select the ActionBar tab at the given position.
+	 *
+	 * @param activity The activity that owns the ActionBar.
+	 * @param position The tab's position.
+	 */
+	public static void selectTab(Activity activity, int position)
+	{
+		ActionBar ab = activity.getActionBar();
+		ab.selectTab(ab.getTabAt(position));
+	}
+
+	@Override
+	public void onTabReselected(Tab tab, FragmentTransaction ft)
+	{
+	}
+
+	@Override
+	public void onTabSelected(Tab tab, FragmentTransaction ft)
+	{
+		mActivity.mViewPager.setCurrentItem(tab.getPosition());
+	}
+
+	@Override
+	public void onTabUnselected(Tab tab, FragmentTransaction ft)
+	{
+	}
+}

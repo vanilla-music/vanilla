@@ -49,7 +49,8 @@ THE SOFTWARE.
 			android:launchMode="singleTop" />
 		<activity
 			android:name="LibraryActivity"
-			android:theme="@style/NoTitle"
+			android:theme="@style/Library"
+			android:uiOptions="splitActionBarWhenNarrow"
 			android:launchMode="singleTop" />
 		<activity
 			android:name="PlaylistActivity"

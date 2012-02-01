@@ -34,6 +34,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.PaintDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -46,16 +47,15 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioGroup;
@@ -88,12 +88,13 @@ public class LibraryActivity
 		{ SongTimeline.MODE_PLAY, SongTimeline.MODE_ENQUEUE, -1,
 		  SongTimeline.MODE_PLAY_ID_FIRST, SongTimeline.MODE_ENQUEUE_ID_FIRST };
 
-	private ViewPager mViewPager;
+	public ViewPager mViewPager;
 	private View mSearchBox;
 	private boolean mSearchBoxVisible;
 	private TextView mTextFilter;
 	private View mClearButton;
 
+	private View mActionControls;
 	private View mControls;
 	private TextView mTitle;
 	private TextView mArtist;
@@ -253,36 +254,6 @@ public class LibraryActivity
 		MediaView.init(this);
 		setContentView(R.layout.library_content);
 
-		SharedPreferences settings = PlaybackService.getSettings(this);
-		if (settings.getBoolean("controls_in_selector", false)) {
-			ViewGroup content = (ViewGroup)findViewById(R.id.content);
-			LayoutInflater.from(this).inflate(R.layout.library_controls, content, true);
-
-			mControls = findViewById(R.id.controls);
-
-			mTitle = (TextView)mControls.findViewById(R.id.title);
-			mArtist = (TextView)mControls.findViewById(R.id.artist);
-			mCover = (ImageView)mControls.findViewById(R.id.cover);
-			View previous = mControls.findViewById(R.id.previous);
-			mPlayPauseButton = (ImageButton)mControls.findViewById(R.id.play_pause);
-			View next = mControls.findViewById(R.id.next);
-
-			mCover.setOnClickListener(this);
-			previous.setOnClickListener(this);
-			mPlayPauseButton.setOnClickListener(this);
-			next.setOnClickListener(this);
-
-			mShuffleButton = (ImageButton)findViewById(R.id.shuffle);
-			mShuffleButton.setOnClickListener(this);
-			registerForContextMenu(mShuffleButton);
-			mEndButton = (ImageButton)findViewById(R.id.end_action);
-			mEndButton.setOnClickListener(this);
-			registerForContextMenu(mEndButton);
-
-			mEmptyQueue = findViewById(R.id.empty_queue);
-			mEmptyQueue.setOnClickListener(this);
-		}
-
 		mSearchBox = findViewById(R.id.search_box);
 
 		mTextFilter = (TextView)findViewById(R.id.filter_text);
@@ -297,9 +268,53 @@ public class LibraryActivity
 		mViewPager = (ViewPager)findViewById(R.id.pager);
 		mViewPager.setAdapter(mPagerAdapter);
 
-		TabPageIndicator tabs = (TabPageIndicator)findViewById(R.id.tabs);
-		tabs.setViewPager(mViewPager);
-		tabs.setOnPageChangeListener(this);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			CompatHoneycomb.addActionBarTabs(this);
+			mViewPager.setOnPageChangeListener(this);
+
+			View controls = getLayoutInflater().inflate(R.layout.actionbar_controls, null);
+			mTitle = (TextView)controls.findViewById(R.id.title);
+			mArtist = (TextView)controls.findViewById(R.id.artist);
+			mCover = (ImageView)controls.findViewById(R.id.cover);
+			controls.setOnClickListener(this);
+			mActionControls = controls;
+		} else {
+			TabPageIndicator tabs = new TabPageIndicator(this);
+			tabs.setViewPager(mViewPager);
+			tabs.setOnPageChangeListener(this);
+
+			LinearLayout content = (LinearLayout)findViewById(R.id.content);
+			content.addView(tabs, 0, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+
+			SharedPreferences settings = PlaybackService.getSettings(this);
+			if (settings.getBoolean("controls_in_selector", false)) {
+				getLayoutInflater().inflate(R.layout.library_controls, content, true);
+
+				mControls = findViewById(R.id.controls);
+
+				mTitle = (TextView)mControls.findViewById(R.id.title);
+				mArtist = (TextView)mControls.findViewById(R.id.artist);
+				mCover = (ImageView)mControls.findViewById(R.id.cover);
+				View previous = mControls.findViewById(R.id.previous);
+				mPlayPauseButton = (ImageButton)mControls.findViewById(R.id.play_pause);
+				View next = mControls.findViewById(R.id.next);
+
+				mCover.setOnClickListener(this);
+				previous.setOnClickListener(this);
+				mPlayPauseButton.setOnClickListener(this);
+				next.setOnClickListener(this);
+
+				mShuffleButton = (ImageButton)findViewById(R.id.shuffle);
+				mShuffleButton.setOnClickListener(this);
+				registerForContextMenu(mShuffleButton);
+				mEndButton = (ImageButton)findViewById(R.id.end_action);
+				mEndButton.setOnClickListener(this);
+				registerForContextMenu(mEndButton);
+
+				mEmptyQueue = findViewById(R.id.empty_queue);
+				mEmptyQueue.setOnClickListener(this);
+			}
+		}
 
 		getContentResolver().registerContentObserver(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, true, mPlaylistObserver);
 
@@ -445,8 +460,8 @@ public class LibraryActivity
 		int mode = action;
 		if (action == ACTION_PLAY_ALL || action == ACTION_ENQUEUE_ALL) {
 			LibraryAdapter adapter = mCurrentAdapter;
-			boolean notPlayAllAdapter = (adapter != mSongAdapter && adapter != mAlbumAdapter
-					&& adapter != mArtistAdapter) || id == MediaView.HEADER_ID;
+			boolean notPlayAllAdapter = adapter != mSongAdapter && adapter != mAlbumAdapter
+					&& adapter != mArtistAdapter || id == MediaView.HEADER_ID;
 			if (mode == ACTION_ENQUEUE_ALL && notPlayAllAdapter) {
 				mode = ACTION_ENQUEUE;
 			} else if (mode == ACTION_PLAY_ALL && notPlayAllAdapter) {
@@ -607,7 +622,7 @@ public class LibraryActivity
 		MediaView mediaView = (MediaView)view;
 		LibraryAdapter adapter = (LibraryAdapter)list.getAdapter();
 		int action = mDefaultAction;
-		if (mediaView.isRightBitmapPressed() || (action == ACTION_EXPAND && mediaView.hasRightBitmap())) {
+		if (mediaView.isRightBitmapPressed() || action == ACTION_EXPAND && mediaView.hasRightBitmap()) {
 			if (adapter == mPlaylistAdapter)
 				editPlaylist(mediaView.getMediaId(), mediaView.getTitle());
 			else
@@ -688,7 +703,7 @@ public class LibraryActivity
 				setSearchBoxVisible(false);
 			else
 				mTextFilter.setText("");
-		} else if (view == mCover) {
+		} else if (view == mCover || view == mActionControls) {
 			openPlaybackActivity();
 		} else if (view == mEmptyQueue) {
 			setState(PlaybackService.get(this).setFinishAction(SongTimeline.FINISH_RANDOM));
@@ -971,8 +986,16 @@ public class LibraryActivity
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-		menu.addSubMenu(0, MENU_SORT, 0, R.string.sort_by).setIcon(R.drawable.ic_menu_sort_alphabetically);
-		menu.add(0, MENU_SEARCH, 0, R.string.search).setIcon(R.drawable.ic_menu_search);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			MenuItem controls = menu.add(null);
+			CompatHoneycomb.setActionView(controls, mActionControls);
+			CompatHoneycomb.setShowAsAction(controls, MenuItem.SHOW_AS_ACTION_ALWAYS);
+			MenuItem search = menu.add(0, MENU_SEARCH, 0, R.string.search).setIcon(R.drawable.ic_menu_search);
+			CompatHoneycomb.setShowAsAction(search, MenuItem.SHOW_AS_ACTION_ALWAYS);
+		} else {
+			menu.add(0, MENU_SEARCH, 0, R.string.search).setIcon(R.drawable.ic_menu_search);
+		}
+		menu.add(0, MENU_SORT, 0, R.string.sort_by).setIcon(R.drawable.ic_menu_sort_alphabetically);
 		menu.add(0, MENU_PLAYBACK, 0, R.string.playback_view).setIcon(R.drawable.ic_menu_gallery);
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -1204,7 +1227,7 @@ public class LibraryActivity
 	}
 
 	@Override
-	protected void onSongChange(final Song song)
+	protected void onSongChange(Song song)
 	{
 		super.onSongChange(song);
 
@@ -1212,8 +1235,15 @@ public class LibraryActivity
 			Bitmap cover = null;
 
 			if (song == null) {
-				mTitle.setText(R.string.none);
-				mArtist.setText(null);
+				if (mActionControls == null) {
+					mTitle.setText(R.string.none);
+					mArtist.setText(null);
+				} else {
+					mTitle.setText(null);
+					mArtist.setText(null);
+					mCover.setImageDrawable(null);
+					return;
+				}
 			} else {
 				Resources res = getResources();
 				String title = song.title == null ? res.getString(R.string.unknown) : song.title;
@@ -1310,5 +1340,9 @@ public class LibraryActivity
 		if (position > 0)
 			requeryIfNeeded(position - 1);
 		updateLimiterViews();
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			CompatHoneycomb.selectTab(this, position);
+		}
 	}
 }

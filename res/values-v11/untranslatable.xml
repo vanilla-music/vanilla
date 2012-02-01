@@ -26,4 +26,10 @@ THE SOFTWARE.
 	<style name="AlertDialogItem">
 		<item name="android:textColor">?android:textColorAlertDialogListItem</item>
 	</style>
+	<style name="Library" parent="Theme">
+		<item name="android:actionBarStyle">@style/LibraryActionBar</item>
+	</style>
+	<style name="LibraryActionBar" parent="android:Widget.Holo.ActionBar">
+		<item name="android:displayOptions"></item>
+	</style>
 </resources>

@@ -163,6 +163,8 @@ public class FullPlaybackActivity extends PlaybackActivity
 
 		setControlsVisible(settings.getBoolean("visible_controls", true));
 		setDuration(0);
+
+		getWindow().addFlags(0x08000000); // show menu key on ICS
 	}
 
 	@Override
