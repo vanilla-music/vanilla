@@ -393,7 +393,7 @@ public final class PlaybackService extends Service
 			} else if (ACTION_TOGGLE_PLAYBACK_DELAYED.equals(action)) {
 				if (mHandler.hasMessages(CALL_GO, Integer.valueOf(0))) {
 					mHandler.removeMessages(CALL_GO, Integer.valueOf(0));
-					startActivity(new Intent(this, LaunchActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+					startActivity(new Intent(this, LibraryActivity.class).setAction(Intent.ACTION_MAIN));
 				} else {
 					mHandler.sendMessageDelayed(mHandler.obtainMessage(CALL_GO, Integer.valueOf(0)), 400);
 				}
@@ -406,7 +406,7 @@ public final class PlaybackService extends Service
 			} else if (ACTION_NEXT_SONG_DELAYED.equals(action)) {
 				if (mHandler.hasMessages(CALL_GO, Integer.valueOf(1))) {
 					mHandler.removeMessages(CALL_GO, Integer.valueOf(1));
-					startActivity(new Intent(this, LaunchActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+					startActivity(new Intent(this, LibraryActivity.class).setAction(Intent.ACTION_MAIN));
 				} else {
 					mHandler.sendMessageDelayed(mHandler.obtainMessage(CALL_GO, Integer.valueOf(1)), 400);
 				}
@@ -558,7 +558,7 @@ public final class PlaybackService extends Service
 	 */
 	private int updateState(int state)
 	{
-		if ((state & (FLAG_NO_MEDIA|FLAG_ERROR|FLAG_EMPTY_QUEUE)) != 0 || (mHeadsetOnly && isSpeakerOn()))
+		if ((state & (FLAG_NO_MEDIA|FLAG_ERROR|FLAG_EMPTY_QUEUE)) != 0 || mHeadsetOnly && isSpeakerOn())
 			state &= ~FLAG_PLAYING;
 
 		int oldState = mState;
@@ -766,7 +766,7 @@ public final class PlaybackService extends Service
 	public int setFinishAction(int action)
 	{
 		synchronized (mStateLock) {
-			return updateState((mState & ~MASK_FINISH) | (action << SHIFT_FINISH));
+			return updateState(mState & ~MASK_FINISH | action << SHIFT_FINISH);
 		}
 	}
 
@@ -794,7 +794,7 @@ public final class PlaybackService extends Service
 	public int setShuffleMode(int mode)
 	{
 		synchronized (mStateLock) {
-			return updateState((mState & ~MASK_SHUFFLE) | (mode << SHIFT_SHUFFLE));
+			return updateState(mState & ~MASK_SHUFFLE | mode << SHIFT_SHUFFLE);
 		}
 	}
 
@@ -1477,7 +1477,8 @@ public final class PlaybackService extends Service
 			Log.w("VanillaMusic", "Unknown value for notification_action. Defaulting to 0.");
 			// fall through
 		case NOT_ACTION_MAIN_ACTIVITY: {
-			Intent intent = new Intent(this, LaunchActivity.class);
+			Intent intent = new Intent(this, LibraryActivity.class);
+			intent.setAction(Intent.ACTION_MAIN);
 			return PendingIntent.getActivity(this, 0, intent, 0);
 		}
 		}

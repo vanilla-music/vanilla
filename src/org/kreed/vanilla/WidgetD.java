@@ -125,7 +125,8 @@ public class WidgetD extends AppWidgetProvider {
 
 		ComponentName service = new ComponentName(context, PlaybackService.class);
 
-		intent = new Intent(context, LaunchActivity.class);
+		intent = new Intent(context, LibraryActivity.class);
+		intent.setAction(Intent.ACTION_MAIN);
 		pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 		views.setOnClickPendingIntent(R.id.cover, pendingIntent);
 

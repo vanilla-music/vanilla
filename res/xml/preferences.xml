@@ -68,6 +68,11 @@ THE SOFTWARE.
 			android:defaultValue="false" />
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/pref_playback_view">
+	    <CheckBoxPreference
+			android:key="playback_on_startup"
+			android:title="@string/playback_on_startup_title"
+			android:summary="@string/playback_on_startup_summary"
+			android:defaultValue="false" />
 		<org.kreed.vanilla.ListPreferenceSummary
 			android:key="display_mode"
 			android:title="@string/display_mode_title"
@@ -98,18 +103,8 @@ THE SOFTWARE.
 			android:entries="@array/swipe_action_entries"
 			android:entryValues="@array/swipe_action_values"
 			android:defaultValue="PlayPause" />
-		<CheckBoxPreference
-			android:key="disable_cover_art"
-			android:title="@string/disable_cover_art_title"
-			android:summary="@string/disable_cover_art_summary"
-			android:defaultValue="false" />
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/pref_song_selector">
-		<CheckBoxPreference
-			android:key="selector_on_startup"
-			android:title="@string/selector_on_startup_title"
-			android:summary="@string/selector_on_startup_summary"
-			android:defaultValue="false" />
 		<CheckBoxPreference
 			android:key="controls_in_selector"
 			android:title="@string/controls_in_selector_title"
@@ -143,6 +138,11 @@ THE SOFTWARE.
 			android:key="idle_timeout"
 			android:title="@string/idle_timeout_title"
 			android:dependency="use_idle_timeout" />
+		<CheckBoxPreference
+			android:key="disable_cover_art"
+			android:title="@string/disable_cover_art_title"
+			android:summary="@string/disable_cover_art_summary"
+			android:defaultValue="false" />
 		<CheckBoxPreference
 			android:key="double_tap"
 			android:title="@string/double_tap_title"

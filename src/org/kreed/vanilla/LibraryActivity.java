@@ -331,6 +331,7 @@ public class LibraryActivity
 		super.onStart();
 
 		SharedPreferences settings = PlaybackService.getSettings(this);
+
 		if (settings.getBoolean("controls_in_selector", false) != (mControls != null)) {
 			finish();
 			startActivity(new Intent(this, LibraryActivity.class));
@@ -345,6 +346,11 @@ public class LibraryActivity
 	{
 		if (intent == null)
 			return;
+
+		SharedPreferences settings = PlaybackService.getSettings(this);
+		if (settings.getBoolean("playback_on_startup", false) && Intent.ACTION_MAIN.equals(intent.getAction())) {
+			startActivity(new Intent(this, FullPlaybackActivity.class));
+		}
 
 		long albumId = intent.getLongExtra("albumId", -1);
 		if (albumId != -1) {
@@ -615,9 +621,7 @@ public class LibraryActivity
 	 */
 	public void openPlaybackActivity()
 	{
-		Intent intent = new Intent(this, FullPlaybackActivity.class);
-		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		startActivity(intent);
+		startActivity(new Intent(this, FullPlaybackActivity.class));
 	}
 
 	@Override

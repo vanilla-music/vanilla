@@ -145,17 +145,15 @@ THE SOFTWARE.
 	<string name="notification_invert_color_summary">Use white text instead of black text</string>
 
 	<string name="pref_playback_view">Playback View</string>
+	<string name="playback_on_startup_title">Open on Startup</string>
+	<string name="playback_on_startup_summary">Open playback view on startup</string>
 	<string name="display_mode_title">Display Mode</string>
 	<string name="swipe_up_action_title">Swipe Up Action</string>
 	<string name="swipe_down_action_title">Swipe Down Action</string>
 	<string name="cover_press_action_title">Cover Tap Action</string>
 	<string name="cover_longpress_action_title">Cover Long Press Action</string>
-	<string name="disable_cover_art_title">Disable Cover Art</string>
-	<string name="disable_cover_art_summary">Do not show cover art anywhere in the application</string>
 
 	<string name="pref_song_selector">Library View</string>
-	<string name="selector_on_startup_title">Open on Startup</string>
-	<string name="selector_on_startup_summary">Open library on startup</string>
 	<string name="controls_in_selector_title">Controls in Library</string>
 	<string name="controls_in_selector_summary">Show the currently playing song and media controls in the library view</string>
 	<string name="default_action_title">Default Action</string>
@@ -167,6 +165,8 @@ THE SOFTWARE.
 	<string name="use_idle_timeout_title">Enable Idle Timeout</string>
 	<string name="use_idle_timeout_summary">When active, playback will be stopped after the given period of inactivity</string>
 	<string name="idle_timeout_title">Idle Timeout</string>
+	<string name="disable_cover_art_title">Disable Cover Art</string>
+	<string name="disable_cover_art_summary">Do not show cover art anywhere in the application</string>
 	<string name="double_tap_title">Double Tap Widget</string>
 	<string name="double_tap_summary">Double-tapping the 1x1 widget will open the player. Incurs a 400ms delay before the widget responds to actions.</string>
 	<string name="scrobble_title">Use ScrobbleDroid API</string>
