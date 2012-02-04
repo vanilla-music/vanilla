@@ -28,6 +28,7 @@ import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 
 /**
  * Framework methods only in Honeycomb or above go here.
@@ -73,6 +74,14 @@ public class CompatHoneycomb implements ActionBar.TabListener {
 			.setTabListener(listener));
 		ab.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		return ab.getCustomView();
+	}
+
+	/**
+	 * Call {@link ListView#setFastScrollAlwaysVisible(boolean)} on the given ListView.
+	 */
+	public static void setFastScrollAlwaysVisible(ListView view, boolean visible)
+	{
+		view.setFastScrollAlwaysVisible(visible);
 	}
 
 	/**

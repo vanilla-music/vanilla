@@ -192,6 +192,10 @@ public class LibraryActivity
 				view.setOnCreateContextMenuListener(LibraryActivity.this);
 				view.setDivider(null);
 				view.setFastScrollEnabled(true);
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+					CompatHoneycomb.setFastScrollAlwaysVisible(view, true);
+				}
+				view.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_INSET);
 
 				view.setAdapter(adapter);
 				if (position != 5)
