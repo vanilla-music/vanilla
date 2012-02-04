@@ -724,7 +724,9 @@ public class LibraryActivity
 				Cursor cursor = resolver.query(uri, projection, limiter.data.toString(), null, null);
 				if (cursor != null) {
 					if (cursor.moveToNext()) {
-						setLimiter(mArtistAdapter.buildLimiter(cursor.getLong(0)), false);
+						String[] fields = { limiter.names[0] };
+						String data = String.format("artist_id=%d", cursor.getLong(0));
+						setLimiter(new Limiter(MediaUtils.TYPE_ARTIST, fields, data), false);
 					}
 					cursor.close();
 				}
