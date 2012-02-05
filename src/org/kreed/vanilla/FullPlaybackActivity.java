@@ -25,6 +25,7 @@ package org.kreed.vanilla;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.format.DateUtils;
@@ -163,8 +164,6 @@ public class FullPlaybackActivity extends PlaybackActivity
 
 		setControlsVisible(settings.getBoolean("visible_controls", true));
 		setDuration(0);
-
-		getWindow().addFlags(0x08000000); // show menu key on ICS
 	}
 
 	@Override
@@ -289,7 +288,9 @@ public class FullPlaybackActivity extends PlaybackActivity
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-		menu.add(0, MENU_LIBRARY, 0, R.string.library).setIcon(R.drawable.ic_menu_music_library);
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+			menu.add(0, MENU_LIBRARY, 0, R.string.library).setIcon(R.drawable.ic_menu_music_library);
+		}
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -297,6 +298,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
 		switch (item.getItemId()) {
+		case android.R.id.home:
 		case MENU_LIBRARY:
 			openLibrary(null);
 			return true;

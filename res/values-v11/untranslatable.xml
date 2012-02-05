@@ -22,11 +22,17 @@ THE SOFTWARE.
 -->
 <resources>
 	<style name="Dialog" parent="android:Theme.Holo.Dialog" />
-	<style name="Theme" parent="android:Theme.Holo" />
 	<style name="AlertDialogItem">
 		<item name="android:textColor">?android:textColorAlertDialogListItem</item>
 	</style>
-	<style name="Library" parent="Theme">
+	<style name="Playback" parent="android:Theme.Holo">
+		<item name="android:actionBarStyle">@style/PlaybackActionBar</item>
+		<item name="android:windowBackground">@android:color/black</item>
+	</style>
+	<style name="PlaybackActionBar" parent="android:Widget.Holo.ActionBar">
+		<item name="android:displayOptions">showTitle|homeAsUp</item>
+	</style>
+	<style name="Library" parent="android:Theme.Holo">
 		<item name="android:actionBarStyle">@style/LibraryActionBar</item>
 	</style>
 	<style name="LibraryActionBar" parent="android:Widget.Holo.ActionBar">

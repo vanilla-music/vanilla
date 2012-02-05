@@ -22,11 +22,10 @@ THE SOFTWARE.
 -->
 <resources>
 	<style name="Dialog" parent="android:Theme.Dialog" />
-	<style name="Theme" parent="android:Theme" />
-	<style name="Library" parent="Theme">
+	<style name="Library" parent="android:Theme">
 		<item name="android:windowNoTitle">true</item>
 	</style>
-	<style name="NoBackground" parent="Theme">
+	<style name="Playback" parent="android:Theme">
 		<item name="android:windowNoTitle">true</item>
 		<item name="android:windowBackground">@null</item>
 	</style>

@@ -37,7 +37,7 @@ THE SOFTWARE.
 		android:backupAgent="PreferencesBackupAgent">
 		<activity
 			android:name="FullPlaybackActivity"
-			android:theme="@style/NoBackground"
+			android:theme="@style/Playback"
 			android:launchMode="singleTask" />
 		<activity
 			android:name="LibraryActivity"
