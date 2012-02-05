@@ -52,6 +52,7 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.AdapterView;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
@@ -1237,8 +1238,19 @@ public class LibraryActivity
 	{
 		mSearchBoxVisible = visible;
 		mSearchBox.setVisibility(visible ? View.VISIBLE : View.GONE);
-		if (mControls != null)
+		if (mControls != null) {
 			mControls.setVisibility(visible || (mState & PlaybackService.FLAG_NO_MEDIA) != 0 ? View.GONE : View.VISIBLE);
+		} else if (mActionControls != null) {
+			// try to hide the bottom action bar
+			ViewParent parent = mActionControls.getParent().getParent();
+			if (parent instanceof ViewGroup) {
+				ViewGroup ab = (ViewGroup)parent;
+				if (ab.getChildCount() == 1) {
+					ab.setVisibility(visible ? View.GONE : View.VISIBLE);
+				}
+			}
+		}
+
 		if (visible)
 			mSearchBox.requestFocus();
 	}
