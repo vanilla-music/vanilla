@@ -48,9 +48,8 @@ public class CompatHoneycomb implements ActionBar.TabListener {
 	 * Add ActionBar tabs for LibraryActivity.
 	 *
 	 * @param activity The activity to add to.
-	 * @return The custom view in the ActionBar (for current song info).
 	 */
-	public static View addActionBarTabs(LibraryActivity activity)
+	public static void addActionBarTabs(LibraryActivity activity)
 	{
 		ActionBar ab = activity.getActionBar();
 		CompatHoneycomb listener = new CompatHoneycomb(activity);
@@ -73,7 +72,6 @@ public class CompatHoneycomb implements ActionBar.TabListener {
 			.setText(R.string.files)
 			.setTabListener(listener));
 		ab.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-		return ab.getCustomView();
 	}
 
 	/**

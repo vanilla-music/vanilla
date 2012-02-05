@@ -120,8 +120,6 @@ THE SOFTWARE.
 	<string name="disable_cover_art_summary">Ikke vis cover bilde noen steder i programmet</string>
 
 	<string name="pref_song_selector">Bibliotek Visning</string>
-	<string name="selector_on_startup_title">Åpne ved oppstart</string>
-	<string name="selector_on_startup_summary">Åpne bibliotek ved oppstart</string>
 	<string name="controls_in_selector_title">Medieknapper i Bibliotek</string>
 	<string name="controls_in_selector_summary">Vis låten som spilles og mediekontrollene i biblioteket</string>
 	<string name="default_action_title">Standard Handling</string>

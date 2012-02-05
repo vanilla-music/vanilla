@@ -127,8 +127,6 @@ THE SOFTWARE.
 	<string name="disable_cover_art_summary">Nebude zobrazovať obal albumu nikde v aplikácii.</string>
 
 	<string name="pref_song_selector">Zobrazenie knižnice</string>
-	<string name="selector_on_startup_title">Otvoriť po spustení</string>
-	<string name="selector_on_startup_summary">Po spustení otvorí knižnicu.</string>
 	<string name="controls_in_selector_title">Ovládanie v knižnici</string>
 	<string name="controls_in_selector_summary">V knižnici zobrazí aktuálne prehrávanú skladbu a ovládanie prehrávania.</string>
 	<string name="default_action_title">Predvolená akcia</string>
