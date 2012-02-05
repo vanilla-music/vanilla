@@ -104,7 +104,7 @@ THE SOFTWARE.
 			android:entryValues="@array/swipe_action_values"
 			android:defaultValue="PlayPause" />
 	</PreferenceCategory>
-	<PreferenceCategory android:title="@string/pref_song_selector">
+	<PreferenceCategory android:key="library" android:title="@string/pref_song_selector">
 		<CheckBoxPreference
 			android:key="controls_in_selector"
 			android:title="@string/controls_in_selector_title"

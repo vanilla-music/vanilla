@@ -22,8 +22,10 @@
 
 package org.kreed.vanilla;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceGroup;
 
 /**
  * The preferences activity in which one can change application preferences.
@@ -37,5 +39,10 @@ public class PreferencesActivity extends PreferenceActivity {
 	{
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.preferences);
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			PreferenceGroup library = (PreferenceGroup)findPreference("library");
+			library.removePreference(findPreference("controls_in_selector"));
+		}
 	}
 }
