@@ -255,6 +255,10 @@ public class LibraryActivity
 	{
 		super.onCreate(state);
 
+		if (state == null) {
+			checkForLaunch(getIntent());
+		}
+
 		MediaView.init(this);
 		setContentView(R.layout.library_content);
 
@@ -322,7 +326,7 @@ public class LibraryActivity
 
 		getContentResolver().registerContentObserver(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, true, mPlaylistObserver);
 
-		onNewIntent(getIntent());
+		loadAlbumIntent(getIntent());
 	}
 
 	@Override
@@ -341,17 +345,24 @@ public class LibraryActivity
 		updateHeaders();
 	}
 
-	@Override
-	public void onNewIntent(Intent intent)
+	/**
+	 * If this intent looks like a launch from icon/widget/etc, perform
+	 * launch actions.
+	 */
+	private void checkForLaunch(Intent intent)
 	{
-		if (intent == null)
-			return;
-
 		SharedPreferences settings = PlaybackService.getSettings(this);
 		if (settings.getBoolean("playback_on_startup", false) && Intent.ACTION_MAIN.equals(intent.getAction())) {
 			startActivity(new Intent(this, FullPlaybackActivity.class));
 		}
+	}
 
+	/**
+	 * If the given intent has album data, set a limiter built from that
+	 * data.
+	 */
+	private void loadAlbumIntent(Intent intent)
+	{
 		long albumId = intent.getLongExtra("albumId", -1);
 		if (albumId != -1) {
 			String[] fields = { intent.getStringExtra("artist"), intent.getStringExtra("album") };
@@ -359,6 +370,16 @@ public class LibraryActivity
 			Limiter limiter = new Limiter(MediaUtils.TYPE_ALBUM, fields, data);
 			setLimiter(limiter, true);
 		}
+	}
+
+	@Override
+	public void onNewIntent(Intent intent)
+	{
+		if (intent == null)
+			return;
+
+		checkForLaunch(intent);
+		loadAlbumIntent(intent);
 	}
 
 	@Override
