@@ -1026,9 +1026,9 @@ public class LibraryActivity
 			CompatHoneycomb.setShowAsAction(search, MenuItem.SHOW_AS_ACTION_ALWAYS);
 		} else {
 			menu.add(0, MENU_SEARCH, 0, R.string.search).setIcon(R.drawable.ic_menu_search);
+			menu.add(0, MENU_PLAYBACK, 0, R.string.playback_view).setIcon(R.drawable.ic_menu_gallery);
 		}
 		menu.add(0, MENU_SORT, 0, R.string.sort_by).setIcon(R.drawable.ic_menu_sort_alphabetically);
-		menu.add(0, MENU_PLAYBACK, 0, R.string.playback_view).setIcon(R.drawable.ic_menu_gallery);
 		return super.onCreateOptionsMenu(menu);
 	}
 
