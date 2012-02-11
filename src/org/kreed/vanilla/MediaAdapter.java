@@ -96,6 +96,10 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer, Libra
 	 */
 	private final MusicAlphabetIndexer mIndexer;
 	/**
+	 * The sections used by the indexer.
+	 */
+	private Object[] mSections;
+	/**
 	 * True if this adapter should have a special MediaView with custom text in
 	 * the first row.
 	 */
@@ -454,14 +458,23 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer, Libra
 	@Override
 	public Object[] getSections()
 	{
-		if (mSortMode != 0)
-			return null;
-		return mIndexer.getSections();
+		if (mSections == null) {
+			if (mSortMode == 0)
+				mSections = mIndexer.getSections();
+			else
+				mSections = new String[] { " " };
+		}
+		return mSections;
 	}
 
 	@Override
 	public int getPositionForSection(int section)
 	{
+		if (section == 0)
+			return 0;
+		if (section == mSections.length)
+			return getCount();
+
 		int offset = 0;
 		if (mHasHeader) {
 			if (section == 0)
@@ -474,8 +487,16 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer, Libra
 	@Override
 	public int getSectionForPosition(int position)
 	{
-		// never called by FastScroller
-		return 0;
+		if (mSortMode != 0)
+			return 0;
+
+		if (mHasHeader) {
+			if (position == 0)
+				return 0;
+			else
+				position -= 1;
+		}
+		return mIndexer.getSectionForPosition(position);
 	}
 
 	/**
