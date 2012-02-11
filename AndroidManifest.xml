@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
+Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -43,15 +43,12 @@ THE SOFTWARE.
 			android:name="LibraryActivity"
 			android:theme="@style/Library"
 			android:uiOptions="splitActionBarWhenNarrow"
-			android:launchMode="singleTask" />
-		<activity-alias
-			android:name="LaunchActivity"
-			android:targetActivity="LibraryActivity">
+			android:launchMode="singleTask">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
-		</activity-alias>
+		</activity>
 		<activity
 			android:name="PlaylistActivity"
 			android:launchMode="singleTask" />
