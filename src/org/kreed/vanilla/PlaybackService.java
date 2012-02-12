@@ -155,6 +155,34 @@ public final class PlaybackService extends Service
 	 */
 	public static final String ACTION_CYCLE_REPEAT = "org.kreed.vanilla.CYCLE_REPEAT";
 
+	public static final int NEVER = 0;
+	public static final int WHEN_PLAYING = 1;
+	public static final int ALWAYS = 2;
+
+	/**
+	 * Notification click action: open LaunchActivity.
+	 */
+	private static final int NOT_ACTION_MAIN_ACTIVITY = 0;
+	/**
+	 * Notification click action: open MiniPlaybackActivity.
+	 */
+	private static final int NOT_ACTION_MINI_ACTIVITY = 1;
+	/**
+	 * Notification click action: skip to next song.
+	 */
+	private static final int NOT_ACTION_NEXT_SONG = 2;
+
+	/**
+	 * If a user action is triggered within this time (in ms) after the
+	 * idle time fade-out occurs, playback will be resumed.
+	 */
+	private static final long IDLE_GRACE_PERIOD = 60000;
+	/**
+	 * Minimum time in milliseconds between shake actions.
+	 */
+	private static final int MIN_SHAKE_PERIOD = 500;
+
+
 	/**
 	 * If set, music will play.
 	 */
@@ -196,32 +224,14 @@ public final class PlaybackService extends Service
 	 *     ff:  {@link PlaybackService#MASK_SHUFFLE}
 	 */
 	int mState;
-	private final Object mStateLock = new Object[0];
-
-	public static final int NEVER = 0;
-	public static final int WHEN_PLAYING = 1;
-	public static final int ALWAYS = 2;
-
 	/**
-	 * Notification click action: open LaunchActivity.
+	 * Object used for state-related locking.
 	 */
-	private static final int NOT_ACTION_MAIN_ACTIVITY = 0;
+	final Object[] mStateLock = new Object[0];
 	/**
-	 * Notification click action: open MiniPlaybackActivity.
+	 * Object used for PlaybackService startup waiting.
 	 */
-	private static final int NOT_ACTION_MINI_ACTIVITY = 1;
-	/**
-	 * Notification click action: skip to next song.
-	 */
-	private static final int NOT_ACTION_NEXT_SONG = 2;
-
-	/**
-	 * If a user action is triggered within this time (in ms) after the
-	 * idle time fade-out occurs, playback will be resumed.
-	 */
-	private static final long IDLE_GRACE_PERIOD = 60000;
-
-	private static final Object sWait = new Object[0];
+	private static final Object[] sWait = new Object[0];
 	/**
 	 * The appplication-wide instance of the PlaybackService.
 	 */
@@ -247,12 +257,12 @@ public final class PlaybackService extends Service
 	/**
 	 * If true, start playing when the headset is plugged in.
 	 */
-	private boolean mHeadsetPlay;
+	boolean mHeadsetPlay;
 	/**
 	 * True if the initial broadcast sent when registering HEADSET_PLUG has
 	 * been receieved.
 	 */
-	private boolean mPlugInitialized;
+	boolean mPlugInitialized;
 	/**
 	 * The time to wait before considering the player idle.
 	 */
@@ -323,12 +333,6 @@ public final class PlaybackService extends Service
 	 * True if the last audio focus loss can be ducked.
 	 */
 	private boolean mDuckedLoss;
-
-	/**
-	 * Minimum time in milliseconds between shake actions.
-	 */
-	private static final int MIN_SHAKE_PERIOD = 500;
-
 	/**
 	 * Magnitude of last sensed acceleration.
 	 */

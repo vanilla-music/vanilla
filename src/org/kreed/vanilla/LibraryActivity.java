@@ -92,7 +92,7 @@ public class LibraryActivity
 	public ViewPager mViewPager;
 	private View mSearchBox;
 	private boolean mSearchBoxVisible;
-	private TextView mTextFilter;
+	TextView mTextFilter;
 	private View mClearButton;
 
 	private View mActionControls;
@@ -451,7 +451,7 @@ public class LibraryActivity
 	 * Returns either "Play All" or "Enqueue All", depending on the current
 	 * default action.
 	 */
-	private String getHeaderText()
+	public String getHeaderText()
 	{
 		int action = mDefaultAction;
 		if (action == ACTION_LAST_USED)
@@ -691,7 +691,10 @@ public class LibraryActivity
 		}
 	}
 
-	private void updateLimiterViews()
+	/**
+	 * Create or recreate the limiter breadcrumbs.
+	 */
+	public void updateLimiterViews()
 	{
 		mLimiterViews.removeAllViews();
 
@@ -1311,7 +1314,7 @@ public class LibraryActivity
 	 *
 	 * @param adapter The adapter to load for.
 	 */
-	private void loadSortOrder(MediaAdapter adapter)
+	public void loadSortOrder(MediaAdapter adapter)
 	{
 		String key = String.format("sort_%d_%d", adapter.getMediaType(), adapter.getLimiterType());
 		int def = adapter.getDefaultSortMode();

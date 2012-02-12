@@ -32,14 +32,14 @@ public class MusicAlphabetIndexer {
 		{ " ", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
 		       "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
 	/**
-	 * The result of {@link MediaStore.Audio.keyFor(String)} called on each
+	 * The result of {@link android.provider.MediaStore.Audio#keyFor(String)} called on each
 	 * letter of the alphabet.
 	 */
 	private static String[] ALPHABET_KEYS = null;
 	/**
 	 * Cached section postions.
 	 */
-	private int mAlphaMap[];
+	private final int mAlphaMap[];
 	/**
 	 * Cursor that is used by the adapter of the list view.
 	 */
@@ -47,7 +47,7 @@ public class MusicAlphabetIndexer {
 	/**
 	 * The index of the cursor column that this list is sorted on.
 	 */
-	private int mColumnIndex;
+	private final int mColumnIndex;
 
 	/**
 	 * Constructs the indexer.
