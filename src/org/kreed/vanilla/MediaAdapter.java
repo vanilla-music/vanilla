@@ -472,7 +472,7 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer, Libra
 	{
 		if (section == 0)
 			return 0;
-		if (section == mSections.length)
+		if (section == getSections().length)
 			return getCount();
 
 		int offset = 0;
