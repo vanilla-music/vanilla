@@ -24,8 +24,11 @@ THE SOFTWARE.
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:persistent="true">
 	<PreferenceCategory android:title="@string/pref_output">
-		<org.kreed.vanilla.VolumePreference
-			android:key="volume"
+		<org.kreed.vanilla.SeekBarPreference
+			android:key="volume_int"
+			android:negativeButtonText="@null"
+			android:dialogLayout="@layout/shake_pref"
+			android:defaultValue="100"
 			android:title="@string/volume_title" />
 		<CheckBoxPreference
 			android:key="media_button"
@@ -137,11 +140,12 @@ THE SOFTWARE.
 			android:defaultValue="NextSong"
 			android:dependency="enable_shake" />
 		<!-- Might be nice to show something indicating the current shake force for this preference. -->
-		<org.kreed.vanilla.ShakeThresholdPreference
+		<org.kreed.vanilla.SeekBarPreference
 			android:key="shake_threshold"
 			android:negativeButtonText="@null"
 			android:dialogLayout="@layout/shake_pref"
 			android:title="@string/shake_threshold_title"
+			android:defaultValue="80"
 			android:dependency="enable_shake" />
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/pref_misc">

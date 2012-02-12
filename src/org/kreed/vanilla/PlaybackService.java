@@ -278,6 +278,10 @@ public final class PlaybackService extends Service
 	 * The SensorManager service.
 	 */
 	private SensorManager mSensorManager;
+	/**
+	 * The equalizer wrapper.
+	 */
+	private CompatEq mEqualizer;
 
 	SongTimeline mTimeline;
 	private Song mCurrentSong;
@@ -299,14 +303,17 @@ public final class PlaybackService extends Service
 	public InCallListener mCallListener;
 	private String mErrorMessage;
 	/**
-	 * The volume set by the user in the preferences.
+	 * The volume adjustment set in the volume preference.
 	 */
-	private float mUserVolume = 1.0f;
+	private float mUserVolume;
 	/**
-	 * The actual volume of the media player. Will differ from the user volume
-	 * when fading the volume.
+	 * The linear scale volume set on the MediaPlayer.
 	 */
-	private float mCurrentVolume = 1.0f;
+	private float mBaseVolume;
+	/**
+	 * If true, the volume is being reduced for the idle fade-out.
+	 */
+	private boolean mFadeInProgress;
 	/**
 	 * Elapsed realtime at which playback was paused by idle timeout. -1
 	 * indicates that no timeout has occurred.
@@ -358,6 +365,10 @@ public final class PlaybackService extends Service
 		mMediaPlayer.setOnCompletionListener(this);
 		mMediaPlayer.setOnErrorListener(this);
 
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+			mEqualizer = new CompatEq(mMediaPlayer);
+		}
+
 		mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 		mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
 		mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
@@ -370,11 +381,7 @@ public final class PlaybackService extends Service
 		settings.registerOnSharedPreferenceChangeListener(this);
 		mNotificationMode = Integer.parseInt(settings.getString("notification_mode", "1"));
 		mScrobble = settings.getBoolean("scrobble", false);
-		float volume = settings.getFloat("volume", 1.0f);
-		if (volume != 1.0f) {
-			mCurrentVolume = mUserVolume = volume;
-			mMediaPlayer.setVolume(volume, volume);
-		}
+		mUserVolume = (float)Math.pow(settings.getInt("volume_int", 100) / 100.0, 3);
 		mIdleTimeout = settings.getBoolean("use_idle_timeout", false) ? settings.getInt("idle_timeout", 3600) : 0;
 		Song.mDisableCoverArt = settings.getBoolean("disable_cover_art", false);
 		mHeadsetOnly = settings.getBoolean("headset_only", false);
@@ -385,6 +392,8 @@ public final class PlaybackService extends Service
 		mHeadsetPause = getSettings(this).getBoolean("headset_pause", true);
 		mShakeAction = settings.getBoolean("enable_shake", false) ? Action.getAction(settings, "shake_action", Action.NextSong) : Action.Nothing;
 		mShakeThreshold = settings.getInt("shake_threshold", 80) / 10.0f;
+
+		updateVolume();
 
 		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
 		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicLock");
@@ -529,6 +538,29 @@ public final class PlaybackService extends Service
 			mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_UI);
 	}
 
+	/**
+	 * Set the volume gain on the MediaPlayer/Equalizer
+	 */
+	private void updateVolume()
+	{
+		float base = mUserVolume;
+
+		if (base > 1.0 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+			// In Gingerbread and above, MediaPlayer no longer accepts volumes
+			// > 1.0. So we use an equalizer instead.
+			CompatEq eq = mEqualizer;
+			short gain = (short)(2000 * Math.log10(base));
+			for (short i = eq.getNumberOfBands(); --i != -1; ) {
+				eq.setBandLevel(i, gain);
+			}
+			base = 1.0f;
+		}
+
+		mBaseVolume = base;
+		if (mMediaPlayer != null)
+			mMediaPlayer.setVolume(base, base);
+	}
+
 	private void loadPreference(String key)
 	{
 		SharedPreferences settings = getSettings(this);
@@ -549,11 +581,9 @@ public final class PlaybackService extends Service
 			updateNotification();
 		} else if ("scrobble".equals(key)) {
 			mScrobble = settings.getBoolean("scrobble", false);
-		} else if ("volume".equals(key)) {
-			float volume = settings.getFloat("volume", 1.0f);
-			mCurrentVolume = mUserVolume = volume;
-			if (mMediaPlayer != null)
-				mMediaPlayer.setVolume(volume, volume);
+		} else if ("volume_int".equals(key)) {
+			mUserVolume = (float)Math.pow(settings.getInt(key, 100) / 100.0, 3);
+			updateVolume();
 		} else if ("media_button".equals(key)) {
 			MediaButtonReceiver.reloadPreference(this);
 		} else if ("use_idle_timeout".equals(key) || "idle_timeout".equals(key)) {
@@ -1117,24 +1147,29 @@ public final class PlaybackService extends Service
 			runQuery(message.arg1, (QueryTask)message.obj, message.arg2);
 			break;
 		case IDLE_TIMEOUT:
-			if ((mState & FLAG_PLAYING) != 0)
+			if ((mState & FLAG_PLAYING) != 0) {
 				mHandler.sendMessage(mHandler.obtainMessage(FADE_OUT, 100, 0));
+				mFadeInProgress = true;
+			}
 			break;
-		case FADE_OUT:
+		case FADE_OUT: {
 			int progress = message.arg1 - 1;
+			float volume;
 			if (progress == 0) {
 				mIdleStart = SystemClock.elapsedRealtime();
 				unsetFlag(FLAG_PLAYING);
-				mCurrentVolume = mUserVolume;
+				volume = mBaseVolume;
+				mFadeInProgress = false;
 			} else {
 				// Approximate an exponential curve with x^4
 				// http://www.dr-lex.be/info-stuff/volumecontrols.html
-				mCurrentVolume = Math.max((float)(Math.pow(progress / 100f, 4) * mUserVolume), .01f);
+				volume = Math.max((float)(Math.pow(progress / 100f, 4) * mBaseVolume), .01f);
 				mHandler.sendMessageDelayed(mHandler.obtainMessage(FADE_OUT, progress, 0), 50);
 			}
 			if (mMediaPlayer != null)
-				mMediaPlayer.setVolume(mCurrentVolume, mCurrentVolume);
+				mMediaPlayer.setVolume(volume, volume);
 			break;
+		}
 		case PROCESS_STATE:
 			processNewState(message.arg1, message.arg2);
 			break;
@@ -1259,15 +1294,15 @@ public final class PlaybackService extends Service
 		if (mIdleTimeout != 0)
 			mHandler.sendEmptyMessageDelayed(IDLE_TIMEOUT, mIdleTimeout * 1000);
 
+		if (mFadeInProgress) {
+			mMediaPlayer.setVolume(mBaseVolume, mBaseVolume);
+			mFadeInProgress = false;
+		}
+
 		long idleStart = mIdleStart;
 		if (idleStart != -1 && SystemClock.elapsedRealtime() - idleStart < IDLE_GRACE_PERIOD) {
 			mIdleStart = -1;
 			setFlag(FLAG_PLAYING);
-		}
-
-		if (mCurrentVolume != mUserVolume) {
-			mCurrentVolume = mUserVolume;
-			mMediaPlayer.setVolume(mCurrentVolume, mCurrentVolume);
 		}
 	}
 
