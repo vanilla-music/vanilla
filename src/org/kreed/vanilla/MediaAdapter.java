@@ -552,6 +552,7 @@ public class MediaAdapter extends CursorAdapter implements SectionIndexer, Libra
 	public void setSortMode(int i)
 	{
 		mSortMode = i;
+		mSections = null;
 	}
 
 	/**
