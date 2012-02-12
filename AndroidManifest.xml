@@ -51,7 +51,8 @@ THE SOFTWARE.
 		</activity>
 		<activity
 			android:name="PlaylistActivity"
-			android:launchMode="singleTask" />
+			android:launchMode="singleTask"
+			android:theme="@style/BackActionBar" />
 		<activity
 			android:name="MiniPlaybackActivity"
 			android:theme="@style/Dialog"
@@ -113,7 +114,9 @@ THE SOFTWARE.
 				<action android:name="org.kreed.vanilla.action.PREVIOUS_SONG" />
 			</intent-filter>
 		</service>
-		<activity android:name="PreferencesActivity" />
+		<activity
+			android:name="PreferencesActivity"
+			android:theme="@style/BackActionBar" />
 		<meta-data
 			android:name="com.google.android.backup.api_key"
 			android:value="AEdPqrEAAAAIH6Xcxa4hn6sHN1m4jMpi4MFFFMP5sv3XhFuWeA" />
