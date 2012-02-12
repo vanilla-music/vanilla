@@ -31,13 +31,17 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 /**
- * SeekBar preference to set the shake force threshold.
+ * A dialog preference that contains a SeekBar.
  */
 public class SeekBarPreference extends DialogPreference implements SeekBar.OnSeekBarChangeListener {
 	/**
-	 * The current value.
+	 * The persisted value.
 	 */
 	private int mValue;
+	/**
+	 * The current position of the seek bar.
+	 */
+	private int mProgress;
 	/**
 	 * TextView to display current threshold.
 	 */
@@ -51,7 +55,13 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 	@Override
 	public CharSequence getSummary()
 	{
-		return getSummary(mValue);
+		String summary = (String)super.getSummary();
+		String status = getStatus();
+		if (summary == null) {
+			return status;
+		} else {
+			return String.format(summary, status);
+		}
 	}
 
 	@Override
@@ -64,20 +74,20 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 	protected void onSetInitialValue(boolean restoreValue, Object defaultValue)
 	{
 		mValue = restoreValue ? getPersistedInt(mValue) : (Integer)defaultValue;
-    }
+	}
 
 	/**
-	 * Create the summary for the given value.
-	 *
-	 * @param value The force threshold.
-	 * @return A string representation of the threshold.
+	 * Get the status text, displayed above the seek bar.
 	 */
-	private String getSummary(int value)
+	private String getStatus()
 	{
-		if ("shake_threshold".equals(getKey())) {
-			return String.valueOf(value / 10.0f);
+		String key = getKey();
+		if ("shake_threshold".equals(key)) {
+			return String.valueOf(mValue / 10.0f);
+		} else if ("volume_mb".equals(key)) {
+			return String.format("%d%% (%+.1fdB)", mProgress, mValue / 100.0);
 		} else {
-			return String.format("%d%% (%+.1fdB)", value, 20 * Math.log10(Math.pow(value / 100.0, 3)));
+			return String.format("%+.1fdB", mValue / 100.0);
 		}
 	}
 
@@ -87,11 +97,11 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 		View view = super.onCreateDialogView();
 
 		mValueText = (TextView)view.findViewById(R.id.value);
-		mValueText.setText(getSummary(mValue));
+		mValueText.setText(getStatus());
 
 		SeekBar seekBar = (SeekBar)view.findViewById(R.id.seek_bar);
-		seekBar.setMax(150);
-		seekBar.setProgress(mValue);
+		seekBar.setMax(getKey().startsWith("replaygain") ? 200 : 150);
+		seekBar.setProgress(valueToProgress(mValue));
 		seekBar.setOnSeekBarChangeListener(this);
 
 		return view;
@@ -103,13 +113,44 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 		notifyChanged();
 	}
 
+	/**
+	 * Convert a seek bar position to the persisted value.
+	 */
+	private int progressToValue(int progress)
+	{
+		String key = getKey();
+		if ("shake_threshold".equals(key)) {
+			return progress;
+		} else {
+			int value = (int)(6000 * Math.log10(progress / 100.0));
+			if (value < -12000)
+				value = -12000;
+			return value;
+		}
+	}
+
+	/**
+	 * Convert a persisted value to a seek bar position.
+	 */
+	private int valueToProgress(int value)
+	{
+		String key = getKey();
+		if ("shake_threshold".equals(key)) {
+			return value;
+		} else {
+			return (int)(Math.pow(10, value / 6000.0) * 100);
+		}
+	}
+
 	@Override
 	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
 	{
 		if (fromUser) {
-			mValue = progress;
-			mValueText.setText(getSummary(progress));
-			persistInt(progress);
+			int value = progressToValue(progress);
+			persistInt(value);
+			mValue = value;
+			mProgress = progress;
+			mValueText.setText(getStatus());
 		}
 	}
 

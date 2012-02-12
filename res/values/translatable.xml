@@ -50,6 +50,9 @@ THE SOFTWARE.
 	<string name="_artist">artist</string>
 	<string name="_album">album</string>
 	<string name="_year">year</string>
+	<string name="_replaygain">replaygain</string>
+	<string name="no_data">no data</string>
+	<string name="replaygain_info">track: %1$s album: %2$s</string>
 
 	<!-- New Playlist Dialog -->
 	<string name="choose_playlist_name">Choose Playlist Name</string>
@@ -176,6 +179,15 @@ THE SOFTWARE.
 	<string name="shake_action_title">Shake Action</string>
 	<string name="shake_threshold_title">Shake Force Threshold</string>
 
+	<string name="replaygain">ReplayGain</string>
+	<string name="enable_replaygain">Enable ReplayGain</string>
+	<string name="enable_replaygain_summary">Ensures that all songs play at a similar volume. ReplayGain data must have been written into the files.</string>
+	<string name="replaygain_fallback_title">Fallback Gain</string>
+	<string name="replaygain_fallback_summary">Songs without ReplayGain data are usually too loud. Use a %s gain for such songs.</string>
+	<string name="replaygain_preamp_title">Pre-amp Gain</string>
+	<string name="replaygain_preamp_summary">Apply a %s gain to all songs when ReplayGain is enabled</string>
+	<string name="replaygain_type_title">Gain Type</string>
+
 	<string name="misc_features">Miscellaneous Features</string>
 	<string name="disable_lockscreen_title">Disable Lockscreen</string>
 	<string name="disable_lockscreen_summary">Prevent the lockscreen from activating when in the library or playback screen</string>
@@ -231,4 +243,7 @@ THE SOFTWARE.
 	<string name="enqueue_current_genre">Enqueue genre</string>
 	<string name="clear_queue">Clear queue</string>
 	<string name="toggle_controls">Toggle controls</string>
+
+	<string name="track_gain">Track gain (all tracks equal loudness)</string>
+	<string name="album_gain">Album gain (albums equal loudness)</string>
 </resources>

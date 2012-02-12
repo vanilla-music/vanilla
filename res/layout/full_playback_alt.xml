@@ -121,6 +121,16 @@ THE SOFTWARE.
 				android:id="@+id/format"
 				android:singleLine="true" />
 		</TableRow>
+		<TableRow>
+			<TextView
+				android:text="@string/_replaygain"
+				android:paddingRight="5dip"
+				android:singleLine="true"
+				android:gravity="right" />
+			<TextView
+				android:id="@+id/replaygain"
+				android:singleLine="true" />
+		</TableRow>
 		<LinearLayout android:id="@+id/controls_top">
 			<TextView
 				android:id="@+id/elapsed"

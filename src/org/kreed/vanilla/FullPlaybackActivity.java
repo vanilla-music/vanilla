@@ -24,6 +24,7 @@ package org.kreed.vanilla;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.media.MediaMetadataRetriever;
 import android.os.Build;
@@ -110,6 +111,8 @@ public class FullPlaybackActivity extends PlaybackActivity
 	private TextView mComposerView;
 	private String mFormat;
 	private TextView mFormatView;
+	private String mReplayGain;
+	private TextView mReplayGainView;
 
 	@Override
 	public void onCreate(Bundle icicle)
@@ -164,10 +167,6 @@ public class FullPlaybackActivity extends PlaybackActivity
 			mInfoTable = table;
 		}
 
-		mTitle = (TextView)findViewById(R.id.title);
-		mAlbum = (TextView)findViewById(R.id.album);
-		mArtist = (TextView)findViewById(R.id.artist);
-
 		mControlsTop = findViewById(R.id.controls_top);
 		mElapsedView = (TextView)findViewById(R.id.elapsed);
 		mDurationView = (TextView)findViewById(R.id.duration);
@@ -176,11 +175,17 @@ public class FullPlaybackActivity extends PlaybackActivity
 		mSeekBar.setOnSeekBarChangeListener(this);
 		mQueuePosView = (TextView)findViewById(R.id.queue_pos);
 
-		mGenreView = (TextView)findViewById(R.id.genre);
-		mTrackView = (TextView)findViewById(R.id.track);
-		mYearView = (TextView)findViewById(R.id.year);
-		mComposerView = (TextView)findViewById(R.id.composer);
-		mFormatView = (TextView)findViewById(R.id.format);
+		if (layout == R.layout.full_playback_alt) {
+			mTitle = (TextView)findViewById(R.id.title);
+			mAlbum = (TextView)findViewById(R.id.album);
+			mArtist = (TextView)findViewById(R.id.artist);
+			mGenreView = (TextView)findViewById(R.id.genre);
+			mTrackView = (TextView)findViewById(R.id.track);
+			mYearView = (TextView)findViewById(R.id.year);
+			mComposerView = (TextView)findViewById(R.id.composer);
+			mFormatView = (TextView)findViewById(R.id.format);
+			mReplayGainView = (TextView)findViewById(R.id.replaygain);
+		}
 
 		mShuffleButton = (ImageButton)findViewById(R.id.shuffle);
 		mShuffleButton.setOnClickListener(this);
@@ -538,6 +543,17 @@ public class FullPlaybackActivity extends PlaybackActivity
 			}
 			mFormat = sb.toString();
 
+			Resources res = getResources();
+			short albumGain = song.albumGain();
+			short trackGain = song.trackGain();
+			if (albumGain == Short.MAX_VALUE && trackGain == Short.MAX_VALUE) {
+				mReplayGain = res.getString(R.string.no_data);
+			} else {
+				String album = albumGain == Short.MAX_VALUE ? res.getString(R.string.no_data) : String.format("%+.2fdB", albumGain / 100.0);
+				String track = trackGain == Short.MAX_VALUE ? res.getString(R.string.no_data) : String.format("%+.2fdB", trackGain / 100.0);
+				mReplayGain = res.getString(R.string.replaygain_info, track, album);
+			}
+
 			data.release();
 		}
 
@@ -606,6 +622,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 			mYearView.setText(mYear);
 			mComposerView.setText(mComposer);
 			mFormatView.setText(mFormat);
+			mReplayGainView.setText(mReplayGain);
 			break;
 		}
 		case MSG_UPDATE_POSITION:

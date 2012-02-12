@@ -24,10 +24,10 @@ THE SOFTWARE.
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:persistent="true">
 	<org.kreed.vanilla.SeekBarPreference
-		android:key="volume_int"
+		android:key="volume_mb"
 		android:negativeButtonText="@null"
 		android:dialogLayout="@layout/shake_pref"
-		android:defaultValue="100"
+		android:defaultValue="0"
 		android:title="@string/volume_title" />
 	<CheckBoxPreference
 		android:key="media_button"
@@ -49,4 +49,34 @@ THE SOFTWARE.
 		android:title="@string/headset_play_title"
 		android:summary="@string/headset_play_summary"
 		android:defaultValue="false" />
+	<PreferenceCategory android:title="@string/replaygain">
+		<CheckBoxPreference
+			android:title="@string/enable_replaygain"
+			android:key="enable_replaygain"
+			android:summary="@string/enable_replaygain_summary"
+			android:defaultValue="false" />
+		<org.kreed.vanilla.SeekBarPreference
+			android:dependency="enable_replaygain"
+			android:key="replaygain_fallback"
+			android:negativeButtonText="@null"
+			android:dialogLayout="@layout/shake_pref"
+			android:defaultValue="-1000"
+			android:title="@string/replaygain_fallback_title"
+			android:summary="@string/replaygain_fallback_summary" />
+		<org.kreed.vanilla.SeekBarPreference
+			android:dependency="enable_replaygain"
+			android:key="replaygain_preamp"
+			android:negativeButtonText="@null"
+			android:dialogLayout="@layout/shake_pref"
+			android:defaultValue="0"
+			android:title="@string/replaygain_preamp_title"
+			android:summary="@string/replaygain_preamp_summary" />
+		<org.kreed.vanilla.ListPreferenceSummary
+			android:dependency="enable_replaygain"
+			android:key="replaygain_type"
+			android:title="@string/replaygain_type_title"
+			android:entries="@array/replaygain_type_entries"
+			android:entryValues="@array/entry_values"
+			android:defaultValue="0" />
+	</PreferenceCategory>
 </PreferenceScreen>

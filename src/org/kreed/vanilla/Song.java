@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,14 @@ import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.support.v4.util.LruCache;
+import android.util.Log;
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
 import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.IOException;
+import org.kreed.vanilla.formats.ID3Reader;
+import org.kreed.vanilla.formats.M4AReader;
 
 /**
  * Represents a Song backed by the MediaStore. Includes basic metadata and
@@ -178,6 +185,21 @@ public class Song implements Comparable<Song> {
 	public int flags;
 
 	/**
+	 * ReplayGain album gain. Short.MIN_VALUE means data has not been loaded.
+	 * Short.MAX_VALUE means the file has no supported ReplayGain tags. You
+	 * probably want to use {@link #albumGain()} to access this value, as that
+	 * will take care of loading the value if needed.
+	 */
+	public short albumGain = Short.MIN_VALUE;
+	/**
+	 * ReplayGain track gain. Short.MIN_VALUE means data has not been loaded.
+	 * Short.MAX_VALUE means the file has no supported ReplayGain tags. You
+	 * probably want to use {@link #trackGain()} to access this value, as that
+	 * will take care of loading the value if needed.
+	 */
+	public short trackGain = Short.MIN_VALUE;
+
+	/**
 	 * Initialize the song with the specified id. Call populate to fill fields
 	 * in the song.
 	 */
@@ -279,5 +301,90 @@ public class Song implements Comparable<Song> {
 		if (albumId > other.albumId)
 			return 1;
 		return -1;
+	}
+
+	/**
+	 * Retrieves the songs's ReplayGain album gain, loading it from the file
+	 * if necessary.
+	 *
+	 * @return The gain in a linear scale or Short.MAX_VALUE if no gain could
+	 * be loaded.
+	 */
+	public synchronized short albumGain()
+	{
+		if (albumGain == Short.MIN_VALUE)
+			loadTags();
+		return albumGain;
+	}
+
+	/**
+	 * Retrieves the songs's ReplayGain track gain, loading it from the file
+	 * if necessary.
+	 *
+	 * @return The gain in a linear scale or Short.MAX_VALUE if no gain could
+	 * be loaded.
+	 */
+	public synchronized short trackGain()
+	{
+		if (trackGain == Short.MIN_VALUE)
+			loadTags();
+		return trackGain;
+	}
+
+	private static final int ID33 = 0x49443303;
+	private static final int ID34 = 0x49443304;
+	private static final int FTYP = 0x66747970;
+	private static final int M4A = 0x4D344120;
+
+	/**
+	 * Attempt to load ReplayGain tags from the file.
+	 */
+	private void loadTags()
+	{
+		trackGain = Short.MAX_VALUE;
+		albumGain = Short.MAX_VALUE;
+
+		if (path == null)
+			return;
+
+		try {
+			DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(path)));
+			in.mark(16);
+
+			int a = in.readInt();
+			int b = in.readInt();
+			int c = in.readInt();
+			if (a == ID33 || a == ID34) {
+				in.reset();
+				ID3Reader.read(this, in);
+			} else if (b == FTYP && c == M4A) {
+				in.reset();
+				M4AReader.read(this, in);
+			}
+
+			in.close();
+		} catch (IOException e) {
+			Log.d("VanillaMusic", "Failed to load tags", e);
+		}
+	}
+
+	/**
+	 * Parse the given text into millibels.
+	 *
+	 * @param text The tag text, in format x.xxxx dB.
+	 * @return The millibel value, or Short.MAX_VALUE if the text could not
+	 * be parsed.
+	 */
+	public static short parseMillibels(String text)
+	{
+		try {
+			int dbIndex = text.toLowerCase().indexOf("db");
+			if (dbIndex != -1)
+				return (short)(Float.parseFloat(text.substring(0, dbIndex - 1)) * 100);
+		} catch (NumberFormatException e) {
+			Log.d("VanillaMusic", "Failed to parse millibels from input: " + text);
+		}
+
+		return Short.MAX_VALUE;
 	}
 }
