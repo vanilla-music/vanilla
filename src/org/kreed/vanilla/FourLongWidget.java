@@ -92,18 +92,21 @@ public class FourLongWidget extends AppWidgetProvider {
 		RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.four_long_widget);
 
 		if ((state & PlaybackService.FLAG_NO_MEDIA) != 0) {
-			views.setViewVisibility(R.id.buttons, View.GONE);
+			views.setViewVisibility(R.id.play_pause, View.GONE);
+			views.setViewVisibility(R.id.next, View.GONE);
 			views.setViewVisibility(R.id.title, View.GONE);
 			views.setInt(R.id.artist, "setText", R.string.no_songs);
 			views.setViewVisibility(R.id.cover, View.GONE);
 		} else if (song == null) {
-			views.setViewVisibility(R.id.buttons, View.VISIBLE);
+			views.setViewVisibility(R.id.play_pause, View.VISIBLE);
+			views.setViewVisibility(R.id.next, View.VISIBLE);
 			views.setViewVisibility(R.id.title, View.GONE);
 			views.setInt(R.id.artist, "setText", R.string.app_name);
 			views.setViewVisibility(R.id.cover, View.GONE);
 		} else {
+			views.setViewVisibility(R.id.play_pause, View.VISIBLE);
+			views.setViewVisibility(R.id.next, View.VISIBLE);
 			views.setViewVisibility(R.id.title, View.VISIBLE);
-			views.setViewVisibility(R.id.buttons, View.VISIBLE);
 			views.setTextViewText(R.id.title, song.title);
 			views.setTextViewText(R.id.artist, song.artist);
 			Bitmap cover = song.getCover(context);
