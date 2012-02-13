@@ -370,7 +370,11 @@ public final class PlaybackService extends Service
 		mMediaPlayer.setOnErrorListener(this);
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-			mEqualizer = new CompatEq(mMediaPlayer);
+			try {
+				mEqualizer = new CompatEq(mMediaPlayer);
+			} catch (IllegalArgumentException e) {
+				// equalizer not supported
+			}
 		}
 
 		mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
@@ -559,9 +563,11 @@ public final class PlaybackService extends Service
 			// In Gingerbread and above, MediaPlayer no longer accepts volumes
 			// > 1.0. So we use an equalizer instead.
 			CompatEq eq = mEqualizer;
-			short gain = (short)(2000 * Math.log10(base));
-			for (short i = eq.getNumberOfBands(); --i != -1; ) {
-				eq.setBandLevel(i, gain);
+			if (eq != null) {
+				short gain = (short)(2000 * Math.log10(base));
+				for (short i = eq.getNumberOfBands(); --i != -1; ) {
+					eq.setBandLevel(i, gain);
+				}
 			}
 			base = 1.0f;
 		}
