@@ -448,9 +448,12 @@ public final class PlaybackService extends Service
 			} else if (ACTION_TOGGLE_PLAYBACK_DELAYED.equals(action)) {
 				if (mHandler.hasMessages(CALL_GO, Integer.valueOf(0))) {
 					mHandler.removeMessages(CALL_GO, Integer.valueOf(0));
-					startActivity(new Intent(this, LibraryActivity.class).setAction(Intent.ACTION_MAIN));
+					Intent launch = new Intent(this, LibraryActivity.class);
+					launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					launch.setAction(Intent.ACTION_MAIN);
+					startActivity(launch);
 				} else {
-					mHandler.sendMessageDelayed(mHandler.obtainMessage(CALL_GO, Integer.valueOf(0)), 400);
+					mHandler.sendMessageDelayed(mHandler.obtainMessage(CALL_GO, 0, 0, Integer.valueOf(0)), 400);
 				}
 			} else if (ACTION_NEXT_SONG.equals(action)) {
 				setCurrentSong(1);
@@ -461,9 +464,12 @@ public final class PlaybackService extends Service
 			} else if (ACTION_NEXT_SONG_DELAYED.equals(action)) {
 				if (mHandler.hasMessages(CALL_GO, Integer.valueOf(1))) {
 					mHandler.removeMessages(CALL_GO, Integer.valueOf(1));
-					startActivity(new Intent(this, LibraryActivity.class).setAction(Intent.ACTION_MAIN));
+					Intent launch = new Intent(this, LibraryActivity.class);
+					launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					launch.setAction(Intent.ACTION_MAIN);
+					startActivity(launch);
 				} else {
-					mHandler.sendMessageDelayed(mHandler.obtainMessage(CALL_GO, Integer.valueOf(1)), 400);
+					mHandler.sendMessageDelayed(mHandler.obtainMessage(CALL_GO, 1, 0, Integer.valueOf(1)), 400);
 				}
 			} else if (ACTION_PREVIOUS_SONG.equals(action)) {
 				setCurrentSong(-1);
@@ -1694,7 +1700,7 @@ public final class PlaybackService extends Service
 			break;
 		case Library:
 			Intent intent = new Intent(this, LibraryActivity.class);
-			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(intent);
 			break;
 		case PlayPause: {
