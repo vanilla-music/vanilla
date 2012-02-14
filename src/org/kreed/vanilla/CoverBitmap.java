@@ -54,11 +54,6 @@ public final class CoverBitmap {
 	 * Draw no song info, only the cover.
 	 */
 	public static final int STYLE_NO_INFO = 2;
-	/**
-	 * Draw no song info and zoom the cover so that it fills the entire bitmap
-	 * (preserving aspect ratio---some parts of the cover may be cut off).
-	 */
-	public static final int STYLE_NO_INFO_ZOOMED = 3;
 
 	private static int TEXT_SIZE = -1;
 	private static int TEXT_SIZE_BIG;
@@ -141,8 +136,6 @@ public final class CoverBitmap {
 			return createSeparatedBitmap(context, coverArt, song, width, height, reuse);
 		case STYLE_NO_INFO:
 			return createScaledBitmap(coverArt, width, height, reuse);
-		case STYLE_NO_INFO_ZOOMED:
-			return createZoomedBitmap(coverArt, width, height, reuse);
 		default:
 			throw new IllegalArgumentException("Invalid bitmap type given: " + style);
 		}
@@ -332,48 +325,6 @@ public final class CoverBitmap {
 
 		canvas.drawBitmap(ARTIST_ICON, left, top, paint);
 		drawText(canvas, artist, left + padding + textSize, top, maxWidth, maxWidth, paint);
-
-		return bitmap;
-	}
-
-	/**
-	 * Scales a bitmap to completely fill a rectangle of the given size. Aspect
-	 * ratio is preserved, thus, parts of the image will be cut off if the
-	 * aspect ratio of the rectangle does not match that of the source bitmap.
-	 *
-	 * @param source The source bitmap. Will be recycled.
-	 * @param width Width of the result
-	 * @param height Height of the result
-	 * @param reuse A bitmap to store the result in if possible
-	 * @return The zoomed bitmap.
-	 */
-	private static Bitmap createZoomedBitmap(Bitmap source, int width, int height, Bitmap reuse)
-	{
-		Bitmap bitmap = null;
-
-		if (reuse != null) {
-			if (reuse.getHeight() == height && reuse.getWidth() == width)
-				bitmap = reuse;
-			else
-				reuse.recycle();
-		}
-
-		if (bitmap == null)
-			bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
-		Canvas canvas = new Canvas(bitmap);
-
-		int sourceWidth = source.getWidth();
-		int sourceHeight = source.getHeight();
-		int size = Math.max(width, height);
-		float scale = sourceWidth < sourceHeight ? (float)size / sourceWidth : (float)size / sourceHeight;
-
-		int srcWidth = (int)(Math.min(width, sourceWidth * scale) / scale);
-		int srcHeight = (int)(Math.min(height, sourceHeight * scale) / scale);
-		int xOffset = (sourceWidth - srcWidth) / 2;
-		int yOffset = (sourceHeight - srcHeight) / 2;
-		Rect src = new Rect(xOffset, yOffset, sourceWidth - xOffset, sourceHeight - yOffset);
-		Rect dest = new Rect(0, 0, width, height);
-		canvas.drawBitmap(source, src, dest, null);
 
 		return bitmap;
 	}

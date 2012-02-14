@@ -197,7 +197,6 @@ THE SOFTWARE.
 	<string name="info_on_cover">Info on cover art</string>
 	<string name="info_below_cover">Info below cover art</string>
 	<string name="fixed_info">Info fixed at top</string>
-	<string name="fixed_info_fullscreen">Info fixed at top (fullscreen cover art)</string>
 
 	<string name="do_nothing">Do nothing</string>
 	<string name="open_library">Open library</string>

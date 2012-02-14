@@ -353,7 +353,7 @@ public final class CoverView extends View implements Handler.Callback {
 		int height = getHeight();
 
 		Bitmap bitmap;
-		if (cover == null && (style == CoverBitmap.STYLE_NO_INFO || style == CoverBitmap.STYLE_NO_INFO_ZOOMED)) {
+		if (cover == null && style == CoverBitmap.STYLE_NO_INFO) {
 			if (mDefaultCover == null)
 				mDefaultCover = CoverBitmap.generateDefaultCover(width, height);
 			bitmap = mDefaultCover;
