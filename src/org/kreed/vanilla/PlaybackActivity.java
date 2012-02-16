@@ -310,6 +310,10 @@ public class PlaybackActivity extends Activity
 	static final int MENU_LIBRARY = 3;
 	static final int MENU_PLAYBACK = 5;
 	static final int MENU_SEARCH = 7;
+	static final int MENU_ENQUEUE_ALBUM = 8;
+	static final int MENU_ENQUEUE_ARTIST = 9;
+	static final int MENU_ENQUEUE_GENRE = 10;
+	static final int MENU_CLEAR_QUEUE = 11;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
@@ -367,11 +371,6 @@ public class PlaybackActivity extends Activity
 			intent.putExtra("artist", song.artist);
 		}
 		startActivity(intent);
-	}
-
-	public void enqueue(int type)
-	{
-		PlaybackService.get(this).enqueueFromCurrent(type);
 	}
 
 	@Override

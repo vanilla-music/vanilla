@@ -283,6 +283,10 @@ public class FullPlaybackActivity extends PlaybackActivity
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
+		menu.add(0, MENU_ENQUEUE_ALBUM, 0, R.string.enqueue_current_album).setIcon(R.drawable.ic_menu_add);
+		menu.add(0, MENU_ENQUEUE_ARTIST, 0, R.string.enqueue_current_artist).setIcon(R.drawable.ic_menu_add);
+		menu.add(0, MENU_ENQUEUE_GENRE, 0, R.string.enqueue_current_genre).setIcon(R.drawable.ic_menu_add);
+		menu.add(0, MENU_CLEAR_QUEUE, 0, R.string.clear_queue).setIcon(R.drawable.ic_menu_close_clear_cancel);
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
 			menu.add(0, MENU_LIBRARY, 0, R.string.library).setIcon(R.drawable.ic_menu_music_library);
 		}
@@ -296,10 +300,24 @@ public class FullPlaybackActivity extends PlaybackActivity
 		case android.R.id.home:
 		case MENU_LIBRARY:
 			openLibrary(null);
-			return true;
+			break;
+		case MENU_ENQUEUE_ALBUM:
+			PlaybackService.get(this).enqueueFromCurrent(MediaUtils.TYPE_ALBUM);
+			break;
+		case MENU_ENQUEUE_ARTIST:
+			PlaybackService.get(this).enqueueFromCurrent(MediaUtils.TYPE_ARTIST);
+			break;
+		case MENU_ENQUEUE_GENRE:
+			PlaybackService.get(this).enqueueFromCurrent(MediaUtils.TYPE_GENRE);
+			break;
+		case MENU_CLEAR_QUEUE:
+			PlaybackService.get(this).clearQueue();
+			break;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+
+		return true;
 	}
 
 	@Override
