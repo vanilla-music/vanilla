@@ -1246,8 +1246,10 @@ public class LibraryActivity
 			mControls.setVisibility(visible || (mState & PlaybackService.FLAG_NO_MEDIA) != 0 ? View.GONE : View.VISIBLE);
 		} else if (mActionControls != null) {
 			// try to hide the bottom action bar
-			ViewParent parent = mActionControls.getParent().getParent();
-			if (parent instanceof ViewGroup) {
+			ViewParent parent = mActionControls.getParent();
+			if (parent != null)
+				parent = parent.getParent();
+			if (parent != null && parent instanceof ViewGroup) {
 				ViewGroup ab = (ViewGroup)parent;
 				if (ab.getChildCount() == 1) {
 					ab.setVisibility(visible ? View.GONE : View.VISIBLE);
