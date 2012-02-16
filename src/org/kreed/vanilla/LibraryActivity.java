@@ -46,6 +46,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.inputmethod.InputMethodManager;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -1254,8 +1255,10 @@ public class LibraryActivity
 			}
 		}
 
-		if (visible)
-			mSearchBox.requestFocus();
+		if (visible) {
+			mTextFilter.requestFocus();
+			((InputMethodManager)getSystemService(INPUT_METHOD_SERVICE)).showSoftInput(mTextFilter, 0);
+		}
 	}
 
 	@Override
