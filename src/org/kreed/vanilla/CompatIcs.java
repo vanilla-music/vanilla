@@ -26,6 +26,7 @@ import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
 import android.media.RemoteControlClient;
@@ -89,7 +90,13 @@ public class CompatIcs {
 			editor.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, song.artist);
 			editor.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, song.album);
 			editor.putString(MediaMetadataRetriever.METADATA_KEY_TITLE, song.title);
-			editor.putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, song.getCover(context));
+			Bitmap bitmap = song.getCover(context);
+			if (bitmap != null) {
+				// Create a copy of the cover art, since RemoteControlClient likes
+				// to recycle what we give it.
+				bitmap = bitmap.copy(Bitmap.Config.RGB_565, false);
+			}
+			editor.putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, bitmap);
 		}
 		editor.apply();
 	}
