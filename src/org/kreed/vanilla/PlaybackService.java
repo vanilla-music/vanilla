@@ -406,9 +406,13 @@ public final class PlaybackService extends Service
 		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
 		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicLock");
 
-		mCallListener = new InCallListener();
-		TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-		telephonyManager.listen(mCallListener, PhoneStateListener.LISTEN_CALL_STATE);
+		try {
+			mCallListener = new InCallListener();
+			TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+			telephonyManager.listen(mCallListener, PhoneStateListener.LISTEN_CALL_STATE);
+		} catch (SecurityException e) {
+			// don't have READ_PHONE_STATE
+		}
 
 		mReceiver = new Receiver();
 		IntentFilter filter = new IntentFilter();
@@ -694,8 +698,12 @@ public final class PlaybackService extends Service
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
 					CompatFroyo.requestAudioFocus(mAudioManager);
 				}
-				if (mWakeLock != null)
-					mWakeLock.acquire();
+				try {
+					if (mWakeLock != null)
+						mWakeLock.acquire();
+				} catch (SecurityException e) {
+					// Don't have WAKE_LOCK permission
+				}
 			} else {
 				if (mMediaPlayerInitialized)
 					mMediaPlayer.pause();
