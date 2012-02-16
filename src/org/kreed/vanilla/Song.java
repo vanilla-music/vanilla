@@ -30,7 +30,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
-import android.util.Log;
+import android.support.v4.util.LruCache;
 import java.io.FileDescriptor;
 
 /**
@@ -85,9 +85,47 @@ public class Song implements Comparable<Song> {
 	};
 
 	/**
-	 * A cache of 8 covers.
+	 * A cache of 6 MiB of covers.
 	 */
-	private static final Cache<Bitmap> sCoverCache = new Cache<Bitmap>(8);
+	private static class CoverCache extends LruCache<Long, Bitmap> {
+		private final Context mContext;
+
+		public CoverCache(Context context)
+		{
+			super(6 * 1024 * 1024);
+			mContext = context;
+		}
+
+		@Override
+		public Bitmap create(Long key)
+		{
+			Uri uri =  Uri.parse("content://media/external/audio/media/" + key + "/albumart");
+			ContentResolver res = mContext.getContentResolver();
+
+			try {
+				ParcelFileDescriptor parcelFileDescriptor = res.openFileDescriptor(uri, "r");
+				if (parcelFileDescriptor != null) {
+					FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+					return BitmapFactory.decodeFileDescriptor(fileDescriptor, null, BITMAP_OPTIONS);
+				}
+			} catch (Exception e) {
+				// no cover art found
+			}
+
+			return null;
+		}
+
+		@Override
+		protected int sizeOf(Long key, Bitmap value)
+		{
+			return value.getRowBytes() * value.getHeight();
+		}
+	};
+
+	/**
+	 * The cache instance.
+	 */
+	private static CoverCache sCoverCache = null;
 
 	/**
 	 * If true, will not attempt to load any cover art in getCover()
@@ -215,32 +253,13 @@ public class Song implements Comparable<Song> {
 		if (mDisableCoverArt || id == -1 || (flags & FLAG_NO_COVER) != 0)
 			return null;
 
+		if (sCoverCache == null)
+			sCoverCache = new CoverCache(context.getApplicationContext());
+
 		Bitmap cover = sCoverCache.get(id);
-		if (cover != null) {
-			return cover;
-		}
-
-		Uri uri =  Uri.parse("content://media/external/audio/media/" + id + "/albumart");
-		ContentResolver res = context.getContentResolver();
-		try {
-			ParcelFileDescriptor parcelFileDescriptor = res.openFileDescriptor(uri, "r");
-			if (parcelFileDescriptor != null) {
-				FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-				cover = BitmapFactory.decodeFileDescriptor(fileDescriptor, null, BITMAP_OPTIONS);
-				if (cover != null) {
-					Bitmap discarded = sCoverCache.discardOldest();
-					if (discarded != null)
-						discarded.recycle();
-					sCoverCache.put(id, cover);
-					return cover;
-				}
-			}
-		} catch (Exception e) {
-			Log.d("VanillaMusic", "Failed to load cover art for " + path, e);
-		}
-
-		flags |= FLAG_NO_COVER;
-		return null;
+		if (cover == null)
+			flags |= FLAG_NO_COVER;
+		return cover;
 	}
 
 	@Override

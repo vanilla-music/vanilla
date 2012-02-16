@@ -27,7 +27,6 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -121,27 +120,24 @@ public final class CoverBitmap {
 	 * @param song Title and other data are taken from here for info modes.
 	 * @param width Maximum width of image
 	 * @param height Maximum height of image
-	 * @param reuse A Bitmap to be drawn into. If null, a new Bitmap will be
-	 * created. If the bitmap cannot be used, it will be recycled and a new
-	 * Bitmap created.
 	 * @return The image, or null if the song was null, or width or height
 	 * were less than 1
 	 */
-	public static Bitmap createBitmap(Context context, int style, Bitmap coverArt, Song song, int width, int height, Bitmap reuse)
+	public static Bitmap createBitmap(Context context, int style, Bitmap coverArt, Song song, int width, int height)
 	{
 		switch (style) {
 		case STYLE_OVERLAPPING_BOX:
-			return createOverlappingBitmap(context, coverArt, song, width, height, reuse);
+			return createOverlappingBitmap(context, coverArt, song, width, height);
 		case STYLE_INFO_BELOW:
-			return createSeparatedBitmap(context, coverArt, song, width, height, reuse);
+			return createSeparatedBitmap(context, coverArt, song, width, height);
 		case STYLE_NO_INFO:
-			return createScaledBitmap(coverArt, width, height, reuse);
+			return createScaledBitmap(coverArt, width, height);
 		default:
 			throw new IllegalArgumentException("Invalid bitmap type given: " + style);
 		}
 	}
 
-	private static Bitmap createOverlappingBitmap(Context context, Bitmap cover, Song song, int width, int height, Bitmap bitmap)
+	private static Bitmap createOverlappingBitmap(Context context, Bitmap cover, Song song, int width, int height)
 	{
 		if (TEXT_SIZE == -1)
 			loadTextSizes(context);
@@ -185,17 +181,7 @@ public final class CoverBitmap {
 		int bitmapWidth = Math.max(coverWidth, boxWidth);
 		int bitmapHeight = Math.max(coverHeight, boxHeight);
 
-		if (bitmap != null) {
-			if (bitmap.getHeight() != bitmapHeight || bitmap.getWidth() != bitmapWidth) {
-				bitmap.recycle();
-				bitmap = null;
-			} else {
-				bitmap.eraseColor(Color.BLACK);
-			}
-		}
-
-		if (bitmap == null)
-			bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.RGB_565);
+		Bitmap bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.RGB_565);
 		Canvas canvas = new Canvas(bitmap);
 
 		if (cover != null) {
@@ -231,7 +217,7 @@ public final class CoverBitmap {
 		return bitmap;
 	}
 
-	private static Bitmap createSeparatedBitmap(Context context, Bitmap cover, Song song, int width, int height, Bitmap bitmap)
+	private static Bitmap createSeparatedBitmap(Context context, Bitmap cover, Song song, int width, int height)
 	{
 		if (TEXT_SIZE == -1)
 			loadTextSizes(context);
@@ -281,17 +267,7 @@ public final class CoverBitmap {
 		int bitmapWidth = horizontal ? coverWidth + boxWidth : Math.max(coverWidth, boxWidth);
 		int bitmapHeight = horizontal ? Math.max(coverHeight, boxHeight) : coverHeight + boxHeight;
 
-		if (bitmap != null) {
-			if (bitmap.getHeight() != bitmapHeight || bitmap.getWidth() != bitmapWidth) {
-				bitmap.recycle();
-				bitmap = null;
-			} else {
-				bitmap.eraseColor(Color.BLACK);
-			}
-		}
-
-		if (bitmap == null)
-			bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.RGB_565);
+		Bitmap bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.RGB_565);
 		Canvas canvas = new Canvas(bitmap);
 
 		if (cover != null) {
@@ -334,18 +310,13 @@ public final class CoverBitmap {
 	 * preserved. At least one dimension of the result will match the provided
 	 * dimension exactly.
 	 *
-	 * @param source The source bitmap. Will be recycled.
+	 * @param source The bitmap to be scaled
 	 * @param width Maximum width of image
 	 * @param height Maximum height of image
-	 * @param reuse A bitmap that will simply be recycled. (This method does not
-	 * support reuse.)
 	 * @return The scaled bitmap.
 	 */
-	private static Bitmap createScaledBitmap(Bitmap source, int width, int height, Bitmap reuse)
+	private static Bitmap createScaledBitmap(Bitmap source, int width, int height)
 	{
-		if (reuse != null)
-			reuse.recycle();
-
 		int sourceWidth = source.getWidth();
 		int sourceHeight = source.getHeight();
 		float scale = Math.min((float)width / sourceWidth, (float)height / sourceHeight);
