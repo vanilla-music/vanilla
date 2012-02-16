@@ -26,6 +26,7 @@ import android.content.ContentResolver;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import java.io.File;
 import java.util.Arrays;
@@ -216,32 +217,37 @@ public class MediaUtils {
 	 */
 	public static long queryGenreForSong(ContentResolver resolver, long id)
 	{
-		// This is terribly inefficient, but it seems to be the only way to do
-		// this. Honeycomb introduced an API to query the genre of the song.
-		// We should look into it when ICS is released.
-
-		// query ids of all the genres
-		Uri uri = MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI;
 		String[] projection = { "_id" };
-		Cursor cursor = resolver.query(uri, projection, null, null, null);
 
-		if (cursor != null) {
-			String selection = "_id=" + id;
-			while (cursor.moveToNext()) {
-				// check if the given song belongs to this genre
-				long genreId = cursor.getLong(0);
-				Uri genreUri = MediaStore.Audio.Genres.Members.getContentUri("external", genreId);
-				Cursor c = resolver.query(genreUri, projection, selection, null, null);
-				if (c != null) {
-					if (c.getCount() == 1)
-						return genreId;
-					c.close();
-				}
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			Uri uri = CompatHoneycomb.getContentUriForAudioId((int)id);
+			Cursor cursor = resolver.query(uri, projection, null, null, null);
+			if (cursor != null) {
+				if (cursor.moveToNext())
+					return cursor.getLong(0);
+				cursor.close();
 			}
-			cursor.close();
+		} else {
+			Uri uri = MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI;
+			Cursor cursor = resolver.query(uri, projection, null, null, null);
+			if (cursor != null) {
+				String selection = "_id=" + id;
+				while (cursor.moveToNext()) {
+					// check if the given song belongs to this genre
+					long genreId = cursor.getLong(0);
+					Uri genreUri = MediaStore.Audio.Genres.Members.getContentUri("external", genreId);
+					Cursor c = resolver.query(genreUri, projection, selection, null, null);
+					if (c != null) {
+						if (c.getCount() == 1)
+							return genreId;
+						c.close();
+					}
+				}
+				cursor.close();
+			}
 		}
 
-		return -1;
+		return 0;
 	}
 
 	/**

@@ -26,6 +26,8 @@ import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.provider.MediaStore;
+import android.net.Uri;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
@@ -124,5 +126,14 @@ public class CompatHoneycomb implements ActionBar.TabListener {
 	@Override
 	public void onTabUnselected(Tab tab, FragmentTransaction ft)
 	{
+	}
+
+	/**
+	 * Call {@link android.provider.MediaStore.Audio.Genres#getContentUriForAudioId(String,int)}
+	 * on the external volume.
+	 */
+	public static Uri getContentUriForAudioId(int id)
+	{
+		return MediaStore.Audio.Genres.getContentUriForAudioId("external", id);
 	}
 }
