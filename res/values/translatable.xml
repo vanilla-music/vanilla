@@ -207,9 +207,9 @@ THE SOFTWARE.
 	<string name="previous_album">Previous album</string>
 	<string name="cycle_repeat_mode">Cycle repeat mode</string>
 	<string name="cycle_shuffle_mode">Cycle shuffle mode</string>
-	<string name="enqueue_current_album">Enqueue current album</string>
-	<string name="enqueue_current_artist">Enqueue current artist</string>
-	<string name="enqueue_current_genre">Enqueue current genre</string>
+	<string name="enqueue_current_album">Enqueue album</string>
+	<string name="enqueue_current_artist">Enqueue artist</string>
+	<string name="enqueue_current_genre">Enqueue genre</string>
 	<string name="clear_queue">Clear queue</string>
 	<string name="toggle_controls">Toggle controls</string>
 </resources>

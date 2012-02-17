@@ -283,14 +283,16 @@ public class FullPlaybackActivity extends PlaybackActivity
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-		menu.add(0, MENU_ENQUEUE_ALBUM, 0, R.string.enqueue_current_album).setIcon(R.drawable.ic_menu_add);
-		menu.add(0, MENU_ENQUEUE_ARTIST, 0, R.string.enqueue_current_artist).setIcon(R.drawable.ic_menu_add);
-		menu.add(0, MENU_ENQUEUE_GENRE, 0, R.string.enqueue_current_genre).setIcon(R.drawable.ic_menu_add);
-		menu.add(0, MENU_CLEAR_QUEUE, 0, R.string.clear_queue).setIcon(R.drawable.ic_menu_close_clear_cancel);
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
 			menu.add(0, MENU_LIBRARY, 0, R.string.library).setIcon(R.drawable.ic_menu_music_library);
 		}
-		return super.onCreateOptionsMenu(menu);
+		super.onCreateOptionsMenu(menu);
+		menu.add(0, MENU_CLEAR_QUEUE, 0, R.string.clear_queue).setIcon(R.drawable.ic_menu_close_clear_cancel);
+		menu.add(0, MENU_ENQUEUE_ALBUM, 0, R.string.enqueue_current_album).setIcon(R.drawable.ic_menu_add);
+		menu.add(0, MENU_ENQUEUE_ARTIST, 0, R.string.enqueue_current_artist).setIcon(R.drawable.ic_menu_add);
+		menu.add(0, MENU_ENQUEUE_GENRE, 0, R.string.enqueue_current_genre).setIcon(R.drawable.ic_menu_add);
+		menu.add(0, MENU_TOGGLE_CONTROLS, 0, R.string.toggle_controls);
+		return true;
 	}
 
 	@Override
@@ -312,6 +314,10 @@ public class FullPlaybackActivity extends PlaybackActivity
 			break;
 		case MENU_CLEAR_QUEUE:
 			PlaybackService.get(this).clearQueue();
+			break;
+		case MENU_TOGGLE_CONTROLS:
+			setControlsVisible(!mControlsVisible);
+			mHandler.sendEmptyMessage(MSG_SAVE_CONTROLS);
 			break;
 		default:
 			return super.onOptionsItemSelected(item);
