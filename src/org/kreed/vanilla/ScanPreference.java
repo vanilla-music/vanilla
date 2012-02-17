@@ -54,7 +54,7 @@ public class ScanPreference extends Preference {
 	{
 		super(context, attrs);
 		setTitle(R.string.media_scan);
-		setSummary(R.string.click_to_scan);
+		setSummary(R.string.tap_to_scan);
 	}
 
 	@Override

@@ -179,9 +179,9 @@ THE SOFTWARE.
 	<string name="stock_broadcast_summary">Send broadcasts emulating those sent by the stock music player to work with 3rd party lockscreen controls, widgets, etc.</string>
 
 	<string name="media_scan">Refresh Library</string>
-	<string name="click_to_scan">Click to scan external storage for music</string>
+	<string name="tap_to_scan">Tap to scan external storage for music</string>
 	<string name="scan_in_progress">Scan in progress…</string>
-	<string name="finished_scanning">Finished scanning. Click to scan again.</string>
+	<string name="finished_scanning">Finished scanning. Tap to scan again.</string>
 
 	<!-- The following are for the list preferences -->
 	<string name="last_used_action">Last used action</string>
