@@ -80,7 +80,7 @@ THE SOFTWARE.
 		</receiver>
 		<receiver
 			android:name=".FourSquareWidget"
-			android:label="Vanilla Music 2x2">
+			android:label="Vanilla Music 2x2 A">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
 			</intent-filter>
@@ -88,11 +88,9 @@ THE SOFTWARE.
 				android:name="android.appwidget.provider"
 				android:resource="@xml/four_square_widget" />
 		</receiver>
-		<!-- This widget has a minimum size of 2x2, but is really more useful
-		     if it is at least 3x3... so that's what we'll call it. -->
 		<receiver
 			android:name=".WidgetD"
-			android:label="Vanilla Music 3x3">
+			android:label="Vanilla Music 2x2 B">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
 			</intent-filter>
