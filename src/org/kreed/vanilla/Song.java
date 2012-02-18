@@ -235,7 +235,7 @@ public class Song implements Comparable<Song> {
 		return song.id;
 	}
 
-	private static final BitmapFactory.Options BITMAP_OPTIONS = new BitmapFactory.Options();
+	static final BitmapFactory.Options BITMAP_OPTIONS = new BitmapFactory.Options();
 
 	static {
 		BITMAP_OPTIONS.inPreferredConfig = Bitmap.Config.RGB_565;
