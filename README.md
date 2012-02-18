@@ -1,13 +1,20 @@
-Vanilla Music Player is a music player for Android
+Building
+========
+To build you will need:
 
-To build:
+ * A Java compiler compatible with Java 1.6
+ * The Android SDK with platform 14 (Android 4.0) installed
 
- * Ensure you have JDK 6 or greater installed and in the path. JDK 6 is required
-for @Override annoations for interface methods.
- * Ensure you have the Android SDK installed and in your path with platform
-android-11 or higher installed.
- * Execute `android update project --path .` You must provide a `--target`
-parameter as well if you are not using platform 14.
- * Execute `ant debug` (or `ant release`)
+Building from command-line
+--------------------------
+ * `android update project --path .` to generate local.properties
+ * `ant debug` to build the APK at bin/VanillaMusic-debug.apk
+ * Optional: `ant installd` to install the APK to a connected device
 
+Building from Eclipse
+---------------------
+You can also build from Eclipse. Create a new Android Project, choosing "Create project from exisiting source", then set the compiler compliance level to 1.6 in project settings.
+
+Documentation
+=============
 Javadocs can be generated using `ant doc`
