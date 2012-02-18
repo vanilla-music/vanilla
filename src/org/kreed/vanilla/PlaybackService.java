@@ -28,12 +28,12 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.res.TypedArray;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -114,6 +114,13 @@ public final class PlaybackService extends Service
 	 */
 	public static final String ACTION_TOGGLE_PLAYBACK_DELAYED = "org.kreed.vanilla.action.TOGGLE_PLAYBACK_DELAYED";
 	/**
+	 * Action for startService: toggle playback on/off.
+	 *
+	 * This works the same way as ACTION_PLAY_PAUSE but prevents the notification
+	 * from being hidden regardless of notification visibility settings.
+	 */
+	public static final String ACTION_TOGGLE_PLAYBACK_NOTIFICATION = "org.kreed.vanilla.action.TOGGLE_PLAYBACK_NOTIFICATION";
+	/**
 	 * Action for startService: advance to the next song.
 	 */
 	public static final String ACTION_NEXT_SONG = "org.kreed.vanilla.action.NEXT_SONG";
@@ -144,16 +151,18 @@ public final class PlaybackService extends Service
 	 * when this is called.
 	 */
 	public static final String ACTION_PREVIOUS_SONG_AUTOPLAY = "org.kreed.vanilla.action.PREVIOUS_SONG_AUTOPLAY";
-
 	/**
 	 * Change the shuffle mode.
 	 */
 	public static final String ACTION_CYCLE_SHUFFLE = "org.kreed.vanilla.CYCLE_SHUFFLE";
-
 	/**
 	 * Change the repeat mode.
 	 */
 	public static final String ACTION_CYCLE_REPEAT = "org.kreed.vanilla.CYCLE_REPEAT";
+	/**
+	 * Pause music and hide the notifcation.
+	 */
+	public static final String ACTION_CLOSE_NOTIFICATION = "org.kreed.vanilla.CLOSE_NOTIFICATION";
 
 	public static final int NEVER = 0;
 	public static final int WHEN_PLAYING = 1;
@@ -353,6 +362,11 @@ public final class PlaybackService extends Service
 	 * What to do when an accelerometer shake is detected.
 	 */
 	private Action mShakeAction;
+	/**
+	 * If true, the notification should not be hidden when pausing regardless
+	 * of user settings.
+	 */
+	private boolean mForceNotificationVisible;
 
 	@Override
 	public void onCreate()
@@ -453,6 +467,14 @@ public final class PlaybackService extends Service
 
 			if (ACTION_TOGGLE_PLAYBACK.equals(action)) {
 				playPause();
+			} else if (ACTION_TOGGLE_PLAYBACK_NOTIFICATION.equals(action)) {
+				mForceNotificationVisible = true;
+				synchronized (mStateLock) {
+					if ((mState & FLAG_PLAYING) != 0)
+						pause();
+					else
+						play();
+				}
 			} else if (ACTION_TOGGLE_PLAYBACK_DELAYED.equals(action)) {
 				if (mHandler.hasMessages(CALL_GO, Integer.valueOf(0))) {
 					mHandler.removeMessages(CALL_GO, Integer.valueOf(0));
@@ -493,6 +515,11 @@ public final class PlaybackService extends Service
 				cycleFinishAction();
 			} else if (ACTION_CYCLE_SHUFFLE.equals(action)) {
 				cycleShuffle();
+			} else if (ACTION_CLOSE_NOTIFICATION.equals(action)) {
+				mForceNotificationVisible = false;
+				pause();
+				stopForeground(true); // sometimes required to clear notification
+				mNotificationManager.cancel(NOTIFICATION_ID);
 			}
 
 			MediaButtonReceiver.registerMediaButton(this);
@@ -708,7 +735,7 @@ public final class PlaybackService extends Service
 				if (mMediaPlayerInitialized)
 					mMediaPlayer.pause();
 
-				if (mNotificationMode == ALWAYS) {
+				if (mNotificationMode == ALWAYS || mForceNotificationVisible) {
 					stopForeground(false);
 					mNotificationManager.notify(NOTIFICATION_ID, createNotification(mCurrentSong, mState));
 				} else {
@@ -818,7 +845,7 @@ public final class PlaybackService extends Service
 
 	private void updateNotification()
 	{
-		if ((mNotificationMode == ALWAYS || mNotificationMode == WHEN_PLAYING && (mState & FLAG_PLAYING) != 0) && mCurrentSong != null)
+		if ((mForceNotificationVisible || mNotificationMode == ALWAYS || mNotificationMode == WHEN_PLAYING && (mState & FLAG_PLAYING) != 0) && mCurrentSong != null)
 			mNotificationManager.notify(NOTIFICATION_ID, createNotification(mCurrentSong, mState));
 		else
 			mNotificationManager.cancel(NOTIFICATION_ID);
@@ -865,6 +892,7 @@ public final class PlaybackService extends Service
 	 */
 	public int playPause()
 	{
+		mForceNotificationVisible = false;
 		synchronized (mStateLock) {
 			if ((mState & FLAG_PLAYING) != 0)
 				return pause();
@@ -1621,23 +1649,40 @@ public final class PlaybackService extends Service
 
 		Bitmap cover = song.getCover(this);
 		if (cover == null) {
-			views.setImageViewResource(R.id.icon, R.drawable.icon);
+			views.setImageViewResource(R.id.cover, R.drawable.albumart_mp_unknown_list);
 		} else {
-			views.setImageViewBitmap(R.id.icon, cover);
+			views.setImageViewBitmap(R.id.cover, cover);
 		}
-		if (playing) {
-			views.setTextViewText(R.id.title, song.title);
-		} else {
-			views.setTextViewText(R.id.title, getResources().getString(R.string.notification_title_paused, song.title));
+
+		String title = song.title;
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			int playButton = playing ? R.drawable.pause_normal : R.drawable.play_normal;
+			views.setImageViewResource(R.id.play_pause, playButton);
+
+			ComponentName service = new ComponentName(this, PlaybackService.class);
+
+			Intent playPause = new Intent(PlaybackService.ACTION_TOGGLE_PLAYBACK_NOTIFICATION);
+			playPause.setComponent(service);
+			views.setOnClickPendingIntent(R.id.play_pause, PendingIntent.getService(this, 0, playPause, 0));
+
+			Intent next = new Intent(PlaybackService.ACTION_NEXT_SONG);
+			next.setComponent(service);
+			views.setOnClickPendingIntent(R.id.next, PendingIntent.getService(this, 0, next, 0));
+
+			Intent close = new Intent(PlaybackService.ACTION_CLOSE_NOTIFICATION);
+			close.setComponent(service);
+			views.setOnClickPendingIntent(R.id.close, PendingIntent.getService(this, 0, close, 0));
+		} else if (!playing) {
+			title = getResources().getString(R.string.notification_title_paused, song.title);
 		}
+
+		views.setTextViewText(R.id.title, title);
 		views.setTextViewText(R.id.artist, song.artist);
 
 		if (mInvertNotification) {
-			TypedArray array = getTheme().obtainStyledAttributes(new int[] { android.R.attr.textColorPrimary });
-			int color = array.getColor(0, 0xFF00FF);
-			array.recycle();
-			views.setTextColor(R.id.title, color);
-			views.setTextColor(R.id.artist, color);
+			views.setTextColor(R.id.title, 0xffffffff);
+			views.setTextColor(R.id.artist, 0xffffffff);
 		}
 
 		Notification notification = new Notification();
@@ -1659,6 +1704,7 @@ public final class PlaybackService extends Service
 		case AudioManager.AUDIOFOCUS_LOSS:
 		case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
 			mDuckedLoss = false;
+			mForceNotificationVisible = true;
 			unsetFlag(FLAG_PLAYING);
 			break;
 		case AudioManager.AUDIOFOCUS_GAIN:

@@ -1,14 +1,12 @@
 #!/bin/sh
 
-force=$1
-
 gen() {
 	name=`basename "$1" .svgz`
 	png="res/drawable-$2/$name.png"
-	if [[ "$1" -nt "$png" || $force ]]; then
-		inkscape --without-gui --export-area-page --export-dpi=$3 --export-png="$png.out" $1
-		pngcrush -q -brute "$png.out" "$png"
-		rm "$png.out"
+	if [ "$1" -nt "$png" -o ! -e "$png" ]; then
+		inkscape --without-gui --export-area-page --export-dpi=$3 --export-png="$png" $1
+		convert -strip "$png" "$png"
+		optipng -quiet -o7 "$png"
 		echo
 	fi
 }
