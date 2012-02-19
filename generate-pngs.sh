@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# This script can be used to generate PNGs from the SVGs stored in orig/.
+# For each SVG in orig/, PNGs will be created in the drawable directories
+# for each DPI with the same name as the SVG. If the PNGs already exist
+# and are newer than the SVG, they will not be recreated.
+
 gen() {
 	name=`basename "$1" .svgz`
 	png="res/drawable-$2/$name.png"
