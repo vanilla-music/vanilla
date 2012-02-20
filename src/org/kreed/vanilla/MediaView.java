@@ -30,8 +30,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.RadialGradient;
-import android.graphics.Shader;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
@@ -56,10 +54,6 @@ public final class MediaView extends View {
 	 */
 	private static Paint sPaint;
 	/**
-	 * The cached divider gradient that separates each view from other views.
-	 */
-	private static RadialGradient sDividerGradient;
-	/**
 	 * The text size used for the text in all views.
 	 */
 	private static int sTextSize;
@@ -67,9 +61,8 @@ public final class MediaView extends View {
 	public static void init(Context context)
 	{
 		Resources res = context.getResources();
-		sExpander = BitmapFactory.decodeResource(res, R.drawable.expander_arrow);
+		sExpander = BitmapFactory.decodeResource(res, R.drawable.arrow);
 		sTextSize = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, res.getDisplayMetrics());
-		sDividerGradient = null;
 
 		sPaint = new Paint();
 		sPaint.setTextSize(sTextSize);
@@ -212,11 +205,7 @@ public final class MediaView extends View {
 		canvas.restore();
 
 		width = getWidth();
-
-		if (sDividerGradient == null)
-			sDividerGradient = new RadialGradient(width / 2, 1, width / 2, Color.WHITE, Color.TRANSPARENT, Shader.TileMode.CLAMP);
-
-		paint.setShader(sDividerGradient);
+		paint.setColor(Color.GRAY);
 		canvas.drawLine(0, height - 1, width, height - 1, paint);
 		paint.setShader(null);
 	}
