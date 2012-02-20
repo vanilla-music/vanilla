@@ -46,7 +46,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.inputmethod.InputMethodManager;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -54,6 +53,7 @@ import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
@@ -1307,7 +1307,7 @@ public class LibraryActivity
 			if (Song.mDisableCoverArt)
 				mCover.setVisibility(View.GONE);
 			else if (cover == null)
-				mCover.setImageResource(R.drawable.albumart_mp_unknown_list);
+				mCover.setImageResource(R.drawable.fallback_cover);
 			else
 				mCover.setImageBitmap(cover);
 		}
