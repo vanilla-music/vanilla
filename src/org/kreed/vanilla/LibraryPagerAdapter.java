@@ -78,7 +78,7 @@ public class LibraryPagerAdapter extends PagerAdapter implements Handler.Callbac
 	/**
 	 * The playlist adapter instance, also stored at mAdapters[3].
 	 */
-	private MediaAdapter mPlaylistAdapter;
+	MediaAdapter mPlaylistAdapter;
 	/**
 	 * The file adapter instance, also stored at mAdapters[5].
 	 */

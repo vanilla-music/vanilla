@@ -26,8 +26,8 @@ import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.Activity;
 import android.app.FragmentTransaction;
-import android.provider.MediaStore;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
@@ -35,26 +35,35 @@ import android.widget.ListView;
 /**
  * Framework methods only in Honeycomb or above go here.
  */
-public class CompatHoneycomb implements ActionBar.TabListener {
-	/**
-	 * The LibraryActivity to callback to when a tab is selected.
-	 */
-	private final LibraryActivity mActivity;
-
-	private CompatHoneycomb(LibraryActivity activity)
-	{
-		mActivity = activity;
-	}
-
+public class CompatHoneycomb {
 	/**
 	 * Add ActionBar tabs for LibraryActivity.
 	 *
 	 * @param activity The activity to add to.
 	 */
-	public static void addActionBarTabs(LibraryActivity activity)
+	public static void addActionBarTabs(final LibraryActivity activity)
 	{
+		ActionBar.TabListener listener = new ActionBar.TabListener() {
+			private final LibraryActivity mActivity = activity;
+
+			@Override
+			public void onTabReselected(Tab tab, FragmentTransaction ft)
+			{
+			}
+
+			@Override
+			public void onTabSelected(Tab tab, FragmentTransaction ft)
+			{
+				mActivity.mViewPager.setCurrentItem(tab.getPosition());
+			}
+
+			@Override
+			public void onTabUnselected(Tab tab, FragmentTransaction ft)
+			{
+			}
+		};
+
 		ActionBar ab = activity.getActionBar();
-		CompatHoneycomb listener = new CompatHoneycomb(activity);
 		ab.addTab(ab.newTab()
 			.setText(R.string.artists)
 			.setTabListener(listener));
@@ -110,22 +119,6 @@ public class CompatHoneycomb implements ActionBar.TabListener {
 	{
 		ActionBar ab = activity.getActionBar();
 		ab.selectTab(ab.getTabAt(position));
-	}
-
-	@Override
-	public void onTabReselected(Tab tab, FragmentTransaction ft)
-	{
-	}
-
-	@Override
-	public void onTabSelected(Tab tab, FragmentTransaction ft)
-	{
-		mActivity.mViewPager.setCurrentItem(tab.getPosition());
-	}
-
-	@Override
-	public void onTabUnselected(Tab tab, FragmentTransaction ft)
-	{
 	}
 
 	/**
