@@ -156,7 +156,7 @@ public final class MediaView extends View {
 	@Override
 	public void onDraw(Canvas canvas)
 	{
-		if (mTitle == null)
+		if (mTitle == null || getHeight() == 1)
 			return;
 
 		int width = getWidth();
