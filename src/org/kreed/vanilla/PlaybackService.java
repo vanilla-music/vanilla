@@ -345,11 +345,11 @@ public final class PlaybackService extends Service
 	/**
 	 * Magnitude of last sensed acceleration.
 	 */
-	private float mAccelLast;
+	private double mAccelLast;
 	/**
 	 * Filtered acceleration used for shake detection.
 	 */
-	private float mAccelFiltered;
+	private double mAccelFiltered;
 	/**
 	 * Elapsed realtime of last shake action.
 	 */
@@ -357,7 +357,7 @@ public final class PlaybackService extends Service
 	/**
 	 * Minimum jerk required for shake.
 	 */
-	private float mShakeThreshold;
+	private double mShakeThreshold;
 	/**
 	 * What to do when an accelerometer shake is detected.
 	 */
@@ -1723,11 +1723,11 @@ public final class PlaybackService extends Service
 		double y = se.values[1];
 		double z = se.values[2];
 
-		float accel = (float)Math.sqrt(x*x + y*y + z*z);
-		float delta = accel - mAccelLast;
+		double accel = Math.sqrt(x*x + y*y + z*z);
+		double delta = accel - mAccelLast;
 		mAccelLast = accel;
 
-		float filtered = mAccelFiltered * 0.9f + delta;
+		double filtered = mAccelFiltered * 0.9f + delta;
 		mAccelFiltered = filtered;
 
 		if (filtered > mShakeThreshold) {
