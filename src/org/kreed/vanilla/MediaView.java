@@ -182,8 +182,8 @@ public final class MediaView extends View {
 
 		if (mShowBitmaps && mLeftBitmap != null) {
 			Bitmap expander = mLeftBitmap;
-			canvas.drawBitmap(expander, 0, (height - expander.getHeight()) / 2, paint);
-			xOffset = expander.getWidth();
+			canvas.drawBitmap(expander, padding, (height - expander.getHeight()) / 2, paint);
+			xOffset = expander.getWidth() + padding;
 		}
 
 		canvas.save();

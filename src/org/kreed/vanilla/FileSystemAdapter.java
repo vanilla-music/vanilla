@@ -117,7 +117,7 @@ public class FileSystemAdapter extends BaseAdapter implements LibraryAdapter {
 	{
 		mActivity = activity;
 		mLimiter = limiter;
-		mFolderIcon = BitmapFactory.decodeResource(activity.getResources(), R.drawable.ic_launcher_folder);
+		mFolderIcon = BitmapFactory.decodeResource(activity.getResources(), R.drawable.folder);
 		if (limiter == null) {
 			limiter = buildLimiter(Environment.getExternalStorageDirectory());
 		}
