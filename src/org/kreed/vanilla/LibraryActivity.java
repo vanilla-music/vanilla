@@ -647,10 +647,12 @@ public class LibraryActivity
 		else
 			menu.setHeaderTitle(view.getTitle());
 
-		menu.add(0, MENU_PLAY, 0, R.string.play).setIntent(intent);
+		if (!isHeader)
+			menu.add(0, MENU_PLAY, 0, R.string.play).setIntent(intent);
 		if (isAllAdapter)
 			menu.add(0, MENU_PLAY_ALL, 0, R.string.play_all).setIntent(intent);
-		menu.add(0, MENU_ENQUEUE, 0, R.string.enqueue).setIntent(intent);
+		if (!isHeader)
+			menu.add(0, MENU_ENQUEUE, 0, R.string.enqueue).setIntent(intent);
 		if (isAllAdapter)
 			menu.add(0, MENU_ENQUEUE_ALL, 0, R.string.enqueue_all).setIntent(intent);
 		if (type == MediaUtils.TYPE_PLAYLIST) {
