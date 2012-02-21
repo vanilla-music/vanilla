@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.database.ContentObserver;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -36,10 +35,8 @@ import android.graphics.drawable.PaintDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -77,23 +74,50 @@ public class LibraryActivity
 	         , TextWatcher
 	         , DialogInterface.OnClickListener
 	         , DialogInterface.OnDismissListener
-	         , ViewPager.OnPageChangeListener
 {
+	/**
+	 * Action for row click: play the row.
+	 */
 	public static final int ACTION_PLAY = 0;
+	/**
+	 * Action for row click: enqueue the row.
+	 */
 	public static final int ACTION_ENQUEUE = 1;
+	/**
+	 * Action for row click: perform the last used action.
+	 */
 	public static final int ACTION_LAST_USED = 2;
+	/**
+	 * Action for row click: play all the songs in the adapter, starting with
+	 * the current row.
+	 */
 	public static final int ACTION_PLAY_ALL = 3;
+	/**
+	 * Action for row click: enqueue all the songs in the adapter, starting with
+	 * the current row.
+	 */
 	public static final int ACTION_ENQUEUE_ALL = 4;
+	/**
+	 * Action for row click: do nothing.
+	 */
 	public static final int ACTION_DO_NOTHING = 5;
+	/**
+	 * Action for row click: expand the row.
+	 */
 	public static final int ACTION_EXPAND = 6;
+	/**
+	 * The SongTimeline add song modes corresponding to each relevant action.
+	 */
 	private static final int[] modeForAction =
 		{ SongTimeline.MODE_PLAY, SongTimeline.MODE_ENQUEUE, -1,
 		  SongTimeline.MODE_PLAY_ID_FIRST, SongTimeline.MODE_ENQUEUE_ID_FIRST };
 
 	public ViewPager mViewPager;
+
 	private View mSearchBox;
 	private boolean mSearchBoxVisible;
-	TextView mTextFilter;
+
+	private TextView mTextFilter;
 	private View mClearButton;
 
 	private View mActionControls;
@@ -106,151 +130,27 @@ public class LibraryActivity
 	private HorizontalScrollView mLimiterScroller;
 	private ViewGroup mLimiterViews;
 
+	/**
+	 * The action to execute when a row is tapped.
+	 */
 	private int mDefaultAction;
-
+	/**
+	 * The last used action from the menu. Used with ACTION_LAST_USED.
+	 */
 	private int mLastAction = ACTION_PLAY;
+	/**
+	 * The id of the media that was last pressed in the current adapter. Used to
+	 * open the playback activity when an item is pressed twice.
+	 */
 	private long mLastActedId;
-
 	/**
-	 * The number of adapters/lists (determines array sizes).
+	 * The pager adapter that manages each media ListView.
 	 */
-	private static final int ADAPTER_COUNT = 6;
+	public LibraryPagerAdapter mPagerAdapter;
 	/**
-	 * The ListView for each adapter, in the same order as MediaUtils.TYPE_*.
+	 * The adapter for the currently visible list.
 	 */
-	final ListView[] mLists = new ListView[ADAPTER_COUNT];
-	/**
-	 * Whether the adapter corresponding to each index has stale data.
-	 */
-	final boolean[] mRequeryNeeded = new boolean[ADAPTER_COUNT];
-	/**
-	 * Each adapter, in the same order as MediaUtils.TYPE_*.
-	 */
-	final LibraryAdapter[] mAdapters = new LibraryAdapter[ADAPTER_COUNT];
-	/**
-	 * The human-readable title for each page.
-	 */
-	public static final int[] TITLES = { R.string.artists, R.string.albums, R.string.songs,
-	                                     R.string.playlists, R.string.genres, R.string.files };
-	/**
-	 * Limiters that should be passed to an adapter constructor.
-	 */
-	public final Limiter[] mPendingLimiters = new Limiter[ADAPTER_COUNT];
-	MediaAdapter mArtistAdapter;
-	MediaAdapter mAlbumAdapter;
-	MediaAdapter mSongAdapter;
-	MediaAdapter mPlaylistAdapter;
-	MediaAdapter mGenreAdapter;
-	FileSystemAdapter mFilesAdapter;
-	LibraryAdapter mCurrentAdapter;
-
-	private final ContentObserver mPlaylistObserver = new ContentObserver(null) {
-		@Override
-		public void onChange(boolean selfChange)
-		{
-			if (mPlaylistAdapter != null) {
-				postRequestRequery(mPlaylistAdapter);
-			}
-		}
-	};
-
-	private final PagerAdapter mPagerAdapter = new PagerAdapter() {
-		@Override
-		public Object instantiateItem(ViewGroup container, int position)
-		{
-			ListView view = mLists[position];
-
-			if (view == null) {
-				LibraryAdapter adapter;
-
-				switch (position) {
-				case 0:
-					adapter = mArtistAdapter = new MediaAdapter(LibraryActivity.this, MediaUtils.TYPE_ARTIST, true, true, null);
-					mArtistAdapter.setHeaderText(getHeaderText());
-					break;
-				case 1:
-					adapter = mAlbumAdapter = new MediaAdapter(LibraryActivity.this, MediaUtils.TYPE_ALBUM, true, true, mPendingLimiters[position]);
-					mAlbumAdapter.setHeaderText(getHeaderText());
-					break;
-				case 2:
-					adapter = mSongAdapter = new MediaAdapter(LibraryActivity.this, MediaUtils.TYPE_SONG, false, true, mPendingLimiters[position]);
-					mSongAdapter.setHeaderText(getHeaderText());
-					break;
-				case 3:
-					adapter = mPlaylistAdapter = new MediaAdapter(LibraryActivity.this, MediaUtils.TYPE_PLAYLIST, true, false, null);
-					break;
-				case 4:
-					adapter = mGenreAdapter = new MediaAdapter(LibraryActivity.this, MediaUtils.TYPE_GENRE, true, false, null);
-					break;
-				case 5:
-					adapter = mFilesAdapter = new FileSystemAdapter(LibraryActivity.this, mPendingLimiters[position]);
-					break;
-				default:
-					throw new IllegalArgumentException("Invalid position: " + position);
-				}
-
-				view = new ListView(LibraryActivity.this);
-				view.setOnItemClickListener(LibraryActivity.this);
-				view.setOnCreateContextMenuListener(LibraryActivity.this);
-				view.setDivider(null);
-				view.setFastScrollEnabled(true);
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-					CompatHoneycomb.setFastScrollAlwaysVisible(view, true);
-				}
-				view.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_INSET);
-
-				view.setAdapter(adapter);
-				if (position != 5)
-					loadSortOrder((MediaAdapter)adapter);
-
-				String filter = mTextFilter.getText().toString();
-				if (filter.length() != 0) {
-					adapter.setFilter(filter);
-				}
-
-				mAdapters[position] = adapter;
-				mLists[position] = view;
-				mRequeryNeeded[position] = true;
-
-				if (mCurrentAdapter == null && mViewPager.getCurrentItem() == position) {
-					// Special case: for first time initialization onPageSelected
-					// is not called (for initial position = 0) or called before
-					// the adapter is initialized (for all other initial positions).
-					// So do required work here.
-					mCurrentAdapter = adapter;
-					updateLimiterViews();
-				}
-			}
-
-			requeryIfNeeded(position);
-			container.addView(view);
-			return view;
-		}
-
-		@Override
-		public void destroyItem(ViewGroup container, int position, Object object)
-		{
-			container.removeView(mLists[position]);
-		}
-
-		@Override
-		public CharSequence getPageTitle(int position)
-		{
-			return getResources().getText(TITLES[position]);
-		}
-
-		@Override
-		public int getCount()
-		{
-			return ADAPTER_COUNT;
-		}
-
-		@Override
-		public boolean isViewFromObject(View view, Object object)
-		{
-			return view == object;
-		}
-	};
+	private LibraryAdapter mCurrentAdapter;
 
 	@Override
 	public void onCreate(Bundle state)
@@ -275,12 +175,16 @@ public class LibraryActivity
 		mLimiterScroller = (HorizontalScrollView)findViewById(R.id.limiter_scroller);
 		mLimiterViews = (ViewGroup)findViewById(R.id.limiter_layout);
 
-		mViewPager = (ViewPager)findViewById(R.id.pager);
-		mViewPager.setAdapter(mPagerAdapter);
+		LibraryPagerAdapter pagerAdapter = new LibraryPagerAdapter(this, mLooper);
+		mPagerAdapter = pagerAdapter;
+
+		ViewPager pager = (ViewPager)findViewById(R.id.pager);
+		pager.setAdapter(pagerAdapter);
+		mViewPager = pager;
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			CompatHoneycomb.addActionBarTabs(this);
-			mViewPager.setOnPageChangeListener(this);
+			pager.setOnPageChangeListener(pagerAdapter);
 
 			View controls = getLayoutInflater().inflate(R.layout.actionbar_controls, null);
 			mTitle = (TextView)controls.findViewById(R.id.title);
@@ -290,8 +194,8 @@ public class LibraryActivity
 			mActionControls = controls;
 		} else {
 			TabPageIndicator tabs = new TabPageIndicator(this);
-			tabs.setViewPager(mViewPager);
-			tabs.setOnPageChangeListener(this);
+			tabs.setViewPager(pager);
+			tabs.setOnPageChangeListener(pagerAdapter);
 
 			LinearLayout content = (LinearLayout)findViewById(R.id.content);
 			content.addView(tabs, 0, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
@@ -325,8 +229,6 @@ public class LibraryActivity
 				mEmptyQueue.setOnClickListener(this);
 			}
 		}
-
-		getContentResolver().registerContentObserver(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, true, mPlaylistObserver);
 
 		loadAlbumIntent(getIntent());
 	}
@@ -370,7 +272,12 @@ public class LibraryActivity
 			String[] fields = { intent.getStringExtra("artist"), intent.getStringExtra("album") };
 			String data = String.format("album_id=%d", albumId);
 			Limiter limiter = new Limiter(MediaUtils.TYPE_ALBUM, fields, data);
-			setLimiter(limiter, true);
+			int tab = mPagerAdapter.setLimiter(limiter);
+			if (tab == mViewPager.getCurrentItem())
+				updateLimiterViews();
+			else
+				mViewPager.setCurrentItem(tab);
+
 		}
 	}
 
@@ -387,26 +294,16 @@ public class LibraryActivity
 	@Override
 	public void onRestoreInstanceState(Bundle in)
 	{
-		super.onRestoreInstanceState(in);
 		if (in.getBoolean("search_box_visible"))
 			setSearchBoxVisible(true);
-		mPendingLimiters[1] = (Limiter)in.getSerializable("limiter_albums");
-		mPendingLimiters[2] = (Limiter)in.getSerializable("limiter_songs");
-		mPendingLimiters[5] = (Limiter)in.getSerializable("limiter_files");
+		super.onRestoreInstanceState(in);
 	}
 
 	@Override
 	protected void onSaveInstanceState(Bundle out)
 	{
 		super.onSaveInstanceState(out);
-
 		out.putBoolean("search_box_visible", mSearchBoxVisible);
-		if (mAlbumAdapter != null)
-			out.putSerializable("limiter_albums", mAlbumAdapter.getLimiter());
-		if (mSongAdapter != null)
-			out.putSerializable("limiter_songs", mSongAdapter.getLimiter());
-		if (mFilesAdapter != null)
-			out.putSerializable("limiter_files", mFilesAdapter.getLimiter());
 	}
 
 	@Override
@@ -449,30 +346,17 @@ public class LibraryActivity
 	}
 
 	/**
-	 * Returns either "Play All" or "Enqueue All", depending on the current
-	 * default action.
-	 */
-	public String getHeaderText()
-	{
-		int action = mDefaultAction;
-		if (action == ACTION_LAST_USED)
-			action = mLastAction;
-		return getString(action == ACTION_ENQUEUE || action == ACTION_ENQUEUE_ALL ? R.string.enqueue_all : R.string.play_all);
-	}
-
-	/**
 	 * Update the first row of the lists with the appropriate action (play all
 	 * or enqueue all).
 	 */
 	private void updateHeaders()
 	{
-		String text = getHeaderText();
-		if (mArtistAdapter != null)
-			mArtistAdapter.setHeaderText(text);
-		if (mAlbumAdapter != null)
-			mAlbumAdapter.setHeaderText(text);
-		if (mSongAdapter != null)
-			mSongAdapter.setHeaderText(text);
+		int action = mDefaultAction;
+		if (action == ACTION_LAST_USED)
+			action = mLastAction;
+		boolean isEnqueue = action == ACTION_ENQUEUE || action == ACTION_ENQUEUE_ALL;
+		String text = getString(isEnqueue ? R.string.enqueue_all : R.string.play_all);
+		mPagerAdapter.setHeaderText(text);
 	}
 
 	/**
@@ -484,17 +368,13 @@ public class LibraryActivity
 	 */
 	private void pickSongs(Intent intent, int action)
 	{
-		if (action == ACTION_LAST_USED)
-			action = mLastAction;
-
 		long id = intent.getLongExtra("id", -1);
 
 		boolean all = false;
 		int mode = action;
 		if (action == ACTION_PLAY_ALL || action == ACTION_ENQUEUE_ALL) {
-			LibraryAdapter adapter = mCurrentAdapter;
-			boolean notPlayAllAdapter = adapter != mSongAdapter && adapter != mAlbumAdapter
-					&& adapter != mArtistAdapter || id == MediaView.HEADER_ID;
+			int type = mCurrentAdapter.getMediaType();
+			boolean notPlayAllAdapter = type > MediaUtils.TYPE_SONG || id == MediaView.HEADER_ID;
 			if (mode == ACTION_ENQUEUE_ALL && notPlayAllAdapter) {
 				mode = ACTION_ENQUEUE;
 			} else if (mode == ACTION_PLAY_ALL && notPlayAllAdapter) {
@@ -527,115 +407,11 @@ public class LibraryActivity
 	{
 		int type = intent.getIntExtra("type", 1);
 		long id = intent.getLongExtra("id", -1);
-		setLimiter(mAdapters[type - 1].buildLimiter(id), true);
-	}
-
-	/**
-	 * Clear a limiter.
-	 *
-	 * @param type Which type of limiter to clear.
-	 */
-	private void clearLimiter(int type)
-	{
-		if (type == MediaUtils.TYPE_FILE) {
-			if (mFilesAdapter == null) {
-				mPendingLimiters[5] = null;
-			} else {
-				mFilesAdapter.setLimiter(null);
-				requestRequery(mFilesAdapter);
-			}
-		} else {
-			if (mAlbumAdapter == null) {
-				mPendingLimiters[1] = null;
-			} else {
-				mAlbumAdapter.setLimiter(null);
-				loadSortOrder(mAlbumAdapter);
-				requestRequery(mAlbumAdapter);
-			}
-			if (mSongAdapter == null) {
-				mPendingLimiters[2] = null;
-			} else {
-				mSongAdapter.setLimiter(null);
-				loadSortOrder(mSongAdapter);
-				requestRequery(mSongAdapter);
-			}
-		}
-		updateLimiterViews();
-	}
-
-	/**
-	 * Update the adapters with the given limiter.
-	 *
-	 * @param switchTab If true, will switch to the tab appropriate for
-	 * expanding a row.
-	 */
-	private void setLimiter(Limiter limiter, boolean switchTab)
-	{
-		int tab;
-
-		switch (limiter.type) {
-		case MediaUtils.TYPE_ALBUM:
-			if (mSongAdapter == null) {
-				mPendingLimiters[2] = limiter;
-			} else {
-				mSongAdapter.setLimiter(limiter);
-				loadSortOrder(mSongAdapter);
-				requestRequery(mSongAdapter);
-			}
-			tab = 2;
-			break;
-		case MediaUtils.TYPE_ARTIST:
-			if (mAlbumAdapter == null) {
-				mPendingLimiters[1] = limiter;
-			} else {
-				mAlbumAdapter.setLimiter(limiter);
-				loadSortOrder(mAlbumAdapter);
-				requestRequery(mAlbumAdapter);
-			}
-			if (mSongAdapter == null) {
-				mPendingLimiters[2] = limiter;
-			} else {
-				mSongAdapter.setLimiter(limiter);
-				loadSortOrder(mSongAdapter);
-				requestRequery(mSongAdapter);
-			}
-			tab = 1;
-			break;
-		case MediaUtils.TYPE_GENRE:
-			if (mAlbumAdapter == null) {
-				mPendingLimiters[1] = limiter;
-			} else {
-				mAlbumAdapter.setLimiter(limiter);
-				loadSortOrder(mAlbumAdapter);
-				requestRequery(mAlbumAdapter);
-			}
-			if (mSongAdapter == null) {
-				mPendingLimiters[2] = null;
-			} else {
-				mSongAdapter.setLimiter(limiter);
-				loadSortOrder(mSongAdapter);
-				requestRequery(mSongAdapter);
-			}
-			tab = 2;
-			break;
-		case MediaUtils.TYPE_FILE:
-			if (mFilesAdapter == null) {
-				mPendingLimiters[5] = limiter;
-			} else {
-				mFilesAdapter.setLimiter(limiter);
-				requestRequery(mFilesAdapter);
-			}
-			tab = 5;
-			break;
-		default:
-			throw new IllegalArgumentException("Unsupported limiter type: " + limiter.type);
-		}
-
-		if (switchTab && mViewPager.getCurrentItem() != tab) {
-			mViewPager.setCurrentItem(tab);
-		} else {
+		int tab = mPagerAdapter.setLimiter(mPagerAdapter.mAdapters[type - 1].buildLimiter(id));
+		if (tab == mViewPager.getCurrentItem())
 			updateLimiterViews();
-		}
+		else
+			mViewPager.setCurrentItem(tab);
 	}
 
 	/**
@@ -653,8 +429,10 @@ public class LibraryActivity
 		MediaView mediaView = (MediaView)view;
 		LibraryAdapter adapter = (LibraryAdapter)list.getAdapter();
 		int action = mDefaultAction;
+		if (action == ACTION_LAST_USED)
+			action = mLastAction;
 		if (mediaView.isRightBitmapPressed() || action == ACTION_EXPAND && mediaView.hasRightBitmap()) {
-			if (adapter == mPlaylistAdapter)
+			if (adapter.getMediaType() == MediaUtils.TYPE_PLAYLIST)
 				editPlaylist(mediaView.getMediaId(), mediaView.getTitle());
 			else
 				expand(createClickIntent(adapter, mediaView));
@@ -683,13 +461,7 @@ public class LibraryActivity
 	@Override
 	public void onTextChanged(CharSequence text, int start, int before, int count)
 	{
-		String filter = text.toString();
-		for (LibraryAdapter adapter : mAdapters) {
-			if (adapter != null) {
-				adapter.setFilter(filter);
-				requestRequery(adapter);
-			}
-		}
+		mPagerAdapter.setFilter(text.toString());
 	}
 
 	/**
@@ -699,9 +471,8 @@ public class LibraryActivity
 	{
 		mLimiterViews.removeAllViews();
 
-		LibraryAdapter adapter = mCurrentAdapter;
-		Limiter limiterData;
-		if (adapter != null && (limiterData = adapter.getLimiter()) != null) {
+		Limiter limiterData = mPagerAdapter.getCurrentLimiter();
+		if (limiterData != null) {
 			String[] limiter = limiterData.names;
 
 			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -745,7 +516,7 @@ public class LibraryActivity
 			// a limiter view was clicked
 			int i = (Integer)view.getTag();
 
-			Limiter limiter = mCurrentAdapter.getLimiter();
+			Limiter limiter = mPagerAdapter.getCurrentLimiter();
 			int type = limiter.type;
 			if (i == 1 && type == MediaUtils.TYPE_ALBUM) {
 				ContentResolver resolver = getContentResolver();
@@ -756,7 +527,8 @@ public class LibraryActivity
 					if (cursor.moveToNext()) {
 						String[] fields = { limiter.names[0] };
 						String data = String.format("artist_id=%d", cursor.getLong(0));
-						setLimiter(new Limiter(MediaUtils.TYPE_ARTIST, fields, data), false);
+						mPagerAdapter.setLimiter(new Limiter(MediaUtils.TYPE_ARTIST, fields, data));
+						updateLimiterViews();
 					}
 					cursor.close();
 				}
@@ -767,9 +539,11 @@ public class LibraryActivity
 				while (--diff != -1) {
 					file = file.getParentFile();
 				}
-				setLimiter(FileSystemAdapter.buildLimiter(file), false);
+				mPagerAdapter.setLimiter(FileSystemAdapter.buildLimiter(file));
+				updateLimiterViews();
 			} else {
-				clearLimiter(type);
+				mPagerAdapter.clearLimiter(type);
+				updateLimiterViews();
 			}
 		} else {
 			super.onClick(view);
@@ -828,7 +602,7 @@ public class LibraryActivity
 		if (type == MediaUtils.TYPE_FILE) {
 			query = MediaUtils.buildFileQuery(intent.getStringExtra("file"), projection);
 		} else if (all || id == MediaView.HEADER_ID) {
-			query = ((MediaAdapter)mAdapters[type - 1]).buildSongQuery(projection);
+			query = ((MediaAdapter)mPagerAdapter.mAdapters[type - 1]).buildSongQuery(projection);
 			query.setExtra(id);
 		} else {
 			query = MediaUtils.buildQuery(type, id, projection, null);
@@ -865,7 +639,8 @@ public class LibraryActivity
 		Intent intent = createClickIntent(adapter, view);
 
 		boolean isHeader = view.getMediaId() == MediaView.HEADER_ID;
-		boolean isAllAdapter = adapter == mArtistAdapter || adapter == mAlbumAdapter || adapter == mSongAdapter;
+		int type = adapter.getMediaType();
+		boolean isAllAdapter = type <= MediaUtils.TYPE_SONG;
 
 		if (isHeader)
 			menu.setHeaderTitle(getString(R.string.all_songs));
@@ -878,7 +653,7 @@ public class LibraryActivity
 		menu.add(0, MENU_ENQUEUE, 0, R.string.enqueue).setIntent(intent);
 		if (isAllAdapter)
 			menu.add(0, MENU_ENQUEUE_ALL, 0, R.string.enqueue_all).setIntent(intent);
-		if (adapter == mPlaylistAdapter) {
+		if (type == MediaUtils.TYPE_PLAYLIST) {
 			menu.add(0, MENU_RENAME_PLAYLIST, 0, R.string.rename).setIntent(intent);
 			menu.add(0, MENU_EDIT, 0, R.string.edit).setIntent(intent);
 		}
@@ -962,6 +737,10 @@ public class LibraryActivity
 		switch (item.getItemId()) {
 		case MENU_EXPAND:
 			expand(intent);
+			if (mDefaultAction == ACTION_LAST_USED && mLastAction != ACTION_EXPAND) {
+				mLastAction = ACTION_EXPAND;
+				updateHeaders();
+			}
 			break;
 		case MENU_ENQUEUE:
 			pickSongs(intent, ACTION_ENQUEUE);
@@ -1039,7 +818,8 @@ public class LibraryActivity
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu)
 	{
-		menu.findItem(MENU_SORT).setEnabled(mCurrentAdapter != mFilesAdapter);
+		LibraryAdapter adapter = mCurrentAdapter;
+		menu.findItem(MENU_SORT).setEnabled(adapter != null && adapter.getMediaType() != MediaUtils.TYPE_FILE);
 		return super.onPrepareOptionsMenu(menu);
 	}
 
@@ -1105,23 +885,9 @@ public class LibraryActivity
 	 */
 	private static final int MSG_RENAME_PLAYLIST = 13;
 	/**
-	 * Called by MediaAdapters to requery their data on the worker thread.
-	 * obj will contain the MediaAdapter.
-	 */
-	private static final int MSG_RUN_QUERY = 14;
-	/**
 	 * Call addToPlaylist with data from the intent in obj.
 	 */
 	private static final int MSG_ADD_TO_PLAYLIST = 15;
-	/**
-	 * Save the sort mode for the adapter passed in obj.
-	 */
-	private static final int MSG_SAVE_SORT = 16;
-	/**
-	 * Call {@link LibraryActivity#requestRequery(LibraryAdapter)} on the adapter
-	 * passed in obj.
-	 */
-	private static final int MSG_REQUEST_REQUERY = 17;
 
 	@Override
 	public boolean handleMessage(Message message)
@@ -1154,31 +920,6 @@ public class LibraryActivity
 			}
 			break;
 		}
-		case MSG_RUN_QUERY: {
-			final LibraryAdapter adapter = (LibraryAdapter)message.obj;
-			final Object data = adapter.query();
-			runOnUiThread(new Runnable() {
-				@Override
-				public void run()
-				{
-					adapter.commitQuery(data);
-					// scroll to the top of the list
-					mLists[adapter.getMediaType() - 1].setSelection(0);
-				}
-			});
-			mRequeryNeeded[adapter.getMediaType() - 1] = false;
-			break;
-		}
-		case MSG_SAVE_SORT: {
-			MediaAdapter adapter = (MediaAdapter)message.obj;
-			SharedPreferences.Editor editor = PlaybackService.getSettings(this).edit();
-			editor.putInt(String.format("sort_%d_%d", adapter.getMediaType(), adapter.getLimiterType()), adapter.getSortMode());
-			editor.commit();
-			break;
-		}
-		case MSG_REQUEST_REQUERY:
-			requestRequery((LibraryAdapter)message.obj);
-			break;
 		default:
 			return super.handleMessage(message);
 		}
@@ -1186,56 +927,10 @@ public class LibraryActivity
 		return true;
 	}
 
-	/**
-	 * Requery the given adapter. If it is the current adapter, requery
-	 * immediately. Otherwise, mark the adapter as needing a requery and requery
-	 * when its tab is selected.
-	 *
-	 * Must be called on the UI thread.
-	 */
-	public void requestRequery(LibraryAdapter adapter)
-	{
-		if (adapter == mCurrentAdapter) {
-			runQuery(adapter);
-		} else {
-			mRequeryNeeded[adapter.getMediaType() - 1] = true;
-			// Clear the data for non-visible adapters (so we don't show the old
-			// data briefly when we later switch to that adapter)
-			adapter.clear();
-		}
-	}
-
-	/**
-	 * Schedule a query to be run for the given adapter on the worker thread.
-	 *
-	 * @param adapter The adapter to run the query for.
-	 */
-	private void runQuery(LibraryAdapter adapter)
-	{
-		mHandler.removeMessages(MSG_RUN_QUERY, adapter);
-		mHandler.sendMessage(mHandler.obtainMessage(MSG_RUN_QUERY, adapter));
-	}
-
 	@Override
 	public void onMediaChange()
 	{
-		for (LibraryAdapter adapter : mAdapters) {
-			if (adapter != null) {
-				postRequestRequery(adapter);
-			}
-		}
-	}
-
-	/**
-	 * Call {@link LibraryActivity#requestRequery(LibraryAdapter)} on the UI
-	 * thread.
-	 *
-	 * @param adapter The adapter, passed to requestRequery.
-	 */
-	public void postRequestRequery(LibraryAdapter adapter)
-	{
-		Handler handler = mUiHandler;
-		handler.sendMessage(handler.obtainMessage(MSG_REQUEST_REQUERY, adapter));
+		mPagerAdapter.invalidateData();
 	}
 
 	private void setSearchBoxVisible(boolean visible)
@@ -1313,20 +1008,6 @@ public class LibraryActivity
 		}
 	}
 
-	/**
-	 * Set the saved sort mode for the given adapter. The adapter should
-	 * be re-queried after calling this.
-	 *
-	 * @param adapter The adapter to load for.
-	 */
-	public void loadSortOrder(MediaAdapter adapter)
-	{
-		String key = String.format("sort_%d_%d", adapter.getMediaType(), adapter.getLimiterType());
-		int def = adapter.getDefaultSortMode();
-		int sort = PlaybackService.getSettings(this).getInt(key, def);
-		adapter.setSortMode(sort);
-	}
-
 	@Override
 	public void onClick(DialogInterface dialog, int which)
 	{
@@ -1336,8 +1017,6 @@ public class LibraryActivity
 	@Override
 	public void onDismiss(DialogInterface dialog)
 	{
-		MediaAdapter adapter = (MediaAdapter)mCurrentAdapter;
-
 		ListView list = ((AlertDialog)dialog).getListView();
 		// subtract 1 for header
 		int which = list.getCheckedItemPosition() - 1;
@@ -1346,54 +1025,21 @@ public class LibraryActivity
 		if (group.getCheckedRadioButtonId() == R.id.descending)
 			which = ~which;
 
-		adapter.setSortMode(which);
-		requestRequery(adapter);
-
-		// Force a new FastScroller to be created so the scroll sections
-		// are updated.
-		ListView view = mLists[mViewPager.getCurrentItem()];
-		view.setFastScrollEnabled(false);
-		view.setFastScrollEnabled(true);
-
-		mHandler.sendMessage(mHandler.obtainMessage(MSG_SAVE_SORT, adapter));
+		mPagerAdapter.setSortMode(which);
 	}
 
 	/**
-	 * Requery the adapter at the given position if it exists and needs a requery.
+	 * Called when a new adapter has been made visible.
 	 *
-	 * @param position An index in mAdapters.
+	 * @param adapter The new visible adapter.
 	 */
-	public void requeryIfNeeded(int position)
+	public void onAdapterSelected(LibraryAdapter adapter)
 	{
-		LibraryAdapter adapter = mAdapters[position];
-		if (adapter != null && mRequeryNeeded[position]) {
-			runQuery(adapter);
-		}
-	}
-
-	@Override
-	public void onPageScrollStateChanged(int arg0)
-	{
-	}
-
-	@Override
-	public void onPageScrolled(int arg0, float arg1, int arg2)
-	{
-	}
-
-	@Override
-	public void onPageSelected(int position)
-	{
-		mCurrentAdapter = mAdapters[position];
-		requeryIfNeeded(position);
-		if (position < ADAPTER_COUNT - 1)
-			requeryIfNeeded(position + 1);
-		if (position > 0)
-			requeryIfNeeded(position - 1);
+		mCurrentAdapter = adapter;
+		mLastActedId = -2;
 		updateLimiterViews();
-
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			CompatHoneycomb.selectTab(this, position);
+			CompatHoneycomb.selectTab(this, mViewPager.getCurrentItem());
 		}
 	}
 }

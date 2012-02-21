@@ -191,7 +191,10 @@ public class FileSystemAdapter extends BaseAdapter implements LibraryAdapter {
 	@Override
 	public void setFilter(String filter)
 	{
-		mFilter = SPACE_SPLIT.split(filter.toLowerCase());
+		if (filter == null)
+			mFilter = null;
+		else
+			mFilter = SPACE_SPLIT.split(filter.toLowerCase());
 	}
 
 	@Override
@@ -247,7 +250,7 @@ public class FileSystemAdapter extends BaseAdapter implements LibraryAdapter {
 		@Override
 		public void onEvent(int event, String path)
 		{
-			mActivity.postRequestRequery(FileSystemAdapter.this);
+			mActivity.mPagerAdapter.postRequestRequery(FileSystemAdapter.this);
 		}
 	}
 }
