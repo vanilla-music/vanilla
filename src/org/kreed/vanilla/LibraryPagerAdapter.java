@@ -430,7 +430,7 @@ public class LibraryPagerAdapter extends PagerAdapter implements Handler.Callbac
 	 */
 	private static final int MSG_SAVE_SORT = 1;
 	/**
-	 * Call {@link LibraryActivity#requestRequery(LibraryAdapter)} on the adapter
+	 * Call {@link LibraryPagerAdapter#requestRequery(LibraryAdapter)} on the adapter
 	 * passed in obj.
 	 *
 	 * Runs on worker thread.
@@ -505,7 +505,7 @@ public class LibraryPagerAdapter extends PagerAdapter implements Handler.Callbac
 	}
 
 	/**
-	 * Call {@link LibraryActivity#requestRequery(LibraryAdapter)} on the UI
+	 * Call {@link LibraryPagerAdapter#requestRequery(LibraryAdapter)} on the UI
 	 * thread.
 	 *
 	 * @param adapter The adapter, passed to requestRequery.
