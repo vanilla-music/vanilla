@@ -1704,7 +1704,12 @@ public final class PlaybackService extends Service
 		case AudioManager.AUDIOFOCUS_LOSS:
 		case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
 			mDuckedLoss = false;
-			mForceNotificationVisible = true;
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				// On Honeycomb and above we have controls in the notification.
+				// Ensure they are shown when music is paused from focus loss
+				// so music can easily be started again if desired.
+				mForceNotificationVisible = true;
+			}
 			unsetFlag(FLAG_PLAYING);
 			break;
 		case AudioManager.AUDIOFOCUS_GAIN:
