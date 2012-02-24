@@ -22,8 +22,8 @@ THE SOFTWARE.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="org.kreed.vanilla"
-	android:versionName="0.9.8"
-	android:versionCode="098"
+	android:versionName="0.9.9"
+	android:versionCode="099"
 	android:installLocation="auto">
 	<uses-sdk android:minSdkVersion="5" android:targetSdkVersion="14" />
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
