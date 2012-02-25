@@ -50,6 +50,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.PowerManager;
+import android.os.Process;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
@@ -371,7 +372,7 @@ public final class PlaybackService extends Service
 	@Override
 	public void onCreate()
 	{
-		HandlerThread thread = new HandlerThread("PlaybackService");
+		HandlerThread thread = new HandlerThread("PlaybackService", Process.THREAD_PRIORITY_BACKGROUND);
 		thread.start();
 
 		mTimeline = new SongTimeline(this);

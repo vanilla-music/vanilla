@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -48,9 +48,9 @@ public final class CoverView extends View implements Handler.Callback {
 	 */
 	private static int sSnapVelocity = -1;
 	/**
-	 * Display metrics, used for scaling.
+	 * The screen density, from {@link DisplayMetrics#density}.
 	 */
-	private static DisplayMetrics sDisplayMetrics;
+	private static double sDensity = -1;
 	/**
 	 * The Handler with which to do background work. Will be null until
 	 * setupHandler is called.
@@ -70,7 +70,7 @@ public final class CoverView extends View implements Handler.Callback {
 	 */
 	public interface Callback {
 		/**
-		 * Called after the view has scrolled to the next or previous cover.
+		 * Called after the view has scrolled to the previous or next cover.
 		 *
 		 * @param delta -1 for the previous cover, 1 for the next.
 		 */
@@ -80,7 +80,7 @@ public final class CoverView extends View implements Handler.Callback {
 		 */
 		public void upSwipe();
 		/**
-		 * Called when the user had swiped down on the view.
+		 * Called when the user has swiped down on the view.
 		 */
 		public void downSwipe();
 	}
@@ -125,11 +125,6 @@ public final class CoverView extends View implements Handler.Callback {
 	 */
 	private float mStartY;
 	/**
-	 * The index of the cover that is being scrolled to during a fling
-	 * animation, or -1 if the cover is the active (middle) cover.
-	 */
-	private int mTentativeCover = -1;
-	/**
 	 * Ignore the next pointer up event, for long presses.
 	 */
 	private boolean mIgnoreNextUp;
@@ -139,10 +134,12 @@ public final class CoverView extends View implements Handler.Callback {
 	 */
 	private boolean mPendingQuery;
 	/**
-	 * If true, calls to invalidate() will do nothing. We use this so we can
-	 * only invalidate the dirty rect during scrolling.
+	 * The current x scroll position of the view.
+	 *
+	 * Scrolling code from {@link View} is not used for this class since many of
+	 * its features are not required.
 	 */
-	private boolean mSuppressInvalidate;
+	private int mScrollX;
 
 	/**
 	 * Constructor intended to be called by inflating from XML.
@@ -155,7 +152,7 @@ public final class CoverView extends View implements Handler.Callback {
 
 		if (sSnapVelocity == -1) {
 			sSnapVelocity = ViewConfiguration.get(context).getScaledMinimumFlingVelocity();
-			sDisplayMetrics = context.getResources().getDisplayMetrics();
+			sDensity = context.getResources().getDisplayMetrics().density;
 		}
 	}
 
@@ -181,7 +178,8 @@ public final class CoverView extends View implements Handler.Callback {
 	{
 		if (!mScroller.isFinished())
 			mScroller.abortAnimation();
-		scrollTo(getWidth(), 0);
+		mScrollX = getWidth();
+		invalidate();
 	}
 
 	@Override
@@ -202,7 +200,7 @@ public final class CoverView extends View implements Handler.Callback {
 		int width = getWidth();
 		int height = getHeight();
 		int x = 0;
-		int scrollX = getScrollX();
+		int scrollX = mScrollX;
 
 		canvas.drawColor(Color.BLACK);
 
@@ -210,7 +208,7 @@ public final class CoverView extends View implements Handler.Callback {
 			if (bitmap != null && scrollX + width > x && scrollX < x + width) {
 				int xOffset = (width - bitmap.getWidth()) / 2;
 				int yOffset = (height - bitmap.getHeight()) / 2;
-				canvas.drawBitmap(bitmap, x + xOffset, yOffset, null);
+				canvas.drawBitmap(bitmap, x + xOffset - scrollX, yOffset, null);
 			}
 			x += width;
 		}
@@ -232,7 +230,7 @@ public final class CoverView extends View implements Handler.Callback {
 
 		float x = ev.getX();
 		float y = ev.getY();
-		int scrollX = getScrollX();
+		int scrollX = mScrollX;
 		int width = getWidth();
 
 		switch (ev.getAction()) {
@@ -254,12 +252,16 @@ public final class CoverView extends View implements Handler.Callback {
 			if (Math.abs(deltaX) > Math.abs(deltaY)) {
 				if (deltaX < 0) {
 					int availableToScroll = scrollX - (mSongs[0] == null ? width : 0);
-					if (availableToScroll > 0)
-						scrollBy(Math.max(-availableToScroll, (int)deltaX), 0);
+					if (availableToScroll > 0) {
+						mScrollX += Math.max(-availableToScroll, (int)deltaX);
+						invalidate();
+					}
 				} else if (deltaX > 0) {
 					int availableToScroll = width * 2 - scrollX;
-					if (availableToScroll > 0)
-						scrollBy(Math.min(availableToScroll, (int)deltaX), 0);
+					if (availableToScroll > 0) {
+						mScrollX += Math.min(availableToScroll, (int)deltaX);
+						invalidate();
+					}
 				}
 			}
 
@@ -277,10 +279,11 @@ public final class CoverView extends View implements Handler.Callback {
 			int mvx = Math.abs(velocityX);
 			int mvy = Math.abs(velocityY);
 
-			int min = mSongs[0] == null ? 1 : 0;
-			int max = 2;
-
-			int whichCover = 1;
+			// If -1 or 1, play the previous or next song, respectively and scroll
+			// to that song's cover. If 0, just scroll back to current song's cover.
+			int whichCover = 0;
+			int min = mSongs[0] == null ? 0 : -1;
+			int max = 1;
 
 			if (Math.abs(mStartX - x) + Math.abs(mStartY - y) < 10) {
 				// A long press was performed and thus the normal action should
@@ -289,7 +292,6 @@ public final class CoverView extends View implements Handler.Callback {
 					mIgnoreNextUp = false;
 				else
 					performClick();
-				whichCover = 1;
 			} else if (mvx > sSnapVelocity || mvy > sSnapVelocity) {
 				if (mvy > mvx) {
 					if (velocityY > 0)
@@ -303,16 +305,18 @@ public final class CoverView extends View implements Handler.Callback {
 						whichCover = max;
 				}
 			} else {
-				int nearestCover = (scrollX + width / 2) / width;
+				int nearestCover = (scrollX + width / 2) / width - 1;
 				whichCover = Math.max(min, Math.min(nearestCover, max));
 			}
 
-			int newX = whichCover * width;
-			int delta = newX - scrollX;
-			mScroller.startScroll(scrollX, 0, delta, 0, (int)(Math.abs(delta) * 2 / sDisplayMetrics.density));
-			if (whichCover != 1)
-				mTentativeCover = whichCover;
+			if (whichCover != 0) {
+				scrollX = scrollX - width * whichCover;
+				mCallback.shiftCurrentSong(whichCover);
+				mScrollX = scrollX;
+			}
 
+			int delta = width - scrollX;
+			mScroller.startScroll(scrollX, 0, delta, 0, (int)(Math.abs(delta) * 2 / sDensity));
 			mUiHandler.sendEmptyMessage(MSG_SCROLL);
 
 			if (mVelocityTracker != null) {
@@ -406,7 +410,6 @@ public final class CoverView extends View implements Handler.Callback {
 		}
 
 		resetScroll();
-		invalidate();
 	}
 
 	/**
@@ -444,19 +447,9 @@ public final class CoverView extends View implements Handler.Callback {
 			break;
 		case MSG_SCROLL:
 			if (mScroller.computeScrollOffset()) {
-				// scrollTo calls invalidate(), however, we want to invalidate
-				// only the region where the covers are drawn, so we need to
-				// suppress this call.
-				mSuppressInvalidate = true;
-				scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
-				mSuppressInvalidate = false;
-
-				invalidateCovers();
+				mScrollX = mScroller.getCurrX();
+				invalidate();
 				mUiHandler.sendEmptyMessage(MSG_SCROLL);
-			} else if (mTentativeCover != -1) {
-				mCallback.shiftCurrentSong(mTentativeCover - 1);
-				mTentativeCover = -1;
-				resetScroll();
 			}
 			break;
 		default:
@@ -485,41 +478,5 @@ public final class CoverView extends View implements Handler.Callback {
 			int size = Math.min(width, height);
 			setMeasuredDimension(size, size);
 		}
-	}
-
-	/**
-	 * Overridden to allow redraws to be suppressed.
-	 */
-	@Override
-	public void invalidate()
-	{
-		if (!mSuppressInvalidate)
-			super.invalidate();
-	}
-
-	/**
-	 * Call {@link View#invalidate(int,int,int,int)} with the area
-	 * containing the visible cover(s).
-	 */
-	public void invalidateCovers()
-	{
-		int width = getWidth();
-		int height = getHeight();
-		int scrollX = getScrollX();
-		int x = 0;
-		int maxHeight = 0;
-
-		for (Bitmap bitmap : mBitmaps) {
-			if (bitmap != null && scrollX + width > x && scrollX < x + width) {
-				int bitmapHeight = bitmap.getHeight();
-				if (bitmapHeight > maxHeight) {
-					maxHeight = bitmapHeight;
-				}
-			}
-			x += width;
-		}
-
-		int offset = (height - maxHeight) / 2;
-		invalidate(scrollX, offset, scrollX + width, height - offset);
 	}
 }

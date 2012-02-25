@@ -31,6 +31,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
+import android.os.Process;
 import android.os.SystemClock;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
@@ -87,7 +88,7 @@ public class PlaybackActivity extends Activity
 
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
-		HandlerThread thread = new HandlerThread(getClass().getName());
+		HandlerThread thread = new HandlerThread(getClass().getName(), Process.THREAD_PRIORITY_LOWEST);
 		thread.start();
 
 		mLooper = thread.getLooper();
