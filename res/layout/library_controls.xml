@@ -38,7 +38,8 @@ THE SOFTWARE.
 		android:scaleType="fitCenter"
 		android:layout_width="80dip"
 		android:layout_height="fill_parent"
-		android:layout_gravity="center" />
+		android:layout_gravity="center"
+		android:contentDescription="@string/cover_art" />
 	<LinearLayout
 		android:layout_height="fill_parent"
 		android:layout_width="fill_parent"

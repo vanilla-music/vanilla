@@ -31,7 +31,8 @@ THE SOFTWARE.
 		android:layout_height="fill_parent"
 		android:adjustViewBounds="true"
 		android:padding="5dip"
-		android:scaleType="fitCenter" />
+		android:scaleType="fitCenter"
+		android:contentDescription="@string/cover_art" />
 	<LinearLayout
 		android:id="@+id/text"
 		android:layout_width="0px"

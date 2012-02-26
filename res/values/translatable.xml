@@ -39,6 +39,8 @@ THE SOFTWARE.
 	<string name="random_enabling">Random enabled</string>
 	<string name="song_load_failed">Failed to load song %s. It may be corrupt or missing.</string>
 	<string name="queue_cleared">Queue cleared.</string>
+	<string name="cover_art">Cover art</string>
+	<string name="close_notification">Close notification</string>
 
 	<!-- New Playlist Dialog -->
 	<string name="choose_playlist_name">Choose Playlist Name</string>
