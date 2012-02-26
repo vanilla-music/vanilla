@@ -91,32 +91,38 @@ public class FourSquareWidget extends AppWidgetProvider {
 
 		RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.four_square_widget);
 
+		boolean playing = (state & PlaybackService.FLAG_PLAYING) != 0;
+		int playResource = R.drawable.play;
+		int nextResource = R.drawable.next;
+		Bitmap cover = null;
+
 		if ((state & PlaybackService.FLAG_NO_MEDIA) != 0) {
-			views.setViewVisibility(R.id.buttons, View.GONE);
-			views.setViewVisibility(R.id.title, View.GONE);
+			views.setViewVisibility(R.id.buttons, View.INVISIBLE);
+			views.setViewVisibility(R.id.title, View.INVISIBLE);
 			views.setInt(R.id.artist, "setText", R.string.no_songs);
-			views.setViewVisibility(R.id.cover, View.GONE);
 		} else if (song == null) {
 			views.setViewVisibility(R.id.buttons, View.VISIBLE);
 			views.setViewVisibility(R.id.title, View.INVISIBLE);
 			views.setInt(R.id.artist, "setText", R.string.app_name);
-			views.setViewVisibility(R.id.cover, View.GONE);
 		} else {
 			views.setViewVisibility(R.id.title, View.VISIBLE);
 			views.setViewVisibility(R.id.buttons, View.VISIBLE);
 			views.setTextViewText(R.id.title, song.title);
 			views.setTextViewText(R.id.artist, song.artist);
-			Bitmap cover = song.getCover(context);
-			if (cover == null) {
-				views.setViewVisibility(R.id.cover, View.GONE);
-			} else {
-				views.setViewVisibility(R.id.cover, View.VISIBLE);
-				views.setImageViewBitmap(R.id.cover, cover);
-			}
+			cover = song.getCover(context);
+			playResource = playing ? R.drawable.hidden_pause : R.drawable.hidden_play;
+			nextResource = R.drawable.hidden_next;
 		}
 
-		boolean playing = (state & PlaybackService.FLAG_PLAYING) != 0;
-		views.setImageViewResource(R.id.play_pause, playing ? R.drawable.hidden_pause : R.drawable.hidden_play);
+		views.setImageViewResource(R.id.play_pause, playResource);
+		views.setImageViewResource(R.id.next, nextResource);
+
+		if (cover == null) {
+			views.setImageViewResource(R.id.cover, R.drawable.fallback_cover);
+		} else {
+			views.setImageViewBitmap(R.id.cover, cover);
+		}
+
 
 		Intent intent;
 		PendingIntent pendingIntent;

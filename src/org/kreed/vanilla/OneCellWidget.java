@@ -30,7 +30,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.view.View;
 import android.widget.RemoteViews;
 
 /**
@@ -73,7 +72,7 @@ public class OneCellWidget extends AppWidgetProvider {
 	 */
 	public static void checkEnabled(Context context, AppWidgetManager manager)
 	{
-		sEnabled = manager.getAppWidgetIds(new ComponentName(context, FourLongWidget.class)).length != 0;
+		sEnabled = manager.getAppWidgetIds(new ComponentName(context, OneCellWidget.class)).length != 0;
 	}
 
 	/**
@@ -108,21 +107,20 @@ public class OneCellWidget extends AppWidgetProvider {
 		next.setComponent(service);
 		views.setOnClickPendingIntent(R.id.next, PendingIntent.getService(context, 0, next, 0));
 
+		Bitmap cover = null;
 		if ((state & PlaybackService.FLAG_NO_MEDIA) != 0) {
 			views.setInt(R.id.title, "setText", R.string.no_songs);
-			views.setViewVisibility(R.id.cover, View.GONE);
 		} else if (song == null) {
 			views.setInt(R.id.title, "setText", R.string.app_name);
-			views.setViewVisibility(R.id.cover, View.GONE);
 		} else {
 			views.setTextViewText(R.id.title, song.title);
-			Bitmap cover = song.getCover(context);
-			if (cover == null) {
-				views.setViewVisibility(R.id.cover, View.GONE);
-			} else {
-				views.setViewVisibility(R.id.cover, View.VISIBLE);
-				views.setImageViewBitmap(R.id.cover, cover);
-			}
+			cover = song.getCover(context);
+		}
+
+		if (cover == null) {
+			views.setImageViewResource(R.id.cover, R.drawable.fallback_cover);
+		} else {
+			views.setImageViewBitmap(R.id.cover, cover);
 		}
 
 		manager.updateAppWidget(new ComponentName(context, OneCellWidget.class), views);

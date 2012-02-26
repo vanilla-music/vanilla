@@ -26,6 +26,7 @@ THE SOFTWARE.
 	android:layout_height="fill_parent">
 	<ImageView
 		android:id="@+id/cover"
+		android:src="@drawable/fallback_cover"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
 		android:scaleType="fitCenter" />
@@ -37,7 +38,7 @@ THE SOFTWARE.
 		android:orientation="vertical">
 		<TextView
 			android:id="@+id/title"
-			android:visibility="gone"
+			android:visibility="invisible"
 			android:layout_width="fill_parent"
 			android:layout_height="0px"
 			android:layout_weight="1"
@@ -75,7 +76,7 @@ THE SOFTWARE.
 			<ImageButton
 				android:id="@+id/play_pause"
 				android:adjustViewBounds="true"
-				android:src="@drawable/hidden_play"
+				android:src="@drawable/play"
 				android:scaleType="centerInside"
 				android:background="@null"
 				android:layout_height="fill_parent"
@@ -85,7 +86,7 @@ THE SOFTWARE.
 			<ImageButton
 				android:id="@+id/next"
 				android:adjustViewBounds="true"
-				android:src="@drawable/hidden_next"
+				android:src="@drawable/next"
 				android:scaleType="centerInside"
 				android:background="@null"
 				android:layout_height="fill_parent"
