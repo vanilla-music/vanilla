@@ -35,51 +35,43 @@ THE SOFTWARE.
 		android:layout_margin="5dip"
 		android:baselineAligned="false"
 		android:orientation="vertical">
-		<LinearLayout
-			android:id="@+id/text"
+		<TextView
+			android:id="@+id/title"
+			android:visibility="gone"
 			android:layout_width="fill_parent"
 			android:layout_height="0px"
 			android:layout_weight="1"
-			android:layout_margin="5dip"
-			android:orientation="vertical">
-			<TextView
-				android:id="@+id/title"
-				android:visibility="gone"
-				android:layout_width="fill_parent"
-				android:layout_height="0px"
-				android:layout_weight="1"
-				android:gravity="center_horizontal|bottom"
-				android:textColor="#fff"
-				android:textSize="18dip"
-				android:shadowColor="#f000"
-				android:shadowDx="0"
-				android:shadowDy="0"
-				android:shadowRadius="5"
-				android:textStyle="bold"
-				android:ellipsize="marquee"
-				android:singleLine="true" />
-			<TextView
-				android:id="@+id/artist"
-				android:text="@string/app_name"
-				android:layout_width="fill_parent"
-				android:layout_height="0px"
-				android:layout_weight="1"
-				android:gravity="center_horizontal|top"
-				android:textColor="#fff"
-				android:shadowColor="#f000"
-				android:shadowDx="0"
-				android:shadowDy="0"
-				android:shadowRadius="5"
-				android:textSize="15dip"
-				android:ellipsize="marquee"
-				android:singleLine="true" />
-		</LinearLayout>
+			android:gravity="center_horizontal|bottom"
+			android:textColor="#fff"
+			android:textSize="18dip"
+			android:shadowColor="#f000"
+			android:shadowDx="0"
+			android:shadowDy="0"
+			android:shadowRadius="5"
+			android:textStyle="bold"
+			android:ellipsize="marquee"
+			android:singleLine="true" />
+		<TextView
+			android:id="@+id/artist"
+			android:text="@string/app_name"
+			android:layout_width="fill_parent"
+			android:layout_height="0px"
+			android:layout_weight="1"
+			android:gravity="center_horizontal|top"
+			android:textColor="#fff"
+			android:shadowColor="#f000"
+			android:shadowDx="0"
+			android:shadowDy="0"
+			android:shadowRadius="5"
+			android:textSize="15dip"
+			android:ellipsize="marquee"
+			android:singleLine="true" />
 		<LinearLayout
 			android:id="@+id/buttons"
 			android:orientation="horizontal"
 			android:layout_width="fill_parent"
 			android:layout_height="0px"
-			android:layout_weight="1">
+			android:layout_weight="2">
 			<ImageButton
 				android:id="@+id/play_pause"
 				android:adjustViewBounds="true"

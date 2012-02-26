@@ -98,7 +98,7 @@ public class FourSquareWidget extends AppWidgetProvider {
 			views.setViewVisibility(R.id.cover, View.GONE);
 		} else if (song == null) {
 			views.setViewVisibility(R.id.buttons, View.VISIBLE);
-			views.setViewVisibility(R.id.title, View.GONE);
+			views.setViewVisibility(R.id.title, View.INVISIBLE);
 			views.setInt(R.id.artist, "setText", R.string.app_name);
 			views.setViewVisibility(R.id.cover, View.GONE);
 		} else {
@@ -126,7 +126,8 @@ public class FourSquareWidget extends AppWidgetProvider {
 		intent = new Intent(context, LibraryActivity.class);
 		intent.setAction(Intent.ACTION_MAIN);
 		pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-		views.setOnClickPendingIntent(R.id.text, pendingIntent);
+		views.setOnClickPendingIntent(R.id.title, pendingIntent);
+		views.setOnClickPendingIntent(R.id.artist, pendingIntent);
 
 		intent = new Intent(PlaybackService.ACTION_TOGGLE_PLAYBACK).setComponent(service);
 		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
