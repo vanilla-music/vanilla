@@ -77,7 +77,7 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 
 		Resources res = context.getResources();
 		mDragBitmap = BitmapFactory.decodeResource(res, R.drawable.grabber);
-		mDeleteBitmap = BitmapFactory.decodeResource(res, R.drawable.close_normal);
+		mDeleteBitmap = BitmapFactory.decodeResource(res, R.drawable.close);
 	}
 
 	/**

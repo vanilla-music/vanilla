@@ -64,7 +64,7 @@ THE SOFTWARE.
 		android:layout_gravity="center"
 		android:background="?android:attr/selectableItemBackground"
 		android:scaleType="fitCenter"
-		android:src="@drawable/play_normal"
+		android:src="@drawable/play"
 		android:contentDescription="@string/play_pause" />
 	<ImageButton
 		android:id="@+id/next"
@@ -75,7 +75,7 @@ THE SOFTWARE.
 		android:layout_gravity="center"
 		android:background="?android:attr/selectableItemBackground"
 		android:scaleType="fitCenter"
-		android:src="@drawable/next_normal"
+		android:src="@drawable/next"
 		android:contentDescription="@string/next_song" />
 	<ImageButton
 		android:id="@+id/close"

@@ -36,50 +36,6 @@ THE SOFTWARE.
 		android:layout_height="wrap_content"
 		android:layout_width="match_parent"
 		android:orientation="horizontal">
-		<ImageButton
-			android:id="@+id/shuffle"
-			android:layout_height="fill_parent"
-			android:layout_width="0px"
-			android:layout_weight="1"
-			android:background="@null"
-			android:scaleType="fitCenter"
-			android:src="@drawable/shuffle_inactive"
-			android:contentDescription="@string/cycle_shuffle_mode" />
-		<ImageButton
-			android:id="@+id/previous"
-			android:layout_height="fill_parent"
-			android:layout_width="0px"
-			android:layout_weight="1"
-			android:background="@null"
-			android:scaleType="fitCenter"
-			android:src="@drawable/previous"
-			android:contentDescription="@string/previous_song" />
-		<ImageButton
-			android:id="@+id/play_pause"
-			android:layout_height="fill_parent"
-			android:layout_width="0px"
-			android:layout_weight="1"
-			android:background="@null"
-			android:scaleType="fitCenter"
-			android:src="@drawable/play"
-			android:contentDescription="@string/play_pause" />
-		<ImageButton
-			android:id="@+id/next"
-			android:layout_height="fill_parent"
-			android:layout_width="0px"
-			android:layout_weight="1"
-			android:background="@null"
-			android:scaleType="fitCenter"
-			android:src="@drawable/next"
-			android:contentDescription="@string/next_song" />
-		<ImageButton
-			android:id="@+id/end_action"
-			android:layout_height="fill_parent"
-			android:layout_width="0px"
-			android:layout_weight="1"
-			android:background="@null"
-			android:scaleType="fitCenter"
-			android:src="@drawable/repeat_inactive"
-			android:contentDescription="@string/cycle_repeat_mode" />
+		<include layout="@layout/controls" />
 	</LinearLayout>
 </LinearLayout>

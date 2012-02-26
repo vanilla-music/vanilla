@@ -71,7 +71,7 @@ THE SOFTWARE.
 			android:defaultValue="false" />
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/pref_playback_view">
-	    <CheckBoxPreference
+		<CheckBoxPreference
 			android:key="playback_on_startup"
 			android:title="@string/playback_on_startup_title"
 			android:summary="@string/playback_on_startup_summary"
