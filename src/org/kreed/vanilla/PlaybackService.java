@@ -800,6 +800,7 @@ public final class PlaybackService extends Service
 		FourSquareWidget.checkEnabled(this, manager);
 		FourLongWidget.checkEnabled(this, manager);
 		WidgetD.checkEnabled(this, manager);
+		WidgetE.checkEnabled(this, manager);
 	}
 
 	/**
@@ -814,6 +815,7 @@ public final class PlaybackService extends Service
 		FourLongWidget.updateWidget(this, manager, song, state);
 		FourSquareWidget.updateWidget(this, manager, song, state);
 		WidgetD.updateWidget(this, manager, song, state);
+		WidgetE.updateWidget(this, manager, song, state);
 	}
 
 	/**

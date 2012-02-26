@@ -70,13 +70,23 @@ THE SOFTWARE.
 		</receiver>
 		<receiver
 			android:name=".FourLongWidget"
-			android:label="Vanilla Music 4x1">
+			android:label="Vanilla Music 4x1 A">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
 			</intent-filter>
 			<meta-data
 				android:name="android.appwidget.provider"
 				android:resource="@xml/four_long_widget" />
+		</receiver>
+		<receiver
+			android:name=".WidgetE"
+			android:label="Vanilla Music 4x1 B">
+			<intent-filter>
+				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+			</intent-filter>
+			<meta-data
+				android:name="android.appwidget.provider"
+				android:resource="@xml/widget_e" />
 		</receiver>
 		<receiver
 			android:name=".FourSquareWidget"
