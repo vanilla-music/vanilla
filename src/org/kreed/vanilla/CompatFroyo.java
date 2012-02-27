@@ -26,6 +26,8 @@ import android.app.backup.BackupManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.media.AudioManager;
+import android.view.VelocityTracker;
+import android.view.ViewConfiguration;
 
 /**
  * Framework methods only in Froyo or above go here.
@@ -83,5 +85,29 @@ public class CompatFroyo implements AudioManager.OnAudioFocusChangeListener {
 		if (service != null) {
 			service.onAudioFocusChange(type);
 		}
+	}
+
+	/**
+	 * Calls {@link VelocityTracker#getYVelocity(int)}.
+	 */
+	public static float getYVelocity(VelocityTracker tracker, int id)
+	{
+		return tracker.getYVelocity(id);
+	}
+
+	/**
+	 * Calls {@link VelocityTracker#getXVelocity(int)}.
+	 */
+	public static float getXVelocity(VelocityTracker tracker, int id)
+	{
+		return tracker.getXVelocity(id);
+	}
+
+	/**
+	 * Calls {@link ViewConfiguration#getScaledPagingTouchSlop()}.
+	 */
+	public static int getScaledPagingTouchSlop(ViewConfiguration config)
+	{
+		return config.getScaledPagingTouchSlop();
 	}
 }

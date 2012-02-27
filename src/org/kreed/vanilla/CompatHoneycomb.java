@@ -28,6 +28,7 @@ import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
@@ -128,5 +129,21 @@ public class CompatHoneycomb {
 	public static Uri getContentUriForAudioId(int id)
 	{
 		return MediaStore.Audio.Genres.getContentUriForAudioId("external", id);
+	}
+
+	/**
+	 * Call {@link KeyEvent#hasNoModifiers()}.
+	 */
+	public static boolean hasNoModifiers(KeyEvent event)
+	{
+		return event.hasNoModifiers();
+	}
+
+	/**
+	 * Call {@link KeyEvent#hasModifiers(int)}.
+	 */
+	public static boolean hasModifiers(KeyEvent event, int modifiers)
+	{
+		return event.hasModifiers(modifiers);
 	}
 }
