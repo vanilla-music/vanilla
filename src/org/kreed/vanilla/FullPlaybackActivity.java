@@ -97,6 +97,8 @@ public class FullPlaybackActivity extends PlaybackActivity
 	{
 		super.onCreate(icicle);
 
+		setTitle(R.string.playback_view);
+
 		SharedPreferences settings = PlaybackService.getSettings(this);
 		int displayMode = Integer.parseInt(settings.getString("display_mode", "2"));
 		mDisplayMode = displayMode;
