@@ -22,12 +22,14 @@
 
 package org.kreed.vanilla;
 
+import android.annotation.TargetApi;
 import android.media.MediaPlayer;
 import android.media.audiofx.Equalizer;
 
 /**
  * Gingerbread equalizer compatibility.
  */
+@TargetApi(9)
 public class CompatEq {
 	private final Equalizer mEq;
 

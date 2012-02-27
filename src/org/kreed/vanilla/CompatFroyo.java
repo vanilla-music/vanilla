@@ -22,6 +22,7 @@
 
 package org.kreed.vanilla;
 
+import android.annotation.TargetApi;
 import android.app.backup.BackupManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -32,6 +33,7 @@ import android.view.ViewConfiguration;
 /**
  * Framework methods only in Froyo or above go here.
  */
+@TargetApi(8)
 public class CompatFroyo implements AudioManager.OnAudioFocusChangeListener {
 	/**
 	 * Instance of the audio focus listener created by {@link #createAudioFocus()}.

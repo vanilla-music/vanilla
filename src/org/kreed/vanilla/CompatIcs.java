@@ -22,6 +22,7 @@
 
 package org.kreed.vanilla;
 
+import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
@@ -34,6 +35,7 @@ import android.media.RemoteControlClient;
 /**
  * Framework methods only in ICS or above go here.
  */
+@TargetApi(14)
 public class CompatIcs {
 	/**
 	 * Used with updateRemote method.

@@ -22,12 +22,14 @@
 
 package org.kreed.vanilla;
 
+import android.annotation.TargetApi;
 import android.media.MediaMetadataRetriever;
 
 /**
  * Wrapper around MediaMetadataRetriever to allow compatibility with older
  * versions of Android.
  */
+@TargetApi(10)
 public class CompatMetadata {
 	/**
 	 * The wrapped MediaMetadataRetriever instance.

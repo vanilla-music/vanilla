@@ -22,6 +22,7 @@
 
 package android.support.v4.view;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.view.View;
@@ -31,6 +32,7 @@ import android.widget.EdgeEffect;
  * Wrapper around {@link EdgeEffect} for compatibility with older versions of
  * Android.
  */
+@TargetApi(14)
 public class EdgeEffectCompat {
 	/**
 	 * The wrapped EdgeEffect.

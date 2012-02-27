@@ -22,6 +22,7 @@
 
 package org.kreed.vanilla;
 
+import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.Activity;
@@ -36,6 +37,7 @@ import android.widget.ListView;
 /**
  * Framework methods only in Honeycomb or above go here.
  */
+@TargetApi(11)
 public class CompatHoneycomb {
 	/**
 	 * Add ActionBar tabs for LibraryActivity.
