@@ -48,7 +48,7 @@ import android.widget.Toast;
  * communication with the PlaybackService and response to state and song
  * changes.
  */
-public class PlaybackActivity extends Activity
+public abstract class PlaybackActivity extends Activity
 	implements Handler.Callback,
 	           View.OnClickListener,
 	           CoverView.Callback
