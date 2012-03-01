@@ -43,19 +43,19 @@ THE SOFTWARE.
 		android:orientation="horizontal">
 		<Button
 			style="?android:attr/buttonBarButtonStyle"
-			android:id="@+id/create"
-			android:layout_width="0px"
-			android:layout_height="wrap_content"
-			android:layout_weight="1"
-			android:text="@string/create"
-			android:singleLine="true" />
-		<Button
-			style="?android:attr/buttonBarButtonStyle"
 			android:id="@+id/cancel"
 			android:layout_width="0px"
 			android:layout_height="wrap_content"
 			android:layout_weight="1"
 			android:text="@string/cancel"
+			android:singleLine="true" />
+		<Button
+			style="?android:attr/buttonBarButtonStyle"
+			android:id="@+id/create"
+			android:layout_width="0px"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="@string/create"
 			android:singleLine="true" />
 	</LinearLayout>
 </LinearLayout>
