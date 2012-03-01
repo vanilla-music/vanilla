@@ -68,11 +68,4 @@
   <string name="pref_playback_view">Vista de reproducción</string>
   <string name="display_mode_title">Modo de visualización</string>
   <string name="pref_song_selector">Vista de biblioteca</string>
-  <plurals name="playing"/>
-  <plurals name="enqueued"/>
-  <plurals name="added_to_playlist"/>
-  <plurals name="deleted"/>
-  <plurals name="seconds"/>
-  <plurals name="minutes"/>
-  <plurals name="hours"/>
 </resources>

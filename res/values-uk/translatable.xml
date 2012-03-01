@@ -49,21 +49,4 @@
   <string name="play_pause">Відтворення/пауза</string>
   <string name="next_song">Наступна пісня</string>
   <string name="next_album">Наступний альбом</string>
-  <plurals name="playing">
-    <item quantity="one">1 пісня грає.</item>
-  </plurals>
-  <plurals name="enqueued"/>
-  <plurals name="added_to_playlist"/>
-  <plurals name="deleted">
-    <item quantity="one">1 пісню, видалено.</item>
-  </plurals>
-  <plurals name="seconds">
-    <item quantity="one">1 секунда</item>
-  </plurals>
-  <plurals name="minutes">
-    <item quantity="one">1 хвилина</item>
-  </plurals>
-  <plurals name="hours">
-    <item quantity="one">1 година</item>
-  </plurals>
 </resources>
