@@ -358,7 +358,7 @@ public class LibraryActivity
 	 * Adds songs matching the data from the given intent to the song timelime.
 	 *
 	 * @param intent An intent created with
-	 * {@link LibraryActivity#createClickIntent(LibraryAdapter,MediaView)}.
+	 * {@link LibraryAdapter#createData(View)}.
 	 * @param action One of LibraryActivity.ACTION_*
 	 */
 	private void pickSongs(Intent intent, int action)
@@ -396,7 +396,7 @@ public class LibraryActivity
 	 * from the view and switching to the appropriate tab.
 	 *
 	 * @param intent An intent created with
-	 * {@link LibraryActivity#createClickIntent(LibraryAdapter,MediaView)}.
+	 * {@link LibraryAdapter#createData(View)}.
 	 */
 	private void expand(Intent intent)
 	{
@@ -421,7 +421,7 @@ public class LibraryActivity
 	/**
 	 * Called by LibraryAdapters when a row has been clicked.
 	 *
-	 * @param row The data for the row that was clicked.
+	 * @param rowData The data for the row that was clicked.
 	 */
 	public void onItemClicked(Intent rowData)
 	{
@@ -446,7 +446,7 @@ public class LibraryActivity
 	/**
 	 * Called by LibraryAdapters when a row's expand arrow has been clicked.
 	 *
-	 * @param row The data for the row that was clicked.
+	 * @param rowData The data for the row that was clicked.
 	 */
 	public void onItemExpanded(Intent rowData)
 	{
@@ -563,7 +563,7 @@ public class LibraryActivity
 	 * Builds a media query based off the data stored in the given intent.
 	 *
 	 * @param intent An intent created with
-	 * {@link LibraryActivity#createClickIntent(LibraryAdapter,MediaView)}.
+	 * {@link LibraryAdapter#createData(View)}.
 	 * @param empty If true, use the empty projection (only query id).
 	 * @param all If true query all songs in the adapter; otherwise query based
 	 * on the row selected.
@@ -644,7 +644,7 @@ public class LibraryActivity
 	 *
 	 * @param playlistId The id of the playlist to add to.
 	 * @param intent An intent created with
-	 * {@link LibraryActivity#createClickIntent(LibraryAdapter,MediaView)}.
+	 * {@link LibraryAdapter#createData(View)}.
 	 */
 	private void addToPlaylist(long playlistId, Intent intent)
 	{
@@ -671,7 +671,7 @@ public class LibraryActivity
 	 * informing the user of this.
 	 *
 	 * @param intent An intent created with
-	 * {@link LibraryActivity#createClickIntent(LibraryAdapter,MediaView)}.
+	 * {@link LibraryAdapter#createData(View)}.
 	 */
 	private void delete(Intent intent)
 	{

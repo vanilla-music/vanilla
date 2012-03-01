@@ -144,8 +144,6 @@ public class MediaAdapter
 	 * @param type The type of media to represent. Must be one of the
 	 * Song.TYPE_* constants. This determines which content provider to query
 	 * and what fields to display in the views.
-	 * @param expandable Whether an expand arrow should be shown to the right
-	 * of the views' text
 	 * @param limiter An initial limiter to use
 	 */
 	public MediaAdapter(LibraryActivity activity, int type, Limiter limiter)

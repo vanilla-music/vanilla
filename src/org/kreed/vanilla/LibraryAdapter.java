@@ -127,7 +127,7 @@ public interface LibraryAdapter extends ListAdapter {
 	public static final String DATA_TYPE = "type";
 	/**
 	 * Extra for row data: canonical file path. type: String. Only present if
-	 * type is {@link MediaUtils.TYPE_FILE}.
+	 * type is {@link MediaUtils#TYPE_FILE}.
 	 */
 	public static final String DATA_FILE = "file";
 	/**
