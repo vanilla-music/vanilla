@@ -590,6 +590,8 @@ public class LibraryPagerAdapter
 	public void setSortMode(int mode)
 	{
 		MediaAdapter adapter = (MediaAdapter)mCurrentAdapter;
+		if (mode == adapter.getSortMode())
+			return;
 
 		adapter.setSortMode(mode);
 		requestRequery(adapter);
