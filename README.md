@@ -1,3 +1,7 @@
+Translating
+===========
+[You can help translate here](http://crowdin.net/project/vanilla-music/invite). If your language isn't on the list, open an issue and I can add it.
+
 Building
 ========
 To build you will need:
