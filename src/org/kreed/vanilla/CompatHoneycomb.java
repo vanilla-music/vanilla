@@ -87,11 +87,12 @@ public class CompatHoneycomb {
 	}
 
 	/**
-	 * Call {@link ListView#setFastScrollAlwaysVisible(boolean)} on the given ListView.
+	 * Call {@link ListView#setFastScrollAlwaysVisible(boolean)} on the given
+	 * ListView with value true.
 	 */
-	public static void setFastScrollAlwaysVisible(ListView view, boolean visible)
+	public static void setFastScrollAlwaysVisible(ListView view)
 	{
-		view.setFastScrollAlwaysVisible(visible);
+		view.setFastScrollAlwaysVisible(true);
 	}
 
 	/**

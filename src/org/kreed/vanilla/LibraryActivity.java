@@ -27,6 +27,7 @@ import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -147,6 +148,10 @@ public class LibraryActivity
 	 * The adapter for the currently visible list.
 	 */
 	private LibraryAdapter mCurrentAdapter;
+	/**
+	 * If true, return target GINGERBREAD from getApplicationInfo().
+	 */
+	boolean mFakeTarget;
 
 	@Override
 	public void onCreate(Bundle state)
@@ -1012,5 +1017,15 @@ public class LibraryActivity
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			CompatHoneycomb.selectTab(this, mViewPager.getCurrentItem());
 		}
+	}
+
+	@Override
+	public ApplicationInfo getApplicationInfo()
+	{
+		ApplicationInfo info = super.getApplicationInfo();
+		if (mFakeTarget) {
+			info.targetSdkVersion = Build.VERSION_CODES.GINGERBREAD;
+		}
+		return info;
 	}
 }

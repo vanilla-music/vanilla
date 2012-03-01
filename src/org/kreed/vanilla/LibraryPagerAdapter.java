@@ -25,6 +25,7 @@ package org.kreed.vanilla;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.ContentObserver;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -214,11 +215,10 @@ public class LibraryPagerAdapter
 				header.setTag(position + 1);
 				view.addHeaderView(header);
 			}
-
 			view.setAdapter(adapter);
 			if (position != 5)
 				loadSortOrder((MediaAdapter)adapter);
-
+			enableFastScroll(view);
 			adapter.setFilter(mFilter);
 
 			mAdapters[position] = adapter;
@@ -598,7 +598,7 @@ public class LibraryPagerAdapter
 		// are updated.
 		ListView view = mLists[mCurrentPage];
 		view.setFastScrollEnabled(false);
-		view.setFastScrollEnabled(true);
+		enableFastScroll(view);
 
 		Handler handler = mWorkerHandler;
 		handler.sendMessage(handler.obtainMessage(MSG_SAVE_SORT, adapter));
@@ -670,5 +670,22 @@ public class LibraryPagerAdapter
 	{
 		Intent intent = id == -1 ? createHeaderIntent(view) : mCurrentAdapter.createData(view);
 		mActivity.onItemClicked(intent);
+	}
+
+	/**
+	 * Enables FastScroller on the given list, ensuring it is always visible
+	 * and suppresses the match drag position feature in newer versions of
+	 * Android.
+	 *
+	 * @param list The list to enable.
+	 */
+	private void enableFastScroll(ListView list)
+	{
+		mActivity.mFakeTarget = true;
+		list.setFastScrollEnabled(true);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			CompatHoneycomb.setFastScrollAlwaysVisible(list);
+		}
+		mActivity.mFakeTarget = false;
 	}
 }
