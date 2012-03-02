@@ -185,6 +185,10 @@ THE SOFTWARE.
 	<string name="scan_in_progress">Scan in progress…</string>
 	<string name="finished_scanning">Finished scanning. Tap to scan again.</string>
 
+	<string name="tabs">Tab Order</string>
+	<string name="customize_tab_order">Adjust the order and visibility of library tabs</string>
+	<string name="restore_default">Restore default</string>
+
 	<!-- The following are for the list preferences -->
 	<string name="last_used_action">Last used action</string>
 

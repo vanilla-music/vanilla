@@ -28,6 +28,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 
 /**
@@ -36,7 +37,7 @@ import android.widget.ListView;
  * This implementation has some restrictions:
  *     Footers are unsupported
  *     All non-header views must have the same height
- *     The adapter must be a PlaylistAdapter
+ *     The adapter must implement DragAdapter
  *
  * Dragging disabled by default. Enable it with
  * {@link DragListView#setEditable(boolean)}.
@@ -46,6 +47,20 @@ import android.widget.ListView;
  */
 public class DragListView extends ListView implements Handler.Callback {
 	/**
+	 * Adapter that implements move and remove operations.
+	 */
+	public interface DragAdapter extends ListAdapter {
+		/**
+		 * Remove the element at position from and insert it at position to.
+		 */
+		public void move(int from, int to);
+		/**
+		 * Remove the element at the given position.
+		 */
+		public void remove(int position);
+	}
+
+	/**
 	 * Sent to scroll the list up or down when the dragged view is near the
 	 * top or bottom of the list.
 	 */
@@ -53,11 +68,11 @@ public class DragListView extends ListView implements Handler.Callback {
 	/**
 	 * Height of each row in dip.
 	 */
-	private static final int ROW_HEIGHT = 44;
+	public static final int ROW_HEIGHT = 44;
 	/**
 	 * Padding for each row in dip.
 	 */
-	private static final int PADDING = 3;
+	public static final int PADDING = 3;
 	/**
 	 * Background color of row while it is being dragged.
 	 */
@@ -73,7 +88,7 @@ public class DragListView extends ListView implements Handler.Callback {
 	/**
 	 * The adapter that will be called to move/remove rows.
 	 */
-	private PlaylistAdapter mAdapter;
+	private DragAdapter mAdapter;
 	/**
 	 * True to allow dragging; false otherwise.
 	 */
@@ -135,13 +150,13 @@ public class DragListView extends ListView implements Handler.Callback {
 	/**
 	 * This should be called instead of
 	 * {@link ListView#setAdapter(android.widget.ListAdapter)}.
-	 * DragListView requires a PlaylistAdapter to handle move/remove callbacks
+	 * DragListView requires a DragAdapter to handle move/remove callbacks
 	 * from dragging.
 	 *
 	 * @param adapter The adapter to use. Will be passed to
 	 * {@link ListView#setAdapter(android.widget.ListAdapter)}.
 	 */
-	public void setAdapter(PlaylistAdapter adapter)
+	public void setAdapter(DragAdapter adapter)
 	{
 		super.setAdapter(adapter);
 		// Keep track of adapter here since getAdapter() will return a wrapper
@@ -217,13 +232,13 @@ public class DragListView extends ListView implements Handler.Callback {
 	 */
 	private void unExpandViews()
 	{
+		int padding = mPadding;
 		for (int i = 0, count = getChildCount(); i != count; ++i) {
 			View view = getChildAt(i);
 			ViewGroup.LayoutParams params = view.getLayoutParams();
 			params.height = 0;
 			view.setLayoutParams(params);
 			view.setVisibility(View.VISIBLE);
-			int padding = mPadding;
 			view.setPadding(padding, padding, padding, padding);
 		}
 	}

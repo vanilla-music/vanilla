@@ -97,7 +97,7 @@ public class PlaylistActivity extends Activity
 
 		setContentView(R.layout.playlist_activity);
 
-		DragListView view = (DragListView)findViewById(R.id.playlist);
+		DragListView view = (DragListView)findViewById(R.id.list);
 		view.setOnItemClickListener(this);
 		view.setOnCreateContextMenuListener(this);
 		mListView = view;
@@ -204,11 +204,12 @@ public class PlaylistActivity extends Activity
 	{
 		int itemId = item.getItemId();
 		Intent intent = item.getIntent();
+		int pos = intent.getIntExtra("position", -1);
 
 		if (itemId == MENU_REMOVE) {
-			mAdapter.remove(intent.getLongExtra("id", -1));
+			mAdapter.remove(pos);
 		} else {
-			performAction(itemId, intent.getIntExtra("position", -1), intent.getLongExtra("audioId", -1));
+			performAction(itemId, pos, intent.getLongExtra("audioId", -1));
 		}
 
 		return true;

@@ -65,25 +65,13 @@ public class CompatHoneycomb {
 		};
 
 		ActionBar ab = activity.getActionBar();
-		ab.addTab(ab.newTab()
-			.setText(R.string.artists)
-			.setTabListener(listener));
-		ab.addTab(ab.newTab()
-			.setText(R.string.albums)
-			.setTabListener(listener));
-		ab.addTab(ab.newTab()
-			.setText(R.string.songs)
-			.setTabListener(listener));
-		ab.addTab(ab.newTab()
-			.setText(R.string.playlists)
-			.setTabListener(listener));
-		ab.addTab(ab.newTab()
-			.setText(R.string.genres)
-			.setTabListener(listener));
-		ab.addTab(ab.newTab()
-			.setText(R.string.files)
-			.setTabListener(listener));
 		ab.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		ab.removeAllTabs();
+		int[] order = activity.mPagerAdapter.mTabOrder;
+		int[] titles = LibraryPagerAdapter.TITLES;
+		for (int i = 0, n = activity.mPagerAdapter.getCount(); i != n; ++i) {
+			ab.addTab(ab.newTab().setText(titles[order[i]]).setTabListener(listener));
+		}
 	}
 
 	/**
@@ -120,7 +108,9 @@ public class CompatHoneycomb {
 	public static void selectTab(Activity activity, int position)
 	{
 		ActionBar ab = activity.getActionBar();
-		ab.selectTab(ab.getTabAt(position));
+		if (position < ab.getTabCount()) {
+			ab.selectTab(ab.getTabAt(position));
+		}
 	}
 
 	/**

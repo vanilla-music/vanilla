@@ -23,7 +23,6 @@ THE SOFTWARE.
 <org.kreed.vanilla.DragTextView
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:padding="3dip"
-	android:minHeight="44dip"
 	android:singleLine="true"
 	android:textColor="#ffff"
 	android:gravity="left|center_vertical" />

@@ -125,6 +125,9 @@ THE SOFTWARE.
 		<activity
 			android:name="PreferencesActivity"
 			android:theme="@style/BackActionBar" />
+		<activity
+			android:name="TabOrderActivity"
+			android:theme="@style/BackActionBar" />
 		<meta-data
 			android:name="com.google.android.backup.api_key"
 			android:value="AEdPqrEAAAAIH6Xcxa4hn6sHN1m4jMpi4MFFFMP5sv3XhFuWeA" />

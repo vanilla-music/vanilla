@@ -113,6 +113,7 @@ THE SOFTWARE.
 			android:title="@string/controls_in_selector_title"
 			android:summary="@string/controls_in_selector_summary"
 			android:defaultValue="false" />
+		<org.kreed.vanilla.TabOrderPreference />
 		<org.kreed.vanilla.ListPreferenceSummary
 			android:key="default_action_int"
 			android:title="@string/default_action_title"

@@ -42,7 +42,7 @@ import android.widget.TextView;
 /**
  * CursorAdapter backed by MediaStore playlists.
  */
-public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
+public class PlaylistAdapter extends CursorAdapter implements Handler.Callback, DragListView.DragAdapter {
 	private static final String[] PROJECTION = new String[] {
 		MediaStore.Audio.Playlists.Members._ID,
 		MediaStore.Audio.Playlists.Members.TITLE,
@@ -162,12 +162,7 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 		return query.runQuery(resolver);
 	}
 
-	/**
-	 * Move a song to a new position.
-	 *
-	 * @param from The old position.
-	 * @param to The new position.
-	 */
+	@Override
 	public void move(int from, int to)
 	{
 		if (from == to)
@@ -221,16 +216,12 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 		changeCursor(runQuery(resolver));
 	}
 
-	/**
-	 * Remove the song with the given id.
-	 *
-	 * @param id The MediaStore id of the row to remove.
-	 */
-	public void remove(long id)
+	@Override
+	public void remove(int position)
 	{
 		ContentResolver resolver = mContext.getContentResolver();
 		Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", mPlaylistId);
-		resolver.delete(ContentUris.withAppendedId(uri, id), null, null);
+		resolver.delete(ContentUris.withAppendedId(uri, getItemId(position)), null, null);
 		changeCursor(runQuery(resolver));
 	}
 }

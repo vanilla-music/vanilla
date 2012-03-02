@@ -110,6 +110,7 @@ public class LibraryActivity
 		  SongTimeline.MODE_PLAY_ID_FIRST, SongTimeline.MODE_ENQUEUE_ID_FIRST };
 
 	public ViewPager mViewPager;
+	private TabPageIndicator mTabs;
 
 	private View mSearchBox;
 	private boolean mSearchBoxVisible;
@@ -183,7 +184,6 @@ public class LibraryActivity
 		mViewPager = pager;
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			CompatHoneycomb.addActionBarTabs(this);
 			pager.setOnPageChangeListener(pagerAdapter);
 
 			View controls = getLayoutInflater().inflate(R.layout.actionbar_controls, null);
@@ -196,6 +196,7 @@ public class LibraryActivity
 			TabPageIndicator tabs = new TabPageIndicator(this);
 			tabs.setViewPager(pager);
 			tabs.setOnPageChangeListener(pagerAdapter);
+			mTabs = tabs;
 
 			LinearLayout content = (LinearLayout)findViewById(R.id.content);
 			content.addView(tabs, 0, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
@@ -239,10 +240,16 @@ public class LibraryActivity
 		super.onStart();
 
 		SharedPreferences settings = PlaybackService.getSettings(this);
-
 		if (settings.getBoolean("controls_in_selector", false) != (mControls != null)) {
 			finish();
 			startActivity(new Intent(this, LibraryActivity.class));
+		}
+		if (mPagerAdapter.loadTabOrder()) {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				CompatHoneycomb.addActionBarTabs(this);
+			} else {
+				mTabs.notifyDataSetChanged();
+			}
 		}
 		mDefaultAction = Integer.parseInt(settings.getString("default_action_int", "0"));
 		mLastActedId = LibraryAdapter.INVALID_ID;
@@ -273,7 +280,7 @@ public class LibraryActivity
 			String data = String.format("album_id=%d", albumId);
 			Limiter limiter = new Limiter(MediaUtils.TYPE_ALBUM, fields, data);
 			int tab = mPagerAdapter.setLimiter(limiter);
-			if (tab == mViewPager.getCurrentItem())
+			if (tab == -1 || tab == mViewPager.getCurrentItem())
 				updateLimiterViews();
 			else
 				mViewPager.setCurrentItem(tab);
@@ -386,7 +393,7 @@ public class LibraryActivity
 		mode = modeForAction[mode];
 
 		QueryTask query = buildQueryFromIntent(intent, false, all);
-		PlaybackService.get(this).addSongs(mode, query, intent.getIntExtra("type", -1));
+		PlaybackService.get(this).addSongs(mode, query, intent.getIntExtra("type", MediaUtils.TYPE_INVALID));
 
 		mLastActedId = id;
 
@@ -405,10 +412,10 @@ public class LibraryActivity
 	 */
 	private void expand(Intent intent)
 	{
-		int type = intent.getIntExtra("type", 1);
+		int type = intent.getIntExtra("type", MediaUtils.TYPE_INVALID);
 		long id = intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
-		int tab = mPagerAdapter.setLimiter(mPagerAdapter.mAdapters[type - 1].buildLimiter(id));
-		if (tab == mViewPager.getCurrentItem())
+		int tab = mPagerAdapter.setLimiter(mPagerAdapter.mAdapters[type].buildLimiter(id));
+		if (tab == -1 || tab == mViewPager.getCurrentItem())
 			updateLimiterViews();
 		else
 			mViewPager.setCurrentItem(tab);
@@ -455,7 +462,7 @@ public class LibraryActivity
 	 */
 	public void onItemExpanded(Intent rowData)
 	{
-		int type = rowData.getIntExtra(LibraryAdapter.DATA_TYPE, -1);
+		int type = rowData.getIntExtra(LibraryAdapter.DATA_TYPE, MediaUtils.TYPE_INVALID);
 		if (type == MediaUtils.TYPE_PLAYLIST)
 			editPlaylist(rowData);
 		else
@@ -575,7 +582,7 @@ public class LibraryActivity
 	 */
 	private QueryTask buildQueryFromIntent(Intent intent, boolean empty, boolean all)
 	{
-		int type = intent.getIntExtra("type", 1);
+		int type = intent.getIntExtra("type", MediaUtils.TYPE_INVALID);
 
 		String[] projection;
 		if (type == MediaUtils.TYPE_PLAYLIST)
@@ -588,7 +595,7 @@ public class LibraryActivity
 		if (type == MediaUtils.TYPE_FILE) {
 			query = MediaUtils.buildFileQuery(intent.getStringExtra("file"), projection);
 		} else if (all || id == LibraryAdapter.HEADER_ID) {
-			query = ((MediaAdapter)mPagerAdapter.mAdapters[type - 1]).buildSongQuery(projection);
+			query = ((MediaAdapter)mPagerAdapter.mAdapters[type]).buildSongQuery(projection);
 			query.setExtra(id);
 		} else {
 			query = MediaUtils.buildQuery(type, id, projection, null);
@@ -622,7 +629,7 @@ public class LibraryActivity
 			menu.add(0, MENU_ENQUEUE_ALL, 0, R.string.enqueue_all).setIntent(rowData);
 			menu.addSubMenu(0, MENU_ADD_TO_PLAYLIST, 0, R.string.add_to_playlist).getItem().setIntent(rowData);
 		} else {
-			int type = rowData.getIntExtra(LibraryAdapter.DATA_TYPE, -1);
+			int type = rowData.getIntExtra(LibraryAdapter.DATA_TYPE, MediaUtils.TYPE_INVALID);
 			boolean isAllAdapter = type <= MediaUtils.TYPE_SONG;
 
 			menu.setHeaderTitle(rowData.getStringExtra(LibraryAdapter.DATA_TITLE));
@@ -680,8 +687,8 @@ public class LibraryActivity
 	 */
 	private void delete(Intent intent)
 	{
-		int type = intent.getIntExtra("type", 1);
-		long id = intent.getLongExtra("id", -1);
+		int type = intent.getIntExtra("type", MediaUtils.TYPE_INVALID);
+		long id = intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
 		String message = null;
 		Resources res = getResources();
 
@@ -1005,17 +1012,18 @@ public class LibraryActivity
 	}
 
 	/**
-	 * Called when a new adapter has been made visible.
+	 * Called when a new page becomes visible.
 	 *
+	 * @param position The position of the new page.
 	 * @param adapter The new visible adapter.
 	 */
-	public void onAdapterSelected(LibraryAdapter adapter)
+	public void onPageChanged(int position, LibraryAdapter adapter)
 	{
 		mCurrentAdapter = adapter;
 		mLastActedId = LibraryAdapter.INVALID_ID;
 		updateLimiterViews();
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			CompatHoneycomb.selectTab(this, mViewPager.getCurrentItem());
+			CompatHoneycomb.selectTab(this, position);
 		}
 	}
 

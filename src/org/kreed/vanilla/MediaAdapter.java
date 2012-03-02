@@ -36,8 +36,9 @@ import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CursorAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 import java.util.regex.Pattern;
@@ -54,7 +55,7 @@ import java.util.regex.Pattern;
  * See getLimiter and setLimiter for details.
  */
 public class MediaAdapter
-	extends CursorAdapter
+	extends BaseAdapter
 	implements SectionIndexer
 	         , LibraryAdapter
 	         , View.OnClickListener
@@ -69,6 +70,10 @@ public class MediaAdapter
 	 * A LayoutInflater to use.
 	 */
 	private final LayoutInflater mInflater;
+	/**
+	 * The current data.
+	 */
+	private Cursor mCursor;
 	/**
 	 * The type of media represented by this adapter. Must be one of the
 	 * MediaUtils.FIELD_* constants. Determines which content provider to query for
@@ -132,9 +137,9 @@ public class MediaAdapter
 	 */
 	private int mSortMode;
 	/**
-	 * The layout used for each row.
+	 * If true, show the expander button on each row.
 	 */
-	private int mLayout;
+	private boolean mExpandable;
 
 	/**
 	 * Construct a MediaAdapter representing the given <code>type</code> of
@@ -148,8 +153,6 @@ public class MediaAdapter
 	 */
 	public MediaAdapter(LibraryActivity activity, int type, Limiter limiter)
 	{
-		super(activity, null, false);
-
 		mActivity = activity;
 		mType = type;
 		mLimiter = limiter;
@@ -164,7 +167,6 @@ public class MediaAdapter
 			mSongSort = MediaUtils.DEFAULT_SORT;
 			mSortEntries = new int[] { R.string.name, R.string.number_of_tracks };
 			mSortValues = new String[] { "artist_key %1$s", "number_of_tracks %1$s,artist_key %1$s" };
-			mLayout = R.layout.library_row_expandable;
 			break;
 		case MediaUtils.TYPE_ALBUM:
 			mStore = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
@@ -174,7 +176,6 @@ public class MediaAdapter
 			mSongSort = "album_key,track";
 			mSortEntries = new int[] { R.string.name, R.string.artist_album, R.string.year, R.string.number_of_tracks };
 			mSortValues = new String[] { "album_key %1$s", "artist_key %1$s,album_key %1$s", "minyear %1$s,album_key %1$s", "numsongs %1$s,album_key %1$s" };
-			mLayout = R.layout.library_row_expandable;
 			break;
 		case MediaUtils.TYPE_SONG:
 			mStore = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
@@ -182,7 +183,6 @@ public class MediaAdapter
 			mFieldKeys = new String[] { MediaStore.Audio.Media.ARTIST_KEY, MediaStore.Audio.Media.ALBUM_KEY, MediaStore.Audio.Media.TITLE_KEY };
 			mSortEntries = new int[] { R.string.name, R.string.artist_album_track, R.string.artist_album_title, R.string.artist_year, R.string.year };
 			mSortValues = new String[] { "title_key %1$s", "artist_key %1$s,album_key %1$s,track %1$s", "artist_key %1$s,album_key %1$s,title_key %1$s", "artist_key %1$s,year %1$s,track %1$s", "year %1$s,title_key %1$s" };
-			mLayout = R.layout.library_row;
 			break;
 		case MediaUtils.TYPE_PLAYLIST:
 			mStore = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI;
@@ -190,7 +190,7 @@ public class MediaAdapter
 			mFieldKeys = null;
 			mSortEntries = new int[] { R.string.name, R.string.date_added };
 			mSortValues = new String[] { "name %1$s", "date_added %1$s" };
-			mLayout = R.layout.library_row_expandable;
+			mExpandable = true;
 			break;
 		case MediaUtils.TYPE_GENRE:
 			mStore = MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI;
@@ -198,7 +198,6 @@ public class MediaAdapter
 			mFieldKeys = null;
 			mSortEntries = new int[] { R.string.name };
 			mSortValues = new String[] { "name %1$s" };
-			mLayout = R.layout.library_row_expandable;
 			break;
 		default:
 			throw new IllegalArgumentException("Invalid value for type: " + type);
@@ -208,6 +207,20 @@ public class MediaAdapter
 			mProjection = new String[] { BaseColumns._ID, mFields[0] };
 		else
 			mProjection = new String[] { BaseColumns._ID, mFields[mFields.length - 1], mFields[0] };
+	}
+
+	/**
+	 * Set whether or not the expander button should be shown in each row.
+	 * Defaults to true for playlist adapter and false for all others.
+	 *
+	 * @param expandable True to show expander, false to hide.
+	 */
+	public void setExpandable(boolean expandable)
+	{
+		if (expandable != mExpandable) {
+			mExpandable = expandable;
+			notifyDataSetChanged();
+		}
 	}
 
 	@Override
@@ -359,7 +372,7 @@ public class MediaAdapter
 		String[] fields;
 		Object data;
 
-		Cursor cursor = getCursor();
+		Cursor cursor = mCursor;
 		if (cursor == null)
 			return null;
 		for (int i = 0, count = cursor.getCount(); i != count; ++i) {
@@ -388,11 +401,24 @@ public class MediaAdapter
 		return new Limiter(mType, fields, data);
 	}
 
-	@Override
+	/**
+	 * Set a new cursor for this adapter. The old cursor will be closed.
+	 *
+	 * @param cursor The new cursor.
+	 */
 	public void changeCursor(Cursor cursor)
 	{
-		super.changeCursor(cursor);
+		Cursor old = mCursor;
+		mCursor = cursor;
+		if (cursor == null) {
+			notifyDataSetInvalidated();
+		} else {
+			notifyDataSetChanged();
+		}
 		mIndexer.setCursor(cursor);
+		if (old != null) {
+			old.close();
+		}
 	}
 
 	@Override
@@ -432,13 +458,36 @@ public class MediaAdapter
 		public ImageView arrow;
 	}
 
-	/**
-	 * Update the values in the given view.
-	 */
 	@Override
-	public void bindView(View view, Context context, Cursor cursor)
+	public View getView(int position, View view, ViewGroup parent)
 	{
-		ViewHolder holder = (ViewHolder)view.getTag();
+		ViewHolder holder;
+
+		if (view == null || mExpandable != view instanceof LinearLayout) {
+			// We must create a new view if we're not given a recycle view or
+			// if the recycle view has the wrong layout.
+
+			int layout = mExpandable ? R.layout.library_row_expandable : R.layout.library_row;
+			view = mInflater.inflate(layout, null);
+			holder = new ViewHolder();
+			view.setTag(holder);
+
+			if (mExpandable) {
+				holder.text = (TextView)view.findViewById(R.id.text);
+				holder.arrow = (ImageView)view.findViewById(R.id.arrow);
+				holder.arrow.setOnClickListener(this);
+			} else {
+				holder.text = (TextView)view;
+				view.setLongClickable(true);
+			}
+
+			holder.text.setOnClickListener(this);
+		} else {
+			holder = (ViewHolder)view.getTag();
+		}
+
+		Cursor cursor = mCursor;
+		cursor.moveToPosition(position);
 		holder.id = cursor.getLong(0);
 		if (mFields.length > 1) {
 			String line1 = cursor.getString(1);
@@ -454,29 +503,7 @@ public class MediaAdapter
 			holder.text.setText(title);
 			holder.title = title;
 		}
-	}
 
-	/**
-	 * Generate a new view.
-	 */
-	@Override
-	public View newView(Context context, Cursor cursor, ViewGroup parent)
-	{
-		int layout = mLayout;
-		View view = mInflater.inflate(layout, null);
-		ViewHolder holder = new ViewHolder();
-		view.setTag(holder);
-
-		if (layout == R.layout.library_row_expandable) {
-			holder.text = (TextView)view.findViewById(R.id.text);
-			holder.arrow = (ImageView)view.findViewById(R.id.arrow);
-			holder.arrow.setOnClickListener(this);
-		} else {
-			holder.text = (TextView)view;
-			view.setLongClickable(true);
-		}
-
-		holder.text.setOnClickListener(this);
 		return view;
 	}
 
@@ -546,7 +573,7 @@ public class MediaAdapter
 		intent.putExtra(LibraryAdapter.DATA_TYPE, mType);
 		intent.putExtra(LibraryAdapter.DATA_ID, holder.id);
 		intent.putExtra(LibraryAdapter.DATA_TITLE, holder.title);
-		intent.putExtra(LibraryAdapter.DATA_EXPANDABLE, mType != MediaUtils.TYPE_SONG);
+		intent.putExtra(LibraryAdapter.DATA_EXPANDABLE, mExpandable);
 		return intent;
 	}
 
@@ -554,7 +581,7 @@ public class MediaAdapter
 	public void onClick(View view)
 	{
 		int id = view.getId();
-		if (mLayout == R.layout.library_row_expandable)
+		if (mExpandable)
 			view = (View)view.getParent();
 		Intent intent = createData(view);
 		if (id == R.id.arrow) {
@@ -562,5 +589,36 @@ public class MediaAdapter
 		} else {
 			mActivity.onItemClicked(intent);
 		}
+	}
+
+	@Override
+	public int getCount()
+	{
+		Cursor cursor = mCursor;
+		if (cursor == null)
+			return 0;
+		return cursor.getCount();
+	}
+
+	@Override
+	public Object getItem(int position)
+	{
+		return null;
+	}
+
+	@Override
+	public long getItemId(int position)
+	{
+		Cursor cursor = mCursor;
+		if (cursor == null)
+			return 0;
+		cursor.moveToPosition(position);
+		return cursor.getLong(0);
+	}
+
+	@Override
+	public boolean hasStableIds()
+	{
+		return true;
 	}
 }
