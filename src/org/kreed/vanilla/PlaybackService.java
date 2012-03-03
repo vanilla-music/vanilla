@@ -1690,7 +1690,7 @@ public final class PlaybackService extends Service
 
 		Notification notification = new Notification();
 		notification.contentView = views;
-		notification.icon = playing ? R.drawable.status_icon : R.drawable.status_icon_paused;
+		notification.icon = R.drawable.status_icon;
 		notification.flags |= Notification.FLAG_ONGOING_EVENT;
 		notification.contentIntent = mNotificationAction;
 		return notification;
