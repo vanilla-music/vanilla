@@ -167,11 +167,19 @@ public class LibraryPagerAdapter
 	/**
 	 * The position of the songs page, or -1 if it is hidden.
 	 */
-	private int mSongsPosition = -1;
+	public int mSongsPosition = -1;
 	/**
 	 * The position of the albums page, or -1 if it is hidden.
 	 */
-	private int mAlbumsPosition = -1;
+	public int mAlbumsPosition = -1;
+	/**
+	 * The position of the artists page, or -1 if it is hidden.
+	 */
+	public int mArtistsPosition = -1;
+	/**
+	 * The position of the genres page, or -1 if it is hidden.
+	 */
+	public int mGenresPosition = -1;
 
 	private final ContentObserver mPlaylistObserver = new ContentObserver(null) {
 		@Override
@@ -251,6 +259,8 @@ public class LibraryPagerAdapter
 		int[] order = mTabOrder;
 		int songsPosition = -1;
 		int albumsPosition = -1;
+		int artistsPosition = -1;
+		int genresPosition = -1;
 		for (int i = mTabCount; --i != -1; ) {
 			switch (order[i]) {
 			case MediaUtils.TYPE_ALBUM:
@@ -258,6 +268,12 @@ public class LibraryPagerAdapter
 				break;
 			case MediaUtils.TYPE_SONG:
 				songsPosition = i;
+				break;
+			case MediaUtils.TYPE_ARTIST:
+				artistsPosition = i;
+				break;
+			case MediaUtils.TYPE_GENRE:
+				genresPosition = i;
 				break;
 			}
 		}
@@ -271,6 +287,8 @@ public class LibraryPagerAdapter
 
 		mSongsPosition = songsPosition;
 		mAlbumsPosition = albumsPosition;
+		mArtistsPosition = artistsPosition;
+		mGenresPosition = genresPosition;
 	}
 
 	@Override

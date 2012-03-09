@@ -343,7 +343,31 @@ public class LibraryActivity
 				mTextFilter.setText("");
 				setSearchBoxVisible(false);
 			} else {
-				finish();
+				Limiter limiter = mPagerAdapter.getCurrentLimiter();
+				if (limiter != null && limiter.type != MediaUtils.TYPE_FILE) {
+					int pos = -1;
+					switch (limiter.type) {
+					case MediaUtils.TYPE_ALBUM:
+						albumToArtistLimiter(limiter);
+						pos = mPagerAdapter.mAlbumsPosition;
+						break;
+					case MediaUtils.TYPE_ARTIST:
+						mPagerAdapter.clearLimiter(MediaUtils.TYPE_ARTIST);
+						pos = mPagerAdapter.mArtistsPosition;
+						break;
+					case MediaUtils.TYPE_GENRE:
+						mPagerAdapter.clearLimiter(MediaUtils.TYPE_GENRE);
+						pos = mPagerAdapter.mGenresPosition;
+						break;
+					}
+					if (pos == -1) {
+						updateLimiterViews();
+					} else {
+						mViewPager.setCurrentItem(pos);
+					}
+				} else {
+					finish();
+				}
 			}
 			break;
 		case KeyEvent.KEYCODE_SEARCH:
@@ -561,19 +585,7 @@ public class LibraryActivity
 			Limiter limiter = mPagerAdapter.getCurrentLimiter();
 			int type = limiter.type;
 			if (i == 1 && type == MediaUtils.TYPE_ALBUM) {
-				ContentResolver resolver = getContentResolver();
-				Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-				String[] projection = new String[] { MediaStore.Audio.Media.ARTIST_ID };
-				Cursor cursor = resolver.query(uri, projection, limiter.data.toString(), null, null);
-				if (cursor != null) {
-					if (cursor.moveToNext()) {
-						String[] fields = { limiter.names[0] };
-						String data = String.format("artist_id=%d", cursor.getLong(0));
-						mPagerAdapter.setLimiter(new Limiter(MediaUtils.TYPE_ARTIST, fields, data));
-						updateLimiterViews();
-					}
-					cursor.close();
-				}
+				albumToArtistLimiter(limiter);
 			} else if (i > 0) {
 				Assert.assertEquals(MediaUtils.TYPE_FILE, limiter.type);
 				File file = (File)limiter.data;
@@ -582,13 +594,34 @@ public class LibraryActivity
 					file = file.getParentFile();
 				}
 				mPagerAdapter.setLimiter(FileSystemAdapter.buildLimiter(file));
-				updateLimiterViews();
 			} else {
 				mPagerAdapter.clearLimiter(type);
-				updateLimiterViews();
 			}
+			updateLimiterViews();
 		} else {
 			super.onClick(view);
+		}
+	}
+
+	/**
+	 * Clear the given album limiter and set that album's artist as the new
+	 * limiter.
+	 *
+	 * @param limiter A limiter with type = MediaUtils.TYPE_ALBUM
+	 */
+	private void albumToArtistLimiter(Limiter limiter)
+	{
+		ContentResolver resolver = getContentResolver();
+		Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+		String[] projection = new String[] { MediaStore.Audio.Media.ARTIST_ID };
+		Cursor cursor = resolver.query(uri, projection, limiter.data.toString(), null, null);
+		if (cursor != null) {
+			if (cursor.moveToNext()) {
+				String[] fields = { limiter.names[0] };
+				String data = String.format("artist_id=%d", cursor.getLong(0));
+				mPagerAdapter.setLimiter(new Limiter(MediaUtils.TYPE_ARTIST, fields, data));
+			}
+			cursor.close();
 		}
 	}
 
