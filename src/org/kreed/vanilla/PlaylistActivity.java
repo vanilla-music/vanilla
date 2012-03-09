@@ -207,7 +207,7 @@ public class PlaylistActivity extends Activity
 		int pos = intent.getIntExtra("position", -1);
 
 		if (itemId == MENU_REMOVE) {
-			mAdapter.remove(pos);
+			mAdapter.remove(pos - mListView.getHeaderViewsCount());
 		} else {
 			performAction(itemId, pos, intent.getLongExtra("audioId", -1));
 		}
