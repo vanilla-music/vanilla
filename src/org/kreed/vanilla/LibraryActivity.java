@@ -36,6 +36,7 @@ import android.graphics.drawable.PaintDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v4.view.ViewPager;
@@ -183,6 +184,7 @@ public class LibraryActivity
 		pager.setAdapter(pagerAdapter);
 		mViewPager = pager;
 
+		SharedPreferences settings = PlaybackService.getSettings(this);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			pager.setOnPageChangeListener(pagerAdapter);
 
@@ -201,7 +203,6 @@ public class LibraryActivity
 			LinearLayout content = (LinearLayout)findViewById(R.id.content);
 			content.addView(tabs, 0, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
-			SharedPreferences settings = PlaybackService.getSettings(this);
 			if (settings.getBoolean("controls_in_selector", false)) {
 				getLayoutInflater().inflate(R.layout.library_controls, content, true);
 
@@ -231,7 +232,20 @@ public class LibraryActivity
 			}
 		}
 
+		loadTabOrder();
+		int page = settings.getInt("library_page", 0);
+		if (page != 0) {
+			pager.setCurrentItem(page);
+		}
+
 		loadAlbumIntent(getIntent());
+	}
+
+	@Override
+	public void onRestart()
+	{
+		super.onRestart();
+		loadTabOrder();
 	}
 
 	@Override
@@ -244,6 +258,16 @@ public class LibraryActivity
 			finish();
 			startActivity(new Intent(this, LibraryActivity.class));
 		}
+		mDefaultAction = Integer.parseInt(settings.getString("default_action_int", "0"));
+		mLastActedId = LibraryAdapter.INVALID_ID;
+		updateHeaders();
+	}
+
+	/**
+	 * Load the tab order and update the tab bars if needed.
+	 */
+	private void loadTabOrder()
+	{
 		if (mPagerAdapter.loadTabOrder()) {
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 				CompatHoneycomb.addActionBarTabs(this);
@@ -251,9 +275,6 @@ public class LibraryActivity
 				mTabs.notifyDataSetChanged();
 			}
 		}
-		mDefaultAction = Integer.parseInt(settings.getString("default_action_int", "0"));
-		mLastActedId = LibraryAdapter.INVALID_ID;
-		updateHeaders();
 	}
 
 	/**
@@ -871,6 +892,10 @@ public class LibraryActivity
 	 * Call addToPlaylist with data from the intent in obj.
 	 */
 	private static final int MSG_ADD_TO_PLAYLIST = 15;
+	/**
+	 * Save the current page, passed in arg1, to SharedPreferences.
+	 */
+	private static final int MSG_SAVE_PAGE = 16;
 
 	@Override
 	public boolean handleMessage(Message message)
@@ -901,6 +926,12 @@ public class LibraryActivity
 				long playlistId = dialog.getIntent().getLongExtra("id", -1);
 				Playlist.renamePlaylist(getContentResolver(), playlistId, dialog.getText());
 			}
+			break;
+		}
+		case MSG_SAVE_PAGE: {
+			SharedPreferences.Editor editor = PlaybackService.getSettings(this).edit();
+			editor.putInt("library_page", message.arg1);
+			editor.commit();
 			break;
 		}
 		default:
@@ -1024,6 +1055,13 @@ public class LibraryActivity
 		updateLimiterViews();
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			CompatHoneycomb.selectTab(this, position);
+		}
+		if (adapter != null && adapter.getLimiter() == null) {
+			// Save current page so it is opened on next startup. Don't save if
+			// the page was expanded to, as the expanded page isn't the starting
+			// point.
+			Handler handler = mHandler;
+			handler.sendMessage(mHandler.obtainMessage(MSG_SAVE_PAGE, position, 0));
 		}
 	}
 
