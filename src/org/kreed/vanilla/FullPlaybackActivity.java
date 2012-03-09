@@ -25,6 +25,7 @@ package org.kreed.vanilla;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.media.MediaMetadataRetriever;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
@@ -39,6 +40,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 /**
@@ -58,6 +60,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 	private SeekBar mSeekBar;
 	private TextView mElapsedView;
 	private TextView mDurationView;
+	private TableLayout mExtraInfo;
 
 	private TextView mTitle;
 	private TextView mAlbum;
@@ -67,7 +70,10 @@ public class FullPlaybackActivity extends PlaybackActivity
 	 * True if the controls are visible (play, next, seek bar, etc).
 	 */
 	private boolean mControlsVisible;
-
+	/**
+	 * True if the extra info is visible.
+	 */
+	private boolean mExtraInfoVisible;
 	/**
 	 * Current song duration in milliseconds.
 	 */
@@ -91,6 +97,17 @@ public class FullPlaybackActivity extends PlaybackActivity
 	 * The currently playing song.
 	 */
 	private Song mCurrentSong;
+
+	private String mGenre;
+	private TextView mGenreView;
+	private String mTrack;
+	private TextView mTrackView;
+	private String mYear;
+	private TextView mYearView;
+	private String mComposer;
+	private TextView mComposerView;
+	private String mFormat;
+	private TextView mFormatView;
 
 	@Override
 	public void onCreate(Bundle icicle)
@@ -139,8 +156,10 @@ public class FullPlaybackActivity extends PlaybackActivity
 		nextButton.setOnClickListener(this);
 
 		View controlsTop = findViewById(R.id.controls_top);
-		if (controlsTop != null)
+		if (controlsTop != null) {
 			controlsTop.setOnClickListener(this);
+			controlsTop.setOnLongClickListener(this);
+		}
 
 		mTitle = (TextView)findViewById(R.id.title);
 		mAlbum = (TextView)findViewById(R.id.album);
@@ -152,6 +171,13 @@ public class FullPlaybackActivity extends PlaybackActivity
 		mSeekBar.setMax(1000);
 		mSeekBar.setOnSeekBarChangeListener(this);
 
+		mExtraInfo = (TableLayout)findViewById(R.id.extra_info);
+		mGenreView = (TextView)findViewById(R.id.genre);
+		mTrackView = (TextView)findViewById(R.id.track);
+		mYearView = (TextView)findViewById(R.id.year);
+		mComposerView = (TextView)findViewById(R.id.composer);
+		mFormatView = (TextView)findViewById(R.id.format);
+
 		mShuffleButton = (ImageButton)findViewById(R.id.shuffle);
 		mShuffleButton.setOnClickListener(this);
 		registerForContextMenu(mShuffleButton);
@@ -160,6 +186,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 		registerForContextMenu(mEndButton);
 
 		setControlsVisible(settings.getBoolean("visible_controls", true));
+		setExtraInfoVisible(settings.getBoolean("visible_extra_info", false));
 		setDuration(0);
 	}
 
@@ -269,6 +296,10 @@ public class FullPlaybackActivity extends PlaybackActivity
 
 		mCurrentSong = song;
 		updateProgress();
+
+		if (mExtraInfoVisible) {
+			mHandler.sendEmptyMessage(MSG_LOAD_EXTRA_INFO);
+		}
 	}
 
 	/**
@@ -389,7 +420,9 @@ public class FullPlaybackActivity extends PlaybackActivity
 	}
 
 	/**
-	 * Toggles the visibility of the playback controls.
+	 * Set the visibility of the controls views.
+	 *
+	 * @param visible True to show, false to hide
 	 */
 	private void setControlsVisible(boolean visible)
 	{
@@ -407,6 +440,89 @@ public class FullPlaybackActivity extends PlaybackActivity
 	}
 
 	/**
+	 * Set the visibility of the extra metadata view.
+	 *
+	 * @param visible True to show, false to hide
+	 */
+	private void setExtraInfoVisible(boolean visible)
+	{
+		if (mExtraInfo == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD_MR1)
+			return;
+
+		mExtraInfo.setVisibility(visible ? View.VISIBLE : View.GONE);
+		mExtraInfoVisible = visible;
+		if (visible && !mHandler.hasMessages(MSG_LOAD_EXTRA_INFO)) {
+			mHandler.sendEmptyMessage(MSG_LOAD_EXTRA_INFO);
+		}
+	}
+
+	/**
+	 * Retrieve the extra metadata for the current song.
+	 */
+	private void loadExtraInfo()
+	{
+		Song song = mCurrentSong;
+
+		if (song == null) {
+			mGenre = null;
+			mTrack = null;
+			mYear = null;
+			mComposer = null;
+			mFormat = null;
+		} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
+			CompatMetadata data = new CompatMetadata(song.path);
+
+			mGenre = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_GENRE);
+			mTrack = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER);
+			String composer = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_COMPOSER);
+			if (composer == null)
+				composer = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_WRITER);
+			mComposer = composer;
+
+			String year = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_YEAR);
+			if (year == null || "0".equals(year)) {
+				year = null;
+			} else {
+				int dash = year.indexOf('-');
+				if (dash != -1)
+					year = year.substring(0, dash);
+			}
+			mYear = year;
+
+			StringBuilder sb = new StringBuilder(12);
+			sb.append(decodeMimeType(data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE)));
+			String bitrate = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE);
+			if (bitrate.length() > 3) {
+				sb.append(' ');
+				sb.append(bitrate.substring(0, bitrate.length() - 3));
+				sb.append("kbps");
+			}
+			mFormat = sb.toString();
+
+			data.release();
+		}
+
+		mUiHandler.sendEmptyMessage(MSG_COMMIT_INFO);
+	}
+
+	/**
+	 * Decode the given mime type into a more human-friendly description.
+	 */
+	private String decodeMimeType(String mime)
+	{
+		if ("audio/mpeg".equals(mime)) {
+			return "MP3";
+		} else if ("audio/mp4".equals(mime)) {
+			return "AAC";
+		} else if ("audio/vorbis".equals(mime)) {
+			return "Ogg Vorbis";
+		} else if ("audio/flac".equals(mime)) {
+			return "FLAC";
+		}
+		return mime;
+	}
+
+	/**
 	 * Update the seekbar progress with the current song progress. This must be
 	 * called on the UI Handler.
 	 */
@@ -415,21 +531,40 @@ public class FullPlaybackActivity extends PlaybackActivity
 	 * Save the hidden_controls preference to storage.
 	 */
 	private static final int MSG_SAVE_CONTROLS = 14;
+	/**
+	 * Call {@link #loadExtraInfo()}.
+	 */
+	private static final int MSG_LOAD_EXTRA_INFO = 15;
+	/**
+	 * Pass obj to mExtraInfo.setText()
+	 */
+	private static final int MSG_COMMIT_INFO = 16;
 
 	@Override
 	public boolean handleMessage(Message message)
 	{
 		switch (message.what) {
 		case MSG_SAVE_CONTROLS: {
-			SharedPreferences settings = PlaybackService.getSettings(this);
-			SharedPreferences.Editor editor = settings.edit();
+			SharedPreferences.Editor editor = PlaybackService.getSettings(this).edit();
 			editor.putBoolean("visible_controls", mControlsVisible);
+			editor.putBoolean("visible_extra_info", mExtraInfoVisible);
 			editor.commit();
 			break;
 		}
 		case MSG_UPDATE_PROGRESS:
 			updateProgress();
 			break;
+		case MSG_LOAD_EXTRA_INFO:
+			loadExtraInfo();
+			break;
+		case MSG_COMMIT_INFO: {
+			mGenreView.setText(mGenre);
+			mTrackView.setText(mTrack);
+			mYearView.setText(mYear);
+			mComposerView.setText(mComposer);
+			mFormatView.setText(mFormat);
+			break;
+		}
 		default:
 			return super.handleMessage(message);
 		}
@@ -483,11 +618,18 @@ public class FullPlaybackActivity extends PlaybackActivity
 	@Override
 	public boolean onLongClick(View view)
 	{
-		if (view.getId() == R.id.cover_view) {
+		switch (view.getId()) {
+		case R.id.cover_view:
 			performAction(mCoverLongPressAction);
-			return true;
+			break;
+		case R.id.controls_top:
+			setExtraInfoVisible(!mExtraInfoVisible);
+			mHandler.sendEmptyMessage(MSG_SAVE_CONTROLS);
+			break;
+		default:
+			return false;
 		}
 
-		return false;
+		return true;
 	}
 }

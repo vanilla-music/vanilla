@@ -41,6 +41,10 @@ THE SOFTWARE.
 	<string name="queue_cleared">Queue cleared.</string>
 	<string name="cover_art">Cover art</string>
 	<string name="close_notification">Close notification</string>
+	<string name="genre">Genre</string>
+	<string name="track">Track</string>
+	<string name="composer">Composer</string>
+	<string name="format">Format</string>
 
 	<!-- New Playlist Dialog -->
 	<string name="choose_playlist_name">Choose Playlist Name</string>

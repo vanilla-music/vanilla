@@ -85,6 +85,32 @@ THE SOFTWARE.
 			android:paddingBottom="5dip"
 			android:paddingLeft="15dip"
 			android:paddingRight="15dip" />
+		<TableLayout
+			android:id="@+id/extra_info"
+			android:visibility="gone"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content">
+			<TableRow>
+				<TextView android:text="@string/genre" />
+				<TextView android:id="@+id/genre" android:paddingLeft="5dip" />
+			</TableRow>
+			<TableRow>
+				<TextView android:text="@string/track" />
+				<TextView android:id="@+id/track" android:paddingLeft="5dip" />
+			</TableRow>
+			<TableRow>
+				<TextView android:text="@string/year" />
+				<TextView android:id="@+id/year" android:paddingLeft="5dip" />
+			</TableRow>
+			<TableRow>
+				<TextView android:text="@string/composer" />
+				<TextView android:id="@+id/composer" android:paddingLeft="5dip" />
+			</TableRow>
+			<TableRow>
+				<TextView android:text="@string/format" />
+				<TextView android:id="@+id/format" android:paddingLeft="5dip" />
+			</TableRow>
+		</TableLayout>
 	</LinearLayout>
 	<LinearLayout
 		android:id="@+id/controls_bottom"
