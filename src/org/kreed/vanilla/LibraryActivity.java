@@ -154,6 +154,10 @@ public class LibraryActivity
 	 * If true, return target GINGERBREAD from getApplicationInfo().
 	 */
 	boolean mFakeTarget;
+	/**
+	 * ApplicationInfo with targetSdkVersion set to Gingerbread.
+	 */
+	private ApplicationInfo mFakeInfo;
 
 	@Override
 	public void onCreate(Bundle state)
@@ -1101,9 +1105,16 @@ public class LibraryActivity
 	@Override
 	public ApplicationInfo getApplicationInfo()
 	{
-		ApplicationInfo info = super.getApplicationInfo();
+		ApplicationInfo info;
 		if (mFakeTarget) {
-			info.targetSdkVersion = Build.VERSION_CODES.GINGERBREAD;
+			info = mFakeInfo;
+			if (info == null) {
+				info = new ApplicationInfo(super.getApplicationInfo());
+				info.targetSdkVersion = Build.VERSION_CODES.GINGERBREAD;
+				mFakeInfo = info;
+			}
+		} else {
+			info = super.getApplicationInfo();
 		}
 		return info;
 	}
