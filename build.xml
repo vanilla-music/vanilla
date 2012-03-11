@@ -98,7 +98,7 @@
             link="${sdk.dir}/docs/reference"
             sourcepath="${source.absolute.dir}:${gen.absolute.dir}"
             bootclasspathref="android.target.classpath"
-            classpathref="jar.libs.ref"
+            classpathref="project.libraries.jars"
             access="private" />
     </target>
 </project>
