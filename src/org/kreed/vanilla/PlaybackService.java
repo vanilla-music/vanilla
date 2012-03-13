@@ -394,7 +394,6 @@ public final class PlaybackService extends Service
 
 		mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 		mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
-		mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
 			CompatFroyo.createAudioFocus();
@@ -553,7 +552,7 @@ public final class PlaybackService extends Service
 			// we haven't registered the receiver yet
 		}
 
-		if (mShakeAction != Action.Nothing)
+		if (mSensorManager != null && mShakeAction != Action.Nothing)
 			mSensorManager.unregisterListener(this);
 
 		if (mWakeLock != null && mWakeLock.isHeld())
@@ -578,6 +577,8 @@ public final class PlaybackService extends Service
 	 */
 	private void setupSensor()
 	{
+		if (mSensorManager == null)
+			mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
 		if (mShakeAction == Action.Nothing || (mState & FLAG_PLAYING) == 0)
 			mSensorManager.unregisterListener(this);
 		else
