@@ -477,8 +477,10 @@ public class FullPlaybackActivity extends PlaybackActivity
 	private void setExtraInfoVisible(boolean visible)
 	{
 		TableLayout table = mInfoTable;
-		if (table == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD_MR1)
+		if (table == null)
 			return;
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD_MR1)
+			visible = false;
 
 		table.setColumnCollapsed(0, !visible);
 		int visibility = visible ? View.VISIBLE : View.GONE;
