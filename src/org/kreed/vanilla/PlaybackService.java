@@ -1005,6 +1005,7 @@ public final class PlaybackService extends Service
 
 		mHandler.removeMessages(PROCESS_SONG);
 
+		mMediaPlayerInitialized = false;
 		mHandler.sendMessage(mHandler.obtainMessage(PROCESS_SONG, song));
 		mHandler.sendMessage(mHandler.obtainMessage(BROADCAST_CHANGE, -1, 0, song));
 		return song;
