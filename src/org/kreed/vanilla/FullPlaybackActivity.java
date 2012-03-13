@@ -529,7 +529,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 			StringBuilder sb = new StringBuilder(12);
 			sb.append(decodeMimeType(data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE)));
 			String bitrate = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE);
-			if (bitrate.length() > 3) {
+			if (bitrate != null && bitrate.length() > 3) {
 				sb.append(' ');
 				sb.append(bitrate.substring(0, bitrate.length() - 3));
 				sb.append("kbps");
