@@ -97,6 +97,10 @@ public final class CoverView extends View implements Handler.Callback {
 	 */
 	private Bitmap[] mBitmaps = new Bitmap[3];
 	/**
+	 * The bitmaps to be drawn. Usually the same as mBitmaps, unless scrolling.
+	 */
+	private Bitmap[] mActiveBitmaps = mBitmaps;
+	/**
 	 * Cover art to use when a song has no cover art in no info display styles.
 	 */
 	private Bitmap mDefaultCover;
@@ -140,6 +144,11 @@ public final class CoverView extends View implements Handler.Callback {
 	 * its features are not required.
 	 */
 	private int mScrollX;
+	/**
+	 * True if a scroll is in progress (i.e. mScrollX != getWidth()), false
+	 * otherwise.
+	 */
+	private boolean mScrolling;
 
 	/**
 	 * Constructor intended to be called by inflating from XML.
@@ -204,7 +213,7 @@ public final class CoverView extends View implements Handler.Callback {
 
 		canvas.drawColor(Color.BLACK);
 
-		for (Bitmap bitmap : mBitmaps) {
+		for (Bitmap bitmap : mActiveBitmaps) {
 			if (bitmap != null && scrollX + width > x && scrollX < x + width) {
 				int xOffset = (width - bitmap.getWidth()) / 2;
 				int yOffset = (height - bitmap.getHeight()) / 2;
@@ -235,13 +244,16 @@ public final class CoverView extends View implements Handler.Callback {
 
 		switch (ev.getAction()) {
 		case MotionEvent.ACTION_DOWN:
-			if (!mScroller.isFinished())
+			if (!mScroller.isFinished()) {
 				mScroller.abortAnimation();
+				mActiveBitmaps = mBitmaps;
+			}
 
 			mStartX = x;
 			mStartY = y;
 			mLastMotionX = x;
 			mLastMotionY = y;
+			mScrolling = true;
 
 			mUiHandler.sendEmptyMessageDelayed(MSG_LONG_CLICK, ViewConfiguration.getLongPressTimeout());
 			break;
@@ -311,6 +323,16 @@ public final class CoverView extends View implements Handler.Callback {
 
 			if (whichCover != 0) {
 				scrollX = scrollX - width * whichCover;
+				Bitmap[] bitmaps = mBitmaps;
+				// Save the two covers being scrolled between, so that if one
+				// of them changes from switching songs (which can happen when
+				// shuffling), the new cover doesn't pop in during the scroll.
+				// mActiveBitmaps is reset when the scroll is finished.
+				if (whichCover == 1) {
+					mActiveBitmaps = new Bitmap[] { bitmaps[1], bitmaps[2], null };
+				} else {
+					mActiveBitmaps = new Bitmap[] { null, bitmaps[0], bitmaps[1] };
+				}
 				mCallback.shiftCurrentSong(whichCover);
 				mScrollX = scrollX;
 			}
@@ -392,6 +414,8 @@ public final class CoverView extends View implements Handler.Callback {
 		Bitmap[] newBitmaps = new Bitmap[3];
 		mSongs = newSongs;
 		mBitmaps = newBitmaps;
+		if (!mScrolling)
+			mActiveBitmaps = newBitmaps;
 
 		for (int i = 0; i != 3; ++i) {
 			if (newSongs[i] == null)
@@ -450,6 +474,9 @@ public final class CoverView extends View implements Handler.Callback {
 				mScrollX = mScroller.getCurrX();
 				invalidate();
 				mUiHandler.sendEmptyMessage(MSG_SCROLL);
+			} else {
+				mScrolling = false;
+				mActiveBitmaps = mBitmaps;
 			}
 			break;
 		default:
