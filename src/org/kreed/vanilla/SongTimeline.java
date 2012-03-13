@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -616,14 +616,15 @@ public final class SongTimeline {
 			switch (mode) {
 			case MODE_ENQUEUE:
 			case MODE_ENQUEUE_POS_FIRST:
-			case MODE_ENQUEUE_ID_FIRST: {
-				int j = timeline.size();
-				while (--j > mCurrentPos) {
-					if (timeline.get(j).isRandom())
-						timeline.remove(j);
+			case MODE_ENQUEUE_ID_FIRST:
+				if (mFinishAction == FINISH_RANDOM) {
+					int j = timeline.size();
+					while (--j > mCurrentPos) {
+						if (timeline.get(j).isRandom())
+							timeline.remove(j);
+					}
 				}
 				break;
-			}
 			case MODE_PLAY_NEXT:
 				timeline.subList(mCurrentPos + 1, timeline.size()).clear();
 				break;
