@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -55,12 +55,14 @@ public class FullPlaybackActivity extends PlaybackActivity
 	public static final int DISPLAY_INFO_WIDGETS = 2;
 
 	private TextView mOverlayText;
+	private View mControlsTop;
 	private View mControlsBottom;
 
 	private SeekBar mSeekBar;
+	private TableLayout mInfoTable;
 	private TextView mElapsedView;
 	private TextView mDurationView;
-	private TableLayout mExtraInfo;
+	private TextView mQueuePosView;
 
 	private TextView mTitle;
 	private TextView mAlbum;
@@ -155,23 +157,25 @@ public class FullPlaybackActivity extends PlaybackActivity
 		View nextButton = findViewById(R.id.next);
 		nextButton.setOnClickListener(this);
 
-		View controlsTop = findViewById(R.id.controls_top);
-		if (controlsTop != null) {
-			controlsTop.setOnClickListener(this);
-			controlsTop.setOnLongClickListener(this);
+		TableLayout table = (TableLayout)findViewById(R.id.info_table);
+		if (table != null) {
+			table.setOnClickListener(this);
+			table.setOnLongClickListener(this);
+			mInfoTable = table;
 		}
 
 		mTitle = (TextView)findViewById(R.id.title);
 		mAlbum = (TextView)findViewById(R.id.album);
 		mArtist = (TextView)findViewById(R.id.artist);
 
+		mControlsTop = findViewById(R.id.controls_top);
 		mElapsedView = (TextView)findViewById(R.id.elapsed);
 		mDurationView = (TextView)findViewById(R.id.duration);
 		mSeekBar = (SeekBar)findViewById(R.id.seek_bar);
 		mSeekBar.setMax(1000);
 		mSeekBar.setOnSeekBarChangeListener(this);
+		mQueuePosView = (TextView)findViewById(R.id.queue_pos);
 
-		mExtraInfo = (TableLayout)findViewById(R.id.extra_info);
 		mGenreView = (TextView)findViewById(R.id.genre);
 		mTrackView = (TextView)findViewById(R.id.track);
 		mYearView = (TextView)findViewById(R.id.year);
@@ -210,7 +214,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 	{
 		super.onResume();
 		mPaused = false;
-		updateProgress();
+		updateElapsedTime();
 	}
 
 	@Override
@@ -272,7 +276,10 @@ public class FullPlaybackActivity extends PlaybackActivity
 		}
 
 		if ((state & PlaybackService.FLAG_PLAYING) != 0)
-			updateProgress();
+			updateElapsedTime();
+
+		if (mQueuePosView != null)
+			updateQueuePosition();
 	}
 
 	@Override
@@ -292,14 +299,38 @@ public class FullPlaybackActivity extends PlaybackActivity
 				mAlbum.setText(song.album);
 				mArtist.setText(song.artist);
 			}
+			updateQueuePosition();
 		}
 
 		mCurrentSong = song;
-		updateProgress();
+		updateElapsedTime();
 
 		if (mExtraInfoVisible) {
 			mHandler.sendEmptyMessage(MSG_LOAD_EXTRA_INFO);
 		}
+	}
+
+	/**
+	 * Update the queue position display. mQueuePos must not be null.
+	 */
+	private void updateQueuePosition()
+	{
+		if (PlaybackService.finishAction(mState) == SongTimeline.FINISH_RANDOM) {
+			// Not very useful in random mode; it will always show something
+			// like 11/13 since the timeline is trimmed to 10 previous songs.
+			// So just hide it.
+			mQueuePosView.setText(null);
+		} else {
+			PlaybackService service = PlaybackService.get(this);
+			mQueuePosView.setText((service.getTimelinePosition() + 1) + "/" + service.getTimelineLength());
+		}
+	}
+
+	@Override
+	public void onPositionInfoChanged()
+	{
+		if (mQueuePosView != null)
+			mUiHandler.sendEmptyMessage(MSG_UPDATE_POSITION);
 	}
 
 	/**
@@ -400,7 +431,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 	/**
 	 * Update seek bar progress and schedule another update in one second
 	 */
-	private void updateProgress()
+	private void updateElapsedTime()
 	{
 		long position = PlaybackService.hasInstance() ? PlaybackService.get(this).getPosition() : 0;
 
@@ -427,15 +458,13 @@ public class FullPlaybackActivity extends PlaybackActivity
 	private void setControlsVisible(boolean visible)
 	{
 		int mode = visible ? View.VISIBLE : View.GONE;
-		mSeekBar.setVisibility(mode);
-		mElapsedView.setVisibility(mode);
-		mDurationView.setVisibility(mode);
+		mControlsTop.setVisibility(mode);
 		mControlsBottom.setVisibility(mode);
 		mControlsVisible = visible;
 
 		if (visible) {
 			mPlayPauseButton.requestFocus();
-			updateProgress();
+			updateElapsedTime();
 		}
 	}
 
@@ -446,10 +475,17 @@ public class FullPlaybackActivity extends PlaybackActivity
 	 */
 	private void setExtraInfoVisible(boolean visible)
 	{
-		if (mExtraInfo == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD_MR1)
+		TableLayout table = mInfoTable;
+		if (table == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD_MR1)
 			return;
 
-		mExtraInfo.setVisibility(visible ? View.VISIBLE : View.GONE);
+		table.setColumnCollapsed(0, !visible);
+		int visibility = visible ? View.VISIBLE : View.GONE;
+		// toggle visibility of all but the first three rows (the title/artist/
+		// album rows) and the last row (the seek bar)
+		for (int i = table.getChildCount() - 1; --i != 2; ) {
+			table.getChildAt(i).setVisibility(visibility);
+		}
 		mExtraInfoVisible = visible;
 		if (visible && !mHandler.hasMessages(MSG_LOAD_EXTRA_INFO)) {
 			mHandler.sendEmptyMessage(MSG_LOAD_EXTRA_INFO);
@@ -539,6 +575,10 @@ public class FullPlaybackActivity extends PlaybackActivity
 	 * Pass obj to mExtraInfo.setText()
 	 */
 	private static final int MSG_COMMIT_INFO = 16;
+	/**
+	 * Calls {@link #updateQueuePosition()}.
+	 */
+	private static final int MSG_UPDATE_POSITION = 17;
 
 	@Override
 	public boolean handleMessage(Message message)
@@ -552,7 +592,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 			break;
 		}
 		case MSG_UPDATE_PROGRESS:
-			updateProgress();
+			updateElapsedTime();
 			break;
 		case MSG_LOAD_EXTRA_INFO:
 			loadExtraInfo();
@@ -565,6 +605,9 @@ public class FullPlaybackActivity extends PlaybackActivity
 			mFormatView.setText(mFormat);
 			break;
 		}
+		case MSG_UPDATE_POSITION:
+			updateQueuePosition();
+			break;
 		default:
 			return super.handleMessage(message);
 		}
@@ -575,8 +618,10 @@ public class FullPlaybackActivity extends PlaybackActivity
 	@Override
 	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
 	{
-		if (fromUser)
+		if (fromUser) {
+			mElapsedView.setText(DateUtils.formatElapsedTime(mTimeBuilder, progress * mDuration / 1000000));
 			PlaybackService.get(this).seekToProgress(progress);
+		}
 	}
 
 	@Override
@@ -608,7 +653,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 			setState(PlaybackService.get(this).setFinishAction(SongTimeline.FINISH_RANDOM));
 		} else if (view == mCoverView) {
 			performAction(mCoverPressAction);
-		} else if (view.getId() == R.id.controls_top) {
+		} else if (view.getId() == R.id.info_table) {
 			openLibrary(mCurrentSong);
 		} else {
 			super.onClick(view);
@@ -622,7 +667,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 		case R.id.cover_view:
 			performAction(mCoverLongPressAction);
 			break;
-		case R.id.controls_top:
+		case R.id.info_table:
 			setExtraInfoVisible(!mExtraInfoVisible);
 			mHandler.sendEmptyMessage(MSG_SAVE_CONTROLS);
 			break;

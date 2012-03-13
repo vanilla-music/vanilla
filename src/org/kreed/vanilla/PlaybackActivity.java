@@ -300,6 +300,13 @@ public abstract class PlaybackActivity extends Activity
 	}
 
 	/**
+	 * Called when the song timeline position/size has changed.
+	 */
+	public void onPositionInfoChanged()
+	{
+	}
+
+	/**
 	 * Called when the content of the media store has changed.
 	 */
 	public void onMediaChange()

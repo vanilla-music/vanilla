@@ -88,7 +88,6 @@ public class TabOrderActivity extends Activity implements View.OnClickListener, 
 	 */
 	public void restoreDefault()
 	{
-		android.util.Log.i("VanillaMusic", "restore default");
 		mAdapter.setTabIds(LibraryPagerAdapter.DEFAULT_ORDER.clone());
 		DragListView list = mList;
 		for (int i = 0; i != LibraryPagerAdapter.MAX_ADAPTER_COUNT; ++i) {

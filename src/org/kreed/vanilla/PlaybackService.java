@@ -1464,6 +1464,14 @@ public final class PlaybackService extends Service
 		mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
 	}
 
+	@Override
+	public void positionInfoChanged()
+	{
+		ArrayList<PlaybackActivity> list = sActivities;
+		for (int i = list.size(); --i != -1; )
+			list.get(i).onPositionInfoChanged();
+	}
+
 	private final ContentObserver mObserver = new ContentObserver(null) {
 		@Override
 		public void onChange(boolean selfChange)
@@ -1820,5 +1828,21 @@ public final class PlaybackService extends Service
 		default:
 			throw new IllegalArgumentException("Invalid action: " + action);
 		}
+	}
+
+	/**
+	 * Returns the position of the current song in the song timeline.
+	 */
+	public int getTimelinePosition()
+	{
+		return mTimeline.getPosition();
+	}
+
+	/**
+	 * Returns the number of songs in the song timeline.
+	 */
+	public int getTimelineLength()
+	{
+		return mTimeline.getLength();
 	}
 }

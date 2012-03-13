@@ -224,6 +224,8 @@ public final class SongTimeline {
 	private Song mSavedPrevious;
 	private Song mSavedCurrent;
 	private Song mSavedNext;
+	private int mSavedPos;
+	private int mSavedSize;
 
 	/**
 	 * Interface to respond to timeline changes.
@@ -244,6 +246,11 @@ public final class SongTimeline {
 		 * storage.
 		 */
 		public void timelineChanged();
+
+		/**
+		 * Called when the length of the timeline has changed.
+		 */
+		public void positionInfoChanged();
 	}
 	/**
 	 * The current Callback, if any.
@@ -710,6 +717,7 @@ public final class SongTimeline {
 		}
 
 		mCallback.activeSongReplaced(+1, getSong(+1));
+		mCallback.positionInfoChanged();
 
 		changed();
 	}
@@ -724,6 +732,8 @@ public final class SongTimeline {
 		mSavedPrevious = getSong(-1);
 		mSavedCurrent = getSong(0);
 		mSavedNext = getSong(+1);
+		mSavedPos = mCurrentPos;
+		mSavedSize = mSongs.size();
 	}
 
 	/**
@@ -738,16 +748,15 @@ public final class SongTimeline {
 		Song current = getSong(0);
 		Song next = getSong(+1);
 
-		if (mCallback != null) {
-			if (Song.getId(mSavedPrevious) != Song.getId(previous))
-				mCallback.activeSongReplaced(-1, previous);
-			if (Song.getId(mSavedNext) != Song.getId(next))
-				mCallback.activeSongReplaced(1, next);
-		}
-		if (Song.getId(mSavedCurrent) != Song.getId(current)) {
-			if (mCallback != null)
-				mCallback.activeSongReplaced(0, current);
-		}
+		if (Song.getId(mSavedPrevious) != Song.getId(previous))
+			mCallback.activeSongReplaced(-1, previous);
+		if (Song.getId(mSavedNext) != Song.getId(next))
+			mCallback.activeSongReplaced(1, next);
+		if (Song.getId(mSavedCurrent) != Song.getId(current))
+			mCallback.activeSongReplaced(0, current);
+
+		if (mCurrentPos != mSavedPos || mSongs.size() != mSavedSize)
+			mCallback.positionInfoChanged();
 	}
 
 	/**
@@ -795,5 +804,21 @@ public final class SongTimeline {
 		synchronized (this) {
 			return mFinishAction == FINISH_STOP && mCurrentPos == mSongs.size() - 1;
 		}
+	}
+
+	/**
+	 * Returns the position of the current song in the timeline.
+	 */
+	public int getPosition()
+	{
+		return mCurrentPos;
+	}
+
+	/**
+	 * Returns the current number of songs in the timeline.
+	 */
+	public int getLength()
+	{
+		return mSongs.size();
 	}
 }

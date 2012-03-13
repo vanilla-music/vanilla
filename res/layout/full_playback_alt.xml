@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
+Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,93 +25,125 @@ THE SOFTWARE.
 		android:id="@+id/cover_view"
 		android:layout_height="fill_parent"
 		android:layout_width="fill_parent" />
-	<LinearLayout
-		android:id="@+id/controls_top"
-		android:layout_height="wrap_content"
+	<TableLayout
+		android:id="@+id/info_table"
 		android:layout_width="fill_parent"
-		android:layout_gravity="top|left"
-		android:layout_margin="0dip"
+		android:layout_height="wrap_content"
+		android:layout_gravity="top"
+		android:collapseColumns="0"
+		android:stretchColumns="1"
+		android:shrinkColumns="1"
 		android:background="#a000"
-		android:orientation="vertical">
-		<TextView
-			android:id="@+id/title"
-			android:ellipsize="marquee"
-			android:layout_height="wrap_content"
-			android:layout_width="fill_parent"
-			android:gravity="center"
-			android:singleLine="true"
-			android:textStyle="bold" />
-		<TextView
-			android:id="@+id/artist"
-			android:ellipsize="marquee"
-			android:layout_height="wrap_content"
-			android:layout_width="fill_parent"
-			android:gravity="center"
-			android:singleLine="true" />
-		<LinearLayout
-			android:layout_height="wrap_content"
-			android:layout_width="fill_parent"
-			android:orientation="horizontal">
+		android:paddingLeft="5dip"
+		android:paddingRight="5dip">
+		<TableRow>
+			<TextView
+				android:text="@string/_title"
+				android:paddingRight="5dip"
+				android:singleLine="true"
+				android:gravity="right" />
+			<TextView
+				android:id="@+id/title"
+				android:textStyle="bold"
+				android:singleLine="true" />
+			<TextView
+				android:id="@+id/queue_pos"
+				android:singleLine="true"
+				android:layout_gravity="top" />
+		</TableRow>
+		<TableRow>
+			<TextView
+				android:text="@string/_artist"
+				android:paddingRight="5dip"
+				android:singleLine="true"
+				android:gravity="right" />
+			<TextView
+				android:id="@+id/artist"
+				android:singleLine="true" />
+		</TableRow>
+		<TableRow>
+			<TextView
+				android:text="@string/_album"
+				android:paddingRight="5dip"
+				android:singleLine="true"
+				android:gravity="right" />
+			<TextView
+				android:id="@+id/album"
+				android:singleLine="true" />
+		</TableRow>
+		<TableRow>
+			<TextView
+				android:text="@string/_genre"
+				android:paddingRight="5dip"
+				android:singleLine="true"
+				android:gravity="right" />
+			<TextView
+				android:id="@+id/genre"
+				android:singleLine="true" />
+		</TableRow>
+		<TableRow>
+			<TextView
+				android:text="@string/_track"
+				android:paddingRight="5dip"
+				android:singleLine="true"
+				android:gravity="right" />
+			<TextView
+				android:id="@+id/track"
+				android:singleLine="true" />
+		</TableRow>
+		<TableRow>
+			<TextView
+				android:text="@string/_year"
+				android:paddingRight="5dip"
+				android:singleLine="true"
+				android:gravity="right" />
+			<TextView
+				android:id="@+id/year"
+				android:singleLine="true" />
+		</TableRow>
+		<TableRow>
+			<TextView
+				android:text="@string/_composer"
+				android:paddingRight="5dip"
+				android:singleLine="true"
+				android:gravity="right" />
+			<TextView
+				android:id="@+id/composer"
+				android:singleLine="true" />
+		</TableRow>
+		<TableRow>
+			<TextView
+				android:text="@string/_format"
+				android:paddingRight="5dip"
+				android:singleLine="true"
+				android:gravity="right" />
+			<TextView
+				android:id="@+id/format"
+				android:singleLine="true" />
+		</TableRow>
+		<LinearLayout android:id="@+id/controls_top">
 			<TextView
 				android:id="@+id/elapsed"
 				android:layout_height="wrap_content"
 				android:layout_width="wrap_content"
-				android:gravity="bottom"
 				android:textSize="10sp"
-				android:paddingLeft="5dip" />
-			<TextView
-				android:id="@+id/album"
-				android:ellipsize="marquee"
+				android:layout_gravity="center" />
+			<SeekBar
+				android:id="@+id/seek_bar"
 				android:layout_height="wrap_content"
 				android:layout_width="0px"
+				android:layout_gravity="center"
 				android:layout_weight="1"
-				android:layout_marginLeft="2dip"
-				android:layout_marginRight="2dip"
-				android:gravity="center"
-				android:singleLine="true" />
+				android:paddingLeft="18dip"
+				android:paddingRight="18dip" />
 			<TextView
 				android:id="@+id/duration"
 				android:layout_height="wrap_content"
 				android:layout_width="wrap_content"
-				android:gravity="bottom"
 				android:textSize="10sp"
-				android:paddingRight="5dip" />
+				android:layout_gravity="center" />
 		</LinearLayout>
-		<SeekBar
-			android:id="@+id/seek_bar"
-			android:layout_height="wrap_content"
-			android:layout_width="fill_parent"
-			android:paddingTop="5dip"
-			android:paddingBottom="5dip"
-			android:paddingLeft="15dip"
-			android:paddingRight="15dip" />
-		<TableLayout
-			android:id="@+id/extra_info"
-			android:visibility="gone"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content">
-			<TableRow>
-				<TextView android:text="@string/genre" />
-				<TextView android:id="@+id/genre" android:paddingLeft="5dip" />
-			</TableRow>
-			<TableRow>
-				<TextView android:text="@string/track" />
-				<TextView android:id="@+id/track" android:paddingLeft="5dip" />
-			</TableRow>
-			<TableRow>
-				<TextView android:text="@string/year" />
-				<TextView android:id="@+id/year" android:paddingLeft="5dip" />
-			</TableRow>
-			<TableRow>
-				<TextView android:text="@string/composer" />
-				<TextView android:id="@+id/composer" android:paddingLeft="5dip" />
-			</TableRow>
-			<TableRow>
-				<TextView android:text="@string/format" />
-				<TextView android:id="@+id/format" android:paddingLeft="5dip" />
-			</TableRow>
-		</TableLayout>
-	</LinearLayout>
+	</TableLayout>
 	<LinearLayout
 		android:id="@+id/controls_bottom"
 		android:layout_height="wrap_content"
