@@ -171,7 +171,6 @@ public class MediaUtils {
 		String sort = MediaStore.Audio.Playlists.Members.PLAY_ORDER;
 		QueryTask result = new QueryTask(uri, projection, selection, null, sort);
 		result.type = TYPE_PLAYLIST;
-		result.id = id;
 		return result;
 	}
 

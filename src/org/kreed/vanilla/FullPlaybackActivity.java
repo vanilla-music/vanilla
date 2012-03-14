@@ -547,7 +547,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 	/**
 	 * Decode the given mime type into a more human-friendly description.
 	 */
-	private String decodeMimeType(String mime)
+	private static String decodeMimeType(String mime)
 	{
 		if ("audio/mpeg".equals(mime)) {
 			return "MP3";

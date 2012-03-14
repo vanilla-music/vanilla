@@ -43,11 +43,6 @@ public class QueryTask {
 	public int mode;
 
 	/**
-	 * Id of the group being queried.
-	 */
-	public long id;
-
-	/**
 	 * Type of the group being query. One of MediaUtils.TYPE_*.
 	 */
 	public int type;

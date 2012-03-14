@@ -120,7 +120,7 @@ public class Song implements Comparable<Song> {
 		{
 			return value.getRowBytes() * value.getHeight();
 		}
-	};
+	}
 
 	/**
 	 * The cache instance.

@@ -793,7 +793,7 @@ public class LibraryPagerAdapter
 	/**
 	 * Creates the row data used by LibraryActivity.
 	 */
-	private Intent createHeaderIntent(View header)
+	private static Intent createHeaderIntent(View header)
 	{
 		int type = (Integer)header.getTag();
 		Intent intent = new Intent();

@@ -72,7 +72,7 @@ public class MusicAlphabetIndexer {
 	/**
 	 * Returns the latin alphabet.
 	 */
-	public Object[] getSections()
+	public static Object[] getSections()
 	{
 		return ALPHABET;
 	}
