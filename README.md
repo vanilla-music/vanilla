@@ -1,6 +1,7 @@
 Translating
 ===========
-[You can help translate here](http://crowdin.net/project/vanilla-music/invite). If your language isn't on the list, open an issue and I can add it.
+[You can help translate here][1]. If your language isn't on the list, open an
+issue and I can add it.
 
 Building
 ========
@@ -17,8 +18,16 @@ Building from command-line
 
 Building from Eclipse
 ---------------------
-You can also build from Eclipse. Create a new Android Project, choosing "Create project from exisiting source", then set the compiler compliance level to 1.6 in project settings.
+You can also build from Eclipse. Create a new Android Project, choosing "Create
+project from exisiting source", then set the compiler compliance level to 1.6
+in project settings.
 
 Documentation
 =============
 Javadocs can be generated using `ant doc`
+
+[![Ohloh project page][3]][2]
+
+  [1]: http://crowdin.net/project/vanilla-music/invite
+  [2]: https://www.ohloh.net/p/vanilla-music?ref=sample
+  [3]: https://www.ohloh.net/p/vanilla-music/widgets/project_thin_badge.gif
