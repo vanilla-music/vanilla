@@ -352,7 +352,7 @@ public class LibraryActivity
 					int pos = -1;
 					switch (limiter.type) {
 					case MediaUtils.TYPE_ALBUM:
-						albumToArtistLimiter(limiter);
+						setLimiter(MediaUtils.TYPE_ARTIST, limiter.data.toString());
 						pos = mPagerAdapter.mAlbumsPosition;
 						break;
 					case MediaUtils.TYPE_ARTIST:
@@ -388,7 +388,7 @@ public class LibraryActivity
 	public boolean onKeyDown(int keyCode, KeyEvent event)
 	{
 		if (keyCode == KeyEvent.KEYCODE_DEL || keyCode == KeyEvent.KEYCODE_FORWARD_DEL)
-			// On ICS, EditText reports backspace events as handled despite
+			// On ICS, EditText reports backspace events as unhandled despite
 			// actually handling them. To workaround, just assume the event was
 			// handled if we get here.
 			return true;
@@ -595,7 +595,7 @@ public class LibraryActivity
 			Limiter limiter = mPagerAdapter.getCurrentLimiter();
 			int type = limiter.type;
 			if (i == 1 && type == MediaUtils.TYPE_ALBUM) {
-				albumToArtistLimiter(limiter);
+				setLimiter(MediaUtils.TYPE_ARTIST, limiter.data.toString());
 			} else if (i > 0) {
 				Assert.assertEquals(MediaUtils.TYPE_FILE, limiter.type);
 				File file = (File)limiter.data;
@@ -614,22 +614,36 @@ public class LibraryActivity
 	}
 
 	/**
-	 * Clear the given album limiter and set that album's artist as the new
-	 * limiter.
+	 * Set a new limiter of the given type built from the first
+	 * MediaStore.Audio.Media row that matches the selection.
 	 *
-	 * @param limiter A limiter with type = MediaUtils.TYPE_ALBUM
+	 * @param limiterType The type of limiter to create. Must be either
+	 * MediaUtils.TYPE_ARTIST or MediaUtils.TYPE_ALBUM.
+	 * @param selection Selection to pass to the query.
 	 */
-	private void albumToArtistLimiter(Limiter limiter)
+	private void setLimiter(int limiterType, String selection)
 	{
 		ContentResolver resolver = getContentResolver();
 		Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-		String[] projection = new String[] { MediaStore.Audio.Media.ARTIST_ID };
-		Cursor cursor = resolver.query(uri, projection, limiter.data.toString(), null, null);
+		String[] projection = new String[] { MediaStore.Audio.Media.ARTIST_ID, MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM };
+		Cursor cursor = resolver.query(uri, projection, selection, null, null);
 		if (cursor != null) {
 			if (cursor.moveToNext()) {
-				String[] fields = { limiter.names[0] };
-				String data = String.format("artist_id=%d", cursor.getLong(0));
-				mPagerAdapter.setLimiter(new Limiter(MediaUtils.TYPE_ARTIST, fields, data));
+				String[] fields;
+				String data;
+				switch (limiterType) {
+				case MediaUtils.TYPE_ARTIST:
+					fields = new String[] { cursor.getString(2) };
+					data = String.format("artist_id=%d", cursor.getLong(0));
+					break;
+				case MediaUtils.TYPE_ALBUM:
+					fields = new String[] { cursor.getString(2), cursor.getString(3) };
+					data = String.format("album_id=%d", cursor.getLong(1));
+					break;
+				default:
+					throw new IllegalArgumentException("setLimiter() does not support limiter type " + limiterType);
+				}
+				mPagerAdapter.setLimiter(new Limiter(limiterType, fields, data));
 			}
 			cursor.close();
 		}
@@ -678,6 +692,8 @@ public class LibraryActivity
 	private static final int MENU_SELECT_PLAYLIST = 8;
 	private static final int MENU_PLAY_ALL = 9;
 	private static final int MENU_ENQUEUE_ALL = 10;
+	private static final int MENU_MORE_FROM_ALBUM = 11;
+	private static final int MENU_MORE_FROM_ARTIST = 12;
 
 	/**
 	 * Creates a context menu for an adapter row.
@@ -709,6 +725,10 @@ public class LibraryActivity
 			} else if (rowData.getBooleanExtra(LibraryAdapter.DATA_EXPANDABLE, false)) {
 				menu.add(0, MENU_EXPAND, 0, R.string.expand).setIntent(rowData);
 			}
+			if (type == MediaUtils.TYPE_ALBUM || type == MediaUtils.TYPE_SONG)
+				menu.add(0, MENU_MORE_FROM_ARTIST, 0, R.string.more_from_artist).setIntent(rowData);
+			if (type == MediaUtils.TYPE_SONG)
+				menu.add(0, MENU_MORE_FROM_ALBUM, 0, R.string.more_from_album).setIntent(rowData);
 			menu.addSubMenu(0, MENU_ADD_TO_PLAYLIST, 0, R.string.add_to_playlist).getItem().setIntent(rowData);
 			menu.add(0, MENU_DELETE, 0, R.string.delete).setIntent(rowData);
 		}
@@ -839,6 +859,22 @@ public class LibraryActivity
 		}
 		case MENU_SELECT_PLAYLIST:
 			mHandler.sendMessage(mHandler.obtainMessage(MSG_ADD_TO_PLAYLIST, intent));
+			break;
+		case MENU_MORE_FROM_ARTIST: {
+			String selection;
+			if (intent.getIntExtra(LibraryAdapter.DATA_TYPE, -1) == MediaUtils.TYPE_ALBUM) {
+				selection = "album_id=";
+			} else {
+				selection = "_id=";
+			}
+			selection += intent.getLongExtra(LibraryAdapter.DATA_ID, LibraryAdapter.INVALID_ID);
+			setLimiter(MediaUtils.TYPE_ARTIST, selection);
+			updateLimiterViews();
+			break;
+		}
+		case MENU_MORE_FROM_ALBUM:
+			setLimiter(MediaUtils.TYPE_ALBUM, "_id=" + intent.getLongExtra(LibraryAdapter.DATA_ID, LibraryAdapter.INVALID_ID));
+			updateLimiterViews();
 			break;
 		}
 
