@@ -552,9 +552,9 @@ public class MediaAdapter
 	 */
 	public int getDefaultSortMode()
 	{
-		Limiter limiter = mLimiter;
-		if (limiter != null && limiter.type == MediaUtils.TYPE_ALBUM)
-			return 1; // artist,album,track
+		int type = mType;
+		if (type == MediaUtils.TYPE_ALBUM || type == MediaUtils.TYPE_SONG)
+			return 1; // aritst,album,track
 		return 0;
 	}
 
