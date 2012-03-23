@@ -142,7 +142,7 @@ THE SOFTWARE.
 	<string name="media_button_title">Headset/Bluetooth Controls</string>
 	<string name="media_button_summary">This is also required for ICS lockscreen controls.</string>
 	<string name="headset_only_title">External Output Only</string>
-	<string name="headset_only_summary">Prevents music from being played through the speakers.</string>
+	<string name="headset_only_summary">Prevents music from being played through the internal speakers.</string>
 	<string name="headset_pause_title">Pause When Unplugged</string>
 	<string name="headset_pause_summary">Pause when the headphones are unplugged.</string>
 	<string name="headset_play_title">Play When Plugged</string>
@@ -206,7 +206,7 @@ THE SOFTWARE.
 	<string name="show_when_playing">Show when playing (default)</string>
 	<string name="always_show">Always show</string>
 
-	<string name="open_main_activity">Open main activity (default)</string>
+	<string name="open_main_activity">Open library (default)</string>
 	<string name="open_mini_popup">Open mini popup</string>
 	<string name="skip_to_next_song">Skip to next song</string>
 
