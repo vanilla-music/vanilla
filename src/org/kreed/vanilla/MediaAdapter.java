@@ -427,7 +427,7 @@ public class MediaAdapter
 	{
 		if (mSections == null) {
 			if (mSortMode == 0)
-				mSections = mIndexer.getSections();
+				mSections = MusicAlphabetIndexer.getSections();
 			else
 				mSections = new String[] { " " };
 		}

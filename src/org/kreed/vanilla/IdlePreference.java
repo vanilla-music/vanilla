@@ -69,7 +69,7 @@ public class IdlePreference extends DialogPreference implements SeekBar.OnSeekBa
 	protected void onPrepareDialogBuilder(Builder builder)
 	{
 		Context context = getContext();
-		ViewGroup.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+		ViewGroup.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
 		mValue = getPersistedInt(DEFAULT_VALUE);
 

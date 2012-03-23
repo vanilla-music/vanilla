@@ -685,8 +685,23 @@ public final class PlaybackService extends Service
 	/**
 	 * Return true if audio would play through the speaker.
 	 */
+	@SuppressWarnings("deprecation")
 	private boolean isSpeakerOn()
 	{
+		// Android seems very intent on making this difficult to detect. In
+		// Android 1.5, this worked great with AudioManager.getRouting(),
+		// which definitively answered if audio would play through the speakers.
+		// Android 2.0 deprecated this method and made it no longer function.
+		// So this hacky alternative was created. But with Android 4.0,
+		// isWiredHeadsetOn() was deprecated, though it still works. But for
+		// how much longer?
+		//
+		// I'd like to remove this feature so I can avoid fighting Android to
+		// keep it working, but some users seem to really like it. I think the
+		// best solution to this problem is for Android to have separate media
+		// volumes for speaker, headphones, etc. That way the speakers can be
+		// muted system-wide. There is not much I can do about that here,
+		// though.
 		return !mAudioManager.isWiredHeadsetOn() && !mAudioManager.isBluetoothA2dpOn() && !mAudioManager.isBluetoothScoOn();
 	}
 

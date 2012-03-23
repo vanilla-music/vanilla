@@ -250,8 +250,8 @@ public class FullPlaybackActivity extends PlaybackActivity
 			view.setClickable(true);
 			view.setOnClickListener(this);
 			addContentView(view,
-					new ViewGroup.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
-							LinearLayout.LayoutParams.FILL_PARENT));
+					new ViewGroup.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+							LinearLayout.LayoutParams.MATCH_PARENT));
 			mOverlayText = view;
 		} else {
 			mOverlayText.setVisibility(View.VISIBLE);
