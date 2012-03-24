@@ -137,7 +137,7 @@ THE SOFTWARE.
 		<item quantity="other">%d hours</item>
 	</plurals>
 
-	<string name="pref_output">Audio Output</string>
+	<string name="audio">Audio</string>
 	<string name="volume_title">Volume</string>
 	<string name="media_button_title">Headset/Bluetooth Controls</string>
 	<string name="media_button_summary">This is also required for ICS lockscreen controls.</string>
@@ -148,13 +148,13 @@ THE SOFTWARE.
 	<string name="headset_play_title">Play When Plugged</string>
 	<string name="headset_play_summary">Play when the headphones are plugged in. (Only works when the service is running.)</string>
 
-	<string name="pref_notifications">Notifications</string>
+	<string name="notifications">Notifications</string>
 	<string name="notification_mode_title">Notification Mode</string>
 	<string name="notification_action_title">Notification Action</string>
 	<string name="notification_invert_color_title">Invert Notification Color</string>
 	<string name="notification_invert_color_summary">Use white text instead of black text</string>
 
-	<string name="pref_playback_view">Playback View</string>
+	<string name="playback_screen">Playback Screen</string>
 	<string name="playback_on_startup_title">Open on Startup</string>
 	<string name="playback_on_startup_summary">Open playback view on startup</string>
 	<string name="display_mode_title">Display Mode</string>
@@ -163,19 +163,19 @@ THE SOFTWARE.
 	<string name="cover_press_action_title">Cover Tap Action</string>
 	<string name="cover_longpress_action_title">Cover Long Press Action</string>
 
-	<string name="pref_song_selector">Library View</string>
+	<string name="library_screen">Library Screen</string>
 	<string name="controls_in_selector_title">Controls in Library</string>
 	<string name="controls_in_selector_summary">Show the currently playing song and media controls in the library view</string>
 	<string name="default_action_title">Default Action</string>
 	<string name="default_playlist_action_title">Default Playlist Action</string>
 
-	<string name="pref_shake">Accelerometer Shake</string>
+	<string name="accelerometer_shake">Accelerometer Shake</string>
 	<string name="enable_shake_title">Enable Accelerometer Shake</string>
 	<string name="enable_shake_summary">Only active when music is playing. Does not work when screen is off on some devices.</string>
 	<string name="shake_action_title">Shake Action</string>
 	<string name="shake_threshold_title">Shake Force Threshold</string>
 
-	<string name="pref_misc">Miscellaneous Features</string>
+	<string name="misc_features">Miscellaneous Features</string>
 	<string name="disable_lockscreen_title">Disable Lockscreen</string>
 	<string name="disable_lockscreen_summary">Prevent the lockscreen from activating when in the library or playback screen</string>
 	<string name="use_idle_timeout_title">Enable Idle Timeout</string>
@@ -194,6 +194,8 @@ THE SOFTWARE.
 	<string name="tap_to_scan">Tap to scan external storage for music</string>
 	<string name="scan_in_progress">Scan in progress…</string>
 	<string name="finished_scanning">Finished scanning. Tap to scan again.</string>
+
+	<string name="about">About</string>
 
 	<string name="tabs">Tab Order</string>
 	<string name="customize_tab_order">Adjust the order and visibility of library tabs</string>

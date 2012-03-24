@@ -125,6 +125,13 @@ THE SOFTWARE.
 		<activity
 			android:name="PreferencesActivity"
 			android:theme="@style/BackActionBar" />
+		<activity android:name="PreferencesActivity$AudioActivity" />
+		<activity android:name="PreferencesActivity$PlaybackActivity" />
+		<activity android:name="PreferencesActivity$LibraryActivity" />
+		<activity android:name="PreferencesActivity$NotificationsActivity" />
+		<activity android:name="PreferencesActivity$ShakeActivity" />
+		<activity android:name="PreferencesActivity$MiscActivity" />
+		<activity android:name="PreferencesActivity$AboutActivity" />
 		<activity
 			android:name="TabOrderActivity"
 			android:theme="@style/BackActionBar" />

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+-->
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:persistent="true">
+	<CheckBoxPreference
+		android:key="enable_shake"
+		android:title="@string/enable_shake_title"
+		android:summary="@string/enable_shake_summary"
+		android:defaultValue="false" />
+	<org.kreed.vanilla.ListPreferenceSummary
+		android:key="shake_action"
+		android:title="@string/shake_action_title"
+		android:entries="@array/swipe_action_entries"
+		android:entryValues="@array/swipe_action_values"
+		android:defaultValue="NextSong"
+		android:dependency="enable_shake" />
+	<!-- Might be nice to show something indicating the current shake force for this preference. -->
+	<org.kreed.vanilla.SeekBarPreference
+		android:key="shake_threshold"
+		android:negativeButtonText="@null"
+		android:dialogLayout="@layout/shake_pref"
+		android:title="@string/shake_threshold_title"
+		android:defaultValue="80"
+		android:dependency="enable_shake" />
+</PreferenceScreen>

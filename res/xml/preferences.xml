@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!--
-Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
+Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,170 +20,47 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<PreferenceScreen
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:persistent="true">
-	<PreferenceCategory android:title="@string/pref_output">
-		<org.kreed.vanilla.SeekBarPreference
-			android:key="volume_int"
-			android:negativeButtonText="@null"
-			android:dialogLayout="@layout/shake_pref"
-			android:defaultValue="100"
-			android:title="@string/volume_title" />
-		<CheckBoxPreference
-			android:key="media_button"
-			android:title="@string/media_button_title"
-			android:summary="@string/media_button_summary"
-			android:defaultValue="true" />
-		<CheckBoxPreference
-			android:key="headset_only"
-			android:title="@string/headset_only_title"
-			android:defaultValue="false"
-			android:summary="@string/headset_only_summary" />
-		<CheckBoxPreference
-			android:key="headset_pause"
-			android:title="@string/headset_pause_title"
-			android:defaultValue="true"
-			android:summary="@string/headset_pause_summary" />
-		<CheckBoxPreference
-			android:key="headset_play"
-			android:title="@string/headset_play_title"
-			android:summary="@string/headset_play_summary"
-			android:defaultValue="false" />
-	</PreferenceCategory>
-	<PreferenceCategory android:title="@string/pref_notifications">
-		<org.kreed.vanilla.ListPreferenceSummary
-			android:key="notification_mode"
-			android:title="@string/notification_mode_title"
-			android:entries="@array/notification_mode_entries"
-			android:entryValues="@array/entry_values"
-			android:defaultValue="1" />
-		<org.kreed.vanilla.ListPreferenceSummary
-			android:key="notification_action"
-			android:title="@string/notification_action_title"
-			android:entries="@array/notification_action_entries"
-			android:entryValues="@array/entry_values"
-			android:defaultValue="0" />
-		<CheckBoxPreference
-			android:key="notification_inverted_color"
-			android:title="@string/notification_invert_color_title"
-			android:summary="@string/notification_invert_color_summary"
-			android:defaultValue="false" />
-	</PreferenceCategory>
-	<PreferenceCategory android:title="@string/pref_playback_view">
-		<CheckBoxPreference
-			android:key="playback_on_startup"
-			android:title="@string/playback_on_startup_title"
-			android:summary="@string/playback_on_startup_summary"
-			android:defaultValue="false" />
-		<org.kreed.vanilla.ListPreferenceSummary
-			android:key="display_mode"
-			android:title="@string/display_mode_title"
-			android:entries="@array/display_mode_entries"
-			android:entryValues="@array/entry_values"
-			android:defaultValue="2" />
-		<org.kreed.vanilla.ListPreferenceSummary
-			android:key="swipe_up_action"
-			android:title="@string/swipe_up_action_title"
-			android:entries="@array/swipe_action_entries"
-			android:entryValues="@array/swipe_action_values"
-			android:defaultValue="Nothing" />
-		<org.kreed.vanilla.ListPreferenceSummary
-			android:key="swipe_down_action"
-			android:title="@string/swipe_down_action_title"
-			android:entries="@array/swipe_action_entries"
-			android:entryValues="@array/swipe_action_values"
-			android:defaultValue="Nothing" />
-		<org.kreed.vanilla.ListPreferenceSummary
-			android:key="cover_press_action"
-			android:title="@string/cover_press_action_title"
-			android:entries="@array/swipe_action_entries"
-			android:entryValues="@array/swipe_action_values"
-			android:defaultValue="ToggleControls" />
-		<org.kreed.vanilla.ListPreferenceSummary
-			android:key="cover_longpress_action"
-			android:title="@string/cover_longpress_action_title"
-			android:entries="@array/swipe_action_entries"
-			android:entryValues="@array/swipe_action_values"
-			android:defaultValue="PlayPause" />
-	</PreferenceCategory>
-	<PreferenceCategory android:key="library" android:title="@string/pref_song_selector">
-		<CheckBoxPreference
-			android:key="controls_in_selector"
-			android:title="@string/controls_in_selector_title"
-			android:summary="@string/controls_in_selector_summary"
-			android:defaultValue="false" />
-		<org.kreed.vanilla.TabOrderPreference />
-		<org.kreed.vanilla.ListPreferenceSummary
-			android:key="default_action_int"
-			android:title="@string/default_action_title"
-			android:entries="@array/default_action_entries"
-			android:entryValues="@array/entry_values"
-			android:defaultValue="0" />
-		<org.kreed.vanilla.ListPreferenceSummary
-			android:key="default_playlist_action"
-			android:title="@string/default_playlist_action_title"
-			android:entries="@array/default_playlist_action_entries"
-			android:entryValues="@array/entry_values"
-			android:defaultValue="3" />
-	</PreferenceCategory>
-	<PreferenceCategory android:title="@string/pref_shake">
-		<CheckBoxPreference
-			android:key="enable_shake"
-			android:title="@string/enable_shake_title"
-			android:summary="@string/enable_shake_summary"
-			android:defaultValue="false" />
-		<org.kreed.vanilla.ListPreferenceSummary
-			android:key="shake_action"
-			android:title="@string/shake_action_title"
-			android:entries="@array/swipe_action_entries"
-			android:entryValues="@array/swipe_action_values"
-			android:defaultValue="NextSong"
-			android:dependency="enable_shake" />
-		<!-- Might be nice to show something indicating the current shake force for this preference. -->
-		<org.kreed.vanilla.SeekBarPreference
-			android:key="shake_threshold"
-			android:negativeButtonText="@null"
-			android:dialogLayout="@layout/shake_pref"
-			android:title="@string/shake_threshold_title"
-			android:defaultValue="80"
-			android:dependency="enable_shake" />
-	</PreferenceCategory>
-	<PreferenceCategory android:title="@string/pref_misc">
-		<CheckBoxPreference
-			android:key="disable_lockscreen"
-			android:title="@string/disable_lockscreen_title"
-			android:summary="@string/disable_lockscreen_summary"
-			android:defaultValue="false" />
-		<CheckBoxPreference
-			android:key="use_idle_timeout"
-			android:title="@string/use_idle_timeout_title"
-			android:summary="@string/use_idle_timeout_summary"
-			android:defaultValue="false" />
-		<org.kreed.vanilla.IdlePreference
-			android:key="idle_timeout"
-			android:title="@string/idle_timeout_title"
-			android:dependency="use_idle_timeout" />
-		<CheckBoxPreference
-			android:key="disable_cover_art"
-			android:title="@string/disable_cover_art_title"
-			android:summary="@string/disable_cover_art_summary"
-			android:defaultValue="false" />
-		<CheckBoxPreference
-			android:key="double_tap"
-			android:title="@string/double_tap_title"
-			android:summary="@string/double_tap_summary"
-			android:defaultValue="false" />
-		<CheckBoxPreference
-			android:key="scrobble"
-			android:title="@string/scrobble_title"
-			android:defaultValue="true"
-			android:summary="@string/scrobble_summary" />
-		<CheckBoxPreference
-			android:key="stock_broadcast"
-			android:title="@string/stock_broadcast_title"
-			android:summary="@string/stock_broadcast_summary"
-			android:defaultValue="false" />
-		<org.kreed.vanilla.ScanPreference />
-	</PreferenceCategory>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+	<PreferenceScreen
+		android:title="@string/audio">
+		<intent
+			android:targetPackage="org.kreed.vanilla"
+			android:targetClass="org.kreed.vanilla.PreferencesActivity$AudioActivity" />
+	</PreferenceScreen>
+	<PreferenceScreen
+		android:title="@string/playback_screen">
+		<intent
+			android:targetPackage="org.kreed.vanilla"
+			android:targetClass="org.kreed.vanilla.PreferencesActivity$PlaybackActivity" />
+	</PreferenceScreen>
+	<PreferenceScreen
+		android:title="@string/library_screen">
+		<intent
+			android:targetPackage="org.kreed.vanilla"
+			android:targetClass="org.kreed.vanilla.PreferencesActivity$LibraryActivity" />
+	</PreferenceScreen>
+	<PreferenceScreen
+		android:title="@string/notifications">
+		<intent
+			android:targetPackage="org.kreed.vanilla"
+			android:targetClass="org.kreed.vanilla.PreferencesActivity$NotificationsActivity" />
+	</PreferenceScreen>
+	<PreferenceScreen
+		android:title="@string/accelerometer_shake">
+		<intent
+			android:targetPackage="org.kreed.vanilla"
+			android:targetClass="org.kreed.vanilla.PreferencesActivity$ShakeActivity" />
+	</PreferenceScreen>
+	<PreferenceScreen
+		android:title="@string/misc_features">
+		<intent
+			android:targetPackage="org.kreed.vanilla"
+			android:targetClass="org.kreed.vanilla.PreferencesActivity$MiscActivity" />
+	</PreferenceScreen>
+	<PreferenceScreen
+		android:title="@string/about">
+		<intent
+			android:targetPackage="org.kreed.vanilla"
+			android:targetClass="org.kreed.vanilla.PreferencesActivity$AboutActivity" />
+	</PreferenceScreen>
 </PreferenceScreen>
