@@ -577,12 +577,14 @@ public final class PlaybackService extends Service
 	 */
 	private void setupSensor()
 	{
-		if (mSensorManager == null)
-			mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
-		if (mShakeAction == Action.Nothing || (mState & FLAG_PLAYING) == 0)
-			mSensorManager.unregisterListener(this);
-		else
+		if (mShakeAction == Action.Nothing || (mState & FLAG_PLAYING) == 0) {
+			if (mSensorManager != null)
+				mSensorManager.unregisterListener(this);
+		} else {
+			if (mSensorManager == null)
+				mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
 			mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_UI);
+		}
 	}
 
 	/**
