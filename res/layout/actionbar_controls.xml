@@ -36,7 +36,7 @@ THE SOFTWARE.
 		android:layout_height="wrap_content"
 		android:layout_width="fill_parent"
 		android:layout_marginLeft="5dip"
-		android:layout_gravity="center_horizontal"
+		android:layout_gravity="center"
 		android:orientation="vertical">
 		<TextView
 			android:id="@+id/title"
