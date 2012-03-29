@@ -40,6 +40,7 @@ THE SOFTWARE.
 	<string name="song_load_failed">Failed to load song %s. It may be corrupt or missing.</string>
 	<string name="queue_cleared">Queue cleared.</string>
 	<string name="cover_art">Cover art</string>
+	<string name="vinyl_cover">Vinyl cover</string>
 	<string name="close_notification">Close notification</string>
 	<string name="_genre">genre</string>
 	<string name="_track">track</string>

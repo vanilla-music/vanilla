@@ -79,6 +79,16 @@ THE SOFTWARE.
 				android:resource="@xml/four_long_widget" />
 		</receiver>
 		<receiver
+			android:name=".FourWhiteWidget"
+			android:label="Vanilla Music 4x1 White">
+			<intent-filter>
+				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+			</intent-filter>
+			<meta-data
+				android:name="android.appwidget.provider"
+				android:resource="@xml/four_white_widget" />
+		</receiver>
+		<receiver
 			android:name=".WidgetE"
 			android:label="Vanilla Music 4x1 B">
 			<intent-filter>
