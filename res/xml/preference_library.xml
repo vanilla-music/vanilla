@@ -47,4 +47,5 @@ THE SOFTWARE.
 		android:entries="@array/default_playlist_action_entries"
 		android:entryValues="@array/entry_values"
 		android:defaultValue="3" />
+	<org.kreed.vanilla.ScanPreference />
 </PreferenceScreen>

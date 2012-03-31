@@ -57,5 +57,4 @@ THE SOFTWARE.
 		android:title="@string/stock_broadcast_title"
 		android:summary="@string/stock_broadcast_summary"
 		android:defaultValue="false" />
-	<org.kreed.vanilla.ScanPreference />
 </PreferenceScreen>
