@@ -38,7 +38,7 @@ THE SOFTWARE.
 			android:layout_gravity="left"
 			android:adjustViewBounds="true"
 			android:src="@drawable/vinyl"
-			android:contentDescription="@string/vinyl_cover"
+			android:contentDescription="@string/cover_art"
 			android:scaleType="fitCenter" />
 		<ImageView
 			android:id="@+id/cover"
