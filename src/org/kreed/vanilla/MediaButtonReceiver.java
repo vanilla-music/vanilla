@@ -84,7 +84,7 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 	{
 		if (sUseControls == -1) {
 			SharedPreferences settings = PlaybackService.getSettings(context);
-			sUseControls = settings.getBoolean("media_button", true) ? 1 : 0;
+			sUseControls = settings.getBoolean(PrefKeys.MEDIA_BUTTON, true) ? 1 : 0;
 		}
 
 		return sUseControls == 1;

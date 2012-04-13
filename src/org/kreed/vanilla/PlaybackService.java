@@ -401,19 +401,19 @@ public final class PlaybackService extends Service
 
 		SharedPreferences settings = getSettings(this);
 		settings.registerOnSharedPreferenceChangeListener(this);
-		mNotificationMode = Integer.parseInt(settings.getString("notification_mode", "1"));
-		mScrobble = settings.getBoolean("scrobble", false);
-		mUserVolume = (float)Math.pow(settings.getInt("volume_int", 100) / 100.0, 3);
-		mIdleTimeout = settings.getBoolean("use_idle_timeout", false) ? settings.getInt("idle_timeout", 3600) : 0;
-		Song.mDisableCoverArt = settings.getBoolean("disable_cover_art", false);
-		mHeadsetOnly = settings.getBoolean("headset_only", false);
-		mStockBroadcast = settings.getBoolean("stock_broadcast", false);
-		mHeadsetPlay = settings.getBoolean("headset_play", false);
-		mInvertNotification = settings.getBoolean("notification_inverted_color", false);
+		mNotificationMode = Integer.parseInt(settings.getString(PrefKeys.NOTIFICATION_MODE, "1"));
+		mScrobble = settings.getBoolean(PrefKeys.SCROBBLE, false);
+		mUserVolume = (float)Math.pow(settings.getInt(PrefKeys.VOLUME, 100) / 100.0, 3);
+		mIdleTimeout = settings.getBoolean(PrefKeys.USE_IDLE_TIMEOUT, false) ? settings.getInt(PrefKeys.IDLE_TIMEOUT, 3600) : 0;
+		Song.mDisableCoverArt = settings.getBoolean(PrefKeys.DISABLE_COVER_ART, false);
+		mHeadsetOnly = settings.getBoolean(PrefKeys.HEADSET_ONLY, false);
+		mStockBroadcast = settings.getBoolean(PrefKeys.STOCK_BROADCAST, false);
+		mHeadsetPlay = settings.getBoolean(PrefKeys.HEADSET_PLAY, false);
+		mInvertNotification = settings.getBoolean(PrefKeys.NOTIFICATION_INVERTED_COLOR, false);
 		mNotificationAction = createNotificationAction(settings);
-		mHeadsetPause = getSettings(this).getBoolean("headset_pause", true);
-		mShakeAction = settings.getBoolean("enable_shake", false) ? Action.getAction(settings, "shake_action", Action.NextSong) : Action.Nothing;
-		mShakeThreshold = settings.getInt("shake_threshold", 80) / 10.0f;
+		mHeadsetPause = getSettings(this).getBoolean(PrefKeys.HEADSET_PAUSE, true);
+		mShakeAction = settings.getBoolean(PrefKeys.ENABLE_SHAKE, false) ? Action.getAction(settings, PrefKeys.SHAKE_ACTION, Action.NextSong) : Action.Nothing;
+		mShakeThreshold = settings.getInt(PrefKeys.SHAKE_THRESHOLD, 80) / 10.0f;
 
 		updateVolume();
 
@@ -615,48 +615,48 @@ public final class PlaybackService extends Service
 	private void loadPreference(String key)
 	{
 		SharedPreferences settings = getSettings(this);
-		if ("headset_pause".equals(key)) {
-			mHeadsetPause = settings.getBoolean("headset_pause", true);
-		} else if ("notification_action".equals(key)) {
+		if (PrefKeys.HEADSET_PAUSE.equals(key)) {
+			mHeadsetPause = settings.getBoolean(PrefKeys.HEADSET_PAUSE, true);
+		} else if (PrefKeys.NOTIFICATION_ACTION.equals(key)) {
 			mNotificationAction = createNotificationAction(settings);
 			updateNotification();
-		} else if ("notification_inverted_color".equals(key)) {
-			mInvertNotification = settings.getBoolean("notification_inverted_color", false);
+		} else if (PrefKeys.NOTIFICATION_INVERTED_COLOR.equals(key)) {
+			mInvertNotification = settings.getBoolean(PrefKeys.NOTIFICATION_INVERTED_COLOR, false);
 			updateNotification();
-		} else if ("notification_mode".equals(key)){
-			mNotificationMode = Integer.parseInt(settings.getString("notification_mode", "1"));
+		} else if (PrefKeys.NOTIFICATION_MODE.equals(key)){
+			mNotificationMode = Integer.parseInt(settings.getString(PrefKeys.NOTIFICATION_MODE, "1"));
 			// This is the only way to remove a notification created by
 			// startForeground(), even if we are not currently in foreground
 			// mode.
 			stopForeground(true);
 			updateNotification();
-		} else if ("scrobble".equals(key)) {
-			mScrobble = settings.getBoolean("scrobble", false);
-		} else if ("volume_int".equals(key)) {
+		} else if (PrefKeys.SCROBBLE.equals(key)) {
+			mScrobble = settings.getBoolean(PrefKeys.SCROBBLE, false);
+		} else if (PrefKeys.VOLUME.equals(key)) {
 			mUserVolume = (float)Math.pow(settings.getInt(key, 100) / 100.0, 3);
 			updateVolume();
-		} else if ("media_button".equals(key)) {
+		} else if (PrefKeys.MEDIA_BUTTON.equals(key)) {
 			MediaButtonReceiver.reloadPreference(this);
-		} else if ("use_idle_timeout".equals(key) || "idle_timeout".equals(key)) {
-			mIdleTimeout = settings.getBoolean("use_idle_timeout", false) ? settings.getInt("idle_timeout", 3600) : 0;
+		} else if (PrefKeys.USE_IDLE_TIMEOUT.equals(key) || PrefKeys.IDLE_TIMEOUT.equals(key)) {
+			mIdleTimeout = settings.getBoolean(PrefKeys.USE_IDLE_TIMEOUT, false) ? settings.getInt(PrefKeys.IDLE_TIMEOUT, 3600) : 0;
 			userActionTriggered();
-		} else if ("disable_cover_art".equals(key)) {
-			Song.mDisableCoverArt = settings.getBoolean("disable_cover_art", false);
-		} else if ("notification_inverted_color".equals(key)) {
+		} else if (PrefKeys.DISABLE_COVER_ART.equals(key)) {
+			Song.mDisableCoverArt = settings.getBoolean(PrefKeys.DISABLE_COVER_ART, false);
+		} else if (PrefKeys.NOTIFICATION_INVERTED_COLOR.equals(key)) {
 			updateNotification();
-		} else if ("headset_only".equals(key)) {
+		} else if (PrefKeys.HEADSET_ONLY.equals(key)) {
 			mHeadsetOnly = settings.getBoolean(key, false);
 			if (mHeadsetOnly && isSpeakerOn())
 				unsetFlag(FLAG_PLAYING);
-		} else if ("stock_broadcast".equals(key)) {
+		} else if (PrefKeys.STOCK_BROADCAST.equals(key)) {
 			mStockBroadcast = settings.getBoolean(key, false);
-		} else if ("headset_play".equals(key)) {
+		} else if (PrefKeys.HEADSET_PLAY.equals(key)) {
 			mHeadsetPlay = settings.getBoolean(key, false);
-		} else if ("enable_shake".equals(key) || "shake_action".equals(key)) {
-			mShakeAction = settings.getBoolean("enable_shake", false) ? Action.getAction(settings, "shake_action", Action.NextSong) : Action.Nothing;
+		} else if (PrefKeys.ENABLE_SHAKE.equals(key) || PrefKeys.SHAKE_ACTION.equals(key)) {
+			mShakeAction = settings.getBoolean(PrefKeys.ENABLE_SHAKE, false) ? Action.getAction(settings, PrefKeys.SHAKE_ACTION, Action.NextSong) : Action.Nothing;
 			setupSensor();
-		} else if ("shake_threshold".equals(key)) {
-			mShakeThreshold = settings.getInt("shake_threshold", 80) / 10.0f;
+		} else if (PrefKeys.SHAKE_THRESHOLD.equals(key)) {
+			mShakeThreshold = settings.getInt(PrefKeys.SHAKE_THRESHOLD, 80) / 10.0f;
 		}
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
@@ -1633,7 +1633,7 @@ public final class PlaybackService extends Service
 	 */
 	public PendingIntent createNotificationAction(SharedPreferences prefs)
 	{
-		switch (Integer.parseInt(prefs.getString("notification_action", "0"))) {
+		switch (Integer.parseInt(prefs.getString(PrefKeys.NOTIFICATION_ACTION, "0"))) {
 		case NOT_ACTION_NEXT_SONG: {
 			Intent intent = new Intent(this, PlaybackService.class);
 			intent.setAction(PlaybackService.ACTION_NEXT_SONG_AUTOPLAY);

@@ -110,6 +110,8 @@ public class LibraryActivity
 		{ SongTimeline.MODE_PLAY, SongTimeline.MODE_ENQUEUE, -1,
 		  SongTimeline.MODE_PLAY_ID_FIRST, SongTimeline.MODE_ENQUEUE_ID_FIRST };
 
+	private static final String SEARCH_BOX_VISIBLE = "search_box_visible";
+
 	public ViewPager mViewPager;
 	private TabPageIndicator mTabs;
 
@@ -207,7 +209,7 @@ public class LibraryActivity
 			LinearLayout content = (LinearLayout)findViewById(R.id.content);
 			content.addView(tabs, 0, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
-			if (settings.getBoolean("controls_in_selector", false)) {
+			if (settings.getBoolean(PrefKeys.CONTROLS_IN_SELECTOR, false)) {
 				getLayoutInflater().inflate(R.layout.library_controls, content, true);
 
 				mControls = findViewById(R.id.controls);
@@ -237,7 +239,7 @@ public class LibraryActivity
 		}
 
 		loadTabOrder();
-		int page = settings.getInt("library_page", 0);
+		int page = settings.getInt(PrefKeys.LIBRARY_PAGE, 0);
 		if (page != 0) {
 			pager.setCurrentItem(page);
 		}
@@ -258,11 +260,11 @@ public class LibraryActivity
 		super.onStart();
 
 		SharedPreferences settings = PlaybackService.getSettings(this);
-		if (settings.getBoolean("controls_in_selector", false) != (mControls != null)) {
+		if (settings.getBoolean(PrefKeys.CONTROLS_IN_SELECTOR, false) != (mControls != null)) {
 			finish();
 			startActivity(new Intent(this, LibraryActivity.class));
 		}
-		mDefaultAction = Integer.parseInt(settings.getString("default_action_int", "0"));
+		mDefaultAction = Integer.parseInt(settings.getString(PrefKeys.DEFAULT_ACTION_INT, "0"));
 		mLastActedId = LibraryAdapter.INVALID_ID;
 		updateHeaders();
 	}
@@ -288,7 +290,7 @@ public class LibraryActivity
 	private void checkForLaunch(Intent intent)
 	{
 		SharedPreferences settings = PlaybackService.getSettings(this);
-		if (settings.getBoolean("playback_on_startup", false) && Intent.ACTION_MAIN.equals(intent.getAction())) {
+		if (settings.getBoolean(PrefKeys.PLAYBACK_ON_STARTUP, false) && Intent.ACTION_MAIN.equals(intent.getAction())) {
 			startActivity(new Intent(this, FullPlaybackActivity.class));
 		}
 	}
@@ -326,7 +328,7 @@ public class LibraryActivity
 	@Override
 	public void onRestoreInstanceState(Bundle in)
 	{
-		if (in.getBoolean("search_box_visible"))
+		if (in.getBoolean(SEARCH_BOX_VISIBLE))
 			setSearchBoxVisible(true);
 		super.onRestoreInstanceState(in);
 	}
@@ -335,7 +337,7 @@ public class LibraryActivity
 	protected void onSaveInstanceState(Bundle out)
 	{
 		super.onSaveInstanceState(out);
-		out.putBoolean("search_box_visible", mSearchBoxVisible);
+		out.putBoolean(SEARCH_BOX_VISIBLE, mSearchBoxVisible);
 	}
 
 	@Override

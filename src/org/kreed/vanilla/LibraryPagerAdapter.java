@@ -214,7 +214,7 @@ public class LibraryPagerAdapter
 	 */
 	public boolean loadTabOrder()
 	{
-		String in = PlaybackService.getSettings(mActivity).getString("tab_order", null);
+		String in = PlaybackService.getSettings(mActivity).getString(PrefKeys.TAB_ORDER, null);
 		int[] order;
 		int count;
 		if (in == null || in.length() != MAX_ADAPTER_COUNT) {

@@ -114,11 +114,11 @@ public abstract class PlaybackActivity extends Activity
 			startService(new Intent(this, PlaybackService.class));
 
 		SharedPreferences prefs = PlaybackService.getSettings(this);
-		mUpAction = Action.getAction(prefs, "swipe_up_action", Action.Nothing);
-		mDownAction = Action.getAction(prefs, "swipe_down_action", Action.Nothing);
+		mUpAction = Action.getAction(prefs, PrefKeys.SWIPE_UP_ACTION, Action.Nothing);
+		mDownAction = Action.getAction(prefs, PrefKeys.SWIPE_DOWN_ACTION, Action.Nothing);
 
 		Window window = getWindow();
-		if (prefs.getBoolean("disable_lockscreen", false))
+		if (prefs.getBoolean(PrefKeys.DISABLE_LOCKSCREEN, false))
 			window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
 		else
 			window.clearFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);

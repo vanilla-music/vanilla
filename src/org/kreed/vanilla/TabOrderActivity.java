@@ -119,7 +119,7 @@ public class TabOrderActivity extends Activity implements View.OnClickListener, 
 	 */
 	public void load()
 	{
-		String in = PlaybackService.getSettings(this).getString("tab_order", null);
+		String in = PlaybackService.getSettings(this).getString(PrefKeys.TAB_ORDER, null);
 		if (in != null && in.length() == LibraryPagerAdapter.MAX_ADAPTER_COUNT) {
 			char[] chars = in.toCharArray();
 			int[] ids = new int[LibraryPagerAdapter.MAX_ADAPTER_COUNT];
