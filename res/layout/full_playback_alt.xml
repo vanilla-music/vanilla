@@ -40,12 +40,10 @@ THE SOFTWARE.
 			<TextView
 				android:text="@string/_title"
 				android:paddingRight="5dip"
-				android:singleLine="true"
 				android:gravity="right" />
 			<TextView
 				android:id="@+id/title"
-				android:textStyle="bold"
-				android:singleLine="true" />
+				android:textStyle="bold" />
 			<TextView
 				android:id="@+id/queue_pos"
 				android:singleLine="true"
@@ -55,71 +53,50 @@ THE SOFTWARE.
 			<TextView
 				android:text="@string/_artist"
 				android:paddingRight="5dip"
-				android:singleLine="true"
 				android:gravity="right" />
-			<TextView
-				android:id="@+id/artist"
-				android:singleLine="true" />
+			<TextView android:id="@+id/artist" />
 		</TableRow>
 		<TableRow>
 			<TextView
 				android:text="@string/_album"
 				android:paddingRight="5dip"
-				android:singleLine="true"
 				android:gravity="right" />
-			<TextView
-				android:id="@+id/album"
-				android:singleLine="true" />
+			<TextView android:id="@+id/album" />
 		</TableRow>
 		<TableRow>
 			<TextView
 				android:text="@string/_genre"
 				android:paddingRight="5dip"
-				android:singleLine="true"
 				android:gravity="right" />
-			<TextView
-				android:id="@+id/genre"
-				android:singleLine="true" />
+			<TextView android:id="@+id/genre" />
 		</TableRow>
 		<TableRow>
 			<TextView
 				android:text="@string/_track"
 				android:paddingRight="5dip"
-				android:singleLine="true"
 				android:gravity="right" />
-			<TextView
-				android:id="@+id/track"
-				android:singleLine="true" />
+			<TextView android:id="@+id/track" />
 		</TableRow>
 		<TableRow>
 			<TextView
 				android:text="@string/_year"
 				android:paddingRight="5dip"
-				android:singleLine="true"
 				android:gravity="right" />
-			<TextView
-				android:id="@+id/year"
-				android:singleLine="true" />
+			<TextView android:id="@+id/year" />
 		</TableRow>
 		<TableRow>
 			<TextView
 				android:text="@string/_composer"
 				android:paddingRight="5dip"
-				android:singleLine="true"
 				android:gravity="right" />
-			<TextView
-				android:id="@+id/composer"
-				android:singleLine="true" />
+			<TextView android:id="@+id/composer" />
 		</TableRow>
 		<TableRow>
 			<TextView
 				android:text="@string/_format"
 				android:paddingRight="5dip"
-				android:singleLine="true"
 				android:gravity="right" />
-			<TextView
-				android:id="@+id/format"
-				android:singleLine="true" />
+			<TextView android:id="@+id/format" />
 		</TableRow>
 		<LinearLayout android:id="@+id/controls_top">
 			<TextView

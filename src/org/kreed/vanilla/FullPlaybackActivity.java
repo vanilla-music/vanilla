@@ -41,6 +41,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 /**
@@ -483,9 +484,15 @@ public class FullPlaybackActivity extends PlaybackActivity
 			visible = false;
 
 		table.setColumnCollapsed(0, !visible);
-		int visibility = visible ? View.VISIBLE : View.GONE;
+		// Make title, album, and artist multi-line when extra info is visible
+		boolean singleLine = !visible;
+		for (int i = 0; i != 3; ++i) {
+			TableRow row = (TableRow)table.getChildAt(i);
+			((TextView)row.getChildAt(1)).setSingleLine(singleLine);
+		}
 		// toggle visibility of all but the first three rows (the title/artist/
 		// album rows) and the last row (the seek bar)
+		int visibility = visible ? View.VISIBLE : View.GONE;
 		for (int i = table.getChildCount() - 1; --i != 2; ) {
 			table.getChildAt(i).setVisibility(visibility);
 		}
