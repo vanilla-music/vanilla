@@ -18,7 +18,6 @@
   <string name="song_load_failed">Falha ao carregar %s. Pode estar danificada</string>
   <string name="queue_cleared">Fila apagada</string>
   <string name="cover_art">Capa de álbum</string>
-  <string name="vinyl_cover">Capa vinil</string>
   <string name="close_notification">Fechar notificação</string>
   <string name="_genre">género</string>
   <string name="_track">faixa</string>

@@ -72,6 +72,7 @@
   <string name="ascending">Aufsteigend</string>
   <string name="descending">Absteigend</string>
   <string name="notification_title_paused">%s (Angehalten)</string>
+  <string name="audio">Audio</string>
   <string name="volume_title">Lautstärke</string>
   <string name="media_button_title">Kopfhörer/Bluetooth-Steuerung</string>
   <string name="media_button_summary">Dies wird auch für die Steuerelemente der ICS-Bildschirmsperre benötigt.</string>
@@ -81,10 +82,12 @@
   <string name="headset_pause_summary">Anhalten, wenn die Kopfhörer entfernt werden.</string>
   <string name="headset_play_title">Abspielen beim anschließen</string>
   <string name="headset_play_summary">Abspielen wenn der Kopfhörer angeschlossen wurde. (Nur wenn der Dienst aktiv ist)</string>
+  <string name="notifications">Benachrichtigungen</string>
   <string name="notification_mode_title">Benachrichtigungsmodus</string>
   <string name="notification_action_title">Benachrichtigungsaktion</string>
   <string name="notification_invert_color_title">Farbe der Benachrichtigung umkehren</string>
   <string name="notification_invert_color_summary">Text weiß statt schwarz anzeigen</string>
+  <string name="playback_screen">Wiedergabebildschirm</string>
   <string name="playback_on_startup_title">Beim Start öffnen</string>
   <string name="playback_on_startup_summary">Wiedergabeansicht beim Start anzeigen</string>
   <string name="display_mode_title">Anzeigemodus</string>
@@ -92,14 +95,17 @@
   <string name="swipe_down_action_title">Runter-Wisch Aktion</string>
   <string name="cover_press_action_title">Cover-Antippen Aktion</string>
   <string name="cover_longpress_action_title">Aktion bei langem Cover-Drücken</string>
+  <string name="library_screen">Bibliotheksbildschirm</string>
   <string name="controls_in_selector_title">Steuerelemente in Bibliotheksansicht</string>
   <string name="controls_in_selector_summary">Zeige den aktuell gespielten Titel und die Steuerelemente in der Bibliotheksansicht</string>
   <string name="default_action_title">Standardaktion</string>
   <string name="default_playlist_action_title">Standard Wiedergabelisten-Aktion</string>
+  <string name="accelerometer_shake">Beschleunigungssensor-Schütteln</string>
   <string name="enable_shake_title">Beschleunigungssensor-Schütteln aktivieren</string>
   <string name="enable_shake_summary">Ist nur aktiv wenn Musik abgespielt wird. Funktioniert auf einigen Geräten nicht bei ausgeschaltetem Bildschirm.</string>
   <string name="shake_action_title">Aktion beim Schütteln</string>
   <string name="shake_threshold_title">Schwellwert beim Schütteln</string>
+  <string name="misc_features">Sonstige Funktionen</string>
   <string name="disable_lockscreen_title">Bildschirmsperre deaktivieren</string>
   <string name="disable_lockscreen_summary">Bildschirmsperre verhindern wenn Bibliothek- oder Wiedergabeansicht aktiv</string>
   <string name="use_idle_timeout_title">Inaktivitäts-Zeitabschaltung aktivieren</string>
@@ -117,6 +123,7 @@
   <string name="tap_to_scan">Antippen, um externem Speicher nach Musik zu durchsuchen</string>
   <string name="scan_in_progress">Aktualisierung wird durchgeführt…</string>
   <string name="finished_scanning">Durchsuchen abgeschlossen. Antippen für erneute Suche.</string>
+  <string name="about">Über</string>
   <string name="tabs">Tab-Reihenfolge</string>
   <string name="customize_tab_order">Anpassen der Reihenfolge und Sichtbarkeit der Bibliothek-Tabs</string>
   <string name="restore_default">Standard wiederherstellen</string>
