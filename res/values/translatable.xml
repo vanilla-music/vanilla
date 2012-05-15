@@ -73,6 +73,7 @@ THE SOFTWARE.
 	<string name="done">Done</string>
 	<string name="remove">Remove</string>
 	<string name="clear_search">Clear search</string>
+	<string name="play_or_enqueue">Enqueue if playing; Play if paused</string>
 
 	<plurals name="playing">
 		<item quantity="one">1 song playing.</item>
