@@ -191,7 +191,10 @@ public final class PlaybackService extends Service
 	 * Minimum time in milliseconds between shake actions.
 	 */
 	private static final int MIN_SHAKE_PERIOD = 500;
-
+	/**
+	 * Defer release of mWakeLock for this time (in ms).
+	 */
+	private static final int WAKE_LOCK_DELAY = 60000;
 
 	/**
 	 * If set, music will play.
@@ -744,6 +747,8 @@ public final class PlaybackService extends Service
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
 					CompatFroyo.requestAudioFocus(mAudioManager);
 				}
+
+				mHandler.removeMessages(RELEASE_WAKE_LOCK);
 				try {
 					if (mWakeLock != null)
 						mWakeLock.acquire();
@@ -761,8 +766,10 @@ public final class PlaybackService extends Service
 					stopForeground(true);
 				}
 
-				if (mWakeLock != null && mWakeLock.isHeld())
-					mWakeLock.release();
+				// Delay release of the wake lock. This allows the headset
+				// button to continue to function for a short period after
+				// pausing.
+				mHandler.sendEmptyMessageDelayed(RELEASE_WAKE_LOCK, WAKE_LOCK_DELAY);
 			}
 
 			setupSensor();
@@ -1173,6 +1180,10 @@ public final class PlaybackService extends Service
 	}
 
 	/**
+	 * Calls {@link PowerManager.WakeLock#release()} on mWakeLock.
+	 */
+	private static final int RELEASE_WAKE_LOCK = 1;
+	/**
 	 * Run the given query and add the results to the timeline.
 	 *
 	 * obj is the QueryTask. arg1 is the add mode (one of SongTimeline.MODE_*)
@@ -1251,6 +1262,10 @@ public final class PlaybackService extends Service
 			break;
 		case BROADCAST_CHANGE:
 			broadcastChange(message.arg1, (Song)message.obj, message.getWhen());
+			break;
+		case RELEASE_WAKE_LOCK:
+			if (mWakeLock != null && mWakeLock.isHeld())
+				mWakeLock.release();
 			break;
 		default:
 			return false;
