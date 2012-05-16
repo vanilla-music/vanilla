@@ -142,6 +142,8 @@ THE SOFTWARE.
 	<string name="volume_title">Volume</string>
 	<string name="media_button_title">Headset/Bluetooth Controls</string>
 	<string name="media_button_summary">This is also required for ICS lockscreen controls.</string>
+	<string name="media_button_beep_title">Headset Control Beep</string>
+	<string name="media_button_beep_summary">Beep after skipping a track with a headset control double click.</string>
 	<string name="headset_only_title">External Output Only</string>
 	<string name="headset_only_summary">Prevents music from being played through the internal speakers.</string>
 	<string name="headset_pause_title">Pause When Unplugged</string>

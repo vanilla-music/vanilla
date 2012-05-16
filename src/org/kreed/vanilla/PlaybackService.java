@@ -635,7 +635,7 @@ public final class PlaybackService extends Service
 		} else if (PrefKeys.VOLUME.equals(key)) {
 			mUserVolume = (float)Math.pow(settings.getInt(key, 100) / 100.0, 3);
 			updateVolume();
-		} else if (PrefKeys.MEDIA_BUTTON.equals(key)) {
+		} else if (PrefKeys.MEDIA_BUTTON.equals(key) || PrefKeys.MEDIA_BUTTON_BEEP.equals(key)) {
 			MediaButtonReceiver.reloadPreference(this);
 		} else if (PrefKeys.USE_IDLE_TIMEOUT.equals(key) || PrefKeys.IDLE_TIMEOUT.equals(key)) {
 			mIdleTimeout = settings.getBoolean(PrefKeys.USE_IDLE_TIMEOUT, false) ? settings.getInt(PrefKeys.IDLE_TIMEOUT, 3600) : 0;

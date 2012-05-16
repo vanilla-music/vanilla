@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,12 +22,14 @@
 
 package org.kreed.vanilla;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.BroadcastReceiver;
 import android.content.SharedPreferences;
+import android.media.AsyncPlayer;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.SystemClock;
 import android.telephony.TelephonyManager;
@@ -58,15 +60,48 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 	 * Time of the last play/pause click. Used to detect double-clicks.
 	 */
 	private static long sLastClickTime = 0;
+	/**
+	 * Whether a beep should be played in response to double clicks be used.
+	 * 1 for yes, 0 for no, -1 for uninitialized.
+	 */
+	private static int sBeep = -1;
+	/**
+	 * Lazy-loaded AsyncPlayer for beep sounds.
+	 */
+	private static AsyncPlayer sBeepPlayer;
+	/**
+	 * Lazy-loaded URI of the beep resource.
+	 */
+	private static Uri sBeepSound;
 
 	/**
-	 * Reload the preference and enable/disable buttons as appropriate.
+	 * Play a beep sound.
+	 */
+	private static void beep(Context context)
+	{
+		if (sBeep == -1) {
+			SharedPreferences settings = PlaybackService.getSettings(context);
+			sBeep = settings.getBoolean(PrefKeys.MEDIA_BUTTON_BEEP, true) ? 1 : 0;
+		}
+
+		if (sBeep == 1) {
+			if (sBeepPlayer == null) {
+				sBeepPlayer = new AsyncPlayer("BeepPlayer");
+				sBeepSound = Uri.parse("android.resource://org.kreed.vanilla/raw/beep");
+			}
+			sBeepPlayer.play(context, sBeepSound, false, AudioManager.STREAM_MUSIC);
+		}
+	}
+
+	/**
+	 * Reload the preferences and enable/disable buttons as appropriate.
 	 *
 	 * @param context A context to use.
 	 */
 	public static void reloadPreference(Context context)
 	{
 		sUseControls = -1;
+		sBeep = -1;
 		if (useHeadsetControls(context)) {
 			registerMediaButton(context);
 		} else {
@@ -138,10 +173,12 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 
 			if (action == KeyEvent.ACTION_DOWN) {
 				long time = SystemClock.uptimeMillis();
-				if (time - sLastClickTime < DOUBLE_CLICK_DELAY)
+				if (time - sLastClickTime < DOUBLE_CLICK_DELAY) {
+					beep(context);
 					act = PlaybackService.ACTION_NEXT_SONG_AUTOPLAY;
-				else
+				} else {
 					act = PlaybackService.ACTION_TOGGLE_PLAYBACK;
+				}
 				sLastClickTime = time;
 			}
 			break;
