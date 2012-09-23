@@ -30,7 +30,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
-import android.support.v4.util.LruCache;
+import android.util.LruCache;
 import java.io.FileDescriptor;
 
 /**
