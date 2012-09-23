@@ -42,6 +42,7 @@ import android.view.ViewParent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.Interpolator;
 import android.widget.Scroller;
+import android.widget.EdgeEffect;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -152,8 +153,8 @@ public class ViewPager extends ViewGroup {
     private boolean mFakeDragging;
     private long mFakeDragBeginTime;
 
-    private EdgeEffectCompat mLeftEdge;
-    private EdgeEffectCompat mRightEdge;
+    private EdgeEffect mLeftEdge;
+    private EdgeEffect mRightEdge;
 
     private boolean mFirstLayout = true;
     private boolean mCalledSuper;
@@ -256,8 +257,8 @@ public class ViewPager extends ViewGroup {
         mMinimumVelocity = configuration.getScaledMinimumFlingVelocity();
         mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
         if (Build.VERSION.SDK_INT >= 14) {
-            mLeftEdge = new EdgeEffectCompat(context);
-            mRightEdge = new EdgeEffectCompat(context);
+            mLeftEdge = new EdgeEffect(context);
+            mRightEdge = new EdgeEffect(context);
         }
 
         final float density = context.getResources().getDisplayMetrics().density;
@@ -1570,7 +1571,7 @@ public class ViewPager extends ViewGroup {
         if (Build.VERSION.SDK_INT >= 14) {
             boolean needsInvalidate = false;
 
-            final int overScrollMode = EdgeEffectCompat.getOverScrollMode(this);
+            final int overScrollMode = this.getOverScrollMode();
             if (overScrollMode == View.OVER_SCROLL_ALWAYS ||
                     (overScrollMode == View.OVER_SCROLL_IF_CONTENT_SCROLLS &&
                             mAdapter != null && mAdapter.getCount() > 1)) {
@@ -1820,7 +1821,7 @@ public class ViewPager extends ViewGroup {
         }
 
         if (Build.VERSION.SDK_INT >= 14) {
-            return checkV && EdgeEffectCompat.canScrollHorizontally(v, -dx);
+            return checkV && v.canScrollHorizontally(-dx);
         } else {
             return false;
         }
