@@ -21,18 +21,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
 <resources>
-	<style name="Dialog" parent="android:Theme.Dialog" />
-	<style name="Library" parent="android:Theme">
-		<item name="android:windowNoTitle">true</item>
-	</style>
-	<style name="Playback" parent="android:Theme">
-		<item name="android:windowNoTitle">true</item>
-		<item name="android:windowBackground">@null</item>
-	</style>
-	<style name="BackActionBar" parent="android:Theme" />
-	<style name="AlertDialogItem">
-		<item name="android:textColor">@android:color/primary_text_light</item>
-	</style>
 	<!-- Color used in LibraryActivity list dividers -->
 	<color name="divider_color">#f444</color>
 	<string-array name="entry_values">
@@ -116,4 +104,28 @@ THE SOFTWARE.
 		<item>@string/info_below_cover</item>
 		<item>@string/fixed_info</item>
 	</string-array>
+
+	<!-- styles -->
+	<style name="Dialog" parent="android:Theme.Holo.Dialog" />
+	<style name="AlertDialogItem">
+		<item name="android:textColor">?android:textColorAlertDialogListItem</item>
+	</style>
+	<style name="Playback" parent="android:Theme.Holo">
+		<item name="android:actionBarStyle">@style/PlaybackActionBar</item>
+		<item name="android:windowBackground">@android:color/black</item>
+	</style>
+	<style name="BackActionBar" parent="android:Theme.Holo">
+		<item name="android:actionBarStyle">@style/PlaybackActionBar</item>
+	</style>
+	<style name="PlaybackActionBar" parent="android:Widget.Holo.ActionBar">
+		<item name="android:displayOptions">showTitle|homeAsUp</item>
+	</style>
+	<style name="Library" parent="android:Theme.Holo">
+		<item name="android:actionBarStyle">@style/LibraryActionBar</item>
+	</style>
+	<style name="LibraryActionBar" parent="android:Widget.Holo.ActionBar">
+		<item name="android:displayOptions"></item>
+	</style>
+
+
 </resources>
