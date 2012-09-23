@@ -23,7 +23,7 @@ THE SOFTWARE.
 <PreferenceScreen
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:persistent="true">
-	<org.kreed.vanilla.SeekBarPreference
+	<ch.blinkenlights.android.vanilla.SeekBarPreference
 		android:key="volume_int"
 		android:negativeButtonText="@null"
 		android:dialogLayout="@layout/shake_pref"

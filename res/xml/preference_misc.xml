@@ -33,7 +33,7 @@ THE SOFTWARE.
 		android:title="@string/use_idle_timeout_title"
 		android:summary="@string/use_idle_timeout_summary"
 		android:defaultValue="false" />
-	<org.kreed.vanilla.IdlePreference
+	<ch.blinkenlights.android.vanilla.IdlePreference
 		android:key="idle_timeout"
 		android:title="@string/idle_timeout_title"
 		android:dependency="use_idle_timeout" />

@@ -20,7 +20,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<org.kreed.vanilla.ActionBarControls
+<ch.blinkenlights.android.vanilla.ActionBarControls
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:background="@drawable/selectable_item_bg"
 	android:clickable="true">
@@ -55,4 +55,4 @@ THE SOFTWARE.
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content" />
 	</LinearLayout>
-</org.kreed.vanilla.ActionBarControls>
+</ch.blinkenlights.android.vanilla.ActionBarControls>

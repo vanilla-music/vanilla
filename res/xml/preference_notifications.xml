@@ -23,13 +23,13 @@ THE SOFTWARE.
 <PreferenceScreen
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:persistent="true">
-	<org.kreed.vanilla.ListPreferenceSummary
+	<ch.blinkenlights.android.vanilla.ListPreferenceSummary
 		android:key="notification_mode"
 		android:title="@string/notification_mode_title"
 		android:entries="@array/notification_mode_entries"
 		android:entryValues="@array/entry_values"
 		android:defaultValue="1" />
-	<org.kreed.vanilla.ListPreferenceSummary
+	<ch.blinkenlights.android.vanilla.ListPreferenceSummary
 		android:key="notification_action"
 		android:title="@string/notification_action_title"
 		android:entries="@array/notification_action_entries"

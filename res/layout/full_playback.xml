@@ -21,7 +21,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
-	<org.kreed.vanilla.CoverView
+	<ch.blinkenlights.android.vanilla.CoverView
 		android:id="@+id/cover_view"
 		android:layout_height="fill_parent"
 		android:layout_width="fill_parent" />

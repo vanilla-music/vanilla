@@ -22,24 +22,24 @@ THE SOFTWARE.
 -->
 <preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
 	<header
-		android:fragment="org.kreed.vanilla.PreferencesActivity$AudioFragment"
+		android:fragment="ch.blinkenlights.android.vanilla.PreferencesActivity$AudioFragment"
 		android:title="@string/audio" />
 	<header
-		android:fragment="org.kreed.vanilla.PreferencesActivity$PlaybackFragment"
+		android:fragment="ch.blinkenlights.android.vanilla.PreferencesActivity$PlaybackFragment"
 		android:title="@string/playback_screen" />
 	<header
-		android:fragment="org.kreed.vanilla.PreferencesActivity$LibraryFragment"
+		android:fragment="ch.blinkenlights.android.vanilla.PreferencesActivity$LibraryFragment"
 		android:title="@string/library_screen" />
 	<header
-		android:fragment="org.kreed.vanilla.PreferencesActivity$NotificationsFragment"
+		android:fragment="ch.blinkenlights.android.vanilla.PreferencesActivity$NotificationsFragment"
 		android:title="@string/notifications" />
 	<header
-		android:fragment="org.kreed.vanilla.PreferencesActivity$ShakeFragment"
+		android:fragment="ch.blinkenlights.android.vanilla.PreferencesActivity$ShakeFragment"
 		android:title="@string/accelerometer_shake" />
 	<header
-		android:fragment="org.kreed.vanilla.PreferencesActivity$MiscFragment"
+		android:fragment="ch.blinkenlights.android.vanilla.PreferencesActivity$MiscFragment"
 		android:title="@string/misc_features" />
 	<header
-		android:fragment="org.kreed.vanilla.PreferencesActivity$AboutFragment"
+		android:fragment="ch.blinkenlights.android.vanilla.PreferencesActivity$AboutFragment"
 		android:title="@string/about" />
 </preference-headers>

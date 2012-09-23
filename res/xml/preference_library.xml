@@ -32,20 +32,20 @@ THE SOFTWARE.
 		android:title="@string/tabs"
 		android:summary="@string/customize_tab_order">
 		<intent
-			android:targetPackage="org.kreed.vanilla"
-			android:targetClass="org.kreed.vanilla.TabOrderActivity" />
+			android:targetPackage="ch.blinkenlights.android.vanilla"
+			android:targetClass="ch.blinkenlights.android.vanilla.TabOrderActivity" />
 	</PreferenceScreen>
-	<org.kreed.vanilla.ListPreferenceSummary
+	<ch.blinkenlights.android.vanilla.ListPreferenceSummary
 		android:key="default_action_int"
 		android:title="@string/default_action_title"
 		android:entries="@array/default_action_entries"
 		android:entryValues="@array/entry_values"
 		android:defaultValue="7" />
-	<org.kreed.vanilla.ListPreferenceSummary
+	<ch.blinkenlights.android.vanilla.ListPreferenceSummary
 		android:key="default_playlist_action"
 		android:title="@string/default_playlist_action_title"
 		android:entries="@array/default_playlist_action_entries"
 		android:entryValues="@array/entry_values"
 		android:defaultValue="3" />
-	<org.kreed.vanilla.ScanPreference />
+	<ch.blinkenlights.android.vanilla.ScanPreference />
 </PreferenceScreen>

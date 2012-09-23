@@ -28,7 +28,7 @@ THE SOFTWARE.
 		android:title="@string/enable_shake_title"
 		android:summary="@string/enable_shake_summary"
 		android:defaultValue="false" />
-	<org.kreed.vanilla.ListPreferenceSummary
+	<ch.blinkenlights.android.vanilla.ListPreferenceSummary
 		android:key="shake_action"
 		android:title="@string/shake_action_title"
 		android:entries="@array/swipe_action_entries"
@@ -36,7 +36,7 @@ THE SOFTWARE.
 		android:defaultValue="NextSong"
 		android:dependency="enable_shake" />
 	<!-- Might be nice to show something indicating the current shake force for this preference. -->
-	<org.kreed.vanilla.SeekBarPreference
+	<ch.blinkenlights.android.vanilla.SeekBarPreference
 		android:key="shake_threshold"
 		android:negativeButtonText="@null"
 		android:dialogLayout="@layout/shake_pref"

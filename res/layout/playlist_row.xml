@@ -20,7 +20,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<org.kreed.vanilla.DragTextView
+<ch.blinkenlights.android.vanilla.DragTextView
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:padding="3dip"
 	android:singleLine="true"

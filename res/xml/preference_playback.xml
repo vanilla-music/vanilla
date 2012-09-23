@@ -28,31 +28,31 @@ THE SOFTWARE.
 		android:title="@string/playback_on_startup_title"
 		android:summary="@string/playback_on_startup_summary"
 		android:defaultValue="false" />
-	<org.kreed.vanilla.ListPreferenceSummary
+	<ch.blinkenlights.android.vanilla.ListPreferenceSummary
 		android:key="display_mode"
 		android:title="@string/display_mode_title"
 		android:entries="@array/display_mode_entries"
 		android:entryValues="@array/entry_values"
 		android:defaultValue="2" />
-	<org.kreed.vanilla.ListPreferenceSummary
+	<ch.blinkenlights.android.vanilla.ListPreferenceSummary
 		android:key="swipe_up_action"
 		android:title="@string/swipe_up_action_title"
 		android:entries="@array/swipe_action_entries"
 		android:entryValues="@array/swipe_action_values"
 		android:defaultValue="Nothing" />
-	<org.kreed.vanilla.ListPreferenceSummary
+	<ch.blinkenlights.android.vanilla.ListPreferenceSummary
 		android:key="swipe_down_action"
 		android:title="@string/swipe_down_action_title"
 		android:entries="@array/swipe_action_entries"
 		android:entryValues="@array/swipe_action_values"
 		android:defaultValue="Nothing" />
-	<org.kreed.vanilla.ListPreferenceSummary
+	<ch.blinkenlights.android.vanilla.ListPreferenceSummary
 		android:key="cover_press_action"
 		android:title="@string/cover_press_action_title"
 		android:entries="@array/swipe_action_entries"
 		android:entryValues="@array/swipe_action_values"
 		android:defaultValue="ToggleControls" />
-	<org.kreed.vanilla.ListPreferenceSummary
+	<ch.blinkenlights.android.vanilla.ListPreferenceSummary
 		android:key="cover_longpress_action"
 		android:title="@string/cover_longpress_action_title"
 		android:entries="@array/swipe_action_entries"

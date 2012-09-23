@@ -27,7 +27,7 @@ THE SOFTWARE.
 	android:showDividers="middle"
 	android:layout_height="fill_parent"
 	android:layout_width="fill_parent">
-	<org.kreed.vanilla.DragListView
+	<ch.blinkenlights.android.vanilla.DragListView
 		android:id="@+id/list"
 		android:divider="@null"
 		android:layout_height="0px"

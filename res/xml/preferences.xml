@@ -24,43 +24,43 @@ THE SOFTWARE.
 	<PreferenceScreen
 		android:title="@string/audio">
 		<intent
-			android:targetPackage="org.kreed.vanilla"
-			android:targetClass="org.kreed.vanilla.PreferencesActivity$AudioActivity" />
+			android:targetPackage="ch.blinkenlights.android.vanilla"
+			android:targetClass="ch.blinkenlights.android.vanilla.PreferencesActivity$AudioActivity" />
 	</PreferenceScreen>
 	<PreferenceScreen
 		android:title="@string/playback_screen">
 		<intent
-			android:targetPackage="org.kreed.vanilla"
-			android:targetClass="org.kreed.vanilla.PreferencesActivity$PlaybackActivity" />
+			android:targetPackage="ch.blinkenlights.android.vanilla"
+			android:targetClass="ch.blinkenlights.android.vanilla.PreferencesActivity$PlaybackActivity" />
 	</PreferenceScreen>
 	<PreferenceScreen
 		android:title="@string/library_screen">
 		<intent
-			android:targetPackage="org.kreed.vanilla"
-			android:targetClass="org.kreed.vanilla.PreferencesActivity$LibraryActivity" />
+			android:targetPackage="ch.blinkenlights.android.vanilla"
+			android:targetClass="ch.blinkenlights.android.vanilla.PreferencesActivity$LibraryActivity" />
 	</PreferenceScreen>
 	<PreferenceScreen
 		android:title="@string/notifications">
 		<intent
-			android:targetPackage="org.kreed.vanilla"
-			android:targetClass="org.kreed.vanilla.PreferencesActivity$NotificationsActivity" />
+			android:targetPackage="ch.blinkenlights.android.vanilla"
+			android:targetClass="ch.blinkenlights.android.vanilla.PreferencesActivity$NotificationsActivity" />
 	</PreferenceScreen>
 	<PreferenceScreen
 		android:title="@string/accelerometer_shake">
 		<intent
-			android:targetPackage="org.kreed.vanilla"
-			android:targetClass="org.kreed.vanilla.PreferencesActivity$ShakeActivity" />
+			android:targetPackage="ch.blinkenlights.android.vanilla"
+			android:targetClass="ch.blinkenlights.android.vanilla.PreferencesActivity$ShakeActivity" />
 	</PreferenceScreen>
 	<PreferenceScreen
 		android:title="@string/misc_features">
 		<intent
-			android:targetPackage="org.kreed.vanilla"
-			android:targetClass="org.kreed.vanilla.PreferencesActivity$MiscActivity" />
+			android:targetPackage="ch.blinkenlights.android.vanilla"
+			android:targetClass="ch.blinkenlights.android.vanilla.PreferencesActivity$MiscActivity" />
 	</PreferenceScreen>
 	<PreferenceScreen
 		android:title="@string/about">
 		<intent
-			android:targetPackage="org.kreed.vanilla"
-			android:targetClass="org.kreed.vanilla.PreferencesActivity$AboutActivity" />
+			android:targetPackage="ch.blinkenlights.android.vanilla"
+			android:targetClass="ch.blinkenlights.android.vanilla.PreferencesActivity$AboutActivity" />
 	</PreferenceScreen>
 </PreferenceScreen>
