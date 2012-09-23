@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
+Copyright (C) 2012 Adrian Ulrich <adrian@blinkenlights.ch>
 Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,7 +26,7 @@ THE SOFTWARE.
 	android:versionName="0.9.10"
 	android:versionCode="0910"
 	android:installLocation="auto">
-	<uses-sdk android:minSdkVersion="5" android:targetSdkVersion="15" />
+	<uses-sdk android:minSdkVersion="15" android:targetSdkVersion="15" />
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -145,8 +146,5 @@ THE SOFTWARE.
 		<activity
 			android:name="TabOrderActivity"
 			android:theme="@style/BackActionBar" />
-		<meta-data
-			android:name="com.google.android.backup.api_key"
-			android:value="AEdPqrEAAAAIH6Xcxa4hn6sHN1m4jMpi4MFFFMP5sv3XhFuWeA" />
 	</application>
 </manifest>

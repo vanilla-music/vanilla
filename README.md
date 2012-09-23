@@ -26,8 +26,6 @@ Documentation
 =============
 Javadocs can be generated using `ant doc`
 
-[![Ohloh project page][3]][2]
 
   [1]: http://crowdin.net/project/vanilla-music/invite
-  [2]: https://www.ohloh.net/p/vanilla-music?ref=sample
-  [3]: https://www.ohloh.net/p/vanilla-music/widgets/project_thin_badge.gif
+
