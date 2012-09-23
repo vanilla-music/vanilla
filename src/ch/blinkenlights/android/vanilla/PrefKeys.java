@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  */
 
-package org.kreed.vanilla;
+package ch.blinkenlights.android.vanilla;
 
 /**
  * SharedPreference keys. Must be kept in sync with keys in res/xml/prefs_*.xml.

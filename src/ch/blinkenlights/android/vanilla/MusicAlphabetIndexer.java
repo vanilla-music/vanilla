@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kreed.vanilla;
+package ch.blinkenlights.android.vanilla;
 
 import android.database.Cursor;
 import android.provider.MediaStore;

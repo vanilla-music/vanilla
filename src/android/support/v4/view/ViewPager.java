@@ -45,8 +45,8 @@ import android.widget.Scroller;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import org.kreed.vanilla.CompatFroyo;
-import org.kreed.vanilla.CompatHoneycomb;
+import ch.blinkenlights.android.vanilla.CompatFroyo;
+import ch.blinkenlights.android.vanilla.CompatHoneycomb;
 
 /**
  * Layout manager that allows the user to flip left and right

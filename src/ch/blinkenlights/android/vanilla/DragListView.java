@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kreed.vanilla;
+package ch.blinkenlights.android.vanilla;
 
 import android.content.Context;
 import android.graphics.Bitmap;

@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  */
 
-package org.kreed.vanilla;
+package ch.blinkenlights.android.vanilla;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -87,7 +87,7 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 		if (sBeep == 1) {
 			if (sBeepPlayer == null) {
 				sBeepPlayer = new AsyncPlayer("BeepPlayer");
-				sBeepSound = Uri.parse("android.resource://org.kreed.vanilla/raw/beep");
+				sBeepSound = Uri.parse("android.resource://ch.blinkenlights.android.vanilla/raw/beep");
 			}
 			sBeepPlayer.play(context, sBeepSound, false, AudioManager.STREAM_MUSIC);
 		}

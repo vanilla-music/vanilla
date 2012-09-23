@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  */
 
-package org.kreed.vanilla;
+package ch.blinkenlights.android.vanilla;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -96,15 +96,15 @@ public final class PlaybackService extends Service
 	/**
 	 * Action for startService: toggle playback on/off.
 	 */
-	public static final String ACTION_TOGGLE_PLAYBACK = "org.kreed.vanilla.action.TOGGLE_PLAYBACK";
+	public static final String ACTION_TOGGLE_PLAYBACK = "ch.blinkenlights.android.vanilla.action.TOGGLE_PLAYBACK";
 	/**
 	 * Action for startService: start playback if paused.
 	 */
-	public static final String ACTION_PLAY = "org.kreed.vanilla.action.PLAY";
+	public static final String ACTION_PLAY = "ch.blinkenlights.android.vanilla.action.PLAY";
 	/**
 	 * Action for startService: pause playback if playing.
 	 */
-	public static final String ACTION_PAUSE = "org.kreed.vanilla.action.PAUSE";
+	public static final String ACTION_PAUSE = "ch.blinkenlights.android.vanilla.action.PAUSE";
 	/**
 	 * Action for startService: toggle playback on/off.
 	 *
@@ -113,18 +113,18 @@ public final class PlaybackService extends Service
 	 * actions are received within 400 ms, the playback activity is opened
 	 * instead.
 	 */
-	public static final String ACTION_TOGGLE_PLAYBACK_DELAYED = "org.kreed.vanilla.action.TOGGLE_PLAYBACK_DELAYED";
+	public static final String ACTION_TOGGLE_PLAYBACK_DELAYED = "ch.blinkenlights.android.vanilla.action.TOGGLE_PLAYBACK_DELAYED";
 	/**
 	 * Action for startService: toggle playback on/off.
 	 *
 	 * This works the same way as ACTION_PLAY_PAUSE but prevents the notification
 	 * from being hidden regardless of notification visibility settings.
 	 */
-	public static final String ACTION_TOGGLE_PLAYBACK_NOTIFICATION = "org.kreed.vanilla.action.TOGGLE_PLAYBACK_NOTIFICATION";
+	public static final String ACTION_TOGGLE_PLAYBACK_NOTIFICATION = "ch.blinkenlights.android.vanilla.action.TOGGLE_PLAYBACK_NOTIFICATION";
 	/**
 	 * Action for startService: advance to the next song.
 	 */
-	public static final String ACTION_NEXT_SONG = "org.kreed.vanilla.action.NEXT_SONG";
+	public static final String ACTION_NEXT_SONG = "ch.blinkenlights.android.vanilla.action.NEXT_SONG";
 	/**
 	 * Action for startService: advance to the next song.
 	 *
@@ -133,37 +133,37 @@ public final class PlaybackService extends Service
 	 * actions are received within 400 ms, the playback activity is opened
 	 * instead.
 	 */
-	public static final String ACTION_NEXT_SONG_DELAYED = "org.kreed.vanilla.action.NEXT_SONG_DELAYED";
+	public static final String ACTION_NEXT_SONG_DELAYED = "ch.blinkenlights.android.vanilla.action.NEXT_SONG_DELAYED";
 	/**
 	 * Action for startService: advance to the next song.
 	 *
 	 * Like ACTION_NEXT_SONG, but starts playing automatically if paused
 	 * when this is called.
 	 */
-	public static final String ACTION_NEXT_SONG_AUTOPLAY = "org.kreed.vanilla.action.NEXT_SONG_AUTOPLAY";
+	public static final String ACTION_NEXT_SONG_AUTOPLAY = "ch.blinkenlights.android.vanilla.action.NEXT_SONG_AUTOPLAY";
 	/**
 	 * Action for startService: go back to the previous song.
 	 */
-	public static final String ACTION_PREVIOUS_SONG = "org.kreed.vanilla.action.PREVIOUS_SONG";
+	public static final String ACTION_PREVIOUS_SONG = "ch.blinkenlights.android.vanilla.action.PREVIOUS_SONG";
 	/**
 	 * Action for startService: go back to the previous song.
 	 *
 	 * Like ACTION_PREVIOUS_SONG, but starts playing automatically if paused
 	 * when this is called.
 	 */
-	public static final String ACTION_PREVIOUS_SONG_AUTOPLAY = "org.kreed.vanilla.action.PREVIOUS_SONG_AUTOPLAY";
+	public static final String ACTION_PREVIOUS_SONG_AUTOPLAY = "ch.blinkenlights.android.vanilla.action.PREVIOUS_SONG_AUTOPLAY";
 	/**
 	 * Change the shuffle mode.
 	 */
-	public static final String ACTION_CYCLE_SHUFFLE = "org.kreed.vanilla.CYCLE_SHUFFLE";
+	public static final String ACTION_CYCLE_SHUFFLE = "ch.blinkenlights.android.vanilla.CYCLE_SHUFFLE";
 	/**
 	 * Change the repeat mode.
 	 */
-	public static final String ACTION_CYCLE_REPEAT = "org.kreed.vanilla.CYCLE_REPEAT";
+	public static final String ACTION_CYCLE_REPEAT = "ch.blinkenlights.android.vanilla.CYCLE_REPEAT";
 	/**
 	 * Pause music and hide the notifcation.
 	 */
-	public static final String ACTION_CLOSE_NOTIFICATION = "org.kreed.vanilla.CLOSE_NOTIFICATION";
+	public static final String ACTION_CLOSE_NOTIFICATION = "ch.blinkenlights.android.vanilla.CLOSE_NOTIFICATION";
 
 	public static final int NEVER = 0;
 	public static final int WHEN_PLAYING = 1;

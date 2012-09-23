@@ -30,7 +30,7 @@ import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import org.kreed.vanilla.R;
+import ch.blinkenlights.android.vanilla.R;
 
 /**
  * This widget implements the dynamic action bar tab behavior that can change

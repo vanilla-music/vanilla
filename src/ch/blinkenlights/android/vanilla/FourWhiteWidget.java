@@ -21,7 +21,7 @@
  * THE SOFTWARE.
  */
 
-package org.kreed.vanilla;
+package ch.blinkenlights.android.vanilla;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
