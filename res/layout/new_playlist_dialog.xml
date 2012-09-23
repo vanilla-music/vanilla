@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
+Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:divider="?android:attr/dividerHorizontal"
+	android:showDividers="middle"
 	android:orientation="vertical"
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content">
@@ -34,21 +37,25 @@ THE SOFTWARE.
 		android:layout_marginLeft="8dip"
 		android:layout_marginRight="8dip" />
 	<LinearLayout
+		style="?android:attr/buttonBarStyle"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		android:paddingTop="6dip"
-		android:background="#fff" >
-		<Button android:id="@+id/create"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_weight="1"
-			android:text="@string/create"
-			android:singleLine="true" />
-		<Button android:id="@+id/cancel"
-			android:layout_width="wrap_content"
+		android:orientation="horizontal">
+		<Button
+			style="?android:attr/buttonBarButtonStyle"
+			android:id="@+id/cancel"
+			android:layout_width="0px"
 			android:layout_height="wrap_content"
 			android:layout_weight="1"
 			android:text="@string/cancel"
+			android:singleLine="true" />
+		<Button
+			style="?android:attr/buttonBarButtonStyle"
+			android:id="@+id/create"
+			android:layout_width="0px"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="@string/create"
 			android:singleLine="true" />
 	</LinearLayout>
 </LinearLayout>
