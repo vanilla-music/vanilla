@@ -94,6 +94,11 @@ public final class PlaybackService extends Service
 	private static final int NOTIFICATION_ID = 2;
 
 	/**
+	 * Rewind song if we already played more than 2.5 sec
+	*/
+	private static final int REWIND_AFTER_PLAYED_MS = 2500;
+	
+	/**
 	 * Action for startService: toggle playback on/off.
 	 */
 	public static final String ACTION_TOGGLE_PLAYBACK = "ch.blinkenlights.android.vanilla.action.TOGGLE_PLAYBACK";
@@ -146,12 +151,9 @@ public final class PlaybackService extends Service
 	 */
 	public static final String ACTION_PREVIOUS_SONG = "ch.blinkenlights.android.vanilla.action.PREVIOUS_SONG";
 	/**
-	 * Action for startService: go back to the previous song.
-	 *
-	 * Like ACTION_PREVIOUS_SONG, but starts playing automatically if paused
-	 * when this is called.
-	 */
-	public static final String ACTION_PREVIOUS_SONG_AUTOPLAY = "ch.blinkenlights.android.vanilla.action.PREVIOUS_SONG_AUTOPLAY";
+	 * Action for startService: go back to the previous song OR just rewind if it played for less than 5 seconds
+	*/
+	public static final String ACTION_REWIND_SONG = "ch.blinkenlights.android.vanilla.action.REWIND_SONG";
 	/**
 	 * Change the shuffle mode.
 	 */
@@ -507,8 +509,14 @@ public final class PlaybackService extends Service
 			} else if (ACTION_PREVIOUS_SONG.equals(action)) {
 				setCurrentSong(-1);
 				userActionTriggered();
-			} else if (ACTION_PREVIOUS_SONG_AUTOPLAY.equals(action)) {
-				setCurrentSong(-1);
+			} else if (ACTION_REWIND_SONG.equals(action)) {
+				/* only rewind song IF we played more than 2.5 sec (and song is longer than 5 sec) */
+				if(getPosition() > REWIND_AFTER_PLAYED_MS &&
+				   getDuration() > REWIND_AFTER_PLAYED_MS*2) {
+					setCurrentSong(0);
+				} else {
+					setCurrentSong(-1);
+				}
 				play();
 			} else if (ACTION_PLAY.equals(action)) {
 				play();
@@ -1295,6 +1303,15 @@ public final class PlaybackService extends Service
 		return mMediaPlayer.getCurrentPosition();
 	}
 
+	/**
+	 * Returns the song duration in milliseconds.
+	*/
+	public int getDuration()
+	{
+		if (!mMediaPlayerInitialized)
+			return 0;
+		return mMediaPlayer.getDuration();
+	}
 	/**
 	 * Seek to a position in the current song.
 	 *
