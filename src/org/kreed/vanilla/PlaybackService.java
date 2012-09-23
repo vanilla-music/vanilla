@@ -375,7 +375,7 @@ public final class PlaybackService extends Service
 	@Override
 	public void onCreate()
 	{
-		HandlerThread thread = new HandlerThread("PlaybackService", Process.THREAD_PRIORITY_BACKGROUND);
+		HandlerThread thread = new HandlerThread("PlaybackService", Process.THREAD_PRIORITY_DEFAULT);
 		thread.start();
 
 		mTimeline = new SongTimeline(this);
