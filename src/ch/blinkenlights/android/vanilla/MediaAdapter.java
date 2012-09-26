@@ -611,7 +611,7 @@ public class MediaAdapter
 	public long getItemId(int position)
 	{
 		Cursor cursor = mCursor;
-		if (cursor == null)
+		if (cursor == null || cursor.getCount() == 0)
 			return 0;
 		cursor.moveToPosition(position);
 		return cursor.getLong(0);
