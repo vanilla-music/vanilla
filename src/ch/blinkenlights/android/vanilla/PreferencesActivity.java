@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2012 Adrian Ulrich <adrian@blinkenlights.ch>
  * Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -50,12 +51,8 @@ public class PreferencesActivity extends PreferenceActivity {
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-			addPreferencesFromResource(R.xml.preferences);
-		}
 	}
 
-	@TargetApi(11)
 	@Override
 	public void onBuildHeaders(List<Header> target)
 	{
@@ -83,7 +80,6 @@ public class PreferencesActivity extends PreferenceActivity {
 		}
 	}
 
-	@TargetApi(11)
 	public static class AudioFragment extends PreferenceFragment {
 		@Override
 		public void onCreate(Bundle savedInstanceState)
@@ -103,7 +99,6 @@ public class PreferencesActivity extends PreferenceActivity {
 		}
 	}
 
-	@TargetApi(11)
 	public static class PlaybackFragment extends PreferenceFragment {
 		@Override
 		public void onCreate(Bundle savedInstanceState)
@@ -123,7 +118,6 @@ public class PreferencesActivity extends PreferenceActivity {
 		}
 	}
 
-	@TargetApi(11)
 	public static class LibraryFragment extends PreferenceFragment {
 		@Override
 		public void onCreate(Bundle savedInstanceState)
@@ -145,7 +139,6 @@ public class PreferencesActivity extends PreferenceActivity {
 		}
 	}
 
-	@TargetApi(11)
 	public static class NotificationsFragment extends PreferenceFragment {
 		@Override
 		public void onCreate(Bundle savedInstanceState)
@@ -165,7 +158,6 @@ public class PreferencesActivity extends PreferenceActivity {
 		}
 	}
 
-	@TargetApi(11)
 	public static class ShakeFragment extends PreferenceFragment {
 		@Override
 		public void onCreate(Bundle savedInstanceState)
@@ -185,7 +177,6 @@ public class PreferencesActivity extends PreferenceActivity {
 		}
 	}
 
-	@TargetApi(11)
 	public static class MiscFragment extends PreferenceFragment {
 		@Override
 		public void onCreate(Bundle savedInstanceState)
@@ -209,7 +200,6 @@ public class PreferencesActivity extends PreferenceActivity {
 		}
 	}
 
-	@TargetApi(11)
 	public static class AboutFragment extends WebViewFragment {
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
