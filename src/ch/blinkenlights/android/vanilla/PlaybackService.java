@@ -1898,4 +1898,19 @@ public final class PlaybackService extends Service
 	{
 		return mTimeline.getLength();
 	}
+	
+	/**
+	 * Returns 'Song' with given id from timeline
+	*/
+	public Song getSongByQueuePosition(int id) {
+		return mTimeline.getSongByQueuePosition(id);
+	}
+	
+	public void jumpToQueuePosition(int id) {
+		pause();
+		mTimeline.setCurrentQueuePosition(id);
+		setCurrentSong(0);
+		play();
+	}
+	
 }

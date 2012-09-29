@@ -557,7 +557,22 @@ public final class SongTimeline {
 		mCurrentPos = pos;
 		mShuffledSongs = null;
 	}
-
+	
+	/**
+	 * Hard-Jump to given queue position
+	*/
+	public Song setCurrentQueuePosition(int pos) {
+		mCurrentPos = pos;
+		return getSong(0);
+	}
+	
+	/**
+	 * Returns 'Song' at given position in queue
+	*/
+	public Song getSongByQueuePosition(int id) {
+		return mSongs.get(id);
+	}
+	
 	/**
 	 * Move to the next or previous song or album.
 	 *
