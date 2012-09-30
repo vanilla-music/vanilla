@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:orientation="horizontal">
+	<View
+		android:id="@+id/playmark"
+		android:layout_width="4dip"
+		android:layout_height="fill_parent"
+		android:background="@android:color/holo_blue_dark" />
+	<TextView
+		android:id="@+id/text"
+		android:background="@drawable/selectable_item_bg"
+		android:maxLines="2"
+		android:padding="3dip"
+		android:textColor="#ffff"
+		android:gravity="left|center_vertical"
+		android:layout_width="0px"
+		android:layout_height="44dip"
+		android:layout_weight="1" />
+</LinearLayout>

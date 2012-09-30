@@ -358,6 +358,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 		menu.add(0, MENU_ENQUEUE_ARTIST, 0, R.string.enqueue_current_artist).setIcon(R.drawable.ic_menu_add);
 		menu.add(0, MENU_ENQUEUE_GENRE, 0, R.string.enqueue_current_genre).setIcon(R.drawable.ic_menu_add);
 		menu.add(0, MENU_TOGGLE_CONTROLS, 0, R.string.toggle_controls);
+		menu.add(0, MENU_SHOW_QUEUE, 0, "++ show queue ++");
 		return true;
 	}
 
@@ -384,6 +385,9 @@ public class FullPlaybackActivity extends PlaybackActivity
 		case MENU_TOGGLE_CONTROLS:
 			setControlsVisible(!mControlsVisible);
 			mHandler.sendEmptyMessage(MSG_SAVE_CONTROLS);
+			break;
+		case MENU_SHOW_QUEUE:
+			startActivity(new Intent(this, ShowQueueActivity.class));
 			break;
 		default:
 			return super.onOptionsItemSelected(item);

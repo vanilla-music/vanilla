@@ -59,6 +59,11 @@ THE SOFTWARE.
 			android:theme="@style/Dialog"
 			android:excludeFromRecents="true"
 			android:launchMode="singleInstance" />
+		<activity
+			android:name="ShowQueueActivity"
+			android:theme="@style/BackActionBar"
+			android:excludeFromRecents="true"
+			android:launchMode="singleInstance" />
 		<receiver
 			android:name=".OneCellWidget"
 			android:label="Vanilla Music 1x1">
