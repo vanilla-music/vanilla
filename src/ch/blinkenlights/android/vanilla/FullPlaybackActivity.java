@@ -358,7 +358,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 		menu.add(0, MENU_ENQUEUE_ARTIST, 0, R.string.enqueue_current_artist).setIcon(R.drawable.ic_menu_add);
 		menu.add(0, MENU_ENQUEUE_GENRE, 0, R.string.enqueue_current_genre).setIcon(R.drawable.ic_menu_add);
 		menu.add(0, MENU_TOGGLE_CONTROLS, 0, R.string.toggle_controls);
-		menu.add(0, MENU_SHOW_QUEUE, 0, "++ show queue ++");
+		menu.add(0, MENU_SHOW_QUEUE, 0, R.string.show_queue);
 		return true;
 	}
 

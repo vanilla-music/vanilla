@@ -232,5 +232,6 @@ THE SOFTWARE.
 	<string name="enqueue_current_artist">Enqueue artist</string>
 	<string name="enqueue_current_genre">Enqueue genre</string>
 	<string name="clear_queue">Clear queue</string>
+	<string name="show_queue">Show queue</string>
 	<string name="toggle_controls">Toggle controls</string>
 </resources>
