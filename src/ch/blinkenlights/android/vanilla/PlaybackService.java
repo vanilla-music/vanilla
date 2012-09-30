@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2012 Adrian Ulrich <adrian@blinkenlights.ch>
  * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -1906,8 +1907,10 @@ public final class PlaybackService extends Service
 		return mTimeline.getSongByQueuePosition(id);
 	}
 	
+	/**
+	 * Do a 'hard' jump to given queue position
+	*/
 	public void jumpToQueuePosition(int id) {
-		pause();
 		mTimeline.setCurrentQueuePosition(id);
 		setCurrentSong(0);
 		play();
