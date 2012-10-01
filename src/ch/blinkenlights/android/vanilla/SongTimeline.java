@@ -563,6 +563,7 @@ public final class SongTimeline {
 	*/
 	public Song setCurrentQueuePosition(int pos) {
 		mCurrentPos = pos;
+		mShuffledSongs = null;
 		return getSong(0);
 	}
 	
