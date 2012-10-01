@@ -829,9 +829,7 @@ public class LibraryPagerAdapter
 	{
 		mActivity.mFakeTarget = true;
 		list.setFastScrollEnabled(true);
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			CompatHoneycomb.setFastScrollAlwaysVisible(list);
-		}
+		CompatHoneycomb.setFastScrollAlwaysVisible(list);
 		mActivity.mFakeTarget = false;
 	}
 }

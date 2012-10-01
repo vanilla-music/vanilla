@@ -219,7 +219,7 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 	 */
 	public static void registerMediaButton(Context context)
 	{
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.FROYO || !useHeadsetControls(context))
+		if (!useHeadsetControls(context))
 			return;
 
 		AudioManager audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
@@ -234,9 +234,6 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 	 */
 	public static void unregisterMediaButton(Context context)
 	{
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.FROYO)
-			return;
-
 		AudioManager audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
 		ComponentName receiver = new ComponentName(context.getPackageName(), MediaButtonReceiver.class.getName());
 		CompatFroyo.unregisterMediaButtonEventReceiver(audioManager, receiver);

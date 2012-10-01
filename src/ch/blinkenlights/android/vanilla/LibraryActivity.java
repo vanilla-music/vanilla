@@ -195,52 +195,14 @@ public class LibraryActivity
 		mViewPager = pager;
 
 		SharedPreferences settings = PlaybackService.getSettings(this);
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			pager.setOnPageChangeListener(pagerAdapter);
+		pager.setOnPageChangeListener(pagerAdapter);
 
-			View controls = getLayoutInflater().inflate(R.layout.actionbar_controls, null);
-			mTitle = (TextView)controls.findViewById(R.id.title);
-			mArtist = (TextView)controls.findViewById(R.id.artist);
-			mCover = (ImageView)controls.findViewById(R.id.cover);
-			controls.setOnClickListener(this);
-			mActionControls = controls;
-		} else {
-			TabPageIndicator tabs = new TabPageIndicator(this);
-			tabs.setViewPager(pager);
-			tabs.setOnPageChangeListener(pagerAdapter);
-			mTabs = tabs;
-
-			LinearLayout content = (LinearLayout)findViewById(R.id.content);
-			content.addView(tabs, 0, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-
-			if (settings.getBoolean(PrefKeys.CONTROLS_IN_SELECTOR, false)) {
-				getLayoutInflater().inflate(R.layout.library_controls, content, true);
-
-				mControls = findViewById(R.id.controls);
-
-				mTitle = (TextView)mControls.findViewById(R.id.title);
-				mArtist = (TextView)mControls.findViewById(R.id.artist);
-				mCover = (ImageView)mControls.findViewById(R.id.cover);
-				View previous = mControls.findViewById(R.id.previous);
-				mPlayPauseButton = (ImageButton)mControls.findViewById(R.id.play_pause);
-				View next = mControls.findViewById(R.id.next);
-
-				mCover.setOnClickListener(this);
-				previous.setOnClickListener(this);
-				mPlayPauseButton.setOnClickListener(this);
-				next.setOnClickListener(this);
-
-				mShuffleButton = (ImageButton)findViewById(R.id.shuffle);
-				mShuffleButton.setOnClickListener(this);
-				registerForContextMenu(mShuffleButton);
-				mEndButton = (ImageButton)findViewById(R.id.end_action);
-				mEndButton.setOnClickListener(this);
-				registerForContextMenu(mEndButton);
-
-				mEmptyQueue = findViewById(R.id.empty_queue);
-				mEmptyQueue.setOnClickListener(this);
-			}
-		}
+		View controls = getLayoutInflater().inflate(R.layout.actionbar_controls, null);
+		mTitle = (TextView)controls.findViewById(R.id.title);
+		mArtist = (TextView)controls.findViewById(R.id.artist);
+		mCover = (ImageView)controls.findViewById(R.id.cover);
+		controls.setOnClickListener(this);
+		mActionControls = controls;
 
 		loadTabOrder();
 		int page = settings.getInt(PrefKeys.LIBRARY_PAGE, 0);
@@ -279,11 +241,7 @@ public class LibraryActivity
 	private void loadTabOrder()
 	{
 		if (mPagerAdapter.loadTabOrder()) {
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-				CompatHoneycomb.addActionBarTabs(this);
-			} else {
-				mTabs.notifyDataSetChanged();
-			}
+			CompatHoneycomb.addActionBarTabs(this);
 		}
 	}
 
@@ -892,16 +850,11 @@ public class LibraryActivity
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			MenuItem controls = menu.add(null);
-			CompatHoneycomb.setActionView(controls, mActionControls);
-			CompatHoneycomb.setShowAsAction(controls, MenuItem.SHOW_AS_ACTION_ALWAYS);
-			MenuItem search = menu.add(0, MENU_SEARCH, 0, R.string.search).setIcon(R.drawable.ic_menu_search);
-			CompatHoneycomb.setShowAsAction(search, MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		} else {
-			menu.add(0, MENU_SEARCH, 0, R.string.search).setIcon(R.drawable.ic_menu_search);
-			menu.add(0, MENU_PLAYBACK, 0, R.string.playback_view).setIcon(R.drawable.ic_menu_gallery);
-		}
+		MenuItem controls = menu.add(null);
+		CompatHoneycomb.setActionView(controls, mActionControls);
+		CompatHoneycomb.setShowAsAction(controls, MenuItem.SHOW_AS_ACTION_ALWAYS);
+		MenuItem search = menu.add(0, MENU_SEARCH, 0, R.string.search).setIcon(R.drawable.ic_menu_search);
+		CompatHoneycomb.setShowAsAction(search, MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		menu.add(0, MENU_SORT, 0, R.string.sort_by).setIcon(R.drawable.ic_menu_sort_alphabetically);
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -1140,9 +1093,7 @@ public class LibraryActivity
 		mCurrentAdapter = adapter;
 		mLastActedId = LibraryAdapter.INVALID_ID;
 		updateLimiterViews();
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			CompatHoneycomb.selectTab(this, position);
-		}
+		CompatHoneycomb.selectTab(this, position);
 		if (adapter != null && adapter.getLimiter() == null) {
 			// Save current page so it is opened on next startup. Don't save if
 			// the page was expanded to, as the expanded page isn't the starting

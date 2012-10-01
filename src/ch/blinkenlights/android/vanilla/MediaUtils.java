@@ -228,35 +228,14 @@ public class MediaUtils {
 	public static long queryGenreForSong(ContentResolver resolver, long id)
 	{
 		String[] projection = { "_id" };
-
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			Uri uri = CompatHoneycomb.getContentUriForAudioId((int)id);
-			Cursor cursor = resolver.query(uri, projection, null, null, null);
-			if (cursor != null) {
-				if (cursor.moveToNext())
-					return cursor.getLong(0);
-				cursor.close();
-			}
-		} else {
-			Uri uri = MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI;
-			Cursor cursor = resolver.query(uri, projection, null, null, null);
-			if (cursor != null) {
-				String selection = "_id=" + id;
-				while (cursor.moveToNext()) {
-					// check if the given song belongs to this genre
-					long genreId = cursor.getLong(0);
-					Uri genreUri = MediaStore.Audio.Genres.Members.getContentUri("external", genreId);
-					Cursor c = resolver.query(genreUri, projection, selection, null, null);
-					if (c != null) {
-						if (c.getCount() == 1)
-							return genreId;
-						c.close();
-					}
-				}
-				cursor.close();
-			}
+		Uri uri = CompatHoneycomb.getContentUriForAudioId((int)id);
+		Cursor cursor = resolver.query(uri, projection, null, null, null);
+		
+		if (cursor != null) {
+			if (cursor.moveToNext())
+				return cursor.getLong(0);
+			cursor.close();
 		}
-
 		return 0;
 	}
 
