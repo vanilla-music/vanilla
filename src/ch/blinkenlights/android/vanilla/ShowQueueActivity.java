@@ -27,6 +27,7 @@ import java.util.Arrays;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -41,7 +42,9 @@ public class ShowQueueActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		setTitle(R.string.queue);
 		setContentView(R.layout.showqueue_listview);
+		
 		
 		mListView   = (ListView) findViewById(R.id.list);
 		listAdapter = new ShowQueueAdapter(this, R.layout.showqueue_row);
@@ -64,6 +67,16 @@ public class ShowQueueActivity extends Activity {
 				return true;
 			}});
 
+	}
+	
+	/*
+	** Called when the user hits the ActionBar item
+	** There is only one item (title) and it should quit this activity
+	*/
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		finish();
+		return true;
 	}
 	
 	/*

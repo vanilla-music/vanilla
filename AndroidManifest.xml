@@ -62,7 +62,6 @@ THE SOFTWARE.
 		<activity
 			android:name="ShowQueueActivity"
 			android:theme="@style/BackActionBar"
-			android:excludeFromRecents="true"
 			android:launchMode="singleInstance" />
 		<receiver
 			android:name=".OneCellWidget"
