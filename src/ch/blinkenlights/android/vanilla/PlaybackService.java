@@ -296,6 +296,7 @@ public final class PlaybackService extends Service
 	private Looper mLooper;
 	private Handler mHandler;
 	MediaPlayer mMediaPlayer;
+	MediaPlayer mPreparedMediaPlayer;
 	private boolean mMediaPlayerInitialized;
 	private PowerManager.WakeLock mWakeLock;
 	private NotificationManager mNotificationManager;
@@ -385,11 +386,8 @@ public final class PlaybackService extends Service
 		mTimeline.setCallback(this);
 		int state = loadState();
 
-		mMediaPlayer = new MediaPlayer();
-		mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-		mMediaPlayer.setOnCompletionListener(this);
-		mMediaPlayer.setOnErrorListener(this);
-
+		mMediaPlayer = getNewMediaPlayer();
+		
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
 			try {
 				mEqualizer = new CompatEq(mMediaPlayer);
@@ -573,6 +571,58 @@ public final class PlaybackService extends Service
 		super.onDestroy();
 	}
 
+	/**
+	 * Returns a new MediaPlayer object
+	 */
+	public MediaPlayer getNewMediaPlayer() {
+		MediaPlayer mp = new MediaPlayer();
+		mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+		mp.setOnCompletionListener(this);
+		mp.setOnErrorListener(this);
+		return mp;
+	}
+	
+	public void triggerGaplessUpdate() {
+		Log.d("VanillaMusic", "triggering gapless update");
+		
+		if(mMediaPlayerInitialized != true)
+			return;
+		
+		if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
+			return; /* setNextMediaPlayer is supported since JB */
+		
+		if(mPreparedMediaPlayer != null) {
+			/* an old prepared player exists and is
+			 * most likely invalid -> destroy it now
+			*/
+			mMediaPlayer.setNextMediaPlayer(null);
+			mPreparedMediaPlayer.release();
+			mPreparedMediaPlayer = null;
+			Log.d("VanillaMusic", "old prepared player destroyed");
+		}
+		
+		int fa = finishAction(mState);
+		Song nextSong = getSong(1);
+		if( nextSong != null
+		    && fa != SongTimeline.FINISH_REPEAT_CURRENT
+		    && fa != SongTimeline.FINISH_STOP_CURRENT
+		    && !mTimeline.isEndOfQueue() ) {
+			try {
+				mPreparedMediaPlayer = getNewMediaPlayer();
+				mPreparedMediaPlayer.setDataSource(nextSong.path);
+				mPreparedMediaPlayer.prepare();
+				mMediaPlayer.setNextMediaPlayer(mPreparedMediaPlayer);
+				Log.d("VanillaMusic", "New media player prepared as "+mPreparedMediaPlayer+" with path "+nextSong.path);
+			} catch (IOException e) {
+				Log.e("VanillaMusic", "IOException", e);
+			}
+		}
+		else {
+			Log.d("VanillaMusic", "Must not create new media player object");
+		}
+		
+	}
+	
 	/**
 	 * Return the SharedPreferences instance containing the PlaybackService
 	 * settings, creating it if necessary.
@@ -796,6 +846,8 @@ public final class PlaybackService extends Service
 			mTimeline.setShuffleMode(shuffleMode(state));
 		if ((toggled & MASK_FINISH) != 0)
 			mTimeline.setFinishAction(finishAction(state));
+		
+		triggerGaplessUpdate();
 	}
 
 	private void broadcastChange(int state, Song song, long uptime)
@@ -1054,8 +1106,18 @@ public final class PlaybackService extends Service
 			mMediaPlayer.reset();
 			mMediaPlayer.setDataSource(song.path);
 			mMediaPlayer.prepare();
+			
+			if(mPreparedMediaPlayer != null &&
+			   mPreparedMediaPlayer.isPlaying()) {
+				Log.v("VanillaMusic", "Replacing existing mediaplayer object with prepared version");
+				mMediaPlayer.release();
+				mMediaPlayer = mPreparedMediaPlayer;
+				mPreparedMediaPlayer = null;
+			}
+			
 			mMediaPlayerInitialized = true;
-
+			triggerGaplessUpdate();
+			
 			if (mPendingSeek != 0 && mPendingSeekSong == song.id) {
 				mMediaPlayer.seekTo(mPendingSeek);
 				mPendingSeek = 0;

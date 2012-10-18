@@ -26,7 +26,7 @@ THE SOFTWARE.
 	android:versionName="0.9.13"
 	android:versionCode="0913"
 	android:installLocation="auto">
-	<uses-sdk android:minSdkVersion="15" android:targetSdkVersion="15" />
+	<uses-sdk android:minSdkVersion="15" android:targetSdkVersion="16" />
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
