@@ -551,7 +551,7 @@ public final class PlaybackService extends Service
 	/**
 	 * Returns a new MediaPlayer object
 	 */
-	public MediaPlayer getNewMediaPlayer() {
+	private MediaPlayer getNewMediaPlayer() {
 		MediaPlayer mp = new MediaPlayer();
 		mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		mp.setOnCompletionListener(this);
@@ -559,7 +559,7 @@ public final class PlaybackService extends Service
 		return mp;
 	}
 	
-	public void triggerGaplessUpdate() {
+	private void triggerGaplessUpdate() {
 		Log.d("VanillaMusic", "triggering gapless update");
 		
 		if(mMediaPlayerInitialized != true)
@@ -1458,8 +1458,9 @@ public final class PlaybackService extends Service
 		default:
 			throw new IllegalArgumentException("Invalid add mode: " + query.mode);
 		}
-
+		
 		Toast.makeText(this, getResources().getQuantityString(text, count, count), Toast.LENGTH_SHORT).show();
+		triggerGaplessUpdate();
 	}
 
 	/**
@@ -1515,6 +1516,7 @@ public final class PlaybackService extends Service
 	public void clearQueue()
 	{
 		mTimeline.clearQueue();
+		triggerGaplessUpdate();
 	}
 
 	/**
