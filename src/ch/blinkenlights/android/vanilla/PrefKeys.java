@@ -57,5 +57,4 @@ public class PrefKeys {
 	public static final String USE_IDLE_TIMEOUT = "use_idle_timeout";
 	public static final String VISIBLE_CONTROLS = "visible_controls";
 	public static final String VISIBLE_EXTRA_INFO = "visible_extra_info";
-	public static final String VOLUME = "volume_int";
 }

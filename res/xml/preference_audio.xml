@@ -23,12 +23,6 @@ THE SOFTWARE.
 <PreferenceScreen
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:persistent="true">
-	<ch.blinkenlights.android.vanilla.SeekBarPreference
-		android:key="volume_int"
-		android:negativeButtonText="@null"
-		android:dialogLayout="@layout/shake_pref"
-		android:defaultValue="100"
-		android:title="@string/volume_title" />
 	<CheckBoxPreference
 		android:key="media_button"
 		android:title="@string/media_button_title"

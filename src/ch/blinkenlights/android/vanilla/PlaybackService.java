@@ -305,10 +305,6 @@ public final class PlaybackService extends Service
 	 * The SensorManager service.
 	 */
 	private SensorManager mSensorManager;
-	/**
-	 * The equalizer wrapper.
-	 */
-	private CompatEq mEqualizer;
 
 	SongTimeline mTimeline;
 	private Song mCurrentSong;
@@ -329,14 +325,6 @@ public final class PlaybackService extends Service
 	public Receiver mReceiver;
 	public InCallListener mCallListener;
 	private String mErrorMessage;
-	/**
-	 * The volume adjustment set in the volume preference.
-	 */
-	private float mUserVolume;
-	/**
-	 * The linear scale volume set on the MediaPlayer.
-	 */
-	private float mBaseVolume;
 	/**
 	 * If true, the volume is being reduced for the idle fade-out.
 	 */
@@ -388,14 +376,6 @@ public final class PlaybackService extends Service
 
 		mMediaPlayer = getNewMediaPlayer();
 		
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-			try {
-				mEqualizer = new CompatEq(mMediaPlayer);
-			} catch (IllegalArgumentException e) {
-				// equalizer not supported
-			}
-		}
-
 		mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 		mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
 
@@ -407,7 +387,6 @@ public final class PlaybackService extends Service
 		settings.registerOnSharedPreferenceChangeListener(this);
 		mNotificationMode = Integer.parseInt(settings.getString(PrefKeys.NOTIFICATION_MODE, "1"));
 		mScrobble = settings.getBoolean(PrefKeys.SCROBBLE, false);
-		mUserVolume = (float)Math.pow(settings.getInt(PrefKeys.VOLUME, 100) / 100.0, 3);
 		mIdleTimeout = settings.getBoolean(PrefKeys.USE_IDLE_TIMEOUT, false) ? settings.getInt(PrefKeys.IDLE_TIMEOUT, 3600) : 0;
 		Song.mDisableCoverArt = settings.getBoolean(PrefKeys.DISABLE_COVER_ART, false);
 		mHeadsetOnly = settings.getBoolean(PrefKeys.HEADSET_ONLY, false);
@@ -418,8 +397,6 @@ public final class PlaybackService extends Service
 		mHeadsetPause = getSettings(this).getBoolean(PrefKeys.HEADSET_PAUSE, true);
 		mShakeAction = settings.getBoolean(PrefKeys.ENABLE_SHAKE, false) ? Action.getAction(settings, PrefKeys.SHAKE_ACTION, Action.NextSong) : Action.Nothing;
 		mShakeThreshold = settings.getInt(PrefKeys.SHAKE_THRESHOLD, 80) / 10.0f;
-
-		updateVolume();
 
 		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
 		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicLock");
@@ -649,30 +626,6 @@ public final class PlaybackService extends Service
 		}
 	}
 
-	/**
-	 * Set the volume gain on the MediaPlayer/Equalizer
-	 */
-	private void updateVolume()
-	{
-		float base = mUserVolume;
-
-		if (base > 1.0 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-			// In Gingerbread and above, MediaPlayer no longer accepts volumes
-			// > 1.0. So we use an equalizer instead.
-			CompatEq eq = mEqualizer;
-			if (eq != null) {
-				short gain = (short)(2000 * Math.log10(base));
-				for (short i = eq.getNumberOfBands(); --i != -1; ) {
-					eq.setBandLevel(i, gain);
-				}
-			}
-			base = 1.0f;
-		}
-
-		mBaseVolume = base;
-		if (mMediaPlayer != null)
-			mMediaPlayer.setVolume(base, base);
-	}
 
 	private void loadPreference(String key)
 	{
@@ -694,9 +647,6 @@ public final class PlaybackService extends Service
 			updateNotification();
 		} else if (PrefKeys.SCROBBLE.equals(key)) {
 			mScrobble = settings.getBoolean(PrefKeys.SCROBBLE, false);
-		} else if (PrefKeys.VOLUME.equals(key)) {
-			mUserVolume = (float)Math.pow(settings.getInt(key, 100) / 100.0, 3);
-			updateVolume();
 		} else if (PrefKeys.MEDIA_BUTTON.equals(key) || PrefKeys.MEDIA_BUTTON_BEEP.equals(key)) {
 			MediaButtonReceiver.reloadPreference(this);
 		} else if (PrefKeys.USE_IDLE_TIMEOUT.equals(key) || PrefKeys.IDLE_TIMEOUT.equals(key)) {
@@ -1318,12 +1268,12 @@ public final class PlaybackService extends Service
 			if (progress == 0) {
 				mIdleStart = SystemClock.elapsedRealtime();
 				unsetFlag(FLAG_PLAYING);
-				volume = mBaseVolume;
+				volume = 1.0f;
 				mFadeInProgress = false;
 			} else {
 				// Approximate an exponential curve with x^4
 				// http://www.dr-lex.be/info-stuff/volumecontrols.html
-				volume = Math.max((float)(Math.pow(progress / 100f, 4) * mBaseVolume), .01f);
+				volume = Math.max((float)(Math.pow(progress / 100f, 4) * 1.0f), .01f);
 				mHandler.sendMessageDelayed(mHandler.obtainMessage(FADE_OUT, progress, 0), 50);
 			}
 			if (mMediaPlayer != null)
@@ -1468,7 +1418,7 @@ public final class PlaybackService extends Service
 			mHandler.sendEmptyMessageDelayed(IDLE_TIMEOUT, mIdleTimeout * 1000);
 
 		if (mFadeInProgress) {
-			mMediaPlayer.setVolume(mBaseVolume, mBaseVolume);
+			mMediaPlayer.setVolume(1.0f, 1.0f);
 			mFadeInProgress = false;
 		}
 
