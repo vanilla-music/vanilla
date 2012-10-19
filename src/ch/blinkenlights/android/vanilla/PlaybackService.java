@@ -379,9 +379,7 @@ public final class PlaybackService extends Service
 		mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 		mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
-			CompatFroyo.createAudioFocus();
-		}
+		CompatFroyo.createAudioFocus();
 
 		SharedPreferences settings = getSettings(this);
 		settings.registerOnSharedPreferenceChangeListener(this);
@@ -418,9 +416,7 @@ public final class PlaybackService extends Service
 
 		getContentResolver().registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, mObserver);
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-			CompatIcs.registerRemote(this, mAudioManager);
-		}
+		CompatIcs.registerRemote(this, mAudioManager);
 
 		mLooper = thread.getLooper();
 		mHandler = new Handler(mLooper, this);
@@ -671,9 +667,7 @@ public final class PlaybackService extends Service
 			mShakeThreshold = settings.getInt(PrefKeys.SHAKE_THRESHOLD, 80) / 10.0f;
 		}
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
-			CompatFroyo.dataChanged(this);
-		}
+		CompatFroyo.dataChanged(this);
 	}
 
 	/**
@@ -753,9 +747,7 @@ public final class PlaybackService extends Service
 				if (mNotificationMode != NEVER)
 					startForeground(NOTIFICATION_ID, createNotification(mCurrentSong, mState));
 
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
-					CompatFroyo.requestAudioFocus(mAudioManager);
-				}
+				CompatFroyo.requestAudioFocus(mAudioManager);
 
 				mHandler.removeMessages(RELEASE_WAKE_LOCK);
 				try {
@@ -816,9 +808,7 @@ public final class PlaybackService extends Service
 
 		updateWidgets();
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-			CompatIcs.updateRemote(this, mCurrentSong, mState);
-		}
+		CompatIcs.updateRemote(this, mCurrentSong, mState);
 
 		if (mStockBroadcast)
 			stockMusicBroadcast();
