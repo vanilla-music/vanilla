@@ -1104,8 +1104,6 @@ public final class PlaybackService extends Service
 		try {
 			mMediaPlayerInitialized = false;
 			mMediaPlayer.reset();
-			mMediaPlayer.setDataSource(song.path);
-			mMediaPlayer.prepare();
 			
 			if(mPreparedMediaPlayer != null &&
 			   mPreparedMediaPlayer.isPlaying()) {
@@ -1113,6 +1111,10 @@ public final class PlaybackService extends Service
 				mMediaPlayer.release();
 				mMediaPlayer = mPreparedMediaPlayer;
 				mPreparedMediaPlayer = null;
+			}
+			else {
+				mMediaPlayer.setDataSource(song.path);
+				mMediaPlayer.prepare();
 			}
 			
 			mMediaPlayerInitialized = true;
