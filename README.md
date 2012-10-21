@@ -8,7 +8,7 @@ Building
 To build you will need:
 
  * A Java compiler compatible with Java 1.6
- * The Android SDK with platform 15 (Android 4.0.3) installed
+ * The Android SDK with platform 16 (JellyBean) installed
 
 Building from command-line
 --------------------------

@@ -1047,7 +1047,7 @@ public final class PlaybackService extends Service
 			
 			if(mPreparedMediaPlayer != null &&
 			   mPreparedMediaPlayer.isPlaying()) {
-				Log.v("VanillaMusic", "Replacing existing mediaplayer object with prepared version");
+				Log.d("VanillaMusic", "Replacing existing mediaplayer object with prepared version");
 				mMediaPlayer.release();
 				mMediaPlayer = mPreparedMediaPlayer;
 				mPreparedMediaPlayer = null;
