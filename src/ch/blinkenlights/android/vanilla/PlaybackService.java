@@ -553,9 +553,9 @@ public final class PlaybackService extends Service
 		mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		mp.setOnCompletionListener(this);
 		mp.setOnErrorListener(this);
-                Intent i = new Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION);
-                i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mp.getAudioSessionId());
-                i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, getPackageName());
+		Intent i = new Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION);
+		i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mp.getAudioSessionId());
+		i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, getPackageName());
 		return mp;
 	}
 	
