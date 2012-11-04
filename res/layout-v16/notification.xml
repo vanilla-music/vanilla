@@ -30,7 +30,7 @@ THE SOFTWARE.
 		android:scaleType="fitCenter"
 		android:layout_width="64dip"
 		android:layout_height="64dip"
-		android:layout_marginRight="12dip"
+		android:layout_marginRight="8dip"
 		android:contentDescription="@string/cover_art" />
 	<LinearLayout
 		android:layout_width="0px"
