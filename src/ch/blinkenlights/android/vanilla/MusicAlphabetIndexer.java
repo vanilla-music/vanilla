@@ -124,9 +124,10 @@ public class MusicAlphabetIndexer {
 		pos = (end + start) / 2;
 		while (pos < end) {
 			cursor.moveToPosition(pos);
-			String curName = cursor.getString(mColumnIndex);
-			String curLetter = MediaStore.Audio.keyFor(curName).substring(0, 3);
-			int diff = curLetter.compareTo(targetLetter);
+			String curName   = cursor.getString(mColumnIndex);
+			String curKey    = MediaStore.Audio.keyFor(curName);
+			String curLetter = ( curKey.length() >= 3 ? curKey.substring(0, 3) : "\t~\t"); /* return fake info if there was no key */
+			int diff         = curLetter.compareTo(targetLetter);
 			if (diff != 0) {
 				if (diff < 0) {
 					start = pos + 1;

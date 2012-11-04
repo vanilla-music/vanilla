@@ -555,6 +555,10 @@ public final class PlaybackService extends Service
 		return mp;
 	}
 	
+	/**
+	 * Destroys any currently prepared MediaPlayer and
+	 * re-creates a newone if needed.
+	 */
 	private void triggerGaplessUpdate() {
 		Log.d("VanillaMusic", "triggering gapless update");
 		
