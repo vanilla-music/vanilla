@@ -39,7 +39,7 @@ public class Bastp {
 			else if(magic.equals("OggS")) {
 				tags = (new OggFile()).getTags(s);
 			}
-			tags.put("_MAGIC", magic);
+			tags.put("_magic", magic);
 		}
 		catch (IOException e) {
 		}
