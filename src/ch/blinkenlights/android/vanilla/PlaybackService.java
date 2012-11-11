@@ -66,6 +66,10 @@ import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Vector;
+import ch.blinkenlights.bastp.Bastp;
+
 
 /**
  * Handles music playback and pretty much all the other work.
@@ -555,6 +559,31 @@ public final class PlaybackService extends Service
 		return mp;
 	}
 	
+	public void prepareMediaPlayer(MediaPlayer mp, String path) throws IOException{
+		
+		mp.setDataSource(path);
+		
+		Hashtable tags = (new Bastp()).getTags(path);
+		float adjust   = 1.0f;
+		
+		if(tags.containsKey("REPLAYGAIN_TRACK_GAIN")) {
+			String rg_raw = (String)((Vector)tags.get("REPLAYGAIN_TRACK_GAIN")).get(0);
+			String rg_numonly = "";
+			float rg_float = 0f;
+			try {
+				String nums = rg_raw.replaceAll("[^0-9.-]","");
+				rg_float = Float.parseFloat(nums);
+			} catch(Exception e) {}
+			
+			adjust = (float)Math.pow(10, (rg_float/20) );
+			Toast.makeText(this, path+"\n"+" PX "+rg_raw+" adj = "+adjust, Toast.LENGTH_LONG).show();
+			
+		}
+		
+		mp.setVolume(adjust, adjust);
+		mp.prepare();
+	}
+	
 	/**
 	 * Destroys any currently prepared MediaPlayer and
 	 * re-creates a newone if needed.
@@ -586,8 +615,7 @@ public final class PlaybackService extends Service
 		    && !mTimeline.isEndOfQueue() ) {
 			try {
 				mPreparedMediaPlayer = getNewMediaPlayer();
-				mPreparedMediaPlayer.setDataSource(nextSong.path);
-				mPreparedMediaPlayer.prepare();
+				prepareMediaPlayer(mPreparedMediaPlayer, nextSong.path);
 				mMediaPlayer.setNextMediaPlayer(mPreparedMediaPlayer);
 				Log.d("VanillaMusic", "New media player prepared as "+mPreparedMediaPlayer+" with path "+nextSong.path);
 			} catch (IOException e) {
@@ -1051,14 +1079,12 @@ public final class PlaybackService extends Service
 			
 			if(mPreparedMediaPlayer != null &&
 			   mPreparedMediaPlayer.isPlaying()) {
-				Log.d("VanillaMusic", "Replacing existing mediaplayer object with prepared version");
 				mMediaPlayer.release();
 				mMediaPlayer = mPreparedMediaPlayer;
 				mPreparedMediaPlayer = null;
 			}
 			else {
-				mMediaPlayer.setDataSource(song.path);
-				mMediaPlayer.prepare();
+				prepareMediaPlayer(mMediaPlayer, song.path);
 			}
 			
 			mMediaPlayerInitialized = true;
