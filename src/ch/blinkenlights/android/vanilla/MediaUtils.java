@@ -144,7 +144,7 @@ public class MediaUtils {
 
 		selection.append('=');
 		selection.append(id);
-		selection.append(" AND is_music!=0");
+		selection.append(" AND is_music AND length(_data)");
 
 		if (select != null) {
 			selection.append(" AND ");
@@ -365,7 +365,8 @@ public class MediaUtils {
 	{
 		if (sSongCount == -1) {
 			Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-			String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
+			String selection = MediaStore.Audio.Media.IS_MUSIC;
+			selection += " AND length(_data)";
 			Cursor cursor = resolver.query(media, new String[]{"count(_id)"}, selection, null, null);
 			if (cursor == null) {
 				sSongCount = 0;
@@ -391,7 +392,8 @@ public class MediaUtils {
 		sRandomCacheEnd = -1;
 
 		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-		String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
+		String selection = MediaStore.Audio.Media.IS_MUSIC;
+		selection += " AND length(_data)";
 		Cursor cursor = resolver.query(media, Song.EMPTY_PROJECTION, selection, null, null);
 		if (cursor == null || cursor.getCount() == 0) {
 			sSongCount = 0;
@@ -526,7 +528,7 @@ public class MediaUtils {
 		DatabaseUtils.appendEscapedSQLString(selection, path);
 		 // delete the quotation mark added by the escape method
 		selection.deleteCharAt(selection.length() - 1);
-		selection.append("*' AND is_music!=0");
+		selection.append("*' AND is_music");
 
 		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 		QueryTask result = new QueryTask(media, projection, selection.toString(), null, DEFAULT_SORT);
