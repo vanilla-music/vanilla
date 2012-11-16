@@ -572,7 +572,7 @@ public final class PlaybackService extends Service
 	}
 	
 	public void prepareMediaPlayer(MediaPlayer mp, String path) throws IOException{
-		
+
 		mp.setDataSource(path);
 		
 		Hashtable tags = (new Bastp()).getTags(path);
@@ -1118,13 +1118,12 @@ public final class PlaybackService extends Service
 			}
 		} catch (IOException e) {
 			mErrorMessage = getResources().getString(R.string.song_load_failed, song.path);
-			boolean wasPlaying = (mState & FLAG_PLAYING) != 0;
-			updateState(mState | FLAG_ERROR);
 			Toast.makeText(this, mErrorMessage, Toast.LENGTH_LONG).show();
 			Log.e("VanillaMusic", "IOException", e);
 
-			if (skipBrokenSongs(song) && wasPlaying)
-				updateState((mState | FLAG_PLAYING) & ~FLAG_ERROR);
+			if (skipBrokenSongs(song)) return;
+
+			updateState(mState | FLAG_ERROR);
 		}
 
 		updateNotification();
@@ -1177,8 +1176,19 @@ public final class PlaybackService extends Service
 					continue;
 				}
 				Log.i("VanillaMusic", "Skipped songs, found valid file: " + skipped + ", " + song.path);
+				mPreparedMediaPlayer = null;
+				mCurrentSong = song;
+				mPendingSeek = 0;
+				mState &= ~FLAG_ERROR;
+
 				timelineChanged();
-				setCurrentSong(0);
+				positionInfoChanged();
+
+				ArrayList<PlaybackActivity> list = sActivities;
+				for (int i = list.size(); --i != -1; )
+					list.get(i).setSong(song);
+
+				processSong(song);
 				return true;
 			}
 
