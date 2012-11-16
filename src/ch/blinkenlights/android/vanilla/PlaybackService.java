@@ -23,6 +23,7 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -67,6 +68,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.TreeSet;
 import java.util.Vector;
 import ch.blinkenlights.bastp.Bastp;
 
@@ -367,6 +369,14 @@ public final class PlaybackService extends Service
 	 * of user settings.
 	 */
 	private boolean mForceNotificationVisible;
+	/**
+	 * List of broken files and directories.
+	 */
+	private TreeSet<String> mBrokenPaths;
+	/**
+	 * Number of broken files we can skip before requiring user input.
+	 */
+	private int mBrokenSkipsLeft = 1000;
 
 	@Override
 	public void onCreate()
@@ -438,6 +448,8 @@ public final class PlaybackService extends Service
 		mAccelFiltered = 0.0f;
 		mAccelLast = SensorManager.GRAVITY_EARTH;
 		setupSensor();
+
+		mBrokenPaths = new TreeSet<String>();
 	}
 
 	@Override
@@ -588,6 +600,7 @@ public final class PlaybackService extends Service
 	 * Destroys any currently prepared MediaPlayer and
 	 * re-creates a newone if needed.
 	 */
+	@SuppressLint("NewApi")
 	private void triggerGaplessUpdate() {
 		Log.d("VanillaMusic", "triggering gapless update");
 		
@@ -1100,18 +1113,94 @@ public final class PlaybackService extends Service
 
 			if ((mState & FLAG_ERROR) != 0) {
 				mErrorMessage = null;
+				resetBrokenSongs();
 				updateState(mState & ~FLAG_ERROR);
 			}
 		} catch (IOException e) {
 			mErrorMessage = getResources().getString(R.string.song_load_failed, song.path);
+			boolean wasPlaying = (mState & FLAG_PLAYING) != 0;
 			updateState(mState | FLAG_ERROR);
 			Toast.makeText(this, mErrorMessage, Toast.LENGTH_LONG).show();
 			Log.e("VanillaMusic", "IOException", e);
+
+			if (skipBrokenSongs(song) && wasPlaying)
+				updateState((mState | FLAG_PLAYING) & ~FLAG_ERROR);
 		}
 
 		updateNotification();
 
 		mTimeline.purge();
+	}
+
+	/**
+	 * If there's an error opening a file, try to find the next valid file.
+	 * It keeps a list of broken paths to avoid, and will automatically
+	 * stop searching for new files after allowing some number of skips.
+	 * 
+	 * @return true if a possibly valid song was found
+	 */
+	private boolean skipBrokenSongs(Song song)
+	{
+		if (song == null) return false;
+		
+		int fa = finishAction(mState);
+		if (fa == SongTimeline.FINISH_REPEAT_CURRENT
+				|| fa == SongTimeline.FINISH_STOP_CURRENT
+				|| mTimeline.isEndOfQueue()) return false;
+
+		long startId = song.id;
+		int skipped = 0;
+
+		while (mBrokenSkipsLeft-- > 0) {
+
+			song = getSong(1);
+			if (song == null) break;
+			if (song.id == startId) continue;
+
+			mTimeline.shiftCurrentSongInternal(SongTimeline.SHIFT_NEXT_SONG);
+			skipped++;
+
+			if (song.path == null || song.path.equals("")) continue;
+
+			String match = mBrokenPaths.floor(song.path);
+			if (match != null
+					&& (match.equals(song.path)
+						|| song.path.startsWith(match + File.separator))) continue;
+
+			File file = new File(song.path);
+
+			if (file.isDirectory()) continue;
+
+			if (file.exists() && file.isFile()) {
+				if (!file.canRead()) {
+					mBrokenPaths.add(song.path);
+					continue;
+				}
+				Log.i("VanillaMusic", "Skipped songs, found valid file: " + skipped + ", " + song.path);
+				timelineChanged();
+				setCurrentSong(0);
+				return true;
+			}
+
+			do {
+				File parent = file.getParentFile();
+				if (parent == null || (parent.exists() && parent.isDirectory() && parent.canRead())) {
+					mBrokenPaths.add(file.getPath());
+					break;
+				}
+				file = parent;
+			} while (file != null);
+		}
+		
+		Log.w("VanillaMusic", "Skipped songs, found valid file: " + skipped + ", none");
+		resetBrokenSongs();
+		return false;
+	}
+	
+	private void resetBrokenSongs()
+	{
+		mBrokenPaths.clear();
+		mBrokenSkipsLeft = 1000;
 	}
 
 	@Override

@@ -535,7 +535,7 @@ public final class SongTimeline {
 	 *
 	 * @param delta -1 to move to the previous song or 1 for the next.
 	 */
-	private void shiftCurrentSongInternal(int delta)
+	protected void shiftCurrentSongInternal(int delta)
 	{
 		int pos = mCurrentPos + delta;
 
