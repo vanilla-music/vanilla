@@ -535,7 +535,7 @@ public final class SongTimeline {
 	 *
 	 * @param delta -1 to move to the previous song or 1 for the next.
 	 */
-	private void shiftCurrentSongInternal(int delta)
+	protected void shiftCurrentSongInternal(int delta)
 	{
 		int pos = mCurrentPos + delta;
 
@@ -733,8 +733,10 @@ public final class SongTimeline {
 				mSongs.subList(mCurrentPos + 1, mSongs.size()).clear();
 		}
 
-		mCallback.activeSongReplaced(+1, getSong(+1));
-		mCallback.positionInfoChanged();
+		if (mCallback != null) {
+			mCallback.activeSongReplaced(+1, getSong(+1));
+			mCallback.positionInfoChanged();
+		}
 
 		changed();
 	}
@@ -761,6 +763,8 @@ public final class SongTimeline {
 	 */
 	private void broadcastChangedSongs()
 	{
+		if (mCallback == null) return;
+
 		Song previous = getSong(-1);
 		Song current = getSong(0);
 		Song next = getSong(+1);
