@@ -134,7 +134,7 @@ public class FileSystemAdapter
 		mFolderIcon = activity.getResources().getDrawable(R.drawable.folder);
 		mInflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		if (limiter == null) {
-			limiter = buildLimiter(Environment.getExternalStorageDirectory());
+			limiter = buildLimiter( activity.getFilesystemBrowseStart() );
 		}
 		setLimiter(limiter);
 	}

@@ -150,5 +150,6 @@ THE SOFTWARE.
 		<activity
 			android:name="TabOrderActivity"
 			android:theme="@style/BackActionBar" />
+		<activity android:name="FilebrowserStartActivity" />
 	</application>
 </manifest>
