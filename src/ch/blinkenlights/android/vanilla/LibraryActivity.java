@@ -687,7 +687,6 @@ public class LibraryActivity
 				menu.add(0, MENU_ENQUEUE_ALL, 0, R.string.enqueue_all).setIntent(rowData);
 			if (type == MediaUtils.TYPE_PLAYLIST) {
 				menu.add(0, MENU_RENAME_PLAYLIST, 0, R.string.rename).setIntent(rowData);
-				menu.add(0, MENU_EXPAND, 0, R.string.edit).setIntent(rowData);
 			} else if (rowData.getBooleanExtra(LibraryAdapter.DATA_EXPANDABLE, false)) {
 				menu.add(0, MENU_EXPAND, 0, R.string.expand).setIntent(rowData);
 			}
