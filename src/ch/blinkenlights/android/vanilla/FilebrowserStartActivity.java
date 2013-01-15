@@ -51,7 +51,7 @@ public class FilebrowserStartActivity extends PlaybackActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		setTitle("TRNS: FILEPCKER");
+		setTitle(R.string.filebrowser_start);
 		setContentView(R.layout.filebrowser_content);
 		
 		mCurrentPath = (String)getFilesystemBrowseStart().getAbsolutePath();

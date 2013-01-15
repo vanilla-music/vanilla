@@ -235,6 +235,8 @@ THE SOFTWARE.
 	<string name="show_queue">Show queue</string>
 	<string name="queue">Queue</string>
 	<string name="toggle_controls">Toggle controls</string>
-	<string name="filebrowser_start">TRNS! FP Start</string>
-	<string name="customize_filebrowser_start">Browsing files starts at this directory</string>
+
+	<string name="filebrowser_start">Filebrowser home</string>
+	<string name="customize_filebrowser_start">Filebrowser starts at this directory</string>
+	<string name="select">Select</string>
 </resources>
