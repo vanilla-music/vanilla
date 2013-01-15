@@ -562,7 +562,7 @@ public final class PlaybackService extends Service
 	public void prepareMediaPlayer(MediaPlayer mp, String path) throws IOException{
 		
 		mp.setDataSource(path);
-		
+		/*
 		Hashtable tags = (new Bastp()).getTags(path);
 		float adjust   = 1.0f;
 		
@@ -577,10 +577,10 @@ public final class PlaybackService extends Service
 			
 			adjust = (float)Math.pow(10, (rg_float/20) );
 			Toast.makeText(this, path+"\n"+" PX "+rg_raw+" adj = "+adjust, Toast.LENGTH_LONG).show();
-			
 		}
 		
 		mp.setVolume(adjust, adjust);
+		*/
 		mp.prepare();
 	}
 	

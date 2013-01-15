@@ -34,6 +34,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import junit.framework.Assert;
+import android.os.Environment;
+import android.util.Log;
 
 /**
  * Provides some static Song/MediaStore-related utility functions.
@@ -512,6 +514,43 @@ public class MediaUtils {
 		return file.delete();
 	}
 
+
+	/**
+	* This is an ugly hack: The tries to 'guess' if given path
+	* is also accessible using a fuse mount
+	*/
+	private static String sanitizeMediaPath(String path) {
+		Log.v("Vanilla", "Input path is: "+path);
+		
+		String exPath  = Environment.getExternalStorageDirectory().getAbsolutePath();
+		File exStorage = new File(exPath+"/Android");
+		long exLastmod = exStorage.lastModified();
+		
+		if(exLastmod != 0) {
+			String pfx = path;
+			while(true) {
+				if((new File(pfx+"/Android")).lastModified() == exLastmod) {
+					String guessPath = exPath + path.substring(pfx.length());
+					if( (new File(guessPath)).exists() ) {
+						Log.v("Vanilla", "OLD="+path);
+						Log.v("Vanilla", "NEW="+guessPath);
+						path = guessPath;
+						break;
+					}
+				}
+				
+				pfx = (new File(pfx)).getParent();
+				if(pfx == null)
+					break; /* hit root */
+			}
+		}
+		
+		Log.v("Vanilla", "Returning "+path);
+		return path;
+	}
+	
+
+
 	/**
 	 * Build a query that will contain all the media under the given path.
 	 *
@@ -523,9 +562,10 @@ public class MediaUtils {
 	{
 		// It would be better to use selectionArgs to pass path here, but there
 		// doesn't appear to be any way to pass the * when using it.
+		Log.v("Vanilla", "buildFileQuery "+path);
 		StringBuilder selection = new StringBuilder();
 		selection.append("_data GLOB ");
-		DatabaseUtils.appendEscapedSQLString(selection, path);
+		DatabaseUtils.appendEscapedSQLString(selection, sanitizeMediaPath(path));
 		 // delete the quotation mark added by the escape method
 		selection.deleteCharAt(selection.length() - 1);
 		selection.append("*' AND is_music");
