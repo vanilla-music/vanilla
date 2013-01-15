@@ -513,15 +513,22 @@ public class FullPlaybackActivity extends PlaybackActivity
 	{
 		Song song = mCurrentSong;
 
-		if (song == null) {
-			mGenre = null;
-			mTrack = null;
-			mYear = null;
-			mComposer = null;
-			mFormat = null;
-		} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
-			CompatMetadata data = new CompatMetadata(song.path);
+		mGenre = null;
+		mTrack = null;
+		mYear = null;
+		mComposer = null;
+		mFormat = null;
 
+		if(song != null) {
+			
+			MediaMetadataRetriever data = new MediaMetadataRetriever();
+			
+			try {
+				data.setDataSource(song.path);
+			} catch (Exception e) {
+				Log.w("VanillaMusic", "Failed to extract metadata from " + song.path);
+			}
+			
 			mGenre = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_GENRE);
 			mTrack = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER);
 			String composer = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_COMPOSER);
@@ -548,7 +555,6 @@ public class FullPlaybackActivity extends PlaybackActivity
 				sb.append("kbps");
 			}
 			mFormat = sb.toString();
-
 			data.release();
 		}
 
