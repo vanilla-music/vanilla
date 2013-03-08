@@ -783,7 +783,7 @@ public final class PlaybackService extends Service
 
 				mHandler.removeMessages(RELEASE_WAKE_LOCK);
 				try {
-					if (mWakeLock != null)
+					if (mWakeLock != null && mWakeLock.isHeld() == false)
 						mWakeLock.acquire();
 				} catch (SecurityException e) {
 					// Don't have WAKE_LOCK permission
