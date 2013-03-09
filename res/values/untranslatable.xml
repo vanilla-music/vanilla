@@ -52,6 +52,7 @@ THE SOFTWARE.
 		<item>EnqueueArtist</item>
 		<item>EnqueueGenre</item>
 		<item>ClearQueue</item>
+		<item>ShowQueue</item>
 		<item>ToggleControls</item>
 	</string-array>
 	<string-array name="swipe_action_entries">
@@ -69,6 +70,7 @@ THE SOFTWARE.
 		<item>@string/enqueue_current_artist</item>
 		<item>@string/enqueue_current_genre</item>
 		<item>@string/clear_queue</item>
+		<item>@string/show_queue</item>
 		<item>@string/toggle_controls</item>
 	</string-array>
 	<string-array name="default_playlist_action_entries">
