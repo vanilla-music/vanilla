@@ -48,4 +48,9 @@ THE SOFTWARE.
 		android:title="@string/headset_play_title"
 		android:summary="@string/headset_play_summary"
 		android:defaultValue="false" />
+		<CheckBoxPreference
+		android:key="enable_replaygain"
+		android:title="@string/replaygain_title"
+		android:summary="@string/replaygain_summary"
+		android:defaultValue="false" />
 </PreferenceScreen>

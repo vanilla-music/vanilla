@@ -367,7 +367,11 @@ public final class PlaybackService extends Service
 	 * of user settings.
 	 */
 	private boolean mForceNotificationVisible;
-
+	/**
+	 * Enables or disables Replay Gain
+	 */
+	private boolean mReplayGainEnabled;
+	
 	@Override
 	public void onCreate()
 	{
@@ -399,6 +403,7 @@ public final class PlaybackService extends Service
 		mHeadsetPause = getSettings(this).getBoolean(PrefKeys.HEADSET_PAUSE, true);
 		mShakeAction = settings.getBoolean(PrefKeys.ENABLE_SHAKE, false) ? Action.getAction(settings, PrefKeys.SHAKE_ACTION, Action.NextSong) : Action.Nothing;
 		mShakeThreshold = settings.getInt(PrefKeys.SHAKE_THRESHOLD, 80) / 10.0f;
+		mReplayGainEnabled = settings.getBoolean(PrefKeys.ENABLE_REPLAYGAIN, false);
 
 		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
 		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicLock");
@@ -562,7 +567,15 @@ public final class PlaybackService extends Service
 	public void prepareMediaPlayer(MediaPlayer mp, String path) throws IOException{
 		
 		mp.setDataSource(path);
-		/*
+		
+		if(mReplayGainEnabled == true) {
+			applyReplayGain(mp, path);
+		}
+		
+		mp.prepare();
+	}
+	
+	private void applyReplayGain(MediaPlayer mp, String path) {
 		Hashtable tags = (new Bastp()).getTags(path);
 		float adjust   = 1.0f;
 		
@@ -576,12 +589,10 @@ public final class PlaybackService extends Service
 			} catch(Exception e) {}
 			
 			adjust = (float)Math.pow(10, (rg_float/20) );
-			Toast.makeText(this, path+"\n"+" PX "+rg_raw+" adj = "+adjust, Toast.LENGTH_LONG).show();
+			Toast.makeText(this, path+"\n"+" PX "+rg_raw+" adj = "+adjust, Toast.LENGTH_SHORT).show();
 		}
 		
 		mp.setVolume(adjust, adjust);
-		*/
-		mp.prepare();
 	}
 	
 	/**
@@ -697,6 +708,8 @@ public final class PlaybackService extends Service
 			setupSensor();
 		} else if (PrefKeys.SHAKE_THRESHOLD.equals(key)) {
 			mShakeThreshold = settings.getInt(PrefKeys.SHAKE_THRESHOLD, 80) / 10.0f;
+		} else if (PrefKeys.ENABLE_REPLAYGAIN.equals(key)) {
+			mReplayGainEnabled = settings.getBoolean(PrefKeys.ENABLE_REPLAYGAIN, false);
 		}
 
 		CompatFroyo.dataChanged(this);
