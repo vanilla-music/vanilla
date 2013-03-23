@@ -121,9 +121,11 @@ public abstract class PlaybackActivity extends Activity
 
 		Window window = getWindow();
 		if (prefs.getBoolean(PrefKeys.DISABLE_LOCKSCREEN, false))
-			window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+			window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+					| WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
 		else
-			window.clearFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+			window.clearFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+					| WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
 	}
 
 	@Override
