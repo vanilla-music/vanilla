@@ -37,6 +37,8 @@
   <string name="edit">Bearbeiten</string>
   <string name="rename">Umbenennen</string>
   <string name="add_to_playlist">Zur Wiedergabeliste hinzufügen…</string>
+  <string name="add_to_favorites">Zu Favoriten hinzufügen…</string>
+  <string name="playlist_favorites">Favoriten</string>
   <string name="new_playlist">Neue Wiedergabeliste…</string>
   <string name="expand">Aufklappen</string>
   <string name="delete">Entfernen</string>

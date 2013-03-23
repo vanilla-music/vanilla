@@ -335,7 +335,7 @@ public abstract class PlaybackActivity extends Activity
 	static final int MENU_ENQUEUE_ARTIST = 9;
 	static final int MENU_ENQUEUE_GENRE = 10;
 	static final int MENU_CLEAR_QUEUE = 11;
-	static final int MENU_TOGGLE_CONTROLS = 12;
+	static final int MENU_SONG_FAVORITE = 12;
 	static final int MENU_SHOW_QUEUE = 13;
 
 	@Override

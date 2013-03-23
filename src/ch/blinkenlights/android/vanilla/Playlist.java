@@ -49,6 +49,23 @@ public class Playlist {
 
 	/**
 	 * Retrieves the id for a playlist with the given name.
+	 * A new playlist will be created if given name does not exist
+	 * @param resolver A ContentResolver to use.
+	 * @param name The name of the playlist.
+	 * @return The id of the playlist, or -1 if there is no playlist with the
+	 * given name.
+	 */
+	public static long getOrCreatePlaylist(ContentResolver resolver, String name)
+	{
+		long id = getPlaylist(resolver, name);
+		if(id == -1) {
+			id = createPlaylist(resolver, name);
+		}
+		return id;
+	}
+
+	/**
+	 * Retrieves the id for a playlist with the given name.
 	 *
 	 * @param resolver A ContentResolver to use.
 	 * @param name The name of the playlist.

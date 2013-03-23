@@ -31,6 +31,7 @@ import android.os.Bundle;
 import android.os.Message;
 import android.text.format.DateUtils;
 import android.util.Log;
+import android.content.ContentResolver;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -43,6 +44,7 @@ import android.widget.SeekBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * The primary playback screen with playback controls and large cover display.
@@ -357,7 +359,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 		menu.add(0, MENU_ENQUEUE_ALBUM, 0, R.string.enqueue_current_album).setIcon(R.drawable.ic_menu_add);
 		menu.add(0, MENU_ENQUEUE_ARTIST, 0, R.string.enqueue_current_artist).setIcon(R.drawable.ic_menu_add);
 		menu.add(0, MENU_ENQUEUE_GENRE, 0, R.string.enqueue_current_genre).setIcon(R.drawable.ic_menu_add);
-		menu.add(0, MENU_TOGGLE_CONTROLS, 0, R.string.toggle_controls);
+		menu.add(0, MENU_SONG_FAVORITE, 0, R.string.add_to_favorites);
 		menu.add(0, MENU_SHOW_QUEUE, 0, R.string.show_queue);
 		return true;
 	}
@@ -382,9 +384,23 @@ public class FullPlaybackActivity extends PlaybackActivity
 		case MENU_CLEAR_QUEUE:
 			PlaybackService.get(this).clearQueue();
 			break;
-		case MENU_TOGGLE_CONTROLS:
-			setControlsVisible(!mControlsVisible);
-			mHandler.sendEmptyMessage(MSG_SAVE_CONTROLS);
+		case MENU_SONG_FAVORITE:
+			PlaybackService psvc = PlaybackService.get(this);
+			ContentResolver resolver = getContentResolver();
+			String plName = getString(R.string.playlist_favorites);
+			long plId = Playlist.getOrCreatePlaylist(resolver, plName);
+			
+			if(psvc.getTimelineLength() > 0) {
+				int qpos = psvc.getTimelinePosition();
+				Song song = psvc.getSongByQueuePosition(qpos);
+				if(song != null) {
+					QueryTask query = MediaUtils.buildFileQuery(song.path, Song.EMPTY_PROJECTION);
+					int count = Playlist.addToPlaylist(resolver, plId, query);
+					String message = getResources().getQuantityString(R.plurals.added_to_playlist, count, count, plName);
+					Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+				}
+			}
+			
 			break;
 		case MENU_SHOW_QUEUE:
 			startActivity(new Intent(this, ShowQueueActivity.class));
