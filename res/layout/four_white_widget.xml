@@ -73,6 +73,7 @@ THE SOFTWARE.
 				android:textColor="#111"
 				android:textSize="16sp"
 				android:textStyle="bold"
+				android:includeFontPadding="false"
 				android:visibility="gone" />
 			<TextView
 				android:id="@+id/artist"
@@ -84,6 +85,7 @@ THE SOFTWARE.
 				android:singleLine="true"
 				android:text="@string/app_name"
 				android:textColor="#111"
+				android:includeFontPadding="false"
 				android:textSize="10sp" />
 		</LinearLayout>
 		<LinearLayout
