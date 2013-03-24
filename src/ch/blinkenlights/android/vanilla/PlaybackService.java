@@ -66,7 +66,7 @@ import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Vector;
 import ch.blinkenlights.bastp.Bastp;
 
@@ -576,7 +576,7 @@ public final class PlaybackService extends Service
 	}
 	
 	private void applyReplayGain(MediaPlayer mp, String path) {
-		Hashtable tags = (new Bastp()).getTags(path);
+		HashMap tags = (new Bastp()).getTags(path);
 		float adjust   = 1.0f;
 		
 		if(tags.containsKey("REPLAYGAIN_TRACK_GAIN")) {

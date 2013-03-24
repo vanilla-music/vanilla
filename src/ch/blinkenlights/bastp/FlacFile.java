@@ -12,7 +12,7 @@ package ch.blinkenlights.bastp;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Enumeration;
 
 
@@ -22,11 +22,11 @@ public class FlacFile extends Common {
 	public FlacFile() {
 	}
 	
-	public Hashtable getTags(RandomAccessFile s) throws IOException {
+	public HashMap getTags(RandomAccessFile s) throws IOException {
 		int xoff  = 4;  // skip file magic
 		int retry = 64;
 		int r[];
-		Hashtable tags = new Hashtable();
+		HashMap tags = new HashMap();
 		
 		for(; retry > 0; retry--) {
 			r = parse_metadata_block(s, xoff);

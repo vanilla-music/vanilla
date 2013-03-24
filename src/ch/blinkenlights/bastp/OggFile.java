@@ -13,7 +13,7 @@ package ch.blinkenlights.bastp;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 
 public class OggFile extends Common {
@@ -24,10 +24,10 @@ public class OggFile extends Common {
 	public OggFile() {
 	}
 	
-	public Hashtable getTags(RandomAccessFile s) throws IOException {
+	public HashMap getTags(RandomAccessFile s) throws IOException {
 		long offset = 0;
 		int  retry  = 64;
-		Hashtable tags = new Hashtable();
+		HashMap tags = new HashMap();
 		
 		for( ; retry > 0 ; retry-- ) {
 			long res[] = parse_ogg_page(s, offset);
@@ -88,7 +88,7 @@ public class OggFile extends Common {
 	/* In 'vorbiscomment' field is prefixed with \3vorbis in OGG files
 	** we check that this marker is present and call the generic comment
 	** parset with the correct offset (+7) */
-	private Hashtable parse_ogg_vorbis_comment(RandomAccessFile s, long offset, long pl_len) throws IOException {
+	private HashMap parse_ogg_vorbis_comment(RandomAccessFile s, long offset, long pl_len) throws IOException {
 		final int pfx_len = 7;
 		byte[] pfx        = new byte[pfx_len];
 		

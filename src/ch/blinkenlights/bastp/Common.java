@@ -1,8 +1,19 @@
+/*****************************************************************
+ *  This file is part of 'bastp!' - the BuggyAndSloppyTagParser! *
+ *                                                               *
+ * (C) 2012 Adrian Ulrich                                        *
+ *                                                               *
+ * Released as 'Public Domain' software                          *
+ *                                                               *
+ *                                                               *
+ *****************************************************************/
+
+
 package ch.blinkenlights.bastp;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Vector;
 
 public class Common {
@@ -45,8 +56,8 @@ public class Common {
 		System.out.println("DBUG "+s);
 	}
 	
-	public Hashtable parse_vorbis_comment(RandomAccessFile s, long offset, long payload_len) throws IOException {
-		Hashtable tags = new Hashtable();
+	public HashMap parse_vorbis_comment(RandomAccessFile s, long offset, long payload_len) throws IOException {
+		HashMap tags = new HashMap();
 		int comments   = 0;                // number of found comments 
 		int xoff       = 0;                // offset within 'scratch'
 		int can_read   = (int)(payload_len > MAX_PKT_SIZE ? MAX_PKT_SIZE : payload_len);
@@ -74,19 +85,20 @@ public class Common {
 			String[] tag_vec = tag_raw.split("=",2);
 			String   tag_key = tag_vec[0].toUpperCase();
 			
-			/* A key can have multiple values, so we need
-			** to store all child data in an array */
-			if(tags.containsKey(tag_key)) {
-				((Vector)tags.get(tag_key)).add(tag_vec[1]); // just add to existing vecotr
-			}
-			else {
-				Vector vx = new Vector();
-				vx.add(tag_vec[1]);
-				tags.put(tag_key, vx);
-			}
-			
+			addTagEntry(tags, tag_key, tag_vec[1]);
 		}
 		return tags;
+	}
+	
+	public void addTagEntry(HashMap tags, String key, String value) {
+		if(tags.containsKey(key)) {
+			((Vector)tags.get(key)).add(value); // just add to existing vector
+		}
+		else {
+			Vector vx = new Vector();
+			vx.add(value);
+			tags.put(key, vx);
+		}
 	}
 	
 }
