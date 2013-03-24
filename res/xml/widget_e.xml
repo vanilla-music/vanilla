@@ -4,4 +4,5 @@
 	android:minWidth="250dip"
 	android:minHeight="40dip"
 	android:initialLayout="@layout/widget_e"
+	android:previewImage="@drawable/preview_widget_e"
 	android:resizeMode="horizontal|vertical" />
