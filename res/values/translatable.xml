@@ -152,10 +152,17 @@ THE SOFTWARE.
 	<string name="headset_pause_summary">Pause when the headphones are unplugged.</string>
 	<string name="headset_play_title">Play When Plugged</string>
 	<string name="headset_play_summary">Play when the headphones are plugged in. (Only works when the service is running.)</string>
+
 	<string name="replaygain">Replay Gain</string>
 	<string name="replaygain_title">Enable Replay Gain</string>
 	<string name="replaygain_summary">Configure handling of Replay Gain information</string>
-
+	<string name="replaygain_track_title">Enable per-track Replay Gain</string>
+	<string name="replaygain_track_summary">Play all tracks at equal loudness</string>
+	<string name="replaygain_album_title">Enable album Replay Gain</string>
+	<string name="replaygain_album_summary">Preserve album dynamics</string>
+	<string name="replaygain_silence_title">Keep volume down</string>
+	<string name="replaygain_silence_summary">Automatically reduce the volume by 30% for tracks without any Replay Gain information</string>
+	
 	<string name="notifications">Notifications</string>
 	<string name="notification_mode_title">Notification Mode</string>
 	<string name="notification_action_title">Notification Action</string>

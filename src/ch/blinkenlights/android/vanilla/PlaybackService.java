@@ -370,7 +370,9 @@ public final class PlaybackService extends Service
 	/**
 	 * Enables or disables Replay Gain
 	 */
-	private boolean mReplayGainEnabled;
+	private boolean mReplayGainTrackEnabled;
+	private boolean mReplayGainAlbumEnabled;
+	private boolean mReplayGainSilenceEnabled;
 	
 	@Override
 	public void onCreate()
@@ -403,7 +405,10 @@ public final class PlaybackService extends Service
 		mHeadsetPause = getSettings(this).getBoolean(PrefKeys.HEADSET_PAUSE, true);
 		mShakeAction = settings.getBoolean(PrefKeys.ENABLE_SHAKE, false) ? Action.getAction(settings, PrefKeys.SHAKE_ACTION, Action.NextSong) : Action.Nothing;
 		mShakeThreshold = settings.getInt(PrefKeys.SHAKE_THRESHOLD, 80) / 10.0f;
-		mReplayGainEnabled = settings.getBoolean(PrefKeys.ENABLE_REPLAYGAIN, false);
+
+		mReplayGainTrackEnabled = settings.getBoolean(PrefKeys.ENABLE_TRACK_REPLAYGAIN, false);
+		mReplayGainAlbumEnabled = settings.getBoolean(PrefKeys.ENABLE_ALBUM_REPLAYGAIN, false);
+		mReplayGainSilenceEnabled = settings.getBoolean(PrefKeys.SILENCE_NONRG_TRACKS, false);
 
 		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
 		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicLock");
@@ -565,34 +570,60 @@ public final class PlaybackService extends Service
 	}
 	
 	public void prepareMediaPlayer(MediaPlayer mp, String path) throws IOException{
+		float adjust = 0f;
 		
 		mp.setDataSource(path);
 		
-		if(mReplayGainEnabled == true) {
-			applyReplayGain(mp, path);
+		float[] rg = calculateReplayGainAdjustment(path); /* track, album */
+		
+		if(mReplayGainAlbumEnabled) {
+			adjust = (rg[0] > 0 ? rg[0] : adjust); /* do we have track adjustment ? */
+			adjust = (rg[1] > 0 ? rg[1] : adjust); /* ..or, even better, album adj? */
+		}
+		
+		if(mReplayGainTrackEnabled || (mReplayGainAlbumEnabled && adjust == 0)) {
+			adjust = (rg[1] > 0 ? rg[1] : adjust); /* do we have album adjustment ? */
+			adjust = (rg[0] > 0 ? rg[0] : adjust); /* ..or, even better, track adj? */
+		}
+		
+		if(adjust == 0 && mReplayGainSilenceEnabled) {
+			adjust = 0.7f;
+		}
+		
+		if(adjust > 0) {
+			Toast.makeText(this, path+"\n"+" PX "+adjust, Toast.LENGTH_SHORT).show();
+			mp.setVolume(adjust, adjust);
+			Log.d("VanillaMusic", "adjusting replaygain of "+path+" to "+adjust);
 		}
 		
 		mp.prepare();
 	}
 	
-	private void applyReplayGain(MediaPlayer mp, String path) {
-		HashMap tags = (new Bastp()).getTags(path);
-		float adjust   = 1.0f;
+	/**
+	 * Returns TRACK, ALBUM gain values for given path
+	 * A value of 0 means that the tag was not found in given file
+	*/
+	private float[] calculateReplayGainAdjustment(String path) {
+		String[] keys = { "REPLAYGAIN_TRACK_GAIN", "REPLAYGAIN_ALBUM_GAIN" };
+		float[] adjust= { 0f                     , 0f                      };
+		HashMap tags  = (new Bastp()).getTags(path);
 		
-		if(tags.containsKey("REPLAYGAIN_TRACK_GAIN")) {
-			String rg_raw = (String)((Vector)tags.get("REPLAYGAIN_TRACK_GAIN")).get(0);
-			String rg_numonly = "";
-			float rg_float = 0f;
-			try {
-				String nums = rg_raw.replaceAll("[^0-9.-]","");
-				rg_float = Float.parseFloat(nums);
-			} catch(Exception e) {}
-			
-			adjust = (float)Math.pow(10, (rg_float/20) );
-			Toast.makeText(this, path+"\n"+" PX "+rg_raw+" adj = "+adjust, Toast.LENGTH_SHORT).show();
+		for (int i=0; i<keys.length; i++) {
+			String curKey = keys[i];
+			if(tags.containsKey(curKey)) {
+				String rg_raw = (String)((Vector)tags.get(curKey)).get(0);
+				String rg_numonly = "";
+				float rg_float = 0f;
+				try {
+					String nums = rg_raw.replaceAll("[^0-9.-]","");
+					rg_float = Float.parseFloat(nums);
+				} catch(Exception e) {}
+				
+				float rg_result = (float)Math.pow(10, (rg_float/20) );
+				adjust[i] = rg_result;
+			}
 		}
-		
-		mp.setVolume(adjust, adjust);
+		return adjust;
 	}
 	
 	/**
@@ -708,8 +739,12 @@ public final class PlaybackService extends Service
 			setupSensor();
 		} else if (PrefKeys.SHAKE_THRESHOLD.equals(key)) {
 			mShakeThreshold = settings.getInt(PrefKeys.SHAKE_THRESHOLD, 80) / 10.0f;
-		} else if (PrefKeys.ENABLE_REPLAYGAIN.equals(key)) {
-			mReplayGainEnabled = settings.getBoolean(PrefKeys.ENABLE_REPLAYGAIN, false);
+		} else if (PrefKeys.ENABLE_TRACK_REPLAYGAIN.equals(key)) {
+			mReplayGainTrackEnabled = settings.getBoolean(PrefKeys.ENABLE_TRACK_REPLAYGAIN, false);
+		} else if (PrefKeys.ENABLE_ALBUM_REPLAYGAIN.equals(key)) {
+			mReplayGainAlbumEnabled = settings.getBoolean(PrefKeys.ENABLE_ALBUM_REPLAYGAIN, false);
+		} else if (PrefKeys.SILENCE_NONRG_TRACKS.equals(key)) {
+			mReplayGainSilenceEnabled = settings.getBoolean(PrefKeys.SILENCE_NONRG_TRACKS, false);
 		}
 
 		CompatFroyo.dataChanged(this);
