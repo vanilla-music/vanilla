@@ -587,15 +587,17 @@ public final class PlaybackService extends Service
 		}
 		
 		if(adjust == 0 && mReplayGainSilenceEnabled) {
-			adjust = 0.7f;
+			adjust = 0.25f;
 		}
 		
 		if(adjust > 0) {
-			Toast.makeText(this, path+"\n"+" PX "+adjust, Toast.LENGTH_SHORT).show();
-			mp.setVolume(adjust, adjust);
+			adjust = adjust * 1.5f; /* add some slack */
 			Log.d("VanillaMusic", "adjusting replaygain of "+path+" to "+adjust);
+		} else {
+			adjust = 1.0f; /* no RG found -> (re-)set mediaplayer to default volume */
 		}
 		
+		mp.setVolume(adjust, adjust);
 		mp.prepare();
 	}
 	
@@ -631,7 +633,7 @@ public final class PlaybackService extends Service
 	 * re-creates a newone if needed.
 	 */
 	private void triggerGaplessUpdate() {
-		Log.d("VanillaMusic", "triggering gapless update");
+		// Log.d("VanillaMusic", "triggering gapless update");
 		
 		if(mMediaPlayerInitialized != true)
 			return;
@@ -646,7 +648,7 @@ public final class PlaybackService extends Service
 			mMediaPlayer.setNextMediaPlayer(null);
 			mPreparedMediaPlayer.release();
 			mPreparedMediaPlayer = null;
-			Log.d("VanillaMusic", "old prepared player destroyed");
+			// Log.d("VanillaMusic", "old prepared player destroyed");
 		}
 		
 		int fa = finishAction(mState);
@@ -659,7 +661,7 @@ public final class PlaybackService extends Service
 				mPreparedMediaPlayer = getNewMediaPlayer();
 				prepareMediaPlayer(mPreparedMediaPlayer, nextSong.path);
 				mMediaPlayer.setNextMediaPlayer(mPreparedMediaPlayer);
-				Log.d("VanillaMusic", "New media player prepared as "+mPreparedMediaPlayer+" with path "+nextSong.path);
+				// Log.d("VanillaMusic", "New media player prepared as "+mPreparedMediaPlayer+" with path "+nextSong.path);
 			} catch (IOException e) {
 				Log.e("VanillaMusic", "IOException", e);
 			}
