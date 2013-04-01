@@ -152,8 +152,9 @@ THE SOFTWARE.
 	<string name="headset_pause_summary">Pause when the headphones are unplugged.</string>
 	<string name="headset_play_title">Play When Plugged</string>
 	<string name="headset_play_summary">Play when the headphones are plugged in. (Only works when the service is running.)</string>
-	<string name="replaygain_title">Enable replay gain</string>
-	<string name="replaygain_summary">Read replay gain information from tags and decrease volume if needed</string>
+	<string name="replaygain">Replay Gain</string>
+	<string name="replaygain_title">Enable Replay Gain</string>
+	<string name="replaygain_summary">Configure handling of Replay Gain information</string>
 
 	<string name="notifications">Notifications</string>
 	<string name="notification_mode_title">Notification Mode</string>

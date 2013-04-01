@@ -89,6 +89,32 @@ public class PreferencesActivity extends PreferenceActivity {
 		}
 	}
 
+	public static class ReplayGainActivity extends PreferenceActivity {
+		@SuppressWarnings("deprecation")
+		@Override
+		public void onCreate(Bundle savedInstanceState)
+		{
+			super.onCreate(savedInstanceState);
+			setTitle(R.string.replaygain);
+			addPreferencesFromResource(R.xml.preference_replaygain);
+		}
+			@Override
+		public boolean onOptionsItemSelected(MenuItem item)
+		{
+			finish();
+			return true;
+		}
+	}
+
+	public static class ReplayGainFragment extends PreferenceFragment {
+		@Override
+		public void onCreate(Bundle savedInstanceState)
+		{
+			super.onCreate(savedInstanceState);
+			addPreferencesFromResource(R.xml.preference_replaygain);
+		}
+	}
+
 	public static class PlaybackActivity extends PreferenceActivity {
 		@SuppressWarnings("deprecation")
 		@Override

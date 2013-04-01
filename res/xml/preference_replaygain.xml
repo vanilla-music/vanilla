@@ -24,36 +24,8 @@ THE SOFTWARE.
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:persistent="true">
 	<CheckBoxPreference
-		android:key="media_button"
-		android:title="@string/media_button_title"
-		android:summary="@string/media_button_summary"
-		android:defaultValue="true" />
-	<CheckBoxPreference
-		android:key="media_button_beep"
-		android:title="@string/media_button_beep_title"
-		android:summary="@string/media_button_beep_summary"
-		android:defaultValue="true" />
-	<CheckBoxPreference
-		android:key="headset_only"
-		android:title="@string/headset_only_title"
-		android:defaultValue="false"
-		android:summary="@string/headset_only_summary" />
-	<CheckBoxPreference
-		android:key="headset_pause"
-		android:title="@string/headset_pause_title"
-		android:defaultValue="true"
-		android:summary="@string/headset_pause_summary" />
-	<CheckBoxPreference
-		android:key="headset_play"
-		android:title="@string/headset_play_title"
-		android:summary="@string/headset_play_summary"
+		android:key="enable_replaygain"
+		android:title="@string/replaygain_title"
+		android:summary="@string/replaygain_summary"
 		android:defaultValue="false" />
-	<PreferenceScreen
-		android:title="@string/replaygain"
-		android:summary="@string/replaygain_summary">
-		<intent
-			android:targetPackage="ch.blinkenlights.android.vanilla"
-			android:targetClass="ch.blinkenlights.android.vanilla.PreferencesActivity$ReplayGainActivity" />
-	</PreferenceScreen>
-
 </PreferenceScreen>
