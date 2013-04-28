@@ -33,9 +33,4 @@ THE SOFTWARE.
 		android:title="@string/replaygain_album_title"
 		android:summary="@string/replaygain_album_summary"
 		android:defaultValue="false" />
-	<CheckBoxPreference
-		android:key="silence_nonreplaygain_tracks"
-		android:title="@string/replaygain_silence_title"
-		android:summary="@string/replaygain_silence_summary"
-		android:defaultValue="false" />
 </PreferenceScreen>

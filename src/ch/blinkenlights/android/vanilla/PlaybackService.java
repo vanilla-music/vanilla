@@ -44,6 +44,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.audiofx.Equalizer;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -301,6 +302,7 @@ public final class PlaybackService extends Service
 	private Handler mHandler;
 	MediaPlayer mMediaPlayer;
 	MediaPlayer mPreparedMediaPlayer;
+	Equalizer mEqualizer;
 	private boolean mMediaPlayerInitialized;
 	private PowerManager.WakeLock mWakeLock;
 	private NotificationManager mNotificationManager;
@@ -372,7 +374,6 @@ public final class PlaybackService extends Service
 	 */
 	private boolean mReplayGainTrackEnabled;
 	private boolean mReplayGainAlbumEnabled;
-	private boolean mReplayGainSilenceEnabled;
 	
 	@Override
 	public void onCreate()
@@ -385,6 +386,7 @@ public final class PlaybackService extends Service
 		int state = loadState();
 
 		mMediaPlayer = getNewMediaPlayer();
+		mEqualizer = getNewEqualizer();
 		
 		mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 		mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
@@ -408,7 +410,6 @@ public final class PlaybackService extends Service
 
 		mReplayGainTrackEnabled = settings.getBoolean(PrefKeys.ENABLE_TRACK_REPLAYGAIN, false);
 		mReplayGainAlbumEnabled = settings.getBoolean(PrefKeys.ENABLE_ALBUM_REPLAYGAIN, false);
-		mReplayGainSilenceEnabled = settings.getBoolean(PrefKeys.SILENCE_NONRG_TRACKS, false);
 
 		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
 		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicLock");
@@ -535,6 +536,10 @@ public final class PlaybackService extends Service
 		// clear the notification
 		stopForeground(true);
 
+		if (mEqualizer != null) {
+			mEqualizer.release();
+			mEqualizer = null;
+		}
 		if (mMediaPlayer != null) {
 			saveState(mMediaPlayer.getCurrentPosition());
 			mMediaPlayer.release();
@@ -569,36 +574,53 @@ public final class PlaybackService extends Service
 		return mp;
 	}
 	
+	private Equalizer getNewEqualizer() {
+		Equalizer eq = null;
+		try {
+			eq = new Equalizer(0, 0);
+			eq.setEnabled(true);
+		} catch (IllegalArgumentException e) {
+			/* eq not supported by this build */
+			Log.d("VanillaMusic", "Device does not support EQs: "+e);
+		}
+		return eq;
+	}
+	
 	public void prepareMediaPlayer(MediaPlayer mp, String path) throws IOException{
-		float adjust = 0f;
-		
 		mp.setDataSource(path);
+		mp.prepare();
+	}
+	
+	private void applyReplayGain(MediaPlayer mp, String path) {
+		
+		if(mEqualizer == null)
+			return; /* device does not support EQs */
+		if(mReplayGainAlbumEnabled == false && mReplayGainTrackEnabled == false)
+			return; /* no need to parse tags: RG is disabled */
 		
 		float[] rg = calculateReplayGainAdjustment(path); /* track, album */
+		short[] eqRange = mEqualizer.getBandLevelRange();
+		float adjust = 0f;
 		
 		if(mReplayGainAlbumEnabled) {
-			adjust = (rg[0] > 0 ? rg[0] : adjust); /* do we have track adjustment ? */
-			adjust = (rg[1] > 0 ? rg[1] : adjust); /* ..or, even better, album adj? */
+			adjust = (rg[0] != 0 ? rg[0] : adjust); /* do we have track adjustment ? */
+			adjust = (rg[1] != 0 ? rg[1] : adjust); /* ..or, even better, album adj? */
 		}
 		
 		if(mReplayGainTrackEnabled || (mReplayGainAlbumEnabled && adjust == 0)) {
-			adjust = (rg[1] > 0 ? rg[1] : adjust); /* do we have album adjustment ? */
-			adjust = (rg[0] > 0 ? rg[0] : adjust); /* ..or, even better, track adj? */
+			adjust = (rg[1] != 0 ? rg[1] : adjust); /* do we have album adjustment ? */
+			adjust = (rg[0] != 0 ? rg[0] : adjust); /* ..or, even better, track adj? */
 		}
 		
-		if(adjust == 0 && mReplayGainSilenceEnabled) {
-			adjust = 0.25f;
+		short gain = (short)((adjust * 100));
+		if(gain != 0)         { gain += 900;       } /* 900 because a 'modern' track has a rg-value of about -9dB */
+		if(gain < eqRange[0]) { gain = eqRange[0]; }
+		if(gain > eqRange[1]) { gain = eqRange[1]; }
+		Log.d("VanillaMusic", "setBandLevel gain = "+gain);
+		for (short i = mEqualizer.getNumberOfBands(); --i != -1; ) {
+			mEqualizer.setBandLevel(i, gain);
 		}
 		
-		if(adjust > 0) {
-			adjust = adjust * 1.5f; /* add some slack */
-			Log.d("VanillaMusic", "adjusting replaygain of "+path+" to "+adjust);
-		} else {
-			adjust = 1.0f; /* no RG found -> (re-)set mediaplayer to default volume */
-		}
-		
-		mp.setVolume(adjust, adjust);
-		mp.prepare();
 	}
 	
 	/**
@@ -620,9 +642,7 @@ public final class PlaybackService extends Service
 					String nums = rg_raw.replaceAll("[^0-9.-]","");
 					rg_float = Float.parseFloat(nums);
 				} catch(Exception e) {}
-				
-				float rg_result = (float)Math.pow(10, (rg_float/20) );
-				adjust[i] = rg_result;
+				adjust[i] = rg_float;
 			}
 		}
 		return adjust;
@@ -745,8 +765,6 @@ public final class PlaybackService extends Service
 			mReplayGainTrackEnabled = settings.getBoolean(PrefKeys.ENABLE_TRACK_REPLAYGAIN, false);
 		} else if (PrefKeys.ENABLE_ALBUM_REPLAYGAIN.equals(key)) {
 			mReplayGainAlbumEnabled = settings.getBoolean(PrefKeys.ENABLE_ALBUM_REPLAYGAIN, false);
-		} else if (PrefKeys.SILENCE_NONRG_TRACKS.equals(key)) {
-			mReplayGainSilenceEnabled = settings.getBoolean(PrefKeys.SILENCE_NONRG_TRACKS, false);
 		}
 
 		CompatFroyo.dataChanged(this);
@@ -1129,6 +1147,7 @@ public final class PlaybackService extends Service
 			
 			if(mPreparedMediaPlayer != null &&
 			   mPreparedMediaPlayer.isPlaying()) {
+				
 				mMediaPlayer.release();
 				mMediaPlayer = mPreparedMediaPlayer;
 				mPreparedMediaPlayer = null;
@@ -1138,6 +1157,7 @@ public final class PlaybackService extends Service
 			}
 			
 			mMediaPlayerInitialized = true;
+			applyReplayGain(mMediaPlayer, song.path);
 			triggerGaplessUpdate();
 			
 			if (mPendingSeek != 0 && mPendingSeekSong == song.id) {

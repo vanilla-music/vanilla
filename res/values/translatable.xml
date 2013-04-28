@@ -160,8 +160,6 @@ THE SOFTWARE.
 	<string name="replaygain_track_summary">Play all tracks at equal loudness</string>
 	<string name="replaygain_album_title">Enable album Replay Gain</string>
 	<string name="replaygain_album_summary">Preserve album dynamics</string>
-	<string name="replaygain_silence_title">Keep volume down</string>
-	<string name="replaygain_silence_summary">Automatically reduce the volume by 30% for tracks without any Replay Gain information</string>
 	
 	<string name="notifications">Notifications</string>
 	<string name="notification_mode_title">Notification Mode</string>
