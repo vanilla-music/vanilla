@@ -29,6 +29,13 @@ THE SOFTWARE.
 		android:summary="@string/enable_shake_summary"
 		android:defaultValue="false" />
 	<ch.blinkenlights.android.vanilla.ListPreferenceSummary
+	    android:key="shake_mode"
+	    android:title="@string/shake_mode_title"
+	    android:entries="@array/shake_mode_entries"
+	    android:entryValues="@array/shake_mode_values"
+	    android:defaultValue="Always"
+	    android:dependency="enable_shake" />
+	<ch.blinkenlights.android.vanilla.ListPreferenceSummary
 		android:key="shake_action"
 		android:title="@string/shake_action_title"
 		android:entries="@array/swipe_action_entries"

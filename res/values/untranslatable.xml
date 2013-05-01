@@ -36,7 +36,18 @@ THE SOFTWARE.
 		<item>6</item>
 		<item>7</item>
 	</string-array>
-	<string-array name="swipe_action_values">
+	<string-array name="shake_mode_values">
+	    <!-- This must match the order of shake_mode_values exactly and
+	    	 contain only values from ShakeMode enum -->
+	    <item>Always</item>
+	    <item>WhenScreenOn</item>
+	</string-array>
+	<string-array name="shake_mode_entries">
+	    <!-- This must match the order of shake_mode_entries exactly -->
+	    <item>@string/always</item>
+	    <item>@string/when_screen_on</item>
+	</string-array>
+		<string-array name="swipe_action_values">
 		<!-- This must match the order of swipe_action_entries exactly and
 		     contain only values from PlaybackActivity.Action enum. -->
 		<item>Nothing</item>

@@ -299,6 +299,7 @@ public final class PlaybackService extends Service
 	MediaPlayer mMediaPlayer;
 	MediaPlayer mPreparedMediaPlayer;
 	private boolean mMediaPlayerInitialized;
+	private PowerManager mPowerManager;
 	private PowerManager.WakeLock mWakeLock;
 	private NotificationManager mNotificationManager;
 	private AudioManager mAudioManager;
@@ -352,6 +353,14 @@ public final class PlaybackService extends Service
 	 */
 	private long mLastShakeTime;
 	/**
+	 * Is action on accelerometer shake active.
+	 */
+	private boolean mShakeActive;
+	/**
+	 * When should accelerometer shake be processed.
+	 */
+	private ShakeMode mShakeMode;
+	/**
 	 * Minimum jerk required for shake.
 	 */
 	private double mShakeThreshold;
@@ -404,7 +413,9 @@ public final class PlaybackService extends Service
 		mInvertNotification = settings.getBoolean(PrefKeys.NOTIFICATION_INVERTED_COLOR, false);
 		mNotificationAction = createNotificationAction(settings);
 		mHeadsetPause = getSettings(this).getBoolean(PrefKeys.HEADSET_PAUSE, true);
-		mShakeAction = settings.getBoolean(PrefKeys.ENABLE_SHAKE, false) ? Action.getAction(settings, PrefKeys.SHAKE_ACTION, Action.NextSong) : Action.Nothing;
+		mShakeActive = settings.getBoolean(PrefKeys.ENABLE_SHAKE, false);
+		mShakeMode = ShakeMode.fromString(settings.getString(PrefKeys.SHAKE_MODE, ShakeMode.ALWAYS.asString()));
+		mShakeAction = Action.getAction(settings, PrefKeys.SHAKE_ACTION, Action.NextSong);
 		mShakeThreshold = settings.getInt(PrefKeys.SHAKE_THRESHOLD, 80) / 10.0f;
 
 		mReplayGainTrackEnabled = settings.getBoolean(PrefKeys.ENABLE_TRACK_REPLAYGAIN, false);
@@ -412,8 +423,8 @@ public final class PlaybackService extends Service
 		mReplayGainBump = settings.getInt(PrefKeys.REPLAYGAIN_BUMP, 75);  /* seek bar is 150 -> 75 == middle == 0 */
 		mReplayGainUntaggedDeBump = settings.getInt(PrefKeys.REPLAYGAIN_UNTAGGED_DEBUMP, 150); /* seek bar is 150 -> == 0 */
 		
-		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
-		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicLock");
+		PowerManager mPowerManager = (PowerManager)getSystemService(POWER_SERVICE);
+		mWakeLock = mPowerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicLock");
 
 		try {
 			mCallListener = new InCallListener();
@@ -551,7 +562,7 @@ public final class PlaybackService extends Service
 			// we haven't registered the receiver yet
 		}
 
-		if (mSensorManager != null && mShakeAction != Action.Nothing)
+		if (mSensorManager != null && mShakeActive)
 			mSensorManager.unregisterListener(this);
 
 		if (mWakeLock != null && mWakeLock.isHeld())
@@ -696,7 +707,7 @@ public final class PlaybackService extends Service
 	 */
 	private void setupSensor()
 	{
-		if (mShakeAction == Action.Nothing || (mState & FLAG_PLAYING) == 0) {
+		if (!mShakeActive || (mState & FLAG_PLAYING) == 0) {
 			if (mSensorManager != null)
 				mSensorManager.unregisterListener(this);
 		} else {
@@ -744,9 +755,13 @@ public final class PlaybackService extends Service
 			mStockBroadcast = settings.getBoolean(key, false);
 		} else if (PrefKeys.HEADSET_PLAY.equals(key)) {
 			mHeadsetPlay = settings.getBoolean(key, false);
-		} else if (PrefKeys.ENABLE_SHAKE.equals(key) || PrefKeys.SHAKE_ACTION.equals(key)) {
-			mShakeAction = settings.getBoolean(PrefKeys.ENABLE_SHAKE, false) ? Action.getAction(settings, PrefKeys.SHAKE_ACTION, Action.NextSong) : Action.Nothing;
+		} else if (PrefKeys.ENABLE_SHAKE.equals(key)) {
+			mShakeActive = settings.getBoolean(PrefKeys.ENABLE_SHAKE, false);
 			setupSensor();
+		} else if (PrefKeys.SHAKE_MODE.equals(key)) {
+			mShakeMode = ShakeMode.fromString(settings.getString(PrefKeys.SHAKE_MODE, ShakeMode.ALWAYS.asString()));
+		} else if (PrefKeys.SHAKE_ACTION.equals(key)) {
+			mShakeAction = Action.getAction(settings, PrefKeys.SHAKE_ACTION, Action.NextSong);
 		} else if (PrefKeys.SHAKE_THRESHOLD.equals(key)) {
 			mShakeThreshold = settings.getInt(PrefKeys.SHAKE_THRESHOLD, 80) / 10.0f;
 		} else if (PrefKeys.ENABLE_TRACK_REPLAYGAIN.equals(key)) {
@@ -1876,26 +1891,51 @@ public final class PlaybackService extends Service
 	}
 
 	@Override
-	public void onSensorChanged(SensorEvent se)
+	public void onSensorChanged(SensorEvent event) {
+		if (mShakeActive) {
+			processAccelerometerEvent(event);
+		}
+	}
+	
+	private void processAccelerometerEvent(final SensorEvent event)
 	{
-		double x = se.values[0];
-		double y = se.values[1];
-		double z = se.values[2];
-
-		double accel = Math.sqrt(x*x + y*y + z*z);
-		double delta = accel - mAccelLast;
-		mAccelLast = accel;
-
-		double filtered = mAccelFiltered * 0.9f + delta;
-		mAccelFiltered = filtered;
-
-		if (filtered > mShakeThreshold) {
-			long now = SystemClock.elapsedRealtime();
+		if (isShakeModeSatisfied() && isShakeAboveThreshold(event.values)) {
+			final long now = SystemClock.elapsedRealtime();
 			if (now - mLastShakeTime > MIN_SHAKE_PERIOD) {
 				mLastShakeTime = now;
 				performAction(mShakeAction, null);
 			}
 		}
+	}
+	
+	private boolean isShakeAboveThreshold(final float[] values) {
+		final double x = values[0];
+		final double y = values[1];
+		final double z = values[2];
+
+		final double accel = Math.sqrt(x*x + y*y + z*z);
+		final double delta = accel - mAccelLast;
+		mAccelLast = accel;
+
+		final double filtered = mAccelFiltered * 0.9f + delta;
+		mAccelFiltered = filtered;
+
+		return filtered > mShakeThreshold;
+	}
+	
+	private boolean isShakeModeSatisfied() {
+		final boolean isActive;
+		switch (mShakeMode) {
+		case ALWAYS:
+			isActive = true;
+			break;
+		case WHEN_SCREEN_ON:
+			isActive = mPowerManager.isScreenOn();
+			break;
+		default:
+			isActive = false;
+		}
+		return isActive;
 	}
 
 	@Override
