@@ -28,9 +28,11 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
+import android.preference.CheckBoxPreference;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -91,18 +93,47 @@ public class PreferencesActivity extends PreferenceActivity {
 
 	public static class ReplayGainActivity extends PreferenceActivity {
 		@SuppressWarnings("deprecation")
+		
+		CheckBoxPreference cbTrackReplayGain;
+		CheckBoxPreference cbAlbumReplayGain;
+		SeekBarPreference sbGainBump;
+		SeekBarPreference sbUntaggedDebump;
+		
 		@Override
 		public void onCreate(Bundle savedInstanceState)
 		{
 			super.onCreate(savedInstanceState);
 			setTitle(R.string.replaygain);
 			addPreferencesFromResource(R.xml.preference_replaygain);
+			
+			cbTrackReplayGain = (CheckBoxPreference)findPreference(PrefKeys.ENABLE_TRACK_REPLAYGAIN);
+			cbAlbumReplayGain = (CheckBoxPreference)findPreference(PrefKeys.ENABLE_ALBUM_REPLAYGAIN);
+			sbGainBump = (SeekBarPreference)findPreference(PrefKeys.REPLAYGAIN_BUMP);
+			sbUntaggedDebump = (SeekBarPreference)findPreference(PrefKeys.REPLAYGAIN_UNTAGGED_DEBUMP);
+			
+			Preference.OnPreferenceClickListener pcListener = new Preference.OnPreferenceClickListener() {
+				public boolean onPreferenceClick(Preference preference) {
+					updateConfigWidgets();
+					return false;
+				}
+			};
+			
+			cbTrackReplayGain.setOnPreferenceClickListener(pcListener);
+			cbAlbumReplayGain.setOnPreferenceClickListener(pcListener);
+			updateConfigWidgets();
 		}
-			@Override
+
+		@Override
 		public boolean onOptionsItemSelected(MenuItem item)
 		{
 			finish();
 			return true;
+		}
+
+		private void updateConfigWidgets() {
+			boolean rgOn = (cbTrackReplayGain.isChecked() || cbAlbumReplayGain.isChecked());
+			sbGainBump.setEnabled(rgOn);
+			sbUntaggedDebump.setEnabled(rgOn);
 		}
 	}
 
