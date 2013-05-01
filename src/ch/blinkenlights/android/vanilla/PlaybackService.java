@@ -66,9 +66,6 @@ import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Vector;
-import ch.blinkenlights.bastp.Bastp;
 
 
 /**
@@ -374,6 +371,8 @@ public final class PlaybackService extends Service
 	private boolean mReplayGainAlbumEnabled;
 	private int mReplayGainBump;
 	
+	private BastpUtil mBastpUtil;
+	
 	@Override
 	public void onCreate()
 	{
@@ -385,6 +384,7 @@ public final class PlaybackService extends Service
 		int state = loadState();
 
 		mMediaPlayer = getNewMediaPlayer();
+		mBastpUtil = new BastpUtil();
 		
 		mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 		mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
@@ -610,7 +610,7 @@ public final class PlaybackService extends Service
 		if(mReplayGainAlbumEnabled == false && mReplayGainTrackEnabled == false)
 			return; /* no need to parse tags: RG is disabled */
 		
-		float[] rg = calculateReplayGainAdjustment(path); /* track, album */
+		float[] rg = getReplayGainValues(path); /* track, album */
 		float adjust = 0f;
 		
 		if(mReplayGainAlbumEnabled) {
@@ -635,29 +635,8 @@ public final class PlaybackService extends Service
 		
 	}
 	
-	/**
-	 * Returns TRACK, ALBUM gain values for given path
-	 * A value of 0 means that the tag was not found in given file
-	*/
-	private float[] calculateReplayGainAdjustment(String path) {
-		String[] keys = { "REPLAYGAIN_TRACK_GAIN", "REPLAYGAIN_ALBUM_GAIN" };
-		float[] adjust= { 0f                     , 0f                      };
-		HashMap tags  = (new Bastp()).getTags(path);
-		
-		for (int i=0; i<keys.length; i++) {
-			String curKey = keys[i];
-			if(tags.containsKey(curKey)) {
-				String rg_raw = (String)((Vector)tags.get(curKey)).get(0);
-				String rg_numonly = "";
-				float rg_float = 0f;
-				try {
-					String nums = rg_raw.replaceAll("[^0-9.-]","");
-					rg_float = Float.parseFloat(nums);
-				} catch(Exception e) {}
-				adjust[i] = rg_float;
-			}
-		}
-		return adjust;
+	public float[] getReplayGainValues(String path) {
+		return mBastpUtil.getReplayGainValues(path);
 	}
 	
 	/**
