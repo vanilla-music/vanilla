@@ -39,6 +39,12 @@ THE SOFTWARE.
 		android:dialogLayout="@layout/shake_pref"
 		android:title="@string/replaygain_bump_title"
 		android:defaultValue="75" />
+	<ch.blinkenlights.android.vanilla.SeekBarPreference
+		android:key="replaygain_untagged_debump"
+		android:negativeButtonText="@null"
+		android:dialogLayout="@layout/shake_pref"
+		android:title="@string/replaygain_untagged_debump_title"
+		android:defaultValue="150" />
 		
 	<EditTextPreference
 		android:enabled="false"

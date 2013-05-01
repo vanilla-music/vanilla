@@ -38,6 +38,12 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 	 * The current value.
 	 */
 	private int mValue;
+	
+	/**
+	 * Our context (needed for getResources())
+	 */
+	private Context mContext;
+	
 	/**
 	 * TextView to display current threshold.
 	 */
@@ -46,6 +52,7 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 	public SeekBarPreference(Context context, AttributeSet attrs)
 	{
 		super(context, attrs);
+		mContext = context;
 	}
 
 	@Override
@@ -77,7 +84,10 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 		if ("shake_threshold".equals(getKey())) {
 			return String.valueOf(value / 10.0f);
 		} else if("replaygain_bump".equals(getKey())) {
-			return String.format("%+.1fdB", 2*(value-75)/10.0);
+			return String.format("%+.1fdB", 2*(value-75)/10f);
+		} else if("replaygain_untagged_debump".equals(getKey())) {
+			String summary = (String)mContext.getResources().getText(R.string.replaygain_untagged_debump_summary);
+			return String.format("%s %.1fdB", summary, (value-150)/10f);
 		} else {
 			return String.format("%d%% (%+.1fdB)", value, 20 * Math.log10(Math.pow(value / 100.0, 3)));
 		}

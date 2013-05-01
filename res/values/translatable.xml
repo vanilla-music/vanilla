@@ -161,6 +161,8 @@ THE SOFTWARE.
 	<string name="replaygain_album_title">Enable album Replay Gain</string>
 	<string name="replaygain_album_summary">Preserve album dynamics</string>
 	<string name="replaygain_bump_title">Replay Gain Pre-amp</string>
+	<string name="replaygain_untagged_debump_title">Songs without Replay Gain tag</string>
+	<string name="replaygain_untagged_debump_summary">Decrease volume by</string>
 	
 	<string name="notifications">Notifications</string>
 	<string name="notification_mode_title">Notification Mode</string>
