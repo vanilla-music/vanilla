@@ -44,7 +44,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.media.audiofx.Equalizer;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -302,7 +301,6 @@ public final class PlaybackService extends Service
 	private Handler mHandler;
 	MediaPlayer mMediaPlayer;
 	MediaPlayer mPreparedMediaPlayer;
-	Equalizer mEqualizer;
 	private boolean mMediaPlayerInitialized;
 	private PowerManager.WakeLock mWakeLock;
 	private NotificationManager mNotificationManager;
@@ -374,6 +372,7 @@ public final class PlaybackService extends Service
 	 */
 	private boolean mReplayGainTrackEnabled;
 	private boolean mReplayGainAlbumEnabled;
+	private int mReplayGainBump;
 	
 	@Override
 	public void onCreate()
@@ -386,7 +385,6 @@ public final class PlaybackService extends Service
 		int state = loadState();
 
 		mMediaPlayer = getNewMediaPlayer();
-		mEqualizer = getNewEqualizer();
 		
 		mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 		mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
@@ -410,7 +408,8 @@ public final class PlaybackService extends Service
 
 		mReplayGainTrackEnabled = settings.getBoolean(PrefKeys.ENABLE_TRACK_REPLAYGAIN, false);
 		mReplayGainAlbumEnabled = settings.getBoolean(PrefKeys.ENABLE_ALBUM_REPLAYGAIN, false);
-
+		mReplayGainBump = settings.getInt(PrefKeys.REPLAYGAIN_BUMP, 75); /* seek bar is 150 -> 75 == middle == 0 */
+		
 		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
 		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicLock");
 
@@ -536,10 +535,6 @@ public final class PlaybackService extends Service
 		// clear the notification
 		stopForeground(true);
 
-		if (mEqualizer != null) {
-			mEqualizer.release();
-			mEqualizer = null;
-		}
 		if (mMediaPlayer != null) {
 			saveState(mMediaPlayer.getCurrentPosition());
 			mMediaPlayer.release();
@@ -574,32 +569,48 @@ public final class PlaybackService extends Service
 		return mp;
 	}
 	
-	private Equalizer getNewEqualizer() {
-		Equalizer eq = null;
-		try {
-			eq = new Equalizer(0, 0);
-			eq.setEnabled(true);
-		} catch (IllegalArgumentException e) {
-			/* eq not supported by this build */
-			Log.d("VanillaMusic", "Device does not support EQs: "+e);
-		}
-		return eq;
-	}
-	
 	public void prepareMediaPlayer(MediaPlayer mp, String path) throws IOException{
 		mp.setDataSource(path);
 		mp.prepare();
+		applyReplayGain(mp, path);
 	}
+	
+	
+	/**
+	 * Make sure that the current ReplayGain volume matches
+	 * the (maybe just changed) user settings
+	*/
+	private void applyReplayGainForcefully() {
+		Song curSong = getSong(0);
+		
+		if(mMediaPlayer == null)
+			return;
+		
+		if(mReplayGainAlbumEnabled == false && mReplayGainTrackEnabled == false) {
+			/* need to enable RG to make 'applyReplayGain' do something */
+			mReplayGainAlbumEnabled = true;
+			
+			applyReplayGain(mMediaPlayer, "/");
+			if(mPreparedMediaPlayer != null) {
+				applyReplayGain(mPreparedMediaPlayer, "/");
+			}
+			
+			mReplayGainAlbumEnabled = false;
+		} else if(curSong != null) {
+			applyReplayGain(mMediaPlayer, curSong.path);
+			if(mPreparedMediaPlayer != null) {
+				applyReplayGain(mPreparedMediaPlayer, getSong(1).path);
+			}
+		}
+	}
+
 	
 	private void applyReplayGain(MediaPlayer mp, String path) {
 		
-		if(mEqualizer == null)
-			return; /* device does not support EQs */
 		if(mReplayGainAlbumEnabled == false && mReplayGainTrackEnabled == false)
 			return; /* no need to parse tags: RG is disabled */
 		
 		float[] rg = calculateReplayGainAdjustment(path); /* track, album */
-		short[] eqRange = mEqualizer.getBandLevelRange();
 		float adjust = 0f;
 		
 		if(mReplayGainAlbumEnabled) {
@@ -612,14 +623,15 @@ public final class PlaybackService extends Service
 			adjust = (rg[0] != 0 ? rg[0] : adjust); /* ..or, even better, track adj? */
 		}
 		
-		short gain = (short)((adjust * 100));
-		if(gain != 0)         { gain += 900;       } /* 900 because a 'modern' track has a rg-value of about -9dB */
-		if(gain < eqRange[0]) { gain = eqRange[0]; }
-		if(gain > eqRange[1]) { gain = eqRange[1]; }
-		Log.d("VanillaMusic", "setBandLevel gain = "+gain);
-		for (short i = mEqualizer.getNumberOfBands(); --i != -1; ) {
-			mEqualizer.setBandLevel(i, gain);
+		if(adjust != 0) {
+			/* This song has some replay gain info, we are now going to apply the 'bump' value
+			** The preferences stores the raw value of the seekbar, that's 0-150
+			** But we want -15 <-> +15, so 75 shall be zero */
+			adjust += 2*(mReplayGainBump-75)/10.0; /* 2* -> we want +-15, not +-7.5 */
 		}
+		
+		float rg_result = (float)Math.pow(10, (adjust/20) );
+		mp.setVolume(rg_result, rg_result);
 		
 	}
 	
@@ -763,8 +775,13 @@ public final class PlaybackService extends Service
 			mShakeThreshold = settings.getInt(PrefKeys.SHAKE_THRESHOLD, 80) / 10.0f;
 		} else if (PrefKeys.ENABLE_TRACK_REPLAYGAIN.equals(key)) {
 			mReplayGainTrackEnabled = settings.getBoolean(PrefKeys.ENABLE_TRACK_REPLAYGAIN, false);
+			applyReplayGainForcefully();
 		} else if (PrefKeys.ENABLE_ALBUM_REPLAYGAIN.equals(key)) {
 			mReplayGainAlbumEnabled = settings.getBoolean(PrefKeys.ENABLE_ALBUM_REPLAYGAIN, false);
+			applyReplayGainForcefully();
+		} else if (PrefKeys.REPLAYGAIN_BUMP.equals(key)) {
+			mReplayGainBump = settings.getInt(PrefKeys.REPLAYGAIN_BUMP, 75);
+			applyReplayGainForcefully();
 		}
 
 		CompatFroyo.dataChanged(this);
@@ -1157,7 +1174,6 @@ public final class PlaybackService extends Service
 			}
 			
 			mMediaPlayerInitialized = true;
-			applyReplayGain(mMediaPlayer, song.path);
 			triggerGaplessUpdate();
 			
 			if (mPendingSeek != 0 && mPendingSeekSong == song.id) {
