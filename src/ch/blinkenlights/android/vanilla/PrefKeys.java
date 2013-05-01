@@ -59,4 +59,5 @@ public class PrefKeys {
 	public static final String VISIBLE_EXTRA_INFO = "visible_extra_info";
 	public static final String ENABLE_TRACK_REPLAYGAIN = "enable_track_replaygain";
 	public static final String ENABLE_ALBUM_REPLAYGAIN = "enable_album_replaygain";
+	public static final String REPLAYGAIN_BUMP = "replaygain_bump";
 }

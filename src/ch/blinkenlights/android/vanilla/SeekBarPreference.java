@@ -76,6 +76,8 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 	{
 		if ("shake_threshold".equals(getKey())) {
 			return String.valueOf(value / 10.0f);
+		} else if("replaygain_bump".equals(getKey())) {
+			return String.format("%+.1fdB", 2*(value-75)/10.0);
 		} else {
 			return String.format("%d%% (%+.1fdB)", value, 20 * Math.log10(Math.pow(value / 100.0, 3)));
 		}
