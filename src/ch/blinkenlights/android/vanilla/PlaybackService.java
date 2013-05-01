@@ -370,6 +370,7 @@ public final class PlaybackService extends Service
 	private boolean mReplayGainTrackEnabled;
 	private boolean mReplayGainAlbumEnabled;
 	private int mReplayGainBump;
+	private int mReplayGainUntaggedDeBump;
 	
 	private BastpUtil mBastpUtil;
 	
@@ -408,7 +409,8 @@ public final class PlaybackService extends Service
 
 		mReplayGainTrackEnabled = settings.getBoolean(PrefKeys.ENABLE_TRACK_REPLAYGAIN, false);
 		mReplayGainAlbumEnabled = settings.getBoolean(PrefKeys.ENABLE_ALBUM_REPLAYGAIN, false);
-		mReplayGainBump = settings.getInt(PrefKeys.REPLAYGAIN_BUMP, 75); /* seek bar is 150 -> 75 == middle == 0 */
+		mReplayGainBump = settings.getInt(PrefKeys.REPLAYGAIN_BUMP, 75);  /* seek bar is 150 -> 75 == middle == 0 */
+		mReplayGainUntaggedDeBump = settings.getInt(PrefKeys.REPLAYGAIN_UNTAGGED_DEBUMP, 150); /* seek bar is 150 -> == 0 */
 		
 		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
 		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicLock");
@@ -580,35 +582,22 @@ public final class PlaybackService extends Service
 	 * Make sure that the current ReplayGain volume matches
 	 * the (maybe just changed) user settings
 	*/
-	private void applyReplayGainForcefully() {
+	private void refreshReplayGainValues() {
 		Song curSong = getSong(0);
 		
 		if(mMediaPlayer == null)
 			return;
-		
-		if(mReplayGainAlbumEnabled == false && mReplayGainTrackEnabled == false) {
-			/* need to enable RG to make 'applyReplayGain' do something */
-			mReplayGainAlbumEnabled = true;
-			
-			applyReplayGain(mMediaPlayer, "/");
-			if(mPreparedMediaPlayer != null) {
-				applyReplayGain(mPreparedMediaPlayer, "/");
-			}
-			
-			mReplayGainAlbumEnabled = false;
-		} else if(curSong != null) {
-			applyReplayGain(mMediaPlayer, curSong.path);
-			if(mPreparedMediaPlayer != null) {
-				applyReplayGain(mPreparedMediaPlayer, getSong(1).path);
-			}
+		if(curSong == null)
+			return;
+
+		applyReplayGain(mMediaPlayer, curSong.path);
+		if(mPreparedMediaPlayer != null) {
+			applyReplayGain(mPreparedMediaPlayer, getSong(1).path);
 		}
 	}
 
 	
 	private void applyReplayGain(MediaPlayer mp, String path) {
-		
-		if(mReplayGainAlbumEnabled == false && mReplayGainTrackEnabled == false)
-			return; /* no need to parse tags: RG is disabled */
 		
 		float[] rg = getReplayGainValues(path); /* track, album */
 		float adjust = 0f;
@@ -623,16 +612,24 @@ public final class PlaybackService extends Service
 			adjust = (rg[0] != 0 ? rg[0] : adjust); /* ..or, even better, track adj? */
 		}
 		
-		if(adjust != 0) {
+		if(adjust == 0) {
+			/* No RG value found: decrease volume for untagged song if requested by user */
+			adjust = (mReplayGainUntaggedDeBump-150)/10f;
+		} else {
 			/* This song has some replay gain info, we are now going to apply the 'bump' value
 			** The preferences stores the raw value of the seekbar, that's 0-150
 			** But we want -15 <-> +15, so 75 shall be zero */
-			adjust += 2*(mReplayGainBump-75)/10.0; /* 2* -> we want +-15, not +-7.5 */
+			adjust += 2*(mReplayGainBump-75)/10f; /* 2* -> we want +-15, not +-7.5 */
+		}
+		
+		if(mReplayGainAlbumEnabled == false && mReplayGainTrackEnabled == false) {
+			/* Feature is disabled: Make sure that we are going to 100% volume */
+			adjust = 0f;
 		}
 		
 		float rg_result = (float)Math.pow(10, (adjust/20) );
 		mp.setVolume(rg_result, rg_result);
-		
+		Log.d("VanillaMusic", "rg="+rg_result+", adj="+adjust+", pth="+path);
 	}
 	
 	public float[] getReplayGainValues(String path) {
@@ -754,13 +751,16 @@ public final class PlaybackService extends Service
 			mShakeThreshold = settings.getInt(PrefKeys.SHAKE_THRESHOLD, 80) / 10.0f;
 		} else if (PrefKeys.ENABLE_TRACK_REPLAYGAIN.equals(key)) {
 			mReplayGainTrackEnabled = settings.getBoolean(PrefKeys.ENABLE_TRACK_REPLAYGAIN, false);
-			applyReplayGainForcefully();
+			refreshReplayGainValues();
 		} else if (PrefKeys.ENABLE_ALBUM_REPLAYGAIN.equals(key)) {
 			mReplayGainAlbumEnabled = settings.getBoolean(PrefKeys.ENABLE_ALBUM_REPLAYGAIN, false);
-			applyReplayGainForcefully();
+			refreshReplayGainValues();
 		} else if (PrefKeys.REPLAYGAIN_BUMP.equals(key)) {
 			mReplayGainBump = settings.getInt(PrefKeys.REPLAYGAIN_BUMP, 75);
-			applyReplayGainForcefully();
+			refreshReplayGainValues();
+		} else if (PrefKeys.REPLAYGAIN_UNTAGGED_DEBUMP.equals(key)) {
+			mReplayGainUntaggedDeBump = settings.getInt(PrefKeys.REPLAYGAIN_UNTAGGED_DEBUMP, 150);
+			refreshReplayGainValues();
 		}
 
 		CompatFroyo.dataChanged(this);
