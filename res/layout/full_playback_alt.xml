@@ -98,6 +98,13 @@ THE SOFTWARE.
 				android:gravity="right" />
 			<TextView android:id="@+id/format" />
 		</TableRow>
+		<TableRow>
+			<TextView
+				android:text="@string/_replaygain"
+				android:paddingRight="5dip"
+				android:gravity="right" />
+			<TextView android:id="@+id/replaygain" />
+		</TableRow>
 		<LinearLayout android:id="@+id/controls_top">
 			<TextView
 				android:id="@+id/elapsed"

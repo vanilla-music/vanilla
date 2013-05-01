@@ -113,6 +113,8 @@ public class FullPlaybackActivity extends PlaybackActivity
 	private TextView mComposerView;
 	private String mFormat;
 	private TextView mFormatView;
+	private String mReplayGain;
+	private TextView mReplayGainView;
 
 	@Override
 	public void onCreate(Bundle icicle)
@@ -184,6 +186,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 		mYearView = (TextView)findViewById(R.id.year);
 		mComposerView = (TextView)findViewById(R.id.composer);
 		mFormatView = (TextView)findViewById(R.id.format);
+		mReplayGainView = (TextView)findViewById(R.id.replaygain);
 
 		mShuffleButton = (ImageButton)findViewById(R.id.shuffle);
 		mShuffleButton.setOnClickListener(this);
@@ -534,7 +537,8 @@ public class FullPlaybackActivity extends PlaybackActivity
 		mYear = null;
 		mComposer = null;
 		mFormat = null;
-
+		mReplayGain = null;
+		
 		if(song != null) {
 			
 			MediaMetadataRetriever data = new MediaMetadataRetriever();
@@ -571,6 +575,10 @@ public class FullPlaybackActivity extends PlaybackActivity
 				sb.append("kbps");
 			}
 			mFormat = sb.toString();
+			
+			float[] rg = PlaybackService.get(this).getReplayGainValues(song.path);
+			mReplayGain = "track="+rg[0]+"dB, album="+rg[1]+"dB";
+			
 			data.release();
 		}
 
@@ -639,6 +647,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 			mYearView.setText(mYear);
 			mComposerView.setText(mComposer);
 			mFormatView.setText(mFormat);
+			mReplayGainView.setText(mReplayGain);
 			break;
 		}
 		case MSG_UPDATE_POSITION:

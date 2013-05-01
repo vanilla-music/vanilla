@@ -49,7 +49,7 @@ THE SOFTWARE.
 	<string name="_artist">artist</string>
 	<string name="_album">album</string>
 	<string name="_year">year</string>
-
+	<string name="_replaygain">rgain</string>
 	<!-- New Playlist Dialog -->
 	<string name="choose_playlist_name">Choose Playlist Name</string>
 	<string name="create">Create</string>
