@@ -423,7 +423,7 @@ public final class PlaybackService extends Service
 		mReplayGainBump = settings.getInt(PrefKeys.REPLAYGAIN_BUMP, 75);  /* seek bar is 150 -> 75 == middle == 0 */
 		mReplayGainUntaggedDeBump = settings.getInt(PrefKeys.REPLAYGAIN_UNTAGGED_DEBUMP, 150); /* seek bar is 150 -> == 0 */
 		
-		PowerManager mPowerManager = (PowerManager)getSystemService(POWER_SERVICE);
+		mPowerManager = (PowerManager)getSystemService(POWER_SERVICE);
 		mWakeLock = mPowerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicLock");
 
 		try {
