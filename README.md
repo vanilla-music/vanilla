@@ -27,5 +27,5 @@ Documentation
 Javadocs can be generated using `ant doc`
 
 
-  [1]: http://crowdin.net/project/vanilla-music/invite
+  [1]: https://www.transifex.com/projects/p/vanilla-music-1/
 
