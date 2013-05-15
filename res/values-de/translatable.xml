@@ -135,6 +135,7 @@
   <string name="always_show">Immer anzeigen</string>
   <string name="open_main_activity">Bibliothek öffnen (Standard)</string>
   <string name="open_mini_popup">Mini-popup öffnen</string>
+  <string name="open_full_player">Player öffnen</string>
   <string name="skip_to_next_song">Zum nächsten Titel springen</string>
   <string name="info_on_cover">Info auf dem Cover</string>
   <string name="info_below_cover">Info unter dem Cover</string>
