@@ -99,6 +99,7 @@ THE SOFTWARE.
 	<string-array name="notification_action_entries">
 		<item>@string/open_main_activity</item>
 		<item>@string/open_mini_popup</item>
+		<item>@string/open_full_player</item>
 		<item>@string/skip_to_next_song</item>
 	</string-array>
 	<string-array name="display_mode_entries">

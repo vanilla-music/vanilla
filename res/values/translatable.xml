@@ -227,6 +227,7 @@ THE SOFTWARE.
 	<string name="open_main_activity">Open library (default)</string>
 	<string name="open_mini_popup">Open mini popup</string>
 	<string name="skip_to_next_song">Skip to next song</string>
+	<string name="open_full_player">Open full player</string>
 
 	<string name="info_on_cover">Info on cover art</string>
 	<string name="info_below_cover">Info below cover art</string>
