@@ -182,9 +182,13 @@ public final class PlaybackService extends Service
 	 */
 	private static final int NOT_ACTION_MINI_ACTIVITY = 1;
 	/**
+	 * Notification click action: open FullPlaybackActivity.
+	 */
+	private static final int NOT_ACTION_FULL_ACTIVITY = 2;
+	/**
 	 * Notification click action: skip to next song.
 	 */
-	private static final int NOT_ACTION_NEXT_SONG = 2;
+	private static final int NOT_ACTION_NEXT_SONG = 3;
 
 	/**
 	 * If a user action is triggered within this time (in ms) after the
@@ -1782,6 +1786,11 @@ public final class PlaybackService extends Service
 			// fall through
 		case NOT_ACTION_MAIN_ACTIVITY: {
 			Intent intent = new Intent(this, LibraryActivity.class);
+			intent.setAction(Intent.ACTION_MAIN);
+			return PendingIntent.getActivity(this, 0, intent, 0);
+		}
+		case NOT_ACTION_FULL_ACTIVITY: {
+			Intent intent = new Intent(this, FullPlaybackActivity.class);
 			intent.setAction(Intent.ACTION_MAIN);
 			return PendingIntent.getActivity(this, 0, intent, 0);
 		}
