@@ -42,6 +42,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.audiofx.AudioEffect;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -543,6 +544,10 @@ public final class PlaybackService extends Service
 
 		if (mMediaPlayer != null) {
 			saveState(mMediaPlayer.getCurrentPosition());
+			Intent i = new Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION);
+			i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mMediaPlayer.getAudioSessionId());
+			i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, getPackageName());
+			sendBroadcast(i);
 			mMediaPlayer.release();
 			mMediaPlayer = null;
 		}
@@ -578,6 +583,12 @@ public final class PlaybackService extends Service
 	public void prepareMediaPlayer(MediaPlayer mp, String path) throws IOException{
 		mp.setDataSource(path);
 		mp.prepare();
+		
+		Intent i = new Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION);
+		i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mp.getAudioSessionId());
+		i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, getPackageName());
+		sendBroadcast(i);
+		
 		applyReplayGain(mp, path);
 	}
 	
