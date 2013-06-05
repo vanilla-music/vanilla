@@ -261,6 +261,18 @@ public class Song implements Comparable<Song> {
 			flags |= FLAG_NO_COVER;
 		return cover;
 	}
+	
+	/**
+	 * Return a Uri for the album art for this song, which may point to non-existent
+	 * cover art.
+	 *
+	 * @return The Uri for the album art
+	 */
+	public Uri getCoverUri()
+	{
+		Uri uri =  Uri.parse("content://media/external/audio/media/" + id + "/albumart");
+		return uri;
+	}
 
 	@Override
 	public String toString()

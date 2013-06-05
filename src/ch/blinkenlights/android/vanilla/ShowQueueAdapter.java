@@ -22,22 +22,26 @@ import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.view.LayoutInflater;
 import android.widget.TextView;
 
 import android.graphics.Color;
+import android.net.Uri;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class ShowQueueAdapter extends ArrayAdapter<Song> {
 	
 	int resource;
 	Context context;
 	int hl_row;
-	
+
+    private ImageLoader imageLoader = ImageLoader.getInstance();
+
 	public ShowQueueAdapter(Context context, int resource) {
 		super(context, resource);
 		this.resource = resource;
@@ -53,23 +57,50 @@ public class ShowQueueAdapter extends ArrayAdapter<Song> {
 		this.hl_row = pos;
 	}
 	
+	private static class ViewHolder {
+		public int position;
+		public TextView text;
+		public View pmark;
+		public ImageView albumart;
+	}
+	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-		View row = inflater.inflate(resource, parent, false);
+		final ViewHolder holder;
+		
+		if (convertView == null) {
+			LayoutInflater inflater = ((Activity)context).getLayoutInflater();
+			convertView = inflater.inflate(resource, parent, false);
+			holder = new ViewHolder();
+			convertView.setTag(holder);
+			holder.text = ((TextView)convertView.findViewById(R.id.text));
+			holder.pmark = ((View)convertView.findViewById(R.id.playmark));
+			holder.albumart = (ImageView)convertView.findViewById(R.id.albumart);
+		} else {
+			holder = (ViewHolder)convertView.getTag();
+		}
+
 		Song song = getItem(position);
-		TextView target = ((TextView)row.findViewById(R.id.text));
 		SpannableStringBuilder sb = new SpannableStringBuilder(song.title);
 		sb.append('\n');
 		sb.append(song.album);
 		sb.setSpan(new ForegroundColorSpan(Color.GRAY), song.title.length() + 1, sb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		
-		target.setText(sb);
+		holder.position = position;
+		holder.text.setText(sb);
+		holder.pmark.setVisibility( ( position == this.hl_row ? View.VISIBLE : View.INVISIBLE ));
 		
-		View pmark = ((View)row.findViewById(R.id.playmark));
-		pmark.setVisibility( ( position == this.hl_row ? View.VISIBLE : View.INVISIBLE ));
+		if (holder.albumart != null) {
+			Uri albumArtUri = song.getCoverUri();
+			if (albumArtUri != null) {
+	            imageLoader.displayImage(albumArtUri.toString(), holder.albumart);
+	        } else {
+	            imageLoader.cancelDisplayTask(holder.albumart);
+	            holder.albumart.setImageResource(R.drawable.musicnotes);
+	        }
+		}
 		
-		return row;
+		return convertView;
 	}
 	
 }

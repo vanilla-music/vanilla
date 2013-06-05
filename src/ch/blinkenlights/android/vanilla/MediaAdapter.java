@@ -43,6 +43,8 @@ import android.widget.SectionIndexer;
 import android.widget.TextView;
 import java.util.regex.Pattern;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+
 /**
  * MediaAdapter provides an adapter backed by a MediaStore content provider.
  * It generates simple one- or two-line text views to display each media
@@ -62,7 +64,9 @@ public class MediaAdapter
 {
 	private static final Pattern SPACE_SPLIT = Pattern.compile("\\s+");
 
-	/**
+    private ImageLoader imageLoader = ImageLoader.getInstance();
+
+    /**
 	 * A context to use.
 	 */
 	private final LibraryActivity mActivity;
@@ -170,9 +174,9 @@ public class MediaAdapter
 			break;
 		case MediaUtils.TYPE_ALBUM:
 			mStore = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
-			mFields = new String[] { MediaStore.Audio.Albums.ARTIST, MediaStore.Audio.Albums.ALBUM };
+			mFields = new String[] { MediaStore.Audio.Albums.ARTIST, MediaStore.Audio.Albums.ALBUM, MediaStore.Audio.Albums.ALBUM_ART };
 			// Why is there no artist_key column constant in the album MediaStore? The column does seem to exist.
-			mFieldKeys = new String[] { "artist_key", MediaStore.Audio.Albums.ALBUM_KEY };
+			mFieldKeys = new String[] { "artist_key", MediaStore.Audio.Albums.ALBUM_KEY, "album_art_key" };
 			mSongSort = "album_key,track";
 			mSortEntries = new int[] { R.string.name, R.string.artist_album, R.string.year, R.string.number_of_tracks };
 			mSortValues = new String[] { "album_key %1$s", "artist_key %1$s,album_key %1$s", "minyear %1$s,album_key %1$s", "numsongs %1$s,album_key %1$s" };
@@ -205,6 +209,8 @@ public class MediaAdapter
 
 		if (mFields.length == 1)
 			mProjection = new String[] { BaseColumns._ID, mFields[0] };
+		else if (mType == MediaUtils.TYPE_ALBUM)
+			mProjection = new String[] { BaseColumns._ID, mFields[mFields.length - 2], mFields[0], mFields[mFields.length - 1] };
 		else
 			mProjection = new String[] { BaseColumns._ID, mFields[mFields.length - 1], mFields[0] };
 	}
@@ -455,6 +461,7 @@ public class MediaAdapter
 	private static class ViewHolder {
 		public long id;
 		public String title;
+		public ImageView albumart;
 		public TextView text;
 		public ImageView arrow;
 	}
@@ -462,7 +469,7 @@ public class MediaAdapter
 	@Override
 	public View getView(int position, View view, ViewGroup parent)
 	{
-		ViewHolder holder;
+		final ViewHolder holder;
 
 		if (view == null || mExpandable != view instanceof LinearLayout) {
 			// We must create a new view if we're not given a recycle view or
@@ -473,12 +480,12 @@ public class MediaAdapter
 			holder = new ViewHolder();
 			view.setTag(holder);
 
+			holder.albumart = (ImageView)view.findViewById(R.id.albumart);
+			holder.text = (TextView)view.findViewById(R.id.text);
 			if (mExpandable) {
-				holder.text = (TextView)view.findViewById(R.id.text);
 				holder.arrow = (ImageView)view.findViewById(R.id.arrow);
 				holder.arrow.setOnClickListener(this);
 			} else {
-				holder.text = (TextView)view;
 				view.setLongClickable(true);
 			}
 
@@ -501,6 +508,22 @@ public class MediaAdapter
 			sb.setSpan(new ForegroundColorSpan(Color.GRAY), line1.length() + 1, sb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 			holder.text.setText(sb);
 			holder.title = line1;
+			
+			if (holder.albumart != null && mFields.length > 2) {
+				Uri albumArtUri = null;
+				if (mType == MediaUtils.TYPE_SONG)
+					albumArtUri =  Uri.parse("content://media/external/audio/media/" + cursor.getLong(0) + "/albumart");
+				else if (mType == MediaUtils.TYPE_ALBUM && cursor.getString(3) != null)
+					albumArtUri = Uri.parse("file:/" + cursor.getString(3));
+				else // no art, use default image
+					albumArtUri = Uri.parse("drawable://" + R.drawable.musicnotes);
+				if (albumArtUri != null) {
+		            imageLoader.displayImage(albumArtUri.toString(), holder.albumart);
+		        } else {
+		            imageLoader.cancelDisplayTask(holder.albumart);
+		            holder.albumart.setImageResource(R.drawable.musicnotes);
+		        }
+			}			
 		} else {
 			String title = cursor.getString(1);
 			if(title == null) { title = "???"; }
@@ -585,8 +608,7 @@ public class MediaAdapter
 	public void onClick(View view)
 	{
 		int id = view.getId();
-		if (mExpandable)
-			view = (View)view.getParent();
+		view = (View)view.getParent();
 		Intent intent = createData(view);
 		if (id == R.id.arrow) {
 			mActivity.onItemExpanded(intent);

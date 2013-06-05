@@ -20,39 +20,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<LinearLayout
+<TextView
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="horizontal">
-	<ImageView
-		android:id="@+id/albumart"
-		android:background="@drawable/selectable_item_bg"
-		android:longClickable="false"
-		android:scaleType="centerInside"
-		android:layout_width="44dip"
-		android:layout_height="44dip" />
-    <TextView
-		android:id="@+id/text"
-		android:longClickable="true"
-		android:background="@drawable/selectable_item_bg"
-		android:maxLines="2"
-		android:padding="3dip"
-		android:textColor="#ffff"
-		android:gravity="left|center_vertical"
-		android:layout_width="0px"
-		android:layout_height="44dip"
-		android:layout_weight="1" />
-	<View
-		android:id="@+id/divider"
-		android:layout_width="1dip"
-		android:layout_height="fill_parent"
-		android:background="@color/divider_color" />
-	<ImageView
-		android:id="@+id/arrow"
-		android:background="@drawable/selectable_item_bg"
-		android:longClickable="true"
-		android:scaleType="center"
-		android:src="@drawable/arrow"
-		android:layout_width="44dip"
-		android:layout_height="44dip"
-		android:contentDescription="@string/expand" />
-</LinearLayout>
+	android:background="@drawable/selectable_item_bg"
+	android:maxLines="2"
+	android:textColor="#ffff"
+	android:gravity="left|center_vertical"
+	android:padding="3dip"
+	android:minHeight="44dip" />
