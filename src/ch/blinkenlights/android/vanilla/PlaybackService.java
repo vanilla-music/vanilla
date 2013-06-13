@@ -643,8 +643,11 @@ public final class PlaybackService extends Service
 		}
 		
 		float rg_result = (float)Math.pow(10, (adjust/20) );
+		if(rg_result > 1.0f) {
+			rg_result = 1.0f; /* android would IGNORE the change if this is > 1 and we would end up with the wrong volume */
+		}
+		
 		mp.setVolume(rg_result, rg_result);
-		Log.d("VanillaMusic", "rg="+rg_result+", adj="+adjust+", pth="+path);
 	}
 	
 	public float[] getReplayGainValues(String path) {
