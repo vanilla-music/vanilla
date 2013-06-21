@@ -38,7 +38,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 import java.util.regex.Pattern;
@@ -464,14 +463,22 @@ public class MediaAdapter
 		public ImageView albumart;
 		public TextView text;
 		public ImageView arrow;
+		public boolean expandable;
 	}
 
 	@Override
 	public View getView(int position, View view, ViewGroup parent)
 	{
 		final ViewHolder holder;
+		boolean expandable = mExpandable;
 
-		if (view == null || mExpandable != view instanceof LinearLayout) {
+		// If a view is being recycled, determine what type it is (expandable or not)
+		if (view != null) {
+			final ViewHolder tmpHolder = (ViewHolder)view.getTag();
+			expandable = tmpHolder.expandable;
+		}
+		
+		if (view == null || mExpandable != expandable) {
 			// We must create a new view if we're not given a recycle view or
 			// if the recycle view has the wrong layout.
 
@@ -482,6 +489,7 @@ public class MediaAdapter
 
 			holder.albumart = (ImageView)view.findViewById(R.id.albumart);
 			holder.text = (TextView)view.findViewById(R.id.text);
+			holder.expandable = mExpandable; 
 			if (mExpandable) {
 				holder.arrow = (ImageView)view.findViewById(R.id.arrow);
 				holder.arrow.setOnClickListener(this);
@@ -529,6 +537,7 @@ public class MediaAdapter
 			if(title == null) { title = "???"; }
 			holder.text.setText(title);
 			holder.title = title;
+			imageLoader.cancelDisplayTask(holder.albumart);		// Cancel any pending load for this (likely recycled) view
 		}
 
 		return view;
