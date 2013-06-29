@@ -246,6 +246,12 @@ public final class PlaybackService extends Service
 	 *     ff:  {@link PlaybackService#MASK_SHUFFLE}
 	 */
 	int mState;
+	
+	/**
+	 * How many broken songs we did already skip
+	 */
+	int mSkipBroken;
+	
 	/**
 	 * Object used for state-related locking.
 	 */
@@ -1155,6 +1161,9 @@ public final class PlaybackService extends Service
 
 	private void processSong(Song song)
 	{
+		/* Save our 'current' state as the try block may set the ERROR flag (which clears the PLAYING flag */
+		boolean playing = (mState & FLAG_PLAYING) != 0;
+		
 		try {
 			mMediaPlayerInitialized = false;
 			mMediaPlayer.reset();
@@ -1185,11 +1194,20 @@ public final class PlaybackService extends Service
 				mErrorMessage = null;
 				updateState(mState & ~FLAG_ERROR);
 			}
+			mSkipBroken = 0; /* File not broken, reset skip counter */
 		} catch (IOException e) {
 			mErrorMessage = getResources().getString(R.string.song_load_failed, song.path);
 			updateState(mState | FLAG_ERROR);
 			Toast.makeText(this, mErrorMessage, Toast.LENGTH_LONG).show();
 			Log.e("VanillaMusic", "IOException", e);
+			
+			/* Automatically advance to next song IF we are currently playing or already did skip something
+			 * This will stop after skipping 10 songs to avoid endless loops (queue full of broken stuff */
+			if(mTimeline.isEndOfQueue() == false && getSong(1) != null && (playing || (mSkipBroken > 0 && mSkipBroken < 10))) {
+				mSkipBroken++;
+				mHandler.sendMessageDelayed(mHandler.obtainMessage(SKIP_BROKEN_SONG, getTimelinePosition(), 0), 1000);
+			}
+			
 		}
 
 		updateNotification();
@@ -1337,6 +1355,7 @@ public final class PlaybackService extends Service
 	private static final int SAVE_STATE = 12;
 	private static final int PROCESS_SONG = 13;
 	private static final int PROCESS_STATE = 14;
+	private static final int SKIP_BROKEN_SONG = 15;
 
 	@Override
 	public boolean handleMessage(Message message)
@@ -1392,6 +1411,17 @@ public final class PlaybackService extends Service
 		case RELEASE_WAKE_LOCK:
 			if (mWakeLock != null && mWakeLock.isHeld())
 				mWakeLock.release();
+			break;
+		case SKIP_BROKEN_SONG:
+			/* Advance to next song if the user didn't already change.
+			 * But we are restoring the Playing state in ANY case as we are most
+			 * likely still stopped due to the error
+			 * Note: This is somewhat racy with user input but also is the - by far - simplest
+			 *       solution */
+			if(getTimelinePosition() == message.arg1) {
+				setCurrentSong(1);
+			}
+			mHandler.sendMessage(mHandler.obtainMessage(CALL_GO, 0, 0));
 			break;
 		default:
 			return false;
