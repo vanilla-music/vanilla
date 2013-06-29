@@ -576,8 +576,10 @@ public class FullPlaybackActivity extends PlaybackActivity
 			}
 			mFormat = sb.toString();
 			
-			float[] rg = PlaybackService.get(this).getReplayGainValues(song.path);
-			mReplayGain = "track="+rg[0]+"dB, album="+rg[1]+"dB";
+			if(song.path != null) { /* ICS bug? */
+				float[] rg = PlaybackService.get(this).getReplayGainValues(song.path);
+				mReplayGain = "track="+rg[0]+"dB, album="+rg[1]+"dB";
+			}
 			
 			data.release();
 		}
