@@ -19,6 +19,7 @@ public class VanillaApplication extends Application {
     		.showImageForEmptyUri(R.drawable.musicnotes)
     		.showImageOnFail(R.drawable.musicnotes)
     		.cacheInMemory()
+    		.cacheOnDisc()
     		.build();
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
 			.memoryCacheSize(1024 * 1024)
