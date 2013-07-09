@@ -338,9 +338,9 @@ public final class PlaybackService extends Service
 	public InCallListener mCallListener;
 	private String mErrorMessage;
 	/**
-	 * If true, the volume is being reduced for the idle fade-out.
+	 * Current fade-out progress. 1.0f if we are not fading out
 	 */
-	private boolean mFadeInProgress;
+	private float mFadeOut = 1.0f;
 	/**
 	 * Elapsed realtime at which playback was paused by idle timeout. -1
 	 * indicates that no timeout has occurred.
@@ -648,11 +648,12 @@ public final class PlaybackService extends Service
 			adjust = 0f;
 		}
 		
-		float rg_result = (float)Math.pow(10, (adjust/20) );
+		float rg_result = ((float)Math.pow(10, (adjust/20) ))*mFadeOut;
 		if(rg_result > 1.0f) {
 			rg_result = 1.0f; /* android would IGNORE the change if this is > 1 and we would end up with the wrong volume */
+		} else if (rg_result < 0.0f) {
+			rg_result = 0.0f;
 		}
-		
 		mp.setVolume(rg_result, rg_result);
 	}
 	
@@ -1380,28 +1381,19 @@ public final class PlaybackService extends Service
 			break;
 		case IDLE_TIMEOUT:
 			if ((mState & FLAG_PLAYING) != 0) {
-				mHandler.sendMessage(mHandler.obtainMessage(FADE_OUT, 100, 0));
-				mFadeInProgress = true;
+				mHandler.sendMessage(mHandler.obtainMessage(FADE_OUT, 0));
 			}
 			break;
-		case FADE_OUT: {
-			int progress = message.arg1 - 1;
-			float volume;
-			if (progress == 0) {
+		case FADE_OUT:
+			if (mFadeOut <= 0.0f) {
 				mIdleStart = SystemClock.elapsedRealtime();
 				unsetFlag(FLAG_PLAYING);
-				volume = 1.0f;
-				mFadeInProgress = false;
 			} else {
-				// Approximate an exponential curve with x^4
-				// http://www.dr-lex.be/info-stuff/volumecontrols.html
-				volume = Math.max((float)(Math.pow(progress / 100f, 4) * 1.0f), .01f);
-				mHandler.sendMessageDelayed(mHandler.obtainMessage(FADE_OUT, progress, 0), 50);
+				mFadeOut -= 0.01f;
+				mHandler.sendMessageDelayed(mHandler.obtainMessage(FADE_OUT, 0), 50);
 			}
-			if (mMediaPlayer != null)
-				mMediaPlayer.setVolume(volume, volume);
+			refreshReplayGainValues(); /* Updates the volume using the new mFadeOut value */
 			break;
-		}
 		case PROCESS_STATE:
 			processNewState(message.arg1, message.arg2);
 			break;
@@ -1550,9 +1542,9 @@ public final class PlaybackService extends Service
 		if (mIdleTimeout != 0)
 			mHandler.sendEmptyMessageDelayed(IDLE_TIMEOUT, mIdleTimeout * 1000);
 
-		if (mFadeInProgress) {
-			mMediaPlayer.setVolume(1.0f, 1.0f);
-			mFadeInProgress = false;
+		if (mFadeOut != 1.0f) {
+			mFadeOut = 1.0f;
+			refreshReplayGainValues();
 		}
 
 		long idleStart = mIdleStart;
