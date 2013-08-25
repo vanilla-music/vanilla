@@ -81,9 +81,12 @@ public class ID3v2File extends Common {
 			bread += s.read(xpl);
 			
 			if(framename.substring(0,1).equals("T")) {
-				String otag = framenameToOggTag(framename);
-				if(otag.length() > 0 && !tags.containsKey(otag)) {
-					addTagEntry(tags, otag, getDecodedString(xpl));
+				String[] nmzInfo = normalizeTaginfo(framename, xpl);
+				String oggKey = nmzInfo[0];
+				String decPld = nmzInfo[1];
+				
+				if(oggKey.length() > 0 && !tags.containsKey(oggKey)) {
+					addTagEntry(tags, oggKey, decPld);
 				}
 			}
 			else if(framename.equals("RVA2")) {
@@ -95,16 +98,29 @@ public class ID3v2File extends Common {
 	}
 	
 	/* Converts ID3v2 sillyframes to OggNames */
-	private String framenameToOggTag(String k) {
+	private String[] normalizeTaginfo(String k, byte[] v) {
+		String[] rv = new String[] {"",""};
 		HashMap lu = new HashMap<String, String>();
 		lu.put("TIT2", "TITLE");
 		lu.put("TALB", "ALBUM");
 		lu.put("TPE1", "ARTIST");
 		
 		if(lu.containsKey(k)) {
-			return (String)lu.get(k);
+			/* A normal, known key: translate into Ogg-Frame name */
+			rv[0] = (String)lu.get(k);
+			rv[1] = getDecodedString(v);
 		}
-		return "";
+		else if(k.equals("TXXX")) {
+			/* A freestyle field, ieks! */
+			String txData[] = getDecodedString(v).split(Character.toString('\0'), 2);
+			/* Check if we got replaygain info in key\0value style */
+			if(txData.length == 2 && txData[0].matches("^(?i)REPLAYGAIN_(ALBUM|TRACK)_GAIN$")) {
+				rv[0] = txData[0].toUpperCase(); /* some tagwriters use lowercase for this */
+				rv[1] = txData[1];
+			}
+		}
+		
+		return rv;
 	}
 	
 	/* Converts a raw byte-stream text into a java String */
