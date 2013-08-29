@@ -38,7 +38,6 @@ public class PrefKeys {
 	public static final String ENABLE_SHAKE = "enable_shake";
 	public static final String HEADSET_ONLY = "headset_only";
 	public static final String HEADSET_PAUSE = "headset_pause";
-	public static final String HEADSET_PLAY = "headset_play";
 	public static final String IDLE_TIMEOUT = "idle_timeout";
 	public static final String LIBRARY_PAGE = "library_page";
 	public static final String MEDIA_BUTTON = "media_button";

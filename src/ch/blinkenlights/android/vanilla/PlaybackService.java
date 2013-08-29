@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2012-2013 Adrian Ulrich <adrian@blinkenlights.ch>
  * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -283,15 +283,6 @@ public final class PlaybackService extends Service
 	 */
 	private boolean mHeadsetOnly;
 	/**
-	 * If true, start playing when the headset is plugged in.
-	 */
-	boolean mHeadsetPlay;
-	/**
-	 * True if the initial broadcast sent when registering HEADSET_PLUG has
-	 * been receieved.
-	 */
-	boolean mPlugInitialized;
-	/**
 	 * The time to wait before considering the player idle.
 	 */
 	private int mIdleTimeout;
@@ -411,7 +402,6 @@ public final class PlaybackService extends Service
 		Song.mDisableCoverArt = settings.getBoolean(PrefKeys.DISABLE_COVER_ART, false);
 		mHeadsetOnly = settings.getBoolean(PrefKeys.HEADSET_ONLY, false);
 		mStockBroadcast = settings.getBoolean(PrefKeys.STOCK_BROADCAST, false);
-		mHeadsetPlay = settings.getBoolean(PrefKeys.HEADSET_PLAY, false);
 		mInvertNotification = settings.getBoolean(PrefKeys.NOTIFICATION_INVERTED_COLOR, false);
 		mNotificationAction = createNotificationAction(settings);
 		mHeadsetPause = getSettings(this).getBoolean(PrefKeys.HEADSET_PAUSE, true);
@@ -437,7 +427,6 @@ public final class PlaybackService extends Service
 		mReceiver = new Receiver();
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
-		filter.addAction(Intent.ACTION_HEADSET_PLUG);
 		filter.addAction(Intent.ACTION_SCREEN_ON);
 		registerReceiver(mReceiver, filter);
 
@@ -767,8 +756,6 @@ public final class PlaybackService extends Service
 				unsetFlag(FLAG_PLAYING);
 		} else if (PrefKeys.STOCK_BROADCAST.equals(key)) {
 			mStockBroadcast = settings.getBoolean(key, false);
-		} else if (PrefKeys.HEADSET_PLAY.equals(key)) {
-			mHeadsetPlay = settings.getBoolean(key, false);
 		} else if (PrefKeys.ENABLE_SHAKE.equals(key) || PrefKeys.SHAKE_ACTION.equals(key)) {
 			mShakeAction = settings.getBoolean(PrefKeys.ENABLE_SHAKE, false) ? Action.getAction(settings, PrefKeys.SHAKE_ACTION, Action.NextSong) : Action.Nothing;
 			setupSensor();
@@ -1262,11 +1249,6 @@ public final class PlaybackService extends Service
 			if (AudioManager.ACTION_AUDIO_BECOMING_NOISY.equals(action)) {
 				if (mHeadsetPause)
 					unsetFlag(FLAG_PLAYING);
-			} else if (Intent.ACTION_HEADSET_PLUG.equals(action)) {
-				if (mHeadsetPlay && mPlugInitialized && intent.getIntExtra("state", 0) == 1)
-					setFlag(FLAG_PLAYING);
-				else if (!mPlugInitialized)
-					mPlugInitialized = true;
 			} else if (Intent.ACTION_SCREEN_ON.equals(action)) {
 				userActionTriggered();
 			}
