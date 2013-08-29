@@ -625,6 +625,10 @@ public class FullPlaybackActivity extends PlaybackActivity
 	 * Calls {@link #updateQueuePosition()}.
 	 */
 	private static final int MSG_UPDATE_POSITION = 17;
+	/**
+	 * Calls {@link #seekToProgress()}.
+	 */
+	private static final int MSG_SEEK_TO_PROGRESS = 18;
 
 	@Override
 	public boolean handleMessage(Message message)
@@ -655,6 +659,10 @@ public class FullPlaybackActivity extends PlaybackActivity
 		case MSG_UPDATE_POSITION:
 			updateQueuePosition();
 			break;
+		case MSG_SEEK_TO_PROGRESS:
+			PlaybackService.get(this).seekToProgress(message.arg1);
+			updateElapsedTime();
+			break;
 		default:
 			return super.handleMessage(message);
 		}
@@ -667,7 +675,8 @@ public class FullPlaybackActivity extends PlaybackActivity
 	{
 		if (fromUser) {
 			mElapsedView.setText(DateUtils.formatElapsedTime(mTimeBuilder, progress * mDuration / 1000000));
-			PlaybackService.get(this).seekToProgress(progress);
+			mUiHandler.removeMessages(MSG_SEEK_TO_PROGRESS);
+			mUiHandler.sendMessageDelayed(mUiHandler.obtainMessage(MSG_SEEK_TO_PROGRESS, progress, 0), 150);
 		}
 	}
 
