@@ -43,6 +43,11 @@ THE SOFTWARE.
 		android:title="@string/headset_pause_title"
 		android:defaultValue="true"
 		android:summary="@string/headset_pause_summary" />
+	<CheckBoxPreference
+		android:key="enable_readahead"
+		android:title="@string/readahead"
+		android:defaultValue="false"
+		android:summary="@string/readahead_summary" />
 	<PreferenceScreen
 		android:title="@string/replaygain"
 		android:summary="@string/replaygain_summary">

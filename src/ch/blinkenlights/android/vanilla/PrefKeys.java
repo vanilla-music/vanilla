@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2012-2013 Adrian Ulrich <adrian@blinkenlights.ch>
  * Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -60,4 +61,5 @@ public class PrefKeys {
 	public static final String ENABLE_ALBUM_REPLAYGAIN = "enable_album_replaygain";
 	public static final String REPLAYGAIN_BUMP = "replaygain_bump";
 	public static final String REPLAYGAIN_UNTAGGED_DEBUMP = "replaygain_untagged_debump";
+	public static final String ENABLE_READAHEAD = "enable_readahead";
 }

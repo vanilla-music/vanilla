@@ -373,7 +373,17 @@ public final class PlaybackService extends Service
 	private boolean mReplayGainAlbumEnabled;
 	private int mReplayGainBump;
 	private int mReplayGainUntaggedDeBump;
-	
+	/**
+	 * TRUE if the readahead feature is enabled
+	 */
+	private boolean mReadaheadEnabled;
+	/**
+	 * Reference to precreated ReadAhead thread
+	 */
+	private ReadaheadThread mReadahead;
+	/**
+	 * Reference to precreated BASTP Object
+	 */
 	private BastpUtil mBastpUtil;
 	
 	@Override
@@ -388,6 +398,8 @@ public final class PlaybackService extends Service
 
 		mMediaPlayer = getNewMediaPlayer();
 		mBastpUtil = new BastpUtil();
+		mReadahead = new ReadaheadThread();
+		mReadahead.start();
 		
 		mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 		mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
@@ -412,7 +424,9 @@ public final class PlaybackService extends Service
 		mReplayGainAlbumEnabled = settings.getBoolean(PrefKeys.ENABLE_ALBUM_REPLAYGAIN, false);
 		mReplayGainBump = settings.getInt(PrefKeys.REPLAYGAIN_BUMP, 75);  /* seek bar is 150 -> 75 == middle == 0 */
 		mReplayGainUntaggedDeBump = settings.getInt(PrefKeys.REPLAYGAIN_UNTAGGED_DEBUMP, 150); /* seek bar is 150 -> == 0 */
-		
+
+		mReadaheadEnabled = settings.getBoolean(PrefKeys.ENABLE_READAHEAD, false);
+
 		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
 		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicLock");
 
@@ -645,11 +659,15 @@ public final class PlaybackService extends Service
 		}
 		mp.setVolume(rg_result, rg_result);
 	}
-	
+
+	/**
+	 * Returns the (hopefully cached) replaygain 
+	 * values of given file
+	 */
 	public float[] getReplayGainValues(String path) {
 		return mBastpUtil.getReplayGainValues(path);
 	}
-	
+
 	/**
 	 * Destroys any currently prepared MediaPlayer and
 	 * re-creates a newone if needed.
@@ -691,9 +709,20 @@ public final class PlaybackService extends Service
 		else {
 			Log.d("VanillaMusic", "Must not create new media player object");
 		}
-		
 	}
-	
+
+	/**
+	 * Stops or starts the readahead thread
+	 */
+	private void triggerReadAhead() {
+		Song song = mCurrentSong;
+		if(mReadaheadEnabled && (mState & FLAG_PLAYING) != 0 && song != null) {
+			mReadahead.setSource(song.path);
+		} else {
+			mReadahead.pause();
+		}
+	}
+
 	/**
 	 * Return the SharedPreferences instance containing the PlaybackService
 	 * settings, creating it if necessary.
@@ -773,6 +802,8 @@ public final class PlaybackService extends Service
 		} else if (PrefKeys.REPLAYGAIN_UNTAGGED_DEBUMP.equals(key)) {
 			mReplayGainUntaggedDeBump = settings.getInt(PrefKeys.REPLAYGAIN_UNTAGGED_DEBUMP, 150);
 			refreshReplayGainValues();
+		} else if (PrefKeys.ENABLE_READAHEAD.equals(key)) {
+			mReadaheadEnabled = settings.getBoolean(PrefKeys.ENABLE_READAHEAD, false);
 		}
 
 		CompatFroyo.dataChanged(this);
@@ -898,6 +929,7 @@ public final class PlaybackService extends Service
 			mTimeline.setFinishAction(finishAction(state));
 		
 		triggerGaplessUpdate();
+		triggerReadAhead();
 	}
 
 	private void broadcastChange(int state, Song song, long uptime)
@@ -1169,6 +1201,7 @@ public final class PlaybackService extends Service
 			
 			mMediaPlayerInitialized = true;
 			triggerGaplessUpdate();
+			triggerReadAhead();
 			
 			if (mPendingSeek != 0 && mPendingSeekSong == song.id) {
 				mMediaPlayer.seekTo(mPendingSeek);

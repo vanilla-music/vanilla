@@ -163,7 +163,10 @@ THE SOFTWARE.
 	<string name="replaygain_bump_title">Replay Gain Pre-amp</string>
 	<string name="replaygain_untagged_debump_title">Songs without Replay Gain tag</string>
 	<string name="replaygain_untagged_debump_summary">Decrease volume by</string>
-	
+
+	<string name="readahead">Enable readahead</string>
+	<string name="readahead_summary">Readahead the currently playing song. This option may solve \'audio dropout\' issues. (caused by a slow SD card)</string>
+
 	<string name="notifications">Notifications</string>
 	<string name="notification_mode_title">Notification Mode</string>
 	<string name="notification_action_title">Notification Action</string>
