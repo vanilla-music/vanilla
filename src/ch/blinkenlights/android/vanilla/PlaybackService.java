@@ -27,6 +27,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.app.backup.BackupManager;
 import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -79,6 +80,7 @@ public final class PlaybackService extends Service
 	         , SharedPreferences.OnSharedPreferenceChangeListener
 	         , SongTimeline.Callback
 	         , SensorEventListener
+	         , AudioManager.OnAudioFocusChangeListener
 {
 	/**
 	 * Name of the state file.
@@ -403,8 +405,6 @@ public final class PlaybackService extends Service
 		
 		mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 		mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
-
-		CompatFroyo.createAudioFocus();
 
 		SharedPreferences settings = getSettings(this);
 		settings.registerOnSharedPreferenceChangeListener(this);
@@ -805,8 +805,8 @@ public final class PlaybackService extends Service
 		} else if (PrefKeys.ENABLE_READAHEAD.equals(key)) {
 			mReadaheadEnabled = settings.getBoolean(PrefKeys.ENABLE_READAHEAD, false);
 		}
-
-		CompatFroyo.dataChanged(this);
+		/* Tell androids cloud-backup manager that we just changed our preferences */
+		(new BackupManager(this)).dataChanged();
 	}
 
 	/**
@@ -886,7 +886,7 @@ public final class PlaybackService extends Service
 				if (mNotificationMode != NEVER)
 					startForeground(NOTIFICATION_ID, createNotification(mCurrentSong, mState));
 
-				CompatFroyo.requestAudioFocus(mAudioManager);
+				mAudioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 
 				mHandler.removeMessages(RELEASE_WAKE_LOCK);
 				try {
