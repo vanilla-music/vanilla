@@ -1870,26 +1870,22 @@ public final class PlaybackService extends Service
 
 		String title = song.title;
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			int playButton = playing ? R.drawable.pause : R.drawable.play;
-			views.setImageViewResource(R.id.play_pause, playButton);
+		int playButton = playing ? R.drawable.pause : R.drawable.play;
+		views.setImageViewResource(R.id.play_pause, playButton);
 
-			ComponentName service = new ComponentName(this, PlaybackService.class);
+		ComponentName service = new ComponentName(this, PlaybackService.class);
 
-			Intent playPause = new Intent(PlaybackService.ACTION_TOGGLE_PLAYBACK_NOTIFICATION);
-			playPause.setComponent(service);
-			views.setOnClickPendingIntent(R.id.play_pause, PendingIntent.getService(this, 0, playPause, 0));
+		Intent playPause = new Intent(PlaybackService.ACTION_TOGGLE_PLAYBACK_NOTIFICATION);
+		playPause.setComponent(service);
+		views.setOnClickPendingIntent(R.id.play_pause, PendingIntent.getService(this, 0, playPause, 0));
 
-			Intent next = new Intent(PlaybackService.ACTION_NEXT_SONG);
-			next.setComponent(service);
-			views.setOnClickPendingIntent(R.id.next, PendingIntent.getService(this, 0, next, 0));
+		Intent next = new Intent(PlaybackService.ACTION_NEXT_SONG);
+		next.setComponent(service);
+		views.setOnClickPendingIntent(R.id.next, PendingIntent.getService(this, 0, next, 0));
 
-			Intent close = new Intent(PlaybackService.ACTION_CLOSE_NOTIFICATION);
-			close.setComponent(service);
-			views.setOnClickPendingIntent(R.id.close, PendingIntent.getService(this, 0, close, 0));
-		} else if (!playing) {
-			title = getResources().getString(R.string.notification_title_paused, song.title);
-		}
+		Intent close = new Intent(PlaybackService.ACTION_CLOSE_NOTIFICATION);
+		close.setComponent(service);
+		views.setOnClickPendingIntent(R.id.close, PendingIntent.getService(this, 0, close, 0));
 
 		views.setTextViewText(R.id.title, title);
 		views.setTextViewText(R.id.artist, song.artist);
@@ -1918,12 +1914,7 @@ public final class PlaybackService extends Service
 		case AudioManager.AUDIOFOCUS_LOSS:
 		case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
 			mDuckedLoss = false;
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-				// On Honeycomb and above we have controls in the notification.
-				// Ensure they are shown when music is paused from focus loss
-				// so music can easily be started again if desired.
-				mForceNotificationVisible = true;
-			}
+			mForceNotificationVisible = true;
 			unsetFlag(FLAG_PLAYING);
 			break;
 		case AudioManager.AUDIOFOCUS_GAIN:

@@ -354,9 +354,6 @@ public class FullPlaybackActivity extends PlaybackActivity
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-			menu.add(0, MENU_LIBRARY, 0, R.string.library).setIcon(R.drawable.ic_menu_music_library);
-		}
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, MENU_CLEAR_QUEUE, 0, R.string.clear_queue).setIcon(R.drawable.ic_menu_close_clear_cancel);
 		menu.add(0, MENU_ENQUEUE_ALBUM, 0, R.string.enqueue_current_album).setIcon(R.drawable.ic_menu_add);
@@ -503,8 +500,6 @@ public class FullPlaybackActivity extends PlaybackActivity
 		TableLayout table = mInfoTable;
 		if (table == null)
 			return;
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD_MR1)
-			visible = false;
 
 		table.setColumnCollapsed(0, !visible);
 		// Make title, album, and artist multi-line when extra info is visible
