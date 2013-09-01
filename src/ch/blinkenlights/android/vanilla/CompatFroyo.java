@@ -88,28 +88,4 @@ public class CompatFroyo implements AudioManager.OnAudioFocusChangeListener {
 			service.onAudioFocusChange(type);
 		}
 	}
-
-	/**
-	 * Calls {@link VelocityTracker#getYVelocity(int)}.
-	 */
-	public static float getYVelocity(VelocityTracker tracker, int id)
-	{
-		return tracker.getYVelocity(id);
-	}
-
-	/**
-	 * Calls {@link VelocityTracker#getXVelocity(int)}.
-	 */
-	public static float getXVelocity(VelocityTracker tracker, int id)
-	{
-		return tracker.getXVelocity(id);
-	}
-
-	/**
-	 * Calls {@link ViewConfiguration#getScaledPagingTouchSlop()}.
-	 */
-	public static int getScaledPagingTouchSlop(ViewConfiguration config)
-	{
-		return config.getScaledPagingTouchSlop();
-	}
 }

@@ -46,7 +46,6 @@ import android.widget.EdgeEffect;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import ch.blinkenlights.android.vanilla.CompatFroyo;
 import ch.blinkenlights.android.vanilla.CompatHoneycomb;
 
 /**
@@ -249,11 +248,7 @@ public class ViewPager extends ViewGroup {
         final Context context = getContext();
         mScroller = new Scroller(context, sInterpolator);
         final ViewConfiguration configuration = ViewConfiguration.get(context);
-        if (Build.VERSION.SDK_INT >= 8) {
-            mTouchSlop = CompatFroyo.getScaledPagingTouchSlop(configuration);
-        } else {
-            mTouchSlop = configuration.getScaledTouchSlop();
-        }
+        mTouchSlop = configuration.getScaledPagingTouchSlop();
         mMinimumVelocity = configuration.getScaledMinimumFlingVelocity();
         mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
         if (Build.VERSION.SDK_INT >= 14) {
@@ -1494,12 +1489,7 @@ public class ViewPager extends ViewGroup {
                 if (mIsBeingDragged) {
                     final VelocityTracker velocityTracker = mVelocityTracker;
                     velocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
-                    int initialVelocity;
-                    if (Build.VERSION.SDK_INT >= 8) {
-                        initialVelocity = (int)CompatFroyo.getXVelocity(velocityTracker, mActivePointerId);
-                    } else {
-                        initialVelocity = (int)velocityTracker.getXVelocity();
-                    }
+                    int initialVelocity = (int)velocityTracker.getXVelocity(mActivePointerId);
                     mPopulatePending = true;
                     final int widthWithMargin = getWidth() + mPageMargin;
                     final int scrollX = getScrollX();
@@ -1679,12 +1669,7 @@ public class ViewPager extends ViewGroup {
 
         final VelocityTracker velocityTracker = mVelocityTracker;
         velocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
-        int initialVelocity;
-        if (Build.VERSION.SDK_INT >= 8) {
-            initialVelocity = (int)CompatFroyo.getYVelocity(velocityTracker, mActivePointerId);
-        } else {
-            initialVelocity = (int)velocityTracker.getYVelocity();
-        }
+        int initialVelocity = (int)velocityTracker.getYVelocity(mActivePointerId);
         mPopulatePending = true;
         final int totalDelta = (int) (mLastMotionX - mInitialMotionX);
         final int scrollX = getScrollX();
