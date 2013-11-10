@@ -21,7 +21,6 @@ import android.util.LruCache;
 import ch.blinkenlights.bastp.Bastp;
 import java.util.HashMap;
 import java.util.Vector;
-import android.util.Log;
 
 public class BastpUtil {
 	private RGLruCache rgCache;
@@ -35,7 +34,7 @@ public class BastpUtil {
 	 */
 	public float[] getReplayGainValues(String path) {
 		float[] cached = rgCache.get(path);
-		Log.d("VanillaMusic", "LRU cache("+rgCache.size()+"): "+path+" -> "+cached);
+
 		if(cached == null) {
 			cached = getReplayGainValuesFromFile(path);
 			rgCache.put(path, cached);

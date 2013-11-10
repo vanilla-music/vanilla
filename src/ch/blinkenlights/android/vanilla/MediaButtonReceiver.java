@@ -224,7 +224,7 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 
 		AudioManager audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
 		ComponentName receiver = new ComponentName(context.getPackageName(), MediaButtonReceiver.class.getName());
-		CompatFroyo.registerMediaButtonEventReceiver(audioManager, receiver);
+		audioManager.registerMediaButtonEventReceiver(receiver);
 	}
 
 	/**
@@ -236,7 +236,7 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 	{
 		AudioManager audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
 		ComponentName receiver = new ComponentName(context.getPackageName(), MediaButtonReceiver.class.getName());
-		CompatFroyo.unregisterMediaButtonEventReceiver(audioManager, receiver);
+		audioManager.unregisterMediaButtonEventReceiver(receiver);
 	}
 
 	@Override

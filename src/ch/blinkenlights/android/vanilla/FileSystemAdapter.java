@@ -318,7 +318,8 @@ public class FileSystemAdapter
 	public void onClick(View view)
 	{
 		Intent intent = createData((View)view.getParent());
-		if (view.getId() == R.id.arrow) {
+		boolean isFolder = intent.getBooleanExtra(LibraryAdapter.DATA_EXPANDABLE, false);
+		if (isFolder) {
 			mActivity.onItemExpanded(intent);
 		} else {
 			mActivity.onItemClicked(intent);

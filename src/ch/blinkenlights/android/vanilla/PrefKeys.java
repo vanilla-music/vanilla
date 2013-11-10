@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2012-2013 Adrian Ulrich <adrian@blinkenlights.ch>
  * Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -38,7 +39,6 @@ public class PrefKeys {
 	public static final String ENABLE_SHAKE = "enable_shake";
 	public static final String HEADSET_ONLY = "headset_only";
 	public static final String HEADSET_PAUSE = "headset_pause";
-	public static final String HEADSET_PLAY = "headset_play";
 	public static final String IDLE_TIMEOUT = "idle_timeout";
 	public static final String LIBRARY_PAGE = "library_page";
 	public static final String MEDIA_BUTTON = "media_button";
@@ -62,4 +62,5 @@ public class PrefKeys {
 	public static final String ENABLE_ALBUM_REPLAYGAIN = "enable_album_replaygain";
 	public static final String REPLAYGAIN_BUMP = "replaygain_bump";
 	public static final String REPLAYGAIN_UNTAGGED_DEBUMP = "replaygain_untagged_debump";
+	public static final String ENABLE_READAHEAD = "enable_readahead";
 }

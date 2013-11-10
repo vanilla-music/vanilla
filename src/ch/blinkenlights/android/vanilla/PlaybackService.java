@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2012-2013 Adrian Ulrich <adrian@blinkenlights.ch>
  * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,6 +27,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.app.backup.BackupManager;
 import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -42,6 +43,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.audiofx.AudioEffect;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -78,6 +80,7 @@ public final class PlaybackService extends Service
 	         , SharedPreferences.OnSharedPreferenceChangeListener
 	         , SongTimeline.Callback
 	         , SensorEventListener
+	         , AudioManager.OnAudioFocusChangeListener
 {
 	/**
 	 * Name of the state file.
@@ -182,9 +185,13 @@ public final class PlaybackService extends Service
 	 */
 	private static final int NOT_ACTION_MINI_ACTIVITY = 1;
 	/**
+	 * Notification click action: open FullPlaybackActivity.
+	 */
+	private static final int NOT_ACTION_FULL_ACTIVITY = 2;
+	/**
 	 * Notification click action: skip to next song.
 	 */
-	private static final int NOT_ACTION_NEXT_SONG = 2;
+	private static final int NOT_ACTION_NEXT_SONG = 3;
 
 	/**
 	 * If a user action is triggered within this time (in ms) after the
@@ -241,6 +248,12 @@ public final class PlaybackService extends Service
 	 *     ff:  {@link PlaybackService#MASK_SHUFFLE}
 	 */
 	int mState;
+	
+	/**
+	 * How many broken songs we did already skip
+	 */
+	int mSkipBroken;
+	
 	/**
 	 * Object used for state-related locking.
 	 */
@@ -271,15 +284,6 @@ public final class PlaybackService extends Service
 	 * If true, audio will not be played through the speaker.
 	 */
 	private boolean mHeadsetOnly;
-	/**
-	 * If true, start playing when the headset is plugged in.
-	 */
-	boolean mHeadsetPlay;
-	/**
-	 * True if the initial broadcast sent when registering HEADSET_PLUG has
-	 * been receieved.
-	 */
-	boolean mPlugInitialized;
 	/**
 	 * The time to wait before considering the player idle.
 	 */
@@ -328,9 +332,9 @@ public final class PlaybackService extends Service
 	public InCallListener mCallListener;
 	private String mErrorMessage;
 	/**
-	 * If true, the volume is being reduced for the idle fade-out.
+	 * Current fade-out progress. 1.0f if we are not fading out
 	 */
-	private boolean mFadeInProgress;
+	private float mFadeOut = 1.0f;
 	/**
 	 * Elapsed realtime at which playback was paused by idle timeout. -1
 	 * indicates that no timeout has occurred.
@@ -380,7 +384,17 @@ public final class PlaybackService extends Service
 	private boolean mReplayGainAlbumEnabled;
 	private int mReplayGainBump;
 	private int mReplayGainUntaggedDeBump;
-	
+	/**
+	 * TRUE if the readahead feature is enabled
+	 */
+	private boolean mReadaheadEnabled;
+	/**
+	 * Reference to precreated ReadAhead thread
+	 */
+	private ReadaheadThread mReadahead;
+	/**
+	 * Reference to precreated BASTP Object
+	 */
 	private BastpUtil mBastpUtil;
 	
 	@Override
@@ -395,11 +409,11 @@ public final class PlaybackService extends Service
 
 		mMediaPlayer = getNewMediaPlayer();
 		mBastpUtil = new BastpUtil();
+		mReadahead = new ReadaheadThread();
+		mReadahead.start();
 		
 		mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 		mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
-
-		CompatFroyo.createAudioFocus();
 
 		SharedPreferences settings = getSettings(this);
 		settings.registerOnSharedPreferenceChangeListener(this);
@@ -409,7 +423,6 @@ public final class PlaybackService extends Service
 		Song.mDisableCoverArt = settings.getBoolean(PrefKeys.DISABLE_COVER_ART, false);
 		mHeadsetOnly = settings.getBoolean(PrefKeys.HEADSET_ONLY, false);
 		mStockBroadcast = settings.getBoolean(PrefKeys.STOCK_BROADCAST, false);
-		mHeadsetPlay = settings.getBoolean(PrefKeys.HEADSET_PLAY, false);
 		mInvertNotification = settings.getBoolean(PrefKeys.NOTIFICATION_INVERTED_COLOR, false);
 		mNotificationAction = createNotificationAction(settings);
 		mHeadsetPause = getSettings(this).getBoolean(PrefKeys.HEADSET_PAUSE, true);
@@ -422,6 +435,7 @@ public final class PlaybackService extends Service
 		mReplayGainAlbumEnabled = settings.getBoolean(PrefKeys.ENABLE_ALBUM_REPLAYGAIN, false);
 		mReplayGainBump = settings.getInt(PrefKeys.REPLAYGAIN_BUMP, 75);  /* seek bar is 150 -> 75 == middle == 0 */
 		mReplayGainUntaggedDeBump = settings.getInt(PrefKeys.REPLAYGAIN_UNTAGGED_DEBUMP, 150); /* seek bar is 150 -> == 0 */
+		mReadaheadEnabled = settings.getBoolean(PrefKeys.ENABLE_READAHEAD, false);
 		
 		mPowerManager = (PowerManager)getSystemService(POWER_SERVICE);
 		mWakeLock = mPowerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicLock");
@@ -437,7 +451,6 @@ public final class PlaybackService extends Service
 		mReceiver = new Receiver();
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
-		filter.addAction(Intent.ACTION_HEADSET_PLUG);
 		filter.addAction(Intent.ACTION_SCREEN_ON);
 		registerReceiver(mReceiver, filter);
 
@@ -550,6 +563,10 @@ public final class PlaybackService extends Service
 
 		if (mMediaPlayer != null) {
 			saveState(mMediaPlayer.getCurrentPosition());
+			Intent i = new Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION);
+			i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mMediaPlayer.getAudioSessionId());
+			i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, getPackageName());
+			sendBroadcast(i);
 			mMediaPlayer.release();
 			mMediaPlayer = null;
 		}
@@ -585,6 +602,12 @@ public final class PlaybackService extends Service
 	public void prepareMediaPlayer(MediaPlayer mp, String path) throws IOException{
 		mp.setDataSource(path);
 		mp.prepare();
+		
+		Intent i = new Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION);
+		i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mp.getAudioSessionId());
+		i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, getPackageName());
+		sendBroadcast(i);
+		
 		applyReplayGain(mp, path);
 	}
 	
@@ -638,15 +661,23 @@ public final class PlaybackService extends Service
 			adjust = 0f;
 		}
 		
-		float rg_result = (float)Math.pow(10, (adjust/20) );
+		float rg_result = ((float)Math.pow(10, (adjust/20) ))*mFadeOut;
+		if(rg_result > 1.0f) {
+			rg_result = 1.0f; /* android would IGNORE the change if this is > 1 and we would end up with the wrong volume */
+		} else if (rg_result < 0.0f) {
+			rg_result = 0.0f;
+		}
 		mp.setVolume(rg_result, rg_result);
-		Log.d("VanillaMusic", "rg="+rg_result+", adj="+adjust+", pth="+path);
 	}
-	
+
+	/**
+	 * Returns the (hopefully cached) replaygain 
+	 * values of given file
+	 */
 	public float[] getReplayGainValues(String path) {
 		return mBastpUtil.getReplayGainValues(path);
 	}
-	
+
 	/**
 	 * Destroys any currently prepared MediaPlayer and
 	 * re-creates a newone if needed.
@@ -688,9 +719,20 @@ public final class PlaybackService extends Service
 		else {
 			Log.d("VanillaMusic", "Must not create new media player object");
 		}
-		
 	}
-	
+
+	/**
+	 * Stops or starts the readahead thread
+	 */
+	private void triggerReadAhead() {
+		Song song = mCurrentSong;
+		if(mReadaheadEnabled && (mState & FLAG_PLAYING) != 0 && song != null) {
+			mReadahead.setSource(song.path);
+		} else {
+			mReadahead.pause();
+		}
+	}
+
 	/**
 	 * Return the SharedPreferences instance containing the PlaybackService
 	 * settings, creating it if necessary.
@@ -753,8 +795,6 @@ public final class PlaybackService extends Service
 				unsetFlag(FLAG_PLAYING);
 		} else if (PrefKeys.STOCK_BROADCAST.equals(key)) {
 			mStockBroadcast = settings.getBoolean(key, false);
-		} else if (PrefKeys.HEADSET_PLAY.equals(key)) {
-			mHeadsetPlay = settings.getBoolean(key, false);
 		} else if (PrefKeys.ENABLE_SHAKE.equals(key)) {
 			mShakeActive = settings.getBoolean(PrefKeys.ENABLE_SHAKE, false);
 			setupSensor();
@@ -776,9 +816,11 @@ public final class PlaybackService extends Service
 		} else if (PrefKeys.REPLAYGAIN_UNTAGGED_DEBUMP.equals(key)) {
 			mReplayGainUntaggedDeBump = settings.getInt(PrefKeys.REPLAYGAIN_UNTAGGED_DEBUMP, 150);
 			refreshReplayGainValues();
+		} else if (PrefKeys.ENABLE_READAHEAD.equals(key)) {
+			mReadaheadEnabled = settings.getBoolean(PrefKeys.ENABLE_READAHEAD, false);
 		}
-
-		CompatFroyo.dataChanged(this);
+		/* Tell androids cloud-backup manager that we just changed our preferences */
+		(new BackupManager(this)).dataChanged();
 	}
 
 	/**
@@ -858,7 +900,7 @@ public final class PlaybackService extends Service
 				if (mNotificationMode != NEVER)
 					startForeground(NOTIFICATION_ID, createNotification(mCurrentSong, mState));
 
-				CompatFroyo.requestAudioFocus(mAudioManager);
+				mAudioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 
 				mHandler.removeMessages(RELEASE_WAKE_LOCK);
 				try {
@@ -901,6 +943,7 @@ public final class PlaybackService extends Service
 			mTimeline.setFinishAction(finishAction(state));
 		
 		triggerGaplessUpdate();
+		triggerReadAhead();
 	}
 
 	private void broadcastChange(int state, Song song, long uptime)
@@ -1152,6 +1195,9 @@ public final class PlaybackService extends Service
 
 	private void processSong(Song song)
 	{
+		/* Save our 'current' state as the try block may set the ERROR flag (which clears the PLAYING flag */
+		boolean playing = (mState & FLAG_PLAYING) != 0;
+		
 		try {
 			mMediaPlayerInitialized = false;
 			mMediaPlayer.reset();
@@ -1169,6 +1215,7 @@ public final class PlaybackService extends Service
 			
 			mMediaPlayerInitialized = true;
 			triggerGaplessUpdate();
+			triggerReadAhead();
 			
 			if (mPendingSeek != 0 && mPendingSeekSong == song.id) {
 				mMediaPlayer.seekTo(mPendingSeek);
@@ -1182,11 +1229,20 @@ public final class PlaybackService extends Service
 				mErrorMessage = null;
 				updateState(mState & ~FLAG_ERROR);
 			}
+			mSkipBroken = 0; /* File not broken, reset skip counter */
 		} catch (IOException e) {
 			mErrorMessage = getResources().getString(R.string.song_load_failed, song.path);
 			updateState(mState | FLAG_ERROR);
 			Toast.makeText(this, mErrorMessage, Toast.LENGTH_LONG).show();
 			Log.e("VanillaMusic", "IOException", e);
+			
+			/* Automatically advance to next song IF we are currently playing or already did skip something
+			 * This will stop after skipping 10 songs to avoid endless loops (queue full of broken stuff */
+			if(mTimeline.isEndOfQueue() == false && getSong(1) != null && (playing || (mSkipBroken > 0 && mSkipBroken < 10))) {
+				mSkipBroken++;
+				mHandler.sendMessageDelayed(mHandler.obtainMessage(SKIP_BROKEN_SONG, getTimelinePosition(), 0), 1000);
+			}
+			
 		}
 
 		updateNotification();
@@ -1240,11 +1296,6 @@ public final class PlaybackService extends Service
 			if (AudioManager.ACTION_AUDIO_BECOMING_NOISY.equals(action)) {
 				if (mHeadsetPause)
 					unsetFlag(FLAG_PLAYING);
-			} else if (Intent.ACTION_HEADSET_PLUG.equals(action)) {
-				if (mHeadsetPlay && mPlugInitialized && intent.getIntExtra("state", 0) == 1)
-					setFlag(FLAG_PLAYING);
-				else if (!mPlugInitialized)
-					mPlugInitialized = true;
 			} else if (Intent.ACTION_SCREEN_ON.equals(action)) {
 				userActionTriggered();
 			}
@@ -1334,6 +1385,7 @@ public final class PlaybackService extends Service
 	private static final int SAVE_STATE = 12;
 	private static final int PROCESS_SONG = 13;
 	private static final int PROCESS_STATE = 14;
+	private static final int SKIP_BROKEN_SONG = 15;
 
 	@Override
 	public boolean handleMessage(Message message)
@@ -1358,28 +1410,19 @@ public final class PlaybackService extends Service
 			break;
 		case IDLE_TIMEOUT:
 			if ((mState & FLAG_PLAYING) != 0) {
-				mHandler.sendMessage(mHandler.obtainMessage(FADE_OUT, 100, 0));
-				mFadeInProgress = true;
+				mHandler.sendMessage(mHandler.obtainMessage(FADE_OUT, 0));
 			}
 			break;
-		case FADE_OUT: {
-			int progress = message.arg1 - 1;
-			float volume;
-			if (progress == 0) {
+		case FADE_OUT:
+			if (mFadeOut <= 0.0f) {
 				mIdleStart = SystemClock.elapsedRealtime();
 				unsetFlag(FLAG_PLAYING);
-				volume = 1.0f;
-				mFadeInProgress = false;
 			} else {
-				// Approximate an exponential curve with x^4
-				// http://www.dr-lex.be/info-stuff/volumecontrols.html
-				volume = Math.max((float)(Math.pow(progress / 100f, 4) * 1.0f), .01f);
-				mHandler.sendMessageDelayed(mHandler.obtainMessage(FADE_OUT, progress, 0), 50);
+				mFadeOut -= 0.01f;
+				mHandler.sendMessageDelayed(mHandler.obtainMessage(FADE_OUT, 0), 50);
 			}
-			if (mMediaPlayer != null)
-				mMediaPlayer.setVolume(volume, volume);
+			refreshReplayGainValues(); /* Updates the volume using the new mFadeOut value */
 			break;
-		}
 		case PROCESS_STATE:
 			processNewState(message.arg1, message.arg2);
 			break;
@@ -1389,6 +1432,17 @@ public final class PlaybackService extends Service
 		case RELEASE_WAKE_LOCK:
 			if (mWakeLock != null && mWakeLock.isHeld())
 				mWakeLock.release();
+			break;
+		case SKIP_BROKEN_SONG:
+			/* Advance to next song if the user didn't already change.
+			 * But we are restoring the Playing state in ANY case as we are most
+			 * likely still stopped due to the error
+			 * Note: This is somewhat racy with user input but also is the - by far - simplest
+			 *       solution */
+			if(getTimelinePosition() == message.arg1) {
+				setCurrentSong(1);
+			}
+			mHandler.sendMessage(mHandler.obtainMessage(CALL_GO, 0, 0));
 			break;
 		default:
 			return false;
@@ -1517,9 +1571,9 @@ public final class PlaybackService extends Service
 		if (mIdleTimeout != 0)
 			mHandler.sendEmptyMessageDelayed(IDLE_TIMEOUT, mIdleTimeout * 1000);
 
-		if (mFadeInProgress) {
-			mMediaPlayer.setVolume(1.0f, 1.0f);
-			mFadeInProgress = false;
+		if (mFadeOut != 1.0f) {
+			mFadeOut = 1.0f;
+			refreshReplayGainValues();
 		}
 
 		long idleStart = mIdleStart;
@@ -1800,6 +1854,11 @@ public final class PlaybackService extends Service
 			intent.setAction(Intent.ACTION_MAIN);
 			return PendingIntent.getActivity(this, 0, intent, 0);
 		}
+		case NOT_ACTION_FULL_ACTIVITY: {
+			Intent intent = new Intent(this, FullPlaybackActivity.class);
+			intent.setAction(Intent.ACTION_MAIN);
+			return PendingIntent.getActivity(this, 0, intent, 0);
+		}
 		}
 	}
 
@@ -1825,26 +1884,22 @@ public final class PlaybackService extends Service
 
 		String title = song.title;
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			int playButton = playing ? R.drawable.pause : R.drawable.play;
-			views.setImageViewResource(R.id.play_pause, playButton);
+		int playButton = playing ? R.drawable.pause : R.drawable.play;
+		views.setImageViewResource(R.id.play_pause, playButton);
 
-			ComponentName service = new ComponentName(this, PlaybackService.class);
+		ComponentName service = new ComponentName(this, PlaybackService.class);
 
-			Intent playPause = new Intent(PlaybackService.ACTION_TOGGLE_PLAYBACK_NOTIFICATION);
-			playPause.setComponent(service);
-			views.setOnClickPendingIntent(R.id.play_pause, PendingIntent.getService(this, 0, playPause, 0));
+		Intent playPause = new Intent(PlaybackService.ACTION_TOGGLE_PLAYBACK_NOTIFICATION);
+		playPause.setComponent(service);
+		views.setOnClickPendingIntent(R.id.play_pause, PendingIntent.getService(this, 0, playPause, 0));
 
-			Intent next = new Intent(PlaybackService.ACTION_NEXT_SONG);
-			next.setComponent(service);
-			views.setOnClickPendingIntent(R.id.next, PendingIntent.getService(this, 0, next, 0));
+		Intent next = new Intent(PlaybackService.ACTION_NEXT_SONG);
+		next.setComponent(service);
+		views.setOnClickPendingIntent(R.id.next, PendingIntent.getService(this, 0, next, 0));
 
-			Intent close = new Intent(PlaybackService.ACTION_CLOSE_NOTIFICATION);
-			close.setComponent(service);
-			views.setOnClickPendingIntent(R.id.close, PendingIntent.getService(this, 0, close, 0));
-		} else if (!playing) {
-			title = getResources().getString(R.string.notification_title_paused, song.title);
-		}
+		Intent close = new Intent(PlaybackService.ACTION_CLOSE_NOTIFICATION);
+		close.setComponent(service);
+		views.setOnClickPendingIntent(R.id.close, PendingIntent.getService(this, 0, close, 0));
 
 		views.setTextViewText(R.id.title, title);
 		views.setTextViewText(R.id.artist, song.artist);
@@ -1873,12 +1928,7 @@ public final class PlaybackService extends Service
 		case AudioManager.AUDIOFOCUS_LOSS:
 		case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
 			mDuckedLoss = false;
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-				// On Honeycomb and above we have controls in the notification.
-				// Ensure they are shown when music is paused from focus loss
-				// so music can easily be started again if desired.
-				mForceNotificationVisible = true;
-			}
+			mForceNotificationVisible = true;
 			unsetFlag(FLAG_PLAYING);
 			break;
 		case AudioManager.AUDIOFOCUS_GAIN:

@@ -354,9 +354,6 @@ public class FullPlaybackActivity extends PlaybackActivity
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-			menu.add(0, MENU_LIBRARY, 0, R.string.library).setIcon(R.drawable.ic_menu_music_library);
-		}
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, MENU_CLEAR_QUEUE, 0, R.string.clear_queue).setIcon(R.drawable.ic_menu_close_clear_cancel);
 		menu.add(0, MENU_ENQUEUE_ALBUM, 0, R.string.enqueue_current_album).setIcon(R.drawable.ic_menu_add);
@@ -503,8 +500,6 @@ public class FullPlaybackActivity extends PlaybackActivity
 		TableLayout table = mInfoTable;
 		if (table == null)
 			return;
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD_MR1)
-			visible = false;
 
 		table.setColumnCollapsed(0, !visible);
 		// Make title, album, and artist multi-line when extra info is visible
@@ -576,8 +571,10 @@ public class FullPlaybackActivity extends PlaybackActivity
 			}
 			mFormat = sb.toString();
 			
-			float[] rg = PlaybackService.get(this).getReplayGainValues(song.path);
-			mReplayGain = "track="+rg[0]+"dB, album="+rg[1]+"dB";
+			if(song.path != null) { /* ICS bug? */
+				float[] rg = PlaybackService.get(this).getReplayGainValues(song.path);
+				mReplayGain = "track="+rg[0]+"dB, album="+rg[1]+"dB";
+			}
 			
 			data.release();
 		}
@@ -623,6 +620,10 @@ public class FullPlaybackActivity extends PlaybackActivity
 	 * Calls {@link #updateQueuePosition()}.
 	 */
 	private static final int MSG_UPDATE_POSITION = 17;
+	/**
+	 * Calls {@link #seekToProgress()}.
+	 */
+	private static final int MSG_SEEK_TO_PROGRESS = 18;
 
 	@Override
 	public boolean handleMessage(Message message)
@@ -653,6 +654,10 @@ public class FullPlaybackActivity extends PlaybackActivity
 		case MSG_UPDATE_POSITION:
 			updateQueuePosition();
 			break;
+		case MSG_SEEK_TO_PROGRESS:
+			PlaybackService.get(this).seekToProgress(message.arg1);
+			updateElapsedTime();
+			break;
 		default:
 			return super.handleMessage(message);
 		}
@@ -665,7 +670,8 @@ public class FullPlaybackActivity extends PlaybackActivity
 	{
 		if (fromUser) {
 			mElapsedView.setText(DateUtils.formatElapsedTime(mTimeBuilder, progress * mDuration / 1000000));
-			PlaybackService.get(this).seekToProgress(progress);
+			mUiHandler.removeMessages(MSG_SEEK_TO_PROGRESS);
+			mUiHandler.sendMessageDelayed(mUiHandler.obtainMessage(MSG_SEEK_TO_PROGRESS, progress, 0), 150);
 		}
 	}
 

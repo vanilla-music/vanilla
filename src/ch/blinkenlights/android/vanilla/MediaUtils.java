@@ -532,8 +532,8 @@ public class MediaUtils {
 				if((new File(pfx+"/Android")).lastModified() == exLastmod) {
 					String guessPath = exPath + path.substring(pfx.length());
 					if( (new File(guessPath)).exists() ) {
-						Log.v("Vanilla", "OLD="+path);
-						Log.v("Vanilla", "NEW="+guessPath);
+						Log.d("Vanilla", "OLD="+path);
+						Log.d("Vanilla", "NEW="+guessPath);
 						path = guessPath;
 						break;
 					}
@@ -549,7 +549,17 @@ public class MediaUtils {
 		return path;
 	}
 	
-
+	/**
+	* Adds a final slash if the path points to an existing directory
+	*/
+	private static String addDirEndSlash(String path) {
+		if(path.length() > 0 && path.charAt(path.length()-1) != '/') {
+			if( (new File(path)).isDirectory() ) {
+				path += "/";
+			}
+		}
+		return path;
+	}
 
 	/**
 	 * Build a query that will contain all the media under the given path.
@@ -560,18 +570,18 @@ public class MediaUtils {
 	 */
 	public static QueryTask buildFileQuery(String path, String[] projection)
 	{
-		// It would be better to use selectionArgs to pass path here, but there
-		// doesn't appear to be any way to pass the * when using it.
-		Log.v("Vanilla", "buildFileQuery "+path);
-		StringBuilder selection = new StringBuilder();
-		selection.append("_data GLOB ");
-		DatabaseUtils.appendEscapedSQLString(selection, sanitizeMediaPath(path));
-		 // delete the quotation mark added by the escape method
-		selection.deleteCharAt(selection.length() - 1);
-		selection.append("*' AND is_music");
+		/* make sure that the path is:
+		   -> fixed-up to point to the real mountpoint if user browsed to the mediadir symlink
+		   -> terminated with a / if it is a directory
+		   -> ended with a % for the LIKE query
+		*/
+		path = addDirEndSlash(sanitizeMediaPath(path)) + "%";
+		final String query = "_data LIKE ? AND is_music";
+		String[] qargs = { path };
 
+		Log.d("VanillaMusic", "Running buildFileQuery for "+query+" with ARG="+qargs[0]);
 		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-		QueryTask result = new QueryTask(media, projection, selection.toString(), null, DEFAULT_SORT);
+		QueryTask result = new QueryTask(media, projection, query, qargs, DEFAULT_SORT);
 		result.type = TYPE_FILE;
 		return result;
 	}

@@ -312,7 +312,7 @@ public class LibraryActivity
 				setSearchBoxVisible(false);
 			} else {
 				Limiter limiter = mPagerAdapter.getCurrentLimiter();
-				if (limiter != null && limiter.type != MediaUtils.TYPE_FILE) {
+				if (limiter != null) {
 					int pos = -1;
 					switch (limiter.type) {
 					case MediaUtils.TYPE_ALBUM:
@@ -326,6 +326,14 @@ public class LibraryActivity
 					case MediaUtils.TYPE_GENRE:
 						mPagerAdapter.clearLimiter(MediaUtils.TYPE_GENRE);
 						pos = mPagerAdapter.mGenresPosition;
+						break;
+					case MediaUtils.TYPE_FILE:
+						if(limiter.names.length > 1) {
+							File parentFile = ((File)limiter.data).getParentFile();
+							mPagerAdapter.setLimiter(FileSystemAdapter.buildLimiter(parentFile));
+						} else {
+							mPagerAdapter.clearLimiter(MediaUtils.TYPE_FILE);
+						}
 						break;
 					}
 					if (pos == -1) {

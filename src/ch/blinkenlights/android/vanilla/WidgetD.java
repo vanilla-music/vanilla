@@ -109,7 +109,7 @@ public class WidgetD extends AppWidgetProvider {
 		}
 
 		if (cover == null) {
-			views.setImageViewResource(R.id.cover, android.R.color.transparent);
+			views.setImageViewResource(R.id.cover, R.drawable.fallback_cover);
 		} else {
 			views.setImageViewBitmap(R.id.cover, cover);
 		}

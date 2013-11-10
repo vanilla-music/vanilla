@@ -106,13 +106,37 @@ public class Song implements Comparable<Song> {
 				ParcelFileDescriptor parcelFileDescriptor = res.openFileDescriptor(uri, "r");
 				if (parcelFileDescriptor != null) {
 					FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-					return BitmapFactory.decodeFileDescriptor(fileDescriptor, null, BITMAP_OPTIONS);
+					BitmapFactory.Options bopts = new BitmapFactory.Options();
+					bopts.inPreferredConfig  = Bitmap.Config.RGB_565;
+					bopts.inJustDecodeBounds = true;
+
+					final int inSampleSize   = getSampleSize(fileDescriptor, bopts);
+
+					/* reuse bopts: we are now REALLY going to decode the image */
+					bopts.inJustDecodeBounds = false;
+					bopts.inSampleSize       = inSampleSize;
+					return BitmapFactory.decodeFileDescriptor(fileDescriptor, null, bopts);
 				}
 			} catch (Exception e) {
 				// no cover art found
 			}
 
 			return null;
+		}
+
+		/**
+		 * Guess a good sampleSize value for given FD
+		 */
+		private static int getSampleSize(FileDescriptor fd, BitmapFactory.Options bopts) {
+			int sampleSize = 1;     /* default sample size                   */
+			long maxVal = 400*400;  /* max number of pixels we are accepting */
+
+			BitmapFactory.decodeFileDescriptor(fd, null, bopts);
+			long hasPixels = bopts.outHeight * bopts.outWidth;
+			if(hasPixels > maxVal) {
+				sampleSize = Math.round((int)Math.sqrt((float) hasPixels / (float) maxVal));
+			}
+			return sampleSize;
 		}
 
 		@Override
@@ -233,13 +257,6 @@ public class Song implements Comparable<Song> {
 		if (song == null)
 			return 0;
 		return song.id;
-	}
-
-	static final BitmapFactory.Options BITMAP_OPTIONS = new BitmapFactory.Options();
-
-	static {
-		BITMAP_OPTIONS.inPreferredConfig = Bitmap.Config.RGB_565;
-		BITMAP_OPTIONS.inDither = false;
 	}
 
 	/**
