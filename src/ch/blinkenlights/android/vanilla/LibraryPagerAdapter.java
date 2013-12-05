@@ -307,18 +307,18 @@ public class LibraryPagerAdapter
 			case MediaUtils.TYPE_ARTIST:
 				adapter = mArtistAdapter = new MediaAdapter(activity, MediaUtils.TYPE_ARTIST, null);
 				mArtistAdapter.setExpandable(mSongsPosition != -1 || mAlbumsPosition != -1);
-				mArtistHeader = header = (TextView)inflater.inflate(R.layout.library_row, null);
+				mArtistHeader = header = (TextView)inflater.inflate(R.layout.library_row_header, null);
 				break;
 			case MediaUtils.TYPE_ALBUM:
 				adapter = mAlbumAdapter = new MediaAdapter(activity, MediaUtils.TYPE_ALBUM, mPendingAlbumLimiter);
 				mAlbumAdapter.setExpandable(mSongsPosition != -1);
 				mPendingAlbumLimiter = null;
-				mAlbumHeader = header = (TextView)inflater.inflate(R.layout.library_row, null);
+				mAlbumHeader = header = (TextView)inflater.inflate(R.layout.library_row_header, null);
 				break;
 			case MediaUtils.TYPE_SONG:
 				adapter = mSongAdapter = new MediaAdapter(activity, MediaUtils.TYPE_SONG, mPendingSongLimiter);
 				mPendingSongLimiter = null;
-				mSongHeader = header = (TextView)inflater.inflate(R.layout.library_row, null);
+				mSongHeader = header = (TextView)inflater.inflate(R.layout.library_row_header, null);
 				break;
 			case MediaUtils.TYPE_PLAYLIST:
 				adapter = mPlaylistAdapter = new MediaAdapter(activity, MediaUtils.TYPE_PLAYLIST, null);

@@ -9,6 +9,13 @@
 		android:layout_width="4dip"
 		android:layout_height="fill_parent"
 		android:background="@android:color/holo_blue_dark" />
+	<ImageView
+		android:id="@+id/albumart"
+		android:background="@drawable/selectable_item_bg"
+		android:longClickable="false"
+		android:scaleType="centerInside"
+		android:layout_width="44dip"
+		android:layout_height="44dip" />
 	<TextView
 		android:id="@+id/text"
 		android:background="@drawable/selectable_item_bg"
