@@ -44,7 +44,8 @@ public class ShowQueueActivity extends Activity {
 		mListView   = (ListView) findViewById(R.id.list);
 		listAdapter = new ShowQueueAdapter(this, R.layout.showqueue_row);
 		mListView.setAdapter(listAdapter);
-		
+		mListView.setFastScrollAlwaysVisible(true);
+
 		mListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
