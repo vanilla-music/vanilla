@@ -133,7 +133,6 @@ public abstract class PlaybackActivity extends Activity
 	{
 		super.onResume();
 		MediaButtonReceiver.registerMediaButton(this);
-		MediaButtonReceiver.setInCall(false);
 		if (PlaybackService.hasInstance()) {
 			PlaybackService service = PlaybackService.get(this);
 			service.userActionTriggered();
