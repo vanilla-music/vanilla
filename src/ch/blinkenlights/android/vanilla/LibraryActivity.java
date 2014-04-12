@@ -763,7 +763,7 @@ public class LibraryActivity
 		}
 
 		if (message == null) {
-			message = res.getString(R.string.deleted, intent.getStringExtra("title"));
+			message = res.getString(R.string.deleted_item, intent.getStringExtra("title"));
 		}
 
 		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();

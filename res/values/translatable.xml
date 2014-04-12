@@ -95,6 +95,7 @@ THE SOFTWARE.
 	</plurals>
 	<string name="delete_file_failed">Failed to delete %s.</string>
 
+	<string name="deleted_item">\'%s\' deleted.</string>
 	<string name="delete_item">Delete \'%s\'?</string>
 
 	<string name="artists">Artists</string>
