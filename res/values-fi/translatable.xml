@@ -64,12 +64,12 @@
     <item quantity="one">1 kappale lisätty soittolistaan %2$s.</item>
     <item quantity="other">%1$d kappaletta lisätty soittolistaan %2$s.</item>
   </plurals>
-  <string name="deleted">%s poistettu.</string>
   <plurals name="deleted">
-    <item quantity="one"></item>
-    <item quantity="other">%s poistettu.</item>
+    <item quantity="one">1 kappale poistettu.</item>
+    <item quantity="other">%d kappaletta poistettu.</item>
   </plurals>
   <string name="delete_file_failed">Kohteen %s poistaminen epäonnistui.</string>
+  <string name="delete_item">Poistetaanko \"%s\"?</string>
   <string name="artists">Esittäjät</string>
   <string name="albums">Albumit</string>
   <string name="songs">Kappaleet</string>
@@ -130,6 +130,8 @@
   <string name="replaygain_bump_title">Replay Gain -esivahvistus</string>
   <string name="replaygain_untagged_debump_title">Kappaleet ilman Replay Gain -tunnistetta</string>
   <string name="replaygain_untagged_debump_summary">Vähennä äänenvoimakkuutta</string>
+  <string name="readahead">Käytä etukäteen lukemista</string>
+  <string name="readahead_summary">Lue etukäteen toistettava kappale. Tämä valinta saattaa auttaa, jos ääni katkeilee, ja syynä on hidas SD-muistikortti.</string>
   <string name="notifications">Ilmoitukset</string>
   <string name="notification_mode_title">Ilmoitustapa</string>
   <string name="notification_action_title">Ilmoitustoiminto</string>
@@ -183,6 +185,7 @@
   <string name="open_main_activity">Avaa kirjasto (oletus)</string>
   <string name="open_mini_popup">Avaa pienoisnäkymä</string>
   <string name="skip_to_next_song">Siirry seuraavaan kappaleeseen</string>
+  <string name="open_full_player">Avaa koko soitin</string>
   <string name="info_on_cover">Tiedot kansikuvan päällä</string>
   <string name="info_below_cover">Tiedot kansikuvan alla</string>
   <string name="fixed_info">Tiedot kiinteästi ylhäällä</string>

@@ -61,10 +61,6 @@
   <plurals name="added_to_playlist">
     <item quantity="other">%1$ d 歌曲已加入到播放清單 %2$ s。</item>
   </plurals>
-  <string name="deleted">已刪除 %s。</string>
-  <plurals name="deleted">
-    <item quantity="other">已刪除 %s。</item>
-  </plurals>
   <string name="delete_file_failed">無法刪除 %s。</string>
   <string name="artists">演唱者</string>
   <string name="albums">專輯</string>

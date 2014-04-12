@@ -67,13 +67,8 @@
     <item quantity="one">Repertuāram %2$s pievienota %1$d dziesma.</item>
     <item quantity="other">Repertuāram %2$s pievienotas %1$d dziesmas.</item>
   </plurals>
-  <string name="deleted">%s izdzēsta.</string>
-  <plurals name="deleted">
-    <item quantity="zero"></item>
-    <item quantity="one"></item>
-    <item quantity="other">%s izdzēsta.</item>
-  </plurals>
   <string name="delete_file_failed">Neizdevās izdzēst %s.</string>
+  <string name="delete_item">Dzēst \'%s\'?</string>
   <string name="artists">Izpildītāji</string>
   <string name="albums">Albumi</string>
   <string name="songs">Dziesmas</string>
@@ -137,6 +132,8 @@
   <string name="replaygain_bump_title">Replay Gain priekšpastiprinājums</string>
   <string name="replaygain_untagged_debump_title">Dziesmas bez Replay Gain taga</string>
   <string name="replaygain_untagged_debump_summary">Samazināt skaļumu par</string>
+  <string name="readahead">Ieslēgt nolasi pirms laika</string>
+  <string name="readahead_summary">Pirms laika nolasīt pašreiz atskaņoto dziesmu. Šī opcija var novērst skaņas \'raustīšanās\' problēmas. (Kuras izraisa lēna SD atmiņas karte)</string>
   <string name="notifications">Paziņojumi</string>
   <string name="notification_mode_title">Paziņojumu režīms</string>
   <string name="notification_action_title">Paziņojuma darbība</string>
@@ -190,6 +187,7 @@
   <string name="open_main_activity">Atvērt bibliotēku (noklusējums)</string>
   <string name="open_mini_popup">Atvērt miniatūru izlecošo logu</string>
   <string name="skip_to_next_song">Pāriet uz nākamo dziesmu</string>
+  <string name="open_full_player">Atvērt pilnu atskaņotāju</string>
   <string name="info_on_cover">Informācija uz vāciņa attēla</string>
   <string name="info_below_cover">Informācija zem vāciņa attēla</string>
   <string name="fixed_info">Informācija fiksētā pozīcijā augšā</string>
