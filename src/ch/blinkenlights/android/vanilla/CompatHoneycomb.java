@@ -77,15 +77,6 @@ public class CompatHoneycomb {
 	}
 
 	/**
-	 * Call {@link ListView#setFastScrollAlwaysVisible(boolean)} on the given
-	 * ListView with value true.
-	 */
-	public static void setFastScrollAlwaysVisible(ListView view)
-	{
-		view.setFastScrollAlwaysVisible(true);
-	}
-
-	/**
 	 * Call {@link MenuItem#setActionView(View)} on the given MenuItem.
 	 */
 	public static void setActionView(MenuItem item, View view)

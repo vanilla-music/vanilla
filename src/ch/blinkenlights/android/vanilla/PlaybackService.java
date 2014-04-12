@@ -312,7 +312,6 @@ public final class PlaybackService extends Service
 	SongTimeline mTimeline;
 	private Song mCurrentSong;
 
-	boolean mPlayingBeforeCall;
 	/**
 	 * Stores the saved position in the current song from saved state. Should
 	 * be seeked to when the song is loaded into MediaPlayer. Used only during

@@ -347,7 +347,7 @@ public class LibraryPagerAdapter
 			view.setAdapter(adapter);
 			if (type != MediaUtils.TYPE_FILE)
 				loadSortOrder((MediaAdapter)adapter);
-			enableFastScroll(view);
+			view.setFastScrollAlwaysVisible(true); // also enables fastscroll
 			adapter.setFilter(mFilter);
 
 			mAdapters[type] = adapter;
@@ -740,12 +740,6 @@ public class LibraryPagerAdapter
 		adapter.setSortMode(mode);
 		requestRequery(adapter);
 
-		// Force a new FastScroller to be created so the scroll sections
-		// are updated.
-		ListView view = mLists[mTabOrder[mCurrentPage]];
-		view.setFastScrollEnabled(false);
-		enableFastScroll(view);
-
 		Handler handler = mWorkerHandler;
 		handler.sendMessage(handler.obtainMessage(MSG_SAVE_SORT, adapter));
 	}
@@ -818,18 +812,4 @@ public class LibraryPagerAdapter
 		mActivity.onItemClicked(intent);
 	}
 
-	/**
-	 * Enables FastScroller on the given list, ensuring it is always visible
-	 * and suppresses the match drag position feature in newer versions of
-	 * Android.
-	 *
-	 * @param list The list to enable.
-	 */
-	private void enableFastScroll(ListView list)
-	{
-		mActivity.mFakeTarget = true;
-		list.setFastScrollEnabled(true);
-		CompatHoneycomb.setFastScrollAlwaysVisible(list);
-		mActivity.mFakeTarget = false;
-	}
 }

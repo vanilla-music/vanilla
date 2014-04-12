@@ -156,14 +156,6 @@ public class LibraryActivity
 	 * The adapter for the currently visible list.
 	 */
 	private LibraryAdapter mCurrentAdapter;
-	/**
-	 * If true, return target GINGERBREAD from getApplicationInfo().
-	 */
-	boolean mFakeTarget;
-	/**
-	 * ApplicationInfo with targetSdkVersion set to Gingerbread.
-	 */
-	private ApplicationInfo mFakeInfo;
 
 	@Override
 	public void onCreate(Bundle state)
@@ -1124,20 +1116,4 @@ public class LibraryActivity
 		}
 	}
 
-	@Override
-	public ApplicationInfo getApplicationInfo()
-	{
-		ApplicationInfo info;
-		if (mFakeTarget) {
-			info = mFakeInfo;
-			if (info == null) {
-				info = new ApplicationInfo(super.getApplicationInfo());
-				info.targetSdkVersion = Build.VERSION_CODES.GINGERBREAD;
-				mFakeInfo = info;
-			}
-		} else {
-			info = super.getApplicationInfo();
-		}
-		return info;
-	}
 }
