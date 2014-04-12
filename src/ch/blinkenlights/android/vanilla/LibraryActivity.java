@@ -775,7 +775,7 @@ public class LibraryActivity
 		if (item.getGroupId() != 0)
 			return super.onContextItemSelected(item);
 
-		Intent intent = item.getIntent();
+		final Intent intent = item.getIntent();
 
 		switch (item.getItemId()) {
 		case MENU_EXPAND:
@@ -810,7 +810,21 @@ public class LibraryActivity
 			break;
 		}
 		case MENU_DELETE:
-			mHandler.sendMessage(mHandler.obtainMessage(MSG_DELETE, intent));
+			String delete_message = getString(R.string.delete_item, intent.getStringExtra("title"));
+			AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+			dialog.setTitle(R.string.delete);
+			dialog
+				.setMessage(delete_message)
+				.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						mHandler.sendMessage(mHandler.obtainMessage(MSG_DELETE, intent));
+					}
+				})
+				.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+					}
+				});
+				dialog.create().show();
 			break;
 		case MENU_ADD_TO_PLAYLIST: {
 			SubMenu playlistMenu = item.getSubMenu();
