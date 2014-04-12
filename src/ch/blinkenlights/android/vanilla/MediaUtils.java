@@ -520,20 +520,17 @@ public class MediaUtils {
 	* is also accessible using a fuse mount
 	*/
 	private static String sanitizeMediaPath(String path) {
-		Log.v("Vanilla", "Input path is: "+path);
-		
+
 		String exPath  = Environment.getExternalStorageDirectory().getAbsolutePath();
 		File exStorage = new File(exPath+"/Android");
 		long exLastmod = exStorage.lastModified();
-		
-		if(exLastmod != 0) {
+
+		if(exLastmod > 0 && path != null) {
 			String pfx = path;
 			while(true) {
 				if((new File(pfx+"/Android")).lastModified() == exLastmod) {
 					String guessPath = exPath + path.substring(pfx.length());
 					if( (new File(guessPath)).exists() ) {
-						Log.d("Vanilla", "OLD="+path);
-						Log.d("Vanilla", "NEW="+guessPath);
 						path = guessPath;
 						break;
 					}
@@ -545,7 +542,6 @@ public class MediaUtils {
 			}
 		}
 		
-		Log.v("Vanilla", "Returning "+path);
 		return path;
 	}
 	
