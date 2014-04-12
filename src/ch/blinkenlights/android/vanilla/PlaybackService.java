@@ -1195,7 +1195,7 @@ public final class PlaybackService extends Service
 				mMediaPlayer = mPreparedMediaPlayer;
 				mPreparedMediaPlayer = null;
 			}
-			else {
+			else if(song.path != null) {
 				prepareMediaPlayer(mMediaPlayer, song.path);
 			}
 			
