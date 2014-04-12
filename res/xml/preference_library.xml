@@ -54,5 +54,4 @@ THE SOFTWARE.
 			android:targetPackage="ch.blinkenlights.android.vanilla"
 			android:targetClass="ch.blinkenlights.android.vanilla.FilebrowserStartActivity" />
 	</PreferenceScreen>
-	<ch.blinkenlights.android.vanilla.ScanPreference />
 </PreferenceScreen>
