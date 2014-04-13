@@ -121,6 +121,7 @@ THE SOFTWARE.
 	<string name="artist_album_track">Artist, album, track number</string>
 	<string name="artist_album_title">Artist, album, title</string>
 	<string name="artist_year">Artist, year</string>
+	<string name="song_playcount">Playcount</string>
 
 	<string name="ascending">Ascending</string>
 	<string name="descending">Descending</string>

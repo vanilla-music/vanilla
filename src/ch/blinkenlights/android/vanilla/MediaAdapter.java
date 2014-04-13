@@ -42,6 +42,8 @@ import android.widget.LinearLayout;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.lang.StringBuilder;
 
 /**
  * MediaAdapter provides an adapter backed by a MediaStore content provider.
@@ -61,6 +63,8 @@ public class MediaAdapter
 	         , View.OnClickListener
 {
 	private static final Pattern SPACE_SPLIT = Pattern.compile("\\s+");
+
+	private static final String SORT_MAGIC_PLAYCOUNT = "__PLAYCOUNT_SORT";
 
 	/**
 	 * A context to use.
@@ -182,9 +186,9 @@ public class MediaAdapter
 			mFields = new String[] { MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.TITLE };
 			mFieldKeys = new String[] { MediaStore.Audio.Media.ARTIST_KEY, MediaStore.Audio.Media.ALBUM_KEY, MediaStore.Audio.Media.TITLE_KEY };
 			mSortEntries = new int[] { R.string.name, R.string.artist_album_track, R.string.artist_album_title,
-			                           R.string.artist_year, R.string.year, R.string.date_added };
+			                           R.string.artist_year, R.string.year, R.string.date_added, R.string.song_playcount };
 			mSortValues = new String[] { "title_key %1$s", "artist_key %1$s,album_key %1$s,track %1$s", "artist_key %1$s,album_key %1$s,title_key %1$s",
-			                             "artist_key %1$s,year %1$s,track %1$s", "year %1$s,title_key %1$s", "_id %1$s" };
+			                             "artist_key %1$s,year %1$s,track %1$s", "year %1$s,title_key %1$s", "_id %1$s", SORT_MAGIC_PLAYCOUNT };
 			break;
 		case MediaUtils.TYPE_PLAYLIST:
 			mStore = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI;
@@ -254,7 +258,24 @@ public class MediaAdapter
 		} else {
 			sortDir = "ASC";
 		}
-		String sort = String.format(mSortValues[mode], sortDir);
+
+		String sortStringRaw = mSortValues[mode];
+
+		// Magic sort mode: sort by playcount
+		if (sortStringRaw == SORT_MAGIC_PLAYCOUNT) {
+			ArrayList<Long> topSongs = (new PlayCountsHelper(mActivity)).getTopSongs();
+			int sortWeight = -1 * topSongs.size(); // Sort mode is actually reversed (default: mostplayed -> leastplayed)
+
+			StringBuilder sb = new StringBuilder("CASE WHEN _id=0 THEN 0"); // include dummy statement in initial string -> topSongs may be empty
+			for (Long id : topSongs) {
+				sb.append(" WHEN _id="+id+" THEN "+sortWeight);
+				sortWeight++;
+			}
+			sb.append(" ELSE 0 END %1s");
+			sortStringRaw = sb.toString();
+		}
+
+		String sort = String.format(sortStringRaw, sortDir);
 
 		if (mType == MediaUtils.TYPE_SONG || forceMusicCheck)
 			selection.append("is_music AND length(_data)");

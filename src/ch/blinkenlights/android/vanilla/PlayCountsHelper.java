@@ -20,7 +20,9 @@ package ch.blinkenlights.android.vanilla;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.Cursor;
 import android.util.Log;
+import java.util.ArrayList;
 
 public class PlayCountsHelper extends SQLiteOpenHelper {
 
@@ -74,6 +76,22 @@ public class PlayCountsHelper extends SQLiteOpenHelper {
 		dbh.execSQL("INSERT OR IGNORE INTO "+TABLE_PLAYCOUNTS+" (type, type_id, playcount) VALUES ("+type+", "+id+", 0);"); // Creates row if not exists
 		dbh.execSQL("UPDATE "+TABLE_PLAYCOUNTS+" SET playcount=playcount+1 WHERE type="+type+" AND type_id="+id+";");
 		dbh.close();
+	}
+
+	/**
+	 * Returns a sorted array list of most often listen song ids
+	 */
+	public ArrayList<Long> getTopSongs() {
+		ArrayList<Long> payload = new ArrayList<Long>();
+		SQLiteDatabase dbh = this.getReadableDatabase();
+		Cursor c = dbh.rawQuery("SELECT type_id FROM "+TABLE_PLAYCOUNTS+" WHERE TYPE="+TYPE_SONG+" ORDER BY playcount DESC limit 4096", null);
+
+		while (c.moveToNext()) {
+			payload.add(c.getLong(0));
+		}
+
+		c.close();
+		return payload;
 	}
 
 }
