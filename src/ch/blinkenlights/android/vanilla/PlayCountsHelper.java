@@ -1,0 +1,79 @@
+/*
+ * Copyright (C) 2014 Adrian Ulrich <adrian@blinkenlights.ch>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>. 
+ */
+
+package ch.blinkenlights.android.vanilla;
+
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+public class PlayCountsHelper extends SQLiteOpenHelper {
+
+	/**
+	 * Value of 'type' field
+	 */
+	private static final int TYPE_SONG = 1;
+
+	/**
+	 * SQL constants and CREATE TABLE statements used by 
+	 * this java class
+	 */
+	private static final int DATABASE_VERSION = 1;
+	private static final String DATABASE_NAME = "playcounts.db";
+	private static final String TABLE_PLAYCOUNTS = "playcounts";
+	private static final String DATABASE_CREATE = "CREATE TABLE "+TABLE_PLAYCOUNTS + " ("
+	  + "type      INTEGER, "
+	  + "type_id   BIGINT, "
+	  + "playcount INTEGER);";
+	private static final String INDEX_UNIQUE_CREATE = "CREATE UNIQUE INDEX idx_uniq ON "+TABLE_PLAYCOUNTS
+	  + " (type, type_id);";
+	private static final String INDEX_TYPE_CREATE = "CREATE INDEX idx_type ON "+TABLE_PLAYCOUNTS
+	  + " (type);";
+
+
+	public PlayCountsHelper(Context context) {
+		super(context, DATABASE_NAME, null, DATABASE_VERSION);
+	}
+
+	@Override
+	public void onCreate(SQLiteDatabase dbh) {
+		Log.v("VanillaMusic", "+> CREATE "+DATABASE_CREATE);
+		dbh.execSQL(DATABASE_CREATE);
+		dbh.execSQL(INDEX_UNIQUE_CREATE);
+		dbh.execSQL(INDEX_TYPE_CREATE);
+	}
+
+	@Override
+	public void onUpgrade(SQLiteDatabase dbh, int oldVersion, int newVersion) {
+		// first db -> nothing to upgrade
+	}
+
+	/**
+	 * Counts this song object as 'played'
+	 */
+	public void countSong(Song song) {
+		int type = TYPE_SONG;
+		long id = Song.getId(song);
+		
+		SQLiteDatabase dbh = this.getWritableDatabase();
+		dbh.execSQL("INSERT OR IGNORE INTO "+TABLE_PLAYCOUNTS+" (type, type_id, playcount) VALUES ("+type+", "+id+", 0);"); // Creates row if not exists
+		dbh.execSQL("UPDATE "+TABLE_PLAYCOUNTS+" SET playcount=playcount+1 WHERE type="+type+" AND type_id="+id+";");
+		dbh.close();
+	}
+
+}

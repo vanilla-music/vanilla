@@ -383,7 +383,11 @@ public final class PlaybackService extends Service
 	 * Reference to precreated BASTP Object
 	 */
 	private BastpUtil mBastpUtil;
-	
+	/**
+	 * Reference to Playcounts helper class
+	 */
+	private PlayCountsHelper mPlayCounts;
+
 	@Override
 	public void onCreate()
 	{
@@ -393,6 +397,8 @@ public final class PlaybackService extends Service
 		mTimeline = new SongTimeline(this);
 		mTimeline.setCallback(this);
 		int state = loadState();
+
+		mPlayCounts = new PlayCountsHelper(this);
 
 		mMediaPlayer = getNewMediaPlayer();
 		mBastpUtil = new BastpUtil();
@@ -1227,6 +1233,11 @@ public final class PlaybackService extends Service
 	@Override
 	public void onCompletion(MediaPlayer player)
 	{
+
+		// Count this song as played
+		Song song = mTimeline.getSong(0);
+		mPlayCounts.countSong(song);
+
 		if (finishAction(mState) == SongTimeline.FINISH_REPEAT_CURRENT) {
 			setCurrentSong(0);
 		} else if (finishAction(mState) == SongTimeline.FINISH_STOP_CURRENT) {
