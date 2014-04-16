@@ -231,7 +231,7 @@ public class PlaylistActivity extends Activity
 		switch (action) {
 		case LibraryActivity.ACTION_PLAY:
 		case LibraryActivity.ACTION_ENQUEUE: {
-			QueryTask query = MediaUtils.buildMediaQuery(MediaUtils.TYPE_SONG, audioId, Song.FILLED_PROJECTION, null);
+			QueryTask query = MediaUtils.buildQuery(MediaUtils.TYPE_SONG, audioId, Song.FILLED_PROJECTION, null);
 			query.mode = MODE_FOR_ACTION[action];
 			PlaybackService.get(this).addSongs(query);
 			break;

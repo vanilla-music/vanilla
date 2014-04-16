@@ -125,7 +125,7 @@ public class MediaUtils {
 	 * @param select An extra selection to pass to the query, or null.
 	 * @return The initialized query.
 	 */
-	public static QueryTask buildMediaQuery(int type, long id, String[] projection, String select)
+	private static QueryTask buildMediaQuery(int type, long id, String[] projection, String select)
 	{
 		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 		StringBuilder selection = new StringBuilder();

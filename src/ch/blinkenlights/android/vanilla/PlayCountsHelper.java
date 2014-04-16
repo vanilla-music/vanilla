@@ -54,7 +54,6 @@ public class PlayCountsHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase dbh) {
-		Log.v("VanillaMusic", "+> CREATE "+DATABASE_CREATE);
 		dbh.execSQL(DATABASE_CREATE);
 		dbh.execSQL(INDEX_UNIQUE_CREATE);
 		dbh.execSQL(INDEX_TYPE_CREATE);
