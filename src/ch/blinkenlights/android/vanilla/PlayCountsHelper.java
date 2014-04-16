@@ -27,11 +27,6 @@ import java.util.ArrayList;
 public class PlayCountsHelper extends SQLiteOpenHelper {
 
 	/**
-	 * Value of 'type' field
-	 */
-	private static final int TYPE_SONG = 1;
-
-	/**
 	 * SQL constants and CREATE TABLE statements used by 
 	 * this java class
 	 */
@@ -68,12 +63,11 @@ public class PlayCountsHelper extends SQLiteOpenHelper {
 	 * Counts this song object as 'played'
 	 */
 	public void countSong(Song song) {
-		int type = TYPE_SONG;
 		long id = Song.getId(song);
 		
 		SQLiteDatabase dbh = this.getWritableDatabase();
-		dbh.execSQL("INSERT OR IGNORE INTO "+TABLE_PLAYCOUNTS+" (type, type_id, playcount) VALUES ("+type+", "+id+", 0);"); // Creates row if not exists
-		dbh.execSQL("UPDATE "+TABLE_PLAYCOUNTS+" SET playcount=playcount+1 WHERE type="+type+" AND type_id="+id+";");
+		dbh.execSQL("INSERT OR IGNORE INTO "+TABLE_PLAYCOUNTS+" (type, type_id, playcount) VALUES ("+MediaUtils.TYPE_SONG+", "+id+", 0);"); // Creates row if not exists
+		dbh.execSQL("UPDATE "+TABLE_PLAYCOUNTS+" SET playcount=playcount+1 WHERE type="+MediaUtils.TYPE_SONG+" AND type_id="+id+";");
 		dbh.close();
 	}
 
@@ -83,7 +77,7 @@ public class PlayCountsHelper extends SQLiteOpenHelper {
 	public ArrayList<Long> getTopSongs() {
 		ArrayList<Long> payload = new ArrayList<Long>();
 		SQLiteDatabase dbh = this.getReadableDatabase();
-		Cursor c = dbh.rawQuery("SELECT type_id FROM "+TABLE_PLAYCOUNTS+" WHERE TYPE="+TYPE_SONG+" ORDER BY playcount DESC limit 4096", null);
+		Cursor c = dbh.rawQuery("SELECT type_id FROM "+TABLE_PLAYCOUNTS+" WHERE type="+MediaUtils.TYPE_SONG+" ORDER BY playcount DESC limit 4096", null);
 
 		while (c.moveToNext()) {
 			payload.add(c.getLong(0));
