@@ -69,6 +69,7 @@
     <item quantity="other">%d kappaletta poistettu.</item>
   </plurals>
   <string name="delete_file_failed">Kohteen %s poistaminen epäonnistui.</string>
+  <string name="deleted_item">\"%s\" poistettu.</string>
   <string name="delete_item">Poistetaanko \"%s\"?</string>
   <string name="artists">Esittäjät</string>
   <string name="albums">Albumit</string>
@@ -91,6 +92,7 @@
   <string name="artist_album_track">Esittäjä, albumi, kappalenumero</string>
   <string name="artist_album_title">Esittäjä, albumi, nimi</string>
   <string name="artist_year">Esittäjä, vuosi</string>
+  <string name="song_playcount">Toistokertoja</string>
   <string name="ascending">Nousevasti</string>
   <string name="descending">Laskevasti</string>
   <!--Notification-->

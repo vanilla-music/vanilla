@@ -68,6 +68,7 @@
     <item quantity="other">Repertuāram %2$s pievienotas %1$d dziesmas.</item>
   </plurals>
   <string name="delete_file_failed">Neizdevās izdzēst %s.</string>
+  <string name="deleted_item">Izdzēsa \'%s\'.</string>
   <string name="delete_item">Dzēst \'%s\'?</string>
   <string name="artists">Izpildītāji</string>
   <string name="albums">Albumi</string>
@@ -90,6 +91,7 @@
   <string name="artist_album_track">Izpildītājs, albums, celiņa numurs</string>
   <string name="artist_album_title">Izpildītājs, albums, nosaukums</string>
   <string name="artist_year">Izpildītājs, gads</string>
+  <string name="song_playcount">Atskaņojumu skaits</string>
   <string name="ascending">Augoši</string>
   <string name="descending">Dilstoši</string>
   <!--Notification-->

@@ -51,6 +51,7 @@
   <string name="done">Fertig</string>
   <string name="remove">Entfernen</string>
   <string name="clear_search">Suche entfernen</string>
+  <string name="play_or_enqueue">Einreihen - oder abspielen falls pausiert</string>
   <plurals name="playing">
     <item quantity="one">1 Titel wird abgespielt.</item>
     <item quantity="other">%d Titel werden abgespielt.</item>
@@ -91,6 +92,7 @@
   <string name="artist_album_track">Interpret, Album, Titelnummer</string>
   <string name="artist_album_title">Interpret, Album, Titel</string>
   <string name="artist_year">Interpret, Jahr</string>
+  <string name="song_playcount">Abspielhäufigkeit</string>
   <string name="ascending">Aufsteigend</string>
   <string name="descending">Absteigend</string>
   <!--Notification-->
@@ -126,6 +128,7 @@
   <string name="replaygain_track_title">Aktiviere per-track Replay Gain</string>
   <string name="replaygain_track_summary">Titel in einheitlicher Lautstärke abspielen</string>
   <string name="replaygain_album_title">Aktiviere Album Replay Gain</string>
+  <string name="replaygain_album_summary">Lautstärke von Alben beibehalten</string>
   <string name="replaygain_bump_title">Replay Gain Vorverstärker</string>
   <string name="replaygain_untagged_debump_title">Titel ohne Replay Gain Information</string>
   <string name="replaygain_untagged_debump_summary">Lautstärke senken um: </string>
