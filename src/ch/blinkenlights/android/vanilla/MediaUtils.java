@@ -22,19 +22,20 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
+import junit.framework.Assert;
 import android.content.ContentResolver;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.net.Uri;
-import android.os.Build;
-import android.provider.MediaStore;
-import java.io.File;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-import junit.framework.Assert;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 
 /**
@@ -276,7 +277,7 @@ public class MediaUtils {
 	}
 
 	/**
-	 * Shuffle a Song list using Fisher-Yates algorithm.
+	 * Shuffle a Song list using Collections.shuffle().
 	 *
 	 * @param albumShuffle If true, preserve the order of tracks inside albums.
 	 */
@@ -288,69 +289,38 @@ public class MediaUtils {
 
 		Random random = getRandom();
 		if (albumShuffle) {
-			Song[] songs = list.toArray(new Song[size]);
-			Song[] temp = new Song[size];
-
-			// Make sure the albums are in order
-			Arrays.sort(songs);
-
-			// This is Fisher-Yates algorithm, but it swaps albums instead of
-			// single elements.
-			for (int i = size; --i != -1; ) {
-				Song songI = songs[i];
-				if (i > 0 && songs[i - 1].albumId == songI.albumId)
-					// This index is not the start of an album. Skip it.
-					continue;
-
-				int j = random.nextInt(i + 1);
-				while (j > 0 && songs[j - 1].albumId == songs[j].albumId)
-					// This index is not the start of an album. Find the start.
-					j -= 1;
-
-				int lowerStart = Math.min(i, j);
-				int upperStart = Math.max(i, j);
-
-				if (lowerStart == upperStart)
-					// Swap with ourself. That was easy!
-					continue;
-
-				long lowerAlbum = songs[lowerStart].albumId;
-				int lowerEnd = lowerStart;
-				while (lowerEnd + 1 < size && songs[lowerEnd + 1].albumId == lowerAlbum)
-					lowerEnd += 1;
-
-				long upperAlbum = songs[upperStart].albumId;
-				int upperEnd = upperStart;
-				while (upperEnd + 1 < size && songs[upperEnd + 1].albumId == upperAlbum)
-					upperEnd += 1;
-
-				int lowerSize = lowerEnd - lowerStart + 1;
-				int upperSize = upperEnd - upperStart + 1;
-
-				if (lowerSize == 1 && upperSize == 1) {
-					// Easy, single element swap
-					Song tempSong = songs[lowerStart];
-					songs[lowerStart] = songs[upperStart];
-					songs[upperStart] = tempSong;
-				} else {
-					// Slow multi-element swap. Copy to a new array in the
-					// swapped order.
-					System.arraycopy(songs, 0, temp, 0, lowerStart); // copy elements before lower
-					System.arraycopy(songs, upperStart, temp, lowerStart, upperSize); // copy upper elements to lower spot
-					System.arraycopy(songs, lowerEnd + 1, temp, lowerStart + upperSize, upperStart - lowerEnd - 1); // copy elements between upper and lower
-					System.arraycopy(songs, lowerStart, temp, lowerStart + upperEnd - lowerEnd, lowerSize); // copy lower elements to upper spot
-					System.arraycopy(songs, upperEnd + 1, temp, upperEnd + 1, size - upperEnd - 1); // copy elements remaining elements after upper
-
-					// New array is finished. Use the old array as temp for the
-					// next iteration.
-					Song[] tempTemp = songs;
-					songs = temp;
-					temp = tempTemp;
+			List<Song> tempList = new ArrayList<Song>(list);
+			Collections.sort(tempList);
+			
+			// Build map of albumId to start index in sorted list
+			Map<Long, Integer> albumStartIndices = new HashMap<Long, Integer>();
+			int index = 0;
+			for (Song song : tempList) {
+				if (!albumStartIndices.containsKey(song.albumId)) {
+					albumStartIndices.put(song.albumId, index);
 				}
+				index++;
 			}
-
+			
+			//Extract album list and shuffle
+			List<Long> shuffledAlbums = new ArrayList<Long>(albumStartIndices.keySet());
+			Collections.shuffle(shuffledAlbums, random);
+			
+			//Build Song list from album list
 			list.clear();
-			list.addAll(Arrays.asList(songs));
+			for (Long albumId : shuffledAlbums) {
+				int songIndex = albumStartIndices.get(albumId);
+				Song song = tempList.get(songIndex);
+				do {
+					list.add(song);
+					songIndex++;
+					if (songIndex < size) {
+						song = tempList.get(songIndex);
+					} else {
+						break;
+					}
+				} while (albumId == song.albumId);
+			}
 		} else {
 			Collections.shuffle(list, random);
 		}
