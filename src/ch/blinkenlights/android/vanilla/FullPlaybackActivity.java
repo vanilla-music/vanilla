@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.MediaMetadataRetriever;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
@@ -45,6 +46,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.util.ArrayList;
 
 /**
  * The primary playback screen with playback controls and large cover display.
@@ -361,6 +363,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 		menu.add(0, MENU_ENQUEUE_GENRE, 0, R.string.enqueue_current_genre).setIcon(R.drawable.ic_menu_add);
 		menu.add(0, MENU_SONG_FAVORITE, 0, R.string.add_to_favorites);
 		menu.add(0, MENU_SHOW_QUEUE, 0, R.string.show_queue);
+		menu.add(0, MENU_SHARE, 0, R.string.share);
 		return true;
 	}
 
@@ -404,6 +407,11 @@ public class FullPlaybackActivity extends PlaybackActivity
 			break;
 		case MENU_SHOW_QUEUE:
 			startActivity(new Intent(this, ShowQueueActivity.class));
+			break;
+		case MENU_SHARE:
+			ArrayList<Uri> shareUri = new ArrayList<Uri>();
+			shareUri.add(Uri.parse("file://" + mCurrentSong.path));
+			startActivity(Intent.createChooser(MediaUtils.createShareIntent(shareUri), mCurrentSong.title));
 			break;
 		default:
 			return super.onOptionsItemSelected(item);

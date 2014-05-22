@@ -63,6 +63,7 @@ import android.widget.Toast;
 import com.viewpagerindicator.TabPageIndicator;
 import java.io.File;
 import junit.framework.Assert;
+import java.util.ArrayList;
 
 /**
  * The library activity where songs to play can be selected from the library.
@@ -395,7 +396,6 @@ public class LibraryActivity
 	private void pickSongs(Intent intent, int action)
 	{
 		long id = intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
-
 		boolean all = false;
 		int mode = action;
 		if (action == ACTION_PLAY_ALL || action == ACTION_ENQUEUE_ALL) {
@@ -654,6 +654,7 @@ public class LibraryActivity
 	private static final int MENU_ADD_TO_PLAYLIST = 3;
 	private static final int MENU_NEW_PLAYLIST = 4;
 	private static final int MENU_DELETE = 5;
+    private static final int MENU_SHARE = 6;
 	private static final int MENU_RENAME_PLAYLIST = 7;
 	private static final int MENU_SELECT_PLAYLIST = 8;
 	private static final int MENU_PLAY_ALL = 9;
@@ -696,6 +697,8 @@ public class LibraryActivity
 				menu.add(0, MENU_MORE_FROM_ALBUM, 0, R.string.more_from_album).setIntent(rowData);
 			menu.addSubMenu(0, MENU_ADD_TO_PLAYLIST, 0, R.string.add_to_playlist).getItem().setIntent(rowData);
 			menu.add(0, MENU_DELETE, 0, R.string.delete).setIntent(rowData);
+			if (type != MediaUtils.TYPE_FILE)
+				menu.add(0, MENU_SHARE, 0, R.string.share).setIntent(rowData);
 		}
 	}
 
@@ -761,6 +764,29 @@ public class LibraryActivity
 		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 	}
 
+    /**
+     * Share the media represented by the given intent.
+     *
+     * @param intent An intent created with
+     * {@link LibraryAdapter#createData(View)}.
+     */
+    private void share(Intent intent)
+    {
+        int type = intent.getIntExtra("type", MediaUtils.TYPE_INVALID);
+        long id = intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
+        ContentResolver resolver = getContentResolver();
+        ArrayList<Uri> shareUri = new ArrayList<Uri>();
+        String[] projection = new String[]{MediaStore.Audio.Media.DATA};
+        Cursor cursor = MediaUtils.buildQuery(type, id, projection, null).runQuery(resolver);
+
+        if (cursor != null) {
+            while (cursor.moveToNext())
+                shareUri.add(Uri.parse("file://" + cursor.getString(0)));
+            cursor.close();
+        }
+        startActivity(Intent.createChooser(MediaUtils.createShareIntent(shareUri), intent.getStringExtra("title")));
+    }
+
 	@Override
 	public boolean onContextItemSelected(MenuItem item)
 	{
@@ -818,6 +844,9 @@ public class LibraryActivity
 				});
 				dialog.create().show();
 			break;
+        case MENU_SHARE:
+            share(intent);
+            break;
 		case MENU_ADD_TO_PLAYLIST: {
 			SubMenu playlistMenu = item.getSubMenu();
 			playlistMenu.add(0, MENU_NEW_PLAYLIST, 0, R.string.new_playlist).setIntent(intent);

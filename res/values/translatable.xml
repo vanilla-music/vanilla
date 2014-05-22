@@ -69,6 +69,7 @@ THE SOFTWARE.
 	<string name="new_playlist">New Playlist…</string>
 	<string name="expand">Expand</string>
 	<string name="delete">Delete</string>
+	<string name="share">Share</string>
 	<string name="playback_view">Now Playing</string>
 	<string name="sort_by">Sort By</string>
 	<string name="search">Search</string>
