@@ -33,6 +33,8 @@ import android.provider.MediaStore;
 import android.util.LruCache;
 import java.io.FileDescriptor;
 
+import android.util.Log;
+
 /**
  * Represents a Song backed by the MediaStore. Includes basic metadata and
  * utilities to retrieve songs from the MediaStore.
@@ -84,10 +86,39 @@ public class Song implements Comparable<Song> {
 		MediaStore.Audio.Playlists.Members.TRACK,
 	};
 
+	private class LruCacheKey {
+		Long id;
+		String path;
+
+		public LruCacheKey(Long id, String path) {
+			this.id = id;
+			this.path = path;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof LruCacheKey && id.equals( ((LruCacheKey)obj).id )) {
+				return true;
+			}
+			return false;
+		}
+
+		@Override
+		public int hashCode() {
+			return this.path.length();
+		}
+
+		@Override
+		public String toString() {
+			return "LruCacheKey<"+this.id+"> = "+this.path;
+		}
+
+	}
+
 	/**
 	 * A cache of 6 MiB of covers.
 	 */
-	private static class CoverCache extends LruCache<Long, Bitmap> {
+	private static class CoverCache extends LruCache<LruCacheKey, Bitmap> {
 		private final Context mContext;
 
 		public CoverCache(Context context)
@@ -97,11 +128,11 @@ public class Song implements Comparable<Song> {
 		}
 
 		@Override
-		public Bitmap create(Long key)
+		public Bitmap create(LruCacheKey key)
 		{
-			Uri uri =  Uri.parse("content://media/external/audio/media/" + key + "/albumart");
+			Uri uri =  Uri.parse("content://media/external/audio/media/" + key.id + "/albumart");
 			ContentResolver res = mContext.getContentResolver();
-
+Log.v("VanillaMusic", "Cache miss on key "+key);
 			try {
 				ParcelFileDescriptor parcelFileDescriptor = res.openFileDescriptor(uri, "r");
 				if (parcelFileDescriptor != null) {
@@ -140,7 +171,7 @@ public class Song implements Comparable<Song> {
 		}
 
 		@Override
-		protected int sizeOf(Long key, Bitmap value)
+		protected int sizeOf(LruCacheKey key, Bitmap value)
 		{
 			return value.getRowBytes() * value.getHeight();
 		}
@@ -273,7 +304,9 @@ public class Song implements Comparable<Song> {
 		if (sCoverCache == null)
 			sCoverCache = new CoverCache(context.getApplicationContext());
 
-		Bitmap cover = sCoverCache.get(id);
+		LruCacheKey key = new LruCacheKey(id, path);
+		Bitmap cover = sCoverCache.get(key);
+
 		if (cover == null)
 			flags |= FLAG_NO_COVER;
 		return cover;
