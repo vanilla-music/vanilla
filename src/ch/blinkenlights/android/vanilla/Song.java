@@ -31,6 +31,8 @@ import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.util.LruCache;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileDescriptor;
 
 import android.util.Log;
@@ -125,6 +127,9 @@ public class Song implements Comparable<Song> {
 	private static class CoverCache extends LruCache<LruCacheKey, Bitmap> {
 		private final Context mContext;
 
+		// Possible coverart names if we are going to load the cover on our own
+		private static String[] coverNames = { "cover.jpg", "cover.png", "album.jpg", "album.png", "artwork.jpg", "artwork.png", "art.jpg", "art.png" };
+
 		public CoverCache(Context context)
 		{
 			super(6 * 1024 * 1024);
@@ -138,10 +143,25 @@ public class Song implements Comparable<Song> {
 			ContentResolver res = mContext.getContentResolver();
 Log.v("VanillaMusic", "Cache miss on key "+key);
 			try {
+				FileDescriptor fileDescriptor = null;
 				ParcelFileDescriptor parcelFileDescriptor = res.openFileDescriptor(uri, "r");
 
 				if (parcelFileDescriptor != null) {
-					FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+					fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+				} else {
+					String basePath = (new File(key.path)).getParentFile().getAbsolutePath(); // ../ of the currently playing file
+					for (String coverFile: coverNames) {
+						File guessedFile = new File( basePath + "/" + coverFile);
+						if (guessedFile.exists() && !guessedFile.isDirectory()) {
+							Log.v("VanillaMusic", "Found album artwork at "+guessedFile.getAbsolutePath());
+							FileInputStream fis = new FileInputStream(guessedFile);
+							fileDescriptor = fis.getFD();
+							break;
+						}
+					}
+				}
+
+				if (fileDescriptor != null) {
 					BitmapFactory.Options bopts = new BitmapFactory.Options();
 					bopts.inPreferredConfig  = Bitmap.Config.RGB_565;
 					bopts.inJustDecodeBounds = true;
@@ -165,7 +185,7 @@ Log.v("VanillaMusic", "Cache miss on key "+key);
 		 */
 		private static int getSampleSize(FileDescriptor fd, BitmapFactory.Options bopts) {
 			int sampleSize = 1;     /* default sample size                   */
-			long maxVal = 400*400;  /* max number of pixels we are accepting */
+			long maxVal = 600*600;  /* max number of pixels we are accepting */
 
 			BitmapFactory.decodeFileDescriptor(fd, null, bopts);
 			long hasPixels = bopts.outHeight * bopts.outWidth;
