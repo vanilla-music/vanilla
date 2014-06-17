@@ -38,10 +38,15 @@ THE SOFTWARE.
 		android:title="@string/idle_timeout_title"
 		android:dependency="use_idle_timeout" />
 	<CheckBoxPreference
-		android:key="disable_cover_art"
+		android:key="coverloader_android"
 		android:title="@string/disable_cover_art_title"
 		android:summary="@string/disable_cover_art_summary"
-		android:defaultValue="false" />
+		android:defaultValue="true" />
+	<CheckBoxPreference
+		android:key="coverloader_vanilla"
+		android:title="@string/disable_cover_art_title"
+		android:summary="@string/disable_cover_art_summary"
+		android:defaultValue="true" />
 	<CheckBoxPreference
 		android:key="double_tap"
 		android:title="@string/double_tap_title"

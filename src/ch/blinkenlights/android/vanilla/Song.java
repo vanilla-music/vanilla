@@ -55,6 +55,19 @@ public class Song implements Comparable<Song> {
 	 * The number of flags.
 	 */
 	public static final int FLAG_COUNT = 2;
+	/**
+	 * Use all cover providers to load cover art
+	 */
+	public static final int COVER_MODE_ALL = 0xF;
+	/**
+	 * Use androids builtin cover mechanism to load covers
+	 */
+	public static final int COVER_MODE_ANDROID = 0x1;
+	/**
+	 * Use vanilla musics cover load mechanism
+	 */
+	public static final int COVER_MODE_VANILLA = 0x2;
+
 
 	public static final String[] EMPTY_PROJECTION = {
 		MediaStore.Audio.Media._ID,
@@ -139,26 +152,31 @@ public class Song implements Comparable<Song> {
 		@Override
 		public Bitmap create(LruCacheKey key)
 		{
-			Uri uri =  Uri.parse("content://media/external/audio/media/" + key.id + "/albumart");
-			ContentResolver res = mContext.getContentResolver();
-Log.v("VanillaMusic", "Cache miss on key "+key);
 			try {
 				FileDescriptor fileDescriptor = null;
-				ParcelFileDescriptor parcelFileDescriptor = res.openFileDescriptor(uri, "r");
 
-				if (parcelFileDescriptor != null) {
-					fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-				} else {
+				if ((mCoverLoadMode & COVER_MODE_VANILLA) != 0) {
 					String basePath = (new File(key.path)).getParentFile().getAbsolutePath(); // ../ of the currently playing file
 					for (String coverFile: coverNames) {
 						File guessedFile = new File( basePath + "/" + coverFile);
 						if (guessedFile.exists() && !guessedFile.isDirectory()) {
-							Log.v("VanillaMusic", "Found album artwork at "+guessedFile.getAbsolutePath());
 							FileInputStream fis = new FileInputStream(guessedFile);
 							fileDescriptor = fis.getFD();
 							break;
 						}
 					}
+				}
+
+/**
+ * fixme: add shadow folder (/sdcard/.covers/artist/album.jpg)
+ * and checkout why some files load partial (fd vs fis)
+ */
+				if (fileDescriptor == null && (mCoverLoadMode & COVER_MODE_ANDROID) != 0) {
+					Uri uri =  Uri.parse("content://media/external/audio/media/" + key.id + "/albumart");
+					ContentResolver res = mContext.getContentResolver();
+					ParcelFileDescriptor parcelFileDescriptor = res.openFileDescriptor(uri, "r");
+					if (parcelFileDescriptor != null)
+						fileDescriptor = parcelFileDescriptor.getFileDescriptor();
 				}
 
 				if (fileDescriptor != null) {
@@ -175,6 +193,7 @@ Log.v("VanillaMusic", "Cache miss on key "+key);
 				}
 			} catch (Exception e) {
 				// no cover art found
+				Log.v("VanillaMusic", "Loading coverart for "+key+" failed with exception "+e);
 			}
 
 			return null;
@@ -208,9 +227,14 @@ Log.v("VanillaMusic", "Cache miss on key "+key);
 	private static CoverCache sCoverCache = null;
 
 	/**
-	 * If true, will not attempt to load any cover art in getCover()
+	 * Bitmask on how we are going to load coverart
 	 */
-	public static boolean mDisableCoverArt = false;
+	public static int mCoverLoadMode = 0;
+
+	/**
+	 * We will evict our own cache if set to true
+	 */
+	public static boolean mFlushCoverCache = false;
 
 	/**
 	 * Id of this song in the MediaStore
@@ -323,11 +347,16 @@ Log.v("VanillaMusic", "Cache miss on key "+key);
 	 */
 	public Bitmap getCover(Context context)
 	{
-		if (mDisableCoverArt || id == -1 || (flags & FLAG_NO_COVER) != 0)
+		if (mCoverLoadMode == 0 || id == -1 || (flags & FLAG_NO_COVER) != 0)
 			return null;
 
 		if (sCoverCache == null)
 			sCoverCache = new CoverCache(context.getApplicationContext());
+
+		if (mFlushCoverCache) {
+			mFlushCoverCache = false;
+			sCoverCache.evictAll();
+		}
 
 		LruCacheKey key = new LruCacheKey(id, artistId, albumId, path);
 		Bitmap cover = sCoverCache.get(key);
