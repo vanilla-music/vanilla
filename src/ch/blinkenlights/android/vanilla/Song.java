@@ -87,17 +87,21 @@ public class Song implements Comparable<Song> {
 	};
 
 	private class LruCacheKey {
-		Long id;
+		long id;
+		long artistId;
+		long albumId;
 		String path;
 
-		public LruCacheKey(Long id, String path) {
+		public LruCacheKey(long id, long artistId, long albumId, String path) {
 			this.id = id;
+			this.artistId = artistId;
+			this.albumId = albumId;
 			this.path = path;
 		}
 
 		@Override
 		public boolean equals(Object obj) {
-			if (obj instanceof LruCacheKey && id.equals( ((LruCacheKey)obj).id )) {
+			if (obj instanceof LruCacheKey && this.albumId == ((LruCacheKey)obj).albumId && this.artistId == ((LruCacheKey)obj).artistId) {
 				return true;
 			}
 			return false;
@@ -105,7 +109,7 @@ public class Song implements Comparable<Song> {
 
 		@Override
 		public int hashCode() {
-			return this.path.length();
+			return (int)( 0xFFFFFF & (this.artistId + this.albumId) );
 		}
 
 		@Override
@@ -135,6 +139,7 @@ public class Song implements Comparable<Song> {
 Log.v("VanillaMusic", "Cache miss on key "+key);
 			try {
 				ParcelFileDescriptor parcelFileDescriptor = res.openFileDescriptor(uri, "r");
+
 				if (parcelFileDescriptor != null) {
 					FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
 					BitmapFactory.Options bopts = new BitmapFactory.Options();
@@ -304,7 +309,7 @@ Log.v("VanillaMusic", "Cache miss on key "+key);
 		if (sCoverCache == null)
 			sCoverCache = new CoverCache(context.getApplicationContext());
 
-		LruCacheKey key = new LruCacheKey(id, path);
+		LruCacheKey key = new LruCacheKey(id, artistId, albumId, path);
 		Bitmap cover = sCoverCache.get(key);
 
 		if (cover == null)
