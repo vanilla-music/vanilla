@@ -165,6 +165,12 @@
   <string name="idle_timeout_title">Inaktive Zeit</string>
   <string name="disable_cover_art_title">Cover-Darstellung deaktivieren</string>
   <string name="disable_cover_art_summary">Jegliches Laden von Cover-Art vermeiden</string>
+  <string name="coverloader_android_title">Albumcover von Android verwenden</string>
+  <string name="coverloader_android_summary">Verwendet Androids interne Mediendatenbank um Albumcover zu laden</string>
+  <string name="coverloader_vanilla_title">Cover aus Ordner laden</string>
+  <string name="coverloader_vanilla_summary">Sucht nach Dateien mit den Namen cover.jpg, album.jpg oder artwork.jpg und verwendet jene als Albumcover</string>
+  <string name="coverloader_shadow_title">Cover aus \'verstecktem\' Ordner laden</string>
+  <string name="coverloader_shadow_summary">Verwendet die Datei unter \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\' als Albumcover. (z.B: /sdcard/Music/.vanilla/Jack White/Blunderbuss.jpg)</string>
   <string name="double_tap_title">Widget-Doppelklick</string>
   <string name="double_tap_summary">Doppeltes Antippen des 1x1 Widget öffnet die Wiedergabeansicht. Verursacht eine Verzögerung von 400 ms bevor das Widget auf Aktionen reagiert.</string>
   <string name="scrobble_title">ScrobbleDroid API verwenden</string>
