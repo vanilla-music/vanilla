@@ -28,12 +28,11 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.util.LruCache;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileDescriptor;
+import java.io.InputStream;
 
 import android.util.Log;
 
@@ -153,15 +152,16 @@ public class Song implements Comparable<Song> {
 		public Bitmap create(LruCacheKey key)
 		{
 			try {
-				FileDescriptor fileDescriptor = null;
+				InputStream inputStream = null;
+				InputStream sampleInputStream = null; // same as inputStream but used for getSampleSize
 
 				if ((mCoverLoadMode & COVER_MODE_VANILLA) != 0) {
 					String basePath = (new File(key.path)).getParentFile().getAbsolutePath(); // ../ of the currently playing file
 					for (String coverFile: coverNames) {
 						File guessedFile = new File( basePath + "/" + coverFile);
 						if (guessedFile.exists() && !guessedFile.isDirectory()) {
-							FileInputStream fis = new FileInputStream(guessedFile);
-							fileDescriptor = fis.getFD();
+							inputStream = new FileInputStream(guessedFile);
+							sampleInputStream = new FileInputStream(guessedFile);
 							break;
 						}
 					}
@@ -171,25 +171,24 @@ public class Song implements Comparable<Song> {
  * fixme: add shadow folder (/sdcard/.covers/artist/album.jpg)
  * and checkout why some files load partial (fd vs fis)
  */
-				if (fileDescriptor == null && (mCoverLoadMode & COVER_MODE_ANDROID) != 0) {
+				if (inputStream == null && (mCoverLoadMode & COVER_MODE_ANDROID) != 0) {
 					Uri uri =  Uri.parse("content://media/external/audio/media/" + key.id + "/albumart");
 					ContentResolver res = mContext.getContentResolver();
-					ParcelFileDescriptor parcelFileDescriptor = res.openFileDescriptor(uri, "r");
-					if (parcelFileDescriptor != null)
-						fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+					inputStream = res.openInputStream(uri);
+					sampleInputStream = res.openInputStream(uri);
 				}
 
-				if (fileDescriptor != null) {
+				if (inputStream != null) {
 					BitmapFactory.Options bopts = new BitmapFactory.Options();
 					bopts.inPreferredConfig  = Bitmap.Config.RGB_565;
 					bopts.inJustDecodeBounds = true;
 
-					final int inSampleSize   = getSampleSize(fileDescriptor, bopts);
+					final int inSampleSize   = getSampleSize(sampleInputStream, bopts);
 
 					/* reuse bopts: we are now REALLY going to decode the image */
 					bopts.inJustDecodeBounds = false;
 					bopts.inSampleSize       = inSampleSize;
-					return BitmapFactory.decodeFileDescriptor(fileDescriptor, null, bopts);
+					return BitmapFactory.decodeStream(inputStream, null, bopts);
 				}
 			} catch (Exception e) {
 				// no cover art found
@@ -200,13 +199,13 @@ public class Song implements Comparable<Song> {
 		}
 
 		/**
-		 * Guess a good sampleSize value for given FD
+		 * Guess a good sampleSize value for given inputStream
 		 */
-		private static int getSampleSize(FileDescriptor fd, BitmapFactory.Options bopts) {
+		private static int getSampleSize(InputStream inputStream, BitmapFactory.Options bopts) {
 			int sampleSize = 1;     /* default sample size                   */
 			long maxVal = 600*600;  /* max number of pixels we are accepting */
 
-			BitmapFactory.decodeFileDescriptor(fd, null, bopts);
+			BitmapFactory.decodeStream(inputStream, null, bopts);
 			long hasPixels = bopts.outHeight * bopts.outWidth;
 			if(hasPixels > maxVal) {
 				sampleSize = Math.round((int)Math.sqrt((float) hasPixels / (float) maxVal));
