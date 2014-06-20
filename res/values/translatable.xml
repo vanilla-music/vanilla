@@ -212,6 +212,9 @@ THE SOFTWARE.
 	<string name="coverloader_vanilla_title">Load artwork from folder</string>
 	<string name="coverloader_vanilla_summary">Search for image files named cover.jpg, album.jpg or artwork.jpg and display them as album cover</string>
 
+	<string name="coverloader_shadow_title">Load artwork from hidden folder</string>
+	<string name="coverloader_shadow_summary">Try to load artwork from \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\'</string>
+
 	<string name="double_tap_title">Double Tap Widget</string>
 	<string name="double_tap_summary">Double-tapping the 1x1 widget will open the player. Incurs a 400ms delay before the widget responds to actions.</string>
 	<string name="scrobble_title">Use ScrobbleDroid API</string>

@@ -24,13 +24,20 @@ THE SOFTWARE.
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:persistent="true">
 	<CheckBoxPreference
-		android:key="coverloader_android"
-		android:title="@string/coverloader_android_title"
-		android:summary="@string/coverloader_android_summary"
-		android:defaultValue="true" />
-	<CheckBoxPreference
 		android:key="coverloader_vanilla"
 		android:title="@string/coverloader_vanilla_title"
 		android:summary="@string/coverloader_vanilla_summary"
+		android:defaultValue="true" />
+
+	<CheckBoxPreference
+		android:key="coverloader_shadow"
+		android:title="@string/coverloader_shadow_title"
+		android:summary="@string/coverloader_shadow_summary"
+		android:defaultValue="true" />
+
+	<CheckBoxPreference
+		android:key="coverloader_android"
+		android:title="@string/coverloader_android_title"
+		android:summary="@string/coverloader_android_summary"
 		android:defaultValue="true" />
 </PreferenceScreen>

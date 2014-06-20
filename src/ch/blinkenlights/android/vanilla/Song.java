@@ -66,6 +66,10 @@ public class Song implements Comparable<Song> {
 	 * Use vanilla musics cover load mechanism
 	 */
 	public static final int COVER_MODE_VANILLA = 0x2;
+	/**
+	 * Use vanilla musics SHADOW cover load mechanism
+	 */
+	public static final int COVER_MODE_SHADOW = 0x4;
 
 
 	public static final String[] EMPTY_PROJECTION = {
@@ -167,10 +171,25 @@ public class Song implements Comparable<Song> {
 					}
 				}
 
-/**
- * fixme: add shadow folder (/sdcard/.covers/artist/album.jpg)
- * and checkout why some files load partial (fd vs fis)
- */
+				if (inputStream == null && (mCoverLoadMode & COVER_MODE_SHADOW) != 0) {
+					String[] projection = new String [] { MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM };
+					QueryTask query = MediaUtils.buildQuery(MediaUtils.TYPE_SONG, key.id, projection, null);
+					Cursor cursor = query.runQuery(mContext.getContentResolver());
+					if (cursor.getCount() > 0) {
+						cursor.moveToNext();
+						String thisArtist = cursor.getString(0);
+						String thisAlbum = cursor.getString(1);
+						String shadowPath = "/sdcard/Music/.vanilla/"+(thisArtist.replaceAll("/", "_"))+"/"+(thisAlbum.replaceAll("/", "_"))+".jpg";
+
+						File guessedFile = new File(shadowPath);
+						if (guessedFile.exists() && !guessedFile.isDirectory()) {
+							inputStream = new FileInputStream(guessedFile);
+							sampleInputStream = new FileInputStream(guessedFile);
+						}
+					}
+					cursor.close();
+				}
+
 				if (inputStream == null && (mCoverLoadMode & COVER_MODE_ANDROID) != 0) {
 					Uri uri =  Uri.parse("content://media/external/audio/media/" + key.id + "/albumart");
 					ContentResolver res = mContext.getContentResolver();
