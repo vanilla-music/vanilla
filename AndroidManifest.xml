@@ -147,6 +147,7 @@ THE SOFTWARE.
 		<activity android:name="PreferencesActivity$LibraryActivity" />
 		<activity android:name="PreferencesActivity$NotificationsActivity" />
 		<activity android:name="PreferencesActivity$ShakeActivity" />
+		<activity android:name="PreferencesActivity$CoverArtActivity" />
 		<activity android:name="PreferencesActivity$MiscActivity" />
 		<activity android:name="PreferencesActivity$AboutActivity" />
 		<activity
