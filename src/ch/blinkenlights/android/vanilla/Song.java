@@ -175,19 +175,21 @@ public class Song implements Comparable<Song> {
 					String[] projection = new String [] { MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM };
 					QueryTask query = MediaUtils.buildQuery(MediaUtils.TYPE_SONG, key.id, projection, null);
 					Cursor cursor = query.runQuery(mContext.getContentResolver());
-					if (cursor.getCount() > 0) {
-						cursor.moveToNext();
-						String thisArtist = cursor.getString(0);
-						String thisAlbum = cursor.getString(1);
-						String shadowPath = "/sdcard/Music/.vanilla/"+(thisArtist.replaceAll("/", "_"))+"/"+(thisAlbum.replaceAll("/", "_"))+".jpg";
+					if (cursor != null) {
+						if (cursor.getCount() > 0) {
+							cursor.moveToNext();
+							String thisArtist = cursor.getString(0);
+							String thisAlbum = cursor.getString(1);
+							String shadowPath = "/sdcard/Music/.vanilla/"+(thisArtist.replaceAll("/", "_"))+"/"+(thisAlbum.replaceAll("/", "_"))+".jpg";
 
-						File guessedFile = new File(shadowPath);
-						if (guessedFile.exists() && !guessedFile.isDirectory()) {
-							inputStream = new FileInputStream(guessedFile);
-							sampleInputStream = new FileInputStream(guessedFile);
+							File guessedFile = new File(shadowPath);
+							if (guessedFile.exists() && !guessedFile.isDirectory()) {
+								inputStream = new FileInputStream(guessedFile);
+								sampleInputStream = new FileInputStream(guessedFile);
+							}
 						}
+						cursor.close();
 					}
-					cursor.close();
 				}
 
 				if (inputStream == null && (mCoverLoadMode & COVER_MODE_ANDROID) != 0) {
