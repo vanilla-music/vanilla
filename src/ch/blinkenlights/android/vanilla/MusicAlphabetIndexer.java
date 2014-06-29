@@ -168,9 +168,12 @@ public class MusicAlphabetIndexer {
 		mDataCursor.moveToPosition(savedCursorPos);
 
 		String[] alphabet = ALPHABET_KEYS;
-		for (int i = 1, len = alphabet.length; i != len; ++i) {
-			if (key.startsWith(alphabet[i]))
-				return i;
+
+		if (key != null) { // can this really be null? google thinks so :-/
+			for (int i = 1, len = alphabet.length; i != len; ++i) {
+				if (key.startsWith(alphabet[i]))
+					return i;
+			}
 		}
 
 		return 0;
