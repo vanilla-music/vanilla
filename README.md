@@ -1,3 +1,13 @@
+Vanilla Music player is an MP3/OGG/FLAC/PCM player for Android with the following features:
+* multiple playlist support
+* grouping by artist, album or genre
+* plain filesystem browsing
+* [ReplayGain](https://en.wikipedia.org/wiki/ReplayGain) support
+* headset/Bluetooth controls
+* accelerometer/shake control
+* cover art support
+* [ScrobbleDroid](https://code.google.com/p/scrobbledroid/) support for Last.fm integration
+
 Translating
 ===========
 [You can help translate here][1]. If your language isn't on the list, open an
