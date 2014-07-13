@@ -194,6 +194,7 @@ THE SOFTWARE.
 	<string name="accelerometer_shake">Accelerometer Shake</string>
 	<string name="enable_shake_title">Enable Accelerometer Shake</string>
 	<string name="enable_shake_summary">Only active when music is playing. Does not work when screen is off on some devices.</string>
+	<string name="shake_mode_title">When should shake work?</string>
 	<string name="shake_action_title">Shake Action</string>
 	<string name="shake_threshold_title">Shake Force Threshold</string>
 
@@ -248,6 +249,9 @@ THE SOFTWARE.
 	<string name="info_on_cover">Info on cover art</string>
 	<string name="info_below_cover">Info below cover art</string>
 	<string name="fixed_info">Info fixed at top</string>
+
+	<string name="always">Always</string>
+	<string name="when_screen_on">When screen is on</string>
 
 	<string name="do_nothing">Do nothing</string>
 	<string name="open_library">Open library</string>
