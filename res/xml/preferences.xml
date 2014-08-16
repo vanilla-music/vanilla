@@ -52,6 +52,12 @@ THE SOFTWARE.
 			android:targetClass="ch.blinkenlights.android.vanilla.PreferencesActivity$ShakeActivity" />
 	</PreferenceScreen>
 	<PreferenceScreen
+		android:title="@string/cover_art">
+		<intent
+			android:targetPackage="ch.blinkenlights.android.vanilla"
+			android:targetClass="ch.blinkenlights.android.vanilla.PreferencesActivity$CoverArtActivity" />
+	</PreferenceScreen>
+	<PreferenceScreen
 		android:title="@string/misc_features">
 		<intent
 			android:targetPackage="ch.blinkenlights.android.vanilla"

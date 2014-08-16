@@ -413,7 +413,11 @@ public final class PlaybackService extends Service
 		mNotificationMode = Integer.parseInt(settings.getString(PrefKeys.NOTIFICATION_MODE, "1"));
 		mScrobble = settings.getBoolean(PrefKeys.SCROBBLE, false);
 		mIdleTimeout = settings.getBoolean(PrefKeys.USE_IDLE_TIMEOUT, false) ? settings.getInt(PrefKeys.IDLE_TIMEOUT, 3600) : 0;
-		Song.mDisableCoverArt = settings.getBoolean(PrefKeys.DISABLE_COVER_ART, false);
+
+		Song.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_ANDROID, true) ? Song.mCoverLoadMode | Song.COVER_MODE_ANDROID : Song.mCoverLoadMode & ~(Song.COVER_MODE_ANDROID);
+		Song.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_VANILLA, true) ? Song.mCoverLoadMode | Song.COVER_MODE_VANILLA : Song.mCoverLoadMode & ~(Song.COVER_MODE_VANILLA);
+		Song.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_SHADOW , true) ? Song.mCoverLoadMode | Song.COVER_MODE_SHADOW  : Song.mCoverLoadMode & ~(Song.COVER_MODE_SHADOW);
+
 		mHeadsetOnly = settings.getBoolean(PrefKeys.HEADSET_ONLY, false);
 		mStockBroadcast = settings.getBoolean(PrefKeys.STOCK_BROADCAST, false);
 		mInvertNotification = settings.getBoolean(PrefKeys.NOTIFICATION_INVERTED_COLOR, false);
@@ -769,8 +773,15 @@ public final class PlaybackService extends Service
 		} else if (PrefKeys.USE_IDLE_TIMEOUT.equals(key) || PrefKeys.IDLE_TIMEOUT.equals(key)) {
 			mIdleTimeout = settings.getBoolean(PrefKeys.USE_IDLE_TIMEOUT, false) ? settings.getInt(PrefKeys.IDLE_TIMEOUT, 3600) : 0;
 			userActionTriggered();
-		} else if (PrefKeys.DISABLE_COVER_ART.equals(key)) {
-			Song.mDisableCoverArt = settings.getBoolean(PrefKeys.DISABLE_COVER_ART, false);
+		} else if (PrefKeys.COVERLOADER_ANDROID.equals(key)) {
+			Song.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_ANDROID, true) ? Song.mCoverLoadMode | Song.COVER_MODE_ANDROID : Song.mCoverLoadMode & ~(Song.COVER_MODE_ANDROID);
+			Song.mFlushCoverCache = true;
+		} else if (PrefKeys.COVERLOADER_VANILLA.equals(key)) {
+			Song.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_VANILLA, true) ? Song.mCoverLoadMode | Song.COVER_MODE_VANILLA : Song.mCoverLoadMode & ~(Song.COVER_MODE_VANILLA);
+			Song.mFlushCoverCache = true;
+		} else if (PrefKeys.COVERLOADER_SHADOW.equals(key)) {
+			Song.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_SHADOW, true) ? Song.mCoverLoadMode | Song.COVER_MODE_SHADOW : Song.mCoverLoadMode & ~(Song.COVER_MODE_SHADOW);
+			Song.mFlushCoverCache = true;
 		} else if (PrefKeys.NOTIFICATION_INVERTED_COLOR.equals(key)) {
 			updateNotification();
 		} else if (PrefKeys.HEADSET_ONLY.equals(key)) {

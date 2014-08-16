@@ -224,6 +224,25 @@ public class PreferencesActivity extends PreferenceActivity {
 		}
 	}
 
+	public static class CoverArtActivity extends PreferenceActivity {
+		@SuppressWarnings("deprecation")
+		@Override
+		public void onCreate(Bundle savedInstanceState)
+		{
+			super.onCreate(savedInstanceState);
+			addPreferencesFromResource(R.xml.preference_coverart);
+		}
+	}
+
+	public static class CoverArtFragment extends PreferenceFragment {
+		@Override
+		public void onCreate(Bundle savedInstanceState)
+		{
+			super.onCreate(savedInstanceState);
+			addPreferencesFromResource(R.xml.preference_coverart);
+		}
+	}
+
 	public static class MiscActivity extends PreferenceActivity {
 		@SuppressWarnings("deprecation")
 		@Override

@@ -37,6 +37,9 @@ THE SOFTWARE.
 		android:fragment="ch.blinkenlights.android.vanilla.PreferencesActivity$ShakeFragment"
 		android:title="@string/accelerometer_shake" />
 	<header
+		android:fragment="ch.blinkenlights.android.vanilla.PreferencesActivity$CoverArtFragment"
+		android:title="@string/cover_art" />
+	<header
 		android:fragment="ch.blinkenlights.android.vanilla.PreferencesActivity$MiscFragment"
 		android:title="@string/misc_features" />
 	<header

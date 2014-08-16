@@ -32,7 +32,9 @@ public class PrefKeys {
 	public static final String COVER_PRESS_ACTION = "cover_press_action";
 	public static final String DEFAULT_ACTION_INT = "default_action_int";
 	public static final String DEFAULT_PLAYLIST_ACTION = "default_playlist_action";
-	public static final String DISABLE_COVER_ART = "disable_cover_art";
+	public static final String COVERLOADER_ANDROID = "coverloader_android";
+	public static final String COVERLOADER_VANILLA = "coverloader_vanilla";
+	public static final String COVERLOADER_SHADOW = "coverloader_shadow";
 	public static final String DISABLE_LOCKSCREEN = "disable_lockscreen";
 	public static final String DISPLAY_MODE = "display_mode";
 	public static final String DOUBLE_TAP = "double_tap";
