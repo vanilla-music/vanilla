@@ -107,7 +107,12 @@ public class Playlist {
 			ContentValues values = new ContentValues(1);
 			values.put(MediaStore.Audio.Playlists.NAME, name);
 			Uri uri = resolver.insert(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, values);
-			id = Long.parseLong(uri.getLastPathSegment());
+			/* Creating the playlist may fail due to race conditions or silly
+			 * android bugs (i am looking at you, kitkat!). In this case, id will stay -1
+			 */
+			if (uri != null) {
+				id = Long.parseLong(uri.getLastPathSegment());
+			}
 		} else {
 			// We are overwriting an existing playlist. Clear existing songs.
 			Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", id);
