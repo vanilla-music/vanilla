@@ -124,6 +124,10 @@ public class MusicAlphabetIndexer {
 		pos = (end + start) / 2;
 		while (pos < end) {
 			cursor.moveToPosition(pos);
+			// Prevent cursor from returning null
+			if (pos == 0) {
+				break;
+			}
 			String curName   = cursor.getString(mColumnIndex);
 			String curKey    = MediaStore.Audio.keyFor(curName);
 
