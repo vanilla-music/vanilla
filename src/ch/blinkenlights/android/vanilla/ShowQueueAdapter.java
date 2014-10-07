@@ -58,14 +58,16 @@ public class ShowQueueAdapter extends ArrayAdapter<Song> {
 		LayoutInflater inflater = ((Activity)context).getLayoutInflater();
 		View row = inflater.inflate(resource, parent, false);
 		Song song = getItem(position);
-		TextView target = ((TextView)row.findViewById(R.id.text));
-		SpannableStringBuilder sb = new SpannableStringBuilder(song.title);
-		sb.append('\n');
-		sb.append(song.album+", "+song.artist);
-		sb.setSpan(new ForegroundColorSpan(Color.GRAY), song.title.length() + 1, sb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-		
-		target.setText(sb);
-		
+
+		if (song != null) { // unlikely to fail but seems to happen in the wild.
+			TextView target = ((TextView)row.findViewById(R.id.text));
+			SpannableStringBuilder sb = new SpannableStringBuilder(song.title);
+			sb.append('\n');
+			sb.append(song.album+", "+song.artist);
+			sb.setSpan(new ForegroundColorSpan(Color.GRAY), song.title.length() + 1, sb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+			target.setText(sb);
+		}
+
 		View pmark = ((View)row.findViewById(R.id.playmark));
 		pmark.setVisibility( ( position == this.hl_row ? View.VISIBLE : View.INVISIBLE ));
 		
