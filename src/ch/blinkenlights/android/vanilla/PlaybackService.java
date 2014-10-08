@@ -896,7 +896,7 @@ public final class PlaybackService extends Service
 	{
 		int toggled = oldState ^ state;
 
-		if ((toggled & FLAG_PLAYING) != 0) {
+		if ( ((toggled & FLAG_PLAYING) != 0) && mCurrentSong != null) { // user requested to start playback AND we have a song selected
 			if ((state & FLAG_PLAYING) != 0) {
 				if (mMediaPlayerInitialized)
 					mMediaPlayer.start();
