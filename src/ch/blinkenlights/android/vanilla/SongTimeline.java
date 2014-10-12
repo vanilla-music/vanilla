@@ -341,13 +341,21 @@ public final class SongTimeline {
 								cursor.moveToNext();
 							if (cursor.getLong(0) == e.id)
 								e.populate(cursor);
-							else
-								// We weren't able to query this song.
-								it.remove();
 						}
 					}
 
 					cursor.close();
+
+					// The query may have returned zero results or we might 
+					// have failed to populate some songs: Get rid of all
+					// uninitialized items (where path == null)
+					Iterator<Song> it = songs.iterator();
+					while (it.hasNext()) {
+						Song e = it.next();
+						if (e.path == null) {
+							it.remove();
+						}
+					}
 
 					// Revert to the order the songs were saved in.
 					Collections.sort(songs, new FlagComparator());
