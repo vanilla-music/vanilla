@@ -60,12 +60,6 @@ import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import android.text.Html;
-import android.text.util.Linkify;
-import android.text.method.LinkMovementMethod;
-import java.util.Calendar;
-
 import com.viewpagerindicator.TabPageIndicator;
 import java.io.File;
 import junit.framework.Assert;
@@ -163,35 +157,6 @@ public class LibraryActivity
 	 */
 	private LibraryAdapter mCurrentAdapter;
 
-
-	public void checkForStupidity() {
-	
-		Calendar cal = Calendar.getInstance();
-		int month = cal.get(Calendar.MONTH);
-
-		if (month > 9) {
-			((TextView) new AlertDialog.Builder(this)
-				.setTitle("Info")
-				.setIcon(android.R.drawable.ic_dialog_info)
-				.setMessage(Html.fromHtml("<b>Note</b><br>Vanilla Music has been removed from the play store due to "+
-				"Google going bananas:<br>Google claims that Vanilla Music <i>may</i> violate intellectual property, but does not tell me how they came to this conclusion."+
-				"<br>(See: <a href='http://pastebin.com/dGpHL4tk'>here</a>)<br><br>"+
-				"Unfortunately there is nothing i can do about this - but you can avoid google and keep getting updates on Vanilla Music by switching to <a href='https://www.f-droid.org'>F-Droid</a>!"+
-				"<br><br>"
-				))
-				.setNeutralButton("Ok",
-					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int whichButton) {
-						}
-					}
-				)
-				.show()
-				.findViewById(android.R.id.message))
-				.setMovementMethod(LinkMovementMethod.getInstance());
-		}
-	}
-
-
 	@Override
 	public void onCreate(Bundle state)
 	{
@@ -199,7 +164,6 @@ public class LibraryActivity
 
 		if (state == null) {
 			checkForLaunch(getIntent());
-			checkForStupidity();
 		}
 
 		setContentView(R.layout.library_content);
