@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Vector;
+import java.util.zip.CRC32;
 
 import junit.framework.Assert;
 import android.content.ContentResolver;
@@ -36,7 +38,10 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
+import android.database.MatrixCursor;
+
+import ch.blinkenlights.bastp.Bastp;
+
 
 /**
  * Provides some static Song/MediaStore-related utility functions.
@@ -545,10 +550,43 @@ public class MediaUtils {
 		final String query = "_data LIKE ? AND is_music";
 		String[] qargs = { path };
 
-		Log.d("VanillaMusic", "Running buildFileQuery for "+query+" with ARG="+qargs[0]);
 		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 		QueryTask result = new QueryTask(media, projection, query, qargs, DEFAULT_SORT);
 		result.type = TYPE_FILE;
 		return result;
 	}
+
+	/**
+	 * Returns a (possibly empty) Cursor for given file path
+	 * @param path The path to the file to be queried
+	 * @return A new Cursor object
+	 * */
+	public static Cursor getCursorForFileQuery(String path) {
+		MatrixCursor matrixCursor = new MatrixCursor(Song.FILLED_PROJECTION);
+		String[] keys = { "", "", "TITLE", "ALBUM", "ARTIST" };
+		HashMap tags  = (new Bastp()).getTags(path);
+
+		if(tags.containsKey("TYPE")) { // File was parseable
+			/* This file is not in the media database but we still need
+			 * to give it an unique id. We are going to use a negative
+			 * ID calculated using the file path.
+			 * This is not perfect as the same file may be accessed using 
+			 * multiple path variations - but getting the inode is not possible
+			 * and hashing the file is out of question */
+			CRC32 crc = new CRC32();
+			crc.update(path.getBytes());
+			Long songId = (Long)(2+crc.getValue())*-1; // must at least be -2 (-1 defines Song-Object to be empty)
+
+			Object[] objData = new Object[] { songId, path, "", "", "", 0, 0, 600000, 0 };
+			for (int i=0; i<keys.length; i++) { // fill in values from BASTP
+				if (tags.containsKey(keys[i])) {
+					objData[i] = (String)((Vector)tags.get(keys[i])).get(0);
+				}
+			}
+			matrixCursor.addRow(objData);
+		}
+
+		return matrixCursor;
+	}
+
 }

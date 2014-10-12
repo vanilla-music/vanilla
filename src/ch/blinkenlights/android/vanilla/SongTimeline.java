@@ -616,14 +616,22 @@ public final class SongTimeline {
 			return 0;
 		}
 
-		int count = cursor.getCount();
-		if (count == 0) {
-			return 0;
-		}
-
 		int mode = query.mode;
 		int type = query.type;
 		long data = query.data;
+
+		int count = cursor.getCount();
+
+		if (count == 0 && type == MediaUtils.TYPE_FILE && query.selectionArgs.length == 1) {
+			String pathQuery = query.selectionArgs[0];
+			pathQuery = pathQuery.substring(0,pathQuery.length()-1); // remove '%' -> this used to be an sql query!
+			cursor = MediaUtils.getCursorForFileQuery(pathQuery);
+			count = cursor.getCount();
+		}
+
+		if (count == 0) {
+			return 0;
+		}
 
 		ArrayList<Song> timeline = mSongs;
 		synchronized (this) {

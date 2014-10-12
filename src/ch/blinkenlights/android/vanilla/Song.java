@@ -192,7 +192,7 @@ public class Song implements Comparable<Song> {
 					}
 				}
 
-				if (inputStream == null && (mCoverLoadMode & COVER_MODE_ANDROID) != 0) {
+				if (inputStream == null && (mCoverLoadMode & COVER_MODE_ANDROID) != 0 && key.id >= 0) {
 					Uri uri =  Uri.parse("content://media/external/audio/media/" + key.id + "/albumart");
 					ContentResolver res = mContext.getContentResolver();
 					inputStream = res.openInputStream(uri);
