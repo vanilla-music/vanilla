@@ -566,7 +566,7 @@ public class MediaUtils {
 		String[] keys = { "", "", "TITLE", "ALBUM", "ARTIST" };
 		HashMap tags  = (new Bastp()).getTags(path);
 
-		if(tags.containsKey("TYPE")) { // File was parseable
+		if(tags.containsKey("type")) { // File was parseable
 			/* This file is not in the media database but we still need
 			 * to give it an unique id. We are going to use a negative
 			 * ID calculated using the file path.
@@ -583,6 +583,13 @@ public class MediaUtils {
 					objData[i] = (String)((Vector)tags.get(keys[i])).get(0);
 				}
 			}
+
+			// Overwrite hardcoded failback duration with actual data from tagparser
+			if(tags.containsKey("duration")) {
+				long songDuration = 1000L * (Integer)tags.get("duration");
+				objData[7] = songDuration;
+			}
+
 			matrixCursor.addRow(objData);
 		}
 

@@ -25,8 +25,9 @@ import java.util.HashMap;
 
 public class OggFile extends Common {
 
-	private static final int OGG_PAGE_SIZE    = 27;  // Static size of an OGG Page
-	private static final int OGG_TYPE_COMMENT = 3;   // ID of 'VorbisComment's
+	private static final int OGG_PAGE_SIZE           = 27;  // Static size of an OGG Page
+	private static final int OGG_TYPE_IDENTIFICATION = 1;   // Identification header
+	private static final int OGG_TYPE_COMMENT        = 3;   // ID of 'VorbisComment's
 	
 	public OggFile() {
 	}
@@ -34,16 +35,38 @@ public class OggFile extends Common {
 	public HashMap getTags(RandomAccessFile s) throws IOException {
 		long offset = 0;
 		int  retry  = 64;
+		boolean need_tags = true;
+		boolean need_id = true;
+
 		HashMap tags = new HashMap();
+		HashMap identification = new HashMap();
 		
 		for( ; retry > 0 ; retry-- ) {
 			long res[] = parse_ogg_page(s, offset);
-			if(res[2] == OGG_TYPE_COMMENT) {
+			if(res[2] == OGG_TYPE_IDENTIFICATION) {
+				identification = parse_ogg_vorbis_identification(s, offset+res[0], res[1]);
+				need_id = false;
+			} else if(res[2] == OGG_TYPE_COMMENT) {
 				tags = parse_ogg_vorbis_comment(s, offset+res[0], res[1]);
-				break;
+				need_tags = false;
 			}
 			offset += res[0] + res[1];
+			if (need_tags == false && need_id == false) {
+				break;
+			}
 		}
+
+		// Calculate duration in seconds
+		// Note that this calculation is WRONG: We would have to get the last
+		// packet to calculate the real length - but this is goot enough.
+		if (identification.containsKey("bitrate_nominal")) {
+			int br_nom = (Integer)identification.get("bitrate_nominal") / 8;
+			long file_length = s.length();
+			if (file_length > 0 && br_nom > 0) {
+				tags.put("duration", (int)(file_length/br_nom));
+			}
+		}
+
 		return tags;
 	}
 	
@@ -110,5 +133,35 @@ public class OggFile extends Common {
 		
 		return parse_vorbis_comment(s, offset+pfx_len, pl_len-pfx_len);
 	}
-	
+
+	/*
+	 ** Returns a hashma with parsed vorbis identification header data
+	 **/
+	private HashMap parse_ogg_vorbis_identification(RandomAccessFile s, long offset, long pl_len) throws IOException {
+		/* Structure:
+		 * 7 bytes of \1vorbis
+		 * 4 bytes version
+		 * 1 byte channels
+		 * 4 bytes sampling rate
+		 * 4 bytes bitrate max
+		 * 4 bytes bitrate nominal
+		 * 4 bytes bitrate min
+		 **/
+		HashMap id_hash = new HashMap();
+		byte[] buff = new byte[28];
+
+		if(pl_len >= buff.length) {
+			s.seek(offset);
+			s.read(buff);
+			id_hash.put("version"         , b2le32(buff, 7));
+			id_hash.put("channels"        , b2u(buff[11]));
+			id_hash.put("samplint_rate"   , b2le32(buff, 12));
+			id_hash.put("bitrate_minimal" , b2le32(buff, 16));
+			id_hash.put("bitrate_nominal" , b2le32(buff, 20));
+			id_hash.put("bitrate_maximal" , b2le32(buff, 24));
+		}
+
+		return id_hash;
+	}
+
 };

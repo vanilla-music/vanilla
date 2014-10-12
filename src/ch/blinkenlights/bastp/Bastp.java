@@ -53,28 +53,29 @@ public class Bastp {
 			String magic = new String(file_ff);
 			if(magic.equals("fLaC")) {
 				tags = (new FlacFile()).getTags(s);
-				tags.put("TYPE", "FLAC");
+				tags.put("type", "FLAC");
 			}
 			else if(magic.equals("OggS")) {
 				tags = (new OggFile()).getTags(s);
-				tags.put("TYPE", "OGG");
+				tags.put("type", "OGG");
 			}
 			else if(file_ff[0] == -1 && file_ff[1] == -5) { /* aka 0xfffb in real languages */
 				tags = (new LameHeader()).getTags(s);
-				tags.put("TYPE", "MP3");
+				tags.put("type", "MP3/Lame");
 			}
 			else if(magic.substring(0,3).equals("ID3")) {
 				tags = (new ID3v2File()).getTags(s);
 				if(tags.containsKey("_hdrlen")) {
 					Long hlen = Long.parseLong( tags.get("_hdrlen").toString(), 10 );
 					HashMap lameInfo = (new LameHeader()).parseLameHeader(s, hlen);
-					/* add gain tags if not already present */
+					/* add tags from lame header if not already present */
 					inheritTag("REPLAYGAIN_TRACK_GAIN", lameInfo, tags);
 					inheritTag("REPLAYGAIN_ALBUM_GAIN", lameInfo, tags);
+					inheritTag("duration", lameInfo, tags);
 				}
-				tags.put("TYPE", "MP3-ID3");
+				tags.put("type", "MP3/ID3v2");
 			}
-			tags.put("_magic", magic);
+
 		}
 		catch (IOException e) {
 		}
