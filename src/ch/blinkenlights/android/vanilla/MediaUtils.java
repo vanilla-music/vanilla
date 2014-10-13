@@ -39,8 +39,8 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.database.MatrixCursor;
-
-import ch.blinkenlights.bastp.Bastp;
+import android.media.MediaMetadataRetriever;
+import android.util.Log;
 
 
 /**
@@ -563,32 +563,40 @@ public class MediaUtils {
 	 * */
 	public static Cursor getCursorForFileQuery(String path) {
 		MatrixCursor matrixCursor = new MatrixCursor(Song.FILLED_PROJECTION);
-		String[] keys = { "", "", "TITLE", "ALBUM", "ARTIST" };
-		HashMap tags  = (new Bastp()).getTags(path);
+		MediaMetadataRetriever data = new MediaMetadataRetriever();
 
-		if(tags.containsKey("type")) { // File was parseable
-			/* This file is not in the media database but we still need
-			 * to give it an unique id. We are going to use a negative
-			 * ID calculated using the file path.
-			 * This is not perfect as the same file may be accessed using 
-			 * multiple path variations - but getting the inode is not possible
-			 * and hashing the file is out of question */
+		try {
+			data.setDataSource(path);
+		} catch (Exception e) {
+				Log.w("VanillaMusic", "Failed to extract metadata from " + path);
+		}
+
+		String title = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+		String album = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM);
+		String artist = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
+		String duration = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+
+		if (duration != null) { // looks like we will be able to play this file
+			// Vanilla requires each file to be identified by its unique id in the media database.
+			// However: This file is not in the database, so we are going to roll our own
+			// using the negative crc32 sum of the path value. While this is not perfect
+			// (the same file may be accessed using various paths) it's the fastest method
+			// and far good enough.
 			CRC32 crc = new CRC32();
 			crc.update(path.getBytes());
 			Long songId = (Long)(2+crc.getValue())*-1; // must at least be -2 (-1 defines Song-Object to be empty)
 
-			Object[] objData = new Object[] { songId, path, "", "", "", 0, 0, 600000, 0 };
-			for (int i=0; i<keys.length; i++) { // fill in values from BASTP
-				if (tags.containsKey(keys[i])) {
-					objData[i] = (String)((Vector)tags.get(keys[i])).get(0);
-				}
-			}
+			// Build minimal fake-database entry for this file
+			Object[] objData = new Object[] { songId, path, "", "", "", 0, 0, 0, 0 };
 
-			// Overwrite hardcoded failback duration with actual data from tagparser
-			if(tags.containsKey("duration")) {
-				long songDuration = 1000L * (Integer)tags.get("duration");
-				objData[7] = songDuration;
-			}
+			if (title != null)
+				objData[2] = title;
+			if (album != null)
+				objData[3] = album;
+			if (artist != null)
+				objData[4] = artist;
+			if (duration != null)
+				objData[7] = Long.parseLong(duration, 10);
 
 			matrixCursor.addRow(objData);
 		}
