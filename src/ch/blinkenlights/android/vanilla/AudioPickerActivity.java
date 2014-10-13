@@ -88,7 +88,6 @@ public class AudioPickerActivity extends PlaybackActivity {
 		query.mode = mode;
 
 		service.addSongs(query);
-		service.play();
 
 		finish();
 	}
