@@ -633,11 +633,13 @@ public final class SongTimeline {
 		if (count == 0 && type == MediaUtils.TYPE_FILE && query.selectionArgs.length == 1) {
 			String pathQuery = query.selectionArgs[0];
 			pathQuery = pathQuery.substring(0,pathQuery.length()-1); // remove '%' -> this used to be an sql query!
+			cursor.close(); // close old version
 			cursor = MediaUtils.getCursorForFileQuery(pathQuery);
 			count = cursor.getCount();
 		}
 
 		if (count == 0) {
+			cursor.close();
 			return 0;
 		}
 
@@ -702,6 +704,8 @@ public final class SongTimeline {
 					}
 				}
 			}
+
+			cursor.close();
 
 			if (mShuffleMode != SHUFFLE_NONE)
 				MediaUtils.shuffle(timeline.subList(start, timeline.size()), mShuffleMode == SHUFFLE_ALBUMS);
