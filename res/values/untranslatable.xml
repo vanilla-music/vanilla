@@ -110,6 +110,7 @@ THE SOFTWARE.
 
 	<!-- styles -->
 	<style name="Dialog" parent="android:Theme.Holo.Dialog" />
+	<style name="DialogMinWidth" parent="android:Theme.Holo.Dialog.MinWidth" />
 	<style name="AlertDialogItem">
 		<item name="android:textColor">?android:textColorAlertDialogListItem</item>
 	</style>
