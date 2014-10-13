@@ -23,8 +23,8 @@ THE SOFTWARE.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="ch.blinkenlights.android.vanilla"
-	android:versionName="0.9.27"
-	android:versionCode="0927"
+	android:versionName="0.9.29"
+	android:versionCode="0929"
 	android:installLocation="auto">
 	<uses-sdk android:minSdkVersion="15" android:targetSdkVersion="16" />
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -33,8 +33,7 @@ THE SOFTWARE.
 	<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 	<application
 		android:icon="@drawable/icon"
-		android:label="@string/app_name"
-		android:backupAgent="PreferencesBackupAgent">
+		android:label="@string/app_name">
 		<activity
 			android:name="FullPlaybackActivity"
 			android:theme="@style/Playback"
