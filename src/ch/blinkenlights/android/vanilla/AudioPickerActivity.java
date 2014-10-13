@@ -70,11 +70,11 @@ public class AudioPickerActivity extends PlaybackActivity {
 		int mode;
 
 		switch(view.getId()) {
-			case R.id.enqueue:
-				mode = LibraryActivity.ACTION_ENQUEUE;
-				break;
 			case R.id.play:
-				mode = LibraryActivity.ACTION_PLAY;
+				mode = SongTimeline.MODE_PLAY;
+				break;
+			case R.id.enqueue:
+				mode = SongTimeline.MODE_ENQUEUE;
 				break;
 			default:
 				finish();

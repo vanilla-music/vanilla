@@ -38,6 +38,8 @@ THE SOFTWARE.
 			android:layout_height="wrap_content"
 			android:layout_gravity="top"
 			android:layout_marginLeft="4dip"
+			android:layout_marginTop="2dip"
+			android:layout_marginBottom="2dip"
 			android:src="@drawable/icon" />
 		<TextView
 			android:id="@+id/filepath"
@@ -45,7 +47,7 @@ THE SOFTWARE.
 			android:layout_height="wrap_content"
 			android:layout_marginBottom="16dip"
 			android:layout_marginTop="16dip"
-			android:layout_marginLeft="8dip"
+			android:layout_marginLeft="16dip"
 			android:layout_marginRight="8dip" />
 	</LinearLayout>
 
