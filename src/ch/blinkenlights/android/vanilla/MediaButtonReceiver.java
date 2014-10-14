@@ -43,7 +43,7 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 	 * If another button event is received before this time in milliseconds
 	 * expires, the event with be considered a double click.
 	 */
-	private static final int DOUBLE_CLICK_DELAY = 400;
+	private static final int DOUBLE_CLICK_DELAY = 600;
 
 	/**
 	 * Whether the headset controls should be used. 1 for yes, 0 for no, -1 for
