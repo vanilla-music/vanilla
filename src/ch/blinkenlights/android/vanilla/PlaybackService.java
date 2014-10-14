@@ -1880,7 +1880,9 @@ public final class PlaybackService extends Service
 		notification.flags |= Notification.FLAG_ONGOING_EVENT;
 		notification.contentIntent = mNotificationAction;
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-			notification.bigContentView = expanded; // expanded view is available since 4.1
+			// expanded view is available since 4.1
+			notification.bigContentView = expanded;
+			notification.priority = 42;
 		}
 		return notification;
 	}
