@@ -46,7 +46,6 @@ public class PrefKeys {
 	public static final String MEDIA_BUTTON = "media_button";
 	public static final String MEDIA_BUTTON_BEEP = "media_button_beep";
 	public static final String NOTIFICATION_ACTION = "notification_action";
-	public static final String NOTIFICATION_INVERTED_COLOR = "notification_inverted_color";
 	public static final String NOTIFICATION_MODE = "notification_mode";
 	public static final String PLAYBACK_ON_STARTUP = "playback_on_startup";
 	public static final String SCROBBLE = "scrobble";

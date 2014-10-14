@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2012-2014 Adrian Ulrich <adrian@blinkenlights.ch>
  * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -291,10 +291,6 @@ public final class PlaybackService extends Service
 	 * {@link PlaybackService#createNotificationAction(SharedPreferences)}.
 	 */
 	private PendingIntent mNotificationAction;
-	/**
-	 * Use white text instead of black default text in notification.
-	 */
-	private boolean mInvertNotification;
 
 	private Looper mLooper;
 	private Handler mHandler;
@@ -420,7 +416,6 @@ public final class PlaybackService extends Service
 
 		mHeadsetOnly = settings.getBoolean(PrefKeys.HEADSET_ONLY, false);
 		mStockBroadcast = settings.getBoolean(PrefKeys.STOCK_BROADCAST, false);
-		mInvertNotification = settings.getBoolean(PrefKeys.NOTIFICATION_INVERTED_COLOR, false);
 		mNotificationAction = createNotificationAction(settings);
 		mHeadsetPause = getSettings(this).getBoolean(PrefKeys.HEADSET_PAUSE, true);
 		mShakeAction = settings.getBoolean(PrefKeys.ENABLE_SHAKE, false) ? Action.getAction(settings, PrefKeys.SHAKE_ACTION, Action.NextSong) : Action.Nothing;
@@ -756,9 +751,6 @@ public final class PlaybackService extends Service
 		} else if (PrefKeys.NOTIFICATION_ACTION.equals(key)) {
 			mNotificationAction = createNotificationAction(settings);
 			updateNotification();
-		} else if (PrefKeys.NOTIFICATION_INVERTED_COLOR.equals(key)) {
-			mInvertNotification = settings.getBoolean(PrefKeys.NOTIFICATION_INVERTED_COLOR, false);
-			updateNotification();
 		} else if (PrefKeys.NOTIFICATION_MODE.equals(key)){
 			mNotificationMode = Integer.parseInt(settings.getString(PrefKeys.NOTIFICATION_MODE, "1"));
 			// This is the only way to remove a notification created by
@@ -782,8 +774,6 @@ public final class PlaybackService extends Service
 		} else if (PrefKeys.COVERLOADER_SHADOW.equals(key)) {
 			Song.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_SHADOW, true) ? Song.mCoverLoadMode | Song.COVER_MODE_SHADOW : Song.mCoverLoadMode & ~(Song.COVER_MODE_SHADOW);
 			Song.mFlushCoverCache = true;
-		} else if (PrefKeys.NOTIFICATION_INVERTED_COLOR.equals(key)) {
-			updateNotification();
 		} else if (PrefKeys.HEADSET_ONLY.equals(key)) {
 			mHeadsetOnly = settings.getBoolean(key, false);
 			if (mHeadsetOnly && isSpeakerOn())
@@ -1883,11 +1873,6 @@ public final class PlaybackService extends Service
 		expanded.setTextViewText(R.id.title, title);
 		expanded.setTextViewText(R.id.album, song.album);
 		expanded.setTextViewText(R.id.artist, song.artist);
-
-		if (mInvertNotification) {
-			views.setTextColor(R.id.title, 0xffffffff);
-			views.setTextColor(R.id.artist, 0xffffffff);
-		}
 
 		Notification notification = new Notification();
 		notification.contentView = views;

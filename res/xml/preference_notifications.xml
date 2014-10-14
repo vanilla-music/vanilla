@@ -35,9 +35,4 @@ THE SOFTWARE.
 		android:entries="@array/notification_action_entries"
 		android:entryValues="@array/entry_values"
 		android:defaultValue="0" />
-	<CheckBoxPreference
-		android:key="notification_inverted_color"
-		android:title="@string/notification_invert_color_title"
-		android:summary="@string/notification_invert_color_summary"
-		android:defaultValue="false" />
 </PreferenceScreen>
