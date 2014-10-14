@@ -29,7 +29,7 @@ THE SOFTWARE.
 		android:background="@drawable/selectable_item_bg"
 		android:maxLines="2"
 		android:padding="3dip"
-		android:textColor="#ffff"
+		android:textColor="?android:textColorPrimary"
 		android:gravity="left|center_vertical"
 		android:layout_width="0px"
 		android:layout_height="44dip"

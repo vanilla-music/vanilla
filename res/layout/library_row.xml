@@ -24,7 +24,7 @@ THE SOFTWARE.
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:background="@drawable/selectable_item_bg"
 	android:maxLines="2"
-	android:textColor="#ffff"
+	android:textColor="?android:textColorPrimary"
 	android:gravity="left|center_vertical"
 	android:padding="3dip"
 	android:minHeight="44dip" />
