@@ -1840,35 +1840,49 @@ public final class PlaybackService extends Service
 		boolean playing = (state & FLAG_PLAYING) != 0;
 
 		RemoteViews views = new RemoteViews(getPackageName(), R.layout.notification);
+		RemoteViews expanded = new RemoteViews(getPackageName(), R.layout.notification_expanded);
 
 		Bitmap cover = song.getCover(this);
 		if (cover == null) {
 			views.setImageViewResource(R.id.cover, R.drawable.fallback_cover);
+			expanded.setImageViewResource(R.id.cover, R.drawable.fallback_cover);
 		} else {
 			views.setImageViewBitmap(R.id.cover, cover);
+			expanded.setImageViewBitmap(R.id.cover, cover);
 		}
 
 		String title = song.title;
 
 		int playButton = playing ? R.drawable.pause : R.drawable.play;
 		views.setImageViewResource(R.id.play_pause, playButton);
+		expanded.setImageViewResource(R.id.play_pause, playButton);
 
 		ComponentName service = new ComponentName(this, PlaybackService.class);
+
+		Intent previous = new Intent(PlaybackService.ACTION_PREVIOUS_SONG);
+		previous.setComponent(service);
+		expanded.setOnClickPendingIntent(R.id.previous, PendingIntent.getService(this, 0, previous, 0));
 
 		Intent playPause = new Intent(PlaybackService.ACTION_TOGGLE_PLAYBACK_NOTIFICATION);
 		playPause.setComponent(service);
 		views.setOnClickPendingIntent(R.id.play_pause, PendingIntent.getService(this, 0, playPause, 0));
+		expanded.setOnClickPendingIntent(R.id.play_pause, PendingIntent.getService(this, 0, playPause, 0));
 
 		Intent next = new Intent(PlaybackService.ACTION_NEXT_SONG);
 		next.setComponent(service);
 		views.setOnClickPendingIntent(R.id.next, PendingIntent.getService(this, 0, next, 0));
+		expanded.setOnClickPendingIntent(R.id.next, PendingIntent.getService(this, 0, next, 0));
 
 		Intent close = new Intent(PlaybackService.ACTION_CLOSE_NOTIFICATION);
 		close.setComponent(service);
 		views.setOnClickPendingIntent(R.id.close, PendingIntent.getService(this, 0, close, 0));
+		expanded.setOnClickPendingIntent(R.id.close, PendingIntent.getService(this, 0, close, 0));
 
 		views.setTextViewText(R.id.title, title);
 		views.setTextViewText(R.id.artist, song.artist);
+		expanded.setTextViewText(R.id.title, title);
+		expanded.setTextViewText(R.id.album, song.album);
+		expanded.setTextViewText(R.id.artist, song.artist);
 
 		if (mInvertNotification) {
 			views.setTextColor(R.id.title, 0xffffffff);
@@ -1880,6 +1894,9 @@ public final class PlaybackService extends Service
 		notification.icon = R.drawable.status_icon;
 		notification.flags |= Notification.FLAG_ONGOING_EVENT;
 		notification.contentIntent = mNotificationAction;
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+			notification.bigContentView = expanded; // expanded view is available since 4.1
+		}
 		return notification;
 	}
 
