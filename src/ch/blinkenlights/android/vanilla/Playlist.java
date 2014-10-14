@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2014 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -181,6 +182,18 @@ public class Playlist {
 	}
 
 	/**
+	 * Copy content from one playlist to another
+	 *
+	 * @param resolver A ContentResolver to use.
+	 * @param sourceid The Media.Audio.Playlists id of the source playlist
+	 * @param destinationId The Media.Audio.Playlists id of the destination playlist
+	 */
+	private static void _copyToPlaylist(ContentResolver resolver, long sourceId, long destinationId) {
+		QueryTask query = MediaUtils.buildPlaylistQuery(sourceId, Song.FILLED_PLAYLIST_PROJECTION, null);
+		addToPlaylist(resolver, destinationId, query);
+	}
+
+	/**
 	 * Rename the playlist with the given id.
 	 *
 	 * @param resolver A ContentResolver to use.
@@ -189,16 +202,10 @@ public class Playlist {
 	 */
 	public static void renamePlaylist(ContentResolver resolver, long id, String newName)
 	{
-		long existingId = getPlaylist(resolver, newName);
-		// We are already called the requested name; nothing to do.
-		if (existingId == id)
-			return;
-		// There is already a playlist with this name. Kill it.
-		if (existingId != -1)
-			deletePlaylist(resolver, existingId);
-
-		ContentValues values = new ContentValues(1);
-		values.put(MediaStore.Audio.Playlists.NAME, newName);
-		resolver.update(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, values, "_id=" + id, null);
+		long newId = createPlaylist(resolver, newName);
+		if (newId != -1) { // new playlist created -> move stuff over
+			_copyToPlaylist(resolver, id, newId);
+			deletePlaylist(resolver, id);
+		}
 	}
 }
