@@ -444,7 +444,7 @@ public final class PlaybackService extends Service
 
 		getContentResolver().registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, mObserver);
 
-		CompatIcs.registerRemote(this, mAudioManager);
+		RemoteControl.registerRemote(this, mAudioManager);
 
 		mLooper = thread.getLooper();
 		mHandler = new Handler(mLooper, this);
@@ -953,7 +953,7 @@ public final class PlaybackService extends Service
 
 		updateWidgets();
 
-		CompatIcs.updateRemote(this, mCurrentSong, mState);
+		RemoteControl.updateRemote(this, mCurrentSong, mState);
 
 		if (mStockBroadcast)
 			stockMusicBroadcast();

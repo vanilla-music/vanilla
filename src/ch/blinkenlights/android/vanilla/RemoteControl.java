@@ -22,7 +22,6 @@
 
 package ch.blinkenlights.android.vanilla;
 
-import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
@@ -32,11 +31,8 @@ import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
 import android.media.RemoteControlClient;
 
-/**
- * Framework methods only in ICS or above go here.
- */
-@TargetApi(14)
-public class CompatIcs {
+
+public class RemoteControl {
 	/**
 	 * Used with updateRemote method.
 	 */

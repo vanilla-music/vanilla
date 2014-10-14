@@ -23,7 +23,6 @@
 
 package ch.blinkenlights.android.vanilla;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Build;
