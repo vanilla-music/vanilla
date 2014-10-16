@@ -72,7 +72,7 @@ public class DragListView extends ListView implements Handler.Callback {
 	/**
 	 * Padding for each row in dip.
 	 */
-	public static final int PADDING = 3;
+	public static final int PADDING = 0;
 	/**
 	 * Background color of row while it is being dragged.
 	 */

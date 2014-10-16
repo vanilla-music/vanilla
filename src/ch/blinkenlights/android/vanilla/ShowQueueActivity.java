@@ -30,7 +30,7 @@ import android.widget.ListView;
 import android.util.Log;
 
 public class ShowQueueActivity extends Activity {
-	private ListView mListView;
+	private DragListView mListView;
 	private ShowQueueAdapter listAdapter;
 	
 	@Override  
@@ -41,10 +41,11 @@ public class ShowQueueActivity extends Activity {
 		setContentView(R.layout.showqueue_listview);
 		
 		
-		mListView   = (ListView) findViewById(R.id.list);
+		mListView   = (DragListView) findViewById(R.id.list);
 		listAdapter = new ShowQueueAdapter(this, R.layout.showqueue_row);
 		mListView.setAdapter(listAdapter);
 		mListView.setFastScrollAlwaysVisible(true);
+		mListView.setEditable(true);
 
 		mListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override

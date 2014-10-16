@@ -31,8 +31,11 @@ import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.util.Log;
 
-public class ShowQueueAdapter extends ArrayAdapter<Song> {
+public class ShowQueueAdapter
+	extends ArrayAdapter<Song>
+	implements DragListView.DragAdapter {
 	
 	int resource;
 	Context context;
@@ -70,8 +73,18 @@ public class ShowQueueAdapter extends ArrayAdapter<Song> {
 
 		View pmark = ((View)row.findViewById(R.id.playmark));
 		pmark.setVisibility( ( position == this.hl_row ? View.VISIBLE : View.INVISIBLE ));
-		
+
 		return row;
 	}
-	
+
+	@Override
+	public void remove(int position) {
+		// not implemented
+	}
+
+	@Override
+	public void move(int from, int to) {
+		Log.v("VanillaMusic", "Moved FROM "+from+" to "+to);
+	}
+
 }

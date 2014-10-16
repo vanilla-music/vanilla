@@ -2,7 +2,7 @@
 <LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
+	android:layout_height="wrap_content"
 	android:orientation="horizontal">
 	<View
 		android:id="@+id/playmark"
@@ -13,10 +13,12 @@
 		android:id="@+id/text"
 		android:background="@drawable/selectable_item_bg"
 		android:maxLines="2"
-		android:padding="3dip"
 		android:textColor="?android:textColorPrimary"
 		android:gravity="left|center_vertical"
 		android:layout_width="0px"
 		android:layout_height="44dip"
+		android:paddingTop="2dip"
+		android:paddingBottom="2dip"
+		android:paddingLeft="6dip"
 		android:layout_weight="1" />
 </LinearLayout>
