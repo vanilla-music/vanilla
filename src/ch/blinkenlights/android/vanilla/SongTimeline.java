@@ -827,6 +827,26 @@ public final class SongTimeline {
 		changed();
 	}
 
+	public void moveSong(int from, int to) {
+		synchronized (this) {
+
+			Song tmp = mSongs.remove(from);
+			mSongs.add(to, tmp);
+
+			if (mCurrentPos == from) {
+				mCurrentPos = to; // active song was dragged to 'to'
+			} else if (from > mCurrentPos && to <= mCurrentPos) {
+				mCurrentPos++;
+			} else if (from < mCurrentPos && to >= mCurrentPos) {
+				mCurrentPos--;
+			}
+
+			saveActiveSongs(); // the current state is now 'sane'
+			broadcastChangedSongs(); // void due to saveActiveSongs();
+		}
+		changed();
+	}
+
 	/**
 	 * Broadcasts that the timeline state has changed.
 	 */

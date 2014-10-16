@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2013-2014 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,35 +31,44 @@ import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import android.util.Log;
 
 public class ShowQueueAdapter
 	extends ArrayAdapter<Song>
 	implements DragListView.DragAdapter {
 	
-	int resource;
-	Context context;
-	int hl_row;
-	
+	int mResource;
+	int mHighlightRow;
+	Context mContext;
+	OnItemMovedListener mCallback;
+
 	public ShowQueueAdapter(Context context, int resource) {
 		super(context, resource);
-		this.resource = resource;
-		this.context = context;
-		this.hl_row = -1;
+		mResource = resource;
+		mContext = context;
+		mCallback = (OnItemMovedListener) context;
+		mHighlightRow = -1;
 	}
-	
-	/*
-	** Tells the adapter to highlight a specific row id
-	** Set this to -1 to disable the feature
+
+	/**
+	 * Called if user moved a queue item
+	 */
+	public interface OnItemMovedListener {
+		public void onItemMoved(int from, int to);
+	}
+
+	/**
+	* Tells the adapter to highlight a specific row id
+	* Set this to -1 to disable the feature
 	*/
 	public void highlightRow(int pos) {
-		this.hl_row = pos;
+		mHighlightRow = pos;
 	}
-	
+
+
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-		View row = inflater.inflate(resource, parent, false);
+		LayoutInflater inflater = ((Activity)mContext).getLayoutInflater();
+		View row = inflater.inflate(mResource, parent, false);
 		Song song = getItem(position);
 
 		if (song != null) { // unlikely to fail but seems to happen in the wild.
@@ -72,7 +81,7 @@ public class ShowQueueAdapter
 		}
 
 		View pmark = ((View)row.findViewById(R.id.playmark));
-		pmark.setVisibility( ( position == this.hl_row ? View.VISIBLE : View.INVISIBLE ));
+		pmark.setVisibility( ( position == mHighlightRow ? View.VISIBLE : View.INVISIBLE ));
 
 		return row;
 	}
@@ -82,9 +91,16 @@ public class ShowQueueAdapter
 		// not implemented
 	}
 
+
+	/**
+	 * Moves a songs position in the queue
+	 *
+	 * @param from the index of the song to be moved
+	 * @param to the new index position of the song
+	 */
 	@Override
 	public void move(int from, int to) {
-		Log.v("VanillaMusic", "Moved FROM "+from+" to "+to);
+		mCallback.onItemMoved(from, to);
 	}
 
 }

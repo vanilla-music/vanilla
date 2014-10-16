@@ -27,12 +27,15 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
-import android.util.Log;
 
-public class ShowQueueActivity extends Activity {
+public class ShowQueueActivity
+	extends Activity 
+	implements ShowQueueAdapter.OnItemMovedListener
+	{
 	private DragListView mListView;
 	private ShowQueueAdapter listAdapter;
-	
+	private PlaybackService mService;
+
 	@Override  
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -40,7 +43,7 @@ public class ShowQueueActivity extends Activity {
 		setTitle(R.string.queue);
 		setContentView(R.layout.showqueue_listview);
 		
-		
+		mService    = PlaybackService.get(this);
 		mListView   = (DragListView) findViewById(R.id.list);
 		listAdapter = new ShowQueueAdapter(this, R.layout.showqueue_row);
 		mListView.setAdapter(listAdapter);
@@ -50,13 +53,13 @@ public class ShowQueueActivity extends Activity {
 		mListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				jumpToSong(position);
+				mService.jumpToQueuePosition(position);
 				finish();
 			}});
 		mListView.setOnItemLongClickListener(new OnItemLongClickListener() {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-				jumpToSong(position);
+				mService.jumpToQueuePosition(position);
 				/* This activity will stay open on longpress, so we have
 				 * to update the playmerker ourselfs */
 				listAdapter.highlightRow(position);
@@ -83,31 +86,33 @@ public class ShowQueueActivity extends Activity {
 	@Override
 	public void onResume() {
 		super.onResume();
-		refreshSongQueueList();
+		refreshSongQueueList(true);
 	}
-	
-	/*
-	** Tells the playback service to jump to a specific song
-	*/
-	private void jumpToSong(int id) {
-		PlaybackService service = PlaybackService.get(this);
-		service.jumpToQueuePosition(id);
+
+	/**
+	 * Fired from adapter list if user moved an item
+	 * @param from the item index that was dragged
+	 * @param to the index where the item was dropped
+	 */
+	public void onItemMoved(int from, int to) {
+		mService.moveSong(from, to);
+		refreshSongQueueList(false);
 	}
-	
-	private void refreshSongQueueList() {
+
+	private void refreshSongQueueList(boolean scroll) {
 		int i, stotal, spos;
-		PlaybackService service = PlaybackService.get(this);
-		
-		stotal = service.getTimelineLength();   /* Total number of songs in queue */
-		spos   = service.getTimelinePosition(); /* Current position in queue      */
-		
+
+		stotal = mService.getTimelineLength();   /* Total number of songs in queue */
+		spos   = mService.getTimelinePosition(); /* Current position in queue      */
+
 		listAdapter.clear();                    /* Flush all existing entries...  */
 		listAdapter.highlightRow(spos);         /* and highlight current position */
-		
+
 		for(i=0 ; i<stotal; i++) {
-			listAdapter.add(service.getSongByQueuePosition(i));
+			listAdapter.add(mService.getSongByQueuePosition(i));
 		}
-		mListView.setSelectionFromTop(spos, 0); /* scroll to currently playing song */
+		if (scroll == true)
+			mListView.setSelectionFromTop(spos, 0); /* scroll to currently playing song */
 	}
 	
 	

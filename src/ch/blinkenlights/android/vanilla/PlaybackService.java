@@ -2056,5 +2056,15 @@ public final class PlaybackService extends Service
 		setCurrentSong(0);
 		play();
 	}
-	
+
+	/**
+	 * Moves a songs position in the queue
+	 *
+	 * @param from the index of the song to be moved
+	 * @param to the new index position of the song
+	 */
+	public void moveSong(int from, int to) {
+		mTimeline.moveSong(from, to);
+	}
+
 }
