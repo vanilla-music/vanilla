@@ -88,6 +88,11 @@ public class MediaUtils {
 	public static final String DEFAULT_SORT = "artist_key,album_key,track";
 
 	/**
+	 * The default sort order for albums. First the album, then tracknumber
+	 */
+	public static final String ALBUM_SORT = "album_key,track";
+
+	/**
 	 * Cached random instance.
 	 */
 	private static Random sRandom;
@@ -135,6 +140,7 @@ public class MediaUtils {
 	{
 		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 		StringBuilder selection = new StringBuilder();
+		String sort = DEFAULT_SORT;
 
 		switch (type) {
 		case TYPE_SONG:
@@ -145,6 +151,7 @@ public class MediaUtils {
 			break;
 		case TYPE_ALBUM:
 			selection.append(MediaStore.Audio.Media.ALBUM_ID);
+			sort = ALBUM_SORT;
 			break;
 		default:
 			throw new IllegalArgumentException("Invalid type specified: " + type);
@@ -159,7 +166,7 @@ public class MediaUtils {
 			selection.append(select);
 		}
 
-		QueryTask result = new QueryTask(media, projection, selection.toString(), null, DEFAULT_SORT);
+		QueryTask result = new QueryTask(media, projection, selection.toString(), null, sort);
 		result.type = type;
 		return result;
 	}

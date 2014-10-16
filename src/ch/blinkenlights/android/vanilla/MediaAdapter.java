@@ -177,7 +177,7 @@ public class MediaAdapter
 			mFields = new String[] { MediaStore.Audio.Albums.ARTIST, MediaStore.Audio.Albums.ALBUM };
 			// Why is there no artist_key column constant in the album MediaStore? The column does seem to exist.
 			mFieldKeys = new String[] { "artist_key", MediaStore.Audio.Albums.ALBUM_KEY };
-			mSongSort = "album_key,track";
+			mSongSort = MediaUtils.ALBUM_SORT;
 			mSortEntries = new int[] { R.string.name, R.string.artist_album, R.string.year, R.string.number_of_tracks, R.string.date_added };
 			mSortValues = new String[] { "album_key %1$s", "artist_key %1$s,album_key %1$s", "minyear %1$s,album_key %1$s", "numsongs %1$s,album_key %1$s", "_id %1$s" };
 			break;
