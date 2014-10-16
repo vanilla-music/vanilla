@@ -92,7 +92,7 @@
   <string name="artist_album_track">Esittäjä, albumi, kappalenumero</string>
   <string name="artist_album_title">Esittäjä, albumi, nimi</string>
   <string name="artist_year">Esittäjä, vuosi</string>
-  <string name="song_playcount">Toistokertoja</string>
+  <string name="song_playcount">Toistokerrat</string>
   <string name="ascending">Nousevasti</string>
   <string name="descending">Laskevasti</string>
   <!--Notification-->
@@ -165,6 +165,12 @@
   <string name="idle_timeout_title">Joutotilan aikatkaisu</string>
   <string name="disable_cover_art_title">Poista kansikuvitus käytöstä</string>
   <string name="disable_cover_art_summary">Vältä lataamasta kansikuvitusta sovelluksessa</string>
+  <string name="coverloader_android_title">Lataa kuvitus Androidista</string>
+  <string name="coverloader_android_summary">Etsi kuvitusta Androidin sisäisestä mediatietokannasta</string>
+  <string name="coverloader_vanilla_title">Lataa kuvitus kansiosta</string>
+  <string name="coverloader_vanilla_summary">Etsi kuvatiedostoja nimeltä cover.jpg, album.jpg tai artwork.jpg ja näytä löytynyt tiedosto kansikuvituksena</string>
+  <string name="coverloader_shadow_title">Lataa kuvitus piilotetusta kansiosta</string>
+  <string name="coverloader_shadow_summary">Yritä ladata kuvitus polusta \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\'</string>
   <string name="double_tap_title">Widgetin kaksoisnapautus</string>
   <string name="double_tap_summary">1x1-widgetin kaksoisnapautus avaa soittimen. Asettaa 400 ms viiveen, ennen kuin widget vastaa toimintoon.</string>
   <string name="scrobble_title">Käytä ScrobbleDroid API:a</string>

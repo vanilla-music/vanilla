@@ -61,7 +61,12 @@
   <plurals name="added_to_playlist">
     <item quantity="other">%1$ d 歌曲已加入到播放清單 %2$ s。</item>
   </plurals>
+  <plurals name="deleted">
+    <item quantity="other">已刪除歌曲 %d</item>
+  </plurals>
   <string name="delete_file_failed">無法刪除 %s。</string>
+  <string name="deleted_item">已刪除 \'%s\'。</string>
+  <string name="delete_item">刪除 \'%s\'？</string>
   <string name="artists">演唱者</string>
   <string name="albums">專輯</string>
   <string name="songs">歌曲</string>
@@ -83,6 +88,7 @@
   <string name="artist_album_track">演唱者，專輯，曲目數</string>
   <string name="artist_album_title">演唱者，專輯，標題</string>
   <string name="artist_year">演唱者，年份</string>
+  <string name="song_playcount">播放次數</string>
   <string name="ascending">遞增</string>
   <string name="descending">遞減</string>
   <!--Notification-->
@@ -119,6 +125,8 @@
   <string name="replaygain_bump_title">重播增益前置放大</string>
   <string name="replaygain_untagged_debump_title">歌曲無重播增益標記</string>
   <string name="replaygain_untagged_debump_summary">降低音量依據</string>
+  <string name="readahead">啟用預先讀取</string>
+  <string name="readahead_summary">預讀目前播放的曲目。此選項可以解決\'音頻落後\'的問題。(因較慢的 SD 卡所造成)</string>
   <string name="notifications">通知</string>
   <string name="notification_mode_title">通知模式</string>
   <string name="notification_action_title">通知啟動</string>
@@ -150,6 +158,12 @@
   <string name="idle_timeout_title">閒置超時</string>
   <string name="disable_cover_art_title">停用封面</string>
   <string name="disable_cover_art_summary">在應用程式中取消載入任何的封面</string>
+  <string name="coverloader_android_title">從 Android 載入插圖</string>
+  <string name="coverloader_android_summary">查詢 Androids 內部的媒體資料庫，以用於專輯插圖</string>
+  <string name="coverloader_vanilla_title">從資料夾載入插圖</string>
+  <string name="coverloader_vanilla_summary">尋找名為 cover.jpg、album.jpg 或 artwork.jpg 的影像檔案，並顯示作為專輯封面</string>
+  <string name="coverloader_shadow_title">從隱藏資料夾載入插圖</string>
+  <string name="coverloader_shadow_summary">試著從 \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\' 載入插圖</string>
   <string name="double_tap_title">雙點擊小工具</string>
   <string name="double_tap_summary">雙點擊 1 x 1 小工具將打開播放機。小工具的操作做出回應之前，會引起400ms的延遲。</string>
   <string name="scrobble_title">使用 ScrobbleDroid 的 API</string>
@@ -172,6 +186,7 @@
   <string name="open_main_activity">開啟媒體庫 (預設)</string>
   <string name="open_mini_popup">開啟迷你彈出視窗</string>
   <string name="skip_to_next_song">跳過下一首</string>
+  <string name="open_full_player">開啟完整播放</string>
   <string name="info_on_cover">資訊在封面上</string>
   <string name="info_below_cover">資訊在封面下方</string>
   <string name="fixed_info">資訊固定在上方</string>

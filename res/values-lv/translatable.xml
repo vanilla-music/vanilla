@@ -67,6 +67,11 @@
     <item quantity="one">Repertuāram %2$s pievienota %1$d dziesma.</item>
     <item quantity="other">Repertuāram %2$s pievienotas %1$d dziesmas.</item>
   </plurals>
+  <plurals name="deleted">
+    <item quantity="zero">Dzēsts %d dziesmu.</item>
+    <item quantity="one">Dzēsta 1 dziesma.</item>
+    <item quantity="other">Dzēstas %d dziesmas.</item>
+  </plurals>
   <string name="delete_file_failed">Neizdevās izdzēst %s.</string>
   <string name="deleted_item">Izdzēsa \'%s\'.</string>
   <string name="delete_item">Dzēst \'%s\'?</string>
@@ -167,6 +172,12 @@
   <string name="idle_timeout_title">Dīkstāves noildze</string>
   <string name="disable_cover_art_title">Atslēgt vāciņu attēlus</string>
   <string name="disable_cover_art_summary">Neielādēt vāciņu attēlus nevienā vietā programmā</string>
+  <string name="coverloader_android_title">Ielādēt vāku attēlus no Android</string>
+  <string name="coverloader_android_summary">Vaicāt pēc vāciņa attēla Android iekšējai mēdiju datubāzei</string>
+  <string name="coverloader_vanilla_title">Ielādēt vāciņa attēlu no mapes</string>
+  <string name="coverloader_vanilla_summary">Meklēt attēla failus ar nosaukumiem cover.jpg, album.jpg vai artwork.jpg un attēlot tos kā albuma vāku</string>
+  <string name="coverloader_shadow_title">Ielādēt vāku attēlus no slēptas mapes</string>
+  <string name="coverloader_shadow_summary">Mēģināt ielādēt vāka attēlu no </string>
   <string name="double_tap_title">Dubultpieskāriena sīklietotne</string>
   <string name="double_tap_summary">Izdarot dubultpieskārienu 1x1 izmēra sīkrīkam, tiks atvērts atskaņotājs. Rada 400 ms aizturi, pirms sīkrīks atbildēs uz darbībām.</string>
   <string name="scrobble_title">Lietot ScrobbleDroid API</string>
