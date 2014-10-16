@@ -709,7 +709,7 @@ public final class PlaybackService extends Service
 	 */
 	private void triggerReadAhead() {
 		Song song = mCurrentSong;
-		if(mReadaheadEnabled && (mState & FLAG_PLAYING) != 0 && song != null) {
+		if((mState & FLAG_PLAYING) != 0 && song != null) {
 			mReadahead.setSource(song.path);
 		} else {
 			mReadahead.pause();
@@ -924,7 +924,6 @@ public final class PlaybackService extends Service
 			mTimeline.setFinishAction(finishAction(state));
 		
 		triggerGaplessUpdate();
-		triggerReadAhead();
 	}
 
 	private void broadcastChange(int state, Song song, long uptime)
@@ -943,12 +942,16 @@ public final class PlaybackService extends Service
 
 		updateWidgets();
 
+		if (mReadaheadEnabled)
+			triggerReadAhead();
+
 		RemoteControl.updateRemote(this, mCurrentSong, mState);
 
 		if (mStockBroadcast)
 			stockMusicBroadcast();
 		if (mScrobble)
 			scrobble();
+
 	}
 
 	/**
@@ -1196,7 +1199,6 @@ public final class PlaybackService extends Service
 			
 			mMediaPlayerInitialized = true;
 			triggerGaplessUpdate();
-			triggerReadAhead();
 			
 			if (mPendingSeek != 0 && mPendingSeekSong == song.id) {
 				mMediaPlayer.seekTo(mPendingSeek);
