@@ -50,9 +50,6 @@ public class FilebrowserStartAdapter extends ArrayAdapter<String> {
 		target.setText(label);
 		target.setCompoundDrawablesWithIntrinsicBounds(mFolderIcon, null, null, null);
 		
-		/* not used here (yet) */
-		View pmark = ((View)row.findViewById(R.id.playmark));
-		pmark.setVisibility(View.INVISIBLE);
 		return row;
 	}
 	

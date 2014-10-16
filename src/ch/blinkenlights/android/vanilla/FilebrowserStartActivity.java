@@ -52,7 +52,7 @@ public class FilebrowserStartActivity extends PlaybackActivity {
 		
 		mCurrentPath = (String)getFilesystemBrowseStart().getAbsolutePath();
 		mPrefEditor  = PlaybackService.getSettings(this).edit();
-		mListAdapter = new FilebrowserStartAdapter(this, R.layout.showqueue_row);
+		mListAdapter = new FilebrowserStartAdapter(this, R.layout.filebrowser_row);
 		mPathDisplay = (TextView) findViewById(R.id.path_display);
 		mListView    = (ListView) findViewById(R.id.list);
 		mSaveButton  = (Button) findViewById(R.id.save_button);
