@@ -713,15 +713,10 @@ public class LibraryActivity
 			menu.addSubMenu(0, MENU_ADD_TO_PLAYLIST, 0, R.string.add_to_playlist).getItem().setIntent(rowData);
 		} else {
 			int type = rowData.getIntExtra(LibraryAdapter.DATA_TYPE, MediaUtils.TYPE_INVALID);
-			boolean isAllAdapter = type <= MediaUtils.TYPE_SONG;
 
 			menu.setHeaderTitle(rowData.getStringExtra(LibraryAdapter.DATA_TITLE));
 			menu.add(0, MENU_PLAY, 0, R.string.play).setIntent(rowData);
-			if (isAllAdapter)
-				menu.add(0, MENU_PLAY_ALL, 0, R.string.play_all).setIntent(rowData);
 			menu.add(0, MENU_ENQUEUE, 0, R.string.enqueue).setIntent(rowData);
-			if (isAllAdapter)
-				menu.add(0, MENU_ENQUEUE_ALL, 0, R.string.enqueue_all).setIntent(rowData);
 			if (type == MediaUtils.TYPE_PLAYLIST) {
 				menu.add(0, MENU_RENAME_PLAYLIST, 0, R.string.rename).setIntent(rowData);
 			} else if (rowData.getBooleanExtra(LibraryAdapter.DATA_EXPANDABLE, false)) {
