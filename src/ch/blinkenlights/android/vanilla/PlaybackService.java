@@ -666,8 +666,7 @@ public final class PlaybackService extends Service
 	 * re-creates a newone if needed.
 	 */
 	private void triggerGaplessUpdate() {
-		// Log.d("VanillaMusic", "triggering gapless update");
-		
+
 		if(mMediaPlayerInitialized != true)
 			return;
 		
@@ -681,7 +680,6 @@ public final class PlaybackService extends Service
 			mMediaPlayer.setNextMediaPlayer(null);
 			mPreparedMediaPlayer.release();
 			mPreparedMediaPlayer = null;
-			// Log.d("VanillaMusic", "old prepared player destroyed");
 		}
 		
 		int fa = finishAction(mState);
@@ -694,7 +692,7 @@ public final class PlaybackService extends Service
 				mPreparedMediaPlayer = getNewMediaPlayer();
 				prepareMediaPlayer(mPreparedMediaPlayer, nextSong.path);
 				mMediaPlayer.setNextMediaPlayer(mPreparedMediaPlayer);
-				// Log.d("VanillaMusic", "New media player prepared as "+mPreparedMediaPlayer+" with path "+nextSong.path);
+				Log.d("VanillaMusic", "New media player prepared with path "+nextSong.path);
 			} catch (IOException e) {
 				Log.e("VanillaMusic", "IOException", e);
 			}
@@ -922,8 +920,6 @@ public final class PlaybackService extends Service
 			mTimeline.setShuffleMode(shuffleMode(state));
 		if ((toggled & MASK_FINISH) != 0)
 			mTimeline.setFinishAction(finishAction(state));
-		
-		triggerGaplessUpdate();
 	}
 
 	private void broadcastChange(int state, Song song, long uptime)
@@ -1197,9 +1193,13 @@ public final class PlaybackService extends Service
 				prepareMediaPlayer(mMediaPlayer, song.path);
 			}
 			
+
 			mMediaPlayerInitialized = true;
+
+			// Cancel any queued gapless triggers: we are updating it right now
+			mHandler.removeMessages(GAPLESS_UPDATE);
 			triggerGaplessUpdate();
-			
+
 			if (mPendingSeek != 0 && mPendingSeekSong == song.id) {
 				mMediaPlayer.seekTo(mPendingSeek);
 				mPendingSeek = 0;
@@ -1344,6 +1344,7 @@ public final class PlaybackService extends Service
 	private static final int PROCESS_SONG = 13;
 	private static final int PROCESS_STATE = 14;
 	private static final int SKIP_BROKEN_SONG = 15;
+	private static final int GAPLESS_UPDATE = 16;
 
 	@Override
 	public boolean handleMessage(Message message)
@@ -1401,6 +1402,9 @@ public final class PlaybackService extends Service
 				setCurrentSong(1);
 			}
 			mHandler.sendMessage(mHandler.obtainMessage(CALL_GO, 0, 0));
+			break;
+		case GAPLESS_UPDATE:
+			triggerGaplessUpdate();
 			break;
 		default:
 			return false;
@@ -1572,7 +1576,6 @@ public final class PlaybackService extends Service
 		}
 		
 		Toast.makeText(this, getResources().getQuantityString(text, count, count), Toast.LENGTH_SHORT).show();
-		triggerGaplessUpdate();
 	}
 
 	/**
@@ -1628,7 +1631,6 @@ public final class PlaybackService extends Service
 	public void clearQueue()
 	{
 		mTimeline.clearQueue();
-		triggerGaplessUpdate();
 	}
 
 	/**
@@ -1644,6 +1646,12 @@ public final class PlaybackService extends Service
 	{
 		mHandler.removeMessages(SAVE_STATE);
 		mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
+
+		// Trigger a gappless update for the new timeline
+		// This might get canceled if setCurrentSong() also fired a call
+		// to processSong();
+		mHandler.removeMessages(GAPLESS_UPDATE);
+		mHandler.sendEmptyMessageDelayed(GAPLESS_UPDATE, 350);
 	}
 
 	@Override
