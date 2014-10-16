@@ -242,7 +242,7 @@ public class MediaAdapter
 	 * @param forceMusicCheck Force the is_music check to be added to the
 	 * selection.
 	 */
-	public QueryTask buildQuery(String[] projection, boolean forceMusicCheck)
+	private QueryTask buildQuery(String[] projection, boolean forceMusicCheck)
 	{
 		String constraint = mConstraint;
 		Limiter limiter = mLimiter;
