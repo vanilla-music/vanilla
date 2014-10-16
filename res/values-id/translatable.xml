@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="app_name">Vanilla Music</string>
+  <!--Playback Activity (main screen)-->
+  <string name="no_songs">Tidak ada lagu ditemukan di device anda</string>
+  <string name="empty_queue">Anda belum memilih lagu. Pilih dari pustaka atau ketik mode acak, ketika menyentuh pesan ini</string>
+  <string name="settings">Konfigurasi</string>
+  <string name="library">Pustaka</string>
+  <string name="no_shuffle">Jangan Acak</string>
+  <string name="shuffle_songs">Acak Lagu</string>
+  <string name="shuffle_albums">Acak Album</string>
+  <string name="no_repeat">Jangan diulang</string>
+  <string name="repeat">Ulangi</string>
+  <string name="repeat_current_song">Ulangi lagu ini</string>
+  <string name="stop_current_song">Berhenti setelah lagu ini</string>
+  <string name="random">Acak</string>
+  <string name="random_enabling">Secara acak diaktifkan</string>
+  <string name="song_load_failed">Gagal menambah lagu %s. Mungkin file korup atau hilang</string>
+  <string name="queue_cleared">Daftar lagu dibersihkan</string>
+  <string name="cover_art">Kover Album</string>
+  <string name="close_notification">Tutup notifikasi</string>
+  <string name="_genre">Genre</string>
+  <string name="_track">Trek</string>
+  <string name="_composer">Penulis</string>
+  <string name="_format">Format</string>
+  <string name="_title">Judul</string>
+  <string name="_artist">Artis</string>
+  <string name="_album">album</string>
+  <string name="_year">tahun</string>
+  <string name="_replaygain">rgain</string>
+  <!--New Playlist Dialog-->
+  <string name="choose_playlist_name">Pilih Daftar putar</string>
+  <string name="create">Buat</string>
+  <string name="overwrite">Timpa</string>
+  <string name="cancel">Batal</string>
+  <string name="delete_playlist">Hapus daftar putar $s?</string>
+  <!--Library-->
+  <string name="enqueue">Daftar antri</string>
+  <string name="play">Putar</string>
+  <string name="edit">Ubah</string>
+  <string name="rename">Ganti nama</string>
+  <string name="add_to_playlist">Tambahkan ke daftar putar</string>
+  <string name="add_to_favorites">Tambahkan ke daftar kesukaan</string>
+  <string name="playlist_favorites">Kesukaan</string>
+  <string name="new_playlist">Daftar putar baru</string>
+  <string name="expand">Tampilkan</string>
+  <string name="delete">Hapus</string>
+  <string name="playback_view">Lagi diputar</string>
+  <string name="sort_by">Sortir berdasarkan</string>
+  <string name="search">Cari</string>
+  <string name="done">Selesai</string>
+  <string name="remove">Hapus</string>
+  <string name="clear_search">Bersihkan pencarian</string>
+  <string name="play_or_enqueue">Diurutkan bila diputar; Putar bila di pause</string>
+  <plurals name="playing">
+    <item quantity="other">% lagu diputar</item>
+  </plurals>
+  <plurals name="enqueued">
+    <item quantity="other">%d antrian lagu</item>
+  </plurals>
+  <plurals name="added_to_playlist">
+    <item quantity="other">%1$d lagu ditambahkan ke daftar putar %2$s.</item>
+  </plurals>
+  <string name="delete_file_failed">Gagal menghapus %s.</string>
+  <string name="artists">Artis</string>
+  <string name="albums">Album</string>
+  <string name="songs">Lagu</string>
+  <string name="playlists">Daftar Putar</string>
+  <string name="genres">Genre</string>
+  <string name="files">Berkas</string>
+  <string name="none">Kosong</string>
+  <string name="unknown">Tidak diketahui</string>
+  <string name="play_all">Putar Semua</string>
+  <string name="enqueue_all">Antrikan Semua</string>
+  <string name="all_songs">Semua Lagu</string>
+  <string name="more_from_artist">Selanjutnya dari artis</string>
+  <string name="more_from_album">selanjutnya dari album</string>
+  <string name="name">Nama</string>
+  <string name="number_of_tracks">Jumlah trek</string>
+  <string name="year">Tahun</string>
+  <string name="date_added">Tanggal ditambah</string>
+  <string name="artist_album">Artis, album</string>
+  <string name="artist_album_track">Artis, album, nomor urut</string>
+  <string name="artist_album_title">Artis, album, judul</string>
+  <string name="artist_year">Artis, tahun</string>
+  <string name="ascending">Kecil ke besar</string>
+  <string name="descending">Besar ke kecil</string>
+  <!--Notification-->
+  <string name="notification_title_paused">%s (Pause)</string>
+  <!--Preferences-->
+  <plurals name="seconds">
+    <item quantity="other">$d detik</item>
+  </plurals>
+  <plurals name="minutes">
+    <item quantity="other">%d menit</item>
+  </plurals>
+  <plurals name="hours">
+    <item quantity="other">%d jam</item>
+  </plurals>
+  <string name="audio">Audio</string>
+  <string name="volume_title">Suara</string>
+  <string name="media_button_title">Headset/Kontrol Bluetooth</string>
+  <string name="media_button_summary">Membutuhkan kontrol pengunci layar ICS</string>
+  <string name="headset_only_title">Hanya Suara Eksternal</string>
+  <string name="headset_only_summary">Non-aktifkan pengeras suara internal</string>
+  <string name="headset_pause_title">Berhentikan ketika dicabut</string>
+  <string name="headset_pause_summary">Berhentikan ketika headphone dicabut</string>
+  <string name="headset_play_title">Mainkan musik ketika dimasukkan</string>
+  <string name="headset_play_summary">Putar musik ketika headphone dicolokkan. (Bila service dijalankan)</string>
+  <string name="replaygain">Putar ulang Gain</string>
+  <string name="replaygain_title">Bisa memutar ulang gain</string>
+  <string name="replaygain_summary">Konfigurasi pemutar ulang gain</string>
+  <string name="replaygain_track_title">Aktifkan per-musik gain</string>
+  <string name="replaygain_track_summary">Putar semua lagu yang memiliki keras suara sama</string>
+  <string name="replaygain_album_title">Aktifkan Putar Ulang album Gain</string>
+  <string name="notifications">Pemberitahuan</string>
+  <string name="notification_mode_title">Mode Notifikasi</string>
+  <string name="notification_action_title">Aksi Pemberitahuan</string>
+  <string name="playback_screen">Layar Putar</string>
+  <string name="playback_on_startup_title">Jalankan waktu dinyalakan</string>
+  <string name="display_mode_title">Mode Tampilan</string>
+  <string name="swipe_up_action_title">Aksi atas sentuhan vertikal</string>
+  <string name="swipe_down_action_title">Aksi geser kebawah</string>
+  <string name="library_screen">Layar pustaka</string>
+  <string name="default_action_title">Aksi bawaaan</string>
+  <string name="disable_lockscreen_title">Nonaktifkan pengunci layar</string>
+  <!--The following are for the list preferences-->
+</resources>
