@@ -105,9 +105,9 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 	@Override
 	public void bindView(View view, Context context, Cursor cursor)
 	{
-		View dragger = ((View)view.findViewById(R.id.dragger));
-		dragger.setVisibility( mEditable ? View.VISIBLE : View.INVISIBLE );
-		TextView textView = ((TextView)view.findViewById(R.id.text));
+		DraggableRow dview = (DraggableRow)view;
+		dview.showDragger(mEditable);
+		TextView textView = dview.getTextView();
 		textView.setText(cursor.getString(1));
 		textView.setTag(cursor.getLong(3));
 	}

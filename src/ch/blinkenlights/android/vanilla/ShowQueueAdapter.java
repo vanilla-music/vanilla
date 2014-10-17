@@ -26,7 +26,6 @@ import android.view.LayoutInflater;
 import android.widget.TextView;
 
 import android.graphics.Color;
-import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.text.Spannable;
@@ -59,20 +58,18 @@ public class ShowQueueAdapter
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		LayoutInflater inflater = ((Activity)mContext).getLayoutInflater();
-		View row = inflater.inflate(mResource, parent, false);
+		DraggableRow row = (DraggableRow)inflater.inflate(mResource, parent, false);
 		Song song = getItem(position);
 
 		if (song != null) { // unlikely to fail but seems to happen in the wild.
-			TextView target = ((TextView)row.findViewById(R.id.text));
 			SpannableStringBuilder sb = new SpannableStringBuilder(song.title);
 			sb.append('\n');
 			sb.append(song.album+", "+song.artist);
 			sb.setSpan(new ForegroundColorSpan(Color.GRAY), song.title.length() + 1, sb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-			target.setText(sb);
+			row.getTextView().setText(sb);
 		}
 
-		View dragger = ((View)row.findViewById(R.id.dragger));
-		dragger.setVisibility( ( position == mHighlightRow ? View.VISIBLE : View.INVISIBLE ));
+		row.highlightRow(position == mHighlightRow);
 
 		return row;
 	}

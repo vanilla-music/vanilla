@@ -29,9 +29,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 		android:orientation="horizontal">
 
 		<View
-			android:id="@+id/dragger"
-			android:layout_width="20dip"
+			android:id="@+id/pmark"
+			android:layout_width="2dip"
 			android:layout_height="44dip"
+			android:visibility="invisible"
 			android:background="@android:color/holo_blue_dark" />
 		<TextView
 			android:id="@+id/text"
@@ -48,14 +49,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 				android:layout_height="match_parent"
 				android:layout_width="0px"
 				android:layout_weight="1"/>
-			<!-- checkbox: off by default -->
 			<CheckedTextView
 				android:id="@+id/checkbox"
 				android:visibility="gone"
 				android:checkMark="?android:attr/listChoiceIndicatorMultiple"
 				android:gravity="center_vertical"
 				android:layout_height="match_parent"
-				android:layout_width="wrap_content"/>
+				android:layout_width="44dip"/>
+			<ImageView
+				android:id="@+id/dragger"
+				android:scaleType="center"
+				android:src="@drawable/arrow"
+				android:layout_width="44dip"
+				android:layout_height="44dip" />
 	</LinearLayout>
 
 	<View

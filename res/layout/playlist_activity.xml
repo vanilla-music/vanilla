@@ -19,10 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:dslv="http://schemas.android.com/apk/res-auto"
 	android:id="@+id/list"
-	android:fastScrollEnabled="true"
 	android:divider="@null"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
+	android:scrollbarStyle="outsideInset"
 	dslv:drag_enabled="false"
 	dslv:drag_start_mode="onMove"
 	dslv:drag_handle_id="@+id/dragger"/>

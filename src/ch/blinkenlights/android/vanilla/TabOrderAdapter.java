@@ -93,7 +93,7 @@ public class TabOrderAdapter extends BaseAdapter {
 		} else {
 			view = (DraggableRow)convert;
 		}
-		((TextView)view.findViewById(R.id.text)).setText(LibraryPagerAdapter.TITLES[mTabIds[position]]);
+		view.getTextView().setText(LibraryPagerAdapter.TITLES[mTabIds[position]]);
 		view.showCheckBox(true);
 		return view;
 	}

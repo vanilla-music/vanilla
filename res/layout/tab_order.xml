@@ -36,7 +36,8 @@ THE SOFTWARE.
 		android:layout_weight="1"
 		android:choiceMode="multipleChoice"
 		dslv:drag_enabled="true"
-		dslv:drag_start_mode="onMove" />
+		dslv:drag_start_mode="onMove"
+		dslv:drag_handle_id="@+id/dragger" />
 	<LinearLayout
 		style="?android:attr/buttonBarStyle"
 		android:layout_width="fill_parent"
