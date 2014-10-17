@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ch.blinkenlights.android.vanilla.DragListView
+<com.mobeta.android.dslv.DragSortListView
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:dslv="http://schemas.android.com/apk/res-auto"
 	android:id="@+id/list"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
 	android:divider="@color/divider_color"
 	android:dividerHeight="1dip"
 	android:listSelector="@drawable/selectable_item_bg"
-	android:scrollbarStyle="outsideInset" />
+	android:scrollbarStyle="outsideInset"
+	dslv:drag_enabled="true"
+	dslv:drag_start_mode="onMove"
+	dslv:drag_handle_id="@+id/playmark"
+	dslv:remove_enabled="true"
+	dslv:remove_mode="flingRemove"
+	/>

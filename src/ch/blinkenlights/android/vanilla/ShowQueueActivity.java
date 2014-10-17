@@ -27,12 +27,10 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
+import com.mobeta.android.dslv.DragSortListView;
 
-public class ShowQueueActivity
-	extends Activity 
-	implements ShowQueueAdapter.OnItemMovedListener
-	{
-	private DragListView mListView;
+public class ShowQueueActivity extends Activity {
+	private DragSortListView mListView;
 	private ShowQueueAdapter listAdapter;
 	private PlaybackService mService;
 
@@ -44,11 +42,11 @@ public class ShowQueueActivity
 		setContentView(R.layout.showqueue_listview);
 		
 		mService    = PlaybackService.get(this);
-		mListView   = (DragListView) findViewById(R.id.list);
+		mListView   = (DragSortListView) findViewById(R.id.list);
 		listAdapter = new ShowQueueAdapter(this, R.layout.showqueue_row);
 		mListView.setAdapter(listAdapter);
 		mListView.setFastScrollAlwaysVisible(true);
-		mListView.setEditable(true);
+		mListView.setDropListener(onDrop);
 
 		PlaybackService.addActivity(this);
 
@@ -94,13 +92,19 @@ public class ShowQueueActivity
 	}
 
 	/**
-	 * Fired from adapter list if user moved an item
+	 * Fired from adapter listview  if user moved an item
 	 * @param from the item index that was dragged
 	 * @param to the index where the item was dropped
 	 */
-	public void onItemMoved(int from, int to) {
-		mService.moveSong(from, to);
-	}
+	private DragSortListView.DropListener onDrop =
+		new DragSortListView.DropListener() {
+			@Override
+			public void drop(int from, int to) {
+				if (from != to) {
+					mService.moveSong(from, to);
+				}
+			}
+		};
 
 	/**
 	 * Triggers a refresh of the queueview

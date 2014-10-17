@@ -34,26 +34,17 @@ import android.text.SpannableStringBuilder;
 
 public class ShowQueueAdapter
 	extends ArrayAdapter<Song>
-	implements DragListView.DragAdapter {
+	 {
 	
 	int mResource;
 	int mHighlightRow;
 	Context mContext;
-	OnItemMovedListener mCallback;
 
 	public ShowQueueAdapter(Context context, int resource) {
 		super(context, resource);
 		mResource = resource;
 		mContext = context;
-		mCallback = (OnItemMovedListener) context;
 		mHighlightRow = -1;
-	}
-
-	/**
-	 * Called if user moved a queue item
-	 */
-	public interface OnItemMovedListener {
-		public void onItemMoved(int from, int to);
 	}
 
 	/**
@@ -84,23 +75,6 @@ public class ShowQueueAdapter
 		pmark.setVisibility( ( position == mHighlightRow ? View.VISIBLE : View.INVISIBLE ));
 
 		return row;
-	}
-
-	@Override
-	public void remove(int position) {
-		// not implemented
-	}
-
-
-	/**
-	 * Moves a songs position in the queue
-	 *
-	 * @param from the index of the song to be moved
-	 * @param to the new index position of the song
-	 */
-	@Override
-	public void move(int from, int to) {
-		mCallback.onItemMoved(from, to);
 	}
 
 }

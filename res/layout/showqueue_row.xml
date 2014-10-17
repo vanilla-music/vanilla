@@ -6,7 +6,7 @@
 	android:orientation="horizontal">
 	<View
 		android:id="@+id/playmark"
-		android:layout_width="4dip"
+		android:layout_width="20dip"
 		android:layout_height="fill_parent"
 		android:background="@android:color/holo_blue_dark" />
 	<TextView
