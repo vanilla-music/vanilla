@@ -516,8 +516,8 @@ public class MediaAdapter
 		if (mFields.length > 1) {
 			String line1 = cursor.getString(1);
 			String line2 = cursor.getString(2);
-			if(line1 == null) { line1 = ""; }
-			if(line2 == null) { line2 = ""; }
+			if(line1 == null) { line1 = "???"; }
+			if(line2 == null) { line2 = "???"; }
 			SpannableStringBuilder sb = new SpannableStringBuilder(line1);
 			sb.append('\n');
 			sb.append(line2);
@@ -526,7 +526,7 @@ public class MediaAdapter
 			holder.title = line1;
 		} else {
 			String title = cursor.getString(1);
-			if(title == null) { title = ""; }
+			if(title == null) { title = "???"; }
 			holder.text.setText(title);
 			holder.title = title;
 		}
