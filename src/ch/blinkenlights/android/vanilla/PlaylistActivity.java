@@ -37,6 +37,7 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
+import com.mobeta.android.dslv.DragSortListView;
 
 /**
  * The playlist activity where playlist songs can be viewed and reordered.
@@ -58,7 +59,7 @@ public class PlaylistActivity extends Activity
 	 * An event loop running on a worker thread.
 	 */
 	private Looper mLooper;
-	private DragListView mListView;
+	private DragSortListView mListView;
 	private PlaylistAdapter mAdapter;
 
 	/**
@@ -97,9 +98,10 @@ public class PlaylistActivity extends Activity
 
 		setContentView(R.layout.playlist_activity);
 
-		DragListView view = (DragListView)findViewById(R.id.list);
+		DragSortListView view = (DragSortListView)findViewById(R.id.list);
 		view.setOnItemClickListener(this);
 		view.setOnCreateContextMenuListener(this);
+		view.setDropListener(onDrop);
 		mListView = view;
 
 		View header = LayoutInflater.from(this).inflate(R.layout.playlist_buttons, null);
@@ -108,7 +110,6 @@ public class PlaylistActivity extends Activity
 		mDeleteButton = (Button)header.findViewById(R.id.delete);
 		mDeleteButton.setOnClickListener(this);
 		view.addHeaderView(header, null, false);
-
 		mLooper = thread.getLooper();
 		mAdapter = new PlaylistAdapter(this, mLooper);
 		view.setAdapter(mAdapter);
@@ -150,7 +151,7 @@ public class PlaylistActivity extends Activity
 	 */
 	public void setEditing(boolean editing)
 	{
-		mListView.setEditable(editing);
+		mListView.setDragEnabled(editing);
 		mAdapter.setEditable(editing);
 		int visible = editing ? View.GONE : View.VISIBLE;
 		mDeleteButton.setVisibility(visible);
@@ -190,7 +191,7 @@ public class PlaylistActivity extends Activity
 		Intent intent = new Intent();
 		intent.putExtra("id", info.id);
 		intent.putExtra("position", info.position);
-		intent.putExtra("audioId", (Long)info.targetView.getTag());
+		intent.putExtra("audioId", (Long)info.targetView.findViewById(R.id.text).getTag());
 
 		menu.add(0, MENU_PLAY, 0, R.string.play).setIntent(intent);
 		menu.add(0, MENU_PLAY_ALL, 0, R.string.play_all).setIntent(intent);
@@ -207,7 +208,7 @@ public class PlaylistActivity extends Activity
 		int pos = intent.getIntExtra("position", -1);
 
 		if (itemId == MENU_REMOVE) {
-			mAdapter.remove(pos - mListView.getHeaderViewsCount());
+			mAdapter.removeItem(pos - mListView.getHeaderViewsCount());
 		} else {
 			performAction(itemId, pos, intent.getLongExtra("audioId", -1));
 		}
@@ -277,4 +278,18 @@ public class PlaylistActivity extends Activity
 			return super.onOptionsItemSelected(item);
 		}
 	}
+
+	/**
+	 * Fired from adapter listview  if user moved an item
+	 * @param from the item index that was dragged
+	 * @param to the index where the item was dropped
+	 */
+	private DragSortListView.DropListener onDrop =
+		new DragSortListView.DropListener() {
+			@Override
+			public void drop(int from, int to) {
+				mAdapter.moveItem(from, to);
+			}
+		};
+
 }
