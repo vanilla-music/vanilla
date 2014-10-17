@@ -31,7 +31,7 @@ import android.widget.BaseAdapter;
 /**
  * CursorAdapter backed by MediaStore playlists.
  */
-public class TabOrderAdapter extends BaseAdapter implements DragListView.DragAdapter {
+public class TabOrderAdapter extends BaseAdapter {
 	private final TabOrderActivity mActivity;
 	private final LayoutInflater mInflater;
 	private int[] mTabIds;
@@ -63,32 +63,6 @@ public class TabOrderAdapter extends BaseAdapter implements DragListView.DragAda
 	public int[] getTabIds()
 	{
 		return mTabIds;
-	}
-
-	@Override
-	public void move(int from, int to)
-	{
-		if (from == to)
-			return;
-
-		int[] ids = mTabIds;
-		int tempId = ids[from];
-
-		if (from > to) {
-			System.arraycopy(ids, to, ids, to + 1, from - to);
-		} else {
-			System.arraycopy(ids, from + 1, ids, from, to - from);
-		}
-
-		ids[to] = tempId;
-		notifyDataSetChanged();
-		mActivity.save();
-	}
-
-	@Override
-	public void remove(int position)
-	{
-		// not implemented
 	}
 
 	@Override

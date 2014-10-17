@@ -29,13 +29,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import com.mobeta.android.dslv.DragSortListView;
 
 /**
  * The preferences activity in which one can change application preferences.
  */
 public class TabOrderActivity extends Activity implements View.OnClickListener, OnItemClickListener {
 	private TabOrderAdapter mAdapter;
-	private DragListView mList;
+	private DragSortListView mList;
 
 	/**
 	 * Initialize the activity, loading the preference specifications.
@@ -48,10 +49,10 @@ public class TabOrderActivity extends Activity implements View.OnClickListener, 
 		setContentView(R.layout.tab_order);
 
 		mAdapter = new TabOrderAdapter(this);
-		DragListView list = (DragListView)findViewById(R.id.list);
+		DragSortListView list = (DragSortListView)findViewById(R.id.list);
 		list.setAdapter(mAdapter);
-		list.setEditable(true);
 		list.setOnItemClickListener(this);
+		list.setDropListener(onDrop);
 		mList = list;
 		load();
 
@@ -89,7 +90,7 @@ public class TabOrderActivity extends Activity implements View.OnClickListener, 
 	public void restoreDefault()
 	{
 		mAdapter.setTabIds(LibraryPagerAdapter.DEFAULT_ORDER.clone());
-		DragListView list = mList;
+		DragSortListView list = mList;
 		for (int i = 0; i != LibraryPagerAdapter.MAX_ADAPTER_COUNT; ++i) {
 			list.setItemChecked(i, true);
 		}
@@ -102,7 +103,7 @@ public class TabOrderActivity extends Activity implements View.OnClickListener, 
 	public void save()
 	{
 		int[] ids = mAdapter.getTabIds();
-		DragListView list = mList;
+		DragSortListView list = mList;
 		char[] out = new char[LibraryPagerAdapter.MAX_ADAPTER_COUNT];
 		for (int i = 0; i != LibraryPagerAdapter.MAX_ADAPTER_COUNT; ++i) {
 			out[i] = (char)(list.isItemChecked(i) ? 128 + ids[i] : 127 - ids[i]);
@@ -135,7 +136,7 @@ public class TabOrderActivity extends Activity implements View.OnClickListener, 
 
 			if (ids != null) {
 				mAdapter.setTabIds(ids);
-				DragListView list = mList;
+				DragSortListView list = mList;
 				for (int i = 0; i != LibraryPagerAdapter.MAX_ADAPTER_COUNT; ++i) {
 					list.setItemChecked(i, chars[i] >= 128);
 				}
@@ -152,4 +153,34 @@ public class TabOrderActivity extends Activity implements View.OnClickListener, 
 	{
 		save();
 	}
+
+	/**
+	 * Fired from adapter listview  if user moved an item
+	 * @param from the item index that was dragged
+	 * @param to the index where the item was dropped
+	 */
+	private DragSortListView.DropListener onDrop =
+		new DragSortListView.DropListener() {
+			@Override
+			public void drop(int from, int to) {
+				if (from == to)
+					return;
+
+				int[] ids = mAdapter.getTabIds();
+				int tempId = ids[from];
+
+				if (from > to) {
+					System.arraycopy(ids, to, ids, to + 1, from - to);
+				} else {
+					System.arraycopy(ids, from + 1, ids, from, to - from);
+				}
+
+				ids[to] = tempId;
+				save();
+				mAdapter.notifyDataSetChanged();
+				// no need to update the copy in mAdapter: We worked on a reference
+			}
+		};
+
+
 }

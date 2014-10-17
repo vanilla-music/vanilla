@@ -22,18 +22,21 @@ THE SOFTWARE.
 -->
 <LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:dslv="http://schemas.android.com/apk/res-auto"
 	android:orientation="vertical"
 	android:divider="?android:attr/dividerHorizontal"
 	android:showDividers="middle"
 	android:layout_height="fill_parent"
 	android:layout_width="fill_parent">
-	<ch.blinkenlights.android.vanilla.DragListView
+	<com.mobeta.android.dslv.DragSortListView
 		android:id="@+id/list"
 		android:divider="@null"
 		android:layout_height="0px"
 		android:layout_width="fill_parent"
 		android:layout_weight="1"
-		android:choiceMode="multipleChoice" />
+		android:choiceMode="multipleChoice"
+		dslv:drag_enabled="true"
+		dslv:drag_start_mode="onMove" />
 	<LinearLayout
 		style="?android:attr/buttonBarStyle"
 		android:layout_width="fill_parent"
