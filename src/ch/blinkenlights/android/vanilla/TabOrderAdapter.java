@@ -26,6 +26,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.BaseAdapter;
 
 /**
@@ -86,14 +87,14 @@ public class TabOrderAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convert, ViewGroup parent)
 	{
-		DragTextView text;
+		View view;
 		if (convert == null) {
-			text = (DragTextView)mInflater.inflate(R.layout.tab_order_row, null);
+			view = mInflater.inflate(R.layout.draggable_row, null);
 		} else {
-			text = (DragTextView)convert;
+			view = convert;
 		}
-		text.setText(LibraryPagerAdapter.TITLES[mTabIds[position]]);
-		return text;
+		((TextView)view.findViewById(R.id.text)).setText(LibraryPagerAdapter.TITLES[mTabIds[position]]);
+		return view;
 	}
 
 	@Override

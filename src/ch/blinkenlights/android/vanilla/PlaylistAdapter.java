@@ -118,7 +118,7 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup parent)
 	{
-		return mInflater.inflate(R.layout.playlist_row, null);
+		return mInflater.inflate(R.layout.draggable_row, null);
 	}
 
 	/**

@@ -71,8 +71,8 @@ public class ShowQueueAdapter
 			target.setText(sb);
 		}
 
-		View pmark = ((View)row.findViewById(R.id.playmark));
-		pmark.setVisibility( ( position == mHighlightRow ? View.VISIBLE : View.INVISIBLE ));
+		View dragger = ((View)row.findViewById(R.id.dragger));
+		dragger.setVisibility( ( position == mHighlightRow ? View.VISIBLE : View.INVISIBLE ));
 
 		return row;
 	}
