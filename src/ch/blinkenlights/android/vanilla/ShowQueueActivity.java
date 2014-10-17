@@ -50,6 +50,8 @@ public class ShowQueueActivity
 		mListView.setFastScrollAlwaysVisible(true);
 		mListView.setEditable(true);
 
+		PlaybackService.addActivity(this);
+
 		mListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -60,10 +62,6 @@ public class ShowQueueActivity
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 				mService.jumpToQueuePosition(position);
-				/* This activity will stay open on longpress, so we have
-				 * to update the playmerker ourselfs */
-				listAdapter.highlightRow(position);
-				listAdapter.notifyDataSetChanged();
 				return true;
 			}});
 
@@ -89,6 +87,12 @@ public class ShowQueueActivity
 		refreshSongQueueList(true);
 	}
 
+	@Override
+	public void onDestroy() {
+		PlaybackService.removeActivity(this);
+		super.onDestroy();
+	}
+
 	/**
 	 * Fired from adapter list if user moved an item
 	 * @param from the item index that was dragged
@@ -96,23 +100,30 @@ public class ShowQueueActivity
 	 */
 	public void onItemMoved(int from, int to) {
 		mService.moveSong(from, to);
-		refreshSongQueueList(false);
 	}
 
-	private void refreshSongQueueList(boolean scroll) {
-		int i, stotal, spos;
+	/**
+	 * Triggers a refresh of the queueview
+	 * @param scroll enable or disable jumping to the currently playing item
+	 */
+	public void refreshSongQueueList(final boolean scroll) {
+		runOnUiThread(new Runnable(){
+			public void run() {
+				int i, stotal, spos;
+				stotal = mService.getTimelineLength();   /* Total number of songs in queue */
+				spos   = mService.getTimelinePosition(); /* Current position in queue      */
 
-		stotal = mService.getTimelineLength();   /* Total number of songs in queue */
-		spos   = mService.getTimelinePosition(); /* Current position in queue      */
+				listAdapter.clear();                    /* Flush all existing entries...  */
+				listAdapter.highlightRow(spos);         /* and highlight current position */
 
-		listAdapter.clear();                    /* Flush all existing entries...  */
-		listAdapter.highlightRow(spos);         /* and highlight current position */
+				for(i=0 ; i<stotal; i++) {
+					listAdapter.add(mService.getSongByQueuePosition(i));
+				}
 
-		for(i=0 ; i<stotal; i++) {
-			listAdapter.add(mService.getSongByQueuePosition(i));
-		}
-		if (scroll == true)
-			mListView.setSelectionFromTop(spos, 0); /* scroll to currently playing song */
+				if (scroll == true)
+					mListView.setSelectionFromTop(spos, 0); /* scroll to currently playing song */
+			}
+		});
 	}
 	
 	

@@ -264,7 +264,14 @@ public final class PlaybackService extends Service
 	 * The appplication-wide instance of the PlaybackService.
 	 */
 	public static PlaybackService sInstance;
+	/**
+	 * Static referenced-array to PlaybackActivities, used for callbacks
+	 */
 	private static final ArrayList<PlaybackActivity> sActivities = new ArrayList<PlaybackActivity>(5);
+	/**
+	 * Static reference to the ShowQueueActivity
+	 */
+	private static ShowQueueActivity sShowQueueActivity = null;
 	/**
 	 * Cached app-wide SharedPreferences instance.
 	 */
@@ -1652,6 +1659,10 @@ public final class PlaybackService extends Service
 		// to processSong();
 		mHandler.removeMessages(GAPLESS_UPDATE);
 		mHandler.sendEmptyMessageDelayed(GAPLESS_UPDATE, 350);
+
+		if (sShowQueueActivity != null)
+			sShowQueueActivity.refreshSongQueueList(false);
+
 	}
 
 	@Override
@@ -1718,6 +1729,14 @@ public final class PlaybackService extends Service
 	public static void removeActivity(PlaybackActivity activity)
 	{
 		sActivities.remove(activity);
+	}
+
+	public static void addActivity(ShowQueueActivity activity) {
+		sShowQueueActivity = activity;
+	}
+
+	public static void removeActivity(ShowQueueActivity activity) {
+		sShowQueueActivity = null;
 	}
 
 	/**
