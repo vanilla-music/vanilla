@@ -59,7 +59,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 			<ImageView
 				android:id="@+id/dragger"
 				android:scaleType="center"
-				android:src="@drawable/arrow"
+				android:src="@drawable/grabber"
 				android:layout_width="44dip"
 				android:layout_height="44dip" />
 	</LinearLayout>
