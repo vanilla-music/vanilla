@@ -15,7 +15,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>. 
 -->
-<LinearLayout
+<ch.blinkenlights.android.vanilla.DraggableRow
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
@@ -63,4 +63,4 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 		android:layout_height="1px"
 		android:background="@color/divider_color"/>
 
-</LinearLayout>
+</ch.blinkenlights.android.vanilla.DraggableRow>

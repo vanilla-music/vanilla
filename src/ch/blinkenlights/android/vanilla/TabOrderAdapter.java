@@ -87,13 +87,14 @@ public class TabOrderAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convert, ViewGroup parent)
 	{
-		View view;
+		DraggableRow view;
 		if (convert == null) {
-			view = mInflater.inflate(R.layout.draggable_row, null);
+			view = (DraggableRow)mInflater.inflate(R.layout.draggable_row, null);
 		} else {
-			view = convert;
+			view = (DraggableRow)convert;
 		}
 		((TextView)view.findViewById(R.id.text)).setText(LibraryPagerAdapter.TITLES[mTabIds[position]]);
+		view.showCheckBox(true);
 		return view;
 	}
 
