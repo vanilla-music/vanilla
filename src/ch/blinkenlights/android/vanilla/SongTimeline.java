@@ -816,13 +816,14 @@ public final class SongTimeline {
 			while (it.hasNext()) {
 				int i = it.nextIndex();
 				if (Song.getId(it.next()) == id) {
-					if (i == mCurrentPos && isEndOfQueue())
-						mCurrentPos = 0;
 					if (i < mCurrentPos)
 						--mCurrentPos;
 					it.remove();
 				}
 			}
+
+			if (getSong(1) == null)
+				mCurrentPos = 0;
 
 			broadcastChangedSongs();
 		}
@@ -838,12 +839,12 @@ public final class SongTimeline {
 		synchronized (this) {
 			saveActiveSongs();
 
-			if (pos == mCurrentPos && isEndOfQueue()) // currently playing and at the and -> go to start
-				mCurrentPos = 0;
+			mSongs.remove(pos);
+
 			if (pos < mCurrentPos)
 				mCurrentPos--;
-
-			mSongs.remove(pos);
+			if (getSong(1) == null) // wrap around if this was the last song
+				mCurrentPos = 0;
 
 			broadcastChangedSongs();
 		}
