@@ -101,7 +101,7 @@ public class ShowQueueActivity extends Activity {
 			@Override
 			public void drop(int from, int to) {
 				if (from != to) {
-					mService.moveSong(from, to);
+					mService.moveSongPosition(from, to);
 				}
 			}
 		};

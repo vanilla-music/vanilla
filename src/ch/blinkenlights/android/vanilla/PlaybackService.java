@@ -2092,8 +2092,8 @@ public final class PlaybackService extends Service
 	 * @param from the index of the song to be moved
 	 * @param to the new index position of the song
 	 */
-	public void moveSong(int from, int to) {
-		mTimeline.moveSong(from, to);
+	public void moveSongPosition(int from, int to) {
+		mTimeline.moveSongPosition(from, to);
 	}
 
 }

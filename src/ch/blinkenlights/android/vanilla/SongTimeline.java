@@ -828,8 +828,9 @@ public final class SongTimeline {
 		changed();
 	}
 
-	public void moveSong(int from, int to) {
+	public void moveSongPosition(int from, int to) {
 		synchronized (this) {
+			saveActiveSongs();
 
 			Song tmp = mSongs.remove(from);
 			mSongs.add(to, tmp);
@@ -842,7 +843,6 @@ public final class SongTimeline {
 				mCurrentPos--;
 			}
 
-			saveActiveSongs(); // the current state is now 'sane'
 			broadcastChangedSongs(); // void due to saveActiveSongs();
 		}
 		changed();
