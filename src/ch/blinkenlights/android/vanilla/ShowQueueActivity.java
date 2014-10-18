@@ -47,6 +47,7 @@ public class ShowQueueActivity extends Activity {
 		mListView.setAdapter(listAdapter);
 		mListView.setFastScrollAlwaysVisible(true);
 		mListView.setDropListener(onDrop);
+		mListView.setRemoveListener(onRemove);
 
 		PlaybackService.addActivity(this);
 
@@ -105,6 +106,19 @@ public class ShowQueueActivity extends Activity {
 				}
 			}
 		};
+
+	/**
+	 * Fired from adapter listview after user removed a song
+	 * @param which index to remove from queue
+	 */
+	private DragSortListView.RemoveListener onRemove =
+		new DragSortListView.RemoveListener() {
+			@Override
+			public void remove(int which) {
+				mService.removeSongPosition(which);
+			}
+		};
+
 
 	/**
 	 * Triggers a refresh of the queueview

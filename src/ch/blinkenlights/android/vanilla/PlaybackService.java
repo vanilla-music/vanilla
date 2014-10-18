@@ -2096,4 +2096,12 @@ public final class PlaybackService extends Service
 		mTimeline.moveSongPosition(from, to);
 	}
 
+	/**
+	 * Removes a song from the queue
+	 * @param which index to remove
+	 */
+	public void removeSongPosition(int which) {
+		mTimeline.removeSongPosition(which);
+	}
+
 }

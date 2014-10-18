@@ -816,6 +816,8 @@ public final class SongTimeline {
 			while (it.hasNext()) {
 				int i = it.nextIndex();
 				if (Song.getId(it.next()) == id) {
+					if (i == mCurrentPos && isEndOfQueue())
+						mCurrentPos = 0;
 					if (i < mCurrentPos)
 						--mCurrentPos;
 					it.remove();
@@ -828,6 +830,31 @@ public final class SongTimeline {
 		changed();
 	}
 
+	/**
+	 * Removes song in timeline at given position
+	 * @param pos index to use
+	 */
+	public void removeSongPosition(int pos) {
+		synchronized (this) {
+			saveActiveSongs();
+
+			if (pos == mCurrentPos && isEndOfQueue()) // currently playing and at the and -> go to start
+				mCurrentPos = 0;
+			if (pos < mCurrentPos)
+				mCurrentPos--;
+
+			mSongs.remove(pos);
+
+			broadcastChangedSongs();
+		}
+		changed();
+	}
+
+	/**
+	 * Moves a song in the timeline to a new position
+	 * @param from index to move from
+	 * @param to index to move to
+	 */
 	public void moveSongPosition(int from, int to) {
 		synchronized (this) {
 			saveActiveSongs();
@@ -843,7 +870,7 @@ public final class SongTimeline {
 				mCurrentPos--;
 			}
 
-			broadcastChangedSongs(); // void due to saveActiveSongs();
+			broadcastChangedSongs();
 		}
 		changed();
 	}
