@@ -837,10 +837,14 @@ public final class SongTimeline {
 	 */
 	public void removeSongPosition(int pos) {
 		synchronized (this) {
+			ArrayList<Song> songs = mSongs;
+
+			if (songs.size() <= pos) // may happen if we race with purge()
+				return;
+
 			saveActiveSongs();
 
-			mSongs.remove(pos);
-
+			songs.remove(pos);
 			if (pos < mCurrentPos)
 				mCurrentPos--;
 			if (getSong(1) == null) // wrap around if this was the last song
@@ -858,10 +862,15 @@ public final class SongTimeline {
 	 */
 	public void moveSongPosition(int from, int to) {
 		synchronized (this) {
+			ArrayList<Song> songs = mSongs;
+
+			if (songs.size() <= from || songs.size() <= to) // may happen if we race with purge()
+				return;
+
 			saveActiveSongs();
 
-			Song tmp = mSongs.remove(from);
-			mSongs.add(to, tmp);
+			Song tmp = songs.remove(from);
+			songs.add(to, tmp);
 
 			if (mCurrentPos == from) {
 				mCurrentPos = to; // active song was dragged to 'to'
