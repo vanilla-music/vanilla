@@ -580,7 +580,12 @@ public final class SongTimeline {
 	 * Returns 'Song' at given position in queue
 	*/
 	public Song getSongByQueuePosition(int id) {
-		return mSongs.get(id);
+		Song song = null;
+		synchronized (this) {
+			if (mSongs.size() > id)
+				song = mSongs.get(id);
+		}
+		return song;
 	}
 	
 	/**
