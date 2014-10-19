@@ -57,8 +57,15 @@ public class ShowQueueAdapter
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		LayoutInflater inflater = ((Activity)mContext).getLayoutInflater();
-		DraggableRow row = (DraggableRow)inflater.inflate(mResource, parent, false);
+		DraggableRow row;
+
+		if (convertView != null) {
+			row = (DraggableRow)convertView;
+		} else {
+			LayoutInflater inflater = ((Activity)mContext).getLayoutInflater();
+			row = (DraggableRow)inflater.inflate(mResource, parent, false);
+		}
+
 		Song song = getItem(position);
 
 		if (song != null) { // unlikely to fail but seems to happen in the wild.

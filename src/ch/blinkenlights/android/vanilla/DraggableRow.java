@@ -25,13 +25,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.CheckedTextView;
 import android.widget.Checkable;
-import android.util.Log;
 
 public class DraggableRow extends LinearLayout implements Checkable {
 	private boolean mShowCheckBox;
+	private boolean mHighlighted;
 	private boolean mChecked;
+
 	private float mDensity;
 	private static int sWidth = -1;
+
 	private TextView mTextView;
 	private CheckedTextView mCheckBox;
 	private View mPmark;
@@ -39,10 +41,10 @@ public class DraggableRow extends LinearLayout implements Checkable {
 
 	// Hardcoded sizes of elements in DPI
 	// MUST match definition in draggable_row
-	private final int DPI_PMARK = 2;
+	private final int DPI_PMARK = 4;
 	private final int DPI_CHECKBOX = 44;
 	private final int DPI_DRAGGER = 44;
-	private final int DPI_SLACK = 2; // safety margin
+	private final int DPI_SLACK = 1; // safety margin
 
 
 	public DraggableRow(Context context, AttributeSet attrs) {
@@ -106,7 +108,10 @@ public class DraggableRow extends LinearLayout implements Checkable {
 	 * @param state Enable or disable highlighting
 	 */
 	public void highlightRow(boolean state) {
-		mPmark.setVisibility( state ? View.VISIBLE : View.INVISIBLE );
+		if (mHighlighted != state) {
+			mPmark.setVisibility( state ? View.VISIBLE : View.INVISIBLE );
+			mHighlighted = state;
+		}
 	}
 
 	/**
