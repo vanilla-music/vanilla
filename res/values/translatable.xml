@@ -63,6 +63,7 @@ THE SOFTWARE.
 	<string name="play">Play</string>
 	<string name="edit">Edit</string>
 	<string name="rename">Rename</string>
+	<string name="save_as_playlist">Save as Playlist…</string>
 	<string name="add_to_playlist">Add to Playlist…</string>
 	<string name="add_to_favorites">Add to Favorites</string>
 	<string name="playlist_favorites">Favorites</string>
