@@ -23,6 +23,8 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import java.util.ArrayList;
+
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -133,8 +135,28 @@ public class Playlist {
 	 * @param query The query to run. The audio id should be the first column.
 	 * @return The number of songs that were added to the playlist.
 	 */
-	public static int addToPlaylist(ContentResolver resolver, long playlistId, QueryTask query)
-	{
+	public static int addToPlaylist(ContentResolver resolver, long playlistId, QueryTask query) {
+		ArrayList<Long> result = new ArrayList<Long>();
+		Cursor cursor = query.runQuery(resolver);
+		if (cursor != null) {
+			while (cursor.moveToNext()) {
+				result.add(cursor.getLong(0));
+			}
+		}
+		return addToPlaylist(resolver, playlistId, result);
+	}
+
+	/**
+	 * Run the given query and add the results to the given playlist. Should be
+	 * run on a background thread.
+	 *
+	 * @param resolver A ContentResolver to use.
+	 * @param playlistId The MediaStore.Audio.Playlist id of the playlist to
+	 * modify.
+	 * @param audioIds An ArrayList with all IDs to add
+	 * @return The number of songs that were added to the playlist.
+	 */
+	public static int addToPlaylist(ContentResolver resolver, long playlistId, ArrayList<Long> audioIds) {
 		if (playlistId == -1)
 			return 0;
 
@@ -147,24 +169,17 @@ public class Playlist {
 			base = cursor.getInt(0) + 1;
 		cursor.close();
 
-		Cursor from = query.runQuery(resolver);
-		if (from == null)
-			return 0;
-
-		int count = from.getCount();
+		int count = audioIds.size();
 		if (count > 0) {
 			ContentValues[] values = new ContentValues[count];
 			for (int i = 0; i != count; ++i) {
-				from.moveToPosition(i);
 				ContentValues value = new ContentValues(2);
 				value.put(MediaStore.Audio.Playlists.Members.PLAY_ORDER, Integer.valueOf(base + i));
-				value.put(MediaStore.Audio.Playlists.Members.AUDIO_ID, from.getLong(0));
+				value.put(MediaStore.Audio.Playlists.Members.AUDIO_ID, audioIds.get(i));
 				values[i] = value;
 			}
 			resolver.bulkInsert(uri, values);
 		}
-
-		from.close();
 
 		return count;
 	}
