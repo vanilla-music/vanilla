@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
- *
+ * Copyright (C) 2014 Adrian Ulrich <adrian@blinkenlights.ch>
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -327,6 +328,13 @@ public abstract class PlaybackActivity extends Activity
 	{
 	}
 
+	/**
+	 * Called when the timeline change has changed.
+	 */
+	public void onTimelineChanged()
+	{
+	}
+
 	static final int MENU_SORT = 1;
 	static final int MENU_PREFS = 2;
 	static final int MENU_LIBRARY = 3;
@@ -338,6 +346,7 @@ public abstract class PlaybackActivity extends Activity
 	static final int MENU_CLEAR_QUEUE = 11;
 	static final int MENU_SONG_FAVORITE = 12;
 	static final int MENU_SHOW_QUEUE = 13;
+	static final int MENU_SAVEAS_PLAYLIST = 14;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
@@ -352,10 +361,14 @@ public abstract class PlaybackActivity extends Activity
 		switch (item.getItemId()) {
 		case MENU_PREFS:
 			startActivity(new Intent(this, PreferencesActivity.class));
-			return true;
+			break;
+		case MENU_CLEAR_QUEUE:
+			PlaybackService.get(this).clearQueue();
+			break;
 		default:
 			return false;
 		}
+		return true;
 	}
 
 	@Override

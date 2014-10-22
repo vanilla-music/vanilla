@@ -22,6 +22,7 @@ import java.util.Arrays;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -29,7 +30,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import com.mobeta.android.dslv.DragSortListView;
 
-public class ShowQueueActivity extends Activity {
+public class ShowQueueActivity extends PlaybackActivity {
 	private DragSortListView mListView;
 	private ShowQueueAdapter listAdapter;
 	private PlaybackService mService;
@@ -49,8 +50,6 @@ public class ShowQueueActivity extends Activity {
 		mListView.setDropListener(onDrop);
 		mListView.setRemoveListener(onRemove);
 
-		PlaybackService.addActivity(this);
-
 		mListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -65,17 +64,32 @@ public class ShowQueueActivity extends Activity {
 			}});
 
 	}
-	
-	/*
-	** Called when the user hits the ActionBar item
-	** There is only one item (title) and it should quit this activity
-	*/
+
+	/**
+	 * Inflate the ActionBar menu
+	 */
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		finish();
+	public boolean onCreateOptionsMenu(Menu menu) {
+		menu.add(0, MENU_CLEAR_QUEUE, 0, R.string.clear_queue).setIcon(R.drawable.ic_menu_close_clear_cancel);
+		menu.add(0, MENU_SAVEAS_PLAYLIST, 0, R.string.save_as_playlist).setIcon(R.drawable.ic_menu_preferences);
 		return true;
 	}
-	
+
+	/**
+	 *  Called after the user selected an action from the ActionBar
+	 * 
+	 * @param item The selected menu item
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (item.getItemId() == android.R.id.home) {
+			finish();
+			return true;
+		} else {
+			return super.onOptionsItemSelected(item);
+		}
+	}
+
 	/*
 	** Called when we are displayed (again)
 	** This will always refresh the whole song list
@@ -84,12 +98,6 @@ public class ShowQueueActivity extends Activity {
 	public void onResume() {
 		super.onResume();
 		refreshSongQueueList(true);
-	}
-
-	@Override
-	public void onDestroy() {
-		PlaybackService.removeActivity(this);
-		super.onDestroy();
 	}
 
 	/**
@@ -119,6 +127,12 @@ public class ShowQueueActivity extends Activity {
 			}
 		};
 
+	/**
+	 * Called when the song timeline has changed
+	 */
+	public void onTimelineChanged() {
+		refreshSongQueueList(false);
+	}
 
 	/**
 	 * Triggers a refresh of the queueview

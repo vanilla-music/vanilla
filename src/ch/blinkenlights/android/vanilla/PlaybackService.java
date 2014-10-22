@@ -269,10 +269,6 @@ public final class PlaybackService extends Service
 	 */
 	private static final ArrayList<PlaybackActivity> sActivities = new ArrayList<PlaybackActivity>(5);
 	/**
-	 * Static reference to the ShowQueueActivity
-	 */
-	private static ShowQueueActivity sShowQueueActivity = null;
-	/**
 	 * Cached app-wide SharedPreferences instance.
 	 */
 	private static SharedPreferences sSettings;
@@ -1660,9 +1656,9 @@ public final class PlaybackService extends Service
 		mHandler.removeMessages(GAPLESS_UPDATE);
 		mHandler.sendEmptyMessageDelayed(GAPLESS_UPDATE, 350);
 
-		if (sShowQueueActivity != null)
-			sShowQueueActivity.refreshSongQueueList(false);
-
+		ArrayList<PlaybackActivity> list = sActivities;
+		for (int i = list.size(); --i != -1; )
+			list.get(i).onTimelineChanged();
 	}
 
 	@Override
@@ -1729,14 +1725,6 @@ public final class PlaybackService extends Service
 	public static void removeActivity(PlaybackActivity activity)
 	{
 		sActivities.remove(activity);
-	}
-
-	public static void addActivity(ShowQueueActivity activity) {
-		sShowQueueActivity = activity;
-	}
-
-	public static void removeActivity(ShowQueueActivity activity) {
-		sShowQueueActivity = null;
 	}
 
 	/**

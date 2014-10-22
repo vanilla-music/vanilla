@@ -381,9 +381,6 @@ public class FullPlaybackActivity extends PlaybackActivity
 		case MENU_ENQUEUE_GENRE:
 			PlaybackService.get(this).enqueueFromCurrent(MediaUtils.TYPE_GENRE);
 			break;
-		case MENU_CLEAR_QUEUE:
-			PlaybackService.get(this).clearQueue();
-			break;
 		case MENU_SONG_FAVORITE:
 			PlaybackService psvc = PlaybackService.get(this);
 			ContentResolver resolver = getContentResolver();
