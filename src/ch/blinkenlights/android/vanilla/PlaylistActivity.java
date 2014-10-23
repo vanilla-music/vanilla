@@ -254,7 +254,9 @@ public class PlaylistActivity extends Activity
 	public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
 	{
 		if (!mEditing && mDefaultAction != LibraryActivity.ACTION_DO_NOTHING) {
-			performAction(mDefaultAction, position, (Long)view.getTag());
+			// fixme: this is butt ugly: the adapter should probably already set this on view (its parent)
+			// setting this on the textarea is hacky
+			performAction(mDefaultAction, position, (Long)view.findViewById(R.id.text).getTag());
 		}
 	}
 
