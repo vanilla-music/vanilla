@@ -732,23 +732,6 @@ public class LibraryActivity
 	}
 
 	/**
-	 * Add a set of songs represented by the intent to a playlist. Displays a
-	 * Toast notifying of success.
-	 *
-	 * @param playlistId The id of the playlist to add to.
-	 * @param intent An intent created with
-	 * {@link LibraryAdapter#createData(View)}.
-	 */
-	private void addToPlaylist(long playlistId, Intent intent)
-	{
-		QueryTask query = buildQueryFromIntent(intent, true, false);
-		int count = Playlist.addToPlaylist(getContentResolver(), playlistId, query);
-
-		String message = getResources().getQuantityString(R.plurals.added_to_playlist, count, count, intent.getStringExtra("playlistName"));
-		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-	}
-
-	/**
 	 * Open the playlist editor for the playlist with the given id.
 	 */
 	private void editPlaylist(Intent rowData)
@@ -822,13 +805,16 @@ public class LibraryActivity
 			pickSongs(intent, ACTION_ENQUEUE_ALL);
 			break;
 		case MENU_NEW_PLAYLIST: {
-			NewPlaylistDialog dialog = new NewPlaylistDialog(this, null, R.string.create, intent);
+			PlaylistTask playlistTask = new PlaylistTask(-1, null);
+			playlistTask.query = buildQueryFromIntent(intent, true, false);
+			NewPlaylistDialog dialog = new NewPlaylistDialog(this, null, R.string.create, playlistTask);
 			dialog.setDismissMessage(mHandler.obtainMessage(MSG_NEW_PLAYLIST, dialog));
 			dialog.show();
 			break;
 		}
 		case MENU_RENAME_PLAYLIST: {
-			NewPlaylistDialog dialog = new NewPlaylistDialog(this, intent.getStringExtra("title"), R.string.rename, intent);
+			PlaylistTask playlistTask = new PlaylistTask(intent.getLongExtra("id", -1), intent.getStringExtra("title"));
+			NewPlaylistDialog dialog = new NewPlaylistDialog(this, intent.getStringExtra("title"), R.string.rename, playlistTask);
 			dialog.setDismissMessage(mHandler.obtainMessage(MSG_RENAME_PLAYLIST, dialog));
 			dialog.show();
 			break;
@@ -869,7 +855,11 @@ public class LibraryActivity
 			break;
 		}
 		case MENU_SELECT_PLAYLIST:
-			mHandler.sendMessage(mHandler.obtainMessage(MSG_ADD_TO_PLAYLIST, intent));
+			long playlistId = intent.getLongExtra("playlist", -1);
+			String playlistName = intent.getStringExtra("playlistName");
+			PlaylistTask playlistTask = new PlaylistTask(playlistId, playlistName);
+			playlistTask.query = buildQueryFromIntent(intent, true, false);
+			mHandler.sendMessage(mHandler.obtainMessage(MSG_ADD_TO_PLAYLIST, playlistTask));
 			break;
 		case MENU_MORE_FROM_ARTIST: {
 			String selection;
@@ -960,59 +950,21 @@ public class LibraryActivity
 	}
 
 	/**
-	 * Call addToPlaylist with the results from a NewPlaylistDialog stored in
-	 * obj.
-	 */
-	private static final int MSG_NEW_PLAYLIST = 11;
-	/**
 	 * Delete the songs represented by the intent stored in obj.
 	 */
-	private static final int MSG_DELETE = 12;
-	/**
-	 * Call renamePlaylist with the results from a NewPlaylistDialog stored in
-	 * obj.
-	 */
-	private static final int MSG_RENAME_PLAYLIST = 13;
-	/**
-	 * Call addToPlaylist with data from the intent in obj.
-	 */
-	private static final int MSG_ADD_TO_PLAYLIST = 15;
+	private static final int MSG_DELETE = 11;
 	/**
 	 * Save the current page, passed in arg1, to SharedPreferences.
 	 */
-	private static final int MSG_SAVE_PAGE = 16;
+	private static final int MSG_SAVE_PAGE = 12;
 
 	@Override
 	public boolean handleMessage(Message message)
 	{
 		switch (message.what) {
-		case MSG_ADD_TO_PLAYLIST: {
-			Intent intent = (Intent)message.obj;
-			addToPlaylist(intent.getLongExtra("playlist", -1), intent);
-			break;
-		}
-		case MSG_NEW_PLAYLIST: {
-			NewPlaylistDialog dialog = (NewPlaylistDialog)message.obj;
-			if (dialog.isAccepted()) {
-				String name = dialog.getText();
-				long playlistId = Playlist.createPlaylist(getContentResolver(), name);
-				Intent intent = dialog.getIntent();
-				intent.putExtra("playlistName", name);
-				addToPlaylist(playlistId, intent);
-			}
-			break;
-		}
 		case MSG_DELETE:
 			delete((Intent)message.obj);
 			break;
-		case MSG_RENAME_PLAYLIST: {
-			NewPlaylistDialog dialog = (NewPlaylistDialog)message.obj;
-			if (dialog.isAccepted()) {
-				long playlistId = dialog.getIntent().getLongExtra("id", -1);
-				Playlist.renamePlaylist(getContentResolver(), playlistId, dialog.getText());
-			}
-			break;
-		}
 		case MSG_SAVE_PAGE: {
 			SharedPreferences.Editor editor = PlaybackService.getSettings(this).edit();
 			editor.putInt("library_page", message.arg1);

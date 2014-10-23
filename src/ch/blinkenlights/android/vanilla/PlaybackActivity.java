@@ -346,7 +346,7 @@ public abstract class PlaybackActivity extends Activity
 	static final int MENU_CLEAR_QUEUE = 11;
 	static final int MENU_SONG_FAVORITE = 12;
 	static final int MENU_SHOW_QUEUE = 13;
-	static final int MENU_SAVEAS_PLAYLIST = 14;
+	static final int MENU_SAVE_AS_PLAYLIST = 14;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
@@ -371,10 +371,75 @@ public abstract class PlaybackActivity extends Activity
 		return true;
 	}
 
+	/**
+	 * Call addToPlaylist with the results from a NewPlaylistDialog stored in
+	 * obj.
+	 */
+	protected static final int MSG_NEW_PLAYLIST = 0;
+	/**
+	 * Call renamePlaylist with the results from a NewPlaylistDialog stored in
+	 * obj.
+	 */
+	protected static final int MSG_RENAME_PLAYLIST = 1;
+	/**
+	 * Call addToPlaylist with data from the playlisttask object.
+	 */
+	protected static final int MSG_ADD_TO_PLAYLIST = 2;
+
 	@Override
-	public boolean handleMessage(Message msg)
+	public boolean handleMessage(Message message)
 	{
-		return false;
+		switch (message.what) {
+		case MSG_NEW_PLAYLIST: {
+			NewPlaylistDialog dialog = (NewPlaylistDialog)message.obj;
+			if (dialog.isAccepted()) {
+				String name = dialog.getText();
+				long playlistId = Playlist.createPlaylist(getContentResolver(), name);
+				PlaylistTask playlistTask = dialog.getPlaylistTask();
+				playlistTask.name = name;
+				playlistTask.playlistId = playlistId;
+				mHandler.sendMessage(mHandler.obtainMessage(MSG_ADD_TO_PLAYLIST, playlistTask));
+			}
+			break;
+		}
+		case MSG_ADD_TO_PLAYLIST: {
+			PlaylistTask playlistTask = (PlaylistTask)message.obj;
+			addToPlaylist(playlistTask);
+			break;
+		}
+		case MSG_RENAME_PLAYLIST: {
+			NewPlaylistDialog dialog = (NewPlaylistDialog)message.obj;
+			if (dialog.isAccepted()) {
+				long playlistId = dialog.getPlaylistTask().playlistId;
+				Playlist.renamePlaylist(getContentResolver(), playlistId, dialog.getText());
+			}
+			break;
+		}
+		default:
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Add a set of songs represented by the playlistTask to a playlist. Displays a
+	 * Toast notifying of success.
+	 *
+	 * @param playlistTask The pending PlaylistTask to execute
+	 */
+	protected void addToPlaylist(PlaylistTask playlistTask) {
+		int count = 0;
+
+		if (playlistTask.query != null) {
+			count += Playlist.addToPlaylist(getContentResolver(), playlistTask.playlistId, playlistTask.query);
+		}
+
+		if (playlistTask.audioIds != null) {
+			count += Playlist.addToPlaylist(getContentResolver(), playlistTask.playlistId, playlistTask.audioIds);
+		}
+
+		String message = getResources().getQuantityString(R.plurals.added_to_playlist, count, count, playlistTask.name);
+		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 	}
 
 	/**
