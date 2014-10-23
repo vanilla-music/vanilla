@@ -22,6 +22,8 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import java.util.ArrayList;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -382,22 +384,16 @@ public class FullPlaybackActivity extends PlaybackActivity
 			PlaybackService.get(this).enqueueFromCurrent(MediaUtils.TYPE_GENRE);
 			break;
 		case MENU_SONG_FAVORITE:
-			PlaybackService psvc = PlaybackService.get(this);
-			ContentResolver resolver = getContentResolver();
-			String plName = getString(R.string.playlist_favorites);
-			long plId = Playlist.getOrCreatePlaylist(resolver, plName);
-			
-			if(psvc.getTimelineLength() > 0) {
-				int qpos = psvc.getTimelinePosition();
-				Song song = psvc.getSongByQueuePosition(qpos);
-				if(song != null) {
-					QueryTask query = MediaUtils.buildFileQuery(song.path, Song.EMPTY_PROJECTION);
-					int count = Playlist.addToPlaylist(resolver, plId, query);
-					String message = getResources().getQuantityString(R.plurals.added_to_playlist, count, count, plName);
-					Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-				}
+			String playlistName = getString(R.string.playlist_favorites);
+			long playlistId = Playlist.getOrCreatePlaylist(getContentResolver(), playlistName);
+			Song song = (PlaybackService.get(this)).getSong(0);
+
+			if (song != null) {
+				PlaylistTask playlistTask = new PlaylistTask(playlistId, playlistName);
+				playlistTask.audioIds = new ArrayList<Long>();
+				playlistTask.audioIds.add(song.id);
+				mHandler.sendMessage(mHandler.obtainMessage(MSG_ADD_TO_PLAYLIST, playlistTask));
 			}
-			
 			break;
 		case MENU_SHOW_QUEUE:
 			startActivity(new Intent(this, ShowQueueActivity.class));
