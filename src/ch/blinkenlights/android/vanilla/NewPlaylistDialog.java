@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2014 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -64,9 +65,9 @@ public class NewPlaylistDialog extends Dialog implements TextWatcher, View.OnCli
 	 */
 	private final int mActionRes;
 	/**
-	 * An intent that is simply stored in the dialog.
+	 * A playlist task that is simply stored in the dialog.
 	 */
-	private final Intent mIntent;
+	private final PlaylistTask mPlaylistTask;
 
 	/**
 	 * Create a NewPlaylistDialog.
@@ -78,12 +79,12 @@ public class NewPlaylistDialog extends Dialog implements TextWatcher, View.OnCli
 	 * action (e.g. "Create").
 	 * @param intent An optional intent to store with the dialog.
 	 */
-	public NewPlaylistDialog(Context context, String initialText, int actionText, Intent intent)
+	public NewPlaylistDialog(Context context, String initialText, int actionText, PlaylistTask playlistTask)
 	{
 		super(context);
 		mInitialText = initialText;
 		mActionRes = actionText;
-		mIntent = intent;
+		mPlaylistTask = playlistTask;
 	}
 
 	@Override
@@ -118,11 +119,11 @@ public class NewPlaylistDialog extends Dialog implements TextWatcher, View.OnCli
 	}
 
 	/**
-	 * Returns the stored intent.
+	 * Returns the stored playlist task.
 	 */
-	public Intent getIntent()
+	public PlaylistTask getPlaylistTask()
 	{
-		return mIntent;
+		return mPlaylistTask;
 	}
 
 	public void afterTextChanged(Editable s)
