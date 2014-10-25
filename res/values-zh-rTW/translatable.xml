@@ -39,6 +39,7 @@
   <string name="play">播放</string>
   <string name="edit">編輯</string>
   <string name="rename">重新命名</string>
+  <string name="save_as_playlist">儲存為播放清單</string>
   <string name="add_to_playlist">加到播放清單…</string>
   <string name="add_to_favorites">加到我的最愛</string>
   <string name="playlist_favorites">我的最愛</string>
@@ -85,9 +86,10 @@
   <string name="year">年份</string>
   <string name="date_added">已加入資料</string>
   <string name="artist_album">演唱者，專輯</string>
-  <string name="artist_album_track">演唱者，專輯，曲目數</string>
+  <string name="artist_album_track">演唱者，專輯，曲目編號</string>
   <string name="artist_album_title">演唱者，專輯，標題</string>
   <string name="artist_year">演唱者，年份</string>
+  <string name="album_track">專輯，曲目編號</string>
   <string name="song_playcount">播放次數</string>
   <string name="ascending">遞增</string>
   <string name="descending">遞減</string>

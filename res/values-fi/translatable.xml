@@ -39,6 +39,7 @@
   <string name="play">Toista</string>
   <string name="edit">Muokkaa</string>
   <string name="rename">Nimeä uudelleen</string>
+  <string name="save_as_playlist">Tallenna soittolistana…</string>
   <string name="add_to_playlist">Lisää soittolistaan…</string>
   <string name="add_to_favorites">Lisää suosikkeihin</string>
   <string name="playlist_favorites">Suosikit</string>
@@ -92,6 +93,7 @@
   <string name="artist_album_track">Esittäjä, albumi, kappalenumero</string>
   <string name="artist_album_title">Esittäjä, albumi, nimi</string>
   <string name="artist_year">Esittäjä, vuosi</string>
+  <string name="album_track">Albumi, kappalenumero</string>
   <string name="song_playcount">Toistokerrat</string>
   <string name="ascending">Nousevasti</string>
   <string name="descending">Laskevasti</string>

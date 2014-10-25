@@ -39,6 +39,7 @@
   <string name="play">Abspielen</string>
   <string name="edit">Bearbeiten</string>
   <string name="rename">Umbenennen</string>
+  <string name="save_as_playlist">Als Wiedergabeliste speichern…</string>
   <string name="add_to_playlist">Zur Wiedergabeliste hinzufügen…</string>
   <string name="add_to_favorites">Zu Favoriten hinzufügen…</string>
   <string name="playlist_favorites">Favoriten</string>
@@ -92,6 +93,7 @@
   <string name="artist_album_track">Interpret, Album, Titelnummer</string>
   <string name="artist_album_title">Interpret, Album, Titel</string>
   <string name="artist_year">Interpret, Jahr</string>
+  <string name="album_track">Album, Titelnummer</string>
   <string name="song_playcount">Abspielhäufigkeit</string>
   <string name="ascending">Aufsteigend</string>
   <string name="descending">Absteigend</string>

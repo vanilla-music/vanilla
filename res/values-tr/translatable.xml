@@ -39,6 +39,7 @@
   <string name="play">Oynat</string>
   <string name="edit">Düzenle</string>
   <string name="rename">Yeniden adlandır</string>
+  <string name="save_as_playlist">Oynatmalık olarak kaydet…</string>
   <string name="add_to_playlist">Oynatmalığa ekle…</string>
   <string name="add_to_favorites">Gözdelere ekle</string>
   <string name="playlist_favorites">Gözdeler</string>
@@ -92,6 +93,7 @@
   <string name="artist_album_track">Sanatçı, albüm, iz numarası</string>
   <string name="artist_album_title">Sanatçı, albüm, başlık</string>
   <string name="artist_year">Sanatçı, yıl</string>
+  <string name="album_track">Albüm, iz numarası</string>
   <string name="song_playcount">Oynatma sayısı</string>
   <string name="ascending">Artan</string>
   <string name="descending">Azalan</string>
@@ -184,7 +186,7 @@
   <string name="about">Hakkında</string>
   <string name="tabs">Sekme Sırası</string>
   <string name="customize_tab_order">Arşiv sekmelerinin sırası ve görünürlüğünü değiştirir</string>
-  <string name="restore_default">Varsayılanlara döndür</string>
+  <string name="restore_default">Öntanımlı düzen</string>
   <!--The following are for the list preferences-->
   <string name="last_used_action">Son kullanılan eylem</string>
   <string name="never_show">Hiçbir zaman gösterme</string>
@@ -197,7 +199,7 @@
   <string name="info_on_cover">Bilgi kapak resmi üstünde</string>
   <string name="info_below_cover">Bilgi kapak resmi altında</string>
   <string name="fixed_info">Bilgi üstte sabit</string>
-  <string name="do_nothing">Hiçbir şey yapla</string>
+  <string name="do_nothing">Hiçbir şey yapma</string>
   <string name="open_library">Arşivi aç</string>
   <string name="play_pause">Oynat/Duraklat</string>
   <string name="next_song">Sonraki şarkı</string>
