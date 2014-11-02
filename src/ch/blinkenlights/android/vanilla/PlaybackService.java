@@ -1260,7 +1260,7 @@ public final class PlaybackService extends Service
 	public boolean onError(MediaPlayer player, int what, int extra)
 	{
 		Log.e("VanillaMusic", "MediaPlayer error: " + what + ' ' + extra);
-		return true;
+		return false;
 	}
 
 	/**
