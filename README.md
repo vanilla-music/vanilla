@@ -1,6 +1,6 @@
 Vanilla Music is DEAD
 =====================
-This project is dead after some troll managed to convinced google to remove the project from the playstore. 
+This project is dead after some troll managed to convince google to remove the project from the playstore. 
 If you would like to pick up the project: feel free to fork and re-upload it to the store.
 I will not continue working on Vanilla Music as i do not have the time to file at least one 'counter DMCA complain' per month & fight Googles absolute stupidity.
 
