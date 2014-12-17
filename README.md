@@ -1,8 +1,6 @@
-Vanilla Music is DEAD
+Vanilla Music
 =====================
-This project is dead after some troll managed to convince google to remove the project from the playstore. 
-If you would like to pick up the project: feel free to fork and re-upload it to the store.
-I will not continue working on Vanilla Music as i do not have the time to file at least one 'counter DMCA complaint' per month & fight Googles absolute stupidity.
+Note: This project is not available from the google playstore after some troll managed to convince google to remove the project from the playstore. You can still compile it yourself or install it using [F-Droid](https://f-droid.org). It is unlikely that Vanilla Music will ever re-appear in the playstore.
 
 Vanilla Music player is an MP3/OGG/FLAC/PCM player for Android with the following features:
 * multiple playlist support
