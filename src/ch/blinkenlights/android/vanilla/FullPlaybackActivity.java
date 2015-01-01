@@ -402,24 +402,27 @@ public class FullPlaybackActivity extends PlaybackActivity
 			final PlaybackService playbackService = PlaybackService.get(this);
 			final Song sng = playbackService.getSong(0);
 			final PlaybackActivity activity = this;
-			String delete_message = getString(R.string.delete_item, sng.title);
-			AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-			dialog.setTitle(R.string.delete);
-			dialog
-				.setMessage(delete_message)
-				.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						shiftCurrentSong(SongTimeline.SHIFT_NEXT_SONG);
-						int count = playbackService.deleteMedia(MediaUtils.TYPE_SONG, sng.id);
-						String msg = getResources().getQuantityString(R.plurals.deleted, count, count);
-						Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
-					}
-				})
-				.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-					}
-				});
+
+			if (sng != null) {
+				String delete_message = getString(R.string.delete_item, sng.title);
+				AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+				dialog.setTitle(R.string.delete);
+				dialog
+					.setMessage(delete_message)
+					.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							shiftCurrentSong(SongTimeline.SHIFT_NEXT_SONG);
+							int count = playbackService.deleteMedia(MediaUtils.TYPE_SONG, sng.id);
+							String msg = getResources().getQuantityString(R.plurals.deleted, count, count);
+							Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
+						}
+					})
+					.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+						}
+					});
 				dialog.create().show();
+			}
 			break;
 		case MENU_SHOW_QUEUE:
 			startActivity(new Intent(this, ShowQueueActivity.class));
