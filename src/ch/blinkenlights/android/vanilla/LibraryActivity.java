@@ -707,40 +707,6 @@ public class LibraryActivity
 		startActivity(launch);
 	}
 
-	/**
-	 * Delete the media represented by the given intent and show a Toast
-	 * informing the user of this.
-	 *
-	 * @param intent An intent created with
-	 * {@link LibraryAdapter#createData(View)}.
-	 */
-	private void delete(Intent intent)
-	{
-		int type = intent.getIntExtra("type", MediaUtils.TYPE_INVALID);
-		long id = intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
-		String message = null;
-		Resources res = getResources();
-
-		if (type == MediaUtils.TYPE_FILE) {
-			String file = intent.getStringExtra("file");
-			boolean success = MediaUtils.deleteFile(new File(file));
-			if (!success) {
-				message = res.getString(R.string.delete_file_failed, file);
-			}
-		} else if (type == MediaUtils.TYPE_PLAYLIST) {
-			Playlist.deletePlaylist(getContentResolver(), id);
-		} else {
-			int count = PlaybackService.get(this).deleteMedia(type, id);
-			message = res.getQuantityString(R.plurals.deleted, count, count);
-		}
-
-		if (message == null) {
-			message = res.getString(R.string.deleted_item, intent.getStringExtra("title"));
-		}
-
-		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-	}
-
 	@Override
 	public boolean onContextItemSelected(MenuItem item)
 	{
@@ -915,10 +881,6 @@ public class LibraryActivity
 	}
 
 	/**
-	 * Delete the songs represented by the intent stored in obj.
-	 */
-	private static final int MSG_DELETE = 11;
-	/**
 	 * Save the current page, passed in arg1, to SharedPreferences.
 	 */
 	private static final int MSG_SAVE_PAGE = 12;
@@ -927,9 +889,6 @@ public class LibraryActivity
 	public boolean handleMessage(Message message)
 	{
 		switch (message.what) {
-		case MSG_DELETE:
-			delete((Intent)message.obj);
-			break;
 		case MSG_SAVE_PAGE: {
 			SharedPreferences.Editor editor = PlaybackService.getSettings(this).edit();
 			editor.putInt("library_page", message.arg1);

@@ -27,6 +27,7 @@ import java.io.File;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -387,6 +388,8 @@ public abstract class PlaybackActivity extends Activity
 	 */
 	protected static final int MSG_ADD_TO_PLAYLIST = 2;
 
+	protected static final int MSG_DELETE = 3;
+
 	@Override
 	public boolean handleMessage(Message message)
 	{
@@ -416,6 +419,10 @@ public abstract class PlaybackActivity extends Activity
 			}
 			break;
 		}
+		case MSG_DELETE: {
+			delete((Intent)message.obj);
+			break;
+		}
 		default:
 			return false;
 		}
@@ -442,6 +449,42 @@ public abstract class PlaybackActivity extends Activity
 		String message = getResources().getQuantityString(R.plurals.added_to_playlist, count, count, playlistTask.name);
 		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 	}
+
+	/**
+	 * Delete the media represented by the given intent and show a Toast
+	 * informing the user of this.
+	 *
+	 * @param intent An intent created with
+	 * {@link LibraryAdapter#createData(View)}.
+	 */
+	private void delete(Intent intent)
+	{
+		int type = intent.getIntExtra("type", MediaUtils.TYPE_INVALID);
+		long id = intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
+		String message = null;
+		Resources res = getResources();
+
+		if (type == MediaUtils.TYPE_FILE) {
+			String file = intent.getStringExtra("file");
+			boolean success = MediaUtils.deleteFile(new File(file));
+			if (!success) {
+				message = res.getString(R.string.delete_file_failed, file);
+			}
+		} else if (type == MediaUtils.TYPE_PLAYLIST) {
+			Playlist.deletePlaylist(getContentResolver(), id);
+		} else {
+			int count = PlaybackService.get(this).deleteMedia(type, id);
+			message = res.getQuantityString(R.plurals.deleted, count, count);
+		}
+
+		if (message == null) {
+			message = res.getString(R.string.deleted_item, intent.getStringExtra("title"));
+		}
+
+		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+	}
+
+
 
 	/**
 	 * Cycle shuffle mode.
