@@ -411,10 +411,11 @@ public class FullPlaybackActivity extends PlaybackActivity
 					.setMessage(delete_message)
 					.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {
-							shiftCurrentSong(SongTimeline.SHIFT_NEXT_SONG);
-							int count = playbackService.deleteMedia(MediaUtils.TYPE_SONG, sng.id);
-							String msg = getResources().getQuantityString(R.plurals.deleted, count, count);
-							Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
+							// MSG_DELETE expects an intent (usually called from listview)
+							Intent intent = new Intent();
+							intent.putExtra(LibraryAdapter.DATA_TYPE, MediaUtils.TYPE_SONG);
+							intent.putExtra(LibraryAdapter.DATA_ID, sng.id);
+							mHandler.sendMessage(mHandler.obtainMessage(MSG_DELETE, intent));
 						}
 					})
 					.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
