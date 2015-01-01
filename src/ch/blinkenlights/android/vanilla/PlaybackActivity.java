@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
  * Copyright (C) 2014 Adrian Ulrich <adrian@blinkenlights.ch>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -283,7 +283,7 @@ public abstract class PlaybackActivity extends Activity
 			}
 		});
 	}
-	
+
 	/**
 	 * Called by FileSystem adapter to get the start folder
 	 * for browsing directories
@@ -294,7 +294,7 @@ public abstract class PlaybackActivity extends Activity
 		File fs_start = new File( folder.equals("") ? Environment.getExternalStorageDirectory().getAbsolutePath() : folder );
 		return fs_start;
 	}
-	
+
 	/**
 	 * Called by PlaybackService to update the current song.
 	 */
@@ -347,6 +347,7 @@ public abstract class PlaybackActivity extends Activity
 	static final int MENU_SONG_FAVORITE = 12;
 	static final int MENU_SHOW_QUEUE = 13;
 	static final int MENU_SAVE_AS_PLAYLIST = 14;
+	static final int MENU_DELETE = 15;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)

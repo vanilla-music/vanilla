@@ -47,6 +47,8 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 
 /**
  * The primary playback screen with playback controls and large cover display.
@@ -362,6 +364,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 		menu.add(0, MENU_ENQUEUE_ARTIST, 0, R.string.enqueue_current_artist).setIcon(R.drawable.ic_menu_add);
 		menu.add(0, MENU_ENQUEUE_GENRE, 0, R.string.enqueue_current_genre).setIcon(R.drawable.ic_menu_add);
 		menu.add(0, MENU_SONG_FAVORITE, 0, R.string.add_to_favorites);
+		menu.add(0, MENU_DELETE, 0, R.string.delete);
 		menu.add(0, MENU_SHOW_QUEUE, 0, R.string.show_queue);
 		return true;
 	}
@@ -394,6 +397,29 @@ public class FullPlaybackActivity extends PlaybackActivity
 				playlistTask.audioIds.add(song.id);
 				mHandler.sendMessage(mHandler.obtainMessage(MSG_ADD_TO_PLAYLIST, playlistTask));
 			}
+			break;
+		case MENU_DELETE:
+			final PlaybackService playbackService = PlaybackService.get(this);
+			final Song sng = playbackService.getSong(0);
+			final PlaybackActivity activity = this;
+			String delete_message = getString(R.string.delete_item, sng.title);
+			AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+			dialog.setTitle(R.string.delete);
+			dialog
+				.setMessage(delete_message)
+				.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						shiftCurrentSong(SongTimeline.SHIFT_NEXT_SONG);
+						int count = playbackService.deleteMedia(MediaUtils.TYPE_SONG, sng.id);
+						String msg = getResources().getQuantityString(R.plurals.deleted, count, count);
+						Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
+					}
+				})
+				.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+					}
+				});
+				dialog.create().show();
 			break;
 		case MENU_SHOW_QUEUE:
 			startActivity(new Intent(this, ShowQueueActivity.class));
@@ -526,17 +552,17 @@ public class FullPlaybackActivity extends PlaybackActivity
 		mComposer = null;
 		mFormat = null;
 		mReplayGain = null;
-		
+
 		if(song != null) {
-			
+
 			MediaMetadataRetriever data = new MediaMetadataRetriever();
-			
+
 			try {
 				data.setDataSource(song.path);
 			} catch (Exception e) {
 				Log.w("VanillaMusic", "Failed to extract metadata from " + song.path);
 			}
-			
+
 			mGenre = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_GENRE);
 			mTrack = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER);
 			String composer = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_COMPOSER);
@@ -563,12 +589,12 @@ public class FullPlaybackActivity extends PlaybackActivity
 				sb.append("kbps");
 			}
 			mFormat = sb.toString();
-			
+
 			if(song.path != null) { /* ICS bug? */
 				float[] rg = PlaybackService.get(this).getReplayGainValues(song.path);
 				mReplayGain = "track="+rg[0]+"dB, album="+rg[1]+"dB";
 			}
-			
+
 			data.release();
 		}
 
