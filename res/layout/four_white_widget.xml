@@ -109,10 +109,9 @@ THE SOFTWARE.
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:layout_weight="1"
-				android:adjustViewBounds="true"
 				android:background="@drawable/selectable_item_bg"
 				android:contentDescription="@string/play_pause"
-				android:scaleType="centerInside"
+				android:scaleType="fitCenter"
 				android:src="@drawable/widget_play"
 				android:padding="5dip" />
 			<ImageButton
@@ -120,10 +119,9 @@ THE SOFTWARE.
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:layout_weight="1"
-				android:adjustViewBounds="true"
 				android:background="@drawable/selectable_item_bg"
 				android:contentDescription="@string/next_song"
-				android:scaleType="centerInside"
+				android:scaleType="fitCenter"
 				android:src="@drawable/widget_next"
 				android:padding="5dip" />
 		</LinearLayout>
