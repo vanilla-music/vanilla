@@ -287,4 +287,12 @@ public class PreferencesActivity extends PreferenceActivity {
 			return view;
 		}
 	}
+
+
+	@Override
+	protected boolean isValidFragment(String fragmentName) {
+		return true;
+	}
+
+
 }

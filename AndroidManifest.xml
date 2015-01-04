@@ -26,7 +26,7 @@ THE SOFTWARE.
 	android:versionName="0.9.40"
 	android:versionCode="0940"
 	android:installLocation="auto">
-	<uses-sdk android:minSdkVersion="15" android:targetSdkVersion="16" />
+	<uses-sdk android:minSdkVersion="15" android:targetSdkVersion="21" />
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 	<!-- This is needed for isWiredHeadsetOn() to work in some cases. (bug?) -->
