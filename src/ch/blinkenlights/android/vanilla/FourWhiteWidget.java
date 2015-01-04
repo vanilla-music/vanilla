@@ -93,19 +93,19 @@ public class FourWhiteWidget extends AppWidgetProvider {
 		RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.four_white_widget);
 
 		if ((state & PlaybackService.FLAG_NO_MEDIA) != 0) {
-			views.setViewVisibility(R.id.play_pause, View.GONE);
-			views.setViewVisibility(R.id.previous, View.GONE);
-			views.setViewVisibility(R.id.next, View.GONE);
-			views.setViewVisibility(R.id.title, View.GONE);
+			views.setViewVisibility(R.id.play_pause, View.INVISIBLE);
+			views.setViewVisibility(R.id.previous, View.INVISIBLE);
+			views.setViewVisibility(R.id.next, View.INVISIBLE);
+			views.setViewVisibility(R.id.title, View.INVISIBLE);
 			views.setInt(R.id.artist, "setText", R.string.no_songs);
-			views.setViewVisibility(R.id.cover, View.GONE);
+			views.setViewVisibility(R.id.cover, View.INVISIBLE);
 		} else if (song == null) {
 			views.setViewVisibility(R.id.play_pause, View.VISIBLE);
 			views.setViewVisibility(R.id.previous, View.VISIBLE);
 			views.setViewVisibility(R.id.next, View.VISIBLE);
-			views.setViewVisibility(R.id.title, View.GONE);
+			views.setViewVisibility(R.id.title, View.INVISIBLE);
 			views.setInt(R.id.artist, "setText", R.string.app_name);
-			views.setViewVisibility(R.id.cover, View.GONE);
+			views.setViewVisibility(R.id.cover, View.INVISIBLE);
 		} else {
 			views.setViewVisibility(R.id.play_pause, View.VISIBLE);
 			views.setViewVisibility(R.id.previous, View.VISIBLE);
@@ -115,7 +115,7 @@ public class FourWhiteWidget extends AppWidgetProvider {
 			views.setTextViewText(R.id.artist, song.artist);
 			Bitmap cover = song.getCover(context);
 			if (cover == null) {
-				views.setViewVisibility(R.id.cover, View.GONE);
+				views.setViewVisibility(R.id.cover, View.INVISIBLE);
 			} else {
 				views.setViewVisibility(R.id.cover, View.VISIBLE);
 				views.setImageViewBitmap(R.id.cover, cover);

@@ -30,7 +30,7 @@ THE SOFTWARE.
 		android:id="@+id/frameLayout1"
 		android:layout_width="wrap_content"
 		android:layout_height="match_parent"
-		android:padding="5dip" >
+		android:padding="5dp" >
 		<ImageView
 			android:id="@+id/vinyl"
 			android:layout_width="wrap_content"
@@ -57,31 +57,31 @@ THE SOFTWARE.
 		<LinearLayout
 			android:id="@+id/text_layout"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
+			android:layout_height="54sp"
 			android:layout_weight="1"
 			android:orientation="vertical"
-			android:paddingLeft="8dip"
-			android:paddingRight="8dip" >
+			android:paddingLeft="8dp"
+			android:paddingRight="8dp" >
 			<TextView
 				android:id="@+id/title"
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:ellipsize="none"
 				android:fadingEdge="horizontal"
-				android:fadingEdgeLength="10dip"
+				android:fadingEdgeLength="10dp"
 				android:singleLine="true"
 				android:textColor="#111"
 				android:textSize="16sp"
 				android:textStyle="bold"
 				android:includeFontPadding="false"
-				android:visibility="gone" />
+				android:visibility="invisible" />
 			<TextView
 				android:id="@+id/artist"
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:ellipsize="none"
 				android:fadingEdge="horizontal"
-				android:fadingEdgeLength="10dip"
+				android:fadingEdgeLength="10dp"
 				android:singleLine="true"
 				android:text="@string/app_name"
 				android:textColor="#111"
@@ -90,7 +90,7 @@ THE SOFTWARE.
 		</LinearLayout>
 		<LinearLayout
 			android:id="@+id/linearLayout1"
-			android:layout_width="match_parent"
+			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
 			android:layout_weight="1"
 			android:gravity="bottom" >
@@ -103,7 +103,7 @@ THE SOFTWARE.
 				android:contentDescription="@string/previous_song"
 				android:scaleType="fitCenter"
 				android:src="@drawable/widget_previous"
-				android:padding="5dip" />
+				android:padding="5dp" />
 			<ImageButton
 				android:id="@+id/play_pause"
 				android:layout_width="fill_parent"
@@ -113,7 +113,7 @@ THE SOFTWARE.
 				android:contentDescription="@string/play_pause"
 				android:scaleType="fitCenter"
 				android:src="@drawable/widget_play"
-				android:padding="5dip" />
+				android:padding="5dp" />
 			<ImageButton
 				android:id="@+id/next"
 				android:layout_width="fill_parent"
@@ -123,7 +123,7 @@ THE SOFTWARE.
 				android:contentDescription="@string/next_song"
 				android:scaleType="fitCenter"
 				android:src="@drawable/widget_next"
-				android:padding="5dip" />
+				android:padding="5dp" />
 		</LinearLayout>
 	</LinearLayout>
 </LinearLayout>
