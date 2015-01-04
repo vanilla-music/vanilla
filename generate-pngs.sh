@@ -16,7 +16,6 @@ gen() {
 	if [ "$1" -nt "$png" -o ! -e "$png" ]; then
 		inkscape --without-gui --export-area-page --export-dpi=$3 --export-png="$png" $1
 		convert -strip "$png" "$png" # strip comments and other metadata
-		optipng -quiet -o7 "$png" # shrink PNG
 		echo
 	fi
 }
