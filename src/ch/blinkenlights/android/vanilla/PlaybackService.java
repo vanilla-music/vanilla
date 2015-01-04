@@ -1860,7 +1860,14 @@ public final class PlaybackService extends Service
 
 		String title = song.title;
 
-		int playButton = playing ? R.drawable.pause : R.drawable.play;
+		int playButton = 0;
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			// Android >= 5.0 uses the dark version of this drawable
+			playButton = playing ? R.drawable.widget_pause : R.drawable.widget_play;
+		} else {
+			playButton = playing ? R.drawable.pause : R.drawable.play;
+		}
+
 		views.setImageViewResource(R.id.play_pause, playButton);
 		expanded.setImageViewResource(R.id.play_pause, playButton);
 
