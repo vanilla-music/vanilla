@@ -1,8 +1,7 @@
 Vanilla Music
 =====================
-Note: This project is not available from the google playstore after some troll managed to convince google to remove the project from the playstore. You can still compile it yourself or install it using [F-Droid](https://f-droid.org). It is unlikely that Vanilla Music will ever re-appear in the playstore.
 
-Vanilla Music player is an MP3/OGG/FLAC/PCM player for Android with the following features:
+Vanilla Music player is a GPLv3 licensed MP3/OGG/FLAC/PCM player for Android with the following features:
 * multiple playlist support
 * grouping by artist, album or genre
 * plain filesystem browsing
