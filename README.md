@@ -1,7 +1,7 @@
 Vanilla Music
 =====================
 
-Vanilla Music player is a GPLv3 licensed MP3/OGG/FLAC/PCM player for Android with the following features:
+Vanilla Music player is a [GPLv3](LICENSE) licensed MP3/OGG/FLAC/PCM player for Android with the following features:
 * multiple playlist support
 * grouping by artist, album or genre
 * plain filesystem browsing
@@ -41,4 +41,3 @@ Javadocs can be generated using `ant doc`
 
 
   [1]: https://www.transifex.com/projects/p/vanilla-music-1/
-
