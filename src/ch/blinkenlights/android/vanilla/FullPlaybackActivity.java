@@ -360,11 +360,11 @@ public class FullPlaybackActivity extends PlaybackActivity
 	{
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, MENU_CLEAR_QUEUE, 0, R.string.clear_queue).setIcon(R.drawable.ic_menu_close_clear_cancel);
+		menu.add(0, MENU_DELETE, 0, R.string.delete);
 		menu.add(0, MENU_ENQUEUE_ALBUM, 0, R.string.enqueue_current_album).setIcon(R.drawable.ic_menu_add);
 		menu.add(0, MENU_ENQUEUE_ARTIST, 0, R.string.enqueue_current_artist).setIcon(R.drawable.ic_menu_add);
 		menu.add(0, MENU_ENQUEUE_GENRE, 0, R.string.enqueue_current_genre).setIcon(R.drawable.ic_menu_add);
 		menu.add(0, MENU_SONG_FAVORITE, 0, R.string.add_to_favorites);
-		menu.add(0, MENU_DELETE, 0, R.string.delete);
 		menu.add(0, MENU_SHOW_QUEUE, 0, R.string.show_queue);
 		return true;
 	}
