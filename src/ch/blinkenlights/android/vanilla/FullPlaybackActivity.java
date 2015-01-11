@@ -404,7 +404,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 			final PlaybackActivity activity = this;
 
 			if (sng != null) {
-				String delete_message = getString(R.string.delete_item, sng.title);
+				String delete_message = getString(R.string.delete_file, sng.title);
 				AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 				dialog.setTitle(R.string.delete);
 				dialog

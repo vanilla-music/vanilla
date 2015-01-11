@@ -98,6 +98,7 @@ THE SOFTWARE.
 
 	<string name="deleted_item">\'%s\' deleted.</string>
 	<string name="delete_item">Delete \'%s\'?</string>
+	<string name="delete_file">Delete file \'%s\'?</string>
 
 	<string name="artists">Artists</string>
 	<string name="albums">Albums</string>
