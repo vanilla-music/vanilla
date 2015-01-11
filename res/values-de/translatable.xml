@@ -33,7 +33,7 @@
   <string name="create">Erstellen</string>
   <string name="overwrite">Überschreiben</string>
   <string name="cancel">Abbrechen</string>
-  <string name="delete_playlist">Wiedergabeliste %s entfernen?</string>
+  <string name="delete_playlist">Wiedergabeliste %s löschen?</string>
   <!--Library-->
   <string name="enqueue">Einreihen</string>
   <string name="play">Abspielen</string>
@@ -45,7 +45,7 @@
   <string name="playlist_favorites">Favoriten</string>
   <string name="new_playlist">Neue Wiedergabeliste…</string>
   <string name="expand">Aufklappen</string>
-  <string name="delete">Entfernen</string>
+  <string name="delete">Löschen</string>
   <string name="playback_view">Aktueller Titel</string>
   <string name="sort_by">Sortiere nach</string>
   <string name="search">Suche</string>
@@ -69,9 +69,10 @@
     <item quantity="one">1 Titel gelöscht.</item>
     <item quantity="other">%d Titel gelöscht.</item>
   </plurals>
-  <string name="delete_file_failed">Entfernen von %s fehlgeschlagen.</string>
+  <string name="delete_file_failed">Löschen von %s fehlgeschlagen.</string>
   <string name="deleted_item">\'%s\' wurde gelöscht.</string>
   <string name="delete_item">\'%s\' löschen?</string>
+  <string name="delete_file">Datei \'%s\' löschen?</string>
   <string name="artists">Interpreten</string>
   <string name="albums">Alben</string>
   <string name="songs">Titel</string>
