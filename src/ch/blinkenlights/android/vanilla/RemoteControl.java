@@ -85,8 +85,11 @@ public class RemoteControl {
 		remote.setPlaybackState((state & PlaybackService.FLAG_PLAYING) != 0 ? RemoteControlClient.PLAYSTATE_PLAYING : RemoteControlClient.PLAYSTATE_PAUSED);
 		RemoteControlClient.MetadataEditor editor = remote.editMetadata(true);
 		if (song != null) {
-			editor.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, song.artist);
-			editor.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, song.album);
+			String artist_album = song.artist + " - " + song.album;
+			artist_album = (song.artist.length() == 0 ? song.album : artist_album); // no artist ? -> only display album
+			artist_album = (song.album.length() == 0 ? song.artist : artist_album); // no album ? -> only display artist
+
+			editor.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, artist_album);
 			editor.putString(MediaMetadataRetriever.METADATA_KEY_TITLE, song.title);
 			Bitmap bitmap = song.getCover(context);
 			if (bitmap != null) {
