@@ -36,6 +36,7 @@
   <string name="delete_playlist">Wiedergabeliste %s löschen?</string>
   <!--Library-->
   <string name="enqueue">Einreihen</string>
+  <string name="enqueue_as_next">Als nächstes abspielen</string>
   <string name="play">Abspielen</string>
   <string name="edit">Bearbeiten</string>
   <string name="rename">Umbenennen</string>
