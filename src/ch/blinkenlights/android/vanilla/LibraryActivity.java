@@ -105,10 +105,6 @@ public class LibraryActivity
 	 */
 	public static final int ACTION_EXPAND = 6;
 	/**
-	 * Action for row click: play if paused or enqueue if playing.
-	 */
-	public static final int ACTION_PLAY_OR_ENQUEUE = 7;
-	/**
 	 * The SongTimeline add song modes corresponding to each relevant action.
 	 */
 	private static final int[] modeForAction =
@@ -471,8 +467,6 @@ public class LibraryActivity
 				// default to playing when trying to expand something that can't
 				// be expanded
 				action = ACTION_PLAY;
-			} else if (action == ACTION_PLAY_OR_ENQUEUE) {
-				action = (mState & PlaybackService.FLAG_PLAYING) == 0 ? ACTION_PLAY : ACTION_ENQUEUE;
 			}
 			pickSongs(rowData, action);
 		}
