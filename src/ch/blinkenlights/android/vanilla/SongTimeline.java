@@ -145,6 +145,14 @@ public final class SongTimeline {
 	 * @see SongTimeline#addSongs(Context, QueryTask)
 	 */
 	public static final int MODE_ENQUEUE_POS_FIRST = 6;
+	/**
+	 * Enqueues the result as next item(s)
+	 *
+	 * Pass the position in QueryTask.data.
+	 *
+	 * @see SongTimeline#addSongs(Context, QueryTask)
+	 */
+	public static final int MODE_ENQUEUE_AS_NEXT = 7;
 
 	/**
 	 * Disable shuffle.
@@ -657,6 +665,7 @@ public final class SongTimeline {
 			case MODE_ENQUEUE:
 			case MODE_ENQUEUE_POS_FIRST:
 			case MODE_ENQUEUE_ID_FIRST:
+			case MODE_ENQUEUE_AS_NEXT:
 				if (mFinishAction == FINISH_RANDOM) {
 					int j = timeline.size();
 					while (--j > mCurrentPos) {
@@ -681,11 +690,21 @@ public final class SongTimeline {
 			int start = timeline.size();
 
 			Song jumpSong = null;
+			int addAtPos = mCurrentPos + 1;
+
+			/* Check if addAtPos is out-of-bounds OR if
+			 * the request does not want to work at the current
+			 * playlist position anyway
+			 */
+			if (addAtPos > start || mode != MODE_ENQUEUE_AS_NEXT) {
+				addAtPos = start;
+			}
+
 			for (int j = 0; j != count; ++j) {
 				cursor.moveToPosition(j);
 				Song song = new Song(-1);
 				song.populate(cursor);
-				timeline.add(song);
+				timeline.add(addAtPos++, song);
 
 				if (jumpSong == null) {
 					if ((mode == MODE_PLAY_POS_FIRST || mode == MODE_ENQUEUE_POS_FIRST) && j == data) {

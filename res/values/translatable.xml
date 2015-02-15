@@ -60,6 +60,7 @@ THE SOFTWARE.
 
 	<!-- Library -->
 	<string name="enqueue">Enqueue</string>
+	<string name="enqueue_as_next">Play Next</string>
 	<string name="play">Play</string>
 	<string name="edit">Edit</string>
 	<string name="rename">Rename</string>

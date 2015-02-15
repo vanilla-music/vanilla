@@ -105,11 +105,16 @@ public class LibraryActivity
 	 */
 	public static final int ACTION_EXPAND = 6;
 	/**
+	 * Action for row click: queue selection as next item
+	 */
+	public static final int ACTION_ENQUEUE_AS_NEXT = 7;
+	/**
 	 * The SongTimeline add song modes corresponding to each relevant action.
 	 */
 	private static final int[] modeForAction =
 		{ SongTimeline.MODE_PLAY, SongTimeline.MODE_ENQUEUE, -1,
-		  SongTimeline.MODE_PLAY_ID_FIRST, SongTimeline.MODE_ENQUEUE_ID_FIRST };
+		  SongTimeline.MODE_PLAY_ID_FIRST, SongTimeline.MODE_ENQUEUE_ID_FIRST,
+		  -1, -1, SongTimeline.MODE_ENQUEUE_AS_NEXT };
 
 	private static final String SEARCH_BOX_VISIBLE = "search_box_visible";
 
@@ -647,9 +652,10 @@ public class LibraryActivity
 	private static final int MENU_PLAY = 0;
 	private static final int MENU_ENQUEUE = 1;
 	private static final int MENU_EXPAND = 2;
-	private static final int MENU_ADD_TO_PLAYLIST = 3;
-	private static final int MENU_NEW_PLAYLIST = 4;
-	private static final int MENU_DELETE = 5;
+	private static final int MENU_ENQUEUE_AS_NEXT = 3;
+	private static final int MENU_ADD_TO_PLAYLIST = 4;
+	private static final int MENU_NEW_PLAYLIST = 5;
+	private static final int MENU_DELETE = 6;
 	private static final int MENU_RENAME_PLAYLIST = 7;
 	private static final int MENU_SELECT_PLAYLIST = 8;
 	private static final int MENU_PLAY_ALL = 9;
@@ -675,6 +681,7 @@ public class LibraryActivity
 
 			menu.setHeaderTitle(rowData.getStringExtra(LibraryAdapter.DATA_TITLE));
 			menu.add(0, MENU_PLAY, 0, R.string.play).setIntent(rowData);
+			menu.add(0, MENU_ENQUEUE_AS_NEXT, 0, R.string.enqueue_as_next).setIntent(rowData);
 			menu.add(0, MENU_ENQUEUE, 0, R.string.enqueue).setIntent(rowData);
 			if (type == MediaUtils.TYPE_PLAYLIST) {
 				menu.add(0, MENU_RENAME_PLAYLIST, 0, R.string.rename).setIntent(rowData);
@@ -728,6 +735,9 @@ public class LibraryActivity
 			break;
 		case MENU_ENQUEUE_ALL:
 			pickSongs(intent, ACTION_ENQUEUE_ALL);
+			break;
+		case MENU_ENQUEUE_AS_NEXT:
+			pickSongs(intent, ACTION_ENQUEUE_AS_NEXT);
 			break;
 		case MENU_NEW_PLAYLIST: {
 			PlaylistTask playlistTask = new PlaylistTask(-1, null);

@@ -1572,6 +1572,7 @@ public final class PlaybackService extends Service
 		case SongTimeline.MODE_ENQUEUE:
 		case SongTimeline.MODE_ENQUEUE_ID_FIRST:
 		case SongTimeline.MODE_ENQUEUE_POS_FIRST:
+		case SongTimeline.MODE_ENQUEUE_AS_NEXT:
 			text = R.plurals.enqueued;
 			break;
 		default:
