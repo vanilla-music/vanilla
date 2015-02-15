@@ -96,7 +96,7 @@ public final class SongTimeline {
 	 *
 	 * @see SongTimeline#addSongs(Context, QueryTask)
 	 */
-	public static final int MODE_PLAY_NEXT = 1;
+	public static final int MODE_FLUSH_AND_PLAY_NEXT = 1;
 	/**
 	 * Add the songs at the end of the timeline, clearing random songs.
 	 *
@@ -665,7 +665,7 @@ public final class SongTimeline {
 					}
 				}
 				break;
-			case MODE_PLAY_NEXT:
+			case MODE_FLUSH_AND_PLAY_NEXT:
 				timeline.subList(mCurrentPos + 1, timeline.size()).clear();
 				break;
 			case MODE_PLAY:

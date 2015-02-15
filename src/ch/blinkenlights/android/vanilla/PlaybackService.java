@@ -1568,7 +1568,7 @@ public final class PlaybackService extends Service
 			if (count != 0 && (mState & FLAG_PLAYING) == 0)
 				setFlag(FLAG_PLAYING);
 			break;
-		case SongTimeline.MODE_PLAY_NEXT:
+		case SongTimeline.MODE_FLUSH_AND_PLAY_NEXT:
 		case SongTimeline.MODE_ENQUEUE:
 		case SongTimeline.MODE_ENQUEUE_ID_FIRST:
 		case SongTimeline.MODE_ENQUEUE_POS_FIRST:
@@ -1624,7 +1624,7 @@ public final class PlaybackService extends Service
 
 		String selection = "_id!=" + current.id;
 		QueryTask query = MediaUtils.buildQuery(type, id, Song.FILLED_PROJECTION, selection);
-		query.mode = SongTimeline.MODE_PLAY_NEXT;
+		query.mode = SongTimeline.MODE_FLUSH_AND_PLAY_NEXT;
 		addSongs(query);
 	}
 
