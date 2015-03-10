@@ -1909,6 +1909,9 @@ public final class PlaybackService extends Service
 			notification.bigContentView = expanded;
 			notification.priority = 42;
 		}
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			notification.visibility = Notification.VISIBILITY_PUBLIC;
+		}
 		return notification;
 	}
 
