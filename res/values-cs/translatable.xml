@@ -2,8 +2,8 @@
 <resources>
   <string name="app_name">Vanilla Music</string>
   <!--Playback Activity (main screen)-->
-  <string name="no_songs">Na vašem přístroji nebyly nalezeny žádné skladby.</string>
-  <string name="empty_queue">Nejsou vybrány žádné skladby. Buď vyberte nějaké ve své sbírce nebo spusťte náhodné přihrávání klepnutím na tuto zprávu.</string>
+  <string name="no_songs">Na tomto přístroji nebyly nalezeny žádné skladby.</string>
+  <string name="empty_queue">Nejsou vybrány žádné skladby. Buď vyberte nějaké ze své sbírky nebo spusťte náhodné přihrávání klepnutím na tuto zprávu.</string>
   <string name="settings">Nastavení</string>
   <string name="library">Sbírka</string>
   <string name="no_shuffle">Nepřehrávat náhodně</string>
@@ -36,6 +36,7 @@
   <string name="delete_playlist">Smazat playlist %s?</string>
   <!--Library-->
   <string name="enqueue">Zařadit do fronty</string>
+  <string name="enqueue_as_next">Přehrát další</string>
   <string name="play">Přehrát</string>
   <string name="edit">Upravit</string>
   <string name="rename">Přejmenovat</string>
@@ -76,6 +77,7 @@
   <string name="delete_file_failed">Selhalo smazání %s.</string>
   <string name="deleted_item">\'%s\' smazáno.</string>
   <string name="delete_item">Smazat \'%s\'?</string>
+  <string name="delete_file">Smazat soubor \'%s\'?</string>
   <string name="artists">Umělec</string>
   <string name="albums">Alba</string>
   <string name="songs">Skladby</string>

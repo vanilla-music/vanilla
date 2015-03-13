@@ -36,6 +36,7 @@
   <string name="delete_playlist">Poistetaanko soittolista %s?</string>
   <!--Library-->
   <string name="enqueue">Lisää jonoon</string>
+  <string name="enqueue_as_next">Toista seuraava</string>
   <string name="play">Toista</string>
   <string name="edit">Muokkaa</string>
   <string name="rename">Nimeä uudelleen</string>
@@ -72,6 +73,7 @@
   <string name="delete_file_failed">Kohteen %s poistaminen epäonnistui.</string>
   <string name="deleted_item">\"%s\" poistettu.</string>
   <string name="delete_item">Poistetaanko \"%s\"?</string>
+  <string name="delete_file">Poistetaanko tiedosto \'%s\'?</string>
   <string name="artists">Esittäjät</string>
   <string name="albums">Albumit</string>
   <string name="songs">Kappaleet</string>

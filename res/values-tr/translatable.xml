@@ -36,6 +36,7 @@
   <string name="delete_playlist">Oynatmalık %s silinsin mi?</string>
   <!--Library-->
   <string name="enqueue">Kuyruğa ekle</string>
+  <string name="enqueue_as_next">Sonrakini oynat</string>
   <string name="play">Oynat</string>
   <string name="edit">Düzenle</string>
   <string name="rename">Yeniden adlandır</string>
@@ -72,6 +73,7 @@
   <string name="delete_file_failed">%s silinemedi.</string>
   <string name="deleted_item">\'%s\' silindi.</string>
   <string name="delete_item">\'%s\' silinsin mi?</string>
+  <string name="delete_file">\'%s\' silinsin mi?</string>
   <string name="artists">Sanatçılar</string>
   <string name="albums">Albümler</string>
   <string name="songs">Şarkılar</string>

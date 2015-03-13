@@ -36,6 +36,7 @@
   <string name="delete_playlist">Supprimer la liste de lecture %s?</string>
   <!--Library-->
   <string name="enqueue">Ajouter à la file d\'attente</string>
+  <string name="enqueue_as_next">Morceau suivant</string>
   <string name="play">Lire</string>
   <string name="edit">Modifier</string>
   <string name="rename">Renommer</string>
@@ -72,6 +73,7 @@
   <string name="delete_file_failed">Échec lors de la suppression %s.</string>
   <string name="deleted_item">\'%s\' supprimé.</string>
   <string name="delete_item">Supprimer \'%s\'?</string>
+  <string name="delete_file">Effacer le fichier \'%s\'?</string>
   <string name="artists">Artistes</string>
   <string name="albums">Albums</string>
   <string name="songs">Morceaux</string>
@@ -178,6 +180,7 @@
   <string name="scrobble_title">Utiliser l\'API ScrobbleDroid</string>
   <string name="scrobble_summary">Envoyer l\'information de scrobble à Last.FM grâce à ScrobbleDroid ou SimpleLast.FM Scrobbler</string>
   <string name="stock_broadcast_title">Émuler la diffusion d\'origine</string>
+  <string name="stock_broadcast_summary">Envoyer les messages de diffusion émulant ceux envoyés par le lecteur d\'origine pour fonctionner avec des contrôles d\'écran de verrouillage tiers, widgets, etc.</string>
   <string name="media_scan">Rafraîchir la bibliothèque</string>
   <string name="tap_to_scan">Toucher pour trouver de la musique dans le stockage externe</string>
   <string name="scan_in_progress">Recherche en cours...</string>

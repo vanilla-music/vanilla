@@ -36,10 +36,11 @@
   <string name="delete_playlist">刪除播放清單 %s？</string>
   <!--Library-->
   <string name="enqueue">佇列</string>
+  <string name="enqueue_as_next">播下一首</string>
   <string name="play">播放</string>
   <string name="edit">編輯</string>
   <string name="rename">重新命名</string>
-  <string name="save_as_playlist">儲存為播放清單</string>
+  <string name="save_as_playlist">儲存為播放清單…</string>
   <string name="add_to_playlist">加到播放清單…</string>
   <string name="add_to_favorites">加到我的最愛</string>
   <string name="playlist_favorites">我的最愛</string>
@@ -68,6 +69,7 @@
   <string name="delete_file_failed">無法刪除 %s。</string>
   <string name="deleted_item">已刪除 \'%s\'。</string>
   <string name="delete_item">刪除 \'%s\'？</string>
+  <string name="delete_file">刪除檔案 \'%s\'？</string>
   <string name="artists">演唱者</string>
   <string name="albums">專輯</string>
   <string name="songs">歌曲</string>

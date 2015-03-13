@@ -36,6 +36,7 @@
   <string name="delete_playlist">プレイリスト %s を削除しますか?</string>
   <!--Library-->
   <string name="enqueue">キューに入れる</string>
+  <string name="enqueue_as_next">次の再生</string>
   <string name="play">再生</string>
   <string name="edit">編集</string>
   <string name="rename">名前を変更</string>
@@ -68,6 +69,7 @@
   <string name="delete_file_failed">%s を削除できませんでした。</string>
   <string name="deleted_item">\'%s\' を</string>
   <string name="delete_item">\'%s\' を削除しますか?</string>
+  <string name="delete_file">ファイル \'%s\' を削除しますか?</string>
   <string name="artists">アーチスト</string>
   <string name="albums">アルバム</string>
   <string name="songs">曲</string>

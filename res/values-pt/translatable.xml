@@ -36,6 +36,7 @@
   <string name="delete_playlist">Eliminar a lista %s?</string>
   <!--Library-->
   <string name="enqueue">Colocar na fila</string>
+  <string name="enqueue_as_next">Reproduzir seguinte</string>
   <string name="play">Reproduzir</string>
   <string name="edit">Editar</string>
   <string name="rename">Mudar nome</string>
@@ -72,6 +73,7 @@
   <string name="delete_file_failed">Falha ao eliminar %s.</string>
   <string name="deleted_item">%s foi eliminado.</string>
   <string name="delete_item">Eliminar %s?</string>
+  <string name="delete_file">Eliminar o ficheiro %s?</string>
   <string name="artists">Artistas</string>
   <string name="albums">Álbuns</string>
   <string name="songs">Faixas</string>

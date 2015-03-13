@@ -36,9 +36,11 @@
   <string name="delete_playlist">%s 재생 목록을 삭제하시겠습니까?</string>
   <!--Library-->
   <string name="enqueue">대기열에 추가</string>
+  <string name="enqueue_as_next">다음 재생</string>
   <string name="play">재생</string>
   <string name="edit">수정</string>
   <string name="rename">이름 변경</string>
+  <string name="save_as_playlist">플레이 리스트에 저장...</string>
   <string name="add_to_playlist">재생목록에 추가...</string>
   <string name="add_to_favorites">즐겨찾기에 추가</string>
   <string name="playlist_favorites">즐겨찾기</string>
@@ -67,6 +69,7 @@
   <string name="delete_file_failed">%s 삭제 실패.</string>
   <string name="deleted_item">\'%s\' 삭제됨.</string>
   <string name="delete_item">\'%s\'를 삭제하시겠습니까?</string>
+  <string name="delete_file">\'%s\'를 삭제하시겠습니까?</string>
   <string name="artists">음악가</string>
   <string name="albums">앨범</string>
   <string name="songs">곡</string>
@@ -88,6 +91,7 @@
   <string name="artist_album_track">음악가, 앨범, 트랙 번호</string>
   <string name="artist_album_title">음악가, 앨범, 곡 제목</string>
   <string name="artist_year">음악가, 연도</string>
+  <string name="album_track">앨범, 트랙 번호</string>
   <string name="song_playcount">재생 횟수</string>
   <string name="ascending">오름차순</string>
   <string name="descending">내림차순</string>
