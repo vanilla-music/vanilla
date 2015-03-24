@@ -74,6 +74,12 @@ public class LibraryActivity
 	         , DialogInterface.OnClickListener
 	         , DialogInterface.OnDismissListener
 {
+
+
+	/**
+	 * NOTE: ACTION_* must be in sync with default_action_entries
+	 */
+
 	/**
 	 * Action for row click: play the row.
 	 */
@@ -105,16 +111,20 @@ public class LibraryActivity
 	 */
 	public static final int ACTION_EXPAND = 6;
 	/**
+	 * Action for row click: play if paused or enqueue if playing.
+	 */
+	public static final int ACTION_PLAY_OR_ENQUEUE = 7;
+	/**
 	 * Action for row click: queue selection as next item
 	 */
-	public static final int ACTION_ENQUEUE_AS_NEXT = 7;
+	public static final int ACTION_ENQUEUE_AS_NEXT = 8;
 	/**
 	 * The SongTimeline add song modes corresponding to each relevant action.
 	 */
 	private static final int[] modeForAction =
 		{ SongTimeline.MODE_PLAY, SongTimeline.MODE_ENQUEUE, -1,
 		  SongTimeline.MODE_PLAY_ID_FIRST, SongTimeline.MODE_ENQUEUE_ID_FIRST,
-		  -1, -1, SongTimeline.MODE_ENQUEUE_AS_NEXT };
+		  -1, -1, -1, SongTimeline.MODE_ENQUEUE_AS_NEXT };
 
 	private static final String SEARCH_BOX_VISIBLE = "search_box_visible";
 
@@ -472,6 +482,8 @@ public class LibraryActivity
 				// default to playing when trying to expand something that can't
 				// be expanded
 				action = ACTION_PLAY;
+			} else if (action == ACTION_PLAY_OR_ENQUEUE) {
+				action = (mState & PlaybackService.FLAG_PLAYING) == 0 ? ACTION_PLAY : ACTION_ENQUEUE;
 			}
 			pickSongs(rowData, action);
 		}

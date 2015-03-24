@@ -35,6 +35,7 @@ THE SOFTWARE.
 		<item>5</item>
 		<item>6</item>
 		<item>7</item>
+		<item>8</item>
 	</string-array>
 	<string-array name="swipe_action_values">
 		<!-- This must match the order of swipe_action_entries exactly and
@@ -90,6 +91,7 @@ THE SOFTWARE.
 		<item>@string/do_nothing</item>
 		<item>@string/expand</item>
 		<item>@string/play_or_enqueue</item>
+		<item>@string/enqueue_as_next</item>
 	</string-array>
 	<string-array name="notification_mode_entries">
 		<item>@string/never_show</item>
