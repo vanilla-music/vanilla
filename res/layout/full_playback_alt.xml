@@ -33,7 +33,7 @@ THE SOFTWARE.
 		android:collapseColumns="0"
 		android:stretchColumns="1"
 		android:shrinkColumns="1"
-		android:background="#a000"
+		android:background="@color/overlay_color"
 		android:paddingLeft="5dip"
 		android:paddingRight="5dip">
 		<TableRow>
@@ -134,7 +134,7 @@ THE SOFTWARE.
 		android:layout_width="fill_parent"
 		android:layout_gravity="bottom|left"
 		android:layout_margin="0dip"
-		android:background="#a000"
+		android:background="@color/overlay_color"
 		android:orientation="horizontal">
 		<include layout="@layout/controls" />
 	</LinearLayout>
