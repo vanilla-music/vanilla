@@ -23,6 +23,7 @@ THE SOFTWARE.
 <resources>
 	<!-- Color used in LibraryActivity list dividers -->
 	<color name="divider_color">#00ff00</color>
+	<color name="overlay_color">#aeee</color>
 
 	<!-- Material design primary colors -->
 	<color name="vanillaPrimary">#9e9d24</color>
