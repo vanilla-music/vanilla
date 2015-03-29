@@ -2,7 +2,7 @@
 	<TextView
 		xmlns:android="http://schemas.android.com/apk/res/android"
 		android:id="@+id/text"
-		android:background="@drawable/selectable_item_bg"
+		android:background="?android:attr/selectableItemBackground"
 		android:maxLines="2"
 		android:padding="3dip"
 		android:textColor="?android:textColorPrimary"

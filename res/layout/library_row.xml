@@ -22,7 +22,7 @@ THE SOFTWARE.
 -->
 <TextView
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:background="@drawable/selectable_item_bg"
+	android:background="?android:attr/selectableItemBackground"
 	android:maxLines="2"
 	android:textColor="?android:textColorPrimary"
 	android:gravity="left|center_vertical"

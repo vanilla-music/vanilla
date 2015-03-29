@@ -78,7 +78,7 @@ THE SOFTWARE.
 			android:layout_weight="1"
 			android:src="@drawable/play"
 			android:padding="5dip"
-			android:background="@drawable/selectable_item_bg"
+			android:background="?android:attr/selectableItemBackground"
 			android:scaleType="centerInside"
 			android:contentDescription="@string/play_pause" />
 		<ImageButton
@@ -89,7 +89,7 @@ THE SOFTWARE.
 			android:layout_weight="1"
 			android:padding="5dip"
 			android:src="@drawable/next"
-			android:background="@drawable/selectable_item_bg"
+			android:background="?android:attr/selectableItemBackground"
 			android:scaleType="centerInside"
 			android:contentDescription="@string/next_song" />
 	</LinearLayout>
