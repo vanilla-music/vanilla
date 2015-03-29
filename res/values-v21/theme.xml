@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+-->
+<resources>
+	<!-- Color used in LibraryActivity list dividers -->
+	<color name="divider_color">#00ff00</color>
+
+	<!-- Material design primary colors -->
+	<color name="vanillaPrimary">#9e9d24</color>
+	<color name="vanillaPrimaryDark">#827717</color>
+	<color name="vanillaAccent">#689f38</color>
+
+	<!-- styles -->
+	<style name="VanillaBase" parent="android:Theme.Material.Light">
+		<item name="android:colorAccent">@color/vanillaAccent</item>
+		<item name="android:colorPrimary">@color/vanillaPrimary</item>
+		<item name="android:colorPrimaryDark">@color/vanillaPrimaryDark</item>
+	</style>
+
+	<style name="Playback" parent="VanillaBase">
+		<item name="android:actionBarStyle">@style/PlaybackActionBar</item>
+	</style>
+
+	<style name="BackActionBar" parent="VanillaBase">
+		<item name="android:actionBarStyle">@style/PlaybackActionBar</item>
+	</style>
+
+	<style name="PlaybackActionBar" parent="android:Widget.Material.ActionBar">
+		<item name="android:displayOptions">showTitle|homeAsUp</item>
+		<item name="android:background">@color/vanillaPrimary</item>
+	</style>
+
+	<style name="Library" parent="VanillaBase">
+		<item name="android:actionBarStyle">@style/LibraryActionBar</item>
+		<item name="android:actionBarTabTextStyle">@style/LibraryActionBarTabText</item>
+	</style>
+
+	<style name="LibraryActionBar" parent="android:Widget.Material.ActionBar">
+		<item name="android:displayOptions"></item>
+		<item name="android:background">@color/vanillaPrimary</item>
+	</style>
+
+	<style name="LibraryActionBarTabText" parent="android:Widget.Material.ActionBar.TabText">
+		<item name="android:singleLine">true</item>
+		<item name="android:textSize">11.5sp</item>
+	</style>
+
+</resources>
