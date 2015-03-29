@@ -211,8 +211,6 @@ public final class CoverView extends View implements Handler.Callback {
 		int x = 0;
 		int scrollX = mScrollX;
 
-		canvas.drawColor(Color.BLACK);
-
 		for (Bitmap bitmap : mActiveBitmaps) {
 			if (bitmap != null && scrollX + width > x && scrollX < x + width) {
 				int xOffset = (width - bitmap.getWidth()) / 2;
