@@ -64,7 +64,7 @@ THE SOFTWARE.
 			android:paddingBottom="4dip"
 			android:layout_width="wrap_content"
 			android:layout_height="fill_parent"
-			android:background="@drawable/selectable_item_bg"
+			android:background="?android:attr/selectableItemBackground"
 			android:src="@drawable/close"
 			android:contentDescription="@string/clear_search" />
 	</LinearLayout>

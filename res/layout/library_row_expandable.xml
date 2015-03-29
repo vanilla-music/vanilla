@@ -26,7 +26,7 @@ THE SOFTWARE.
 	<TextView
 		android:id="@+id/text"
 		android:longClickable="true"
-		android:background="@drawable/selectable_item_bg"
+		android:background="?android:attr/selectableItemBackground"
 		android:maxLines="2"
 		android:padding="3dip"
 		android:textColor="?android:textColorPrimary"
@@ -41,7 +41,7 @@ THE SOFTWARE.
 		android:background="@color/divider_color" />
 	<ImageView
 		android:id="@+id/arrow"
-		android:background="@drawable/selectable_item_bg"
+		android:background="?android:attr/selectableItemBackground"
 		android:longClickable="true"
 		android:scaleType="center"
 		android:src="@drawable/arrow"

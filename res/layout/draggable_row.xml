@@ -23,7 +23,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 	>
 
 	<LinearLayout
-		android:background="@drawable/selectable_item_bg"
+		android:background="?android:attr/selectableItemBackground"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:orientation="horizontal">
