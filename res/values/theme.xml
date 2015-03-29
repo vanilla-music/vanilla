@@ -23,7 +23,7 @@ THE SOFTWARE.
 <resources>
 	<!-- Color used in LibraryActivity list dividers -->
 	<color name="divider_color">#f444</color>
-	<color name="overlay_color">#a000</color>
+	<color name="overlay_color">#afff</color>
 
 	<!-- styles -->
 	<style name="Dialog" parent="android:Theme.Holo.Dialog" />
