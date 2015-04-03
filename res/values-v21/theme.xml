@@ -22,16 +22,17 @@ THE SOFTWARE.
 -->
 <resources>
 	<!-- Color used in LibraryActivity list dividers -->
-	<color name="divider_color">#00ff00</color>
+	<color name="divider_color">#f888</color>
 	<color name="overlay_color">#feee</color>
 
 	<!-- Material design primary colors -->
 	<color name="vanillaPrimary">#607D8B</color>
 	<color name="vanillaPrimaryDark">#455A64</color>
-	<color name="vanillaAccent">#9E9E9E</color>
+	<color name="vanillaAccent">#607D8B</color>
+	<color name="material_grey_900">#ff212121</color>
 
 	<!-- styles -->
-	<style name="VanillaBase" parent="android:Theme.Material.Light">
+	<style name="VanillaBase" parent="android:Theme.Material.Light.DarkActionBar">
 		<item name="android:colorAccent">@color/vanillaAccent</item>
 		<item name="android:colorPrimary">@color/vanillaPrimary</item>
 		<item name="android:colorPrimaryDark">@color/vanillaPrimaryDark</item>
@@ -63,6 +64,7 @@ THE SOFTWARE.
 	<style name="LibraryActionBarTabText" parent="android:Widget.Material.ActionBar.TabText">
 		<item name="android:singleLine">true</item>
 		<item name="android:textSize">11.5sp</item>
+		<item name="android:textColor">@color/material_grey_900</item>
 	</style>
 
 </resources>
