@@ -24,6 +24,7 @@ THE SOFTWARE.
 	<!-- Color used in LibraryActivity list dividers -->
 	<color name="divider_color">#f888</color>
 	<color name="overlay_color">#feee</color>
+	<color name="float_color">#fccc</color>
 
 	<!-- Material design primary colors -->
 	<color name="vanillaPrimary">#607D8B</color>

@@ -24,6 +24,7 @@ THE SOFTWARE.
 	<!-- Color used in LibraryActivity list dividers -->
 	<color name="divider_color">#f444</color>
 	<color name="overlay_color">#a000</color>
+	<color name="float_color">#f222</color>
 
 	<!-- styles -->
 	<style name="Dialog" parent="android:Theme.Holo.Dialog" />
