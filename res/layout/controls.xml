@@ -21,7 +21,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
-	<ImageButton
+	<ch.blinkenlights.android.vanilla.VanillaImageButton
 		android:id="@+id/shuffle"
 		android:layout_height="fill_parent"
 		android:layout_width="0px"
@@ -30,7 +30,7 @@ THE SOFTWARE.
 		android:scaleType="fitCenter"
 		android:src="@drawable/shuffle_inactive"
 		android:contentDescription="@string/cycle_shuffle_mode" />
-	<ImageButton
+	<ch.blinkenlights.android.vanilla.VanillaImageButton
 		android:id="@+id/previous"
 		android:layout_height="fill_parent"
 		android:layout_width="0px"
@@ -39,7 +39,7 @@ THE SOFTWARE.
 		android:scaleType="fitCenter"
 		android:src="@drawable/previous"
 		android:contentDescription="@string/previous_song" />
-	<ImageButton
+	<ch.blinkenlights.android.vanilla.VanillaImageButton
 		android:id="@+id/play_pause"
 		android:layout_height="fill_parent"
 		android:layout_width="0px"
@@ -48,7 +48,7 @@ THE SOFTWARE.
 		android:scaleType="fitCenter"
 		android:src="@drawable/play"
 		android:contentDescription="@string/play_pause" />
-	<ImageButton
+	<ch.blinkenlights.android.vanilla.VanillaImageButton
 		android:id="@+id/next"
 		android:layout_height="fill_parent"
 		android:layout_width="0px"
@@ -57,7 +57,7 @@ THE SOFTWARE.
 		android:scaleType="fitCenter"
 		android:src="@drawable/next"
 		android:contentDescription="@string/next_song" />
-	<ImageButton
+	<ch.blinkenlights.android.vanilla.VanillaImageButton
 		android:id="@+id/end_action"
 		android:layout_height="fill_parent"
 		android:layout_width="0px"
