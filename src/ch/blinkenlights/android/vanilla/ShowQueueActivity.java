@@ -49,7 +49,6 @@ public class ShowQueueActivity extends PlaybackActivity
 		mListView   = (DragSortListView) findViewById(R.id.list);
 		listAdapter = new ShowQueueAdapter(this, R.layout.draggable_row);
 		mListView.setAdapter(listAdapter);
-		mListView.setFastScrollAlwaysVisible(true);
 		mListView.setDropListener(onDrop);
 		mListView.setRemoveListener(onRemove);
 
