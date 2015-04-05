@@ -33,6 +33,9 @@ THE SOFTWARE.
 	<color name="material_grey_900">#ff212121</color>
 
 	<!-- styles -->
+	<style name="Dialog" parent="android:Theme.Material.Light.Dialog" />
+	<style name="DialogMinWidth" parent="android:Theme.Material.Light.Dialog.MinWidth" />
+
 	<style name="VanillaBase" parent="android:Theme.Material.Light.DarkActionBar">
 		<item name="android:colorAccent">@color/vanillaAccent</item>
 		<item name="android:colorPrimary">@color/vanillaPrimary</item>
