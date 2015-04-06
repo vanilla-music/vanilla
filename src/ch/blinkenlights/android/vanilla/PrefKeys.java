@@ -27,7 +27,6 @@ package ch.blinkenlights.android.vanilla;
  * SharedPreference keys. Must be kept in sync with keys in res/xml/prefs_*.xml.
  */
 public class PrefKeys {
-	public static final String CONTROLS_IN_SELECTOR = "controls_in_selector";
 	public static final String COVER_LONGPRESS_ACTION = "cover_longpress_action";
 	public static final String COVER_PRESS_ACTION = "cover_press_action";
 	public static final String DEFAULT_ACTION_INT = "default_action_int";
