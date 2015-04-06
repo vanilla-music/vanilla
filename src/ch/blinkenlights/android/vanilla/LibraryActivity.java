@@ -764,7 +764,7 @@ public class LibraryActivity
 		controls.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
 		MenuItem search = menu.add(0, MENU_SEARCH, 0, R.string.search).setIcon(R.drawable.ic_menu_search);
-		search.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		search.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItem.SHOW_AS_ACTION_ALWAYS);
 		SearchView mSearchView = new SearchView(getActionBar().getThemedContext());
 		mSearchView.setOnQueryTextListener(this);
 		search.setActionView(mSearchView);
