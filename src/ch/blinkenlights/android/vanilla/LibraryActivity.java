@@ -833,10 +833,10 @@ public class LibraryActivity
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
 		MenuItem controls = menu.add(null);
-		CompatHoneycomb.setActionView(controls, mActionControls);
-		CompatHoneycomb.setShowAsAction(controls, MenuItem.SHOW_AS_ACTION_ALWAYS);
+		controls.setActionView(mActionControls);
+		controls.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 		MenuItem search = menu.add(0, MENU_SEARCH, 0, R.string.search).setIcon(R.drawable.ic_menu_search);
-		CompatHoneycomb.setShowAsAction(search, MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		search.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		menu.add(0, MENU_SORT, 0, R.string.sort_by).setIcon(R.drawable.ic_menu_sort_alphabetically);
 		return super.onCreateOptionsMenu(menu);
 	}

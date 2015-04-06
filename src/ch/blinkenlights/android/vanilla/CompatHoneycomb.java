@@ -77,22 +77,6 @@ public class CompatHoneycomb {
 	}
 
 	/**
-	 * Call {@link MenuItem#setActionView(View)} on the given MenuItem.
-	 */
-	public static void setActionView(MenuItem item, View view)
-	{
-		item.setActionView(view);
-	}
-
-	/**
-	 * Call {@link MenuItem#setShowAsAction(int)} on the given MenuItem.
-	 */
-	public static void setShowAsAction(MenuItem item, int mode)
-	{
-		item.setShowAsAction(mode);
-	}
-
-	/**
 	 * Select the ActionBar tab at the given position.
 	 *
 	 * @param activity The activity that owns the ActionBar.
