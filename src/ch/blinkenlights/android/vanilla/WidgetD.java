@@ -37,118 +37,113 @@ import android.widget.RemoteViews;
  * a semi-transparent widget on top of the cover.
  */
 public class WidgetD extends AppWidgetProvider {
-	private static boolean sEnabled;
+    private static boolean sEnabled;
 
-	@Override
-	public void onEnabled(Context context)
-	{
-		sEnabled = true;
-	}
+    /**
+     * Check if there are any instances of this widget placed.
+     */
+    public static void checkEnabled(Context context, AppWidgetManager manager) {
+        sEnabled = manager.getAppWidgetIds(new ComponentName(context, WidgetD.class)).length != 0;
+    }
 
-	@Override
-	public void onDisabled(Context context)
-	{
-		sEnabled = false;
-	}
+    /**
+     * Populate the widgets with the given ids with the given info.
+     *
+     * @param context A Context to use.
+     * @param manager The AppWidgetManager that will be used to update the
+     *                widget.
+     * @param song    The current Song in PlaybackService.
+     * @param state   The current PlaybackService state.
+     */
+    public static void updateWidget(Context context, AppWidgetManager manager, Song song, int state) {
+        if (!sEnabled)
+            return;
 
-	@Override
-	public void onUpdate(Context context, AppWidgetManager manager, int[] ids)
-	{
-		Song song = null;
-		int state = 0;
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_d);
+        Bitmap cover = null;
 
-		if (PlaybackService.hasInstance()) {
-			PlaybackService service = PlaybackService.get(context);
-			song = service.getSong(0);
-			state = service.getState();
-		}
+        if ((state & PlaybackService.FLAG_NO_MEDIA) != 0) {
+            views.setViewVisibility(R.id.buttons, View.GONE);
+            views.setViewVisibility(R.id.title, View.GONE);
+            views.setInt(R.id.artist, "setText", R.string.no_songs);
+        } else if (song == null) {
+            views.setViewVisibility(R.id.buttons, View.VISIBLE);
+            views.setViewVisibility(R.id.title, View.GONE);
+            views.setInt(R.id.artist, "setText", R.string.app_name);
+        } else {
+            views.setViewVisibility(R.id.title, View.VISIBLE);
+            views.setViewVisibility(R.id.buttons, View.VISIBLE);
+            views.setTextViewText(R.id.title, song.title);
+            views.setTextViewText(R.id.artist, song.artist);
+            cover = song.getCover(context);
+        }
 
-		sEnabled = true;
-		updateWidget(context, manager, song, state);
-	}
+        if (cover == null) {
+            views.setImageViewResource(R.id.cover, R.drawable.fallback_cover);
+        } else {
+            views.setImageViewBitmap(R.id.cover, cover);
+        }
 
-	/**
-	 * Check if there are any instances of this widget placed.
-	 */
-	public static void checkEnabled(Context context, AppWidgetManager manager)
-	{
-		sEnabled = manager.getAppWidgetIds(new ComponentName(context, WidgetD.class)).length != 0;
-	}
+        boolean playing = (state & PlaybackService.FLAG_PLAYING) != 0;
+        views.setImageViewResource(R.id.play_pause, playing ? R.drawable.pause : R.drawable.play);
+        views.setImageViewResource(R.id.end_action, SongTimeline.FINISH_ICONS[PlaybackService.finishAction(state)]);
+        views.setImageViewResource(R.id.shuffle, SongTimeline.SHUFFLE_ICONS[PlaybackService.shuffleMode(state)]);
 
-	/**
-	 * Populate the widgets with the given ids with the given info.
-	 *
-	 * @param context A Context to use.
-	 * @param manager The AppWidgetManager that will be used to update the
-	 * widget.
-	 * @param song The current Song in PlaybackService.
-	 * @param state The current PlaybackService state.
-	 */
-	public static void updateWidget(Context context, AppWidgetManager manager, Song song, int state)
-	{
-		if (!sEnabled)
-			return;
+        Intent intent;
+        PendingIntent pendingIntent;
 
-		RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_d);
-		Bitmap cover = null;
+        ComponentName service = new ComponentName(context, PlaybackService.class);
 
-		if ((state & PlaybackService.FLAG_NO_MEDIA) != 0) {
-			views.setViewVisibility(R.id.buttons, View.GONE);
-			views.setViewVisibility(R.id.title, View.GONE);
-			views.setInt(R.id.artist, "setText", R.string.no_songs);
-		} else if (song == null) {
-			views.setViewVisibility(R.id.buttons, View.VISIBLE);
-			views.setViewVisibility(R.id.title, View.GONE);
-			views.setInt(R.id.artist, "setText", R.string.app_name);
-		} else {
-			views.setViewVisibility(R.id.title, View.VISIBLE);
-			views.setViewVisibility(R.id.buttons, View.VISIBLE);
-			views.setTextViewText(R.id.title, song.title);
-			views.setTextViewText(R.id.artist, song.artist);
-			cover = song.getCover(context);
-		}
+        intent = new Intent(context, LibraryActivity.class);
+        intent.setAction(Intent.ACTION_MAIN);
+        pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        views.setOnClickPendingIntent(R.id.cover, pendingIntent);
 
-		if (cover == null) {
-			views.setImageViewResource(R.id.cover, R.drawable.fallback_cover);
-		} else {
-			views.setImageViewBitmap(R.id.cover, cover);
-		}
+        intent = new Intent(PlaybackService.ACTION_TOGGLE_PLAYBACK).setComponent(service);
+        pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+        views.setOnClickPendingIntent(R.id.play_pause, pendingIntent);
 
-		boolean playing = (state & PlaybackService.FLAG_PLAYING) != 0;
-		views.setImageViewResource(R.id.play_pause, playing ? R.drawable.pause : R.drawable.play);
-		views.setImageViewResource(R.id.end_action, SongTimeline.FINISH_ICONS[PlaybackService.finishAction(state)]);
-		views.setImageViewResource(R.id.shuffle, SongTimeline.SHUFFLE_ICONS[PlaybackService.shuffleMode(state)]);
+        intent = new Intent(PlaybackService.ACTION_NEXT_SONG).setComponent(service);
+        pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+        views.setOnClickPendingIntent(R.id.next, pendingIntent);
 
-		Intent intent;
-		PendingIntent pendingIntent;
+        intent = new Intent(PlaybackService.ACTION_PREVIOUS_SONG).setComponent(service);
+        pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+        views.setOnClickPendingIntent(R.id.previous, pendingIntent);
 
-		ComponentName service = new ComponentName(context, PlaybackService.class);
+        intent = new Intent(PlaybackService.ACTION_CYCLE_SHUFFLE).setComponent(service);
+        pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+        views.setOnClickPendingIntent(R.id.shuffle, pendingIntent);
 
-		intent = new Intent(context, LibraryActivity.class);
-		intent.setAction(Intent.ACTION_MAIN);
-		pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-		views.setOnClickPendingIntent(R.id.cover, pendingIntent);
+        intent = new Intent(PlaybackService.ACTION_CYCLE_REPEAT).setComponent(service);
+        pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+        views.setOnClickPendingIntent(R.id.end_action, pendingIntent);
 
-		intent = new Intent(PlaybackService.ACTION_TOGGLE_PLAYBACK).setComponent(service);
-		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
-		views.setOnClickPendingIntent(R.id.play_pause, pendingIntent);
+        manager.updateAppWidget(new ComponentName(context, WidgetD.class), views);
+    }
 
-		intent = new Intent(PlaybackService.ACTION_NEXT_SONG).setComponent(service);
-		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
-		views.setOnClickPendingIntent(R.id.next, pendingIntent);
+    @Override
+    public void onEnabled(Context context) {
+        sEnabled = true;
+    }
 
-		intent = new Intent(PlaybackService.ACTION_PREVIOUS_SONG).setComponent(service);
-		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
-		views.setOnClickPendingIntent(R.id.previous, pendingIntent);
+    @Override
+    public void onDisabled(Context context) {
+        sEnabled = false;
+    }
 
-		intent = new Intent(PlaybackService.ACTION_CYCLE_SHUFFLE).setComponent(service);
-		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
-		views.setOnClickPendingIntent(R.id.shuffle, pendingIntent);
+    @Override
+    public void onUpdate(Context context, AppWidgetManager manager, int[] ids) {
+        Song song = null;
+        int state = 0;
 
-		intent = new Intent(PlaybackService.ACTION_CYCLE_REPEAT).setComponent(service);
-		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
-		views.setOnClickPendingIntent(R.id.end_action, pendingIntent);
+        if (PlaybackService.hasInstance()) {
+            PlaybackService service = PlaybackService.get(context);
+            song = service.getSong(0);
+            state = service.getState();
+        }
 
-		manager.updateAppWidget(new ComponentName(context, WidgetD.class), views);
-	}
+        sEnabled = true;
+        updateWidget(context, manager, song, state);
+    }
 }

@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<appwidget-provider
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:minWidth="40dip"
-	android:minHeight="40dip"
-	android:initialLayout="@layout/one_cell_widget"
-	android:previewImage="@drawable/preview_widget_one_cell"
-	android:resizeMode="horizontal|vertical" />
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:initialLayout="@layout/one_cell_widget"
+    android:minHeight="40dip"
+    android:minWidth="40dip"
+    android:previewImage="@drawable/preview_widget_one_cell"
+    android:resizeMode="horizontal|vertical" />

@@ -33,72 +33,70 @@ import android.media.RemoteControlClient;
 
 
 public class RemoteControl {
-	/**
-	 * Used with updateRemote method.
-	 */
-	private static RemoteControlClient sRemote;
+    /**
+     * Used with updateRemote method.
+     */
+    private static RemoteControlClient sRemote;
 
-	/**
-	 * Perform initialization required for RemoteControlClient.
-	 *
-	 * @param context A context to use.
-	 * @param am The AudioManager service.
-	 */
-	public static void registerRemote(Context context, AudioManager am)
-	{
-		if (!MediaButtonReceiver.useHeadsetControls(context)) {
-			// RemoteControlClient requires MEDIA_BUTTON intent
-			return;
-		}
+    /**
+     * Perform initialization required for RemoteControlClient.
+     *
+     * @param context A context to use.
+     * @param am      The AudioManager service.
+     */
+    public static void registerRemote(Context context, AudioManager am) {
+        if (!MediaButtonReceiver.useHeadsetControls(context)) {
+            // RemoteControlClient requires MEDIA_BUTTON intent
+            return;
+        }
 
-		MediaButtonReceiver.registerMediaButton(context);
+        MediaButtonReceiver.registerMediaButton(context);
 
-		Intent mediaButtonIntent = new Intent(Intent.ACTION_MEDIA_BUTTON);
-		mediaButtonIntent.setComponent(new ComponentName(context.getPackageName(), MediaButtonReceiver.class.getName()));
-		PendingIntent mediaPendingIntent = PendingIntent.getBroadcast(context, 0, mediaButtonIntent, 0);
-		RemoteControlClient remote = new RemoteControlClient(mediaPendingIntent);
-		int flags = RemoteControlClient.FLAG_KEY_MEDIA_NEXT
-			| RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS
-			| RemoteControlClient.FLAG_KEY_MEDIA_PLAY_PAUSE
-			| RemoteControlClient.FLAG_KEY_MEDIA_PLAY
-			| RemoteControlClient.FLAG_KEY_MEDIA_PAUSE;
-		remote.setTransportControlFlags(flags);
-		am.registerRemoteControlClient(remote);
-		sRemote = remote;
-	}
+        Intent mediaButtonIntent = new Intent(Intent.ACTION_MEDIA_BUTTON);
+        mediaButtonIntent.setComponent(new ComponentName(context.getPackageName(), MediaButtonReceiver.class.getName()));
+        PendingIntent mediaPendingIntent = PendingIntent.getBroadcast(context, 0, mediaButtonIntent, 0);
+        RemoteControlClient remote = new RemoteControlClient(mediaPendingIntent);
+        int flags = RemoteControlClient.FLAG_KEY_MEDIA_NEXT
+                | RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS
+                | RemoteControlClient.FLAG_KEY_MEDIA_PLAY_PAUSE
+                | RemoteControlClient.FLAG_KEY_MEDIA_PLAY
+                | RemoteControlClient.FLAG_KEY_MEDIA_PAUSE;
+        remote.setTransportControlFlags(flags);
+        am.registerRemoteControlClient(remote);
+        sRemote = remote;
+    }
 
-	/**
-	 * Update the remote with new metadata.
-	 * {@link #registerRemote(Context, AudioManager)} must have been called
-	 * first.
-	 *
-	 * @param context A context to use.
-	 * @param song The song containing the new metadata.
-	 * @param state PlaybackService state, used to determine playback state.
-	 */
-	public static void updateRemote(Context context, Song song, int state)
-	{
-		RemoteControlClient remote = sRemote;
-		if (remote == null)
-			return;
+    /**
+     * Update the remote with new metadata.
+     * {@link #registerRemote(Context, AudioManager)} must have been called
+     * first.
+     *
+     * @param context A context to use.
+     * @param song    The song containing the new metadata.
+     * @param state   PlaybackService state, used to determine playback state.
+     */
+    public static void updateRemote(Context context, Song song, int state) {
+        RemoteControlClient remote = sRemote;
+        if (remote == null)
+            return;
 
-		remote.setPlaybackState((state & PlaybackService.FLAG_PLAYING) != 0 ? RemoteControlClient.PLAYSTATE_PLAYING : RemoteControlClient.PLAYSTATE_PAUSED);
-		RemoteControlClient.MetadataEditor editor = remote.editMetadata(true);
-		if (song != null) {
-			String artist_album = song.artist + " - " + song.album;
-			artist_album = (song.artist.length() == 0 ? song.album : artist_album); // no artist ? -> only display album
-			artist_album = (song.album.length() == 0 ? song.artist : artist_album); // no album ? -> only display artist
+        remote.setPlaybackState((state & PlaybackService.FLAG_PLAYING) != 0 ? RemoteControlClient.PLAYSTATE_PLAYING : RemoteControlClient.PLAYSTATE_PAUSED);
+        RemoteControlClient.MetadataEditor editor = remote.editMetadata(true);
+        if (song != null) {
+            String artist_album = song.artist + " - " + song.album;
+            artist_album = (song.artist.length() == 0 ? song.album : artist_album); // no artist ? -> only display album
+            artist_album = (song.album.length() == 0 ? song.artist : artist_album); // no album ? -> only display artist
 
-			editor.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, artist_album);
-			editor.putString(MediaMetadataRetriever.METADATA_KEY_TITLE, song.title);
-			Bitmap bitmap = song.getCover(context);
-			if (bitmap != null) {
-				// Create a copy of the cover art, since RemoteControlClient likes
-				// to recycle what we give it.
-				bitmap = bitmap.copy(Bitmap.Config.RGB_565, false);
-			}
-			editor.putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, bitmap);
-		}
-		editor.apply();
-	}
+            editor.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, artist_album);
+            editor.putString(MediaMetadataRetriever.METADATA_KEY_TITLE, song.title);
+            Bitmap bitmap = song.getCover(context);
+            if (bitmap != null) {
+                // Create a copy of the cover art, since RemoteControlClient likes
+                // to recycle what we give it.
+                bitmap = bitmap.copy(Bitmap.Config.RGB_565, false);
+            }
+            editor.putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, bitmap);
+        }
+        editor.apply();
+    }
 }

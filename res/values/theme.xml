@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,38 +20,46 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
 <resources>
-	<!-- Color used in LibraryActivity list dividers -->
-	<color name="divider_color">#f444</color>
-	<color name="overlay_color">#a000</color>
-	<!-- color to use in full_playback text, set to bright_foreground_disabled_holo_light //-->
-	<color name="playback_color">#ffb2b2b2</color>
+    <!-- Color used in LibraryActivity list dividers -->
+    <color name="divider_color">#f444</color>
+    <color name="overlay_color">#a000</color>
+    <!-- color to use in full_playback text, set to bright_foreground_disabled_holo_light //-->
+    <color name="playback_color">#ffb2b2b2</color>
 
-	<!-- styles -->
-	<style name="Dialog" parent="android:Theme.Holo.Dialog" />
-	<style name="DialogMinWidth" parent="android:Theme.Holo.Dialog.MinWidth" />
-	<style name="AlertDialogItem">
-		<item name="android:textColor">?android:textColorAlertDialogListItem</item>
-	</style>
-	<style name="Playback" parent="android:Theme.Holo">
-		<item name="android:actionBarStyle">@style/PlaybackActionBar</item>
-		<item name="android:windowBackground">@android:color/black</item>
-	</style>
-	<style name="BackActionBar" parent="android:Theme.Holo">
-		<item name="android:actionBarStyle">@style/PlaybackActionBar</item>
-	</style>
-	<style name="PlaybackActionBar" parent="android:Widget.Holo.ActionBar">
-		<item name="android:displayOptions">showTitle|homeAsUp</item>
-	</style>
-	<style name="Library" parent="android:Theme.Holo">
-		<item name="android:actionBarStyle">@style/LibraryActionBar</item>
-		<item name="android:actionBarTabTextStyle">@style/LibraryActionBarTabText</item>
-	</style>
-	<style name="LibraryActionBar" parent="android:Widget.Holo.ActionBar">
-		<item name="android:displayOptions"></item>
-	</style>
-	<style name="LibraryActionBarTabText" parent="android:Widget.Holo.ActionBar.TabText">
-		<item name="android:singleLine">true</item>
-		<item name="android:textSize">11.5sp</item>
-	</style>
+    <!-- styles -->
+    <style name="Dialog" parent="android:Theme.Holo.Dialog" />
+
+    <style name="DialogMinWidth" parent="android:Theme.Holo.Dialog.MinWidth" />
+
+    <style name="AlertDialogItem">
+        <item name="android:textColor">?android:textColorAlertDialogListItem</item>
+    </style>
+
+    <style name="Playback" parent="android:Theme.Holo">
+        <item name="android:actionBarStyle">@style/PlaybackActionBar</item>
+        <item name="android:windowBackground">@android:color/black</item>
+    </style>
+
+    <style name="BackActionBar" parent="android:Theme.Holo">
+        <item name="android:actionBarStyle">@style/PlaybackActionBar</item>
+    </style>
+
+    <style name="PlaybackActionBar" parent="android:Widget.Holo.ActionBar">
+        <item name="android:displayOptions">showTitle|homeAsUp</item>
+    </style>
+
+    <style name="Library" parent="android:Theme.Holo">
+        <item name="android:actionBarStyle">@style/LibraryActionBar</item>
+        <item name="android:actionBarTabTextStyle">@style/LibraryActionBarTabText</item>
+    </style>
+
+    <style name="LibraryActionBar" parent="android:Widget.Holo.ActionBar">
+        <item name="android:displayOptions"></item>
+    </style>
+
+    <style name="LibraryActionBarTabText" parent="android:Widget.Holo.ActionBar.TabText">
+        <item name="android:singleLine">true</item>
+        <item name="android:textSize">11.5sp</item>
+    </style>
 
 </resources>

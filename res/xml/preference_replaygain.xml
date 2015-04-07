@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,38 +19,36 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<PreferenceScreen
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:persistent="true">
-	<CheckBoxPreference
-		android:key="enable_track_replaygain"
-		android:title="@string/replaygain_track_title"
-		android:summary="@string/replaygain_track_summary"
-		android:defaultValue="false" />
-	<CheckBoxPreference
-		android:key="enable_album_replaygain"
-		android:title="@string/replaygain_album_title"
-		android:summary="@string/replaygain_album_summary"
-		android:defaultValue="false" />
-	<ch.blinkenlights.android.vanilla.SeekBarPreference
-		android:key="replaygain_bump"
-		android:negativeButtonText="@null"
-		android:dialogLayout="@layout/shake_pref"
-		android:title="@string/replaygain_bump_title"
-		android:defaultValue="75" />
-	<ch.blinkenlights.android.vanilla.SeekBarPreference
-		android:key="replaygain_untagged_debump"
-		android:negativeButtonText="@null"
-		android:dialogLayout="@layout/shake_pref"
-		android:title="@string/replaygain_untagged_debump_title"
-		android:defaultValue="150" />
-		
-	<EditTextPreference
-		android:enabled="false"
-		android:title="Note"
-		android:summary="Android does not allow Vanilla Music to raise the volume 
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:persistent="true">
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="enable_track_replaygain"
+        android:summary="@string/replaygain_track_summary"
+        android:title="@string/replaygain_track_title" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="enable_album_replaygain"
+        android:summary="@string/replaygain_album_summary"
+        android:title="@string/replaygain_album_title" />
+    <ch.blinkenlights.android.vanilla.SeekBarPreference
+        android:defaultValue="75"
+        android:dialogLayout="@layout/shake_pref"
+        android:key="replaygain_bump"
+        android:negativeButtonText="@null"
+        android:title="@string/replaygain_bump_title" />
+    <ch.blinkenlights.android.vanilla.SeekBarPreference
+        android:defaultValue="150"
+        android:dialogLayout="@layout/shake_pref"
+        android:key="replaygain_untagged_debump"
+        android:negativeButtonText="@null"
+        android:title="@string/replaygain_untagged_debump_title" />
+
+    <EditTextPreference
+        android:enabled="false"
+        android:summary="Android does not allow Vanilla Music to raise the volume
 to >100%. Setting the Pre-amp to a high value may cause issues if you are listening to 'quiet' music.
 \nRecommended values are:\n-> -3dB for silent/classical music\n-> +3dB for post-2000 recordings"
-		/>
-		
+        android:title="Note" />
+
 </PreferenceScreen>

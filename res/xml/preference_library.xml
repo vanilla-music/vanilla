@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,38 +19,37 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<PreferenceScreen
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:persistent="true">
-	<CheckBoxPreference
-		android:key="controls_in_selector"
-		android:title="@string/controls_in_selector_title"
-		android:summary="@string/controls_in_selector_summary"
-		android:defaultValue="false" />
-	<PreferenceScreen
-		android:title="@string/tabs"
-		android:summary="@string/customize_tab_order">
-		<intent
-			android:targetPackage="ch.blinkenlights.android.vanilla"
-			android:targetClass="ch.blinkenlights.android.vanilla.TabOrderActivity" />
-	</PreferenceScreen>
-	<ch.blinkenlights.android.vanilla.ListPreferenceSummary
-		android:key="default_action_int"
-		android:title="@string/default_action_title"
-		android:entries="@array/default_action_entries"
-		android:entryValues="@array/entry_values"
-		android:defaultValue="7" />
-	<ch.blinkenlights.android.vanilla.ListPreferenceSummary
-		android:key="default_playlist_action"
-		android:title="@string/default_playlist_action_title"
-		android:entries="@array/default_playlist_action_entries"
-		android:entryValues="@array/entry_values"
-		android:defaultValue="3" />
-	<PreferenceScreen
-		android:title="@string/filebrowser_start"
-		android:summary="@string/customize_filebrowser_start">
-		<intent
-			android:targetPackage="ch.blinkenlights.android.vanilla"
-			android:targetClass="ch.blinkenlights.android.vanilla.FilebrowserStartActivity" />
-	</PreferenceScreen>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:persistent="true">
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="controls_in_selector"
+        android:summary="@string/controls_in_selector_summary"
+        android:title="@string/controls_in_selector_title" />
+    <PreferenceScreen
+        android:summary="@string/customize_tab_order"
+        android:title="@string/tabs">
+        <intent
+            android:targetClass="ch.blinkenlights.android.vanilla.TabOrderActivity"
+            android:targetPackage="ch.blinkenlights.android.vanilla" />
+    </PreferenceScreen>
+    <ch.blinkenlights.android.vanilla.ListPreferenceSummary
+        android:defaultValue="7"
+        android:entries="@array/default_action_entries"
+        android:entryValues="@array/entry_values"
+        android:key="default_action_int"
+        android:title="@string/default_action_title" />
+    <ch.blinkenlights.android.vanilla.ListPreferenceSummary
+        android:defaultValue="3"
+        android:entries="@array/default_playlist_action_entries"
+        android:entryValues="@array/entry_values"
+        android:key="default_playlist_action"
+        android:title="@string/default_playlist_action_title" />
+    <PreferenceScreen
+        android:summary="@string/customize_filebrowser_start"
+        android:title="@string/filebrowser_start">
+        <intent
+            android:targetClass="ch.blinkenlights.android.vanilla.FilebrowserStartActivity"
+            android:targetPackage="ch.blinkenlights.android.vanilla" />
+    </PreferenceScreen>
 </PreferenceScreen>

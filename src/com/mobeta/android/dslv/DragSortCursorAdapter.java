@@ -1,13 +1,13 @@
 package com.mobeta.android.dslv;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.util.SparseIntArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+
+import java.util.ArrayList;
 
 
 /**
@@ -18,7 +18,7 @@ import android.widget.CursorAdapter;
  * To persist changes made by drag-sorts, one can retrieve the
  * mapping with the {@link #getCursorPositions()} method, which
  * returns the reordered list of Cursor positions.
- *
+ * <p/>
  * An instance of this class is passed
  * to {@link DragSortListView#setAdapter(ListAdapter)} and, since
  * this class implements the {@link DragSortListView.DragSortListener}
@@ -35,7 +35,7 @@ public abstract class DragSortCursorAdapter extends CursorAdapter implements Dra
     private SparseIntArray mListMapping = new SparseIntArray();
 
     private ArrayList<Integer> mRemovedCursorPositions = new ArrayList<Integer>();
-    
+
     public DragSortCursorAdapter(Context context, Cursor c) {
         super(context, c);
     }
@@ -127,7 +127,7 @@ public abstract class DragSortCursorAdapter extends CursorAdapter implements Dra
             }
             mListMapping.put(to, cursorFrom);
 
-            cleanMapping();        
+            cleanMapping();
             notifyDataSetChanged();
         }
     }
@@ -195,7 +195,6 @@ public abstract class DragSortCursorAdapter extends CursorAdapter implements Dra
      * operations).
      *
      * @param position List position
-     *
      * @return The mapped-to Cursor position
      */
     public int getCursorPosition(int position) {

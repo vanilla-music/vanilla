@@ -19,56 +19,55 @@
 package ch.blinkenlights.android.vanilla;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.widget.ImageButton;
-import android.graphics.Color;
-import android.graphics.ColorFilter;
 
 public class VanillaImageButton extends ImageButton {
 
-	public static boolean mLightTheme = false;
+    public static boolean mLightTheme = false;
 
-	public VanillaImageButton(Context context) {
-		super(context);
-		updateImageTint(-1);
-	}
+    public VanillaImageButton(Context context) {
+        super(context);
+        updateImageTint(-1);
+    }
 
-	public VanillaImageButton(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		updateImageTint(-1);
-	}
+    public VanillaImageButton(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        updateImageTint(-1);
+    }
 
-	public VanillaImageButton(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
-		updateImageTint(-1);
-	}
+    public VanillaImageButton(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        updateImageTint(-1);
+    }
 
-	@Override
-	public void setImageResource(int resId) {
-		super.setImageResource(resId);
-		this.updateImageTint(resId);
-	}
+    @Override
+    public void setImageResource(int resId) {
+        super.setImageResource(resId);
+        this.updateImageTint(resId);
+    }
 
 
-	private void updateImageTint(int resHint) {
-		boolean setFilter = mLightTheme == true;
+    private void updateImageTint(int resHint) {
+        boolean setFilter = mLightTheme == true;
 
-		// These drawables should never be filtered:
-		switch (resHint) {
-			case R.drawable.repeat_active:
-			case R.drawable.repeat_current_active:
-			case R.drawable.stop_current_active:
-			case R.drawable.shuffle_active:
-			case R.drawable.shuffle_album_active:
-			case R.drawable.random_active:
-				setFilter = false;
-		}
+        // These drawables should never be filtered:
+        switch (resHint) {
+            case R.drawable.repeat_active:
+            case R.drawable.repeat_current_active:
+            case R.drawable.stop_current_active:
+            case R.drawable.shuffle_active:
+            case R.drawable.shuffle_album_active:
+            case R.drawable.random_active:
+                setFilter = false;
+        }
 
-		if (setFilter == true) {
-			this.setColorFilter(Color.argb(255, 130, 130, 130));
-		} else {
-			this.setColorFilter(null);
-		}
-	}
+        if (setFilter == true) {
+            this.setColorFilter(Color.argb(255, 130, 130, 130));
+        } else {
+            this.setColorFilter(null);
+        }
+    }
 
 }

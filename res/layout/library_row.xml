@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,11 +19,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<TextView
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:background="?android:attr/selectableItemBackground"
-	android:maxLines="2"
-	android:textColor="?android:textColorPrimary"
-	android:gravity="left|center_vertical"
-	android:padding="3dip"
-	android:minHeight="44dip" />
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="?android:attr/selectableItemBackground"
+    android:gravity="left|center_vertical"
+    android:maxLines="2"
+    android:minHeight="44dip"
+    android:padding="3dip"
+    android:textColor="?android:textColorPrimary" />

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 Copyright (C) 2014 Adrian Ulrich <adrian@blinkenlights.ch>
 
 This program is free software: you can redistribute it and/or modify
@@ -15,14 +14,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>. 
 -->
-<com.mobeta.android.dslv.DragSortListView
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:dslv="http://schemas.android.com/apk/res-auto"
-	android:id="@+id/list"
-	android:divider="@null"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
-	android:scrollbarStyle="outsideInset"
-	dslv:drag_enabled="false"
-	dslv:drag_start_mode="onMove"
-	dslv:drag_handle_id="@+id/dragger"/>
+<com.mobeta.android.dslv.DragSortListView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dslv="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/list"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:divider="@null"
+    android:scrollbarStyle="outsideInset"
+    dslv:drag_enabled="false"
+    dslv:drag_handle_id="@+id/dragger"
+    dslv:drag_start_mode="onMove" />

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,32 +19,34 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="horizontal">
-	<TextView
-		android:id="@+id/text"
-		android:longClickable="true"
-		android:background="?android:attr/selectableItemBackground"
-		android:maxLines="2"
-		android:padding="3dip"
-		android:textColor="?android:textColorPrimary"
-		android:gravity="left|center_vertical"
-		android:layout_width="0px"
-		android:layout_height="44dip"
-		android:layout_weight="1" />
-	<View
-		android:id="@+id/divider"
-		android:layout_width="1dip"
-		android:layout_height="fill_parent"
-		android:background="@color/divider_color" />
-	<ImageView
-		android:id="@+id/arrow"
-		android:background="?android:attr/selectableItemBackground"
-		android:longClickable="true"
-		android:scaleType="center"
-		android:src="@drawable/arrow"
-		android:layout_width="44dip"
-		android:layout_height="44dip"
-		android:contentDescription="@string/expand" />
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="0px"
+        android:layout_height="44dip"
+        android:layout_weight="1"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="left|center_vertical"
+        android:longClickable="true"
+        android:maxLines="2"
+        android:padding="3dip"
+        android:textColor="?android:textColorPrimary" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="1dip"
+        android:layout_height="fill_parent"
+        android:background="@color/divider_color" />
+
+    <ImageView
+        android:id="@+id/arrow"
+        android:layout_width="44dip"
+        android:layout_height="44dip"
+        android:background="?android:attr/selectableItemBackground"
+        android:contentDescription="@string/expand"
+        android:longClickable="true"
+        android:scaleType="center"
+        android:src="@drawable/arrow" />
 </LinearLayout>

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,76 +20,83 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
-	android:orientation="horizontal"
-	android:background="#B2191919">
-	<ImageView
-		android:id="@+id/cover"
-		android:layout_width="wrap_content"
-		android:layout_height="fill_parent"
-		android:adjustViewBounds="true"
-		android:padding="5dip"
-		android:scaleType="fitCenter"
-		android:contentDescription="@string/cover_art" />
-	<LinearLayout
-		android:id="@+id/text_layout"
-		android:layout_width="0px"
-		android:layout_height="wrap_content"
-		android:layout_weight="1"
-		android:layout_gravity="center"
-		android:orientation="vertical"
-		android:paddingLeft="8dip"
-		android:paddingRight="8dip">
-		<TextView
-			android:id="@+id/title"
-			android:visibility="gone"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:textColor="#fff"
-			android:textSize="20sp"
-			android:textStyle="bold"
-			android:singleLine="true"
-			android:fadingEdge="horizontal"
-			android:fadingEdgeLength="10dip"
-			android:ellipsize="none" />
-		<TextView
-			android:id="@+id/artist"
-			android:text="@string/app_name"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:textColor="#fff"
-			android:textSize="16sp"
-			android:singleLine="true"
-			android:fadingEdge="horizontal"
-			android:fadingEdgeLength="10dip"
-			android:ellipsize="none" />
-	</LinearLayout>
-	<LinearLayout
-		android:orientation="vertical"
-		android:layout_width="wrap_content"
-		android:layout_height="fill_parent">
-		<ImageButton
-			android:id="@+id/play_pause"
-			android:adjustViewBounds="true"
-			android:layout_width="fill_parent"
-			android:layout_height="0px"
-			android:layout_weight="1"
-			android:src="@drawable/play"
-			android:padding="5dip"
-			android:background="?android:attr/selectableItemBackground"
-			android:scaleType="centerInside"
-			android:contentDescription="@string/play_pause" />
-		<ImageButton
-			android:id="@+id/next"
-			android:adjustViewBounds="true"
-			android:layout_width="fill_parent"
-			android:layout_height="0px"
-			android:layout_weight="1"
-			android:padding="5dip"
-			android:src="@drawable/next"
-			android:background="?android:attr/selectableItemBackground"
-			android:scaleType="centerInside"
-			android:contentDescription="@string/next_song" />
-	</LinearLayout>
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#B2191919"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/cover"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/cover_art"
+        android:padding="5dip"
+        android:scaleType="fitCenter" />
+
+    <LinearLayout
+        android:id="@+id/text_layout"
+        android:layout_width="0px"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingLeft="8dip"
+        android:paddingRight="8dip">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="none"
+            android:fadingEdge="horizontal"
+            android:fadingEdgeLength="10dip"
+            android:singleLine="true"
+            android:textColor="#fff"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/artist"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="none"
+            android:fadingEdge="horizontal"
+            android:fadingEdgeLength="10dip"
+            android:singleLine="true"
+            android:text="@string/app_name"
+            android:textColor="#fff"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
+
+        <ImageButton
+            android:id="@+id/play_pause"
+            android:layout_width="fill_parent"
+            android:layout_height="0px"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="@string/play_pause"
+            android:padding="5dip"
+            android:scaleType="centerInside"
+            android:src="@drawable/play" />
+
+        <ImageButton
+            android:id="@+id/next"
+            android:layout_width="fill_parent"
+            android:layout_height="0px"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="@string/next_song"
+            android:padding="5dip"
+            android:scaleType="centerInside"
+            android:src="@drawable/next" />
+    </LinearLayout>
 </LinearLayout>

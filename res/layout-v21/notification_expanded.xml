@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 Copyright (C) 2014 Adrian Ulrich <adrian@blinkenlights.ch>
 
 This program is free software: you can redistribute it and/or modify
@@ -16,115 +15,122 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>. 
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:layout_gravity="center_vertical"
-	android:orientation="horizontal">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_vertical"
+    android:orientation="horizontal">
 
-	<ImageView
-		android:id="@+id/cover"
-		android:scaleType="fitCenter"
-		android:layout_width="128dp"
-		android:layout_height="128dp"
-		android:layout_marginRight="8dp"
-		android:contentDescription="@string/cover_art" />
+    <ImageView
+        android:id="@+id/cover"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        android:layout_marginRight="8dp"
+        android:contentDescription="@string/cover_art"
+        android:scaleType="fitCenter" />
 
-	<LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-		<LinearLayout
-			android:layout_width="match_parent"
-			android:layout_height="0dp"
-			android:layout_weight="1"
-			android:orientation="horizontal">
-			<LinearLayout
-				android:layout_marginTop="4dp"
-				android:layout_width="0px"
-				android:layout_height="match_parent"
-				android:layout_weight="1"
-				android:layout_gravity="center"
-				android:orientation="vertical">
-				<TextView
-					android:id="@+id/title"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"
-					android:singleLine="true"
-					android:ellipsize="marquee" />
-				<TextView
-					android:id="@+id/artist"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:textAppearance="@android:style/TextAppearance.Material.Notification.Line2"
-					android:singleLine="true"
-					android:ellipsize="marquee" />
-				<TextView
-					android:id="@+id/album"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:textAppearance="@android:style/TextAppearance.Material.Notification.Line2"
-					android:singleLine="true"
-					android:ellipsize="marquee" />
-			</LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
 
-			<ImageButton
-				android:id="@+id/close"
-				android:padding="5dp"
-				android:layout_width="32dp"
-				android:layout_height="32dp"
-				android:scaleType="fitCenter"
-				android:background="?android:attr/selectableItemBackground"
-				android:src="@drawable/notification_close_dark"
-				android:contentDescription="@string/close_notification" />
-		</LinearLayout>
+            <LinearLayout
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginTop="4dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-		<!-- start controll buttons -->
-		<LinearLayout
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:orientation="horizontal">
-			<ImageButton
-				android:id="@+id/previous"
-				android:paddingTop="5dp"
-				android:paddingBottom="5dp"
-				android:layout_height="42dp"
-				android:layout_width="match_parent"
-				android:layout_gravity="center"
-				android:layout_weight="1"
-				android:background="?android:attr/selectableItemBackground"
-				android:scaleType="fitCenter"
-				android:src="@drawable/widget_previous"
-				android:contentDescription="@string/next_song" />
-			<ImageButton
-				android:id="@+id/play_pause"
-				android:paddingTop="5dp"
-				android:paddingBottom="5dp"
-				android:layout_height="42dp"
-				android:layout_width="match_parent"
-				android:layout_gravity="center"
-				android:layout_weight="1"
-				android:background="?android:attr/selectableItemBackground"
-				android:scaleType="fitCenter"
-				android:src="@drawable/widget_play"
-				android:contentDescription="@string/play_pause" />
-			<ImageButton
-				android:id="@+id/next"
-				android:paddingTop="5dp"
-				android:paddingBottom="5dp"
-				android:layout_height="42dp"
-				android:layout_width="match_parent"
-				android:layout_gravity="center"
-				android:layout_weight="1"
-				android:background="?android:attr/selectableItemBackground"
-				android:scaleType="fitCenter"
-				android:src="@drawable/widget_next"
-				android:contentDescription="@string/next_song" />
-		</LinearLayout>
-		<!-- end controll buttons -->
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="marquee"
+                    android:singleLine="true"
+                    android:textAppearance="@android:style/TextAppearance.Material.Notification.Title" />
 
-	</LinearLayout>
+                <TextView
+                    android:id="@+id/artist"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="marquee"
+                    android:singleLine="true"
+                    android:textAppearance="@android:style/TextAppearance.Material.Notification.Line2" />
+
+                <TextView
+                    android:id="@+id/album"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="marquee"
+                    android:singleLine="true"
+                    android:textAppearance="@android:style/TextAppearance.Material.Notification.Line2" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/close"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:contentDescription="@string/close_notification"
+                android:padding="5dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/notification_close_dark" />
+        </LinearLayout>
+
+        <!-- start controll buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/previous"
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="?android:attr/selectableItemBackground"
+                android:contentDescription="@string/next_song"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/widget_previous" />
+
+            <ImageButton
+                android:id="@+id/play_pause"
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="?android:attr/selectableItemBackground"
+                android:contentDescription="@string/play_pause"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/widget_play" />
+
+            <ImageButton
+                android:id="@+id/next"
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="?android:attr/selectableItemBackground"
+                android:contentDescription="@string/next_song"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/widget_next" />
+        </LinearLayout>
+        <!-- end controll buttons -->
+
+    </LinearLayout>
 
 
 </LinearLayout>

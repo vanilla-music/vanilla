@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,52 +20,44 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-	<PreferenceScreen
-		android:title="@string/audio">
-		<intent
-			android:targetPackage="ch.blinkenlights.android.vanilla"
-			android:targetClass="ch.blinkenlights.android.vanilla.PreferencesActivity$AudioActivity" />
-	</PreferenceScreen>
-	<PreferenceScreen
-		android:title="@string/playback_screen">
-		<intent
-			android:targetPackage="ch.blinkenlights.android.vanilla"
-			android:targetClass="ch.blinkenlights.android.vanilla.PreferencesActivity$PlaybackActivity" />
-	</PreferenceScreen>
-	<PreferenceScreen
-		android:title="@string/library_screen">
-		<intent
-			android:targetPackage="ch.blinkenlights.android.vanilla"
-			android:targetClass="ch.blinkenlights.android.vanilla.PreferencesActivity$LibraryActivity" />
-	</PreferenceScreen>
-	<PreferenceScreen
-		android:title="@string/notifications">
-		<intent
-			android:targetPackage="ch.blinkenlights.android.vanilla"
-			android:targetClass="ch.blinkenlights.android.vanilla.PreferencesActivity$NotificationsActivity" />
-	</PreferenceScreen>
-	<PreferenceScreen
-		android:title="@string/accelerometer_shake">
-		<intent
-			android:targetPackage="ch.blinkenlights.android.vanilla"
-			android:targetClass="ch.blinkenlights.android.vanilla.PreferencesActivity$ShakeActivity" />
-	</PreferenceScreen>
-	<PreferenceScreen
-		android:title="@string/cover_art">
-		<intent
-			android:targetPackage="ch.blinkenlights.android.vanilla"
-			android:targetClass="ch.blinkenlights.android.vanilla.PreferencesActivity$CoverArtActivity" />
-	</PreferenceScreen>
-	<PreferenceScreen
-		android:title="@string/misc_features">
-		<intent
-			android:targetPackage="ch.blinkenlights.android.vanilla"
-			android:targetClass="ch.blinkenlights.android.vanilla.PreferencesActivity$MiscActivity" />
-	</PreferenceScreen>
-	<PreferenceScreen
-		android:title="@string/about">
-		<intent
-			android:targetPackage="ch.blinkenlights.android.vanilla"
-			android:targetClass="ch.blinkenlights.android.vanilla.PreferencesActivity$AboutActivity" />
-	</PreferenceScreen>
+    <PreferenceScreen android:title="@string/audio">
+        <intent
+            android:targetClass="ch.blinkenlights.android.vanilla.PreferencesActivity$AudioActivity"
+            android:targetPackage="ch.blinkenlights.android.vanilla" />
+    </PreferenceScreen>
+    <PreferenceScreen android:title="@string/playback_screen">
+        <intent
+            android:targetClass="ch.blinkenlights.android.vanilla.PreferencesActivity$PlaybackActivity"
+            android:targetPackage="ch.blinkenlights.android.vanilla" />
+    </PreferenceScreen>
+    <PreferenceScreen android:title="@string/library_screen">
+        <intent
+            android:targetClass="ch.blinkenlights.android.vanilla.PreferencesActivity$LibraryActivity"
+            android:targetPackage="ch.blinkenlights.android.vanilla" />
+    </PreferenceScreen>
+    <PreferenceScreen android:title="@string/notifications">
+        <intent
+            android:targetClass="ch.blinkenlights.android.vanilla.PreferencesActivity$NotificationsActivity"
+            android:targetPackage="ch.blinkenlights.android.vanilla" />
+    </PreferenceScreen>
+    <PreferenceScreen android:title="@string/accelerometer_shake">
+        <intent
+            android:targetClass="ch.blinkenlights.android.vanilla.PreferencesActivity$ShakeActivity"
+            android:targetPackage="ch.blinkenlights.android.vanilla" />
+    </PreferenceScreen>
+    <PreferenceScreen android:title="@string/cover_art">
+        <intent
+            android:targetClass="ch.blinkenlights.android.vanilla.PreferencesActivity$CoverArtActivity"
+            android:targetPackage="ch.blinkenlights.android.vanilla" />
+    </PreferenceScreen>
+    <PreferenceScreen android:title="@string/misc_features">
+        <intent
+            android:targetClass="ch.blinkenlights.android.vanilla.PreferencesActivity$MiscActivity"
+            android:targetPackage="ch.blinkenlights.android.vanilla" />
+    </PreferenceScreen>
+    <PreferenceScreen android:title="@string/about">
+        <intent
+            android:targetClass="ch.blinkenlights.android.vanilla.PreferencesActivity$AboutActivity"
+            android:targetPackage="ch.blinkenlights.android.vanilla" />
+    </PreferenceScreen>
 </PreferenceScreen>

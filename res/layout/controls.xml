@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,49 +20,54 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
-	<ch.blinkenlights.android.vanilla.VanillaImageButton
-		android:id="@+id/shuffle"
-		android:layout_height="fill_parent"
-		android:layout_width="0px"
-		android:layout_weight="1"
-		android:background="?android:attr/selectableItemBackground"
-		android:scaleType="fitCenter"
-		android:src="@drawable/shuffle_inactive"
-		android:contentDescription="@string/cycle_shuffle_mode" />
-	<ch.blinkenlights.android.vanilla.VanillaImageButton
-		android:id="@+id/previous"
-		android:layout_height="fill_parent"
-		android:layout_width="0px"
-		android:layout_weight="1"
-		android:background="?android:attr/selectableItemBackground"
-		android:scaleType="fitCenter"
-		android:src="@drawable/previous"
-		android:contentDescription="@string/previous_song" />
-	<ch.blinkenlights.android.vanilla.VanillaImageButton
-		android:id="@+id/play_pause"
-		android:layout_height="fill_parent"
-		android:layout_width="0px"
-		android:layout_weight="1"
-		android:background="?android:attr/selectableItemBackground"
-		android:scaleType="fitCenter"
-		android:src="@drawable/play"
-		android:contentDescription="@string/play_pause" />
-	<ch.blinkenlights.android.vanilla.VanillaImageButton
-		android:id="@+id/next"
-		android:layout_height="fill_parent"
-		android:layout_width="0px"
-		android:layout_weight="1"
-		android:background="?android:attr/selectableItemBackground"
-		android:scaleType="fitCenter"
-		android:src="@drawable/next"
-		android:contentDescription="@string/next_song" />
-	<ch.blinkenlights.android.vanilla.VanillaImageButton
-		android:id="@+id/end_action"
-		android:layout_height="fill_parent"
-		android:layout_width="0px"
-		android:layout_weight="1"
-		android:background="?android:attr/selectableItemBackground"
-		android:scaleType="fitCenter"
-		android:src="@drawable/repeat_inactive"
-		android:contentDescription="@string/cycle_repeat_mode" />
+
+    <ch.blinkenlights.android.vanilla.VanillaImageButton
+        android:id="@+id/shuffle"
+        android:layout_width="0px"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:background="?android:attr/selectableItemBackground"
+        android:contentDescription="@string/cycle_shuffle_mode"
+        android:scaleType="fitCenter"
+        android:src="@drawable/shuffle_inactive" />
+
+    <ch.blinkenlights.android.vanilla.VanillaImageButton
+        android:id="@+id/previous"
+        android:layout_width="0px"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:background="?android:attr/selectableItemBackground"
+        android:contentDescription="@string/previous_song"
+        android:scaleType="fitCenter"
+        android:src="@drawable/previous" />
+
+    <ch.blinkenlights.android.vanilla.VanillaImageButton
+        android:id="@+id/play_pause"
+        android:layout_width="0px"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:background="?android:attr/selectableItemBackground"
+        android:contentDescription="@string/play_pause"
+        android:scaleType="fitCenter"
+        android:src="@drawable/play" />
+
+    <ch.blinkenlights.android.vanilla.VanillaImageButton
+        android:id="@+id/next"
+        android:layout_width="0px"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:background="?android:attr/selectableItemBackground"
+        android:contentDescription="@string/next_song"
+        android:scaleType="fitCenter"
+        android:src="@drawable/next" />
+
+    <ch.blinkenlights.android.vanilla.VanillaImageButton
+        android:id="@+id/end_action"
+        android:layout_width="0px"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:background="?android:attr/selectableItemBackground"
+        android:contentDescription="@string/cycle_repeat_mode"
+        android:scaleType="fitCenter"
+        android:src="@drawable/repeat_inactive" />
 </merge>
