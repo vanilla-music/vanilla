@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,51 +19,57 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/controls"
-	android:background="@drawable/music_bottom_playback_bg"
-	android:layout_width="fill_parent"
-	android:layout_height="80dip">
-	<TextView
-		android:id="@+id/empty_queue"
-		android:gravity="center"
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
-		android:text="@string/empty_queue"
-		android:visibility="gone" />
-	<ImageView
-		android:id="@+id/cover"
-		android:scaleType="fitCenter"
-		android:layout_width="80dip"
-		android:layout_height="fill_parent"
-		android:layout_gravity="center"
-		android:contentDescription="@string/cover_art" />
-	<LinearLayout
-		android:layout_height="fill_parent"
-		android:layout_width="fill_parent"
-		android:orientation="vertical">
-		<TextView
-			android:id="@+id/title"
-			android:textSize="14sp"
-			android:singleLine="true"
-			android:ellipsize="marquee"
-			android:gravity="center"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content" />
-		<TextView
-			android:id="@+id/artist"
-			android:textSize="12sp"
-			android:singleLine="true"
-			android:ellipsize="marquee"
-			android:gravity="center"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content" />
-		<LinearLayout
-			android:orientation="horizontal"
-			android:layout_width="fill_parent"
-			android:layout_height="fill_parent">
-			<include layout="@layout/controls" />
-		</LinearLayout>
-	</LinearLayout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/controls"
+    android:layout_width="fill_parent"
+    android:layout_height="80dip"
+    android:background="@drawable/music_bottom_playback_bg">
+
+    <TextView
+        android:id="@+id/empty_queue"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:text="@string/empty_queue"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/cover"
+        android:layout_width="80dip"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center"
+        android:contentDescription="@string/cover_art"
+        android:scaleType="fitCenter" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/artist"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textSize="12sp" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="horizontal">
+
+            <include layout="@layout/controls" />
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

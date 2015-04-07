@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,11 +19,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<ListView
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
-	android:divider="@color/divider_color"
-	android:dividerHeight="1dip"
-	android:listSelector="?android:attr/selectableItemBackground"
-	android:scrollbarStyle="outsideInset" />
+<ListView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:divider="@color/divider_color"
+    android:dividerHeight="1dip"
+    android:listSelector="?android:attr/selectableItemBackground"
+    android:scrollbarStyle="outsideInset" />

@@ -17,68 +17,64 @@
 
 package ch.blinkenlights.android.vanilla;
 
-import android.content.Context;
 import android.app.Activity;
+import android.content.Context;
+import android.graphics.Color;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.view.LayoutInflater;
-import android.widget.TextView;
-
-import android.graphics.Color;
-import android.text.SpannableStringBuilder;
-import android.text.style.ForegroundColorSpan;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
 
 public class ShowQueueAdapter
-	extends ArrayAdapter<Song>
-	 {
-	
-	int mResource;
-	int mHighlightRow;
-	Context mContext;
+        extends ArrayAdapter<Song> {
 
-	public ShowQueueAdapter(Context context, int resource) {
-		super(context, resource);
-		mResource = resource;
-		mContext = context;
-		mHighlightRow = -1;
-	}
+    int mResource;
+    int mHighlightRow;
+    Context mContext;
 
-	/**
-	* Tells the adapter to highlight a specific row id
-	* Set this to -1 to disable the feature
-	*/
-	public void highlightRow(int pos) {
-		mHighlightRow = pos;
-	}
+    public ShowQueueAdapter(Context context, int resource) {
+        super(context, resource);
+        mResource = resource;
+        mContext = context;
+        mHighlightRow = -1;
+    }
+
+    /**
+     * Tells the adapter to highlight a specific row id
+     * Set this to -1 to disable the feature
+     */
+    public void highlightRow(int pos) {
+        mHighlightRow = pos;
+    }
 
 
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		DraggableRow row;
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        DraggableRow row;
 
-		if (convertView != null) {
-			row = (DraggableRow)convertView;
-		} else {
-			LayoutInflater inflater = ((Activity)mContext).getLayoutInflater();
-			row = (DraggableRow)inflater.inflate(mResource, parent, false);
-		}
+        if (convertView != null) {
+            row = (DraggableRow) convertView;
+        } else {
+            LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
+            row = (DraggableRow) inflater.inflate(mResource, parent, false);
+        }
 
-		Song song = getItem(position);
+        Song song = getItem(position);
 
-		if (song != null) { // unlikely to fail but seems to happen in the wild.
-			SpannableStringBuilder sb = new SpannableStringBuilder(song.title);
-			sb.append('\n');
-			sb.append(song.album+", "+song.artist);
-			sb.setSpan(new ForegroundColorSpan(Color.GRAY), song.title.length() + 1, sb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-			row.getTextView().setText(sb);
-		}
+        if (song != null) { // unlikely to fail but seems to happen in the wild.
+            SpannableStringBuilder sb = new SpannableStringBuilder(song.title);
+            sb.append('\n');
+            sb.append(song.album + ", " + song.artist);
+            sb.setSpan(new ForegroundColorSpan(Color.GRAY), song.title.length() + 1, sb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            row.getTextView().setText(sb);
+        }
 
-		row.highlightRow(position == mHighlightRow);
+        row.highlightRow(position == mHighlightRow);
 
-		return row;
-	}
+        return row;
+    }
 
 }

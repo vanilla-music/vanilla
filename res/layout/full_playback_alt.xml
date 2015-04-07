@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,131 +20,183 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
-	<ch.blinkenlights.android.vanilla.CoverView
-		android:id="@+id/cover_view"
-		android:layout_height="fill_parent"
-		android:layout_width="fill_parent" />
-	<TableLayout
-		android:id="@+id/info_table"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:layout_gravity="top"
-		android:collapseColumns="0"
-		android:stretchColumns="1"
-		android:shrinkColumns="1"
-		android:background="@color/overlay_color"
-		android:paddingLeft="5dip"
-		android:paddingRight="5dip">
-		<TableRow>
-			<TextView
-				android:text="@string/_title"
-				android:textColor="@color/playback_color"
-				android:paddingRight="5dip"
-				android:gravity="right" />
-			<TextView
-				android:id="@+id/title"
-				android:textColor="@color/playback_color"
-				android:textStyle="bold" />
-			<TextView
-				android:id="@+id/queue_pos"
-				android:singleLine="true"
-				android:layout_gravity="top" />
-		</TableRow>
-		<TableRow>
-			<TextView
-				android:text="@string/_artist"
-				android:textColor="@color/playback_color"
-				android:paddingRight="5dip"
-				android:gravity="right" />
-			<TextView android:id="@+id/artist" android:textColor="@color/playback_color"/>
-		</TableRow>
-		<TableRow>
-			<TextView
-				android:text="@string/_album"
-				android:textColor="@color/playback_color"
-				android:paddingRight="5dip"
-				android:gravity="right" />
-			<TextView android:id="@+id/album" android:textColor="@color/playback_color"/>
-		</TableRow>
-		<TableRow>
-			<TextView
-				android:text="@string/_genre"
-				android:textColor="@color/playback_color"
-				android:paddingRight="5dip"
-				android:gravity="right" />
-			<TextView android:id="@+id/genre" android:textColor="@color/playback_color"/>
-		</TableRow>
-		<TableRow>
-			<TextView
-				android:text="@string/_track"
-				android:textColor="@color/playback_color"
-				android:paddingRight="5dip"
-				android:gravity="right" />
-			<TextView android:id="@+id/track" android:textColor="@color/playback_color"/>
-		</TableRow>
-		<TableRow>
-			<TextView
-				android:text="@string/_year"
-				android:textColor="@color/playback_color"
-				android:paddingRight="5dip"
-				android:gravity="right" />
-			<TextView android:id="@+id/year" android:textColor="@color/playback_color"/>
-		</TableRow>
-		<TableRow>
-			<TextView
-				android:text="@string/_composer"
-				android:textColor="@color/playback_color"
-				android:paddingRight="5dip"
-				android:gravity="right" />
-			<TextView android:id="@+id/composer" android:textColor="@color/playback_color"/>
-		</TableRow>
-		<TableRow>
-			<TextView
-				android:text="@string/_format"
-				android:textColor="@color/playback_color"
-				android:paddingRight="5dip"
-				android:gravity="right" />
-			<TextView android:id="@+id/format" android:textColor="@color/playback_color"/>
-		</TableRow>
-		<TableRow>
-			<TextView
-				android:text="@string/_replaygain"
-				android:textColor="@color/playback_color"
-				android:paddingRight="5dip"
-				android:gravity="right" />
-			<TextView android:id="@+id/replaygain" android:textColor="@color/playback_color"/>
-		</TableRow>
-		<LinearLayout android:id="@+id/controls_top">
-			<TextView
-				android:id="@+id/elapsed"
-				android:layout_height="wrap_content"
-				android:layout_width="wrap_content"
-				android:textSize="10sp"
-				android:layout_gravity="center" />
-			<SeekBar
-				android:id="@+id/seek_bar"
-				android:layout_height="wrap_content"
-				android:layout_width="0px"
-				android:layout_gravity="center"
-				android:layout_weight="1"
-				android:paddingLeft="18dip"
-				android:paddingRight="18dip" />
-			<TextView
-				android:id="@+id/duration"
-				android:layout_height="wrap_content"
-				android:layout_width="wrap_content"
-				android:textSize="10sp"
-				android:layout_gravity="center" />
-		</LinearLayout>
-	</TableLayout>
-	<LinearLayout
-		android:id="@+id/controls_bottom"
-		android:layout_height="wrap_content"
-		android:layout_width="fill_parent"
-		android:layout_gravity="bottom|left"
-		android:layout_margin="0dip"
-		android:background="@color/overlay_color"
-		android:orientation="horizontal">
-		<include layout="@layout/controls" />
-	</LinearLayout>
+
+    <ch.blinkenlights.android.vanilla.CoverView
+        android:id="@+id/cover_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+
+    <TableLayout
+        android:id="@+id/info_table"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:background="@color/overlay_color"
+        android:collapseColumns="0"
+        android:paddingLeft="5dip"
+        android:paddingRight="5dip"
+        android:shrinkColumns="1"
+        android:stretchColumns="1">
+
+        <TableRow>
+
+            <TextView
+                android:gravity="right"
+                android:paddingRight="5dip"
+                android:text="@string/_title"
+                android:textColor="@color/playback_color" />
+
+            <TextView
+                android:id="@+id/title"
+                android:textColor="@color/playback_color"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/queue_pos"
+                android:layout_gravity="top"
+                android:singleLine="true" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:gravity="right"
+                android:paddingRight="5dip"
+                android:text="@string/_artist"
+                android:textColor="@color/playback_color" />
+
+            <TextView
+                android:id="@+id/artist"
+                android:textColor="@color/playback_color" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:gravity="right"
+                android:paddingRight="5dip"
+                android:text="@string/_album"
+                android:textColor="@color/playback_color" />
+
+            <TextView
+                android:id="@+id/album"
+                android:textColor="@color/playback_color" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:gravity="right"
+                android:paddingRight="5dip"
+                android:text="@string/_genre"
+                android:textColor="@color/playback_color" />
+
+            <TextView
+                android:id="@+id/genre"
+                android:textColor="@color/playback_color" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:gravity="right"
+                android:paddingRight="5dip"
+                android:text="@string/_track"
+                android:textColor="@color/playback_color" />
+
+            <TextView
+                android:id="@+id/track"
+                android:textColor="@color/playback_color" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:gravity="right"
+                android:paddingRight="5dip"
+                android:text="@string/_year"
+                android:textColor="@color/playback_color" />
+
+            <TextView
+                android:id="@+id/year"
+                android:textColor="@color/playback_color" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:gravity="right"
+                android:paddingRight="5dip"
+                android:text="@string/_composer"
+                android:textColor="@color/playback_color" />
+
+            <TextView
+                android:id="@+id/composer"
+                android:textColor="@color/playback_color" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:gravity="right"
+                android:paddingRight="5dip"
+                android:text="@string/_format"
+                android:textColor="@color/playback_color" />
+
+            <TextView
+                android:id="@+id/format"
+                android:textColor="@color/playback_color" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:gravity="right"
+                android:paddingRight="5dip"
+                android:text="@string/_replaygain"
+                android:textColor="@color/playback_color" />
+
+            <TextView
+                android:id="@+id/replaygain"
+                android:textColor="@color/playback_color" />
+        </TableRow>
+
+        <LinearLayout android:id="@+id/controls_top">
+
+            <TextView
+                android:id="@+id/elapsed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textSize="10sp" />
+
+            <SeekBar
+                android:id="@+id/seek_bar"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:paddingLeft="18dip"
+                android:paddingRight="18dip" />
+
+            <TextView
+                android:id="@+id/duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textSize="10sp" />
+        </LinearLayout>
+    </TableLayout>
+
+    <LinearLayout
+        android:id="@+id/controls_bottom"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|left"
+        android:layout_margin="0dip"
+        android:background="@color/overlay_color"
+        android:orientation="horizontal">
+
+        <include layout="@layout/controls" />
+    </LinearLayout>
 </merge>

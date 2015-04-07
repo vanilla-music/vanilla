@@ -34,104 +34,94 @@ import android.widget.TextView;
  * SeekBar preference to set the shake force threshold.
  */
 public class SeekBarPreference extends DialogPreference implements SeekBar.OnSeekBarChangeListener {
-	/**
-	 * The current value.
-	 */
-	private int mValue;
-	
-	/**
-	 * Our context (needed for getResources())
-	 */
-	private Context mContext;
-	
-	/**
-	 * TextView to display current threshold.
-	 */
-	private TextView mValueText;
+    /**
+     * The current value.
+     */
+    private int mValue;
 
-	public SeekBarPreference(Context context, AttributeSet attrs)
-	{
-		super(context, attrs);
-		mContext = context;
-	}
+    /**
+     * Our context (needed for getResources())
+     */
+    private Context mContext;
 
-	@Override
-	public CharSequence getSummary()
-	{
-		return getSummary(mValue);
-	}
+    /**
+     * TextView to display current threshold.
+     */
+    private TextView mValueText;
 
-	@Override
-	protected Object onGetDefaultValue(TypedArray a, int index)
-	{
-		return a.getInt(index, 100);
-	}
-
-	@Override
-	protected void onSetInitialValue(boolean restoreValue, Object defaultValue)
-	{
-		mValue = restoreValue ? getPersistedInt(mValue) : (Integer)defaultValue;
+    public SeekBarPreference(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        mContext = context;
     }
 
-	/**
-	 * Create the summary for the given value.
-	 *
-	 * @param value The force threshold.
-	 * @return A string representation of the threshold.
-	 */
-	private String getSummary(int value)
-	{
-		if ("shake_threshold".equals(getKey())) {
-			return String.valueOf(value / 10.0f);
-		} else if("replaygain_bump".equals(getKey())) {
-			return String.format("%+.1fdB", 2*(value-75)/10f);
-		} else if("replaygain_untagged_debump".equals(getKey())) {
-			String summary = (String)mContext.getResources().getText(R.string.replaygain_untagged_debump_summary);
-			return String.format("%s %.1fdB", summary, (value-150)/10f);
-		} else {
-			return String.format("%d%% (%+.1fdB)", value, 20 * Math.log10(Math.pow(value / 100.0, 3)));
-		}
-	}
+    @Override
+    public CharSequence getSummary() {
+        return getSummary(mValue);
+    }
 
-	@Override
-	protected View onCreateDialogView()
-	{
-		View view = super.onCreateDialogView();
+    @Override
+    protected Object onGetDefaultValue(TypedArray a, int index) {
+        return a.getInt(index, 100);
+    }
 
-		mValueText = (TextView)view.findViewById(R.id.value);
-		mValueText.setText(getSummary(mValue));
+    @Override
+    protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
+        mValue = restoreValue ? getPersistedInt(mValue) : (Integer) defaultValue;
+    }
 
-		SeekBar seekBar = (SeekBar)view.findViewById(R.id.seek_bar);
-		seekBar.setMax(150);
-		seekBar.setProgress(mValue);
-		seekBar.setOnSeekBarChangeListener(this);
+    /**
+     * Create the summary for the given value.
+     *
+     * @param value The force threshold.
+     * @return A string representation of the threshold.
+     */
+    private String getSummary(int value) {
+        if ("shake_threshold".equals(getKey())) {
+            return String.valueOf(value / 10.0f);
+        } else if ("replaygain_bump".equals(getKey())) {
+            return String.format("%+.1fdB", 2 * (value - 75) / 10f);
+        } else if ("replaygain_untagged_debump".equals(getKey())) {
+            String summary = (String) mContext.getResources().getText(R.string.replaygain_untagged_debump_summary);
+            return String.format("%s %.1fdB", summary, (value - 150) / 10f);
+        } else {
+            return String.format("%d%% (%+.1fdB)", value, 20 * Math.log10(Math.pow(value / 100.0, 3)));
+        }
+    }
 
-		return view;
-	}
+    @Override
+    protected View onCreateDialogView() {
+        View view = super.onCreateDialogView();
 
-	@Override
-	protected void onDialogClosed(boolean positiveResult)
-	{
-		notifyChanged();
-	}
+        mValueText = (TextView) view.findViewById(R.id.value);
+        mValueText.setText(getSummary(mValue));
 
-	@Override
-	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
-	{
-		if (fromUser) {
-			mValue = progress;
-			mValueText.setText(getSummary(progress));
-			persistInt(progress);
-		}
-	}
+        SeekBar seekBar = (SeekBar) view.findViewById(R.id.seek_bar);
+        seekBar.setMax(150);
+        seekBar.setProgress(mValue);
+        seekBar.setOnSeekBarChangeListener(this);
 
-	@Override
-	public void onStartTrackingTouch(SeekBar seekBar)
-	{
-	}
+        return view;
+    }
 
-	@Override
-	public void onStopTrackingTouch(SeekBar seekBar)
-	{
-	}
+    @Override
+    protected void onDialogClosed(boolean positiveResult) {
+        notifyChanged();
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        if (fromUser) {
+            mValue = progress;
+            mValueText.setText(getSummary(progress));
+            persistInt(progress);
+        }
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+    }
 }

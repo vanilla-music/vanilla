@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,92 +20,92 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
 <resources>
-	<string-array name="entry_values">
-		<!-- Note: even if this was an integer-array, these would be converted
-		     to strings anyway.
-		     http://code.google.com/p/android/issues/detail?id=2096 -->
-		<item>0</item>
-		<item>1</item>
-		<item>2</item>
-		<item>3</item>
-		<item>4</item>
-		<item>5</item>
-		<item>6</item>
-		<item>7</item>
-		<item>8</item>
-	</string-array>
-	<string-array name="swipe_action_values">
-		<!-- This must match the order of swipe_action_entries exactly and
-		     contain only values from PlaybackActivity.Action enum. -->
-		<item>Nothing</item>
-		<item>Library</item>
-		<item>PlayPause</item>
-		<item>NextSong</item>
-		<item>PreviousSong</item>
-		<item>NextAlbum</item>
-		<item>PreviousAlbum</item>
-		<item>Repeat</item>
-		<item>Shuffle</item>
-		<item>EnqueueAlbum</item>
-		<item>EnqueueArtist</item>
-		<item>EnqueueGenre</item>
-		<item>ClearQueue</item>
-		<item>ShowQueue</item>
-		<item>ToggleControls</item>
-	</string-array>
-	<string-array name="swipe_action_entries">
-		<!-- This must match the order of swipe_action_values exactly -->
-		<item>@string/do_nothing</item>
-		<item>@string/open_library</item>
-		<item>@string/play_pause</item>
-		<item>@string/next_song</item>
-		<item>@string/previous_song</item>
-		<item>@string/next_album</item>
-		<item>@string/previous_album</item>
-		<item>@string/cycle_repeat_mode</item>
-		<item>@string/cycle_shuffle_mode</item>
-		<item>@string/enqueue_current_album</item>
-		<item>@string/enqueue_current_artist</item>
-		<item>@string/enqueue_current_genre</item>
-		<item>@string/clear_queue</item>
-		<item>@string/show_queue</item>
-		<item>@string/toggle_controls</item>
-	</string-array>
-	<string-array name="default_playlist_action_entries">
-		<item>@string/play</item>
-		<item>@string/enqueue</item>
-		<item>@string/last_used_action</item>
-		<item>@string/play_all</item>
-		<item>@string/enqueue_all</item>
-		<item>@string/do_nothing</item>
-	</string-array>
-	<string-array name="default_action_entries">
-		<item>@string/play</item>
-		<item>@string/enqueue</item>
-		<item>@string/last_used_action</item>
-		<item>@string/play_all</item>
-		<item>@string/enqueue_all</item>
-		<item>@string/do_nothing</item>
-		<item>@string/expand</item>
-		<item>@string/play_or_enqueue</item>
-		<item>@string/enqueue_as_next</item>
-	</string-array>
-	<string-array name="notification_mode_entries">
-		<item>@string/never_show</item>
-		<item>@string/show_when_playing</item>
-		<item>@string/always_show</item>
-	</string-array>
-	<string-array name="notification_action_entries">
-		<item>@string/open_main_activity</item>
-		<item>@string/open_mini_popup</item>
-		<item>@string/open_full_player</item>
-		<item>@string/skip_to_next_song</item>
-	</string-array>
-	<string-array name="display_mode_entries">
-		<item>@string/info_on_cover</item>
-		<item>@string/info_below_cover</item>
-		<item>@string/fixed_info</item>
-	</string-array>
+    <string-array name="entry_values">
+        <!-- Note: even if this was an integer-array, these would be converted
+             to strings anyway.
+             http://code.google.com/p/android/issues/detail?id=2096 -->
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+    </string-array>
+    <string-array name="swipe_action_values">
+        <!-- This must match the order of swipe_action_entries exactly and
+             contain only values from PlaybackActivity.Action enum. -->
+        <item>Nothing</item>
+        <item>Library</item>
+        <item>PlayPause</item>
+        <item>NextSong</item>
+        <item>PreviousSong</item>
+        <item>NextAlbum</item>
+        <item>PreviousAlbum</item>
+        <item>Repeat</item>
+        <item>Shuffle</item>
+        <item>EnqueueAlbum</item>
+        <item>EnqueueArtist</item>
+        <item>EnqueueGenre</item>
+        <item>ClearQueue</item>
+        <item>ShowQueue</item>
+        <item>ToggleControls</item>
+    </string-array>
+    <string-array name="swipe_action_entries">
+        <!-- This must match the order of swipe_action_values exactly -->
+        <item>@string/do_nothing</item>
+        <item>@string/open_library</item>
+        <item>@string/play_pause</item>
+        <item>@string/next_song</item>
+        <item>@string/previous_song</item>
+        <item>@string/next_album</item>
+        <item>@string/previous_album</item>
+        <item>@string/cycle_repeat_mode</item>
+        <item>@string/cycle_shuffle_mode</item>
+        <item>@string/enqueue_current_album</item>
+        <item>@string/enqueue_current_artist</item>
+        <item>@string/enqueue_current_genre</item>
+        <item>@string/clear_queue</item>
+        <item>@string/show_queue</item>
+        <item>@string/toggle_controls</item>
+    </string-array>
+    <string-array name="default_playlist_action_entries">
+        <item>@string/play</item>
+        <item>@string/enqueue</item>
+        <item>@string/last_used_action</item>
+        <item>@string/play_all</item>
+        <item>@string/enqueue_all</item>
+        <item>@string/do_nothing</item>
+    </string-array>
+    <string-array name="default_action_entries">
+        <item>@string/play</item>
+        <item>@string/enqueue</item>
+        <item>@string/last_used_action</item>
+        <item>@string/play_all</item>
+        <item>@string/enqueue_all</item>
+        <item>@string/do_nothing</item>
+        <item>@string/expand</item>
+        <item>@string/play_or_enqueue</item>
+        <item>@string/enqueue_as_next</item>
+    </string-array>
+    <string-array name="notification_mode_entries">
+        <item>@string/never_show</item>
+        <item>@string/show_when_playing</item>
+        <item>@string/always_show</item>
+    </string-array>
+    <string-array name="notification_action_entries">
+        <item>@string/open_main_activity</item>
+        <item>@string/open_mini_popup</item>
+        <item>@string/open_full_player</item>
+        <item>@string/skip_to_next_song</item>
+    </string-array>
+    <string-array name="display_mode_entries">
+        <item>@string/info_on_cover</item>
+        <item>@string/info_below_cover</item>
+        <item>@string/fixed_info</item>
+    </string-array>
 
 
 </resources>

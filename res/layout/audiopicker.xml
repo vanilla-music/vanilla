@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,65 +19,69 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:divider="?android:attr/dividerHorizontal"
-	android:showDividers="middle"
-	android:orientation="vertical"
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:divider="?android:attr/dividerHorizontal"
+    android:orientation="vertical"
+    android:showDividers="middle">
 
-	<LinearLayout
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:orientation="horizontal">
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-		<ImageView android:id="@+id/icon"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_gravity="top"
-			android:layout_marginLeft="4dip"
-			android:layout_marginTop="2dip"
-			android:layout_marginBottom="2dip"
-			android:src="@drawable/icon" />
-		<TextView
-			android:id="@+id/filepath"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:layout_marginBottom="16dip"
-			android:layout_marginTop="16dip"
-			android:layout_marginLeft="16dip"
-			android:layout_marginRight="8dip" />
-	</LinearLayout>
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:layout_marginBottom="2dip"
+            android:layout_marginLeft="4dip"
+            android:layout_marginTop="2dip"
+            android:src="@drawable/icon" />
 
-	<LinearLayout
-		style="?android:attr/buttonBarStyle"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:orientation="horizontal">
-		<Button
-			style="?android:attr/buttonBarButtonStyle"
-			android:id="@+id/cancel"
-			android:layout_width="0px"
-			android:layout_height="wrap_content"
-			android:layout_weight="1"
-			android:text="@string/cancel"
-			android:singleLine="true" />
-		<Button
-			style="?android:attr/buttonBarButtonStyle"
-			android:id="@+id/enqueue"
-			android:layout_width="0px"
-			android:layout_height="wrap_content"
-			android:layout_weight="1"
-			android:text="@string/enqueue"
-			android:singleLine="true" />
-		<Button
-			style="?android:attr/buttonBarButtonStyle"
-			android:id="@+id/play"
-			android:layout_width="0px"
-			android:layout_height="wrap_content"
-			android:layout_weight="1"
-			android:text="@string/play"
-			android:singleLine="true" />
-	</LinearLayout>
+        <TextView
+            android:id="@+id/filepath"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dip"
+            android:layout_marginLeft="16dip"
+            android:layout_marginRight="8dip"
+            android:layout_marginTop="16dip" />
+    </LinearLayout>
+
+    <LinearLayout
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/cancel"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:singleLine="true"
+            android:text="@string/cancel" />
+
+        <Button
+            android:id="@+id/enqueue"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:singleLine="true"
+            android:text="@string/enqueue" />
+
+        <Button
+            android:id="@+id/play"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:singleLine="true"
+            android:text="@string/play" />
+    </LinearLayout>
 </LinearLayout>

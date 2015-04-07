@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,42 +19,41 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<PreferenceScreen
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:persistent="true">
-	<CheckBoxPreference
-		android:key="playback_on_startup"
-		android:title="@string/playback_on_startup_title"
-		android:summary="@string/playback_on_startup_summary"
-		android:defaultValue="false" />
-	<ch.blinkenlights.android.vanilla.ListPreferenceSummary
-		android:key="display_mode"
-		android:title="@string/display_mode_title"
-		android:entries="@array/display_mode_entries"
-		android:entryValues="@array/entry_values"
-		android:defaultValue="2" />
-	<ch.blinkenlights.android.vanilla.ListPreferenceSummary
-		android:key="swipe_up_action"
-		android:title="@string/swipe_up_action_title"
-		android:entries="@array/swipe_action_entries"
-		android:entryValues="@array/swipe_action_values"
-		android:defaultValue="Nothing" />
-	<ch.blinkenlights.android.vanilla.ListPreferenceSummary
-		android:key="swipe_down_action"
-		android:title="@string/swipe_down_action_title"
-		android:entries="@array/swipe_action_entries"
-		android:entryValues="@array/swipe_action_values"
-		android:defaultValue="Nothing" />
-	<ch.blinkenlights.android.vanilla.ListPreferenceSummary
-		android:key="cover_press_action"
-		android:title="@string/cover_press_action_title"
-		android:entries="@array/swipe_action_entries"
-		android:entryValues="@array/swipe_action_values"
-		android:defaultValue="ToggleControls" />
-	<ch.blinkenlights.android.vanilla.ListPreferenceSummary
-		android:key="cover_longpress_action"
-		android:title="@string/cover_longpress_action_title"
-		android:entries="@array/swipe_action_entries"
-		android:entryValues="@array/swipe_action_values"
-		android:defaultValue="PlayPause" />
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:persistent="true">
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="playback_on_startup"
+        android:summary="@string/playback_on_startup_summary"
+        android:title="@string/playback_on_startup_title" />
+    <ch.blinkenlights.android.vanilla.ListPreferenceSummary
+        android:defaultValue="2"
+        android:entries="@array/display_mode_entries"
+        android:entryValues="@array/entry_values"
+        android:key="display_mode"
+        android:title="@string/display_mode_title" />
+    <ch.blinkenlights.android.vanilla.ListPreferenceSummary
+        android:defaultValue="Nothing"
+        android:entries="@array/swipe_action_entries"
+        android:entryValues="@array/swipe_action_values"
+        android:key="swipe_up_action"
+        android:title="@string/swipe_up_action_title" />
+    <ch.blinkenlights.android.vanilla.ListPreferenceSummary
+        android:defaultValue="Nothing"
+        android:entries="@array/swipe_action_entries"
+        android:entryValues="@array/swipe_action_values"
+        android:key="swipe_down_action"
+        android:title="@string/swipe_down_action_title" />
+    <ch.blinkenlights.android.vanilla.ListPreferenceSummary
+        android:defaultValue="ToggleControls"
+        android:entries="@array/swipe_action_entries"
+        android:entryValues="@array/swipe_action_values"
+        android:key="cover_press_action"
+        android:title="@string/cover_press_action_title" />
+    <ch.blinkenlights.android.vanilla.ListPreferenceSummary
+        android:defaultValue="PlayPause"
+        android:entries="@array/swipe_action_entries"
+        android:entryValues="@array/swipe_action_values"
+        android:key="cover_longpress_action"
+        android:title="@string/cover_longpress_action_title" />
 </PreferenceScreen>

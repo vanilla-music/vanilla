@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,36 +19,35 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<PreferenceScreen
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:persistent="true">
-	<CheckBoxPreference
-		android:key="disable_lockscreen"
-		android:title="@string/disable_lockscreen_title"
-		android:summary="@string/disable_lockscreen_summary"
-		android:defaultValue="false" />
-	<CheckBoxPreference
-		android:key="use_idle_timeout"
-		android:title="@string/use_idle_timeout_title"
-		android:summary="@string/use_idle_timeout_summary"
-		android:defaultValue="false" />
-	<ch.blinkenlights.android.vanilla.IdlePreference
-		android:key="idle_timeout"
-		android:title="@string/idle_timeout_title"
-		android:dependency="use_idle_timeout" />
-	<CheckBoxPreference
-		android:key="double_tap"
-		android:title="@string/double_tap_title"
-		android:summary="@string/double_tap_summary"
-		android:defaultValue="false" />
-	<CheckBoxPreference
-		android:key="scrobble"
-		android:title="@string/scrobble_title"
-		android:defaultValue="true"
-		android:summary="@string/scrobble_summary" />
-	<CheckBoxPreference
-		android:key="stock_broadcast"
-		android:title="@string/stock_broadcast_title"
-		android:summary="@string/stock_broadcast_summary"
-		android:defaultValue="false" />
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:persistent="true">
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="disable_lockscreen"
+        android:summary="@string/disable_lockscreen_summary"
+        android:title="@string/disable_lockscreen_title" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="use_idle_timeout"
+        android:summary="@string/use_idle_timeout_summary"
+        android:title="@string/use_idle_timeout_title" />
+    <ch.blinkenlights.android.vanilla.IdlePreference
+        android:dependency="use_idle_timeout"
+        android:key="idle_timeout"
+        android:title="@string/idle_timeout_title" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="double_tap"
+        android:summary="@string/double_tap_summary"
+        android:title="@string/double_tap_title" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="scrobble"
+        android:summary="@string/scrobble_summary"
+        android:title="@string/scrobble_title" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="stock_broadcast"
+        android:summary="@string/stock_broadcast_summary"
+        android:title="@string/stock_broadcast_title" />
 </PreferenceScreen>

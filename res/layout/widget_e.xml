@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,39 +19,42 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:background="#a000"
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content"
-	android:layout_gravity="bottom|center_horizontal"
-	android:orientation="vertical">
-	<TextView
-		android:id="@+id/title"
-		android:textSize="16sp"
-		android:textColor="#ffff"
-		android:textStyle="bold"
-		android:singleLine="true"
-		android:ellipsize="marquee"
-		android:gravity="center"
-		android:layout_width="fill_parent"
-		android:visibility="gone"
-		android:layout_height="wrap_content" />
-	<TextView
-		android:id="@+id/artist"
-		android:text="@string/app_name"
-		android:textSize="14sp"
-		android:textColor="#ffff"
-		android:singleLine="true"
-		android:ellipsize="marquee"
-		android:gravity="center"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content" />
-	<LinearLayout
-		android:id="@+id/buttons"
-		android:orientation="horizontal"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content">
-		<include layout="@layout/controls" />
-	</LinearLayout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom|center_horizontal"
+    android:background="#a000"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:gravity="center"
+        android:singleLine="true"
+        android:textColor="#ffff"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/artist"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="@string/app_name"
+        android:textColor="#ffff"
+        android:textSize="14sp" />
+
+    <LinearLayout
+        android:id="@+id/buttons"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <include layout="@layout/controls" />
+    </LinearLayout>
 </LinearLayout>

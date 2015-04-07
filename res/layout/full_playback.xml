@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,48 +20,55 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
-	<ch.blinkenlights.android.vanilla.CoverView
-		android:id="@+id/cover_view"
-		android:layout_height="fill_parent"
-		android:layout_width="fill_parent" />
-	<LinearLayout
-		android:id="@+id/controls_top"
-		android:layout_height="wrap_content"
-		android:layout_width="fill_parent"
-		android:layout_gravity="top"
-		android:background="@color/overlay_color"
-		android:orientation="horizontal">
-		<TextView
-			android:id="@+id/elapsed"
-			android:layout_height="wrap_content"
-			android:layout_width="wrap_content"
-			android:layout_gravity="center"
-			android:paddingLeft="5dip" />
-		<SeekBar
-			android:id="@+id/seek_bar"
-			android:layout_height="wrap_content"
-			android:layout_width="0px"
-			android:layout_gravity="center"
-			android:paddingTop="5dip"
-			android:paddingBottom="5dip"
-			android:paddingLeft="18dip"
-			android:paddingRight="18dip"
-			android:layout_weight="1" />
-		<TextView
-			android:id="@+id/duration"
-			android:layout_height="wrap_content"
-			android:layout_width="wrap_content"
-			android:layout_gravity="center"
-			android:paddingRight="5dip" />
-	</LinearLayout>
-	<LinearLayout
-		android:id="@+id/controls_bottom"
-		android:layout_height="wrap_content"
-		android:layout_width="fill_parent"
-		android:layout_gravity="bottom|left"
-		android:layout_margin="0dip"
-		android:background="@color/overlay_color"
-		android:orientation="horizontal">
-		<include layout="@layout/controls" />
-	</LinearLayout>
+
+    <ch.blinkenlights.android.vanilla.CoverView
+        android:id="@+id/cover_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+
+    <LinearLayout
+        android:id="@+id/controls_top"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:background="@color/overlay_color"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/elapsed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingLeft="5dip" />
+
+        <SeekBar
+            android:id="@+id/seek_bar"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:paddingBottom="5dip"
+            android:paddingLeft="18dip"
+            android:paddingRight="18dip"
+            android:paddingTop="5dip" />
+
+        <TextView
+            android:id="@+id/duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingRight="5dip" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/controls_bottom"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|left"
+        android:layout_margin="0dip"
+        android:background="@color/overlay_color"
+        android:orientation="horizontal">
+
+        <include layout="@layout/controls" />
+    </LinearLayout>
 </merge>
