@@ -24,8 +24,6 @@ android {
         applicationId "ch.blinkenlights.android.vanilla"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 942
-        versionName "0.9.42"
     }
     
     
