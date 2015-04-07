@@ -50,7 +50,7 @@ for name in ar.namelist():
 		lang = 'pt'
 
 	# create dir if needed (assume res/ exists already)
-	path = 'res/values-' + lang
+	path = 'app/src/main/res/values-' + lang
 	if not (os.path.isdir(path)):
 		os.mkdir(path)
 

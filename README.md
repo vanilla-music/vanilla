@@ -20,24 +20,21 @@ Building
 ========
 To build you will need:
 
- * A Java compiler compatible with Java 1.6
- * The Android SDK with platform 16 (JellyBean) installed
+ * A Java compiler compatible with Java 1.8
+ * The Android SDK with platform 22 (Lollipop) installed
 
 Building from command-line
 --------------------------
- * `android update project --path .` to generate local.properties
- * `ant debug` to build the APK at bin/VanillaMusic-debug.apk
- * Optional: `ant installd` to install the APK to a connected device
+ * `gradle build` to build the APK
+ * Optional: `gradle installDebug` to install the APK to a connected device
 
-Building from Eclipse
+Building with Android Studio
 ---------------------
-You can also build from Eclipse. Create a new Android Project, choosing "Create
-project from exisiting source", then set the compiler compliance level to 1.6
-in project settings.
+You can also build with Android Studio by importing this project into it.
 
 Documentation
 =============
-Javadocs can be generated using `ant doc`
+Javadocs can be generated using `gradle javadoc`
 
 
   [1]: https://www.transifex.com/projects/p/vanilla-music-1/

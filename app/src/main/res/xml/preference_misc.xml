@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+-->
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:persistent="true">
+	<CheckBoxPreference
+		android:key="disable_lockscreen"
+		android:title="@string/disable_lockscreen_title"
+		android:summary="@string/disable_lockscreen_summary"
+		android:defaultValue="false" />
+	<CheckBoxPreference
+		android:key="use_idle_timeout"
+		android:title="@string/use_idle_timeout_title"
+		android:summary="@string/use_idle_timeout_summary"
+		android:defaultValue="false" />
+	<ch.blinkenlights.android.vanilla.IdlePreference
+		android:key="idle_timeout"
+		android:title="@string/idle_timeout_title"
+		android:dependency="use_idle_timeout" />
+	<CheckBoxPreference
+		android:key="double_tap"
+		android:title="@string/double_tap_title"
+		android:summary="@string/double_tap_summary"
+		android:defaultValue="false" />
+	<CheckBoxPreference
+		android:key="scrobble"
+		android:title="@string/scrobble_title"
+		android:defaultValue="true"
+		android:summary="@string/scrobble_summary" />
+	<CheckBoxPreference
+		android:key="stock_broadcast"
+		android:title="@string/stock_broadcast_title"
+		android:summary="@string/stock_broadcast_summary"
+		android:defaultValue="false" />
+</PreferenceScreen>
