@@ -23,10 +23,10 @@ THE SOFTWARE.
 <resources>
 	<!-- Color used in LibraryActivity list dividers -->
 	<color name="divider_color">#f444</color>
-	<color name="overlay_color">#a000</color>
-	<color name="float_color">#f222</color>
+	<color name="overlay_background_color">#a000</color>
 	<!-- color to use in full_playback text, set to bright_foreground_disabled_holo_light //-->
-	<color name="playback_color">#ffb2b2b2</color>
+	<color name="overlay_foreground_color">#ffb2b2b2</color>
+	<color name="float_color">#f222</color>
 
 	<!-- styles -->
 	<style name="Dialog" parent="android:Theme.Holo.Dialog" />

@@ -23,14 +23,14 @@ THE SOFTWARE.
 <resources>
 	<!-- Color used in LibraryActivity list dividers -->
 	<color name="divider_color">#ffd6d7d7</color>
-	<color name="overlay_color">#ffefefef</color>
+	<color name="overlay_background_color">#ffefefef</color>
+	<color name="overlay_foreground_color">#f000</color>
 	<color name="float_color">#ffd6d7d7</color>
-	<color name="playback_color">#f000</color>
 
 	<!-- Material design primary colors -->
 	<color name="vanillaPrimary">#607D8B</color>
 	<color name="vanillaPrimaryDark">#455A64</color>
-	<color name="vanillaAccent">#607D8B</color>
+	<color name="vanillaAccent">#455A64</color>
 	<color name="material_grey_900">#ff212121</color>
 
 	<!-- styles -->
