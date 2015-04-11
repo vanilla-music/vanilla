@@ -180,8 +180,6 @@ public class PreferencesActivity extends PreferenceActivity {
 		{
 			super.onCreate(savedInstanceState);
 			addPreferencesFromResource(R.xml.preference_library);
-			PreferenceGroup group = getPreferenceScreen();
-			group.removePreference(group.findPreference("controls_in_selector"));
 		}
 	}
 

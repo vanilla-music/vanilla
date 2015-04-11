@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2015 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,14 +24,20 @@ package ch.blinkenlights.android.vanilla;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.ViewGroup;
+import android.view.View;
 import android.widget.LinearLayout;
 
 /**
  * LinearLayout that contains some hacks for sizing inside an ActionBar.
  */
 public class ActionBarControls extends LinearLayout {
+
+	private final int dpiMaxWidth = 350;
+	private final int dpiCompatMax = 200;
+	private final int dpiElement = 50;
+	private final int slackElements = 2;
+
 	public ActionBarControls(Context context, AttributeSet attrs)
 	{
 		super(context, attrs);
@@ -40,22 +46,40 @@ public class ActionBarControls extends LinearLayout {
 	@Override
 	public void onMeasure(int ws, int hs)
 	{
+		ViewGroup parent = (ViewGroup)this.getParent();
+		int pxUsed = 0;  // pixels used by child elements, excluding us
+		int pxTotal = 0; // pixels we can actually use
+
+		// Measure how much space we got and how much is already used
+		// by other children
+		if (parent != null) {
+			// We are item 0, so we skip ourselfs
+			for (int i=1; i<parent.getChildCount(); i++) {
+				pxUsed += parent.getChildAt(i).getWidth();
+			}
+			View topParent = (View)parent.getParent();
+			if (topParent != null) {
+				pxTotal = topParent.getWidth();
+			}
+		}
+
+		final float density = getResources().getDisplayMetrics().density;
+		int widthMode = MeasureSpec.getMode(ws);
+
 		super.onMeasure(ws, hs);
 
-		float density = getResources().getDisplayMetrics().density;
+		if (widthMode != MeasureSpec.EXACTLY && pxTotal > 0) {
+			int pxAvailable = (pxTotal - (int)(density * dpiElement * slackElements));
+			int pxMaxWidth = (int)(dpiMaxWidth * density);
 
-		int width = MeasureSpec.getSize(ws);
-		int widthMode = MeasureSpec.getMode(ws);
-		if (widthMode != MeasureSpec.EXACTLY)
-			width = (int)(200 * density);
-
-		setMeasuredDimension(width, (int)(40 * density));
-
-		ViewGroup.LayoutParams lp = getLayoutParams();
-		try {
-			lp.getClass().getField("expandable").set(lp, true);
-		} catch (Exception e) {
-			Log.d("VanillaMusic", "Failed to set controls expandable", e);
+			if (pxAvailable <= 0 || pxAvailable > pxMaxWidth) {
+				pxAvailable = pxMaxWidth;
+			}
+			if (android.os.Build.VERSION.SDK_INT < 21) {
+				pxAvailable = (int)(dpiCompatMax * density);
+			}
+			setMeasuredDimension( pxAvailable, (int)(dpiElement * density));
 		}
+
 	}
 }
