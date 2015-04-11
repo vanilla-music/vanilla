@@ -22,38 +22,54 @@ THE SOFTWARE.
 -->
 <resources>
 	<!-- Color used in LibraryActivity list dividers -->
-	<color name="divider_color">#f444</color>
-	<color name="overlay_color">#a000</color>
-	<color name="float_color">#f222</color>
-	<!-- color to use in full_playback text, set to bright_foreground_disabled_holo_light //-->
-	<color name="playback_color">#ffb2b2b2</color>
+	<color name="divider_color">#ffd6d7d7</color>
+	<color name="overlay_color">#ffefefef</color>
+	<color name="float_color">#ffd6d7d7</color>
+	<color name="playback_color">#f000</color>
+
+	<!-- Material design primary colors -->
+	<color name="vanillaPrimary">#607D8B</color>
+	<color name="vanillaPrimaryDark">#455A64</color>
+	<color name="vanillaAccent">#607D8B</color>
+	<color name="material_grey_900">#ff212121</color>
 
 	<!-- styles -->
-	<style name="Dialog" parent="android:Theme.Holo.Dialog" />
-	<style name="DialogMinWidth" parent="android:Theme.Holo.Dialog.MinWidth" />
-	<style name="AlertDialogItem">
-		<item name="android:textColor">?android:textColorAlertDialogListItem</item>
+	<style name="Dialog" parent="android:Theme.Material.Light.Dialog" />
+	<style name="DialogMinWidth" parent="android:Theme.Material.Light.Dialog.MinWidth" />
+
+	<style name="VanillaBase" parent="android:Theme.Material.Light.DarkActionBar">
+		<item name="android:colorAccent">@color/vanillaAccent</item>
+		<item name="android:colorPrimary">@color/vanillaPrimary</item>
+		<item name="android:colorPrimaryDark">@color/vanillaPrimaryDark</item>
 	</style>
-	<style name="Playback" parent="android:Theme.Holo">
+
+	<style name="Playback" parent="VanillaBase">
 		<item name="android:actionBarStyle">@style/PlaybackActionBar</item>
-		<item name="android:windowBackground">@android:color/black</item>
 	</style>
-	<style name="BackActionBar" parent="android:Theme.Holo">
+
+	<style name="BackActionBar" parent="VanillaBase">
 		<item name="android:actionBarStyle">@style/PlaybackActionBar</item>
 	</style>
-	<style name="PlaybackActionBar" parent="android:Widget.Holo.ActionBar">
+
+	<style name="PlaybackActionBar" parent="android:Widget.Material.ActionBar">
 		<item name="android:displayOptions">showTitle|homeAsUp</item>
+		<item name="android:background">@color/vanillaPrimary</item>
 	</style>
-	<style name="Library" parent="android:Theme.Holo">
+
+	<style name="Library" parent="VanillaBase">
 		<item name="android:actionBarStyle">@style/LibraryActionBar</item>
 		<item name="android:actionBarTabTextStyle">@style/LibraryActionBarTabText</item>
 	</style>
-	<style name="LibraryActionBar" parent="android:Widget.Holo.ActionBar">
+
+	<style name="LibraryActionBar" parent="android:Widget.Material.ActionBar">
 		<item name="android:displayOptions"></item>
+		<item name="android:background">@color/vanillaPrimary</item>
 	</style>
-	<style name="LibraryActionBarTabText" parent="android:Widget.Holo.ActionBar.TabText">
+
+	<style name="LibraryActionBarTabText" parent="android:Widget.Material.ActionBar.TabText">
 		<item name="android:singleLine">true</item>
 		<item name="android:textSize">11.5sp</item>
+		<item name="android:textColor">@color/material_grey_900</item>
 	</style>
 
 </resources>

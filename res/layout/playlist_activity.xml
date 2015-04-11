@@ -25,4 +25,5 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 	android:scrollbarStyle="outsideInset"
 	dslv:drag_enabled="false"
 	dslv:drag_start_mode="onMove"
+	dslv:float_background_color="@color/float_color"
 	dslv:drag_handle_id="@+id/dragger"/>
