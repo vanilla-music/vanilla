@@ -38,6 +38,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewFragment;
+import android.net.Uri;
 import java.util.List;
 
 /**
@@ -175,9 +176,9 @@ public class PreferencesActivity extends PreferenceActivity {
 		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 		{
 			WebView view = (WebView)super.onCreateView(inflater, container, savedInstanceState);
-			view.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 			view.getSettings().setJavaScriptEnabled(true);
-			view.loadUrl("file:///android_asset/about.html");
+			String fontColor = getResources().getString(R.color.overlay_foreground_color);
+			view.loadUrl("file:///android_asset/about.html?"+Uri.encode(fontColor));
 			view.setBackgroundColor(Color.TRANSPARENT);
 			return view;
 		}
