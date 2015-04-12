@@ -71,16 +71,6 @@ public class PreferencesActivity extends PreferenceActivity {
 		}
 	}
 
-	public static class AudioActivity extends PreferenceActivity {
-		@SuppressWarnings("deprecation")
-		@Override
-		public void onCreate(Bundle savedInstanceState)
-		{
-			super.onCreate(savedInstanceState);
-			addPreferencesFromResource(R.xml.preference_audio);
-		}
-	}
-
 	public static class AudioFragment extends PreferenceFragment {
 		@Override
 		public void onCreate(Bundle savedInstanceState)
@@ -90,19 +80,16 @@ public class PreferencesActivity extends PreferenceActivity {
 		}
 	}
 
-	public static class ReplayGainActivity extends PreferenceActivity {
-		@SuppressWarnings("deprecation")
-		
+	public static class ReplayGainFragment extends PreferenceFragment {
 		CheckBoxPreference cbTrackReplayGain;
 		CheckBoxPreference cbAlbumReplayGain;
 		SeekBarPreference sbGainBump;
 		SeekBarPreference sbUntaggedDebump;
-		
+
 		@Override
 		public void onCreate(Bundle savedInstanceState)
 		{
 			super.onCreate(savedInstanceState);
-			setTitle(R.string.replaygain);
 			addPreferencesFromResource(R.xml.preference_replaygain);
 			
 			cbTrackReplayGain = (CheckBoxPreference)findPreference(PrefKeys.ENABLE_TRACK_REPLAYGAIN);
@@ -122,36 +109,10 @@ public class PreferencesActivity extends PreferenceActivity {
 			updateConfigWidgets();
 		}
 
-		@Override
-		public boolean onOptionsItemSelected(MenuItem item)
-		{
-			finish();
-			return true;
-		}
-
 		private void updateConfigWidgets() {
 			boolean rgOn = (cbTrackReplayGain.isChecked() || cbAlbumReplayGain.isChecked());
 			sbGainBump.setEnabled(rgOn);
 			sbUntaggedDebump.setEnabled(rgOn);
-		}
-	}
-
-	public static class ReplayGainFragment extends PreferenceFragment {
-		@Override
-		public void onCreate(Bundle savedInstanceState)
-		{
-			super.onCreate(savedInstanceState);
-			addPreferencesFromResource(R.xml.preference_replaygain);
-		}
-	}
-
-	public static class PlaybackActivity extends PreferenceActivity {
-		@SuppressWarnings("deprecation")
-		@Override
-		public void onCreate(Bundle savedInstanceState)
-		{
-			super.onCreate(savedInstanceState);
-			addPreferencesFromResource(R.xml.preference_playback);
 		}
 	}
 
@@ -164,32 +125,12 @@ public class PreferencesActivity extends PreferenceActivity {
 		}
 	}
 
-	public static class LibraryActivity extends PreferenceActivity {
-		@SuppressWarnings("deprecation")
-		@Override
-		public void onCreate(Bundle savedInstanceState)
-		{
-			super.onCreate(savedInstanceState);
-			addPreferencesFromResource(R.xml.preference_library);
-		}
-	}
-
 	public static class LibraryFragment extends PreferenceFragment {
 		@Override
 		public void onCreate(Bundle savedInstanceState)
 		{
 			super.onCreate(savedInstanceState);
 			addPreferencesFromResource(R.xml.preference_library);
-		}
-	}
-
-	public static class NotificationsActivity extends PreferenceActivity {
-		@SuppressWarnings("deprecation")
-		@Override
-		public void onCreate(Bundle savedInstanceState)
-		{
-			super.onCreate(savedInstanceState);
-			addPreferencesFromResource(R.xml.preference_notifications);
 		}
 	}
 
@@ -202,32 +143,12 @@ public class PreferencesActivity extends PreferenceActivity {
 		}
 	}
 
-	public static class ShakeActivity extends PreferenceActivity {
-		@SuppressWarnings("deprecation")
-		@Override
-		public void onCreate(Bundle savedInstanceState)
-		{
-			super.onCreate(savedInstanceState);
-			addPreferencesFromResource(R.xml.preference_shake);
-		}
-	}
-
 	public static class ShakeFragment extends PreferenceFragment {
 		@Override
 		public void onCreate(Bundle savedInstanceState)
 		{
 			super.onCreate(savedInstanceState);
 			addPreferencesFromResource(R.xml.preference_shake);
-		}
-	}
-
-	public static class CoverArtActivity extends PreferenceActivity {
-		@SuppressWarnings("deprecation")
-		@Override
-		public void onCreate(Bundle savedInstanceState)
-		{
-			super.onCreate(savedInstanceState);
-			addPreferencesFromResource(R.xml.preference_coverart);
 		}
 	}
 
@@ -240,36 +161,12 @@ public class PreferencesActivity extends PreferenceActivity {
 		}
 	}
 
-	public static class MiscActivity extends PreferenceActivity {
-		@SuppressWarnings("deprecation")
-		@Override
-		public void onCreate(Bundle savedInstanceState)
-		{
-			super.onCreate(savedInstanceState);
-			addPreferencesFromResource(R.xml.preference_misc);
-		}
-	}
-
 	public static class MiscFragment extends PreferenceFragment {
 		@Override
 		public void onCreate(Bundle savedInstanceState)
 		{
 			super.onCreate(savedInstanceState);
 			addPreferencesFromResource(R.xml.preference_misc);
-		}
-	}
-
-	public static class AboutActivity extends Activity {
-		@Override
-		public void onCreate(Bundle state)
-		{
-			super.onCreate(state);
-
-			WebView view = new WebView(this);
-			view.getSettings().setJavaScriptEnabled(true);
-			view.loadUrl("file:///android_asset/about.html");
-			view.setBackgroundColor(Color.TRANSPARENT);
-			setContentView(view);
 		}
 	}
 

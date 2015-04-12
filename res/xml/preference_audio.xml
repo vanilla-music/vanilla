@@ -49,11 +49,10 @@ THE SOFTWARE.
 		android:defaultValue="false"
 		android:summary="@string/readahead_summary" />
 	<PreferenceScreen
+		android:fragment="ch.blinkenlights.android.vanilla.PreferencesActivity$ReplayGainFragment"
 		android:title="@string/replaygain"
 		android:summary="@string/replaygain_summary">
-		<intent
-			android:targetPackage="ch.blinkenlights.android.vanilla"
-			android:targetClass="ch.blinkenlights.android.vanilla.PreferencesActivity$ReplayGainActivity" />
+
 	</PreferenceScreen>
 
 </PreferenceScreen>
