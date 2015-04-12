@@ -759,7 +759,7 @@ public class LibraryActivity
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-		MenuItem controls = menu.add(null);
+		MenuItem controls = menu.add(0, MENU_PLAYBACK, 0, R.string.playback_view);
 		controls.setActionView(mActionControls);
 		controls.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
