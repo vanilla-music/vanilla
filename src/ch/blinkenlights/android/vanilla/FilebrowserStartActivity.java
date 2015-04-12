@@ -49,21 +49,15 @@ public class FilebrowserStartActivity extends PlaybackActivity {
 		
 		setTitle(R.string.filebrowser_start);
 		setContentView(R.layout.filebrowser_content);
-		
 		mCurrentPath = (String)getFilesystemBrowseStart().getAbsolutePath();
 		mPrefEditor  = PlaybackService.getSettings(this).edit();
-		mListAdapter = new FilebrowserStartAdapter(this, R.layout.filebrowser_row);
+		mListAdapter = new FilebrowserStartAdapter((FilebrowserStartActivity)this, 0);
 		mPathDisplay = (TextView) findViewById(R.id.path_display);
 		mListView    = (ListView) findViewById(R.id.list);
 		mSaveButton  = (Button) findViewById(R.id.save_button);
-		
+
 		mListView.setAdapter(mListAdapter);
-		mListView.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				jumpToDirectory(position);
-			}});
-		
+
 		mSaveButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				mPrefEditor.putString("filesystem_browse_start", mCurrentPath);
@@ -103,7 +97,7 @@ public class FilebrowserStartActivity extends PlaybackActivity {
 	/*
 	** Enters selected directory at 'pos'
 	*/
-	private void jumpToDirectory(int pos) {
+	public void onDirectoryClicked(int pos) {
 		String dirent = mListAdapter.getItem(pos);
 		
 		if(pos == 0) {
