@@ -134,6 +134,7 @@ public class LibraryActivity
 	private TextView mArtist;
 	private ImageView mCover;
 	private View mEmptyQueue;
+	private MenuItem mSearchMenuItem;
 
 	private HorizontalScrollView mLimiterScroller;
 	private ViewGroup mLimiterViews;
@@ -277,6 +278,18 @@ public class LibraryActivity
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_BACK:
 			Limiter limiter = mPagerAdapter.getCurrentLimiter();
+			MenuItem menu_item = mSearchMenuItem;
+
+			if (menu_item != null) {
+				// Check if we can collapse the search view
+				// if we can, then it was open and we handled this
+				// action
+				boolean did_collapse = menu_item.collapseActionView();
+				if (did_collapse == true) {
+					break;
+				}
+			}
+
 			if (limiter != null) {
 				int pos = -1;
 				switch (limiter.type) {
@@ -763,11 +776,11 @@ public class LibraryActivity
 		controls.setActionView(mActionControls);
 		controls.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
-		MenuItem search = menu.add(0, MENU_SEARCH, 0, R.string.search).setIcon(R.drawable.ic_menu_search);
-		search.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItem.SHOW_AS_ACTION_ALWAYS);
+		mSearchMenuItem = menu.add(0, MENU_SEARCH, 0, R.string.search).setIcon(R.drawable.ic_menu_search);
+		mSearchMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItem.SHOW_AS_ACTION_ALWAYS);
 		SearchView mSearchView = new SearchView(getActionBar().getThemedContext());
 		mSearchView.setOnQueryTextListener(this);
-		search.setActionView(mSearchView);
+		mSearchMenuItem.setActionView(mSearchView);
 
 		menu.add(0, MENU_SORT, 0, R.string.sort_by).setIcon(R.drawable.ic_menu_sort_alphabetically);
 		return super.onCreateOptionsMenu(menu);
