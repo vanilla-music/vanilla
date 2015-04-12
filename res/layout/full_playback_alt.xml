@@ -33,6 +33,7 @@ THE SOFTWARE.
 		android:collapseColumns="0"
 		android:stretchColumns="1"
 		android:shrinkColumns="1"
+		android:elevation="1dp"
 		android:background="@color/overlay_background_color"
 		android:paddingLeft="5dip"
 		android:paddingRight="5dip">
