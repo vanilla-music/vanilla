@@ -417,9 +417,6 @@ public final class PlaybackService extends Service
 		Song.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_VANILLA, true) ? Song.mCoverLoadMode | Song.COVER_MODE_VANILLA : Song.mCoverLoadMode & ~(Song.COVER_MODE_VANILLA);
 		Song.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_SHADOW , true) ? Song.mCoverLoadMode | Song.COVER_MODE_SHADOW  : Song.mCoverLoadMode & ~(Song.COVER_MODE_SHADOW);
 
-		// The 'light' (aka: material) theme is the default on Android 5.x
-		VanillaImageButton.mLightTheme = settings.getBoolean(PrefKeys.USE_LIGHT_THEME, Build.VERSION.SDK_INT >= 21);
-
 		mHeadsetOnly = settings.getBoolean(PrefKeys.HEADSET_ONLY, false);
 		mStockBroadcast = settings.getBoolean(PrefKeys.STOCK_BROADCAST, false);
 		mNotificationAction = createNotificationAction(settings);

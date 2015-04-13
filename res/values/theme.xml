@@ -34,6 +34,10 @@ THE SOFTWARE.
 	<color name="defaultcover_gradient_end">#ff404040</color>
 	<color name="defaultcover_center">#88000000</color>
 
+	<!-- now-playing screen buttons tint -->
+	<color name="controls_active">@android:color/holo_blue_dark</color>
+	<color name="controls_normal">#fff5f5f5</color>
+
 	<!-- styles -->
 	<style name="Dialog" parent="android:Theme.Holo.Dialog" />
 	<style name="DialogMinWidth" parent="android:Theme.Holo.Dialog.MinWidth" />

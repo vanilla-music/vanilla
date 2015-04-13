@@ -26,20 +26,23 @@ import android.graphics.ColorFilter;
 
 public class VanillaImageButton extends ImageButton {
 
-	public static boolean mLightTheme = false;
+	private Context mContext;
 
 	public VanillaImageButton(Context context) {
 		super(context);
+		mContext = context;
 		updateImageTint(-1);
 	}
 
 	public VanillaImageButton(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		mContext = context;
 		updateImageTint(-1);
 	}
 
 	public VanillaImageButton(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
+		mContext = context;
 		updateImageTint(-1);
 	}
 
@@ -51,9 +54,8 @@ public class VanillaImageButton extends ImageButton {
 
 
 	private void updateImageTint(int resHint) {
-		boolean setFilter = mLightTheme == true;
+		int filterColor = R.color.controls_normal;
 
-		// These drawables should never be filtered:
 		switch (resHint) {
 			case R.drawable.repeat_active:
 			case R.drawable.repeat_current_active:
@@ -61,14 +63,10 @@ public class VanillaImageButton extends ImageButton {
 			case R.drawable.shuffle_active:
 			case R.drawable.shuffle_album_active:
 			case R.drawable.random_active:
-				setFilter = false;
+				filterColor = R.color.controls_active;
 		}
 
-		if (setFilter == true) {
-			this.setColorFilter(Color.argb(255, 130, 130, 130));
-		} else {
-			this.setColorFilter(null);
-		}
+		this.setColorFilter(mContext.getResources().getColor(filterColor));
 	}
 
 }
