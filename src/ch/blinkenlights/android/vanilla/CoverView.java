@@ -366,7 +366,7 @@ public final class CoverView extends View implements Handler.Callback {
 		if (cover == null && style == CoverBitmap.STYLE_NO_INFO) {
 			Bitmap def = mDefaultCover;
 			if (def == null) {
-				mDefaultCover = def = CoverBitmap.generateDefaultCover(getWidth(), getHeight());
+				mDefaultCover = def = CoverBitmap.generateDefaultCover(context, getWidth(), getHeight());
 			}
 			mBitmaps[i] = def;
 		} else {

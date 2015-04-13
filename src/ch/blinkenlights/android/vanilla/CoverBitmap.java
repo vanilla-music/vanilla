@@ -333,14 +333,21 @@ public final class CoverBitmap {
 	 * @param height The max height
 	 * @return The default cover.
 	 */
-	public static Bitmap generateDefaultCover(int width, int height)
+	public static Bitmap generateDefaultCover(Context context, int width, int height)
 	{
 		int size = Math.min(width, height);
 		int halfSize = size / 2;
 		int eightSize = size / 8;
 
-		Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.RGB_565);
-		LinearGradient gradient = new LinearGradient(size, 0, 0, size, 0xff646464, 0xff464646, Shader.TileMode.CLAMP);
+		int rgb_background = context.getResources().getColor(R.color.defaultcover_background);
+		int rgb_gardient_begin = context.getResources().getColor(R.color.defaultcover_gradient_begin);
+		int rgb_gardient_end = context.getResources().getColor(R.color.defaultcover_gradient_end);
+		int rgb_center = context.getResources().getColor(R.color.defaultcover_center);
+
+		Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
+		bitmap.eraseColor(rgb_background);
+
+		LinearGradient gradient = new LinearGradient(size, 0, 0, size, rgb_gardient_begin, rgb_gardient_end, Shader.TileMode.CLAMP);
 		RectF oval = new RectF(eightSize, 0, size - eightSize, size);
 
 		Paint paint = new Paint();
@@ -355,12 +362,13 @@ public final class CoverBitmap {
 		canvas.drawOval(oval, paint);
 
 		paint.setShader(null);
-		paint.setColor(0xff000000);
+		paint.setColor(rgb_center);
 		canvas.translate(size / 3, size / 3);
 		canvas.scale(0.333f, 0.333f);
 		canvas.drawOval(oval, paint);
 
-		paint.setShader(gradient);
+		paint.setShader(null);
+		paint.setColor(rgb_background);
 		canvas.translate(size / 3, size / 3);
 		canvas.scale(0.333f, 0.333f);
 		canvas.drawOval(oval, paint);

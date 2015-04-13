@@ -28,6 +28,12 @@ THE SOFTWARE.
 	<color name="overlay_foreground_color">#ffb2b2b2</color>
 	<color name="float_color">#f222</color>
 
+	<!-- styling of the default cover bitmap -->
+	<color name="defaultcover_background">#ff000000</color>
+	<color name="defaultcover_gradient_begin">#ff606060</color>
+	<color name="defaultcover_gradient_end">#ff404040</color>
+	<color name="defaultcover_center">#88000000</color>
+
 	<!-- styles -->
 	<style name="Dialog" parent="android:Theme.Holo.Dialog" />
 	<style name="DialogMinWidth" parent="android:Theme.Holo.Dialog.MinWidth" />
