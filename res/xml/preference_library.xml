@@ -23,11 +23,6 @@ THE SOFTWARE.
 <PreferenceScreen
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:persistent="true">
-	<CheckBoxPreference
-		android:key="controls_in_selector"
-		android:title="@string/controls_in_selector_title"
-		android:summary="@string/controls_in_selector_summary"
-		android:defaultValue="false" />
 	<PreferenceScreen
 		android:title="@string/tabs"
 		android:summary="@string/customize_tab_order">
