@@ -787,6 +787,23 @@ public final class SongTimeline {
 	}
 
 	/**
+	 * Empty the song queue (clear the whole queue).
+	 */
+	public void emptyQueue()
+	{
+		synchronized (this) {
+			mSongs.clear();
+		}
+
+		if (mCallback != null) {
+			mCallback.activeSongReplaced(+1, getSong(+1));
+			mCallback.positionInfoChanged();
+		}
+
+		changed();
+	}
+
+	/**
 	 * Save the active songs for use with broadcastChangedSongs().
 	 *
 	 * @see SongTimeline#broadcastChangedSongs()

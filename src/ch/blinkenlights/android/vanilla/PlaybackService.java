@@ -1638,6 +1638,14 @@ public final class PlaybackService extends Service
 	}
 
 	/**
+	 * Empty the song queue.
+	 */
+	public void emptyQueue()
+	{
+		mTimeline.emptyQueue();
+	}
+
+	/**
 	 * Return the error message set when FLAG_ERROR is set.
 	 */
 	public String getErrorMessage()
