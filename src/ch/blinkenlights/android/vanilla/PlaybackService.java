@@ -1642,6 +1642,8 @@ public final class PlaybackService extends Service
 	 */
 	public void emptyQueue()
 	{
+		pause();
+		setFlag(FLAG_EMPTY_QUEUE);
 		mTimeline.emptyQueue();
 	}
 

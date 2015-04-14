@@ -774,15 +774,12 @@ public final class SongTimeline {
 	public void clearQueue()
 	{
 		synchronized (this) {
+			saveActiveSongs();
 			if (mCurrentPos + 1 < mSongs.size())
 				mSongs.subList(mCurrentPos + 1, mSongs.size()).clear();
 		}
 
-		if (mCallback != null) {
-			mCallback.activeSongReplaced(+1, getSong(+1));
-			mCallback.positionInfoChanged();
-		}
-
+		broadcastChangedSongs();
 		changed();
 	}
 
@@ -792,14 +789,11 @@ public final class SongTimeline {
 	public void emptyQueue()
 	{
 		synchronized (this) {
+			saveActiveSongs();
 			mSongs.clear();
 		}
 
-		if (mCallback != null) {
-			mCallback.activeSongReplaced(+1, getSong(+1));
-			mCallback.positionInfoChanged();
-		}
-
+		broadcastChangedSongs();
 		changed();
 	}
 
