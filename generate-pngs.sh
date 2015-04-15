@@ -24,4 +24,5 @@ for i in orig/*.svgz; do
 	gen "$i" mdpi 90
 	gen "$i" hdpi 135
 	gen "$i" xhdpi 180
+	gen "$i" xxhdpi 270
 done
