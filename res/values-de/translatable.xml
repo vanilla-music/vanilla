@@ -214,6 +214,7 @@
   <string name="enqueue_current_artist">Interpret einreihen</string>
   <string name="enqueue_current_genre">Genre einreihen</string>
   <string name="clear_queue">Warteschlange leeren</string>
+  <string name="empty_the_queue">Warteschlange verwerfen</string>
   <string name="show_queue">Warteschlange anzeigen</string>
   <string name="queue">Warteschlange</string>
   <string name="toggle_controls">Steuerelemente ein/-ausblenden</string>
