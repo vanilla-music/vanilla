@@ -252,8 +252,9 @@ public class FullPlaybackActivity extends PlaybackActivity
 	{
 		if (mOverlayText == null) {
 			TextView view = new TextView(this);
-			view.setBackgroundColor(Color.BLACK);
-			view.setTextColor(Color.WHITE);
+			// This will be drawn on top of all other controls, so we flood this view
+			// with a non-alpha color
+			view.setBackgroundResource(R.color.defaultcover_background);
 			view.setGravity(Gravity.CENTER);
 			view.setPadding(25, 25, 25, 25);
 			// Make the view clickable so it eats touch events
