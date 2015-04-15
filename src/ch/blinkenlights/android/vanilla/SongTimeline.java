@@ -777,9 +777,9 @@ public final class SongTimeline {
 			saveActiveSongs();
 			if (mCurrentPos + 1 < mSongs.size())
 				mSongs.subList(mCurrentPos + 1, mSongs.size()).clear();
+			broadcastChangedSongs();
 		}
 
-		broadcastChangedSongs();
 		changed();
 	}
 
@@ -791,9 +791,10 @@ public final class SongTimeline {
 		synchronized (this) {
 			saveActiveSongs();
 			mSongs.clear();
+			mCurrentPos = 0;
+			broadcastChangedSongs();
 		}
 
-		broadcastChangedSongs();
 		changed();
 	}
 

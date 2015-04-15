@@ -96,6 +96,7 @@ public class ShowQueueActivity extends PlaybackActivity
 				break;
 			case MENU_EMPTY_QUEUE:
 				PlaybackService.get(this).emptyQueue();
+				finish();
 				break;
 			default:
 				return super.onOptionsItemSelected(item);
