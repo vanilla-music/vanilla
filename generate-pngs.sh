@@ -15,7 +15,6 @@ gen() {
 	png="res/drawable-$2/$name.png"
 	if [ "$1" -nt "$png" -o ! -e "$png" ]; then
 		inkscape --without-gui --export-area-page --export-dpi=$3 --export-png="$png" $1
-		convert -strip "$png" "$png" # strip comments and other metadata
 		echo
 	fi
 }
