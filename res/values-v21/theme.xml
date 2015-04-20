@@ -32,12 +32,12 @@ Copyright (C) 2015 Adrian Ulrich <adrian@blinkenlights.ch>
 	<color name="float_color">@color/button_material_light</color>
 
 	<!-- Material design primary colors -->
-	<color name="vanillaPrimary">#607D8B</color>
-	<color name="vanillaPrimaryDark">#37474F</color>
-	<color name="vanillaAccent">#546E7A</color>
+	<color name="vanillaPrimary">#ff37474f</color>
+	<color name="vanillaPrimaryDark">#ff263238</color>
+	<color name="vanillaAccent">#ff3e677a</color>
 
 	<!-- now-playing screen buttons tint -->
-	<color name="controls_active">#3e677a</color>
+	<color name="controls_active">@color/vanillaAccent</color>
 	<color name="controls_normal">@color/material_grey_600</color>
 
 	<!-- styling of the default cover bitmap -->
