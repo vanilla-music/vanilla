@@ -2,7 +2,7 @@
 <resources>
   <string name="app_name">Vanilla Music</string>
   <!--Playback Activity (main screen)-->
-  <string name="no_songs">Não foram encontradas faixas.</string>
+  <string name="no_songs">Não foram encontradas faixas</string>
   <string name="empty_queue">Nenhuma faixa selecionada. Escolha algumas na coleção ou aceda ao modo aleatório clicando nesta mensagem.</string>
   <string name="settings">Definições</string>
   <string name="library">Coleção</string>
@@ -16,7 +16,7 @@
   <string name="random">Aleatório</string>
   <string name="random_enabling">Modo aleatório ativado</string>
   <string name="song_load_failed">Falha ao carregar %s. Pode estar danificada ou em falta.</string>
-  <string name="queue_cleared">Fila de reprodução limpa.</string>
+  <string name="queue_cleared">Fila de reprodução limpa</string>
   <string name="cover_art">Capa de álbum</string>
   <string name="close_notification">Fechar notificação</string>
   <string name="_genre">género</string>
@@ -40,11 +40,11 @@
   <string name="play">Reproduzir</string>
   <string name="edit">Editar</string>
   <string name="rename">Mudar nome</string>
-  <string name="save_as_playlist">Gravar como lista de reprodução...</string>
-  <string name="add_to_playlist">Adicionar à lista de reprodução...</string>
-  <string name="add_to_favorites">Adicionar aos favoritos...</string>
+  <string name="save_as_playlist">Gravar como lista de reprodução</string>
+  <string name="add_to_playlist">Adicionar à lista de reprodução</string>
+  <string name="add_to_favorites">Adicionar aos favoritos</string>
   <string name="playlist_favorites">Favoritos</string>
-  <string name="new_playlist">Nova lista de reprodução...</string>
+  <string name="new_playlist">Nova lista de reprodução</string>
   <string name="expand">Expandir</string>
   <string name="delete">Eliminar</string>
   <string name="playback_view">Em reprodução</string>
@@ -55,23 +55,23 @@
   <string name="clear_search">Limpar procura</string>
   <string name="play_or_enqueue">Colocar na fila ou reproduzir se em pausa</string>
   <plurals name="playing">
-    <item quantity="one">1 faixa em reprodução.</item>
-    <item quantity="other">%d faixas em reprodução.</item>
+    <item quantity="one">1 faixa em reprodução</item>
+    <item quantity="other">%d faixas em reprodução</item>
   </plurals>
   <plurals name="enqueued">
-    <item quantity="one">1 faixa na fila.</item>
-    <item quantity="other">%d faixas na fila.</item>
+    <item quantity="one">1 faixa na fila</item>
+    <item quantity="other">%d faixas na fila</item>
   </plurals>
   <plurals name="added_to_playlist">
-    <item quantity="one">1 faixa adicionada à lista %2$s.</item>
-    <item quantity="other">%1$d faixas adicionadas à lista %2$s.</item>
+    <item quantity="one">1 faixa adicionada à lista %2$s</item>
+    <item quantity="other">%1$d faixas adicionadas à lista %2$s</item>
   </plurals>
   <plurals name="deleted">
-    <item quantity="one">1 faixa eliminada.</item>
-    <item quantity="other">%d faixas eliminadas.</item>
+    <item quantity="one">1 faixa eliminada</item>
+    <item quantity="other">%d faixas eliminadas</item>
   </plurals>
-  <string name="delete_file_failed">Falha ao eliminar %s.</string>
-  <string name="deleted_item">%s foi eliminado.</string>
+  <string name="delete_file_failed">Falha ao eliminar %s</string>
+  <string name="deleted_item">%s foi eliminado</string>
   <string name="delete_item">Eliminar %s?</string>
   <string name="delete_file">Eliminar o ficheiro %s?</string>
   <string name="artists">Artistas</string>
@@ -117,22 +117,22 @@
   <string name="audio">Áudio</string>
   <string name="volume_title">Volume</string>
   <string name="media_button_title">Auscultador/bluetooth</string>
-  <string name="media_button_summary">Necessário para os controlos do ecrã de bloqueio ICS.</string>
+  <string name="media_button_summary">Necessário para os controlos do ecrã de bloqueio ICS</string>
   <string name="media_button_beep_title">Sinal de auscultador</string>
-  <string name="media_button_beep_summary">Sinalizar ao avançar uma faixa com duplo clique no controlo de auscultador.</string>
+  <string name="media_button_beep_summary">Sinalizar ao avançar uma faixa com duplo clique no controlo de auscultador</string>
   <string name="headset_only_title">Apenas saída externa</string>
-  <string name="headset_only_summary">Impede que a música seja reproduzida através dos altifalantes externos.</string>
+  <string name="headset_only_summary">Impede que a música seja reproduzida através dos altifalantes internos</string>
   <string name="headset_pause_title">Pausa ao remover</string>
-  <string name="headset_pause_summary">Pausa na reprodução ao remover os auscultadores.</string>
+  <string name="headset_pause_summary">Pausa na reprodução ao remover os auscultadores</string>
   <string name="headset_play_title">Reproduzir ao inserir</string>
-  <string name="headset_play_summary">Reproduzir ao inserir os auscultadores. (Apenas funciona se o serviço estiver em execução)</string>
+  <string name="headset_play_summary">Reproduzir ao inserir os auscultadores (Apenas funciona se o serviço estiver em execução)</string>
   <string name="replaygain">Replay Gain</string>
   <string name="replaygain_title">Ativar replay gain</string>
-  <string name="replaygain_summary">Configurar gestão das informações replay gain.</string>
+  <string name="replaygain_summary">Configurar gestão das informações replay gain</string>
   <string name="replaygain_track_title">Ativar replay gain por faixa</string>
-  <string name="replaygain_track_summary">Reproduzir todas as faixas com igual volume.</string>
+  <string name="replaygain_track_summary">Reproduzir todas as faixas com igual volume</string>
   <string name="replaygain_album_title">Ativar replay gain de álbum</string>
-  <string name="replaygain_album_summary">Manter dinâmica do álbum.</string>
+  <string name="replaygain_album_summary">Manter dinâmica do álbum</string>
   <string name="replaygain_bump_title">Amplificador replay gain</string>
   <string name="replaygain_untagged_debump_title">Faixas sem informação replay gain</string>
   <string name="replaygain_untagged_debump_summary">Diminuir volume em</string>
@@ -145,7 +145,7 @@
   <string name="notification_invert_color_summary">Usar texto branco em vez de preto</string>
   <string name="playback_screen">Ecrã de reprodução</string>
   <string name="playback_on_startup_title">Abrir ao iniciar</string>
-  <string name="playback_on_startup_summary">Abrir vista de reprodução ao iniciar.</string>
+  <string name="playback_on_startup_summary">Abrir vista de reprodução ao iniciar</string>
   <string name="display_mode_title">Modo de exibição</string>
   <string name="swipe_up_action_title">Ação ao deslizar para cima</string>
   <string name="swipe_down_action_title">Ação ao deslizar para baixo</string>
@@ -153,7 +153,7 @@
   <string name="cover_longpress_action_title">Ação com clique longo na capa</string>
   <string name="library_screen">Ecrã da coleção</string>
   <string name="controls_in_selector_title">Controlos na coleção</string>
-  <string name="controls_in_selector_summary">Mostrar controlos de reprodução e a faixa atual na vista da coleção.</string>
+  <string name="controls_in_selector_summary">Mostrar controlos de reprodução e a faixa atual na vista da coleção</string>
   <string name="default_action_title">Ação padrão</string>
   <string name="default_playlist_action_title">Ação padrão na lista de reprodução</string>
   <string name="accelerometer_shake">Acelerador ao agitar</string>
@@ -163,31 +163,31 @@
   <string name="shake_threshold_title">Limite da agitação</string>
   <string name="misc_features">Outras funções</string>
   <string name="disable_lockscreen_title">Desativar ecrã de bloqueio</string>
-  <string name="disable_lockscreen_summary">Impede que o ecrã de bloqueio fique ativo, se na vista de reprodução ou coleção.</string>
+  <string name="disable_lockscreen_summary">Impede a ativação do ecrã de bloqueio, se na vista de reprodução ou na coleção</string>
   <string name="use_idle_timeout_title">Terminar reprodução</string>
-  <string name="use_idle_timeout_summary">Se ativa, a reprodução será parada após um certo tempo de inatividade.</string>
+  <string name="use_idle_timeout_summary">Se ativa, a reprodução será parada após um certo tempo de inatividade</string>
   <string name="idle_timeout_title">Tempo de inatividade</string>
   <string name="disable_cover_art_title">Desativar capa de álbum</string>
-  <string name="disable_cover_art_summary">Impede o carregamento da capa do álbum.</string>
+  <string name="disable_cover_art_summary">Impede o carregamento da capa do álbum</string>
   <string name="coverloader_android_title">Carregar  imagem do Android</string>
-  <string name="coverloader_android_summary">Consulta a capa do álbum na base de dados interna do Android.</string>
+  <string name="coverloader_android_summary">Consulta a capa do álbum na base de dados interna do Android</string>
   <string name="coverloader_vanilla_title">Carregar imagem da pasta</string>
-  <string name="coverloader_vanilla_summary">Procura as imagens com o nome cover.jpg, album.jpg e artwork.jpg e mostra-as como capa.</string>
+  <string name="coverloader_vanilla_summary">Procura as imagens com o nome cover.jpg, album.jpg e artwork.jpg e mostra-as como capa</string>
   <string name="coverloader_shadow_title">Carregar imagem de pasta oculta</string>
-  <string name="coverloader_shadow_summary">Tenta carregar a imagem em \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\'.</string>
+  <string name="coverloader_shadow_summary">Tenta carregar a imagem em \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\'</string>
   <string name="double_tap_title">Duplo clique no widget</string>
   <string name="double_tap_summary">Ao clicar duas vezes no widget 1x1, abre o reprodutor. Tem um atraso de 400 ms antes de responder às ações.</string>
   <string name="scrobble_title">Usar API ScrobbleDroid</string>
-  <string name="scrobble_summary">Enviar faixas para a Last.FM através de ScrobbleDroid ou Simple Last.FM Scrobbler.</string>
+  <string name="scrobble_summary">Enviar faixas para a Last.FM através de ScrobbleDroid ou Simple Last.FM Scrobbler</string>
   <string name="stock_broadcast_title">Emular comunicações</string>
-  <string name="stock_broadcast_summary">Enviar emissões emulando as enviadas pelo reprodutor do Android para poder funcionar com controlos e widgets de terceiros.</string>
+  <string name="stock_broadcast_summary">Enviar emissões emulando as enviadas pelo reprodutor do Android para poder funcionar com controlos e widgets de terceiros</string>
   <string name="media_scan">Atualizar coleção</string>
-  <string name="tap_to_scan">Clique para analisar as faixas do cartão SD.</string>
+  <string name="tap_to_scan">Clique para analisar as faixas do cartão SD</string>
   <string name="scan_in_progress">Análise em curso...</string>
   <string name="finished_scanning">Análise terminada. Clique para analisar novamente.</string>
   <string name="about">Sobre</string>
   <string name="tabs">Ordem de separadores</string>
-  <string name="customize_tab_order">Ajustar ordem e visibilidade dos separadores.</string>
+  <string name="customize_tab_order">Ajustar ordem e visibilidade dos separadores</string>
   <string name="restore_default">Restaurar padrões</string>
   <!--The following are for the list preferences-->
   <string name="last_used_action">Última ação utilizada</string>
@@ -214,10 +214,11 @@
   <string name="enqueue_current_artist">Colocar artista na fila</string>
   <string name="enqueue_current_genre">Colocar género na fila</string>
   <string name="clear_queue">Limpar fila</string>
+  <string name="empty_the_queue">Fila de reprodução vazia</string>
   <string name="show_queue">Mostrar fila</string>
   <string name="queue">Fila</string>
   <string name="toggle_controls">Alternar controlos</string>
   <string name="filebrowser_start">Pasta inicial do explorador</string>
-  <string name="customize_filebrowser_start">O explorador de ficheiros abre esta pasta.</string>
+  <string name="customize_filebrowser_start">O explorador de ficheiros abre esta pasta</string>
   <string name="select">Selecionar</string>
 </resources>
