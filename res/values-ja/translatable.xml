@@ -207,6 +207,7 @@
   <string name="enqueue_current_artist">アーチストをキューに入れる</string>
   <string name="enqueue_current_genre">ジャンルをキューに入れる</string>
   <string name="clear_queue">キューをクリア</string>
+  <string name="empty_the_queue">空のキュー</string>
   <string name="show_queue">キューを表示</string>
   <string name="queue">キュー</string>
   <string name="toggle_controls">コントロールを切り替え</string>

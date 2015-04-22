@@ -221,6 +221,7 @@
   <string name="enqueue_current_artist">Zařadit umělce do fronty</string>
   <string name="enqueue_current_genre">Zařadit žánr do fronty</string>
   <string name="clear_queue">Vymazat frontu</string>
+  <string name="empty_the_queue">Prázdná fronta</string>
   <string name="show_queue">Zobrazit frontu</string>
   <string name="queue">Fronta</string>
   <string name="toggle_controls">Přepnout ovládání</string>

@@ -36,9 +36,11 @@
   <string name="delete_playlist">Dzēst repertuāru %s?</string>
   <!--Library-->
   <string name="enqueue">Ierindot</string>
+  <string name="enqueue_as_next">Atskaņot nākamo</string>
   <string name="play">Atskaņot</string>
   <string name="edit">Rediģēt</string>
   <string name="rename">Pārdēvēt</string>
+  <string name="save_as_playlist">Saglabāt kā repertuāru...</string>
   <string name="add_to_playlist">Pievienot repertuāram...</string>
   <string name="add_to_favorites">Pievienot iecienītajiem</string>
   <string name="playlist_favorites">Iecienītie</string>
@@ -75,6 +77,7 @@
   <string name="delete_file_failed">Neizdevās izdzēst %s.</string>
   <string name="deleted_item">Izdzēsa \'%s\'.</string>
   <string name="delete_item">Dzēst \'%s\'?</string>
+  <string name="delete_file">Dzēst failu \'%s\'?</string>
   <string name="artists">Izpildītāji</string>
   <string name="albums">Albumi</string>
   <string name="songs">Dziesmas</string>
@@ -96,6 +99,7 @@
   <string name="artist_album_track">Izpildītājs, albums, celiņa numurs</string>
   <string name="artist_album_title">Izpildītājs, albums, nosaukums</string>
   <string name="artist_year">Izpildītājs, gads</string>
+  <string name="album_track">Albums, celiņa numurs</string>
   <string name="song_playcount">Atskaņojumu skaits</string>
   <string name="ascending">Augoši</string>
   <string name="descending">Dilstoši</string>
@@ -217,6 +221,7 @@
   <string name="enqueue_current_artist">Ierindot izpildītāju</string>
   <string name="enqueue_current_genre">Ierindot žanru</string>
   <string name="clear_queue">Notīrīt rindu</string>
+  <string name="empty_the_queue">Tukša rinda</string>
   <string name="show_queue">Rādīt rindu</string>
   <string name="queue">Rinda</string>
   <string name="toggle_controls">Pārslēgt vadīklas</string>

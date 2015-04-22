@@ -214,6 +214,7 @@
   <string name="enqueue_current_artist">Lisää esittäjä jonoon</string>
   <string name="enqueue_current_genre">Lisää lajityyppi jonoon</string>
   <string name="clear_queue">Tyhjennä jono</string>
+  <string name="empty_the_queue">Tyhjennä jono</string>
   <string name="show_queue">Näytä jono</string>
   <string name="queue">Jono</string>
   <string name="toggle_controls">Näytä/piilota ohjaimet</string>
