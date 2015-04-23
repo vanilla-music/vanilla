@@ -53,6 +53,6 @@ THE SOFTWARE.
 		android:orientation="horizontal"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content">
-		<include layout="@layout/controls" />
+		<include layout="@layout/controls_widget" />
 	</LinearLayout>
 </LinearLayout>
