@@ -448,6 +448,18 @@ public class LibraryPagerAdapter
 	}
 
 	/**
+	 * Forcefully updates mSavedPositions by storing the current
+	 * state and passing it back into restoreState()
+	 * This ensures that the nest MSG_COMMIT_QUERY will
+	 * keep the current scrolling position
+	 */
+	public void maintainState()
+	{
+		Parcelable state = saveState();
+		restoreState(state, null);
+	}
+
+	/**
 	 * Sets the text to be displayed in the first row of the artist, album, and
 	 * song lists.
 	 */
