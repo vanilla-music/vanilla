@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2014 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2012-2015 Adrian Ulrich <adrian@blinkenlights.ch>
  * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -570,7 +570,7 @@ public final class PlaybackService extends Service
 			// we haven't registered the receiver yet
 		}
 
-		if (mSensorManager != null && mShakeAction != Action.Nothing)
+		if (mSensorManager != null)
 			mSensorManager.unregisterListener(this);
 
 		if (mWakeLock != null && mWakeLock.isHeld())
@@ -738,7 +738,7 @@ public final class PlaybackService extends Service
 	 */
 	private void setupSensor()
 	{
-		if (mShakeAction == Action.Nothing || (mState & FLAG_PLAYING) == 0) {
+		if (mShakeAction == Action.Nothing) {
 			if (mSensorManager != null)
 				mSensorManager.unregisterListener(this);
 		} else {
