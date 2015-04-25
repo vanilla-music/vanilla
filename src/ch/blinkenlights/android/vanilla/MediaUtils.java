@@ -48,6 +48,10 @@ import android.util.Log;
  */
 public class MediaUtils {
 	/**
+	 * Not a real file type: just an http type
+	 */
+	public static final int TYPE_STREAM = -2;
+	/**
 	 * A special invalid media type.
 	 */
 	public static final int TYPE_INVALID = -1;
@@ -584,16 +588,8 @@ public class MediaUtils {
 		String duration = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
 
 		if (duration != null) { // looks like we will be able to play this file
-			// Vanilla requires each file to be identified by its unique id in the media database.
-			// However: This file is not in the database, so we are going to roll our own
-			// using the negative crc32 sum of the path value. While this is not perfect
-			// (the same file may be accessed using various paths) it's the fastest method
-			// and far good enough.
-			CRC32 crc = new CRC32();
-			crc.update(path.getBytes());
-			Long songId = (Long)(2+crc.getValue())*-1; // must at least be -2 (-1 defines Song-Object to be empty)
-
 			// Build minimal fake-database entry for this file
+			Long songId = bytesToFakeId(path.getBytes());
 			Object[] objData = new Object[] { songId, path, "", "", "", 0, 0, 0, 0 };
 
 			if (title != null)
@@ -609,6 +605,52 @@ public class MediaUtils {
 		}
 
 		return matrixCursor;
+	}
+
+	/**
+	 * Builds a fake query task for a stream uri
+	 * @param uri The uri to stream
+	 * @param projection The projection to use
+	 * @return A new query task
+	 */
+	public static QueryTask buildStreamQuery(Uri uri, String[] projection)
+	{
+		QueryTask result = new QueryTask(uri, projection, null, null, DEFAULT_SORT);
+		result.type = TYPE_STREAM;
+		return result;
+	}
+
+	/**
+	 * Returns a (possible empty) cursor for given stream uri
+	 * @param uri The uri object describing the stream
+	 * @return A new Cursor object
+	 */
+	public static Cursor getCursorForStream(Uri uri) {
+		MatrixCursor matrixCursor = null;
+		String path = uri.toString();
+		List<String> segments = uri.getPathSegments();
+
+		if (path != null && segments.size() >= 1) {
+			matrixCursor = new MatrixCursor(Song.FILLED_PROJECTION);
+			Long songId = bytesToFakeId(path.getBytes());
+			String name = segments.get(segments.size() - 1);
+			Object[] objData = new Object[] { songId, path, name, "", path, 0, 0, 0, 0 };
+			matrixCursor.addRow(objData);
+		}
+		return matrixCursor;
+	}
+
+	/**
+	 * Returns a fake id calculated from given byte input
+	 * Vanilla requires each file to be identified by an unique id in the media database.
+	 * This function can be used to create a 'fake' id for files which are not in the
+	 * database. The generated id is always <= -2 (-1 = invalid, 0 = first media db file)
+	 */
+	private static Long bytesToFakeId(byte[] input) {
+		CRC32 crc = new CRC32();
+		crc.update(input);
+		Long songId = (Long)(2+crc.getValue())*-1; // must at least be -2 (-1 defines Song-Object to be empty)
+		return songId;
 	}
 
 }

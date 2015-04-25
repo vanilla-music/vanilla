@@ -666,17 +666,22 @@ public final class SongTimeline {
 	 */
 	public int addSongs(Context context, QueryTask query)
 	{
-		Cursor cursor = query.runQuery(context.getContentResolver());
-		if (cursor == null) {
-			return 0;
-		}
-
+		Cursor cursor;
 		int mode = query.mode;
 		int type = query.type;
 		long data = query.data;
 
-		int count = cursor.getCount();
+		if (type == MediaUtils.TYPE_STREAM) {
+			cursor = MediaUtils.getCursorForStream(query.uri);
+		} else {
+			cursor = query.runQuery(context.getContentResolver());
+		}
 
+		if (cursor == null) {
+			return 0;
+		}
+
+		int count = cursor.getCount();
 		if (count == 0 && type == MediaUtils.TYPE_FILE && query.selectionArgs.length == 1) {
 			String pathQuery = query.selectionArgs[0];
 			pathQuery = pathQuery.substring(0,pathQuery.length()-1); // remove '%' -> this used to be an sql query!

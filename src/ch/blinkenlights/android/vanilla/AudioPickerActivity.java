@@ -26,7 +26,6 @@ import android.view.Window;
 import android.widget.TextView;
 import android.widget.Button;
 
-
 public class AudioPickerActivity extends PlaybackActivity {
 
 	private Uri mUri;
@@ -42,7 +41,7 @@ public class AudioPickerActivity extends PlaybackActivity {
 		}
 
 		mUri = intent.getData();
-		if (mUri == null || mUri.getScheme().equals("file") == false) { // we do not support streaming
+		if (mUri == null || mUri.getScheme().matches("^(file|http|https)$") == false) {
 			finish();
 			return;
 		}
@@ -81,12 +80,15 @@ public class AudioPickerActivity extends PlaybackActivity {
 				return;
 		}
 
-		String path = mUri.getPath();
-		PlaybackService service = PlaybackService.get(this);
-
-		QueryTask query = MediaUtils.buildFileQuery(path, Song.FILLED_PROJECTION);
+		QueryTask query;
+		if (mUri.getScheme().equals("file")) {
+			query = MediaUtils.buildFileQuery(mUri.getPath(), Song.FILLED_PROJECTION);
+		} else {
+			query = MediaUtils.buildStreamQuery(mUri, Song.FILLED_PROJECTION);
+		}
 		query.mode = mode;
 
+		PlaybackService service = PlaybackService.get(this);
 		service.addSongs(query);
 
 		finish();
