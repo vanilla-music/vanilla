@@ -223,27 +223,27 @@ public final class PlaybackService extends Service
 	public static final int FLAG_EMPTY_QUEUE = 0x8;
 	public static final int SHIFT_FINISH = 4;
 	/**
-	 * These two bits will be one of SongTimeline.FINISH_*.
+	 * These three bits will be one of SongTimeline.FINISH_*.
 	 */
 	public static final int MASK_FINISH = 0x7 << SHIFT_FINISH;
 	public static final int SHIFT_SHUFFLE = 7;
 	/**
-	 * These two bits will be one of SongTimeline.SHUFFLE_*.
+	 * These three bits will be one of SongTimeline.SHUFFLE_*.
 	 */
-	public static final int MASK_SHUFFLE = 0x3 << SHIFT_SHUFFLE;
+	public static final int MASK_SHUFFLE = 0x7 << SHIFT_SHUFFLE;
 
 	/**
 	 * The PlaybackService state, indicating if the service is playing,
 	 * repeating, etc.
 	 *
-	 * The format of this is 0b00000000_00000000_00000000f_feeedcba,
+	 * The format of this is 0b00000000_00000000_0000000ff_feeedcba,
 	 * where each bit is:
 	 *     a:   {@link PlaybackService#FLAG_PLAYING}
 	 *     b:   {@link PlaybackService#FLAG_NO_MEDIA}
 	 *     c:   {@link PlaybackService#FLAG_ERROR}
 	 *     d:   {@link PlaybackService#FLAG_EMPTY_QUEUE}
 	 *     eee: {@link PlaybackService#MASK_FINISH}
-	 *     ff:  {@link PlaybackService#MASK_SHUFFLE}
+	 *     fff: {@link PlaybackService#MASK_SHUFFLE}
 	 */
 	int mState;
 	
@@ -294,6 +294,10 @@ public final class PlaybackService extends Service
 	 * {@link PlaybackService#createNotificationAction(SharedPreferences)}.
 	 */
 	private PendingIntent mNotificationAction;
+	/**
+	 * If true, use SongTimeline.SHUFFLE_CONTINUOUS while cycling shuffle modes
+	 */
+	private boolean mCycleContinuousShuffling;
 
 	private Looper mLooper;
 	private Handler mHandler;
@@ -418,6 +422,7 @@ public final class PlaybackService extends Service
 		Song.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_SHADOW , true) ? Song.mCoverLoadMode | Song.COVER_MODE_SHADOW  : Song.mCoverLoadMode & ~(Song.COVER_MODE_SHADOW);
 
 		mHeadsetOnly = settings.getBoolean(PrefKeys.HEADSET_ONLY, false);
+		mCycleContinuousShuffling = settings.getBoolean(PrefKeys.CYCLE_CONTINUOUS_SHUFFLING, false);
 		mStockBroadcast = settings.getBoolean(PrefKeys.STOCK_BROADCAST, false);
 		mNotificationAction = createNotificationAction(settings);
 		mHeadsetPause = getSettings(this).getBoolean(PrefKeys.HEADSET_PAUSE, true);
@@ -779,6 +784,9 @@ public final class PlaybackService extends Service
 			mHeadsetOnly = settings.getBoolean(key, false);
 			if (mHeadsetOnly && isSpeakerOn())
 				unsetFlag(FLAG_PLAYING);
+		} else if (PrefKeys.CYCLE_CONTINUOUS_SHUFFLING.equals(key)) {
+			mCycleContinuousShuffling = settings.getBoolean(key, false);
+			setShuffleMode(SongTimeline.SHUFFLE_NONE);
 		} else if (PrefKeys.STOCK_BROADCAST.equals(key)) {
 			mStockBroadcast = settings.getBoolean(key, false);
 		} else if (PrefKeys.ENABLE_SHAKE.equals(key) || PrefKeys.SHAKE_ACTION.equals(key)) {
@@ -1120,8 +1128,12 @@ public final class PlaybackService extends Service
 	{
 		synchronized (mStateLock) {
 			int mode = shuffleMode(mState) + 1;
+			if (mCycleContinuousShuffling == true && mode == SongTimeline.SHUFFLE_SONGS)
+				mode++; // skip this mode, advance to continuous
+			if (mCycleContinuousShuffling == false && mode == SongTimeline.SHUFFLE_CONTINUOUS)
+				mode++; // skip this mode, advance to albums
 			if (mode > SongTimeline.SHUFFLE_ALBUMS)
-				mode = SongTimeline.SHUFFLE_NONE;
+				mode = SongTimeline.SHUFFLE_NONE; // end reached: switch to none
 			return setShuffleMode(mode);
 		}
 	}

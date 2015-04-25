@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2015 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -167,18 +168,24 @@ public final class SongTimeline {
 	 */
 	public static final int SHUFFLE_SONGS = 1;
 	/**
+	 * Randomize order of songs and re-shuffle continuously
+	 *
+	 * @see SongTimeline@setShuffleMode(int)
+	 */
+	public static final int SHUFFLE_CONTINUOUS = 2;
+	/**
 	 * Randomize order of albums, preserving the order of tracks inside the
 	 * albums.
 	 *
 	 * @see SongTimeline#setShuffleMode(int)
 	 */
-	public static final int SHUFFLE_ALBUMS = 2;
+	public static final int SHUFFLE_ALBUMS = 3;
 
 	/**
 	 * Icons corresponding to each of the shuffle actions.
 	 */
 	public static final int[] SHUFFLE_ICONS =
-		{ R.drawable.shuffle_inactive, R.drawable.shuffle_active, R.drawable.shuffle_album_active };
+		{ R.drawable.shuffle_inactive, R.drawable.shuffle_active, R.drawable.shuffle_active, R.drawable.shuffle_album_active };
 
 	/**
 	 * Move current position to the previous album.
@@ -495,6 +502,28 @@ public final class SongTimeline {
 	}
 
 	/**
+	 * Shuffles the current timeline but keeps the current
+	 * queue position
+	 */
+	private void reshuffleTimeline()
+	{
+		synchronized (this) {
+			saveActiveSongs();
+
+			mShuffledSongs = null;
+			shuffleAll();
+			ArrayList<Song> songs = mShuffledSongs;
+			mShuffledSongs = null;
+
+			int newPosition = songs.indexOf(mSavedCurrent);
+			Collections.swap(songs, newPosition, mCurrentPos);
+			mSongs = songs;
+			broadcastChangedSongs();
+		}
+		changed();
+	}
+
+	/**
 	 * Returns the song <code>delta</code> places away from the current
 	 * position. Returns null if there is a problem retrieving the song.
 	 *
@@ -572,6 +601,11 @@ public final class SongTimeline {
 
 		mCurrentPos = pos;
 		mShuffledSongs = null;
+
+		if (mShuffleMode == SHUFFLE_CONTINUOUS) {
+			reshuffleTimeline();
+		}
+
 	}
 	
 	/**

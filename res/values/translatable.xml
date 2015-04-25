@@ -174,6 +174,9 @@ THE SOFTWARE.
 	<string name="readahead">Enable readahead</string>
 	<string name="readahead_summary">Readahead the currently playing song. This option may solve \'audio dropout\' issues. (caused by a slow SD card)</string>
 
+	<string name="cycle_continuous_shuffling">Continuous Shuffle</string>
+	<string name="cycle_continuous_shuffling_summary">\'Shuffle mode\' will play songs in completely random order</string>
+
 	<string name="notifications">Notifications</string>
 	<string name="notification_mode_title">Notification Mode</string>
 	<string name="notification_action_title">Notification Action</string>
