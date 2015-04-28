@@ -43,7 +43,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.media.audiofx.AudioEffect;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -301,8 +300,8 @@ public final class PlaybackService extends Service
 
 	private Looper mLooper;
 	private Handler mHandler;
-	MediaPlayer mMediaPlayer;
-	MediaPlayer mPreparedMediaPlayer;
+	VanillaMediaPlayer mMediaPlayer;
+	VanillaMediaPlayer mPreparedMediaPlayer;
 	private boolean mMediaPlayerInitialized;
 	private PowerManager.WakeLock mWakeLock;
 	private NotificationManager mNotificationManager;
@@ -404,6 +403,7 @@ public final class PlaybackService extends Service
 		mPlayCounts = new PlayCountsHelper(this);
 
 		mMediaPlayer = getNewMediaPlayer();
+		mPreparedMediaPlayer = getNewMediaPlayer();
 		mBastpUtil = new BastpUtil();
 		mReadahead = new ReadaheadThread();
 		mReadahead.start();
@@ -554,12 +554,13 @@ public final class PlaybackService extends Service
 
 		if (mMediaPlayer != null) {
 			saveState(mMediaPlayer.getCurrentPosition());
-			Intent i = new Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION);
-			i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mMediaPlayer.getAudioSessionId());
-			i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, getPackageName());
-			sendBroadcast(i);
 			mMediaPlayer.release();
 			mMediaPlayer = null;
+		}
+
+		if (mPreparedMediaPlayer != null) {
+			mPreparedMediaPlayer.release();
+			mPreparedMediaPlayer = null;
 		}
 
 		MediaButtonReceiver.unregisterMediaButton(this);
@@ -582,24 +583,18 @@ public final class PlaybackService extends Service
 	/**
 	 * Returns a new MediaPlayer object
 	 */
-	private MediaPlayer getNewMediaPlayer() {
-		MediaPlayer mp = new MediaPlayer();
+	private VanillaMediaPlayer getNewMediaPlayer() {
+		VanillaMediaPlayer mp = new VanillaMediaPlayer(this);
 		mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		mp.setOnCompletionListener(this);
 		mp.setOnErrorListener(this);
 		return mp;
 	}
 	
-	public void prepareMediaPlayer(MediaPlayer mp, String path) throws IOException{
+	public void prepareMediaPlayer(VanillaMediaPlayer mp, String path) throws IOException{
 		mp.setDataSource(path);
 		mp.prepare();
-		
-		Intent i = new Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION);
-		i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mp.getAudioSessionId());
-		i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, getPackageName());
-		sendBroadcast(i);
-		
-		applyReplayGain(mp, path);
+		applyReplayGain(mp);
 	}
 	
 	
@@ -608,23 +603,17 @@ public final class PlaybackService extends Service
 	 * the (maybe just changed) user settings
 	*/
 	private void refreshReplayGainValues() {
-		Song curSong = getSong(0);
-		
-		if(mMediaPlayer == null)
-			return;
-		if(curSong == null)
-			return;
-
-		applyReplayGain(mMediaPlayer, curSong.path);
-		if(mPreparedMediaPlayer != null) {
-			applyReplayGain(mPreparedMediaPlayer, getSong(1).path);
-		}
+		applyReplayGain(mMediaPlayer);
+		applyReplayGain(mPreparedMediaPlayer);
 	}
 
-	
-	private void applyReplayGain(MediaPlayer mp, String path) {
+	/***
+	 * Reads the replay gain value of the media players data source
+	 * and adjusts the volume
+	 */
+	private void applyReplayGain(VanillaMediaPlayer mp) {
 		
-		float[] rg = getReplayGainValues(path); /* track, album */
+		float[] rg = getReplayGainValues(mp.getDataSource()); /* track, album */
 		float adjust = 0f;
 		
 		if(mReplayGainAlbumEnabled) {
@@ -674,22 +663,16 @@ public final class PlaybackService extends Service
 	 * re-creates a newone if needed.
 	 */
 	private void triggerGaplessUpdate() {
-
 		if(mMediaPlayerInitialized != true)
 			return;
 		
 		if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
 			return; /* setNextMediaPlayer is supported since JB */
-		
-		if(mPreparedMediaPlayer != null) {
-			/* an old prepared player exists and is
-			 * most likely invalid -> destroy it now
-			*/
-			mMediaPlayer.setNextMediaPlayer(null);
-			mPreparedMediaPlayer.release();
-			mPreparedMediaPlayer = null;
-		}
-		
+
+		// Reset any preparations
+		mMediaPlayer.setNextMediaPlayer(null);
+		mPreparedMediaPlayer.reset();
+
 		int fa = finishAction(mState);
 		Song nextSong = getSong(1);
 		if( nextSong != null
@@ -697,7 +680,6 @@ public final class PlaybackService extends Service
 		    && fa != SongTimeline.FINISH_STOP_CURRENT
 		    && !mTimeline.isEndOfQueue() ) {
 			try {
-				mPreparedMediaPlayer = getNewMediaPlayer();
 				prepareMediaPlayer(mPreparedMediaPlayer, nextSong.path);
 				mMediaPlayer.setNextMediaPlayer(mPreparedMediaPlayer);
 				Log.d("VanillaMusic", "New media player prepared with path "+nextSong.path);
@@ -1197,12 +1179,12 @@ public final class PlaybackService extends Service
 			mMediaPlayerInitialized = false;
 			mMediaPlayer.reset();
 			
-			if(mPreparedMediaPlayer != null &&
-			   mPreparedMediaPlayer.isPlaying()) {
-				
-				mMediaPlayer.release();
+			if(mPreparedMediaPlayer.isPlaying()) {
+				VanillaMediaPlayer tmpPlayer = mMediaPlayer;
 				mMediaPlayer = mPreparedMediaPlayer;
-				mPreparedMediaPlayer = null;
+				mPreparedMediaPlayer = tmpPlayer;
+				mPreparedMediaPlayer.reset();
+				Log.v("VanillaMusic", "Swapped media players");
 			}
 			else if(song.path != null) {
 				prepareMediaPlayer(mMediaPlayer, song.path);
@@ -1210,10 +1192,9 @@ public final class PlaybackService extends Service
 			
 
 			mMediaPlayerInitialized = true;
-
-			// Cancel any queued gapless triggers: we are updating it right now
+			// Cancel any pending gapless updates and re-send them
 			mHandler.removeMessages(GAPLESS_UPDATE);
-			triggerGaplessUpdate();
+			mHandler.sendEmptyMessage(GAPLESS_UPDATE);
 
 			if (mPendingSeek != 0 && mPendingSeekSong == song.id) {
 				mMediaPlayer.seekTo(mPendingSeek);
@@ -1677,7 +1658,7 @@ public final class PlaybackService extends Service
 		// This might get canceled if setCurrentSong() also fired a call
 		// to processSong();
 		mHandler.removeMessages(GAPLESS_UPDATE);
-		mHandler.sendEmptyMessageDelayed(GAPLESS_UPDATE, 350);
+		mHandler.sendEmptyMessageDelayed(GAPLESS_UPDATE, 500);
 
 		ArrayList<PlaybackActivity> list = sActivities;
 		for (int i = list.size(); --i != -1; )

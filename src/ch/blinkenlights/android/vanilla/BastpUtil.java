@@ -26,13 +26,18 @@ public class BastpUtil {
 	private RGLruCache rgCache;
 	
 	public BastpUtil() {
-		rgCache = new RGLruCache(16); /* Cache up to 16 entries */
+		rgCache = new RGLruCache(64); /* Cache up to 64 entries */
 	}
 	
 	
 	/** Returns the ReplayGain values of 'path' as <track,album>
 	 */
 	public float[] getReplayGainValues(String path) {
+		if(path == null) {
+			// path must not be null
+			path = "//null\\";
+		}
+
 		float[] cached = rgCache.get(path);
 
 		if(cached == null) {
