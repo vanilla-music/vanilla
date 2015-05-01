@@ -404,6 +404,11 @@ public final class PlaybackService extends Service
 
 		mMediaPlayer = getNewMediaPlayer();
 		mPreparedMediaPlayer = getNewMediaPlayer();
+		// We only have a single audio session
+		mPreparedMediaPlayer.setAudioSessionId(mMediaPlayer.getAudioSessionId());
+		// Broadcast our audio ID for the EQ
+		mPreparedMediaPlayer.openAudioFx();
+
 		mBastpUtil = new BastpUtil();
 		mReadahead = new ReadaheadThread();
 		mReadahead.start();
@@ -559,6 +564,7 @@ public final class PlaybackService extends Service
 		}
 
 		if (mPreparedMediaPlayer != null) {
+			mPreparedMediaPlayer.closeAudioFx();
 			mPreparedMediaPlayer.release();
 			mPreparedMediaPlayer = null;
 		}
@@ -684,15 +690,15 @@ public final class PlaybackService extends Service
 			Log.d("VanillaMusic", "Must not create new media player object");
 		}
 
-		Log.v("VanillaMusic", "A>>  hasNext="+mMediaPlayer.hasNextMediaPlayer()+", ds="+mMediaPlayer.getDataSource()+", class="+mMediaPlayer);
-		Log.v("VanillaMusic", "P>>  hasNext="+mPreparedMediaPlayer.hasNextMediaPlayer()+", ds="+mPreparedMediaPlayer.getDataSource()+", class="+mPreparedMediaPlayer);
+		vLog("VanillaMusic", "A>>  hasNext="+mMediaPlayer.hasNextMediaPlayer()+", ds="+mMediaPlayer.getDataSource()+", class="+mMediaPlayer);
+		vLog("VanillaMusic", "P>>  hasNext="+mPreparedMediaPlayer.hasNextMediaPlayer()+", ds="+mPreparedMediaPlayer.getDataSource()+", class="+mPreparedMediaPlayer);
 
 		if(doGapless == true) {
 			try {
 				if(nextSong.path.equals(mPreparedMediaPlayer.getDataSource()) == false) {
 					// Prepared MP has a different data source: We need to re-initalize
 					// it and set it as the next MP for the active media player
-					Log.v("VanillaMusic", "GAPLESS: SETTING "+nextSong.path);
+					vLog("VanillaMusic", "GAPLESS: SETTING "+nextSong.path);
 					mPreparedMediaPlayer.reset();
 					prepareMediaPlayer(mPreparedMediaPlayer, nextSong.path);
 					mMediaPlayer.setNextMediaPlayer(mPreparedMediaPlayer);
@@ -700,11 +706,11 @@ public final class PlaybackService extends Service
 				if(mMediaPlayer.hasNextMediaPlayer() == false) {
 					// We can reuse the prepared MediaPlayer but the current instance lacks
 					// a link to it
-					Log.v("VanillaMusic", "SETTING NEXT MP as in "+mPreparedMediaPlayer.getDataSource());
+					vLog("VanillaMusic", "SETTING NEXT MP as in "+mPreparedMediaPlayer.getDataSource());
 					mMediaPlayer.setNextMediaPlayer(mPreparedMediaPlayer);
 				}
 			} catch (IOException e) {
-				Log.v("VanillaMusic", "triggerGaplessUpdate() failed with exception "+e);
+				vLog("VanillaMusic", "triggerGaplessUpdate() failed with exception "+e);
 				mMediaPlayer.setNextMediaPlayer(null);
 				mPreparedMediaPlayer.reset();
 			}
@@ -716,10 +722,14 @@ public final class PlaybackService extends Service
 			}
 		}
 
-		Log.v("VanillaMusic", "A<<  hasNext="+mMediaPlayer.hasNextMediaPlayer()+", ds="+mMediaPlayer.getDataSource()+", class="+mMediaPlayer);
-		Log.v("VanillaMusic", "P<<  hasNext="+mPreparedMediaPlayer.hasNextMediaPlayer()+", ds="+mPreparedMediaPlayer.getDataSource()+", class="+mPreparedMediaPlayer);
+		vLog("VanillaMusic", "A<<  hasNext="+mMediaPlayer.hasNextMediaPlayer()+", ds="+mMediaPlayer.getDataSource()+", class="+mMediaPlayer);
+		vLog("VanillaMusic", "P<<  hasNext="+mPreparedMediaPlayer.hasNextMediaPlayer()+", ds="+mPreparedMediaPlayer.getDataSource()+", class="+mPreparedMediaPlayer);
+	}
 
-
+	// Helper to quickly enable and disable logging of triggerGaplessUpdate
+	// FIXME: REMOVE ME
+	private static void vLog(String name, String text) {
+		Log.v(name, text);
 	}
 
 	/**
@@ -1471,6 +1481,16 @@ public final class PlaybackService extends Service
 			return 0;
 		return mMediaPlayer.getDuration();
 	}
+
+	/**
+	 * Returns the global audio session
+	 */
+	public int getAudioSession() {
+		// Must not be 'ready' or initialized: the audio session
+		// is set on object creation
+		return mMediaPlayer.getAudioSessionId();
+	}
+
 	/**
 	 * Seek to a position in the current song.
 	 *

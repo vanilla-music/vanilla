@@ -22,17 +22,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.audiofx.AudioEffect;
-
 import java.io.IOException;
-
-
 
 public class VanillaMediaPlayer extends MediaPlayer {
 
 	private Context mContext;
 	private String mDataSource;
 	private boolean mHasNextMediaPlayer;
-	private int mClaimedAudioSessionId = 0;
 
 	/**
 	 * Constructs a new VanillaMediaPlayer class
@@ -40,7 +36,6 @@ public class VanillaMediaPlayer extends MediaPlayer {
 	public VanillaMediaPlayer(Context context) {
 		super();
 		mContext = context;
-		_claimAudioSession();
 	}
 
 	/**
@@ -56,7 +51,6 @@ public class VanillaMediaPlayer extends MediaPlayer {
 	 * Releases the media player and frees any claimed AudioEffect
 	 */
 	public void release() {
-		_releaseAudioSession();
 		mDataSource = null;
 		mHasNextMediaPlayer = false;
 		super.release();
@@ -68,7 +62,6 @@ public class VanillaMediaPlayer extends MediaPlayer {
 	public void setDataSource(String dataSource) throws IOException, IllegalArgumentException, SecurityException, IllegalStateException {
 		mDataSource = dataSource;
 		super.setDataSource(mDataSource);
-		_claimAudioSession();
 	}
 
 	/**
@@ -97,28 +90,21 @@ public class VanillaMediaPlayer extends MediaPlayer {
 	/**
 	 * Creates a new AudioEffect for our AudioSession
 	 */
-	private void _claimAudioSession() {
-		// No active audio session -> claim one
-		if (mClaimedAudioSessionId == 0) {
-			mClaimedAudioSessionId = this.getAudioSessionId();
-			Intent i = new Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION);
-			i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mClaimedAudioSessionId);
-			i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mContext.getPackageName());
-			mContext.sendBroadcast(i);
-		}
+	public void openAudioFx() {
+		Intent i = new Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION);
+		i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, this.getAudioSessionId());
+		i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mContext.getPackageName());
+		mContext.sendBroadcast(i);
 	}
 
 	/**
 	 * Releases a previously claimed audio session id
 	 */
-	private void _releaseAudioSession() {
-		if (mClaimedAudioSessionId != 0) {
-			Intent i = new Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION);
-			i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mClaimedAudioSessionId);
-			i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mContext.getPackageName());
-			mContext.sendBroadcast(i);
-			mClaimedAudioSessionId = 0;
-		}
+	public void closeAudioFx() {
+		Intent i = new Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION);
+		i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, this.getAudioSessionId());
+		i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mContext.getPackageName());
+		mContext.sendBroadcast(i);
 	}
 
 }

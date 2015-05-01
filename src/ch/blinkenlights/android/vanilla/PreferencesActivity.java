@@ -38,6 +38,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewFragment;
+import android.content.Context;
+import android.content.Intent;
+import android.media.audiofx.AudioEffect;
 import android.net.Uri;
 import java.util.List;
 
@@ -114,6 +117,32 @@ public class PreferencesActivity extends PreferenceActivity {
 			boolean rgOn = (cbTrackReplayGain.isChecked() || cbAlbumReplayGain.isChecked());
 			sbGainBump.setEnabled(rgOn);
 			sbUntaggedDebump.setEnabled(rgOn);
+		}
+	}
+
+	public static class EqualizerFragment extends PreferenceFragment {
+		@Override
+		public void onCreate(Bundle savedInstanceState)
+		{
+			super.onCreate(savedInstanceState);
+
+			Context context = getActivity();
+			int mAudioSession = 0;
+			if (PlaybackService.hasInstance()) {
+				PlaybackService service = PlaybackService.get(context);
+				mAudioSession = service.getAudioSession();
+			}
+
+			try {
+				final Intent effects = new Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
+				effects.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.getPackageName());
+				effects.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mAudioSession);
+				startActivityForResult(effects, 0);
+			} catch (Exception e) {
+				// ignored. Whee!
+			}
+
+			getActivity().finish();
 		}
 	}
 

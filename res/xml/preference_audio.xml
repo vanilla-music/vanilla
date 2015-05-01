@@ -27,6 +27,10 @@ THE SOFTWARE.
 		android:fragment="ch.blinkenlights.android.vanilla.PreferencesActivity$ReplayGainFragment"
 		android:title="@string/replaygain"
 		android:summary="@string/replaygain_summary" />
+	<PreferenceScreen
+		android:fragment="ch.blinkenlights.android.vanilla.PreferencesActivity$EqualizerFragment"
+		android:title="@string/equalizer"
+		android:summary="" />
 	<CheckBoxPreference
 		android:key="media_button"
 		android:title="@string/media_button_title"
