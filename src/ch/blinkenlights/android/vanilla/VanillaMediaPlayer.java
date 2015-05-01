@@ -26,13 +26,12 @@ import android.media.audiofx.AudioEffect;
 import java.io.IOException;
 
 
-import android.util.Log;
-
 
 public class VanillaMediaPlayer extends MediaPlayer {
 
 	private Context mContext;
 	private String mDataSource;
+	private boolean mHasNextMediaPlayer;
 	private int mClaimedAudioSessionId = 0;
 
 	/**
@@ -49,6 +48,7 @@ public class VanillaMediaPlayer extends MediaPlayer {
 	 */
 	public void reset() {
 		mDataSource = null;
+		mHasNextMediaPlayer = false;
 		super.reset();
 	}
 
@@ -58,6 +58,7 @@ public class VanillaMediaPlayer extends MediaPlayer {
 	public void release() {
 		_releaseAudioSession();
 		mDataSource = null;
+		mHasNextMediaPlayer = false;
 		super.release();
 	}
 
@@ -78,11 +79,26 @@ public class VanillaMediaPlayer extends MediaPlayer {
 	}
 
 	/**
+	 * Sets the next media player data source
+	 */
+	public void setNextMediaPlayer(VanillaMediaPlayer next) {
+		super.setNextMediaPlayer(next);
+		mHasNextMediaPlayer = (next != null);
+	}
+
+	/**
+	 * Returns true if a 'next' media player has been configured
+	 * via setNextMediaPlayer(next)
+	 */
+	public boolean hasNextMediaPlayer() {
+		return mHasNextMediaPlayer;
+	}
+
+	/**
 	 * Creates a new AudioEffect for our AudioSession
 	 */
 	private void _claimAudioSession() {
 		// No active audio session -> claim one
-		Log.v("VanillaMusic", "_claimAudioSession() -> "+mClaimedAudioSessionId+" -> "+this);
 		if (mClaimedAudioSessionId == 0) {
 			mClaimedAudioSessionId = this.getAudioSessionId();
 			Intent i = new Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION);
@@ -96,8 +112,6 @@ public class VanillaMediaPlayer extends MediaPlayer {
 	 * Releases a previously claimed audio session id
 	 */
 	private void _releaseAudioSession() {
-		Log.v("VanillaMusic", "_releaseAudioSession() "+mClaimedAudioSessionId+" -> "+this);
-
 		if (mClaimedAudioSessionId != 0) {
 			Intent i = new Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION);
 			i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mClaimedAudioSessionId);

@@ -669,27 +669,57 @@ public final class PlaybackService extends Service
 		if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
 			return; /* setNextMediaPlayer is supported since JB */
 
-		// Reset any preparations
-		mMediaPlayer.setNextMediaPlayer(null);
-		mPreparedMediaPlayer.reset();
-
+		boolean doGapless = false;
 		int fa = finishAction(mState);
 		Song nextSong = getSong(1);
+
 		if( nextSong != null
-		    && fa != SongTimeline.FINISH_REPEAT_CURRENT
-		    && fa != SongTimeline.FINISH_STOP_CURRENT
-		    && !mTimeline.isEndOfQueue() ) {
-			try {
-				prepareMediaPlayer(mPreparedMediaPlayer, nextSong.path);
-				mMediaPlayer.setNextMediaPlayer(mPreparedMediaPlayer);
-				Log.d("VanillaMusic", "New media player prepared with path "+nextSong.path);
-			} catch (IOException e) {
-				Log.e("VanillaMusic", "IOException", e);
-			}
+		 && nextSong.path != null
+		 && fa != SongTimeline.FINISH_REPEAT_CURRENT
+		 && fa != SongTimeline.FINISH_STOP_CURRENT
+		 && !mTimeline.isEndOfQueue() ) {
+			doGapless = true;
 		}
 		else {
 			Log.d("VanillaMusic", "Must not create new media player object");
 		}
+
+		Log.v("VanillaMusic", "A>>  hasNext="+mMediaPlayer.hasNextMediaPlayer()+", ds="+mMediaPlayer.getDataSource()+", class="+mMediaPlayer);
+		Log.v("VanillaMusic", "P>>  hasNext="+mPreparedMediaPlayer.hasNextMediaPlayer()+", ds="+mPreparedMediaPlayer.getDataSource()+", class="+mPreparedMediaPlayer);
+
+		if(doGapless == true) {
+			try {
+				if(nextSong.path.equals(mPreparedMediaPlayer.getDataSource()) == false) {
+					// Prepared MP has a different data source: We need to re-initalize
+					// it and set it as the next MP for the active media player
+					Log.v("VanillaMusic", "GAPLESS: SETTING "+nextSong.path);
+					mPreparedMediaPlayer.reset();
+					prepareMediaPlayer(mPreparedMediaPlayer, nextSong.path);
+					mMediaPlayer.setNextMediaPlayer(mPreparedMediaPlayer);
+				}
+				if(mMediaPlayer.hasNextMediaPlayer() == false) {
+					// We can reuse the prepared MediaPlayer but the current instance lacks
+					// a link to it
+					Log.v("VanillaMusic", "SETTING NEXT MP as in "+mPreparedMediaPlayer.getDataSource());
+					mMediaPlayer.setNextMediaPlayer(mPreparedMediaPlayer);
+				}
+			} catch (IOException e) {
+				Log.v("VanillaMusic", "triggerGaplessUpdate() failed with exception "+e);
+				mMediaPlayer.setNextMediaPlayer(null);
+				mPreparedMediaPlayer.reset();
+			}
+		} else {
+			if(mMediaPlayer.hasNextMediaPlayer()) {
+				Log.v("VanillaMusic", "UNCONFIGURING NEW MEDIA PLAYER");
+				mMediaPlayer.setNextMediaPlayer(null);
+				// There is no need to cleanup mPreparedMediaPlayer
+			}
+		}
+
+		Log.v("VanillaMusic", "A<<  hasNext="+mMediaPlayer.hasNextMediaPlayer()+", ds="+mMediaPlayer.getDataSource()+", class="+mMediaPlayer);
+		Log.v("VanillaMusic", "P<<  hasNext="+mPreparedMediaPlayer.hasNextMediaPlayer()+", ds="+mPreparedMediaPlayer.getDataSource()+", class="+mPreparedMediaPlayer);
+
+
 	}
 
 	/**
@@ -1178,12 +1208,14 @@ public final class PlaybackService extends Service
 		try {
 			mMediaPlayerInitialized = false;
 			mMediaPlayer.reset();
-			
+
 			if(mPreparedMediaPlayer.isPlaying()) {
+				// The prepared media player is playing as the previous song
+				// reched its end 'naturally' (-> gapless)
+				// We can now swap mPreparedMediaPlayer and mMediaPlayer
 				VanillaMediaPlayer tmpPlayer = mMediaPlayer;
 				mMediaPlayer = mPreparedMediaPlayer;
-				mPreparedMediaPlayer = tmpPlayer;
-				mPreparedMediaPlayer.reset();
+				mPreparedMediaPlayer = tmpPlayer; // this was mMediaPlayer and is in reset() state
 				Log.v("VanillaMusic", "Swapped media players");
 			}
 			else if(song.path != null) {
@@ -1658,7 +1690,7 @@ public final class PlaybackService extends Service
 		// This might get canceled if setCurrentSong() also fired a call
 		// to processSong();
 		mHandler.removeMessages(GAPLESS_UPDATE);
-		mHandler.sendEmptyMessageDelayed(GAPLESS_UPDATE, 500);
+		mHandler.sendEmptyMessageDelayed(GAPLESS_UPDATE, 100);
 
 		ArrayList<PlaybackActivity> list = sActivities;
 		for (int i = list.size(); --i != -1; )
