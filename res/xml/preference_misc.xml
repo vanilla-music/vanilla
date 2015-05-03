@@ -52,4 +52,9 @@ THE SOFTWARE.
 		android:title="@string/stock_broadcast_title"
 		android:summary="@string/stock_broadcast_summary"
 		android:defaultValue="false" />
+	<CheckBoxPreference
+		android:key="enable_readahead"
+		android:title="@string/readahead"
+		android:defaultValue="false"
+		android:summary="@string/readahead_summary" />
 </PreferenceScreen>

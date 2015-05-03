@@ -24,13 +24,13 @@ THE SOFTWARE.
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:persistent="true">
 	<PreferenceScreen
-		android:fragment="ch.blinkenlights.android.vanilla.PreferencesActivity$ReplayGainFragment"
-		android:title="@string/replaygain"
-		android:summary="@string/replaygain_summary" />
-	<PreferenceScreen
 		android:fragment="ch.blinkenlights.android.vanilla.PreferencesActivity$EqualizerFragment"
 		android:title="@string/equalizer"
 		android:summary="" />
+	<PreferenceScreen
+		android:fragment="ch.blinkenlights.android.vanilla.PreferencesActivity$ReplayGainFragment"
+		android:title="@string/replaygain"
+		android:summary="@string/replaygain_summary" />
 	<CheckBoxPreference
 		android:key="media_button"
 		android:title="@string/media_button_title"
@@ -56,9 +56,4 @@ THE SOFTWARE.
 		android:title="@string/cycle_continuous_shuffling"
 		android:defaultValue="false"
 		android:summary="@string/cycle_continuous_shuffling_summary" />
-	<CheckBoxPreference
-		android:key="enable_readahead"
-		android:title="@string/readahead"
-		android:defaultValue="false"
-		android:summary="@string/readahead_summary" />
 </PreferenceScreen>
