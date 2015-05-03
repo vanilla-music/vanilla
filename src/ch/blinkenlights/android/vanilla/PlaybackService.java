@@ -200,9 +200,9 @@ public final class PlaybackService extends Service
 	 */
 	private static final int MIN_SHAKE_PERIOD = 500;
 	/**
-	 * Defer release of mWakeLock for this time (in ms).
+	 * Defer entering deep sleep for this time (in ms).
 	 */
-	private static final int WAKE_LOCK_DELAY = 60000;
+	private static final int SLEEP_STATE_DELAY = 60000;
 
 	/**
 	 * If set, music will play.
@@ -303,6 +303,7 @@ public final class PlaybackService extends Service
 	VanillaMediaPlayer mMediaPlayer;
 	VanillaMediaPlayer mPreparedMediaPlayer;
 	private boolean mMediaPlayerInitialized;
+	private boolean mMediaPlayerAudioFxActive;
 	private PowerManager.WakeLock mWakeLock;
 	private NotificationManager mNotificationManager;
 	private AudioManager mAudioManager;
@@ -406,8 +407,6 @@ public final class PlaybackService extends Service
 		mPreparedMediaPlayer = getNewMediaPlayer();
 		// We only have a single audio session
 		mPreparedMediaPlayer.setAudioSessionId(mMediaPlayer.getAudioSessionId());
-		// Broadcast our audio ID for the EQ
-		mPreparedMediaPlayer.openAudioFx();
 
 		mBastpUtil = new BastpUtil();
 		mReadahead = new ReadaheadThread();
@@ -557,6 +556,9 @@ public final class PlaybackService extends Service
 		// clear the notification
 		stopForeground(true);
 
+		// defer wakelock and close audioFX
+		enterSleepState();
+
 		if (mMediaPlayer != null) {
 			saveState(mMediaPlayer.getCurrentPosition());
 			mMediaPlayer.release();
@@ -564,7 +566,6 @@ public final class PlaybackService extends Service
 		}
 
 		if (mPreparedMediaPlayer != null) {
-			mPreparedMediaPlayer.closeAudioFx();
 			mPreparedMediaPlayer.release();
 			mPreparedMediaPlayer = null;
 		}
@@ -579,9 +580,6 @@ public final class PlaybackService extends Service
 
 		if (mSensorManager != null)
 			mSensorManager.unregisterListener(this);
-
-		if (mWakeLock != null && mWakeLock.isHeld())
-			mWakeLock.release();
 
 		super.onDestroy();
 	}
@@ -662,6 +660,22 @@ public final class PlaybackService extends Service
 	 */
 	public float[] getReplayGainValues(String path) {
 		return mBastpUtil.getReplayGainValues(path);
+	}
+
+	/**
+	 * Prepares PlaybackService to sleep / shutdown
+	 * Closes any open AudioFX session and releases
+	 * our wakelock if held
+	 */
+	private void enterSleepState()
+	{
+		if (mMediaPlayerAudioFxActive) {
+			mMediaPlayer.closeAudioFx();
+			mMediaPlayerAudioFxActive = false;
+		}
+
+		if (mWakeLock != null && mWakeLock.isHeld())
+			mWakeLock.release();
 	}
 
 	/**
@@ -906,6 +920,13 @@ public final class PlaybackService extends Service
 
 		if ( ((toggled & FLAG_PLAYING) != 0) && mCurrentSong != null) { // user requested to start playback AND we have a song selected
 			if ((state & FLAG_PLAYING) != 0) {
+
+				// We get noisy: Acquire a new AudioFX session if required
+				if (mMediaPlayerAudioFxActive == false) {
+					mMediaPlayer.openAudioFx();
+					mMediaPlayerAudioFxActive = true;
+				}
+
 				if (mMediaPlayerInitialized)
 					mMediaPlayer.start();
 
@@ -914,7 +935,7 @@ public final class PlaybackService extends Service
 
 				mAudioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 
-				mHandler.removeMessages(RELEASE_WAKE_LOCK);
+				mHandler.removeMessages(ENTER_SLEEP_STATE);
 				try {
 					if (mWakeLock != null && mWakeLock.isHeld() == false)
 						mWakeLock.acquire();
@@ -932,10 +953,10 @@ public final class PlaybackService extends Service
 					stopForeground(true);
 				}
 
-				// Delay release of the wake lock. This allows the headset
+				// Delay entering deep sleep. This allows the headset
 				// button to continue to function for a short period after
-				// pausing.
-				mHandler.sendEmptyMessageDelayed(RELEASE_WAKE_LOCK, WAKE_LOCK_DELAY);
+				// pausing and keeps the AudioFX session open
+				mHandler.sendEmptyMessageDelayed(ENTER_SLEEP_STATE, SLEEP_STATE_DELAY);
 			}
 
 			setupSensor();
@@ -1350,9 +1371,9 @@ public final class PlaybackService extends Service
 	}
 
 	/**
-	 * Calls {@link PowerManager.WakeLock#release()} on mWakeLock.
+	 * Releases mWakeLock and closes any open AudioFx sessions
 	 */
-	private static final int RELEASE_WAKE_LOCK = 1;
+	private static final int ENTER_SLEEP_STATE = 1;
 	/**
 	 * Run the given query and add the results to the timeline.
 	 *
@@ -1426,9 +1447,8 @@ public final class PlaybackService extends Service
 		case BROADCAST_CHANGE:
 			broadcastChange(message.arg1, (Song)message.obj, message.getWhen());
 			break;
-		case RELEASE_WAKE_LOCK:
-			if (mWakeLock != null && mWakeLock.isHeld())
-				mWakeLock.release();
+		case ENTER_SLEEP_STATE:
+			enterSleepState();
 			break;
 		case SKIP_BROKEN_SONG:
 			/* Advance to next song if the user didn't already change.
