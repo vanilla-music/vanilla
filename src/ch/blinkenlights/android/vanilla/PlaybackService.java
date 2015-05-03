@@ -1464,6 +1464,9 @@ public final class PlaybackService extends Service
 			if(getTimelinePosition() == message.arg1) {
 				setCurrentSong(1);
 			}
+			// Optimistically claim to have recovered from this error
+			mErrorMessage = null;
+			unsetFlag(FLAG_ERROR);
 			mHandler.sendMessage(mHandler.obtainMessage(CALL_GO, 0, 0));
 			break;
 		case GAPLESS_UPDATE:
