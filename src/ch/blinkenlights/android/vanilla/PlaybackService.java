@@ -203,7 +203,10 @@ public final class PlaybackService extends Service
 	 * Defer entering deep sleep for this time (in ms).
 	 */
 	private static final int SLEEP_STATE_DELAY = 60000;
-
+	/**
+	 * Save the current playlist state on queue changes after this time (in ms).
+	 */
+	private static final int SAVE_STATE_DELAY = 5000;
 	/**
 	 * If set, music will play.
 	 */
@@ -560,7 +563,6 @@ public final class PlaybackService extends Service
 		enterSleepState();
 
 		if (mMediaPlayer != null) {
-			saveState(mMediaPlayer.getCurrentPosition());
 			mMediaPlayer.release();
 			mMediaPlayer = null;
 		}
@@ -669,9 +671,12 @@ public final class PlaybackService extends Service
 	 */
 	private void enterSleepState()
 	{
-		if (mMediaPlayerAudioFxActive) {
-			mMediaPlayer.closeAudioFx();
-			mMediaPlayerAudioFxActive = false;
+		if (mMediaPlayer != null) {
+			if (mMediaPlayerAudioFxActive) {
+				mMediaPlayer.closeAudioFx();
+				mMediaPlayerAudioFxActive = false;
+			}
+			saveState(mMediaPlayer.getCurrentPosition());
 		}
 
 		if (mWakeLock != null && mWakeLock.isHeld())
@@ -1724,7 +1729,7 @@ public final class PlaybackService extends Service
 	public void timelineChanged()
 	{
 		mHandler.removeMessages(SAVE_STATE);
-		mHandler.sendEmptyMessageDelayed(SAVE_STATE, 5000);
+		mHandler.sendEmptyMessageDelayed(SAVE_STATE, SAVE_STATE_DELAY);
 
 		// Trigger a gappless update for the new timeline
 		// This might get canceled if setCurrentSong() also fired a call
