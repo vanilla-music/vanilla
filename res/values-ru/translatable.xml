@@ -2,8 +2,8 @@
 <resources>
   <string name="app_name">Vanilla Music</string>
   <!--Playback Activity (main screen)-->
-  <string name="no_songs">На вашем устройстве песни не найдены.</string>
-  <string name="empty_queue">Песни не выбраны. Выберите что-нибудь из библиотеки или включите случайный режим, нажав на это сообщение.</string>
+  <string name="no_songs">Музыка не найдена</string>
+  <string name="empty_queue">Треки не выбраны. Выберите что-нибудь из библиотеки или включите случайный режим, нажав на это сообщение.</string>
   <string name="settings">Настройки</string>
   <string name="library">Библиотека</string>
   <string name="no_shuffle">Без перемешивания</string>
@@ -36,9 +36,11 @@
   <string name="delete_playlist">Удалить плейлист %s?</string>
   <!--Library-->
   <string name="enqueue">Добавить в очередь</string>
+  <string name="enqueue_as_next">След.</string>
   <string name="play">Воспроизвести</string>
   <string name="edit">Редактировать</string>
   <string name="rename">Переименовать</string>
+  <string name="save_as_playlist">Сохранить плейлист</string>
   <string name="add_to_playlist">Добавить в плейлист…</string>
   <string name="add_to_favorites">Добавить в избранное</string>
   <string name="playlist_favorites">Избранное</string>
@@ -55,26 +57,31 @@
   <plurals name="playing">
     <item quantity="one">1 песня воспроизводится.</item>
     <item quantity="few">%d песни воспроизводятся.</item>
+    <item quantity="many">%d песен воспроизводится.</item>
     <item quantity="other">%d песен воспроизводится.</item>
   </plurals>
   <plurals name="enqueued">
     <item quantity="one">1 песня в очереди.</item>
     <item quantity="few">%d песни в очереди.</item>
+    <item quantity="many">%d песен в очереди.</item>
     <item quantity="other">%d песен в очереди.</item>
   </plurals>
   <plurals name="added_to_playlist">
     <item quantity="one">1 песня добавлена в плейлист %2$s.</item>
     <item quantity="few">%1$d песни добавлены в плейлист %2$s.</item>
+    <item quantity="many">%1$d песен добавлены в плейлист %2$s.</item>
     <item quantity="other">%1$d песен добавлены в плейлист %2$s.</item>
   </plurals>
   <plurals name="deleted">
     <item quantity="one">1 песня удалена.</item>
     <item quantity="few">%d песни удалено.</item>
+    <item quantity="many">%d песен удалено.</item>
     <item quantity="other">%d песен удалено.</item>
   </plurals>
   <string name="delete_file_failed">Ошибка при удалении %s.</string>
   <string name="deleted_item">\"%s\" удалено.</string>
   <string name="delete_item">Удалить \"%s\"?</string>
+  <string name="delete_file">Удалить файл \'%s\'?</string>
   <string name="artists">Исполнители</string>
   <string name="albums">Альбомы</string>
   <string name="songs">Песни</string>
@@ -96,6 +103,7 @@
   <string name="artist_album_track">Исполнитель, альбом, номер трека</string>
   <string name="artist_album_title">Исполнитель, альбом, название</string>
   <string name="artist_year">Исполнитель, год</string>
+  <string name="album_track">Альбом, номер трека</string>
   <string name="song_playcount">Кол-во проигрываний</string>
   <string name="ascending">По возрастанию</string>
   <string name="descending">По убыванию</string>
@@ -105,16 +113,19 @@
   <plurals name="seconds">
     <item quantity="one">1 секунда</item>
     <item quantity="few">%d секунды</item>
+    <item quantity="many">%d секунд</item>
     <item quantity="other">%d секунд</item>
   </plurals>
   <plurals name="minutes">
     <item quantity="one">1 минута</item>
     <item quantity="few">%d минуты</item>
+    <item quantity="many">%d минут</item>
     <item quantity="other">%d минут</item>
   </plurals>
   <plurals name="hours">
     <item quantity="one">1 час</item>
     <item quantity="few">%d часа</item>
+    <item quantity="many">%d часов</item>
     <item quantity="other">%d часов</item>
   </plurals>
   <string name="audio">Аудио</string>
@@ -158,6 +169,7 @@
   <string name="controls_in_selector_summary">Показывать в библиотеке проигрываемую композицию и элементы управления воспроизведением</string>
   <string name="default_action_title">Действие по умолчанию</string>
   <string name="default_playlist_action_title">Действие плейлиста по умолчанию</string>
+  <string name="accelerometer_shake">Акселерометр</string>
   <string name="enable_shake_summary">Активно только при воспроизведении музыки. Не работает с выключенным экраном на некоторых устройствах.</string>
   <string name="shake_action_title">Действие при встряхивании</string>
   <string name="shake_threshold_title">Порог силы встряхивания</string>

@@ -145,6 +145,9 @@
   <string name="replaygain_untagged_debump_summary">Samazināt skaļumu par</string>
   <string name="readahead">Ieslēgt nolasi pirms laika</string>
   <string name="readahead_summary">Pirms laika nolasīt pašreiz atskaņoto dziesmu. Šī opcija var novērst skaņas \'raustīšanās\' problēmas. (Kuras izraisa lēna SD atmiņas karte)</string>
+  <string name="equalizer">Balansieris</string>
+  <string name="cycle_continuous_shuffling">Nepārtrauktā sajaukšana</string>
+  <string name="cycle_continuous_shuffling_summary">\"Sajaukšanas režīms\" dziesmas atskaņos pilnīgi nejaušā kārtībā</string>
   <string name="notifications">Paziņojumi</string>
   <string name="notification_mode_title">Paziņojumu režīms</string>
   <string name="notification_action_title">Paziņojuma darbība</string>
@@ -223,6 +226,7 @@
   <string name="clear_queue">Notīrīt rindu</string>
   <string name="empty_the_queue">Tukša rinda</string>
   <string name="show_queue">Rādīt rindu</string>
+  <string name="dequeue_rest">Noņemt no rindas pārējos</string>
   <string name="queue">Rinda</string>
   <string name="toggle_controls">Pārslēgt vadīklas</string>
   <string name="filebrowser_start">Failu pārlūka mājas</string>

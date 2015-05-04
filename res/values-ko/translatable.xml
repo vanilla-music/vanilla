@@ -131,6 +131,8 @@
   <string name="replaygain_untagged_debump_summary">음량 감소</string>
   <string name="readahead">미리 읽기 활성화</string>
   <string name="readahead_summary">현재 재생중인 곡 미리 읽기. 이것은 \'audio dropout\' 문제를 해결할 수 있는 옵션입니다. (느린 SD 카드에서 발생하는)</string>
+  <string name="cycle_continuous_shuffling">연속으로 섞기</string>
+  <string name="cycle_continuous_shuffling_summary">섞기모드는 랜덤한 순서로 곡을 재생합니다.</string>
   <string name="notifications">알림</string>
   <string name="notification_mode_title">알림 모드</string>
   <string name="notification_action_title">알림을 눌렀을때</string>
@@ -207,7 +209,9 @@
   <string name="enqueue_current_artist">음악가 대기열로 추가</string>
   <string name="enqueue_current_genre">장르 대기열로 추가</string>
   <string name="clear_queue">대기열 삭제</string>
+  <string name="empty_the_queue">대기열 비우기</string>
   <string name="show_queue">대기열 보이기</string>
+  <string name="dequeue_rest">대기열에 없는 나머지</string>
   <string name="queue">대기열</string>
   <string name="toggle_controls">토글 컨트롤</string>
   <string name="filebrowser_start">파일 검색기 홈</string>

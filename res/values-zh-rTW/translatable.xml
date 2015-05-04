@@ -131,6 +131,9 @@
   <string name="replaygain_untagged_debump_summary">降低音量依據</string>
   <string name="readahead">啟用預先讀取</string>
   <string name="readahead_summary">預讀目前播放的曲目。此選項可以解決\'音頻落後\'的問題。(因較慢的 SD 卡所造成)</string>
+  <string name="equalizer">等化器</string>
+  <string name="cycle_continuous_shuffling">連續隨機播放</string>
+  <string name="cycle_continuous_shuffling_summary">\'隨機模式\'將會在完整地隨機順序播放歌曲</string>
   <string name="notifications">通知</string>
   <string name="notification_mode_title">通知模式</string>
   <string name="notification_action_title">通知啟動</string>
@@ -207,7 +210,9 @@
   <string name="enqueue_current_artist">以演唱者儲入佇列</string>
   <string name="enqueue_current_genre">以類型儲入佇列</string>
   <string name="clear_queue">清除佇列</string>
+  <string name="empty_the_queue">佇列是空的</string>
   <string name="show_queue">顯示佇列</string>
+  <string name="dequeue_rest">剩餘的移出佇列</string>
   <string name="queue">佇列</string>
   <string name="toggle_controls">切換控制</string>
   <string name="filebrowser_start">啟始目錄</string>

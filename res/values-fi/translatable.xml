@@ -138,6 +138,9 @@
   <string name="replaygain_untagged_debump_summary">Vähennä äänenvoimakkuutta</string>
   <string name="readahead">Käytä etukäteen lukemista</string>
   <string name="readahead_summary">Lue etukäteen toistettava kappale. Tämä valinta saattaa auttaa, jos ääni katkeilee, ja syynä on hidas SD-muistikortti.</string>
+  <string name="equalizer">Taajuuskorjain</string>
+  <string name="cycle_continuous_shuffling">Jatkuva sekoitus</string>
+  <string name="cycle_continuous_shuffling_summary">\"Sekoitustila\" toistaa kappaleet satunnaisessa järjestyksessä</string>
   <string name="notifications">Ilmoitukset</string>
   <string name="notification_mode_title">Ilmoitustapa</string>
   <string name="notification_action_title">Ilmoitustoiminto</string>
@@ -216,6 +219,7 @@
   <string name="clear_queue">Tyhjennä jono</string>
   <string name="empty_the_queue">Tyhjennä jono</string>
   <string name="show_queue">Näytä jono</string>
+  <string name="dequeue_rest">Poista loput jonosta</string>
   <string name="queue">Jono</string>
   <string name="toggle_controls">Näytä/piilota ohjaimet</string>
   <string name="filebrowser_start">Tiedostohallinnan aloitus</string>

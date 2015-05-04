@@ -138,6 +138,9 @@
   <string name="replaygain_untagged_debump_summary">Ses düzeyini şu kadar indir:</string>
   <string name="readahead">Önbelleğe yazmayı etkinleştir</string>
   <string name="readahead_summary">Oynatılan şarkıyı belleğe alır. Bu seçenek ses takılması sorunlarını çözebilir (yavaş bir SD karta neden olabilir).</string>
+  <string name="equalizer">Equalizer</string>
+  <string name="cycle_continuous_shuffling">Sürekli Karıştır</string>
+  <string name="cycle_continuous_shuffling_summary">\'Karıştır kipi\' şarkıları tümüyle sırasız olarak çalar</string>
   <string name="notifications">Bildirimler</string>
   <string name="notification_mode_title">Bildirim Kipi</string>
   <string name="notification_action_title">Bildirim Eylemi</string>
@@ -214,7 +217,9 @@
   <string name="enqueue_current_artist">Bu sanatçıyı kuyruğa ekle</string>
   <string name="enqueue_current_genre">Bu türü kuyruğa ekle</string>
   <string name="clear_queue">Kuyruğu temizle</string>
+  <string name="empty_the_queue">Sırayı boşalt</string>
   <string name="show_queue">Kuyruğu göster</string>
+  <string name="dequeue_rest">Gerisini sıradan çıkar</string>
   <string name="queue">Kuyruk</string>
   <string name="toggle_controls">Denetimleri göster</string>
   <string name="filebrowser_start">Dosya yöneticisi Ana Ekran</string>

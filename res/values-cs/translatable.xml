@@ -145,6 +145,8 @@
   <string name="replaygain_untagged_debump_summary">Ztlumit o</string>
   <string name="readahead">Povolit předčítání</string>
   <string name="readahead_summary">Předčítat přehrávané skladby. Toto nastavení může vyřešit problém vynechávání zvuku. (způsobené pomalou SD kartou)</string>
+  <string name="cycle_continuous_shuffling">Nepřetržité náhodné přehrávání</string>
+  <string name="cycle_continuous_shuffling_summary">\'Náhodný mód\' přehrává skladby v náhodném pořadí</string>
   <string name="notifications">Upozornění</string>
   <string name="notification_mode_title">Režim upozornění</string>
   <string name="notification_action_title">Akce upozornění</string>
@@ -223,6 +225,7 @@
   <string name="clear_queue">Vymazat frontu</string>
   <string name="empty_the_queue">Prázdná fronta</string>
   <string name="show_queue">Zobrazit frontu</string>
+  <string name="dequeue_rest">Odstranit zbytek z fronty</string>
   <string name="queue">Fronta</string>
   <string name="toggle_controls">Přepnout ovládání</string>
   <string name="filebrowser_start">Výchozí cesta souborů</string>
