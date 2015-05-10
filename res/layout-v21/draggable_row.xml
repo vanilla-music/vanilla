@@ -67,6 +67,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 	<View
 		android:layout_width="match_parent"
 		android:layout_height="1px"
-		android:background="@color/divider_color"/>
+		android:background="?divider_color"/>
 
 </ch.blinkenlights.android.vanilla.DraggableRow>

@@ -40,11 +40,12 @@ public class ShowQueueActivity extends PlaybackActivity
 
 	@Override  
 	public void onCreate(Bundle savedInstanceState) {
+		ThemeHelper.setTheme(this, R.style.BackActionBar);
 		super.onCreate(savedInstanceState);
-		
+
 		setTitle(R.string.queue);
 		setContentView(R.layout.showqueue_listview);
-		
+
 		mService    = PlaybackService.get(this);
 		mListView   = (DragSortListView) findViewById(R.id.list);
 		listAdapter = new ShowQueueAdapter(this, R.layout.draggable_row);

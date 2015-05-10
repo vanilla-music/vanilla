@@ -21,19 +21,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
 <resources>
-	<!-- Color used in LibraryActivity list dividers -->
-	<color name="divider_color">#f444</color>
-	<color name="overlay_background_color">#a000</color>
-	<!-- color to use in full_playback text, set to bright_foreground_disabled_holo_light //-->
-	<color name="overlay_foreground_color">#ffb2b2b2</color>
-	<color name="float_color">#f222</color>
-
-	<!-- styling of the default cover bitmap -->
-	<color name="defaultcover_background">#ff000000</color>
-	<color name="defaultcover_gradient_begin">#ff606060</color>
-	<color name="defaultcover_gradient_end">#ff404040</color>
-	<color name="defaultcover_center">#88000000</color>
-
 	<!-- now-playing screen buttons tint -->
 	<color name="controls_active">@android:color/holo_blue_dark</color>
 	<color name="controls_normal">#fff5f5f5</color>
@@ -44,17 +31,26 @@ THE SOFTWARE.
 	<style name="AlertDialogItem">
 		<item name="android:textColor">?android:textColorAlertDialogListItem</item>
 	</style>
-	<style name="Playback" parent="android:Theme.Holo">
+
+	<style name="VanillaBase" parent="android:Theme.Holo">
+		<item name="overlay_background_color">#a000</item>
+		<!-- color to use in full_playback text, set to bright_foreground_disabled_holo_light //-->
+		<item name="overlay_foreground_color">#ffb2b2b2</item>
+		<item name="divider_color">#f444</item>
+		<item name="float_color">#f222</item>
+	</style>
+
+	<style name="Playback" parent="VanillaBase">
 		<item name="android:actionBarStyle">@style/PlaybackActionBar</item>
 		<item name="android:windowBackground">@android:color/black</item>
 	</style>
-	<style name="BackActionBar" parent="android:Theme.Holo">
+	<style name="BackActionBar" parent="VanillaBase">
 		<item name="android:actionBarStyle">@style/PlaybackActionBar</item>
 	</style>
 	<style name="PlaybackActionBar" parent="android:Widget.Holo.ActionBar">
 		<item name="android:displayOptions">showTitle|homeAsUp</item>
 	</style>
-	<style name="Library" parent="android:Theme.Holo">
+	<style name="Library" parent="VanillaBase">
 		<item name="android:actionBarStyle">@style/LibraryActionBar</item>
 		<item name="android:actionBarTabTextStyle">@style/LibraryActionBarTabText</item>
 	</style>

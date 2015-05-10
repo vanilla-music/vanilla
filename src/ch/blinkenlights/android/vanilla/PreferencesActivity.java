@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2012-2015 Adrian Ulrich <adrian@blinkenlights.ch>
  * Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -31,6 +31,7 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
+import android.preference.PreferenceScreen;
 import android.preference.CheckBoxPreference;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -42,6 +43,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.audiofx.AudioEffect;
 import android.net.Uri;
+import android.util.TypedValue;
 import java.util.List;
 
 /**
@@ -55,6 +57,7 @@ public class PreferencesActivity extends PreferenceActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
+		ThemeHelper.setTheme(this, R.style.BackActionBar);
 		super.onCreate(savedInstanceState);
 	}
 
@@ -152,6 +155,14 @@ public class PreferencesActivity extends PreferenceActivity {
 		{
 			super.onCreate(savedInstanceState);
 			addPreferencesFromResource(R.xml.preference_playback);
+
+			// Hide the dark theme preference if this device
+			// does not support multiple themes
+			PreferenceScreen screen = getPreferenceScreen();
+			CheckBoxPreference dark_theme_pref = (CheckBoxPreference)findPreference("use_dark_theme");
+			if (ThemeHelper.couldUseDarkTheme() == false)
+				screen.removePreference(dark_theme_pref);
+
 		}
 	}
 
@@ -206,7 +217,10 @@ public class PreferencesActivity extends PreferenceActivity {
 		{
 			WebView view = (WebView)super.onCreateView(inflater, container, savedInstanceState);
 			view.getSettings().setJavaScriptEnabled(true);
-			String fontColor = getResources().getString(R.color.overlay_foreground_color);
+
+			TypedValue value = new TypedValue();
+			getActivity().getTheme().resolveAttribute(R.attr.overlay_foreground_color, value, true);
+			String fontColor = TypedValue.coerceToString(value.type, value.data);
 			view.loadUrl("file:///android_asset/about.html?"+Uri.encode(fontColor));
 			view.setBackgroundColor(Color.TRANSPARENT);
 			return view;

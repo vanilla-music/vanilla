@@ -37,7 +37,7 @@ THE SOFTWARE.
 		android:choiceMode="multipleChoice"
 		dslv:drag_enabled="true"
 		dslv:drag_start_mode="onMove"
-		dslv:float_background_color="@color/float_color"
+		dslv:float_background_color="?float_color"
 		dslv:drag_handle_id="@+id/dragger" />
 	<LinearLayout
 		style="?android:attr/buttonBarStyle"

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
- * Copyright (C) 2014 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2014-2015 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -55,7 +55,8 @@ import android.widget.Toast;
 public abstract class PlaybackActivity extends Activity
 	implements Handler.Callback,
 	           View.OnClickListener,
-	           CoverView.Callback
+	           CoverView.Callback,
+	           SharedPreferences.OnSharedPreferenceChangeListener
 {
 	private Action mUpAction;
 	private Action mDownAction;
@@ -118,6 +119,7 @@ public abstract class PlaybackActivity extends Activity
 			startService(new Intent(this, PlaybackService.class));
 
 		SharedPreferences prefs = PlaybackService.getSettings(this);
+		prefs.registerOnSharedPreferenceChangeListener(this);
 		mUpAction = Action.getAction(prefs, PrefKeys.SWIPE_UP_ACTION, Action.Nothing);
 		mDownAction = Action.getAction(prefs, PrefKeys.SWIPE_DOWN_ACTION, Action.Nothing);
 
@@ -139,7 +141,18 @@ public abstract class PlaybackActivity extends Activity
 			PlaybackService service = PlaybackService.get(this);
 			service.userActionTriggered();
 		}
+
 	}
+
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+		if (key.equals(PrefKeys.USE_DARK_THEME)) {
+			// Terminate this activity as the currently used theme is outdated
+			finish();
+		}
+    }
+
+
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event)

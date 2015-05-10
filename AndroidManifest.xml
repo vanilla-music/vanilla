@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-Copyright (C) 2012 Adrian Ulrich <adrian@blinkenlights.ch>
+Copyright (C) 2012-2015 Adrian Ulrich <adrian@blinkenlights.ch>
 Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -36,7 +36,6 @@ THE SOFTWARE.
 		android:label="@string/app_name">
 		<activity
 			android:name="FullPlaybackActivity"
-			android:theme="@style/Playback"
 			android:launchMode="singleTask" />
 		<activity
 			android:name="LibraryActivity"
@@ -50,8 +49,7 @@ THE SOFTWARE.
 		</activity>
 		<activity
 			android:name="PlaylistActivity"
-			android:launchMode="singleTask"
-			android:theme="@style/BackActionBar" />
+			android:launchMode="singleTask" />
 		<activity
 			android:name="MiniPlaybackActivity"
 			android:theme="@style/Dialog"
@@ -59,7 +57,6 @@ THE SOFTWARE.
 			android:launchMode="singleInstance" />
 		<activity
 			android:name="ShowQueueActivity"
-			android:theme="@style/BackActionBar"
 			android:launchMode="singleInstance" />
 		<receiver
 			android:name=".OneCellWidget"
@@ -136,14 +133,11 @@ THE SOFTWARE.
 			</intent-filter>
 		</service>
 		<activity
-			android:name="PreferencesActivity"
-			android:theme="@style/BackActionBar" />
+			android:name="PreferencesActivity" />
 		<activity
-			android:name="TabOrderActivity"
-			android:theme="@style/BackActionBar" />
+			android:name="TabOrderActivity" />
 		<activity
-			android:name="FilebrowserStartActivity"
-			android:theme="@style/BackActionBar" />
+			android:name="FilebrowserStartActivity" />
 
 		<activity android:name="AudioPickerActivity" android:theme="@style/DialogMinWidth"
 			android:excludeFromRecents="true" android:exported="true" >

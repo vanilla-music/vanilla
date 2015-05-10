@@ -33,18 +33,18 @@ THE SOFTWARE.
 		android:collapseColumns="0"
 		android:stretchColumns="1"
 		android:shrinkColumns="1"
-		android:background="@color/overlay_background_color"
+		android:background="?overlay_background_color"
 		android:paddingLeft="5dip"
 		android:paddingRight="5dip">
 		<TableRow>
 			<TextView
 				android:text="@string/_title"
-				android:textColor="@color/overlay_foreground_color"
+				android:textColor="?overlay_foreground_color"
 				android:paddingRight="5dip"
 				android:gravity="right" />
 			<TextView
 				android:id="@+id/title"
-				android:textColor="@color/overlay_foreground_color"
+				android:textColor="?overlay_foreground_color"
 				android:textStyle="bold" />
 			<TextView
 				android:id="@+id/queue_pos"
@@ -54,66 +54,66 @@ THE SOFTWARE.
 		<TableRow>
 			<TextView
 				android:text="@string/_artist"
-				android:textColor="@color/overlay_foreground_color"
+				android:textColor="?overlay_foreground_color"
 				android:paddingRight="5dip"
 				android:gravity="right" />
-			<TextView android:id="@+id/artist" android:textColor="@color/overlay_foreground_color"/>
+			<TextView android:id="@+id/artist" android:textColor="?overlay_foreground_color"/>
 		</TableRow>
 		<TableRow>
 			<TextView
 				android:text="@string/_album"
-				android:textColor="@color/overlay_foreground_color"
+				android:textColor="?overlay_foreground_color"
 				android:paddingRight="5dip"
 				android:gravity="right" />
-			<TextView android:id="@+id/album" android:textColor="@color/overlay_foreground_color"/>
+			<TextView android:id="@+id/album" android:textColor="?overlay_foreground_color"/>
 		</TableRow>
 		<TableRow>
 			<TextView
 				android:text="@string/_genre"
-				android:textColor="@color/overlay_foreground_color"
+				android:textColor="?overlay_foreground_color"
 				android:paddingRight="5dip"
 				android:gravity="right" />
-			<TextView android:id="@+id/genre" android:textColor="@color/overlay_foreground_color"/>
+			<TextView android:id="@+id/genre" android:textColor="?overlay_foreground_color"/>
 		</TableRow>
 		<TableRow>
 			<TextView
 				android:text="@string/_track"
-				android:textColor="@color/overlay_foreground_color"
+				android:textColor="?overlay_foreground_color"
 				android:paddingRight="5dip"
 				android:gravity="right" />
-			<TextView android:id="@+id/track" android:textColor="@color/overlay_foreground_color"/>
+			<TextView android:id="@+id/track" android:textColor="?overlay_foreground_color"/>
 		</TableRow>
 		<TableRow>
 			<TextView
 				android:text="@string/_year"
-				android:textColor="@color/overlay_foreground_color"
+				android:textColor="?overlay_foreground_color"
 				android:paddingRight="5dip"
 				android:gravity="right" />
-			<TextView android:id="@+id/year" android:textColor="@color/overlay_foreground_color"/>
+			<TextView android:id="@+id/year" android:textColor="?overlay_foreground_color"/>
 		</TableRow>
 		<TableRow>
 			<TextView
 				android:text="@string/_composer"
-				android:textColor="@color/overlay_foreground_color"
+				android:textColor="?overlay_foreground_color"
 				android:paddingRight="5dip"
 				android:gravity="right" />
-			<TextView android:id="@+id/composer" android:textColor="@color/overlay_foreground_color"/>
+			<TextView android:id="@+id/composer" android:textColor="?overlay_foreground_color"/>
 		</TableRow>
 		<TableRow>
 			<TextView
 				android:text="@string/_format"
-				android:textColor="@color/overlay_foreground_color"
+				android:textColor="?overlay_foreground_color"
 				android:paddingRight="5dip"
 				android:gravity="right" />
-			<TextView android:id="@+id/format" android:textColor="@color/overlay_foreground_color"/>
+			<TextView android:id="@+id/format" android:textColor="?overlay_foreground_color"/>
 		</TableRow>
 		<TableRow>
 			<TextView
 				android:text="@string/_replaygain"
-				android:textColor="@color/overlay_foreground_color"
+				android:textColor="?overlay_foreground_color"
 				android:paddingRight="5dip"
 				android:gravity="right" />
-			<TextView android:id="@+id/replaygain" android:textColor="@color/overlay_foreground_color"/>
+			<TextView android:id="@+id/replaygain" android:textColor="?overlay_foreground_color"/>
 		</TableRow>
 		<LinearLayout android:id="@+id/controls_top">
 			<TextView
@@ -144,7 +144,7 @@ THE SOFTWARE.
 		android:layout_width="fill_parent"
 		android:layout_gravity="bottom|left"
 		android:layout_margin="0dip"
-		android:background="@color/overlay_background_color"
+		android:background="?overlay_background_color"
 		android:orientation="horizontal">
 		<include layout="@layout/controls" />
 	</LinearLayout>

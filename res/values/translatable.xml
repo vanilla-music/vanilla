@@ -207,6 +207,8 @@ THE SOFTWARE.
 	<string name="shake_threshold_title">Shake Force Threshold</string>
 
 	<string name="misc_features">Miscellaneous Features</string>
+	<string name="use_dark_theme_title">Use dark theme</string>
+	<string name="use_dark_theme_summary">Enables the dark material theme (requires restart)</string>
 	<string name="disable_lockscreen_title">Disable Lockscreen</string>
 	<string name="disable_lockscreen_summary">Prevent the lockscreen from activating when in the library or playback screen</string>
 	<string name="use_idle_timeout_title">Enable Idle Timeout</string>

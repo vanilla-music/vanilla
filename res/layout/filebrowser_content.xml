@@ -48,7 +48,7 @@ THE SOFTWARE.
 	<TextView
 		android:layout_width="fill_parent"
 		android:layout_height="2dp"
-		android:background="@color/divider_color"
+		android:background="?divider_color"
 	/>
 
 <ListView
@@ -56,7 +56,7 @@ THE SOFTWARE.
 	android:id="@+id/list"
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
-	android:divider="@color/divider_color"
+	android:divider="?divider_color"
 	android:dividerHeight="1dip"
 	android:listSelector="?android:attr/selectableItemBackground"
 	android:scrollbarStyle="outsideInset" />

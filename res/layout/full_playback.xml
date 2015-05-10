@@ -30,7 +30,7 @@ THE SOFTWARE.
 		android:layout_height="wrap_content"
 		android:layout_width="fill_parent"
 		android:layout_gravity="top"
-		android:background="@color/overlay_background_color"
+		android:background="?overlay_background_color"
 		android:orientation="horizontal">
 		<TextView
 			android:id="@+id/elapsed"
@@ -61,7 +61,7 @@ THE SOFTWARE.
 		android:layout_width="fill_parent"
 		android:layout_gravity="bottom|left"
 		android:layout_margin="0dip"
-		android:background="@color/overlay_background_color"
+		android:background="?overlay_background_color"
 		android:orientation="horizontal">
 		<include layout="@layout/controls" />
 	</LinearLayout>

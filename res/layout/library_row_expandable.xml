@@ -38,7 +38,7 @@ THE SOFTWARE.
 		android:id="@+id/divider"
 		android:layout_width="1dip"
 		android:layout_height="fill_parent"
-		android:background="@color/divider_color" />
+		android:background="?divider_color" />
 	<ImageView
 		android:id="@+id/arrow"
 		android:background="?android:attr/selectableItemBackground"

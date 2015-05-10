@@ -44,7 +44,9 @@ public class TabOrderActivity extends Activity implements View.OnClickListener, 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
+		ThemeHelper.setTheme(this, R.style.BackActionBar);
 		super.onCreate(savedInstanceState);
+
 		setTitle(R.string.tabs);
 		setContentView(R.layout.tab_order);
 

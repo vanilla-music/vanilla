@@ -339,10 +339,11 @@ public final class CoverBitmap {
 		int halfSize = size / 2;
 		int eightSize = size / 8;
 
-		int rgb_background = context.getResources().getColor(R.color.defaultcover_background);
-		int rgb_gardient_begin = context.getResources().getColor(R.color.defaultcover_gradient_begin);
-		int rgb_gardient_end = context.getResources().getColor(R.color.defaultcover_gradient_end);
-		int rgb_center = context.getResources().getColor(R.color.defaultcover_center);
+		int[] colors = ThemeHelper.getDefaultCoverColors(context);
+		int rgb_background = colors[0];
+		int rgb_gardient_begin = colors[1];
+		int rgb_gardient_end = colors[2];
+		int rgb_center = colors[3];
 
 		Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
 		bitmap.eraseColor(rgb_background);
