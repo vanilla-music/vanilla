@@ -849,6 +849,11 @@ public final class PlaybackService extends Service
 			refreshReplayGainValues();
 		} else if (PrefKeys.ENABLE_READAHEAD.equals(key)) {
 			mReadaheadEnabled = settings.getBoolean(PrefKeys.ENABLE_READAHEAD, false);
+		} else if (PrefKeys.USE_DARK_THEME.equals(key)) {
+			// Theme changed: trigger a restart of all registered activites
+			ArrayList<PlaybackActivity> list = sActivities;
+			for (int i = list.size(); --i != -1; )
+				list.get(i).recreate();
 		}
 		/* Tell androids cloud-backup manager that we just changed our preferences */
 		(new BackupManager(this)).dataChanged();

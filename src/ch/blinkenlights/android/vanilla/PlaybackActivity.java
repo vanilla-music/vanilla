@@ -55,8 +55,7 @@ import android.widget.Toast;
 public abstract class PlaybackActivity extends Activity
 	implements Handler.Callback,
 	           View.OnClickListener,
-	           CoverView.Callback,
-	           SharedPreferences.OnSharedPreferenceChangeListener
+	           CoverView.Callback
 {
 	private Action mUpAction;
 	private Action mDownAction;
@@ -119,11 +118,11 @@ public abstract class PlaybackActivity extends Activity
 			startService(new Intent(this, PlaybackService.class));
 
 		SharedPreferences prefs = PlaybackService.getSettings(this);
-		prefs.registerOnSharedPreferenceChangeListener(this);
 		mUpAction = Action.getAction(prefs, PrefKeys.SWIPE_UP_ACTION, Action.Nothing);
 		mDownAction = Action.getAction(prefs, PrefKeys.SWIPE_DOWN_ACTION, Action.Nothing);
 
 		Window window = getWindow();
+
 		if (prefs.getBoolean(PrefKeys.DISABLE_LOCKSCREEN, false))
 			window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
 					| WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
@@ -143,15 +142,6 @@ public abstract class PlaybackActivity extends Activity
 		}
 
 	}
-
-	@Override
-	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-		if (key.equals(PrefKeys.USE_DARK_THEME)) {
-			// Terminate this activity as the currently used theme is outdated
-			finish();
-		}
-    }
-
 
 
 	@Override
