@@ -294,7 +294,7 @@ public abstract class PlaybackActivity extends Activity
 	 */
 	protected File getFilesystemBrowseStart() {
 		SharedPreferences prefs = PlaybackService.getSettings(this);
-		String folder = prefs.getString("filesystem_browse_start", "");
+		String folder = prefs.getString(PrefKeys.FILESYSTEM_BROWSE_START, "");
 		File fs_start = new File( folder.equals("") ? Environment.getExternalStorageDirectory().getAbsolutePath() : folder );
 		return fs_start;
 	}
