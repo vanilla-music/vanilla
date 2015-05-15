@@ -145,6 +145,7 @@
   <string name="replaygain_untagged_debump_summary">Ztlumit o</string>
   <string name="readahead">Povolit předčítání</string>
   <string name="readahead_summary">Předčítat přehrávané skladby. Toto nastavení může vyřešit problém vynechávání zvuku. (způsobené pomalou SD kartou)</string>
+  <string name="equalizer">Ekvalizér</string>
   <string name="cycle_continuous_shuffling">Nepřetržité náhodné přehrávání</string>
   <string name="cycle_continuous_shuffling_summary">\'Náhodný mód\' přehrává skladby v náhodném pořadí</string>
   <string name="notifications">Upozornění</string>
@@ -171,6 +172,8 @@
   <string name="shake_action_title">Akce při potřesení</string>
   <string name="shake_threshold_title">Práh síly potřesení</string>
   <string name="misc_features">Další možnosti</string>
+  <string name="use_dark_theme_title">Použít tmavý vzhled</string>
+  <string name="use_dark_theme_summary">Zapne tmavý vzhled aplikace</string>
   <string name="disable_lockscreen_title">Vypnout zamykání</string>
   <string name="disable_lockscreen_summary">Zamezí uzamčení přístroje na obrazovce přehrávání nebo sbírky</string>
   <string name="use_idle_timeout_title">Povolit kontrolu nečinnosti</string>

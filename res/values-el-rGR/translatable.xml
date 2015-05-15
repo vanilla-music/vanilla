@@ -165,6 +165,7 @@
   <string name="shake_action_title">Ανακινηση δράσης</string>
   <string name="shake_threshold_title">Ανακινηση δύναμης κατωφλίου</string>
   <string name="misc_features">Διάφορα Χαρακτηριστικά</string>
+  <string name="use_dark_theme_title">Χρήση σκοτεινου θέματος</string>
   <string name="disable_lockscreen_title">Απενεργοποίηση της οθόνης κλειδώματος</string>
   <string name="disable_lockscreen_summary">Αποτροπή της οθόνης κλειδώματος από την ενεργοποίηση, όταν στην οθόνη βιβλιοθήκης ή αναπαραγωγής</string>
   <string name="use_idle_timeout_title">Ενεργοποίηση του Idle Timeout</string>

@@ -158,6 +158,8 @@
   <string name="shake_action_title">シェイク操作</string>
   <string name="shake_threshold_title">シェイクする力の閾値</string>
   <string name="misc_features">その他の機能</string>
+  <string name="use_dark_theme_title">ダークテーマを使用する</string>
+  <string name="use_dark_theme_summary">ダークマテリアルテーマを有効にします</string>
   <string name="disable_lockscreen_title">ロック画面を無効にする</string>
   <string name="disable_lockscreen_summary">ライブラリーや再生画面でロック画面が有効になるのを防止します</string>
   <string name="use_idle_timeout_title">アイドル タイムアウトを有効にする</string>

@@ -165,6 +165,8 @@
   <string name="shake_action_title">Ação ao agitar</string>
   <string name="shake_threshold_title">Limite da agitação</string>
   <string name="misc_features">Outras funções</string>
+  <string name="use_dark_theme_title">Utilizar tema escuro</string>
+  <string name="use_dark_theme_summary">Ativa o novo tema escuro</string>
   <string name="disable_lockscreen_title">Desativar ecrã de bloqueio</string>
   <string name="disable_lockscreen_summary">Impede a ativação do ecrã de bloqueio, se na vista de reprodução ou na coleção</string>
   <string name="use_idle_timeout_title">Terminar reprodução</string>

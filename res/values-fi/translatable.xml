@@ -165,6 +165,8 @@
   <string name="shake_action_title">Ravistuksen toiminto</string>
   <string name="shake_threshold_title">Ravistusvoiman kynnysarvo</string>
   <string name="misc_features">Muut ominaisuudet</string>
+  <string name="use_dark_theme_title">Käytä tummaa teemaa</string>
+  <string name="use_dark_theme_summary">Ottaa käyttöön tumman material-teeman</string>
   <string name="disable_lockscreen_title">Estä lukitusnäyttö</string>
   <string name="disable_lockscreen_summary">Estä lukitusnäytön aktivoituminen kirjasto- ja toistonäkymässä</string>
   <string name="use_idle_timeout_title">Käytä joutotilan aikakatkaisua</string>

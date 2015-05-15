@@ -165,6 +165,8 @@
   <string name="shake_action_title">Aktion beim Schütteln</string>
   <string name="shake_threshold_title">Schwellwert beim Schütteln</string>
   <string name="misc_features">Sonstige Funktionen</string>
+  <string name="use_dark_theme_title">Dunkles Theme verwenden</string>
+  <string name="use_dark_theme_summary">Aktiviert das \'Dark Material Design Theme\'</string>
   <string name="disable_lockscreen_title">Bildschirmsperre deaktivieren</string>
   <string name="disable_lockscreen_summary">Bildschirmsperre verhindern wenn Bibliothek- oder Wiedergabeansicht aktiv</string>
   <string name="use_idle_timeout_title">Inaktivitäts-Zeitabschaltung aktivieren</string>

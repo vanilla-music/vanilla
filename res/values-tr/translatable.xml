@@ -165,6 +165,8 @@
   <string name="shake_action_title">Sallama Ekranı</string>
   <string name="shake_threshold_title">Sallama Gücü Sınırı</string>
   <string name="misc_features">Diğer Özellikler</string>
+  <string name="use_dark_theme_title">Karanlık temayı kullan</string>
+  <string name="use_dark_theme_summary">Karanlık temayı etkinleştirir</string>
   <string name="disable_lockscreen_title">Kilit ekranını etkisizleştir</string>
   <string name="disable_lockscreen_summary">Arşiv ekranında veya oynatma ekranındayken kilit ekranını devre dışı bırak</string>
   <string name="use_idle_timeout_title">Boşta kalma süresini etkinleştir</string>
