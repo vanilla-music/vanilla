@@ -2114,6 +2114,23 @@ public final class PlaybackService extends Service
 		case ToggleControls:
 			// Handled in FullPlaybackActivity.performAction
 			break;
+		case SeekForward:
+			if (mCurrentSong != null) {
+				mPendingSeekSong = mCurrentSong.id;
+				mPendingSeek = getPosition() + 10000;
+				// We 'abuse' setCurrentSong as it will stop the playback and restart it
+				// at the new position, taking care of the ui update
+				setCurrentSong(0);
+			}
+			break;
+		case SeekBackward:
+			if (mCurrentSong != null) {
+				mPendingSeekSong = mCurrentSong.id;
+				mPendingSeek = getPosition() - 10000;
+				if (mPendingSeek < 1) mPendingSeek = 1; // must at least be 1
+				setCurrentSong(0);
+			}
+			break;
 		default:
 			throw new IllegalArgumentException("Invalid action: " + action);
 		}

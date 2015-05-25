@@ -87,7 +87,15 @@ enum Action {
 	/**
 	 * Toggle the controls in the playback activity.
 	 */
-	ToggleControls;
+	ToggleControls,
+	/**
+	 * Seek 10 seconds forward
+	 */
+	SeekForward,
+	/**
+	 * Seek 10 seconds back
+	 */
+	SeekBackward;
 
 	/**
 	 * Retrieve an action from the given SharedPreferences.

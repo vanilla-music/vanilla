@@ -53,6 +53,8 @@ THE SOFTWARE.
 		<item>ClearQueue</item>
 		<item>ShowQueue</item>
 		<item>ToggleControls</item>
+		<item>SeekForward</item>
+		<item>SeekBackward</item>
 	</string-array>
 	<string-array name="swipe_action_entries">
 		<!-- This must match the order of swipe_action_values exactly -->
@@ -71,6 +73,8 @@ THE SOFTWARE.
 		<item>@string/clear_queue</item>
 		<item>@string/show_queue</item>
 		<item>@string/toggle_controls</item>
+		<item>@string/seek_10s_forward</item>
+		<item>@string/seek_10s_backward</item>
 	</string-array>
 	<string-array name="default_playlist_action_entries">
 		<item>@string/play</item>

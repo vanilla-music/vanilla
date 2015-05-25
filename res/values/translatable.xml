@@ -279,6 +279,8 @@ THE SOFTWARE.
 	<string name="dequeue_rest">Dequeue rest</string>
 	<string name="queue">Queue</string>
 	<string name="toggle_controls">Toggle controls</string>
+	<string name="seek_10s_backward">Seek 10 seconds backward</string>
+	<string name="seek_10s_forward">Seek 10 seconds forward</string>
 
 	<string name="filebrowser_start">Filebrowser home</string>
 	<string name="customize_filebrowser_start">Filebrowser starts at this directory</string>
