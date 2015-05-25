@@ -353,7 +353,7 @@ public class LibraryPagerAdapter
 			view.setAdapter(adapter);
 			if (type != MediaUtils.TYPE_FILE)
 				loadSortOrder((MediaAdapter)adapter);
-			view.setFastScrollAlwaysVisible(true); // also enables fastscroll
+			view.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_OVERLAY);
 			adapter.setFilter(mFilter);
 
 			mAdapters[type] = adapter;

@@ -39,7 +39,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.SectionIndexer;
 import android.widget.TextView;
 import java.util.regex.Pattern;
 import java.util.ArrayList;
@@ -58,8 +57,7 @@ import java.lang.StringBuilder;
  */
 public class MediaAdapter
 	extends BaseAdapter
-	implements SectionIndexer
-	         , LibraryAdapter
+	implements LibraryAdapter
 	         , View.OnClickListener
 {
 	private static final Pattern SPACE_SPLIT = Pattern.compile("\\s+");
@@ -114,14 +112,6 @@ public class MediaAdapter
 	 */
 	private String mConstraint;
 	/**
-	 * The section indexer, for the letter pop-up when scrolling.
-	 */
-	private final MusicAlphabetIndexer mIndexer;
-	/**
-	 * The sections used by the indexer.
-	 */
-	private Object[] mSections;
-	/**
 	 * The sort order for use with buildSongQuery().
 	 */
 	private String mSongSort;
@@ -160,7 +150,6 @@ public class MediaAdapter
 		mActivity = activity;
 		mType = type;
 		mLimiter = limiter;
-		mIndexer = new MusicAlphabetIndexer(1);
 		mInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 		switch (type) {
@@ -439,40 +428,9 @@ public class MediaAdapter
 		} else {
 			notifyDataSetChanged();
 		}
-		mIndexer.setCursor(cursor);
 		if (old != null) {
 			old.close();
 		}
-	}
-
-	@Override
-	public Object[] getSections()
-	{
-		if (mSections == null) {
-			if (mSortMode == 0)
-				mSections = MusicAlphabetIndexer.getSections();
-			else
-				mSections = new String[] { " " };
-		}
-		return mSections;
-	}
-
-	@Override
-	public int getPositionForSection(int section)
-	{
-		if (section == 0)
-			return 0;
-		if (section == getSections().length)
-			return getCount();
-		return mIndexer.getPositionForSection(section);
-	}
-
-	@Override
-	public int getSectionForPosition(int position)
-	{
-		if (mSortMode != 0)
-			return 0;
-		return mIndexer.getSectionForPosition(position);
 	}
 
 	private static class ViewHolder {
@@ -569,7 +527,6 @@ public class MediaAdapter
 	public void setSortMode(int i)
 	{
 		mSortMode = i;
-		mSections = null;
 	}
 
 	/**
