@@ -30,6 +30,7 @@ THE SOFTWARE.
 	<string name="library">Library</string>
 	<string name="no_shuffle">No shuffle</string>
 	<string name="shuffle_songs">Shuffle songs</string>
+	<string name="shuffle_songs_continuously">Shuffle songs continuously</string>
 	<string name="shuffle_albums">Shuffle albums</string>
 	<string name="no_repeat">No repeat</string>
 	<string name="repeat">Repeat</string>
