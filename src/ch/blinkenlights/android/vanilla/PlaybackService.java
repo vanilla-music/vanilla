@@ -282,7 +282,14 @@ public final class PlaybackService extends Service
 	 * music player.
 	 */
 	private boolean mStockBroadcast;
+	/**
+	 * Behaviour of the notification
+	 */
 	private int mNotificationMode;
+	/**
+	 * If true, create a notification with ticker text or heads up display
+	 */
+	private boolean mNotificationNag;
 	/**
 	 * If true, audio will not be played through the speaker.
 	 */
@@ -421,6 +428,7 @@ public final class PlaybackService extends Service
 		SharedPreferences settings = getSettings(this);
 		settings.registerOnSharedPreferenceChangeListener(this);
 		mNotificationMode = Integer.parseInt(settings.getString(PrefKeys.NOTIFICATION_MODE, "1"));
+		mNotificationNag = settings.getBoolean(PrefKeys.NOTIFICATION_NAG, false);
 		mScrobble = settings.getBoolean(PrefKeys.SCROBBLE, false);
 		mIdleTimeout = settings.getBoolean(PrefKeys.USE_IDLE_TIMEOUT, false) ? settings.getInt(PrefKeys.IDLE_TIMEOUT, 3600) : 0;
 
@@ -789,6 +797,9 @@ public final class PlaybackService extends Service
 			// mode.
 			stopForeground(true);
 			updateNotification();
+		} else if (PrefKeys.NOTIFICATION_NAG.equals(key)) {
+			mNotificationNag = settings.getBoolean(PrefKeys.NOTIFICATION_NAG, false);
+			// no need to update notification: happens on next event
 		} else if (PrefKeys.SCROBBLE.equals(key)) {
 			mScrobble = settings.getBoolean(PrefKeys.SCROBBLE, false);
 		} else if (PrefKeys.MEDIA_BUTTON.equals(key) || PrefKeys.MEDIA_BUTTON_BEEP.equals(key)) {
@@ -1931,8 +1942,6 @@ public final class PlaybackService extends Service
 			expanded.setImageViewBitmap(R.id.cover, cover);
 		}
 
-		String title = song.title;
-
 		int playButton = ThemeHelper.getPlayButtonResource(playing);
 
 		views.setImageViewResource(R.id.play_pause, playButton);
@@ -1959,9 +1968,9 @@ public final class PlaybackService extends Service
 		views.setOnClickPendingIntent(R.id.close, PendingIntent.getService(this, 0, close, 0));
 		expanded.setOnClickPendingIntent(R.id.close, PendingIntent.getService(this, 0, close, 0));
 
-		views.setTextViewText(R.id.title, title);
+		views.setTextViewText(R.id.title, song.title);
 		views.setTextViewText(R.id.artist, song.artist);
-		expanded.setTextViewText(R.id.title, title);
+		expanded.setTextViewText(R.id.title, song.title);
 		expanded.setTextViewText(R.id.album, song.album);
 		expanded.setTextViewText(R.id.artist, song.artist);
 
@@ -1973,11 +1982,20 @@ public final class PlaybackService extends Service
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
 			// expanded view is available since 4.1
 			notification.bigContentView = expanded;
-			notification.priority = 42;
 		}
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 			notification.visibility = Notification.VISIBILITY_PUBLIC;
 		}
+
+		if(mNotificationNag) {
+			if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+				notification.priority = Notification.PRIORITY_MAX;
+				notification.vibrate = new long[0]; // needed to get headsup
+			} else {
+				notification.tickerText = song.title + " - " + song.artist;
+			}
+		}
+
 		return notification;
 	}
 

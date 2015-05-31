@@ -186,6 +186,9 @@ THE SOFTWARE.
 	<string name="notification_invert_color_title">Invert Notification Color</string>
 	<string name="notification_invert_color_summary">Use white text instead of black text</string>
 
+	<string name="notification_nag">Very verbose notification</string>
+	<string name="notification_nag_summary">Announce song changes using a \'Heads-Up-Notification\'</string>
+
 	<string name="playback_screen">Playback Screen</string>
 	<string name="playback_on_startup_title">Open on Startup</string>
 	<string name="playback_on_startup_summary">Open playback view on startup</string>

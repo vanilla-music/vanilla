@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2012-2015 Adrian Ulrich <adrian@blinkenlights.ch>
  * Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -47,6 +47,7 @@ public class PrefKeys {
 	public static final String MEDIA_BUTTON_BEEP = "media_button_beep";
 	public static final String NOTIFICATION_ACTION = "notification_action";
 	public static final String NOTIFICATION_MODE = "notification_mode";
+	public static final String NOTIFICATION_NAG = "notification_nag";
 	public static final String PLAYBACK_ON_STARTUP = "playback_on_startup";
 	public static final String SCROBBLE = "scrobble";
 	public static final String SHAKE_ACTION = "shake_action";
