@@ -24,62 +24,47 @@ package ch.blinkenlights.android.vanilla;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.ViewGroup;
-import android.view.View;
 import android.widget.LinearLayout;
+import android.os.Build;
+import android.util.DisplayMetrics;
 
 /**
  * LinearLayout that contains some hacks for sizing inside an ActionBar.
  */
 public class ActionBarControls extends LinearLayout {
 
-	private final int dpiMaxWidth = 350;
-	private final int dpiCompatMax = 200;
-	private final int dpiElement = 50;
-	private final int slackElements = 2;
+	private final int dpiElementLp    = 52;  // Size of the ActionBarSearch icon in 5.x (50 + some slack)
+	private final int dpiElementHolo  = 64;  // Size of the ActionBarSearch icon in HOLO
+	private final int dpiMaxWidth     = 350; // Never use more then 350 DPIs
+	private final int visibleElements = 2;   // The ActionBarSearch + Menu icons are visible
 
-	public ActionBarControls(Context context, AttributeSet attrs)
-	{
+	public ActionBarControls(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
 
-	@Override
-	public void onMeasure(int ws, int hs)
-	{
-		ViewGroup parent = (ViewGroup)this.getParent();
-		int pxUsed = 0;  // pixels used by child elements, excluding us
-		int pxTotal = 0; // pixels we can actually use
-
-		// Measure how much space we got and how much is already used
-		// by other children
-		if (parent != null) {
-			// We are item 0, so we skip ourselfs
-			for (int i=1; i<parent.getChildCount(); i++) {
-				pxUsed += parent.getChildAt(i).getWidth();
-			}
-			View topParent = (View)parent.getParent();
-			if (topParent != null) {
-				pxTotal = topParent.getWidth();
-			}
-		}
-
-		final float density = getResources().getDisplayMetrics().density;
-		int widthMode = MeasureSpec.getMode(ws);
-
+	public void onMeasure(int ws, int hs) {
 		super.onMeasure(ws, hs);
 
-		if (widthMode != MeasureSpec.EXACTLY && pxTotal > 0) {
-			int pxAvailable = (pxTotal - (int)(density * dpiElement * slackElements));
-			int pxMaxWidth = (int)(dpiMaxWidth * density);
+		final float density = getResources().getDisplayMetrics().density;
+		final int dpiElement = ( android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? dpiElementLp : dpiElementHolo );
+		int widthMode = MeasureSpec.getMode(ws);
 
-			if (pxAvailable <= 0 || pxAvailable > pxMaxWidth) {
-				pxAvailable = pxMaxWidth;
+		if (widthMode != MeasureSpec.EXACTLY) {
+			float dpiAvailable = (getSmallestAxisPx() / density) - (dpiElement * visibleElements);
+			if (dpiAvailable > dpiMaxWidth || dpiAvailable < 1) {
+				dpiAvailable = dpiMaxWidth;
 			}
-			if (android.os.Build.VERSION.SDK_INT < 21) {
-				pxAvailable = (int)(dpiCompatMax * density);
-			}
-			setMeasuredDimension( pxAvailable, (int)(dpiElement * density));
+			setMeasuredDimension((int)(dpiAvailable * density), (int)(dpiElement * density));
 		}
-
 	}
+
+	/**
+	 * Returns the smaller axis of the display dimensions
+	 * @return The dimension of the smaller axis in pixels
+	 */
+	private final int getSmallestAxisPx() {
+		DisplayMetrics metrics = getResources().getDisplayMetrics();
+		return (metrics.widthPixels > metrics.heightPixels ? metrics.heightPixels : metrics.widthPixels);
+	}
+
 }
