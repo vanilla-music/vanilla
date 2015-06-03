@@ -80,7 +80,7 @@ public class ID3v2File extends Common {
 			bread += s.read(frame);
 			String framename = new String(frame, 0, 4);
 			int slen = b2be32(frame, 4);
-            slen = unsyncsafe(slen);
+			slen = unsyncsafe(slen);
 			
 			/* Abort on silly sizes */
 			if(slen < 1 || slen > 524288)
