@@ -75,7 +75,7 @@ public class ID3v2File extends Common {
 		HashMap tags = new HashMap();
 		byte[] frame   = new byte[10]; // a frame header is always 10 bytes
 		long bread     = 0;            // total amount of read bytes
-		
+
 		while(bread < payload_len) {
 			bread += s.read(frame);
 			String framename = new String(frame, 0, 4);
@@ -83,7 +83,8 @@ public class ID3v2File extends Common {
 			slen = unsyncsafe(slen);
 			
 			/* Abort on silly sizes */
-			if(slen < 1 || slen > 524288)
+			long bytesRemaining = payload_len - bread;
+			if(slen < 1 || slen > (bytesRemaining))
 				break;
 			
 			byte[] xpl = new byte[slen];
