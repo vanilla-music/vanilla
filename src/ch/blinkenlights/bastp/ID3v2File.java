@@ -43,23 +43,23 @@ public class ID3v2File extends Common {
 		s.seek(0);
 		s.read(v2hdr);
 		
-		int id3v   = ((b2be32(v2hdr,0))) & 0xFF;   // swapped ID3\04 -> ver. ist the first byte
-		int v3len  = ((b2be32(v2hdr,6)));          // total size EXCLUDING the this 10 byte header
-		v3len      = unsyncsafe(v3len);
+		int v3minor = ((b2be32(v2hdr,0))) & 0xFF;   // swapped ID3\04 -> ver. ist the first byte
+		int v3len   = ((b2be32(v2hdr,6)));          // total size EXCLUDING the this 10 byte header
+		v3len       = unsyncsafe(v3len);
 		
-		// debug(">> tag version ID3v2."+id3v);
+		// debug(">> tag version ID3v2."+v3minor);
 		// debug(">> LEN= "+v3len+" // "+v3len);
 		
 		// we should already be at the first frame
 		// so we can start the parsing right now
-		tags = parse_v3_frames(s, v3len);
+		tags = parse_v3_frames(s, v3len, v3minor);
 		tags.put("_hdrlen", v3len+v2hdr_len);
 		return tags;
 	}
 
-    /*
-    **  converts syncsafe integer to Java integer
-    */
+	/*
+	**  converts syncsafe integer to Java integer
+	*/
 	private int unsyncsafe(int x) {
 		x     = ((x & 0x7f000000) >> 3) |
 				((x & 0x007f0000) >> 2) |
@@ -71,7 +71,7 @@ public class ID3v2File extends Common {
 	/* Parses all ID3v2 frames at the current position up until payload_len
 	** bytes were read
 	*/
-	public HashMap parse_v3_frames(RandomAccessFile s, long payload_len) throws IOException {
+	public HashMap parse_v3_frames(RandomAccessFile s, long payload_len, int v3minor) throws IOException {
 		HashMap tags = new HashMap();
 		byte[] frame   = new byte[10]; // a frame header is always 10 bytes
 		long bread     = 0;            // total amount of read bytes
@@ -79,8 +79,9 @@ public class ID3v2File extends Common {
 		while(bread < payload_len) {
 			bread += s.read(frame);
 			String framename = new String(frame, 0, 4);
-			int slen = b2be32(frame, 4);
-			slen = unsyncsafe(slen);
+			int rawlen = b2be32(frame, 4);
+			// Encoders prior ID3v2.4 did not encode the frame length
+			int slen = (v3minor >= 4 ? unsyncsafe(rawlen) : rawlen);
 			
 			/* Abort on silly sizes */
 			long bytesRemaining = payload_len - bread;
