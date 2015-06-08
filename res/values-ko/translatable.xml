@@ -8,6 +8,7 @@
   <string name="library">라이브러리</string>
   <string name="no_shuffle">섞지 않음</string>
   <string name="shuffle_songs">곡 섞기</string>
+  <string name="shuffle_songs_continuously">연속해서 곡 섞기</string>
   <string name="shuffle_albums">앨범 섞기</string>
   <string name="no_repeat">반복 안함</string>
   <string name="repeat">반복</string>
@@ -131,6 +132,7 @@
   <string name="replaygain_untagged_debump_summary">음량 감소</string>
   <string name="readahead">미리 읽기 활성화</string>
   <string name="readahead_summary">현재 재생중인 곡 미리 읽기. 이것은 \'audio dropout\' 문제를 해결할 수 있는 옵션입니다. (느린 SD 카드에서 발생하는)</string>
+  <string name="equalizer">이퀄라이져</string>
   <string name="cycle_continuous_shuffling">연속으로 섞기</string>
   <string name="cycle_continuous_shuffling_summary">섞기모드는 랜덤한 순서로 곡을 재생합니다.</string>
   <string name="notifications">알림</string>
@@ -138,6 +140,8 @@
   <string name="notification_action_title">알림을 눌렀을때</string>
   <string name="notification_invert_color_title">알림 색 반전</string>
   <string name="notification_invert_color_summary">검은색 글자 대신 흰 글자를 사용합니다</string>
+  <string name="notification_nag">매우 잦은 알림</string>
+  <string name="notification_nag_summary">\'Heads-Up-Notification\' 사용중일때 곡 변경 알리기</string>
   <string name="playback_screen">재생 화면</string>
   <string name="playback_on_startup_title">시작 시 열기</string>
   <string name="playback_on_startup_summary">시작시 재생 중 화면 열기</string>
@@ -157,6 +161,8 @@
   <string name="shake_action_title">흔들기 동작</string>
   <string name="shake_threshold_title">흔듬 강도</string>
   <string name="misc_features">기타 기능</string>
+  <string name="use_dark_theme_title">어두운 테마 사용</string>
+  <string name="use_dark_theme_summary">어두운 테마 활성화</string>
   <string name="disable_lockscreen_title">잠금화면 사용 안함</string>
   <string name="disable_lockscreen_summary">재생 중 화면, 라이브러리 일때 잠금화면 방지 </string>
   <string name="use_idle_timeout_title">유휴 대기 시간 활성화</string>
@@ -214,6 +220,8 @@
   <string name="dequeue_rest">대기열에 없는 나머지</string>
   <string name="queue">대기열</string>
   <string name="toggle_controls">토글 컨트롤</string>
+  <string name="seek_10s_backward">뒤로 10초 이동</string>
+  <string name="seek_10s_forward">앞으로 10초 이동</string>
   <string name="filebrowser_start">파일 검색기 홈</string>
   <string name="customize_filebrowser_start">파일 탐색기가 이 디렉토리에서 시작합니다</string>
   <string name="select">선택</string>

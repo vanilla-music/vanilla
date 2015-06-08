@@ -8,6 +8,7 @@
   <string name="library">Bibliotēka</string>
   <string name="no_shuffle">Nejaukt</string>
   <string name="shuffle_songs">Jaukt dziesmas</string>
+  <string name="shuffle_songs_continuously">Sajaukt dziesmas nepārtraukti</string>
   <string name="shuffle_albums">Jaukt albumus</string>
   <string name="no_repeat">Neatkārtot</string>
   <string name="repeat">Atkārtot</string>
@@ -153,6 +154,8 @@
   <string name="notification_action_title">Paziņojuma darbība</string>
   <string name="notification_invert_color_title">Invertēt paziņojuma krāsu</string>
   <string name="notification_invert_color_summary">Lietot baltu nevis melnu tekstu</string>
+  <string name="notification_nag">Ļoti runīgs paziņojums</string>
+  <string name="notification_nag_summary">Paziņot par dziesmas maiņu ar uzekrāna paziņojumu</string>
   <string name="playback_screen">Atskaņošanas ekrāns</string>
   <string name="playback_on_startup_title">Atvērt palaižot programmu</string>
   <string name="playback_on_startup_summary">Palaižot programmu, atvērt atskaņošanas skatu</string>
@@ -172,6 +175,8 @@
   <string name="shake_action_title">Kratīšanas darbība</string>
   <string name="shake_threshold_title">Kratīšanas spēka slieksnis</string>
   <string name="misc_features">Citas iespējas</string>
+  <string name="use_dark_theme_title">Lietot tumšo tēmu</string>
+  <string name="use_dark_theme_summary">Ieslēgt tumšo \'material\' tēmu</string>
   <string name="disable_lockscreen_title">Atslēgt slēgekrānu</string>
   <string name="disable_lockscreen_summary">Novērst slēgekrāna aktivizēšanos bibliotēkas vai atskaņošanas ekrānā</string>
   <string name="use_idle_timeout_title">Ieslēgt dīkstāves noildzi</string>
@@ -229,6 +234,8 @@
   <string name="dequeue_rest">Noņemt no rindas pārējos</string>
   <string name="queue">Rinda</string>
   <string name="toggle_controls">Pārslēgt vadīklas</string>
+  <string name="seek_10s_backward">Iet 10 sekundes atpakaļ</string>
+  <string name="seek_10s_forward">Iet 10 sekundes uz priekšu</string>
   <string name="filebrowser_start">Failu pārlūka mājas</string>
   <string name="customize_filebrowser_start">Failu pārlūks atvērsies šajā mapē</string>
   <string name="select">Izvēlēties</string>

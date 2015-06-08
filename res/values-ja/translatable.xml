@@ -8,6 +8,7 @@
   <string name="library">ライブラリー</string>
   <string name="no_shuffle">シャッフルなし</string>
   <string name="shuffle_songs">曲をシャッフル</string>
+  <string name="shuffle_songs_continuously">連続して曲をシャッフル</string>
   <string name="shuffle_albums">アルバムをシャッフル</string>
   <string name="no_repeat">繰り返しなし</string>
   <string name="repeat">繰り返し</string>
@@ -139,6 +140,8 @@
   <string name="notification_action_title">通知アクション</string>
   <string name="notification_invert_color_title">通知の色を反転</string>
   <string name="notification_invert_color_summary">黒の文字に代えて白の文字を使用します</string>
+  <string name="notification_nag">非常に詳細な通知</string>
+  <string name="notification_nag_summary">\'Heads-Up-通知\' を使用して曲の変更をお知らせします</string>
   <string name="playback_screen">再生画面</string>
   <string name="playback_on_startup_title">起動時に開く</string>
   <string name="playback_on_startup_summary">起動時に再生ビューを開きます</string>
@@ -217,6 +220,8 @@
   <string name="dequeue_rest">残りをキューから消す</string>
   <string name="queue">キュー</string>
   <string name="toggle_controls">コントロールを切り替え</string>
+  <string name="seek_10s_backward">10 秒前にシーク</string>
+  <string name="seek_10s_forward">10 秒先にシーク</string>
   <string name="filebrowser_start">ファイルブラウザー ホーム</string>
   <string name="customize_filebrowser_start">ファイルブラウザーはこのディレクトリーから開始します</string>
   <string name="select">選択</string>

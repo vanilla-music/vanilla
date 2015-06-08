@@ -8,6 +8,7 @@
   <string name="library">Arşiv</string>
   <string name="no_shuffle">Karıştırma yok</string>
   <string name="shuffle_songs">Şarkıları karışık çal</string>
+  <string name="shuffle_songs_continuously">Parçaları sürekli karıştır</string>
   <string name="shuffle_albums">Albümleri karışık çal</string>
   <string name="no_repeat">Yineleme yok</string>
   <string name="repeat">Yinele</string>
@@ -224,6 +225,8 @@
   <string name="dequeue_rest">Gerisini sıradan çıkar</string>
   <string name="queue">Kuyruk</string>
   <string name="toggle_controls">Denetimleri göster</string>
+  <string name="seek_10s_backward">10 saniye geri sar</string>
+  <string name="seek_10s_forward">10 saniye ileri sar</string>
   <string name="filebrowser_start">Dosya yöneticisi Ana Ekran</string>
   <string name="customize_filebrowser_start">Dosya yöneticisi bu dizinde başlar</string>
   <string name="select">Seç</string>

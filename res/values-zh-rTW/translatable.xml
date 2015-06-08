@@ -8,6 +8,7 @@
   <string name="library">媒體庫</string>
   <string name="no_shuffle">不隨機播放</string>
   <string name="shuffle_songs">隨機播放歌曲</string>
+  <string name="shuffle_songs_continuously">連續隨機播放歌曲</string>
   <string name="shuffle_albums">隨機播放專輯</string>
   <string name="no_repeat">不重複播放</string>
   <string name="repeat">重複播放</string>
@@ -139,6 +140,8 @@
   <string name="notification_action_title">通知啟動</string>
   <string name="notification_invert_color_title">反轉通知顏色</string>
   <string name="notification_invert_color_summary">使用白色的文字代替黑色的文字</string>
+  <string name="notification_nag">非常詳細的通知</string>
+  <string name="notification_nag_summary">通報歌曲的更換使用 \'抬頭顯示通知\'</string>
   <string name="playback_screen">播放畫面</string>
   <string name="playback_on_startup_title">啟動時開啟</string>
   <string name="playback_on_startup_summary">啟動時開啟播放檢視</string>
@@ -158,6 +161,8 @@
   <string name="shake_action_title">搖動啟用</string>
   <string name="shake_threshold_title">搖動力度界限</string>
   <string name="misc_features">其它功能</string>
+  <string name="use_dark_theme_title">使用深色主題</string>
+  <string name="use_dark_theme_summary">啟用深色主題</string>
   <string name="disable_lockscreen_title">停用螢幕鎖</string>
   <string name="disable_lockscreen_summary">啟動後，在媒體庫或播放畫面，會阻止螢幕鎖</string>
   <string name="use_idle_timeout_title">啟用閒置超時</string>
@@ -215,6 +220,8 @@
   <string name="dequeue_rest">剩餘的移出佇列</string>
   <string name="queue">佇列</string>
   <string name="toggle_controls">切換控制</string>
+  <string name="seek_10s_backward">向後探尋10秒</string>
+  <string name="seek_10s_forward">向前探尋10秒</string>
   <string name="filebrowser_start">啟始目錄</string>
   <string name="customize_filebrowser_start">在此目錄開始瀏覽檔案</string>
   <string name="select">選擇</string>

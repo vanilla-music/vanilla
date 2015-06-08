@@ -2,12 +2,13 @@
 <resources>
   <string name="app_name">Vanilla Music</string>
   <!--Playback Activity (main screen)-->
-  <string name="no_songs">Não foram encontradas faixas</string>
+  <string name="no_songs">Não foram encontradas músicas</string>
   <string name="empty_queue">Nenhuma faixa selecionada. Escolha algumas na coleção ou aceda ao modo aleatório clicando nesta mensagem.</string>
   <string name="settings">Definições</string>
   <string name="library">Coleção</string>
   <string name="no_shuffle">Não misturar</string>
   <string name="shuffle_songs">Misturar faixas</string>
+  <string name="shuffle_songs_continuously">Misturar faixas continuamente</string>
   <string name="shuffle_albums">Misturar álbuns</string>
   <string name="no_repeat">Não repetir</string>
   <string name="repeat">Repetir</string>
@@ -146,6 +147,8 @@
   <string name="notification_action_title">Ação na notificação</string>
   <string name="notification_invert_color_title">Trocar cor de notificação</string>
   <string name="notification_invert_color_summary">Usar texto branco em vez de preto</string>
+  <string name="notification_nag">Notificação muito detalhada</string>
+  <string name="notification_nag_summary">Anunciar alteração de faixa com \'Heads-Up-Notification\'</string>
   <string name="playback_screen">Ecrã de reprodução</string>
   <string name="playback_on_startup_title">Abrir ao iniciar</string>
   <string name="playback_on_startup_summary">Abrir vista de reprodução ao iniciar</string>
@@ -219,11 +222,13 @@
   <string name="enqueue_current_artist">Colocar artista na fila</string>
   <string name="enqueue_current_genre">Colocar género na fila</string>
   <string name="clear_queue">Limpar fila</string>
-  <string name="empty_the_queue">Fila de reprodução vazia</string>
+  <string name="empty_the_queue">Limpar fila de reprodução</string>
   <string name="show_queue">Mostrar fila</string>
   <string name="dequeue_rest">Retirar restantes da fila</string>
   <string name="queue">Fila</string>
   <string name="toggle_controls">Alternar controlos</string>
+  <string name="seek_10s_backward">Recuar 10 segundos</string>
+  <string name="seek_10s_forward">Avançar 10 segundos</string>
   <string name="filebrowser_start">Pasta inicial do explorador</string>
   <string name="customize_filebrowser_start">O explorador de ficheiros abre esta pasta</string>
   <string name="select">Selecionar</string>

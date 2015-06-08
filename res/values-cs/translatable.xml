@@ -8,6 +8,7 @@
   <string name="library">Sbírka</string>
   <string name="no_shuffle">Nepřehrávat náhodně</string>
   <string name="shuffle_songs">Náhodné skladby</string>
+  <string name="shuffle_songs_continuously">Neustálé náhodné přehrávání</string>
   <string name="shuffle_albums">Náhodná alba</string>
   <string name="no_repeat">Neopakovat</string>
   <string name="repeat">Opakovat</string>
@@ -231,6 +232,8 @@
   <string name="dequeue_rest">Odstranit zbytek z fronty</string>
   <string name="queue">Fronta</string>
   <string name="toggle_controls">Přepnout ovládání</string>
+  <string name="seek_10s_backward">Přeskočit o 10 sekund zpět</string>
+  <string name="seek_10s_forward">Přeskočit o 10 sekund vpřed</string>
   <string name="filebrowser_start">Výchozí cesta souborů</string>
   <string name="customize_filebrowser_start">Procházení souborů se otevírá zde</string>
   <string name="select">Vybrat</string>
