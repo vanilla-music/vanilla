@@ -82,7 +82,7 @@ THE SOFTWARE.
 		<item>@string/last_used_action</item>
 		<item>@string/play_all</item>
 		<item>@string/enqueue_all</item>
-		<item>@string/do_nothing</item>
+		<item>@string/none</item>
 	</string-array>
 	<string-array name="default_action_entries">
 		<item>@string/play</item>
@@ -90,7 +90,7 @@ THE SOFTWARE.
 		<item>@string/last_used_action</item>
 		<item>@string/play_all</item>
 		<item>@string/enqueue_all</item>
-		<item>@string/do_nothing</item>
+		<item>@string/none</item>
 		<item>@string/expand</item>
 		<item>@string/play_or_enqueue</item>
 		<item>@string/enqueue_as_next</item>
