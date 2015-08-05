@@ -322,7 +322,7 @@ public final class CoverBitmap {
 		float scale = Math.min((float)width / sourceWidth, (float)height / sourceHeight);
 		sourceWidth *= scale;
 		sourceHeight *= scale;
-		return Bitmap.createScaledBitmap(source, sourceWidth, sourceHeight, false);
+		return Bitmap.createScaledBitmap(source, sourceWidth, sourceHeight, true);
 	}
 
 	/**
