@@ -43,6 +43,7 @@ import android.util.LruCache;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.LinearLayout;
 import java.util.Arrays;
 
 /**
@@ -53,7 +54,7 @@ public class LibraryPagerAdapter
 	implements Handler.Callback
 	         , ViewPager.OnPageChangeListener
 	         , View.OnCreateContextMenuListener
-	         , AdapterView.OnItemClickListener
+	         , View.OnClickListener
 {
 	/**
 	 * The number of unique list types. The number of visible lists may be
@@ -162,9 +163,9 @@ public class LibraryPagerAdapter
 	 * song limiters.
 	 */
 	private String mHeaderText;
-	private TextView mArtistHeader;
-	private TextView mAlbumHeader;
-	private TextView mSongHeader;
+	private LinearLayout mArtistHeader;
+	private LinearLayout mAlbumHeader;
+	private LinearLayout mSongHeader;
 	/**
 	 * The current filter text, or null if none.
 	 */
@@ -307,24 +308,24 @@ public class LibraryPagerAdapter
 			LibraryActivity activity = mActivity;
 			LayoutInflater inflater = activity.getLayoutInflater();
 			LibraryAdapter adapter;
-			TextView header = null;
+			LinearLayout header = null;
 
 			switch (type) {
 			case MediaUtils.TYPE_ARTIST:
 				adapter = mArtistAdapter = new MediaAdapter(activity, MediaUtils.TYPE_ARTIST, null);
 				mArtistAdapter.setExpandable(mSongsPosition != -1 || mAlbumsPosition != -1);
-				mArtistHeader = header = (TextView)inflater.inflate(R.layout.library_row, null);
+				mArtistHeader = header = (LinearLayout)inflater.inflate(R.layout.library_row, null);
 				break;
 			case MediaUtils.TYPE_ALBUM:
 				adapter = mAlbumAdapter = new MediaAdapter(activity, MediaUtils.TYPE_ALBUM, mPendingAlbumLimiter);
 				mAlbumAdapter.setExpandable(mSongsPosition != -1);
 				mPendingAlbumLimiter = null;
-				mAlbumHeader = header = (TextView)inflater.inflate(R.layout.library_row, null);
+				mAlbumHeader = header = (LinearLayout)inflater.inflate(R.layout.library_row, null);
 				break;
 			case MediaUtils.TYPE_SONG:
 				adapter = mSongAdapter = new MediaAdapter(activity, MediaUtils.TYPE_SONG, mPendingSongLimiter);
 				mPendingSongLimiter = null;
-				mSongHeader = header = (TextView)inflater.inflate(R.layout.library_row, null);
+				mSongHeader = header = (LinearLayout)inflater.inflate(R.layout.library_row, null);
 				break;
 			case MediaUtils.TYPE_PLAYLIST:
 				adapter = mPlaylistAdapter = new MediaAdapter(activity, MediaUtils.TYPE_PLAYLIST, null);
@@ -343,10 +344,12 @@ public class LibraryPagerAdapter
 
 			view = (ListView)inflater.inflate(R.layout.listview, null);
 			view.setOnCreateContextMenuListener(this);
-			view.setOnItemClickListener(this);
+
 			view.setTag(type);
 			if (header != null) {
-				header.setText(mHeaderText);
+				TextView headerText = (TextView)header.findViewById(R.id.text);
+				headerText.setText(mHeaderText);
+				headerText.setOnClickListener(this);
 				header.setTag(type);
 				view.addHeaderView(header);
 			}
@@ -466,11 +469,11 @@ public class LibraryPagerAdapter
 	public void setHeaderText(String text)
 	{
 		if (mArtistHeader != null)
-			mArtistHeader.setText(text);
+			((TextView)mArtistHeader.findViewById(R.id.text)).setText(text);
 		if (mAlbumHeader != null)
-			mAlbumHeader.setText(text);
+			((TextView)mAlbumHeader.findViewById(R.id.text)).setText(text);
 		if (mSongHeader != null)
-			mSongHeader.setText(text);
+			((TextView)mSongHeader.findViewById(R.id.text)).setText(text);
 		mHeaderText = text;
 	}
 
@@ -836,12 +839,11 @@ public class LibraryPagerAdapter
 	}
 
 	@Override
-	public void onItemClick(AdapterView<?> list, View view, int position, long id)
-	{
-		Intent intent = id == -1 ? createHeaderIntent(view) : mCurrentAdapter.createData(view);
+	public void onClick(View view) {
+		view = (View)view.getParent(); // get view of linear layout, not the click consumer
+		Intent intent = createHeaderIntent(view);
 		mActivity.onItemClicked(intent);
 	}
-
 
 	/**
 	 * LRU implementation for filebrowser position cache

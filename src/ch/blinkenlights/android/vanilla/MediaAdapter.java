@@ -454,15 +454,11 @@ public class MediaAdapter
 			holder = new ViewHolder();
 			view.setTag(holder);
 
+			holder.text = (TextView)view.findViewById(R.id.text);
 			if (mExpandable) {
-				holder.text = (TextView)view.findViewById(R.id.text);
 				holder.arrow = (ImageView)view.findViewById(R.id.arrow);
 				holder.arrow.setOnClickListener(this);
-			} else {
-				holder.text = (TextView)view;
-				view.setLongClickable(true);
 			}
-
 			holder.text.setOnClickListener(this);
 		} else {
 			holder = (ViewHolder)view.getTag();
@@ -565,8 +561,7 @@ public class MediaAdapter
 	public void onClick(View view)
 	{
 		int id = view.getId();
-		if (mExpandable)
-			view = (View)view.getParent();
+		view = (View)view.getParent(); // get view of linear layout, not the click consumer
 		Intent intent = createData(view);
 		if (id == R.id.arrow) {
 			mActivity.onItemExpanded(intent);
