@@ -433,33 +433,25 @@ public class MediaAdapter
 		}
 	}
 
-	private static class ViewHolder {
-		public long id;
-		public String title;
-		public TextView text;
-		public ImageView arrow;
-	}
-
 	@Override
 	public View getView(int position, View view, ViewGroup parent)
 	{
 		ViewHolder holder;
 
-		if (view == null || mExpandable != view instanceof LinearLayout) {
+		if (view == null) {
 			// We must create a new view if we're not given a recycle view or
 			// if the recycle view has the wrong layout.
 
-			int layout = mExpandable ? R.layout.library_row_expandable : R.layout.library_row;
-			view = mInflater.inflate(layout, null);
+			view = mInflater.inflate(R.layout.library_row_expandable, null);
 			holder = new ViewHolder();
 			view.setTag(holder);
 
 			holder.text = (TextView)view.findViewById(R.id.text);
-			if (mExpandable) {
-				holder.arrow = (ImageView)view.findViewById(R.id.arrow);
-				holder.arrow.setOnClickListener(this);
-			}
+			holder.arrow = (ImageView)view.findViewById(R.id.arrow);
+			holder.arrow.setOnClickListener(this);
 			holder.text.setOnClickListener(this);
+
+			holder.arrow.setVisibility(mExpandable ? View.VISIBLE : View.GONE);
 		} else {
 			holder = (ViewHolder)view.getTag();
 		}

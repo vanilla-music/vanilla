@@ -47,5 +47,6 @@ THE SOFTWARE.
 		android:src="@drawable/arrow"
 		android:layout_width="44dip"
 		android:layout_height="44dip"
+		android:visibility="gone"
 		android:contentDescription="@string/expand" />
 </LinearLayout>
