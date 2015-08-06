@@ -350,7 +350,7 @@ public class LibraryPagerAdapter
 				TextView headerText = (TextView)header.findViewById(R.id.text);
 				headerText.setText(mHeaderText);
 				headerText.setOnClickListener(this);
-				header.setTag(type);
+				header.setTag(new ViewHolder()); // behave like a normal library row
 				view.addHeaderView(header);
 			}
 			view.setAdapter(adapter);
@@ -822,6 +822,7 @@ public class LibraryPagerAdapter
 	 */
 	private static Intent createHeaderIntent(View header)
 	{
+		header = (View)header.getParent(); // tag is set on parent view of header
 		int type = (Integer)header.getTag();
 		Intent intent = new Intent();
 		intent.putExtra(LibraryAdapter.DATA_ID, LibraryAdapter.HEADER_ID);
