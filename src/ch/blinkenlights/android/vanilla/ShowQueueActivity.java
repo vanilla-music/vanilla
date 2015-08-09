@@ -48,7 +48,7 @@ public class ShowQueueActivity extends PlaybackActivity
 
 		mService    = PlaybackService.get(this);
 		mListView   = (DragSortListView) findViewById(R.id.list);
-		listAdapter = new ShowQueueAdapter(this, R.layout.draggable_row);
+		listAdapter = new ShowQueueAdapter(this, R.layout.draggable_row, mHandler.getLooper());
 		mListView.setAdapter(listAdapter);
 		mListView.setDropListener(onDrop);
 		mListView.setRemoveListener(onRemove);

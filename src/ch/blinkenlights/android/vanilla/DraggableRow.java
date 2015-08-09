@@ -28,6 +28,7 @@ import android.widget.Checkable;
 
 public class DraggableRow extends LinearLayout implements Checkable {
 	private boolean mShowCheckBox;
+	private boolean mShowCover;
 	private boolean mHighlighted;
 	private boolean mChecked;
 
@@ -38,12 +39,14 @@ public class DraggableRow extends LinearLayout implements Checkable {
 	private CheckedTextView mCheckBox;
 	private View mPmark;
 	private ImageView mDragger;
+	private LazyCoverView mCoverView;
 
 	// Hardcoded sizes of elements in DPI
 	// MUST match definition in draggable_row
 	private final int DPI_PMARK = 4;
 	private final int DPI_CHECKBOX = 44;
 	private final int DPI_DRAGGER = 44;
+	private final int DPI_COVER = 44;
 	private final int DPI_SLACK = 1; // safety margin
 
 
@@ -55,10 +58,11 @@ public class DraggableRow extends LinearLayout implements Checkable {
 
 	@Override 
 	public void onFinishInflate() {
-		mCheckBox = (CheckedTextView)this.findViewById(R.id.checkbox);
-		mTextView = (TextView)this.findViewById(R.id.text);
-		mPmark    = (View)this.findViewById(R.id.pmark);
-		mDragger  = (ImageView)this.findViewById(R.id.dragger);
+		mCheckBox  = (CheckedTextView)this.findViewById(R.id.checkbox);
+		mTextView  = (TextView)this.findViewById(R.id.text);
+		mPmark     = (View)this.findViewById(R.id.pmark);
+		mDragger   = (ImageView)this.findViewById(R.id.dragger);
+		mCoverView = (LazyCoverView)this.findViewById(R.id.cover);
 		setupTextView(false);
 	}
 
@@ -79,7 +83,7 @@ public class DraggableRow extends LinearLayout implements Checkable {
 	 * @param redraw invalidates the current view if TRUE
 	 */
 	private void setupTextView(boolean redraw) {
-		int pixelUsed = (int)((DPI_SLACK + DPI_PMARK + DPI_DRAGGER + (mShowCheckBox ? DPI_CHECKBOX : 0)) * mDensity);
+		int pixelUsed = (int)((DPI_SLACK + DPI_PMARK + DPI_DRAGGER + (mShowCover ? DPI_COVER : 0) + (mShowCheckBox ? DPI_CHECKBOX : 0)) * mDensity);
 		int pixelFree = sWidth - pixelUsed;
 		if (pixelFree > 0)
 			mTextView.setWidth(pixelFree);
@@ -116,18 +120,33 @@ public class DraggableRow extends LinearLayout implements Checkable {
 
 	/**
 	 * Changes the visibility of the checkbox
+	 *
 	 * @param state show or destroy the checkbox
 	 */
 	public void showCheckBox(boolean state) {
 		if (mShowCheckBox != state) {
-			mCheckBox.setVisibility( state ? View.VISIBLE : View.GONE);
+			mCheckBox.setVisibility( state ? View.VISIBLE : View.GONE );
 			mShowCheckBox = state;
 			setupTextView(true);
 		}
 	}
 
 	/**
+	 * Change the visibility of the cover view
+	 *
+	 * @param state show or hide the cover view
+	 */
+	public void showCoverView(boolean state) {
+		if (mShowCover != state) {
+			mCoverView.setVisibility( state ? View.VISIBLE : View.GONE );
+			mShowCover = state;
+			setupTextView(true);
+		}
+	}
+
+	/**
 	 * Change visibility of dragger element
+	 *
 	 * @param state shows or hides the dragger
 	 */
 	public void showDragger(boolean state) {
@@ -139,6 +158,13 @@ public class DraggableRow extends LinearLayout implements Checkable {
 	 */
 	public TextView getTextView() {
 		return mTextView;
+	}
+
+	/**
+	 * Returns an instance of our coverview
+	 */
+	public LazyCoverView getCoverView() {
+		return mCoverView;
 	}
 
 }

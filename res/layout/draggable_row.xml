@@ -34,6 +34,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 			android:layout_height="44dip"
 			android:visibility="invisible"
 			android:background="@color/now_playing_marker" />
+		<ch.blinkenlights.android.vanilla.LazyCoverView
+			android:id="@+id/cover"
+			android:background="?android:attr/selectableItemBackground"
+			android:longClickable="true"
+			android:scaleType="fitCenter"
+			android:layout_width="44dip"
+			android:layout_height="44dip"
+			android:visibility="gone"
+		/>
 		<TextView
 			android:id="@+id/text"
 			android:maxLines="2"
