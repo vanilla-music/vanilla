@@ -77,7 +77,6 @@ public class NewPlaylistDialog extends Dialog implements TextWatcher, View.OnCli
 	 * disabled when the EditText contains this text.
 	 * @param actionText A string resource describing the default positive
 	 * action (e.g. "Create").
-	 * @param intent An optional intent to store with the dialog.
 	 */
 	public NewPlaylistDialog(Context context, String initialText, int actionText, PlaylistTask playlistTask)
 	{

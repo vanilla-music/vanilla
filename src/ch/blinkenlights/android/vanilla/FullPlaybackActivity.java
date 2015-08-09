@@ -647,7 +647,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 	 */
 	private static final int MSG_UPDATE_POSITION = 17;
 	/**
-	 * Calls {@link #seekToProgress()}.
+	 * Calls {@link PlaybackService#seekToProgress(int)}.
 	 */
 	private static final int MSG_SEEK_TO_PROGRESS = 18;
 
