@@ -137,9 +137,10 @@ public class MediaAdapter
 	 */
 	private boolean mExpandable;
 	/**
-	 * If true, return views with covers and fire callbacks
+	 * Defines the media type to use for this entry
+	 * Setting this to MediaUtils.TYPE_INVALID disables cover artwork
 	 */
-	private boolean mHasCoverArt;
+	private int mCoverCacheType;
 
 	/**
 	 * Construct a MediaAdapter representing the given <code>type</code> of
@@ -159,6 +160,9 @@ public class MediaAdapter
 		mInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mLooper = looper;
 
+		mCoverCacheType = MediaUtils.TYPE_INVALID;
+		String coverCacheKey = "0"; // SQL dummy entry
+
 		switch (type) {
 		case MediaUtils.TYPE_ARTIST:
 			mStore = MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI;
@@ -176,7 +180,8 @@ public class MediaAdapter
 			mSongSort = MediaUtils.ALBUM_SORT;
 			mSortEntries = new int[] { R.string.name, R.string.artist_album, R.string.year, R.string.number_of_tracks, R.string.date_added };
 			mSortValues = new String[] { "album_key %1$s", "artist_key %1$s,album_key %1$s", "minyear %1$s,album_key %1$s", "numsongs %1$s,album_key %1$s", "_id %1$s" };
-			mHasCoverArt = true;
+			mCoverCacheType = MediaUtils.TYPE_ALBUM;
+			coverCacheKey = BaseColumns._ID;
 			break;
 		case MediaUtils.TYPE_SONG:
 			mStore = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
@@ -186,7 +191,8 @@ public class MediaAdapter
 			                           R.string.artist_year, R.string.album_track, R.string.year, R.string.date_added, R.string.song_playcount };
 			mSortValues = new String[] { "title_key %1$s", "artist_key %1$s,album_key %1$s,track %1$s", "artist_key %1$s,album_key %1$s,title_key %1$s",
 			                             "artist_key %1$s,year %1$s,track %1$s", "album_key %1$s,track %1s", "year %1$s,title_key %1$s", "_id %1$s", SORT_MAGIC_PLAYCOUNT };
-			mHasCoverArt = true;
+			mCoverCacheType = MediaUtils.TYPE_ALBUM;
+			coverCacheKey = MediaStore.Audio.Albums.ALBUM_ID;
 			break;
 		case MediaUtils.TYPE_PLAYLIST:
 			mStore = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI;
@@ -208,9 +214,9 @@ public class MediaAdapter
 		}
 
 		if (mFields.length == 1)
-			mProjection = new String[] { BaseColumns._ID, mFields[0] };
+			mProjection = new String[] { BaseColumns._ID, coverCacheKey, mFields[0] };
 		else
-			mProjection = new String[] { BaseColumns._ID, mFields[mFields.length - 1], mFields[0] };
+			mProjection = new String[] { BaseColumns._ID, coverCacheKey, mFields[mFields.length - 1], mFields[0] };
 	}
 
 	/**
@@ -405,15 +411,15 @@ public class MediaAdapter
 
 		switch (mType) {
 		case MediaUtils.TYPE_ARTIST:
-			fields = new String[] { cursor.getString(1) };
+			fields = new String[] { cursor.getString(2) };
 			data = String.format("%s=%d", MediaStore.Audio.Media.ARTIST_ID, id);
 			break;
 		case MediaUtils.TYPE_ALBUM:
-			fields = new String[] { cursor.getString(2), cursor.getString(1) };
+			fields = new String[] { cursor.getString(3), cursor.getString(2) };
 			data = String.format("%s=%d",  MediaStore.Audio.Media.ALBUM_ID, id);
 			break;
 		case MediaUtils.TYPE_GENRE:
-			fields = new String[] { cursor.getString(1) };
+			fields = new String[] { cursor.getString(2) };
 			data = id;
 			break;
 		default:
@@ -463,7 +469,7 @@ public class MediaAdapter
 			holder.cover.setOnClickListener(this);
 
 			holder.arrow.setVisibility(mExpandable ? View.VISIBLE : View.GONE);
-			holder.cover.setVisibility(mHasCoverArt ? View.VISIBLE : View.GONE);
+			holder.cover.setVisibility(mCoverCacheType != MediaUtils.TYPE_INVALID ? View.VISIBLE : View.GONE);
 			holder.cover.setup(mLooper);
 		} else {
 			holder = (ViewHolder)view.getTag();
@@ -472,9 +478,10 @@ public class MediaAdapter
 		Cursor cursor = mCursor;
 		cursor.moveToPosition(position);
 		holder.id = cursor.getLong(0);
-		if (mFields.length > 1) {
-			String line1 = cursor.getString(1);
-			String line2 = cursor.getString(2);
+		long cacheId = cursor.getLong(1);
+		if (mFields.length > 2) {
+			String line1 = cursor.getString(2);
+			String line2 = cursor.getString(3);
 			if(line1 == null) { line1 = "???"; }
 			if(line2 == null) { line2 = "???"; }
 			SpannableStringBuilder sb = new SpannableStringBuilder(line1);
@@ -484,14 +491,14 @@ public class MediaAdapter
 			holder.text.setText(sb);
 			holder.title = line1;
 		} else {
-			String title = cursor.getString(1);
+			String title = cursor.getString(2);
 			if(title == null) { title = "???"; }
 			holder.text.setText(title);
 			holder.title = title;
 		}
 
-		if (mHasCoverArt) {
-			holder.cover.setCover(mType, holder.id);
+		if (mCoverCacheType != MediaUtils.TYPE_INVALID) {
+			holder.cover.setCover(mCoverCacheType, cacheId);
 		}
 
 		return view;
