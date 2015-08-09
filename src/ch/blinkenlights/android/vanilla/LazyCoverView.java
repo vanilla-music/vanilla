@@ -126,7 +126,7 @@ public class LazyCoverView extends ImageView
 		if (sUiHandler == null) {
 			sUiHandler = new Handler(this);
 		}
-		if (sHandler == null) {
+		if (sHandler == null || sHandler.getLooper().equals(looper) == false) {
 			sHandler = new Handler(looper, this);
 		}
 		// image dimension we are going to cache - we should probably calculate this
