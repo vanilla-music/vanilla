@@ -23,6 +23,15 @@ THE SOFTWARE.
 <LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="horizontal">
+	<ch.blinkenlights.android.vanilla.LazyCoverView
+		android:id="@+id/cover"
+		android:background="?android:attr/selectableItemBackground"
+		android:longClickable="true"
+		android:scaleType="fitCenter"
+		android:layout_width="44dip"
+		android:layout_height="44dip"
+		android:visibility="gone"
+	/>
 	<TextView
 		android:id="@+id/text"
 		android:longClickable="true"

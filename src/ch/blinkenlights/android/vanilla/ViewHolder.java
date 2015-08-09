@@ -26,4 +26,5 @@ public class ViewHolder {
 	public String title;
 	public TextView text;
 	public ImageView arrow;
+	public LazyCoverView cover;
 }

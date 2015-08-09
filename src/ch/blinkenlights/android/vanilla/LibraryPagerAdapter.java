@@ -309,29 +309,30 @@ public class LibraryPagerAdapter
 			LayoutInflater inflater = activity.getLayoutInflater();
 			LibraryAdapter adapter;
 			LinearLayout header = null;
+			Looper looper = mWorkerHandler.getLooper();
 
 			switch (type) {
 			case MediaUtils.TYPE_ARTIST:
-				adapter = mArtistAdapter = new MediaAdapter(activity, MediaUtils.TYPE_ARTIST, null);
+				adapter = mArtistAdapter = new MediaAdapter(activity, MediaUtils.TYPE_ARTIST, null, looper);
 				mArtistAdapter.setExpandable(mSongsPosition != -1 || mAlbumsPosition != -1);
 				mArtistHeader = header = (LinearLayout)inflater.inflate(R.layout.library_row_expandable, null);
 				break;
 			case MediaUtils.TYPE_ALBUM:
-				adapter = mAlbumAdapter = new MediaAdapter(activity, MediaUtils.TYPE_ALBUM, mPendingAlbumLimiter);
+				adapter = mAlbumAdapter = new MediaAdapter(activity, MediaUtils.TYPE_ALBUM, mPendingAlbumLimiter, looper);
 				mAlbumAdapter.setExpandable(mSongsPosition != -1);
 				mPendingAlbumLimiter = null;
 				mAlbumHeader = header = (LinearLayout)inflater.inflate(R.layout.library_row_expandable, null);
 				break;
 			case MediaUtils.TYPE_SONG:
-				adapter = mSongAdapter = new MediaAdapter(activity, MediaUtils.TYPE_SONG, mPendingSongLimiter);
+				adapter = mSongAdapter = new MediaAdapter(activity, MediaUtils.TYPE_SONG, mPendingSongLimiter, looper);
 				mPendingSongLimiter = null;
 				mSongHeader = header = (LinearLayout)inflater.inflate(R.layout.library_row_expandable, null);
 				break;
 			case MediaUtils.TYPE_PLAYLIST:
-				adapter = mPlaylistAdapter = new MediaAdapter(activity, MediaUtils.TYPE_PLAYLIST, null);
+				adapter = mPlaylistAdapter = new MediaAdapter(activity, MediaUtils.TYPE_PLAYLIST, null, looper);
 				break;
 			case MediaUtils.TYPE_GENRE:
-				adapter = mGenreAdapter = new MediaAdapter(activity, MediaUtils.TYPE_GENRE, null);
+				adapter = mGenreAdapter = new MediaAdapter(activity, MediaUtils.TYPE_GENRE, null, looper);
 				mGenreAdapter.setExpandable(mSongsPosition != -1);
 				break;
 			case MediaUtils.TYPE_FILE:

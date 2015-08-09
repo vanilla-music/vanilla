@@ -28,6 +28,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Looper;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.text.Spannable;
@@ -76,6 +77,7 @@ public class MediaAdapter
 	 * The current data.
 	 */
 	private Cursor mCursor;
+	private Looper mLooper;
 	/**
 	 * The type of media represented by this adapter. Must be one of the
 	 * MediaUtils.FIELD_* constants. Determines which content provider to query for
@@ -134,6 +136,10 @@ public class MediaAdapter
 	 * If true, show the expander button on each row.
 	 */
 	private boolean mExpandable;
+	/**
+	 * If true, return views with covers and fire callbacks
+	 */
+	private boolean mHasCoverArt;
 
 	/**
 	 * Construct a MediaAdapter representing the given <code>type</code> of
@@ -145,12 +151,13 @@ public class MediaAdapter
 	 * and what fields to display in the views.
 	 * @param limiter An initial limiter to use
 	 */
-	public MediaAdapter(LibraryActivity activity, int type, Limiter limiter)
+	public MediaAdapter(LibraryActivity activity, int type, Limiter limiter, Looper looper)
 	{
 		mActivity = activity;
 		mType = type;
 		mLimiter = limiter;
 		mInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		mLooper = looper;
 
 		switch (type) {
 		case MediaUtils.TYPE_ARTIST:
@@ -169,6 +176,7 @@ public class MediaAdapter
 			mSongSort = MediaUtils.ALBUM_SORT;
 			mSortEntries = new int[] { R.string.name, R.string.artist_album, R.string.year, R.string.number_of_tracks, R.string.date_added };
 			mSortValues = new String[] { "album_key %1$s", "artist_key %1$s,album_key %1$s", "minyear %1$s,album_key %1$s", "numsongs %1$s,album_key %1$s", "_id %1$s" };
+			mHasCoverArt = true;
 			break;
 		case MediaUtils.TYPE_SONG:
 			mStore = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
@@ -178,6 +186,7 @@ public class MediaAdapter
 			                           R.string.artist_year, R.string.album_track, R.string.year, R.string.date_added, R.string.song_playcount };
 			mSortValues = new String[] { "title_key %1$s", "artist_key %1$s,album_key %1$s,track %1$s", "artist_key %1$s,album_key %1$s,title_key %1$s",
 			                             "artist_key %1$s,year %1$s,track %1$s", "album_key %1$s,track %1s", "year %1$s,title_key %1$s", "_id %1$s", SORT_MAGIC_PLAYCOUNT };
+			mHasCoverArt = true;
 			break;
 		case MediaUtils.TYPE_PLAYLIST:
 			mStore = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI;
@@ -448,10 +457,14 @@ public class MediaAdapter
 
 			holder.text = (TextView)view.findViewById(R.id.text);
 			holder.arrow = (ImageView)view.findViewById(R.id.arrow);
+			holder.cover = (LazyCoverView)view.findViewById(R.id.cover);
 			holder.arrow.setOnClickListener(this);
 			holder.text.setOnClickListener(this);
+			holder.cover.setOnClickListener(this);
 
 			holder.arrow.setVisibility(mExpandable ? View.VISIBLE : View.GONE);
+			holder.cover.setVisibility(mHasCoverArt ? View.VISIBLE : View.GONE);
+			holder.cover.setup(mLooper);
 		} else {
 			holder = (ViewHolder)view.getTag();
 		}
@@ -475,6 +488,10 @@ public class MediaAdapter
 			if(title == null) { title = "???"; }
 			holder.text.setText(title);
 			holder.title = title;
+		}
+
+		if (mHasCoverArt) {
+			holder.cover.setCover(mType, holder.id);
 		}
 
 		return view;
