@@ -45,13 +45,6 @@ public class FilebrowserStartAdapter
 		mInflater   = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 
-	private static class ViewHolder {
-		public int id;
-		public TextView text;
-		public View divider;
-		public ImageView arrow;
-	}
-
 	@Override
 	public View getView(int pos, View convertView, ViewGroup parent) {
 		View view;
@@ -82,7 +75,7 @@ public class FilebrowserStartAdapter
 	@Override
 	public void onClick(View view) {
 		ViewHolder holder = (ViewHolder)((View)view.getParent()).getTag();
-		mActivity.onDirectoryClicked(holder.id);
+		mActivity.onDirectoryClicked((int)holder.id);
 	}
 
 }
