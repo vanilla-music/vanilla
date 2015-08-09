@@ -33,7 +33,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 			android:layout_width="4dip"
 			android:layout_height="44dip"
 			android:visibility="invisible"
-			android:background="@android:color/holo_blue_dark" />
+			android:background="@color/now_playing_marker" />
 		<TextView
 			android:id="@+id/text"
 			android:maxLines="2"
