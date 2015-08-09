@@ -198,6 +198,7 @@ public class FileSystemAdapter
 			view = mInflater.inflate(R.layout.library_row_expandable, null);
 			holder = new ViewHolder();
 			holder.text = (TextView)view.findViewById(R.id.text);
+			holder.divider = (View)view.findViewById(R.id.divider);
 			holder.arrow = (ImageView)view.findViewById(R.id.arrow);
 			holder.text.setOnClickListener(this);
 			holder.arrow.setOnClickListener(this);
@@ -212,6 +213,7 @@ public class FileSystemAdapter
 		holder.id = pos;
 		holder.text.setText(file.getName());
 		holder.arrow.setVisibility(isDirectory ? View.VISIBLE : View.GONE);
+		holder.divider.setVisibility(isDirectory ? View.VISIBLE : View.GONE);
 		holder.text.setCompoundDrawablesWithIntrinsicBounds(isDirectory ? mFolderIcon : null, null, null, null);
 		return view;
 	}

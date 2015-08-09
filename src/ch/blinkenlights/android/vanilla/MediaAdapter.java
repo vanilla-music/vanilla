@@ -462,12 +462,14 @@ public class MediaAdapter
 			view.setTag(holder);
 
 			holder.text = (TextView)view.findViewById(R.id.text);
+			holder.divider = (View)view.findViewById(R.id.divider);
 			holder.arrow = (ImageView)view.findViewById(R.id.arrow);
 			holder.cover = (LazyCoverView)view.findViewById(R.id.cover);
 			holder.arrow.setOnClickListener(this);
 			holder.text.setOnClickListener(this);
 			holder.cover.setOnClickListener(this);
 
+			holder.divider.setVisibility(mExpandable ? View.VISIBLE : View.GONE);
 			holder.arrow.setVisibility(mExpandable ? View.VISIBLE : View.GONE);
 			holder.cover.setVisibility(mCoverCacheType != MediaUtils.TYPE_INVALID ? View.VISIBLE : View.GONE);
 			holder.cover.setup(mLooper);

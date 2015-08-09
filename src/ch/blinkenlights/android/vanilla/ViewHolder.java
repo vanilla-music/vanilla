@@ -17,6 +17,7 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import android.view.View;
 import android.widget.TextView;
 import android.widget.ImageView;
 
@@ -25,6 +26,7 @@ public class ViewHolder {
 	public long id;
 	public String title;
 	public TextView text;
+	public View divider;
 	public ImageView arrow;
 	public LazyCoverView cover;
 }
