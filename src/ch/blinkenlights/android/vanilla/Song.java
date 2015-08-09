@@ -106,20 +106,18 @@ public class Song implements Comparable<Song> {
 
 	private class LruCacheKey {
 		long id;
-		long artistId;
 		long albumId;
 		String path;
 
-		public LruCacheKey(long id, long artistId, long albumId, String path) {
+		public LruCacheKey(long id, long albumId, String path) {
 			this.id = id;
-			this.artistId = artistId;
 			this.albumId = albumId;
 			this.path = path;
 		}
 
 		@Override
 		public boolean equals(Object obj) {
-			if (obj instanceof LruCacheKey && this.albumId == ((LruCacheKey)obj).albumId && this.artistId == ((LruCacheKey)obj).artistId) {
+			if (obj instanceof LruCacheKey && this.albumId == ((LruCacheKey)obj).albumId) {
 				return true;
 			}
 			return false;
@@ -127,7 +125,7 @@ public class Song implements Comparable<Song> {
 
 		@Override
 		public int hashCode() {
-			return (int)( 0xFFFFFF & (this.artistId + this.albumId) );
+			return (int)( 0xFFFFFF & (this.albumId) );
 		}
 
 		@Override
@@ -378,7 +376,7 @@ public class Song implements Comparable<Song> {
 			sCoverCache.evictAll();
 		}
 
-		LruCacheKey key = new LruCacheKey(id, artistId, albumId, path);
+		LruCacheKey key = new LruCacheKey(id, albumId, path);
 		Bitmap cover = sCoverCache.get(key);
 
 		if (cover == null)
