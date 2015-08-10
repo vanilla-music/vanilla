@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2014 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2013-2015 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Message;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -143,15 +144,15 @@ public class ShowQueueActivity extends PlaybackActivity
 		};
 
 	/**
-	 * Fired if user dismisses the create-playlist dialog
-	 *
-	 * @param dialogInterface the dismissed interface dialog
+	 * Saves the current queue as a playlist
 	 */
+	protected static final int MSG_SAVE_QUEUE_AS_PLAYLIST = 30;
+
 	@Override
-	public void onDismiss(DialogInterface dialogInterface) {
-		NewPlaylistDialog dialog = (NewPlaylistDialog)dialogInterface;
-		if (dialog.isAccepted()) {
-			String playlistName = dialog.getText();
+	public boolean handleMessage(Message message) {
+		switch (message.what) {
+		case MSG_SAVE_QUEUE_AS_PLAYLIST:
+			String playlistName = (String)message.obj;
 			long playlistId = Playlist.createPlaylist(getContentResolver(), playlistName);
 			PlaylistTask playlistTask = new PlaylistTask(playlistId, playlistName);
 			playlistTask.audioIds = new ArrayList<Long>();
@@ -163,7 +164,26 @@ public class ShowQueueActivity extends PlaybackActivity
 					break;
 				playlistTask.audioIds.add(song.id);
 			}
-			mHandler.sendMessage(mHandler.obtainMessage(MSG_ADD_TO_PLAYLIST, playlistTask));
+
+			addToPlaylist(playlistTask);
+			break;
+		default:
+			return super.handleMessage(message);
+		}
+		return true;
+	}
+
+	/**
+	 * Fired if user dismisses the create-playlist dialog
+	 *
+	 * @param dialogInterface the dismissed interface dialog
+	 */
+	@Override
+	public void onDismiss(DialogInterface dialogInterface) {
+		NewPlaylistDialog dialog = (NewPlaylistDialog)dialogInterface;
+		if (dialog.isAccepted()) {
+			String playlistName = dialog.getText();
+			mHandler.sendMessage(mHandler.obtainMessage(MSG_SAVE_QUEUE_AS_PLAYLIST, playlistName));
 		}
 	}
 
