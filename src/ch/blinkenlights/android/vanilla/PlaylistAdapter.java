@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2015 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +39,6 @@ import android.widget.CursorAdapter;
 import android.widget.TextView;
 import android.provider.MediaStore.Audio.Playlists.Members;
 
-
 /**
  * CursorAdapter backed by MediaStore playlists.
  */
@@ -48,6 +48,7 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 		MediaStore.Audio.Playlists.Members.TITLE,
 		MediaStore.Audio.Playlists.Members.ARTIST,
 		MediaStore.Audio.Playlists.Members.AUDIO_ID,
+		MediaStore.Audio.Playlists.Members.ALBUM_ID,
 		MediaStore.Audio.Playlists.Members.PLAY_ORDER,
 	};
 
@@ -110,6 +111,11 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 		TextView textView = dview.getTextView();
 		textView.setText(cursor.getString(1));
 		textView.setTag(cursor.getLong(3));
+
+		LazyCoverView cover = dview.getCoverView();
+		dview.showCoverView(true);
+		cover.setup(mWorkerHandler.getLooper());
+		cover.setCover(MediaUtils.TYPE_ALBUM, cursor.getLong(4));
 	}
 
 	/**
