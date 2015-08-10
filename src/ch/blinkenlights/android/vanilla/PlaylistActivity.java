@@ -47,6 +47,7 @@ public class PlaylistActivity extends Activity
 	         , AbsListView.OnItemClickListener
 	         , DialogInterface.OnClickListener
 	         , DragSortListView.DropListener
+	         , DragSortListView.RemoveListener
 {
 	/**
 	 * The SongTimeline play mode corresponding to each
@@ -104,6 +105,7 @@ public class PlaylistActivity extends Activity
 		view.setOnItemClickListener(this);
 		view.setOnCreateContextMenuListener(this);
 		view.setDropListener(this);
+		view.setRemoveListener(this);
 		mListView = view;
 
 		View header = LayoutInflater.from(this).inflate(R.layout.playlist_buttons, null);
@@ -291,6 +293,15 @@ public class PlaylistActivity extends Activity
 	@Override
 	public void drop(int from, int to) {
 		mAdapter.moveItem(from, to);
+	}
+
+	/**
+	 * Fired from adapter listview if user fling-removed an item
+	 * @param position The position of the removed item
+	 */
+	@Override
+	public void remove(int position) {
+		mAdapter.removeItem(position);
 	}
 
 }
