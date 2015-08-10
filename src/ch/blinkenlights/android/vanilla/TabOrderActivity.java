@@ -34,7 +34,11 @@ import com.mobeta.android.dslv.DragSortListView;
 /**
  * The preferences activity in which one can change application preferences.
  */
-public class TabOrderActivity extends Activity implements View.OnClickListener, OnItemClickListener {
+public class TabOrderActivity extends Activity
+	implements View.OnClickListener,
+	           OnItemClickListener,
+	           DragSortListView.DropListener
+{
 	private TabOrderAdapter mAdapter;
 	private DragSortListView mList;
 
@@ -54,7 +58,7 @@ public class TabOrderActivity extends Activity implements View.OnClickListener, 
 		DragSortListView list = (DragSortListView)findViewById(R.id.list);
 		list.setAdapter(mAdapter);
 		list.setOnItemClickListener(this);
-		list.setDropListener(onDrop);
+		list.setDropListener(this);
 		mList = list;
 		load();
 
@@ -161,28 +165,25 @@ public class TabOrderActivity extends Activity implements View.OnClickListener, 
 	 * @param from the item index that was dragged
 	 * @param to the index where the item was dropped
 	 */
-	private DragSortListView.DropListener onDrop =
-		new DragSortListView.DropListener() {
-			@Override
-			public void drop(int from, int to) {
-				if (from == to)
-					return;
+	@Override
+	public void drop(int from, int to) {
+		if (from == to)
+			return;
 
-				int[] ids = mAdapter.getTabIds();
-				int tempId = ids[from];
+		int[] ids = mAdapter.getTabIds();
+		int tempId = ids[from];
 
-				if (from > to) {
-					System.arraycopy(ids, to, ids, to + 1, from - to);
-				} else {
-					System.arraycopy(ids, from + 1, ids, from, to - from);
-				}
+		if (from > to) {
+			System.arraycopy(ids, to, ids, to + 1, from - to);
+		} else {
+			System.arraycopy(ids, from + 1, ids, from, to - from);
+		}
 
-				ids[to] = tempId;
-				save();
-				mAdapter.notifyDataSetChanged();
-				// no need to update the copy in mAdapter: We worked on a reference
-			}
-		};
+		ids[to] = tempId;
+		save();
+		mAdapter.notifyDataSetChanged();
+		// no need to update the copy in mAdapter: We worked on a reference
+	}
 
 
 }

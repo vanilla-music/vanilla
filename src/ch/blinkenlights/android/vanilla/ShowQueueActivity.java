@@ -33,8 +33,10 @@ import android.widget.ListView;
 import com.mobeta.android.dslv.DragSortListView;
 
 public class ShowQueueActivity extends PlaybackActivity
-	implements DialogInterface.OnDismissListener
-	{
+	implements DialogInterface.OnDismissListener,
+	           DragSortListView.DropListener,
+	           DragSortListView.RemoveListener
+{
 	private DragSortListView mListView;
 	private ShowQueueAdapter listAdapter;
 	private PlaybackService mService;
@@ -51,8 +53,8 @@ public class ShowQueueActivity extends PlaybackActivity
 		mListView   = (DragSortListView) findViewById(R.id.list);
 		listAdapter = new ShowQueueAdapter(this, R.layout.draggable_row, mHandler.getLooper());
 		mListView.setAdapter(listAdapter);
-		mListView.setDropListener(onDrop);
-		mListView.setRemoveListener(onRemove);
+		mListView.setDropListener(this);
+		mListView.setRemoveListener(this);
 
 		mListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -121,27 +123,21 @@ public class ShowQueueActivity extends PlaybackActivity
 	 * @param from the item index that was dragged
 	 * @param to the index where the item was dropped
 	 */
-	private DragSortListView.DropListener onDrop =
-		new DragSortListView.DropListener() {
-			@Override
-			public void drop(int from, int to) {
-				if (from != to) {
-					mService.moveSongPosition(from, to);
-				}
-			}
-		};
+	@Override
+	public void drop(int from, int to) {
+		if (from != to) {
+			mService.moveSongPosition(from, to);
+		}
+	}
 
 	/**
 	 * Fired from adapter listview after user removed a song
 	 * @param which index to remove from queue
 	 */
-	private DragSortListView.RemoveListener onRemove =
-		new DragSortListView.RemoveListener() {
-			@Override
-			public void remove(int which) {
-				mService.removeSongPosition(which);
-			}
-		};
+	@Override
+	public void remove(int which) {
+		mService.removeSongPosition(which);
+	}
 
 	/**
 	 * Saves the current queue as a playlist
