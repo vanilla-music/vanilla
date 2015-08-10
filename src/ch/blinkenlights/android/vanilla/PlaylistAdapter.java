@@ -25,6 +25,7 @@ package ch.blinkenlights.android.vanilla;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -172,15 +173,6 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 	 * @param from original position of item
 	 * @param to destination of item
 	 **/
-	public void moveItem(int from, int to) {
-		if (from == to)
-			return;
-		android.provider.MediaStore.Audio.Playlists.Members.moveItem(mContext.getContentResolver(), mPlaylistId , from, to);
-		mUiHandler.sendEmptyMessage(MSG_RUN_QUERY);
-	}
-
-
-/* fixme: does the move-after-delete bug still exist in 4.x?
 	public void moveItem(int from, int to)
 	{
 		if (from == to)
@@ -208,11 +200,11 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 			order = 0;
 		} else {
 			cursor.moveToPosition(start - 1);
-			order = cursor.getLong(4) + 1;
+			order = cursor.getLong(5) + 1;
 		}
 
 		cursor.moveToPosition(end);
-		long endOrder = cursor.getLong(4);
+		long endOrder = cursor.getLong(5);
 
 		// clear the rows we are replacing
 		String[] args = new String[] { Long.toString(order), Long.toString(endOrder) };
@@ -233,7 +225,7 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 
 		changeCursor(runQuery(resolver));
 	}
-*/
+
 	public void removeItem(int position)
 	{
 		ContentResolver resolver = mContext.getContentResolver();
