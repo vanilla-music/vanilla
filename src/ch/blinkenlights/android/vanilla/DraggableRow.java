@@ -32,27 +32,15 @@ public class DraggableRow extends LinearLayout implements Checkable {
 	private boolean mHighlighted;
 	private boolean mChecked;
 
-	private float mDensity;
-	private static int sWidth = -1;
-
 	private TextView mTextView;
 	private CheckedTextView mCheckBox;
 	private View mPmark;
 	private ImageView mDragger;
 	private LazyCoverView mCoverView;
 
-	// Hardcoded sizes of elements in DPI
-	// MUST match definition in draggable_row
-	private final int DPI_PMARK = 4;
-	private final int DPI_CHECKBOX = 44;
-	private final int DPI_DRAGGER = 44;
-	private final int DPI_COVER = 44;
-	private final int DPI_SLACK = 1; // safety margin
-
 
 	public DraggableRow(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		mDensity = context.getResources().getDisplayMetrics().density;
 	}
 
 
@@ -63,33 +51,10 @@ public class DraggableRow extends LinearLayout implements Checkable {
 		mPmark     = (View)this.findViewById(R.id.pmark);
 		mDragger   = (ImageView)this.findViewById(R.id.dragger);
 		mCoverView = (LazyCoverView)this.findViewById(R.id.cover);
-		setupTextView(false);
+		super.onFinishInflate();
 	}
 
 
-	@Override
-	protected void onSizeChanged (int w, int h, int oldw, int oldh) {
-		super.onSizeChanged(w, h, oldw, oldh);
-		if (sWidth != w) {
-			sWidth = w;
-			// This view was drawn with an incorrect with
-			// fix it and force a redraw
-			setupTextView(true);
-		}
-	}
-
-	/**
-	 * Resizes our textview to the correct size
-	 * @param redraw invalidates the current view if TRUE
-	 */
-	private void setupTextView(boolean redraw) {
-		int pixelUsed = (int)((DPI_SLACK + DPI_PMARK + DPI_DRAGGER + (mShowCover ? DPI_COVER : 0) + (mShowCheckBox ? DPI_CHECKBOX : 0)) * mDensity);
-		int pixelFree = sWidth - pixelUsed;
-		if (pixelFree > 0)
-			mTextView.setWidth(pixelFree);
-		if (redraw == true)
-			this.invalidate();
-	}
 
 	@Override
 	public boolean isChecked() {
@@ -127,7 +92,6 @@ public class DraggableRow extends LinearLayout implements Checkable {
 		if (mShowCheckBox != state) {
 			mCheckBox.setVisibility( state ? View.VISIBLE : View.GONE );
 			mShowCheckBox = state;
-			setupTextView(true);
 		}
 	}
 
@@ -140,7 +104,6 @@ public class DraggableRow extends LinearLayout implements Checkable {
 		if (mShowCover != state) {
 			mCoverView.setVisibility( state ? View.VISIBLE : View.GONE );
 			mShowCover = state;
-			setupTextView(true);
 		}
 	}
 

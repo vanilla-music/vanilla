@@ -48,16 +48,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 			android:maxLines="2"
 			android:textColor="?android:textColorPrimary"
 			android:gravity="left|center_vertical"
-			android:layout_width="wrap_content"
+			android:layout_width="0px"
+			android:layout_weight="1"
 			android:layout_height="match_parent"
 			android:paddingTop="2dip"
 			android:paddingBottom="2dip"
 			android:paddingLeft="4dip" />
-			<!-- spacer -->
-			<View
-				android:layout_height="match_parent"
-				android:layout_width="0px"
-				android:layout_weight="1"/>
+
 			<CheckedTextView
 				android:id="@+id/checkbox"
 				android:visibility="gone"
