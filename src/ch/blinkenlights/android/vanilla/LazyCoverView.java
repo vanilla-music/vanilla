@@ -190,9 +190,14 @@ public class LazyCoverView extends ImageView
 		CoverMsg payload = new CoverMsg(type, id, this);
 		mExpectedKey = payload.getKey();
 		if (drawFromCache(payload) == false) {
-			// We send this delayed to avoid a cache-miss-storm if the user scrolls
-			// quickly in the listview
-			sHandler.sendMessageDelayed(sHandler.obtainMessage(MSG_CACHE_COVER, payload), 200);
+			int delay = 1;
+			if (sHandler.hasMessages(MSG_CACHE_COVER)) {
+				// User is probably scrolling fast as there is already a queued resize job
+				// wait 200ms as this view will most likely be obsolete soon anyway.
+				// This frees us from scaling bitmaps we are never going to show
+				delay = 200;
+			}
+			sHandler.sendMessageDelayed(sHandler.obtainMessage(MSG_CACHE_COVER, payload), delay);
 		}
 	}
 
