@@ -183,7 +183,7 @@ public abstract class PlaybackActivity extends Activity
 		PlaybackService service = PlaybackService.get(this);
 		int state = service.playPause();
 		if ((state & PlaybackService.FLAG_ERROR) != 0)
-			Toast.makeText(this, service.getErrorMessage(), Toast.LENGTH_LONG).show();
+			showToast(service.getErrorMessage(), Toast.LENGTH_LONG);
 		setState(state);
 	}
 
@@ -451,7 +451,7 @@ public abstract class PlaybackActivity extends Activity
 		}
 
 		String message = getResources().getQuantityString(R.plurals.added_to_playlist, count, count, playlistTask.name);
-		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+		showToast(message, Toast.LENGTH_SHORT);
 	}
 
 	/**
@@ -485,9 +485,20 @@ public abstract class PlaybackActivity extends Activity
 			message = res.getString(R.string.deleted_item, intent.getStringExtra("title"));
 		}
 
-		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+		showToast(message, Toast.LENGTH_SHORT);
 	}
 
+	/**
+	 * Creates and displays a new toast message
+	 */
+	private void showToast(final String message, final int duration) {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				Toast.makeText(getApplicationContext(), message, duration).show();
+			}
+		});
+	}
 
 
 	/**
