@@ -67,7 +67,7 @@ public class ShowQueueAdapter
 		} else {
 			LayoutInflater inflater = ((Activity)mContext).getLayoutInflater();
 			row = (DraggableRow)inflater.inflate(mResource, parent, false);
-			row.showCoverView(true);
+			row.setupLayout(DraggableRow.LAYOUT_COVERVIEW);
 			row.getCoverView().setup(mLooper);
 		}
 

@@ -108,13 +108,14 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 	public void bindView(View view, Context context, Cursor cursor)
 	{
 		DraggableRow dview = (DraggableRow)view;
+		dview.setupLayout(DraggableRow.LAYOUT_COVERVIEW);
 		dview.showDragger(mEditable);
+
 		TextView textView = dview.getTextView();
 		textView.setText(cursor.getString(1));
 		textView.setTag(cursor.getLong(3));
 
 		LazyCoverView cover = dview.getCoverView();
-		dview.showCoverView(true);
 		cover.setup(mWorkerHandler.getLooper());
 		cover.setCover(MediaUtils.TYPE_ALBUM, cursor.getLong(4));
 	}

@@ -27,16 +27,26 @@ import android.widget.CheckedTextView;
 import android.widget.Checkable;
 
 public class DraggableRow extends LinearLayout implements Checkable {
-	private boolean mShowCheckBox;
-	private boolean mShowCover;
-	private boolean mHighlighted;
+	/**
+	 * True if the checkbox is checked
+	 */
 	private boolean mChecked;
+	/**
+	 * True if setupLayout has been called
+	 */
+	private boolean mLayoutSet;
 
 	private TextView mTextView;
 	private CheckedTextView mCheckBox;
 	private View mPmark;
 	private ImageView mDragger;
 	private LazyCoverView mCoverView;
+
+	/**
+	 * Layout types for use with setupLayout
+	 */
+	public static final int LAYOUT_CHECKBOXES =  1;
+	public static final int LAYOUT_COVERVIEW  =  2;
 
 
 	public DraggableRow(Context context, AttributeSet attrs) {
@@ -54,7 +64,28 @@ public class DraggableRow extends LinearLayout implements Checkable {
 		super.onFinishInflate();
 	}
 
-
+	/**
+	 * Sets up commonly used layouts - can only be called once per view
+	 *
+	 * @param type the layout type to use
+	 */
+	public void setupLayout(int type) {
+		if (!mLayoutSet) {
+			switch (type) {
+				case LAYOUT_CHECKBOXES:
+					mCheckBox.setVisibility(View.VISIBLE);
+					showDragger(true);
+					break;
+				case LAYOUT_COVERVIEW:
+					mCoverView.setVisibility(View.VISIBLE);
+					showDragger(true);
+					break;
+				default:
+					break; // do not care
+			}
+			mLayoutSet = true;
+		}
+	}
 
 	@Override
 	public boolean isChecked() {
@@ -77,34 +108,7 @@ public class DraggableRow extends LinearLayout implements Checkable {
 	 * @param state Enable or disable highlighting
 	 */
 	public void highlightRow(boolean state) {
-		if (mHighlighted != state) {
-			mPmark.setVisibility( state ? View.VISIBLE : View.INVISIBLE );
-			mHighlighted = state;
-		}
-	}
-
-	/**
-	 * Changes the visibility of the checkbox
-	 *
-	 * @param state show or destroy the checkbox
-	 */
-	public void showCheckBox(boolean state) {
-		if (mShowCheckBox != state) {
-			mCheckBox.setVisibility( state ? View.VISIBLE : View.GONE );
-			mShowCheckBox = state;
-		}
-	}
-
-	/**
-	 * Change the visibility of the cover view
-	 *
-	 * @param state show or hide the cover view
-	 */
-	public void showCoverView(boolean state) {
-		if (mShowCover != state) {
-			mCoverView.setVisibility( state ? View.VISIBLE : View.GONE );
-			mShowCover = state;
-		}
+		mPmark.setVisibility( state ? View.VISIBLE : View.INVISIBLE );
 	}
 
 	/**
