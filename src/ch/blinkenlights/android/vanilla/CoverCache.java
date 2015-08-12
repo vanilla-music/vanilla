@@ -39,9 +39,29 @@ public class CoverCache {
 	 */
 	public final static int SIZE_LARGE = 600;
 	/**
+	 * Use all cover providers to load cover art
+	 */
+	public static final int COVER_MODE_ALL = 0xF;
+	/**
+	 * Use androids builtin cover mechanism to load covers
+	 */
+	public static final int COVER_MODE_ANDROID = 0x1;
+	/**
+	 * Use vanilla musics cover load mechanism
+	 */
+	public static final int COVER_MODE_VANILLA = 0x2;
+	/**
+	 * Use vanilla musics SHADOW cover load mechanism
+	 */
+	public static final int COVER_MODE_SHADOW = 0x4;
+	/**
 	 * Shared LRU cache class
 	 */
 	private static BitmapLruCache sBitmapLruCache;
+	/**
+	 * Bitmask on how we are going to load coverart
+	 */
+	public static int mCoverLoadMode = 0;
 
 	/**
 	 * Constructs a new BitmapCache object
@@ -94,8 +114,10 @@ public class CoverCache {
 	/**
 	 * Deletes all items hold in the LRU cache
 	 */
-	public void evictAll() {
-		sBitmapLruCache.evictAll();
+	public static void evictAll() {
+		if (sBitmapLruCache != null) {
+			sBitmapLruCache.evictAll();
+		}
 	}
 
 
@@ -180,7 +202,7 @@ public class CoverCache {
 				InputStream inputStream = null;
 				InputStream sampleInputStream = null; // same as inputStream but used for getSampleSize
 
-				if ((Song.mCoverLoadMode & Song.COVER_MODE_VANILLA) != 0) {
+				if ((CoverCache.mCoverLoadMode & CoverCache.COVER_MODE_VANILLA) != 0) {
 					String basePath = (new File(song.path)).getParentFile().getAbsolutePath(); // parent dir of the currently playing file
 					for (String coverFile: coverNames) {
 						File guessedFile = new File( basePath + "/" + coverFile);
@@ -192,7 +214,7 @@ public class CoverCache {
 					}
 				}
 
-				if (inputStream == null && (Song.mCoverLoadMode & Song.COVER_MODE_SHADOW) != 0) {
+				if (inputStream == null && (CoverCache.mCoverLoadMode & CoverCache.COVER_MODE_SHADOW) != 0) {
 					String shadowPath = "/sdcard/Music/.vanilla/"+(song.artist.replaceAll("/", "_"))+"/"+(song.album.replaceAll("/", "_"))+".jpg";
 
 					File guessedFile = new File(shadowPath);
@@ -202,7 +224,7 @@ public class CoverCache {
 					}
 				}
 
-				if (inputStream == null && (Song.mCoverLoadMode & Song.COVER_MODE_ANDROID) != 0 && song.id >= 0) {
+				if (inputStream == null && (CoverCache.mCoverLoadMode & CoverCache.COVER_MODE_ANDROID) != 0 && song.id >= 0) {
 					Uri uri =  Uri.parse("content://media/external/audio/media/" + song.id + "/albumart");
 					ContentResolver res = mContext.getContentResolver();
 					inputStream = res.openInputStream(uri);

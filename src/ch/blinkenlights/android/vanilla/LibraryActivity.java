@@ -926,7 +926,7 @@ public class LibraryActivity
 				cover = song.getCover(this);
 			}
 
-			mCover.setVisibility(Song.mCoverLoadMode == 0 ? View.GONE : View.VISIBLE);
+			mCover.setVisibility(CoverCache.mCoverLoadMode == 0 ? View.GONE : View.VISIBLE);
 			if (cover == null)
 				mCover.setImageResource(R.drawable.fallback_cover);
 			else

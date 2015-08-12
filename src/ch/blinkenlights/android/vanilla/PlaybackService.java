@@ -432,9 +432,9 @@ public final class PlaybackService extends Service
 		mScrobble = settings.getBoolean(PrefKeys.SCROBBLE, false);
 		mIdleTimeout = settings.getBoolean(PrefKeys.USE_IDLE_TIMEOUT, false) ? settings.getInt(PrefKeys.IDLE_TIMEOUT, 3600) : 0;
 
-		Song.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_ANDROID, true) ? Song.mCoverLoadMode | Song.COVER_MODE_ANDROID : Song.mCoverLoadMode & ~(Song.COVER_MODE_ANDROID);
-		Song.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_VANILLA, true) ? Song.mCoverLoadMode | Song.COVER_MODE_VANILLA : Song.mCoverLoadMode & ~(Song.COVER_MODE_VANILLA);
-		Song.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_SHADOW , true) ? Song.mCoverLoadMode | Song.COVER_MODE_SHADOW  : Song.mCoverLoadMode & ~(Song.COVER_MODE_SHADOW);
+		CoverCache.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_ANDROID, true) ? CoverCache.mCoverLoadMode | CoverCache.COVER_MODE_ANDROID : CoverCache.mCoverLoadMode & ~(CoverCache.COVER_MODE_ANDROID);
+		CoverCache.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_VANILLA, true) ? CoverCache.mCoverLoadMode | CoverCache.COVER_MODE_VANILLA : CoverCache.mCoverLoadMode & ~(CoverCache.COVER_MODE_VANILLA);
+		CoverCache.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_SHADOW , true) ? CoverCache.mCoverLoadMode | CoverCache.COVER_MODE_SHADOW  : CoverCache.mCoverLoadMode & ~(CoverCache.COVER_MODE_SHADOW);
 
 		mHeadsetOnly = settings.getBoolean(PrefKeys.HEADSET_ONLY, false);
 		mCycleContinuousShuffling = settings.getBoolean(PrefKeys.CYCLE_CONTINUOUS_SHUFFLING, false);
@@ -808,14 +808,14 @@ public final class PlaybackService extends Service
 			mIdleTimeout = settings.getBoolean(PrefKeys.USE_IDLE_TIMEOUT, false) ? settings.getInt(PrefKeys.IDLE_TIMEOUT, 3600) : 0;
 			userActionTriggered();
 		} else if (PrefKeys.COVERLOADER_ANDROID.equals(key)) {
-			Song.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_ANDROID, true) ? Song.mCoverLoadMode | Song.COVER_MODE_ANDROID : Song.mCoverLoadMode & ~(Song.COVER_MODE_ANDROID);
-			Song.mFlushCoverCache = true;
+			CoverCache.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_ANDROID, true) ? CoverCache.mCoverLoadMode | CoverCache.COVER_MODE_ANDROID : CoverCache.mCoverLoadMode & ~(CoverCache.COVER_MODE_ANDROID);
+			CoverCache.evictAll();
 		} else if (PrefKeys.COVERLOADER_VANILLA.equals(key)) {
-			Song.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_VANILLA, true) ? Song.mCoverLoadMode | Song.COVER_MODE_VANILLA : Song.mCoverLoadMode & ~(Song.COVER_MODE_VANILLA);
-			Song.mFlushCoverCache = true;
+			CoverCache.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_VANILLA, true) ? CoverCache.mCoverLoadMode | CoverCache.COVER_MODE_VANILLA : CoverCache.mCoverLoadMode & ~(CoverCache.COVER_MODE_VANILLA);
+			CoverCache.evictAll();
 		} else if (PrefKeys.COVERLOADER_SHADOW.equals(key)) {
-			Song.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_SHADOW, true) ? Song.mCoverLoadMode | Song.COVER_MODE_SHADOW : Song.mCoverLoadMode & ~(Song.COVER_MODE_SHADOW);
-			Song.mFlushCoverCache = true;
+			CoverCache.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_SHADOW, true) ? CoverCache.mCoverLoadMode | CoverCache.COVER_MODE_SHADOW : CoverCache.mCoverLoadMode & ~(CoverCache.COVER_MODE_SHADOW);
+			CoverCache.evictAll();
 		} else if (PrefKeys.HEADSET_ONLY.equals(key)) {
 			mHeadsetOnly = settings.getBoolean(key, false);
 			if (mHeadsetOnly && isSpeakerOn())

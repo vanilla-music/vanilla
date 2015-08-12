@@ -44,22 +44,6 @@ public class Song implements Comparable<Song> {
 	 * The number of flags.
 	 */
 	public static final int FLAG_COUNT = 2;
-	/**
-	 * Use all cover providers to load cover art
-	 */
-	public static final int COVER_MODE_ALL = 0xF;
-	/**
-	 * Use androids builtin cover mechanism to load covers
-	 */
-	public static final int COVER_MODE_ANDROID = 0x1;
-	/**
-	 * Use vanilla musics cover load mechanism
-	 */
-	public static final int COVER_MODE_VANILLA = 0x2;
-	/**
-	 * Use vanilla musics SHADOW cover load mechanism
-	 */
-	public static final int COVER_MODE_SHADOW = 0x4;
 
 
 	public static final String[] EMPTY_PROJECTION = {
@@ -99,16 +83,6 @@ public class Song implements Comparable<Song> {
 	 * The cache instance.
 	 */
 	private static CoverCache sCoverCache = null;
-
-	/**
-	 * Bitmask on how we are going to load coverart
-	 */
-	public static int mCoverLoadMode = 0;
-
-	/**
-	 * We will evict our own cache if set to true
-	 */
-	public static boolean mFlushCoverCache = false;
 
 	/**
 	 * Id of this song in the MediaStore
@@ -221,16 +195,11 @@ public class Song implements Comparable<Song> {
 	 */
 	public Bitmap getCover(Context context)
 	{
-		if (mCoverLoadMode == 0 || id == -1 || (flags & FLAG_NO_COVER) != 0)
+		if (CoverCache.mCoverLoadMode == 0 || id == -1 || (flags & FLAG_NO_COVER) != 0)
 			return null;
 
 		if (sCoverCache == null)
 			sCoverCache = new CoverCache(context.getApplicationContext());
-
-		if (mFlushCoverCache) {
-			mFlushCoverCache = false;
-			sCoverCache.evictAll();
-		}
 
 		CoverCache.CoverKey key = new CoverCache.CoverKey(MediaUtils.TYPE_ALBUM, this.albumId, CoverCache.SIZE_LARGE);
 		Bitmap cover = sCoverCache.getCoverFromSong(key, this);
