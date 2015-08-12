@@ -26,7 +26,6 @@ import android.os.Message;
 
 import android.util.AttributeSet;
 import android.widget.ImageView;
-import android.util.LruCache;
 
 /**
  * LazyCoverView implements a 'song-aware' ImageView
@@ -57,45 +56,29 @@ public class LazyCoverView extends ImageView
 	 */
 	private static Bitmap sFallbackBitmap;
 	/**
-	 * Bitmap LRU cache
+	 * Cover LRU cache LRU cache
 	 */
-	private static BitmapCache sBitmapCache;
+	private static CoverCache sCoverCache;
 	/**
-	 * The key we are expected to draw
+	 * The cover key we are expected to draw
 	 */
-	private String mExpectedKey;
-	/**
-	 * Dimension of cached pictures in pixels
-	 */
-	private int mImageDimensionPx;
-	/**
-	 * Bitmap cache LRU cache implementation
-	 */
-	private class BitmapCache extends LruCache<String, Bitmap> {
-		public BitmapCache(int size) {
-			super(size);
-		}
-	}
+	private CoverCache.CoverKey mExpectedKey;
+
 	/**
 	 * Cover message we are passing around using mHandler
 	 */
 	private static class CoverMsg {
-		public int type;           // Media type
-		public long id;            // ID of this media type to query
+		public CoverCache.CoverKey key;
 		public LazyCoverView view; // The view we are updating
-		CoverMsg(int type, long id, LazyCoverView view) {
-			this.type = type;
-			this.id = id;
+		CoverMsg(CoverCache.CoverKey key, LazyCoverView view) {
+			this.key = key;
 			this.view = view;
-		}
-		public String getKey() {
-			return this.type +"/"+ this.id;
 		}
 		/**
 		 * Returns true if the view still requires updating
 		 */
 		public boolean isRecent() {
-			return this.getKey().equals(this.view.mExpectedKey);
+			return this.key.equals(this.view.mExpectedKey);
 		}
 	}
 
@@ -117,8 +100,8 @@ public class LazyCoverView extends ImageView
 	 * @param looper The worker thread to use for image scaling
 	 */
 	public void setup(Looper looper) {
-		if (sBitmapCache == null) {
-			sBitmapCache = new BitmapCache(255); // Cache up to 255 items
+		if (sCoverCache == null) {
+			sCoverCache = new CoverCache(mContext);
 		}
 		if (sFallbackBitmap == null) {
 			sFallbackBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.fallback_cover);
@@ -129,8 +112,6 @@ public class LazyCoverView extends ImageView
 		if (sHandler == null || sHandler.getLooper().equals(looper) == false) {
 			sHandler = new Handler(looper, this);
 		}
-		// image dimension we are going to cache - we should probably calculate this
-		mImageDimensionPx = 128;
 	}
 
 
@@ -151,27 +132,27 @@ public class LazyCoverView extends ImageView
 					break;
 				}
 
-				Bitmap bitmap = sBitmapCache.get(payload.getKey());
+				Bitmap bitmap = sCoverCache.getCachedCover(payload.key);
 				if (bitmap == null) {
-					Song song = MediaUtils.getSongByTypeId(mContext.getContentResolver(), payload.type, payload.id);
+					Song song = MediaUtils.getSongByTypeId(mContext.getContentResolver(), payload.key.mediaType, payload.key.mediaId);
 					if (song != null) {
-						bitmap = song.getCover(mContext);
+						bitmap = sCoverCache.getCoverFromSong(payload.key, song);
 					}
 					if (bitmap == null) {
 						bitmap = sFallbackBitmap;
 					}
-					bitmap = Bitmap.createScaledBitmap(bitmap, mImageDimensionPx, mImageDimensionPx, true);
-					sBitmapCache.put(payload.getKey(), bitmap);
+					sCoverCache.putCover(payload.key, bitmap);
 				}
 				sUiHandler.sendMessage(sUiHandler.obtainMessage(MSG_DRAW_COVER, payload));
 				break;
 			}
 			case MSG_DRAW_COVER: {
 				CoverMsg payload = (CoverMsg)message.obj;
-				synchronized(payload.view) {
-					if (payload.isRecent()) {
-						drawFromCache(payload);
-					}
+				// We run in the UI-Thread like setCover()
+				// and do not need locking: checking if the payload
+				// is still recent is sufficient.
+				if (payload.isRecent()) {
+					payload.view.drawFromCache(payload.key);
 				}
 			}
 			default:
@@ -182,14 +163,14 @@ public class LazyCoverView extends ImageView
 
 	/**
 	 * Attempts to set the image of this cover
+	 * Must be called from an UI thread
 	 * 
 	 * @param type The Media type
 	 * @param id The id of this media type to query
 	 */
 	public void setCover(int type, long id) {
-		CoverMsg payload = new CoverMsg(type, id, this);
-		mExpectedKey = payload.getKey();
-		if (drawFromCache(payload) == false) {
+		mExpectedKey = new CoverCache.CoverKey(type, id, CoverCache.SIZE_SMALL);
+		if (drawFromCache(mExpectedKey) == false) {
 			int delay = 1;
 			if (sHandler.hasMessages(MSG_CACHE_COVER)) {
 				// User is probably scrolling fast as there is already a queued resize job
@@ -197,6 +178,7 @@ public class LazyCoverView extends ImageView
 				// This frees us from scaling bitmaps we are never going to show
 				delay = 200;
 			}
+			CoverMsg payload = new CoverMsg(mExpectedKey, this);
 			sHandler.sendMessageDelayed(sHandler.obtainMessage(MSG_CACHE_COVER, payload), delay);
 		}
 	}
@@ -207,14 +189,14 @@ public class LazyCoverView extends ImageView
 	 *
 	 * @param payload The cover message containing the cache key and view to use
 	 */
-	public boolean drawFromCache(CoverMsg payload) {
+	public boolean drawFromCache(CoverCache.CoverKey key) {
 		boolean cacheHit = true;
-		Bitmap bitmap = sBitmapCache.get(payload.getKey());
+		Bitmap bitmap = sCoverCache.getCachedCover(key);
 		if (bitmap == null) {
 			cacheHit = false;
 			bitmap = sFallbackBitmap;
 		}
-		payload.view.setImageBitmap(bitmap);
+		setImageBitmap(bitmap);
 		return cacheHit;
 	}
 
