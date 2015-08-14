@@ -1303,7 +1303,8 @@ public final class PlaybackService extends Service
 
 		// Count this song as played
 		Song song = mTimeline.getSong(0);
-		mPlayCounts.countSong(song);
+		mHandler.sendMessage(mHandler.obtainMessage(MSG_UPDATE_PLAYCOUNTS, song));
+
 
 		if (finishAction(mState) == SongTimeline.FINISH_REPEAT_CURRENT) {
 			setCurrentSong(0);
@@ -1409,6 +1410,7 @@ public final class PlaybackService extends Service
 	private static final int PROCESS_STATE = 14;
 	private static final int SKIP_BROKEN_SONG = 15;
 	private static final int GAPLESS_UPDATE = 16;
+	private static final int MSG_UPDATE_PLAYCOUNTS = 17;
 
 	@Override
 	public boolean handleMessage(Message message)
@@ -1471,6 +1473,10 @@ public final class PlaybackService extends Service
 			break;
 		case GAPLESS_UPDATE:
 			triggerGaplessUpdate();
+			break;
+		case MSG_UPDATE_PLAYCOUNTS:
+			Song song = (Song)message.obj;
+			mPlayCounts.countSong(song);
 			break;
 		default:
 			return false;
