@@ -85,7 +85,7 @@ public class PlayCountsHelper extends SQLiteOpenHelper {
 		ArrayList<Long> payload = new ArrayList<Long>();
 		SQLiteDatabase dbh = getReadableDatabase();
 
-		Cursor cursor = dbh.rawQuery("SELECT type_id FROM "+TABLE_PLAYCOUNTS+" WHERE type="+MediaUtils.TYPE_SONG+" ORDER BY playcount DESC limit "+limit, null);
+		Cursor cursor = dbh.rawQuery("SELECT type_id FROM "+TABLE_PLAYCOUNTS+" WHERE type="+MediaUtils.TYPE_SONG+" AND playcount != 0 ORDER BY playcount DESC limit "+limit, null);
 
 		while (cursor.moveToNext()) {
 			payload.add(cursor.getLong(0));
