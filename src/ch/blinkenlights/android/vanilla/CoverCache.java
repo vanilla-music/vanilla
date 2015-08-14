@@ -198,6 +198,12 @@ public class CoverCache {
 		 * @param maxPxCount the maximum amount of pixels to return (30*30 = 900)
 		 */
 		public Bitmap createBitmap(Song song, long maxPxCount) {
+
+			if (song.id < 0) {
+				// Unindexed song: return early
+				return null;
+			}
+
 			try {
 				InputStream inputStream = null;
 				InputStream sampleInputStream = null; // same as inputStream but used for getSampleSize
@@ -224,7 +230,7 @@ public class CoverCache {
 					}
 				}
 
-				if (inputStream == null && (CoverCache.mCoverLoadMode & CoverCache.COVER_MODE_ANDROID) != 0 && song.id >= 0) {
+				if (inputStream == null && (CoverCache.mCoverLoadMode & CoverCache.COVER_MODE_ANDROID) != 0) {
 					Uri uri =  Uri.parse("content://media/external/audio/media/" + song.id + "/albumart");
 					ContentResolver res = mContext.getContentResolver();
 					inputStream = res.openInputStream(uri);
