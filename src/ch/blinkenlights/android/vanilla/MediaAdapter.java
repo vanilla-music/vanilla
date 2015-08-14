@@ -267,7 +267,7 @@ public class MediaAdapter
 
 		// Magic sort mode: sort by playcount
 		if (sortStringRaw == SORT_MAGIC_PLAYCOUNT) {
-			ArrayList<Long> topSongs = (new PlayCountsHelper(mActivity)).getTopSongs();
+			ArrayList<Long> topSongs = (new PlayCountsHelper(mActivity)).getTopSongs(4096);
 			int sortWeight = -1 * topSongs.size(); // Sort mode is actually reversed (default: mostplayed -> leastplayed)
 
 			StringBuilder sb = new StringBuilder("CASE WHEN _id=0 THEN 0"); // include dummy statement in initial string -> topSongs may be empty
