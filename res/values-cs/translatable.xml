@@ -154,6 +154,8 @@
   <string name="notification_action_title">Akce upozornění</string>
   <string name="notification_invert_color_title">Převrátit barvu upozornění</string>
   <string name="notification_invert_color_summary">Použít bílý text místo černého</string>
+  <string name="notification_nag">Velmi detailní upozornění</string>
+  <string name="notification_nag_summary">Oznamovat změny skladeb za použití \'Heads-Up-Notification\'</string>
   <string name="playback_screen">Obrazovka přehrávání</string>
   <string name="playback_on_startup_title">Otevřít při spuštění</string>
   <string name="playback_on_startup_summary">Při spuštění otevřít náhled přehrávání</string>

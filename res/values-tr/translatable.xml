@@ -147,6 +147,8 @@
   <string name="notification_action_title">Bildirim Eylemi</string>
   <string name="notification_invert_color_title">Bildirim rengini tersine döndür</string>
   <string name="notification_invert_color_summary">Siyah metin yerine beyaz metin kullan</string>
+  <string name="notification_nag">Tam sözlü bildirim</string>
+  <string name="notification_nag_summary">Şarkı değişikliklerini \'Ekran Üstü Bildirimi\' ile göster</string>
   <string name="playback_screen">Oynatma Ekranı</string>
   <string name="playback_on_startup_title">Başlangıçta Aç</string>
   <string name="playback_on_startup_summary">Başlangıçta oynatım görünümünü açar</string>
