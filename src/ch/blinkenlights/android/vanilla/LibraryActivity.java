@@ -501,6 +501,23 @@ public class LibraryActivity
 		}
 	}
 
+	/**
+	 * Updates mCover with the new bitmap, running in the UI thread
+	 *
+	 * @param cover the cover to set, will use a fallback drawable if null
+	 */
+	private void updateCover(final Bitmap cover) {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				if (cover == null)
+					mCover.setImageResource(R.drawable.fallback_cover);
+				else
+					mCover.setImageBitmap(cover);
+			}
+		});
+	}
+
 	@Override
 	public void onClick(View view)
 	{
@@ -864,7 +881,11 @@ public class LibraryActivity
 	/**
 	 * Save the current page, passed in arg1, to SharedPreferences.
 	 */
-	private static final int MSG_SAVE_PAGE = 12;
+	private static final int MSG_SAVE_PAGE = 40;
+	/**
+	 * Updates mCover using a background thread
+	 */
+	private static final int MSG_UPDATE_COVER = 41;
 
 	@Override
 	public boolean handleMessage(Message message)
@@ -874,6 +895,16 @@ public class LibraryActivity
 			SharedPreferences.Editor editor = PlaybackService.getSettings(this).edit();
 			editor.putInt("library_page", message.arg1);
 			editor.commit();
+			break;
+		}
+		case MSG_UPDATE_COVER: {
+			Bitmap cover = null;
+			Song song = (Song)message.obj;
+			if (song != null) {
+				cover = song.getCover(this);
+			}
+			// Dispatch view update to UI thread
+			updateCover(cover);
 			break;
 		}
 		default:
@@ -905,8 +936,6 @@ public class LibraryActivity
 		super.onSongChange(song);
 
 		if (mTitle != null) {
-			Bitmap cover = null;
-
 			if (song == null) {
 				if (mActionControls == null) {
 					mTitle.setText(R.string.none);
@@ -914,7 +943,6 @@ public class LibraryActivity
 				} else {
 					mTitle.setText(null);
 					mArtist.setText(null);
-					mCover.setImageDrawable(null);
 					return;
 				}
 			} else {
@@ -923,15 +951,12 @@ public class LibraryActivity
 				String artist = song.artist == null ? res.getString(R.string.unknown) : song.artist;
 				mTitle.setText(title);
 				mArtist.setText(artist);
-				cover = song.getCover(this);
 			}
 
 			mCover.setVisibility(CoverCache.mCoverLoadMode == 0 ? View.GONE : View.VISIBLE);
-			if (cover == null)
-				mCover.setImageResource(R.drawable.fallback_cover);
-			else
-				mCover.setImageBitmap(cover);
+			mHandler.sendMessage(mHandler.obtainMessage(MSG_UPDATE_COVER, song));
 		}
+
 	}
 
 	@Override
