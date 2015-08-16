@@ -20,6 +20,10 @@ package ch.blinkenlights.android.vanilla;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
+import android.graphics.drawable.BitmapDrawable;
+
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -152,7 +156,7 @@ public class LazyCoverView extends ImageView
 				// and do not need locking: checking if the payload
 				// is still recent is sufficient.
 				if (payload.isRecent()) {
-					payload.view.drawFromCache(payload.key);
+					payload.view.drawFromCache(payload.key, true);
 				}
 			}
 			default:
@@ -170,7 +174,7 @@ public class LazyCoverView extends ImageView
 	 */
 	public void setCover(int type, long id) {
 		mExpectedKey = new CoverCache.CoverKey(type, id, CoverCache.SIZE_SMALL);
-		if (drawFromCache(mExpectedKey) == false) {
+		if (drawFromCache(mExpectedKey, false) == false) {
 			int delay = 1;
 			if (sHandler.hasMessages(MSG_CACHE_COVER)) {
 				// User is probably scrolling fast as there is already a queued resize job
@@ -189,14 +193,24 @@ public class LazyCoverView extends ImageView
 	 *
 	 * @param payload The cover message containing the cache key and view to use
 	 */
-	public boolean drawFromCache(CoverCache.CoverKey key) {
+	public boolean drawFromCache(CoverCache.CoverKey key, boolean fadeIn) {
 		boolean cacheHit = true;
 		Bitmap bitmap = sCoverCache.getCachedCover(key);
 		if (bitmap == null) {
 			cacheHit = false;
-			bitmap = sFallbackBitmap;
 		}
-		setImageBitmap(bitmap);
+
+		if (fadeIn) {
+			TransitionDrawable td = new TransitionDrawable(new Drawable[] {
+				getDrawable(),
+				(new BitmapDrawable(getResources(), bitmap))
+			});
+			setImageDrawable(td);
+			td.startTransition(120);
+		} else {
+			setImageBitmap(bitmap);
+		}
+
 		return cacheHit;
 	}
 
