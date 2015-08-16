@@ -428,9 +428,6 @@ public class FullPlaybackActivity extends PlaybackActivity
 				dialog.create().show();
 			}
 			break;
-		case MENU_SHOW_QUEUE:
-			startActivity(new Intent(this, ShowQueueActivity.class));
-			break;
 		default:
 			return super.onOptionsItemSelected(item);
 		}

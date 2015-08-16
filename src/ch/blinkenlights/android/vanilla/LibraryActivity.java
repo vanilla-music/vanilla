@@ -795,6 +795,9 @@ public class LibraryActivity
 		controls.setActionView(mActionControls);
 		controls.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
+		// Call super after adding the now-playing view as this should be the first item
+		super.onCreateOptionsMenu(menu);
+
 		mSearchMenuItem = menu.add(0, MENU_SEARCH, 0, R.string.search).setIcon(R.drawable.ic_menu_search);
 		mSearchMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItem.SHOW_AS_ACTION_ALWAYS);
 		SearchView mSearchView = new SearchView(getActionBar().getThemedContext());
@@ -802,7 +805,9 @@ public class LibraryActivity
 		mSearchMenuItem.setActionView(mSearchView);
 
 		menu.add(0, MENU_SORT, 0, R.string.sort_by).setIcon(R.drawable.ic_menu_sort_alphabetically);
-		return super.onCreateOptionsMenu(menu);
+		menu.add(0, MENU_SHOW_QUEUE, 0, R.string.show_queue);
+
+		return true;
 	}
 
 	@Override

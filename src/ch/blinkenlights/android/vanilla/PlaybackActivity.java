@@ -371,6 +371,9 @@ public abstract class PlaybackActivity extends Activity
 		case MENU_CLEAR_QUEUE:
 			PlaybackService.get(this).clearQueue();
 			break;
+		case MENU_SHOW_QUEUE:
+			startActivity(new Intent(this, ShowQueueActivity.class));
+			break;
 		default:
 			return false;
 		}
