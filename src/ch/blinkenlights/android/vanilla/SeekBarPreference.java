@@ -81,11 +81,11 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 	 */
 	private String getSummary(int value)
 	{
-		if ("shake_threshold".equals(getKey())) {
+		if (PrefKeys.SHAKE_THRESHOLD.equals(getKey())) {
 			return String.valueOf(value / 10.0f);
-		} else if("replaygain_bump".equals(getKey())) {
+		} else if(PrefKeys.REPLAYGAIN_BUMP.equals(getKey())) {
 			return String.format("%+.1fdB", 2*(value-75)/10f);
-		} else if("replaygain_untagged_debump".equals(getKey())) {
+		} else if(PrefKeys.REPLAYGAIN_UNTAGGED_DEBUMP.equals(getKey())) {
 			String summary = (String)mContext.getResources().getText(R.string.replaygain_untagged_debump_summary);
 			return String.format("%s %.1fdB", summary, (value-150)/10f);
 		} else {
@@ -102,7 +102,10 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 		mValueText.setText(getSummary(mValue));
 
 		SeekBar seekBar = (SeekBar)view.findViewById(R.id.seek_bar);
-		seekBar.setMax(150);
+
+		int maxValue = (PrefKeys.SHAKE_THRESHOLD.equals(getKey()) ? 300 : 150);
+
+		seekBar.setMax(maxValue);
 		seekBar.setProgress(mValue);
 		seekBar.setOnSeekBarChangeListener(this);
 
