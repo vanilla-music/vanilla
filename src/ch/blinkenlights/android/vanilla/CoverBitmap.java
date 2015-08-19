@@ -181,7 +181,7 @@ public final class CoverBitmap {
 		int bitmapWidth = Math.max(coverWidth, boxWidth);
 		int bitmapHeight = Math.max(coverHeight, boxHeight);
 
-		Bitmap bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.RGB_565);
+		Bitmap bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
 		Canvas canvas = new Canvas(bitmap);
 
 		if (cover != null) {
@@ -267,7 +267,7 @@ public final class CoverBitmap {
 		int bitmapWidth = horizontal ? coverWidth + boxWidth : Math.max(coverWidth, boxWidth);
 		int bitmapHeight = horizontal ? Math.max(coverHeight, boxHeight) : coverHeight + boxHeight;
 
-		Bitmap bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.RGB_565);
+		Bitmap bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
 		Canvas canvas = new Canvas(bitmap);
 
 		if (cover != null) {
