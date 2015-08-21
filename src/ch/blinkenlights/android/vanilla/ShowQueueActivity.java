@@ -19,8 +19,9 @@ package ch.blinkenlights.android.vanilla;
 
 import java.util.ArrayList;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.view.View;
@@ -29,7 +30,6 @@ import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.ListView;
 import com.mobeta.android.dslv.DragSortListView;
 
 public class ShowQueueActivity extends PlaybackActivity
@@ -41,7 +41,7 @@ public class ShowQueueActivity extends PlaybackActivity
 	private ShowQueueAdapter listAdapter;
 	private PlaybackService mService;
 
-	@Override  
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		ThemeHelper.setTheme(this, R.style.BackActionBar);
 		super.onCreate(savedInstanceState);
@@ -84,7 +84,7 @@ public class ShowQueueActivity extends PlaybackActivity
 
 	/**
 	 *  Called after the user selected an action from the ActionBar
-	 * 
+	 *
 	 * @param item The selected menu item
 	 */
 	@Override
@@ -208,12 +208,25 @@ public class ShowQueueActivity extends PlaybackActivity
 					listAdapter.add(mService.getSongByQueuePosition(i));
 				}
 
-				if (scroll == true)
-					mListView.setSelectionFromTop(spos, 0); /* scroll to currently playing song */
+				if(scroll)
+					scrollToCurrentSong(spos);
 			}
 		});
 	}
-	
-	
+
+	/**
+	 * Scrolls to the current song<br/>
+	 * We suppress the new api lint check as lint thinks
+	 * {@link android.widget.AbsListView#setSelectionFromTop(int, int)} was only added in
+	 * {@link Build.VERSION_CODES#JELLY_BEAN}, but it was actually added in API
+	 * level 1<br/>
+	 * <a href="https://developer.android.com/reference/android/widget/AbsListView.html#setSelectionFromTop%28int,%20int%29">
+	 *     Android reference: AbsListView.setSelectionFromTop()</a>
+	 * @param currentSongPosition The position in {@link #mListView} of the current song
+	 */
+	@SuppressLint("NewApi")
+	private void scrollToCurrentSong(int currentSongPosition){
+		mListView.setSelectionFromTop(currentSongPosition, 0); /* scroll to currently playing song */
+	}
 	
 }
