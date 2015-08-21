@@ -191,7 +191,7 @@ public class LazyCoverView extends ImageView
 	 * Updates the view with a cached bitmap
 	 * A fallback image will be used on cache miss
 	 *
-	 * @param payload The cover message containing the cache key and view to use
+	 * @param key The cover message containing the cache key and view to use
 	 */
 	public boolean drawFromCache(CoverCache.CoverKey key, boolean fadeIn) {
 		boolean cacheHit = true;

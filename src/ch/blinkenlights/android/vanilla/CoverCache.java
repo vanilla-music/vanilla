@@ -175,7 +175,7 @@ public class CoverCache {
 		 * Creates a new in-memory LRU cache
 		 *
 		 * @param context the application context
-		 * @param int the lru cache size in bytes
+		 * @param size the lru cache size in bytes
 		 */
 		public BitmapLruCache(Context context, int size) {
 			super(size);
