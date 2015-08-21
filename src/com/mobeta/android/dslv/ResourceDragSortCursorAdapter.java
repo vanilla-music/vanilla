@@ -21,7 +21,6 @@ import android.database.Cursor;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
-import android.widget.CursorAdapter;
 
 // taken from v4 rev. 10 ResourceCursorAdapter.java
 
@@ -62,7 +61,7 @@ public abstract class ResourceDragSortCursorAdapter extends DragSortCursorAdapte
     /**
      * Constructor with default behavior as per
      * {@link CursorAdapter#CursorAdapter(Context, Cursor, boolean)}; it is recommended
-     * you not use this, but instead {@link #ResourceDragSortCursorAdapter(Context, int, Cursor, int)}.
+     * you not use this, but instead {@link #ResourceCursorAdapter(Context, int, Cursor, int)}.
      * When using this constructor, {@link #FLAG_REGISTER_CONTENT_OBSERVER}
      * will always be set.
      *
@@ -101,7 +100,7 @@ public abstract class ResourceDragSortCursorAdapter extends DragSortCursorAdapte
     /**
      * Inflates view(s) from the specified XML file.
      * 
-     * @see CursorAdapter#newView(android.content.Context,
+     * @see android.widget.CursorAdapter#newView(android.content.Context,
      *      android.database.Cursor, ViewGroup)
      */
     @Override

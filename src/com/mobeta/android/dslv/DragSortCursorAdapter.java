@@ -8,7 +8,6 @@ import android.util.SparseIntArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
-import android.widget.ListAdapter;
 
 
 /**
@@ -108,7 +107,7 @@ public abstract class DragSortCursorAdapter extends CursorAdapter implements Dra
     /**
      * On drop, this updates the mapping between Cursor positions
      * and ListView positions. The Cursor is unchanged. Retrieve
-     * the current mapping with {@link #getCursorPositions()}.
+     * the current mapping with {@link getCursorPositions()}.
      *
      * @see DragSortListView.DropListener#drop(int, int)
      */
@@ -136,7 +135,7 @@ public abstract class DragSortCursorAdapter extends CursorAdapter implements Dra
     /**
      * On remove, this updates the mapping between Cursor positions
      * and ListView positions. The Cursor is unchanged. Retrieve
-     * the current mapping with {@link #getCursorPositions()}.
+     * the current mapping with {@link getCursorPositions()}.
      *
      * @see DragSortListView.RemoveListener#remove(int)
      */
