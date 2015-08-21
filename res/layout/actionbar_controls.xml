@@ -23,6 +23,8 @@ THE SOFTWARE.
 <ch.blinkenlights.android.vanilla.ActionBarControls
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:background="?android:attr/selectableItemBackground"
+	android:layout_width="wrap_content"
+	android:layout_height="fill_parent"
 	android:clickable="true">
 	<ImageView
 		android:id="@+id/cover"
