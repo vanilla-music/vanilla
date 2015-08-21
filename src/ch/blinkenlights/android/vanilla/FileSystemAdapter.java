@@ -188,13 +188,6 @@ public class FileSystemAdapter
 		return pos;
 	}
 
-	private static class ViewHolder {
-		public int id;
-		public TextView text;
-		public View divider;
-		public ImageView arrow;
-	}
-
 	@Override
 	public View getView(int pos, View convertView, ViewGroup parent)
 	{
@@ -205,7 +198,7 @@ public class FileSystemAdapter
 			view = mInflater.inflate(R.layout.library_row_expandable, null);
 			holder = new ViewHolder();
 			holder.text = (TextView)view.findViewById(R.id.text);
-			holder.divider = view.findViewById(R.id.divider);
+			holder.divider = (View)view.findViewById(R.id.divider);
 			holder.arrow = (ImageView)view.findViewById(R.id.arrow);
 			holder.text.setOnClickListener(this);
 			holder.arrow.setOnClickListener(this);
@@ -219,8 +212,8 @@ public class FileSystemAdapter
 		boolean isDirectory = file.isDirectory();
 		holder.id = pos;
 		holder.text.setText(file.getName());
-		holder.divider.setVisibility(isDirectory ? View.VISIBLE : View.GONE);
 		holder.arrow.setVisibility(isDirectory ? View.VISIBLE : View.GONE);
+		holder.divider.setVisibility(isDirectory ? View.VISIBLE : View.GONE);
 		holder.text.setCompoundDrawablesWithIntrinsicBounds(isDirectory ? mFolderIcon : null, null, null, null);
 		return view;
 	}
@@ -295,11 +288,11 @@ public class FileSystemAdapter
 	public Intent createData(View view)
 	{
 		ViewHolder holder = (ViewHolder)view.getTag();
-		File file = mFiles[holder.id];
+		File file = mFiles[(int)holder.id];
 
 		Intent intent = new Intent();
 		intent.putExtra(LibraryAdapter.DATA_TYPE, MediaUtils.TYPE_FILE);
-		intent.putExtra(LibraryAdapter.DATA_ID, (long)holder.id);
+		intent.putExtra(LibraryAdapter.DATA_ID, holder.id);
 		intent.putExtra(LibraryAdapter.DATA_TITLE, holder.text.getText().toString());
 		intent.putExtra(LibraryAdapter.DATA_EXPANDABLE, file.isDirectory());
 

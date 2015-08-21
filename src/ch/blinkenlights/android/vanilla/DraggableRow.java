@@ -27,64 +27,64 @@ import android.widget.CheckedTextView;
 import android.widget.Checkable;
 
 public class DraggableRow extends LinearLayout implements Checkable {
-	private boolean mShowCheckBox;
-	private boolean mHighlighted;
+	/**
+	 * True if the checkbox is checked
+	 */
 	private boolean mChecked;
-
-	private float mDensity;
-	private static int sWidth = -1;
+	/**
+	 * True if setupLayout has been called
+	 */
+	private boolean mLayoutSet;
 
 	private TextView mTextView;
 	private CheckedTextView mCheckBox;
 	private View mPmark;
 	private ImageView mDragger;
+	private LazyCoverView mCoverView;
 
-	// Hardcoded sizes of elements in DPI
-	// MUST match definition in draggable_row
-	private final int DPI_PMARK = 4;
-	private final int DPI_CHECKBOX = 44;
-	private final int DPI_DRAGGER = 44;
-	private final int DPI_SLACK = 1; // safety margin
+	/**
+	 * Layout types for use with setupLayout
+	 */
+	public static final int LAYOUT_CHECKBOXES =  1;
+	public static final int LAYOUT_COVERVIEW  =  2;
 
 
 	public DraggableRow(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		mDensity = context.getResources().getDisplayMetrics().density;
 	}
 
 
 	@Override 
 	public void onFinishInflate() {
-		mCheckBox = (CheckedTextView)this.findViewById(R.id.checkbox);
-		mTextView = (TextView)this.findViewById(R.id.text);
-		mPmark    = (View)this.findViewById(R.id.pmark);
-		mDragger  = (ImageView)this.findViewById(R.id.dragger);
-		setupTextView(false);
-	}
-
-
-	@Override
-	protected void onSizeChanged (int w, int h, int oldw, int oldh) {
-		super.onSizeChanged(w, h, oldw, oldh);
-		if (sWidth != w) {
-			sWidth = w;
-			// This view was drawn with an incorrect with
-			// fix it and force a redraw
-			setupTextView(true);
-		}
+		mCheckBox  = (CheckedTextView)this.findViewById(R.id.checkbox);
+		mTextView  = (TextView)this.findViewById(R.id.text);
+		mPmark     = (View)this.findViewById(R.id.pmark);
+		mDragger   = (ImageView)this.findViewById(R.id.dragger);
+		mCoverView = (LazyCoverView)this.findViewById(R.id.cover);
+		super.onFinishInflate();
 	}
 
 	/**
-	 * Resizes our textview to the correct size
-	 * @param redraw invalidates the current view if TRUE
+	 * Sets up commonly used layouts - can only be called once per view
+	 *
+	 * @param type the layout type to use
 	 */
-	private void setupTextView(boolean redraw) {
-		int pixelUsed = (int)((DPI_SLACK + DPI_PMARK + DPI_DRAGGER + (mShowCheckBox ? DPI_CHECKBOX : 0)) * mDensity);
-		int pixelFree = sWidth - pixelUsed;
-		if (pixelFree > 0)
-			mTextView.setWidth(pixelFree);
-		if (redraw == true)
-			this.invalidate();
+	public void setupLayout(int type) {
+		if (!mLayoutSet) {
+			switch (type) {
+				case LAYOUT_CHECKBOXES:
+					mCheckBox.setVisibility(View.VISIBLE);
+					showDragger(true);
+					break;
+				case LAYOUT_COVERVIEW:
+					mCoverView.setVisibility(View.VISIBLE);
+					showDragger(true);
+					break;
+				default:
+					break; // do not care
+			}
+			mLayoutSet = true;
+		}
 	}
 
 	@Override
@@ -108,26 +108,12 @@ public class DraggableRow extends LinearLayout implements Checkable {
 	 * @param state Enable or disable highlighting
 	 */
 	public void highlightRow(boolean state) {
-		if (mHighlighted != state) {
-			mPmark.setVisibility( state ? View.VISIBLE : View.INVISIBLE );
-			mHighlighted = state;
-		}
-	}
-
-	/**
-	 * Changes the visibility of the checkbox
-	 * @param state show or destroy the checkbox
-	 */
-	public void showCheckBox(boolean state) {
-		if (mShowCheckBox != state) {
-			mCheckBox.setVisibility( state ? View.VISIBLE : View.GONE);
-			mShowCheckBox = state;
-			setupTextView(true);
-		}
+		mPmark.setVisibility( state ? View.VISIBLE : View.INVISIBLE );
 	}
 
 	/**
 	 * Change visibility of dragger element
+	 *
 	 * @param state shows or hides the dragger
 	 */
 	public void showDragger(boolean state) {
@@ -139,6 +125,13 @@ public class DraggableRow extends LinearLayout implements Checkable {
 	 */
 	public TextView getTextView() {
 		return mTextView;
+	}
+
+	/**
+	 * Returns an instance of our coverview
+	 */
+	public LazyCoverView getCoverView() {
+		return mCoverView;
 	}
 
 }

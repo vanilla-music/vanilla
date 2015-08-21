@@ -68,26 +68,31 @@ public class PlayCountsHelper extends SQLiteOpenHelper {
 	public void countSong(Song song) {
 		long id = Song.getId(song);
 		
-		SQLiteDatabase dbh = this.getWritableDatabase();
+		SQLiteDatabase dbh = getWritableDatabase();
 		dbh.execSQL("INSERT OR IGNORE INTO "+TABLE_PLAYCOUNTS+" (type, type_id, playcount) VALUES ("+MediaUtils.TYPE_SONG+", "+id+", 0);"); // Creates row if not exists
 		dbh.execSQL("UPDATE "+TABLE_PLAYCOUNTS+" SET playcount=playcount+1 WHERE type="+MediaUtils.TYPE_SONG+" AND type_id="+id+";");
-		performGC(dbh, MediaUtils.TYPE_SONG);
 		dbh.close();
+
+		performGC(MediaUtils.TYPE_SONG);
 	}
+
+
 
 	/**
 	 * Returns a sorted array list of most often listen song ids
 	 */
-	public ArrayList<Long> getTopSongs() {
+	public ArrayList<Long> getTopSongs(int limit) {
 		ArrayList<Long> payload = new ArrayList<Long>();
-		SQLiteDatabase dbh = this.getReadableDatabase();
-		Cursor cursor = dbh.rawQuery("SELECT type_id FROM "+TABLE_PLAYCOUNTS+" WHERE type="+MediaUtils.TYPE_SONG+" ORDER BY playcount DESC limit 4096", null);
+		SQLiteDatabase dbh = getReadableDatabase();
+
+		Cursor cursor = dbh.rawQuery("SELECT type_id FROM "+TABLE_PLAYCOUNTS+" WHERE type="+MediaUtils.TYPE_SONG+" AND playcount != 0 ORDER BY playcount DESC limit "+limit, null);
 
 		while (cursor.moveToNext()) {
 			payload.add(cursor.getLong(0));
 		}
 
 		cursor.close();
+		dbh.close();
 		return payload;
 	}
 
@@ -96,7 +101,8 @@ public class PlayCountsHelper extends SQLiteOpenHelper {
 	 * and checks them against Androids media database.
 	 * Items not found in the media library are removed from the DBH's database
 	 */
-	private int performGC(SQLiteDatabase dbh, int type) {
+	private int performGC(int type) {
+		SQLiteDatabase dbh      = getWritableDatabase();
 		ArrayList<Long> toCheck = new ArrayList<Long>(); // List of songs we are going to check
 		QueryTask query;                                 // Reused query object
 		Cursor cursor;                                   // recycled cursor
@@ -119,6 +125,7 @@ public class PlayCountsHelper extends SQLiteOpenHelper {
 			cursor.close();
 		}
 		Log.v("VanillaMusic", "performGC: items removed="+removed);
+		dbh.close();
 		return removed;
 	}
 

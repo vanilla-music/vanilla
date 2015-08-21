@@ -96,6 +96,11 @@ public class RemoteControl {
 				// Create a copy of the cover art, since RemoteControlClient likes
 				// to recycle what we give it.
 				bitmap = bitmap.copy(Bitmap.Config.RGB_565, false);
+			} else {
+				// Some lockscreen implementations fail to clear the cover artwork
+				// if we send a null bitmap. We are creating a 16x16 transparent
+				// bitmap to work around this limitation.
+				bitmap = Bitmap.createBitmap(16, 16, Bitmap.Config.ARGB_8888);
 			}
 			editor.putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, bitmap);
 		}

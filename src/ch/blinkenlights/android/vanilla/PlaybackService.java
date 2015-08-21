@@ -432,9 +432,9 @@ public final class PlaybackService extends Service
 		mScrobble = settings.getBoolean(PrefKeys.SCROBBLE, false);
 		mIdleTimeout = settings.getBoolean(PrefKeys.USE_IDLE_TIMEOUT, false) ? settings.getInt(PrefKeys.IDLE_TIMEOUT, 3600) : 0;
 
-		Song.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_ANDROID, true) ? Song.mCoverLoadMode | Song.COVER_MODE_ANDROID : Song.mCoverLoadMode & ~(Song.COVER_MODE_ANDROID);
-		Song.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_VANILLA, true) ? Song.mCoverLoadMode | Song.COVER_MODE_VANILLA : Song.mCoverLoadMode & ~(Song.COVER_MODE_VANILLA);
-		Song.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_SHADOW , true) ? Song.mCoverLoadMode | Song.COVER_MODE_SHADOW  : Song.mCoverLoadMode & ~(Song.COVER_MODE_SHADOW);
+		CoverCache.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_ANDROID, true) ? CoverCache.mCoverLoadMode | CoverCache.COVER_MODE_ANDROID : CoverCache.mCoverLoadMode & ~(CoverCache.COVER_MODE_ANDROID);
+		CoverCache.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_VANILLA, true) ? CoverCache.mCoverLoadMode | CoverCache.COVER_MODE_VANILLA : CoverCache.mCoverLoadMode & ~(CoverCache.COVER_MODE_VANILLA);
+		CoverCache.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_SHADOW , true) ? CoverCache.mCoverLoadMode | CoverCache.COVER_MODE_SHADOW  : CoverCache.mCoverLoadMode & ~(CoverCache.COVER_MODE_SHADOW);
 
 		mHeadsetOnly = settings.getBoolean(PrefKeys.HEADSET_ONLY, false);
 		mCycleContinuousShuffling = settings.getBoolean(PrefKeys.CYCLE_CONTINUOUS_SHUFFLING, false);
@@ -499,14 +499,14 @@ public final class PlaybackService extends Service
 						play();
 				}
 			} else if (ACTION_TOGGLE_PLAYBACK_DELAYED.equals(action)) {
-				if (mHandler.hasMessages(CALL_GO, Integer.valueOf(0))) {
-					mHandler.removeMessages(CALL_GO, Integer.valueOf(0));
+				if (mHandler.hasMessages(MSG_CALL_GO, Integer.valueOf(0))) {
+					mHandler.removeMessages(MSG_CALL_GO, Integer.valueOf(0));
 					Intent launch = new Intent(this, LibraryActivity.class);
 					launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					launch.setAction(Intent.ACTION_MAIN);
 					startActivity(launch);
 				} else {
-					mHandler.sendMessageDelayed(mHandler.obtainMessage(CALL_GO, 0, 0, Integer.valueOf(0)), 400);
+					mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_CALL_GO, 0, 0, Integer.valueOf(0)), 400);
 				}
 			} else if (ACTION_NEXT_SONG.equals(action)) {
 				setCurrentSong(1);
@@ -515,14 +515,14 @@ public final class PlaybackService extends Service
 				setCurrentSong(1);
 				play();
 			} else if (ACTION_NEXT_SONG_DELAYED.equals(action)) {
-				if (mHandler.hasMessages(CALL_GO, Integer.valueOf(1))) {
-					mHandler.removeMessages(CALL_GO, Integer.valueOf(1));
+				if (mHandler.hasMessages(MSG_CALL_GO, Integer.valueOf(1))) {
+					mHandler.removeMessages(MSG_CALL_GO, Integer.valueOf(1));
 					Intent launch = new Intent(this, LibraryActivity.class);
 					launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					launch.setAction(Intent.ACTION_MAIN);
 					startActivity(launch);
 				} else {
-					mHandler.sendMessageDelayed(mHandler.obtainMessage(CALL_GO, 1, 0, Integer.valueOf(1)), 400);
+					mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_CALL_GO, 1, 0, Integer.valueOf(1)), 400);
 				}
 			} else if (ACTION_PREVIOUS_SONG.equals(action)) {
 				setCurrentSong(-1);
@@ -808,14 +808,14 @@ public final class PlaybackService extends Service
 			mIdleTimeout = settings.getBoolean(PrefKeys.USE_IDLE_TIMEOUT, false) ? settings.getInt(PrefKeys.IDLE_TIMEOUT, 3600) : 0;
 			userActionTriggered();
 		} else if (PrefKeys.COVERLOADER_ANDROID.equals(key)) {
-			Song.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_ANDROID, true) ? Song.mCoverLoadMode | Song.COVER_MODE_ANDROID : Song.mCoverLoadMode & ~(Song.COVER_MODE_ANDROID);
-			Song.mFlushCoverCache = true;
+			CoverCache.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_ANDROID, true) ? CoverCache.mCoverLoadMode | CoverCache.COVER_MODE_ANDROID : CoverCache.mCoverLoadMode & ~(CoverCache.COVER_MODE_ANDROID);
+			CoverCache.evictAll();
 		} else if (PrefKeys.COVERLOADER_VANILLA.equals(key)) {
-			Song.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_VANILLA, true) ? Song.mCoverLoadMode | Song.COVER_MODE_VANILLA : Song.mCoverLoadMode & ~(Song.COVER_MODE_VANILLA);
-			Song.mFlushCoverCache = true;
+			CoverCache.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_VANILLA, true) ? CoverCache.mCoverLoadMode | CoverCache.COVER_MODE_VANILLA : CoverCache.mCoverLoadMode & ~(CoverCache.COVER_MODE_VANILLA);
+			CoverCache.evictAll();
 		} else if (PrefKeys.COVERLOADER_SHADOW.equals(key)) {
-			Song.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_SHADOW, true) ? Song.mCoverLoadMode | Song.COVER_MODE_SHADOW : Song.mCoverLoadMode & ~(Song.COVER_MODE_SHADOW);
-			Song.mFlushCoverCache = true;
+			CoverCache.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_SHADOW, true) ? CoverCache.mCoverLoadMode | CoverCache.COVER_MODE_SHADOW : CoverCache.mCoverLoadMode & ~(CoverCache.COVER_MODE_SHADOW);
+			CoverCache.evictAll();
 		} else if (PrefKeys.HEADSET_ONLY.equals(key)) {
 			mHeadsetOnly = settings.getBoolean(key, false);
 			if (mHeadsetOnly && isSpeakerOn())
@@ -912,8 +912,8 @@ public final class PlaybackService extends Service
 		mState = state;
 
 		if (state != oldState) {
-			mHandler.sendMessage(mHandler.obtainMessage(PROCESS_STATE, oldState, state));
-			mHandler.sendMessage(mHandler.obtainMessage(BROADCAST_CHANGE, state, 0));
+			mHandler.sendMessage(mHandler.obtainMessage(MSG_PROCESS_STATE, oldState, state));
+			mHandler.sendMessage(mHandler.obtainMessage(MSG_BROADCAST_CHANGE, state, 0));
 		}
 
 		return state;
@@ -940,7 +940,7 @@ public final class PlaybackService extends Service
 
 				mAudioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 
-				mHandler.removeMessages(ENTER_SLEEP_STATE);
+				mHandler.removeMessages(MSG_ENTER_SLEEP_STATE);
 				try {
 					if (mWakeLock != null && mWakeLock.isHeld() == false)
 						mWakeLock.acquire();
@@ -961,7 +961,7 @@ public final class PlaybackService extends Service
 				// Delay entering deep sleep. This allows the headset
 				// button to continue to function for a short period after
 				// pausing and keeps the AudioFX session open
-				mHandler.sendEmptyMessageDelayed(ENTER_SLEEP_STATE, SLEEP_STATE_DELAY);
+				mHandler.sendEmptyMessageDelayed(MSG_ENTER_SLEEP_STATE, SLEEP_STATE_DELAY);
 			}
 
 			setupSensor();
@@ -1228,11 +1228,11 @@ public final class PlaybackService extends Service
 			}
 		}
 
-		mHandler.removeMessages(PROCESS_SONG);
+		mHandler.removeMessages(MSG_PROCESS_SONG);
 
 		mMediaPlayerInitialized = false;
-		mHandler.sendMessage(mHandler.obtainMessage(PROCESS_SONG, song));
-		mHandler.sendMessage(mHandler.obtainMessage(BROADCAST_CHANGE, -1, 0, song));
+		mHandler.sendMessage(mHandler.obtainMessage(MSG_PROCESS_SONG, song));
+		mHandler.sendMessage(mHandler.obtainMessage(MSG_BROADCAST_CHANGE, -1, 0, song));
 		return song;
 	}
 
@@ -1261,8 +1261,8 @@ public final class PlaybackService extends Service
 
 			mMediaPlayerInitialized = true;
 			// Cancel any pending gapless updates and re-send them
-			mHandler.removeMessages(GAPLESS_UPDATE);
-			mHandler.sendEmptyMessage(GAPLESS_UPDATE);
+			mHandler.removeMessages(MSG_GAPLESS_UPDATE);
+			mHandler.sendEmptyMessage(MSG_GAPLESS_UPDATE);
 
 			if (mPendingSeek != 0 && mPendingSeekSong == song.id) {
 				mMediaPlayer.seekTo(mPendingSeek);
@@ -1287,7 +1287,7 @@ public final class PlaybackService extends Service
 			 * This will stop after skipping 10 songs to avoid endless loops (queue full of broken stuff */
 			if(mTimeline.isEndOfQueue() == false && getSong(1) != null && (playing || (mSkipBroken > 0 && mSkipBroken < 10))) {
 				mSkipBroken++;
-				mHandler.sendMessageDelayed(mHandler.obtainMessage(SKIP_BROKEN_SONG, getTimelinePosition(), 0), 1000);
+				mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_SKIP_BROKEN_SONG, getTimelinePosition(), 0), 1000);
 			}
 			
 		}
@@ -1303,7 +1303,8 @@ public final class PlaybackService extends Service
 
 		// Count this song as played
 		Song song = mTimeline.getSong(0);
-		mPlayCounts.countSong(song);
+		mHandler.sendMessage(mHandler.obtainMessage(MSG_UPDATE_PLAYCOUNTS, song));
+
 
 		if (finishAction(mState) == SongTimeline.FINISH_REPEAT_CURRENT) {
 			setCurrentSong(0);
@@ -1378,84 +1379,85 @@ public final class PlaybackService extends Service
 	/**
 	 * Releases mWakeLock and closes any open AudioFx sessions
 	 */
-	private static final int ENTER_SLEEP_STATE = 1;
+	private static final int MSG_ENTER_SLEEP_STATE = 1;
 	/**
 	 * Run the given query and add the results to the timeline.
 	 *
 	 * obj is the QueryTask. arg1 is the add mode (one of SongTimeline.MODE_*)
 	 */
-	private static final int QUERY = 2;
+	private static final int MSG_QUERY = 2;
 	/**
 	 * This message is sent with a delay specified by a user preference. After
 	 * this delay, assuming no new IDLE_TIMEOUT messages cancel it, playback
 	 * will be stopped.
 	 */
-	private static final int IDLE_TIMEOUT = 4;
+	private static final int MSG_IDLE_TIMEOUT = 4;
 	/**
 	 * Decrease the volume gradually over five seconds, pausing when 0 is
 	 * reached.
 	 *
 	 * arg1 should be the progress in the fade as a percentage, 1-100.
 	 */
-	private static final int FADE_OUT = 7;
+	private static final int MSG_FADE_OUT = 7;
 	/**
 	 * If arg1 is 0, calls {@link PlaybackService#playPause()}.
 	 * Otherwise, calls {@link PlaybackService#setCurrentSong(int)} with arg1.
 	 */
-	private static final int CALL_GO = 8;
-	private static final int BROADCAST_CHANGE = 10;
-	private static final int SAVE_STATE = 12;
-	private static final int PROCESS_SONG = 13;
-	private static final int PROCESS_STATE = 14;
-	private static final int SKIP_BROKEN_SONG = 15;
-	private static final int GAPLESS_UPDATE = 16;
+	private static final int MSG_CALL_GO = 8;
+	private static final int MSG_BROADCAST_CHANGE = 10;
+	private static final int MSG_SAVE_STATE = 12;
+	private static final int MSG_PROCESS_SONG = 13;
+	private static final int MSG_PROCESS_STATE = 14;
+	private static final int MSG_SKIP_BROKEN_SONG = 15;
+	private static final int MSG_GAPLESS_UPDATE = 16;
+	private static final int MSG_UPDATE_PLAYCOUNTS = 17;
 
 	@Override
 	public boolean handleMessage(Message message)
 	{
 		switch (message.what) {
-		case CALL_GO:
+		case MSG_CALL_GO:
 			if (message.arg1 == 0)
 				playPause();
 			else
 				setCurrentSong(message.arg1);
 			break;
-		case SAVE_STATE:
+		case MSG_SAVE_STATE:
 			// For unexpected terminations: crashes, task killers, etc.
 			// In most cases onDestroy will handle this
 			saveState(0);
 			break;
-		case PROCESS_SONG:
+		case MSG_PROCESS_SONG:
 			processSong((Song)message.obj);
 			break;
-		case QUERY:
+		case MSG_QUERY:
 			runQuery((QueryTask)message.obj);
 			break;
-		case IDLE_TIMEOUT:
+		case MSG_IDLE_TIMEOUT:
 			if ((mState & FLAG_PLAYING) != 0) {
-				mHandler.sendMessage(mHandler.obtainMessage(FADE_OUT, 0));
+				mHandler.sendMessage(mHandler.obtainMessage(MSG_FADE_OUT, 0));
 			}
 			break;
-		case FADE_OUT:
+		case MSG_FADE_OUT:
 			if (mFadeOut <= 0.0f) {
 				mIdleStart = SystemClock.elapsedRealtime();
 				unsetFlag(FLAG_PLAYING);
 			} else {
 				mFadeOut -= 0.01f;
-				mHandler.sendMessageDelayed(mHandler.obtainMessage(FADE_OUT, 0), 50);
+				mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_FADE_OUT, 0), 50);
 			}
 			refreshReplayGainValues(); /* Updates the volume using the new mFadeOut value */
 			break;
-		case PROCESS_STATE:
+		case MSG_PROCESS_STATE:
 			processNewState(message.arg1, message.arg2);
 			break;
-		case BROADCAST_CHANGE:
+		case MSG_BROADCAST_CHANGE:
 			broadcastChange(message.arg1, (Song)message.obj, message.getWhen());
 			break;
-		case ENTER_SLEEP_STATE:
+		case MSG_ENTER_SLEEP_STATE:
 			enterSleepState();
 			break;
-		case SKIP_BROKEN_SONG:
+		case MSG_SKIP_BROKEN_SONG:
 			/* Advance to next song if the user didn't already change.
 			 * But we are restoring the Playing state in ANY case as we are most
 			 * likely still stopped due to the error
@@ -1467,10 +1469,14 @@ public final class PlaybackService extends Service
 			// Optimistically claim to have recovered from this error
 			mErrorMessage = null;
 			unsetFlag(FLAG_ERROR);
-			mHandler.sendMessage(mHandler.obtainMessage(CALL_GO, 0, 0));
+			mHandler.sendMessage(mHandler.obtainMessage(MSG_CALL_GO, 0, 0));
 			break;
-		case GAPLESS_UPDATE:
+		case MSG_GAPLESS_UPDATE:
 			triggerGaplessUpdate();
+			break;
+		case MSG_UPDATE_PLAYCOUNTS:
+			Song song = (Song)message.obj;
+			mPlayCounts.countSong(song);
 			break;
 		default:
 			return false;
@@ -1604,10 +1610,10 @@ public final class PlaybackService extends Service
 	 */
 	public void userActionTriggered()
 	{
-		mHandler.removeMessages(FADE_OUT);
-		mHandler.removeMessages(IDLE_TIMEOUT);
+		mHandler.removeMessages(MSG_FADE_OUT);
+		mHandler.removeMessages(MSG_IDLE_TIMEOUT);
 		if (mIdleTimeout != 0)
-			mHandler.sendEmptyMessageDelayed(IDLE_TIMEOUT, mIdleTimeout * 1000);
+			mHandler.sendEmptyMessageDelayed(MSG_IDLE_TIMEOUT, mIdleTimeout * 1000);
 
 		if (mFadeOut != 1.0f) {
 			mFadeOut = 1.0f;
@@ -1662,7 +1668,7 @@ public final class PlaybackService extends Service
 	 */
 	public void addSongs(QueryTask query)
 	{
-		mHandler.sendMessage(mHandler.obtainMessage(QUERY, query));
+		mHandler.sendMessage(mHandler.obtainMessage(MSG_QUERY, query));
 	}
 
 	/**
@@ -1731,14 +1737,14 @@ public final class PlaybackService extends Service
 	@Override
 	public void timelineChanged()
 	{
-		mHandler.removeMessages(SAVE_STATE);
-		mHandler.sendEmptyMessageDelayed(SAVE_STATE, SAVE_STATE_DELAY);
+		mHandler.removeMessages(MSG_SAVE_STATE);
+		mHandler.sendEmptyMessageDelayed(MSG_SAVE_STATE, SAVE_STATE_DELAY);
 
 		// Trigger a gappless update for the new timeline
 		// This might get canceled if setCurrentSong() also fired a call
 		// to processSong();
-		mHandler.removeMessages(GAPLESS_UPDATE);
-		mHandler.sendEmptyMessageDelayed(GAPLESS_UPDATE, 100);
+		mHandler.removeMessages(MSG_GAPLESS_UPDATE);
+		mHandler.sendEmptyMessageDelayed(MSG_GAPLESS_UPDATE, 100);
 
 		ArrayList<PlaybackActivity> list = sActivities;
 		for (int i = list.size(); --i != -1; )

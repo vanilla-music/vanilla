@@ -365,16 +365,14 @@ public final class CoverView extends View implements Handler.Callback {
 		Context context = getContext();
 		Bitmap cover = song == null ? null : song.getCover(context);
 
-		if (cover == null && style == CoverBitmap.STYLE_NO_INFO) {
-			Bitmap def = mDefaultCover;
-			if (def == null) {
-				mDefaultCover = def = CoverBitmap.generateDefaultCover(context, getWidth(), getHeight());
+		if (cover == null && style != CoverBitmap.STYLE_OVERLAPPING_BOX) {
+			if (mDefaultCover == null) {
+				mDefaultCover = CoverBitmap.generateDefaultCover(context, getWidth(), getHeight());
 			}
-			mBitmaps[i] = def;
-		} else {
-			mBitmaps[i] = CoverBitmap.createBitmap(context, style, cover, song, getWidth(), getHeight());
+			cover = mDefaultCover;
 		}
 
+		mBitmaps[i] = CoverBitmap.createBitmap(context, style, cover, song, getWidth(), getHeight());
 		postInvalidate();
 	}
 

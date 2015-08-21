@@ -19,6 +19,7 @@ package ch.blinkenlights.android.vanilla;
 
 import android.content.Context;
 import android.app.Activity;
+import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -35,14 +36,16 @@ public class ShowQueueAdapter
 	extends ArrayAdapter<Song>
 	 {
 	
-	int mResource;
-	int mHighlightRow;
-	Context mContext;
+	private int mResource;
+	private int mHighlightRow;
+	private Context mContext;
+	private Looper mLooper;
 
-	public ShowQueueAdapter(Context context, int resource) {
+	public ShowQueueAdapter(Context context, int resource, Looper looper) {
 		super(context, resource);
 		mResource = resource;
 		mContext = context;
+		mLooper = looper;
 		mHighlightRow = -1;
 	}
 
@@ -64,6 +67,8 @@ public class ShowQueueAdapter
 		} else {
 			LayoutInflater inflater = ((Activity)mContext).getLayoutInflater();
 			row = (DraggableRow)inflater.inflate(mResource, parent, false);
+			row.setupLayout(DraggableRow.LAYOUT_COVERVIEW);
+			row.getCoverView().setup(mLooper);
 		}
 
 		Song song = getItem(position);
@@ -74,6 +79,7 @@ public class ShowQueueAdapter
 			sb.append(song.album+", "+song.artist);
 			sb.setSpan(new ForegroundColorSpan(Color.GRAY), song.title.length() + 1, sb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 			row.getTextView().setText(sb);
+			row.getCoverView().setCover(MediaUtils.TYPE_ALBUM, song.albumId);
 		}
 
 		row.highlightRow(position == mHighlightRow);

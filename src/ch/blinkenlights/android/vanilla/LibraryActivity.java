@@ -501,6 +501,23 @@ public class LibraryActivity
 		}
 	}
 
+	/**
+	 * Updates mCover with the new bitmap, running in the UI thread
+	 *
+	 * @param cover the cover to set, will use a fallback drawable if null
+	 */
+	private void updateCover(final Bitmap cover) {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				if (cover == null)
+					mCover.setImageResource(R.drawable.fallback_cover);
+				else
+					mCover.setImageBitmap(cover);
+			}
+		});
+	}
+
 	@Override
 	public void onClick(View view)
 	{
@@ -778,6 +795,9 @@ public class LibraryActivity
 		controls.setActionView(mActionControls);
 		controls.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
+		// Call super after adding the now-playing view as this should be the first item
+		super.onCreateOptionsMenu(menu);
+
 		mSearchMenuItem = menu.add(0, MENU_SEARCH, 0, R.string.search).setIcon(R.drawable.ic_menu_search);
 		mSearchMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItem.SHOW_AS_ACTION_ALWAYS);
 		SearchView mSearchView = new SearchView(getActionBar().getThemedContext());
@@ -785,7 +805,9 @@ public class LibraryActivity
 		mSearchMenuItem.setActionView(mSearchView);
 
 		menu.add(0, MENU_SORT, 0, R.string.sort_by).setIcon(R.drawable.ic_menu_sort_alphabetically);
-		return super.onCreateOptionsMenu(menu);
+		menu.add(0, MENU_SHOW_QUEUE, 0, R.string.show_queue);
+
+		return true;
 	}
 
 	@Override
@@ -864,7 +886,11 @@ public class LibraryActivity
 	/**
 	 * Save the current page, passed in arg1, to SharedPreferences.
 	 */
-	private static final int MSG_SAVE_PAGE = 12;
+	private static final int MSG_SAVE_PAGE = 40;
+	/**
+	 * Updates mCover using a background thread
+	 */
+	private static final int MSG_UPDATE_COVER = 41;
 
 	@Override
 	public boolean handleMessage(Message message)
@@ -874,6 +900,16 @@ public class LibraryActivity
 			SharedPreferences.Editor editor = PlaybackService.getSettings(this).edit();
 			editor.putInt("library_page", message.arg1);
 			editor.commit();
+			break;
+		}
+		case MSG_UPDATE_COVER: {
+			Bitmap cover = null;
+			Song song = (Song)message.obj;
+			if (song != null) {
+				cover = song.getCover(this);
+			}
+			// Dispatch view update to UI thread
+			updateCover(cover);
 			break;
 		}
 		default:
@@ -905,8 +941,6 @@ public class LibraryActivity
 		super.onSongChange(song);
 
 		if (mTitle != null) {
-			Bitmap cover = null;
-
 			if (song == null) {
 				if (mActionControls == null) {
 					mTitle.setText(R.string.none);
@@ -914,7 +948,6 @@ public class LibraryActivity
 				} else {
 					mTitle.setText(null);
 					mArtist.setText(null);
-					mCover.setImageDrawable(null);
 					return;
 				}
 			} else {
@@ -923,16 +956,12 @@ public class LibraryActivity
 				String artist = song.artist == null ? res.getString(R.string.unknown) : song.artist;
 				mTitle.setText(title);
 				mArtist.setText(artist);
-				cover = song.getCover(this);
 			}
 
-			if (Song.mCoverLoadMode == 0)
-				mCover.setVisibility(View.GONE);
-			else if (cover == null)
-				mCover.setImageResource(R.drawable.fallback_cover);
-			else
-				mCover.setImageBitmap(cover);
+			mCover.setVisibility(CoverCache.mCoverLoadMode == 0 ? View.GONE : View.VISIBLE);
+			mHandler.sendMessage(mHandler.obtainMessage(MSG_UPDATE_COVER, song));
 		}
+
 	}
 
 	@Override

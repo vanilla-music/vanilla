@@ -90,11 +90,11 @@ public class TabOrderAdapter extends BaseAdapter {
 		DraggableRow view;
 		if (convert == null) {
 			view = (DraggableRow)mInflater.inflate(R.layout.draggable_row, null);
+			view.setupLayout(DraggableRow.LAYOUT_CHECKBOXES);
 		} else {
 			view = (DraggableRow)convert;
 		}
 		view.getTextView().setText(LibraryPagerAdapter.TITLES[mTabIds[position]]);
-		view.showCheckBox(true);
 		return view;
 	}
 

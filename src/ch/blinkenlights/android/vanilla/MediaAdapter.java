@@ -28,6 +28,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Looper;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.text.Spannable;
@@ -76,6 +77,7 @@ public class MediaAdapter
 	 * The current data.
 	 */
 	private Cursor mCursor;
+	private Looper mLooper;
 	/**
 	 * The type of media represented by this adapter. Must be one of the
 	 * MediaUtils.FIELD_* constants. Determines which content provider to query for
@@ -134,6 +136,11 @@ public class MediaAdapter
 	 * If true, show the expander button on each row.
 	 */
 	private boolean mExpandable;
+	/**
+	 * Defines the media type to use for this entry
+	 * Setting this to MediaUtils.TYPE_INVALID disables cover artwork
+	 */
+	private int mCoverCacheType;
 
 	/**
 	 * Construct a MediaAdapter representing the given <code>type</code> of
@@ -145,12 +152,16 @@ public class MediaAdapter
 	 * and what fields to display in the views.
 	 * @param limiter An initial limiter to use
 	 */
-	public MediaAdapter(LibraryActivity activity, int type, Limiter limiter)
+	public MediaAdapter(LibraryActivity activity, int type, Limiter limiter, Looper looper)
 	{
 		mActivity = activity;
 		mType = type;
 		mLimiter = limiter;
 		mInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		mLooper = looper;
+
+		mCoverCacheType = MediaUtils.TYPE_INVALID;
+		String coverCacheKey = "0"; // SQL dummy entry
 
 		switch (type) {
 		case MediaUtils.TYPE_ARTIST:
@@ -169,6 +180,8 @@ public class MediaAdapter
 			mSongSort = MediaUtils.ALBUM_SORT;
 			mSortEntries = new int[] { R.string.name, R.string.artist_album, R.string.year, R.string.number_of_tracks, R.string.date_added };
 			mSortValues = new String[] { "album_key %1$s", "artist_key %1$s,album_key %1$s", "minyear %1$s,album_key %1$s", "numsongs %1$s,album_key %1$s", "_id %1$s" };
+			mCoverCacheType = MediaUtils.TYPE_ALBUM;
+			coverCacheKey = BaseColumns._ID;
 			break;
 		case MediaUtils.TYPE_SONG:
 			mStore = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
@@ -178,6 +191,8 @@ public class MediaAdapter
 			                           R.string.artist_year, R.string.album_track, R.string.year, R.string.date_added, R.string.song_playcount };
 			mSortValues = new String[] { "title_key %1$s", "artist_key %1$s,album_key %1$s,track %1$s", "artist_key %1$s,album_key %1$s,title_key %1$s",
 			                             "artist_key %1$s,year %1$s,track %1$s", "album_key %1$s,track %1s", "year %1$s,title_key %1$s", "_id %1$s", SORT_MAGIC_PLAYCOUNT };
+			mCoverCacheType = MediaUtils.TYPE_ALBUM;
+			coverCacheKey = MediaStore.Audio.Albums.ALBUM_ID;
 			break;
 		case MediaUtils.TYPE_PLAYLIST:
 			mStore = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI;
@@ -199,9 +214,9 @@ public class MediaAdapter
 		}
 
 		if (mFields.length == 1)
-			mProjection = new String[] { BaseColumns._ID, mFields[0] };
+			mProjection = new String[] { BaseColumns._ID, coverCacheKey, mFields[0] };
 		else
-			mProjection = new String[] { BaseColumns._ID, mFields[mFields.length - 1], mFields[0] };
+			mProjection = new String[] { BaseColumns._ID, coverCacheKey, mFields[mFields.length - 1], mFields[0] };
 	}
 
 	/**
@@ -252,7 +267,7 @@ public class MediaAdapter
 
 		// Magic sort mode: sort by playcount
 		if (sortStringRaw == SORT_MAGIC_PLAYCOUNT) {
-			ArrayList<Long> topSongs = (new PlayCountsHelper(mActivity)).getTopSongs();
+			ArrayList<Long> topSongs = (new PlayCountsHelper(mActivity)).getTopSongs(4096);
 			int sortWeight = -1 * topSongs.size(); // Sort mode is actually reversed (default: mostplayed -> leastplayed)
 
 			StringBuilder sb = new StringBuilder("CASE WHEN _id=0 THEN 0"); // include dummy statement in initial string -> topSongs may be empty
@@ -396,15 +411,15 @@ public class MediaAdapter
 
 		switch (mType) {
 		case MediaUtils.TYPE_ARTIST:
-			fields = new String[] { cursor.getString(1) };
+			fields = new String[] { cursor.getString(2) };
 			data = String.format("%s=%d", MediaStore.Audio.Media.ARTIST_ID, id);
 			break;
 		case MediaUtils.TYPE_ALBUM:
-			fields = new String[] { cursor.getString(2), cursor.getString(1) };
+			fields = new String[] { cursor.getString(3), cursor.getString(2) };
 			data = String.format("%s=%d",  MediaStore.Audio.Media.ALBUM_ID, id);
 			break;
 		case MediaUtils.TYPE_GENRE:
-			fields = new String[] { cursor.getString(1) };
+			fields = new String[] { cursor.getString(2) };
 			data = id;
 			break;
 		default:
@@ -433,37 +448,31 @@ public class MediaAdapter
 		}
 	}
 
-	private static class ViewHolder {
-		public long id;
-		public String title;
-		public TextView text;
-		public ImageView arrow;
-	}
-
 	@Override
 	public View getView(int position, View view, ViewGroup parent)
 	{
 		ViewHolder holder;
 
-		if (view == null || mExpandable != view instanceof LinearLayout) {
+		if (view == null) {
 			// We must create a new view if we're not given a recycle view or
 			// if the recycle view has the wrong layout.
 
-			int layout = mExpandable ? R.layout.library_row_expandable : R.layout.library_row;
-			view = mInflater.inflate(layout, null);
+			view = mInflater.inflate(R.layout.library_row_expandable, null);
 			holder = new ViewHolder();
 			view.setTag(holder);
 
-			if (mExpandable) {
-				holder.text = (TextView)view.findViewById(R.id.text);
-				holder.arrow = (ImageView)view.findViewById(R.id.arrow);
-				holder.arrow.setOnClickListener(this);
-			} else {
-				holder.text = (TextView)view;
-				view.setLongClickable(true);
-			}
-
+			holder.text = (TextView)view.findViewById(R.id.text);
+			holder.divider = (View)view.findViewById(R.id.divider);
+			holder.arrow = (ImageView)view.findViewById(R.id.arrow);
+			holder.cover = (LazyCoverView)view.findViewById(R.id.cover);
+			holder.arrow.setOnClickListener(this);
 			holder.text.setOnClickListener(this);
+			holder.cover.setOnClickListener(this);
+
+			holder.divider.setVisibility(mExpandable ? View.VISIBLE : View.GONE);
+			holder.arrow.setVisibility(mExpandable ? View.VISIBLE : View.GONE);
+			holder.cover.setVisibility(mCoverCacheType != MediaUtils.TYPE_INVALID ? View.VISIBLE : View.GONE);
+			holder.cover.setup(mLooper);
 		} else {
 			holder = (ViewHolder)view.getTag();
 		}
@@ -471,9 +480,10 @@ public class MediaAdapter
 		Cursor cursor = mCursor;
 		cursor.moveToPosition(position);
 		holder.id = cursor.getLong(0);
-		if (mFields.length > 1) {
-			String line1 = cursor.getString(1);
-			String line2 = cursor.getString(2);
+		long cacheId = cursor.getLong(1);
+		if (mFields.length > 2) {
+			String line1 = cursor.getString(2);
+			String line2 = cursor.getString(3);
 			if(line1 == null) { line1 = "???"; }
 			if(line2 == null) { line2 = "???"; }
 			SpannableStringBuilder sb = new SpannableStringBuilder(line1);
@@ -483,10 +493,14 @@ public class MediaAdapter
 			holder.text.setText(sb);
 			holder.title = line1;
 		} else {
-			String title = cursor.getString(1);
+			String title = cursor.getString(2);
 			if(title == null) { title = "???"; }
 			holder.text.setText(title);
 			holder.title = title;
+		}
+
+		if (mCoverCacheType != MediaUtils.TYPE_INVALID) {
+			holder.cover.setCover(mCoverCacheType, cacheId);
 		}
 
 		return view;
@@ -565,8 +579,7 @@ public class MediaAdapter
 	public void onClick(View view)
 	{
 		int id = view.getId();
-		if (mExpandable)
-			view = (View)view.getParent();
+		view = (View)view.getParent(); // get view of linear layout, not the click consumer
 		Intent intent = createData(view);
 		if (id == R.id.arrow) {
 			mActivity.onItemExpanded(intent);

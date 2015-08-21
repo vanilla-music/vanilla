@@ -25,6 +25,15 @@ THE SOFTWARE.
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:orientation="horizontal">
+	<ch.blinkenlights.android.vanilla.LazyCoverView
+		android:id="@+id/cover"
+		android:background="?android:attr/selectableItemBackground"
+		android:longClickable="true"
+		android:scaleType="fitCenter"
+		android:layout_width="44dip"
+		android:layout_height="44dip"
+		android:visibility="gone"
+	/>
 	<TextView
 		android:id="@+id/text"
 		android:longClickable="true"
@@ -40,6 +49,7 @@ THE SOFTWARE.
 		android:id="@+id/divider"
 		android:layout_width="1dip"
 		android:layout_height="fill_parent"
+		android:visibility="gone"
 		android:background="?divider_color" />
 	<ImageView
 		android:id="@+id/arrow"
@@ -49,5 +59,6 @@ THE SOFTWARE.
 		android:src="@drawable/arrow"
 		android:layout_width="44dip"
 		android:layout_height="44dip"
+		android:visibility="gone"
 		android:contentDescription="@string/expand" />
 </LinearLayout>
