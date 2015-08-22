@@ -392,6 +392,10 @@ public final class PlaybackService extends Service
 	private int mReplayGainBump;
 	private int mReplayGainUntaggedDeBump;
 	/**
+	 * Percentage to set the volume as while a notification is playing (aka ducking)
+	 */
+	private int mVolumeOnNotification;
+	/**
 	 * TRUE if the readahead feature is enabled
 	 */
 	private boolean mReadaheadEnabled;
@@ -455,6 +459,9 @@ public final class PlaybackService extends Service
 		mReplayGainAlbumEnabled = settings.getBoolean(PrefKeys.ENABLE_ALBUM_REPLAYGAIN, false);
 		mReplayGainBump = settings.getInt(PrefKeys.REPLAYGAIN_BUMP, 75);  /* seek bar is 150 -> 75 == middle == 0 */
 		mReplayGainUntaggedDeBump = settings.getInt(PrefKeys.REPLAYGAIN_UNTAGGED_DEBUMP, 150); /* seek bar is 150 -> == 0 */
+
+		mVolumeOnNotification = settings.getInt(PrefKeys.VOLUME_ON_NOTIFICATION, 50);
+		refreshDuckingValues();
 
 		mReadaheadEnabled = settings.getBoolean(PrefKeys.ENABLE_READAHEAD, false);
 
@@ -626,6 +633,12 @@ public final class PlaybackService extends Service
 	private void refreshReplayGainValues() {
 		applyReplayGain(mMediaPlayer);
 		applyReplayGain(mPreparedMediaPlayer);
+	}
+
+	private void refreshDuckingValues() {
+		float duckingFactor = ((float)mVolumeOnNotification)/100f;
+		mMediaPlayer.setDuckingFactor(duckingFactor);
+		mPreparedMediaPlayer.setDuckingFactor(duckingFactor);
 	}
 
 	/***
@@ -849,6 +862,9 @@ public final class PlaybackService extends Service
 		} else if (PrefKeys.REPLAYGAIN_UNTAGGED_DEBUMP.equals(key)) {
 			mReplayGainUntaggedDeBump = settings.getInt(PrefKeys.REPLAYGAIN_UNTAGGED_DEBUMP, 150);
 			refreshReplayGainValues();
+		} else if (PrefKeys.VOLUME_ON_NOTIFICATION.equals(key)) {
+			mVolumeOnNotification = settings.getInt(PrefKeys.VOLUME_ON_NOTIFICATION, 50);
+			refreshDuckingValues();
 		} else if (PrefKeys.ENABLE_READAHEAD.equals(key)) {
 			mReadaheadEnabled = settings.getBoolean(PrefKeys.ENABLE_READAHEAD, false);
 		} else if (PrefKeys.USE_DARK_THEME.equals(key)) {
