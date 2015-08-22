@@ -18,10 +18,13 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.audiofx.AudioEffect;
+import android.os.Build;
+
 import java.io.IOException;
 
 public class VanillaMediaPlayer extends MediaPlayer {
@@ -74,6 +77,7 @@ public class VanillaMediaPlayer extends MediaPlayer {
 	/**
 	 * Sets the next media player data source
 	 */
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	public void setNextMediaPlayer(VanillaMediaPlayer next) {
 		super.setNextMediaPlayer(next);
 		mHasNextMediaPlayer = (next != null);
