@@ -233,12 +233,18 @@ public final class PlaybackService extends Service
 	 * These three bits will be one of SongTimeline.SHUFFLE_*.
 	 */
 	public static final int MASK_SHUFFLE = 0x7 << SHIFT_SHUFFLE;
+	public static final int SHIFT_DUCKING = 10;
+	/**
+	 * Whether we're 'ducking' (lowering the playback volume temporarily due to a transient system
+	 * sound, such as a notification) or not
+	 */
+	public static final int FLAG_DUCKING = 0x1 << SHIFT_DUCKING;
 
 	/**
 	 * The PlaybackService state, indicating if the service is playing,
 	 * repeating, etc.
 	 *
-	 * The format of this is 0b00000000_00000000_0000000ff_feeedcba,
+	 * The format of this is 0b00000000_00000000_000000gff_feeedcba,
 	 * where each bit is:
 	 *     a:   {@link PlaybackService#FLAG_PLAYING}
 	 *     b:   {@link PlaybackService#FLAG_NO_MEDIA}
@@ -246,6 +252,7 @@ public final class PlaybackService extends Service
 	 *     d:   {@link PlaybackService#FLAG_EMPTY_QUEUE}
 	 *     eee: {@link PlaybackService#MASK_FINISH}
 	 *     fff: {@link PlaybackService#MASK_SHUFFLE}
+	 *     g:   {@link PlaybackService#FLAG_DUCKING}
 	 */
 	int mState;
 	
@@ -661,7 +668,7 @@ public final class PlaybackService extends Service
 		} else if (rg_result < 0.0f) {
 			rg_result = 0.0f;
 		}
-		mp.setVolume(rg_result, rg_result);
+		mp.setReplayGain(rg_result);
 	}
 
 	/**
@@ -979,6 +986,10 @@ public final class PlaybackService extends Service
 			mTimeline.setShuffleMode(shuffleMode(state));
 		if ((toggled & MASK_FINISH) != 0)
 			mTimeline.setFinishAction(finishAction(state));
+
+		if((toggled & FLAG_DUCKING) != 0) {
+			mMediaPlayer.setIsDucking((state & FLAG_DUCKING) != 0);
+		}
 	}
 
 	private void broadcastChange(int state, Song song, long uptime)
@@ -2010,8 +2021,8 @@ public final class PlaybackService extends Service
 		Log.d("VanillaMusic", "audio focus change: " + type);
 		switch (type) {
 		case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-			mDuckedLoss = (mState & FLAG_PLAYING) != 0;
-			unsetFlag(FLAG_PLAYING);
+			mDuckedLoss = true;
+			setFlag(FLAG_DUCKING);
 			break;
 		case AudioManager.AUDIOFOCUS_LOSS:
 		case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
@@ -2022,7 +2033,7 @@ public final class PlaybackService extends Service
 		case AudioManager.AUDIOFOCUS_GAIN:
 			if (mDuckedLoss) {
 				mDuckedLoss = false;
-				setFlag(FLAG_PLAYING);
+				unsetFlag(FLAG_DUCKING);
 			}
 			break;
 		}

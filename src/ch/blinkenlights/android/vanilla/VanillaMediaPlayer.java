@@ -29,6 +29,8 @@ public class VanillaMediaPlayer extends MediaPlayer {
 	private Context mContext;
 	private String mDataSource;
 	private boolean mHasNextMediaPlayer;
+	private float mReplayGain = Float.NaN;
+	private float mDuckingFactor = Float.NaN;
 
 	/**
 	 * Constructs a new VanillaMediaPlayer class
@@ -105,6 +107,40 @@ public class VanillaMediaPlayer extends MediaPlayer {
 		i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, this.getAudioSessionId());
 		i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mContext.getPackageName());
 		mContext.sendBroadcast(i);
+	}
+
+	/**
+	 * Sets the desired scaling due to replay gain.
+	 * @param mReplayGain the factor to adjust the volume by. Must be between 0 and 1 (inclusive)
+	 *                    or {@link Float#NaN} to disable replay gain scaling
+	 */
+	public void setReplayGain(float mReplayGain) {
+		this.mReplayGain = mReplayGain;
+		updateVolume();
+	}
+
+	/**
+	 * Sets whether we are ducking or not. Ducking is when we temporarily decrease the volume for
+	 * a transient sound to play from another application, such as a notification's beep.
+	 * @param isDucking true if we are ducking, false if we are not
+	 */
+	public void setIsDucking(boolean isDucking) {
+		mDuckingFactor = (isDucking ? 0.2f : Float.NaN);
+		updateVolume();
+	}
+
+	/**
+	 * Sets the volume. Ducking takes precedence over replay gain. If neither ducking nor replay
+	 * gain is set, uses the default value of 1.0f
+	 */
+	private void updateVolume() {
+		float volume = 1.0f;
+		if(!Float.isNaN(mDuckingFactor)) {
+			volume = mDuckingFactor;
+		} else if (!Float.isNaN(mReplayGain)) {
+			volume = mReplayGain;
+		}
+		setVolume(volume, volume);
 	}
 
 }
