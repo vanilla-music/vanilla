@@ -710,13 +710,14 @@ public class FullPlaybackActivity extends PlaybackActivity
 		mSeekBarTracking = false;
 	}
 
-	public void performAction(Action action)
+	@Override
+	protected void performAction(Action action)
 	{
 		if (action == Action.ToggleControls) {
 			setControlsVisible(!mControlsVisible);
 			mHandler.sendEmptyMessage(MSG_SAVE_CONTROLS);
 		} else {
-			PlaybackService.get(this).performAction(action, this);
+			super.performAction(action);
 		}
 	}
 

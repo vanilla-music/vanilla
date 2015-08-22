@@ -540,13 +540,18 @@ public abstract class PlaybackActivity extends Activity
 	@Override
 	public void upSwipe()
 	{
-		PlaybackService.get(this).performAction(mUpAction, this);
+		performAction(mUpAction);
 	}
 
 	@Override
 	public void downSwipe()
 	{
-		PlaybackService.get(this).performAction(mDownAction, this);
+		performAction(mDownAction);
+	}
+
+	protected void performAction(Action action)
+	{
+		PlaybackService.get(this).performAction(action, this);
 	}
 
 	private static final int GROUP_SHUFFLE = 100;
