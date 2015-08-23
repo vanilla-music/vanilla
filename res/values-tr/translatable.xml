@@ -186,7 +186,7 @@
   <string name="double_tap_title">Widget\'a iki kez bas</string>
   <string name="double_tap_summary">1x1 widget\'a iki kez basmak oynatıcıyı açar. 400ms\'lik bir gecikme ile çalışır.</string>
   <string name="scrobble_title">ScrobbleDroid API\'sini kullan</string>
-  <string name="scrobble_summary">Last.FM\'e ScrobbleDroid veya Simple Last.FM Scrobbler ile iskropla.</string>
+  <string name="scrobble_summary">Last.fm\'e ScrobbleDroid veya Simple Last.fm Scrobbler ile iskropla.</string>
   <string name="stock_broadcast_title">Varsayılan yayınları öykün</string>
   <string name="stock_broadcast_summary">Varsayılan müzik oynatıcısı tarafından üçüncü parti kilit ekranı denetimleri ve widgetlar ile çalışması için gönderilen yayınları öykün.</string>
   <string name="media_scan">Arşivi yenile</string>

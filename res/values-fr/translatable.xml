@@ -178,7 +178,7 @@
   <string name="double_tap_title">Widget \"Double Tap\"</string>
   <string name="double_tap_summary">Toucher deux fois le widget 1x1 pour ouvrir le lecteur. Implique un délai de 400ms avant que le widget réponde aux actions.</string>
   <string name="scrobble_title">Utiliser l\'API ScrobbleDroid</string>
-  <string name="scrobble_summary">Envoyer l\'information de scrobble à Last.FM grâce à ScrobbleDroid ou SimpleLast.FM Scrobbler</string>
+  <string name="scrobble_summary">Envoyer l\'information de scrobble à Last.fm grâce à ScrobbleDroid ou SimpleLast.fm Scrobbler</string>
   <string name="stock_broadcast_title">Émuler la diffusion d\'origine</string>
   <string name="stock_broadcast_summary">Envoyer les messages de diffusion émulant ceux envoyés par le lecteur d\'origine pour fonctionner avec des contrôles d\'écran de verrouillage tiers, widgets, etc.</string>
   <string name="media_scan">Rafraîchir la bibliothèque</string>

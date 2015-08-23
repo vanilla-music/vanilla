@@ -179,7 +179,7 @@
   <string name="double_tap_title">双击小工具</string>
   <string name="double_tap_summary">双击 1 x 1 的小工具将会打开播放器。小工具做出响应之前会有 400 毫秒延迟。</string>
   <string name="scrobble_title">使用 ScrobbleDroid API</string>
-  <string name="scrobble_summary">Scrobble 透过 ScrobbleDroid 到 Last.FM 或只是 Last.FM Scrobbler</string>
+  <string name="scrobble_summary">Scrobble 透过 ScrobbleDroid 到 Last.fm 或只是 Last.fm Scrobbler</string>
   <string name="stock_broadcast_title">模拟原生应用广播</string>
   <string name="stock_broadcast_summary">发送广播以模拟那些由本地原生播放器而产生的效果，例如第三方锁屏控制，小工具等等。</string>
   <string name="media_scan">刷新媒体库</string>

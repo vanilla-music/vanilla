@@ -186,7 +186,7 @@
   <string name="double_tap_title">Duplo clique no widget</string>
   <string name="double_tap_summary">Ao clicar duas vezes no widget 1x1, abre o reprodutor. Tem um atraso de 400 ms antes de responder às ações.</string>
   <string name="scrobble_title">Usar API ScrobbleDroid</string>
-  <string name="scrobble_summary">Enviar faixas para a Last.FM através de ScrobbleDroid ou Simple Last.FM Scrobbler</string>
+  <string name="scrobble_summary">Enviar faixas para a Last.fm através de ScrobbleDroid ou Simple Last.fm Scrobbler</string>
   <string name="stock_broadcast_title">Emular comunicações</string>
   <string name="stock_broadcast_summary">Enviar emissões emulando as enviadas pelo reprodutor do Android para poder funcionar com controlos e widgets de terceiros</string>
   <string name="media_scan">Atualizar coleção</string>
