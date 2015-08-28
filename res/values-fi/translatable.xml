@@ -186,7 +186,7 @@
   <string name="double_tap_title">Widgetin kaksoisnapautus</string>
   <string name="double_tap_summary">1x1-widgetin kaksoisnapautus avaa soittimen. Asettaa 400 ms viiveen, ennen kuin widget vastaa toimintoon.</string>
   <string name="scrobble_title">Käytä ScrobbleDroid API:a</string>
-  <string name="scrobble_summary">Lähetä scrobblaustiedot Last.FM:ään ScrobbleDroidin tai Simple Last.FM Scrobblerin kautta</string>
+  <string name="scrobble_summary">Lähetä toistotiedot Last.fm:ään käyttäen ScrobbleDroidia tai Simple Last.fm Scrobbleria</string>
   <string name="stock_broadcast_title">Emuloi vakioita yleislähetyksiä</string>
   <string name="stock_broadcast_summary">Lähetä vakiosoitinta emuloivia yleislähetyksiä. Auttaa kolmansien osapuolten lukitusnäyttöohjainten, widgettien yms. toimivuuden kanssa.</string>
   <string name="media_scan">Päivitä kirjasto</string>

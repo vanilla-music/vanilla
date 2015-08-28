@@ -193,7 +193,7 @@
   <string name="double_tap_title">Double Tap Widget</string>
   <string name="double_tap_summary">Dvojité ťuknutí na 1x1 widget otevře přehrávač. Zpoždění odpovědi widgetu na akci je 400ms.</string>
   <string name="scrobble_title">Použít ScrobbleDroid API</string>
-  <string name="scrobble_summary">Informovat Last.FM přes ScrobbleDroid nebo jiný Last.FM scrobbler</string>
+  <string name="scrobble_summary">Informovat Last.fm přes ScrobbleDroid nebo jiný Last.fm scrobbler</string>
   <string name="stock_broadcast_title">Emulovat výchozí upozornění</string>
   <string name="stock_broadcast_summary">Posílat upozornění jako to dělá výchozí přehrávač hudby, pro zajištění funkčnosti modulů, ovládání uzamčené obrazovky, atd. poskytovaných třetími stranami.</string>
   <string name="media_scan">Obnovit sbírku</string>

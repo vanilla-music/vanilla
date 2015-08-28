@@ -16,7 +16,7 @@
   <string name="stop_current_song">Nach aktuellem Titel stoppen</string>
   <string name="random">Zufallswiedergabe</string>
   <string name="random_enabling">Zufallswiedergabe aktiviert</string>
-  <string name="song_load_failed">Titel %s konnte nicht geladen werden. Er ist möglicherweise beschädigt oder fehlt.</string>
+  <string name="song_load_failed">Titel %s konnte nicht geladen werden. Möglicherweise ist er beschädigt oder fehlt.</string>
   <string name="queue_cleared">Warteschlange geleert.</string>
   <string name="cover_art">Cover</string>
   <string name="close_notification">Benachrichtigung beim Schließen</string>
@@ -72,9 +72,9 @@
     <item quantity="other">%d Titel gelöscht.</item>
   </plurals>
   <string name="delete_file_failed">Löschen von %s fehlgeschlagen.</string>
-  <string name="deleted_item">\"%s\" wurde gelöscht.</string>
-  <string name="delete_item">\"%s\" löschen?</string>
-  <string name="delete_file">Datei \"%s\" löschen?</string>
+  <string name="deleted_item">„%s“ wurde gelöscht.</string>
+  <string name="delete_item">„%s“ löschen?</string>
+  <string name="delete_file">Datei „%s“ löschen?</string>
   <string name="artists">Interpreten</string>
   <string name="albums">Alben</string>
   <string name="songs">Titel</string>
@@ -138,7 +138,7 @@
   <string name="replaygain_untagged_debump_title">Titel ohne Replay Gain-Information</string>
   <string name="replaygain_untagged_debump_summary">Lautstärke senken um: </string>
   <string name="readahead">Datei vorauslesen</string>
-  <string name="readahead_summary">Liest den momentan abgespielten Titel im Voraus ein (löst Probleme mit langsamen SD-Karten).</string>
+  <string name="readahead_summary">Aktuell abgespielten Titel im Voraus einlesen (löst Probleme mit langsamen SD-Karten)</string>
   <string name="equalizer">Equalizer</string>
   <string name="cycle_continuous_shuffling">Dauerzufallswiedergabe</string>
   <string name="cycle_continuous_shuffling_summary">Titel werden fortlaufend neu durchgemischt</string>
@@ -148,7 +148,7 @@
   <string name="notification_invert_color_title">Farbe der Benachrichtigung umkehren</string>
   <string name="notification_invert_color_summary">Text weiß statt schwarz anzeigen</string>
   <string name="notification_nag">Auffällige Benachrichtigung</string>
-  <string name="notification_nag_summary">Titelwechsel als \"Heads-Up\"-Benachrichtigung anzeigen</string>
+  <string name="notification_nag_summary">Titelwechsel als „Heads-Up“-Benachrichtigung anzeigen</string>
   <string name="playback_screen">Wiedergabeansicht</string>
   <string name="playback_on_startup_title">Beim Start öffnen</string>
   <string name="playback_on_startup_summary">Wiedergabeansicht beim Start öffnen</string>
@@ -164,29 +164,29 @@
   <string name="default_playlist_action_title">Wiedergabelisten-Standardaktion</string>
   <string name="accelerometer_shake">Schütteln</string>
   <string name="enable_shake_title">Schütteln aktivieren</string>
-  <string name="enable_shake_summary">Ist nur während abgespielter Musik aktiv. Funktioniert auf einigen Geräten nicht bei ausgeschaltetem Bildschirm.</string>
+  <string name="enable_shake_summary">Nur während abgespielter Musik aktiv. Funktioniert auf einigen Geräten nicht bei ausgeschaltetem Bildschirm.</string>
   <string name="shake_action_title">Aktion beim Schütteln</string>
   <string name="shake_threshold_title">Schwellwert beim Schütteln</string>
   <string name="misc_features">Sonstige Funktionen</string>
   <string name="use_dark_theme_title">Dunkles Design verwenden</string>
-  <string name="use_dark_theme_summary">Aktiviert das dunkle \"Material\"-Design</string>
+  <string name="use_dark_theme_summary">Aktiviert das dunkle „Material“-Design</string>
   <string name="disable_lockscreen_title">Bildschirmsperre deaktivieren</string>
-  <string name="disable_lockscreen_summary">Bildschirmsperre verhindern, wenn Bibliothek- oder Wiedergabeansicht aktiv</string>
+  <string name="disable_lockscreen_summary">Bildschirmsperre verhindern, wenn Bibliotheks- oder Wiedergabeansicht aktiv</string>
   <string name="use_idle_timeout_title">Inaktivitätszeitabschaltung aktivieren</string>
   <string name="use_idle_timeout_summary">Falls aktiviert, wird die Wiedergabe nach der angegebenen Inaktivität beendet</string>
   <string name="idle_timeout_title">Inaktivitätszeitabschaltung</string>
   <string name="disable_cover_art_title">Cover-Darstellung deaktivieren</string>
   <string name="disable_cover_art_summary">Jegliches Laden von Albumcovern vermeiden</string>
   <string name="coverloader_android_title">Albumcover von Android verwenden</string>
-  <string name="coverloader_android_summary">Androids interne Mediendatenbank verwenden, um Albumcover zu laden</string>
+  <string name="coverloader_android_summary">Androids interne Mediendatenbank für Albumcover verwenden</string>
   <string name="coverloader_vanilla_title">Cover aus Ordner laden</string>
   <string name="coverloader_vanilla_summary">Nach Dateien mit den Namen cover.jpg, album.jpg oder artwork.jpg suchen und diese als Albumcover anzeigen</string>
   <string name="coverloader_shadow_title">Cover aus verstecktem Ordner laden</string>
-  <string name="coverloader_shadow_summary">Albumcover von \"/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\" laden, falls möglich.</string>
+  <string name="coverloader_shadow_summary">Albumcover von „/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg“ laden, falls möglich.</string>
   <string name="double_tap_title">Widget-Doppelantippen</string>
-  <string name="double_tap_summary">Doppeltes Antippen des 1x1-Widgets öffnet die Wiedergabeansicht. Verursacht eine Verzögerung von 400 ms bevor das Widget auf Aktionen reagiert.</string>
+  <string name="double_tap_summary">Doppeltes Antippen des 1x1-Widgets öffnet die Wiedergabeansicht. Verursacht eine Verzögerung von 400 ms, bevor das Widget auf Aktionen reagiert.</string>
   <string name="scrobble_title">ScrobbleDroid-API verwenden</string>
-  <string name="scrobble_summary">Zu Last.FM scrobbeln mithilfe von ScrobbleDroid oder Simple Last.FM Scrobbler</string>
+  <string name="scrobble_summary">Zu Last.fm scrobbeln mithilfe von ScrobbleDroid oder Simple Last.fm Scrobbler</string>
   <string name="stock_broadcast_title">Standardplayer-Benachrichtigungen emulieren</string>
   <string name="stock_broadcast_summary">Benachrichtigungen senden, welche den normalen Standardplayer emulieren, um mit externen Bildschirmsperre-Steuerelementen, Widgets etc. kompatibel zu sein.</string>
   <string name="media_scan">Bibliothek aktualisieren</string>
@@ -195,7 +195,7 @@
   <string name="finished_scanning">Durchsuchen abgeschlossen. Für erneute Suche antippen.</string>
   <string name="about">Über</string>
   <string name="tabs">Tab-Reihenfolge</string>
-  <string name="customize_tab_order">Anpassen der Reihenfolge und Sichtbarkeit der Bibliothek-Tabs</string>
+  <string name="customize_tab_order">Reihenfolge und Sichtbarkeit der Bibliotheks-Tabs anpassen</string>
   <string name="restore_default">Standard wiederherstellen</string>
   <!--The following are for the list preferences-->
   <string name="last_used_action">Zuletzt verwendete Aktion</string>

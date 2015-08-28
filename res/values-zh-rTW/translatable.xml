@@ -179,7 +179,7 @@
   <string name="double_tap_title">雙點擊小工具</string>
   <string name="double_tap_summary">雙點擊 1 x 1 小工具將打開播放機。小工具的操作做出回應之前，會引起400ms的延遲。</string>
   <string name="scrobble_title">使用 ScrobbleDroid 的 API</string>
-  <string name="scrobble_summary">Scrobble 透過 ScrobbleDroid 到 Last.FM或單純的 Last.FM Scrobbler</string>
+  <string name="scrobble_summary">Scrobble 透過 ScrobbleDroid 到 Last.fm或單純的 Last.fm Scrobbler</string>
   <string name="stock_broadcast_title">模擬股票廣播</string>
   <string name="stock_broadcast_summary">放送廣播，模擬那些放送股票音樂播放的工作與第三方螢幕鎖控制、小工具等。</string>
   <string name="media_scan">更新媒體庫</string>

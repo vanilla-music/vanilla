@@ -182,7 +182,7 @@
   <string name="double_tap_title">Διπλό χτύπημα γραφικου στοιχείου</string>
   <string name="double_tap_summary">Διπλό χτύπημα στο γραφικό στοιχείο 1x1 θα ανοίξει το πρόγραμμα αναπαραγωγής. Διατρέχει 400μδευ καθυστέρηση πριν το γραφικό στοιχείο ανταποκριθει στις ενέργειες.</string>
   <string name="scrobble_title">Χρήση του ScrobbleDroid API</string>
-  <string name="scrobble_summary">Scrobble στο Last.FM μέσω ScrobbleDroid ή Απλό Last.FM Scrobbler</string>
+  <string name="scrobble_summary">Scrobble στο Last.fm μέσω ScrobbleDroid ή Απλό Last.fm Scrobbler</string>
   <string name="stock_broadcast_title">Εξομοίωση εκπομπων απο την μνημη</string>
   <string name="stock_broadcast_summary">Αποστολή εκπομπων απο την μνημη για να συνεργαστουν με τους ελέγχους lockscreen 3τρίτου κόμματος, γραφικά στοιχεία, κ.λπ.</string>
   <string name="media_scan">Ανανέωση βιβλιοθήκης</string>

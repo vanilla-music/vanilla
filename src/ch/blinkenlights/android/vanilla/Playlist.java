@@ -200,7 +200,7 @@ public class Playlist {
 	 * Copy content from one playlist to another
 	 *
 	 * @param resolver A ContentResolver to use.
-	 * @param sourceid The Media.Audio.Playlists id of the source playlist
+	 * @param sourceId The Media.Audio.Playlists id of the source playlist
 	 * @param destinationId The Media.Audio.Playlists id of the destination playlist
 	 */
 	private static void _copyToPlaylist(ContentResolver resolver, long sourceId, long destinationId) {

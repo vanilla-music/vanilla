@@ -179,7 +179,7 @@
   <string name="double_tap_title">ダブルタップ ウィジェット</string>
   <string name="double_tap_summary">1x1 のウィジェットをダブルタップするとプレーヤーを開きます。ウィジェットが操作に応答する前に 400ms の遅延が発生します。</string>
   <string name="scrobble_title">ScrobbleDroid API を使用する</string>
-  <string name="scrobble_summary">ScrobbleDroid または Simple Last.FM Scrobbler 経由で Last.FM にスクローブルします</string>
+  <string name="scrobble_summary">ScrobbleDroid または Simple Last.fm Scrobbler 経由で Last.fm にスクローブルします</string>
   <string name="stock_broadcast_title">既存のブロードキャストをエミュレートする</string>
   <string name="stock_broadcast_summary">サードパーティ製のロック画面コントロール、ウィジェットなどで動作するように、既存の音楽プレーヤーから送信されるブロードキャストをエミュレートして送信します</string>
   <string name="media_scan">ライブラリーをリフレッシュ</string>
@@ -215,7 +215,7 @@
   <string name="enqueue_current_artist">アーチストをキューに入れる</string>
   <string name="enqueue_current_genre">ジャンルをキューに入れる</string>
   <string name="clear_queue">キューをクリア</string>
-  <string name="empty_the_queue">空のキュー</string>
+  <string name="empty_the_queue">キューを空にする</string>
   <string name="show_queue">キューを表示</string>
   <string name="dequeue_rest">残りをキューから消す</string>
   <string name="queue">キュー</string>

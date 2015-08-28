@@ -193,7 +193,7 @@
   <string name="double_tap_title">Dubultpieskāriena sīklietotne</string>
   <string name="double_tap_summary">Izdarot dubultpieskārienu 1x1 izmēra sīkrīkam, tiks atvērts atskaņotājs. Rada 400 ms aizturi, pirms sīkrīks atbildēs uz darbībām.</string>
   <string name="scrobble_title">Lietot ScrobbleDroid API</string>
-  <string name="scrobble_summary">Sūtīt atskaņojumus uz Last.FM caur ScrobbleDroid vai Simple Last.FM atskaņojumu sūtītāju</string>
+  <string name="scrobble_summary">Nosūtīt atskaņojumus servisam Last.fm, izmantojot ScrobbleDroid vai Simple Last.fm Scrobbler</string>
   <string name="stock_broadcast_title">Emulēt pamata raidījumus</string>
   <string name="stock_broadcast_summary">Sūtīt raidījumus, tādējādi emulējot noklusētā mūzikas atskaņotāja sūtītos, lai būtu iespējama trešo pušu slēgekrānu vadīklu, sīkrīku, u.t.t., kontrole.</string>
   <string name="media_scan">Atsvaidzināt bibliotēku</string>

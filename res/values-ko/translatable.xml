@@ -179,7 +179,7 @@
   <string name="double_tap_title">위젯을 두번 탭</string>
   <string name="double_tap_summary">1x1위젯을 두번 탭하면 플레이어가 열림.  위젯을 400ms이하로 탭해야 반응함.​</string>
   <string name="scrobble_title">ScrobbleDroid API 사용</string>
-  <string name="scrobble_summary">ScrobbleDroid 이나 간단한 Last.FM ​Scrobbler를 통하여 Last.FM을 Scrobble 함</string>
+  <string name="scrobble_summary">ScrobbleDroid 이나 간단한 Last.fm ​Scrobbler를 통하여 Last.fm을 Scrobble 함</string>
   <string name="stock_broadcast_title">Stock Broadcasts를 에뮬레이트 함</string>
   <string name="stock_broadcast_summary">서드파티 잠금화면 컨트롤, 위젯등과 내장 음악 플레이어로 전송된 broadcasts 에뮬레이팅을 전송함</string>
   <string name="media_scan">라이브러리 새로 고침</string>
