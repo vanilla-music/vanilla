@@ -150,8 +150,8 @@ THE SOFTWARE.
 
 	<string name="audio">Audio</string>
 	<string name="volume_title">Volume</string>
-	<string name="volume_on_notification_title">Volume During Notification</string>
-	<string name="volume_on_notification_summary">Playback volume: </string>
+	<string name="volume_during_ducking_title">Volume During Notification</string>
+	<string name="volume_during_ducking_summary">Playback volume: </string>
 	<string name="media_button_title">Headset/Bluetooth Controls</string>
 	<string name="media_button_summary">This is also required for ICS lockscreen controls.</string>
 	<string name="media_button_beep_title">Headset Control Beep</string>

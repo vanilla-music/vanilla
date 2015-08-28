@@ -88,8 +88,8 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 		} else if(PrefKeys.REPLAYGAIN_UNTAGGED_DEBUMP.equals(getKey())) {
 			String summary = (String)mContext.getResources().getText(R.string.replaygain_untagged_debump_summary);
 			return String.format("%s %.1fdB", summary, (value-150)/10f);
-		} else if (PrefKeys.VOLUME_ON_NOTIFICATION.equals(getKey())) {
-			String summary = mContext.getString(R.string.volume_on_notification_summary);
+		} else if (PrefKeys.VOLUME_DURING_DUCKING.equals(getKey())) {
+			String summary = mContext.getString(R.string.volume_during_ducking_summary);
 			return summary + " " + value + "%";
 		} else {
 			return String.format("%d%% (%+.1fdB)", value, 20 * Math.log10(Math.pow(value / 100.0, 3)));
@@ -107,15 +107,13 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 		SeekBar seekBar = (SeekBar)view.findViewById(R.id.seek_bar);
 
 		int maxValue;
-		switch (getKey()) {
-			case PrefKeys.SHAKE_THRESHOLD:
-				maxValue = 300;
-				break;
-			case PrefKeys.VOLUME_ON_NOTIFICATION:
-				maxValue = 100;
-				break;
-			default:
-				maxValue = 150;
+		String key = getKey();
+		if (PrefKeys.SHAKE_THRESHOLD.equals(key)) {
+			maxValue = 300;
+		} else if (PrefKeys.VOLUME_DURING_DUCKING.equals(key)) {
+			maxValue = 100;
+		} else {
+			maxValue = 150;
 		}
 
 		seekBar.setMax(maxValue);
@@ -128,7 +126,7 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 	@Override
 	protected void onDialogClosed(boolean positiveResult)
 	{
-		if(!positiveResult && PrefKeys.VOLUME_ON_NOTIFICATION.equals(getKey())) {
+		if(!positiveResult && PrefKeys.VOLUME_DURING_DUCKING.equals(getKey())) {
 			setValue(50);
 		}
 		notifyChanged();

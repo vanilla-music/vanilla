@@ -66,5 +66,5 @@ public class PrefKeys {
 	public static final String ENABLE_READAHEAD = "enable_readahead";
 	public static final String USE_DARK_THEME = "use_dark_theme";
 	public static final String FILESYSTEM_BROWSE_START = "filesystem_browse_start";
-	public static final String VOLUME_ON_NOTIFICATION = "volume_on_notification";
+	public static final String VOLUME_DURING_DUCKING = "volume_during_ducking";
 }

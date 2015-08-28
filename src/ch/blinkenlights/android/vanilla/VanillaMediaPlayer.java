@@ -155,5 +155,5 @@ public class VanillaMediaPlayer extends MediaPlayer {
 
 		setVolume(volume, volume);
 	}
-	
+
 }

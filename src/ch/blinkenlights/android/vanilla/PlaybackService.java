@@ -394,7 +394,7 @@ public final class PlaybackService extends Service
 	/**
 	 * Percentage to set the volume as while a notification is playing (aka ducking)
 	 */
-	private int mVolumeOnNotification;
+	private int mVolumeDuringDucking;
 	/**
 	 * TRUE if the readahead feature is enabled
 	 */
@@ -460,7 +460,7 @@ public final class PlaybackService extends Service
 		mReplayGainBump = settings.getInt(PrefKeys.REPLAYGAIN_BUMP, 75);  /* seek bar is 150 -> 75 == middle == 0 */
 		mReplayGainUntaggedDeBump = settings.getInt(PrefKeys.REPLAYGAIN_UNTAGGED_DEBUMP, 150); /* seek bar is 150 -> == 0 */
 
-		mVolumeOnNotification = settings.getInt(PrefKeys.VOLUME_ON_NOTIFICATION, 50);
+		mVolumeDuringDucking = settings.getInt(PrefKeys.VOLUME_DURING_DUCKING, 50);
 		refreshDuckingValues();
 
 		mReadaheadEnabled = settings.getBoolean(PrefKeys.ENABLE_READAHEAD, false);
@@ -636,7 +636,7 @@ public final class PlaybackService extends Service
 	}
 
 	private void refreshDuckingValues() {
-		float duckingFactor = ((float)mVolumeOnNotification)/100f;
+		float duckingFactor = ((float) mVolumeDuringDucking)/100f;
 		mMediaPlayer.setDuckingFactor(duckingFactor);
 		mPreparedMediaPlayer.setDuckingFactor(duckingFactor);
 	}
@@ -862,8 +862,8 @@ public final class PlaybackService extends Service
 		} else if (PrefKeys.REPLAYGAIN_UNTAGGED_DEBUMP.equals(key)) {
 			mReplayGainUntaggedDeBump = settings.getInt(PrefKeys.REPLAYGAIN_UNTAGGED_DEBUMP, 150);
 			refreshReplayGainValues();
-		} else if (PrefKeys.VOLUME_ON_NOTIFICATION.equals(key)) {
-			mVolumeOnNotification = settings.getInt(PrefKeys.VOLUME_ON_NOTIFICATION, 50);
+		} else if (PrefKeys.VOLUME_DURING_DUCKING.equals(key)) {
+			mVolumeDuringDucking = settings.getInt(PrefKeys.VOLUME_DURING_DUCKING, 50);
 			refreshDuckingValues();
 		} else if (PrefKeys.ENABLE_READAHEAD.equals(key)) {
 			mReadaheadEnabled = settings.getBoolean(PrefKeys.ENABLE_READAHEAD, false);
@@ -1004,7 +1004,9 @@ public final class PlaybackService extends Service
 			mTimeline.setFinishAction(finishAction(state));
 
 		if((toggled & FLAG_DUCKING) != 0) {
-			mMediaPlayer.setIsDucking((state & FLAG_DUCKING) != 0);
+			boolean isDucking = (state & FLAG_DUCKING) != 0;
+			mMediaPlayer.setIsDucking(isDucking);
+			mPreparedMediaPlayer.setIsDucking(isDucking);
 		}
 	}
 
@@ -2037,9 +2039,13 @@ public final class PlaybackService extends Service
 		Log.d("VanillaMusic", "audio focus change: " + type);
 		switch (type) {
 		case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-			mDuckedLoss = true;
-			setFlag(FLAG_DUCKING);
-			break;
+			synchronized (mStateLock) {
+				mDuckedLoss = (mState & FLAG_PLAYING) != 0;
+				if(mDuckedLoss) {
+					setFlag(FLAG_DUCKING);
+				}
+				break;
+			}
 		case AudioManager.AUDIOFOCUS_LOSS:
 		case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
 			mDuckedLoss = false;

@@ -32,10 +32,10 @@ THE SOFTWARE.
 		android:title="@string/replaygain"
 		android:summary="@string/replaygain_summary" />
 	<ch.blinkenlights.android.vanilla.SeekBarPreference
-		android:key="volume_on_notification"
+		android:key="volume_during_ducking"
 		android:negativeButtonText="@string/restore_default"
 		android:dialogLayout="@layout/shake_pref"
-		android:title="@string/volume_on_notification_title"
+		android:title="@string/volume_during_ducking_title"
 		android:defaultValue="50" />
 	<CheckBoxPreference
 		android:key="media_button"
