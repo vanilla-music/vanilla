@@ -25,6 +25,7 @@ package ch.blinkenlights.android.vanilla;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.preference.DialogPreference;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.SeekBar;
@@ -100,6 +101,13 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 
 		mValueText = (TextView)view.findViewById(R.id.value);
 		mValueText.setText(getSummary(mValue));
+
+		CharSequence dialogMessage = getDialogMessage();
+		if(!TextUtils.isEmpty(dialogMessage)) {
+			TextView messageTextView = (TextView) view.findViewById(R.id.message);
+			messageTextView.setText(dialogMessage);
+			messageTextView.setVisibility(View.VISIBLE);
+		}
 
 		SeekBar seekBar = (SeekBar)view.findViewById(R.id.seek_bar);
 
