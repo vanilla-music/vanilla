@@ -88,6 +88,9 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 		} else if(PrefKeys.REPLAYGAIN_UNTAGGED_DEBUMP.equals(getKey())) {
 			String summary = (String)mContext.getResources().getText(R.string.replaygain_untagged_debump_summary);
 			return String.format("%s %.1fdB", summary, (value-150)/10f);
+		} else if (PrefKeys.VOLUME_DURING_DUCKING.equals(getKey())) {
+			String summary = mContext.getString(R.string.volume_during_ducking_summary);
+			return summary + " " + value + "%";
 		} else {
 			return String.format("%d%% (%+.1fdB)", value, 20 * Math.log10(Math.pow(value / 100.0, 3)));
 		}
@@ -103,7 +106,15 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 
 		SeekBar seekBar = (SeekBar)view.findViewById(R.id.seek_bar);
 
-		int maxValue = (PrefKeys.SHAKE_THRESHOLD.equals(getKey()) ? 300 : 150);
+		int maxValue;
+		String key = getKey();
+		if (PrefKeys.SHAKE_THRESHOLD.equals(key)) {
+			maxValue = 300;
+		} else if (PrefKeys.VOLUME_DURING_DUCKING.equals(key)) {
+			maxValue = 100;
+		} else {
+			maxValue = 150;
+		}
 
 		seekBar.setMax(maxValue);
 		seekBar.setProgress(mValue);
@@ -115,6 +126,9 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 	@Override
 	protected void onDialogClosed(boolean positiveResult)
 	{
+		if(!positiveResult && PrefKeys.VOLUME_DURING_DUCKING.equals(getKey())) {
+			setValue(50);
+		}
 		notifyChanged();
 	}
 
@@ -122,9 +136,7 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
 	{
 		if (fromUser) {
-			mValue = progress;
-			mValueText.setText(getSummary(progress));
-			persistInt(progress);
+			setValue(progress);
 		}
 	}
 
@@ -136,5 +148,11 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 	@Override
 	public void onStopTrackingTouch(SeekBar seekBar)
 	{
+	}
+
+	private void setValue(int value) {
+		mValue = value;
+		mValueText.setText(getSummary(value));
+		persistInt(value);
 	}
 }
