@@ -46,12 +46,10 @@ THE SOFTWARE.
 		android:title="@string/replaygain_untagged_debump_title"
 		android:defaultValue="150" />
 		
-	<EditTextPreference
-		android:enabled="false"
-		android:title="Note"
-		android:summary="Android does not allow Vanilla Music to raise the volume 
-to >100%. Setting the Pre-amp to a high value may cause issues if you are listening to 'quiet' music.
-\nRecommended values are:\n-> -3dB for silent/classical music\n-> +3dB for post-2000 recordings"
+	<Preference
+		android:selectable="false"
+		android:title="@string/replaygain_preamp_note_title"
+		android:summary="@string/replaygain_preamp_note_content"
 		/>
 		
 </PreferenceScreen>

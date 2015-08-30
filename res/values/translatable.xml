@@ -171,6 +171,8 @@ THE SOFTWARE.
 	<string name="replaygain_bump_title">Replay Gain Pre-amp</string>
 	<string name="replaygain_untagged_debump_title">Songs without Replay Gain tag</string>
 	<string name="replaygain_untagged_debump_summary">Decrease volume by</string>
+	<string name="replaygain_preamp_note_title">Note</string>
+	<string name="replaygain_preamp_note_content">Android does not allow Vanilla Music to raise the volume to >100%. Setting the Pre-amp to a high value may cause issues if you are listening to \'quiet\' music. \n\nRecommended values are:\n-> -3dB for silent/classical music\n-> +3dB for post-2000 recordings</string> 
 
 	<string name="readahead">Enable readahead</string>
 	<string name="readahead_summary">Readahead the currently playing song. This option may solve \'audio dropout\' issues. (caused by a slow SD card)</string>
