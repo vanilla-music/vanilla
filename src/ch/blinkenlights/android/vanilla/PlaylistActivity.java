@@ -55,7 +55,8 @@ public class PlaylistActivity extends Activity
 	 */
 	private static final int[] MODE_FOR_ACTION =
 		{ SongTimeline.MODE_PLAY, SongTimeline.MODE_ENQUEUE, -1,
-		  SongTimeline.MODE_PLAY_POS_FIRST, SongTimeline.MODE_ENQUEUE_POS_FIRST };
+		  SongTimeline.MODE_PLAY_POS_FIRST, SongTimeline.MODE_ENQUEUE_POS_FIRST,
+		  -1, -1, -1, SongTimeline.MODE_ENQUEUE_AS_NEXT };
 
 	/**
 	 * An event loop running on a worker thread.
@@ -186,6 +187,7 @@ public class PlaylistActivity extends Activity
 	private static final int MENU_PLAY_ALL = LibraryActivity.ACTION_PLAY_ALL;
 	private static final int MENU_ENQUEUE = LibraryActivity.ACTION_ENQUEUE;
 	private static final int MENU_ENQUEUE_ALL = LibraryActivity.ACTION_ENQUEUE_ALL;
+	private static final int MENU_ENQUEUE_AS_NEXT = LibraryActivity.ACTION_ENQUEUE_AS_NEXT;
 	private static final int MENU_REMOVE = -1;
 
 	@Override
@@ -199,6 +201,7 @@ public class PlaylistActivity extends Activity
 
 		menu.add(0, MENU_PLAY, 0, R.string.play).setIntent(intent);
 		menu.add(0, MENU_PLAY_ALL, 0, R.string.play_all).setIntent(intent);
+		menu.add(0, MENU_ENQUEUE_AS_NEXT, 0, R.string.enqueue_as_next).setIntent(intent);
 		menu.add(0, MENU_ENQUEUE, 0, R.string.enqueue).setIntent(intent);
 		menu.add(0, MENU_ENQUEUE_ALL, 0, R.string.enqueue_all).setIntent(intent);
 		menu.add(0, MENU_REMOVE, 0, R.string.remove).setIntent(intent);
@@ -235,7 +238,8 @@ public class PlaylistActivity extends Activity
 
 		switch (action) {
 		case LibraryActivity.ACTION_PLAY:
-		case LibraryActivity.ACTION_ENQUEUE: {
+		case LibraryActivity.ACTION_ENQUEUE:
+		case LibraryActivity.ACTION_ENQUEUE_AS_NEXT: {
 			QueryTask query = MediaUtils.buildQuery(MediaUtils.TYPE_SONG, audioId, Song.FILLED_PROJECTION, null);
 			query.mode = MODE_FOR_ACTION[action];
 			PlaybackService.get(this).addSongs(query);
