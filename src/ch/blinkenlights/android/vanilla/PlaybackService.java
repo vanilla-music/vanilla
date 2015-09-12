@@ -1323,7 +1323,6 @@ public final class PlaybackService extends Service
 
 		updateNotification();
 
-		mTimeline.purge();
 	}
 
 	@Override

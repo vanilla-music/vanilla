@@ -552,6 +552,10 @@ public final class SongTimeline {
 					if (song == null)
 						return null;
 					timeline.add(song);
+					// Keep the queue at 20 items to avoid growing forever
+					// Note that we do not broadcast the addition of this song, as it
+					// was virtually 'always there'
+					shrinkQueue(20);
 				} else {
 					if (size == 0)
 						// empty queue
@@ -790,19 +794,16 @@ public final class SongTimeline {
 	}
 
 	/**
-	 * Removes any songs greater than 10 songs before the current song when in
-	 * random mode.
+	 * Removes any songs greater than `len' songs before the current song.
 	 */
-	public void purge()
-	{
+	private void shrinkQueue(int len) {
 		synchronized (this) {
-			if (mFinishAction == FINISH_RANDOM) {
-				while (mCurrentPos > 10) {
-					mSongs.remove(0);
-					--mCurrentPos;
-				}
+			while (mCurrentPos > len) {
+				mSongs.remove(0);
+				mCurrentPos--;
 			}
 		}
+		changed();
 	}
 
 	/**
