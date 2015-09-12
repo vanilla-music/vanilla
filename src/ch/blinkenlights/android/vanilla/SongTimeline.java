@@ -612,7 +612,11 @@ public final class SongTimeline {
 	 * Hard-Jump to given queue position
 	*/
 	public Song setCurrentQueuePosition(int pos) {
-		mCurrentPos = pos;
+		synchronized (this) {
+			saveActiveSongs();
+			mCurrentPos = pos;
+			broadcastChangedSongs();
+		}
 		changed();
 		return getSong(0);
 	}
