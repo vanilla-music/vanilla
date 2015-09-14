@@ -288,6 +288,11 @@ THE SOFTWARE.
 	<string name="toggle_controls">Toggle controls</string>
 	<string name="seek_10s_backward">Seek 10 seconds backward</string>
 	<string name="seek_10s_forward">Seek 10 seconds forward</string>
+	<string name="preferences_action_show_queue">Show queue</string>
+	<string name="preferences_action_clear_queue">Clear queue</string>
+	<string name="preferences_action_enqueue_current_album">Enqueue album</string>
+	<string name="preferences_action_enqueue_current_artist">Enqueue artist</string>
+	<string name="preferences_action_enqueue_current_genre">Enqueue genre</string>
 
 	<string name="filebrowser_start">Filebrowser home</string>
 	<string name="customize_filebrowser_start">Filebrowser starts at this directory</string>
