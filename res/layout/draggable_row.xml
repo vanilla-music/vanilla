@@ -32,7 +32,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 			android:id="@+id/pmark"
 			android:visibility="gone"
 			android:layout_width="4dip"
-			android:layout_height="44dip"
+			android:layout_height="44sp"
 			android:background="@color/now_playing_marker" />
 
 		<ch.blinkenlights.android.vanilla.LazyCoverView
@@ -41,8 +41,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 			android:background="?android:attr/selectableItemBackground"
 			android:longClickable="true"
 			android:scaleType="fitCenter"
-			android:layout_width="44dip"
-			android:layout_height="44dip" />
+			android:layout_width="44sp"
+			android:layout_height="44sp" />
 
 		<TextView
 			android:id="@+id/text"
@@ -62,15 +62,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 			android:checkMark="?android:attr/listChoiceIndicatorMultiple"
 			android:gravity="center_vertical"
 			android:layout_height="match_parent"
-			android:layout_width="44dip"/>
+			android:layout_width="44sp"/>
 
 		<ImageView
 			android:id="@+id/dragger"
 			android:visibility="gone"
 			android:scaleType="center"
 			android:src="@drawable/grabber"
-			android:layout_width="44dip"
-			android:layout_height="44dip" />
+			android:layout_width="44sp"
+			android:layout_height="44sp" />
 	</LinearLayout>
 
 	<View
