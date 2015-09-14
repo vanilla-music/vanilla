@@ -356,9 +356,9 @@ public final class PlaybackService extends Service
 	 */
 	private long mIdleStart = -1;
 	/**
-	 * True if the last audio focus loss can be ducked.
+	 * True if we encountered a transient audio loss
 	 */
-	private boolean mDuckedLoss;
+	private boolean mTransientAudioLoss;
 	/**
 	 * Magnitude of last sensed acceleration.
 	 */
@@ -2038,23 +2038,29 @@ public final class PlaybackService extends Service
 		Log.d("VanillaMusic", "audio focus change: " + type);
 		switch (type) {
 		case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+		case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
 			synchronized (mStateLock) {
-				mDuckedLoss = (mState & FLAG_PLAYING) != 0;
-				if(mDuckedLoss) {
-					setFlag(FLAG_DUCKING);
+				mTransientAudioLoss = (mState & FLAG_PLAYING) != 0;
+				if(mTransientAudioLoss) {
+					if (type == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
+						setFlag(FLAG_DUCKING);
+					} else {
+						unsetFlag(FLAG_PLAYING);
+					}
 				}
 				break;
 			}
 		case AudioManager.AUDIOFOCUS_LOSS:
-		case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-			mDuckedLoss = false;
+			mTransientAudioLoss = false;
 			mForceNotificationVisible = true;
 			unsetFlag(FLAG_PLAYING);
 			break;
 		case AudioManager.AUDIOFOCUS_GAIN:
-			if (mDuckedLoss) {
-				mDuckedLoss = false;
+			if (mTransientAudioLoss) {
+				mTransientAudioLoss = false;
+				// Restore all flags possibly changed by AUDIOFOCUS_LOSS_TRANSIENT_*
 				unsetFlag(FLAG_DUCKING);
+				setFlag(FLAG_PLAYING);
 			}
 			break;
 		}
