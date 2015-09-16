@@ -1375,8 +1375,11 @@ public final class PlaybackService extends Service
 			String action = intent.getAction();
 
 			if (AudioManager.ACTION_AUDIO_BECOMING_NOISY.equals(action)) {
-				if (mHeadsetPause)
+				if (mHeadsetPause) {
 					unsetFlag(FLAG_PLAYING);
+					// Treat any pending transient audio loss as permanent
+					mTransientAudioLoss = false;
+				}
 			} else if (Intent.ACTION_SCREEN_ON.equals(action)) {
 				userActionTriggered();
 			}
@@ -2045,6 +2048,7 @@ public final class PlaybackService extends Service
 					if (type == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
 						setFlag(FLAG_DUCKING);
 					} else {
+						mForceNotificationVisible = true;
 						unsetFlag(FLAG_PLAYING);
 					}
 				}
