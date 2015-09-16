@@ -976,7 +976,8 @@ public final class PlaybackService extends Service
 
 				if (mNotificationMode == ALWAYS || mForceNotificationVisible) {
 					stopForeground(false);
-					mNotificationManager.notify(NOTIFICATION_ID, createNotification(mCurrentSong, mState));
+					if (mCurrentSong != null)
+						mNotificationManager.notify(NOTIFICATION_ID, createNotification(mCurrentSong, mState));
 				} else {
 					stopForeground(true);
 				}
