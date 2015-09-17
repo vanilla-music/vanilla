@@ -68,6 +68,10 @@ public class MediaAdapter
 	/**
 	 * A context to use.
 	 */
+	private final Context mContext;
+	/**
+	 * The library activity to use.
+	 */
 	private final LibraryActivity mActivity;
 	/**
 	 * A LayoutInflater to use.
@@ -146,19 +150,29 @@ public class MediaAdapter
 	 * Construct a MediaAdapter representing the given <code>type</code> of
 	 * media.
 	 *
-	 * @param activity The LibraryActivity that will contain this adapter.
+	 * @param context The Context used to access the content model.
 	 * @param type The type of media to represent. Must be one of the
 	 * Song.TYPE_* constants. This determines which content provider to query
 	 * and what fields to display in the views.
 	 * @param limiter An initial limiter to use
+	 * @param activity The LibraryActivity that will contain this adapter - may be null
+	 * @param looper The looper to use for image processing - may be null
+	 *
 	 */
-	public MediaAdapter(LibraryActivity activity, int type, Limiter limiter, Looper looper)
+	public MediaAdapter(Context context, int type, Limiter limiter, LibraryActivity activity, Looper looper)
 	{
+		mContext = context;
 		mActivity = activity;
 		mType = type;
 		mLimiter = limiter;
-		mInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mLooper = looper;
+
+		if (mActivity != null) {
+			mInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		} else {
+			mInflater = null; // not running inside an activity
+		}
+
 
 		mCoverCacheType = MediaUtils.TYPE_INVALID;
 		String coverCacheKey = "0"; // SQL dummy entry
@@ -267,7 +281,7 @@ public class MediaAdapter
 
 		// Magic sort mode: sort by playcount
 		if (sortStringRaw == SORT_MAGIC_PLAYCOUNT) {
-			ArrayList<Long> topSongs = (new PlayCountsHelper(mActivity)).getTopSongs(4096);
+			ArrayList<Long> topSongs = (new PlayCountsHelper(mContext)).getTopSongs(4096);
 			int sortWeight = -1 * topSongs.size(); // Sort mode is actually reversed (default: mostplayed -> leastplayed)
 
 			StringBuilder sb = new StringBuilder("CASE WHEN _id=0 THEN 0"); // include dummy statement in initial string -> topSongs may be empty
@@ -340,9 +354,9 @@ public class MediaAdapter
 	}
 
 	@Override
-	public Object query()
+	public Cursor query()
 	{
-		return buildQuery(mProjection, false).runQuery(mActivity.getContentResolver());
+		return buildQuery(mProjection, false).runQuery(mContext.getContentResolver());
 	}
 
 	@Override

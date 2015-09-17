@@ -313,26 +313,26 @@ public class LibraryPagerAdapter
 
 			switch (type) {
 			case MediaUtils.TYPE_ARTIST:
-				adapter = mArtistAdapter = new MediaAdapter(activity, MediaUtils.TYPE_ARTIST, null, looper);
+				adapter = mArtistAdapter = new MediaAdapter(activity, MediaUtils.TYPE_ARTIST, null, activity, looper);
 				mArtistAdapter.setExpandable(mSongsPosition != -1 || mAlbumsPosition != -1);
 				mArtistHeader = header = (LinearLayout)inflater.inflate(R.layout.library_row_expandable, null);
 				break;
 			case MediaUtils.TYPE_ALBUM:
-				adapter = mAlbumAdapter = new MediaAdapter(activity, MediaUtils.TYPE_ALBUM, mPendingAlbumLimiter, looper);
+				adapter = mAlbumAdapter = new MediaAdapter(activity, MediaUtils.TYPE_ALBUM, mPendingAlbumLimiter, activity, looper);
 				mAlbumAdapter.setExpandable(mSongsPosition != -1);
 				mPendingAlbumLimiter = null;
 				mAlbumHeader = header = (LinearLayout)inflater.inflate(R.layout.library_row_expandable, null);
 				break;
 			case MediaUtils.TYPE_SONG:
-				adapter = mSongAdapter = new MediaAdapter(activity, MediaUtils.TYPE_SONG, mPendingSongLimiter, looper);
+				adapter = mSongAdapter = new MediaAdapter(activity, MediaUtils.TYPE_SONG, mPendingSongLimiter, activity, looper);
 				mPendingSongLimiter = null;
 				mSongHeader = header = (LinearLayout)inflater.inflate(R.layout.library_row_expandable, null);
 				break;
 			case MediaUtils.TYPE_PLAYLIST:
-				adapter = mPlaylistAdapter = new MediaAdapter(activity, MediaUtils.TYPE_PLAYLIST, null, looper);
+				adapter = mPlaylistAdapter = new MediaAdapter(activity, MediaUtils.TYPE_PLAYLIST, null, activity, looper);
 				break;
 			case MediaUtils.TYPE_GENRE:
-				adapter = mGenreAdapter = new MediaAdapter(activity, MediaUtils.TYPE_GENRE, null, looper);
+				adapter = mGenreAdapter = new MediaAdapter(activity, MediaUtils.TYPE_GENRE, null, activity, looper);
 				mGenreAdapter.setExpandable(mSongsPosition != -1);
 				break;
 			case MediaUtils.TYPE_FILE:
