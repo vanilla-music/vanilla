@@ -942,26 +942,20 @@ public class LibraryActivity
 
 		if (mTitle != null) {
 			if (song == null) {
-				if (mActionControls == null) {
-					mTitle.setText(R.string.none);
-					mArtist.setText(null);
-				} else {
-					mTitle.setText(null);
-					mArtist.setText(null);
-					return;
-				}
+				mTitle.setText(null);
+				mArtist.setText(null);
+				mCover.setImageBitmap(null);
 			} else {
 				Resources res = getResources();
 				String title = song.title == null ? res.getString(R.string.unknown) : song.title;
 				String artist = song.artist == null ? res.getString(R.string.unknown) : song.artist;
 				mTitle.setText(title);
 				mArtist.setText(artist);
+				// Update and generate the cover in a background thread
+				mHandler.sendMessage(mHandler.obtainMessage(MSG_UPDATE_COVER, song));
 			}
-
 			mCover.setVisibility(CoverCache.mCoverLoadMode == 0 ? View.GONE : View.VISIBLE);
-			mHandler.sendMessage(mHandler.obtainMessage(MSG_UPDATE_COVER, song));
 		}
-
 	}
 
 	@Override
