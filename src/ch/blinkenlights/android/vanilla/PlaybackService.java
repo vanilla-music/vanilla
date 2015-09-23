@@ -72,12 +72,12 @@ import java.util.ArrayList;
  */
 public final class PlaybackService extends Service
 	implements Handler.Callback
-	         , MediaPlayer.OnCompletionListener
-	         , MediaPlayer.OnErrorListener
-	         , SharedPreferences.OnSharedPreferenceChangeListener
-	         , SongTimeline.Callback
-	         , SensorEventListener
-	         , AudioManager.OnAudioFocusChangeListener
+			 , MediaPlayer.OnCompletionListener
+			 , MediaPlayer.OnErrorListener
+			 , SharedPreferences.OnSharedPreferenceChangeListener
+			 , SongTimeline.Callback
+			 , SensorEventListener
+			 , AudioManager.OnAudioFocusChangeListener
 {
 	/**
 	 * Name of the state file.
@@ -99,7 +99,7 @@ public final class PlaybackService extends Service
 	 * Rewind song if we already played more than 2.5 sec
 	*/
 	private static final int REWIND_AFTER_PLAYED_MS = 2500;
-	
+
 	/**
 	 * Action for startService: toggle playback on/off.
 	 */
@@ -255,12 +255,12 @@ public final class PlaybackService extends Service
 	 *     g:   {@link PlaybackService#FLAG_DUCKING}
 	 */
 	int mState;
-	
+
 	/**
 	 * How many broken songs we did already skip
 	 */
 	int mSkipBroken;
-	
+
 	/**
 	 * Object used for state-related locking.
 	 */
@@ -277,6 +277,10 @@ public final class PlaybackService extends Service
 	 * Static referenced-array to PlaybackActivities, used for callbacks
 	 */
 	private static final ArrayList<PlaybackActivity> sActivities = new ArrayList<PlaybackActivity>(5);
+	/**
+	 * Static reference to MirrorLinkMediaBrowserService, used for callbacks
+	 */
+	private static MirrorLinkMediaBrowserService sMirrorLinkMediaBrowserService = null;
 	/**
 	 * Cached app-wide SharedPreferences instance.
 	 */
@@ -432,7 +436,7 @@ public final class PlaybackService extends Service
 		mBastpUtil = new BastpUtil();
 		mReadahead = new ReadaheadThread();
 		mReadahead.start();
-		
+
 		mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 		mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
 
@@ -618,14 +622,14 @@ public final class PlaybackService extends Service
 		mp.setOnErrorListener(this);
 		return mp;
 	}
-	
+
 	public void prepareMediaPlayer(VanillaMediaPlayer mp, String path) throws IOException{
 		mp.setDataSource(path);
 		mp.prepare();
 		applyReplayGain(mp);
 	}
-	
-	
+
+
 	/**
 	 * Make sure that the current ReplayGain volume matches
 	 * the (maybe just changed) user settings
@@ -646,20 +650,20 @@ public final class PlaybackService extends Service
 	 * and adjusts the volume
 	 */
 	private void applyReplayGain(VanillaMediaPlayer mp) {
-		
+
 		float[] rg = getReplayGainValues(mp.getDataSource()); /* track, album */
 		float adjust = 0f;
-		
+
 		if(mReplayGainAlbumEnabled) {
 			adjust = (rg[0] != 0 ? rg[0] : adjust); /* do we have track adjustment ? */
 			adjust = (rg[1] != 0 ? rg[1] : adjust); /* ..or, even better, album adj? */
 		}
-		
+
 		if(mReplayGainTrackEnabled || (mReplayGainAlbumEnabled && adjust == 0)) {
 			adjust = (rg[1] != 0 ? rg[1] : adjust); /* do we have album adjustment ? */
 			adjust = (rg[0] != 0 ? rg[0] : adjust); /* ..or, even better, track adj? */
 		}
-		
+
 		if(adjust == 0) {
 			/* No RG value found: decrease volume for untagged song if requested by user */
 			adjust = (mReplayGainUntaggedDeBump-150)/10f;
@@ -669,12 +673,12 @@ public final class PlaybackService extends Service
 			** But we want -15 <-> +15, so 75 shall be zero */
 			adjust += 2*(mReplayGainBump-75)/10f; /* 2* -> we want +-15, not +-7.5 */
 		}
-		
+
 		if(mReplayGainAlbumEnabled == false && mReplayGainTrackEnabled == false) {
 			/* Feature is disabled: Make sure that we are going to 100% volume */
 			adjust = 0f;
 		}
-		
+
 		float rg_result = ((float)Math.pow(10, (adjust/20) ))*mFadeOut;
 		if(rg_result > 1.0f) {
 			rg_result = 1.0f; /* android would IGNORE the change if this is > 1 and we would end up with the wrong volume */
@@ -685,7 +689,7 @@ public final class PlaybackService extends Service
 	}
 
 	/**
-	 * Returns the (hopefully cached) replaygain 
+	 * Returns the (hopefully cached) replaygain
 	 * values of given file
 	 */
 	public float[] getReplayGainValues(String path) {
@@ -718,7 +722,7 @@ public final class PlaybackService extends Service
 	private void triggerGaplessUpdate() {
 		if(mMediaPlayerInitialized != true)
 			return;
-		
+
 		if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
 			return; /* setNextMediaPlayer is supported since JB */
 
@@ -1017,12 +1021,22 @@ public final class PlaybackService extends Service
 			ArrayList<PlaybackActivity> list = sActivities;
 			for (int i = list.size(); --i != -1; )
 				list.get(i).setState(uptime, state);
+
+			MirrorLinkMediaBrowserService service = sMirrorLinkMediaBrowserService;
+			if(service != null) {
+				service.setState(uptime, state);
+			}
 		}
 
 		if (song != null) {
 			ArrayList<PlaybackActivity> list = sActivities;
 			for (int i = list.size(); --i != -1; )
 				list.get(i).setSong(uptime, song);
+		}
+
+		MirrorLinkMediaBrowserService service = sMirrorLinkMediaBrowserService;
+		if(service != null) {
+			service.setSong(uptime, song);
 		}
 
 		updateWidgets();
@@ -1106,6 +1120,23 @@ public final class PlaybackService extends Service
 	}
 
 	/**
+	 * When playing through MirrorLink(tm) don't interact
+	 * with the User directly as this is considered distracting
+	 * while driving
+	 */
+	private void showMirrorLinkSafeToast(int resId, int duration) {
+		if(sMirrorLinkMediaBrowserService == null) {
+			Toast.makeText(this, resId, duration).show();
+		}
+	}
+
+	private void showMirrorLinkSafeToast(CharSequence text, int duration) {
+		if(sMirrorLinkMediaBrowserService == null) {
+			Toast.makeText(this, text, duration).show();
+		}
+	}
+
+	/**
 	 * Start playing if currently paused.
 	 *
 	 * @return The new state after this is called.
@@ -1116,7 +1147,7 @@ public final class PlaybackService extends Service
 			if ((mState & FLAG_EMPTY_QUEUE) != 0) {
 				setFinishAction(SongTimeline.FINISH_RANDOM);
 				setCurrentSong(0);
-				Toast.makeText(this, R.string.random_enabling, Toast.LENGTH_SHORT).show();
+				showMirrorLinkSafeToast(R.string.random_enabling, Toast.LENGTH_SHORT);
 			}
 
 			int state = updateState(mState | FLAG_PLAYING);
@@ -1270,7 +1301,7 @@ public final class PlaybackService extends Service
 	{
 		/* Save our 'current' state as the try block may set the ERROR flag (which clears the PLAYING flag */
 		boolean playing = (mState & FLAG_PLAYING) != 0;
-		
+
 		try {
 			mMediaPlayerInitialized = false;
 			mMediaPlayer.reset();
@@ -1287,7 +1318,7 @@ public final class PlaybackService extends Service
 			else if(song.path != null) {
 				prepareMediaPlayer(mMediaPlayer, song.path);
 			}
-			
+
 
 			mMediaPlayerInitialized = true;
 			// Cancel any pending gapless updates and re-send them
@@ -1310,16 +1341,16 @@ public final class PlaybackService extends Service
 		} catch (IOException e) {
 			mErrorMessage = getResources().getString(R.string.song_load_failed, song.path);
 			updateState(mState | FLAG_ERROR);
-			Toast.makeText(this, mErrorMessage, Toast.LENGTH_LONG).show();
+			showMirrorLinkSafeToast(mErrorMessage, Toast.LENGTH_LONG);
 			Log.e("VanillaMusic", "IOException", e);
-			
+
 			/* Automatically advance to next song IF we are currently playing or already did skip something
 			 * This will stop after skipping 10 songs to avoid endless loops (queue full of broken stuff */
 			if(mTimeline.isEndOfQueue() == false && getSong(1) != null && (playing || (mSkipBroken > 0 && mSkipBroken < 10))) {
 				mSkipBroken++;
 				mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_SKIP_BROKEN_SONG, getTimelinePosition(), 0), 1000);
 			}
-			
+
 		}
 
 		updateNotification();
@@ -1351,6 +1382,10 @@ public final class PlaybackService extends Service
 	public boolean onError(MediaPlayer player, int what, int extra)
 	{
 		Log.e("VanillaMusic", "MediaPlayer error: " + what + ' ' + extra);
+		MirrorLinkMediaBrowserService service = sMirrorLinkMediaBrowserService;
+		if(service != null) {
+			service.onError("MediaPlayer Error");
+		}
 		return true;
 	}
 
@@ -1689,8 +1724,7 @@ public final class PlaybackService extends Service
 		default:
 			throw new IllegalArgumentException("Invalid add mode: " + query.mode);
 		}
-		
-		Toast.makeText(this, getResources().getQuantityString(text, count, count), Toast.LENGTH_SHORT).show();
+		showMirrorLinkSafeToast(getResources().getQuantityString(text, count, count), Toast.LENGTH_SHORT);
 	}
 
 	/**
@@ -1781,6 +1815,11 @@ public final class PlaybackService extends Service
 		ArrayList<PlaybackActivity> list = sActivities;
 		for (int i = list.size(); --i != -1; )
 			list.get(i).onTimelineChanged();
+
+		MirrorLinkMediaBrowserService service = sMirrorLinkMediaBrowserService;
+		if(service != null) {
+			service.onTimelineChanged();
+		}
 	}
 
 	@Override
@@ -1789,6 +1828,11 @@ public final class PlaybackService extends Service
 		ArrayList<PlaybackActivity> list = sActivities;
 		for (int i = list.size(); --i != -1; )
 			list.get(i).onPositionInfoChanged();
+
+		MirrorLinkMediaBrowserService service = sMirrorLinkMediaBrowserService;
+		if(service != null) {
+			service.onPositionInfoChanged();
+		}
 	}
 
 	private final ContentObserver mObserver = new ContentObserver(null) {
@@ -1847,6 +1891,24 @@ public final class PlaybackService extends Service
 	public static void removeActivity(PlaybackActivity activity)
 	{
 		sActivities.remove(activity);
+	}
+
+	/**
+	 * Register a MirrorLinkMediaBrowserService instance
+	 *
+	 * @param service the Service to be registered
+	 */
+	public static void registerService(MirrorLinkMediaBrowserService service) {
+		sMirrorLinkMediaBrowserService = service;
+	}
+
+	/**
+	 * Deregister a MirrorLinkMediaBrowserService instance
+	 *
+	 * @param service the Service to be deregistered
+	 */
+	public static void unregisterService() {
+		sMirrorLinkMediaBrowserService = null;
 	}
 
 	/**
@@ -2171,7 +2233,7 @@ public final class PlaybackService extends Service
 			break;
 		case ClearQueue:
 			clearQueue();
-			Toast.makeText(this, R.string.queue_cleared, Toast.LENGTH_SHORT).show();
+			showMirrorLinkSafeToast(R.string.queue_cleared, Toast.LENGTH_SHORT);
 			break;
 		case ShowQueue:
 			Intent intentShowQueue = new Intent(this, ShowQueueActivity.class);
@@ -2204,6 +2266,13 @@ public final class PlaybackService extends Service
 	}
 
 	/**
+	 * Returns the playing status of the current song
+	 */
+	public boolean isPlaying() {
+		return (mState & FLAG_PLAYING) != 0;
+	}
+
+	/**
 	 * Returns the position of the current song in the song timeline.
 	 */
 	public int getTimelinePosition()
@@ -2218,14 +2287,14 @@ public final class PlaybackService extends Service
 	{
 		return mTimeline.getLength();
 	}
-	
+
 	/**
 	 * Returns 'Song' with given id from timeline
 	*/
 	public Song getSongByQueuePosition(int id) {
 		return mTimeline.getSongByQueuePosition(id);
 	}
-	
+
 	/**
 	 * Do a 'hard' jump to given queue position
 	*/
