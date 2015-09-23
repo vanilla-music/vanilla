@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2015 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -732,7 +733,7 @@ public class LibraryActivity
 				.setMessage(delete_message)
 				.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
-						mPagerAdapter.maintainState(); // remember current scrolling position
+						mPagerAdapter.maintainPosition(); // remember current scrolling position
 						mHandler.sendMessage(mHandler.obtainMessage(MSG_DELETE, intent));
 					}
 				})

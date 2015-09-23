@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2015 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -118,9 +119,9 @@ public class LibraryPagerAdapter
 	 */
 	private FileSystemAdapter mFilesAdapter;
 	/**
-	 * LRU cache holding the last scrolling position of the filesadapter listview
+	 * LRU cache holding the last scrolling position of all adapter views
 	 */
-	private FilePositionLruCache mFilePosLRU;
+	private static AdaperPositionLruCache sLruAdapterPos;
 	/**
 	 * The adapter of the currently visible list.
 	 */
@@ -141,10 +142,6 @@ public class LibraryPagerAdapter
 	 * A limiter that should be set when the files adapter is created.
 	 */
 	private Limiter mPendingFileLimiter;
-	/**
-	 * List positions stored in the saved state, or null if none were stored.
-	 */
-	private int[] mSavedPositions;
 	/**
 	 * The LibraryActivity that owns this adapter. The adapter will be notified
 	 * of changes in the current page.
@@ -206,7 +203,8 @@ public class LibraryPagerAdapter
 	 */
 	public LibraryPagerAdapter(LibraryActivity activity, Looper workerLooper)
 	{
-		mFilePosLRU = new FilePositionLruCache(32);
+		if (sLruAdapterPos == null)
+			sLruAdapterPos = new AdaperPositionLruCache(32);
 		mActivity = activity;
 		mUiHandler = new Handler(this);
 		mWorkerHandler = new Handler(workerLooper, this);
@@ -426,7 +424,6 @@ public class LibraryPagerAdapter
 		mPendingAlbumLimiter = (Limiter)in.getSerializable("limiter_albums");
 		mPendingSongLimiter = (Limiter)in.getSerializable("limiter_songs");
 		mPendingFileLimiter = (Limiter)in.getSerializable("limiter_files");
-		mSavedPositions = in.getIntArray("pos");
 	}
 
 	@Override
@@ -439,28 +436,8 @@ public class LibraryPagerAdapter
 			out.putSerializable("limiter_songs", mSongAdapter.getLimiter());
 		if (mFilesAdapter != null)
 			out.putSerializable("limiter_files", mFilesAdapter.getLimiter());
-
-		int[] savedPositions = new int[MAX_ADAPTER_COUNT];
-		ListView[] lists = mLists;
-		for (int i = MAX_ADAPTER_COUNT; --i != -1; ) {
-			if (lists[i] != null) {
-				savedPositions[i] = lists[i].getFirstVisiblePosition();
-			}
-		}
-		out.putIntArray("pos", savedPositions);
+		maintainPosition();
 		return out;
-	}
-
-	/**
-	 * Forcefully updates mSavedPositions by storing the current
-	 * state and passing it back into restoreState()
-	 * This ensures that the nest MSG_COMMIT_QUERY will
-	 * keep the current scrolling position
-	 */
-	public void maintainState()
-	{
-		Parcelable state = saveState();
-		restoreState(state, null);
 	}
 
 	/**
@@ -485,6 +462,8 @@ public class LibraryPagerAdapter
 	 */
 	public void clearLimiter(int type)
 	{
+		maintainPosition();
+
 		if (type == MediaUtils.TYPE_FILE) {
 			if (mFilesAdapter == null) {
 				mPendingFileLimiter = null;
@@ -519,6 +498,8 @@ public class LibraryPagerAdapter
 	public int setLimiter(Limiter limiter)
 	{
 		int tab;
+
+		maintainPosition();
 
 		switch (limiter.type) {
 		case MediaUtils.TYPE_ALBUM:
@@ -571,10 +552,6 @@ public class LibraryPagerAdapter
 			if (mFilesAdapter == null) {
 				mPendingFileLimiter = limiter;
 			} else {
-				Limiter oldLimiter = mFilesAdapter.getLimiter();
-				int curPos = mLists[limiter.type].getFirstVisiblePosition();
-				mFilePosLRU.putLimiter(oldLimiter, curPos);
-
 				mFilesAdapter.setLimiter(limiter);
 				requestRequery(mFilesAdapter);
 			}
@@ -585,6 +562,17 @@ public class LibraryPagerAdapter
 		}
 
 		return tab;
+	}
+
+	/**
+	 * Saves the scrolling position of every visible limiter
+	 */
+	public void maintainPosition() {
+		for (int i = MAX_ADAPTER_COUNT; --i != -1; ) {
+			if (mAdapters[i] != null) {
+				sLruAdapterPos.storePosition(mAdapters[i], mLists[i].getFirstVisiblePosition());
+			}
+		}
 	}
 
 	/**
@@ -637,22 +625,14 @@ public class LibraryPagerAdapter
 			break;
 		}
 		case MSG_COMMIT_QUERY: {
+			int pos = 0;
 			int index = message.arg1;
 			mAdapters[index].commitQuery(message.obj);
-			int pos;
-			if (mSavedPositions == null) {
-				pos = 0;
-			} else {
-				pos = mSavedPositions[index];
-				mSavedPositions[index] = 0;
-			}
 
-			if (index == MediaUtils.TYPE_FILE) {
-				Limiter curLimiter = mAdapters[index].getLimiter();
-				Integer curPos = mFilePosLRU.getLimiter(curLimiter);
-				if (curPos != null)
-					pos = (int)curPos;
-			}
+			Limiter curLimiter = mAdapters[index].getLimiter();
+			Integer curPos = sLruAdapterPos.getPosition(mAdapters[index]);
+			if (curPos != null)
+				pos = (int)curPos;
 
 			mLists[index].setSelection(pos);
 			break;
@@ -848,24 +828,26 @@ public class LibraryPagerAdapter
 	}
 
 	/**
-	 * LRU implementation for filebrowser position cache
+	 * LRU implementation: saves the adapter position
 	 */
-	private class FilePositionLruCache extends LruCache<String, Integer> {
-		public FilePositionLruCache(int size) {
+	private class AdaperPositionLruCache extends LruCache<String, Integer> {
+		public AdaperPositionLruCache(int size) {
 			super(size);
 		}
-		public void putLimiter(Limiter limiter, Integer val) {
-			this.put(_k(limiter), val);
+		public void storePosition(LibraryAdapter adapter, Integer val) {
+			this.put(_k(adapter), val);
 		}
-		public Integer getLimiter(Limiter limiter) {
-			return this.get(_k(limiter));
+		public Integer getPosition(LibraryAdapter adapter) {
+			return this.get(_k(adapter));
 		}
 
 		/**
-		 * Stringify limiter or return / if null
+		 * Assemble internal cache key from adapter
 		 */
-		private String _k(Limiter limiter) {
-			String result = "/";
+		private String _k(LibraryAdapter adapter) {
+			String result = adapter.getMediaType()+"://";
+			Limiter limiter = adapter.getLimiter();
+
 			if (limiter != null) {
 				for(String entry : limiter.names) {
 					result = result + entry + "/";
