@@ -110,6 +110,8 @@
   </plurals>
   <string name="audio">音訊</string>
   <string name="volume_title">音量</string>
+  <string name="volume_during_ducking_title">音量在通知</string>
+  <string name="volume_during_ducking_summary">播放音量：</string>
   <string name="media_button_title">耳機/藍牙控制</string>
   <string name="media_button_summary">這也需要由 ICS 螢幕鎖定控制。</string>
   <string name="media_button_beep_title">耳機控制嗶音</string>
@@ -130,6 +132,8 @@
   <string name="replaygain_bump_title">重播增益前置放大</string>
   <string name="replaygain_untagged_debump_title">歌曲無重播增益標記</string>
   <string name="replaygain_untagged_debump_summary">降低音量依據</string>
+  <string name="replaygain_preamp_note_title">注解</string>
+  <string name="replaygain_preamp_note_content">Android 不允許 Vanilla Music 提高&gt; 100% 的音量。如果您正在聽 \'安靜\' 的音樂，設定前置放大器為一個較高的值，可能會導致問題。\n\n推薦值是：\n-&gt; -3dB 給寂靜的/古典音樂\n-&gt; +3dB 給 post-2000 的錄音</string>
   <string name="readahead">啟用預先讀取</string>
   <string name="readahead_summary">預讀目前播放的曲目。此選項可以解決\'音頻落後\'的問題。(因較慢的 SD 卡所造成)</string>
   <string name="equalizer">等化器</string>
@@ -222,6 +226,11 @@
   <string name="toggle_controls">切換控制</string>
   <string name="seek_10s_backward">向後探尋10秒</string>
   <string name="seek_10s_forward">向前探尋10秒</string>
+  <string name="preferences_action_show_queue">顯示佇列</string>
+  <string name="preferences_action_clear_queue">清除佇列</string>
+  <string name="preferences_action_enqueue_current_album">以專輯儲入佇列</string>
+  <string name="preferences_action_enqueue_current_artist">以演唱者儲入佇列</string>
+  <string name="preferences_action_enqueue_current_genre">以類型儲入佇列</string>
   <string name="filebrowser_start">啟始目錄</string>
   <string name="customize_filebrowser_start">在此目錄開始瀏覽檔案</string>
   <string name="select">選擇</string>

@@ -54,7 +54,7 @@
   <string name="done">Fertig</string>
   <string name="remove">Entfernen</string>
   <string name="clear_search">Suche leeren</string>
-  <string name="play_or_enqueue">Einreihen - oder abspielen falls pausiert</string>
+  <string name="play_or_enqueue">Einreihen bei aktiver Wiedergabe oder abspielen, falls pausiert</string>
   <plurals name="playing">
     <item quantity="one">1 Titel wird abgespielt.</item>
     <item quantity="other">%d Titel werden abgespielt.</item>
@@ -117,14 +117,16 @@
   </plurals>
   <string name="audio">Audio</string>
   <string name="volume_title">Lautstärke</string>
+  <string name="volume_during_ducking_title">Lautstärke während Benachrichtigung</string>
+  <string name="volume_during_ducking_summary">Wiedergabelautstärke:</string>
   <string name="media_button_title">Headset-/Bluetooth-Steuerung</string>
-  <string name="media_button_summary">Dies wird auch für die Steuerelemente der ICS-Bildschirmsperre benötigt.</string>
+  <string name="media_button_summary">Wird auch für Steuerelemente der ICS-Bildschirmsperre benötigt</string>
   <string name="media_button_beep_title">Headset-Steuerung signalisieren</string>
-  <string name="media_button_beep_summary">Akustisches Signal nach dem Überspringen eines Titels via Headset-Steuerung.</string>
+  <string name="media_button_beep_summary">Akustisches Signal nach dem Überspringen eines Titels via Headset-Steuerung</string>
   <string name="headset_only_title">Nur externer Ausgang</string>
-  <string name="headset_only_summary">Verhindert, dass Musik über die internen Lautsprecher wiedergegeben wird.</string>
+  <string name="headset_only_summary">Verhindert die Wiedergabe von Musik über die internen Lautsprecher</string>
   <string name="headset_pause_title">Pausieren, wenn nicht angeschlossen</string>
-  <string name="headset_pause_summary">Pausieren, wenn der Kopfhörer entfernt wird.</string>
+  <string name="headset_pause_summary">Pausieren, wenn der Kopfhörer entfernt wird</string>
   <string name="headset_play_title">Abspielen beim Anschließen</string>
   <string name="headset_play_summary">Abspielen, wenn der Kopfhörer angeschlossen wird (funkioniert nur bei aktivem Dienst).</string>
   <string name="replaygain">Replay Gain</string>
@@ -137,6 +139,8 @@
   <string name="replaygain_bump_title">Replay Gain-Vorverstärker</string>
   <string name="replaygain_untagged_debump_title">Titel ohne Replay Gain-Information</string>
   <string name="replaygain_untagged_debump_summary">Lautstärke senken um: </string>
+  <string name="replaygain_preamp_note_title">Hinweis</string>
+  <string name="replaygain_preamp_note_content">Android erlaubt Vanilla Music kein Verändern der Lautstärke auf über 100%. Hohe Werte für den Vorverstärker können bei „stiller“ Musik zu Problemen führen.\n\nEmpfohlene Werte sind:\n-&gt; -3 dB für stille/klassische Musik\n-&gt; +3 dB für Aufnahmen nach 2000.</string>
   <string name="readahead">Datei vorauslesen</string>
   <string name="readahead_summary">Aktuell abgespielten Titel im Voraus einlesen (löst Probleme mit langsamen SD-Karten)</string>
   <string name="equalizer">Equalizer</string>
@@ -229,6 +233,11 @@
   <string name="toggle_controls">Steuerelemente ein-/ausblenden</string>
   <string name="seek_10s_backward">10 Sekunden zurück springen</string>
   <string name="seek_10s_forward">10 Sekunden vorwärts springen</string>
+  <string name="preferences_action_show_queue">Warteschlange anzeigen</string>
+  <string name="preferences_action_clear_queue">Warteschlange leeren</string>
+  <string name="preferences_action_enqueue_current_album">Album einreihen</string>
+  <string name="preferences_action_enqueue_current_artist">Interpret einreihen</string>
+  <string name="preferences_action_enqueue_current_genre">Genre einreihen</string>
   <string name="filebrowser_start">Startordner</string>
   <string name="customize_filebrowser_start">Dateimanager startet in diesem Ordner</string>
   <string name="select">Auswählen</string>

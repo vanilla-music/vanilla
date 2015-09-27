@@ -110,6 +110,8 @@
   </plurals>
   <string name="audio">オーディオ</string>
   <string name="volume_title">音量</string>
+  <string name="volume_during_ducking_title">通知の間の音量</string>
+  <string name="volume_during_ducking_summary">再生音量: </string>
   <string name="media_button_title">ヘッドセット/Bluetooth コントロール</string>
   <string name="media_button_summary">ICS ロックスクリーンのコントロールにも必要です。</string>
   <string name="media_button_beep_title">ヘッドセット コントロール ビープ</string>
@@ -130,6 +132,8 @@
   <string name="replaygain_bump_title">リプレイゲイン プリアンプ</string>
   <string name="replaygain_untagged_debump_title">リプレイゲイン タグがない曲</string>
   <string name="replaygain_untagged_debump_summary">音量を下げる</string>
+  <string name="replaygain_preamp_note_title">注意</string>
+  <string name="replaygain_preamp_note_content">Android で Vanilla Music の音量を &gt;100% に上げることはできません。プリアンプを高い値に設定することは、\'静かな\' 音楽を聴いているときに問題になります。\n\n推奨の値は:\n-&gt; -3dB : 静かな/クラシック音楽\n-&gt; +3dB : post-2000 の録音</string>
   <string name="readahead">先読みを有効にする</string>
   <string name="readahead_summary">現在再生中の曲を先読みします。このオプションは、(遅いSDカードによって引き起こされる) \'オーディオ ドロップアウト\' の問題を解決することがあります。</string>
   <string name="equalizer">イコライザー</string>
@@ -222,6 +226,11 @@
   <string name="toggle_controls">コントロールを切り替え</string>
   <string name="seek_10s_backward">10 秒前にシーク</string>
   <string name="seek_10s_forward">10 秒先にシーク</string>
+  <string name="preferences_action_show_queue">キューを表示</string>
+  <string name="preferences_action_clear_queue">キューをクリア</string>
+  <string name="preferences_action_enqueue_current_album">アルバムをキューに入れる</string>
+  <string name="preferences_action_enqueue_current_artist">アーチストをキューに入れる</string>
+  <string name="preferences_action_enqueue_current_genre">ジャンルをキューに入れる</string>
   <string name="filebrowser_start">ファイルブラウザー ホーム</string>
   <string name="customize_filebrowser_start">ファイルブラウザーはこのディレクトリーから開始します</string>
   <string name="select">選択</string>

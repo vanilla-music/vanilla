@@ -124,6 +124,8 @@
   </plurals>
   <string name="audio">Audio</string>
   <string name="volume_title">Hlasitost</string>
+  <string name="volume_during_ducking_title">Hlasitost upozornění</string>
+  <string name="volume_during_ducking_summary">Hlasitost přehrávání</string>
   <string name="media_button_title">Headset/Bluetooth ovládání</string>
   <string name="media_button_summary">Toto je také vyžadováno pro ICS ovládání uzamčené obrazovky.</string>
   <string name="media_button_beep_title">Zvukový signál headsetu</string>
@@ -144,6 +146,8 @@
   <string name="replaygain_bump_title">Pre-amp hlasitosti přehrávání</string>
   <string name="replaygain_untagged_debump_title">Skladby bez tagu pro hlasitost ovládání</string>
   <string name="replaygain_untagged_debump_summary">Ztlumit o</string>
+  <string name="replaygain_preamp_note_title">Poznámka</string>
+  <string name="replaygain_preamp_note_content">Android nepovoluje aplikaci Vanilla Music zvýšit hlasitost na &gt;100%. Nastavení Pre-amp na vysokou hodnotu může způsobovat problémy při poslechu \'tiché\' hudby. \n\nDoporučené hodnoty jsou:\n-&gt; -3dB pro tichou/klasickou hudbu\n-&gt; +3dB pro aktuální nahrávky</string>
   <string name="readahead">Povolit předčítání</string>
   <string name="readahead_summary">Předčítat přehrávané skladby. Toto nastavení může vyřešit problém vynechávání zvuku. (způsobené pomalou SD kartou)</string>
   <string name="equalizer">Ekvalizér</string>
@@ -193,7 +197,7 @@
   <string name="double_tap_title">Double Tap Widget</string>
   <string name="double_tap_summary">Dvojité ťuknutí na 1x1 widget otevře přehrávač. Zpoždění odpovědi widgetu na akci je 400ms.</string>
   <string name="scrobble_title">Použít ScrobbleDroid API</string>
-  <string name="scrobble_summary">Informovat Last.fm přes ScrobbleDroid nebo jiný Last.fm scrobbler</string>
+  <string name="scrobble_summary">Posílat na Last.fm přes ScrobbleDroid nebo Simple Last.fm scrobbler</string>
   <string name="stock_broadcast_title">Emulovat výchozí upozornění</string>
   <string name="stock_broadcast_summary">Posílat upozornění jako to dělá výchozí přehrávač hudby, pro zajištění funkčnosti modulů, ovládání uzamčené obrazovky, atd. poskytovaných třetími stranami.</string>
   <string name="media_scan">Obnovit sbírku</string>

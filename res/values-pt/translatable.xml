@@ -117,6 +117,8 @@
   </plurals>
   <string name="audio">Áudio</string>
   <string name="volume_title">Volume</string>
+  <string name="volume_during_ducking_title">Volume durante a notificação</string>
+  <string name="volume_during_ducking_summary">Volume de reprodução:</string>
   <string name="media_button_title">Auscultador/bluetooth</string>
   <string name="media_button_summary">Necessário para os controlos do ecrã de bloqueio ICS</string>
   <string name="media_button_beep_title">Sinal de auscultador</string>
@@ -137,6 +139,8 @@
   <string name="replaygain_bump_title">Amplificador replay gain</string>
   <string name="replaygain_untagged_debump_title">Faixas sem informação replay gain</string>
   <string name="replaygain_untagged_debump_summary">Diminuir volume em</string>
+  <string name="replaygain_preamp_note_title">Nota</string>
+  <string name="replaygain_preamp_note_content">Os sistemas Android não permitem que o Vanilla Music aumente o volume para valores &gt;100%. A utilização de um valor mais alto do amplificador podem gerar problemas se estiver a ouvir músicas calmas.\n\nOs valores recomendados são:\n-&gt; -3dB para músicas calmas ou clássicas\n-&gt; +3dB para músicas gravadas opós após o ano 2000.</string>
   <string name="readahead">Ativar \'readahead\'</string>
   <string name="readahead_summary">\'Readahead\' da faixa atual. A opção pode resolver os erros \'audio dropout\'. (Causados por um cartão SD lento)</string>
   <string name="equalizer">Equalizador</string>
@@ -229,6 +233,11 @@
   <string name="toggle_controls">Alternar controlos</string>
   <string name="seek_10s_backward">Recuar 10 segundos</string>
   <string name="seek_10s_forward">Avançar 10 segundos</string>
+  <string name="preferences_action_show_queue">Mostrar fila</string>
+  <string name="preferences_action_clear_queue">Limpar fila</string>
+  <string name="preferences_action_enqueue_current_album">Colocar álbum na fila</string>
+  <string name="preferences_action_enqueue_current_artist">Colocar artista na fila</string>
+  <string name="preferences_action_enqueue_current_genre">Colocar género na fila</string>
   <string name="filebrowser_start">Pasta inicial do explorador</string>
   <string name="customize_filebrowser_start">O explorador de ficheiros abre esta pasta</string>
   <string name="select">Selecionar</string>

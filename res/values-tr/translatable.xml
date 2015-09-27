@@ -117,6 +117,8 @@
   </plurals>
   <string name="audio">Ses</string>
   <string name="volume_title">Ses Düzeyi</string>
+  <string name="volume_during_ducking_title">Bildirim Sırasında Ses Düzeyi</string>
+  <string name="volume_during_ducking_summary">Oynatma ses düzeyi</string>
   <string name="media_button_title">Kulaklık/Bluetooth Denetimleri</string>
   <string name="media_button_summary">Bu aynı zamanda ICS kilit ekranı denetimleri için de gereklidir.</string>
   <string name="media_button_beep_title">Kulaklık Denetim Bipi</string>
@@ -137,6 +139,8 @@
   <string name="replaygain_bump_title">Ses Verici Desibel Ayarı</string>
   <string name="replaygain_untagged_debump_title">SDE Etiketi Olmayan Şarkılar</string>
   <string name="replaygain_untagged_debump_summary">Ses düzeyini şu kadar indir:</string>
+  <string name="replaygain_preamp_note_title">Not</string>
+  <string name="replaygain_preamp_note_content">Android Vanilya Müzik\'in ses düzeyini &gt;%100\'e çıkartmasına izin vermiyor. Pre-amp\'ı daha yüksek bir değere çıkarmak özellikle \"sessiz\" müzikler dinlerken sorunlara neden olabilir.\n\nTavsiye edilen değerler: sessiz/klasik müzik için \n-&gt; -3dB -2000 yılı sonrası kayıtlar için +3dB\'dir.</string>
   <string name="readahead">Önbelleğe yazmayı etkinleştir</string>
   <string name="readahead_summary">Oynatılan şarkıyı belleğe alır. Bu seçenek ses takılması sorunlarını çözebilir (yavaş bir SD karta neden olabilir).</string>
   <string name="equalizer">Equalizer</string>
@@ -229,6 +233,11 @@
   <string name="toggle_controls">Denetimleri göster</string>
   <string name="seek_10s_backward">10 saniye geri sar</string>
   <string name="seek_10s_forward">10 saniye ileri sar</string>
+  <string name="preferences_action_show_queue">Kuyruğu göster</string>
+  <string name="preferences_action_clear_queue">Kuyruğu temizle</string>
+  <string name="preferences_action_enqueue_current_album">Albümü kuyruğa ekle</string>
+  <string name="preferences_action_enqueue_current_artist">Sanatçıyı kuyruğa ekle</string>
+  <string name="preferences_action_enqueue_current_genre">Türü kuyruğa ekle</string>
   <string name="filebrowser_start">Dosya yöneticisi Ana Ekran</string>
   <string name="customize_filebrowser_start">Dosya yöneticisi bu dizinde başlar</string>
   <string name="select">Seç</string>
