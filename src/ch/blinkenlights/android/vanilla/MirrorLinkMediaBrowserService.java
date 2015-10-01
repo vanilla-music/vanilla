@@ -586,27 +586,27 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService implement
 		break;
 		case MSG_PREVSONG:
 			if(PlaybackService.hasInstance()) {
-				PlaybackService.get(MirrorLinkMediaBrowserService.this).performAction(Action.SeekForward, null);
+				PlaybackService.get(MirrorLinkMediaBrowserService.this).performAction(Action.PreviousSong, null);
 			}
 		break;
 		case MSG_SEEKFW:
 			if(PlaybackService.hasInstance()) {
-				PlaybackService.get(MirrorLinkMediaBrowserService.this).performAction(Action.SeekBackward, null);
+				PlaybackService.get(MirrorLinkMediaBrowserService.this).performAction(Action.SeekForward, null);
 			}
 		break;
 		case MSG_SEEKBW:
 			if(PlaybackService.hasInstance()) {
-				PlaybackService.get(MirrorLinkMediaBrowserService.this).performAction(Action.Repeat, null);
+				PlaybackService.get(MirrorLinkMediaBrowserService.this).performAction(Action.SeekBackward, null);
 			}
 		break;
 		case MSG_REPEAT:
 			if(PlaybackService.hasInstance()) {
-				PlaybackService.get(MirrorLinkMediaBrowserService.this).performAction(Action.Shuffle, null);
+				PlaybackService.get(MirrorLinkMediaBrowserService.this).performAction(Action.Repeat, null);
 			}
 		break;
 		case MSG_SHUFFLE:
 			if(PlaybackService.hasInstance()) {
-				PlaybackService.get(MirrorLinkMediaBrowserService.this).performAction(Action.NextSong, null);
+				PlaybackService.get(MirrorLinkMediaBrowserService.this).performAction(Action.Shuffle, null);
 			}
 		break;
 		case MSG_UPDATE_STATE:
