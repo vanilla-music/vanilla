@@ -566,7 +566,7 @@ public final class PlaybackService extends Service
 				mForceNotificationVisible = false;
 				pause();
 				stopForeground(true); // sometimes required to clear notification
-				mNotificationManager.cancel(NOTIFICATION_ID);
+				updateNotification();
 			}
 
 			MediaButtonReceiver.registerMediaButton(this);
@@ -978,13 +978,14 @@ public final class PlaybackService extends Service
 				if (mMediaPlayerInitialized)
 					mMediaPlayer.pause();
 
-				if (mNotificationMode == ALWAYS || mForceNotificationVisible) {
-					stopForeground(false);
-					if (mCurrentSong != null)
-						mNotificationManager.notify(NOTIFICATION_ID, createNotification(mCurrentSong, mState));
-				} else {
-					stopForeground(true);
-				}
+				// We are switching into background mode. The notification will be removed
+				// unless we forcefully show it (or the user selected to always show it)
+				// In both cases we will update the notification to reflect the
+				// actual playback state (or to hit cancel() as this is required to
+				// get rid of it if it was created via notify())
+				boolean removeNotification = (mForceNotificationVisible == false && mNotificationMode != ALWAYS);
+				stopForeground(removeNotification);
+				updateNotification();
 
 				// Delay entering deep sleep. This allows the headset
 				// button to continue to function for a short period after
