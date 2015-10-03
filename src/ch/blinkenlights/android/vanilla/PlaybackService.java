@@ -1045,7 +1045,7 @@ public final class PlaybackService extends Service
 		if (mReadaheadEnabled)
 			triggerReadAhead();
 
-		RemoteControl.updateRemote(this, mCurrentSong, mState);
+		RemoteControl.updateRemote(this, mCurrentSong, mState, mForceNotificationVisible);
 
 		if (mStockBroadcast)
 			stockMusicBroadcast();

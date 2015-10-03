@@ -75,14 +75,17 @@ public class RemoteControl {
 	 * @param context A context to use.
 	 * @param song The song containing the new metadata.
 	 * @param state PlaybackService state, used to determine playback state.
+	 * @param keepPaused whether or not to keep the remote updated in paused mode
 	 */
-	public static void updateRemote(Context context, Song song, int state)
+	public static void updateRemote(Context context, Song song, int state, boolean keepPaused)
 	{
 		RemoteControlClient remote = sRemote;
 		if (remote == null)
 			return;
 
-		remote.setPlaybackState((state & PlaybackService.FLAG_PLAYING) != 0 ? RemoteControlClient.PLAYSTATE_PLAYING : RemoteControlClient.PLAYSTATE_PAUSED);
+		boolean isPlaying = ((state & PlaybackService.FLAG_PLAYING) != 0);
+
+		remote.setPlaybackState(isPlaying ? RemoteControlClient.PLAYSTATE_PLAYING : RemoteControlClient.PLAYSTATE_PAUSED);
 		RemoteControlClient.MetadataEditor editor = remote.editMetadata(true);
 		if (song != null && song.id != -1) {
 			String artist_album = song.artist + " - " + song.album;
@@ -92,7 +95,7 @@ public class RemoteControl {
 			editor.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, artist_album);
 			editor.putString(MediaMetadataRetriever.METADATA_KEY_TITLE, song.title);
 			Bitmap bitmap = song.getCover(context);
-			if (bitmap != null) {
+			if (bitmap != null  && (isPlaying || keepPaused)) {
 				// Create a copy of the cover art, since RemoteControlClient likes
 				// to recycle what we give it.
 				bitmap = bitmap.copy(Bitmap.Config.RGB_565, false);
