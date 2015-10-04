@@ -49,6 +49,8 @@ THE SOFTWARE.
 			<TextView
 				android:id="@+id/queue_pos"
 				android:singleLine="true"
+				android:hint="00/00"
+				android:gravity="right"
 				android:layout_gravity="top" />
 		</TableRow>
 		<TableRow>
