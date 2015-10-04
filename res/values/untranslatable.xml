@@ -67,10 +67,10 @@ THE SOFTWARE.
 		<item>@string/previous_album</item>
 		<item>@string/cycle_repeat_mode</item>
 		<item>@string/cycle_shuffle_mode</item>
-		<item>@string/enqueue_current_album</item>
-		<item>@string/enqueue_current_artist</item>
-		<item>@string/enqueue_current_genre</item>
-		<item>@string/clear_queue</item>
+		<item>@string/preferences_action_enqueue_current_album</item>
+		<item>@string/preferences_action_enqueue_current_artist</item>
+		<item>@string/preferences_action_enqueue_current_genre</item>
+		<item>@string/preferences_action_clear_queue</item>
 		<item>@string/show_queue</item>
 		<item>@string/toggle_controls</item>
 		<item>@string/seek_10s_forward</item>
