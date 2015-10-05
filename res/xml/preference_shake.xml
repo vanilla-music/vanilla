@@ -40,7 +40,7 @@ THE SOFTWARE.
 	<ch.blinkenlights.android.vanilla.SeekBarPreference
 		android:key="shake_threshold"
 		android:negativeButtonText="@null"
-		android:dialogLayout="@layout/shake_pref"
+		android:dialogLayout="@layout/seekbar_pref"
 		android:title="@string/shake_threshold_title"
 		android:defaultValue="80"
 		vanilla:sbpMaxValue="300"

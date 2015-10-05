@@ -37,7 +37,7 @@ THE SOFTWARE.
 	<ch.blinkenlights.android.vanilla.SeekBarPreference
 		android:key="replaygain_bump"
 		android:negativeButtonText="@null"
-		android:dialogLayout="@layout/shake_pref"
+		android:dialogLayout="@layout/seekbar_pref"
 		android:title="@string/replaygain_bump_title"
 		android:defaultValue="75"
 		vanilla:sbpMaxValue="150"
@@ -48,7 +48,7 @@ THE SOFTWARE.
 	<ch.blinkenlights.android.vanilla.SeekBarPreference
 		android:key="replaygain_untagged_debump"
 		android:negativeButtonText="@null"
-		android:dialogLayout="@layout/shake_pref"
+		android:dialogLayout="@layout/seekbar_pref"
 		android:title="@string/replaygain_untagged_debump_title"
 		android:defaultValue="150"
 		vanilla:sbpMaxValue="150"
