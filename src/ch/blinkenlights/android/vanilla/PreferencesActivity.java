@@ -24,6 +24,9 @@
 package ch.blinkenlights.android.vanilla;
 
 import android.app.Activity;
+import android.app.AlertDialog.Builder;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -50,6 +53,12 @@ import java.util.List;
  * The preferences activity in which one can change application preferences.
  */
 public class PreferencesActivity extends PreferenceActivity {
+
+	/**
+	 * The package name of our external helper app
+	 */
+	private static final String VPLUG_PACKAGE_NAME = "ch.blinkenlights.android.vanillaplug";
+
 	/**
 	 * Initialize the activity, loading the preference specifications.
 	 */
@@ -227,6 +236,40 @@ public class PreferencesActivity extends PreferenceActivity {
 		}
 	}
 
+	public static class HeadsetLaunchFragment extends PreferenceFragment {
+		@Override
+		public void onCreate(Bundle savedInstanceState)
+		{
+			super.onCreate(savedInstanceState);
+
+			Activity activity = getActivity();
+			Intent intent = activity.getPackageManager().getLaunchIntentForPackage(VPLUG_PACKAGE_NAME);
+
+			if (intent != null) {
+				startActivity(intent);
+				activity.finish();
+			} else {
+				// package is not installed, ask user to install it
+				new AlertDialog.Builder(activity)
+				.setTitle(R.string.headset_launch_title)
+				.setMessage(R.string.headset_launch_app_missing)
+				.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						Intent marketIntent = new Intent(Intent.ACTION_VIEW);
+						marketIntent.setData(Uri.parse("market://details?id="+VPLUG_PACKAGE_NAME));
+						startActivity(marketIntent);
+						getActivity().finish();
+					}
+				})
+				.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						getActivity().finish();
+					}
+				})
+				.show();
+			}
+		}
+	}
 
 	@Override
 	protected boolean isValidFragment(String fragmentName) {

@@ -60,6 +60,10 @@ THE SOFTWARE.
 		android:title="@string/headset_pause_title"
 		android:defaultValue="true"
 		android:summary="@string/headset_pause_summary" />
+	<PreferenceScreen
+		android:fragment="ch.blinkenlights.android.vanilla.PreferencesActivity$HeadsetLaunchFragment"
+		android:title="@string/headset_launch_title"
+		android:summary="@string/headset_launch_summary" />
 	<CheckBoxPreference
 		android:key="cycle_continuous_shuffling"
 		android:title="@string/cycle_continuous_shuffling"

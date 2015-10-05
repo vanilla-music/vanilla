@@ -56,6 +56,7 @@ THE SOFTWARE.
 	<string name="create">Create</string>
 	<string name="overwrite">Overwrite</string>
 	<string name="cancel">Cancel</string>
+	<string name="yes">Yes</string>
 
 	<string name="delete_playlist">Delete playlist %s?</string>
 
@@ -160,8 +161,9 @@ THE SOFTWARE.
 	<string name="headset_only_summary">Prevents music from being played through the internal speakers.</string>
 	<string name="headset_pause_title">Pause When Unplugged</string>
 	<string name="headset_pause_summary">Pause when the headphones are unplugged.</string>
-	<string name="headset_play_title">Play When Plugged</string>
-	<string name="headset_play_summary">Play when the headphones are plugged in. (Only works when the service is running.)</string>
+	<string name="headset_launch_title">Play When Plugged</string>
+	<string name="headset_launch_summary">Play when the headphones are plugged in. (Requires the \'Headphone detector\' app to be installed.)</string>
+	<string name="headset_launch_app_missing">This features requires the \'Headphone detector\' app to be installed.\nWould you like to open the Play Store to install the application?</string>
 
 	<string name="replaygain">Replay Gain</string>
 	<string name="replaygain_title">Enable Replay Gain</string>
