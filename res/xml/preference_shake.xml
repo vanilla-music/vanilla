@@ -22,6 +22,7 @@ THE SOFTWARE.
 -->
 <PreferenceScreen
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:vanilla="http://schemas.android.com/apk/res/ch.blinkenlights.android.vanilla"
 	android:persistent="true">
 	<CheckBoxPreference
 		android:key="enable_shake"
@@ -42,5 +43,7 @@ THE SOFTWARE.
 		android:dialogLayout="@layout/shake_pref"
 		android:title="@string/shake_threshold_title"
 		android:defaultValue="80"
+		vanilla:sbpMaxValue="300"
+		vanilla:sbpSummaryValueDivider="10"
 		android:dependency="enable_shake" />
 </PreferenceScreen>

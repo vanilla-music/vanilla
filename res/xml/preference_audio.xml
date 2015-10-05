@@ -22,6 +22,7 @@ THE SOFTWARE.
 -->
 <PreferenceScreen
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:vanilla="http://schemas.android.com/apk/res/ch.blinkenlights.android.vanilla"
 	android:persistent="true">
 	<PreferenceScreen
 		android:fragment="ch.blinkenlights.android.vanilla.PreferencesActivity$EqualizerFragment"
@@ -33,10 +34,12 @@ THE SOFTWARE.
 		android:summary="@string/replaygain_summary" />
 	<ch.blinkenlights.android.vanilla.SeekBarPreference
 		android:key="volume_during_ducking"
-		android:negativeButtonText="@string/restore_default"
 		android:dialogLayout="@layout/shake_pref"
 		android:title="@string/volume_during_ducking_title"
-		android:defaultValue="50" />
+		android:defaultValue="50"
+		vanilla:sbpSummaryText="@string/volume_during_ducking_summary"
+		vanilla:sbpSummaryFormat="%s %.0f%%"
+		vanilla:sbpMaxValue="100"/>
 	<CheckBoxPreference
 		android:key="media_button"
 		android:title="@string/media_button_title"

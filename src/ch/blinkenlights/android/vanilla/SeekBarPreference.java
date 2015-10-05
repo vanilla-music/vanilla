@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2015 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,14 +39,36 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 	 * The current value.
 	 */
 	private int mValue;
-	
 	/**
 	 * Our context (needed for getResources())
 	 */
 	private Context mContext;
-	
 	/**
-	 * TextView to display current threshold.
+	 * The maximum value to use
+	 */
+	private int mMaxValue;
+	/**
+	 * The initially configured value (updated on dialog close)
+	 */
+	private int mInitialValue;
+	/**
+	 * The format to use for the summary
+	 */
+	private String mSummaryFormat;
+	/**
+	 * The text to use in the summary
+	 */
+	private String mSummaryText;
+	/**
+	 * Add given value to summary value
+	 */
+	private float mSummaryValueAddition;
+	/**
+	 * Divide summary value by this value
+	 */
+	private float mSummaryValueDivider;
+	/**
+	 * TextView to display current summary
 	 */
 	private TextView mValueText;
 
@@ -53,7 +76,28 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 	{
 		super(context, attrs);
 		mContext = context;
+		initDefaults(attrs);
 	}
+
+
+	/**
+	 * Configures the view using the SeekBarPreference XML attributes
+	 *
+	 * @param attrs An AttributeSet
+	 */
+	private void initDefaults(AttributeSet attrs) {
+		TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.SeekBarPreference);
+
+		mMaxValue = a.getInteger(R.styleable.SeekBarPreference_sbpMaxValue, 0);
+		mSummaryValueDivider = a.getFloat(R.styleable.SeekBarPreference_sbpSummaryValueDivider, 0f);
+		mSummaryValueAddition = a.getFloat(R.styleable.SeekBarPreference_sbpSummaryValueAddition, 0f);
+		mSummaryFormat = a.getString(R.styleable.SeekBarPreference_sbpSummaryFormat);
+		mSummaryFormat = (mSummaryFormat == null ? "%s %.1f" : mSummaryFormat);
+		mSummaryText = a.getString(R.styleable.SeekBarPreference_sbpSummaryText);
+		mSummaryText = (mSummaryText == null ? "" : mSummaryText);
+		a.recycle();
+	}
+
 
 	@Override
 	public CharSequence getSummary()
@@ -70,8 +114,8 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 	@Override
 	protected void onSetInitialValue(boolean restoreValue, Object defaultValue)
 	{
-		mValue = restoreValue ? getPersistedInt(mValue) : (Integer)defaultValue;
-    }
+		mInitialValue = mValue = restoreValue ? getPersistedInt(mValue) : (Integer)defaultValue;
+	}
 
 	/**
 	 * Create the summary for the given value.
@@ -79,21 +123,15 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 	 * @param value The force threshold.
 	 * @return A string representation of the threshold.
 	 */
-	private String getSummary(int value)
-	{
-		if (PrefKeys.SHAKE_THRESHOLD.equals(getKey())) {
-			return String.valueOf(value / 10.0f);
-		} else if(PrefKeys.REPLAYGAIN_BUMP.equals(getKey())) {
-			return String.format("%+.1fdB", 2*(value-75)/10f);
-		} else if(PrefKeys.REPLAYGAIN_UNTAGGED_DEBUMP.equals(getKey())) {
-			String summary = (String)mContext.getResources().getText(R.string.replaygain_untagged_debump_summary);
-			return String.format("%s %.1fdB", summary, (value-150)/10f);
-		} else if (PrefKeys.VOLUME_DURING_DUCKING.equals(getKey())) {
-			String summary = mContext.getString(R.string.volume_during_ducking_summary);
-			return summary + " " + value + "%";
-		} else {
-			return String.format("%d%% (%+.1fdB)", value, 20 * Math.log10(Math.pow(value / 100.0, 3)));
-		}
+	private String getSummary(int value) {
+		float fValue = (float)value;
+
+		if (mSummaryValueAddition != 0f)
+			fValue = fValue + mSummaryValueAddition;
+		if (mSummaryValueDivider != 0f)
+			fValue = fValue / mSummaryValueDivider;
+
+		return String.format(mSummaryFormat, mSummaryText, fValue);
 	}
 
 	@Override
@@ -106,17 +144,7 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 
 		SeekBar seekBar = (SeekBar)view.findViewById(R.id.seek_bar);
 
-		int maxValue;
-		String key = getKey();
-		if (PrefKeys.SHAKE_THRESHOLD.equals(key)) {
-			maxValue = 300;
-		} else if (PrefKeys.VOLUME_DURING_DUCKING.equals(key)) {
-			maxValue = 100;
-		} else {
-			maxValue = 150;
-		}
-
-		seekBar.setMax(maxValue);
+		seekBar.setMax(mMaxValue);
 		seekBar.setProgress(mValue);
 		seekBar.setOnSeekBarChangeListener(this);
 
@@ -124,10 +152,12 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 	}
 
 	@Override
-	protected void onDialogClosed(boolean positiveResult)
-	{
-		if(!positiveResult && PrefKeys.VOLUME_DURING_DUCKING.equals(getKey())) {
-			setValue(50);
+	protected void onDialogClosed(boolean positiveResult) {
+		if (positiveResult) {
+			mInitialValue = mValue;
+		} else {
+			// User aborted: Set remembered start value
+			setValue(mInitialValue);
 		}
 		notifyChanged();
 	}
