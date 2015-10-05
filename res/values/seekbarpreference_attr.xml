@@ -7,5 +7,6 @@
 		<attr name="sbpSummaryValueAddition" format="float"/>
 		<attr name="sbpSummaryText" format="string"/>
 		<attr name="sbpSummaryFormat" format="string"/>
+		<attr name="sbpSummaryZeroText" format="string" />
 	</declare-styleable>
 </resources>

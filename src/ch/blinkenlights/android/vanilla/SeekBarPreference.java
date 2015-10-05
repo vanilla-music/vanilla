@@ -64,6 +64,10 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 	 */
 	private String mSummaryText;
 	/**
+	 * Text to display if the value equals zero
+	 */
+	private String mZeroText;
+	/**
 	 * Add given value to summary value
 	 */
 	private float mSummaryValueAddition;
@@ -100,6 +104,7 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 		mSummaryFormat = (mSummaryFormat == null ? "%s %.1f" : mSummaryFormat);
 		mSummaryText = a.getString(R.styleable.SeekBarPreference_sbpSummaryText);
 		mSummaryText = (mSummaryText == null ? "" : mSummaryText);
+		mZeroText = a.getString(R.styleable.SeekBarPreference_sbpSummaryZeroText); // unlike other strings, this may be null
 		a.recycle();
 	}
 
@@ -136,7 +141,12 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 		if (mSummaryValueMultiplication != 0f)
 			fValue = fValue * mSummaryValueMultiplication;
 
-		return String.format(mSummaryFormat, mSummaryText, fValue);
+		String result = String.format(mSummaryFormat, mSummaryText, fValue);
+
+		if (fValue == 0f && mZeroText != null)
+			result = mZeroText;
+
+		return result;
 	}
 
 	@Override
