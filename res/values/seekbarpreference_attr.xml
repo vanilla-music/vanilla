@@ -2,7 +2,7 @@
 <resources>
 	<declare-styleable name="SeekBarPreference">
 		<attr name="sbpMaxValue" format="integer"/>
-		<attr name="sbpSummaryValueDivider" format="float"/>
+		<attr name="sbpSummaryValueMultiplication" format="float"/>
 		<attr name="sbpSummaryValueAddition" format="float"/>
 		<attr name="sbpSummaryText" format="string"/>
 		<attr name="sbpSummaryFormat" format="string"/>

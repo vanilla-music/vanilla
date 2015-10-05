@@ -44,6 +44,6 @@ THE SOFTWARE.
 		android:title="@string/shake_threshold_title"
 		android:defaultValue="80"
 		vanilla:sbpMaxValue="300"
-		vanilla:sbpSummaryValueDivider="10"
+		vanilla:sbpSummaryValueMultiplication="0.1"
 		android:dependency="enable_shake" />
 </PreferenceScreen>

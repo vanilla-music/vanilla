@@ -43,8 +43,9 @@ THE SOFTWARE.
 		vanilla:sbpMaxValue="150"
 		vanilla:sbpSummaryFormat="%s%+.1fdB"
 		vanilla:sbpSummaryValueAddition="-75"
-		vanilla:sbpSummaryValueDivider="5"
+		vanilla:sbpSummaryValueMultiplication="0.2"
 		/>
+		<!-- x0.2 = /5 -->
 	<ch.blinkenlights.android.vanilla.SeekBarPreference
 		android:key="replaygain_untagged_debump"
 		android:negativeButtonText="@null"
@@ -55,7 +56,7 @@ THE SOFTWARE.
 		vanilla:sbpSummaryText="@string/replaygain_untagged_debump_summary"
 		vanilla:sbpSummaryFormat="%s %.1fdB"
 		vanilla:sbpSummaryValueAddition="-150"
-		vanilla:sbpSummaryValueDivider="10" />
+		vanilla:sbpSummaryValueMultiplication="0.1" />
 		
 	<Preference
 		android:selectable="false"

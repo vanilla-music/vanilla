@@ -64,9 +64,9 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 	 */
 	private float mSummaryValueAddition;
 	/**
-	 * Divide summary value by this value
+	 * Multiply summary value by this value
 	 */
-	private float mSummaryValueDivider;
+	private float mSummaryValueMultiplication;
 	/**
 	 * TextView to display current summary
 	 */
@@ -89,7 +89,7 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 		TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.SeekBarPreference);
 
 		mMaxValue = a.getInteger(R.styleable.SeekBarPreference_sbpMaxValue, 0);
-		mSummaryValueDivider = a.getFloat(R.styleable.SeekBarPreference_sbpSummaryValueDivider, 0f);
+		mSummaryValueMultiplication = a.getFloat(R.styleable.SeekBarPreference_sbpSummaryValueMultiplication, 0f);
 		mSummaryValueAddition = a.getFloat(R.styleable.SeekBarPreference_sbpSummaryValueAddition, 0f);
 		mSummaryFormat = a.getString(R.styleable.SeekBarPreference_sbpSummaryFormat);
 		mSummaryFormat = (mSummaryFormat == null ? "%s %.1f" : mSummaryFormat);
@@ -128,8 +128,8 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 
 		if (mSummaryValueAddition != 0f)
 			fValue = fValue + mSummaryValueAddition;
-		if (mSummaryValueDivider != 0f)
-			fValue = fValue / mSummaryValueDivider;
+		if (mSummaryValueMultiplication != 0f)
+			fValue = fValue * mSummaryValueMultiplication;
 
 		return String.format(mSummaryFormat, mSummaryText, fValue);
 	}
