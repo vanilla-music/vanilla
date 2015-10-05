@@ -299,4 +299,12 @@ THE SOFTWARE.
 	<string name="filebrowser_start">Filebrowser home</string>
 	<string name="customize_filebrowser_start">Filebrowser starts at this directory</string>
 	<string name="select">Select</string>
+
+
+	<string name="autoplaylist_playcounts_title">Automatic playlist creation</string>
+	<string name="autoplaylist_playcounts_summary">Automatically create a</string>
+	<string name="autoplaylist_playcounts_fmt" formatted="false">%s \'Top %.0f\' playlist</string>
+	<string name="autoplaylist_playcounts_disabled">Do not create an automatic playlist</string>
+	<string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
+
 </resources>

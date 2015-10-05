@@ -67,4 +67,5 @@ public class PrefKeys {
 	public static final String USE_DARK_THEME = "use_dark_theme";
 	public static final String FILESYSTEM_BROWSE_START = "filesystem_browse_start";
 	public static final String VOLUME_DURING_DUCKING = "volume_during_ducking";
+	public static final String AUTOPLAYLIST_PLAYCOUNTS = "playcounts_autoplaylist";
 }
