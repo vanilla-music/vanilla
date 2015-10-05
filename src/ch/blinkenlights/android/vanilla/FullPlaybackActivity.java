@@ -337,7 +337,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 			PlaybackService service = PlaybackService.get(this);
 			mQueuePosView.setText((service.getTimelinePosition() + 1) + "/" + service.getTimelineLength());
 		}
-		mInfoTable.requestLayout(); // ensure queue pos column has enough room
+		mQueuePosView.requestLayout(); // ensure queue pos column has enough room
 	}
 
 	@Override
