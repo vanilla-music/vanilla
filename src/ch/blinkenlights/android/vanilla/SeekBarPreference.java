@@ -52,6 +52,10 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 	 */
 	private int mInitialValue;
 	/**
+	 * Steps to take for the value
+	 */
+	private int mSteps;
+	/**
 	 * The format to use for the summary
 	 */
 	private String mSummaryFormat;
@@ -89,6 +93,7 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 		TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.SeekBarPreference);
 
 		mMaxValue = a.getInteger(R.styleable.SeekBarPreference_sbpMaxValue, 0);
+		mSteps = a.getInteger(R.styleable.SeekBarPreference_sbpSteps, 1);
 		mSummaryValueMultiplication = a.getFloat(R.styleable.SeekBarPreference_sbpSummaryValueMultiplication, 0f);
 		mSummaryValueAddition = a.getFloat(R.styleable.SeekBarPreference_sbpSummaryValueAddition, 0f);
 		mSummaryFormat = a.getString(R.styleable.SeekBarPreference_sbpSummaryFormat);
@@ -166,6 +171,8 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
 	{
 		if (fromUser) {
+			progress = (progress/mSteps) * mSteps;
+			seekBar.setProgress(progress);
 			setValue(progress);
 		}
 	}
