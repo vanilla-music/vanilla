@@ -22,14 +22,12 @@
 
 package ch.blinkenlights.android.vanilla;
 
-import android.app.AlertDialog.Builder;
+//import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.res.Resources;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
-import android.view.Gravity;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -65,35 +63,26 @@ public class IdlePreference extends DialogPreference implements SeekBar.OnSeekBa
 		return formatTime(getPersistedInt(DEFAULT_VALUE));
 	}
 
+
 	@Override
-	protected void onPrepareDialogBuilder(Builder builder)
+	protected View onCreateDialogView()
 	{
-		Context context = getContext();
-		ViewGroup.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+		View view = super.onCreateDialogView();
 
 		mValue = getPersistedInt(DEFAULT_VALUE);
 
-		LinearLayout layout = new LinearLayout(context);
-		layout.setOrientation(LinearLayout.VERTICAL);
-		layout.setLayoutParams(params);
+		mValueText = (TextView)view.findViewById(R.id.value);
 
-		mValueText = new TextView(context);
-		mValueText.setGravity(Gravity.RIGHT);
-		mValueText.setPadding(20, 0, 20, 0);
-		layout.addView(mValueText);
-
-		SeekBar seekBar = new SeekBar(context);
-		seekBar.setPadding(20, 0, 20, 20);
-		seekBar.setLayoutParams(params);
+		SeekBar seekBar = (SeekBar)view.findViewById(R.id.seek_bar);
 		seekBar.setMax(1000);
 		seekBar.setProgress((int)(Math.pow((float)(mValue - MIN) / (MAX - MIN), 0.25f) * 1000));
 		seekBar.setOnSeekBarChangeListener(this);
-		layout.addView(seekBar);
 
 		updateText();
 
-		builder.setView(layout);
+		return view;
 	}
+
 
 	/**
 	 * Format seconds into a human-readable time description.

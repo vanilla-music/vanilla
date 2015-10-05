@@ -36,6 +36,7 @@ THE SOFTWARE.
 	<ch.blinkenlights.android.vanilla.IdlePreference
 		android:key="idle_timeout"
 		android:title="@string/idle_timeout_title"
+		android:dialogLayout="@layout/seekbar_pref"
 		android:dependency="use_idle_timeout" />
 	<CheckBoxPreference
 		android:key="double_tap"
