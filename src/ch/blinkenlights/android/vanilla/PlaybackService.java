@@ -738,7 +738,6 @@ public final class PlaybackService extends Service
 		Song nextSong = getSong(1);
 
 		if( nextSong != null
-		 && nextSong.path != null
 		 && fa != SongTimeline.FINISH_REPEAT_CURRENT
 		 && fa != SongTimeline.FINISH_STOP_CURRENT
 		 && !mTimeline.isEndOfQueue() ) {
@@ -1279,7 +1278,7 @@ public final class PlaybackService extends Service
 		else
 			song = mTimeline.shiftCurrentSong(delta);
 		mCurrentSong = song;
-		if (song == null || song.isEmpty()) {
+		if (song == null) {
 			if (MediaUtils.isSongAvailable(getContentResolver())) {
 				int flag = finishAction(mState) == SongTimeline.FINISH_RANDOM ? FLAG_ERROR : FLAG_EMPTY_QUEUE;
 				synchronized (mStateLock) {
@@ -1325,7 +1324,7 @@ public final class PlaybackService extends Service
 				mPreparedMediaPlayer = tmpPlayer; // this was mMediaPlayer and is in reset() state
 				Log.v("VanillaMusic", "Swapped media players");
 			}
-			else if(song.path != null) {
+			else {
 				prepareMediaPlayer(mMediaPlayer, song.path);
 			}
 

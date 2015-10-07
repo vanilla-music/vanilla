@@ -37,6 +37,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.ListIterator;
 import junit.framework.Assert;
+import android.util.Log;
 
 /**
  * Contains the list of currently playing songs, implements repeat and shuffle
@@ -363,11 +364,11 @@ public final class SongTimeline {
 
 					// The query may have returned zero results or we might 
 					// have failed to populate some songs: Get rid of all
-					// uninitialized items (where path == null)
+					// uninitialized items
 					Iterator<Song> it = songs.iterator();
 					while (it.hasNext()) {
 						Song e = it.next();
-						if (e.path == null) {
+						if (e.isFilled() == false) {
 							it.remove();
 						}
 					}
@@ -683,7 +684,8 @@ public final class SongTimeline {
 		int type = query.type;
 		long data = query.data;
 
-		int count = cursor.getCount();
+		int count = cursor.getCount(); // Items found by query
+		int added = 0;                 // Items actually added to the queue
 
 		if (count == 0 && type == MediaUtils.TYPE_FILE && query.selectionArgs.length == 1) {
 			String pathQuery = query.selectionArgs[0];
@@ -743,9 +745,16 @@ public final class SongTimeline {
 
 			for (int j = 0; j != count; ++j) {
 				cursor.moveToPosition(j);
+
 				Song song = new Song(-1);
 				song.populate(cursor);
+				if (song.isFilled() == false) {
+					// Song vanished from device for some reason: we are silently skipping it.
+					continue;
+				}
+
 				timeline.add(addAtPos++, song);
+				added++;
 
 				if (jumpSong == null) {
 					if ((mode == MODE_PLAY_POS_FIRST || mode == MODE_ENQUEUE_POS_FIRST) && j == data) {
@@ -790,7 +799,7 @@ public final class SongTimeline {
 
 		changed();
 
-		return count;
+		return added;
 	}
 
 	/**

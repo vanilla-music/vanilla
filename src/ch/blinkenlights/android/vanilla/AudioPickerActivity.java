@@ -51,7 +51,7 @@ public class AudioPickerActivity extends PlaybackActivity {
 		}
 
 		mSong = getSongForUri(uri);
-		if (mSong.isEmpty()) {
+		if (mSong == null) {
 			// unsupported intent or song not found
 			finish();
 			return;
@@ -113,7 +113,7 @@ public class AudioPickerActivity extends PlaybackActivity {
 	 * Attempts to resolve given uri to a song object
 	 *
 	 * @param uri The uri to resolve
-	 * @return A song object, id will be -1 on failure
+	 * @return A song object, null on failure
 	 */
 	private Song getSongForUri(Uri uri) {
 		Song song = new Song(-1);
@@ -130,7 +130,7 @@ public class AudioPickerActivity extends PlaybackActivity {
 			}
 			cursor.close();
 		}
-		return song;
+		return song.isFilled() ? song : null;
 	}
 
 }

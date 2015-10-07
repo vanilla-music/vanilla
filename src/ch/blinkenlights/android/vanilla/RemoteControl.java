@@ -87,7 +87,7 @@ public class RemoteControl {
 
 		remote.setPlaybackState(isPlaying ? RemoteControlClient.PLAYSTATE_PLAYING : RemoteControlClient.PLAYSTATE_PAUSED);
 		RemoteControlClient.MetadataEditor editor = remote.editMetadata(true);
-		if (song != null && song.isEmpty() == false) {
+		if (song != null) {
 			editor.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, song.artist);
 			editor.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, song.album);
 			editor.putString(MediaMetadataRetriever.METADATA_KEY_TITLE, song.title);

@@ -412,7 +412,7 @@ public class MediaUtils {
 			}
 			cursor.close();
 		}
-		return song.isEmpty() ? null : song;
+		return song.isFilled() ? song : null;
 	}
 
 	/**

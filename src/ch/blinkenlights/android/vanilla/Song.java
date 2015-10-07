@@ -157,11 +157,11 @@ public class Song implements Comparable<Song> {
 	}
 
 	/**
-	 * Returns true if the song is empty
+	 * Returns true if the song is filled
 	 */
-	public boolean isEmpty()
+	public boolean isFilled()
 	{
-		return id == -1;
+		return (id != -1 && path != null);
 	}
 
 	/**
