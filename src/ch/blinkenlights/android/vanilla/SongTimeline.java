@@ -380,9 +380,15 @@ public final class SongTimeline {
 				}
 			}
 
-			mCurrentPos = Math.min(mSongs == null ? 0 : mSongs.size(), in.readInt());
+			mCurrentPos = Math.min(mSongs == null ? 0 : mSongs.size(), Math.abs(in.readInt()));
 			mFinishAction = in.readInt();
 			mShuffleMode = in.readInt();
+
+			// Guard against corruption
+			if (mFinishAction < 0 || mFinishAction >= FINISH_ICONS.length)
+				mFinishAction = 0;
+			if (mShuffleMode < 0 || mShuffleMode >= SHUFFLE_ICONS.length)
+				mShuffleMode = 0;
 		}
 	}
 
