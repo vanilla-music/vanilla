@@ -157,6 +157,14 @@ public class Song implements Comparable<Song> {
 	}
 
 	/**
+	 * Returns true if the song is empty
+	 */
+	public boolean isEmpty()
+	{
+		return id == -1;
+	}
+
+	/**
 	 * Populate fields with data from the supplied cursor.
 	 *
 	 * @param cursor Cursor queried with FILLED_PROJECTION projection
