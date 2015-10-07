@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2014-2015 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@ package ch.blinkenlights.android.vanilla;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -26,10 +27,12 @@ import android.view.Window;
 import android.widget.TextView;
 import android.widget.Button;
 
+import java.io.File;
+
 
 public class AudioPickerActivity extends PlaybackActivity {
 
-	private Uri mUri;
+	private Song mSong;
 
 	@Override
 	public void onCreate(Bundle icicle) {
@@ -41,17 +44,26 @@ public class AudioPickerActivity extends PlaybackActivity {
 			return;
 		}
 
-		mUri = intent.getData();
-		if (mUri == null || mUri.getScheme().equals("file") == false) { // we do not support streaming
+		Uri uri = intent.getData();
+		if (uri == null) {
 			finish();
 			return;
 		}
 
+		mSong = getSongForUri(uri);
+		if (mSong.isEmpty()) {
+			// unsupported intent or song not found
+			finish();
+			return;
+		}
+
+
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.audiopicker);
 
+		String displayName = new File(mSong.path).getName();
 		TextView filePath = (TextView)findViewById(R.id.filepath);
-		filePath.setText(mUri.getLastPathSegment());
+		filePath.setText(displayName);
 
 		// Bind all 3 clickbuttons
 		Button cancelButton = (Button)findViewById(R.id.cancel);
@@ -68,6 +80,7 @@ public class AudioPickerActivity extends PlaybackActivity {
 	public void onClick(View view)
 	{
 		int mode;
+		QueryTask query;
 
 		switch(view.getId()) {
 			case R.id.play:
@@ -81,15 +94,43 @@ public class AudioPickerActivity extends PlaybackActivity {
 				return;
 		}
 
-		String path = mUri.getPath();
-		PlaybackService service = PlaybackService.get(this);
+		// This code is not reached unless mSong is filled and non-empty
+		if (mSong.id < 0) {
+			query = MediaUtils.buildFileQuery(mSong.path, Song.FILLED_PROJECTION);
+		} else {
+			query = MediaUtils.buildQuery(MediaUtils.TYPE_SONG, mSong.id, Song.FILLED_PROJECTION, null);
+		}
 
-		QueryTask query = MediaUtils.buildFileQuery(path, Song.FILLED_PROJECTION);
 		query.mode = mode;
 
+		PlaybackService service = PlaybackService.get(this);
 		service.addSongs(query);
-
 		finish();
+	}
+
+
+	/**
+	 * Attempts to resolve given uri to a song object
+	 *
+	 * @param uri The uri to resolve
+	 * @return A song object, id will be -1 on failure
+	 */
+	private Song getSongForUri(Uri uri) {
+		Song song = new Song(-1);
+		Cursor cursor = null;
+
+		if (uri.getScheme().equals("content"))
+			cursor = getContentResolver().query(uri, Song.FILLED_PROJECTION, null, null, null);
+		if (uri.getScheme().equals("file"))
+			cursor = MediaUtils.getCursorForFileQuery(uri.getPath());
+
+		if (cursor != null) {
+			if (cursor.moveToNext()) {
+				song.populate(cursor);
+			}
+			cursor.close();
+		}
+		return song;
 	}
 
 }
