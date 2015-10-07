@@ -151,7 +151,7 @@ public class MediaUtils {
 
 		selection.append('=');
 		selection.append(id);
-		selection.append(" AND is_music AND length(_data)");
+		selection.append(" AND length(_data) AND "+MediaStore.Audio.Media.IS_MUSIC);
 
 		if (select != null) {
 			selection.append(" AND ");
@@ -515,7 +515,7 @@ public class MediaUtils {
 		   -> ended with a % for the LIKE query
 		*/
 		path = addDirEndSlash(sanitizeMediaPath(path)) + "%";
-		final String query = "_data LIKE ? AND is_music";
+		final String query = "_data LIKE ? AND "+MediaStore.Audio.Media.IS_MUSIC;
 		String[] qargs = { path };
 
 		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;

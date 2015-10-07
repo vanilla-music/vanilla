@@ -296,7 +296,8 @@ public class MediaAdapter
 		String sort = String.format(sortStringRaw, sortDir);
 
 		if (mType == MediaUtils.TYPE_SONG || forceMusicCheck)
-			selection.append("is_music AND length(_data)");
+			selection.append(MediaStore.Audio.Media.IS_MUSIC+" AND length(_data)");
+
 
 		if (constraint != null && constraint.length() != 0) {
 			String[] needles;
