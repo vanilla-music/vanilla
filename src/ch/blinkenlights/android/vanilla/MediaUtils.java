@@ -104,14 +104,6 @@ public class MediaUtils {
 	private static int sAllSongsIdx;
 
 	/**
-	 * Query this many songs at a time from sAllSongs.
-	 */
-	private static final int RANDOM_POPULATE_SIZE = 20;
-	private static final Song[] sRandomCache = new Song[RANDOM_POPULATE_SIZE];
-	private static int sRandomCacheIdx;
-	private static int sRandomCacheEnd;
-
-	/**
 	 * Total number of songs in the music library, or -1 for uninitialized.
 	 */
 	private static int sSongCount = -1;
@@ -370,11 +362,8 @@ public class MediaUtils {
 	 *
 	 * @param resolver A ContentResolver to use.
 	 */
-	public static long[] queryAllSongs(ContentResolver resolver)
+	private static long[] queryAllSongs(ContentResolver resolver)
 	{
-		sAllSongsIdx = 0;
-		sRandomCacheEnd = -1;
-
 		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 		String selection = MediaStore.Audio.Media.IS_MUSIC;
 		selection += " AND length(_data)";
@@ -441,63 +430,14 @@ public class MediaUtils {
 			if (songs == null)
 				return null;
 			sAllSongs = songs;
+			sAllSongsIdx = 0;
 		} else if (sAllSongsIdx == sAllSongs.length) {
 			sAllSongsIdx = 0;
-			sRandomCacheEnd = -1;
 			shuffle(sAllSongs);
 		}
 
-		if (sAllSongsIdx >= sRandomCacheEnd) {
-			Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-
-			StringBuilder selection = new StringBuilder("_ID IN (");
-
-			boolean first = true;
-			int end = Math.min(sAllSongsIdx + RANDOM_POPULATE_SIZE, sAllSongs.length);
-			for (int i = sAllSongsIdx; i != end; ++i) {
-				if (!first)
-					selection.append(',');
-
-				first = false;
-
-				selection.append(sAllSongs[i]);
-			}
-
-			selection.append(')');
-
-			Cursor cursor = resolver.query(media, Song.FILLED_PROJECTION, selection.toString(), null, null);
-
-			if (cursor == null) {
-				sAllSongs = null;
-				return null;
-			}
-
-			int count = cursor.getCount();
-			if (count > 0) {
-				Assert.assertTrue(count <= RANDOM_POPULATE_SIZE);
-
-				for (int i = 0; i != count; ++i) {
-					cursor.moveToNext();
-					Song newSong = new Song(-1);
-					newSong.populate(cursor);
-					newSong.flags |= Song.FLAG_RANDOM;
-					sRandomCache[i] = newSong;
-				}
-			}
-
-			cursor.close();
-
-			// The query will return sorted results; undo that
-			shuffle(sRandomCache, count);
-
-			sRandomCacheIdx = 0;
-			sRandomCacheEnd = sAllSongsIdx + count;
-		}
-
-		Song result = sRandomCache[sRandomCacheIdx];
-		++sRandomCacheIdx;
-		++sAllSongsIdx;
-
+		Song result = getSongByTypeId(resolver, MediaUtils.TYPE_SONG, sAllSongs[sAllSongsIdx]);
+		sAllSongsIdx++;
 		return result;
 	}
 
