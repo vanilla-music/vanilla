@@ -1279,7 +1279,7 @@ public final class PlaybackService extends Service
 		else
 			song = mTimeline.shiftCurrentSong(delta);
 		mCurrentSong = song;
-		if (song == null || song.id == -1 || song.path == null) {
+		if (song == null || song.isEmpty()) {
 			if (MediaUtils.isSongAvailable(getContentResolver())) {
 				int flag = finishAction(mState) == SongTimeline.FINISH_RANDOM ? FLAG_ERROR : FLAG_EMPTY_QUEUE;
 				synchronized (mStateLock) {
