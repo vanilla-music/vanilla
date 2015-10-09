@@ -540,7 +540,7 @@ public class LibraryPagerAdapter
 				requestRequery(mAlbumAdapter);
 			}
 			if (mSongAdapter == null) {
-				mPendingSongLimiter = null;
+				mPendingSongLimiter = limiter;
 			} else {
 				mSongAdapter.setLimiter(limiter);
 				loadSortOrder(mSongAdapter);
