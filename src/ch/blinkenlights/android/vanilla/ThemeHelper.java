@@ -108,10 +108,10 @@ public class ThemeHelper {
 		int[] colors_marshmallow_dark  = colors_material_dark;
 		if (couldUseDarkTheme() == false) // pre material device
 			return colors_holo_yolo;
-		if (usesDarkTheme(context))
-			return colors_material_dark;
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+			return usesDarkTheme(context) ? colors_marshmallow_dark : colors_marshmallow_light;
 		// else
-		return colors_material_light;
+		return usesDarkTheme(context) ? colors_material_dark : colors_material_light;
 	}
 
 }
