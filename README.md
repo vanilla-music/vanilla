@@ -11,16 +11,25 @@ Vanilla Music player is a [GPLv3](LICENSE) licensed MP3/OGG/FLAC/PCM player for 
 * cover art support
 * [ScrobbleDroid](https://code.google.com/p/scrobbledroid/) support for Last.fm integration
 
-Translating
+Contributing
 ===========
+
+Translating
+-----------
 [You can help translate here][1]. If your language isn't on the list, open an
 issue and I can add it.
+
+Contributing code
+---------------
+* A list of open issues can be found at the [issue tracker][2]
+* Features we would like to see (but nobody started working on them yet) have the [patches-welcome][3] label attached to them. Please let us know if you start working on such an open issue (to avoid duplicate work)
+* We accept raw patches and github pull request - and we use tabs.
 
 Building
 ========
 To build you will need:
 
- * A Java compiler compatible with Java 1.8
+ * A Java compiler compatible with Java 1.7
  * The Android SDK with platform 22 (Lollipop) installed
 
 Building from command-line #1
@@ -50,3 +59,5 @@ Javadocs can be generated using `gradle javadoc` or `ant doc`
 
 
   [1]: https://www.transifex.com/projects/p/vanilla-music-1/
+  [2]: https://github.com/vanilla-music/vanilla/issues
+  [3]: https://github.com/vanilla-music/vanilla/labels/patches-welcome
