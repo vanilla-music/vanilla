@@ -67,20 +67,13 @@ public class ThemeHelper {
 	}
 
 	/**
-	 * Configures (or unconfigures) the use of the black theme
-	 */
-	final public static void setDarkTheme(boolean enable)
-	{
-	}
-
-	/**
 	 * Returns TRUE if we should use the dark material theme,
 	 * Returns FALSE otherwise - always returns FALSE on pre-5.x devices
 	 */
 	final private static boolean usesDarkTheme(Context context)
 	{
 		boolean useDark = false;
-		if(couldUseDarkTheme()) {
+		if(usesHoloTheme() == false) {
 			SharedPreferences settings = PlaybackService.getSettings(context);
 			useDark = settings.getBoolean(PrefKeys.USE_DARK_THEME, false);
 		}
@@ -88,11 +81,10 @@ public class ThemeHelper {
 	}
 
 	/**
-	 * Returns TRUE if this device may use the dark theme
-	 * (eg: running api v21 or later)
+	 * Returns TRUE if this device uses the HOLO (android 4) theme
 	 */
-	final public static boolean couldUseDarkTheme() {
-		return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
+	final public static boolean usesHoloTheme() {
+		return (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP);
 	}
 
 	/**
@@ -106,7 +98,7 @@ public class ThemeHelper {
 		int[] colors_material_dark     = { 0xff303030, 0xff606060, 0xff404040, 0x33ffffff };
 		int[] colors_marshmallow_light = { 0xfffafafa, 0xffd6d7d7, 0xffd6d7d7, 0x55ffffff };
 		int[] colors_marshmallow_dark  = colors_material_dark;
-		if (couldUseDarkTheme() == false) // pre material device
+		if (usesHoloTheme()) // pre material device
 			return colors_holo_yolo;
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
 			return usesDarkTheme(context) ? colors_marshmallow_dark : colors_marshmallow_light;
