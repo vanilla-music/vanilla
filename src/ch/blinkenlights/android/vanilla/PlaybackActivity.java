@@ -97,6 +97,9 @@ public abstract class PlaybackActivity extends Activity
 
 		mLooper = thread.getLooper();
 		mHandler = new Handler(mLooper, this);
+
+		if (PermissionRequestActivity.requestPermissions(this))
+			finish();
 	}
 
 	@Override
