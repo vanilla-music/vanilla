@@ -73,6 +73,6 @@ public class QueryTask {
 	 */
 	public Cursor runQuery(ContentResolver resolver)
 	{
-		return resolver.query(uri, projection, selection, selectionArgs, sortOrder);
+		return MediaUtils.queryResolver(resolver, uri, projection, selection, selectionArgs, sortOrder);
 	}
 }

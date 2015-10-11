@@ -273,7 +273,7 @@ public class MediaUtils {
 	{
 		String[] projection = { "_id" };
 		Uri uri = CompatHoneycomb.getContentUriForAudioId((int)id);
-		Cursor cursor = resolver.query(uri, projection, null, null, null);
+		Cursor cursor = queryResolver(resolver, uri, projection, null, null, null);
 		
 		if (cursor != null) {
 			if (cursor.moveToNext())
@@ -380,7 +380,7 @@ public class MediaUtils {
 			Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 			String selection = MediaStore.Audio.Media.IS_MUSIC;
 			selection += " AND length(_data)";
-			Cursor cursor = resolver.query(media, new String[]{"count(_id)"}, selection, null, null);
+			Cursor cursor = queryResolver(resolver, media, new String[]{"count(_id)"}, selection, null, null);
 			if (cursor == null) {
 				sSongCount = 0;
 			} else {
@@ -404,7 +404,7 @@ public class MediaUtils {
 		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 		String selection = MediaStore.Audio.Media.IS_MUSIC;
 		selection += " AND length(_data)";
-		Cursor cursor = resolver.query(media, Song.EMPTY_PROJECTION, selection, null, null);
+		Cursor cursor = queryResolver(resolver, media, Song.EMPTY_PROJECTION, selection, null, null);
 		if (cursor == null || cursor.getCount() == 0) {
 			sSongCount = 0;
 			return null;
@@ -423,6 +423,30 @@ public class MediaUtils {
 		shuffle(ids);
 
 		return ids;
+	}
+
+	/**
+	 * Runs a query on the passed content resolver.
+	 * Catches (and returns null on) SecurityException (= user revoked read permission)
+	 *
+	 * @param resolver The content resolver to use
+	 * @param uri the uri to query
+	 * @param projection the projection to use
+	 * @param selection the selection to use
+	 * @param selectionArgs arguments for the selection
+	 * @param sortOrder sort order of the returned result
+	 *
+	 * @return a cursor or null
+	 */
+	public static Cursor queryResolver(ContentResolver resolver, Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder)
+	{
+		Cursor cursor = null;
+		try {
+			cursor = resolver.query(uri, projection, selection, selectionArgs, sortOrder);
+		} catch(java.lang.SecurityException e) {
+			// we do not have read permission - just return a null cursor
+		}
+		return cursor;
 	}
 
 	public static void onMediaChange()
