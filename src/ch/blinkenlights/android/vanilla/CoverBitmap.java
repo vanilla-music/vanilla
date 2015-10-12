@@ -29,6 +29,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
@@ -289,7 +291,13 @@ public final class CoverBitmap {
 		}
 
 		int maxWidth = boxWidth - padding * 3 - textSize;
-		paint.setARGB(255, 0, 0, 0);
+
+		// Calculate a solid version of the inverted background color
+		int colors[] = ThemeHelper.getDefaultCoverColors(context);
+		int textColor = 0xFF000000 + (0xFFFFFF - (colors[0] & 0xFFFFFF));
+
+		PorterDuffColorFilter filter = new PorterDuffColorFilter(textColor, PorterDuff.Mode.SRC_ATOP);
+		paint.setColorFilter(filter);
 
 		canvas.drawBitmap(SONG_ICON, left, top, paint);
 		drawText(canvas, title, left + padding + textSize, top, maxWidth, maxWidth, paint);
