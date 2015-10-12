@@ -84,9 +84,9 @@ public final class CoverBitmap {
 	private static void loadIcons(Context context)
 	{
 		Resources res = context.getResources();
-		SONG_ICON = BitmapFactory.decodeResource(res, R.drawable.ic_tab_songs_selected);
-		ALBUM_ICON = BitmapFactory.decodeResource(res, R.drawable.ic_tab_albums_selected);
-		ARTIST_ICON = BitmapFactory.decodeResource(res, R.drawable.ic_tab_artists_selected);
+		SONG_ICON = BitmapFactory.decodeResource(res, R.drawable.ic_musicnote);
+		ALBUM_ICON = BitmapFactory.decodeResource(res, R.drawable.ic_disk);
+		ARTIST_ICON = BitmapFactory.decodeResource(res, R.drawable.ic_microphone);
 	}
 
 	/**
@@ -289,7 +289,7 @@ public final class CoverBitmap {
 		}
 
 		int maxWidth = boxWidth - padding * 3 - textSize;
-		paint.setARGB(255, 255, 255, 255);
+		paint.setARGB(255, 0, 0, 0);
 
 		canvas.drawBitmap(SONG_ICON, left, top, paint);
 		drawText(canvas, title, left + padding + textSize, top, maxWidth, maxWidth, paint);
