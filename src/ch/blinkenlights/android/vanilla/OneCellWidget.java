@@ -90,7 +90,7 @@ public class OneCellWidget extends AppWidgetProvider {
 			return;
 
 		SharedPreferences settings = PlaybackService.getSettings(context);
-		boolean doubleTap = settings.getBoolean(PrefKeys.DOUBLE_TAP, false);
+		boolean doubleTap = settings.getBoolean(PrefKeys.DOUBLE_TAP, PrefDefaults.DOUBLE_TAP);
 
 		RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.one_cell_widget);
 

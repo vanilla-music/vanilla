@@ -123,7 +123,7 @@ public abstract class PlaybackActivity extends Activity
 
 		Window window = getWindow();
 
-		if (prefs.getBoolean(PrefKeys.DISABLE_LOCKSCREEN, false))
+		if (prefs.getBoolean(PrefKeys.DISABLE_LOCKSCREEN, PrefDefaults.DISABLE_LOCKSCREEN))
 			window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
 					| WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
 		else

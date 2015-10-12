@@ -26,18 +26,16 @@ package ch.blinkenlights.android.vanilla;
  * SharedPreference default values. Must be kept in sync with keys in res/xml/prefs_*.xml.
  */
 public class PrefDefaults {
-/*
-	public static final String COVER_LONGPRESS_ACTION = "cover_longpress_action";
-	public static final String COVER_PRESS_ACTION = "cover_press_action";
-	public static final String DEFAULT_ACTION_INT = "default_action_int";
-	public static final String DEFAULT_PLAYLIST_ACTION = "default_playlist_action";
-	public static final String COVERLOADER_ANDROID = "coverloader_android";
-	public static final String COVERLOADER_VANILLA = "coverloader_vanilla";
-	public static final String COVERLOADER_SHADOW = "coverloader_shadow";
-	public static final String DISABLE_LOCKSCREEN = "disable_lockscreen";
-	public static final String DISPLAY_MODE = "display_mode";
-	public static final String DOUBLE_TAP = "double_tap";
-*/
+	public static final Action  COVER_LONGPRESS_ACTION = Action.PlayPause;
+	public static final Action  COVER_PRESS_ACTION = Action.ToggleControls;
+	public static final String  DEFAULT_ACTION_INT = "7";
+	public static final String  DEFAULT_PLAYLIST_ACTION = "0";
+	public static final boolean COVERLOADER_ANDROID = true;
+	public static final boolean COVERLOADER_VANILLA = true;
+	public static final boolean COVERLOADER_SHADOW = true;
+	public static final boolean DISABLE_LOCKSCREEN = false;
+	public static final String DISPLAY_MODE = "2";
+	public static final boolean DOUBLE_TAP = false;
 	public static final boolean ENABLE_SHAKE = false;
 	public static final boolean HEADSET_ONLY = false;
 	public static final boolean CYCLE_CONTINUOUS_SHUFFLING = false;

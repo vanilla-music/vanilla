@@ -452,9 +452,9 @@ public final class PlaybackService extends Service
 		mScrobble = settings.getBoolean(PrefKeys.SCROBBLE, PrefDefaults.SCROBBLE);
 		mIdleTimeout = settings.getBoolean(PrefKeys.USE_IDLE_TIMEOUT, PrefDefaults.USE_IDLE_TIMEOUT) ? settings.getInt(PrefKeys.IDLE_TIMEOUT, PrefDefaults.IDLE_TIMEOUT) : 0;
 
-		CoverCache.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_ANDROID, true) ? CoverCache.mCoverLoadMode | CoverCache.COVER_MODE_ANDROID : CoverCache.mCoverLoadMode & ~(CoverCache.COVER_MODE_ANDROID);
-		CoverCache.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_VANILLA, true) ? CoverCache.mCoverLoadMode | CoverCache.COVER_MODE_VANILLA : CoverCache.mCoverLoadMode & ~(CoverCache.COVER_MODE_VANILLA);
-		CoverCache.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_SHADOW , true) ? CoverCache.mCoverLoadMode | CoverCache.COVER_MODE_SHADOW  : CoverCache.mCoverLoadMode & ~(CoverCache.COVER_MODE_SHADOW);
+		CoverCache.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_ANDROID, PrefDefaults.COVERLOADER_ANDROID) ? CoverCache.mCoverLoadMode | CoverCache.COVER_MODE_ANDROID : CoverCache.mCoverLoadMode & ~(CoverCache.COVER_MODE_ANDROID);
+		CoverCache.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_VANILLA, PrefDefaults.COVERLOADER_VANILLA) ? CoverCache.mCoverLoadMode | CoverCache.COVER_MODE_VANILLA : CoverCache.mCoverLoadMode & ~(CoverCache.COVER_MODE_VANILLA);
+		CoverCache.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_SHADOW , PrefDefaults.COVERLOADER_SHADOW)  ? CoverCache.mCoverLoadMode | CoverCache.COVER_MODE_SHADOW  : CoverCache.mCoverLoadMode & ~(CoverCache.COVER_MODE_SHADOW);
 
 		mHeadsetOnly = settings.getBoolean(PrefKeys.HEADSET_ONLY, PrefDefaults.HEADSET_ONLY);
 		mCycleContinuousShuffling = settings.getBoolean(PrefKeys.CYCLE_CONTINUOUS_SHUFFLING, PrefDefaults.CYCLE_CONTINUOUS_SHUFFLING);
@@ -838,13 +838,13 @@ public final class PlaybackService extends Service
 			mIdleTimeout = settings.getBoolean(PrefKeys.USE_IDLE_TIMEOUT, PrefDefaults.USE_IDLE_TIMEOUT) ? settings.getInt(PrefKeys.IDLE_TIMEOUT, PrefDefaults.IDLE_TIMEOUT) : 0;
 			userActionTriggered();
 		} else if (PrefKeys.COVERLOADER_ANDROID.equals(key)) {
-			CoverCache.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_ANDROID, true) ? CoverCache.mCoverLoadMode | CoverCache.COVER_MODE_ANDROID : CoverCache.mCoverLoadMode & ~(CoverCache.COVER_MODE_ANDROID);
+			CoverCache.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_ANDROID, PrefDefaults.COVERLOADER_ANDROID) ? CoverCache.mCoverLoadMode | CoverCache.COVER_MODE_ANDROID : CoverCache.mCoverLoadMode & ~(CoverCache.COVER_MODE_ANDROID);
 			CoverCache.evictAll();
 		} else if (PrefKeys.COVERLOADER_VANILLA.equals(key)) {
-			CoverCache.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_VANILLA, true) ? CoverCache.mCoverLoadMode | CoverCache.COVER_MODE_VANILLA : CoverCache.mCoverLoadMode & ~(CoverCache.COVER_MODE_VANILLA);
+			CoverCache.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_VANILLA, PrefDefaults.COVERLOADER_VANILLA) ? CoverCache.mCoverLoadMode | CoverCache.COVER_MODE_VANILLA : CoverCache.mCoverLoadMode & ~(CoverCache.COVER_MODE_VANILLA);
 			CoverCache.evictAll();
 		} else if (PrefKeys.COVERLOADER_SHADOW.equals(key)) {
-			CoverCache.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_SHADOW, true) ? CoverCache.mCoverLoadMode | CoverCache.COVER_MODE_SHADOW : CoverCache.mCoverLoadMode & ~(CoverCache.COVER_MODE_SHADOW);
+			CoverCache.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_SHADOW, PrefDefaults.COVERLOADER_SHADOW) ? CoverCache.mCoverLoadMode | CoverCache.COVER_MODE_SHADOW : CoverCache.mCoverLoadMode & ~(CoverCache.COVER_MODE_SHADOW);
 			CoverCache.evictAll();
 		} else if (PrefKeys.HEADSET_ONLY.equals(key)) {
 			mHeadsetOnly = settings.getBoolean(key, PrefDefaults.HEADSET_ONLY);

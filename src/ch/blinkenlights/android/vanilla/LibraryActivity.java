@@ -217,7 +217,7 @@ public class LibraryActivity
 		super.onStart();
 
 		SharedPreferences settings = PlaybackService.getSettings(this);
-		mDefaultAction = Integer.parseInt(settings.getString(PrefKeys.DEFAULT_ACTION_INT, "7"));
+		mDefaultAction = Integer.parseInt(settings.getString(PrefKeys.DEFAULT_ACTION_INT, PrefDefaults.DEFAULT_ACTION_INT));
 		mLastActedId = LibraryAdapter.INVALID_ID;
 		updateHeaders();
 	}

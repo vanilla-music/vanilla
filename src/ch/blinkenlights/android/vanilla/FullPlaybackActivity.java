@@ -129,7 +129,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 		setTitle(R.string.playback_view);
 
 		SharedPreferences settings = PlaybackService.getSettings(this);
-		int displayMode = Integer.parseInt(settings.getString(PrefKeys.DISPLAY_MODE, "2"));
+		int displayMode = Integer.parseInt(settings.getString(PrefKeys.DISPLAY_MODE, PrefDefaults.DISPLAY_MODE));
 		mDisplayMode = displayMode;
 
 		int layout = R.layout.full_playback;
@@ -211,13 +211,13 @@ public class FullPlaybackActivity extends PlaybackActivity
 		super.onStart();
 
 		SharedPreferences settings = PlaybackService.getSettings(this);
-		if (mDisplayMode != Integer.parseInt(settings.getString(PrefKeys.DISPLAY_MODE, "2"))) {
+		if (mDisplayMode != Integer.parseInt(settings.getString(PrefKeys.DISPLAY_MODE, PrefDefaults.DISPLAY_MODE))) {
 			finish();
 			startActivity(new Intent(this, FullPlaybackActivity.class));
 		}
 
-		mCoverPressAction = Action.getAction(settings, PrefKeys.COVER_PRESS_ACTION, Action.ToggleControls);
-		mCoverLongPressAction = Action.getAction(settings, PrefKeys.COVER_LONGPRESS_ACTION, Action.PlayPause);
+		mCoverPressAction = Action.getAction(settings, PrefKeys.COVER_PRESS_ACTION, PrefDefaults.COVER_PRESS_ACTION);
+		mCoverLongPressAction = Action.getAction(settings, PrefKeys.COVER_LONGPRESS_ACTION, PrefDefaults.COVER_LONGPRESS_ACTION);
 	}
 
 	@Override
