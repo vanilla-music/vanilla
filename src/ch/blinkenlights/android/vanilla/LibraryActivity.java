@@ -196,7 +196,7 @@ public class LibraryActivity
 		mActionControls = controls;
 
 		loadTabOrder();
-		int page = settings.getInt(PrefKeys.LIBRARY_PAGE, 0);
+		int page = settings.getInt(PrefKeys.LIBRARY_PAGE, PrefDefaults.LIBRARY_PAGE);
 		if (page != 0) {
 			pager.setCurrentItem(page);
 		}

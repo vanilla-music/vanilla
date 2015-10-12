@@ -75,7 +75,7 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 	{
 		if (sBeep == -1) {
 			SharedPreferences settings = PlaybackService.getSettings(context);
-			sBeep = settings.getBoolean(PrefKeys.MEDIA_BUTTON_BEEP, true) ? 1 : 0;
+			sBeep = settings.getBoolean(PrefKeys.MEDIA_BUTTON_BEEP, PrefDefaults.MEDIA_BUTTON_BEEP) ? 1 : 0;
 		}
 
 		if (sBeep == 1) {
@@ -113,7 +113,7 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 	{
 		if (sUseControls == -1) {
 			SharedPreferences settings = PlaybackService.getSettings(context);
-			sUseControls = settings.getBoolean(PrefKeys.MEDIA_BUTTON, true) ? 1 : 0;
+			sUseControls = settings.getBoolean(PrefKeys.MEDIA_BUTTON, PrefDefaults.MEDIA_BUTTON) ? 1 : 0;
 		}
 
 		return sUseControls == 1;

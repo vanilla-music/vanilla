@@ -37,15 +37,15 @@ public class PrefDefaults {
 	public static final String DISABLE_LOCKSCREEN = "disable_lockscreen";
 	public static final String DISPLAY_MODE = "display_mode";
 	public static final String DOUBLE_TAP = "double_tap";
-	public static final String ENABLE_SHAKE = "enable_shake";
-	public static final String HEADSET_ONLY = "headset_only";
-	public static final String CYCLE_CONTINUOUS_SHUFFLING = "cycle_continuous_shuffling";
-	public static final String HEADSET_PAUSE = "headset_pause";
-	public static final String IDLE_TIMEOUT = "idle_timeout";
-	public static final String LIBRARY_PAGE = "library_page";
-	public static final String MEDIA_BUTTON = "media_button";
-	public static final String MEDIA_BUTTON_BEEP = "media_button_beep";
 */
+	public static final boolean ENABLE_SHAKE = false;
+	public static final boolean HEADSET_ONLY = false;
+	public static final boolean CYCLE_CONTINUOUS_SHUFFLING = false;
+	public static final boolean HEADSET_PAUSE = true;
+	public static final int     IDLE_TIMEOUT = 3600;
+	public static final int     LIBRARY_PAGE = 0;
+	public static final boolean MEDIA_BUTTON = true;
+	public static final boolean MEDIA_BUTTON_BEEP = true;
 	public static final String  NOTIFICATION_ACTION = "0";
 	public static final String  NOTIFICATION_MODE = "1";
 	public static final boolean NOTIFICATION_NAG = false;
