@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2015 Adrian Ulrich <adrian@blinkenlights.ch>
  * Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,6 +27,7 @@ import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
@@ -37,6 +39,11 @@ public class RemoteControl {
 	 * Used with updateRemote method.
 	 */
 	private static RemoteControlClient sRemote;
+	/**
+	 * Whether the cover should be shown. 1 for yes, 0 for no, -1 for
+	 * uninitialized.
+	 */
+	private static int sShowCover = -1;
 
 	/**
 	 * Perform initialization required for RemoteControlClient.
@@ -68,6 +75,14 @@ public class RemoteControl {
 	}
 
 	/**
+	 * Uninitializes our cached preferences, forcing a reload
+	 */
+	public static void reloadPreference()
+	{
+		sShowCover = -1;
+	}
+
+	/**
 	 * Update the remote with new metadata.
 	 * {@link #registerRemote(Context, AudioManager)} must have been called
 	 * first.
@@ -85,6 +100,11 @@ public class RemoteControl {
 
 		boolean isPlaying = ((state & PlaybackService.FLAG_PLAYING) != 0);
 
+		if (sShowCover == -1) {
+			SharedPreferences settings = PlaybackService.getSettings(context);
+			sShowCover = settings.getBoolean(PrefKeys.COVER_ON_LOCKSCREEN, PrefDefaults.COVER_ON_LOCKSCREEN) ? 1 : 0;
+		}
+
 		remote.setPlaybackState(isPlaying ? RemoteControlClient.PLAYSTATE_PLAYING : RemoteControlClient.PLAYSTATE_PAUSED);
 		RemoteControlClient.MetadataEditor editor = remote.editMetadata(true);
 		if (song != null) {
@@ -92,7 +112,7 @@ public class RemoteControl {
 			editor.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, song.album);
 			editor.putString(MediaMetadataRetriever.METADATA_KEY_TITLE, song.title);
 			Bitmap bitmap = song.getCover(context);
-			if (bitmap != null  && (isPlaying || keepPaused)) {
+			if (bitmap != null  && sShowCover == 1 && (isPlaying || keepPaused)) {
 				// Create a copy of the cover art, since RemoteControlClient likes
 				// to recycle what we give it.
 				bitmap = bitmap.copy(Bitmap.Config.RGB_565, false);

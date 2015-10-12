@@ -40,4 +40,10 @@ THE SOFTWARE.
 		android:title="@string/coverloader_android_title"
 		android:summary="@string/coverloader_android_summary"
 		android:defaultValue="true" />
+
+	<CheckBoxPreference
+		android:key="cover_on_lockscreen"
+		android:title="@string/cover_on_lockscreen_title"
+		android:summary="@string/cover_on_lockscreen_summary"
+		android:defaultValue="true" />
 </PreferenceScreen>
