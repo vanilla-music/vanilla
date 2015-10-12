@@ -82,7 +82,7 @@ public class ThemeHelper {
 		boolean useDark = false;
 		if(couldUseDarkTheme()) {
 			SharedPreferences settings = PlaybackService.getSettings(context);
-			useDark = settings.getBoolean(PrefKeys.USE_DARK_THEME, false);
+			useDark = settings.getBoolean(PrefKeys.USE_DARK_THEME, PrefDefaults.USE_DARK_THEME);
 		}
 		return useDark;
 	}

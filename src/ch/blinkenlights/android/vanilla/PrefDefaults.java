@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2012-2015 Adrian Ulrich <adrian@blinkenlights.ch>
- * Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2015 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,9 +23,10 @@
 package ch.blinkenlights.android.vanilla;
 
 /**
- * SharedPreference keys. Must be kept in sync with PrefDefaults.java.
+ * SharedPreference default values. Must be kept in sync with keys in res/xml/prefs_*.xml.
  */
-public class PrefKeys {
+public class PrefDefaults {
+/*
 	public static final String COVER_LONGPRESS_ACTION = "cover_longpress_action";
 	public static final String COVER_PRESS_ACTION = "cover_press_action";
 	public static final String DEFAULT_ACTION_INT = "default_action_int";
@@ -45,27 +45,28 @@ public class PrefKeys {
 	public static final String LIBRARY_PAGE = "library_page";
 	public static final String MEDIA_BUTTON = "media_button";
 	public static final String MEDIA_BUTTON_BEEP = "media_button_beep";
-	public static final String NOTIFICATION_ACTION = "notification_action";
-	public static final String NOTIFICATION_MODE = "notification_mode";
-	public static final String NOTIFICATION_NAG = "notification_nag";
-	public static final String PLAYBACK_ON_STARTUP = "playback_on_startup";
-	public static final String SCROBBLE = "scrobble";
-	public static final String SHAKE_ACTION = "shake_action";
-	public static final String SHAKE_THRESHOLD = "shake_threshold";
-	public static final String STOCK_BROADCAST = "stock_broadcast";
-	public static final String SWIPE_DOWN_ACTION = "swipe_down_action";
-	public static final String SWIPE_UP_ACTION = "swipe_up_action";
-	public static final String TAB_ORDER = "tab_order";
-	public static final String USE_IDLE_TIMEOUT = "use_idle_timeout";
-	public static final String VISIBLE_CONTROLS = "visible_controls";
-	public static final String VISIBLE_EXTRA_INFO = "visible_extra_info";
-	public static final String ENABLE_TRACK_REPLAYGAIN = "enable_track_replaygain";
-	public static final String ENABLE_ALBUM_REPLAYGAIN = "enable_album_replaygain";
-	public static final String REPLAYGAIN_BUMP = "replaygain_bump";
-	public static final String REPLAYGAIN_UNTAGGED_DEBUMP = "replaygain_untagged_debump";
-	public static final String ENABLE_READAHEAD = "enable_readahead";
-	public static final String USE_DARK_THEME = "use_dark_theme";
-	public static final String FILESYSTEM_BROWSE_START = "filesystem_browse_start";
-	public static final String VOLUME_DURING_DUCKING = "volume_during_ducking";
-	public static final String AUTOPLAYLIST_PLAYCOUNTS = "playcounts_autoplaylist";
+*/
+	public static final String  NOTIFICATION_ACTION = "0";
+	public static final String  NOTIFICATION_MODE = "1";
+	public static final boolean NOTIFICATION_NAG = false;
+	public static final boolean PLAYBACK_ON_STARTUP = false;
+	public static final boolean SCROBBLE = false;
+	public static final Action  SHAKE_ACTION = Action.NextSong;
+	public static final int     SHAKE_THRESHOLD = 80;
+	public static final boolean STOCK_BROADCAST = false;
+	public static final Action  SWIPE_DOWN_ACTION = Action.Nothing;
+	public static final Action  SWIPE_UP_ACTION = Action.Nothing;
+	public static final String  TAB_ORDER = null;
+	public static final boolean USE_IDLE_TIMEOUT = false;
+	public static final boolean VISIBLE_CONTROLS = true;
+	public static final boolean VISIBLE_EXTRA_INFO = false;
+	public static final boolean ENABLE_TRACK_REPLAYGAIN = false;
+	public static final boolean ENABLE_ALBUM_REPLAYGAIN = false;
+	public static final int     REPLAYGAIN_BUMP = 75; // seek bar is 150 -> 75 == middle == 0
+	public static final int     REPLAYGAIN_UNTAGGED_DEBUMP = 150; // seek bar is 150 -> == 0
+	public static final boolean ENABLE_READAHEAD = false;
+	public static final boolean USE_DARK_THEME = false;
+	public static final String  FILESYSTEM_BROWSE_START = "";
+	public static final int     VOLUME_DURING_DUCKING = 50;
+	public static final int     AUTOPLAYLIST_PLAYCOUNTS = 0;
 }

@@ -239,7 +239,7 @@ public class LibraryActivity
 	private void checkForLaunch(Intent intent)
 	{
 		SharedPreferences settings = PlaybackService.getSettings(this);
-		if (settings.getBoolean(PrefKeys.PLAYBACK_ON_STARTUP, false) && Intent.ACTION_MAIN.equals(intent.getAction())) {
+		if (settings.getBoolean(PrefKeys.PLAYBACK_ON_STARTUP, PrefDefaults.PLAYBACK_ON_STARTUP) && Intent.ACTION_MAIN.equals(intent.getAction())) {
 			startActivity(new Intent(this, FullPlaybackActivity.class));
 		}
 	}

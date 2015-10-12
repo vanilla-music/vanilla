@@ -200,8 +200,8 @@ public class FullPlaybackActivity extends PlaybackActivity
 		mEndButton.setOnClickListener(this);
 		registerForContextMenu(mEndButton);
 
-		setControlsVisible(settings.getBoolean(PrefKeys.VISIBLE_CONTROLS, true));
-		setExtraInfoVisible(settings.getBoolean(PrefKeys.VISIBLE_EXTRA_INFO, false));
+		setControlsVisible(settings.getBoolean(PrefKeys.VISIBLE_CONTROLS, PrefDefaults.VISIBLE_CONTROLS));
+		setExtraInfoVisible(settings.getBoolean(PrefKeys.VISIBLE_EXTRA_INFO, PrefDefaults.VISIBLE_EXTRA_INFO));
 		setDuration(0);
 	}
 
@@ -652,8 +652,8 @@ public class FullPlaybackActivity extends PlaybackActivity
 		switch (message.what) {
 		case MSG_SAVE_CONTROLS: {
 			SharedPreferences.Editor editor = PlaybackService.getSettings(this).edit();
-			editor.putBoolean("visible_controls", mControlsVisible);
-			editor.putBoolean("visible_extra_info", mExtraInfoVisible);
+			editor.putBoolean(PrefKeys.VISIBLE_CONTROLS, mControlsVisible);
+			editor.putBoolean(PrefKeys.VISIBLE_EXTRA_INFO, mExtraInfoVisible);
 			editor.commit();
 			break;
 		}
