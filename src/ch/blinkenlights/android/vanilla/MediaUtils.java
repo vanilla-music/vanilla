@@ -208,7 +208,7 @@ public class MediaUtils {
 		// which shares some columns with audio.
 		// This regexp should matche duplicate column names and forces them to use
 		// the audio table as a source
-		final String _FORCE_AUDIO_SRC = "(^|[ ,\\(])(_id|album(_\\S+)?|artist(_\\S+)?)";
+		final String _FORCE_AUDIO_SRC = "(^|[ |,\\(])(_id|album(_\\w+)?|artist(_\\w+)?)";
 
 		// Prefix the SELECTed rows with the current table authority name
 		for (int i=0 ;i<clonedProjection.length; i++) {
