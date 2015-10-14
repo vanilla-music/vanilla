@@ -52,6 +52,8 @@ import java.util.List;
 /**
  * Handles Music Playback through MirrorLink(tm) by implementing a MediaBrowserService.
  */
+
+@TargetApi(21)
 public class MirrorLinkMediaBrowserService extends MediaBrowserService implements Handler.Callback {
 
 	private static final String TAG = "MirrorLinkMediaBrowserService";
