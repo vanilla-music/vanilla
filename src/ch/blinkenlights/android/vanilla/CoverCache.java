@@ -20,14 +20,21 @@ package ch.blinkenlights.android.vanilla;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.LruCache;
 import android.util.Log;
+
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
-
+import java.io.OutputStream;
+import java.util.Date;
+import java.util.Collections;
+import java.util.Arrays;
 
 public class CoverCache {
 	/**
@@ -59,6 +66,10 @@ public class CoverCache {
 	 */
 	private static BitmapLruCache sBitmapLruCache;
 	/**
+	 * Shared on-disk cache class
+	 */
+	private static BitmapDiskCache sBitmapDiskCache;
+	/**
 	 * Bitmask on how we are going to load coverart
 	 */
 	public static int mCoverLoadMode = 0;
@@ -73,50 +84,91 @@ public class CoverCache {
 		if (sBitmapLruCache == null) {
 			sBitmapLruCache = new BitmapLruCache(context, 6*1024*1024);
 		}
+		if (sBitmapDiskCache == null) {
+			sBitmapDiskCache = new BitmapDiskCache(context, 25*1024*1024);
+		}
 	}
 
 	/**
-	 * Returns a (possibly uncached) cover for the song - may return null if the song has no cover
+	 * Returns a (possibly uncached) cover for the song - will return null if the song has no cover
 	 *
 	 * @param key The cache key to use for storing a generated cover
-	 * @param song The song used to identify the artwork to load 
+	 * @param song The song used to identify the artwork to load
+	 * @return a bitmap or null if no artwork was found
 	 */
 	public Bitmap getCoverFromSong(CoverKey key, Song song) {
 		Bitmap cover = getCachedCover(key);
+
 		if (cover == null) {
-			cover = sBitmapLruCache.createBitmap(song, key.coverSize*key.coverSize);
+			// memory miss: check disk
+			cover = getStoredCover(key);
+			if (cover == null) {
+				// disk miss: create
+				cover = sBitmapLruCache.createBitmap(song, key.coverSize*key.coverSize);
+				if (cover != null) {
+					storeCover(key, cover);
+				}
+			}
+			// store in memory if cover was re-created
 			if (cover != null) {
-				putCover(key, cover);
+				cacheCover(key, cover);
 			}
 		}
 		return cover;
 	}
 
 	/**
-	 * Returns a cached version of the cover. Will return null if nothing was cached
+	 * Returns a cached version of the cover.
 	 *
 	 * @param key The cache key to use
+	 * @param bitmap or null on cache miss
 	 */
 	public Bitmap getCachedCover(CoverKey key) {
 		return sBitmapLruCache.get(key);
 	}
 
 	/**
-	 * Stores a new entry in the cache
+	 * Returns the on-disk cached version of the cover.
+	 * Should only be used on a background thread
+	 *
+	 * @param key The cache key to use
+	 * @return bitmap or null on cache miss
+	 */
+	public Bitmap getStoredCover(CoverKey key) {
+		return sBitmapDiskCache.get(key);
+	}
+
+	/**
+	 * Stores a new entry in the in-memory cache
+	 * Use getCachedCover to read the cached contents back
 	 *
 	 * @param key The cache key to use
 	 * @param cover The bitmap to store
 	 */
-	public void putCover(CoverKey key, Bitmap cover) {
+	public void cacheCover(CoverKey key, Bitmap cover) {
 		sBitmapLruCache.put(key, cover);
 	}
 
 	/**
-	 * Deletes all items hold in the LRU cache
+	 * Stores a new entry in the on-disk cache
+	 * Use getStoredCover to read the cached contents back
+	 *
+	 * @param key The cache key to use
+	 * @param cover The bitmap to store
+	 */
+	public void storeCover(CoverKey key, Bitmap cover) {
+		sBitmapDiskCache.put(key, cover);
+	}
+
+	/**
+	 * Deletes all items hold in the cover caches
 	 */
 	public static void evictAll() {
 		if (sBitmapLruCache != null) {
 			sBitmapLruCache.evictAll();
+		}
+		if (sBitmapDiskCache != null) {
+			sBitmapDiskCache.evictAll();
 		}
 	}
 
@@ -150,6 +202,131 @@ public class CoverCache {
 		@Override
 		public int hashCode() {
 			return this.mediaType*10 + (int)this.mediaId + this.coverSize * (int)1e5;
+		}
+
+		@Override
+		public String toString() {
+			return "CoverKey_i"+this.mediaId+"_t"+this.mediaType+"_s"+this.coverSize;
+		}
+
+	}
+
+
+	private static class BitmapDiskCache {
+		/**
+		 * Name of the cache subdir we are using
+		 */
+		private static final String CACHE_SUBDIR = "vanilla-bitmap-cache";
+		/**
+		 * How long we consider on-disk files as valid
+		 */
+		private static final long   MAX_AGE_MS = 86400000 * 1;
+		/**
+		 * Maximal cache size to use in bytes
+		 */
+		private final long mCacheSize;
+		/**
+		 * Context to use
+		 */
+		private final Context mContext;
+		/**
+		 * The root directory of our cache
+		 */
+		private final File mCacheDir;
+		/**
+		 * How many writes have been performed
+		 */
+		private int mWriteCount = 0;
+
+		/**
+		 * Creates a new BitmapDiskCache instance
+		 *
+		 * @param context The context to use
+		 * @param cacheSize The maximal amount of disk space to use in bytes
+		 */
+		public BitmapDiskCache(Context context, long cacheSize) {
+			mContext = context;
+			mCacheSize = cacheSize;
+			mCacheDir = new File(mContext.getCacheDir(), CACHE_SUBDIR);
+			mCacheDir.mkdir();
+		}
+
+		/**
+		 * Trims the on disk cache to given size
+		 *
+		 * @param maxCacheSize Trim cache to this many bytes
+		 */
+		private void trim(long maxCacheSize) {
+			long usedSpace = 0;
+			File[] dirents = mCacheDir.listFiles();
+			Collections.shuffle(Arrays.asList(dirents));
+			for (final File entry : dirents) {
+				long entrySize = entry.length();
+				usedSpace += entrySize;
+				if (entrySize == 0 || usedSpace > maxCacheSize) {
+					entry.delete();
+				}
+			}
+		}
+
+		/**
+		 * Deletes all cached elements from the on-disk cache
+		 */
+		public void evictAll() {
+			trim(0);
+		}
+
+		/**
+		 * Checks if passed file is considered to be valid
+		 *
+		 * @param file The file to check
+		 * @return boolean true if file is valid
+		 */
+		private boolean fileIsValid(File file) {
+			long diff = new Date().getTime() - file.lastModified();
+			return (diff < MAX_AGE_MS ? true : false);
+		}
+
+		/**
+		 * Stores a bitmap in the disk cache, does not update existing objects
+		 *
+		 * @param key The cover key to use
+		 * @param Bitmap The bitmap to store
+		 */
+		public void put(CoverKey key, Bitmap cover) {
+			File cacheFile = new File(mCacheDir, key.toString());
+
+			if (fileIsValid(cacheFile) == false) {
+				if (mWriteCount++ % 15 == 0) {
+					trim(mCacheSize);
+				}
+				OutputStream out = null;
+				try {
+					File tmpFile = new File(cacheFile.getPath()+".tmp-"+android.os.Process.myTid());
+					out = new BufferedOutputStream(new FileOutputStream(tmpFile));
+					cover.compress(CompressFormat.PNG, 100, out);
+					out.close();
+					tmpFile.renameTo(cacheFile);
+				} catch(Exception e) {
+					Log.e("VanillaMusic", "Write to "+cacheFile+" failed: "+e);
+					cacheFile.delete();
+				}
+			}
+		}
+
+		/**
+		 * Returns a cached bitmap
+		 *
+		 * @param key The key to lookup
+		 * @return a cached bitmap, null on cache miss
+		 */
+		public Bitmap get(CoverKey key) {
+			File cacheFile = new File(mCacheDir, key.toString());
+			Bitmap cover = null;
+			if (fileIsValid(cacheFile)) {
+				cover = BitmapFactory.decodeFile(cacheFile.toString());
+			}
+			return cover;
 		}
 
 	}
