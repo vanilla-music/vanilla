@@ -17,6 +17,7 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.BroadcastReceiver;
