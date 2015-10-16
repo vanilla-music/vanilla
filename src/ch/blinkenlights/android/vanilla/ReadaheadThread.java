@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2015 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,113 +18,123 @@
 
 package ch.blinkenlights.android.vanilla;
 
-import android.util.Log;
 import android.os.Handler;
-import android.os.Looper;
+import android.os.HandlerThread;
 import android.os.Message;
-import java.io.File;
+import android.os.Process;
+import android.util.Log;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-class ReadaheadThread extends Thread {
-	private String mCurrentPath = null;
-	private boolean mPaused = true;
-	private Thread mThread;
+class ReadaheadThread implements Handler.Callback {
+
+	/**
+	 * How many bytes we are going to read per run
+	 */
+	private static final int BYTES_PER_READ = 32768;
+	/**
+	 * How many milliseconds to wait between reads. 125*32768 = ~256kb/s. This should be fast enough for flac files
+	 */
+	private static final int MS_DELAY_PER_READ = 125;
+	/**
+	 * Our message handler
+	 */
+	private Handler mHandler;
+	/**
+	 * The global (current) file input stream
+	 */
+	private FileInputStream mFis;
+	/**
+	 * The filesystem path used to create the current mFis
+	 */
+	private String mPath;
+	/**
+	 * Scratch space to read junk data
+	 */
+	private byte[] mScratch;
 
 
 	public ReadaheadThread() {
+		mScratch = new byte[BYTES_PER_READ];
+		HandlerThread handlerThread = new HandlerThread("ReadaheadThread", Process.THREAD_PRIORITY_LOWEST);
+		handlerThread.start();
+		mHandler = new Handler(handlerThread.getLooper(), this);
 	}
 
 	/**
-	 * Starts the persistent RA-Thread. This thread is never stopped: Destroying + creating
-	 * a new thread just because the user clicked on 'pause' doesn't make much sense
-	 */
-	public void start() {
-		mThread = new Thread(new Runnable() {
-			public void run() {
-				threadWorker();
-			}
-		});
-		mThread.start();
-	}
-
-	/**
-	 * Updates the current read-ahead source and wakes up the ra-thread
-	 */
-	public void setSource(String path) {
-		mCurrentPath = path;
-		mPaused = false;
-		mThread.interrupt();
-	}
-
-	/**
-	 * Tells the ra-thread to pause the read-ahead work
-	 * Calling setSource with path = mCurrentPath will cause the
-	 * thread to RESUME (the file is not closed by calling pause())
+	 * Aborts all current in-flight RPCs, pausing the readahead operation
 	 */
 	public void pause() {
-		mPaused = true;
+		mHandler.removeMessages(MSG_SET_PATH);
+		mHandler.removeMessages(MSG_READ_CHUNK);
 	}
 
 	/**
-	 * Sleep for x milli seconds
+	 * Starts a new readahead operation. Will resume if `path' equals
+	 * the currently open file
+	 *
+	 * @param path The path to read ahead
 	 */
-	private static void sleep(int millis) {
-		try { Thread.sleep(millis); }
-		catch(InterruptedException e) {}
+	public void setSource(String path) {
+		pause(); // cancell all in-flight rpc's
+		mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_SET_PATH, path), 1000);
 	}
 
-	/**
-	 * Our thread mainloop
-	 * This thread will read from mCurrentPath until
-	 * we hit an EOF or mPaused is set to false.
-	 * The readahead speed is controlled by 'sleepTime'
-	 */
-	private void threadWorker() {
-		String path = null;
-		FileInputStream fis = null;
-		byte[] scratch = new byte[8192];             // Read 8kB per call to read()
-		int sleepTime = (int)((1f/(256f/8f))*1000f); // We try to read 256kB/s (with 8kB blocks)
+	private static final int MSG_SET_PATH = 1;
+	private static final int MSG_READ_CHUNK = 2;
+	@Override
+	public boolean handleMessage(Message message) {
+		switch (message.what) {
+			case MSG_SET_PATH: {
+				String path = (String)message.obj;
 
-		for(;;) {
-			if(mPaused) {
-				sleep(600*1000); /* Sleep 10 minutes */
-				continue;
+				if (mFis != null && mPath.equals(path) == false) {
+					// current file does not match requested one: clean it
+					try {
+						mFis.close();
+					} catch (IOException e) {
+						Log.e("VanillaMusic", "Failed to close file: "+e);
+					}
+					mFis = null;
+					mPath = null;
+				}
+
+				if (mFis == null) {
+					// need to open new input stream
+					try {
+						FileInputStream fis = new FileInputStream(path);
+						mFis = fis;
+						mPath = path;
+					} catch (FileNotFoundException e) {
+						Log.e("VanillaMusic", "Failed to open file "+path+": "+e);
+					}
+				}
+
+				if (mFis != null) {
+					mHandler.sendEmptyMessage(MSG_READ_CHUNK);
+				}
+				break;
 			}
-
-			if(path != mCurrentPath) {
-				// File changed: First we try to close the old FIS
-				// fis can be null or already closed, we therefore do
-				// not care about the result. (the GC would take care of it anyway)
-				try { fis.close(); } catch(Exception e) {}
-				// We can now try to open the new file.
-				// Errors are not fatal, we will simply switch into paused-mode
+			case MSG_READ_CHUNK: {
+				int bytesRead = -1;
 				try {
-					fis = new FileInputStream(mCurrentPath);
-					path = mCurrentPath;
-					Log.v("VanillaMusic", "readahead of "+path+" starts");
-				} catch(FileNotFoundException e) {
-					path = null;
-					mPaused = true;
-					continue;
+					bytesRead = mFis.read(mScratch);
+				} catch (IOException e) {
+					// fs error or eof: stop in any case
+				}
+				if (bytesRead >= 0) {
+					mHandler.sendEmptyMessageDelayed(MSG_READ_CHUNK, MS_DELAY_PER_READ);
+				} else {
+					Log.d("VanillaMusic", "Readahead for "+mPath+" finished");
 				}
 			}
-
-			// 'fis' is now an open FileInputStream. Read 8kB per go until
-			// we hit EOF
-			try {
-				int br = fis.read(scratch);
-				if(br < 0) { // no more data -> EOF
-					mPaused = true;
-					Log.v("VanillaMusic", "readahead of "+path+" finished");
-				}
-			} catch(IOException e) {
-				path = null; // io error?! switch into paused mode
-				mPaused = true;
+			default: {
+				break;
 			}
-			sleep(sleepTime);
 		}
+		return true;
 	}
-	
+
 }
