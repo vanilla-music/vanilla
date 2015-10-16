@@ -25,6 +25,7 @@ import android.graphics.drawable.TransitionDrawable;
 import android.graphics.drawable.BitmapDrawable;
 
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 
@@ -95,15 +96,6 @@ public class LazyCoverView extends ImageView
 	public LazyCoverView(Context context, AttributeSet attributes) {
 		super(context, attributes);
 		mContext = context;
-	}
-
-	/**
-	 * Setup the handler of this view instance. This function
-	 * must be called before calling setCover().
-	 * 
-	 * @param looper The worker thread to use for image scaling
-	 */
-	public void setup(Looper looper) {
 		if (sCoverCache == null) {
 			sCoverCache = new CoverCache(mContext);
 		}
@@ -113,11 +105,13 @@ public class LazyCoverView extends ImageView
 		if (sUiHandler == null) {
 			sUiHandler = new Handler(this);
 		}
-		if (sHandler == null || sHandler.getLooper().equals(looper) == false) {
-			sHandler = new Handler(looper, this);
+		if (sHandler == null) {
+			HandlerThread thread = new HandlerThread("LazyCoverRpc");
+			thread.start();
+			sHandler = new Handler(thread.getLooper(), this);
 		}
-	}
 
+	}
 
 	/**
 	 * mHandler and mUiHandler callbacks
