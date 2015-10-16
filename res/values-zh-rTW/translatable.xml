@@ -34,6 +34,7 @@
   <string name="create">建立</string>
   <string name="overwrite">覆寫</string>
   <string name="cancel">取消</string>
+  <string name="yes">是</string>
   <string name="delete_playlist">刪除播放清單 %s？</string>
   <!--Library-->
   <string name="enqueue">佇列</string>
@@ -120,8 +121,9 @@
   <string name="headset_only_summary">防止經由內部喇叭播放音樂。</string>
   <string name="headset_pause_title">拔出暫停</string>
   <string name="headset_pause_summary">拔出耳機時暫停。</string>
-  <string name="headset_play_title">插入播放</string>
-  <string name="headset_play_summary">當耳機插入時播放。(僅工作於服務正在執行時。)</string>
+  <string name="headset_launch_title">插入播放</string>
+  <string name="headset_launch_summary">當耳機插入時播放。(需要安裝“耳機偵測”的應用程式。)</string>
+  <string name="headset_launch_app_missing">此功能需要安裝“耳機偵測”的應用程式。\n您想要開啟 Play 商店以安裝應用程式嗎？</string>
   <string name="replaygain">重播增益</string>
   <string name="replaygain_title">啟用播放增益</string>
   <string name="replaygain_summary">組態重播增益資訊處理</string>
@@ -234,4 +236,9 @@
   <string name="filebrowser_start">啟始目錄</string>
   <string name="customize_filebrowser_start">在此目錄開始瀏覽檔案</string>
   <string name="select">選擇</string>
+  <string name="autoplaylist_playcounts_title">自動播放清單建立</string>
+  <string name="autoplaylist_playcounts_summary">自動建立一個</string>
+  <string name="autoplaylist_playcounts_fmt" formatted="false">%s \'Top %.0f\' 播放清單</string>
+  <string name="autoplaylist_playcounts_disabled">不要建立自動播放清單</string>
+  <string name="autoplaylist_playcounts_name" formatted="false">置頂 %d</string>
 </resources>

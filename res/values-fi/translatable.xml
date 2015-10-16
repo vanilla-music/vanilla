@@ -34,6 +34,7 @@
   <string name="create">Luo</string>
   <string name="overwrite">Korvaa</string>
   <string name="cancel">Peru</string>
+  <string name="yes">Kyllä</string>
   <string name="delete_playlist">Poistetaanko soittolista %s?</string>
   <!--Library-->
   <string name="enqueue">Lisää jonoon</string>
@@ -127,8 +128,9 @@
   <string name="headset_only_summary">Estää musiikin soiton sisäisistä kaiuttimista.</string>
   <string name="headset_pause_title">Keskeytä irrottaessa</string>
   <string name="headset_pause_summary">Keskeytä toisto, kun kuulokkeet irrotetaan.</string>
-  <string name="headset_play_title">Toista liitettäessä</string>
-  <string name="headset_play_summary">Toista kun kuulokkeet liitetään. (Toimii vain palvelun ollessa käynnissä.)</string>
+  <string name="headset_launch_title">Toista liitettäessä</string>
+  <string name="headset_launch_summary">Toista kun kuulokkeet liitetään. (Vaatii Headphone detector -sovelluksen asennuksen.)</string>
+  <string name="headset_launch_app_missing">Tämä toiminto vaatii Headphone detector -sovelluksen asennuksen.\nHaluatko avata Play-kaupan ja asentaa kyseisen sovelluksen?</string>
   <string name="replaygain">Replay Gain</string>
   <string name="replaygain_title">Käytä Replay Gainia</string>
   <string name="replaygain_summary">Määritä Replay Gain -tietojen käytön asetukset</string>
@@ -186,6 +188,8 @@
   <string name="coverloader_vanilla_summary">Etsi kuvatiedostoja nimeltä cover.jpg, album.jpg tai artwork.jpg ja näytä löytynyt tiedosto kansikuvituksena</string>
   <string name="coverloader_shadow_title">Lataa kuvitus piilotetusta kansiosta</string>
   <string name="coverloader_shadow_summary">Yritä ladata kuvitus polusta \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\'</string>
+  <string name="cover_on_lockscreen_title">Näytä kuvitus lukitusnäytöllä</string>
+  <string name="cover_on_lockscreen_summary">Näytä toistettavan kappaleen kuvitus lukitusnäytöllä</string>
   <string name="double_tap_title">Widgetin kaksoisnapautus</string>
   <string name="double_tap_summary">1x1-widgetin kaksoisnapautus avaa soittimen. Asettaa 400 ms viiveen, ennen kuin widget vastaa toimintoon.</string>
   <string name="scrobble_title">Käytä ScrobbleDroid API:a</string>
@@ -240,4 +244,9 @@
   <string name="filebrowser_start">Tiedostohallinnan aloitus</string>
   <string name="customize_filebrowser_start">Tiedostohallinta käynnistyy tästä kansiosta</string>
   <string name="select">Valitse</string>
+  <string name="autoplaylist_playcounts_title">Automaattisen soittolistan luonti</string>
+  <string name="autoplaylist_playcounts_summary">Luo automaattisesti</string>
+  <string name="autoplaylist_playcounts_fmt" formatted="false">%s \'Top %.0f\' -soittolista</string>
+  <string name="autoplaylist_playcounts_disabled">Älä luo automaattista soittolistaa</string>
+  <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
 </resources>

@@ -34,6 +34,7 @@
   <string name="create">作成</string>
   <string name="overwrite">上書</string>
   <string name="cancel">キャンセル</string>
+  <string name="yes">はい</string>
   <string name="delete_playlist">プレイリスト %s を削除しますか?</string>
   <!--Library-->
   <string name="enqueue">キューに入れる</string>
@@ -120,8 +121,9 @@
   <string name="headset_only_summary">内部スピーカーから音楽が再生されないようにします。</string>
   <string name="headset_pause_title">プラグを外した時に一時停止</string>
   <string name="headset_pause_summary">ヘッドフォンのプラグを抜いたときに一時停止します。</string>
-  <string name="headset_play_title">プラグを挿した時に再生</string>
-  <string name="headset_play_summary">ヘッドホンが差し込まれたときに再生します。 (サービスが実行されている場合にのみ動作します。)</string>
+  <string name="headset_launch_title">プラグを挿した時に再生</string>
+  <string name="headset_launch_summary">ヘッドホンが差し込まれたときに再生します。 (\'ヘッドフォン検出\' アプリをインストールする必要があります。)</string>
+  <string name="headset_launch_app_missing">この機能は、\'ヘッドフォン検出\' アプリをインストールする必要があります。\nPlay ストアを開いて、アプリケーションをインストールしますか?</string>
   <string name="replaygain">リプレイゲイン</string>
   <string name="replaygain_title">リプレイゲインを有効にする</string>
   <string name="replaygain_summary">リプレイゲイン情報の処理を設定します</string>
@@ -234,4 +236,9 @@
   <string name="filebrowser_start">ファイルブラウザー ホーム</string>
   <string name="customize_filebrowser_start">ファイルブラウザーはこのディレクトリーから開始します</string>
   <string name="select">選択</string>
+  <string name="autoplaylist_playcounts_title">自動プレイリスト作成</string>
+  <string name="autoplaylist_playcounts_summary">自動的に作成</string>
+  <string name="autoplaylist_playcounts_fmt" formatted="false">%s \'トップ %.0f\' プレイリスト</string>
+  <string name="autoplaylist_playcounts_disabled">自動的にプレイリストを作成しない</string>
+  <string name="autoplaylist_playcounts_name" formatted="false">トップ %d</string>
 </resources>

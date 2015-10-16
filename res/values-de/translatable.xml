@@ -34,6 +34,7 @@
   <string name="create">Erstellen</string>
   <string name="overwrite">Überschreiben</string>
   <string name="cancel">Abbrechen</string>
+  <string name="yes">Ja</string>
   <string name="delete_playlist">Wiedergabeliste %s löschen?</string>
   <!--Library-->
   <string name="enqueue">Einreihen</string>
@@ -127,8 +128,9 @@
   <string name="headset_only_summary">Verhindert die Wiedergabe von Musik über die internen Lautsprecher</string>
   <string name="headset_pause_title">Pausieren, wenn nicht angeschlossen</string>
   <string name="headset_pause_summary">Pausieren, wenn der Kopfhörer entfernt wird</string>
-  <string name="headset_play_title">Abspielen beim Anschließen</string>
-  <string name="headset_play_summary">Abspielen, wenn der Kopfhörer angeschlossen wird (funkioniert nur bei aktivem Dienst).</string>
+  <string name="headset_launch_title">Abspielen beim Anschließen</string>
+  <string name="headset_launch_summary">Abspielen, wenn der Kopfhörer angeschlossen wird (dazu muss die \'Headphone detector\' App installiert sein)</string>
+  <string name="headset_launch_app_missing">Um diese Funktion zu nutzen, muss die \'Headphone detector\' App installiert sein. Möchtest du den Play Store öffnen, um die Applikation zu installieren?</string>
   <string name="replaygain">Replay Gain</string>
   <string name="replaygain_title">Replay Gain aktivieren</string>
   <string name="replaygain_summary">Replay Gain-Einstellungen</string>
@@ -187,6 +189,8 @@
   <string name="coverloader_vanilla_summary">Nach Dateien mit den Namen cover.jpg, album.jpg oder artwork.jpg suchen und diese als Albumcover anzeigen</string>
   <string name="coverloader_shadow_title">Cover aus verstecktem Ordner laden</string>
   <string name="coverloader_shadow_summary">Albumcover von „/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg“ laden, falls möglich.</string>
+  <string name="cover_on_lockscreen_title">Cover auf Sperrbildschirm anzeigen</string>
+  <string name="cover_on_lockscreen_summary">Albumcover des abgespielten Titels auf dem Sperrbildschirm anzeigen</string>
   <string name="double_tap_title">Widget-Doppelantippen</string>
   <string name="double_tap_summary">Doppeltes Antippen des 1x1-Widgets öffnet die Wiedergabeansicht. Verursacht eine Verzögerung von 400 ms, bevor das Widget auf Aktionen reagiert.</string>
   <string name="scrobble_title">ScrobbleDroid-API verwenden</string>
@@ -241,4 +245,9 @@
   <string name="filebrowser_start">Startordner</string>
   <string name="customize_filebrowser_start">Dateimanager startet in diesem Ordner</string>
   <string name="select">Auswählen</string>
+  <string name="autoplaylist_playcounts_title">Wiedergabeliste automatisch erstellen</string>
+  <string name="autoplaylist_playcounts_summary">Erstelle automatisch eine</string>
+  <string name="autoplaylist_playcounts_fmt" formatted="false">%s \'Top %.0f\' Wiedergabeliste</string>
+  <string name="autoplaylist_playcounts_disabled">Keine automatische Wiedergabeliste erstellen</string>
+  <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
 </resources>

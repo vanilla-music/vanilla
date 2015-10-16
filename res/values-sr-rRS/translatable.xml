@@ -34,6 +34,7 @@
   <string name="create">Направи</string>
   <string name="overwrite">Пребриши</string>
   <string name="cancel">Одустани</string>
+  <string name="yes">Да</string>
   <string name="delete_playlist">Да обришем листу нумера %s?</string>
   <!--Library-->
   <string name="enqueue">Стави у ред</string>
@@ -134,8 +135,9 @@
   <string name="headset_only_summary">Спречава пуштање музике на уграђене звучнике.</string>
   <string name="headset_pause_title">Паузирај по искључењу</string>
   <string name="headset_pause_summary">Пауза по искључењу слушалица.</string>
-  <string name="headset_play_title">Пусти по укључењу </string>
-  <string name="headset_play_summary">Пуштање музике по укључењу слушалица. (Ради само ако је сервис покренут.)</string>
+  <string name="headset_launch_title">Пусти по укључењу </string>
+  <string name="headset_launch_summary">Пуштање музике по укључењу слушалица. (Захтева апликацију „Откривач слушалица“.)</string>
+  <string name="headset_launch_app_missing">Ова функција захтева апликацију „Откривач слушалица“.\nЖелите ли да је инсталирате?</string>
   <string name="replaygain">Нивелатор звука</string>
   <string name="replaygain_title">Укључи нивелисање звука</string>
   <string name="replaygain_summary">Поставке руковања информацијама о нивелисању звука</string>
@@ -194,6 +196,8 @@
   <string name="coverloader_vanilla_summary">Тражи слике назива „cover.jpg“, „album.jpg“ или „artwork.jpg“ и приказује их као омот албума</string>
   <string name="coverloader_shadow_title">Учитај омоте из сакривене фасцикле</string>
   <string name="coverloader_shadow_summary">Покушава учитавање омота са „/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg“</string>
+  <string name="cover_on_lockscreen_title">Прикажи омот на екрану закључавања</string>
+  <string name="cover_on_lockscreen_summary">Приказ омота текуће песме на екрану закључавања</string>
   <string name="double_tap_title">Двотап на виџет</string>
   <string name="double_tap_summary">Двотап на 1x1 виџет отвара плејер. Опција поставља застој од 400ms пре одзива виџета на радње.</string>
   <string name="scrobble_title">Користи ScrobbleDroid АПИ</string>
@@ -248,4 +252,9 @@
   <string name="filebrowser_start">Почетна страница</string>
   <string name="customize_filebrowser_start">Прегледач фајлова почиње од ове фасцикле</string>
   <string name="select">Изабери</string>
+  <string name="autoplaylist_playcounts_title">Аутоматске листе нумера</string>
+  <string name="autoplaylist_playcounts_summary">Аутоматски направи</string>
+  <string name="autoplaylist_playcounts_fmt" formatted="false">%s „Најбоље %.0f“ листу</string>
+  <string name="autoplaylist_playcounts_disabled">Не прави аутоматску листу нумера</string>
+  <string name="autoplaylist_playcounts_name" formatted="false">Најбољих %d</string>
 </resources>

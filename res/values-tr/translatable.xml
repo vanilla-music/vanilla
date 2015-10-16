@@ -127,8 +127,6 @@
   <string name="headset_only_summary">Müziğin dahili hoparlörlerden oynatılmasını engeller.</string>
   <string name="headset_pause_title">Kulaklık takılı olmadığında duraklat</string>
   <string name="headset_pause_summary">Kulaklıklar takılı olmadığında müziği duraklatır.</string>
-  <string name="headset_play_title">Kulaklık takıldığında oynat</string>
-  <string name="headset_play_summary">Kulaklıklar takılı olduğunda oynatmaya başlar (yalnızca uygulama çalıştığı zaman).</string>
   <string name="replaygain">Ses Düzeyi Eşitlemesi</string>
   <string name="replaygain_title">Ses düzeyini eşitle</string>
   <string name="replaygain_summary">Ses düzeyi eşitlemesini yapılandırır</string>
