@@ -75,15 +75,15 @@ public final class CoverView extends View implements Handler.Callback {
 		 *
 		 * @param delta -1 for the previous cover, 1 for the next.
 		 */
-		public void shiftCurrentSong(int delta);
+		void shiftCurrentSong(int delta);
 		/**
 		 * Called when the user has swiped up on the view.
 		 */
-		public void upSwipe();
+		void upSwipe();
 		/**
 		 * Called when the user has swiped down on the view.
 		 */
-		public void downSwipe();
+		void downSwipe();
 	}
 	/**
 	 * The instance of the callback.

@@ -35,7 +35,7 @@ public interface LibraryAdapter extends ListAdapter {
 	 * Return the type of media represented by this adapter. One of
 	 * MediaUtils.TYPE_*.
 	 */
-	public int getMediaType();
+	int getMediaType();
 
 	/**
 	 * Set the limiter for the adapter.
@@ -46,13 +46,13 @@ public interface LibraryAdapter extends ListAdapter {
 	 * @param limiter The limiter, created by
 	 * {@link LibraryAdapter#buildLimiter(long)}.
 	 */
-	public void setLimiter(Limiter limiter);
+	void setLimiter(Limiter limiter);
 
 	/**
 	 * Returns the limiter currently active on this adapter or null if none are
 	 * active.
 	 */
-	public Limiter getLimiter();
+	Limiter getLimiter();
 
 	/**
 	 * Builds a limiter based off of the media represented by the given row.
@@ -61,7 +61,7 @@ public interface LibraryAdapter extends ListAdapter {
 	 * @see LibraryAdapter#getLimiter()
 	 * @see LibraryAdapter#setLimiter(Limiter)
 	 */
-	public Limiter buildLimiter(long id);
+	Limiter buildLimiter(long id);
 
 	/**
 	 * Set a new filter.
@@ -72,7 +72,7 @@ public interface LibraryAdapter extends ListAdapter {
 	 * media that contain all of the terms (in any order) will be displayed
 	 * after filtering is complete.
 	 */
-	public void setFilter(String filter);
+	void setFilter(String filter);
 
 	/**
 	 * Retrieve the data for this adapter. The data must be set with
@@ -82,7 +82,7 @@ public interface LibraryAdapter extends ListAdapter {
 	 *
 	 * @return The data. Contents depend on the sub-class.
 	 */
-	public Object query();
+	Object query();
 
 	/**
 	 * Update the adapter with the given data.
@@ -91,47 +91,47 @@ public interface LibraryAdapter extends ListAdapter {
 	 *
 	 * @param data Data from {@link LibraryAdapter#query()}.
 	 */
-	public void commitQuery(Object data);
+	void commitQuery(Object data);
 
 	/**
 	 * Clear the data for this adapter.
 	 *
 	 * Must be called on the UI thread.
 	 */
-	public void clear();
+	void clear();
 
 	/**
 	 * Creates the row data used by LibraryActivity.
 	 */
-	public Intent createData(View row);
+	Intent createData(View row);
 
 	/**
 	 * Extra for row data: media id. type: long.
 	 */
-	public static final String DATA_ID = "id";
+	String DATA_ID = "id";
 	/**
 	 * Special id for {@link #DATA_ID}: the row represented is a header view.
 	 */
-	public static final long HEADER_ID = -1;
+	long HEADER_ID = -1;
 	/**
 	 * Special id for {@link #DATA_ID}: invalid id.
 	 */
-	public static final long INVALID_ID = -2;
+	long INVALID_ID = -2;
 	/**
 	 * Extra for row data: media title. type: String.
 	 */
-	public static final String DATA_TITLE = "title";
+	String DATA_TITLE = "title";
 	/**
 	 * Extra for row data: media type. type: int. One of MediaUtils.TYPE_*.
 	 */
-	public static final String DATA_TYPE = "type";
+	String DATA_TYPE = "type";
 	/**
 	 * Extra for row data: canonical file path. type: String. Only present if
 	 * type is {@link MediaUtils#TYPE_FILE}.
 	 */
-	public static final String DATA_FILE = "file";
+	String DATA_FILE = "file";
 	/**
 	 * Extra for row data: if true, row has expander arrow. type: boolean.
 	 */
-	public static final String DATA_EXPANDABLE = "expandable";
+	String DATA_EXPANDABLE = "expandable";
 }
