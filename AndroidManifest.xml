@@ -26,8 +26,9 @@ THE SOFTWARE.
 	android:versionName="1.0.33"
 	android:versionCode="1033"
 	android:installLocation="auto">
-	<uses-sdk android:minSdkVersion="15" android:targetSdkVersion="21" />
+	<uses-sdk android:minSdkVersion="15" android:targetSdkVersion="23" />
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 	<!-- This is needed for isWiredHeadsetOn() to work in some cases. (bug?) -->
 	<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
@@ -149,6 +150,8 @@ THE SOFTWARE.
 			android:name="TabOrderActivity" />
 		<activity
 			android:name="FilebrowserStartActivity" />
+		<activity
+			android:name="PermissionRequestActivity" />
 
 		<activity android:name="AudioPickerActivity" android:theme="@style/DialogMinWidth"
 			android:excludeFromRecents="true" android:exported="true" >
