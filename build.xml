@@ -79,6 +79,11 @@
          In all cases you must update the value of version-tag below to read 'custom' instead of an integer,
          in order to avoid having your file be overridden by tools such as "android update project"
     -->
+
+    <property name="java.target" value="1.7" />
+    <property name="java.source" value="1.7" />
+
+
     <!-- version-tag: 1 -->
     <import file="${sdk.dir}/tools/ant/build.xml" />
 

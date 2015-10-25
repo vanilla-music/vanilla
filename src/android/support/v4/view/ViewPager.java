@@ -28,14 +28,6 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.SystemClock;
-import android.support.annotation.CallSuper;
-import android.support.annotation.DrawableRes;
-import android.support.v4.os.ParcelableCompat;
-import android.support.v4.os.ParcelableCompatCreatorCallbacks;
-import android.support.v4.view.accessibility.AccessibilityEventCompat;
-import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
-import android.support.v4.view.accessibility.AccessibilityRecordCompat;
-import android.support.v4.widget.EdgeEffectCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.FocusFinder;
@@ -51,6 +43,13 @@ import android.view.ViewParent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.Interpolator;
 import android.widget.Scroller;
+
+import android.view.MotionEvent;
+import android.widget.EdgeEffect;
+import android.view.View.AccessibilityDelegate;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityNodeInfo;
+import android.view.accessibility.AccessibilityRecord;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -207,8 +206,8 @@ public class ViewPager extends ViewGroup {
     private boolean mFakeDragging;
     private long mFakeDragBeginTime;
 
-    private EdgeEffectCompat mLeftEdge;
-    private EdgeEffectCompat mRightEdge;
+    private EdgeEffect mLeftEdge;
+    private EdgeEffect mRightEdge;
 
     private boolean mFirstLayout = true;
     private boolean mNeedCalculatePageOffsets = false;
@@ -366,22 +365,21 @@ public class ViewPager extends ViewGroup {
         final ViewConfiguration configuration = ViewConfiguration.get(context);
         final float density = context.getResources().getDisplayMetrics().density;
 
-        mTouchSlop = ViewConfigurationCompat.getScaledPagingTouchSlop(configuration);
+        mTouchSlop = configuration.getScaledPagingTouchSlop();
         mMinimumVelocity = (int) (MIN_FLING_VELOCITY * density);
         mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
-        mLeftEdge = new EdgeEffectCompat(context);
-        mRightEdge = new EdgeEffectCompat(context);
+        mLeftEdge = new EdgeEffect(context);
+        mRightEdge = new EdgeEffect(context);
 
         mFlingDistance = (int) (MIN_DISTANCE_FOR_FLING * density);
         mCloseEnough = (int) (CLOSE_ENOUGH * density);
         mDefaultGutterSize = (int) (DEFAULT_GUTTER_SIZE * density);
 
-        ViewCompat.setAccessibilityDelegate(this, new MyAccessibilityDelegate());
+        this.setAccessibilityDelegate(new MyAccessibilityDelegate());
 
-        if (ViewCompat.getImportantForAccessibility(this)
-                == ViewCompat.IMPORTANT_FOR_ACCESSIBILITY_AUTO) {
-            ViewCompat.setImportantForAccessibility(this,
-                    ViewCompat.IMPORTANT_FOR_ACCESSIBILITY_YES);
+        if (this.getImportantForAccessibility()
+                == View.IMPORTANT_FOR_ACCESSIBILITY_AUTO) {
+            this.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
         }
     }
 
@@ -778,7 +776,7 @@ public class ViewPager extends ViewGroup {
      *
      * @param resId Resource ID of a drawable to display between pages
      */
-    public void setPageMarginDrawable(@DrawableRes int resId) {
+    public void setPageMarginDrawable(int resId) {
         setPageMarginDrawable(getContext().getResources().getDrawable(resId));
     }
 
@@ -861,7 +859,7 @@ public class ViewPager extends ViewGroup {
         duration = Math.min(duration, MAX_SETTLE_DURATION);
 
         mScroller.startScroll(sx, sy, dx, dy, duration);
-        ViewCompat.postInvalidateOnAnimation(this);
+        this.postInvalidateOnAnimation();
     }
 
     ItemInfo addNewItem(int position, int index) {
@@ -1272,22 +1270,18 @@ public class ViewPager extends ViewGroup {
         }
 
         public static final Parcelable.Creator<SavedState> CREATOR
-                = ParcelableCompat.newCreator(new ParcelableCompatCreatorCallbacks<SavedState>() {
-                    @Override
-                    public SavedState createFromParcel(Parcel in, ClassLoader loader) {
-                        return new SavedState(in, loader);
+                = new Parcelable.Creator<SavedState>() {
+                    public SavedState createFromParcel(Parcel in) {
+                        return new SavedState(in);
                     }
-                    @Override
                     public SavedState[] newArray(int size) {
                         return new SavedState[size];
                     }
-                });
+                };
 
-        SavedState(Parcel in, ClassLoader loader) {
+        SavedState(Parcel in) {
             super(in);
-            if (loader == null) {
-                loader = getClass().getClassLoader();
-            }
+            loader = getClass().getClassLoader();
             position = in.readInt();
             adapterState = in.readParcelable(loader);
             this.loader = loader;
@@ -1657,7 +1651,7 @@ public class ViewPager extends ViewGroup {
             }
 
             // Keep on drawing until the animation has finished.
-            ViewCompat.postInvalidateOnAnimation(this);
+            this.postInvalidateOnAnimation();
             return;
         }
 
@@ -1705,7 +1699,6 @@ public class ViewPager extends ViewGroup {
      * @param offset Value from [0, 1) indicating the offset from the page at position.
      * @param offsetPixels Value in pixels indicating the offset from position.
      */
-    @CallSuper
     protected void onPageScrolled(int position, float offset, int offsetPixels) {
         // Offset any decor views if needed - keep them on-screen at all times.
         if (mDecorChildCount > 0) {
@@ -1844,7 +1837,7 @@ public class ViewPager extends ViewGroup {
         }
         if (needPopulate) {
             if (postEvents) {
-                ViewCompat.postOnAnimation(this, mEndScrollRunnable);
+                this.postOnAnimation(mEndScrollRunnable);
             } else {
                 mEndScrollRunnable.run();
             }
@@ -1859,8 +1852,8 @@ public class ViewPager extends ViewGroup {
         final int childCount = getChildCount();
         for (int i = 0; i < childCount; i++) {
             final int layerType = enable ?
-                    ViewCompat.LAYER_TYPE_HARDWARE : ViewCompat.LAYER_TYPE_NONE;
-            ViewCompat.setLayerType(getChildAt(i), layerType, null);
+                    View.LAYER_TYPE_HARDWARE : View.LAYER_TYPE_NONE;
+            getChildAt(i).setLayerType(layerType, null);
         }
     }
 
@@ -1872,7 +1865,7 @@ public class ViewPager extends ViewGroup {
          * scrolling there.
          */
 
-        final int action = ev.getAction() & MotionEventCompat.ACTION_MASK;
+        final int action = ev.getAction() & MotionEvent.ACTION_MASK;
 
         // Always take care of the touch gesture being complete.
         if (action == MotionEvent.ACTION_CANCEL || action == MotionEvent.ACTION_UP) {
@@ -1918,11 +1911,11 @@ public class ViewPager extends ViewGroup {
                     break;
                 }
 
-                final int pointerIndex = MotionEventCompat.findPointerIndex(ev, activePointerId);
-                final float x = MotionEventCompat.getX(ev, pointerIndex);
+                final int pointerIndex = ev.findPointerIndex(activePointerId);
+                final float x = ev.getX(pointerIndex);
                 final float dx = x - mLastMotionX;
                 final float xDiff = Math.abs(dx);
-                final float y = MotionEventCompat.getY(ev, pointerIndex);
+                final float y = ev.getY(pointerIndex);
                 final float yDiff = Math.abs(y - mInitialMotionY);
                 if (DEBUG) Log.v(TAG, "Moved x to " + x + "," + y + " diff=" + xDiff + "," + yDiff);
 
@@ -1954,7 +1947,7 @@ public class ViewPager extends ViewGroup {
                 if (mIsBeingDragged) {
                     // Scroll to follow the motion event
                     if (performDrag(x)) {
-                        ViewCompat.postInvalidateOnAnimation(this);
+                        this.postInvalidateOnAnimation();
                     }
                 }
                 break;
@@ -1967,7 +1960,7 @@ public class ViewPager extends ViewGroup {
                  */
                 mLastMotionX = mInitialMotionX = ev.getX();
                 mLastMotionY = mInitialMotionY = ev.getY();
-                mActivePointerId = MotionEventCompat.getPointerId(ev, 0);
+                mActivePointerId = ev.getPointerId(0);
                 mIsUnableToDrag = false;
 
                 mScroller.computeScrollOffset();
@@ -1991,7 +1984,7 @@ public class ViewPager extends ViewGroup {
                 break;
             }
 
-            case MotionEventCompat.ACTION_POINTER_UP:
+            case MotionEvent.ACTION_POINTER_UP:
                 onSecondaryPointerUp(ev);
                 break;
         }
@@ -2036,7 +2029,7 @@ public class ViewPager extends ViewGroup {
         final int action = ev.getAction();
         boolean needsInvalidate = false;
 
-        switch (action & MotionEventCompat.ACTION_MASK) {
+        switch (action & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN: {
                 mScroller.abortAnimation();
                 mPopulatePending = false;
@@ -2045,15 +2038,15 @@ public class ViewPager extends ViewGroup {
                 // Remember where the motion event started
                 mLastMotionX = mInitialMotionX = ev.getX();
                 mLastMotionY = mInitialMotionY = ev.getY();
-                mActivePointerId = MotionEventCompat.getPointerId(ev, 0);
+                mActivePointerId = ev.getPointerId(0);
                 break;
             }
             case MotionEvent.ACTION_MOVE:
                 if (!mIsBeingDragged) {
-                    final int pointerIndex = MotionEventCompat.findPointerIndex(ev, mActivePointerId);
-                    final float x = MotionEventCompat.getX(ev, pointerIndex);
+                    final int pointerIndex = ev.findPointerIndex(mActivePointerId);
+                    final float x = ev.getX(pointerIndex);
                     final float xDiff = Math.abs(x - mLastMotionX);
-                    final float y = MotionEventCompat.getY(ev, pointerIndex);
+                    final float y = ev.getY(pointerIndex);
                     final float yDiff = Math.abs(y - mLastMotionY);
                     if (DEBUG) Log.v(TAG, "Moved x to " + x + "," + y + " diff=" + xDiff + "," + yDiff);
                     if (xDiff > mTouchSlop && xDiff > yDiff) {
@@ -2076,9 +2069,8 @@ public class ViewPager extends ViewGroup {
                 // Not else! Note that mIsBeingDragged can be set above.
                 if (mIsBeingDragged) {
                     // Scroll to follow the motion event
-                    final int activePointerIndex = MotionEventCompat.findPointerIndex(
-                            ev, mActivePointerId);
-                    final float x = MotionEventCompat.getX(ev, activePointerIndex);
+                    final int activePointerIndex = ev.findPointerIndex(mActivePointerId);
+                    final float x = ev.getX(activePointerIndex);
                     needsInvalidate |= performDrag(x);
                 }
                 break;
@@ -2086,8 +2078,7 @@ public class ViewPager extends ViewGroup {
                 if (mIsBeingDragged) {
                     final VelocityTracker velocityTracker = mVelocityTracker;
                     velocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
-                    int initialVelocity = (int) VelocityTrackerCompat.getXVelocity(
-                            velocityTracker, mActivePointerId);
+                    int initialVelocity = (int) velocityTracker.getXVelocity(mActivePointerId);
                     mPopulatePending = true;
                     final int width = getClientWidth();
                     final int scrollX = getScrollX();
@@ -2095,8 +2086,8 @@ public class ViewPager extends ViewGroup {
                     final int currentPage = ii.position;
                     final float pageOffset = (((float) scrollX / width) - ii.offset) / ii.widthFactor;
                     final int activePointerIndex =
-                            MotionEventCompat.findPointerIndex(ev, mActivePointerId);
-                    final float x = MotionEventCompat.getX(ev, activePointerIndex);
+                            ev.findPointerIndex(mActivePointerId);
+                    final float x = ev.getX(activePointerIndex);
                     final int totalDelta = (int) (x - mInitialMotionX);
                     int nextPage = determineTargetPage(currentPage, pageOffset, initialVelocity,
                             totalDelta);
@@ -2104,7 +2095,7 @@ public class ViewPager extends ViewGroup {
 
                     mActivePointerId = INVALID_POINTER;
                     endDrag();
-                    needsInvalidate = mLeftEdge.onRelease() | mRightEdge.onRelease();
+                    needsInvalidate = compatEdgeEffectOnRelease(mLeftEdge) | compatEdgeEffectOnRelease(mRightEdge);
                 }
                 break;
             case MotionEvent.ACTION_CANCEL:
@@ -2112,26 +2103,31 @@ public class ViewPager extends ViewGroup {
                     scrollToItem(mCurItem, true, 0, false);
                     mActivePointerId = INVALID_POINTER;
                     endDrag();
-                    needsInvalidate = mLeftEdge.onRelease() | mRightEdge.onRelease();
+                    needsInvalidate = compatEdgeEffectOnRelease(mLeftEdge) | compatEdgeEffectOnRelease(mRightEdge);
                 }
                 break;
-            case MotionEventCompat.ACTION_POINTER_DOWN: {
-                final int index = MotionEventCompat.getActionIndex(ev);
-                final float x = MotionEventCompat.getX(ev, index);
+            case MotionEvent.ACTION_POINTER_DOWN: {
+                final int index = ev.getActionIndex();
+                final float x = ev.getX(index);
                 mLastMotionX = x;
-                mActivePointerId = MotionEventCompat.getPointerId(ev, index);
+                mActivePointerId = ev.getPointerId(index);
                 break;
             }
-            case MotionEventCompat.ACTION_POINTER_UP:
+            case MotionEvent.ACTION_POINTER_UP:
                 onSecondaryPointerUp(ev);
-                mLastMotionX = MotionEventCompat.getX(ev,
-                        MotionEventCompat.findPointerIndex(ev, mActivePointerId));
+                mLastMotionX = ev.getX(ev.findPointerIndex(mActivePointerId));
                 break;
         }
         if (needsInvalidate) {
-            ViewCompat.postInvalidateOnAnimation(this);
+            this.postInvalidateOnAnimation();
         }
         return true;
+    }
+
+    // implements EdgeEffectCompatIcs's onRelease()
+    private boolean compatEdgeEffectOnRelease(EdgeEffect eff) {
+        eff.onRelease();
+        return eff.isFinished();
     }
 
     private void requestParentDisallowInterceptTouchEvent(boolean disallowIntercept) {
@@ -2170,13 +2166,15 @@ public class ViewPager extends ViewGroup {
         if (scrollX < leftBound) {
             if (leftAbsolute) {
                 float over = leftBound - scrollX;
-                needsInvalidate = mLeftEdge.onPull(Math.abs(over) / width);
+                mLeftEdge.onPull(Math.abs(over) / width);
+                needsInvalidate = true; // compat always returns true
             }
             scrollX = leftBound;
         } else if (scrollX > rightBound) {
             if (rightAbsolute) {
                 float over = scrollX - rightBound;
-                needsInvalidate = mRightEdge.onPull(Math.abs(over) / width);
+                mRightEdge.onPull(Math.abs(over) / width);
+                needsInvalidate = true; // compat always returns true
             }
             scrollX = rightBound;
         }
@@ -2259,9 +2257,9 @@ public class ViewPager extends ViewGroup {
         super.draw(canvas);
         boolean needsInvalidate = false;
 
-        final int overScrollMode = ViewCompat.getOverScrollMode(this);
-        if (overScrollMode == ViewCompat.OVER_SCROLL_ALWAYS ||
-                (overScrollMode == ViewCompat.OVER_SCROLL_IF_CONTENT_SCROLLS &&
+        final int overScrollMode = this.getOverScrollMode();
+        if (overScrollMode == View.OVER_SCROLL_ALWAYS ||
+                (overScrollMode == View.OVER_SCROLL_IF_CONTENT_SCROLLS &&
                         mAdapter != null && mAdapter.getCount() > 1)) {
             if (!mLeftEdge.isFinished()) {
                 final int restoreCount = canvas.save();
@@ -2292,7 +2290,7 @@ public class ViewPager extends ViewGroup {
 
         if (needsInvalidate) {
             // Keep animating
-            ViewCompat.postInvalidateOnAnimation(this);
+            this.postInvalidateOnAnimation();
         }
     }
 
@@ -2390,8 +2388,7 @@ public class ViewPager extends ViewGroup {
 
         final VelocityTracker velocityTracker = mVelocityTracker;
         velocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
-        int initialVelocity = (int) VelocityTrackerCompat.getXVelocity(
-                velocityTracker, mActivePointerId);
+        int initialVelocity = (int) velocityTracker.getXVelocity(mActivePointerId);
         mPopulatePending = true;
         final int width = getClientWidth();
         final int scrollX = getScrollX();
@@ -2469,14 +2466,14 @@ public class ViewPager extends ViewGroup {
     }
 
     private void onSecondaryPointerUp(MotionEvent ev) {
-        final int pointerIndex = MotionEventCompat.getActionIndex(ev);
-        final int pointerId = MotionEventCompat.getPointerId(ev, pointerIndex);
+        final int pointerIndex = ev.getActionIndex();
+        final int pointerId = ev.getPointerId(pointerIndex);
         if (pointerId == mActivePointerId) {
             // This was our active pointer going up. Choose a new
             // active pointer and adjust accordingly.
             final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
-            mLastMotionX = MotionEventCompat.getX(ev, newPointerIndex);
-            mActivePointerId = MotionEventCompat.getPointerId(ev, newPointerIndex);
+            mLastMotionX = ev.getX(newPointerIndex);
+            mActivePointerId = ev.getPointerId(newPointerIndex);
             if (mVelocityTracker != null) {
                 mVelocityTracker.clear();
             }
@@ -2555,7 +2552,7 @@ public class ViewPager extends ViewGroup {
             }
         }
 
-        return checkV && ViewCompat.canScrollHorizontally(v, -dx);
+        return checkV && v.canScrollHorizontally(-dx);
     }
 
     @Override
@@ -2586,9 +2583,9 @@ public class ViewPager extends ViewGroup {
                     if (Build.VERSION.SDK_INT >= 11) {
                         // The focus finder had a bug handling FOCUS_FORWARD and FOCUS_BACKWARD
                         // before Android 3.0. Ignore the tab key on those devices.
-                        if (KeyEventCompat.hasNoModifiers(event)) {
+                        if (event.hasNoModifiers()) {
                             handled = arrowScroll(FOCUS_FORWARD);
-                        } else if (KeyEventCompat.hasModifiers(event, KeyEvent.META_SHIFT_ON)) {
+                        } else if (event.hasModifiers(KeyEvent.META_SHIFT_ON)) {
                             handled = arrowScroll(FOCUS_BACKWARD);
                         }
                     }
@@ -2805,7 +2802,7 @@ public class ViewPager extends ViewGroup {
     @Override
     public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
         // Dispatch scroll events from this ViewPager.
-        if (event.getEventType() == AccessibilityEventCompat.TYPE_VIEW_SCROLLED) {
+        if (event.getEventType() == AccessibilityEvent.TYPE_VIEW_SCROLLED) {
             return super.dispatchPopulateAccessibilityEvent(event);
         }
 
@@ -2845,15 +2842,15 @@ public class ViewPager extends ViewGroup {
         return new LayoutParams(getContext(), attrs);
     }
 
-    class MyAccessibilityDelegate extends AccessibilityDelegateCompat {
+    class MyAccessibilityDelegate extends AccessibilityDelegate {
 
         @Override
         public void onInitializeAccessibilityEvent(View host, AccessibilityEvent event) {
             super.onInitializeAccessibilityEvent(host, event);
             event.setClassName(ViewPager.class.getName());
-            final AccessibilityRecordCompat recordCompat = AccessibilityRecordCompat.obtain();
+            final AccessibilityRecord recordCompat = AccessibilityRecord.obtain();
             recordCompat.setScrollable(canScroll());
-            if (event.getEventType() == AccessibilityEventCompat.TYPE_VIEW_SCROLLED
+            if (event.getEventType() == AccessibilityEvent.TYPE_VIEW_SCROLLED
                     && mAdapter != null) {
                 recordCompat.setItemCount(mAdapter.getCount());
                 recordCompat.setFromIndex(mCurItem);
@@ -2862,15 +2859,15 @@ public class ViewPager extends ViewGroup {
         }
 
         @Override
-        public void onInitializeAccessibilityNodeInfo(View host, AccessibilityNodeInfoCompat info) {
+        public void onInitializeAccessibilityNodeInfo(View host, AccessibilityNodeInfo info) {
             super.onInitializeAccessibilityNodeInfo(host, info);
             info.setClassName(ViewPager.class.getName());
             info.setScrollable(canScroll());
             if (canScrollHorizontally(1)) {
-                info.addAction(AccessibilityNodeInfoCompat.ACTION_SCROLL_FORWARD);
+                info.addAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
             }
             if (canScrollHorizontally(-1)) {
-                info.addAction(AccessibilityNodeInfoCompat.ACTION_SCROLL_BACKWARD);
+                info.addAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
             }
         }
 
@@ -2880,13 +2877,13 @@ public class ViewPager extends ViewGroup {
                 return true;
             }
             switch (action) {
-                case AccessibilityNodeInfoCompat.ACTION_SCROLL_FORWARD: {
+                case AccessibilityNodeInfo.ACTION_SCROLL_FORWARD: {
                     if (canScrollHorizontally(1)) {
                         setCurrentItem(mCurItem + 1);
                         return true;
                     }
                 } return false;
-                case AccessibilityNodeInfoCompat.ACTION_SCROLL_BACKWARD: {
+                case AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD: {
                     if (canScrollHorizontally(-1)) {
                         setCurrentItem(mCurItem - 1);
                         return true;
