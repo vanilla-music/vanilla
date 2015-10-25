@@ -24,7 +24,10 @@ import android.view.ViewGroup;
 
 /**
  * Base class providing the adapter to populate pages inside of
- * a {@link ViewPager}.
+ * a {@link ViewPager}.  You will most likely want to use a more
+ * specific implementation of this, such as
+ * {@link android.support.v4.app.FragmentPagerAdapter} or
+ * {@link android.support.v4.app.FragmentStatePagerAdapter}.
  *
  * <p>When you implement a PagerAdapter, you must override the following methods
  * at minimum:</p>
@@ -73,7 +76,7 @@ import android.view.ViewGroup;
  * the method {@link #getItemPosition(Object)}.</p>
  */
 public abstract class PagerAdapter {
-    private final DataSetObservable mObservable = new DataSetObservable();
+    private DataSetObservable mObservable = new DataSetObservable();
 
     public static final int POSITION_UNCHANGED = -1;
     public static final int POSITION_NONE = -2;
@@ -89,6 +92,7 @@ public abstract class PagerAdapter {
      * page views.
      */
     public void startUpdate(ViewGroup container) {
+        startUpdate((View) container);
     }
 
     /**
@@ -102,7 +106,9 @@ public abstract class PagerAdapter {
      * @return Returns an Object representing the new page.  This does not
      * need to be a View, but can be some other container of the page.
      */
-    public abstract Object instantiateItem(ViewGroup container, int position);
+    public Object instantiateItem(ViewGroup container, int position) {
+        return instantiateItem((View) container, position);
+    }
 
     /**
      * Remove a page for the given position.  The adapter is responsible
@@ -112,9 +118,11 @@ public abstract class PagerAdapter {
      * @param container The containing View from which the page will be removed.
      * @param position The page position to be removed.
      * @param object The same object that was returned by
-     * {@link #instantiateItem(ViewGroup, int)}.
+     * {@link #instantiateItem(View, int)}.
      */
-    public abstract void destroyItem(ViewGroup container, int position, Object object);
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        destroyItem((View) container, position, object);
+    }
 
     /**
      * Called to inform the adapter of which item is currently considered to
@@ -123,9 +131,10 @@ public abstract class PagerAdapter {
      * @param container The containing View from which the page will be removed.
      * @param position The page position that is now the primary.
      * @param object The same object that was returned by
-     * {@link #instantiateItem(ViewGroup, int)}.
+     * {@link #instantiateItem(View, int)}.
      */
     public void setPrimaryItem(ViewGroup container, int position, Object object) {
+        setPrimaryItem((View) container, position, object);
     }
 
     /**
@@ -136,6 +145,77 @@ public abstract class PagerAdapter {
      * page views.
      */
     public void finishUpdate(ViewGroup container) {
+        finishUpdate((View) container);
+    }
+
+    /**
+     * Called when a change in the shown pages is going to start being made.
+     * @param container The containing View which is displaying this adapter's
+     * page views.
+     *
+     * @deprecated Use {@link #startUpdate(ViewGroup)}
+     */
+    public void startUpdate(View container) {
+    }
+
+    /**
+     * Create the page for the given position.  The adapter is responsible
+     * for adding the view to the container given here, although it only
+     * must ensure this is done by the time it returns from
+     * {@link #finishUpdate(ViewGroup)}.
+     *
+     * @param container The containing View in which the page will be shown.
+     * @param position The page position to be instantiated.
+     * @return Returns an Object representing the new page.  This does not
+     * need to be a View, but can be some other container of the page.
+     *
+     * @deprecated Use {@link #instantiateItem(ViewGroup, int)}
+     */
+    public Object instantiateItem(View container, int position) {
+        throw new UnsupportedOperationException(
+                "Required method instantiateItem was not overridden");
+    }
+
+    /**
+     * Remove a page for the given position.  The adapter is responsible
+     * for removing the view from its container, although it only must ensure
+     * this is done by the time it returns from {@link #finishUpdate(View)}.
+     *
+     * @param container The containing View from which the page will be removed.
+     * @param position The page position to be removed.
+     * @param object The same object that was returned by
+     * {@link #instantiateItem(View, int)}.
+     *
+     * @deprecated Use {@link #destroyItem(ViewGroup, int, Object)}
+     */
+    public void destroyItem(View container, int position, Object object) {
+        throw new UnsupportedOperationException("Required method destroyItem was not overridden");
+    }
+
+    /**
+     * Called to inform the adapter of which item is currently considered to
+     * be the "primary", that is the one show to the user as the current page.
+     *
+     * @param container The containing View from which the page will be removed.
+     * @param position The page position that is now the primary.
+     * @param object The same object that was returned by
+     * {@link #instantiateItem(View, int)}.
+     *
+     * @deprecated Use {@link #setPrimaryItem(ViewGroup, int, Object)}
+     */
+    public void setPrimaryItem(View container, int position, Object object) {
+    }
+
+    /**
+     * Called when the a change in the shown pages has been completed.  At this
+     * point you must ensure that all of the pages have actually been added or
+     * removed from the container as appropriate.
+     * @param container The containing View which is displaying this adapter's
+     * page views.
+     *
+     * @deprecated Use {@link #finishUpdate(ViewGroup)}
+     */
+    public void finishUpdate(View container) {
     }
 
     /**
@@ -148,15 +228,6 @@ public abstract class PagerAdapter {
      * @return true if <code>view</code> is associated with the key object <code>object</code>
      */
     public abstract boolean isViewFromObject(View view, Object object);
-
-    /**
-     * This method will be invoked when a new page becomes selected. Animation is not
-     * necessarily complete.
-     *
-     * @param position Position index of the new selected page.
-     */
-    public void onPageSelected(int position) {
-    }
 
     /**
      * Save any instance state associated with this adapter and its pages that should be
@@ -188,7 +259,7 @@ public abstract class PagerAdapter {
      * change position and always returns {@link #POSITION_UNCHANGED}.
      *
      * @param object Object representing an item, previously returned by a call to
-     *               {@link #instantiateItem(ViewGroup, int)}.
+     *               {@link #instantiateItem(View, int)}.
      * @return object's new position index from [0, {@link #getCount()}),
      *         {@link #POSITION_UNCHANGED} if the object's position has not changed,
      *         or {@link #POSITION_NONE} if the item is no longer present.
@@ -205,11 +276,21 @@ public abstract class PagerAdapter {
         mObservable.notifyChanged();
     }
 
-    void registerDataSetObserver(DataSetObserver observer) {
+    /**
+     * Register an observer to receive callbacks related to the adapter's data changing.
+     *
+     * @param observer The {@link android.database.DataSetObserver} which will receive callbacks.
+     */
+    public void registerDataSetObserver(DataSetObserver observer) {
         mObservable.registerObserver(observer);
     }
 
-    void unregisterDataSetObserver(DataSetObserver observer) {
+    /**
+     * Unregister an observer from callbacks related to the adapter's data changing.
+     *
+     * @param observer The {@link android.database.DataSetObserver} which will be unregistered.
+     */
+    public void unregisterDataSetObserver(DataSetObserver observer) {
         mObservable.unregisterObserver(observer);
     }
 
@@ -224,5 +305,16 @@ public abstract class PagerAdapter {
      */
     public CharSequence getPageTitle(int position) {
         return null;
+    }
+
+    /**
+     * Returns the proportional width of a given page as a percentage of the
+     * ViewPager's measured width from (0.f-1.f]
+     *
+     * @param position The position of the page requested
+     * @return Proportional width for the given page position
+     */
+    public float getPageWidth(int position) {
+        return 1.f;
     }
 }
