@@ -259,18 +259,18 @@ public final class SongTimeline {
 		 * 0, or 1.
 		 * @param song The new song at the position
 		 */
-		public void activeSongReplaced(int delta, Song song);
+		void activeSongReplaced(int delta, Song song);
 
 		/**
 		 * Called when the timeline state has changed and should be saved to
 		 * storage.
 		 */
-		public void timelineChanged();
+		void timelineChanged();
 
 		/**
 		 * Called when the length of the timeline has changed.
 		 */
-		public void positionInfoChanged();
+		void positionInfoChanged();
 	}
 	/**
 	 * The current Callback, if any.
