@@ -30,7 +30,7 @@ Building
 To build you will need:
 
  * A Java compiler compatible with Java 1.7
- * The Android SDK with platform 22 (Lollipop) installed
+ * The Android SDK with platform 23 (Marshmallow) installed
 
 Building from command-line #1
 --------------------------
