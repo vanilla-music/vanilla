@@ -11,6 +11,12 @@ Vanilla Music player is a [GPLv3](LICENSE) licensed MP3/OGG/FLAC/PCM player for 
 * cover art support
 * [ScrobbleDroid](https://code.google.com/p/scrobbledroid/) support for Last.fm integration
 
+Donations
+===========
+You can donate to Vanilla Musics development via gratipay
+
+[![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.3.0/dist/gratipay.png)](https://gratipay.com/vanilla-music/)
+
 Contributing
 ===========
 
