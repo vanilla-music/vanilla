@@ -346,7 +346,7 @@ public final class SongTimeline {
 				ContentResolver resolver = mContext.getContentResolver();
 				Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 
-				Cursor cursor = resolver.query(media, Song.FILLED_PROJECTION, selection.toString(), null, "_id");
+				Cursor cursor = MediaUtils.queryResolver(resolver, media, Song.FILLED_PROJECTION, selection.toString(), null, "_id");
 				if (cursor != null) {
 					if (cursor.getCount() != 0) {
 						cursor.moveToNext();

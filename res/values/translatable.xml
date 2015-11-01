@@ -310,4 +310,6 @@ THE SOFTWARE.
 	<string name="autoplaylist_playcounts_disabled">Do not create an automatic playlist</string>
 	<string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
 
+	<string name="permission_request_summary">Vanilla Music needs read permission to display your music library</string>
+	<string name="ok">Ok</string>
 </resources>

@@ -44,6 +44,11 @@ public class AudioPickerActivity extends PlaybackActivity {
 			return;
 		}
 
+		if (PermissionRequestActivity.requestPermissions(this, intent)) {
+			finish();
+			return;
+		}
+
 		Uri uri = intent.getData();
 		if (uri == null) {
 			finish();
@@ -120,7 +125,7 @@ public class AudioPickerActivity extends PlaybackActivity {
 		Cursor cursor = null;
 
 		if (uri.getScheme().equals("content"))
-			cursor = getContentResolver().query(uri, Song.FILLED_PROJECTION, null, null, null);
+			cursor = MediaUtils.queryResolver(getContentResolver(), uri, Song.FILLED_PROJECTION, null, null, null);
 		if (uri.getScheme().equals("file"))
 			cursor = MediaUtils.getCursorForFileQuery(uri.getPath());
 
