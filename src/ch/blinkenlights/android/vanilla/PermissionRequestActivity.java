@@ -19,6 +19,7 @@ package ch.blinkenlights.android.vanilla;
 
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.content.Context;
@@ -32,6 +33,7 @@ public class PermissionRequestActivity extends Activity {
 	// 'dangerous' permissions not granted by the manifest on versions >= M
 	private static final String[] NEEDED_PERMISSIONS = { Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE };
 
+	@TargetApi(Build.VERSION_CODES.M)
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		ThemeHelper.setTheme(this, R.style.VanillaBase);
