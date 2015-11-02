@@ -97,6 +97,7 @@ public abstract class PlaybackActivity extends Activity
 
 		mLooper = thread.getLooper();
 		mHandler = new Handler(mLooper, this);
+
 	}
 
 	@Override

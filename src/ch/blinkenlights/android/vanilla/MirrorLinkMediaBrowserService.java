@@ -17,6 +17,7 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.BroadcastReceiver;
@@ -52,6 +53,8 @@ import java.util.List;
 /**
  * Handles Music Playback through MirrorLink(tm) by implementing a MediaBrowserService.
  */
+
+@TargetApi(21)
 public class MirrorLinkMediaBrowserService extends MediaBrowserService implements Handler.Callback {
 
 	private static final String TAG = "MirrorLinkMediaBrowserService";
@@ -96,11 +99,11 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService implement
 		thread.start();
 
 		// Prep the Media Adapters (caches the top categories)
-		mArtistAdapter = new MediaAdapter(this, MediaUtils.TYPE_ARTIST, null ,null, null);
-		mAlbumAdapter = new MediaAdapter(this, MediaUtils.TYPE_ALBUM, null, null, null);
-		mSongAdapter = new MediaAdapter(this, MediaUtils.TYPE_SONG, null, null, null);
-		mPlaylistAdapter = new MediaAdapter(this, MediaUtils.TYPE_PLAYLIST, null, null, null);
-		mGenreAdapter = new MediaAdapter(this, MediaUtils.TYPE_GENRE, null, null, null);
+		mArtistAdapter = new MediaAdapter(this, MediaUtils.TYPE_ARTIST, null ,null);
+		mAlbumAdapter = new MediaAdapter(this, MediaUtils.TYPE_ALBUM, null, null);
+		mSongAdapter = new MediaAdapter(this, MediaUtils.TYPE_SONG, null, null);
+		mPlaylistAdapter = new MediaAdapter(this, MediaUtils.TYPE_PLAYLIST, null, null);
+		mGenreAdapter = new MediaAdapter(this, MediaUtils.TYPE_GENRE, null, null);
 		mMediaAdapters[MediaUtils.TYPE_ARTIST] = mArtistAdapter;
 		mMediaAdapters[MediaUtils.TYPE_ALBUM] = mAlbumAdapter;
 		mMediaAdapters[MediaUtils.TYPE_SONG] = mSongAdapter;

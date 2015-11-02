@@ -440,7 +440,6 @@ public final class PlaybackService extends Service
 
 		mBastpUtil = new BastpUtil();
 		mReadahead = new ReadaheadThread();
-		mReadahead.start();
 
 		mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 		mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);

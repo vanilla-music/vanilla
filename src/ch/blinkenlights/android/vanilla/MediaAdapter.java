@@ -29,7 +29,6 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Looper;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.text.Spannable;
@@ -82,7 +81,6 @@ public class MediaAdapter
 	 * The current data.
 	 */
 	private Cursor mCursor;
-	private Looper mLooper;
 	/**
 	 * The type of media represented by this adapter. Must be one of the
 	 * MediaUtils.FIELD_* constants. Determines which content provider to query for
@@ -157,16 +155,14 @@ public class MediaAdapter
 	 * and what fields to display in the views.
 	 * @param limiter An initial limiter to use
 	 * @param activity The LibraryActivity that will contain this adapter - may be null
-	 * @param looper The looper to use for image processing - may be null
 	 *
 	 */
-	public MediaAdapter(Context context, int type, Limiter limiter, LibraryActivity activity, Looper looper)
+	public MediaAdapter(Context context, int type, Limiter limiter, LibraryActivity activity)
 	{
 		mContext = context;
 		mActivity = activity;
 		mType = type;
 		mLimiter = limiter;
-		mLooper = looper;
 
 		if (mActivity != null) {
 			mInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -490,7 +486,6 @@ public class MediaAdapter
 			holder.divider.setVisibility(mExpandable ? View.VISIBLE : View.GONE);
 			holder.arrow.setVisibility(mExpandable ? View.VISIBLE : View.GONE);
 			holder.cover.setVisibility(mCoverCacheType != MediaUtils.TYPE_INVALID ? View.VISIBLE : View.GONE);
-			holder.cover.setup(mLooper);
 		} else {
 			holder = (ViewHolder)view.getTag();
 		}

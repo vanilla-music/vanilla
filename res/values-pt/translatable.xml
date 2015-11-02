@@ -34,6 +34,7 @@
   <string name="create">Criar</string>
   <string name="overwrite">Substituir</string>
   <string name="cancel">Cancelar</string>
+  <string name="yes">Sim</string>
   <string name="delete_playlist">Eliminar a lista %s?</string>
   <!--Library-->
   <string name="enqueue">Colocar na fila</string>
@@ -127,8 +128,9 @@
   <string name="headset_only_summary">Impede que a música seja reproduzida através dos altifalantes internos</string>
   <string name="headset_pause_title">Pausa ao remover</string>
   <string name="headset_pause_summary">Pausa na reprodução ao remover os auscultadores</string>
-  <string name="headset_play_title">Reproduzir ao inserir</string>
-  <string name="headset_play_summary">Reproduzir ao inserir os auscultadores (Apenas funciona se o serviço estiver em execução)</string>
+  <string name="headset_launch_title">Reproduzir ao inserir</string>
+  <string name="headset_launch_summary">Reproduzir ao inserir os auscultadores (Requer a instalação da aplicação \'Headphone detector\'.)</string>
+  <string name="headset_launch_app_missing">Esta funcionalidade requer que a aplicação \'Headphone detector\' esteja instalada.\nGostaria de abrir a loja Google para a instalar?</string>
   <string name="replaygain">Replay Gain</string>
   <string name="replaygain_title">Ativar replay gain</string>
   <string name="replaygain_summary">Configurar gestão das informações replay gain</string>
@@ -187,6 +189,8 @@
   <string name="coverloader_vanilla_summary">Procura as imagens com o nome cover.jpg, album.jpg e artwork.jpg e mostra-as como capa</string>
   <string name="coverloader_shadow_title">Carregar imagem de pasta oculta</string>
   <string name="coverloader_shadow_summary">Tenta carregar a imagem em \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\'</string>
+  <string name="cover_on_lockscreen_title">Mostrar imagem no ecrã de bloqueio</string>
+  <string name="cover_on_lockscreen_summary">Mostra a imagem do faixa em reprodução no ecrã de bloqueio</string>
   <string name="double_tap_title">Duplo clique no widget</string>
   <string name="double_tap_summary">Ao clicar duas vezes no widget 1x1, abre o reprodutor. Tem um atraso de 400 ms antes de responder às ações.</string>
   <string name="scrobble_title">Usar API ScrobbleDroid</string>
@@ -241,4 +245,9 @@
   <string name="filebrowser_start">Pasta inicial do explorador</string>
   <string name="customize_filebrowser_start">O explorador de ficheiros abre esta pasta</string>
   <string name="select">Selecionar</string>
+  <string name="autoplaylist_playcounts_title">Criação automática de lista de reprodução</string>
+  <string name="autoplaylist_playcounts_summary">Criar automaticamente</string>
+  <string name="autoplaylist_playcounts_fmt" formatted="false">%s uma lista de reprodução \'Top %.0f\'</string>
+  <string name="autoplaylist_playcounts_disabled">Não criar lista de reprodução automaticamente</string>
+  <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
 </resources>

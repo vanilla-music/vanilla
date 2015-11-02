@@ -19,7 +19,6 @@ package ch.blinkenlights.android.vanilla;
 
 import android.content.Context;
 import android.app.Activity;
-import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -39,13 +38,11 @@ public class ShowQueueAdapter
 	private int mResource;
 	private int mHighlightRow;
 	private Context mContext;
-	private Looper mLooper;
 
-	public ShowQueueAdapter(Context context, int resource, Looper looper) {
+	public ShowQueueAdapter(Context context, int resource) {
 		super(context, resource);
 		mResource = resource;
 		mContext = context;
-		mLooper = looper;
 		mHighlightRow = -1;
 	}
 
@@ -68,7 +65,6 @@ public class ShowQueueAdapter
 			LayoutInflater inflater = ((Activity)mContext).getLayoutInflater();
 			row = (DraggableRow)inflater.inflate(mResource, parent, false);
 			row.setupLayout(DraggableRow.LAYOUT_COVERVIEW);
-			row.getCoverView().setup(mLooper);
 		}
 
 		Song song = getItem(position);

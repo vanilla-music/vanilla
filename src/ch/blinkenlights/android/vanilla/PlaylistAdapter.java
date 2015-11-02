@@ -116,7 +116,6 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 		textView.setTag(cursor.getLong(3));
 
 		LazyCoverView cover = dview.getCoverView();
-		cover.setup(mWorkerHandler.getLooper());
 		cover.setCover(MediaUtils.TYPE_ALBUM, cursor.getLong(4));
 	}
 

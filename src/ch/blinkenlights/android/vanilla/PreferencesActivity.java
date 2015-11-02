@@ -169,7 +169,7 @@ public class PreferencesActivity extends PreferenceActivity {
 			// does not support multiple themes
 			PreferenceScreen screen = getPreferenceScreen();
 			CheckBoxPreference dark_theme_pref = (CheckBoxPreference)findPreference("use_dark_theme");
-			if (ThemeHelper.couldUseDarkTheme() == false)
+			if (ThemeHelper.usesHoloTheme()) // not available on 4.x devices
 				screen.removePreference(dark_theme_pref);
 
 		}

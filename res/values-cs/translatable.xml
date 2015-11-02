@@ -34,6 +34,7 @@
   <string name="create">Vytvořit</string>
   <string name="overwrite">Přepsat</string>
   <string name="cancel">Zavřit</string>
+  <string name="yes">Ano</string>
   <string name="delete_playlist">Smazat playlist %s?</string>
   <!--Library-->
   <string name="enqueue">Zařadit do fronty</string>
@@ -134,8 +135,9 @@
   <string name="headset_only_summary">Zabrání přehrávání skladeb vnitřním reproduktorem přístroje.</string>
   <string name="headset_pause_title">Pozastavit při odpojení</string>
   <string name="headset_pause_summary">Pozastaví přehrávání při odpojení sluchátek.</string>
-  <string name="headset_play_title">Spustit při připojení</string>
-  <string name="headset_play_summary">Začít přehrávat při připojení sluchátek. (Funguje pouze pokud služba běží.)</string>
+  <string name="headset_launch_title">Spustit při připojení</string>
+  <string name="headset_launch_summary">Začít přehrávat při připojení sluchátek. (Vyžaduje nainstalovanou aplikaci \'Headphone detector\'.)</string>
+  <string name="headset_launch_app_missing">Tato funkce vyžaduje nainstalovanou aplikaci \'Headphone detector\'.\nChcete přesměrovat do Obchodu Play pro její instalaci?</string>
   <string name="replaygain">Hlasitost přehrávání</string>
   <string name="replaygain_title">Povolit automatickou změnu hlasitosti přehrávání</string>
   <string name="replaygain_summary">Nastavit ovládání hlasitosti přehrávání</string>
@@ -240,7 +242,16 @@
   <string name="toggle_controls">Přepnout ovládání</string>
   <string name="seek_10s_backward">Přeskočit o 10 sekund zpět</string>
   <string name="seek_10s_forward">Přeskočit o 10 sekund vpřed</string>
+  <string name="preferences_action_show_queue">Zobrazit frontu</string>
+  <string name="preferences_action_clear_queue">Vymazat frontu</string>
+  <string name="preferences_action_enqueue_current_album">Zařadit album do fronty</string>
+  <string name="preferences_action_enqueue_current_artist">Zařadit umělce do fronty</string>
+  <string name="preferences_action_enqueue_current_genre">Zařadit žánr do fronty</string>
   <string name="filebrowser_start">Výchozí cesta souborů</string>
   <string name="customize_filebrowser_start">Procházení souborů se otevírá zde</string>
   <string name="select">Vybrat</string>
+  <string name="autoplaylist_playcounts_title">Automatická tvorba playlistu</string>
+  <string name="autoplaylist_playcounts_summary">Automaticky vytvořit</string>
+  <string name="autoplaylist_playcounts_fmt" formatted="false">%s \'Top %.0f\' playlist</string>
+  <string name="autoplaylist_playcounts_disabled">Nevytvářet automatický playlist</string>
 </resources>

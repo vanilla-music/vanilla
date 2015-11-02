@@ -135,6 +135,7 @@ public class LibraryActivity
 	private TextView mArtist;
 	private ImageView mCover;
 	private View mEmptyQueue;
+	private View mPermissionRequest;
 	private MenuItem mSearchMenuItem;
 
 	private HorizontalScrollView mLimiterScroller;
@@ -194,6 +195,15 @@ public class LibraryActivity
 		mCover = (ImageView)controls.findViewById(R.id.cover);
 		controls.setOnClickListener(this);
 		mActionControls = controls;
+
+		mPermissionRequest = (View)findViewById(R.id.permission_request);
+
+		if(PermissionRequestActivity.havePermissions(this) == false) {
+			// We are lacking permissions: bind and display nag bar
+			mPermissionRequest.setOnClickListener(this);
+			mPermissionRequest.setVisibility(View.VISIBLE);
+		}
+
 
 		loadTabOrder();
 		int page = settings.getInt(PrefKeys.LIBRARY_PAGE, PrefDefaults.LIBRARY_PAGE);
@@ -524,6 +534,8 @@ public class LibraryActivity
 	{
 		if (view == mCover || view == mActionControls) {
 			openPlaybackActivity();
+		} else if (view == mPermissionRequest) {
+			PermissionRequestActivity.requestPermissions(this, getIntent());
 		} else if (view == mEmptyQueue) {
 			setState(PlaybackService.get(this).setFinishAction(SongTimeline.FINISH_RANDOM));
 		} else if (view.getTag() != null) {
@@ -564,7 +576,7 @@ public class LibraryActivity
 		ContentResolver resolver = getContentResolver();
 		Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 		String[] projection = new String[] { MediaStore.Audio.Media.ARTIST_ID, MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM };
-		Cursor cursor = resolver.query(uri, projection, selection, null, null);
+		Cursor cursor = MediaUtils.queryResolver(resolver, uri, projection, selection, null, null);
 		if (cursor != null) {
 			if (cursor.moveToNext()) {
 				String[] fields;
@@ -991,10 +1003,11 @@ public class LibraryActivity
 		mLastActedId = LibraryAdapter.INVALID_ID;
 		updateLimiterViews();
 		CompatHoneycomb.selectTab(this, position);
-		if (adapter != null && adapter.getLimiter() == null) {
+		if (adapter != null && (adapter.getLimiter() == null || adapter.getMediaType() == MediaUtils.TYPE_FILE)) {
 			// Save current page so it is opened on next startup. Don't save if
 			// the page was expanded to, as the expanded page isn't the starting
-			// point.
+			// point. This limitation does not affect the files tab as the limiter
+			// (the files almost always have a limiter)
 			Handler handler = mHandler;
 			handler.sendMessage(mHandler.obtainMessage(MSG_SAVE_PAGE, position, 0));
 		}
