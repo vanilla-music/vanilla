@@ -1003,10 +1003,11 @@ public class LibraryActivity
 		mLastActedId = LibraryAdapter.INVALID_ID;
 		updateLimiterViews();
 		CompatHoneycomb.selectTab(this, position);
-		if (adapter != null && adapter.getLimiter() == null) {
+		if (adapter != null && (adapter.getLimiter() == null || adapter.getMediaType() == MediaUtils.TYPE_FILE)) {
 			// Save current page so it is opened on next startup. Don't save if
 			// the page was expanded to, as the expanded page isn't the starting
-			// point.
+			// point. This limitation does not affect the files tab as the limiter
+			// (the files almost always have a limiter)
 			Handler handler = mHandler;
 			handler.sendMessage(mHandler.obtainMessage(MSG_SAVE_PAGE, position, 0));
 		}
