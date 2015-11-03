@@ -114,8 +114,9 @@ public class LazyCoverView extends ImageView
 	/**
 	 * mHandler and mUiHandler callbacks
 	 */
-	private static final int MSG_FETCH_COVER = 60;
-	private static final int MSG_DRAW_COVER = 61;
+	private static final int MSG_READ_COVER   = 60;
+	private static final int MSG_CREATE_COVER = 61;
+	private static final int MSG_DRAW_COVER   = 62;
 
 	@Override
 	public boolean handleMessage(Message message) {
@@ -126,10 +127,21 @@ public class LazyCoverView extends ImageView
 		}
 
 		switch (message.what) {
-			case MSG_FETCH_COVER: {
+			case MSG_READ_COVER: {
+				// Cover was not in in-memory cache: Try to read from disk
+				Bitmap bitmap = sCoverCache.getStoredCover(payload.key);
+				if (bitmap != null) {
+					// Got it: promote to memory cache and let ui thread draw it
+					sCoverCache.cacheCover(payload.key, bitmap);
+					sUiHandler.sendMessage(sUiHandler.obtainMessage(MSG_DRAW_COVER, payload));
+				} else {
+					sHandler.sendMessage(sHandler.obtainMessage(MSG_CREATE_COVER, payload));
+				}
+				break;
+			}
+			case MSG_CREATE_COVER: {
 				// This message was sent due to a cache miss, but the cover might got cached in the meantime
 				Bitmap bitmap = sCoverCache.getCachedCover(payload.key);
-
 				if (bitmap == null) {
 					Song song = MediaUtils.getSongByTypeId(mContext.getContentResolver(), payload.key.mediaType, payload.key.mediaId);
 					if (song != null) {
@@ -144,7 +156,6 @@ public class LazyCoverView extends ImageView
 						sCoverCache.cacheCover(payload.key, bitmap);
 					}
 				}
-				// Request UI-Thread to draw the bitmap
 				sUiHandler.sendMessage(sUiHandler.obtainMessage(MSG_DRAW_COVER, payload));
 				break;
 			}
@@ -169,15 +180,9 @@ public class LazyCoverView extends ImageView
 	public void setCover(int type, long id) {
 		mExpectedKey = new CoverCache.CoverKey(type, id, CoverCache.SIZE_SMALL);
 		if (drawFromCache(mExpectedKey, false) == false) {
-			int delay = 1;
-			if (sHandler.hasMessages(MSG_FETCH_COVER)) {
-				// User is probably scrolling fast as there is already a queued read job
-				// wait 100ms as this view will most likely be obsolete soon anyway.
-				// This frees us from scaling bitmaps we are never going to show
-				delay = 100;
-			}
 			CoverMsg payload = new CoverMsg(mExpectedKey, this);
-			sHandler.sendMessageDelayed(sHandler.obtainMessage(MSG_FETCH_COVER, payload), delay);
+			// We put the message at the queue start to out-race slow CREATE RPC's
+			sHandler.sendMessageAtFrontOfQueue(sHandler.obtainMessage(MSG_READ_COVER, payload));
 		}
 	}
 

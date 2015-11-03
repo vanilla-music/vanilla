@@ -18,7 +18,11 @@
 package ch.blinkenlights.android.vanilla;
 
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
@@ -26,15 +30,11 @@ import android.net.Uri;
 import android.util.LruCache;
 import android.util.Log;
 
-import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Date;
-import java.util.Collections;
-import java.util.Arrays;
 
 public class CoverCache {
 	/**
@@ -128,17 +128,6 @@ public class CoverCache {
 	}
 
 	/**
-	 * Returns the on-disk cached version of the cover.
-	 * Should only be used on a background thread
-	 *
-	 * @param key The cache key to use
-	 * @return bitmap or null on cache miss
-	 */
-	public Bitmap getStoredCover(CoverKey key) {
-		return sBitmapDiskCache.get(key);
-	}
-
-	/**
 	 * Stores a new entry in the in-memory cache
 	 * Use getCachedCover to read the cached contents back
 	 *
@@ -150,13 +139,24 @@ public class CoverCache {
 	}
 
 	/**
+	 * Returns the on-disk cached version of the cover.
+	 * Should only be used on a background thread
+	 *
+	 * @param key The cache key to use
+	 * @return bitmap or null on cache miss
+	 */
+	public Bitmap getStoredCover(CoverKey key) {
+		return sBitmapDiskCache.get(key);
+	}
+
+	/**
 	 * Stores a new entry in the on-disk cache
 	 * Use getStoredCover to read the cached contents back
 	 *
 	 * @param key The cache key to use
 	 * @param cover The bitmap to store
 	 */
-	public void storeCover(CoverKey key, Bitmap cover) {
+	private void storeCover(CoverKey key, Bitmap cover) {
 		sBitmapDiskCache.put(key, cover);
 	}
 
@@ -212,31 +212,27 @@ public class CoverCache {
 	}
 
 
-	private static class BitmapDiskCache {
-		/**
-		 * Name of the cache subdir we are using
-		 */
-		private static final String CACHE_SUBDIR = "vanilla-bitmap-cache";
-		/**
-		 * How long we consider on-disk files as valid
-		 */
-		private static final long   MAX_AGE_MS = 86400000 * 1;
+	private static class BitmapDiskCache extends SQLiteOpenHelper {
 		/**
 		 * Maximal cache size to use in bytes
 		 */
 		private final long mCacheSize;
 		/**
-		 * Context to use
+		 * SQLite table to use
 		 */
-		private final Context mContext;
+		private final static String TABLE_NAME = "covercache";
 		/**
-		 * The root directory of our cache
+		 * Projection of all columns in the database
 		 */
-		private final File mCacheDir;
+		private final static String[] FULL_PROJECTION = {"id", "size", "expires", "blob"};
 		/**
-		 * How many writes have been performed
+		 * Projection of metadata-only columns
 		 */
-		private int mWriteCount = 0;
+		private final static String[] META_PROJECTION = {"id", "size", "expires"};
+		/**
+		 * Entries older than so many seconds are expired
+		 */
+		private final static long DEFAULT_TTL = 86400*3; // FIXME: We should probably increase this
 
 		/**
 		 * Creates a new BitmapDiskCache instance
@@ -245,10 +241,25 @@ public class CoverCache {
 		 * @param cacheSize The maximal amount of disk space to use in bytes
 		 */
 		public BitmapDiskCache(Context context, long cacheSize) {
-			mContext = context;
+			super(context, "covercache.db", null, 1 /* version */);
 			mCacheSize = cacheSize;
-			mCacheDir = new File(mContext.getCacheDir(), CACHE_SUBDIR);
-			mCacheDir.mkdir();
+		}
+
+		/**
+		 * Called by SQLiteOpenHelper to create the database schema
+		 */
+		@Override
+		public void onCreate(SQLiteDatabase dbh) {
+			dbh.execSQL("CREATE TABLE "+TABLE_NAME+" (id INTEGER, expires INTEGER, size INTEGER, blob BLOB);");
+			dbh.execSQL("CREATE UNIQUE INDEX idx ON "+TABLE_NAME+" (id);");
+		}
+
+		/**
+		 * Called by SqLiteOpenHelper if the database needs an upgrade
+		 */
+		@Override
+		public void onUpgrade(SQLiteDatabase dbh, int oldVersion, int newVersion) {
+			// first db -> nothing to upgrade
 		}
 
 		/**
@@ -257,14 +268,30 @@ public class CoverCache {
 		 * @param maxCacheSize Trim cache to this many bytes
 		 */
 		private void trim(long maxCacheSize) {
-			long usedSpace = 0;
-			File[] dirents = mCacheDir.listFiles();
-			Collections.shuffle(Arrays.asList(dirents));
-			for (final File entry : dirents) {
-				long entrySize = entry.length();
-				usedSpace += entrySize;
-				if (entrySize == 0 || usedSpace > maxCacheSize) {
-					entry.delete();
+			SQLiteDatabase dbh = getWritableDatabase();
+			long availableSpace = maxCacheSize - getUsedSpace();
+
+			if (maxCacheSize == 0) {
+				// Just drop the whole database (probably a call from evictAll)
+				dbh.delete(TABLE_NAME, "1", null);
+			} else if (availableSpace < 0) {
+				// Try to evict all expired entries first
+				int affected = dbh.delete(TABLE_NAME, "expires < ?", new String[] {""+getUnixTime()});
+				if (affected > 0)
+					availableSpace = maxCacheSize - getUsedSpace();
+
+				if (availableSpace < 0) {
+					// still not enough space: purge random rows
+					Cursor cursor = dbh.query(TABLE_NAME, META_PROJECTION, null, null, null, null, "RANDOM()");
+					if (cursor != null) {
+						while (cursor.moveToNext() && availableSpace < 0) {
+							int id = cursor.getInt(0);
+							int size = cursor.getInt(1);
+							dbh.delete(TABLE_NAME, "id=?", new String[] {""+id});
+							availableSpace += size;
+						}
+						cursor.close();
+					}
 				}
 			}
 		}
@@ -273,18 +300,46 @@ public class CoverCache {
 		 * Deletes all cached elements from the on-disk cache
 		 */
 		public void evictAll() {
+			// purge all cached entries
 			trim(0);
+			// and release the dbh
+			getWritableDatabase().close();
 		}
 
 		/**
-		 * Checks if passed file is considered to be valid
+		 * Checks if given stamp is considered to be expired
 		 *
-		 * @param file The file to check
-		 * @return boolean true if file is valid
+		 * @param stamp The timestamp to check
+		 * @return boolean true if stamp is expired
 		 */
-		private boolean fileIsValid(File file) {
-			long diff = new Date().getTime() - file.lastModified();
-			return (diff < MAX_AGE_MS ? true : false);
+		private boolean isExpired(long stamp) {
+			return (getUnixTime() > stamp);
+		}
+
+		/**
+		 * Returns the current unix timestamp
+		 *
+		 * @return long unix seconds since epoc
+		 */
+		private long getUnixTime() {
+			return System.currentTimeMillis() / 1000L;
+		}
+
+		/**
+		 * Calculates the space used by the sqlite database
+		 *
+		 * @return long the space used in bytes
+		 */
+		private long getUsedSpace() {
+			long usedSpace = -1;
+			SQLiteDatabase dbh = getWritableDatabase();
+			Cursor cursor = dbh.query(TABLE_NAME, new String[]{"SUM(size)"}, null, null, null, null, null);
+			if (cursor != null) {
+				if (cursor.moveToNext())
+					usedSpace = cursor.getLong(0);
+				cursor.close();
+			}
+			return usedSpace;
 		}
 
 		/**
@@ -294,24 +349,21 @@ public class CoverCache {
 		 * @param Bitmap The bitmap to store
 		 */
 		public void put(CoverKey key, Bitmap cover) {
-			File cacheFile = new File(mCacheDir, key.toString());
+			SQLiteDatabase dbh = getWritableDatabase();
 
-			if (fileIsValid(cacheFile) == false) {
-				if (mWriteCount++ % 15 == 0) {
-					trim(mCacheSize);
-				}
-				OutputStream out = null;
-				try {
-					File tmpFile = new File(cacheFile.getPath()+".tmp-"+android.os.Process.myTid());
-					out = new BufferedOutputStream(new FileOutputStream(tmpFile));
-					cover.compress(CompressFormat.PNG, 100, out);
-					out.close();
-					tmpFile.renameTo(cacheFile);
-				} catch(Exception e) {
-					Log.e("VanillaMusic", "Write to "+cacheFile+" failed: "+e);
-					cacheFile.delete();
-				}
-			}
+			// Ensure that there is some space left
+			trim(mCacheSize);
+
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			cover.compress(Bitmap.CompressFormat.PNG, 100, out);
+
+			ContentValues values = new ContentValues();
+			values.put("id"     , key.hashCode());
+			values.put("expires", getUnixTime() + DEFAULT_TTL);
+			values.put("size"   , out.size());
+			values.put("blob"   , out.toByteArray());
+
+			dbh.insert(TABLE_NAME, null, values);
 		}
 
 		/**
@@ -321,11 +373,27 @@ public class CoverCache {
 		 * @return a cached bitmap, null on cache miss
 		 */
 		public Bitmap get(CoverKey key) {
-			File cacheFile = new File(mCacheDir, key.toString());
 			Bitmap cover = null;
-			if (fileIsValid(cacheFile)) {
-				cover = BitmapFactory.decodeFile(cacheFile.toString());
+
+			SQLiteDatabase dbh = getWritableDatabase(); // may also delete
+			String selection = "id=?";
+			String[] selectionArgs = { ""+key.hashCode() };
+			Cursor cursor = dbh.query(TABLE_NAME, FULL_PROJECTION, selection, selectionArgs, null, null, null);
+			if (cursor != null) {
+				if (cursor.moveToFirst()) {
+					long expires = cursor.getLong(2);
+					byte[] blob = cursor.getBlob(3);
+
+					if (isExpired(expires)) {
+						dbh.delete(TABLE_NAME, selection, selectionArgs);
+					} else {
+						ByteArrayInputStream stream = new ByteArrayInputStream(blob);
+						cover = BitmapFactory.decodeStream(stream);
+					}
+				}
+				cursor.close();
 			}
+
 			return cover;
 		}
 
