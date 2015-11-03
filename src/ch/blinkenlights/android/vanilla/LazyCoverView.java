@@ -135,7 +135,7 @@ public class LazyCoverView extends ImageView
 					sCoverCache.cacheCover(payload.key, bitmap);
 					sUiHandler.sendMessage(sUiHandler.obtainMessage(MSG_DRAW_COVER, payload));
 				} else {
-					sHandler.sendMessage(sHandler.obtainMessage(MSG_CREATE_COVER, payload));
+					sHandler.sendMessageDelayed(sHandler.obtainMessage(MSG_CREATE_COVER, payload), 80);
 				}
 				break;
 			}
@@ -182,7 +182,7 @@ public class LazyCoverView extends ImageView
 		if (drawFromCache(mExpectedKey, false) == false) {
 			CoverMsg payload = new CoverMsg(mExpectedKey, this);
 			// We put the message at the queue start to out-race slow CREATE RPC's
-			sHandler.sendMessageAtFrontOfQueue(sHandler.obtainMessage(MSG_READ_COVER, payload));
+			sHandler.sendMessage(sHandler.obtainMessage(MSG_READ_COVER, payload));
 		}
 	}
 
