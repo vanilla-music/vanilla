@@ -52,7 +52,7 @@ THE SOFTWARE.
 	<string name="_year">year</string>
 	<string name="_replaygain">rgain</string>
 	<!-- New Playlist Dialog -->
-	<string name="choose_playlist_name">Choose Playlist Name</string>
+	<string name="choose_playlist_name">Choose playlist name</string>
 	<string name="create">Create</string>
 	<string name="overwrite">Overwrite</string>
 	<string name="cancel">Cancel</string>
@@ -62,19 +62,19 @@ THE SOFTWARE.
 
 	<!-- Library -->
 	<string name="enqueue">Enqueue</string>
-	<string name="enqueue_as_next">Play Next</string>
+	<string name="enqueue_as_next">Play next</string>
 	<string name="play">Play</string>
 	<string name="edit">Edit</string>
 	<string name="rename">Rename</string>
-	<string name="save_as_playlist">Save as Playlist…</string>
-	<string name="add_to_playlist">Add to Playlist…</string>
-	<string name="add_to_favorites">Add to Favorites</string>
+	<string name="save_as_playlist">Save as playlist…</string>
+	<string name="add_to_playlist">Add to playlist…</string>
+	<string name="add_to_favorites">Add to favorites</string>
 	<string name="playlist_favorites">Favorites</string>
-	<string name="new_playlist">New Playlist…</string>
+	<string name="new_playlist">New playlist…</string>
 	<string name="expand">Expand</string>
 	<string name="delete">Delete</string>
-	<string name="playback_view">Now Playing</string>
-	<string name="sort_by">Sort By</string>
+	<string name="playback_view">Now playing</string>
+	<string name="sort_by">Sort by</string>
 	<string name="search">Search</string>
 	<string name="done">Done</string>
 	<string name="remove">Remove</string>
@@ -112,9 +112,9 @@ THE SOFTWARE.
 
 	<string name="none">None</string>
 	<string name="unknown">Unknown</string>
-	<string name="play_all">Play All</string>
-	<string name="enqueue_all">Enqueue All</string>
-	<string name="all_songs">All Songs</string>
+	<string name="play_all">Play all</string>
+	<string name="enqueue_all">Enqueue all</string>
+	<string name="all_songs">All songs</string>
 	<string name="more_from_artist">More from artist</string>
 	<string name="more_from_album">More from album</string>
 
@@ -151,29 +151,29 @@ THE SOFTWARE.
 
 	<string name="audio">Audio</string>
 	<string name="volume_title">Volume</string>
-	<string name="volume_during_ducking_title">Volume During Notification</string>
+	<string name="volume_during_ducking_title">Volume during notification</string>
 	<string name="volume_during_ducking_summary">Playback volume: </string>
-	<string name="media_button_title">Headset/Bluetooth Controls</string>
+	<string name="media_button_title">Headset/Bluetooth controls</string>
 	<string name="media_button_summary">This is also required for ICS lockscreen controls.</string>
-	<string name="media_button_beep_title">Headset Control Beep</string>
+	<string name="media_button_beep_title">Headset control beep</string>
 	<string name="media_button_beep_summary">Beep after skipping a track with a headset control double click.</string>
-	<string name="headset_only_title">External Output Only</string>
+	<string name="headset_only_title">External output only</string>
 	<string name="headset_only_summary">Prevents music from being played through the internal speakers.</string>
-	<string name="headset_pause_title">Pause When Unplugged</string>
+	<string name="headset_pause_title">Pause when unplugged</string>
 	<string name="headset_pause_summary">Pause when the headphones are unplugged.</string>
-	<string name="headset_launch_title">Play When Plugged</string>
+	<string name="headset_launch_title">Play when plugged</string>
 	<string name="headset_launch_summary">Play when the headphones are plugged in. (Requires the \'Headphone detector\' app to be installed.)</string>
 	<string name="headset_launch_app_missing">This features requires the \'Headphone detector\' app to be installed.\nWould you like to open the Play Store to install the application?</string>
 
-	<string name="replaygain">Replay Gain</string>
-	<string name="replaygain_title">Enable Replay Gain</string>
-	<string name="replaygain_summary">Configure handling of Replay Gain information</string>
-	<string name="replaygain_track_title">Enable per-track Replay Gain</string>
+	<string name="replaygain">Replay gain</string>
+	<string name="replaygain_title">Enable replay gain</string>
+	<string name="replaygain_summary">Configure handling of replay gain information</string>
+	<string name="replaygain_track_title">Enable per-track replay gain</string>
 	<string name="replaygain_track_summary">Play all tracks at equal loudness</string>
-	<string name="replaygain_album_title">Enable album Replay Gain</string>
+	<string name="replaygain_album_title">Enable album replay gain</string>
 	<string name="replaygain_album_summary">Preserve album dynamics</string>
-	<string name="replaygain_bump_title">Replay Gain Pre-amp</string>
-	<string name="replaygain_untagged_debump_title">Songs without Replay Gain tag</string>
+	<string name="replaygain_bump_title">Replay gain pre-amp</string>
+	<string name="replaygain_untagged_debump_title">Songs without replay gain tag</string>
 	<string name="replaygain_untagged_debump_summary">Decrease volume by</string>
 	<string name="replaygain_preamp_note_title">Note</string>
 	<string name="replaygain_preamp_note_content">Android does not allow Vanilla Music to raise the volume to >100%. Setting the Pre-amp to a high value may cause issues if you are listening to \'quiet\' music. \n\nRecommended values are:\n-> -3dB for silent/classical music\n-> +3dB for post-2000 recordings</string> 
@@ -183,48 +183,48 @@ THE SOFTWARE.
 
 	<string name="equalizer">Equalizer</string>
 
-	<string name="cycle_continuous_shuffling">Continuous Shuffle</string>
+	<string name="cycle_continuous_shuffling">Continuous shuffle</string>
 	<string name="cycle_continuous_shuffling_summary">\'Shuffle mode\' will play songs in completely random order</string>
 
 	<string name="notifications">Notifications</string>
-	<string name="notification_mode_title">Notification Mode</string>
-	<string name="notification_action_title">Notification Action</string>
-	<string name="notification_invert_color_title">Invert Notification Color</string>
+	<string name="notification_mode_title">Notification mode</string>
+	<string name="notification_action_title">Notification action</string>
+	<string name="notification_invert_color_title">Invert notification color</string>
 	<string name="notification_invert_color_summary">Use white text instead of black text</string>
 
 	<string name="notification_nag">Very verbose notification</string>
 	<string name="notification_nag_summary">Announce song changes using a \'Heads-Up-Notification\'</string>
 
-	<string name="playback_screen">Playback Screen</string>
-	<string name="playback_on_startup_title">Open on Startup</string>
+	<string name="playback_screen">Playback screen</string>
+	<string name="playback_on_startup_title">Open on startup</string>
 	<string name="playback_on_startup_summary">Open playback view on startup</string>
-	<string name="display_mode_title">Display Mode</string>
-	<string name="swipe_up_action_title">Swipe Up Action</string>
-	<string name="swipe_down_action_title">Swipe Down Action</string>
-	<string name="cover_press_action_title">Cover Tap Action</string>
-	<string name="cover_longpress_action_title">Cover Long Press Action</string>
+	<string name="display_mode_title">Display mode</string>
+	<string name="swipe_up_action_title">Swipe up action</string>
+	<string name="swipe_down_action_title">Swipe down action</string>
+	<string name="cover_press_action_title">Cover tap action</string>
+	<string name="cover_longpress_action_title">Cover long press action</string>
 
-	<string name="library_screen">Library Screen</string>
-	<string name="controls_in_selector_title">Controls in Library</string>
+	<string name="library_screen">Library screen</string>
+	<string name="controls_in_selector_title">Controls in library</string>
 	<string name="controls_in_selector_summary">Show the currently playing song and media controls in the library view</string>
-	<string name="default_action_title">Default Action</string>
-	<string name="default_playlist_action_title">Default Playlist Action</string>
+	<string name="default_action_title">Default action</string>
+	<string name="default_playlist_action_title">Default playlist action</string>
 
-	<string name="accelerometer_shake">Accelerometer Shake</string>
-	<string name="enable_shake_title">Enable Accelerometer Shake</string>
+	<string name="accelerometer_shake">Accelerometer shake</string>
+	<string name="enable_shake_title">Enable accelerometer shake</string>
 	<string name="enable_shake_summary">Only active when music is playing. Does not work when screen is off on some devices.</string>
-	<string name="shake_action_title">Shake Action</string>
-	<string name="shake_threshold_title">Shake Force Threshold</string>
+	<string name="shake_action_title">Shake action</string>
+	<string name="shake_threshold_title">Shake force threshold</string>
 
-	<string name="misc_features">Miscellaneous Features</string>
+	<string name="misc_features">Miscellaneous features</string>
 	<string name="use_dark_theme_title">Use dark theme</string>
 	<string name="use_dark_theme_summary">Enables the dark material theme</string>
-	<string name="disable_lockscreen_title">Disable Lockscreen</string>
+	<string name="disable_lockscreen_title">Disable lockscreen</string>
 	<string name="disable_lockscreen_summary">Prevent the lockscreen from activating when in the library or playback screen</string>
-	<string name="use_idle_timeout_title">Enable Idle Timeout</string>
+	<string name="use_idle_timeout_title">Enable idle timeout</string>
 	<string name="use_idle_timeout_summary">When active, playback will be stopped after the given period of inactivity</string>
-	<string name="idle_timeout_title">Idle Timeout</string>
-	<string name="disable_cover_art_title">Disable Cover Art</string>
+	<string name="idle_timeout_title">Idle timeout</string>
+	<string name="disable_cover_art_title">Disable cover art</string>
 	<string name="disable_cover_art_summary">Avoid loading cover art anywhere in the application</string>
 
 	<string name="coverloader_android_title">Load artwork from Android</string>
@@ -239,21 +239,21 @@ THE SOFTWARE.
 	<string name="cover_on_lockscreen_title">Show artwork on lockscreen</string>
 	<string name="cover_on_lockscreen_summary">Display the artwork of the currently playing song on the lockscreen</string>
 
-	<string name="double_tap_title">Double Tap Widget</string>
+	<string name="double_tap_title">Double tap widget</string>
 	<string name="double_tap_summary">Double-tapping the 1x1 widget will open the player. Incurs a 400ms delay before the widget responds to actions.</string>
 	<string name="scrobble_title">Use ScrobbleDroid API</string>
 	<string name="scrobble_summary">Scrobble to Last.fm through ScrobbleDroid or Simple Last.fm Scrobbler</string>
-	<string name="stock_broadcast_title">Emulate Stock Broadcasts</string>
+	<string name="stock_broadcast_title">Emulate stock broadcasts</string>
 	<string name="stock_broadcast_summary">Send broadcasts emulating those sent by the stock music player to work with 3rd party lockscreen controls, widgets, etc.</string>
 
-	<string name="media_scan">Refresh Library</string>
+	<string name="media_scan">Refresh library</string>
 	<string name="tap_to_scan">Tap to scan external storage for music</string>
 	<string name="scan_in_progress">Scan in progress…</string>
 	<string name="finished_scanning">Finished scanning. Tap to scan again.</string>
 
 	<string name="about">About</string>
 
-	<string name="tabs">Tab Order</string>
+	<string name="tabs">Tab order</string>
 	<string name="customize_tab_order">Adjust the order and visibility of library tabs</string>
 	<string name="restore_default">Restore default</string>
 
