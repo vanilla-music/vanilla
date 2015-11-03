@@ -200,6 +200,11 @@ public final class SongTimeline {
 	 */
 	public static final int SHIFT_PREVIOUS_SONG = -1;
 	/**
+	 * Noop
+	 * @see SongTimeline#shiftCurrentSong(int)
+	 */
+	public static final int SHIFT_KEEP_SONG = 0;
+	/**
 	 * Move current position to the next song.
 	 *
 	 * @see SongTimeline#shiftCurrentSong(int)
@@ -650,7 +655,10 @@ public final class SongTimeline {
 	public Song shiftCurrentSong(int delta)
 	{
 		synchronized (this) {
-			if (delta == SHIFT_PREVIOUS_SONG || delta == SHIFT_NEXT_SONG) {
+			if (delta == SHIFT_KEEP_SONG) {
+				// void
+			}
+			else if (delta == SHIFT_PREVIOUS_SONG || delta == SHIFT_NEXT_SONG) {
 				shiftCurrentSongInternal(delta);
 			} else {
 				Song song = getSong(0);
@@ -663,7 +671,9 @@ public final class SongTimeline {
 				} while (currentAlbum == song.albumId && currentSong != song.id);
 			}
 		}
-		changed();
+
+		if (delta != SHIFT_KEEP_SONG)
+			changed();
 		return getSong(0);
 	}
 

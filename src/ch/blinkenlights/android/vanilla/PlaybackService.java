@@ -1273,11 +1273,7 @@ public final class PlaybackService extends Service
 		if (mMediaPlayer.isPlaying())
 			mMediaPlayer.stop();
 
-		Song song;
-		if (delta == 0)
-			song = mTimeline.getSong(0);
-		else
-			song = mTimeline.shiftCurrentSong(delta);
+		Song song = mTimeline.shiftCurrentSong(delta);
 		mCurrentSong = song;
 		if (song == null) {
 			if (MediaUtils.isSongAvailable(getContentResolver())) {
