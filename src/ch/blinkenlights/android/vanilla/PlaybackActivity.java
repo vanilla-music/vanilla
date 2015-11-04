@@ -257,7 +257,7 @@ public abstract class PlaybackActivity extends Activity
 	 */
 	public void setState(long uptime, int state)
 	{
-		if (uptime > mLastStateEvent)
+		if (uptime >= mLastStateEvent)
 			setState(state);
 	}
 
@@ -311,7 +311,7 @@ public abstract class PlaybackActivity extends Activity
 	 */
 	public void setSong(long uptime, Song song)
 	{
-		if (uptime > mLastSongEvent)
+		if (uptime >= mLastSongEvent)
 			setSong(song);
 	}
 
