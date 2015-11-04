@@ -134,7 +134,6 @@ public class LibraryActivity
 	private TextView mTitle;
 	private TextView mArtist;
 	private ImageView mCover;
-	private View mEmptyQueue;
 	private View mPermissionRequest;
 	private MenuItem mSearchMenuItem;
 
@@ -536,8 +535,6 @@ public class LibraryActivity
 			openPlaybackActivity();
 		} else if (view == mPermissionRequest) {
 			PermissionRequestActivity.requestPermissions(this, getIntent());
-		} else if (view == mEmptyQueue) {
-			setState(PlaybackService.get(this).setFinishAction(SongTimeline.FINISH_RANDOM));
 		} else if (view.getTag() != null) {
 			// a limiter view was clicked
 			int i = (Integer)view.getTag();
@@ -942,10 +939,6 @@ public class LibraryActivity
 	protected void onStateChange(int state, int toggled)
 	{
 		super.onStateChange(state, toggled);
-
-		if ((toggled & PlaybackService.FLAG_EMPTY_QUEUE) != 0 && mEmptyQueue != null) {
-			mEmptyQueue.setVisibility((state & PlaybackService.FLAG_EMPTY_QUEUE) == 0 ? View.GONE : View.VISIBLE);
-		}
 	}
 
 	@Override
