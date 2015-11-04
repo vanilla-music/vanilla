@@ -154,9 +154,12 @@ public final class PlaybackService extends Service
 	 */
 	public static final String ACTION_PREVIOUS_SONG = "ch.blinkenlights.android.vanilla.action.PREVIOUS_SONG";
 	/**
-	 * Action for startService: go back to the previous song OR just rewind if it played for less than 5 seconds
-	*/
-	public static final String ACTION_REWIND_SONG = "ch.blinkenlights.android.vanilla.action.REWIND_SONG";
+	 * Action for startService: go back to the previous song.
+	 *
+	 * Like ACTION_PREVIOUS_SONG, but starts playing automatically if paused
+	 * when this is called.
+	 */
+	public static final String ACTION_PREVIOUS_SONG_AUTOPLAY = "ch.blinkenlights.android.vanilla.action.PREVIOUS_SONG_AUTOPLAY";
 	/**
 	 * Change the shuffle mode.
 	 */
@@ -533,10 +536,9 @@ public final class PlaybackService extends Service
 					mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_CALL_GO, 0, 0, Integer.valueOf(0)), 400);
 				}
 			} else if (ACTION_NEXT_SONG.equals(action)) {
-				setCurrentSong(1);
-				userActionTriggered();
+				shiftCurrentSong(SongTimeline.SHIFT_NEXT_SONG);
 			} else if (ACTION_NEXT_SONG_AUTOPLAY.equals(action)) {
-				setCurrentSong(1);
+				shiftCurrentSong(SongTimeline.SHIFT_NEXT_SONG);
 				play();
 			} else if (ACTION_NEXT_SONG_DELAYED.equals(action)) {
 				if (mHandler.hasMessages(MSG_CALL_GO, Integer.valueOf(1))) {
@@ -549,16 +551,9 @@ public final class PlaybackService extends Service
 					mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_CALL_GO, 1, 0, Integer.valueOf(1)), 400);
 				}
 			} else if (ACTION_PREVIOUS_SONG.equals(action)) {
-				setCurrentSong(-1);
-				userActionTriggered();
-			} else if (ACTION_REWIND_SONG.equals(action)) {
-				/* only rewind song IF we played more than 2.5 sec (and song is longer than 5 sec) */
-				if(getPosition() > REWIND_AFTER_PLAYED_MS &&
-				   getDuration() > REWIND_AFTER_PLAYED_MS*2) {
-					setCurrentSong(0);
-				} else {
-					setCurrentSong(-1);
-				}
+				rewindCurrentSong();
+			} else if (ACTION_PREVIOUS_SONG_AUTOPLAY.equals(action)) {
+				rewindCurrentSong();
 				play();
 			} else if (ACTION_PLAY.equals(action)) {
 				play();
@@ -1319,7 +1314,6 @@ public final class PlaybackService extends Service
 				VanillaMediaPlayer tmpPlayer = mMediaPlayer;
 				mMediaPlayer = mPreparedMediaPlayer;
 				mPreparedMediaPlayer = tmpPlayer; // this was mMediaPlayer and is in reset() state
-				Log.v("VanillaMusic", "Swapped media players");
 			}
 			else {
 				prepareMediaPlayer(mMediaPlayer, song.path);
@@ -1367,10 +1361,8 @@ public final class PlaybackService extends Service
 	public void onCompletion(MediaPlayer player)
 	{
 
-		Song song = mTimeline.getSong(0);
-
 		// Count this song as played
-		mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_UPDATE_PLAYCOUNTS, song), 2500);
+		mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_UPDATE_PLAYCOUNTS, mCurrentSong), 2500);
 
 		if (finishAction(mState) == SongTimeline.FINISH_REPEAT_CURRENT) {
 			setCurrentSong(0);
@@ -1550,7 +1542,6 @@ public final class PlaybackService extends Service
 		case MSG_UPDATE_PLAYCOUNTS:
 			Song song = (Song)message.obj;
 			mPlayCounts.countSong(song);
-
 			// Update the playcounts playlist in ~20% of all cases if enabled
 			if (mAutoPlPlaycounts > 0 && Math.random() > 0.8) {
 				ContentResolver resolver = getContentResolver();
@@ -1684,6 +1675,24 @@ public final class PlaybackService extends Service
 		Song song = setCurrentSong(delta);
 		userActionTriggered();
 		return song;
+	}
+
+	/**
+	 * Skips to the previous song OR rewinds the currently playing track
+	 *
+	 * @return The new current song
+	 */
+	public Song rewindCurrentSong() {
+		int delta = SongTimeline.SHIFT_PREVIOUS_SONG;
+		if(isPlaying() && getPosition() > REWIND_AFTER_PLAYED_MS && getDuration() > REWIND_AFTER_PLAYED_MS*2) {
+			delta = SongTimeline.SHIFT_KEEP_SONG;
+			// Count song as played if >= 80% were done
+			double pctPlayed = (double)getPosition()/getDuration();
+			if (pctPlayed >= 0.8) {
+				mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_UPDATE_PLAYCOUNTS, mCurrentSong), 2500);
+			}
+		}
+		return shiftCurrentSong(delta);
 	}
 
 	/**

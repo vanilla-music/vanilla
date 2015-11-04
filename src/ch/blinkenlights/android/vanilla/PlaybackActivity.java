@@ -188,6 +188,12 @@ public abstract class PlaybackActivity extends Activity
 		setState(state);
 	}
 
+	private void rewindCurrentSong()
+	{
+		setSong(PlaybackService.get(this).rewindCurrentSong());
+	}
+
+
 	@Override
 	public void onClick(View view)
 	{
@@ -199,7 +205,7 @@ public abstract class PlaybackActivity extends Activity
 			playPause();
 			break;
 		case R.id.previous:
-			shiftCurrentSong(SongTimeline.SHIFT_PREVIOUS_SONG);
+			rewindCurrentSong();
 			break;
 		case R.id.end_action:
 			cycleFinishAction();
