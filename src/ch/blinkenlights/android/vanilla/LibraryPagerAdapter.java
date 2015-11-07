@@ -133,6 +133,10 @@ public class LibraryPagerAdapter
 	/**
 	 * A limiter that should be set when the album adapter is created.
 	 */
+	private Limiter mPendingArtistLimiter;
+	/**
+	 * A limiter that should be set when the album adapter is created.
+	 */
 	private Limiter mPendingAlbumLimiter;
 	/**
 	 * A limiter that should be set when the song adapter is created.
@@ -310,7 +314,7 @@ public class LibraryPagerAdapter
 
 			switch (type) {
 			case MediaUtils.TYPE_ARTIST:
-				adapter = mArtistAdapter = new MediaAdapter(activity, MediaUtils.TYPE_ARTIST, null, activity);
+				adapter = mArtistAdapter = new MediaAdapter(activity, MediaUtils.TYPE_ARTIST, mPendingArtistLimiter, activity);
 				mArtistAdapter.setExpandable(mSongsPosition != -1 || mAlbumsPosition != -1);
 				mArtistHeader = header = (LinearLayout)inflater.inflate(R.layout.library_row_expandable, null);
 				break;
@@ -420,6 +424,7 @@ public class LibraryPagerAdapter
 	public void restoreState(Parcelable state, ClassLoader loader)
 	{
 		Bundle in = (Bundle)state;
+		mPendingArtistLimiter = (Limiter)in.getSerializable("limiter_artists");
 		mPendingAlbumLimiter = (Limiter)in.getSerializable("limiter_albums");
 		mPendingSongLimiter = (Limiter)in.getSerializable("limiter_songs");
 		mPendingFileLimiter = (Limiter)in.getSerializable("limiter_files");
@@ -429,6 +434,8 @@ public class LibraryPagerAdapter
 	public Parcelable saveState()
 	{
 		Bundle out = new Bundle(10);
+		if (mArtistAdapter != null)
+			out.putSerializable("limiter_artists", mArtistAdapter.getLimiter());
 		if (mAlbumAdapter != null)
 			out.putSerializable("limiter_albums", mAlbumAdapter.getLimiter());
 		if (mSongAdapter != null)
@@ -471,6 +478,13 @@ public class LibraryPagerAdapter
 				requestRequery(mFilesAdapter);
 			}
 		} else {
+			if (mArtistAdapter == null) {
+				mPendingArtistLimiter = null;
+			} else {
+				mArtistAdapter.setLimiter(null);
+				loadSortOrder(mArtistAdapter);
+				requestRequery(mArtistAdapter);
+			}
 			if (mAlbumAdapter == null) {
 				mPendingAlbumLimiter = null;
 			} else {
@@ -531,6 +545,13 @@ public class LibraryPagerAdapter
 				tab = mSongsPosition;
 			break;
 		case MediaUtils.TYPE_GENRE:
+			if (mArtistAdapter == null) {
+				mPendingArtistLimiter = limiter;
+			} else {
+				mArtistAdapter.setLimiter(limiter);
+				loadSortOrder(mArtistAdapter);
+				requestRequery(mArtistAdapter);
+			}
 			if (mAlbumAdapter == null) {
 				mPendingAlbumLimiter = limiter;
 			} else {
@@ -545,7 +566,7 @@ public class LibraryPagerAdapter
 				loadSortOrder(mSongAdapter);
 				requestRequery(mSongAdapter);
 			}
-			tab = mSongsPosition;
+			tab = mArtistsPosition;
 			break;
 		case MediaUtils.TYPE_FILE:
 			if (mFilesAdapter == null) {
