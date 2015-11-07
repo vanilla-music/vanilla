@@ -191,8 +191,9 @@ public class MediaUtils {
 	 * @param selection The selection to pass to the query, or null.
 	 * @param selectionArgs The arguments to substitute into the selection.
 	 * @param sort The sort order.
+	 * @param type The media type to return
 	 */
-	public static QueryTask buildGenreQuery(long id, String[] projection, String selection, String[] selectionArgs, String sort, boolean returnAlbums)
+	public static QueryTask buildGenreQuery(long id, String[] projection, String selection, String[] selectionArgs, String sort, int type)
 	{
 		// Note: This function works on a raw sql query with way too much internal
 		// knowledge about the mediaProvider SQL table layout. Yes: it's ugly.
@@ -202,7 +203,12 @@ public class MediaUtils {
 		Uri uri = MediaStore.Audio.Genres.Members.getContentUri("external", id);
 		String[] clonedProjection = projection.clone(); // we modify the projection, but this should not be visible to the caller
 		String sql = "";
-		String authority = (returnAlbums ? "album_info" : "audio");
+		String authority = "audio";
+
+		if (type == TYPE_ARTIST)
+			authority = "artist_info";
+		if (type == TYPE_ALBUM)
+			authority = "album_info";
 
 		// Our raw SQL query includes the album_info table (well: it's actually a view)
 		// which shares some columns with audio.
@@ -212,18 +218,22 @@ public class MediaUtils {
 
 		// Prefix the SELECTed rows with the current table authority name
 		for (int i=0 ;i<clonedProjection.length; i++) {
-			clonedProjection[i] = authority+"."+clonedProjection[i];
+			if (clonedProjection[i].equals("0") == false) // do not prefix fake rows
+				clonedProjection[i] = authority+"."+clonedProjection[i];
 		}
 
 		sql += TextUtils.join(", ", clonedProjection);
-		sql += " FROM audio_genres_map_noid, audio, album_info";
-		sql += " WHERE(audio.album_id = album_info._id AND audio._id = audio_id AND genre_id=?)";
+		sql += " FROM audio_genres_map_noid, audio" + (authority.equals("audio") ? "" : ", "+authority);
+		sql += " WHERE(audio._id = audio_id AND genre_id=?)";
 
 		if (selection != null && selection.length() > 0)
 			sql += " AND("+selection.replaceAll(_FORCE_AUDIO_SRC, "$1audio.$2")+")";
 
-		if (returnAlbums)
-			sql += " GROUP BY album_info._id";
+		if (type == TYPE_ARTIST)
+			sql += " AND(artist_info._id = audio.artist_id) GROUP BY artist_info._id";
+
+		if (type == TYPE_ALBUM)
+			sql += " AND(album_info._id = audio.album_id) GROUP BY album_info._id";
 
 		if (sort != null && sort.length() > 0)
 			sql += " ORDER BY "+sort.replaceAll(_FORCE_AUDIO_SRC, "$1audio.$2");
@@ -256,7 +266,7 @@ public class MediaUtils {
 		case TYPE_PLAYLIST:
 			return buildPlaylistQuery(id, projection, selection);
 		case TYPE_GENRE:
-			return buildGenreQuery(id, projection, selection, null,  MediaStore.Audio.Genres.Members.TITLE_KEY, false);
+			return buildGenreQuery(id, projection, selection, null,  MediaStore.Audio.Genres.Members.TITLE_KEY, TYPE_SONG);
 		default:
 			throw new IllegalArgumentException("Specified type not valid: " + type);
 		}

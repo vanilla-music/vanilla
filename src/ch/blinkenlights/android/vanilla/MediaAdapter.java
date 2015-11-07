@@ -341,7 +341,7 @@ public class MediaAdapter
 		if (limiter != null && limiter.type == MediaUtils.TYPE_GENRE) {
 			// Genre is not standard metadata for MediaStore.Audio.Media.
 			// We have to query it through a separate provider. : /
-			return MediaUtils.buildGenreQuery((Long)limiter.data, projection,  selection.toString(), selectionArgs, sort, mType == MediaUtils.TYPE_ALBUM);
+			return MediaUtils.buildGenreQuery((Long)limiter.data, projection,  selection.toString(), selectionArgs, sort, mType);
 		} else {
 			if (limiter != null) {
 				if (selection.length() != 0)
