@@ -599,8 +599,6 @@ public final class PlaybackService extends Service
 			mPreparedMediaPlayer = null;
 		}
 
-		MediaButtonReceiver.unregisterMediaButton(this);
-
 		try {
 			unregisterReceiver(mReceiver);
 		} catch (IllegalArgumentException e) {
