@@ -35,7 +35,6 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
-import android.os.SystemClock;
 import android.os.Environment;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
@@ -237,7 +236,7 @@ public abstract class PlaybackActivity extends Activity
 
 	protected void setState(final int state)
 	{
-		mLastStateEvent = SystemClock.uptimeMillis();
+		mLastStateEvent = System.nanoTime();
 
 		if (mState != state) {
 			final int toggled = mState ^ state;
@@ -257,7 +256,7 @@ public abstract class PlaybackActivity extends Activity
 	 */
 	public void setState(long uptime, int state)
 	{
-		if (uptime > mLastStateEvent)
+		if (uptime >= mLastStateEvent)
 			setState(state);
 	}
 
@@ -285,7 +284,7 @@ public abstract class PlaybackActivity extends Activity
 
 	protected void setSong(final Song song)
 	{
-		mLastSongEvent = SystemClock.uptimeMillis();
+		mLastSongEvent = System.nanoTime();
 		runOnUiThread(new Runnable() {
 			@Override
 			public void run()
@@ -311,7 +310,7 @@ public abstract class PlaybackActivity extends Activity
 	 */
 	public void setSong(long uptime, Song song)
 	{
-		if (uptime > mLastSongEvent)
+		if (uptime >= mLastSongEvent)
 			setSong(song);
 	}
 

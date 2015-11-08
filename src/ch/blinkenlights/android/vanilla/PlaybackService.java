@@ -942,7 +942,7 @@ public final class PlaybackService extends Service
 
 		if (state != oldState) {
 			mHandler.sendMessage(mHandler.obtainMessage(MSG_PROCESS_STATE, oldState, state));
-			mHandler.sendMessage(mHandler.obtainMessage(MSG_BROADCAST_CHANGE, state, 0));
+			mHandler.sendMessage(mHandler.obtainMessage(MSG_BROADCAST_CHANGE, state, 0, new TimestampedObject(null)));
 		}
 
 		return state;
@@ -1292,7 +1292,7 @@ public final class PlaybackService extends Service
 
 		mMediaPlayerInitialized = false;
 		mHandler.sendMessage(mHandler.obtainMessage(MSG_PROCESS_SONG, song));
-		mHandler.sendMessage(mHandler.obtainMessage(MSG_BROADCAST_CHANGE, -1, 0, song));
+		mHandler.sendMessage(mHandler.obtainMessage(MSG_BROADCAST_CHANGE, -1, 0, new TimestampedObject(song)));
 		return song;
 	}
 
@@ -1515,7 +1515,8 @@ public final class PlaybackService extends Service
 			processNewState(message.arg1, message.arg2);
 			break;
 		case MSG_BROADCAST_CHANGE:
-			broadcastChange(message.arg1, (Song)message.obj, message.getWhen());
+			TimestampedObject tso = (TimestampedObject)message.obj;
+			broadcastChange(message.arg1, (Song)tso.object, tso.uptime);
 			break;
 		case MSG_ENTER_SLEEP_STATE:
 			enterSleepState();
