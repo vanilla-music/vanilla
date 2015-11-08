@@ -191,9 +191,10 @@ public class MediaUtils {
 	 * @param selection The selection to pass to the query, or null.
 	 * @param selectionArgs The arguments to substitute into the selection.
 	 * @param sort The sort order.
-	 * @param type The media type to return
+	 * @param type The media type to query and return
+	 * @param returnSongs returns matching songs instead of `type' if true
 	 */
-	public static QueryTask buildGenreQuery(long id, String[] projection, String selection, String[] selectionArgs, String sort, int type)
+	public static QueryTask buildGenreQuery(long id, String[] projection, String selection, String[] selectionArgs, String sort, int type, boolean returnSongs)
 	{
 		// Note: This function works on a raw sql query with way too much internal
 		// knowledge about the mediaProvider SQL table layout. Yes: it's ugly.
@@ -219,7 +220,7 @@ public class MediaUtils {
 		// Prefix the SELECTed rows with the current table authority name
 		for (int i=0 ;i<clonedProjection.length; i++) {
 			if (clonedProjection[i].equals("0") == false) // do not prefix fake rows
-				clonedProjection[i] = authority+"."+clonedProjection[i];
+				clonedProjection[i] = (returnSongs ? "audio" : authority)+"."+clonedProjection[i];
 		}
 
 		sql += TextUtils.join(", ", clonedProjection);
@@ -230,10 +231,10 @@ public class MediaUtils {
 			sql += " AND("+selection.replaceAll(_FORCE_AUDIO_SRC, "$1audio.$2")+")";
 
 		if (type == TYPE_ARTIST)
-			sql += " AND(artist_info._id = audio.artist_id) GROUP BY artist_info._id";
+			sql += " AND(artist_info._id = audio.artist_id)" + (returnSongs ? "" : " GROUP BY artist_info._id");
 
 		if (type == TYPE_ALBUM)
-			sql += " AND(album_info._id = audio.album_id) GROUP BY album_info._id";
+			sql += " AND(album_info._id = audio.album_id)" + (returnSongs ? "" : " GROUP BY album_info._id");
 
 		if (sort != null && sort.length() > 0)
 			sql += " ORDER BY "+sort.replaceAll(_FORCE_AUDIO_SRC, "$1audio.$2");
@@ -266,7 +267,7 @@ public class MediaUtils {
 		case TYPE_PLAYLIST:
 			return buildPlaylistQuery(id, projection, selection);
 		case TYPE_GENRE:
-			return buildGenreQuery(id, projection, selection, null,  MediaStore.Audio.Genres.Members.TITLE_KEY, TYPE_SONG);
+			return buildGenreQuery(id, projection, selection, null,  MediaStore.Audio.Genres.Members.TITLE_KEY, TYPE_SONG, true);
 		default:
 			throw new IllegalArgumentException("Specified type not valid: " + type);
 		}

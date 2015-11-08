@@ -259,7 +259,7 @@ public class MediaAdapter
 	 * @param forceMusicCheck Force the is_music check to be added to the
 	 * selection.
 	 */
-	private QueryTask buildQuery(String[] projection, boolean forceMusicCheck)
+	private QueryTask buildQuery(String[] projection, boolean returnSongs)
 	{
 		String constraint = mConstraint;
 		Limiter limiter = mLimiter;
@@ -290,13 +290,16 @@ public class MediaAdapter
 			}
 			sb.append(" ELSE 0 END %1s");
 			sortStringRaw = sb.toString();
+		} else if (returnSongs && mType != MediaUtils.TYPE_SONG) {
+			// We are in a non-song adapter but requested to return songs - sorting
+			// can only be done by using the adapters default sort mode :-(
+			sortStringRaw = mSongSort;
 		}
 
 		String sort = String.format(sortStringRaw, sortDir);
 
-		if (mType == MediaUtils.TYPE_SONG || forceMusicCheck)
+		if (returnSongs || mType == MediaUtils.TYPE_SONG)
 			selection.append(MediaStore.Audio.Media.IS_MUSIC+" AND length(_data)");
-
 
 		if (constraint != null && constraint.length() != 0) {
 			String[] needles;
@@ -338,19 +341,22 @@ public class MediaAdapter
 			}
 		}
 
+		QueryTask query;
 		if (limiter != null && limiter.type == MediaUtils.TYPE_GENRE) {
 			// Genre is not standard metadata for MediaStore.Audio.Media.
 			// We have to query it through a separate provider. : /
-			return MediaUtils.buildGenreQuery((Long)limiter.data, projection,  selection.toString(), selectionArgs, sort, mType);
+			query = MediaUtils.buildGenreQuery((Long)limiter.data, projection,  selection.toString(), selectionArgs, sort, mType, returnSongs);
 		} else {
 			if (limiter != null) {
 				if (selection.length() != 0)
 					selection.append(" AND ");
 				selection.append(limiter.data);
 			}
-
-			return new QueryTask(mStore, projection, selection.toString(), selectionArgs, sort);
+			query = new QueryTask(mStore, projection, selection.toString(), selectionArgs, sort);
+			if (returnSongs) // force query on song provider as we are requested to return songs
+				query.uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 		}
+		return query;
 	}
 
 	@Override
@@ -375,12 +381,6 @@ public class MediaAdapter
 	{
 		QueryTask query = buildQuery(projection, true);
 		query.type = mType;
-		if (mType != MediaUtils.TYPE_SONG) {
-			query.uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-			// Would be better to match the sort order in the adapter. This
-			// is likely to require significantly more work though.
-			query.sortOrder = mSongSort;
-		}
 		return query;
 	}
 
