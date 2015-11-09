@@ -39,7 +39,6 @@ import android.widget.TextView;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.regex.Pattern;
@@ -312,27 +311,11 @@ public class FileSystemAdapter
 
 	@Override
 	public void onClick(View view) {
-		Intent intent    = createData((View)view.getParent());
-		String path      = intent.getStringExtra(LibraryAdapter.DATA_FILE);
-		String mimeGuess = URLConnection.guessContentTypeFromName(path);
+		Intent intent = createData((View)view.getParent());
 		boolean isFolder = intent.getBooleanExtra(LibraryAdapter.DATA_EXPANDABLE, false);
 
-		if (isFolder == false && mimeGuess != null && mimeGuess.matches("^(image|text)/.+")) { // Dispatch images and text to external apps
-			boolean fallthrough = false;
-			File file = new File(path);
-			Uri uri = Uri.fromFile(file);
-
-			Intent extView = new Intent(Intent.ACTION_VIEW);
-			extView.setDataAndType(uri, mimeGuess);
-			try {
-				mActivity.startActivity(extView);
-			} catch (Exception ActivityNotFoundException) {
-				fallthrough = true;
-			}
-
-			if (fallthrough == false) // activity was started
-				return;
-		}
+		if (FileUtils.canDispatchIntent(intent) && FileUtils.dispatchIntent(mActivity, intent))
+			return;
 
 		if (isFolder) {
 			mActivity.onItemExpanded(intent);

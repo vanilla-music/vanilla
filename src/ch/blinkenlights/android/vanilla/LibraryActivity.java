@@ -642,6 +642,7 @@ public class LibraryActivity
 	private static final int MENU_ENQUEUE_ALL = 10;
 	private static final int MENU_MORE_FROM_ALBUM = 11;
 	private static final int MENU_MORE_FROM_ARTIST = 12;
+	private static final int MENU_OPEN_EXTERNAL = 13;
 
 	/**
 	 * Creates a context menu for an adapter row.
@@ -660,6 +661,9 @@ public class LibraryActivity
 			int type = rowData.getIntExtra(LibraryAdapter.DATA_TYPE, MediaUtils.TYPE_INVALID);
 
 			menu.setHeaderTitle(rowData.getStringExtra(LibraryAdapter.DATA_TITLE));
+
+			if (FileUtils.canDispatchIntent(rowData))
+				menu.add(0, MENU_OPEN_EXTERNAL, 0, R.string.open).setIntent(rowData);
 			menu.add(0, MENU_PLAY, 0, R.string.play).setIntent(rowData);
 			menu.add(0, MENU_ENQUEUE_AS_NEXT, 0, R.string.enqueue_as_next).setIntent(rowData);
 			menu.add(0, MENU_ENQUEUE, 0, R.string.enqueue).setIntent(rowData);
@@ -752,6 +756,10 @@ public class LibraryActivity
 				});
 				dialog.create().show();
 			break;
+		case MENU_OPEN_EXTERNAL: {
+			FileUtils.dispatchIntent(this, intent);
+			break;
+		}
 		case MENU_ADD_TO_PLAYLIST: {
 			SubMenu playlistMenu = item.getSubMenu();
 			playlistMenu.add(0, MENU_NEW_PLAYLIST, 0, R.string.new_playlist).setIntent(intent);
