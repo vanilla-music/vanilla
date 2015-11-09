@@ -35,6 +35,8 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.Random;
+
 
 public class CoverCache {
 	/**
@@ -230,9 +232,9 @@ public class CoverCache {
 		 */
 		private final static String[] META_PROJECTION = {"id", "size", "expires"};
 		/**
-		 * Entries older than so many seconds are expired
+		 * Restrict lifetime of cached objects to, at most, OBJECT_TTL
 		 */
-		private final static long DEFAULT_TTL = 86400*3; // FIXME: We should probably increase this
+		private final static int OBJECT_TTL = 86400*4;
 
 		/**
 		 * Creates a new BitmapDiskCache instance
@@ -281,8 +283,8 @@ public class CoverCache {
 					availableSpace = maxCacheSize - getUsedSpace();
 
 				if (availableSpace < 0) {
-					// still not enough space: purge random rows
-					Cursor cursor = dbh.query(TABLE_NAME, META_PROJECTION, null, null, null, null, "RANDOM()");
+					// still not enough space: purge by expire date (this kills random rows as expire times are random)
+					Cursor cursor = dbh.query(TABLE_NAME, META_PROJECTION, null, null, null, null, "expires ASC");
 					if (cursor != null) {
 						while (cursor.moveToNext() && availableSpace < 0) {
 							int id = cursor.getInt(0);
@@ -357,9 +359,12 @@ public class CoverCache {
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			cover.compress(Bitmap.CompressFormat.PNG, 100, out);
 
+			Random rnd = new Random();
+			long ttl = getUnixTime() + rnd.nextInt(OBJECT_TTL);
+
 			ContentValues values = new ContentValues();
 			values.put("id"     , key.hashCode());
-			values.put("expires", getUnixTime() + DEFAULT_TTL);
+			values.put("expires", ttl);
 			values.put("size"   , out.size());
 			values.put("blob"   , out.toByteArray());
 
