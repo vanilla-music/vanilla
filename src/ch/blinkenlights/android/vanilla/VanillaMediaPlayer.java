@@ -25,6 +25,7 @@ import android.media.MediaPlayer;
 import android.media.audiofx.AudioEffect;
 import android.os.Build;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 
 public class VanillaMediaPlayer extends MediaPlayer {
@@ -65,9 +66,14 @@ public class VanillaMediaPlayer extends MediaPlayer {
 	/**
 	 * Sets the data source to use
 	 */
-	public void setDataSource(String dataSource) throws IOException, IllegalArgumentException, SecurityException, IllegalStateException {
-		mDataSource = dataSource;
-		super.setDataSource(mDataSource);
+	public void setDataSource(String path) throws IOException, IllegalArgumentException, SecurityException, IllegalStateException {
+		// The MediaPlayer function expects a file:// like string but also accepts *most* absolute unix paths (= paths with no colon)
+		// We could therefore encode the path into a full URI, but a much quicker way is to simply use
+		// setDataSource(FileDescriptor) as the framework code would end up calling this function anyways (MediaPlayer.java:1100 (6.0))
+		FileInputStream fis = new FileInputStream(path);
+		super.setDataSource(fis.getFD());
+		fis.close(); // this is OK according to the SDK documentation!
+		mDataSource = path;
 	}
 
 	/**
