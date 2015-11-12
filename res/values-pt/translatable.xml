@@ -30,7 +30,7 @@
   <string name="_year">ano</string>
   <string name="_replaygain">ganho</string>
   <!--New Playlist Dialog-->
-  <string name="choose_playlist_name">Escolha o nome da lista</string>
+  <string name="choose_playlist_name">Escolha o nome da lista de reprodução</string>
   <string name="create">Criar</string>
   <string name="overwrite">Substituir</string>
   <string name="cancel">Cancelar</string>
@@ -42,11 +42,11 @@
   <string name="play">Reproduzir</string>
   <string name="edit">Editar</string>
   <string name="rename">Mudar nome</string>
-  <string name="save_as_playlist">Gravar como lista de reprodução</string>
-  <string name="add_to_playlist">Adicionar à lista de reprodução</string>
+  <string name="save_as_playlist">Guardar como lista de reprodução...</string>
+  <string name="add_to_playlist">Adicionar à lista de reprodução...</string>
   <string name="add_to_favorites">Adicionar aos favoritos</string>
   <string name="playlist_favorites">Favoritos</string>
-  <string name="new_playlist">Nova lista de reprodução</string>
+  <string name="new_playlist">Nova lista de reprodução...</string>
   <string name="expand">Expandir</string>
   <string name="delete">Eliminar</string>
   <string name="playback_view">Em reprodução</string>
@@ -56,6 +56,7 @@
   <string name="remove">Remover</string>
   <string name="clear_search">Limpar procura</string>
   <string name="play_or_enqueue">Colocar na fila ou reproduzir se em pausa</string>
+  <string name="open">Abrir</string>
   <plurals name="playing">
     <item quantity="one">1 faixa em reprodução</item>
     <item quantity="other">%d faixas em reprodução</item>
@@ -120,7 +121,7 @@
   <string name="volume_title">Volume</string>
   <string name="volume_during_ducking_title">Volume durante a notificação</string>
   <string name="volume_during_ducking_summary">Volume de reprodução:</string>
-  <string name="media_button_title">Auscultador/bluetooth</string>
+  <string name="media_button_title">Auscultadores/bluetooth</string>
   <string name="media_button_summary">Necessário para os controlos do ecrã de bloqueio ICS</string>
   <string name="media_button_beep_title">Sinal de auscultador</string>
   <string name="media_button_beep_summary">Sinalizar ao avançar uma faixa com duplo clique no controlo de auscultador</string>
@@ -131,12 +132,12 @@
   <string name="headset_launch_title">Reproduzir ao inserir</string>
   <string name="headset_launch_summary">Reproduzir ao inserir os auscultadores (Requer a instalação da aplicação \'Headphone detector\'.)</string>
   <string name="headset_launch_app_missing">Esta funcionalidade requer que a aplicação \'Headphone detector\' esteja instalada.\nGostaria de abrir a loja Google para a instalar?</string>
-  <string name="replaygain">Replay Gain</string>
+  <string name="replaygain">Replay gain</string>
   <string name="replaygain_title">Ativar replay gain</string>
-  <string name="replaygain_summary">Configurar gestão das informações replay gain</string>
+  <string name="replaygain_summary">Configurar a gestão de informações replay gain</string>
   <string name="replaygain_track_title">Ativar replay gain por faixa</string>
   <string name="replaygain_track_summary">Reproduzir todas as faixas com igual volume</string>
-  <string name="replaygain_album_title">Ativar replay gain de álbum</string>
+  <string name="replaygain_album_title">Ativar replay gain por álbum</string>
   <string name="replaygain_album_summary">Manter dinâmica do álbum</string>
   <string name="replaygain_bump_title">Amplificador replay gain</string>
   <string name="replaygain_untagged_debump_title">Faixas sem informação replay gain</string>
@@ -151,7 +152,7 @@
   <string name="notifications">Notificações</string>
   <string name="notification_mode_title">Modo de notificação</string>
   <string name="notification_action_title">Ação na notificação</string>
-  <string name="notification_invert_color_title">Trocar cor de notificação</string>
+  <string name="notification_invert_color_title">Inverter cor da notificação</string>
   <string name="notification_invert_color_summary">Usar texto branco em vez de preto</string>
   <string name="notification_nag">Notificação muito detalhada</string>
   <string name="notification_nag_summary">Anunciar alteração de faixa com \'Heads-Up-Notification\'</string>
@@ -162,25 +163,25 @@
   <string name="swipe_up_action_title">Ação ao deslizar para cima</string>
   <string name="swipe_down_action_title">Ação ao deslizar para baixo</string>
   <string name="cover_press_action_title">Ação ao tocar na capa</string>
-  <string name="cover_longpress_action_title">Ação com clique longo na capa</string>
+  <string name="cover_longpress_action_title">Ação com toque longo na capa</string>
   <string name="library_screen">Ecrã da coleção</string>
   <string name="controls_in_selector_title">Controlos na coleção</string>
   <string name="controls_in_selector_summary">Mostrar controlos de reprodução e a faixa atual na vista da coleção</string>
   <string name="default_action_title">Ação padrão</string>
   <string name="default_playlist_action_title">Ação padrão na lista de reprodução</string>
-  <string name="accelerometer_shake">Acelerador ao agitar</string>
-  <string name="enable_shake_title">Ativar acelerador</string>
+  <string name="accelerometer_shake">Acelerador</string>
+  <string name="enable_shake_title">Ativar acelerador ao agitar</string>
   <string name="enable_shake_summary">Apenas ativo se em reprodução. Em alguns dispositivos não funciona se o ecrã de bloqueio estiver ativo.</string>
   <string name="shake_action_title">Ação ao agitar</string>
-  <string name="shake_threshold_title">Limite da agitação</string>
+  <string name="shake_threshold_title">Limite de agitação</string>
   <string name="misc_features">Outras funções</string>
   <string name="use_dark_theme_title">Utilizar tema escuro</string>
   <string name="use_dark_theme_summary">Ativa o novo tema escuro</string>
   <string name="disable_lockscreen_title">Desativar ecrã de bloqueio</string>
   <string name="disable_lockscreen_summary">Impede a ativação do ecrã de bloqueio, se na vista de reprodução ou na coleção</string>
-  <string name="use_idle_timeout_title">Terminar reprodução</string>
+  <string name="use_idle_timeout_title">Ativar período de inatividade</string>
   <string name="use_idle_timeout_summary">Se ativa, a reprodução será parada após um certo tempo de inatividade</string>
-  <string name="idle_timeout_title">Tempo de inatividade</string>
+  <string name="idle_timeout_title">Período de inatividade</string>
   <string name="disable_cover_art_title">Desativar capa de álbum</string>
   <string name="disable_cover_art_summary">Impede o carregamento da capa do álbum</string>
   <string name="coverloader_android_title">Carregar  imagem do Android</string>
@@ -191,7 +192,7 @@
   <string name="coverloader_shadow_summary">Tenta carregar a imagem em \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\'</string>
   <string name="cover_on_lockscreen_title">Mostrar imagem no ecrã de bloqueio</string>
   <string name="cover_on_lockscreen_summary">Mostra a imagem do faixa em reprodução no ecrã de bloqueio</string>
-  <string name="double_tap_title">Duplo clique no widget</string>
+  <string name="double_tap_title">Duplo toque no widget</string>
   <string name="double_tap_summary">Ao clicar duas vezes no widget 1x1, abre o reprodutor. Tem um atraso de 400 ms antes de responder às ações.</string>
   <string name="scrobble_title">Usar API ScrobbleDroid</string>
   <string name="scrobble_summary">Enviar faixas para a Last.fm através de ScrobbleDroid ou Simple Last.fm Scrobbler</string>
@@ -202,7 +203,7 @@
   <string name="scan_in_progress">Análise em curso...</string>
   <string name="finished_scanning">Análise terminada. Clique para analisar novamente.</string>
   <string name="about">Sobre</string>
-  <string name="tabs">Ordem de separadores</string>
+  <string name="tabs">Ordem dos separadores</string>
   <string name="customize_tab_order">Ajustar ordem e visibilidade dos separadores</string>
   <string name="restore_default">Restaurar padrões</string>
   <!--The following are for the list preferences-->
@@ -250,4 +251,6 @@
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s uma lista de reprodução \'Top %.0f\'</string>
   <string name="autoplaylist_playcounts_disabled">Não criar lista de reprodução automaticamente</string>
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
+  <string name="permission_request_summary">O Vanilla Music necessita da permissão de leitura para mostrar a sua coleção</string>
+  <string name="ok">OK</string>
 </resources>

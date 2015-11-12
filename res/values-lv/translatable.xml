@@ -43,7 +43,7 @@
   <string name="edit">Rediģēt</string>
   <string name="rename">Pārdēvēt</string>
   <string name="save_as_playlist">Saglabāt kā repertuāru...</string>
-  <string name="add_to_playlist">Pievienot repertuāram...</string>
+  <string name="add_to_playlist">Pievienot repertuāru...</string>
   <string name="add_to_favorites">Pievienot iecienītajiem</string>
   <string name="playlist_favorites">Iecienītie</string>
   <string name="new_playlist">Jauns repertuārs...</string>
@@ -133,17 +133,17 @@
   <string name="media_button_beep_summary">Pīkstēt pēc celiņa izlaišanas ar austiņu vadīklas dubultklikšķi.</string>
   <string name="headset_only_title">Tikai ārēja izvade</string>
   <string name="headset_only_summary">Nepieļauj mūzikas atskaņošanu caur iekšējiem skaļruņiem.</string>
-  <string name="headset_pause_title">Pauzēt atvienojot</string>
+  <string name="headset_pause_title">Pauzēt, kad atvienotas austiņas</string>
   <string name="headset_pause_summary">Pauzēt, kad tiek atvienotas austiņas.</string>
-  <string name="headset_launch_title">Atskaņot, kad pievieno</string>
+  <string name="headset_launch_title">Atskaņot, kad pievienotas austiņas</string>
   <string name="headset_launch_summary">Atskaņot, kad tiek pievienotas austiņas. (Jābūt instalētai lietotnei \'Headphone detector\'.)</string>
   <string name="headset_launch_app_missing">Šajai iespējai nepieciešams instalēt lietotni \'Headphone detector\'.\nWould vēlaties atvērt Play Store, lai instalētu lietotni?</string>
-  <string name="replaygain">Replay Gain</string>
+  <string name="replaygain">Replay gain</string>
   <string name="replaygain_title">Ieslēgt Replay Gain</string>
   <string name="replaygain_summary">Konfigurēt Replay Gain informācijas apstrādi</string>
   <string name="replaygain_track_title">Ieslēgt celiņu Replay Gain</string>
   <string name="replaygain_track_summary">Atskaņot visus celiņus vienādā skaļumā</string>
-  <string name="replaygain_album_title">Ieslēgt albumu </string>
+  <string name="replaygain_album_title">Ieslēgt albuma Replay Gain</string>
   <string name="replaygain_album_summary">Saglabāt albumu dinamiku</string>
   <string name="replaygain_bump_title">Replay Gain priekšpastiprinājums</string>
   <string name="replaygain_untagged_debump_title">Dziesmas bez Replay Gain taga</string>
@@ -157,30 +157,30 @@
   <string name="cycle_continuous_shuffling">Nepārtrauktā sajaukšana</string>
   <string name="cycle_continuous_shuffling_summary">\"Sajaukšanas režīms\" dziesmas atskaņos pilnīgi nejaušā kārtībā</string>
   <string name="notifications">Paziņojumi</string>
-  <string name="notification_mode_title">Paziņojumu režīms</string>
+  <string name="notification_mode_title">Paziņojuma režīms</string>
   <string name="notification_action_title">Paziņojuma darbība</string>
   <string name="notification_invert_color_title">Invertēt paziņojuma krāsu</string>
   <string name="notification_invert_color_summary">Lietot baltu nevis melnu tekstu</string>
   <string name="notification_nag">Ļoti runīgs paziņojums</string>
   <string name="notification_nag_summary">Paziņot par dziesmas maiņu ar uzekrāna paziņojumu</string>
   <string name="playback_screen">Atskaņošanas ekrāns</string>
-  <string name="playback_on_startup_title">Atvērt palaižot programmu</string>
+  <string name="playback_on_startup_title">Atvērt palaižot</string>
   <string name="playback_on_startup_summary">Palaižot programmu, atvērt atskaņošanas skatu</string>
   <string name="display_mode_title">Rādīšanas režīms</string>
   <string name="swipe_up_action_title">Darbība žestam uz augšu</string>
   <string name="swipe_down_action_title">Darbība žestam uz leju</string>
-  <string name="cover_press_action_title">Darbība piesitienam uz vāciņa</string>
+  <string name="cover_press_action_title">Darbība nospiedienam uz vāciņa</string>
   <string name="cover_longpress_action_title">Darbība ilgākam nospiedienam uz vāciņa</string>
   <string name="library_screen">Bibliotēkas ekrāns</string>
   <string name="controls_in_selector_title">Vadīklas bibliotēkā</string>
   <string name="controls_in_selector_summary">Bibliotēkas skatā rādīt pašreiz atskaņoto dziesmu un mēdiju vadīklas</string>
   <string name="default_action_title">Noklusētā darbība</string>
   <string name="default_playlist_action_title">Noklusētā repertuāra darbība</string>
-  <string name="accelerometer_shake">Akselerometra kratīšana</string>
-  <string name="enable_shake_title">Ieslēgt akselelometra kratīšanu</string>
+  <string name="accelerometer_shake">Akselelometra kratīšana</string>
+  <string name="enable_shake_title">Ieslēgt akselerometra kratīšanu</string>
   <string name="enable_shake_summary">Aktīvs tikai, atskaņojot mūziku. Dažās ierīcēs nedarbojas, kad ir izslēgts ekrāns.</string>
   <string name="shake_action_title">Kratīšanas darbība</string>
-  <string name="shake_threshold_title">Kratīšanas spēka slieksnis</string>
+  <string name="shake_threshold_title">Kratīšanas darbības slieksnis</string>
   <string name="misc_features">Citas iespējas</string>
   <string name="use_dark_theme_title">Lietot tumšo tēmu</string>
   <string name="use_dark_theme_summary">Ieslēgt tumšo \'material\' tēmu</string>
@@ -189,7 +189,7 @@
   <string name="use_idle_timeout_title">Ieslēgt dīkstāves noildzi</string>
   <string name="use_idle_timeout_summary">Kad aktīva, atskaņošana tiks apturēta pēc norādītā neaktivitātes perioda</string>
   <string name="idle_timeout_title">Dīkstāves noildze</string>
-  <string name="disable_cover_art_title">Atslēgt vāciņu attēlus</string>
+  <string name="disable_cover_art_title">Atslēgt vāciņa attēlu</string>
   <string name="disable_cover_art_summary">Neielādēt vāciņu attēlus nevienā vietā programmā</string>
   <string name="coverloader_android_title">Ielādēt vāku attēlus no Android</string>
   <string name="coverloader_android_summary">Vaicāt pēc vāciņa attēla Android iekšējai mēdiju datubāzei</string>
@@ -197,7 +197,9 @@
   <string name="coverloader_vanilla_summary">Meklēt attēla failus ar nosaukumiem cover.jpg, album.jpg vai artwork.jpg un attēlot tos kā albuma vāku</string>
   <string name="coverloader_shadow_title">Ielādēt vāku attēlus no slēptas mapes</string>
   <string name="coverloader_shadow_summary">Mēģināt ielādēt vāka attēlu no </string>
-  <string name="double_tap_title">Dubultpieskāriena sīklietotne</string>
+  <string name="cover_on_lockscreen_title">Rādīt albuma vāciņu slēgekrānā</string>
+  <string name="cover_on_lockscreen_summary">Rādīt pašreiz atskaņotās dziesmas albuma vāciņu slēgekrānā</string>
+  <string name="double_tap_title">Dubultpiesitiena sīkrīks</string>
   <string name="double_tap_summary">Izdarot dubultpieskārienu 1x1 izmēra sīkrīkam, tiks atvērts atskaņotājs. Rada 400 ms aizturi, pirms sīkrīks atbildēs uz darbībām.</string>
   <string name="scrobble_title">Lietot ScrobbleDroid API</string>
   <string name="scrobble_summary">Nosūtīt atskaņojumus servisam Last.fm, izmantojot ScrobbleDroid vai Simple Last.fm Scrobbler</string>
@@ -256,4 +258,6 @@
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s \'Top %.0f\' repertuāru</string>
   <string name="autoplaylist_playcounts_disabled">Neizveidot automātisko repertuāru</string>
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
+  <string name="permission_request_summary">Vanilla Music lasīšanas atļauja vajadzīga, lai parādītu jūsu mūzikas bibliotēku</string>
+  <string name="ok">Labi</string>
 </resources>

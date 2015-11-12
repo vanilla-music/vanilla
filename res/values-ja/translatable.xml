@@ -56,6 +56,7 @@
   <string name="remove">除去</string>
   <string name="clear_search">検索をクリア</string>
   <string name="play_or_enqueue">再生中はキューに入れる、一時停止中は再生</string>
+  <string name="open">開く</string>
   <plurals name="playing">
     <item quantity="other">%d 曲を再生中。</item>
   </plurals>
@@ -111,11 +112,11 @@
   </plurals>
   <string name="audio">オーディオ</string>
   <string name="volume_title">音量</string>
-  <string name="volume_during_ducking_title">通知の間の音量</string>
+  <string name="volume_during_ducking_title">通知時の音量</string>
   <string name="volume_during_ducking_summary">再生音量: </string>
   <string name="media_button_title">ヘッドセット/Bluetooth コントロール</string>
   <string name="media_button_summary">ICS ロックスクリーンのコントロールにも必要です。</string>
-  <string name="media_button_beep_title">ヘッドセット コントロール ビープ</string>
+  <string name="media_button_beep_title">ヘッドセット コントロール ビープ音</string>
   <string name="media_button_beep_summary">ヘッドセットのコントロールをダブルクリックして、トラックをスキップした後のビープ音。</string>
   <string name="headset_only_title">外部出力のみ</string>
   <string name="headset_only_summary">内部スピーカーから音楽が再生されないようにします。</string>
@@ -143,7 +144,7 @@
   <string name="cycle_continuous_shuffling_summary">\'シャッフルモード\' は、完全にランダムな順序で曲を再生します</string>
   <string name="notifications">通知</string>
   <string name="notification_mode_title">通知モード</string>
-  <string name="notification_action_title">通知アクション</string>
+  <string name="notification_action_title">通知操作</string>
   <string name="notification_invert_color_title">通知の色を反転</string>
   <string name="notification_invert_color_summary">黒の文字に代えて白の文字を使用します</string>
   <string name="notification_nag">非常に詳細な通知</string>
@@ -182,6 +183,8 @@
   <string name="coverloader_vanilla_summary">cover.jpg、album.jpg または artwork.jpg という名前で画像ファイルを検索し、アルバム カバーとして表示します</string>
   <string name="coverloader_shadow_title">隠しフォルダからアートワークを読み込む</string>
   <string name="coverloader_shadow_summary">\'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\' からアートワークの読み込みを試行します</string>
+  <string name="cover_on_lockscreen_title">ロック画面にアートワークを表示</string>
+  <string name="cover_on_lockscreen_summary">ロック画面に現在再生している曲のアートワークを表示します</string>
   <string name="double_tap_title">ダブルタップ ウィジェット</string>
   <string name="double_tap_summary">1x1 のウィジェットをダブルタップするとプレーヤーを開きます。ウィジェットが操作に応答する前に 400ms の遅延が発生します。</string>
   <string name="scrobble_title">ScrobbleDroid API を使用する</string>
@@ -241,4 +244,6 @@
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s \'トップ %.0f\' プレイリスト</string>
   <string name="autoplaylist_playcounts_disabled">自動的にプレイリストを作成しない</string>
   <string name="autoplaylist_playcounts_name" formatted="false">トップ %d</string>
+  <string name="permission_request_summary">Vanilla Music  が音楽ライブラリを表示するために、読み取りのアクセス許可が必要です</string>
+  <string name="ok">OK</string>
 </resources>

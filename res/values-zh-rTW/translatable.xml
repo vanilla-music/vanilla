@@ -49,13 +49,14 @@
   <string name="new_playlist">新的播放清單…</string>
   <string name="expand">展開</string>
   <string name="delete">刪除</string>
-  <string name="playback_view">目前播放</string>
+  <string name="playback_view">現在播放</string>
   <string name="sort_by">排序依據</string>
   <string name="search">搜尋</string>
   <string name="done">完成</string>
   <string name="remove">移除</string>
   <string name="clear_search">清除搜尋</string>
   <string name="play_or_enqueue">如果播放佇列；如果暫停播放</string>
+  <string name="open">開啟</string>
   <plurals name="playing">
     <item quantity="other">播放歌曲 %d。</item>
   </plurals>
@@ -119,14 +120,14 @@
   <string name="media_button_beep_summary">嗶音之後以耳機控制按兩下跳一個曲目。</string>
   <string name="headset_only_title">僅外部輸出</string>
   <string name="headset_only_summary">防止經由內部喇叭播放音樂。</string>
-  <string name="headset_pause_title">拔出暫停</string>
+  <string name="headset_pause_title">耳機拔出時暫停</string>
   <string name="headset_pause_summary">拔出耳機時暫停。</string>
-  <string name="headset_launch_title">插入播放</string>
+  <string name="headset_launch_title">耳機插入時播放</string>
   <string name="headset_launch_summary">當耳機插入時播放。(需要安裝“耳機偵測”的應用程式。)</string>
   <string name="headset_launch_app_missing">此功能需要安裝“耳機偵測”的應用程式。\n您想要開啟 Play 商店以安裝應用程式嗎？</string>
   <string name="replaygain">重播增益</string>
-  <string name="replaygain_title">啟用播放增益</string>
-  <string name="replaygain_summary">組態重播增益資訊處理</string>
+  <string name="replaygain_title">啟用重播增益</string>
+  <string name="replaygain_summary">組態操作重播增益資訊處理</string>
   <string name="replaygain_track_title">每曲目重播增益啟用</string>
   <string name="replaygain_track_summary">以同等響度播放所有曲目</string>
   <string name="replaygain_album_title">啟用專輯重播增益</string>
@@ -148,25 +149,25 @@
   <string name="notification_invert_color_summary">使用白色的文字代替黑色的文字</string>
   <string name="notification_nag">非常詳細的通知</string>
   <string name="notification_nag_summary">通報歌曲的更換使用 \'抬頭顯示通知\'</string>
-  <string name="playback_screen">播放畫面</string>
+  <string name="playback_screen">回播畫面</string>
   <string name="playback_on_startup_title">啟動時開啟</string>
   <string name="playback_on_startup_summary">啟動時開啟播放檢視</string>
   <string name="display_mode_title">顯示模式</string>
-  <string name="swipe_up_action_title">向上滑動</string>
-  <string name="swipe_down_action_title">向下滑動</string>
+  <string name="swipe_up_action_title">向上滑動作</string>
+  <string name="swipe_down_action_title">向下滑動作</string>
   <string name="cover_press_action_title">輕點封面動作</string>
   <string name="cover_longpress_action_title">長按封面動作</string>
-  <string name="library_screen">沒體庫畫面</string>
-  <string name="controls_in_selector_title">媒體庫中的控制項</string>
+  <string name="library_screen">媒體庫畫面</string>
+  <string name="controls_in_selector_title">在媒體庫的控制項</string>
   <string name="controls_in_selector_summary">檢視媒體庫時，顯示目前播放的歌曲和媒體控制</string>
-  <string name="default_action_title">預設動作</string>
-  <string name="default_playlist_action_title">預設播放清單啟動</string>
+  <string name="default_action_title">預定啟動</string>
+  <string name="default_playlist_action_title">預定播放清單啟動</string>
   <string name="accelerometer_shake">搖動速渡感測</string>
   <string name="enable_shake_title">啟用搖動速度感測</string>
   <string name="enable_shake_summary">僅在播放音樂時的動作。螢幕關閉後在某些裝置上無法工作。</string>
   <string name="shake_action_title">搖動啟用</string>
   <string name="shake_threshold_title">搖動力度界限</string>
-  <string name="misc_features">其它功能</string>
+  <string name="misc_features">其它各種功能</string>
   <string name="use_dark_theme_title">使用深色主題</string>
   <string name="use_dark_theme_summary">啟用深色主題</string>
   <string name="disable_lockscreen_title">停用螢幕鎖</string>
@@ -176,12 +177,14 @@
   <string name="idle_timeout_title">閒置超時</string>
   <string name="disable_cover_art_title">停用封面</string>
   <string name="disable_cover_art_summary">在應用程式中取消載入任何的封面</string>
-  <string name="coverloader_android_title">從 Android 載入插圖</string>
-  <string name="coverloader_android_summary">查詢 Androids 內部的媒體資料庫，以用於專輯插圖</string>
-  <string name="coverloader_vanilla_title">從資料夾載入插圖</string>
+  <string name="coverloader_android_title">從 Android 載入封面</string>
+  <string name="coverloader_android_summary">查詢 Androids 內部的媒體資料庫，以用於專輯封面</string>
+  <string name="coverloader_vanilla_title">從資料夾載入封面</string>
   <string name="coverloader_vanilla_summary">尋找名為 cover.jpg、album.jpg 或 artwork.jpg 的影像檔案，並顯示作為專輯封面</string>
-  <string name="coverloader_shadow_title">從隱藏資料夾載入插圖</string>
-  <string name="coverloader_shadow_summary">試著從 \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\' 載入插圖</string>
+  <string name="coverloader_shadow_title">從隱藏資料夾載入封面</string>
+  <string name="coverloader_shadow_summary">試著從 \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\' 載入封面</string>
+  <string name="cover_on_lockscreen_title">在螢幕鎖定時，顯示封面</string>
+  <string name="cover_on_lockscreen_summary">顯示目前播放歌曲的封面，在鎖定螢幕上</string>
   <string name="double_tap_title">雙點擊小工具</string>
   <string name="double_tap_summary">雙點擊 1 x 1 小工具將打開播放機。小工具的操作做出回應之前，會引起400ms的延遲。</string>
   <string name="scrobble_title">使用 ScrobbleDroid 的 API</string>
@@ -193,7 +196,7 @@
   <string name="scan_in_progress">掃描正在處理中…</string>
   <string name="finished_scanning">掃描已完成。點選再次掃描。</string>
   <string name="about">關於</string>
-  <string name="tabs">分頁標簽排列</string>
+  <string name="tabs">分頁標簽順序</string>
   <string name="customize_tab_order">調整排列和要顯現的媒體庫分頁標簽</string>
   <string name="restore_default">還原預設值</string>
   <!--The following are for the list preferences-->
@@ -241,4 +244,6 @@
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s \'Top %.0f\' 播放清單</string>
   <string name="autoplaylist_playcounts_disabled">不要建立自動播放清單</string>
   <string name="autoplaylist_playcounts_name" formatted="false">置頂 %d</string>
+  <string name="permission_request_summary">Vanilla 音樂需要讀取的權限，以顯示您的媒體庫</string>
+  <string name="ok">確定</string>
 </resources>
