@@ -313,4 +313,18 @@ THE SOFTWARE.
 
 	<string name="permission_request_summary">Vanilla Music needs read permission to display your music library</string>
 	<string name="ok">Ok</string>
+
+	<string name="import_export_settings">Import/Export</string>
+	<string name="import_settings">Import</string>
+	<string name="export_settings">Export</string>
+	<string name="import_settings_toast">Settings imported</string>
+	<string name="export_settings_toast">Settings exported</string>
+	<string name="import_settings_error">Error importing settings</string>
+	<string name="export_settings_error">Error exporting settings</string>
+	<string name="import_export_settings_status">State: %s</string>
+	<string name="export_settings_terrible_failure">Failed to serialise settings. This is a bug, please report it!</string>
+	<string name="settings_no_file">no file</string>
+	<string name="settings_file_same_as_current">up to date</string>
+	<string name="settings_file_differs_from_current">outdated</string>
+	<string name="settings_error_reading_file">Error reading file</string>
 </resources>

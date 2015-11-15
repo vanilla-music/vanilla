@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<item
+		android:id="@+id/menu_import_export_preferences"
+		android:icon="@drawable/database"
+		android:showAsAction="ifRoom"
+		android:title="@string/import_export_settings"/>
+</menu>

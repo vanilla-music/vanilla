@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	android:id="@+id/settings_root"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	android:paddingTop="24dp">
+
+	<TextView
+		android:id="@+id/file_path"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:drawableLeft="?database_drawable"
+		android:drawablePadding="8dp"
+		android:drawableStart="?database_drawable"
+		android:gravity="left|center_vertical"
+		android:minHeight="36sp"
+		android:paddingLeft="24dp"
+		android:paddingRight="24dp"/>
+
+	<TextView
+		android:id="@+id/file_state"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginLeft="32dp"
+		android:gravity="left|center_vertical"
+		android:minHeight="36sp"
+		android:paddingLeft="24dp"
+		android:paddingRight="24dp"/>
+
+	<LinearLayout
+		style="?android:buttonBarStyle"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="right"
+		android:layout_marginRight="8dp"
+		android:orientation="horizontal">
+
+		<Button
+			android:id="@+id/import_settings"
+			style="?android:buttonBarButtonStyle"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/import_settings"/>
+
+		<Button
+			android:id="@+id/export_settings"
+			style="?android:buttonBarButtonStyle"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/export_settings"/>
+	</LinearLayout>
+
+</LinearLayout>

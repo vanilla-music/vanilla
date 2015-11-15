@@ -41,6 +41,7 @@ THE SOFTWARE.
 		<item name="overlay_foreground_color">#ffb2b2b2</item>
 		<item name="divider_color">#f444</item>
 		<item name="float_color">#f222</item>
+		<item name="database_drawable">@drawable/database</item>
 	</style>
 
 	<style name="Playback" parent="VanillaBase">
