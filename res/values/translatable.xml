@@ -314,7 +314,7 @@ THE SOFTWARE.
 	<string name="permission_request_summary">Vanilla Music needs read permission to display your music library</string>
 	<string name="ok">Ok</string>
 
-	<string name="import_export_settings">Import/Export</string>
+	<string name="import_export_settings_title">Import/Export Settings</string>
 	<string name="import_settings">Import</string>
 	<string name="export_settings">Export</string>
 	<string name="import_settings_toast">Settings imported</string>
