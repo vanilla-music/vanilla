@@ -24,11 +24,9 @@
 package ch.blinkenlights.android.vanilla;
 
 import android.app.Activity;
-import android.app.AlertDialog.Builder;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -80,7 +78,7 @@ public class PreferencesActivity extends PreferenceActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.preferences, menu);
+		inflater.inflate(R.menu.settings, menu);
 		return true;
 	}
 
@@ -90,7 +88,7 @@ public class PreferencesActivity extends PreferenceActivity {
 		if (item.getItemId() == android.R.id.home) {
 			finish();
 			return true;
-		} else if(item.getItemId() == R.id.menu_import_export_preferences) {
+		} else if(item.getItemId() == R.id.menu_import_export_settings) {
 			startActivity(new Intent(this, ImportExportSettingsActivity.class));
 			return true;
 		} else {

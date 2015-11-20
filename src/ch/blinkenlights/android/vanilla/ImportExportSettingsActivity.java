@@ -39,15 +39,13 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.IllegalFormatException;
 import java.util.Map;
 
 public class ImportExportSettingsActivity extends Activity implements View.OnClickListener {
 
 	private SharedPreferences mPreferences;
-	private static final File PREFERENCE_FILE = new File(Environment.getExternalStorageDirectory(),
-			"vanilla_preferences");
+	private static final File SETTINGS_FILE = new File(Environment.getExternalStorageDirectory(),
+			"vanilla_settings");
 	private View mImportButton;
 	private View mExportButton;
 	private CharSequence mStatusFormat;
@@ -62,7 +60,7 @@ public class ImportExportSettingsActivity extends Activity implements View.OnCli
 		mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
 		TextView filePathTextView = (TextView) findViewById(R.id.file_path);
-		filePathTextView.setText(PREFERENCE_FILE.getPath());
+		filePathTextView.setText(SETTINGS_FILE.getPath());
 
 		mImportButton = findViewById(R.id.import_settings);
 		mExportButton = findViewById(R.id.export_settings);
@@ -91,10 +89,10 @@ public class ImportExportSettingsActivity extends Activity implements View.OnCli
 		try {
 			int successToastId;
 			if (export) {
-				exportPreferences(mPreferences, new FileOutputStream(PREFERENCE_FILE));
+				exportPreferences(mPreferences, new FileOutputStream(SETTINGS_FILE));
 				successToastId = R.string.export_settings_toast;
 			} else {
-				importPreferences(mPreferences, new FileInputStream(PREFERENCE_FILE));
+				importPreferences(mPreferences, new FileInputStream(SETTINGS_FILE));
 				successToastId = R.string.import_settings_toast;
 			}
 
@@ -119,7 +117,7 @@ public class ImportExportSettingsActivity extends Activity implements View.OnCli
 		// Compare current settings to saved
 		final SettingsFileState settingsFileState;
 		try {
-			settingsFileState = SettingsFileState.getState(PREFERENCE_FILE, mPreferences);
+			settingsFileState = SettingsFileState.getState(SETTINGS_FILE, mPreferences);
 		} catch (IOException e) {
 			// This is generic IO error (we didn't attempt any packing/unpacking)
 			e.printStackTrace();
