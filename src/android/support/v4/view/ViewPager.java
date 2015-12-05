@@ -377,7 +377,7 @@ public class ViewPager extends ViewGroup {
 
         this.setAccessibilityDelegate(new MyAccessibilityDelegate());
 
-        if (this.getImportantForAccessibility()
+        if (ViewPagerIcsCompat.getImportantForAccessibility(this)
                 == View.IMPORTANT_FOR_ACCESSIBILITY_AUTO) {
             this.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
         }
@@ -859,7 +859,7 @@ public class ViewPager extends ViewGroup {
         duration = Math.min(duration, MAX_SETTLE_DURATION);
 
         mScroller.startScroll(sx, sy, dx, dy, duration);
-        this.postInvalidateOnAnimation();
+        ViewPagerIcsCompat.postInvalidateOnAnimation(this);
     }
 
     ItemInfo addNewItem(int position, int index) {
@@ -1651,7 +1651,7 @@ public class ViewPager extends ViewGroup {
             }
 
             // Keep on drawing until the animation has finished.
-            this.postInvalidateOnAnimation();
+            ViewPagerIcsCompat.postInvalidateOnAnimation(this);
             return;
         }
 
@@ -1837,7 +1837,7 @@ public class ViewPager extends ViewGroup {
         }
         if (needPopulate) {
             if (postEvents) {
-                this.postOnAnimation(mEndScrollRunnable);
+                ViewPagerIcsCompat.postOnAnimation(this, mEndScrollRunnable);
             } else {
                 mEndScrollRunnable.run();
             }
@@ -1947,7 +1947,7 @@ public class ViewPager extends ViewGroup {
                 if (mIsBeingDragged) {
                     // Scroll to follow the motion event
                     if (performDrag(x)) {
-                        this.postInvalidateOnAnimation();
+                        ViewPagerIcsCompat.postInvalidateOnAnimation(this);
                     }
                 }
                 break;
@@ -2119,7 +2119,7 @@ public class ViewPager extends ViewGroup {
                 break;
         }
         if (needsInvalidate) {
-            this.postInvalidateOnAnimation();
+            ViewPagerIcsCompat.postInvalidateOnAnimation(this);
         }
         return true;
     }
@@ -2290,7 +2290,7 @@ public class ViewPager extends ViewGroup {
 
         if (needsInvalidate) {
             // Keep animating
-            this.postInvalidateOnAnimation();
+            ViewPagerIcsCompat.postInvalidateOnAnimation(this);
         }
     }
 
