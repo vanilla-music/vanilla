@@ -37,7 +37,6 @@
 		android:id="@+id/file_state"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_marginLeft="24dp"
 		android:gravity="left|center_vertical"
 		android:minHeight="36sp"
 		android:paddingLeft="24dp"

@@ -60,7 +60,8 @@ public class ImportExportSettingsActivity extends Activity implements View.OnCli
 		mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
 		TextView filePathTextView = (TextView) findViewById(R.id.file_path);
-		filePathTextView.setText(SETTINGS_FILE.getPath());
+		filePathTextView.setText(getString(R.string.import_export_settings_file, SETTINGS_FILE
+				.getPath()));
 
 		mImportButton = findViewById(R.id.import_settings);
 		mExportButton = findViewById(R.id.export_settings);
