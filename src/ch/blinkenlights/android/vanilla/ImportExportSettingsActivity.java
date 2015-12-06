@@ -18,9 +18,11 @@
 package ch.blinkenlights.android.vanilla;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -44,6 +46,9 @@ import java.util.Map;
 public class ImportExportSettingsActivity extends Activity implements View.OnClickListener {
 
 	private SharedPreferences mPreferences;
+
+	public static final String ACTION_SETTINGS_IMPORTED =
+			"ch.blinkenlights.android.vanilla.action.SETTINGS_IMPORTED";
 	private static final File SETTINGS_FILE = new File(Environment.getExternalStorageDirectory(),
 			"vanilla_settings");
 	private View mImportButton;
@@ -95,6 +100,10 @@ public class ImportExportSettingsActivity extends Activity implements View.OnCli
 			} else {
 				importPreferences(mPreferences, new FileInputStream(SETTINGS_FILE));
 				successToastId = R.string.import_settings_toast;
+				final Intent settingsImportedIntent = new Intent(ACTION_SETTINGS_IMPORTED);
+				settingsImportedIntent.setPackage(getPackageName());
+				sendBroadcast(settingsImportedIntent);
+				postFinish();
 			}
 
 			Toast.makeText(this, successToastId, Toast.LENGTH_SHORT).show();
@@ -109,6 +118,15 @@ public class ImportExportSettingsActivity extends Activity implements View.OnCli
 					R.string.export_settings_error);
 			onTerribleFailure(getString(errorId), error);
 		}
+	}
+
+	private void postFinish() {
+		new Handler(getMainLooper()).post(new Runnable() {
+			@Override
+			public void run() {
+				finish();
+			}
+		});
 	}
 
 	private void updateFileState() {

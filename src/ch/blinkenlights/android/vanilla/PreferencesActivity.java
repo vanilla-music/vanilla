@@ -26,10 +26,13 @@ package ch.blinkenlights.android.vanilla;
 import android.app.Activity;
 import android.app.AlertDialog.Builder;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
@@ -60,6 +63,27 @@ public class PreferencesActivity extends PreferenceActivity {
 	private static final String VPLUG_PACKAGE_NAME = "ch.blinkenlights.android.vanillaplug";
 
 	/**
+	 * The receiver that's called when settings are imported from the backup file ({@link
+	 * ImportExportSettingsActivity#ACTION_SETTINGS_IMPORTED})
+	 */
+	private BroadcastReceiver mSettingsImportedReceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(final Context context, final Intent intent) {
+			postFinish();
+		}
+
+		private void postFinish() {
+			new Handler(getMainLooper()).post(new Runnable() {
+				@Override
+				public void run() {
+					finish();
+				}
+			});
+		}
+	};
+
+	/**
 	 * Initialize the activity, loading the preference specifications.
 	 */
 	@SuppressWarnings("deprecation")
@@ -68,12 +92,22 @@ public class PreferencesActivity extends PreferenceActivity {
 	{
 		ThemeHelper.setTheme(this, R.style.BackActionBar);
 		super.onCreate(savedInstanceState);
+
+		registerReceiver(mSettingsImportedReceiver, new IntentFilter(ImportExportSettingsActivity
+				.ACTION_SETTINGS_IMPORTED));
 	}
 
 	@Override
 	public void onBuildHeaders(List<Header> target)
 	{
 		loadHeadersFromResource(R.xml.preference_headers, target);
+	}
+
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
+		unregisterReceiver(mSettingsImportedReceiver);
 	}
 
 	@Override
