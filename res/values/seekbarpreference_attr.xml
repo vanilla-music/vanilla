@@ -8,5 +8,7 @@
 		<attr name="sbpSummaryText" format="string"/>
 		<attr name="sbpSummaryFormat" format="string"/>
 		<attr name="sbpSummaryZeroText" format="string" />
+		<attr name="sbpCheckBoxText" format="string" />
+		<attr name="sbpCheckBoxKey" format="string" />
 	</declare-styleable>
 </resources>

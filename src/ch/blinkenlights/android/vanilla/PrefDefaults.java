@@ -68,4 +68,5 @@ public class PrefDefaults {
 	public static final String  FILESYSTEM_BROWSE_START = "";
 	public static final int     VOLUME_DURING_DUCKING = 50;
 	public static final int     AUTOPLAYLIST_PLAYCOUNTS = 0;
+	public static final boolean IGNORE_AUDIOFOCUS_LOSS = false;
 }

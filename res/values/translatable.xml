@@ -154,6 +154,7 @@ THE SOFTWARE.
 	<string name="volume_title">Volume</string>
 	<string name="volume_during_ducking_title">Volume during notification</string>
 	<string name="volume_during_ducking_summary">Playback volume: </string>
+	<string name="ignore_audiofocus_loss_summary">Keep playing on permanent audio focus loss</string>
 	<string name="media_button_title">Headset/Bluetooth controls</string>
 	<string name="media_button_summary">This is also required for ICS lockscreen controls.</string>
 	<string name="media_button_beep_title">Headset control beep</string>

@@ -408,6 +408,10 @@ public final class PlaybackService extends Service
 	 */
 	private int mVolumeDuringDucking;
 	/**
+	 *
+	 */
+	private boolean mIgnoreAudioFocusLoss;
+	/**
 	 * TRUE if the readahead feature is enabled
 	 */
 	private boolean mReadaheadEnabled;
@@ -472,6 +476,7 @@ public final class PlaybackService extends Service
 		mReplayGainUntaggedDeBump = settings.getInt(PrefKeys.REPLAYGAIN_UNTAGGED_DEBUMP, PrefDefaults.REPLAYGAIN_UNTAGGED_DEBUMP);
 
 		mVolumeDuringDucking = settings.getInt(PrefKeys.VOLUME_DURING_DUCKING, PrefDefaults.VOLUME_DURING_DUCKING);
+		mIgnoreAudioFocusLoss = settings.getBoolean(PrefKeys.IGNORE_AUDIOFOCUS_LOSS, PrefDefaults.IGNORE_AUDIOFOCUS_LOSS);
 		refreshDuckingValues();
 
 		mReadaheadEnabled = settings.getBoolean(PrefKeys.ENABLE_READAHEAD, PrefDefaults.ENABLE_READAHEAD);
@@ -869,6 +874,8 @@ public final class PlaybackService extends Service
 		} else if (PrefKeys.VOLUME_DURING_DUCKING.equals(key)) {
 			mVolumeDuringDucking = settings.getInt(PrefKeys.VOLUME_DURING_DUCKING, PrefDefaults.VOLUME_DURING_DUCKING);
 			refreshDuckingValues();
+		} else if (PrefKeys.IGNORE_AUDIOFOCUS_LOSS.equals(key)) {
+			mIgnoreAudioFocusLoss = settings.getBoolean(PrefKeys.IGNORE_AUDIOFOCUS_LOSS, PrefDefaults.IGNORE_AUDIOFOCUS_LOSS);
 		} else if (PrefKeys.ENABLE_READAHEAD.equals(key)) {
 			mReadaheadEnabled = settings.getBoolean(PrefKeys.ENABLE_READAHEAD, PrefDefaults.ENABLE_READAHEAD);
 		} else if (PrefKeys.AUTOPLAYLIST_PLAYCOUNTS.equals(key)) {
@@ -1167,7 +1174,8 @@ public final class PlaybackService extends Service
 	public int pause()
 	{
 		synchronized (mStateLock) {
-			int state = updateState(mState & ~FLAG_PLAYING);
+			mTransientAudioLoss = false; // do not resume playback as this pause was user initiated
+			int state = updateState(mState & ~FLAG_PLAYING & ~FLAG_DUCKING);
 			userActionTriggered();
 			return state;
 		}
@@ -1408,9 +1416,7 @@ public final class PlaybackService extends Service
 
 			if (AudioManager.ACTION_AUDIO_BECOMING_NOISY.equals(action)) {
 				if (mHeadsetPause) {
-					unsetFlag(FLAG_PLAYING);
-					// Treat any pending transient audio loss as permanent
-					mTransientAudioLoss = false;
+					pause();
 				}
 			} else if (Intent.ACTION_SCREEN_ON.equals(action)) {
 				userActionTriggered();
@@ -2128,6 +2134,16 @@ public final class PlaybackService extends Service
 	public void onAudioFocusChange(int type)
 	{
 		Log.d("VanillaMusic", "audio focus change: " + type);
+
+		// Rewrite permanent focus loss into can_duck
+		if (mIgnoreAudioFocusLoss) {
+			switch (type) {
+				case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+				case AudioManager.AUDIOFOCUS_LOSS:
+					type = AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK;
+			}
+		}
+
 		switch (type) {
 		case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
 		case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:

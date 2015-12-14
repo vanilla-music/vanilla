@@ -39,7 +39,10 @@ THE SOFTWARE.
 		android:defaultValue="50"
 		vanilla:sbpSummaryText="@string/volume_during_ducking_summary"
 		vanilla:sbpSummaryFormat="%s %.0f%%"
-		vanilla:sbpMaxValue="100"/>
+		vanilla:sbpMaxValue="100"
+		vanilla:sbpCheckBoxKey="ignore_audiofocus_loss"
+		vanilla:sbpCheckBoxText="@string/ignore_audiofocus_loss_summary"
+		/>
 	<CheckBoxPreference
 		android:key="media_button"
 		android:title="@string/media_button_title"

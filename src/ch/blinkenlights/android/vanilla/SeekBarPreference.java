@@ -24,10 +24,12 @@
 package ch.blinkenlights.android.vanilla;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -68,6 +70,14 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 	 */
 	private String mZeroText;
 	/**
+	 * CheckBox preferences key, may be null
+	 */
+	private String mCheckBoxKey;
+	/**
+	 * Label of checkbox
+	 */
+	private String mCheckBoxText;
+	/**
 	 * Add given value to summary value
 	 */
 	private float mSummaryValueAddition;
@@ -79,6 +89,10 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 	 * TextView to display current summary
 	 */
 	private TextView mValueText;
+	/**
+	 * CheckBox to display, may be null
+	 */
+	private CheckBox mCheckBox;
 
 	public SeekBarPreference(Context context, AttributeSet attrs)
 	{
@@ -104,7 +118,9 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 		mSummaryFormat = (mSummaryFormat == null ? "%s %.1f" : mSummaryFormat);
 		mSummaryText = a.getString(R.styleable.SeekBarPreference_sbpSummaryText);
 		mSummaryText = (mSummaryText == null ? "" : mSummaryText);
-		mZeroText = a.getString(R.styleable.SeekBarPreference_sbpSummaryZeroText); // unlike other strings, this may be null
+		mZeroText = a.getString(R.styleable.SeekBarPreference_sbpSummaryZeroText);  // unlike other strings, this may be null
+		mCheckBoxKey = a.getString(R.styleable.SeekBarPreference_sbpCheckBoxKey);   // non-null if checkbox enabled
+		mCheckBoxText = a.getString(R.styleable.SeekBarPreference_sbpCheckBoxText);
 		a.recycle();
 	}
 
@@ -163,6 +179,13 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 		seekBar.setProgress(mValue);
 		seekBar.setOnSeekBarChangeListener(this);
 
+		if (mCheckBoxKey != null) {
+			mCheckBox = (CheckBox)view.findViewById(R.id.check_box);
+			mCheckBox.setText(mCheckBoxText);
+			mCheckBox.setChecked(getCheckBoxPreference());
+			mCheckBox.setVisibility(View.VISIBLE);
+		}
+
 		return view;
 	}
 
@@ -170,6 +193,8 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 	protected void onDialogClosed(boolean positiveResult) {
 		if (positiveResult) {
 			mInitialValue = mValue;
+			if (mCheckBox != null)
+				saveCheckBoxPreference(mCheckBox.isChecked());
 		} else {
 			// User aborted: Set remembered start value
 			setValue(mInitialValue);
@@ -202,4 +227,16 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 		mValueText.setText(getSummary(value));
 		persistInt(value);
 	}
+
+	private void saveCheckBoxPreference(boolean enabled) {
+		SharedPreferences.Editor editor = PlaybackService.getSettings(mContext).edit();
+		editor.putBoolean(mCheckBoxKey, enabled);
+		editor.commit();
+	}
+
+	private boolean getCheckBoxPreference() {
+		SharedPreferences settings = PlaybackService.getSettings(mContext);
+		return settings.getBoolean(mCheckBoxKey, false);
+	}
+
 }
