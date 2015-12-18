@@ -57,6 +57,7 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 import java.lang.Math;
@@ -972,7 +973,7 @@ public final class PlaybackService extends Service
 					mMediaPlayer.start();
 
 				if (mNotificationMode != NEVER)
-					startForeground(NOTIFICATION_ID, createNotification(mCurrentSong, mState));
+					startForeground(NOTIFICATION_ID, createNotification(mCurrentSong, mState, mNotificationMode));
 
 				mAudioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 
@@ -1124,7 +1125,7 @@ public final class PlaybackService extends Service
 	private void updateNotification()
 	{
 		if ((mForceNotificationVisible || mNotificationMode == ALWAYS || mNotificationMode == WHEN_PLAYING && (mState & FLAG_PLAYING) != 0) && mCurrentSong != null)
-			mNotificationManager.notify(NOTIFICATION_ID, createNotification(mCurrentSong, mState));
+			mNotificationManager.notify(NOTIFICATION_ID, createNotification(mCurrentSong, mState, mNotificationMode));
 		else
 			mNotificationManager.cancel(NOTIFICATION_ID);
 	}
@@ -2058,7 +2059,7 @@ public final class PlaybackService extends Service
 	 * @param song The Song to display information about.
 	 * @param state The state. Determines whether to show paused or playing icon.
 	 */
-	public Notification createNotification(Song song, int state)
+	public Notification createNotification(Song song, int state, int mode)
 	{
 		boolean playing = (state & FLAG_PLAYING) != 0;
 
@@ -2095,10 +2096,13 @@ public final class PlaybackService extends Service
 		views.setOnClickPendingIntent(R.id.next, PendingIntent.getService(this, 0, next, 0));
 		expanded.setOnClickPendingIntent(R.id.next, PendingIntent.getService(this, 0, next, 0));
 
+		int closeButtonVisibility = (mode == WHEN_PLAYING) ? View.VISIBLE : View.INVISIBLE;
 		Intent close = new Intent(PlaybackService.ACTION_CLOSE_NOTIFICATION);
 		close.setComponent(service);
 		views.setOnClickPendingIntent(R.id.close, PendingIntent.getService(this, 0, close, 0));
+		views.setViewVisibility(R.id.close, closeButtonVisibility);
 		expanded.setOnClickPendingIntent(R.id.close, PendingIntent.getService(this, 0, close, 0));
+		expanded.setViewVisibility(R.id.close, closeButtonVisibility);
 
 		views.setTextViewText(R.id.title, song.title);
 		views.setTextViewText(R.id.artist, song.artist);
