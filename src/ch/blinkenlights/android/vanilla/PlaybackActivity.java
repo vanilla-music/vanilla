@@ -135,7 +135,6 @@ public abstract class PlaybackActivity extends Activity
 	public void onResume()
 	{
 		super.onResume();
-		MediaButtonReceiver.registerMediaButton(this);
 		if (PlaybackService.hasInstance()) {
 			PlaybackService service = PlaybackService.get(this);
 			service.userActionTriggered();

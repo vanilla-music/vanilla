@@ -17,15 +17,16 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.ComponentName;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.media.AudioManager;
 import android.media.MediaMetadata;
 import android.media.session.MediaSession;
 import android.media.session.PlaybackState;
-
-
+import android.view.KeyEvent;
 
 public class RemoteControlImplLp implements RemoteControl.Client {
 	/**
@@ -53,13 +54,34 @@ public class RemoteControlImplLp implements RemoteControl.Client {
 
 	/**
 	 * Registers a new MediaSession on the device
-	 *
-	 * @param am The AudioManager service. (unused)
 	 */
-	public void registerRemote(AudioManager am) {
+	public void registerRemote() {
 		mMediaSession = new MediaSession(mContext, "VanillaMusic");
-		mMediaSession.setFlags(MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
-		mMediaSession.setActive(true);
+
+		mMediaSession.setCallback(new MediaSession.Callback() {
+			@Override
+			public void onPause() {
+				MediaButtonReceiver.processKey(mContext, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_HEADSETHOOK));
+			}
+			public void onPlay() {
+				MediaButtonReceiver.processKey(mContext, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_HEADSETHOOK));
+			}
+			@Override
+			public void onSkipToNext() {
+				MediaButtonReceiver.processKey(mContext, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT));
+			}
+			public void onSkipToPrevious() {
+				MediaButtonReceiver.processKey(mContext, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS));
+			}
+		});
+
+		// This intent will be used to receive button events while our session is NOT active
+		Intent intent = new Intent();
+		intent.setComponent(new ComponentName(mContext.getPackageName(), MediaButtonReceiver.class.getName()));
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, 0, intent, 0);
+
+		mMediaSession.setMediaButtonReceiver(pendingIntent);
+		mMediaSession.setFlags(MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS | MediaSession.FLAG_HANDLES_MEDIA_BUTTONS);
 	}
 
 	/**
@@ -79,7 +101,7 @@ public class RemoteControlImplLp implements RemoteControl.Client {
 
 	/**
 	 * Update the remote with new metadata.
-	 * {@link #registerRemote(AudioManager)} must have been called
+	 * {@link #registerRemote()} must have been called
 	 * first.
 	 *
 	 * @param song The song containing the new metadata.
@@ -116,7 +138,12 @@ public class RemoteControlImplLp implements RemoteControl.Client {
 		}
 
 		int playbackState = (isPlaying ? PlaybackState.STATE_PLAYING : PlaybackState.STATE_PAUSED);
+
 		session.setPlaybackState(new PlaybackState.Builder()
-			.setState(playbackState, PlaybackState.PLAYBACK_POSITION_UNKNOWN , 1.0f).build());
+			.setState(playbackState, PlaybackState.PLAYBACK_POSITION_UNKNOWN , 1.0f)
+			.setActions(PlaybackState.ACTION_PLAY | PlaybackState.ACTION_PAUSE | PlaybackState.ACTION_PLAY_PAUSE |
+			            PlaybackState.ACTION_SKIP_TO_NEXT | PlaybackState.ACTION_SKIP_TO_PREVIOUS)
+			.build());
+		mMediaSession.setActive(true);
 	}
 }

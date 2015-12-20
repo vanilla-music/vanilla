@@ -500,7 +500,7 @@ public final class PlaybackService extends Service
 		getContentResolver().registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, mObserver);
 
 		mRemoteControlClient = new RemoteControl().getClient(this);
-		mRemoteControlClient.registerRemote(mAudioManager);
+		mRemoteControlClient.registerRemote();
 
 		mLooper = thread.getLooper();
 		mHandler = new Handler(mLooper, this);
@@ -580,8 +580,6 @@ public final class PlaybackService extends Service
 				stopForeground(true); // sometimes required to clear notification
 				updateNotification();
 			}
-
-			MediaButtonReceiver.registerMediaButton(this);
 		}
 
 		return START_NOT_STICKY;

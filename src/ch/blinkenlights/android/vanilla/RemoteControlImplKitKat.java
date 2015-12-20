@@ -63,31 +63,37 @@ public class RemoteControlImplKitKat implements RemoteControl.Client {
 	 *
 	 * @param am The AudioManager service.
 	 */
-	public void registerRemote(AudioManager am)
+	public void registerRemote()
 	{
-		if (!MediaButtonReceiver.useHeadsetControls(mContext)) {
-			// RemoteControlClient requires MEDIA_BUTTON intent
-			return;
-		}
-
-		MediaButtonReceiver.registerMediaButton(mContext);
+		// Receive 'background' play button events
+		AudioManager audioManager = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
+		ComponentName receiver = new ComponentName(mContext.getPackageName(), MediaButtonReceiver.class.getName());
+		audioManager.registerMediaButtonEventReceiver(receiver);
 
 		Intent mediaButtonIntent = new Intent(Intent.ACTION_MEDIA_BUTTON);
 		mediaButtonIntent.setComponent(new ComponentName(mContext.getPackageName(), MediaButtonReceiver.class.getName()));
 		PendingIntent mediaPendingIntent = PendingIntent.getBroadcast(mContext, 0, mediaButtonIntent, 0);
 		RemoteControlClient remote = new RemoteControlClient(mediaPendingIntent);
+
+		// Things we can do (eg: buttons to display on lock screen)
 		int flags = RemoteControlClient.FLAG_KEY_MEDIA_NEXT
 			| RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS
 			| RemoteControlClient.FLAG_KEY_MEDIA_PLAY_PAUSE
 			| RemoteControlClient.FLAG_KEY_MEDIA_PLAY
 			| RemoteControlClient.FLAG_KEY_MEDIA_PAUSE;
 		remote.setTransportControlFlags(flags);
-		am.registerRemoteControlClient(remote);
+
+		audioManager.registerRemoteControlClient(remote);
 		mRemote = remote;
 	}
 
+	/**
+	 * Unregisters a remote control client
+	 */
 	public void unregisterRemote() {
-		// we should probably call am.unregisterRemoteControlClient but we never did and i'm not touching the legacy implementation.
+		AudioManager audioManager = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
+		ComponentName receiver = new ComponentName(mContext.getPackageName(), MediaButtonReceiver.class.getName());
+		audioManager.unregisterMediaButtonEventReceiver(receiver);
 	}
 
 	/**

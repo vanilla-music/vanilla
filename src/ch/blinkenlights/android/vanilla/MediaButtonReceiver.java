@@ -96,11 +96,6 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 	{
 		sUseControls = -1;
 		sBeep = -1;
-		if (useHeadsetControls(context)) {
-			registerMediaButton(context);
-		} else {
-			unregisterMediaButton(context);
-		}
 	}
 
 	/**
@@ -109,7 +104,7 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 	 *
 	 * @param context A context to use.
 	 */
-	public static boolean useHeadsetControls(Context context)
+	private static boolean useHeadsetControls(Context context)
 	{
 		if (sUseControls == -1) {
 			SharedPreferences settings = PlaybackService.getSettings(context);
@@ -179,34 +174,6 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 		}
 
 		return true;
-	}
-
-	/**
-	 * Request focus on the media buttons from AudioManager if media buttons
-	 * are enabled.
-	 *
-	 * @param context A context to use.
-	 */
-	public static void registerMediaButton(Context context)
-	{
-		if (!useHeadsetControls(context))
-			return;
-
-		AudioManager audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
-		ComponentName receiver = new ComponentName(context.getPackageName(), MediaButtonReceiver.class.getName());
-		audioManager.registerMediaButtonEventReceiver(receiver);
-	}
-
-	/**
-	 * Unregister the media buttons from AudioManager.
-	 *
-	 * @param context A context to use.
-	 */
-	public static void unregisterMediaButton(Context context)
-	{
-		AudioManager audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
-		ComponentName receiver = new ComponentName(context.getPackageName(), MediaButtonReceiver.class.getName());
-		audioManager.unregisterMediaButtonEventReceiver(receiver);
 	}
 
 	@Override
