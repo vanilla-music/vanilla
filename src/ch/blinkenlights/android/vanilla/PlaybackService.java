@@ -337,6 +337,10 @@ public final class PlaybackService extends Service
 	 * The SensorManager service.
 	 */
 	private SensorManager mSensorManager;
+	/**
+	 * A remote control client implementation
+	 */
+	private RemoteControl.Client mRemoteControlClient;
 
 	SongTimeline mTimeline;
 	private Song mCurrentSong;
@@ -495,7 +499,8 @@ public final class PlaybackService extends Service
 
 		getContentResolver().registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, mObserver);
 
-		RemoteControl.registerRemote(this, mAudioManager);
+		mRemoteControlClient = new RemoteControl().getClient(this);
+		mRemoteControlClient.registerRemote(mAudioManager);
 
 		mLooper = thread.getLooper();
 		mHandler = new Handler(mLooper, this);
@@ -613,6 +618,9 @@ public final class PlaybackService extends Service
 
 		if (mSensorManager != null)
 			mSensorManager.unregisterListener(this);
+
+		if (mRemoteControlClient != null)
+			mRemoteControlClient.unregisterRemote();
 
 		super.onDestroy();
 	}
@@ -833,7 +841,7 @@ public final class PlaybackService extends Service
 		} else if (PrefKeys.MEDIA_BUTTON.equals(key) || PrefKeys.MEDIA_BUTTON_BEEP.equals(key)) {
 			MediaButtonReceiver.reloadPreference(this);
 		} else if (PrefKeys.COVER_ON_LOCKSCREEN.equals(key)) {
-			RemoteControl.reloadPreference();
+			mRemoteControlClient.reloadPreference();
 		} else if (PrefKeys.USE_IDLE_TIMEOUT.equals(key) || PrefKeys.IDLE_TIMEOUT.equals(key)) {
 			mIdleTimeout = settings.getBoolean(PrefKeys.USE_IDLE_TIMEOUT, PrefDefaults.USE_IDLE_TIMEOUT) ? settings.getInt(PrefKeys.IDLE_TIMEOUT, PrefDefaults.IDLE_TIMEOUT) : 0;
 			userActionTriggered();
@@ -1055,7 +1063,7 @@ public final class PlaybackService extends Service
 		if (mReadaheadEnabled)
 			triggerReadAhead();
 
-		RemoteControl.updateRemote(this, mCurrentSong, mState, mForceNotificationVisible);
+		mRemoteControlClient.updateRemote(mCurrentSong, mState, mForceNotificationVisible);
 
 		if (mStockBroadcast)
 			stockMusicBroadcast();
