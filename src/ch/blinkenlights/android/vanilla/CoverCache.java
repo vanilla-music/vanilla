@@ -234,7 +234,7 @@ public class CoverCache {
 		/**
 		 * Restrict lifetime of cached objects to, at most, OBJECT_TTL
 		 */
-		private final static int OBJECT_TTL = 86400*4;
+		private final static int OBJECT_TTL = 86400*8;
 
 		/**
 		 * Creates a new BitmapDiskCache instance
@@ -357,7 +357,9 @@ public class CoverCache {
 			trim(mCacheSize);
 
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			cover.compress(Bitmap.CompressFormat.PNG, 100, out);
+			// We store a lossy version as this image was
+			// created from the original source (and will not be re-compressed)
+			cover.compress(Bitmap.CompressFormat.WEBP, 90, out);
 
 			Random rnd = new Random();
 			long ttl = getUnixTime() + rnd.nextInt(OBJECT_TTL);
