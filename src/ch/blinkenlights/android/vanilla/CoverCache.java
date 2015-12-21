@@ -203,7 +203,7 @@ public class CoverCache {
 
 		@Override
 		public int hashCode() {
-			return this.mediaType*10 + (int)this.mediaId + this.coverSize * (int)1e5;
+			return (int)this.mediaId + this.mediaType*(int)1e4 + this.coverSize * (int)1e5;
 		}
 
 		@Override
