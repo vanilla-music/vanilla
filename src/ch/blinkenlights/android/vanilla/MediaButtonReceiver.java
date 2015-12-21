@@ -104,7 +104,7 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 	 *
 	 * @param context A context to use.
 	 */
-	private static boolean useHeadsetControls(Context context)
+	public static boolean useHeadsetControls(Context context)
 	{
 		if (sUseControls == -1) {
 			SharedPreferences settings = PlaybackService.getSettings(context);

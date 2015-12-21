@@ -33,7 +33,6 @@ import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
 import android.media.RemoteControlClient;
 
-
 public class RemoteControlImplKitKat implements RemoteControl.Client {
 	/**
 	 * Context of this instance
@@ -63,8 +62,12 @@ public class RemoteControlImplKitKat implements RemoteControl.Client {
 	 *
 	 * @param am The AudioManager service.
 	 */
-	public void registerRemote()
-	{
+	public void initializeRemote() {
+		// make sure there is only one registered remote
+		unregisterRemote();
+		if (MediaButtonReceiver.useHeadsetControls(mContext) == false)
+			return;
+
 		// Receive 'background' play button events
 		AudioManager audioManager = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
 		ComponentName receiver = new ComponentName(mContext.getPackageName(), MediaButtonReceiver.class.getName());
@@ -91,9 +94,13 @@ public class RemoteControlImplKitKat implements RemoteControl.Client {
 	 * Unregisters a remote control client
 	 */
 	public void unregisterRemote() {
-		AudioManager audioManager = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
-		ComponentName receiver = new ComponentName(mContext.getPackageName(), MediaButtonReceiver.class.getName());
-		audioManager.unregisterMediaButtonEventReceiver(receiver);
+		if (mRemote != null) {
+			AudioManager audioManager = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
+			ComponentName receiver = new ComponentName(mContext.getPackageName(), MediaButtonReceiver.class.getName());
+			audioManager.unregisterMediaButtonEventReceiver(receiver);
+			audioManager.unregisterRemoteControlClient(mRemote);
+			mRemote = null;
+		}
 	}
 
 	/**

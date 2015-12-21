@@ -55,8 +55,13 @@ public class RemoteControlImplLp implements RemoteControl.Client {
 	/**
 	 * Registers a new MediaSession on the device
 	 */
-	public void registerRemote() {
-		mMediaSession = new MediaSession(mContext, "VanillaMusic");
+	public void initializeRemote() {
+		// make sure there is only one registered remote
+		unregisterRemote();
+		if (MediaButtonReceiver.useHeadsetControls(mContext) == false)
+			return;
+
+		mMediaSession = new MediaSession(mContext, "Vanilla Music");
 
 		mMediaSession.setCallback(new MediaSession.Callback() {
 			@Override
@@ -75,11 +80,11 @@ public class RemoteControlImplLp implements RemoteControl.Client {
 			}
 		});
 
-		// This intent will be used to receive button events while our session is NOT active
 		Intent intent = new Intent();
 		intent.setComponent(new ComponentName(mContext.getPackageName(), MediaButtonReceiver.class.getName()));
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, 0, intent, 0);
-
+		// This Seems to overwrite our MEDIA_BUTTON intent filter and there seems to be no way to unregister it
+		// Well: We intent to keep this around as long as possible anyway. But WHY ANDROID?!
 		mMediaSession.setMediaButtonReceiver(pendingIntent);
 		mMediaSession.setFlags(MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS | MediaSession.FLAG_HANDLES_MEDIA_BUTTONS);
 	}
@@ -88,8 +93,11 @@ public class RemoteControlImplLp implements RemoteControl.Client {
 	 * Unregisters a registered media session
 	 */
 	public void unregisterRemote() {
-		mMediaSession.setActive(false);
-		mMediaSession.release();
+		if (mMediaSession != null) {
+			mMediaSession.setActive(false);
+			mMediaSession.release();
+			mMediaSession = null;
+		}
 	}
 
 	/**

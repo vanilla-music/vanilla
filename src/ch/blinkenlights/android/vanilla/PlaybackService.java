@@ -500,7 +500,7 @@ public final class PlaybackService extends Service
 		getContentResolver().registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, mObserver);
 
 		mRemoteControlClient = new RemoteControl().getClient(this);
-		mRemoteControlClient.registerRemote();
+		mRemoteControlClient.initializeRemote();
 
 		mLooper = thread.getLooper();
 		mHandler = new Handler(mLooper, this);
@@ -838,6 +838,7 @@ public final class PlaybackService extends Service
 			mScrobble = settings.getBoolean(PrefKeys.SCROBBLE, PrefDefaults.SCROBBLE);
 		} else if (PrefKeys.MEDIA_BUTTON.equals(key) || PrefKeys.MEDIA_BUTTON_BEEP.equals(key)) {
 			MediaButtonReceiver.reloadPreference(this);
+			mRemoteControlClient.initializeRemote();
 		} else if (PrefKeys.COVER_ON_LOCKSCREEN.equals(key)) {
 			mRemoteControlClient.reloadPreference();
 		} else if (PrefKeys.USE_IDLE_TIMEOUT.equals(key) || PrefKeys.IDLE_TIMEOUT.equals(key)) {

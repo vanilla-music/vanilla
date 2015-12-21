@@ -37,7 +37,7 @@ public class RemoteControl {
 	 * Interface definition of our RemoteControl API
 	 */
 	public interface Client {
-		public void registerRemote();
+		public void initializeRemote();
 		public void unregisterRemote();
 		public void reloadPreference();
 		public void updateRemote(Song song, int state, boolean keepPaused);
