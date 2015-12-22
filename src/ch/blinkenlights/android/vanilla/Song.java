@@ -196,20 +196,40 @@ public class Song implements Comparable<Song> {
 	}
 
 	/**
-	 * Query the album art for this song.
+	 * Query the large album art for this song.
 	 *
 	 * @param context A context to use.
 	 * @return The album art or null if no album art could be found
 	 */
-	public Bitmap getCover(Context context)
-	{
+	public Bitmap getCover(Context context) {
+		return getCoverInternal(context, CoverCache.SIZE_LARGE);
+	}
+
+	/**
+	 * Query the small album art for this song.
+	 *
+	 * @param context A context to use.
+	 * @return The album art or null if no album art could be found
+	 */
+	public Bitmap getSmallCover(Context context) {
+		return getCoverInternal(context, CoverCache.SIZE_SMALL);
+	}
+
+	/**
+	 * Internal implementation of getCover
+	 *
+	 * @param context A context to use.
+	 * @param size The desired cover size
+	 * @return The album art or null if no album art could be found
+	 */
+	private Bitmap getCoverInternal(Context context, int size) {
 		if (CoverCache.mCoverLoadMode == 0 || id == -1 || (flags & FLAG_NO_COVER) != 0)
 			return null;
 
 		if (sCoverCache == null)
 			sCoverCache = new CoverCache(context.getApplicationContext());
 
-		CoverCache.CoverKey key = new CoverCache.CoverKey(MediaUtils.TYPE_ALBUM, this.albumId, CoverCache.SIZE_LARGE);
+		CoverCache.CoverKey key = new CoverCache.CoverKey(MediaUtils.TYPE_ALBUM, this.albumId, size);
 		Bitmap cover = sCoverCache.getCoverFromSong(key, this);
 
 		if (cover == null)

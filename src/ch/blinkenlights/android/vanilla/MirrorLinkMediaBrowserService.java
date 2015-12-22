@@ -20,6 +20,7 @@ package ch.blinkenlights.android.vanilla;
 import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.ContentResolver;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -398,16 +399,6 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService implement
 	}
 
 
-	private Uri getArtUri(int mediaType, String id) {
-		switch(mediaType) {
-			case MediaUtils.TYPE_SONG:
-				return Uri.parse("content://media/external/audio/media/" + id + "/albumart");
-			case MediaUtils.TYPE_ALBUM:
-				return Uri.parse("content://media/external/audio/albumart/" + id);
-		}
-		return Uri.parse("android.resource://ch.blinkenlights.android.vanilla/drawable/fallback_cover");
-	}
-
 	private String  subtitleForMediaType(int mediaType) {
 		switch(mediaType) {
 			case MediaUtils.TYPE_ARTIST:
@@ -428,6 +419,8 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService implement
 		populateMe.clear();
 		try {
 			Cursor cursor = adapter.query();
+			Context context = getApplicationContext();
+			ContentResolver resolver = context.getContentResolver();
 
 			if (cursor == null) {
 				return;
@@ -439,12 +432,15 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService implement
 				cursor.moveToPosition(j);
 				final String id = cursor.getString(0);
 				final String label = cursor.getString(2);
+				long mediaId = Long.parseLong(id);
+
+				Song song = MediaUtils.getSongByTypeId(resolver, mediaType, mediaId);
 				MediaBrowser.MediaItem item = new MediaBrowser.MediaItem(
 					new MediaDescription.Builder()
-						.setMediaId(MediaID.toString(mediaType, Long.parseLong(id), label))
+						.setMediaId(MediaID.toString(mediaType, mediaId, label))
 						.setTitle(label)
 						.setSubtitle(subtitleForMediaType(mediaType))
-						.setIconUri(getArtUri(mediaType, id))
+						.setIconBitmap(song.getSmallCover(context))
 						.build(),
 						flags);
 				populateMe.add(item);
