@@ -33,7 +33,7 @@ import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
 import android.media.RemoteControlClient;
 
-public class RemoteControlImplKitKat implements RemoteControl.Client {
+public class RemoteControlImplICS implements RemoteControl.Client {
 	/**
 	 * Context of this instance
 	 */
@@ -53,7 +53,7 @@ public class RemoteControlImplKitKat implements RemoteControl.Client {
 	 *
 	 * @param context The context to use
 	 */
-	public RemoteControlImplKitKat(Context context) {
+	public RemoteControlImplICS(Context context) {
 		mContext = context;
 	}
 
@@ -136,8 +136,12 @@ public class RemoteControlImplKitKat implements RemoteControl.Client {
 		remote.setPlaybackState(isPlaying ? RemoteControlClient.PLAYSTATE_PLAYING : RemoteControlClient.PLAYSTATE_PAUSED);
 		RemoteControlClient.MetadataEditor editor = remote.editMetadata(true);
 		if (song != null) {
-			editor.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, song.artist);
-			editor.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, song.album);
+
+			String artist_album = song.artist + " - " + song.album;
+			artist_album = (song.artist.length() == 0 ? song.album : artist_album); // no artist ? -> only display album
+			artist_album = (song.album.length() == 0 ? song.artist : artist_album); // no album ? -> only display artist
+
+			editor.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, artist_album);
 			editor.putString(MediaMetadataRetriever.METADATA_KEY_TITLE, song.title);
 			Bitmap bitmap = song.getCover(mContext);
 			if (bitmap != null  && mShowCover == 1 && (isPlaying || keepPaused)) {

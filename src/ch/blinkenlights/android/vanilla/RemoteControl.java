@@ -29,7 +29,7 @@ public class RemoteControl {
 	public RemoteControl.Client getClient(Context context) {
 		return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ?
 			new RemoteControlImplLp(context) :
-			new RemoteControlImplKitKat(context)  // legacy implementation, kept until we drop 4.x support
+			new RemoteControlImplICS(context)  // legacy implementation, kept until we drop 4.x support
 		);
 	}
 
