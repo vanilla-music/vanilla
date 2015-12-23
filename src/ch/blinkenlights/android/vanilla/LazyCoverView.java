@@ -28,6 +28,7 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.LruCache;
 import android.widget.ImageView;
 
 /**
@@ -63,6 +64,10 @@ public class LazyCoverView extends ImageView
 	 */
 	private static CoverCache sCoverCache;
 	/**
+	 * Our private LRU cache
+	 */
+	private static BitmapLruCache sBitmapLruCache;
+	/**
 	 * The cover key we are expected to draw
 	 */
 	private CoverCache.CoverKey mExpectedKey;
@@ -97,6 +102,9 @@ public class LazyCoverView extends ImageView
 		if (sCoverCache == null) {
 			sCoverCache = new CoverCache(mContext);
 		}
+		if (sBitmapLruCache == null) {
+			sBitmapLruCache = new BitmapLruCache(6*1024*1024);
+		}
 		if (sFallbackBitmap == null) {
 			sFallbackBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.fallback_cover);
 		}
@@ -114,7 +122,6 @@ public class LazyCoverView extends ImageView
 	/**
 	 * mHandler and mUiHandler callbacks
 	 */
-	private static final int MSG_READ_COVER   = 60;
 	private static final int MSG_CREATE_COVER = 61;
 	private static final int MSG_DRAW_COVER   = 62;
 
@@ -127,35 +134,22 @@ public class LazyCoverView extends ImageView
 		}
 
 		switch (message.what) {
-			case MSG_READ_COVER: {
-				// Cover was not in in-memory cache: Try to read from disk
-				Bitmap bitmap = sCoverCache.getStoredCover(payload.key);
-				if (bitmap != null) {
-					// Got it: promote to memory cache and let ui thread draw it
-					sCoverCache.cacheCover(payload.key, bitmap);
-					sUiHandler.sendMessage(sUiHandler.obtainMessage(MSG_DRAW_COVER, payload));
-				} else {
-					sHandler.sendMessageDelayed(sHandler.obtainMessage(MSG_CREATE_COVER, payload), 80);
-				}
-				break;
-			}
 			case MSG_CREATE_COVER: {
 				// This message was sent due to a cache miss, but the cover might got cached in the meantime
-				Bitmap bitmap = sCoverCache.getCachedCover(payload.key);
+				Bitmap bitmap = sBitmapLruCache.get(payload.key);
 				if (bitmap == null) {
 					Song song = MediaUtils.getSongByTypeId(mContext.getContentResolver(), payload.key.mediaType, payload.key.mediaId);
 					if (song != null) {
 						// we got a song, try to fetch a cover
-						// will also populate all caches if a cover was found
-						bitmap = sCoverCache.getCoverFromSong(payload.key, song);
+						bitmap = song.getSmallCover(mContext);
 					}
 					if (bitmap == null) {
-						// song has no cover: return a failback one and store
-						// it (only) in memory
+						// song has no cover: return a failback
 						bitmap = sFallbackBitmap;
-						sCoverCache.cacheCover(payload.key, bitmap);
 					}
 				}
+				// bitmap is non null: store in LRU cache and draw it
+				sBitmapLruCache.put(payload.key, bitmap);
 				sUiHandler.sendMessage(sUiHandler.obtainMessage(MSG_DRAW_COVER, payload));
 				break;
 			}
@@ -181,8 +175,7 @@ public class LazyCoverView extends ImageView
 		mExpectedKey = new CoverCache.CoverKey(type, id, CoverCache.SIZE_SMALL);
 		if (drawFromCache(mExpectedKey, false) == false) {
 			CoverMsg payload = new CoverMsg(mExpectedKey, this);
-			// We put the message at the queue start to out-race slow CREATE RPC's
-			sHandler.sendMessage(sHandler.obtainMessage(MSG_READ_COVER, payload));
+			sHandler.sendMessage(sHandler.obtainMessage(MSG_CREATE_COVER, payload));
 		}
 	}
 
@@ -194,7 +187,7 @@ public class LazyCoverView extends ImageView
 	 */
 	public boolean drawFromCache(CoverCache.CoverKey key, boolean fadeIn) {
 		boolean cacheHit = true;
-		Bitmap bitmap = sCoverCache.getCachedCover(key);
+		Bitmap bitmap = sBitmapLruCache.get(key);
 		if (bitmap == null) {
 			cacheHit = false;
 		}
@@ -211,6 +204,34 @@ public class LazyCoverView extends ImageView
 		}
 
 		return cacheHit;
+	}
+
+
+
+	/**
+	* A LRU cache implementation, using the CoverKey as key to store Bitmap objects
+	*
+	* Note that the implementation does not override create() in order to enable
+	* the use of fetch-if-cached functions: createBitmap() is therefore called
+	* by CoverCache itself.
+	*/
+	private static class BitmapLruCache extends LruCache<CoverCache.CoverKey, Bitmap> {
+		/**
+		 * Creates a new in-memory LRU cache
+		 *
+		 * @param size the lru cache size in bytes
+		 */
+		public BitmapLruCache(int size) {
+			super(size);
+		}
+
+		/**
+		 * Returns the cache size in bytes, not objects
+		 */
+		@Override
+		protected int sizeOf(CoverCache.CoverKey key, Bitmap value) {
+			return value.getByteCount();
+		}
 	}
 
 }

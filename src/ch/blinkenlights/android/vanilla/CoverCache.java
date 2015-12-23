@@ -27,7 +27,6 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.util.LruCache;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
@@ -41,8 +40,9 @@ import java.util.Random;
 public class CoverCache {
 	/**
 	 * Returned size of small album covers
+	 * This is 44sp * 2 = xhdpi resolution. We should probably calculate this dynamically
 	 */
-	public final static int SIZE_SMALL = 96;
+	public final static int SIZE_SMALL = 88;
 	/**
 	 * Returned size of large (cover view) album covers
 	 */
@@ -64,10 +64,6 @@ public class CoverCache {
 	 */
 	public static final int COVER_MODE_SHADOW = 0x4;
 	/**
-	 * Shared LRU cache class
-	 */
-	private static BitmapLruCache sBitmapLruCache;
-	/**
 	 * Shared on-disk cache class
 	 */
 	private static BitmapDiskCache sBitmapDiskCache;
@@ -83,9 +79,6 @@ public class CoverCache {
 	 * @param context A context to use
 	 */
 	public CoverCache(Context context) {
-		if (sBitmapLruCache == null) {
-			sBitmapLruCache = new BitmapLruCache(context, 6*1024*1024);
-		}
 		if (sBitmapDiskCache == null) {
 			sBitmapDiskCache = new BitmapDiskCache(context, 25*1024*1024);
 		}
@@ -98,46 +91,15 @@ public class CoverCache {
 	 * @param song The song used to identify the artwork to load
 	 * @return a bitmap or null if no artwork was found
 	 */
-	public Bitmap getCoverFromSong(CoverKey key, Song song) {
-		Bitmap cover = getCachedCover(key);
-
+	public Bitmap getCoverFromSong(Song song, int size) {
+		CoverKey key = new CoverCache.CoverKey(MediaUtils.TYPE_ALBUM, song.albumId, size);
+		Bitmap cover = getStoredCover(key);
 		if (cover == null) {
-			// memory miss: check disk
-			cover = getStoredCover(key);
-			if (cover == null) {
-				// disk miss: create
-				cover = sBitmapLruCache.createBitmap(song, key.coverSize*key.coverSize);
-				if (cover != null) {
-					storeCover(key, cover);
-				}
-			}
-			// store in memory if cover was re-created
-			if (cover != null) {
-				cacheCover(key, cover);
-			}
+			cover = sBitmapDiskCache.createBitmap(song, size*size);
+			if (cover != null)
+				storeCover(key, cover);
 		}
 		return cover;
-	}
-
-	/**
-	 * Returns a cached version of the cover.
-	 *
-	 * @param key The cache key to use
-	 * @param bitmap or null on cache miss
-	 */
-	public Bitmap getCachedCover(CoverKey key) {
-		return sBitmapLruCache.get(key);
-	}
-
-	/**
-	 * Stores a new entry in the in-memory cache
-	 * Use getCachedCover to read the cached contents back
-	 *
-	 * @param key The cache key to use
-	 * @param cover The bitmap to store
-	 */
-	public void cacheCover(CoverKey key, Bitmap cover) {
-		sBitmapLruCache.put(key, cover);
 	}
 
 	/**
@@ -147,7 +109,7 @@ public class CoverCache {
 	 * @param key The cache key to use
 	 * @return bitmap or null on cache miss
 	 */
-	public Bitmap getStoredCover(CoverKey key) {
+	private Bitmap getStoredCover(CoverKey key) {
 		return sBitmapDiskCache.get(key);
 	}
 
@@ -166,9 +128,6 @@ public class CoverCache {
 	 * Deletes all items hold in the cover caches
 	 */
 	public static void evictAll() {
-		if (sBitmapLruCache != null) {
-			sBitmapLruCache.evictAll();
-		}
 		if (sBitmapDiskCache != null) {
 			sBitmapDiskCache.evictAll();
 		}
@@ -216,6 +175,10 @@ public class CoverCache {
 
 	private static class BitmapDiskCache extends SQLiteOpenHelper {
 		/**
+		 * The Context to use
+		 */
+		private final Context mContext;
+		/**
 		 * Maximal cache size to use in bytes
 		 */
 		private final long mCacheSize;
@@ -245,6 +208,7 @@ public class CoverCache {
 		public BitmapDiskCache(Context context, long cacheSize) {
 			super(context, "covercache.db", null, 1 /* version */);
 			mCacheSize = cacheSize;
+			mContext = context;
 		}
 
 		/**
@@ -404,44 +368,6 @@ public class CoverCache {
 			return cover;
 		}
 
-	}
-
-	/**
-	 * The LRU cache implementation, using the CoverKey as key to store Bitmap objects
-	 *
-	 * Note that the implementation does not override create() in order to enable
-	 * the use of fetch-if-cached functions: createBitmap() is therefore called
-	 * by CoverCache itself.
-	 */
-	private static class BitmapLruCache extends LruCache<CoverKey, Bitmap> {
-		/**
-		 * Context required for content resolver
-		 */
-		private final Context mContext;
-		/**
-		 * Filenames we consider to be cover art
-		 */
-		private final static String[] coverNames = { "cover.jpg", "cover.png", "album.jpg", "album.png", "artwork.jpg", "artwork.png", "art.jpg", "art.png" };
-
-		/**
-		 * Creates a new in-memory LRU cache
-		 *
-		 * @param context the application context
-		 * @param size the lru cache size in bytes
-		 */
-		public BitmapLruCache(Context context, int size) {
-			super(size);
-			mContext = context;
-		}
-
-		/**
-		 * Returns the cache size in bytes, not objects
-		 */
-		@Override
-		protected int sizeOf(CoverKey key, Bitmap value) {
-			return value.getByteCount();
-		}
-
 		/**
 		 * Attempts to create a new bitmap object for given song.
 		 * Returns null if no cover art was found
@@ -450,7 +376,7 @@ public class CoverCache {
 		 * @param maxPxCount the maximum amount of pixels to return (30*30 = 900)
 		 */
 		public Bitmap createBitmap(Song song, long maxPxCount) {
-
+			final String[] coverNames = { "cover.jpg", "cover.png", "album.jpg", "album.png", "artwork.jpg", "artwork.png", "art.jpg", "art.png" };
 			if (song.id < 0) {
 				// Unindexed song: return early
 				return null;

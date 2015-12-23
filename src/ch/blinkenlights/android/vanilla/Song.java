@@ -229,8 +229,7 @@ public class Song implements Comparable<Song> {
 		if (sCoverCache == null)
 			sCoverCache = new CoverCache(context.getApplicationContext());
 
-		CoverCache.CoverKey key = new CoverCache.CoverKey(MediaUtils.TYPE_ALBUM, this.albumId, size);
-		Bitmap cover = sCoverCache.getCoverFromSong(key, this);
+		Bitmap cover = sCoverCache.getCoverFromSong(this, size);
 
 		if (cover == null)
 			flags |= FLAG_NO_COVER;
