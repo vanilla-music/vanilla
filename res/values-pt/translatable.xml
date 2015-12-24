@@ -121,6 +121,7 @@
   <string name="volume_title">Volume</string>
   <string name="volume_during_ducking_title">Volume durante a notificação</string>
   <string name="volume_during_ducking_summary">Volume de reprodução:</string>
+  <string name="ignore_audiofocus_loss_summary">Manter reprodução ao perder o foco áudio</string>
   <string name="media_button_title">Auscultadores/bluetooth</string>
   <string name="media_button_summary">Necessário para os controlos do ecrã de bloqueio ICS</string>
   <string name="media_button_beep_title">Sinal de auscultador</string>

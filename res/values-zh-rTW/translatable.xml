@@ -64,7 +64,7 @@
     <item quantity="other">已佇列歌曲 %d</item>
   </plurals>
   <plurals name="added_to_playlist">
-    <item quantity="other">%1$ d 歌曲已加入到播放清單 %2$ s。</item>
+    <item quantity="other">%1$d 歌曲已加入到播放清單 %2$s。</item>
   </plurals>
   <plurals name="deleted">
     <item quantity="other">已刪除歌曲 %d</item>
@@ -114,6 +114,7 @@
   <string name="volume_title">音量</string>
   <string name="volume_during_ducking_title">音量在通知</string>
   <string name="volume_during_ducking_summary">播放音量：</string>
+  <string name="ignore_audiofocus_loss_summary">在永久性音訊焦點遺失時繼續播放</string>
   <string name="media_button_title">耳機/藍牙控制</string>
   <string name="media_button_summary">這也需要由 ICS 螢幕鎖定控制。</string>
   <string name="media_button_beep_title">耳機控制嗶音</string>

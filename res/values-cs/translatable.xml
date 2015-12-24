@@ -128,6 +128,7 @@
   <string name="volume_title">Hlasitost</string>
   <string name="volume_during_ducking_title">Hlasitost během upozornění</string>
   <string name="volume_during_ducking_summary">Hlasitost přehrávání</string>
+  <string name="ignore_audiofocus_loss_summary">Přehrávat dále i při trvalé ztrátě zvukového výstupu</string>
   <string name="media_button_title">Ovládání headsetu/bluetooth</string>
   <string name="media_button_summary">Toto je také vyžadováno pro ICS ovládání uzamčené obrazovky.</string>
   <string name="media_button_beep_title">Kontrolní zvuk sluchátek</string>

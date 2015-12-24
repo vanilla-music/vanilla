@@ -121,9 +121,12 @@
   <string name="volume_title">Voimakkuus</string>
   <string name="volume_during_ducking_title">Äänenvoimakkuus ilmoituksen aikana</string>
   <string name="volume_during_ducking_summary">Toiston voimakkuus:</string>
+  <string name="ignore_audiofocus_loss_summary">Jatka toistamista pysyvän äänen kohdistuksen menettämisen jälkeen</string>
   <string name="media_button_title">Kuulokkeiden/bluetoothin ohjaimet</string>
   <string name="media_button_summary">Vaadittu myös ICS:n lukitusnäytön ohjaimia varten.</string>
+  <string name="media_button_beep_title">Kuulokeohjauksen piippaus</string>
   <string name="media_button_beep_summary">Piippaa kun kappale ohitetaan kuulokkeiden ohjaimella.</string>
+  <string name="headset_only_title">Vain ulkoinen ulostulo</string>
   <string name="headset_only_summary">Estää musiikin soiton sisäisistä kaiuttimista.</string>
   <string name="headset_pause_title">Keskeytä kun kuulokkeet irrotetaan</string>
   <string name="headset_pause_summary">Keskeytä toisto, kun kuulokkeet irrotetaan.</string>

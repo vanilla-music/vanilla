@@ -56,6 +56,7 @@
   <string name="remove">Izņemt</string>
   <string name="clear_search">Notīrīt meklējumu</string>
   <string name="play_or_enqueue">Ierindot, ja atskaņo; atskaņot, ja nopauzēts</string>
+  <string name="open">Atvērt</string>
   <plurals name="playing">
     <item quantity="zero">Atskaņo %d dziesmu.</item>
     <item quantity="one">Atskaņo %d dziesmu.</item>
@@ -127,6 +128,7 @@
   <string name="volume_title">Skaļums</string>
   <string name="volume_during_ducking_title">Skaļums paziņojuma laikā</string>
   <string name="volume_during_ducking_summary">Atskaņošanas skaļums:</string>
+  <string name="ignore_audiofocus_loss_summary">Turpināt atskaņošanu patstāvīga audio fokusa zaudējuma gadījumā</string>
   <string name="media_button_title">Austiņu/Bluetooth vadīklas</string>
   <string name="media_button_summary">Šis ir nepieciešams arī ICS slēgekrāna vadīklām.</string>
   <string name="media_button_beep_title">Austiņu vadīklu pīkstēšana</string>

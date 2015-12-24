@@ -128,6 +128,7 @@
   <string name="volume_title">Јачина звука</string>
   <string name="volume_during_ducking_title">Јачина звука при обавештењу</string>
   <string name="volume_during_ducking_summary">Јачина звука:</string>
+  <string name="ignore_audiofocus_loss_summary">Настави пуштање по трајном губитку фокуса</string>
   <string name="media_button_title">Управљање слушалицама/блутутом</string>
   <string name="media_button_summary">Потребно за контроле закључаног екрана за Ајскрим Сендвич.</string>
   <string name="media_button_beep_title">Контролни звучни сигнал слушалица</string>

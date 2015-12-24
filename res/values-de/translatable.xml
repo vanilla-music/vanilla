@@ -121,6 +121,7 @@
   <string name="volume_title">Lautstärke</string>
   <string name="volume_during_ducking_title">Lautstärke während Benachrichtigung</string>
   <string name="volume_during_ducking_summary">Wiedergabelautstärke:</string>
+  <string name="ignore_audiofocus_loss_summary">Wiedergabe auch bei permanenter Unterbrechung nicht pausieren</string>
   <string name="media_button_title">Headset-/Bluetooth-Steuerung</string>
   <string name="media_button_summary">Wird auch für Steuerelemente der ICS-Bildschirmsperre benötigt</string>
   <string name="media_button_beep_title">Headset-Kontrollsignal</string>
@@ -130,17 +131,17 @@
   <string name="headset_pause_title">Pausieren, wenn nicht angeschlossen</string>
   <string name="headset_pause_summary">Pausieren, wenn der Kopfhörer entfernt wird</string>
   <string name="headset_launch_title">Abspielen beim Anschließen</string>
-  <string name="headset_launch_summary">Abspielen, wenn der Kopfhörer angeschlossen wird (dazu muss die \'Headphone detector\' App installiert sein)</string>
-  <string name="headset_launch_app_missing">Um diese Funktion zu nutzen, muss die \'Headphone detector\' App installiert sein. Möchtest du den Play Store öffnen, um die Applikation zu installieren?</string>
-  <string name="replaygain">Replay Gain</string>
-  <string name="replaygain_title">Replay Gain aktivieren</string>
-  <string name="replaygain_summary">Replay Gain-Einstellungen</string>
-  <string name="replaygain_track_title">Per-Titel-Replay Gain aktivieren</string>
+  <string name="headset_launch_summary">Abspielen, wenn der Kopfhörer angeschlossen wird (erfordert eine installierte „Headphone Detector“-App).</string>
+  <string name="headset_launch_app_missing">Die Verwendung dieser Funktion benötigt eine bestehende Installation der „Headphone Detector“-App.\nMöchten Sie den Play Store öffnen, um die App zu installieren?</string>
+  <string name="replaygain">ReplayGain</string>
+  <string name="replaygain_title">ReplayGain aktivieren</string>
+  <string name="replaygain_summary">ReplayGain-Einstellungen</string>
+  <string name="replaygain_track_title">Per-Titel-ReplayGain aktivieren</string>
   <string name="replaygain_track_summary">Alle Titel in einheitlicher Lautstärke abspielen</string>
-  <string name="replaygain_album_title">Album-Replay Gain aktivieren</string>
+  <string name="replaygain_album_title">Album-ReplayGain aktivieren</string>
   <string name="replaygain_album_summary">Lautstärke von Alben beibehalten</string>
-  <string name="replaygain_bump_title">Replay Gain-Vorverstärker</string>
-  <string name="replaygain_untagged_debump_title">Titel ohne Replay Gain-Information</string>
+  <string name="replaygain_bump_title">ReplayGain-Vorverstärker</string>
+  <string name="replaygain_untagged_debump_title">Titel ohne ReplayGain-Information</string>
   <string name="replaygain_untagged_debump_summary">Lautstärke senken um: </string>
   <string name="replaygain_preamp_note_title">Hinweis</string>
   <string name="replaygain_preamp_note_content">Android erlaubt Vanilla Music kein Verändern der Lautstärke auf über 100%. Hohe Werte für den Vorverstärker können bei „stiller“ Musik zu Problemen führen.\n\nEmpfohlene Werte sind:\n-&gt; -3 dB für stille/klassische Musik\n-&gt; +3 dB für Aufnahmen nach 2000.</string>
@@ -191,7 +192,7 @@
   <string name="coverloader_shadow_title">Cover aus verstecktem Ordner laden</string>
   <string name="coverloader_shadow_summary">Albumcover von „/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg“ laden, falls möglich.</string>
   <string name="cover_on_lockscreen_title">Cover auf Sperrbildschirm anzeigen</string>
-  <string name="cover_on_lockscreen_summary">Albumcover des abgespielten Titels auf dem Sperrbildschirm anzeigen</string>
+  <string name="cover_on_lockscreen_summary">Albumcover des derzeit abgespielten Titels auf dem Sperrbildschirm anzeigen</string>
   <string name="double_tap_title">Widget-Doppelantippen</string>
   <string name="double_tap_summary">Doppeltes Antippen des 1x1-Widgets öffnet die Wiedergabeansicht. Verursacht eine Verzögerung von 400 ms, bevor das Widget auf Aktionen reagiert.</string>
   <string name="scrobble_title">ScrobbleDroid-API verwenden</string>
@@ -247,8 +248,8 @@
   <string name="customize_filebrowser_start">Dateimanager startet in diesem Ordner</string>
   <string name="select">Auswählen</string>
   <string name="autoplaylist_playcounts_title">Wiedergabeliste automatisch erstellen</string>
-  <string name="autoplaylist_playcounts_summary">Erstelle automatisch eine</string>
-  <string name="autoplaylist_playcounts_fmt" formatted="false">%s \'Top %.0f\' Wiedergabeliste</string>
+  <string name="autoplaylist_playcounts_summary">Automatisches Erstellen einer</string>
+  <string name="autoplaylist_playcounts_fmt" formatted="false">%s „Top %.0f“-Wiedergabeliste</string>
   <string name="autoplaylist_playcounts_disabled">Keine automatische Wiedergabeliste erstellen</string>
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
   <string name="permission_request_summary">Vanilla Music benötigt Leserechte, um Ihre Musikbibliothek anzuzeigen</string>

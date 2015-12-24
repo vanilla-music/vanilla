@@ -114,6 +114,7 @@
   <string name="volume_title">音量</string>
   <string name="volume_during_ducking_title">通知時の音量</string>
   <string name="volume_during_ducking_summary">再生音量: </string>
+  <string name="ignore_audiofocus_loss_summary">オーディオのフォーカスを失っても永久に再生を続けます</string>
   <string name="media_button_title">ヘッドセット/Bluetooth コントロール</string>
   <string name="media_button_summary">ICS ロックスクリーンのコントロールにも必要です。</string>
   <string name="media_button_beep_title">ヘッドセット コントロール ビープ音</string>

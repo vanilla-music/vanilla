@@ -56,6 +56,7 @@
   <string name="remove">Kaldır</string>
   <string name="clear_search">Aramayı temizle</string>
   <string name="play_or_enqueue">Oynatma varsa kuyruğa ekle; duraklatıldıysa oynat</string>
+  <string name="open">Aç</string>
   <plurals name="playing">
     <item quantity="one">1 şarkı oynatılıyor.</item>
     <item quantity="other">%d şarkı oynatılıyor.</item>
