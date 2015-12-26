@@ -59,6 +59,10 @@ You can also build from Eclipse. Create a new Android Project, choosing "Create
 project from exisiting source", then set the compiler compliance level to 1.6
 in project settings.
 
+Nightly Builds
+---------------------
+Automatically created builds are available from http://android.eqmx.net/android/vanilla/
+
 Documentation
 =============
 Javadocs can be generated using `gradle javadoc` or `ant doc`
