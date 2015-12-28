@@ -26,6 +26,14 @@ THE SOFTWARE.
 	android:orientation="vertical"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
+
+	<View
+		android:id="@+id/actionbar_elevation_hack"
+		android:layout_width="fill_parent"
+		android:layout_height="1px"
+		android:background="?float_color"
+		android:elevation="4dp"
+	/>
 	<android.support.v4.view.ViewPager
 		android:id="@+id/pager"
 		android:layout_width="fill_parent"

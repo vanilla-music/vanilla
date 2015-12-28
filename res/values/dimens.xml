@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+	<dimen name="cover_size">44sp</dimen>
+	<dimen name="cover_padding">0sp</dimen>
+	<dimen name="text_padding">3sp</dimen>
+	<dimen name="row_normal_height">44sp</dimen>
+	<dimen name="divider_size">1dip</dimen>
+</resources>

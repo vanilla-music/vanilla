@@ -27,38 +27,36 @@ THE SOFTWARE.
 	android:orientation="horizontal">
 	<ch.blinkenlights.android.vanilla.LazyCoverView
 		android:id="@+id/cover"
-		android:background="?android:attr/selectableItemBackground"
-		android:longClickable="true"
-		android:scaleType="fitCenter"
-		android:layout_width="44sp"
-		android:layout_height="44sp"
-		android:visibility="gone"
-	/>
+		android:scaleType="centerCrop"
+		android:layout_width="@dimen/cover_size"
+		android:layout_height="@dimen/cover_size"
+		android:layout_marginLeft="@dimen/cover_padding"
+		android:layout_gravity="center_vertical"
+		android:visibility="gone" />
 	<TextView
 		android:id="@+id/text"
-		android:longClickable="true"
-		android:background="?android:attr/selectableItemBackground"
 		android:maxLines="2"
-		android:padding="3dip"
 		android:textColor="?android:textColorPrimary"
 		android:gravity="left|center_vertical"
 		android:layout_width="0px"
-		android:layout_height="44sp"
+		android:layout_height="@dimen/row_normal_height"
+		android:layout_marginLeft="@dimen/text_padding"
 		android:layout_weight="1" />
+
 	<View
 		android:id="@+id/divider"
-		android:layout_width="1dip"
+		android:layout_width="@dimen/divider_size"
 		android:layout_height="fill_parent"
 		android:visibility="gone"
-		android:background="?divider_color" />
+		android:background="?android:attr/dividerHorizontal" />
+
 	<ImageView
 		android:id="@+id/arrow"
 		android:background="?android:attr/selectableItemBackground"
-		android:longClickable="true"
-		android:scaleType="center"
 		android:src="@drawable/arrow"
-		android:layout_width="44sp"
-		android:layout_height="44sp"
+		android:scaleType="center"
+		android:layout_width="@dimen/row_normal_height"
+		android:layout_height="@dimen/row_normal_height"
 		android:visibility="gone"
 		android:contentDescription="@string/expand" />
 </LinearLayout>

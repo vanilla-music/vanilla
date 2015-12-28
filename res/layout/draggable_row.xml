@@ -23,7 +23,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 	>
 
 	<LinearLayout
-		android:background="?android:attr/selectableItemBackground"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:orientation="horizontal">
@@ -32,29 +31,26 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 			android:id="@+id/pmark"
 			android:visibility="gone"
 			android:layout_width="4dip"
-			android:layout_height="44sp"
+			android:layout_height="@dimen/row_normal_height"
 			android:background="@color/now_playing_marker" />
 
 		<ch.blinkenlights.android.vanilla.LazyCoverView
 			android:id="@+id/cover"
-			android:visibility="gone"
-			android:background="?android:attr/selectableItemBackground"
-			android:longClickable="true"
-			android:scaleType="fitCenter"
-			android:layout_width="44sp"
-			android:layout_height="44sp" />
-
+			android:scaleType="centerCrop"
+			android:layout_width="@dimen/cover_size"
+			android:layout_height="@dimen/cover_size"
+			android:layout_marginLeft="@dimen/cover_padding"
+			android:layout_gravity="center_vertical"
+			android:visibility="gone" />
 		<TextView
 			android:id="@+id/text"
 			android:maxLines="2"
 			android:textColor="?android:textColorPrimary"
 			android:gravity="left|center_vertical"
 			android:layout_width="0px"
-			android:layout_weight="1"
-			android:layout_height="match_parent"
-			android:paddingTop="2dip"
-			android:paddingBottom="2dip"
-			android:paddingLeft="4dip" />
+			android:layout_height="@dimen/row_normal_height"
+			android:layout_marginLeft="@dimen/text_padding"
+			android:layout_weight="1" />
 
 		<CheckedTextView
 			android:id="@+id/checkbox"
@@ -62,20 +58,21 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 			android:checkMark="?android:attr/listChoiceIndicatorMultiple"
 			android:gravity="center_vertical"
 			android:layout_height="match_parent"
-			android:layout_width="44sp"/>
+			android:layout_width="@dimen/row_normal_height"/>
 
 		<ImageView
 			android:id="@+id/dragger"
 			android:visibility="gone"
-			android:scaleType="center"
 			android:src="@drawable/grabber"
-			android:layout_width="44sp"
-			android:layout_height="44sp" />
+			android:scaleType="center"
+			android:layout_width="@dimen/row_normal_height"
+			android:layout_height="@dimen/row_normal_height"
+	/>
 	</LinearLayout>
 
 	<View
 		android:layout_width="match_parent"
-		android:layout_height="1px"
-		android:background="?divider_color"/>
+		android:layout_height="1dip"
+		android:background="?android:attr/dividerHorizontal"/>
 
 </ch.blinkenlights.android.vanilla.DraggableRow>

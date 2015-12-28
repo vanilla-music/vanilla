@@ -480,8 +480,6 @@ public class MediaAdapter
 			holder.arrow = (ImageView)view.findViewById(R.id.arrow);
 			holder.cover = (LazyCoverView)view.findViewById(R.id.cover);
 			holder.arrow.setOnClickListener(this);
-			holder.text.setOnClickListener(this);
-			holder.cover.setOnClickListener(this);
 
 			holder.divider.setVisibility(mExpandable ? View.VISIBLE : View.GONE);
 			holder.arrow.setVisibility(mExpandable ? View.VISIBLE : View.GONE);
@@ -576,6 +574,9 @@ public class MediaAdapter
 		return mSortMode;
 	}
 
+	/**
+	 * Creates an intent to dispatch
+	 */
 	@Override
 	public Intent createData(View view)
 	{
@@ -588,17 +589,16 @@ public class MediaAdapter
 		return intent;
 	}
 
+	/**
+	 * Callback of array clicks (item clicks are handled in LibraryPagerAdapter)
+	 */
 	@Override
 	public void onClick(View view)
 	{
 		int id = view.getId();
 		view = (View)view.getParent(); // get view of linear layout, not the click consumer
 		Intent intent = createData(view);
-		if (id == R.id.arrow) {
-			mActivity.onItemExpanded(intent);
-		} else {
-			mActivity.onItemClicked(intent);
-		}
+		mActivity.onItemExpanded(intent);
 	}
 
 	@Override

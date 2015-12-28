@@ -39,7 +39,6 @@ THE SOFTWARE.
 		<item name="overlay_background_color">#a000</item>
 		<!-- color to use in full_playback text, set to bright_foreground_disabled_holo_light //-->
 		<item name="overlay_foreground_color">#ffb2b2b2</item>
-		<item name="divider_color">#f444</item>
 		<item name="float_color">#f222</item>
 	</style>
 

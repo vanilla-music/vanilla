@@ -62,7 +62,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.SearchView;
 
-import com.viewpagerindicator.TabPageIndicator;
 import java.io.File;
 import junit.framework.Assert;
 
@@ -128,7 +127,6 @@ public class LibraryActivity
 		  -1, -1, -1, SongTimeline.MODE_ENQUEUE_AS_NEXT };
 
 	public ViewPager mViewPager;
-	private TabPageIndicator mTabs;
 
 	private View mActionControls;
 	private TextView mTitle;

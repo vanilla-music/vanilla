@@ -42,6 +42,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.util.LruCache;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.LinearLayout;
@@ -55,7 +56,7 @@ public class LibraryPagerAdapter
 	implements Handler.Callback
 	         , ViewPager.OnPageChangeListener
 	         , View.OnCreateContextMenuListener
-	         , View.OnClickListener
+	         , AdapterView.OnItemClickListener
 {
 	/**
 	 * The number of unique list types. The number of visible lists may be
@@ -346,12 +347,12 @@ public class LibraryPagerAdapter
 
 			view = (ListView)inflater.inflate(R.layout.listview, null);
 			view.setOnCreateContextMenuListener(this);
+			view.setOnItemClickListener(this);
 
 			view.setTag(type);
 			if (header != null) {
 				TextView headerText = (TextView)header.findViewById(R.id.text);
 				headerText.setText(mHeaderText);
-				headerText.setOnClickListener(this);
 				header.setTag(new ViewHolder()); // behave like a normal library row
 				view.addHeaderView(header);
 			}
@@ -841,10 +842,14 @@ public class LibraryPagerAdapter
 	}
 
 	@Override
-	public void onClick(View view) {
-		view = (View)view.getParent(); // get view of linear layout, not the click consumer
-		Intent intent = createHeaderIntent(view);
-		mActivity.onItemClicked(intent);
+	public void onItemClick (AdapterView<?> parent, View view, int position, long id) {
+		int type = (Integer)parent.getTag();
+		if (type == MediaUtils.TYPE_FILE) {
+			mFilesAdapter.onHandleRowClick(view);
+		} else {
+			Intent intent = id == -1 ? createHeaderIntent(view) : mCurrentAdapter.createData(view);
+			mActivity.onItemClicked(intent);
+		}
 	}
 
 	/**

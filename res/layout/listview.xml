@@ -24,7 +24,6 @@ THE SOFTWARE.
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
-	android:divider="?divider_color"
+	android:divider="?android:attr/dividerHorizontal"
 	android:dividerHeight="1dip"
-	android:listSelector="?android:attr/selectableItemBackground"
 	android:scrollbarStyle="outsideInset" />
