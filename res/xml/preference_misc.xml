@@ -70,4 +70,11 @@ THE SOFTWARE.
 		android:title="@string/readahead"
 		android:defaultValue="false"
 		android:summary="@string/readahead_summary" />
+
+	<PreferenceScreen
+		android:title="@string/import_export_settings_title">
+		<intent
+			android:targetPackage="ch.blinkenlights.android.vanilla"
+			android:targetClass="ch.blinkenlights.android.vanilla.ImportExportSettingsActivity"/>
+	</PreferenceScreen>
 </PreferenceScreen>

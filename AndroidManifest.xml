@@ -147,6 +147,8 @@ THE SOFTWARE.
 		<activity
 			android:name="PreferencesActivity" />
 		<activity
+			android:name="ImportExportSettingsActivity"/>
+		<activity
 			android:name="TabOrderActivity" />
 		<activity
 			android:name="FilebrowserStartActivity" />
