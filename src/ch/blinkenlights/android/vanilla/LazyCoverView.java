@@ -217,7 +217,7 @@ public class LazyCoverView extends ImageView
 	}
 
 	/**
-	 * Draws a fake cover from given title string
+	 * Draws a placeholder cover from given title string
 	 *
 	 * @param title A text string to use in the cover
 	 * @return bitmap The drawn bitmap
