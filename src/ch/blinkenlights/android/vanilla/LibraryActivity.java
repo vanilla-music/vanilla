@@ -185,7 +185,6 @@ public class LibraryActivity
 		mViewPager = pager;
 
 		SharedPreferences settings = PlaybackService.getSettings(this);
-		pager.setOnPageChangeListener(pagerAdapter);
 
 		View controls = getLayoutInflater().inflate(R.layout.actionbar_controls, null);
 		mTitle = (TextView)controls.findViewById(R.id.title);
@@ -204,6 +203,7 @@ public class LibraryActivity
 
 		mVanillaTabLayout = (VanillaTabLayout)findViewById(R.id.sliding_tabs);
 		mVanillaTabLayout.inheritElevation(getActionBar());
+		mVanillaTabLayout.setOnPageChangeListener(pagerAdapter);
 
 		loadTabOrder();
 		int page = settings.getInt(PrefKeys.LIBRARY_PAGE, PrefDefaults.LIBRARY_PAGE);
