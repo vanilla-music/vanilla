@@ -170,9 +170,9 @@ public class MediaAdapter
 			mInflater = null; // not running inside an activity
 		}
 
-
-		mCoverCacheType = MediaUtils.TYPE_INVALID;
-		String coverCacheKey = "0"; // SQL dummy entry
+		// Use media type + base id as cache key combination
+		mCoverCacheType = mType;
+		String coverCacheKey = BaseColumns._ID;
 
 		switch (type) {
 		case MediaUtils.TYPE_ARTIST:
@@ -191,8 +191,6 @@ public class MediaAdapter
 			mSongSort = MediaUtils.ALBUM_SORT;
 			mSortEntries = new int[] { R.string.name, R.string.artist_album, R.string.year, R.string.number_of_tracks, R.string.date_added };
 			mSortValues = new String[] { "album_key %1$s", "artist_key %1$s,album_key %1$s", "minyear %1$s,album_key %1$s", "numsongs %1$s,album_key %1$s", "_id %1$s" };
-			mCoverCacheType = MediaUtils.TYPE_ALBUM;
-			coverCacheKey = BaseColumns._ID;
 			break;
 		case MediaUtils.TYPE_SONG:
 			mStore = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
@@ -204,6 +202,7 @@ public class MediaAdapter
 			mSortValues = new String[] { "title_key %1$s", "artist_key %1$s,album_key %1$s,track", "artist_key %1$s,album_key %1$s,title_key %1$s",
 			                             "artist_key %1$s,year %1$s,album_key %1$s, track", "album_key %1$s,track",
 			                             "year %1$s,title_key %1$s","_id %1$s", SORT_MAGIC_PLAYCOUNT };
+			// Songs covers are cached per-album
 			mCoverCacheType = MediaUtils.TYPE_ALBUM;
 			coverCacheKey = MediaStore.Audio.Albums.ALBUM_ID;
 			break;
@@ -510,9 +509,7 @@ public class MediaAdapter
 			holder.title = title;
 		}
 
-		if (mCoverCacheType != MediaUtils.TYPE_INVALID) {
-			holder.cover.setCover(mCoverCacheType, cacheId);
-		}
+		holder.cover.setCover(mCoverCacheType, cacheId, holder.title);
 
 		return view;
 	}
