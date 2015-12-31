@@ -40,7 +40,6 @@ Copyright (C) 2015 Adrian Ulrich <adrian@blinkenlights.ch>
 
 	<style name="Library" parent="VanillaBase">
 		<item name="android:actionBarStyle">@style/Universal.LibraryActionBar</item>
-		<item name="android:actionBarTabStyle">@style/Universal.LibraryActionBarTabView</item>
 		<item name="android:actionBarTabTextStyle">@style/Universal.LibraryActionBarTabText</item>
 	</style>
 
@@ -60,10 +59,6 @@ Copyright (C) 2015 Adrian Ulrich <adrian@blinkenlights.ch>
 		<item name="android:singleLine">true</item>
 		<item name="android:textSize">11.5sp</item>
 		<item name="android:textColor">@color/material_grey_300</item>
-	</style>
-
-	<style name="Universal.LibraryActionBarTabView" parent="android:Widget.Material.ActionBar.TabView">
-		<item name="android:background">@drawable/tab_indicator</item>
 	</style>
 
 
@@ -87,7 +82,6 @@ Copyright (C) 2015 Adrian Ulrich <adrian@blinkenlights.ch>
 
 	<style name="Dark.Library" parent="Dark.VanillaBase">
 		<item name="android:actionBarStyle">@style/Universal.LibraryActionBar</item>
-		<item name="android:actionBarTabStyle">@style/Universal.LibraryActionBarTabView</item>
 		<item name="android:actionBarTabTextStyle">@style/Universal.LibraryActionBarTabText</item>
 	</style>
 
