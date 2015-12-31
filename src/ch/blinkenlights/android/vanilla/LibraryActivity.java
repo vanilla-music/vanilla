@@ -40,6 +40,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.support.iosched.tabs.VanillaTabLayout;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -137,7 +138,7 @@ public class LibraryActivity
 
 	private HorizontalScrollView mLimiterScroller;
 	private ViewGroup mLimiterViews;
-
+	private VanillaTabLayout mVanillaTabLayout;
 	/**
 	 * The action to execute when a row is tapped.
 	 */
@@ -201,6 +202,8 @@ public class LibraryActivity
 			mPermissionRequest.setVisibility(View.VISIBLE);
 		}
 
+		mVanillaTabLayout = (VanillaTabLayout)findViewById(R.id.sliding_tabs);
+		mVanillaTabLayout.inheritElevation(getActionBar());
 
 		loadTabOrder();
 		int page = settings.getInt(PrefKeys.LIBRARY_PAGE, PrefDefaults.LIBRARY_PAGE);
@@ -235,7 +238,8 @@ public class LibraryActivity
 	private void loadTabOrder()
 	{
 		if (mPagerAdapter.loadTabOrder()) {
-			CompatHoneycomb.addActionBarTabs(this);
+			// Reinitializes all tabs
+			mVanillaTabLayout.setViewPager(mViewPager);
 		}
 	}
 
@@ -1008,7 +1012,6 @@ public class LibraryActivity
 		mCurrentAdapter = adapter;
 		mLastActedId = LibraryAdapter.INVALID_ID;
 		updateLimiterViews();
-		CompatHoneycomb.selectTab(this, position);
 		if (adapter != null && (adapter.getLimiter() == null || adapter.getMediaType() == MediaUtils.TYPE_FILE)) {
 			// Save current page so it is opened on next startup. Don't save if
 			// the page was expanded to, as the expanded page isn't the starting

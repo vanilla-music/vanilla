@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<!-- now-playing screen buttons tint -->
+	<color name="controls_active">@android:color/holo_blue_dark</color>
+	<color name="controls_normal">#fff5f5f5</color>
+	<!-- showqueue info -->
+	<color name="now_playing_marker">@android:color/holo_blue_dark</color>
+	<!-- library tabs -->
+	<color name="tabs_background">#ff1e1e1e</color>
+	<color name="tabs_active_indicator">@android:color/holo_blue_dark</color>
+</resources>

@@ -42,7 +42,6 @@ THE SOFTWARE.
 		<activity
 			android:name="LibraryActivity"
 			android:theme="@style/Library"
-			android:uiOptions="splitActionBarWhenNarrow"
 			android:launchMode="singleTask">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
