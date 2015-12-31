@@ -283,7 +283,7 @@ public class MediaUtils {
 	public static long queryGenreForSong(ContentResolver resolver, long id)
 	{
 		String[] projection = { "_id" };
-		Uri uri = CompatHoneycomb.getContentUriForAudioId((int)id);
+		Uri uri = MediaStore.Audio.Genres.getContentUriForAudioId("external", (int)id);
 		Cursor cursor = queryResolver(resolver, uri, projection, null, null, null);
 		
 		if (cursor != null) {

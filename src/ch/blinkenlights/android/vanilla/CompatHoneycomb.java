@@ -90,28 +90,4 @@ public class CompatHoneycomb {
 		}
 	}
 
-	/**
-	 * Call {@link android.provider.MediaStore.Audio.Genres#getContentUriForAudioId(String,int)}
-	 * on the external volume.
-	 */
-	public static Uri getContentUriForAudioId(int id)
-	{
-		return MediaStore.Audio.Genres.getContentUriForAudioId("external", id);
-	}
-
-	/**
-	 * Call {@link KeyEvent#hasNoModifiers()}.
-	 */
-	public static boolean hasNoModifiers(KeyEvent event)
-	{
-		return event.hasNoModifiers();
-	}
-
-	/**
-	 * Call {@link KeyEvent#hasModifiers(int)}.
-	 */
-	public static boolean hasModifiers(KeyEvent event, int modifiers)
-	{
-		return event.hasModifiers(modifiers);
-	}
 }
