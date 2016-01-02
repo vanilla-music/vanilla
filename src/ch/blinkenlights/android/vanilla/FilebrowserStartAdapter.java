@@ -55,8 +55,13 @@ public class FilebrowserStartAdapter
 			holder = new ViewHolder();
 			holder.text = (TextView)view.findViewById(R.id.text);
 			holder.divider = view.findViewById(R.id.divider);
+			holder.cover = (LazyCoverView)view.findViewById(R.id.cover);
+
 			holder.arrow = (ImageView)view.findViewById(R.id.arrow);
+
+			holder.cover.setImageDrawable(mFolderIcon);
 			holder.text.setOnClickListener(this);
+			holder.cover.setVisibility(View.VISIBLE);
 			view.setTag(holder);
 		} else {
 			view = convertView;
@@ -66,9 +71,6 @@ public class FilebrowserStartAdapter
 		String label = getItem(pos);
 		holder.id = pos;
 		holder.text.setText(label);
-		holder.divider.setVisibility(View.GONE);
-		holder.arrow.setVisibility(View.GONE);
-		holder.text.setCompoundDrawablesWithIntrinsicBounds(mFolderIcon, null, null, null);
 		return view;
 	}
 
