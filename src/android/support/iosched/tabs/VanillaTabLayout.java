@@ -52,6 +52,7 @@ public class VanillaTabLayout extends SlidingTabLayout {
 		TextView view = super.createDefaultTabView(context);
 		int color = getResources().getColor(android.R.color.primary_text_dark);
 		view.setTextColor(color);
+		view.setTextSize(14);
 		return view;
 	}
 
