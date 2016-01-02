@@ -40,7 +40,7 @@ public class VanillaTabLayout extends SlidingTabLayout {
 
 	public VanillaTabLayout(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-		setCustomTabColorizer(new TabColorizer(context));
+		setSelectedIndicatorColors(context.getResources().getColor(ch.blinkenlights.android.vanilla.R.color.tabs_active_indicator));
 		setDistributeEvenly(true);
 	}
 
@@ -70,17 +70,6 @@ public class VanillaTabLayout extends SlidingTabLayout {
 		setElevation(elevation);
 	}
 
-
-	private static class TabColorizer implements SlidingTabLayout.TabColorizer {
-		private final int mTabIndicatorColor;
-		TabColorizer(Context context) {
-			mTabIndicatorColor = context.getResources().getColor(ch.blinkenlights.android.vanilla.R.color.tabs_active_indicator);
-		}
-		@Override
-		public final int getIndicatorColor(int position) {
-			return mTabIndicatorColor;
-		}
-	}
 
 
 }
