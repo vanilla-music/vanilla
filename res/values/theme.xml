@@ -21,13 +21,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
 <resources>
-	<!-- now-playing screen buttons tint -->
-	<color name="controls_active">@android:color/holo_blue_dark</color>
-	<color name="controls_normal">#fff5f5f5</color>
-
-	<!-- showqueue info -->
-	<color name="now_playing_marker">@android:color/holo_blue_dark</color>
-
 	<!-- styles -->
 	<style name="Dialog" parent="android:Theme.Holo.Dialog" />
 	<style name="DialogMinWidth" parent="android:Theme.Holo.Dialog.MinWidth" />
@@ -54,14 +47,9 @@ THE SOFTWARE.
 	</style>
 	<style name="Library" parent="VanillaBase">
 		<item name="android:actionBarStyle">@style/LibraryActionBar</item>
-		<item name="android:actionBarTabTextStyle">@style/LibraryActionBarTabText</item>
 	</style>
 	<style name="LibraryActionBar" parent="android:Widget.Holo.ActionBar">
 		<item name="android:displayOptions"></item>
-	</style>
-	<style name="LibraryActionBarTabText" parent="android:Widget.Holo.ActionBar.TabText">
-		<item name="android:singleLine">true</item>
-		<item name="android:textSize">11.5sp</item>
 	</style>
 
 </resources>

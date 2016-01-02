@@ -812,7 +812,7 @@ public class LibraryPagerAdapter
 		// onPageSelected and setPrimaryItem are called in similar cases, and it
 		// would be nice to use just one of them, but each has caveats:
 		// - onPageSelected isn't called when the ViewPager is first
-		//   initialized
+		//   initialized if there is no scrolling to do
 		// - setPrimaryItem isn't called until scrolling is complete, which
 		//   makes tab bar and limiter updates look bad
 		// So we use both.
