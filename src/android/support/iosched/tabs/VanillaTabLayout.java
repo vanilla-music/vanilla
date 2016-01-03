@@ -19,6 +19,7 @@ package android.support.iosched.tabs;
 
 import android.app.ActionBar;
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
@@ -51,6 +52,8 @@ public class VanillaTabLayout extends SlidingTabLayout {
 	protected TextView createDefaultTabView(Context context) {
 		TextView view = super.createDefaultTabView(context);
 		view.setTextColor(getResources().getColorStateList(ch.blinkenlights.android.vanilla.R.color.tab_text_selector));
+		view.setMaxLines(1);
+		view.setEllipsize(TextUtils.TruncateAt.END);
 		view.setTextSize(14);
 		return view;
 	}
