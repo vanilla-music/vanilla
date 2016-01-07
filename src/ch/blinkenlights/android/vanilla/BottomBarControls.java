@@ -167,18 +167,28 @@ public class BottomBarControls extends LinearLayout
 			}
 		}
 
-		// Add menu button at end of view
+		// Add menu button as last item
 		menuButton.setTag(popupMenu);
 		menuButton.setOnClickListener(this);
 		mControlsContent.addView(menuButton, -1);
+
+		// Add a clickable and empty view
+		// We will use this to add a margin to the menu button if required
+		// Note that the view will ALWAYS be present, even if it is 0dp wide to keep
+		// the menu button at position -2
+		View spacer = new View(mContext);
+		spacer.setClickable(true);
+		int spacerDp = menuMargin() ? (int)(getResources().getDisplayMetrics().density * 4.0f) : 0;
+		spacer.setLayoutParams(new LinearLayout.LayoutParams(spacerDp, LinearLayout.LayoutParams.MATCH_PARENT));
+		mControlsContent.addView(spacer, -1);
 	}
 
 	/**
 	 * Opens the OptionsMenu of this view
 	 */
 	public void openMenu() {
-		// simulates a click on the rightmost child which should be the options menu
-		mControlsContent.getChildAt(mControlsContent.getChildCount()-1).performClick();
+		// simulates a click on the 2nd rightmost child which should be the options menu
+		mControlsContent.getChildAt(mControlsContent.getChildCount()-2).performClick();
 	}
 
 	/**
@@ -241,12 +251,6 @@ public class BottomBarControls extends LinearLayout
 		ImageButton button = new ImageButton(mContext);
 		button.setImageDrawable(drawable);
 		button.setBackgroundResource(R.drawable.unbound_ripple_light);
-
-		if (menuMargin()) {
-			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-			params.rightMargin = (int)(getResources().getDisplayMetrics().density * 4.0f);
-			button.setLayoutParams(params);
-		}
 		return button;
 	}
 
