@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2015-2016 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,9 @@ import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.content.Context;
 import android.content.Intent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.LayoutInflater;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -79,6 +82,27 @@ public class PermissionRequestActivity extends Activity {
 			// but reading from /sdcard doesn't)
 			android.os.Process.killProcess(android.os.Process.myPid());
 		}
+	}
+
+	/**
+	 * Injects a warning that we are missing read permissions into the activity layout
+	 *
+	 * @param activity Reference to LibraryActivity
+	 * @param intent The intent starting the parent activity
+	 */
+	public static void showWarning(final LibraryActivity activity, final Intent intent) {
+		LayoutInflater inflater = LayoutInflater.from(activity);
+		View view = inflater.inflate(R.layout.permission_request, null, false);
+
+		view.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				PermissionRequestActivity.requestPermissions(activity, intent);
+			}
+		});
+
+		ViewGroup parent = (ViewGroup)activity.findViewById(R.id.content); // main layout of library_content
+		parent.addView(view, -1);
 	}
 
 	/**

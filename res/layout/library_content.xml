@@ -51,6 +51,5 @@ THE SOFTWARE.
 			android:layout_height="fill_parent" />
 	</HorizontalScrollView>
 	<include layout="@layout/bottombar_controls" android:id="@+id/bottombar_controls" />
-	<include layout="@layout/permission_request" />
 </LinearLayout>
 

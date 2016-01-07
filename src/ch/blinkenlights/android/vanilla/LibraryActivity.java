@@ -130,7 +130,6 @@ public class LibraryActivity
 	public ViewPager mViewPager;
 
 	private BottomBarControls mBottomBarControls;
-	private View mPermissionRequest;
 
 	private HorizontalScrollView mLimiterScroller;
 	private ViewGroup mLimiterViews;
@@ -187,12 +186,8 @@ public class LibraryActivity
 		mBottomBarControls.setOnQueryTextListener(this);
 		mBottomBarControls.enableOptionsMenu(this);
 
-		mPermissionRequest = (View)findViewById(R.id.permission_request);
-
 		if(PermissionRequestActivity.havePermissions(this) == false) {
-			// We are lacking permissions: bind and display nag bar
-			mPermissionRequest.setOnClickListener(this);
-			mPermissionRequest.setVisibility(View.VISIBLE);
+			PermissionRequestActivity.showWarning(this, getIntent());
 		}
 
 		mVanillaTabLayout = (VanillaTabLayout)findViewById(R.id.sliding_tabs);
@@ -521,8 +516,6 @@ public class LibraryActivity
 	{
 		if (view == mBottomBarControls) {
 			openPlaybackActivity();
-		} else if (view == mPermissionRequest) {
-			PermissionRequestActivity.requestPermissions(this, getIntent());
 		} else if (view.getTag() != null) {
 			// a limiter view was clicked
 			int i = (Integer)view.getTag();
