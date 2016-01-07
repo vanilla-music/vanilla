@@ -170,6 +170,8 @@ public class BottomBarControls extends LinearLayout
 		// Add menu button as last item
 		menuButton.setTag(popupMenu);
 		menuButton.setOnClickListener(this);
+		int specialSnowflake = menuMargin() ? dpToPx(36) : LinearLayout.LayoutParams.WRAP_CONTENT;
+		menuButton.setLayoutParams(new LinearLayout.LayoutParams(specialSnowflake, LinearLayout.LayoutParams.WRAP_CONTENT));
 		mControlsContent.addView(menuButton, -1);
 
 		// Add a clickable and empty view
@@ -178,7 +180,7 @@ public class BottomBarControls extends LinearLayout
 		// the menu button at position -2
 		View spacer = new View(mContext);
 		spacer.setClickable(true);
-		int spacerDp = menuMargin() ? (int)(getResources().getDisplayMetrics().density * 4.0f) : 0;
+		int spacerDp = menuMargin() ? dpToPx(4) : 0;
 		spacer.setLayoutParams(new LinearLayout.LayoutParams(spacerDp, LinearLayout.LayoutParams.MATCH_PARENT));
 		mControlsContent.addView(spacer, -1);
 	}
@@ -284,4 +286,15 @@ public class BottomBarControls extends LinearLayout
 	private boolean menuMargin() {
 		return ThemeHelper.usesHoloTheme() == false;
 	}
+
+	/**
+	 * Convert dp into pixels
+	 *
+	 * @param dp input as dp
+	 * @return output as px
+	 */
+	private int dpToPx(int dp) {
+		return (int)(getResources().getDisplayMetrics().density * dp);
+	}
+
 }
