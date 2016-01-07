@@ -46,10 +46,8 @@ THE SOFTWARE.
 		<item name="android:displayOptions">showTitle|homeAsUp</item>
 	</style>
 	<style name="Library" parent="VanillaBase">
-		<item name="android:actionBarStyle">@style/LibraryActionBar</item>
-	</style>
-	<style name="LibraryActionBar" parent="android:Widget.Holo.ActionBar">
-		<item name="android:displayOptions"></item>
+		<item name="android:windowActionBar">false</item>
+		<item name="android:windowNoTitle">true</item>
 	</style>
 
 </resources>

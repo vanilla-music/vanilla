@@ -39,17 +39,13 @@ Copyright (C) 2015 Adrian Ulrich <adrian@blinkenlights.ch>
 	</style>
 
 	<style name="Library" parent="VanillaBase">
-		<item name="android:actionBarStyle">@style/Universal.LibraryActionBar</item>
+		<item name="android:windowActionBar">false</item>
+		<item name="android:windowNoTitle">true</item>
 	</style>
 
 	<!-- universal styles -->
 	<style name="Universal.PlaybackActionBar" parent="android:Widget.Material.ActionBar">
 		<item name="android:displayOptions">showTitle|homeAsUp</item>
-		<item name="android:background">@color/vanillaPrimary</item>
-	</style>
-
-	<style name="Universal.LibraryActionBar" parent="android:Widget.Material.ActionBar">
-		<item name="android:displayOptions"></item>
 		<item name="android:background">@color/vanillaPrimary</item>
 	</style>
 
@@ -73,7 +69,8 @@ Copyright (C) 2015 Adrian Ulrich <adrian@blinkenlights.ch>
 	</style>
 
 	<style name="Dark.Library" parent="Dark.VanillaBase">
-		<item name="android:actionBarStyle">@style/Universal.LibraryActionBar</item>
+		<item name="android:windowActionBar">false</item>
+		<item name="android:windowNoTitle">true</item>
 	</style>
 
 

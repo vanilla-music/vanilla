@@ -23,7 +23,7 @@
 
 	<!-- library tabs -->
 	<color name="tabs_background">@color/vanillaPrimary</color>
-	<color name="tabs_active_indicator">@android:color/primary_text_dark</color>
+	<color name="tabs_active_indicator">@android:color/background_light</color>
 
 	<!-- themed overlay colors for full playback activity -->
 	<color name="overlay_background_light">#ffeeeeee</color>

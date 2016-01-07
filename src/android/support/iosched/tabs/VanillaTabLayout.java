@@ -23,8 +23,6 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-import android.os.Build;
-
 /**
  * Simple wrapper for SlidingTabLayout which takes
  * care of setting sane per-platform defaults
@@ -52,26 +50,11 @@ public class VanillaTabLayout extends SlidingTabLayout {
 	protected TextView createDefaultTabView(Context context) {
 		TextView view = super.createDefaultTabView(context);
 		view.setTextColor(getResources().getColorStateList(ch.blinkenlights.android.vanilla.R.color.tab_text_selector));
+		view.setBackgroundResource(ch.blinkenlights.android.vanilla.R.drawable.unbound_ripple_light);
 		view.setMaxLines(1);
 		view.setEllipsize(TextUtils.TruncateAt.END);
 		view.setTextSize(14);
 		return view;
 	}
-
-	/**
-	 * Borrow elevation of given action bar
-	 *
-	 * @param ab The active action bar
-	 */
-	public void inheritElevation(ActionBar ab) {
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
-			return; // noop on earlier releases
-
-		float elevation = ab.getElevation();
-		ab.setElevation(0.0f);
-		setElevation(elevation);
-	}
-
-
 
 }
