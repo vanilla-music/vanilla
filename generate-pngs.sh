@@ -25,3 +25,6 @@ for i in orig/*.svgz; do
 	gen "$i" xhdpi 180
 	gen "$i" xxhdpi 270
 done
+
+# GOOG tells us to use xxx-hdpi only for launcher icons
+gen "orig/icon.svgz" xxxhdpi 360
