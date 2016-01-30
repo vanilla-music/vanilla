@@ -80,7 +80,7 @@ public class CoverCache {
 	 */
 	public CoverCache(Context context) {
 		if (sBitmapDiskCache == null) {
-			sBitmapDiskCache = new BitmapDiskCache(context, 25*1024*1024);
+			sBitmapDiskCache = new BitmapDiskCache(context.getApplicationContext(), 25*1024*1024);
 		}
 	}
 
