@@ -38,7 +38,7 @@ public class ShowQueueActivity extends PlaybackActivity
 	           DragSortListView.RemoveListener
 {
 	private DragSortListView mListView;
-	private ShowQueueAdapter listAdapter;
+	private ShowQueueAdapter mListAdapter;
 	private PlaybackService mService;
 
 	@Override
@@ -51,8 +51,8 @@ public class ShowQueueActivity extends PlaybackActivity
 
 		mService    = PlaybackService.get(this);
 		mListView   = (DragSortListView) findViewById(R.id.list);
-		listAdapter = new ShowQueueAdapter(this, R.layout.draggable_row);
-		mListView.setAdapter(listAdapter);
+		mListAdapter = new ShowQueueAdapter(this, R.layout.draggable_row);
+		mListView.setAdapter(mListAdapter);
 		mListView.setDropListener(this);
 		mListView.setRemoveListener(this);
 
@@ -201,11 +201,11 @@ public class ShowQueueActivity extends PlaybackActivity
 				stotal = mService.getTimelineLength();   /* Total number of songs in queue */
 				spos   = mService.getTimelinePosition(); /* Current position in queue      */
 
-				listAdapter.clear();                    /* Flush all existing entries...  */
-				listAdapter.highlightRow(spos);         /* and highlight current position */
+				mListAdapter.clear();                    /* Flush all existing entries...  */
+				mListAdapter.highlightRow(spos);         /* and highlight current position */
 
 				for(i=0 ; i<stotal; i++) {
-					listAdapter.add(mService.getSongByQueuePosition(i));
+					mListAdapter.add(mService.getSongByQueuePosition(i));
 				}
 
 				if(scroll)
