@@ -314,4 +314,9 @@ THE SOFTWARE.
 
 	<string name="permission_request_summary">Vanilla Music needs read permission to display your music library</string>
 	<string name="ok">Ok</string>
+	<string name="sort_queue">Sort queue…</string>
+	<string name="title_a_to_z">Title A - Z</string>
+	<string name="title_z_to_a">Title Z - A</string>
+	<string name="album_name_a_to_z">Album Name A - Z</string>
+	<string name="album_name_z_to_a">Album Name Z - A</string>
 </resources>

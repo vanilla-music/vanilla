@@ -111,6 +111,11 @@ THE SOFTWARE.
 		<item>@string/info_below_cover</item>
 		<item>@string/fixed_info</item>
 	</string-array>
-
+	<string-array name="sort_queue_entries">
+		<item>@string/title_a_to_z</item>
+		<item>@string/title_z_to_a</item>
+		<item>@string/album_name_a_to_z</item>
+		<item>@string/album_name_z_to_a</item>
+	</string-array>
 
 </resources>

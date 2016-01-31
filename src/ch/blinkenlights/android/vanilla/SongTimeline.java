@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ListIterator;
 import junit.framework.Assert;
 
@@ -251,6 +252,47 @@ public final class SongTimeline {
 	private Song mSavedNext;
 	private int mSavedPos;
 	private int mSavedSize;
+
+	/**
+	 * Some implementations of {@link Comparator<Song>}
+	 */
+	public enum SongSorter implements Comparator<Song> {
+		DEFAULT {
+			@Override
+			public int compare(final Song lhs, final Song rhs) {
+				return lhs.compareTo(rhs);
+			}
+		}, DEFAULT_REVERSE {
+			@Override
+			public int compare(final Song lhs, final Song rhs) {
+				return DEFAULT.compare(rhs, lhs);
+			}
+		}, TITLE {
+			@Override
+			public int compare(final Song lhs, final Song rhs) {
+				return lhs.title.compareTo(rhs.title);
+			}
+		}, TITLE_REVERSE {
+			@Override
+			public int compare(final Song lhs, final Song rhs) {
+				return TITLE.compare(rhs, lhs);
+			}
+		}, ALBUM_TITLE {
+			@Override
+			public int compare(final Song lhs, final Song rhs) {
+				return lhs.album.compareTo(rhs.album);
+			}
+		}, ALBUM_TITLE_REVERSE {
+			@Override
+			public int compare(final Song lhs, final Song rhs) {
+				return ALBUM_TITLE.compare(rhs,lhs);
+			}
+		};
+
+		public void sort(List<Song> songs) {
+			Collections.sort(songs, this);
+		}
+	}
 
 	/**
 	 * Interface to respond to timeline changes.
@@ -482,6 +524,22 @@ public final class SongTimeline {
 			broadcastChangedSongs();
 		}
 
+		changed();
+	}
+
+	/**
+	 * Sorts the songs in this timeline. Sets the shuffle mode to {@link #SHUFFLE_NONE}
+	 * @param songSorter The {@link SongSorter} to sort the songs with
+	 */
+	public synchronized void sort(SongSorter songSorter) {
+		setShuffleMode(SongTimeline.SHUFFLE_NONE);
+		synchronized (this) {
+
+			saveActiveSongs();
+			songSorter.sort(mSongs);
+			mCurrentPos = mSongs.indexOf(mSavedCurrent);
+			broadcastChangedSongs();
+		}
 		changed();
 	}
 
