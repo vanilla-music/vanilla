@@ -24,6 +24,7 @@ package ch.blinkenlights.android.vanilla;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -382,6 +383,46 @@ public final class CoverBitmap {
 		canvas.scale(0.333f, 0.333f);
 		canvas.drawOval(oval, paint);
 
+		return bitmap;
+	}
+
+	/**
+	 * Draws a placeholder cover from given title string
+	 *
+	 * @param title A text string to use in the cover
+	 * @return bitmap The drawn bitmap
+	 */
+	public static Bitmap generatePlaceholderCover(Context context, int width, int height, String title)
+	{
+		if (title == null || width < 1 || height < 1)
+			return null;
+
+		final float textSize = width * 0.4f;
+
+		title = title.replaceFirst("(?i)^The ", ""); // 'The\s' shall not be a part of the string we are drawing.
+		String subText = (title+"  ").substring(0,2);
+
+		Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+		Canvas canvas = new Canvas(bitmap);
+		Paint paint = new Paint();
+
+		// Picks a semi-random color from tiles_colors.xml
+		TypedArray colors = context.getResources().obtainTypedArray(R.array.letter_tile_colors);
+		int color = colors.getColor(Math.abs(title.hashCode()) % colors.length(), 0);
+		colors.recycle();
+		paint.setColor(color);
+
+		paint.setStyle(Paint.Style.FILL);
+		canvas.drawPaint(paint);
+
+		paint.setARGB(255, 255, 255, 255);
+		paint.setAntiAlias(true);
+		paint.setTextSize(textSize);
+
+		Rect bounds = new Rect();
+		paint.getTextBounds(subText, 0, subText.length(), bounds);
+
+		canvas.drawText(subText, (width/2f)-bounds.exactCenterX(), (height/2f)-bounds.exactCenterY(), paint);
 		return bitmap;
 	}
 }
