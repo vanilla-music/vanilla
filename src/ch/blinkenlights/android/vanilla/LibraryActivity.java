@@ -899,7 +899,7 @@ public class LibraryActivity
 			Bitmap cover = null;
 			Song song = (Song)message.obj;
 			if (song != null) {
-				cover = song.getCover(this);
+				cover = song.getSmallCover(this);
 			}
 			// Dispatch view update to UI thread
 			updateCover(cover);
