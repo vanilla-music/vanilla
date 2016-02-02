@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2015-2016 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -97,7 +98,10 @@ public class LazyCoverView extends ImageView
 		super(context, attributes);
 		mContext = context;
 		if (sBitmapLruCache == null) {
-			sBitmapLruCache = new BitmapLruCache(6*1024*1024);
+			ActivityManager am = (ActivityManager)context.getSystemService(context.ACTIVITY_SERVICE);
+			int lruSize = am.getMemoryClass() / 10; // use ~10% for LRU
+			lruSize = lruSize < 2 ? 2 : lruSize; // LRU will always be at least 2MiB
+			sBitmapLruCache = new BitmapLruCache(lruSize*1024*1024);
 		}
 		if (sFallbackBitmap == null) {
 			sFallbackBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.fallback_cover);
@@ -110,7 +114,6 @@ public class LazyCoverView extends ImageView
 			thread.start();
 			sHandler = new Handler(thread.getLooper(), this);
 		}
-
 	}
 
 	/**
