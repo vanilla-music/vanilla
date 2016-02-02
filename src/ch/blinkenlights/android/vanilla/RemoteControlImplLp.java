@@ -132,8 +132,6 @@ public class RemoteControlImplLp implements RemoteControl.Client {
 			Bitmap bitmap = null;
 			if (mShowCover == 1 && (isPlaying || keepPaused)) {
 				bitmap = song.getCover(mContext);
-				if (bitmap != null)
-					bitmap.copy(Bitmap.Config.ARGB_8888, false);
 			}
 
 			session.setMetadata(new MediaMetadata.Builder()
