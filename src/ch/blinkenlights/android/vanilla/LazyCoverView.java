@@ -59,10 +59,6 @@ public class LazyCoverView extends ImageView
 	 */
 	private static Bitmap sFallbackBitmap;
 	/**
-	 * Cover LRU cache LRU cache
-	 */
-	private static CoverCache sCoverCache;
-	/**
 	 * Our private LRU cache
 	 */
 	private static BitmapLruCache sBitmapLruCache;
@@ -100,9 +96,6 @@ public class LazyCoverView extends ImageView
 	public LazyCoverView(Context context, AttributeSet attributes) {
 		super(context, attributes);
 		mContext = context;
-		if (sCoverCache == null) {
-			sCoverCache = new CoverCache(mContext);
-		}
 		if (sBitmapLruCache == null) {
 			sBitmapLruCache = new BitmapLruCache(6*1024*1024);
 		}
