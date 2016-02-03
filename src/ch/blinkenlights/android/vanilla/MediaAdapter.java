@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2015-2016 Adrian Ulrich <adrian@blinkenlights.ch>
  * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -185,17 +185,17 @@ public class MediaAdapter
 			break;
 		case MediaUtils.TYPE_ALBUM:
 			mStore = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
-			mFields = new String[] { MediaStore.Audio.Albums.ARTIST, MediaStore.Audio.Albums.ALBUM };
+			mFields = new String[] { MediaStore.Audio.Albums.ALBUM, MediaStore.Audio.Albums.ARTIST };
 			// Why is there no artist_key column constant in the album MediaStore? The column does seem to exist.
-			mFieldKeys = new String[] { "artist_key", MediaStore.Audio.Albums.ALBUM_KEY };
+			mFieldKeys = new String[] { MediaStore.Audio.Albums.ALBUM_KEY, "artist_key" };
 			mSongSort = MediaUtils.ALBUM_SORT;
 			mSortEntries = new int[] { R.string.name, R.string.artist_album, R.string.year, R.string.number_of_tracks, R.string.date_added };
 			mSortValues = new String[] { "album_key %1$s", "artist_key %1$s,album_key %1$s", "minyear %1$s,album_key %1$s", "numsongs %1$s,album_key %1$s", "_id %1$s" };
 			break;
 		case MediaUtils.TYPE_SONG:
 			mStore = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-			mFields = new String[] { MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.TITLE };
-			mFieldKeys = new String[] { MediaStore.Audio.Media.ARTIST_KEY, MediaStore.Audio.Media.ALBUM_KEY, MediaStore.Audio.Media.TITLE_KEY };
+			mFields = new String[] { MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.ARTIST };
+			mFieldKeys = new String[] { MediaStore.Audio.Media.TITLE_KEY, MediaStore.Audio.Media.ALBUM_KEY, MediaStore.Audio.Media.ARTIST_KEY };
 			mSortEntries = new int[] { R.string.name, R.string.artist_album_track, R.string.artist_album_title,
 			                           R.string.artist_year, R.string.album_track,
 			                           R.string.year, R.string.date_added, R.string.song_playcount };
@@ -225,10 +225,13 @@ public class MediaAdapter
 			throw new IllegalArgumentException("Invalid value for type: " + type);
 		}
 
-		if (mFields.length == 1)
-			mProjection = new String[] { BaseColumns._ID, coverCacheKey, mFields[0] };
-		else
-			mProjection = new String[] { BaseColumns._ID, coverCacheKey, mFields[mFields.length - 1], mFields[0] };
+
+		mProjection = new String[mFields.length + 2];
+		mProjection[0] = BaseColumns._ID;
+		mProjection[1] = coverCacheKey;
+		for (int i = 0; i < mFields.length; i++) {
+			mProjection[i + 2] = mFields[i];
+		}
 	}
 
 	/**
@@ -491,11 +494,12 @@ public class MediaAdapter
 		cursor.moveToPosition(position);
 		holder.id = cursor.getLong(0);
 		long cacheId = cursor.getLong(1);
-		if (mFields.length > 2) {
+		if (mProjection.length >= 5) {
 			String line1 = cursor.getString(2);
 			String line2 = cursor.getString(3);
-			if(line1 == null) { line1 = "???"; }
-			if(line2 == null) { line2 = "???"; }
+			line1 = (line1 == null ? "???" : line1);
+			line2 = (line2 == null ? "???" : line2 + ", " + cursor.getString(4));
+
 			SpannableStringBuilder sb = new SpannableStringBuilder(line1);
 			sb.append('\n');
 			sb.append(line2);
