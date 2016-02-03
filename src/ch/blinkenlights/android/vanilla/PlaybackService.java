@@ -1416,6 +1416,16 @@ public final class PlaybackService extends Service
 		return mTimeline.getSong(delta);
 	}
 
+	/**
+	 * Sorts the songs in the timeline.
+	 * @param songSorter The {@link SongTimeline.SongSorter} used to sort
+	 *
+	 * @see SongTimeline#sort(SongTimeline.SongSorter)
+	 */
+	public void sortTimeline(SongTimeline.SongSorter songSorter) {
+		mTimeline.sort(songSorter);
+	}
+
 	private class Receiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context content, Intent intent)

@@ -20,10 +20,13 @@ package ch.blinkenlights.android.vanilla;
 import java.util.ArrayList;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,7 +41,7 @@ public class ShowQueueActivity extends PlaybackActivity
 	           DragSortListView.RemoveListener
 {
 	private DragSortListView mListView;
-	private ShowQueueAdapter listAdapter;
+	private ShowQueueAdapter mListAdapter;
 	private PlaybackService mService;
 
 	@Override
@@ -51,8 +54,8 @@ public class ShowQueueActivity extends PlaybackActivity
 
 		mService    = PlaybackService.get(this);
 		mListView   = (DragSortListView) findViewById(R.id.list);
-		listAdapter = new ShowQueueAdapter(this, R.layout.draggable_row);
-		mListView.setAdapter(listAdapter);
+		mListAdapter = new ShowQueueAdapter(this, R.layout.draggable_row);
+		mListView.setAdapter(mListAdapter);
 		mListView.setDropListener(this);
 		mListView.setRemoveListener(this);
 
@@ -76,6 +79,8 @@ public class ShowQueueActivity extends PlaybackActivity
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		menu.add(0, MENU_SORT_QUEUE, 0 , R.string.sort_queue).setIcon(R.drawable
+				.ic_menu_sort_alphabetically);
 		menu.add(0, MENU_CLEAR_QUEUE, 0, R.string.dequeue_rest).setIcon(R.drawable.ic_menu_close_clear_cancel);
 		menu.add(0, MENU_EMPTY_QUEUE, 0, R.string.empty_the_queue);
 		menu.add(0, MENU_SAVE_AS_PLAYLIST, 0, R.string.save_as_playlist).setIcon(R.drawable.ic_menu_preferences);
@@ -92,6 +97,9 @@ public class ShowQueueActivity extends PlaybackActivity
 		switch (item.getItemId()) {
 			case android.R.id.home:
 				finish();
+				break;
+			case MENU_SORT_QUEUE:
+				new SortDialogHelper().createDialog().show();
 				break;
 			case MENU_SAVE_AS_PLAYLIST:
 				NewPlaylistDialog dialog = new NewPlaylistDialog(this, null, R.string.create, null);
@@ -201,11 +209,11 @@ public class ShowQueueActivity extends PlaybackActivity
 				stotal = mService.getTimelineLength();   /* Total number of songs in queue */
 				spos   = mService.getTimelinePosition(); /* Current position in queue      */
 
-				listAdapter.clear();                    /* Flush all existing entries...  */
-				listAdapter.highlightRow(spos);         /* and highlight current position */
+				mListAdapter.clear();                    /* Flush all existing entries...  */
+				mListAdapter.highlightRow(spos);         /* and highlight current position */
 
 				for(i=0 ; i<stotal; i++) {
-					listAdapter.add(mService.getSongByQueuePosition(i));
+					mListAdapter.add(mService.getSongByQueuePosition(i));
 				}
 
 				if(scroll)
@@ -228,5 +236,45 @@ public class ShowQueueActivity extends PlaybackActivity
 	private void scrollToCurrentSong(int currentSongPosition){
 		mListView.setSelectionFromTop(currentSongPosition, 0); /* scroll to currently playing song */
 	}
-	
+
+	/**
+	 * Helper class for creating the dialog that allows sorting of the queue. Handles the click
+	 * events on the dialog
+	 */
+	private class SortDialogHelper implements Dialog.OnClickListener {
+
+		AlertDialog createDialog() {
+			return new AlertDialog.Builder(ShowQueueActivity.this)
+					.setTitle(R.string.sort_by)
+					.setItems(R.array.sort_queue_entries, this)
+					.setNegativeButton(R.string.cancel, null)
+					.create();
+		}
+
+		@Override
+		public void onClick(final DialogInterface dialog, final int which) {
+
+			// Dependency upon order of {@link R#array#sort_queue_entries}
+			SongTimeline.SongSorter songSorter = SongTimeline.SongSorter.DEFAULT;
+			switch (which) {
+				case 0:
+					songSorter = SongTimeline.SongSorter.TITLE;
+					break;
+				case 1:
+					songSorter = SongTimeline.SongSorter.TITLE_REVERSE;
+					break;
+				case 2:
+					songSorter = SongTimeline.SongSorter.ALBUM_TITLE;
+					break;
+				case 3:
+					songSorter = SongTimeline.SongSorter.ALBUM_TITLE_REVERSE;
+					break;
+				default:
+					Log.w("VanillaMusic", "Ignoring invalid sort option " +
+							which);
+					return;
+			}
+			mService.sortTimeline(songSorter);
+		}
+	}
 }
