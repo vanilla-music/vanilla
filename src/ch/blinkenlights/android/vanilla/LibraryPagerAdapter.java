@@ -650,9 +650,8 @@ public class LibraryPagerAdapter
 			int index = message.arg1;
 			mAdapters[index].commitQuery(message.obj);
 
-			Limiter curLimiter = mAdapters[index].getLimiter();
 			Integer curPos = sLruAdapterPos.getPosition(mAdapters[index]);
-			if (curPos != null)
+			if (curPos != null && curPos < mLists[index].getCount())
 				pos = (int)curPos;
 
 			mLists[index].setSelection(pos);
