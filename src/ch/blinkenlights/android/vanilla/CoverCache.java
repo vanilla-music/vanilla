@@ -96,8 +96,10 @@ public class CoverCache {
 		Bitmap cover = getStoredCover(key);
 		if (cover == null) {
 			cover = sBitmapDiskCache.createBitmap(song, size*size);
-			if (cover != null)
+			if (cover != null) {
 				storeCover(key, cover);
+				cover = getStoredCover(key); // return lossy version to avoid random quality changes
+			}
 		}
 		return cover;
 	}
@@ -323,7 +325,7 @@ public class CoverCache {
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			// We store a lossy version as this image was
 			// created from the original source (and will not be re-compressed)
-			cover.compress(Bitmap.CompressFormat.WEBP, 90, out);
+			cover.compress(Bitmap.CompressFormat.JPEG, 80, out);
 
 			Random rnd = new Random();
 			long ttl = getUnixTime() + rnd.nextInt(OBJECT_TTL);
