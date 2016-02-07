@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
- * Copyright (C) 2014 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2014-2016 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@ package ch.blinkenlights.android.vanilla;
 
 import java.util.ArrayList;
 
+import android.content.Context;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -48,23 +49,6 @@ public class Playlist {
 		String[] projection = { MediaStore.Audio.Playlists._ID, MediaStore.Audio.Playlists.NAME };
 		String sort = MediaStore.Audio.Playlists.NAME;
 		return MediaUtils.queryResolver(resolver, media, projection, null, null, sort);
-	}
-
-	/**
-	 * Retrieves the id for a playlist with the given name.
-	 * A new playlist will be created if given name does not exist
-	 * @param resolver A ContentResolver to use.
-	 * @param name The name of the playlist.
-	 * @return The id of the playlist, or -1 if there is no playlist with the
-	 * given name.
-	 */
-	public static long getOrCreatePlaylist(ContentResolver resolver, String name)
-	{
-		long id = getPlaylist(resolver, name);
-		if(id == -1) {
-			id = createPlaylist(resolver, name);
-		}
-		return id;
 	}
 
 	/**
@@ -147,7 +131,7 @@ public class Playlist {
 	}
 
 	/**
-	 * Run the given query and add the results to the given playlist. Should be
+	 * Adds a set of audioIds to the given playlist. Should be
 	 * run on a background thread.
 	 *
 	 * @param resolver A ContentResolver to use.
@@ -181,6 +165,29 @@ public class Playlist {
 			resolver.bulkInsert(uri, values);
 		}
 
+		return count;
+	}
+
+	/**
+	 * Removes a set of audioIds from the given playlist. Should be
+	 * run on a background thread.
+	 *
+	 * @param resolver A ContentResolver to use.
+	 * @param playlistId The MediaStore.Audio.Playlist id of the playlist to
+	 * modify.
+	 * @param audioIds An ArrayList with all IDs to add
+	 * @return The number of songs that were added to the playlist.
+	 */
+	public static int removeFromPlaylist(ContentResolver resolver, long playlistId, ArrayList<Long> audioIds) {
+		if (playlistId == -1)
+			return 0;
+
+		int count = 0;
+		Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId);
+		for (long id : audioIds) {
+			String where = MediaStore.Audio.Playlists.Members.AUDIO_ID + "=" + id;
+			count += resolver.delete(uri, where, null);
+		}
 		return count;
 	}
 
@@ -222,5 +229,45 @@ public class Playlist {
 			_copyToPlaylist(resolver, id, newId);
 			deletePlaylist(resolver, id);
 		}
+	}
+
+	/**
+	 * Returns the ID of the 'favorites' playlist.
+	 *
+	 * @param context The Context to use
+	 * @param create Create the playlist if it does not exist
+	 * @return the id of the playlist, -1 on error
+	 */
+	public static long getFavoritesId(Context context, boolean create) {
+		String playlistName = context.getString(R.string.playlist_favorites);
+		long playlistId = getPlaylist(context.getContentResolver(), playlistName);
+
+		if (playlistId == -1 && create == true)
+			playlistId = createPlaylist(context.getContentResolver(), playlistName);
+
+		return playlistId;
+	}
+
+	/**
+	 * Searches for given song in given playlist
+	 *
+	 * @param resolver A ContentResolver to use.
+	 * @param playlistId The ID of the Playlist to query
+	 * @param song The Song to search in given playlistId
+	 * @return true if `song' was found in `playlistId'
+	 */
+	public static boolean isInPlaylist(ContentResolver resolver, long playlistId, Song song) {
+		if (playlistId == -1 || song == null)
+			return false;
+
+		boolean found = false;
+		String where = MediaStore.Audio.Playlists.Members.AUDIO_ID + "=" + song.id;
+		QueryTask query = MediaUtils.buildPlaylistQuery(playlistId, Song.EMPTY_PLAYLIST_PROJECTION, where);
+		Cursor cursor = query.runQuery(resolver);
+		if (cursor != null) {
+			found = cursor.getCount() != 0;
+			cursor.close();
+		}
+		return found;
 	}
 }

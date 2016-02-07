@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2016 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -119,6 +120,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 	private TextView mFormatView;
 	private String mReplayGain;
 	private TextView mReplayGainView;
+	private MenuItem mFavorites;
 
 	@Override
 	public void onCreate(Bundle icicle)
@@ -298,8 +300,6 @@ public class FullPlaybackActivity extends PlaybackActivity
 	@Override
 	protected void onSongChange(Song song)
 	{
-		super.onSongChange(song);
-
 		setDuration(song == null ? 0 : song.duration);
 
 		if (mTitle != null) {
@@ -318,9 +318,14 @@ public class FullPlaybackActivity extends PlaybackActivity
 		mCurrentSong = song;
 		updateElapsedTime();
 
+		mHandler.sendEmptyMessage(MSG_LOAD_FAVOURITE_INFO);
+
+		// All quick UI updates are done: Time to update the cover
+		// and parse additional info
 		if (mExtraInfoVisible) {
 			mHandler.sendEmptyMessage(MSG_LOAD_EXTRA_INFO);
 		}
+		super.onSongChange(song);
 	}
 
 	/**
@@ -367,8 +372,11 @@ public class FullPlaybackActivity extends PlaybackActivity
 		menu.add(0, MENU_ENQUEUE_ALBUM, 0, R.string.enqueue_current_album).setIcon(R.drawable.ic_menu_add);
 		menu.add(0, MENU_ENQUEUE_ARTIST, 0, R.string.enqueue_current_artist).setIcon(R.drawable.ic_menu_add);
 		menu.add(0, MENU_ENQUEUE_GENRE, 0, R.string.enqueue_current_genre).setIcon(R.drawable.ic_menu_add);
-		menu.add(0, MENU_SONG_FAVORITE, 0, R.string.add_to_favorites);
+		mFavorites = menu.add(0, MENU_SONG_FAVORITE, 0, R.string.add_to_favorites).setIcon(R.drawable.btn_rating_star_off_mtrl_alpha).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		menu.add(0, MENU_SHOW_QUEUE, 0, R.string.show_queue);
+
+		// ensure that mFavorites is updated
+		mHandler.sendEmptyMessage(MSG_LOAD_FAVOURITE_INFO);
 		return true;
 	}
 
@@ -390,15 +398,16 @@ public class FullPlaybackActivity extends PlaybackActivity
 			PlaybackService.get(this).enqueueFromCurrent(MediaUtils.TYPE_GENRE);
 			break;
 		case MENU_SONG_FAVORITE:
-			String playlistName = getString(R.string.playlist_favorites);
-			long playlistId = Playlist.getOrCreatePlaylist(getContentResolver(), playlistName);
 			Song song = (PlaybackService.get(this)).getSong(0);
+			long playlistId = Playlist.getFavoritesId(this, true);
 
 			if (song != null) {
-				PlaylistTask playlistTask = new PlaylistTask(playlistId, playlistName);
+				PlaylistTask playlistTask = new PlaylistTask(playlistId, getString(R.string.playlist_favorites));
 				playlistTask.audioIds = new ArrayList<Long>();
 				playlistTask.audioIds.add(song.id);
-				mHandler.sendMessage(mHandler.obtainMessage(MSG_ADD_TO_PLAYLIST, playlistTask));
+				int action = Playlist.isInPlaylist(getContentResolver(), playlistId, song) ? MSG_REMOVE_FROM_PLAYLIST : MSG_ADD_TO_PLAYLIST;
+				mHandler.sendMessage(mHandler.obtainMessage(action, playlistTask));
+				mHandler.sendEmptyMessage(MSG_LOAD_FAVOURITE_INFO);
 			}
 			break;
 		case MENU_DELETE:
@@ -645,6 +654,14 @@ public class FullPlaybackActivity extends PlaybackActivity
 	 * Calls {@link PlaybackService#seekToProgress(int)}.
 	 */
 	private static final int MSG_SEEK_TO_PROGRESS = 18;
+	/**
+	 * Check if passed song is a favorite
+	 */
+	private static final int MSG_LOAD_FAVOURITE_INFO = 19;
+	/**
+	 * Updates the favorites state
+	 */
+	private static final int MSG_COMMIT_FAVOURITE_INFO = 20;
 
 	@Override
 	public boolean handleMessage(Message message)
@@ -678,6 +695,19 @@ public class FullPlaybackActivity extends PlaybackActivity
 		case MSG_SEEK_TO_PROGRESS:
 			PlaybackService.get(this).seekToProgress(message.arg1);
 			updateElapsedTime();
+			break;
+		case MSG_LOAD_FAVOURITE_INFO:
+			if (mCurrentSong != null) {
+				boolean found = Playlist.isInPlaylist(getContentResolver(), Playlist.getFavoritesId(this, false), mCurrentSong);
+				mUiHandler.sendMessage(mUiHandler.obtainMessage(MSG_COMMIT_FAVOURITE_INFO, found));
+			}
+			break;
+		case MSG_COMMIT_FAVOURITE_INFO:
+			if (mFavorites != null) {
+				boolean found = (boolean)message.obj;
+				mFavorites.setIcon(found ? R.drawable.btn_rating_star_on_mtrl_alpha: R.drawable.btn_rating_star_off_mtrl_alpha);
+				mFavorites.setTitle(found ? R.string.remove_from_favorites : R.string.add_to_favorites);
+			}
 			break;
 		default:
 			return super.handleMessage(message);

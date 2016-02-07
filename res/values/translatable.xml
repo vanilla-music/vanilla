@@ -69,6 +69,7 @@ THE SOFTWARE.
 	<string name="save_as_playlist">Save as playlist…</string>
 	<string name="add_to_playlist">Add to playlist…</string>
 	<string name="add_to_favorites">Add to favorites</string>
+	<string name="remove_from_favorites">Remove from favorites</string>
 	<string name="playlist_favorites">Favorites</string>
 	<string name="new_playlist">New playlist…</string>
 	<string name="expand">Expand</string>
@@ -93,6 +94,10 @@ THE SOFTWARE.
 	<plurals name="added_to_playlist">
 		<item quantity="one">1 song added to playlist %2$s.</item>
 		<item quantity="other">%1$d songs added to playlist %2$s.</item>
+	</plurals>
+	<plurals name="removed_from_playlist">
+		<item quantity="one">1 song removed from playlist %2$s.</item>
+		<item quantity="other">%1$d songs removed from playlist %2$s.</item>
 	</plurals>
 	<plurals name="deleted">
 		<item quantity="one">1 song deleted.</item>

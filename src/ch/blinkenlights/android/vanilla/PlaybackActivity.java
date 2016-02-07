@@ -399,8 +399,14 @@ public abstract class PlaybackActivity extends Activity
 	 * Call addToPlaylist with data from the playlisttask object.
 	 */
 	protected static final int MSG_ADD_TO_PLAYLIST = 2;
-
-	protected static final int MSG_DELETE = 3;
+	/**
+	 * Call removeFromPlaylist with data from the playlisttask object.
+	 */
+	protected static final int MSG_REMOVE_FROM_PLAYLIST = 3;
+	/**
+	 * Removes a media object
+	 */
+	protected static final int MSG_DELETE = 4;
 
 	@Override
 	public boolean handleMessage(Message message)
@@ -421,6 +427,11 @@ public abstract class PlaybackActivity extends Activity
 		case MSG_ADD_TO_PLAYLIST: {
 			PlaylistTask playlistTask = (PlaylistTask)message.obj;
 			addToPlaylist(playlistTask);
+			break;
+		}
+		case MSG_REMOVE_FROM_PLAYLIST: {
+			PlaylistTask playlistTask = (PlaylistTask)message.obj;
+			removeFromPlaylist(playlistTask);
 			break;
 		}
 		case MSG_RENAME_PLAYLIST: {
@@ -459,6 +470,27 @@ public abstract class PlaybackActivity extends Activity
 		}
 
 		String message = getResources().getQuantityString(R.plurals.added_to_playlist, count, count, playlistTask.name);
+		showToast(message, Toast.LENGTH_SHORT);
+	}
+
+	/**
+	 * Removes a set of songs represented by the playlistTask from a playlist. Displays a
+	 * Toast notifying of success.
+	 *
+	 * @param playlistTask The pending PlaylistTask to execute
+	 */
+	private void removeFromPlaylist(PlaylistTask playlistTask) {
+		int count = 0;
+
+		if (playlistTask.query != null) {
+			throw new IllegalArgumentException("Delete by query is not implemented yet");
+		}
+
+		if (playlistTask.audioIds != null) {
+			count += Playlist.removeFromPlaylist(getContentResolver(), playlistTask.playlistId, playlistTask.audioIds);
+		}
+
+		String message = getResources().getQuantityString(R.plurals.removed_from_playlist, count, count, playlistTask.name);
 		showToast(message, Toast.LENGTH_SHORT);
 	}
 
