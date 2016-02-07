@@ -71,6 +71,10 @@ public class BottomBarControls extends LinearLayout
 	 */
 	private SearchView mSearchView;
 	/**
+	 * The assembled PopupMenu
+	 */
+	private PopupMenu mPopupMenu;
+	/**
 	 * ControlsContent click consumer, may be null
 	 */
 	private View.OnClickListener mParentClickConsumer;
@@ -102,7 +106,7 @@ public class BottomBarControls extends LinearLayout
 	public void onClick(View view) {
 		Object tag = view.getTag();
 		if (tag instanceof PopupMenu) {
-			((PopupMenu)tag).show();
+			openMenu();
 		} else if (tag instanceof MenuItem) {
 			mParentMenuConsumer.onOptionsItemSelected((MenuItem)tag);
 		} else if (view == mControlsContent && mParentClickConsumer != null) {
@@ -148,15 +152,15 @@ public class BottomBarControls extends LinearLayout
 		mParentMenuConsumer = owner;
 
 		ImageButton menuButton = getImageButton(getResources().getDrawable(R.drawable.ic_menu_moreoverflow));
-		PopupMenu popupMenu = (menuMargin() ? new PopupMenu(mContext, menuButton, Gravity.RIGHT) : new PopupMenu(mContext, menuButton));
-		popupMenu.setOnMenuItemClickListener(this);
+		mPopupMenu = (menuMargin() ? new PopupMenu(mContext, menuButton, Gravity.RIGHT) : new PopupMenu(mContext, menuButton));
+		mPopupMenu.setOnMenuItemClickListener(this);
 
 		// Let parent populate the menu
-		mParentMenuConsumer.onCreateOptionsMenu(popupMenu.getMenu());
+		mParentMenuConsumer.onCreateOptionsMenu(mPopupMenu.getMenu());
 
 		// The menu is now ready, we an now add all invisible
 		// items to the toolbar
-		Menu menu = popupMenu.getMenu();
+		Menu menu = mPopupMenu.getMenu();
 		for (int i=0; i < menu.size(); i++) {
 			MenuItem menuItem = menu.getItem(i);
 			if (menuItem.isVisible() == false) {
@@ -168,7 +172,7 @@ public class BottomBarControls extends LinearLayout
 		}
 
 		// Add menu button as last item
-		menuButton.setTag(popupMenu);
+		menuButton.setTag(mPopupMenu);
 		menuButton.setOnClickListener(this);
 		int specialSnowflake = menuMargin() ? dpToPx(36) : LinearLayout.LayoutParams.WRAP_CONTENT;
 		menuButton.setLayoutParams(new LinearLayout.LayoutParams(specialSnowflake, LinearLayout.LayoutParams.WRAP_CONTENT));
@@ -189,8 +193,10 @@ public class BottomBarControls extends LinearLayout
 	 * Opens the OptionsMenu of this view
 	 */
 	public void openMenu() {
-		// simulates a click on the 2nd rightmost child which should be the options menu
-		mControlsContent.getChildAt(mControlsContent.getChildCount()-2).performClick();
+		if (mPopupMenu == null || mParentMenuConsumer == null)
+			return;
+		mParentMenuConsumer.onPrepareOptionsMenu(mPopupMenu.getMenu());
+		mPopupMenu.show();
 	}
 
 	/**
