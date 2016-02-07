@@ -325,7 +325,7 @@ public class CoverCache {
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			// We store a lossy version as this image was
 			// created from the original source (and will not be re-compressed)
-			cover.compress(Bitmap.CompressFormat.JPEG, 80, out);
+			cover.compress(Bitmap.CompressFormat.JPEG, 85, out);
 
 			Random rnd = new Random();
 			long ttl = getUnixTime() + rnd.nextInt(OBJECT_TTL);
