@@ -311,24 +311,6 @@ public class MediaUtils {
 	}
 
 	/**
-	 * Shuffle an array using Fisher-Yates algorithm.
-	 *
-	 * @param list The array. It will be shuffled in place.
-	 * @param end Only elements before this index will be shuffled.
-	 */
-	public static void shuffle(Song[] list, int end)
-	{
-		Assert.assertTrue(end <= list.length && end >= 0);
-		Random random = getRandom();
-		for (int i = end; --i != -1; ) {
-			int j = random.nextInt(i + 1);
-			Song tmp = list[j];
-			list[j] = list[i];
-			list[i] = tmp;
-		}
-	}
-
-	/**
 	 * Shuffle a Song list using Collections.shuffle().
 	 *
 	 * @param albumShuffle If true, preserve the order of tracks inside albums.
