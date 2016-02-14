@@ -397,54 +397,7 @@ public class LibraryActivity
 		}
 	}
 
-	/**
-	 * Make the selected song , ringtone of the user's mobile
-	 */
 
-	private void makeRingtone(Intent intent){
-		try {
-			long id = intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
-			Uri trackUri = ContentUris.withAppendedId(
-					android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-					id);
-			String path = getRealPathFromURI(this, trackUri);
-			Uri uri = MediaStore.Audio.Media.getContentUriForPath(path);
-			ContentValues values = new ContentValues();
-			values.put(MediaStore.MediaColumns.DATA, path);
-			values.put(MediaStore.MediaColumns.TITLE, intent.getStringExtra(LibraryAdapter.DATA_TITLE));
-			values.put(MediaStore.MediaColumns.MIME_TYPE, "");
-			values.put(MediaStore.Audio.Media.ARTIST, "");
-			values.put(MediaStore.Audio.Media.IS_RINGTONE, true);
-			values.put(MediaStore.Audio.Media.IS_NOTIFICATION, false);
-			values.put(MediaStore.Audio.Media.IS_ALARM, false);
-			values.put(MediaStore.Audio.Media.IS_MUSIC, false);
-
-			this.getContentResolver().delete(uri, MediaStore.MediaColumns.DATA + "=\"" + path + "\"", null);
-			Uri newUri = this.getContentResolver().insert(uri, values);
-
-			RingtoneManager.setActualDefaultRingtoneUri(this,
-					RingtoneManager.TYPE_RINGTONE, newUri);
-			Toast.makeText(this, "Ringtone has been set", Toast.LENGTH_SHORT).show();
-		}
-		catch(Exception e){
-			Toast.makeText(this, "Can not set this song as ringtone", Toast.LENGTH_SHORT).show();
-		}
-	}
-
-	public String getRealPathFromURI(Context context, Uri contentUri) {
-		Cursor cursor = null;
-		try {
-			String[] proj = { MediaStore.Images.Media.DATA };
-			cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
-			int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-			cursor.moveToFirst();
-			return cursor.getString(column_index);
-		} finally {
-			if (cursor != null) {
-				cursor.close();
-			}
-		}
-	}
 
 	/**
 	 * "Expand" the view represented by the given intent by setting the limiter
@@ -711,7 +664,6 @@ public class LibraryActivity
 				menu.add(0, MENU_MORE_FROM_ARTIST, 0, R.string.more_from_artist).setIntent(rowData);
 			if (type == MediaUtils.TYPE_SONG) {
 				menu.add(0, MENU_MORE_FROM_ALBUM, 0, R.string.more_from_album).setIntent(rowData);
-				menu.add(0,MENU_RINGTONE,0,R.string.set_as_ringtone).setIntent(rowData);
 			}
 			menu.addSubMenu(0, MENU_ADD_TO_PLAYLIST, 0, R.string.add_to_playlist).getItem().setIntent(rowData);
 			menu.add(0, MENU_DELETE, 0, R.string.delete).setIntent(rowData);
@@ -839,9 +791,7 @@ public class LibraryActivity
 			updateLimiterViews();
 			break;
 		}
-			case MENU_RINGTONE:
-				makeRingtone(intent);
-				break;
+
 		}
 
 		return true;
