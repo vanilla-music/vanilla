@@ -25,6 +25,7 @@ package ch.blinkenlights.android.vanilla;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
+import android.util.Log;
 
 /**
  * Represents a pending query.
@@ -73,6 +74,7 @@ public class QueryTask {
 	 */
 	public Cursor runQuery(ContentResolver resolver)
 	{
+
 		return MediaUtils.queryResolver(resolver, uri, projection, selection, selectionArgs, sortOrder);
 	}
 }

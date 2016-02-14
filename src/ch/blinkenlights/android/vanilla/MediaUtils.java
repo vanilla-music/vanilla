@@ -199,7 +199,7 @@ public class MediaUtils {
 		// Note: This function works on a raw sql query with way too much internal
 		// knowledge about the mediaProvider SQL table layout. Yes: it's ugly.
 		// The reason for this mess is that android has a very crippled genre implementation
-		// and does, for example, not allow us to query the albumbs beloging to a genre.
+		// and does, for example, not allow us to query the albumbs belonging to a genre.
 
 		Uri uri = MediaStore.Audio.Genres.Members.getContentUri("external", id);
 		String[] clonedProjection = projection.clone(); // we modify the projection, but this should not be visible to the caller
