@@ -630,7 +630,6 @@ public class LibraryActivity
 	private static final int MENU_MORE_FROM_ALBUM = 11;
 	private static final int MENU_MORE_FROM_ARTIST = 12;
 	private static final int MENU_OPEN_EXTERNAL = 13;
-	private static final int MENU_RINGTONE = 14;
 
 	/**
 	 * Creates a context menu for an adapter row.
