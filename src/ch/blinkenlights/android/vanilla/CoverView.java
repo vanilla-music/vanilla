@@ -359,6 +359,12 @@ public final class CoverView extends View implements Handler.Callback {
 	 */
 	private void generateBitmap(int i)
 	{
+		if(getWidth() == 0 || getHeight() == 0) {
+			// View isn't laid out - can't generate the bitmap until we know the size
+			mPendingQuery = true;
+			return;
+		}
+
 		Song song = mSongs[i];
 
 		int style = mCoverStyle;
