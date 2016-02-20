@@ -319,4 +319,5 @@ THE SOFTWARE.
 
 	<string name="permission_request_summary">Vanilla Music needs read permission to display your music library</string>
 	<string name="ok">Ok</string>
+	<string name="download_nightly">Download Nightly</string>
 </resources>

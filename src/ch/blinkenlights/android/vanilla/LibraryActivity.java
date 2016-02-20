@@ -800,6 +800,12 @@ public class LibraryActivity
 		menu.add(0, MENU_SORT, 0, R.string.sort_by).setIcon(R.drawable.ic_menu_sort_alphabetically);
 		menu.add(0, MENU_SHOW_QUEUE, 0, R.string.show_queue);
 
+		if(getPackageName().endsWith("vanillanightly")) {
+			String url = "http://android.eqmx.net/android/vanilla/VanillaMusic-nightly.apk";
+			menu.add(0, MENU_DOWNLOAD_NIGHTLY, 0, R.string.download_nightly)
+					.setIntent(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+		}
+
 		return true;
 	}
 
