@@ -373,7 +373,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 		menu.add(0, MENU_ENQUEUE_ARTIST, 0, R.string.enqueue_current_artist).setIcon(R.drawable.ic_menu_add);
 		menu.add(0, MENU_ENQUEUE_GENRE, 0, R.string.enqueue_current_genre).setIcon(R.drawable.ic_menu_add);
 		mFavorites = menu.add(0, MENU_SONG_FAVORITE, 0, R.string.add_to_favorites).setIcon(R.drawable.btn_rating_star_off_mtrl_alpha).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		menu.add(0, MENU_SHOW_QUEUE, 0, R.string.show_queue);
+		menu.add(0, MENU_SHOW_QUEUE, 0, R.string.show_queue).setIcon(R.drawable.ic_menu_show_queue).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
 		// ensure that mFavorites is updated
 		mHandler.sendEmptyMessage(MSG_LOAD_FAVOURITE_INFO);
