@@ -52,7 +52,8 @@ import android.widget.Toast;
  * changes.
  */
 public abstract class PlaybackActivity extends Activity
-	implements Handler.Callback,
+	implements TimelineCallback,
+	           Handler.Callback,
 	           View.OnClickListener,
 	           CoverView.Callback
 {
@@ -87,7 +88,7 @@ public abstract class PlaybackActivity extends Activity
 	{
 		super.onCreate(state);
 
-		PlaybackService.addActivity(this);
+		PlaybackService.addTimelineCallback(this);
 
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
@@ -102,7 +103,7 @@ public abstract class PlaybackActivity extends Activity
 	@Override
 	public void onDestroy()
 	{
-		PlaybackService.removeActivity(this);
+		PlaybackService.removeTimelineCallback(this);
 		mLooper.quit();
 		super.onDestroy();
 	}
