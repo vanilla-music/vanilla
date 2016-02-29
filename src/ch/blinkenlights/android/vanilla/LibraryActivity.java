@@ -402,6 +402,7 @@ public class LibraryActivity
 	 */
 	private void expand(Intent intent)
 	{
+		mBottomBarControls.showSearch(false);
 		int type = intent.getIntExtra("type", MediaUtils.TYPE_INVALID);
 		long id = intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
 		int tab = mPagerAdapter.setLimiter(mPagerAdapter.mAdapters[type].buildLimiter(id));
