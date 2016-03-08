@@ -248,6 +248,62 @@ public class MediaUtils {
 	}
 
 	/**
+	 * Creates a {@link QueryTask} for genres. The query will select only genres that have at least
+	 * one song associated with them.
+	 *
+	 * @param projection The fields of the genre table that should be returned.
+	 * @param selection Additional constraints for the query (added to the WHERE section). '?'s
+	 * will be replaced by values in {@code selectionArgs}. Can be null.
+	 * @param selectionArgs Arguments for {@code selection}. Can be null. See
+	 * {@link android.content.ContentProvider#query(Uri, String[], String, String[], String)}
+	 * @param sort How the returned genres should be sorted (added to the ORDER BY section)
+	 * @return The QueryTask for the genres
+	 */
+	public static QueryTask buildGenreExcludeEmptyQuery(String[] projection, String selection, String[] selectionArgs, String sort) {
+		/*
+		 * An example SQLite query that we're building in this function
+			SELECT DISTINCT _id, name
+			FROM audio_genres
+			WHERE
+				EXISTS(
+					SELECT audio_id, genre_id, audio._id
+					FROM audio_genres_map, audio
+					WHERE (genre_id == audio_genres._id)
+						AND (audio_id == audio._id))
+			ORDER BY name DESC
+		 */
+		Uri uri = MediaStore.Audio.Genres.getContentUri("external");
+		StringBuilder sql = new StringBuilder();
+		// Don't want multiple identical genres
+		sql.append("DISTINCT ");
+
+		// Add the projection fields to the query
+		sql.append(TextUtils.join(", ", projection)).append(' ');
+
+		sql.append("FROM audio_genres ");
+		// Limit to genres that contain at least one valid song
+		sql.append("WHERE EXISTS( ")
+			.append("SELECT audio_id, genre_id, audio._id ")
+			.append("FROM audio_genres_map, audio ")
+			.append("WHERE (genre_id == audio_genres._id) AND (audio_id == audio._id) ")
+			.append(") ");
+
+		if (!TextUtils.isEmpty(selection))
+			sql.append(" AND(" + selection + ") ");
+
+		if(!TextUtils.isEmpty(sort))
+			sql.append(" ORDER BY ").append(sort);
+
+		// Ignore the framework generated query
+		sql.append(" -- ");
+		String[] injectedProjection = new String[1];
+		injectedProjection[0] = sql.toString();
+
+		// Don't pass the selection/sort as we've already added it to the query
+		return new QueryTask(uri, injectedProjection, null, selectionArgs, null);
+	}
+
+	/**
 	 * Builds a query with the given information.
 	 *
 	 * @param type Type the id represents. Must be one of the Song.TYPE_*
