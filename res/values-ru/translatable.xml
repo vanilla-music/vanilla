@@ -225,4 +225,9 @@
   <string name="filebrowser_start">Домашняя папка браузера файлов</string>
   <string name="customize_filebrowser_start">Браузер файлов открывает эту папку</string>
   <string name="select">Выбрать</string>
+  <string name="get_lyrics">Скачать текст</string>
+  <string name="fetching_lyrics">Поиск текста</string>
+  <string name="lyrics_not_found">Текст песни не найден</string>
+  <string name="please_wait">Пожалуйста, подождите…</string>
+  <string name="song_lyrics">Текст песни</string>
 </resources>

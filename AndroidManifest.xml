@@ -30,6 +30,7 @@ THE SOFTWARE.
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+	<uses-permission android:name="android.permission.INTERNET" />
 	<!-- This is needed for isWiredHeadsetOn() to work in some cases. (bug?) -->
 	<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 	<application
