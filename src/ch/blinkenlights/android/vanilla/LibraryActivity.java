@@ -66,6 +66,8 @@ import android.widget.SearchView;
 import java.io.File;
 import junit.framework.Assert;
 
+import ch.blinkenlights.android.vanilla.lyrics.LyricsDialog;
+
 /**
  * The library activity where songs to play can be selected from the library.
  */
@@ -625,6 +627,7 @@ public class LibraryActivity
 	private static final int MENU_MORE_FROM_ALBUM = 11;
 	private static final int MENU_MORE_FROM_ARTIST = 12;
 	private static final int MENU_OPEN_EXTERNAL = 13;
+	private static final int MENU_GET_LYRICS = 14;
 
 	/**
 	 * Creates a context menu for an adapter row.
@@ -660,6 +663,7 @@ public class LibraryActivity
 				menu.add(0, MENU_MORE_FROM_ALBUM, 0, R.string.more_from_album).setIntent(rowData);
 			menu.addSubMenu(0, MENU_ADD_TO_PLAYLIST, 0, R.string.add_to_playlist).getItem().setIntent(rowData);
 			menu.add(0, MENU_DELETE, 0, R.string.delete).setIntent(rowData);
+			menu.add(0, MENU_GET_LYRICS, 0, R.string.get_lyrics).setIntent(rowData);
 		}
 	}
 
@@ -782,6 +786,16 @@ public class LibraryActivity
 		case MENU_MORE_FROM_ALBUM:
 			setLimiter(MediaUtils.TYPE_ALBUM, "_id=" + intent.getLongExtra(LibraryAdapter.DATA_ID, LibraryAdapter.INVALID_ID));
 			updateLimiterViews();
+			break;
+		case MENU_GET_LYRICS:
+			long id = intent.getLongExtra(LibraryAdapter.DATA_ID, LibraryAdapter.INVALID_ID);
+			Song queried = MediaUtils.getSongByTypeId(getContentResolver(), MediaUtils.TYPE_SONG, id);
+			if(queried == null) {
+				break;
+			}
+			
+			LyricsDialog lrd = LyricsDialog.newInstance(queried.artist, queried.title);
+			lrd.show(getFragmentManager(), "LyricsDialog");
 			break;
 		}
 
