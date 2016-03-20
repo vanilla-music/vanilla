@@ -1777,37 +1777,37 @@ public final class PlaybackService extends Service
 	}
 
 	/**
-	 * Enqueues all the songs with the same album/artist/genre as the current
+	 * Enqueues all the songs with the same album/artist/genre as the passed
 	 * song.
 	 *
 	 * This will clear the queue and place the first song from the group after
 	 * the playing song.
 	 *
+	 * @param song The song to base the query on
 	 * @param type The media type, one of MediaUtils.TYPE_ALBUM, TYPE_ARTIST,
 	 * or TYPE_GENRE
 	 */
-	public void enqueueFromCurrent(int type)
+	public void enqueueFromSong(Song song, int type)
 	{
-		Song current = mCurrentSong;
-		if (current == null)
+		if (song == null)
 			return;
 
 		long id;
 		switch (type) {
 		case MediaUtils.TYPE_ARTIST:
-			id = current.artistId;
+			id = song.artistId;
 			break;
 		case MediaUtils.TYPE_ALBUM:
-			id = current.albumId;
+			id = song.albumId;
 			break;
 		case MediaUtils.TYPE_GENRE:
-			id = MediaUtils.queryGenreForSong(getContentResolver(), current.id);
+			id = MediaUtils.queryGenreForSong(getContentResolver(), song.id);
 			break;
 		default:
 			throw new IllegalArgumentException("Unsupported media type: " + type);
 		}
 
-		String selection = "_id!=" + current.id;
+		String selection = "_id!=" + song.id;
 		QueryTask query = MediaUtils.buildQuery(type, id, Song.FILLED_PROJECTION, selection);
 		query.mode = SongTimeline.MODE_FLUSH_AND_PLAY_NEXT;
 		addSongs(query);
@@ -2248,13 +2248,13 @@ public final class PlaybackService extends Service
 			break;
 		}
 		case EnqueueAlbum:
-			enqueueFromCurrent(MediaUtils.TYPE_ALBUM);
+			enqueueFromSong(mCurrentSong, MediaUtils.TYPE_ALBUM);
 			break;
 		case EnqueueArtist:
-			enqueueFromCurrent(MediaUtils.TYPE_ARTIST);
+			enqueueFromSong(mCurrentSong, MediaUtils.TYPE_ARTIST);
 			break;
 		case EnqueueGenre:
-			enqueueFromCurrent(MediaUtils.TYPE_GENRE);
+			enqueueFromSong(mCurrentSong, MediaUtils.TYPE_GENRE);
 			break;
 		case ClearQueue:
 			clearQueue();

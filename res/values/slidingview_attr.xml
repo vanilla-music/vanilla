@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<declare-styleable name="SlidingViewPreferences">
+		<attr name="slider_handle_id" format="integer"/>
+		<attr name="slider_slave_id" format="integer"/>
+	</declare-styleable>
+</resources>

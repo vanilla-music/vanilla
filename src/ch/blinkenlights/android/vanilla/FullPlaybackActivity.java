@@ -64,7 +64,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 
 	private TextView mOverlayText;
 	private View mControlsTop;
-	private View mControlsBottom;
+	private View mSlidingView;
 
 	private SeekBar mSeekBar;
 	private TableLayout mInfoTable;
@@ -161,7 +161,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 		coverView.setOnLongClickListener(this);
 		mCoverView = coverView;
 
-		mControlsBottom = findViewById(R.id.controls_bottom);
+		mSlidingView = findViewById(R.id.sliding_view);
 		View previousButton = findViewById(R.id.previous);
 		previousButton.setOnClickListener(this);
 		mPlayPauseButton = (ImageButton)findViewById(R.id.play_pause);
@@ -389,13 +389,13 @@ public class FullPlaybackActivity extends PlaybackActivity
 			openLibrary(null);
 			break;
 		case MENU_ENQUEUE_ALBUM:
-			PlaybackService.get(this).enqueueFromCurrent(MediaUtils.TYPE_ALBUM);
+			PlaybackService.get(this).enqueueFromSong(PlaybackService.get(this).getSong(0), MediaUtils.TYPE_ALBUM);
 			break;
 		case MENU_ENQUEUE_ARTIST:
-			PlaybackService.get(this).enqueueFromCurrent(MediaUtils.TYPE_ARTIST);
+			PlaybackService.get(this).enqueueFromSong(PlaybackService.get(this).getSong(0), MediaUtils.TYPE_ARTIST);
 			break;
 		case MENU_ENQUEUE_GENRE:
-			PlaybackService.get(this).enqueueFromCurrent(MediaUtils.TYPE_GENRE);
+			PlaybackService.get(this).enqueueFromSong(PlaybackService.get(this).getSong(0), MediaUtils.TYPE_GENRE);
 			break;
 		case MENU_SONG_FAVORITE:
 			Song song = (PlaybackService.get(this)).getSong(0);
@@ -513,7 +513,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 	{
 		int mode = visible ? View.VISIBLE : View.GONE;
 		mControlsTop.setVisibility(mode);
-		mControlsBottom.setVisibility(mode);
+		mSlidingView.setVisibility(mode);
 		mControlsVisible = visible;
 
 		if (visible) {

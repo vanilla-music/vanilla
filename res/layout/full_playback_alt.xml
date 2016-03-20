@@ -20,7 +20,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+       xmlns:vanilla="http://schemas.android.com/apk/res/ch.blinkenlights.android.vanilla" >
 	<ch.blinkenlights.android.vanilla.CoverView
 		android:id="@+id/cover_view"
 		android:layout_height="fill_parent"
@@ -139,14 +140,29 @@ THE SOFTWARE.
 				android:layout_gravity="center" />
 		</LinearLayout>
 	</TableLayout>
-	<LinearLayout
-		android:id="@+id/controls_bottom"
-		android:layout_height="wrap_content"
+
+
+	<ch.blinkenlights.android.vanilla.SlidingView
+		android:id="@+id/sliding_view"
+		android:layout_height="fill_parent"
 		android:layout_width="fill_parent"
 		android:layout_gravity="bottom|left"
-		android:layout_margin="0dip"
-		android:background="?overlay_background_color"
-		android:orientation="horizontal">
-		<include layout="@layout/controls" />
-	</LinearLayout>
+		android:layout_marginTop="88dip"
+		android:orientation="horizontal"
+		vanilla:slider_handle_id="@+id/queue_slider">
+			<LinearLayout
+				android:id="@+id/queue_slider"
+				android:layout_height="wrap_content"
+				android:layout_width="fill_parent"
+				android:background="?overlay_background_color"
+				android:orientation="horizontal">
+					<include layout="@layout/controls" />
+			</LinearLayout>
+			<fragment class="ch.blinkenlights.android.vanilla.ShowQueueFragment"
+				android:id="@+id/queue"
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent" />
+	</ch.blinkenlights.android.vanilla.SlidingView>
+
+
 </merge>
