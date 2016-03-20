@@ -162,12 +162,6 @@ public class FullPlaybackActivity extends PlaybackActivity
 		mCoverView = coverView;
 
 		mSlidingView = findViewById(R.id.sliding_view);
-		View previousButton = findViewById(R.id.previous);
-		previousButton.setOnClickListener(this);
-		mPlayPauseButton = (ImageButton)findViewById(R.id.play_pause);
-		mPlayPauseButton.setOnClickListener(this);
-		View nextButton = findViewById(R.id.next);
-		nextButton.setOnClickListener(this);
 
 		TableLayout table = (TableLayout)findViewById(R.id.info_table);
 		if (table != null) {
@@ -195,12 +189,7 @@ public class FullPlaybackActivity extends PlaybackActivity
 		mFormatView = (TextView)findViewById(R.id.format);
 		mReplayGainView = (TextView)findViewById(R.id.replaygain);
 
-		mShuffleButton = (ImageButton)findViewById(R.id.shuffle);
-		mShuffleButton.setOnClickListener(this);
-		registerForContextMenu(mShuffleButton);
-		mEndButton = (ImageButton)findViewById(R.id.end_action);
-		mEndButton.setOnClickListener(this);
-		registerForContextMenu(mEndButton);
+		bindControlButtons();
 
 		setControlsVisible(settings.getBoolean(PrefKeys.VISIBLE_CONTROLS, PrefDefaults.VISIBLE_CONTROLS));
 		setExtraInfoVisible(settings.getBoolean(PrefKeys.VISIBLE_EXTRA_INFO, PrefDefaults.VISIBLE_EXTRA_INFO));

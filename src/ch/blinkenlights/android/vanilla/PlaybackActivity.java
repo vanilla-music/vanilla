@@ -306,6 +306,25 @@ public abstract class PlaybackActivity extends Activity
 	}
 
 	/**
+	 * Sets up onClick listeners for our common control buttons bar
+	 */
+	protected void bindControlButtons() {
+		View previousButton = findViewById(R.id.previous);
+		previousButton.setOnClickListener(this);
+		mPlayPauseButton = (ImageButton)findViewById(R.id.play_pause);
+		mPlayPauseButton.setOnClickListener(this);
+		View nextButton = findViewById(R.id.next);
+		nextButton.setOnClickListener(this);
+
+		mShuffleButton = (ImageButton)findViewById(R.id.shuffle);
+		mShuffleButton.setOnClickListener(this);
+		registerForContextMenu(mShuffleButton);
+		mEndButton = (ImageButton)findViewById(R.id.end_action);
+		mEndButton.setOnClickListener(this);
+		registerForContextMenu(mEndButton);
+	}
+
+	/**
 	 * Called by PlaybackService to update the current song.
 	 */
 	public void setSong(long uptime, Song song)

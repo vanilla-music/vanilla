@@ -200,6 +200,7 @@ public class LibraryActivity
 		}
 
 		loadAlbumIntent(getIntent());
+		bindControlButtons();
 	}
 
 	@Override
