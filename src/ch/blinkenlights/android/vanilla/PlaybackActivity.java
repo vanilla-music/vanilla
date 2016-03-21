@@ -35,7 +35,6 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
-import android.os.Environment;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -292,17 +291,6 @@ public abstract class PlaybackActivity extends Activity
 				onSongChange(song);
 			}
 		});
-	}
-
-	/**
-	 * Called by FileSystem adapter to get the start folder
-	 * for browsing directories
-	 */
-	protected File getFilesystemBrowseStart() {
-		SharedPreferences prefs = PlaybackService.getSettings(this);
-		String folder = prefs.getString(PrefKeys.FILESYSTEM_BROWSE_START, PrefDefaults.FILESYSTEM_BROWSE_START);
-		File fs_start = new File( folder.equals("") ? Environment.getExternalStorageDirectory().getAbsolutePath() : folder );
-		return fs_start;
 	}
 
 	/**

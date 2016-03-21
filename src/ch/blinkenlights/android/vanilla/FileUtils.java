@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2015-2016 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,10 +17,14 @@
 
 package ch.blinkenlights.android.vanilla;
 
-import android.content.Intent;
-import android.net.Uri;
 import java.io.File;
 import java.net.URLConnection;
+
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.Environment;
 
 
 /**
@@ -75,4 +79,13 @@ public class FileUtils {
 		return handled;
 	}
 
+	/**
+	 * Called by FileSystem adapter to get the start folder
+	 * for browsing directories
+	 */
+	public static File getFilesystemBrowseStart(Context context) {
+		SharedPreferences prefs = PlaybackService.getSettings(context);
+		String folder = prefs.getString(PrefKeys.FILESYSTEM_BROWSE_START, PrefDefaults.FILESYSTEM_BROWSE_START);
+		return new File( folder.equals("") ? Environment.getExternalStorageDirectory().getAbsolutePath() : folder );
+	}
 }

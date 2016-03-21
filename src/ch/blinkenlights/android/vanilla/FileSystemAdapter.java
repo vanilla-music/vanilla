@@ -26,8 +26,6 @@ package ch.blinkenlights.android.vanilla;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.Environment;
 import android.os.FileObserver;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -136,7 +134,7 @@ public class FileSystemAdapter
 		mFolderIcon = activity.getResources().getDrawable(R.drawable.folder);
 		mInflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		if (limiter == null) {
-			limiter = buildLimiter( activity.getFilesystemBrowseStart() );
+			limiter = buildLimiter( FileUtils.getFilesystemBrowseStart(activity) );
 		}
 		setLimiter(limiter);
 	}
