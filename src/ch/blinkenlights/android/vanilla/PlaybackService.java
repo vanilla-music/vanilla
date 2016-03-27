@@ -2260,11 +2260,6 @@ public final class PlaybackService extends Service
 			clearQueue();
 			showMirrorLinkSafeToast(R.string.queue_cleared, Toast.LENGTH_SHORT);
 			break;
-		case ShowQueue:
-			Intent intentShowQueue = new Intent(this, ShowQueueActivity.class);
-			intentShowQueue.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-			startActivity(intentShowQueue);
-			break;
 		case ToggleControls:
 			// Handled in FullPlaybackActivity.performAction
 			break;

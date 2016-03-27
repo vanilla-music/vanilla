@@ -56,10 +56,6 @@ THE SOFTWARE.
 			android:name="PlaylistActivity"
 			android:launchMode="singleTask" />
 		<activity
-			android:name="ShowQueueActivity"
-			android:launchMode="singleTask"
-			/>
-		<activity
 			android:name="MiniPlaybackActivity"
 			android:theme="@style/Dialog"
 			android:excludeFromRecents="true"
