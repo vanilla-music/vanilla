@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
- * Copyright (C) 2014-2015 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2014-2016 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,10 @@
 package ch.blinkenlights.android.vanilla;
 
 import java.io.File;
+import java.util.ArrayList;
+
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -371,7 +374,7 @@ public abstract class PlaybackActivity extends Activity
 	static final int MENU_SONG_FAVORITE = 12;
 	static final int MENU_SHOW_QUEUE = 13;
 	static final int MENU_HIDE_QUEUE = 14;
-	static final int MENU_SAVE_AS_PLAYLIST = 15;
+	static final int MENU_SAVE_QUEUE_AS_PLAYLIST = 15;
 	static final int MENU_DELETE = 16;
 	static final int MENU_EMPTY_QUEUE = 17;
 
@@ -384,6 +387,8 @@ public abstract class PlaybackActivity extends Activity
 		menu.add(0, MENU_HIDE_QUEUE, 0, R.string.hide_queue);
 		menu.add(0, MENU_CLEAR_QUEUE, 0, R.string.dequeue_rest);
 		menu.add(0, MENU_EMPTY_QUEUE, 0, R.string.empty_the_queue);
+		menu.add(0, MENU_SAVE_QUEUE_AS_PLAYLIST, 0, R.string.save_as_playlist);
+
 		onSlideFullyExpanded(false);
 		return true;
 	}
@@ -407,6 +412,11 @@ public abstract class PlaybackActivity extends Activity
 		case MENU_EMPTY_QUEUE:
 			PlaybackService.get(this).emptyQueue();
 			break;
+		case MENU_SAVE_QUEUE_AS_PLAYLIST:
+			NewPlaylistDialog dialog = new NewPlaylistDialog(this, null, R.string.create, null);
+			dialog.setOnDismissListener(new SaveAsPlaylistDismiss());
+			dialog.show();
+			break;
 		default:
 			return false;
 		}
@@ -425,7 +435,7 @@ public abstract class PlaybackActivity extends Activity
 		if (mMenu == null)
 			return; // not initialized yet
 
-		final int[] slide_visible = {MENU_HIDE_QUEUE, MENU_CLEAR_QUEUE, MENU_EMPTY_QUEUE};
+		final int[] slide_visible = {MENU_HIDE_QUEUE, MENU_CLEAR_QUEUE, MENU_EMPTY_QUEUE, MENU_SAVE_QUEUE_AS_PLAYLIST};
 		final int[] slide_hidden = {MENU_SHOW_QUEUE, MENU_SORT};
 
 		for (int id : slide_visible) {
@@ -463,6 +473,10 @@ public abstract class PlaybackActivity extends Activity
 	 * Removes a media object
 	 */
 	protected static final int MSG_DELETE = 4;
+	/**
+	 * Saves the current queue as a playlist
+	 */
+	protected static final int MSG_SAVE_QUEUE_AS_PLAYLIST = 5;
 
 	@Override
 	public boolean handleMessage(Message message)
@@ -482,6 +496,24 @@ public abstract class PlaybackActivity extends Activity
 		}
 		case MSG_ADD_TO_PLAYLIST: {
 			PlaylistTask playlistTask = (PlaylistTask)message.obj;
+			addToPlaylist(playlistTask);
+			break;
+		}
+		case MSG_SAVE_QUEUE_AS_PLAYLIST: {
+			String playlistName = (String)message.obj;
+			long playlistId = Playlist.createPlaylist(getContentResolver(), playlistName);
+			PlaylistTask playlistTask = new PlaylistTask(playlistId, playlistName);
+			playlistTask.audioIds = new ArrayList<Long>();
+
+			Song song;
+			PlaybackService service = PlaybackService.get(this);
+			for (int i=0; ; i++) {
+				song = service.getSongByQueuePosition(i);
+				if (song == null)
+					break;
+				playlistTask.audioIds.add(song.id);
+			}
+
 			addToPlaylist(playlistTask);
 			break;
 		}
@@ -677,5 +709,21 @@ public abstract class PlaybackActivity extends Activity
 		else if (group == GROUP_FINISH)
 			setState(PlaybackService.get(this).setFinishAction(id));
 		return true;
+	}
+
+	/**
+	 * Fired if user dismisses the create-playlist dialog
+	 *
+	 * @param dialogInterface the dismissed interface dialog
+	 */
+	class SaveAsPlaylistDismiss implements DialogInterface.OnDismissListener {
+		@Override
+		public void onDismiss(DialogInterface dialogInterface) {
+			NewPlaylistDialog dialog = (NewPlaylistDialog)dialogInterface;
+			if (dialog.isAccepted()) {
+				String playlistName = dialog.getText();
+				mHandler.sendMessage(mHandler.obtainMessage(MSG_SAVE_QUEUE_AS_PLAYLIST, playlistName));
+			}
+		}
 	}
 }
