@@ -159,11 +159,11 @@ public class BottomBarControls extends LinearLayout
 		mParentMenuConsumer.onCreateOptionsMenu(mPopupMenu.getMenu());
 
 		// The menu is now ready, we an now add all invisible
-		// items to the toolbar
+		// items with an icon to the toolbar
 		Menu menu = mPopupMenu.getMenu();
 		for (int i=0; i < menu.size(); i++) {
 			MenuItem menuItem = menu.getItem(i);
-			if (menuItem.isVisible() == false) {
+			if (menuItem.isVisible() == false && menuItem.getIcon() != null) {
 				ImageButton button = getImageButton(menuItem.getIcon());
 				button.setTag(menuItem);
 				button.setOnClickListener(this);
