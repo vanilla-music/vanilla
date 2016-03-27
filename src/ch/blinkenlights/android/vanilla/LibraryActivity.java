@@ -796,12 +796,8 @@ public class LibraryActivity
 		menu.add(0, MENU_PLAYBACK, 0, R.string.playback_view);
 		super.onCreateOptionsMenu(menu);
 
-		MenuItem search = menu.add(0, MENU_SEARCH, 0, R.string.search).setIcon(R.drawable.ic_menu_search);
-		search.setVisible(false);
-
+		menu.add(0, MENU_SEARCH, 0, R.string.search).setIcon(R.drawable.ic_menu_search).setVisible(false);
 		menu.add(0, MENU_SORT, 0, R.string.sort_by).setIcon(R.drawable.ic_menu_sort_alphabetically);
-		menu.add(0, MENU_SHOW_QUEUE, 0, R.string.show_queue);
-
 		return true;
 	}
 

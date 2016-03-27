@@ -85,8 +85,7 @@ public class SlidingView extends FrameLayout
 	 */
 	private Callback mCallback;
 	public interface Callback {
-		public abstract void onSlideHidden();
-		public abstract void onSlideExpanded();
+		public abstract void onSlideFullyExpanded(boolean visible);
 	}
 
 
@@ -324,10 +323,7 @@ public class SlidingView extends FrameLayout
 		public void onAnimationEnd(Animator animation) {
 			setSlaveViewStage(mCurrentStage);
 			if (mCallback != null) {
-				if (mCurrentStage == 0)
-					mCallback.onSlideHidden();
-				if (mCurrentStage == mStages.size()-1)
-					mCallback.onSlideExpanded();
+				mCallback.onSlideFullyExpanded( mCurrentStage == mStages.size()-1 );
 			}
 		}
 		@Override

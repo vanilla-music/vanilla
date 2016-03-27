@@ -54,10 +54,12 @@ public abstract class PlaybackActivity extends Activity
 	implements TimelineCallback,
 	           Handler.Callback,
 	           View.OnClickListener,
-	           CoverView.Callback
+	           CoverView.Callback,
+	           SlidingView.Callback
 {
 	private Action mUpAction;
 	private Action mDownAction;
+	private Menu mMenu;
 
 	/**
 	 * A Handler running on the UI thread, in contrast with mHandler which runs
@@ -77,6 +79,7 @@ public abstract class PlaybackActivity extends Activity
 	protected ImageButton mPlayPauseButton;
 	protected ImageButton mShuffleButton;
 	protected ImageButton mEndButton;
+	protected SlidingView mSlidingView;
 
 	protected int mState;
 	private long mLastStateEvent;
@@ -310,6 +313,10 @@ public abstract class PlaybackActivity extends Activity
 		mEndButton = (ImageButton)findViewById(R.id.end_action);
 		mEndButton.setOnClickListener(this);
 		registerForContextMenu(mEndButton);
+
+		mSlidingView = (SlidingView)findViewById(R.id.sliding_view);
+		if (mSlidingView != null)
+			mSlidingView.setCallback(this);
 	}
 
 	/**
@@ -363,14 +370,18 @@ public abstract class PlaybackActivity extends Activity
 	static final int MENU_CLEAR_QUEUE = 11;
 	static final int MENU_SONG_FAVORITE = 12;
 	static final int MENU_SHOW_QUEUE = 13;
-	static final int MENU_SAVE_AS_PLAYLIST = 14;
-	static final int MENU_DELETE = 15;
-	static final int MENU_EMPTY_QUEUE = 16;
+	static final int MENU_HIDE_QUEUE = 14;
+	static final int MENU_SAVE_AS_PLAYLIST = 15;
+	static final int MENU_DELETE = 16;
+	static final int MENU_EMPTY_QUEUE = 17;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
+		mMenu = menu;
 		menu.add(0, MENU_PREFS, 0, R.string.settings).setIcon(R.drawable.ic_menu_preferences);
+		menu.add(0, MENU_SHOW_QUEUE, 0, R.string.show_queue);
+		menu.add(0, MENU_HIDE_QUEUE, 0, R.string.hide_queue);
 		return true;
 	}
 
@@ -385,12 +396,26 @@ public abstract class PlaybackActivity extends Activity
 			PlaybackService.get(this).clearQueue();
 			break;
 		case MENU_SHOW_QUEUE:
-			startActivity(new Intent(this, ShowQueueActivity.class));
+			mSlidingView.expandSlide();
 			break;
+		case MENU_HIDE_QUEUE:
+			mSlidingView.hideSlide();
 		default:
 			return false;
 		}
 		return true;
+	}
+
+
+	/**
+	 * Called by SlidingView to signal a visibility change
+	 */
+	@Override
+	public void onSlideFullyExpanded(boolean visible) {
+		if (mMenu == null)
+			return; // not initialized yet
+		mMenu.findItem(MENU_HIDE_QUEUE).setVisible(visible);
+		mMenu.findItem(MENU_SHOW_QUEUE).setVisible(!visible);
 	}
 
 	/**
