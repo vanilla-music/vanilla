@@ -382,6 +382,8 @@ public abstract class PlaybackActivity extends Activity
 		menu.add(0, MENU_PREFS, 0, R.string.settings).setIcon(R.drawable.ic_menu_preferences);
 		menu.add(0, MENU_SHOW_QUEUE, 0, R.string.show_queue);
 		menu.add(0, MENU_HIDE_QUEUE, 0, R.string.hide_queue);
+		menu.add(0, MENU_CLEAR_QUEUE, 0, R.string.dequeue_rest);
+		onSlideFullyExpanded(false);
 		return true;
 	}
 
@@ -408,14 +410,30 @@ public abstract class PlaybackActivity extends Activity
 
 
 	/**
-	 * Called by SlidingView to signal a visibility change
+	 * Called by SlidingView to signal a visibility change.
+	 * Toggles the visibility of menu items
+	 *
+	 * @param expanded true if slide fully expanded
 	 */
 	@Override
-	public void onSlideFullyExpanded(boolean visible) {
+	public void onSlideFullyExpanded(boolean expanded) {
 		if (mMenu == null)
 			return; // not initialized yet
-		mMenu.findItem(MENU_HIDE_QUEUE).setVisible(visible);
-		mMenu.findItem(MENU_SHOW_QUEUE).setVisible(!visible);
+
+		final int[] slide_visible = {MENU_HIDE_QUEUE, MENU_CLEAR_QUEUE};
+		final int[] slide_hidden = {MENU_SHOW_QUEUE, MENU_SORT};
+
+		for (int id : slide_visible) {
+			MenuItem item = mMenu.findItem(id);
+			if (item != null)
+				item.setVisible(expanded);
+		}
+
+		for (int id : slide_hidden) {
+			MenuItem item = mMenu.findItem(id);
+			if (item != null)
+				item.setVisible(!expanded);
+		}
 	}
 
 	/**

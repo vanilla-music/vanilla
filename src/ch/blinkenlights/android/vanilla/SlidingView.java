@@ -85,7 +85,7 @@ public class SlidingView extends FrameLayout
 	 */
 	private Callback mCallback;
 	public interface Callback {
-		public abstract void onSlideFullyExpanded(boolean visible);
+		public abstract void onSlideFullyExpanded(boolean expanded);
 	}
 
 
