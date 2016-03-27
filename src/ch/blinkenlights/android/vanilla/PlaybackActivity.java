@@ -383,6 +383,7 @@ public abstract class PlaybackActivity extends Activity
 		menu.add(0, MENU_SHOW_QUEUE, 0, R.string.show_queue);
 		menu.add(0, MENU_HIDE_QUEUE, 0, R.string.hide_queue);
 		menu.add(0, MENU_CLEAR_QUEUE, 0, R.string.dequeue_rest);
+		menu.add(0, MENU_EMPTY_QUEUE, 0, R.string.empty_the_queue);
 		onSlideFullyExpanded(false);
 		return true;
 	}
@@ -402,6 +403,10 @@ public abstract class PlaybackActivity extends Activity
 			break;
 		case MENU_HIDE_QUEUE:
 			mSlidingView.hideSlide();
+			break;
+		case MENU_EMPTY_QUEUE:
+			PlaybackService.get(this).emptyQueue();
+			break;
 		default:
 			return false;
 		}
@@ -420,7 +425,7 @@ public abstract class PlaybackActivity extends Activity
 		if (mMenu == null)
 			return; // not initialized yet
 
-		final int[] slide_visible = {MENU_HIDE_QUEUE, MENU_CLEAR_QUEUE};
+		final int[] slide_visible = {MENU_HIDE_QUEUE, MENU_CLEAR_QUEUE, MENU_EMPTY_QUEUE};
 		final int[] slide_hidden = {MENU_SHOW_QUEUE, MENU_SORT};
 
 		for (int id : slide_visible) {
