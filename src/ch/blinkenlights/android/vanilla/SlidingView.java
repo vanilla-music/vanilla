@@ -270,7 +270,8 @@ public class SlidingView extends FrameLayout
 					int nstages = mStages.size();
 					int tstage = 0;
 					int tbonus = (int)mProgressPx * mFlingDirection; // we add the progress as virtual bonus on fling
-					int toff = (int)mMaxOffsetY;
+					int toff = Integer.MAX_VALUE;
+
 					for (int i=0; i<nstages; i++) {
 						int tdiff = Math.abs((int)vy + tbonus - mStages.get(i));
 						if (tdiff < toff) {
