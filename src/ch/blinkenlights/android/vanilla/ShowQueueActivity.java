@@ -76,7 +76,7 @@ public class ShowQueueActivity extends PlaybackActivity
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add(0, MENU_CLEAR_QUEUE, 0, R.string.dequeue_rest).setIcon(R.drawable.ic_menu_close_clear_cancel);
+		menu.add(0, MENU_CLEAR_QUEUE, 0, R.string.dequeue_rest);
 		menu.add(0, MENU_EMPTY_QUEUE, 0, R.string.empty_the_queue);
 		menu.add(0, MENU_SAVE_AS_PLAYLIST, 0, R.string.save_as_playlist).setIcon(R.drawable.ic_menu_preferences);
 		return true;
