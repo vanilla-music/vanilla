@@ -41,6 +41,10 @@ public class SlidingView extends FrameLayout
 	 */
 	private final float MAX_PROGRESS = 30;
 	/**
+	 * Duration of the animate() call in ms
+	 */
+	private final int ANIMATION_DURATION = 250;
+	/**
 	 * The maximum (initial) offset of the view
 	 */
 	private float mMaxOffsetY = 0;
@@ -53,9 +57,9 @@ public class SlidingView extends FrameLayout
 	 */
 	private float mProgressPx = 0;
 	/**
-	 * Signals the direction of the fling
+	 * Signals the direction and speed of the fling
 	 */
-	private int mFlingDirection = 0;
+	private float mFlingVelocity = 0;
 	/**
 	 * TRUE if we started to move this view
 	 */
@@ -154,6 +158,7 @@ public class SlidingView extends FrameLayout
 		this
 			.animate()
 			.translationY(pxOff)
+			.setDuration(ANIMATION_DURATION)
 			.setListener(new AnimationListener())
 			.setInterpolator(new DecelerateInterpolator());
 	}
@@ -269,15 +274,11 @@ public class SlidingView extends FrameLayout
 				} else {
 					int nstages = mStages.size();
 					int tstage = 0;
-					int tbonus = (int)mProgressPx * mFlingDirection; // we add the progress as virtual bonus on fling
-					int toff = Integer.MAX_VALUE;
-
-					for (int i=0; i<nstages; i++) {
-						int tdiff = Math.abs((int)vy + tbonus - mStages.get(i));
-						if (tdiff < toff) {
-							toff = tdiff;
+					// add the amounts of pixels we would progress in HALF of the time of the animation as a virtual progress
+					int tbonus = (int)(mFlingVelocity * 0.001 * ANIMATION_DURATION * 0.5);
+					for (int i = 0; i < nstages; i++) {
+						if (vy+tbonus <= mStages.get(i))
 							tstage = i;
-						}
 					}
 					setExpansionStage(tstage);
 				}
@@ -287,7 +288,7 @@ public class SlidingView extends FrameLayout
 				v.onTouchEvent(event);
 
 				mProgressPx = 0;
-				mFlingDirection = 0;
+				mFlingVelocity = 0;
 				mDidScroll = false;
 				break;
 			}
@@ -321,7 +322,7 @@ public class SlidingView extends FrameLayout
 	class GestureListener extends GestureDetector.SimpleOnGestureListener {
 		@Override
 		public boolean onFling(MotionEvent event1, MotionEvent event2,  float velocityX, float velocityY) {
-			mFlingDirection = (velocityY > 0 ? 1 : -1);
+			mFlingVelocity = velocityY;
 			return true;
 		}
 	}
