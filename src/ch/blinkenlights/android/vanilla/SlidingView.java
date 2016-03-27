@@ -80,6 +80,14 @@ public class SlidingView extends FrameLayout
 	 * List with all possible stages and their offsets
 	 */
 	ArrayList<Integer> mStages = new ArrayList<Integer>();
+	/**
+	 * Our callback interface
+	 */
+	private Callback mCallback;
+	public interface Callback {
+		public abstract void onSlideHidden();
+		public abstract void onSlideExpanded();
+	}
 
 
 	public SlidingView(Context context) {
@@ -106,6 +114,15 @@ public class SlidingView extends FrameLayout
 	}
 
 	/**
+	 * Sets the callback receiver of this instance.
+	 *
+	 * @param callback Reference to activity implementing the callback interface
+	 */
+	public void setCallback(Callback callback) {
+		mCallback = callback;
+	}
+
+	/**
 	 * Fully expands the slide
 	 */
 	public void expandSlide() {
@@ -116,6 +133,7 @@ public class SlidingView extends FrameLayout
 	 * Hides the slide
 	 */
 	public void hideSlide() {
+		setSlaveViewStage(0); // ensure that parent is visible before the animation starts
 		setExpansionStage(0);
 	}
 
@@ -305,6 +323,12 @@ public class SlidingView extends FrameLayout
 		@Override
 		public void onAnimationEnd(Animator animation) {
 			setSlaveViewStage(mCurrentStage);
+			if (mCallback != null) {
+				if (mCurrentStage == 0)
+					mCallback.onSlideHidden();
+				if (mCurrentStage == mStages.size()-1)
+					mCallback.onSlideExpanded();
+			}
 		}
 		@Override
 		public void onAnimationCancel(Animator animation) {
