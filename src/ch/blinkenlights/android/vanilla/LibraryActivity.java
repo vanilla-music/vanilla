@@ -281,8 +281,14 @@ public class LibraryActivity
 		case KeyEvent.KEYCODE_BACK:
 			Limiter limiter = mPagerAdapter.getCurrentLimiter();
 
-			if (mBottomBarControls.showSearch(false))
+			if (mSlidingView.isHidden() == false) {
+				mSlidingView.hideSlide();
 				break;
+			}
+
+			if (mBottomBarControls.showSearch(false)) {
+				break;
+			}
 
 			if (limiter != null) {
 				int pos = -1;

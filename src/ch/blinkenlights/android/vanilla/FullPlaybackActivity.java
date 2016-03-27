@@ -456,11 +456,16 @@ public class FullPlaybackActivity extends PlaybackActivity
 	public boolean onKeyUp(int keyCode, KeyEvent event)
 	{
 		switch (keyCode) {
-		case KeyEvent.KEYCODE_DPAD_CENTER:
-		case KeyEvent.KEYCODE_ENTER:
-			setControlsVisible(!mControlsVisible);
-			mHandler.sendEmptyMessage(MSG_SAVE_CONTROLS);
-			return true;
+			case KeyEvent.KEYCODE_DPAD_CENTER:
+			case KeyEvent.KEYCODE_ENTER:
+				setControlsVisible(!mControlsVisible);
+				mHandler.sendEmptyMessage(MSG_SAVE_CONTROLS);
+				return true;
+			case KeyEvent.KEYCODE_BACK:
+				if (mSlidingView.isHidden() == false) {
+					mSlidingView.hideSlide();
+					return true;
+				}
 		}
 
 		return super.onKeyUp(keyCode, event);

@@ -137,6 +137,13 @@ public class SlidingView extends FrameLayout
 	}
 
 	/**
+	 * Returns true if the slide is fully hidden
+	 */
+	public boolean isHidden() {
+		return mCurrentStage == 0;
+	}
+
+	/**
 	 * Transforms to the new expansion state
 	 *
 	 * @param stage the stage to transform to
