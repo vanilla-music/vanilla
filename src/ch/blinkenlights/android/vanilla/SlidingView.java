@@ -277,7 +277,8 @@ public class SlidingView extends FrameLayout
 					// add the amounts of pixels we would progress in HALF of the time of the animation as a virtual progress
 					int tbonus = (int)(mFlingVelocity * 0.001 * ANIMATION_DURATION * 0.5);
 					for (int i = 0; i < nstages; i++) {
-						if (vy+tbonus <= mStages.get(i))
+						int csnap = getChildAt(i).getHeight() / 2; // try to 'snap in' at half of this childs height
+						if (vy+tbonus-csnap <= mStages.get(i))
 							tstage = i;
 					}
 					setExpansionStage(tstage);
