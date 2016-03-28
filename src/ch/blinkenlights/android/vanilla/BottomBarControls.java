@@ -183,7 +183,8 @@ public class BottomBarControls extends LinearLayout
 		// Note that the view will ALWAYS be present, even if it is 0dp wide to keep
 		// the menu button at position -2
 		View spacer = new View(mContext);
-		spacer.setClickable(true);
+		spacer.setOnClickListener(this);
+		spacer.setTag(mPopupMenu);
 		int spacerDp = menuMargin() ? dpToPx(4) : 0;
 		spacer.setLayoutParams(new LinearLayout.LayoutParams(spacerDp, LinearLayout.LayoutParams.MATCH_PARENT));
 		mControlsContent.addView(spacer, -1);
