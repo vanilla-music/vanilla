@@ -72,7 +72,9 @@ public class ShowQueueFragment extends Fragment
 	public void onResume() {
 		super.onResume();
 
-		// Check if playback service has already been created
+		// Get playback service if we can and must
+		// This happens eg. during a rotate where the view
+		// was destroyed
 		if (mService == null && PlaybackService.hasInstance())
 			mService = PlaybackService.get(getActivity());
 
@@ -210,11 +212,25 @@ public class ShowQueueFragment extends Fragment
 		mListView.setSelectionFromTop(currentSongPosition, 0); /* scroll to currently playing song */
 	}
 
-	// Used Callbacks of TImelineCallback
-	public void onTimelineChanged() {
-		if (mService == null)
+	/**
+	 * Called after a song has been set.
+	 * We are only interested in this call if mService is null
+	 * as this signals that the playback service just became ready
+	 * (and wasn't during onResume())
+	 */
+	public void setSong(long uptime, Song song) {
+		if (mService == null) {
 			mService = PlaybackService.get(getActivity());
-		refreshSongQueueList(false);
+			onTimelineChanged();
+		}
+	}
+
+	/**
+	 * Called after the timeline changed
+	 */
+	public void onTimelineChanged() {
+		if (mService != null)
+			refreshSongQueueList(false);
 	}
 
 	// Unused Callbacks of TimelineCallback
@@ -225,8 +241,6 @@ public class ShowQueueFragment extends Fragment
 	public void recreate() {
 	}
 	public void replaceSong(int delta, Song song) {
-	}
-	public void setSong(long uptime, Song song) {
 	}
 	public void setState(long uptime, int state) {
 	}
