@@ -926,6 +926,9 @@ public class LibraryActivity
 	protected void onStateChange(int state, int toggled)
 	{
 		super.onStateChange(state, toggled);
+
+		if ((state & PlaybackService.FLAG_EMPTY_QUEUE) != 0)
+			mBottomBarControls.setSong(null);
 	}
 
 	@Override
