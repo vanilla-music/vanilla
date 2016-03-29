@@ -20,36 +20,63 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/content"
-	android:orientation="vertical"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent">
 
-	<android.support.iosched.tabs.VanillaTabLayout
-		android:id="@+id/sliding_tabs"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:elevation="4dp"
-		android:background="@color/tabs_background" />
-
-	<android.support.v4.view.ViewPager
-		android:id="@+id/pager"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+       xmlns:vanilla="http://schemas.android.com/apk/res/ch.blinkenlights.android.vanilla" >
+	<LinearLayout
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		android:id="@+id/content"
+		android:orientation="vertical"
 		android:layout_width="fill_parent"
-		android:layout_height="0px"
-		android:layout_weight="1" />
-	<HorizontalScrollView
-		android:id="@+id/limiter_scroller"
+		android:layout_height="fill_parent">
+		<android.support.iosched.tabs.VanillaTabLayout
+			android:id="@+id/sliding_tabs"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:elevation="4dp"
+			android:background="@color/tabs_background" />
+		<android.support.v4.view.ViewPager
+			android:id="@+id/pager"
+			android:layout_width="fill_parent"
+			android:layout_height="0px"
+			android:layout_weight="1" />
+		<HorizontalScrollView
+			android:id="@+id/limiter_scroller"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="bottom|left">
+			<LinearLayout
+				android:id="@+id/limiter_layout"
+				android:orientation="horizontal"
+				android:layout_width="wrap_content"
+				android:layout_height="fill_parent" />
+		</HorizontalScrollView>
+	</LinearLayout>
+	<ch.blinkenlights.android.vanilla.SlidingView
+		android:id="@+id/sliding_view"
 		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:layout_gravity="bottom|left">
-		<LinearLayout
-			android:id="@+id/limiter_layout"
-			android:orientation="horizontal"
-			android:layout_width="wrap_content"
-			android:layout_height="fill_parent" />
-	</HorizontalScrollView>
-	<include layout="@layout/bottombar_controls" android:id="@+id/bottombar_controls" />
-</LinearLayout>
+		android:layout_height="fill_parent"
+		android:layout_gravity="bottom|left"
+		android:orientation="horizontal"
+		vanilla:slider_handle_id="@+id/bottombar_controls"
+		vanilla:slider_slave_id="@+id/content">
+			<LinearLayout
+				android:layout_height="wrap_content"
+				android:layout_width="fill_parent"
+				android:background="?overlay_background_color"
+				android:orientation="horizontal">
+				<include layout="@layout/bottombar_controls" android:id="@+id/bottombar_controls" />
+			</LinearLayout>
+			<LinearLayout
+				android:layout_height="wrap_content"
+				android:layout_width="fill_parent"
+				android:background="?overlay_background_color"
+				android:orientation="horizontal">
+					<include layout="@layout/controls" />
+			</LinearLayout>
 
+			<fragment class="ch.blinkenlights.android.vanilla.ShowQueueFragment"
+				android:id="@+id/queue"
+				android:layout_width="fill_parent" android:layout_height="fill_parent" />
+	</ch.blinkenlights.android.vanilla.SlidingView>
+</merge>

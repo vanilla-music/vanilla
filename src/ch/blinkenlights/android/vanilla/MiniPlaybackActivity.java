@@ -46,19 +46,7 @@ public class MiniPlaybackActivity extends PlaybackActivity {
 		mCoverView.setOnClickListener(this);
 		mCoverView.setup(mLooper, this, CoverBitmap.STYLE_OVERLAPPING_BOX);
 
-		View previousButton = findViewById(R.id.previous);
-		previousButton.setOnClickListener(this);
-		mPlayPauseButton = (ImageButton)findViewById(R.id.play_pause);
-		mPlayPauseButton.setOnClickListener(this);
-		View nextButton = findViewById(R.id.next);
-		nextButton.setOnClickListener(this);
-
-		mShuffleButton = (ImageButton)findViewById(R.id.shuffle);
-		mShuffleButton.setOnClickListener(this);
-		registerForContextMenu(mShuffleButton);
-		mEndButton = (ImageButton)findViewById(R.id.end_action);
-		mEndButton.setOnClickListener(this);
-		registerForContextMenu(mEndButton);
+		bindControlButtons();
 	}
 
 	@Override

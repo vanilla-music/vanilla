@@ -56,7 +56,9 @@ import java.util.List;
  */
 
 @TargetApi(21)
-public class MirrorLinkMediaBrowserService extends MediaBrowserService implements Handler.Callback {
+public class MirrorLinkMediaBrowserService extends MediaBrowserService
+	implements Handler.Callback,
+	           TimelineCallback {
 
 	private static final String TAG = "MirrorLinkMediaBrowserService";
 	// Action to change the repeat mode
@@ -167,7 +169,7 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService implement
 		mSession.setExtras(mSessionExtras);
 
 		// Register with the PlaybackService
-		PlaybackService.registerService(this);
+		PlaybackService.addTimelineCallback(this);
 
 		// Make sure the PlaybackService is running
 		if(!PlaybackService.hasInstance()) {
@@ -196,7 +198,7 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService implement
 	public void onDestroy() {
 		Log.d("VanillaMusic", "MediaBrowserService#onDestroy");
 		mServiceStarted = false;
-		PlaybackService.unregisterService();
+		PlaybackService.removeTimelineCallback(this);
 		mSession.release();
 	}
 
@@ -730,17 +732,23 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService implement
 	 */
 	public void onTimelineChanged() {
 		mHandler.sendMessage(mHandler.obtainMessage(MSG_UPDATE_STATE, null));
-		// updatePlaybackState(null);
 	}
 
 	public void setState(long uptime, int state) {
 		mHandler.sendMessage(mHandler.obtainMessage(MSG_UPDATE_STATE, null));
-		// updatePlaybackState(null);
+	}
+
+	public void replaceSong(int delta, Song song) {
+	}
+
+	public void onMediaChange() {
+	}
+
+	public void recreate() {
 	}
 
 	public void setSong(long uptime, Song song) {
 		mHandler.sendMessage(mHandler.obtainMessage(MSG_UPDATE_STATE, null));
-//		updatePlaybackState(null);
 		if(song == null) {
 			if(PlaybackService.hasInstance()) {
 				song = PlaybackService.get(this).getSong(0);

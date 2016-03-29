@@ -295,6 +295,7 @@ THE SOFTWARE.
 	<string name="clear_queue">Clear queue</string>
 	<string name="empty_the_queue">Empty queue</string>
 	<string name="show_queue">Show queue</string>
+	<string name="hide_queue">Hide queue</string>
 	<string name="dequeue_rest">Dequeue rest</string>
 	<string name="queue">Queue</string>
 	<string name="toggle_controls">Toggle controls</string>

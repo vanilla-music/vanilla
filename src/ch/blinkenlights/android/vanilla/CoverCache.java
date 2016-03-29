@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2015-2016 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 
 public class CoverCache {
@@ -188,6 +189,10 @@ public class CoverCache {
 		 * SQLite table to use
 		 */
 		private final static String TABLE_NAME = "covercache";
+		/**
+		 * Priority-ordered list of possible cover names
+		 */
+		private final static Pattern[] COVER_MATCHES = { Pattern.compile("(?i).+/(COVER|ALBUM)\\.(JPE?G|PNG)$"), Pattern.compile("(?i).+/(CD|FRONT|ARTWORK)\\.(JPE?G|PNG)$"), Pattern.compile("(?i).+\\.(JPE?G|PNG)$") };
 		/**
 		 * Projection of all columns in the database
 		 */
@@ -378,7 +383,6 @@ public class CoverCache {
 		 * @param maxPxCount the maximum amount of pixels to return (30*30 = 900)
 		 */
 		public Bitmap createBitmap(Song song, long maxPxCount) {
-			final String[] coverNames = { "cover.jpg", "cover.png", "album.jpg", "album.png", "artwork.jpg", "artwork.png", "art.jpg", "art.png" };
 			if (song.id < 0) {
 				// Unindexed song: return early
 				return null;
@@ -389,13 +393,31 @@ public class CoverCache {
 				InputStream sampleInputStream = null; // same as inputStream but used for getSampleSize
 
 				if ((CoverCache.mCoverLoadMode & CoverCache.COVER_MODE_VANILLA) != 0) {
-					String basePath = (new File(song.path)).getParentFile().getAbsolutePath(); // parent dir of the currently playing file
-					for (String coverFile: coverNames) {
-						File guessedFile = new File( basePath + "/" + coverFile);
+					final File baseFile  = new File(song.path);  // File object of queried song
+					String bestMatchPath = null;                 // The best cover-path we found
+					int bestMatchIndex   = COVER_MATCHES.length; // The best cover-index/priority found
+					int loopCount        = 0;                    // Directory items loop counter
+
+					for (final File entry : baseFile.getParentFile().listFiles()) {
+						for (int i=0; i < bestMatchIndex ; i++) {
+							// We are checking each file entry to see if it matches a known
+							// cover pattern. We abort on first hit as the Pattern array is sorted from good->meh
+							if (COVER_MATCHES[i].matcher(entry.toString()).matches()) {
+								bestMatchIndex = i;
+								bestMatchPath = entry.toString();
+								break;
+							}
+						}
+						// Stop loop if we found the best match or if we looped 50 times
+						if (loopCount++ > 50 || bestMatchIndex == 0)
+							break;
+					}
+
+					if (bestMatchPath != null) {
+						final File guessedFile = new File(bestMatchPath);
 						if (guessedFile.exists() && !guessedFile.isDirectory()) {
 							inputStream = new FileInputStream(guessedFile);
 							sampleInputStream = new FileInputStream(guessedFile);
-							break;
 						}
 					}
 				}

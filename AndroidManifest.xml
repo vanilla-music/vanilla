@@ -36,6 +36,10 @@ THE SOFTWARE.
 		android:icon="@drawable/icon"
 		android:label="@string/app_name">
 
+		<meta-data
+		android:name="com.mirrorlink.android.rockscout.allow-offline-access"
+		android:value="true" />
+
 		<activity
 			android:name="FullPlaybackActivity"
 			android:launchMode="singleTask" />
@@ -51,10 +55,6 @@ THE SOFTWARE.
 		<activity
 			android:name="PlaylistActivity"
 			android:launchMode="singleTask" />
-		<activity
-			android:name="ShowQueueActivity"
-			android:launchMode="singleTask"
-			/>
 		<activity
 			android:name="MiniPlaybackActivity"
 			android:theme="@style/Dialog"

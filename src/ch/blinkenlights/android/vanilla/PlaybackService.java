@@ -281,11 +281,7 @@ public final class PlaybackService extends Service
 	/**
 	 * Static referenced-array to PlaybackActivities, used for callbacks
 	 */
-	private static final ArrayList<PlaybackActivity> sActivities = new ArrayList<PlaybackActivity>(5);
-	/**
-	 * Static reference to MirrorLinkMediaBrowserService, used for callbacks
-	 */
-	private static MirrorLinkMediaBrowserService sMirrorLinkMediaBrowserService = null;
+	private static final ArrayList<TimelineCallback> sCallbacks = new ArrayList<TimelineCallback>(5);
 	/**
 	 * Cached app-wide SharedPreferences instance.
 	 */
@@ -890,7 +886,7 @@ public final class PlaybackService extends Service
 			mAutoPlPlaycounts = settings.getInt(PrefKeys.AUTOPLAYLIST_PLAYCOUNTS, PrefDefaults.AUTOPLAYLIST_PLAYCOUNTS);
 		} else if (PrefKeys.USE_DARK_THEME.equals(key)) {
 			// Theme changed: trigger a restart of all registered activites
-			ArrayList<PlaybackActivity> list = sActivities;
+			ArrayList<TimelineCallback> list = sCallbacks;
 			for (int i = list.size(); --i != -1; )
 				list.get(i).recreate();
 		}
@@ -1036,25 +1032,15 @@ public final class PlaybackService extends Service
 	private void broadcastChange(int state, Song song, long uptime)
 	{
 		if (state != -1) {
-			ArrayList<PlaybackActivity> list = sActivities;
+			ArrayList<TimelineCallback> list = sCallbacks;
 			for (int i = list.size(); --i != -1; )
 				list.get(i).setState(uptime, state);
-
-			MirrorLinkMediaBrowserService service = sMirrorLinkMediaBrowserService;
-			if(service != null) {
-				service.setState(uptime, state);
-			}
 		}
 
 		if (song != null) {
-			ArrayList<PlaybackActivity> list = sActivities;
+			ArrayList<TimelineCallback> list = sCallbacks;
 			for (int i = list.size(); --i != -1; )
 				list.get(i).setSong(uptime, song);
-		}
-
-		MirrorLinkMediaBrowserService service = sMirrorLinkMediaBrowserService;
-		if(service != null) {
-			service.setSong(uptime, song);
 		}
 
 		updateWidgets();
@@ -1143,15 +1129,27 @@ public final class PlaybackService extends Service
 	 * while driving
 	 */
 	private void showMirrorLinkSafeToast(int resId, int duration) {
-		if(sMirrorLinkMediaBrowserService == null) {
+		if(getMirrorLinkCallback() == null) {
 			Toast.makeText(this, resId, duration).show();
 		}
 	}
 
 	private void showMirrorLinkSafeToast(CharSequence text, int duration) {
-		if(sMirrorLinkMediaBrowserService == null) {
+		if(getMirrorLinkCallback() == null) {
 			Toast.makeText(this, text, duration).show();
 		}
+	}
+
+	/**
+	 * Returns TRUE if the mirror link service has been registered
+	 */
+	private MirrorLinkMediaBrowserService getMirrorLinkCallback() {
+		for (Object o : sCallbacks) {
+			if (o instanceof MirrorLinkMediaBrowserService) {
+				return (MirrorLinkMediaBrowserService)o;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -1394,7 +1392,8 @@ public final class PlaybackService extends Service
 	public boolean onError(MediaPlayer player, int what, int extra)
 	{
 		Log.e("VanillaMusic", "MediaPlayer error: " + what + ' ' + extra);
-		MirrorLinkMediaBrowserService service = sMirrorLinkMediaBrowserService;
+
+		MirrorLinkMediaBrowserService service = getMirrorLinkCallback();
 		if(service != null) {
 			service.onError("MediaPlayer Error");
 		}
@@ -1441,7 +1440,7 @@ public final class PlaybackService extends Service
 			setFlag(FLAG_NO_MEDIA);
 		}
 
-		ArrayList<PlaybackActivity> list = sActivities;
+		ArrayList<TimelineCallback> list = sCallbacks;
 		for (int i = list.size(); --i != -1; )
 			list.get(i).onMediaChange();
 
@@ -1636,7 +1635,7 @@ public final class PlaybackService extends Service
 	@Override
 	public void activeSongReplaced(int delta, Song song)
 	{
-		ArrayList<PlaybackActivity> list = sActivities;
+		ArrayList<TimelineCallback> list = sCallbacks;
 		for (int i = list.size(); --i != -1; )
 			list.get(i).replaceSong(delta, song);
 
@@ -1778,37 +1777,37 @@ public final class PlaybackService extends Service
 	}
 
 	/**
-	 * Enqueues all the songs with the same album/artist/genre as the current
+	 * Enqueues all the songs with the same album/artist/genre as the passed
 	 * song.
 	 *
 	 * This will clear the queue and place the first song from the group after
 	 * the playing song.
 	 *
+	 * @param song The song to base the query on
 	 * @param type The media type, one of MediaUtils.TYPE_ALBUM, TYPE_ARTIST,
 	 * or TYPE_GENRE
 	 */
-	public void enqueueFromCurrent(int type)
+	public void enqueueFromSong(Song song, int type)
 	{
-		Song current = mCurrentSong;
-		if (current == null)
+		if (song == null)
 			return;
 
 		long id;
 		switch (type) {
 		case MediaUtils.TYPE_ARTIST:
-			id = current.artistId;
+			id = song.artistId;
 			break;
 		case MediaUtils.TYPE_ALBUM:
-			id = current.albumId;
+			id = song.albumId;
 			break;
 		case MediaUtils.TYPE_GENRE:
-			id = MediaUtils.queryGenreForSong(getContentResolver(), current.id);
+			id = MediaUtils.queryGenreForSong(getContentResolver(), song.id);
 			break;
 		default:
 			throw new IllegalArgumentException("Unsupported media type: " + type);
 		}
 
-		String selection = "_id!=" + current.id;
+		String selection = "_id!=" + song.id;
 		QueryTask query = MediaUtils.buildQuery(type, id, Song.FILLED_PROJECTION, selection);
 		query.mode = SongTimeline.MODE_FLUSH_AND_PLAY_NEXT;
 		addSongs(query);
@@ -1852,27 +1851,18 @@ public final class PlaybackService extends Service
 		mHandler.removeMessages(MSG_GAPLESS_UPDATE);
 		mHandler.sendEmptyMessageDelayed(MSG_GAPLESS_UPDATE, 100);
 
-		ArrayList<PlaybackActivity> list = sActivities;
+		ArrayList<TimelineCallback> list = sCallbacks;
 		for (int i = list.size(); --i != -1; )
 			list.get(i).onTimelineChanged();
 
-		MirrorLinkMediaBrowserService service = sMirrorLinkMediaBrowserService;
-		if(service != null) {
-			service.onTimelineChanged();
-		}
 	}
 
 	@Override
 	public void positionInfoChanged()
 	{
-		ArrayList<PlaybackActivity> list = sActivities;
+		ArrayList<TimelineCallback> list = sCallbacks;
 		for (int i = list.size(); --i != -1; )
 			list.get(i).onPositionInfoChanged();
-
-		MirrorLinkMediaBrowserService service = sMirrorLinkMediaBrowserService;
-		if(service != null) {
-			service.onPositionInfoChanged();
-		}
 	}
 
 	private final ContentObserver mObserver = new ContentObserver(null) {
@@ -1918,9 +1908,9 @@ public final class PlaybackService extends Service
 	 *
 	 * @param activity The Activity to be added
 	 */
-	public static void addActivity(PlaybackActivity activity)
+	public static void addTimelineCallback(TimelineCallback consumer)
 	{
-		sActivities.add(activity);
+		sCallbacks.add(consumer);
 	}
 
 	/**
@@ -1928,27 +1918,9 @@ public final class PlaybackService extends Service
 	 *
 	 * @param activity The Activity to be removed
 	 */
-	public static void removeActivity(PlaybackActivity activity)
+	public static void removeTimelineCallback(TimelineCallback consumer)
 	{
-		sActivities.remove(activity);
-	}
-
-	/**
-	 * Register a MirrorLinkMediaBrowserService instance
-	 *
-	 * @param service the Service to be registered
-	 */
-	public static void registerService(MirrorLinkMediaBrowserService service) {
-		sMirrorLinkMediaBrowserService = service;
-	}
-
-	/**
-	 * Deregister a MirrorLinkMediaBrowserService instance
-	 *
-	 * @param service the Service to be deregistered
-	 */
-	public static void unregisterService() {
-		sMirrorLinkMediaBrowserService = null;
+		sCallbacks.remove(consumer);
 	}
 
 	/**
@@ -2276,22 +2248,17 @@ public final class PlaybackService extends Service
 			break;
 		}
 		case EnqueueAlbum:
-			enqueueFromCurrent(MediaUtils.TYPE_ALBUM);
+			enqueueFromSong(mCurrentSong, MediaUtils.TYPE_ALBUM);
 			break;
 		case EnqueueArtist:
-			enqueueFromCurrent(MediaUtils.TYPE_ARTIST);
+			enqueueFromSong(mCurrentSong, MediaUtils.TYPE_ARTIST);
 			break;
 		case EnqueueGenre:
-			enqueueFromCurrent(MediaUtils.TYPE_GENRE);
+			enqueueFromSong(mCurrentSong, MediaUtils.TYPE_GENRE);
 			break;
 		case ClearQueue:
 			clearQueue();
 			showMirrorLinkSafeToast(R.string.queue_cleared, Toast.LENGTH_SHORT);
-			break;
-		case ShowQueue:
-			Intent intentShowQueue = new Intent(this, ShowQueueActivity.class);
-			intentShowQueue.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-			startActivity(intentShowQueue);
 			break;
 		case ToggleControls:
 			// Handled in FullPlaybackActivity.performAction

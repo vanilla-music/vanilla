@@ -200,6 +200,7 @@ public class LibraryActivity
 		}
 
 		loadAlbumIntent(getIntent());
+		bindControlButtons();
 	}
 
 	@Override
@@ -280,8 +281,14 @@ public class LibraryActivity
 		case KeyEvent.KEYCODE_BACK:
 			Limiter limiter = mPagerAdapter.getCurrentLimiter();
 
-			if (mBottomBarControls.showSearch(false))
+			if (mSlidingView.isHidden() == false) {
+				mSlidingView.hideSlide();
 				break;
+			}
+
+			if (mBottomBarControls.showSearch(false)) {
+				break;
+			}
 
 			if (limiter != null) {
 				int pos = -1;
@@ -402,6 +409,7 @@ public class LibraryActivity
 	 */
 	private void expand(Intent intent)
 	{
+		mBottomBarControls.showSearch(false);
 		int type = intent.getIntExtra("type", MediaUtils.TYPE_INVALID);
 		long id = intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
 		int tab = mPagerAdapter.setLimiter(mPagerAdapter.mAdapters[type].buildLimiter(id));
@@ -794,12 +802,8 @@ public class LibraryActivity
 		menu.add(0, MENU_PLAYBACK, 0, R.string.playback_view);
 		super.onCreateOptionsMenu(menu);
 
-		MenuItem search = menu.add(0, MENU_SEARCH, 0, R.string.search).setIcon(R.drawable.ic_menu_search);
-		search.setVisible(false);
-
+		menu.add(0, MENU_SEARCH, 0, R.string.search).setIcon(R.drawable.ic_menu_search).setVisible(false);
 		menu.add(0, MENU_SORT, 0, R.string.sort_by).setIcon(R.drawable.ic_menu_sort_alphabetically);
-		menu.add(0, MENU_SHOW_QUEUE, 0, R.string.show_queue);
-
 		return true;
 	}
 
@@ -922,6 +926,9 @@ public class LibraryActivity
 	protected void onStateChange(int state, int toggled)
 	{
 		super.onStateChange(state, toggled);
+
+		if ((state & PlaybackService.FLAG_EMPTY_QUEUE) != 0)
+			mBottomBarControls.setSong(null);
 	}
 
 	@Override

@@ -17,7 +17,6 @@
 
 package ch.blinkenlights.android.vanilla;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.io.File;
 import android.app.Activity;
@@ -27,14 +26,12 @@ import android.view.MenuItem;
 import android.view.Menu;
 import android.widget.TextView;
 import android.widget.Button;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.content.SharedPreferences;
 
 
-public class FilebrowserStartActivity extends PlaybackActivity {
+public class FilebrowserStartActivity extends Activity {
 	
 	private ListView mListView;
 	private TextView mPathDisplay;
@@ -50,7 +47,7 @@ public class FilebrowserStartActivity extends PlaybackActivity {
 
 		setTitle(R.string.filebrowser_start);
 		setContentView(R.layout.filebrowser_content);
-		mCurrentPath = (String)getFilesystemBrowseStart().getAbsolutePath();
+		mCurrentPath = (String)FileUtils.getFilesystemBrowseStart(this).getAbsolutePath();
 		mPrefEditor  = PlaybackService.getSettings(this).edit();
 		mListAdapter = new FilebrowserStartAdapter((FilebrowserStartActivity)this, 0);
 		mPathDisplay = (TextView) findViewById(R.id.path_display);

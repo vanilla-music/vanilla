@@ -344,7 +344,10 @@ public class MediaAdapter
 		}
 
 		QueryTask query;
-		if (limiter != null && limiter.type == MediaUtils.TYPE_GENRE) {
+		if(mType == MediaUtils.TYPE_GENRE && !returnSongs) {
+			query = MediaUtils.buildGenreExcludeEmptyQuery(projection, selection.toString(),
+					selectionArgs, sort);
+		} else if (limiter != null && limiter.type == MediaUtils.TYPE_GENRE) {
 			// Genre is not standard metadata for MediaStore.Audio.Media.
 			// We have to query it through a separate provider. : /
 			query = MediaUtils.buildGenreQuery((Long)limiter.data, projection,  selection.toString(), selectionArgs, sort, mType, returnSongs);

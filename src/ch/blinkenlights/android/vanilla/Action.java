@@ -81,10 +81,6 @@ enum Action {
 	 */
 	ClearQueue,
 	/**
-	 * Show the queue.
-	 */
-	ShowQueue,
-	/**
 	 * Toggle the controls in the playback activity.
 	 */
 	ToggleControls,

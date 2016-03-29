@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
- * Copyright (C) 2014-2015 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2014-2016 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,10 @@
 package ch.blinkenlights.android.vanilla;
 
 import java.io.File;
+import java.util.ArrayList;
+
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -35,7 +38,6 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
-import android.os.Environment;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -52,12 +54,15 @@ import android.widget.Toast;
  * changes.
  */
 public abstract class PlaybackActivity extends Activity
-	implements Handler.Callback,
+	implements TimelineCallback,
+	           Handler.Callback,
 	           View.OnClickListener,
-	           CoverView.Callback
+	           CoverView.Callback,
+	           SlidingView.Callback
 {
 	private Action mUpAction;
 	private Action mDownAction;
+	private Menu mMenu;
 
 	/**
 	 * A Handler running on the UI thread, in contrast with mHandler which runs
@@ -77,6 +82,7 @@ public abstract class PlaybackActivity extends Activity
 	protected ImageButton mPlayPauseButton;
 	protected ImageButton mShuffleButton;
 	protected ImageButton mEndButton;
+	protected SlidingView mSlidingView;
 
 	protected int mState;
 	private long mLastStateEvent;
@@ -87,7 +93,7 @@ public abstract class PlaybackActivity extends Activity
 	{
 		super.onCreate(state);
 
-		PlaybackService.addActivity(this);
+		PlaybackService.addTimelineCallback(this);
 
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
@@ -102,7 +108,7 @@ public abstract class PlaybackActivity extends Activity
 	@Override
 	public void onDestroy()
 	{
-		PlaybackService.removeActivity(this);
+		PlaybackService.removeTimelineCallback(this);
 		mLooper.quit();
 		super.onDestroy();
 	}
@@ -255,8 +261,10 @@ public abstract class PlaybackActivity extends Activity
 	 */
 	public void setState(long uptime, int state)
 	{
-		if (uptime >= mLastStateEvent)
+		if (uptime > mLastStateEvent) {
 			setState(state);
+			mLastStateEvent = uptime;
+		}
 	}
 
 	/**
@@ -294,14 +302,26 @@ public abstract class PlaybackActivity extends Activity
 	}
 
 	/**
-	 * Called by FileSystem adapter to get the start folder
-	 * for browsing directories
+	 * Sets up onClick listeners for our common control buttons bar
 	 */
-	protected File getFilesystemBrowseStart() {
-		SharedPreferences prefs = PlaybackService.getSettings(this);
-		String folder = prefs.getString(PrefKeys.FILESYSTEM_BROWSE_START, PrefDefaults.FILESYSTEM_BROWSE_START);
-		File fs_start = new File( folder.equals("") ? Environment.getExternalStorageDirectory().getAbsolutePath() : folder );
-		return fs_start;
+	protected void bindControlButtons() {
+		View previousButton = findViewById(R.id.previous);
+		previousButton.setOnClickListener(this);
+		mPlayPauseButton = (ImageButton)findViewById(R.id.play_pause);
+		mPlayPauseButton.setOnClickListener(this);
+		View nextButton = findViewById(R.id.next);
+		nextButton.setOnClickListener(this);
+
+		mShuffleButton = (ImageButton)findViewById(R.id.shuffle);
+		mShuffleButton.setOnClickListener(this);
+		registerForContextMenu(mShuffleButton);
+		mEndButton = (ImageButton)findViewById(R.id.end_action);
+		mEndButton.setOnClickListener(this);
+		registerForContextMenu(mEndButton);
+
+		mSlidingView = (SlidingView)findViewById(R.id.sliding_view);
+		if (mSlidingView != null)
+			mSlidingView.setCallback(this);
 	}
 
 	/**
@@ -309,8 +329,10 @@ public abstract class PlaybackActivity extends Activity
 	 */
 	public void setSong(long uptime, Song song)
 	{
-		if (uptime >= mLastSongEvent)
+		if (uptime > mLastSongEvent) {
 			setSong(song);
+			mLastSongEvent = uptime;
+		}
 	}
 
 	/**
@@ -355,14 +377,23 @@ public abstract class PlaybackActivity extends Activity
 	static final int MENU_CLEAR_QUEUE = 11;
 	static final int MENU_SONG_FAVORITE = 12;
 	static final int MENU_SHOW_QUEUE = 13;
-	static final int MENU_SAVE_AS_PLAYLIST = 14;
-	static final int MENU_DELETE = 15;
-	static final int MENU_EMPTY_QUEUE = 16;
+	static final int MENU_HIDE_QUEUE = 14;
+	static final int MENU_SAVE_QUEUE_AS_PLAYLIST = 15;
+	static final int MENU_DELETE = 16;
+	static final int MENU_EMPTY_QUEUE = 17;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
+		mMenu = menu;
 		menu.add(0, MENU_PREFS, 0, R.string.settings).setIcon(R.drawable.ic_menu_preferences);
+		menu.add(0, MENU_SHOW_QUEUE, 0, R.string.show_queue);
+		menu.add(0, MENU_HIDE_QUEUE, 0, R.string.hide_queue);
+		menu.add(0, MENU_CLEAR_QUEUE, 0, R.string.dequeue_rest);
+		menu.add(0, MENU_EMPTY_QUEUE, 0, R.string.empty_the_queue);
+		menu.add(0, MENU_SAVE_QUEUE_AS_PLAYLIST, 0, R.string.save_as_playlist);
+
+		onSlideFullyExpanded(false);
 		return true;
 	}
 
@@ -377,12 +408,51 @@ public abstract class PlaybackActivity extends Activity
 			PlaybackService.get(this).clearQueue();
 			break;
 		case MENU_SHOW_QUEUE:
-			startActivity(new Intent(this, ShowQueueActivity.class));
+			mSlidingView.expandSlide();
+			break;
+		case MENU_HIDE_QUEUE:
+			mSlidingView.hideSlide();
+			break;
+		case MENU_EMPTY_QUEUE:
+			PlaybackService.get(this).emptyQueue();
+			break;
+		case MENU_SAVE_QUEUE_AS_PLAYLIST:
+			NewPlaylistDialog dialog = new NewPlaylistDialog(this, null, R.string.create, null);
+			dialog.setOnDismissListener(new SaveAsPlaylistDismiss());
+			dialog.show();
 			break;
 		default:
 			return false;
 		}
 		return true;
+	}
+
+
+	/**
+	 * Called by SlidingView to signal a visibility change.
+	 * Toggles the visibility of menu items
+	 *
+	 * @param expanded true if slide fully expanded
+	 */
+	@Override
+	public void onSlideFullyExpanded(boolean expanded) {
+		if (mMenu == null)
+			return; // not initialized yet
+
+		final int[] slide_visible = {MENU_HIDE_QUEUE, MENU_CLEAR_QUEUE, MENU_EMPTY_QUEUE, MENU_SAVE_QUEUE_AS_PLAYLIST};
+		final int[] slide_hidden = {MENU_SHOW_QUEUE, MENU_SORT};
+
+		for (int id : slide_visible) {
+			MenuItem item = mMenu.findItem(id);
+			if (item != null)
+				item.setVisible(expanded);
+		}
+
+		for (int id : slide_hidden) {
+			MenuItem item = mMenu.findItem(id);
+			if (item != null)
+				item.setVisible(!expanded);
+		}
 	}
 
 	/**
@@ -407,6 +477,10 @@ public abstract class PlaybackActivity extends Activity
 	 * Removes a media object
 	 */
 	protected static final int MSG_DELETE = 4;
+	/**
+	 * Saves the current queue as a playlist
+	 */
+	protected static final int MSG_SAVE_QUEUE_AS_PLAYLIST = 5;
 
 	@Override
 	public boolean handleMessage(Message message)
@@ -426,6 +500,24 @@ public abstract class PlaybackActivity extends Activity
 		}
 		case MSG_ADD_TO_PLAYLIST: {
 			PlaylistTask playlistTask = (PlaylistTask)message.obj;
+			addToPlaylist(playlistTask);
+			break;
+		}
+		case MSG_SAVE_QUEUE_AS_PLAYLIST: {
+			String playlistName = (String)message.obj;
+			long playlistId = Playlist.createPlaylist(getContentResolver(), playlistName);
+			PlaylistTask playlistTask = new PlaylistTask(playlistId, playlistName);
+			playlistTask.audioIds = new ArrayList<Long>();
+
+			Song song;
+			PlaybackService service = PlaybackService.get(this);
+			for (int i=0; ; i++) {
+				song = service.getSongByQueuePosition(i);
+				if (song == null)
+					break;
+				playlistTask.audioIds.add(song.id);
+			}
+
 			addToPlaylist(playlistTask);
 			break;
 		}
@@ -621,5 +713,21 @@ public abstract class PlaybackActivity extends Activity
 		else if (group == GROUP_FINISH)
 			setState(PlaybackService.get(this).setFinishAction(id));
 		return true;
+	}
+
+	/**
+	 * Fired if user dismisses the create-playlist dialog
+	 *
+	 * @param dialogInterface the dismissed interface dialog
+	 */
+	class SaveAsPlaylistDismiss implements DialogInterface.OnDismissListener {
+		@Override
+		public void onDismiss(DialogInterface dialogInterface) {
+			NewPlaylistDialog dialog = (NewPlaylistDialog)dialogInterface;
+			if (dialog.isAccepted()) {
+				String playlistName = dialog.getText();
+				mHandler.sendMessage(mHandler.obtainMessage(MSG_SAVE_QUEUE_AS_PLAYLIST, playlistName));
+			}
+		}
 	}
 }

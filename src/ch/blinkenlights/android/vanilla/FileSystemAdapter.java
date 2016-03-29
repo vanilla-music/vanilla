@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
- * Copyright (C) 2015 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2015-2016 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,8 +26,6 @@ package ch.blinkenlights.android.vanilla;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.Environment;
 import android.os.FileObserver;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -136,7 +134,7 @@ public class FileSystemAdapter
 		mFolderIcon = activity.getResources().getDrawable(R.drawable.folder);
 		mInflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		if (limiter == null) {
-			limiter = buildLimiter( activity.getFilesystemBrowseStart() );
+			limiter = buildLimiter( FileUtils.getFilesystemBrowseStart(activity) );
 		}
 		setLimiter(limiter);
 	}
@@ -160,7 +158,7 @@ public class FileSystemAdapter
 	public void commitQuery(Object data)
 	{
 		mFiles = (File[])data;
-		notifyDataSetInvalidated();
+		notifyDataSetChanged();
 	}
 
 	@Override
