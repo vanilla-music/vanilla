@@ -31,10 +31,6 @@ proguard/
 .DS_Store
 
 # Source: https://gitlab.com/fdroid/fdroidclient/raw/master/.gitignore
-gradlew
-gradlew.bat
-gradle-wrapper.jar
-gradle-wrapper.properties
 *~
 *.swp
 .idea/
