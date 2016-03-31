@@ -45,6 +45,7 @@
   <string name="save_as_playlist">Als Wiedergabeliste speichern …</string>
   <string name="add_to_playlist">Zur Wiedergabeliste hinzufügen …</string>
   <string name="add_to_favorites">Zu Favoriten hinzufügen …</string>
+  <string name="remove_from_favorites">Aus Favoriten entfernen</string>
   <string name="playlist_favorites">Favoriten</string>
   <string name="new_playlist">Neue Wiedergabeliste …</string>
   <string name="expand">Aufklappen</string>
@@ -68,6 +69,10 @@
   <plurals name="added_to_playlist">
     <item quantity="one">1 Titel zur Wiedergabeliste %2$s hinzugefügt.</item>
     <item quantity="other">%1$d Titel zur Wiedergabeliste %2$s hinzugefügt.</item>
+  </plurals>
+  <plurals name="removed_from_playlist">
+    <item quantity="one">1 Titel aus Wiedergabeliste %2$s entfernt.</item>
+    <item quantity="other">%1$d Titel aus Wiedergabeliste %2$s entfernt.</item>
   </plurals>
   <plurals name="deleted">
     <item quantity="one">1 Titel gelöscht.</item>
@@ -141,7 +146,7 @@
   <string name="replaygain_album_title">Album-ReplayGain aktivieren</string>
   <string name="replaygain_album_summary">Lautstärke von Alben beibehalten</string>
   <string name="replaygain_bump_title">ReplayGain-Vorverstärker</string>
-  <string name="replaygain_untagged_debump_title">Titel ohne ReplayGain-Information</string>
+  <string name="replaygain_untagged_debump_title">Titel ohne ReplayGain-Informationen</string>
   <string name="replaygain_untagged_debump_summary">Lautstärke senken um: </string>
   <string name="replaygain_preamp_note_title">Hinweis</string>
   <string name="replaygain_preamp_note_content">Android erlaubt Vanilla Music kein Verändern der Lautstärke auf über 100%. Hohe Werte für den Vorverstärker können bei „stiller“ Musik zu Problemen führen.\n\nEmpfohlene Werte sind:\n-&gt; -3 dB für stille/klassische Musik\n-&gt; +3 dB für Aufnahmen nach 2000.</string>
@@ -234,6 +239,7 @@
   <string name="clear_queue">Warteschlange leeren</string>
   <string name="empty_the_queue">Warteschlange verwerfen</string>
   <string name="show_queue">Warteschlange anzeigen</string>
+  <string name="hide_queue">Warteschlange ausblenden</string>
   <string name="dequeue_rest">Warteschlange leeren</string>
   <string name="queue">Warteschlange</string>
   <string name="toggle_controls">Steuerelemente ein-/ausblenden</string>

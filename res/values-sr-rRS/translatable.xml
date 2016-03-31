@@ -45,6 +45,7 @@
   <string name="save_as_playlist">Сачувај као листу нумера…</string>
   <string name="add_to_playlist">Додај у листу нумера…</string>
   <string name="add_to_favorites">Додај у омиљене</string>
+  <string name="remove_from_favorites">Уклони из омиљених</string>
   <string name="playlist_favorites">Омиљене</string>
   <string name="new_playlist">Нова листа нумера…</string>
   <string name="expand">Рашири</string>
@@ -71,6 +72,11 @@
     <item quantity="one">1 песма додата у листу нумера %2$s.</item>
     <item quantity="few">%1$d песме додате у листу нумера %2$s.</item>
     <item quantity="other">%1$d песама додато у листу нумера %2$s.</item>
+  </plurals>
+  <plurals name="removed_from_playlist">
+    <item quantity="one">1 песма уклоњена са листе нумера %2$s.</item>
+    <item quantity="few">%1$d песме уклоњене са листе нумера %2$s.</item>
+    <item quantity="other">%1$d песама уклоњено са листе нумера %2$s.</item>
   </plurals>
   <plurals name="deleted">
     <item quantity="one">1 песма обрисана.</item>

@@ -45,6 +45,7 @@
   <string name="save_as_playlist">儲存為播放清單…</string>
   <string name="add_to_playlist">加到播放清單…</string>
   <string name="add_to_favorites">加到我的最愛</string>
+  <string name="remove_from_favorites">從我的最愛移除</string>
   <string name="playlist_favorites">我的最愛</string>
   <string name="new_playlist">新的播放清單…</string>
   <string name="expand">展開</string>
@@ -65,6 +66,9 @@
   </plurals>
   <plurals name="added_to_playlist">
     <item quantity="other">%1$d 歌曲已加入到播放清單 %2$s。</item>
+  </plurals>
+  <plurals name="removed_from_playlist">
+    <item quantity="other"> %1$d 的歌曲已從播放清單 %2$s 中移除。</item>
   </plurals>
   <plurals name="deleted">
     <item quantity="other">已刪除歌曲 %d</item>
@@ -227,6 +231,7 @@
   <string name="clear_queue">清除佇列</string>
   <string name="empty_the_queue">佇列是空的</string>
   <string name="show_queue">顯示佇列</string>
+  <string name="hide_queue">隱藏佇列</string>
   <string name="dequeue_rest">剩餘的移出佇列</string>
   <string name="queue">佇列</string>
   <string name="toggle_controls">切換控制</string>

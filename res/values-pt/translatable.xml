@@ -35,7 +35,7 @@
   <string name="overwrite">Substituir</string>
   <string name="cancel">Cancelar</string>
   <string name="yes">Sim</string>
-  <string name="delete_playlist">Eliminar a lista %s?</string>
+  <string name="delete_playlist">Apagar a lista de reprodução %s?</string>
   <!--Library-->
   <string name="enqueue">Colocar na fila</string>
   <string name="enqueue_as_next">Reproduzir seguinte</string>
@@ -45,10 +45,11 @@
   <string name="save_as_playlist">Guardar como lista de reprodução...</string>
   <string name="add_to_playlist">Adicionar à lista de reprodução...</string>
   <string name="add_to_favorites">Adicionar aos favoritos</string>
+  <string name="remove_from_favorites">Remover dos favoritos</string>
   <string name="playlist_favorites">Favoritos</string>
   <string name="new_playlist">Nova lista de reprodução...</string>
   <string name="expand">Expandir</string>
-  <string name="delete">Eliminar</string>
+  <string name="delete">Apagar</string>
   <string name="playback_view">Em reprodução</string>
   <string name="sort_by">Ordenar por</string>
   <string name="search">Procura</string>
@@ -66,17 +67,21 @@
     <item quantity="other">%d faixas na fila</item>
   </plurals>
   <plurals name="added_to_playlist">
-    <item quantity="one">1 faixa adicionada à lista %2$s</item>
-    <item quantity="other">%1$d faixas adicionadas à lista %2$s</item>
+    <item quantity="one">1 faixa adicionada à lista de reprodução %2$s</item>
+    <item quantity="other">%1$d faixas adicionadas à de reprodução %2$s</item>
+  </plurals>
+  <plurals name="removed_from_playlist">
+    <item quantity="one">1 faixa removida da lista de reprodução %2$s.</item>
+    <item quantity="other">%1$d faixas removidas da lista de reprodução %2$s.</item>
   </plurals>
   <plurals name="deleted">
-    <item quantity="one">1 faixa eliminada</item>
-    <item quantity="other">%d faixas eliminadas</item>
+    <item quantity="one">1 faixa apagada</item>
+    <item quantity="other">%d faixas apagadas</item>
   </plurals>
-  <string name="delete_file_failed">Falha ao eliminar %s</string>
-  <string name="deleted_item">%s foi eliminado</string>
-  <string name="delete_item">Eliminar %s?</string>
-  <string name="delete_file">Eliminar o ficheiro %s?</string>
+  <string name="delete_file_failed">Falha ao apagar %s</string>
+  <string name="deleted_item">%s foi apagado</string>
+  <string name="delete_item">Apagar %s?</string>
+  <string name="delete_file">Apagar o ficheiro %s?</string>
   <string name="artists">Artistas</string>
   <string name="albums">Álbuns</string>
   <string name="songs">Faixas</string>
@@ -247,7 +252,7 @@
   <string name="filebrowser_start">Pasta inicial do explorador</string>
   <string name="customize_filebrowser_start">O explorador de ficheiros abre esta pasta</string>
   <string name="select">Selecionar</string>
-  <string name="autoplaylist_playcounts_title">Criação automática de lista de reprodução</string>
+  <string name="autoplaylist_playcounts_title">Criação automática de listas de reprodução</string>
   <string name="autoplaylist_playcounts_summary">Criar automaticamente</string>
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s uma lista de reprodução \'Top %.0f\'</string>
   <string name="autoplaylist_playcounts_disabled">Não criar lista de reprodução automaticamente</string>

@@ -45,6 +45,7 @@
   <string name="save_as_playlist">Tallenna soittolistana…</string>
   <string name="add_to_playlist">Lisää soittolistaan…</string>
   <string name="add_to_favorites">Lisää suosikkeihin</string>
+  <string name="remove_from_favorites">Poista suosikeista</string>
   <string name="playlist_favorites">Suosikit</string>
   <string name="new_playlist">Uusi soittolista…</string>
   <string name="expand">Laajenna</string>
@@ -68,6 +69,10 @@
   <plurals name="added_to_playlist">
     <item quantity="one">1 kappale lisätty soittolistaan %2$s.</item>
     <item quantity="other">%1$d kappaletta lisätty soittolistaan %2$s.</item>
+  </plurals>
+  <plurals name="removed_from_playlist">
+    <item quantity="one">1 kappale poistettu soittolistalta %2$s.</item>
+    <item quantity="other">%1$d kappaletta poistettu soittolistalta %2$s.</item>
   </plurals>
   <plurals name="deleted">
     <item quantity="one">1 kappale poistettu.</item>

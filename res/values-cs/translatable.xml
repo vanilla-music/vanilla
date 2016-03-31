@@ -45,6 +45,7 @@
   <string name="save_as_playlist">Uložit jako playlist...</string>
   <string name="add_to_playlist">Přidat do playlistu...</string>
   <string name="add_to_favorites">Přidat k oblíbeným</string>
+  <string name="remove_from_favorites">Odstranit z oblíbených</string>
   <string name="playlist_favorites">Oblíbené</string>
   <string name="new_playlist">Nový playlist...</string>
   <string name="expand">Rozbalit</string>
@@ -71,6 +72,11 @@
     <item quantity="one">1 skladba přidána do playlistu %2$s.</item>
     <item quantity="few">%1$d skladby přidány do playlistu %2$s.</item>
     <item quantity="other">%1$d skladeb přidáno do playlistu %2$s.</item>
+  </plurals>
+  <plurals name="removed_from_playlist">
+    <item quantity="one">1 skladba odstraněna z playlistu %2$s.</item>
+    <item quantity="few">%1$d skladby odstraněny z playlistu %2$s.</item>
+    <item quantity="other">%1$d skladeb odstraněno z playlistu %2$s.</item>
   </plurals>
   <plurals name="deleted">
     <item quantity="one">1 skladba smazána.</item>

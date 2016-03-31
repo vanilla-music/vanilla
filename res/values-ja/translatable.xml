@@ -45,6 +45,7 @@
   <string name="save_as_playlist">プレイリストとして保存…</string>
   <string name="add_to_playlist">プレイリストに追加…</string>
   <string name="add_to_favorites">お気に入りに追加</string>
+  <string name="remove_from_favorites">お気に入りから削除</string>
   <string name="playlist_favorites">お気に入り</string>
   <string name="new_playlist">新しいプレイリスト…</string>
   <string name="expand">展開</string>
@@ -65,6 +66,9 @@
   </plurals>
   <plurals name="added_to_playlist">
     <item quantity="other">%1$d 曲をプレイリスト %2$s に追加しました。</item>
+  </plurals>
+  <plurals name="removed_from_playlist">
+    <item quantity="other">%1$d 曲をプレイリスト %2$s から削除しました。</item>
   </plurals>
   <plurals name="deleted">
     <item quantity="other">%d 曲を削除しました。</item>
@@ -227,6 +231,7 @@
   <string name="clear_queue">キューをクリア</string>
   <string name="empty_the_queue">キューを空にする</string>
   <string name="show_queue">キューを表示</string>
+  <string name="hide_queue">キューを非表示</string>
   <string name="dequeue_rest">残りをキューから消す</string>
   <string name="queue">キュー</string>
   <string name="toggle_controls">コントロールを切り替え</string>

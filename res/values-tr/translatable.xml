@@ -8,7 +8,7 @@
   <string name="library">Arşiv</string>
   <string name="no_shuffle">Karıştırma yok</string>
   <string name="shuffle_songs">Şarkıları karışık çal</string>
-  <string name="shuffle_songs_continuously">Parçaları sürekli karıştır</string>
+  <string name="shuffle_songs_continuously">Şarkıları sürekli karıştır</string>
   <string name="shuffle_albums">Albümleri karışık çal</string>
   <string name="no_repeat">Yineleme yok</string>
   <string name="repeat">Yinele</string>
@@ -45,6 +45,7 @@
   <string name="save_as_playlist">Oynatmalık olarak kaydet...</string>
   <string name="add_to_playlist">Oynatmalığa ekle...</string>
   <string name="add_to_favorites">Gözdelere ekle</string>
+  <string name="remove_from_favorites">Gözdelerden kaldır</string>
   <string name="playlist_favorites">Gözdeler</string>
   <string name="new_playlist">Yeni oynatmalık...</string>
   <string name="expand">Genişlet</string>
@@ -68,6 +69,10 @@
   <plurals name="added_to_playlist">
     <item quantity="one">1 şarkı %2$s oynatmalığına eklendi.</item>
     <item quantity="other">%1$d şarkı %2$s oynatmalığına eklendi.</item>
+  </plurals>
+  <plurals name="removed_from_playlist">
+    <item quantity="one">%2$s oynatmalığından bir şarkı çıkarıldı.</item>
+    <item quantity="other">%1$d şarkı %2$s oynatmalığından çıkarıldı.</item>
   </plurals>
   <plurals name="deleted">
     <item quantity="one">1 şarkı silindi.</item>
@@ -121,6 +126,7 @@
   <string name="volume_title">Ses Düzeyi</string>
   <string name="volume_during_ducking_title">Bildirim sırasında ses düzeyi</string>
   <string name="volume_during_ducking_summary">Oynatma ses düzeyi</string>
+  <string name="ignore_audiofocus_loss_summary">Sürekli ses odak kaybında oynatmayı sürdür</string>
   <string name="media_button_title">Kulaklık/Bluetooth denetimleri</string>
   <string name="media_button_summary">Bu aynı zamanda ICS kilit ekranı denetimleri için de gereklidir.</string>
   <string name="media_button_beep_title">Kulaklık denetim bipi</string>

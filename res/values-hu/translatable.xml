@@ -45,6 +45,7 @@
   <string name="save_as_playlist">Mentés lejátszólistaként…</string>
   <string name="add_to_playlist">Hozzáadás a lejátszólistához…</string>
   <string name="add_to_favorites">Hozzáadás a kedvencekhez</string>
+  <string name="remove_from_favorites">Eltávolítás a kedvencekből</string>
   <string name="playlist_favorites">Kedvencek</string>
   <string name="new_playlist">Új lejátszólista…</string>
   <string name="expand">Részletek</string>
@@ -68,6 +69,10 @@
   <plurals name="added_to_playlist">
     <item quantity="one">1 szám a(z) %2$s lejátszólistához adva.</item>
     <item quantity="other">%1$d szám a(z) %2$s lejátszólistához adva.</item>
+  </plurals>
+  <plurals name="removed_from_playlist">
+    <item quantity="one">1 szám eltávolítva a(z) %2$s lejátszólistáról.</item>
+    <item quantity="other">%1$d szám eltávolítva a(z) %2$s lejátszólistáról.</item>
   </plurals>
   <plurals name="deleted">
     <item quantity="one">1 szám törölve.</item>
@@ -234,7 +239,7 @@
   <string name="clear_queue">Lejátszási sor ürítése</string>
   <string name="empty_the_queue">Lejátszási sor ürítése</string>
   <string name="show_queue">Lejátszási sor megjelenítése</string>
-  <string name="dequeue_rest">Maradék eltávolítása a lejátszási sorból</string>
+  <string name="dequeue_rest">Hátralévők eltávolítása</string>
   <string name="queue">Lejátszási sor</string>
   <string name="toggle_controls">Vezérlőelemek megjelenítése</string>
   <string name="seek_10s_backward">Léptetés 10 másodperccel hátra</string>
