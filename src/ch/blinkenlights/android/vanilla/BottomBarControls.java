@@ -22,6 +22,7 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
@@ -148,6 +149,7 @@ public class BottomBarControls extends LinearLayout
 	 *
 	 * @param owner the activity who will receive our callbacks
 	 */
+	@SuppressLint("NewApi") // PopupMenu with gravity is API19, checked by menuMargin()
 	public void enableOptionsMenu(Activity owner) {
 		mParentMenuConsumer = owner;
 

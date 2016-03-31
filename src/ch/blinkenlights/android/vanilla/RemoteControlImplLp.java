@@ -17,6 +17,7 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.ComponentName;
@@ -28,6 +29,7 @@ import android.media.session.MediaSession;
 import android.media.session.PlaybackState;
 import android.view.KeyEvent;
 
+@TargetApi(21)
 public class RemoteControlImplLp implements RemoteControl.Client {
 	/**
 	 * Context of this instance

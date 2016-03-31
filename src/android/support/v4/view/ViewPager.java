@@ -378,7 +378,7 @@ public class ViewPager extends ViewGroup {
         this.setAccessibilityDelegate(new MyAccessibilityDelegate());
 
         if (ViewPagerIcsCompat.getImportantForAccessibility(this)
-                == View.IMPORTANT_FOR_ACCESSIBILITY_AUTO) {
+                == View.IMPORTANT_FOR_ACCESSIBILITY_AUTO && Build.VERSION.SDK_INT >= 16) {
             this.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
         }
     }
