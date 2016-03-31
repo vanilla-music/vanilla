@@ -33,14 +33,17 @@ import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.SectionIndexer;
 import android.widget.TextView;
+
+import java.util.List;
 import java.util.regex.Pattern;
 import java.util.ArrayList;
 import java.lang.StringBuilder;
@@ -60,6 +63,7 @@ public class MediaAdapter
 	extends BaseAdapter
 	implements LibraryAdapter
 	         , View.OnClickListener
+	         , SectionIndexer
 {
 	private static final Pattern SPACE_SPLIT = Pattern.compile("\\s+");
 
@@ -144,6 +148,8 @@ public class MediaAdapter
 	 * Setting this to MediaUtils.TYPE_INVALID disables cover artwork
 	 */
 	private int mCoverCacheType;
+	
+	private List<SectionIndex> mAlphabet = new ArrayList<>(512);
 
 	/**
 	 * Construct a MediaAdapter representing the given <code>type</code> of
@@ -457,6 +463,7 @@ public class MediaAdapter
 	{
 		Cursor old = mCursor;
 		mCursor = cursor;
+		buildAlphabet();
 		if (cursor == null) {
 			notifyDataSetInvalidated();
 		} else {
@@ -634,5 +641,66 @@ public class MediaAdapter
 	public boolean hasStableIds()
 	{
 		return true;
+	}
+
+	private class SectionIndex 
+	{
+		
+		public SectionIndex(char letter, int position) {
+			this.letter = letter;
+			this.position = position;
+		}
+
+		private char letter;
+		private int position;
+
+		@Override
+		public String toString() {
+			return String.valueOf(letter);
+		}
+	}
+
+	private void buildAlphabet() 
+	{
+		mAlphabet.clear();
+		
+		Cursor cursor = mCursor;
+		if(cursor == null)
+			return;
+
+		cursor.moveToFirst();
+		char lastKnown = 0;
+		do {
+			String title = cursor.getString(2);
+			if(!TextUtils.isEmpty(title)) {
+				Character next = title.charAt(0);
+				if(next != lastKnown) { // new char
+					mAlphabet.add(new SectionIndex(next, cursor.getPosition()));
+					lastKnown = next;
+				}
+			}
+		} while (cursor.moveToNext());
+	}
+	
+	@Override
+	public Object[] getSections() 
+	{
+		return mAlphabet.toArray(new SectionIndex[mAlphabet.size()]);
+	}
+
+	@Override
+	public int getPositionForSection(int sectionIndex) 
+	{
+		return mAlphabet.get(sectionIndex).position;
+	}
+
+	@Override
+	public int getSectionForPosition(int position) 
+	{
+		for(int i = 0; i < mAlphabet.size(); ++i) {
+			if(mAlphabet.get(i).position > position)
+				return i - 1;
+		}
+		return 0;
 	}
 }
