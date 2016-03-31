@@ -896,7 +896,7 @@ public class LibraryActivity
 		case MSG_SAVE_PAGE: {
 			SharedPreferences.Editor editor = PlaybackService.getSettings(this).edit();
 			editor.putInt("library_page", message.arg1);
-			editor.commit();
+			editor.apply();
 			break;
 		}
 		case MSG_UPDATE_COVER: {

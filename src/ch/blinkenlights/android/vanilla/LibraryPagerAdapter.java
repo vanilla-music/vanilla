@@ -661,7 +661,7 @@ public class LibraryPagerAdapter
 			MediaAdapter adapter = (MediaAdapter)message.obj;
 			SharedPreferences.Editor editor = PlaybackService.getSettings(mActivity).edit();
 			editor.putInt(String.format("sort_%d_%d", adapter.getMediaType(), adapter.getLimiterType()), adapter.getSortMode());
-			editor.commit();
+			editor.apply();
 			break;
 		}
 		case MSG_REQUEST_REQUERY:

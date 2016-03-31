@@ -117,7 +117,7 @@ public class TabOrderActivity extends Activity
 
 		SharedPreferences.Editor editor = PlaybackService.getSettings(this).edit();
 		editor.putString(PrefKeys.TAB_ORDER, new String(out));
-		editor.commit();
+		editor.apply();
 	}
 
 	/**
