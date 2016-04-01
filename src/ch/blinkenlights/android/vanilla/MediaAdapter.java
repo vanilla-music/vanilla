@@ -33,7 +33,6 @@ import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,6 +42,7 @@ import android.widget.ImageView;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.ArrayList;
@@ -60,10 +60,10 @@ import java.lang.StringBuilder;
  * See getLimiter and setLimiter for details.
  */
 public class MediaAdapter
-	extends BaseAdapter
-	implements LibraryAdapter
-	         , View.OnClickListener
-	         , SectionIndexer
+		extends BaseAdapter
+		implements LibraryAdapter
+		, View.OnClickListener
+		, SectionIndexer
 {
 	private static final Pattern SPACE_SPLIT = Pattern.compile("\\s+");
 
@@ -148,7 +148,9 @@ public class MediaAdapter
 	 * Setting this to MediaUtils.TYPE_INVALID disables cover artwork
 	 */
 	private int mCoverCacheType;
-	
+	/**
+	 * Alphabet to be used for {@link SectionIndexer}. Populated in {@link #buildAlphabet()}.
+	 */
 	private List<SectionIndex> mAlphabet = new ArrayList<>(512);
 
 	/**
@@ -241,6 +243,23 @@ public class MediaAdapter
 	}
 
 	/**
+	 * Returns first sort column for this adapter. Ensure {@link #mSortMode} is correctly set
+	 * prior to calling this.
+	 *
+	 * @return string representing sort column to be used in projection.
+	 * 		   If the column is binary, returns its human-readable counterpart instead.
+	 */
+	private String getFirstSortColumn() {
+		int mode = mSortMode < 0 ? ~mSortMode : mSortMode; // get current sort mode
+		String column = SPACE_SPLIT.split(mSortValues[mode])[0];
+		if(column.endsWith("_key")) { // we want human-readable string, not machine-composed
+			column = column.substring(0, column.length() - 4);
+		}
+
+		return column;
+	}
+
+	/**
 	 * Set whether or not the expander button should be shown in each row.
 	 * Defaults to true for playlist adapter and false for all others.
 	 *
@@ -286,8 +305,12 @@ public class MediaAdapter
 
 		String sortStringRaw = mSortValues[mode];
 
+		String[] enrichedProjection;
 		// Magic sort mode: sort by playcount
 		if (sortStringRaw == SORT_MAGIC_PLAYCOUNT) {
+			// special case, no explicit column to sort
+			enrichedProjection = projection;
+
 			ArrayList<Long> topSongs = (new PlayCountsHelper(mContext)).getTopSongs(4096);
 			int sortWeight = -1 * topSongs.size(); // Sort mode is actually reversed (default: mostplayed -> leastplayed)
 
@@ -298,10 +321,16 @@ public class MediaAdapter
 			}
 			sb.append(" ELSE 0 END %1s");
 			sortStringRaw = sb.toString();
-		} else if (returnSongs && mType != MediaUtils.TYPE_SONG) {
-			// We are in a non-song adapter but requested to return songs - sorting
-			// can only be done by using the adapters default sort mode :-(
-			sortStringRaw = mSongSort;
+		} else {
+			// enrich projection with sort column to build alphabet later
+			enrichedProjection = Arrays.copyOf(projection, projection.length + 1);
+			enrichedProjection[projection.length] = getFirstSortColumn();
+
+			if (returnSongs && mType != MediaUtils.TYPE_SONG) {
+				// We are in a non-song adapter but requested to return songs - sorting
+				// can only be done by using the adapters default sort mode :-(
+				sortStringRaw = mSongSort;
+			}
 		}
 
 		String sort = String.format(sortStringRaw, sortDir);
@@ -351,19 +380,19 @@ public class MediaAdapter
 
 		QueryTask query;
 		if(mType == MediaUtils.TYPE_GENRE && !returnSongs) {
-			query = MediaUtils.buildGenreExcludeEmptyQuery(projection, selection.toString(),
+			query = MediaUtils.buildGenreExcludeEmptyQuery(enrichedProjection, selection.toString(),
 					selectionArgs, sort);
 		} else if (limiter != null && limiter.type == MediaUtils.TYPE_GENRE) {
 			// Genre is not standard metadata for MediaStore.Audio.Media.
 			// We have to query it through a separate provider. : /
-			query = MediaUtils.buildGenreQuery((Long)limiter.data, projection,  selection.toString(), selectionArgs, sort, mType, returnSongs);
+			query = MediaUtils.buildGenreQuery((Long)limiter.data, enrichedProjection,  selection.toString(), selectionArgs, sort, mType, returnSongs);
 		} else {
 			if (limiter != null) {
 				if (selection.length() != 0)
 					selection.append(" AND ");
 				selection.append(limiter.data);
 			}
-			query = new QueryTask(mStore, projection, selection.toString(), selectionArgs, sort);
+			query = new QueryTask(mStore, enrichedProjection, selection.toString(), selectionArgs, sort);
 			if (returnSongs) // force query on song provider as we are requested to return songs
 				query.uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 		}
@@ -643,59 +672,105 @@ public class MediaAdapter
 		return true;
 	}
 
-	private class SectionIndex 
+	/**
+	 * Helper class for building an alphabet.
+	 * Contains a hint that is shown in fast scroll thumb popup and a position where this hint
+	 * has appeared first.
+	 */
+	private class SectionIndex
 	{
-		
-		public SectionIndex(char letter, int position) {
-			this.letter = letter;
+
+		public SectionIndex(Object hint, int position) {
+			this.hint = hint;
 			this.position = position;
 		}
 
-		private char letter;
+		private Object hint;
 		private int position;
 
 		@Override
 		public String toString() {
-			return String.valueOf(letter);
+			return String.valueOf(hint);
 		}
 	}
 
-	private void buildAlphabet() 
+	/**
+	 * Build alphabet for fast-scroller. Detects automatically whether we're sorting
+	 * on string-type (e.g. title or album) or integer type (e.g. year).
+	 *
+	 * <p/>Alphabet building is only performed if applicable, i.e. magic playcount sort
+	 * or sort by date added will yield no results as the section hints would not be
+	 * human-readable.
+	 *
+	 * <p/>Note: This clears alphabet in case current cursor is invalid.
+	 */
+	private void buildAlphabet()
 	{
 		mAlphabet.clear();
-		
+
 		Cursor cursor = mCursor;
-		if(cursor == null)
+		if(cursor == null || cursor.getCount() == 0) {
 			return;
+		}
+
+		String columnName = getFirstSortColumn();
+		int sortColumnIndex = cursor.getColumnIndex(columnName);
+		if(sortColumnIndex <= 0) {
+			// either projection doesn't contain this column
+			// or the column is _id (e.g. sort by date added),
+			// no point in building
+			return;
+		}
 
 		cursor.moveToFirst();
-		char lastKnown = 0;
+		Object lastKnown = null;
+		Object next;
 		do {
-			String title = cursor.getString(2);
-			if(!TextUtils.isEmpty(title)) {
-				Character next = title.charAt(0);
-				if(next != lastKnown) { // new char
-					mAlphabet.add(new SectionIndex(next, cursor.getPosition()));
-					lastKnown = next;
-				}
+			if(cursor.isNull(sortColumnIndex))
+				continue;
+
+			int type = cursor.getType(sortColumnIndex);
+			switch (type) {
+				case Cursor.FIELD_TYPE_INTEGER:
+					next = cursor.getInt(sortColumnIndex);
+					break;
+				case Cursor.FIELD_TYPE_STRING:
+					next = cursor.getString(sortColumnIndex).charAt(0);
+					break;
+				default:
+					continue;
+			}
+			if (!next.equals(lastKnown)) { // new char
+				mAlphabet.add(new SectionIndex(next, cursor.getPosition()));
+				lastKnown = next;
 			}
 		} while (cursor.moveToNext());
 	}
-	
+
 	@Override
-	public Object[] getSections() 
+	public Object[] getSections()
 	{
 		return mAlphabet.toArray(new SectionIndex[mAlphabet.size()]);
 	}
 
 	@Override
-	public int getPositionForSection(int sectionIndex) 
+	public int getPositionForSection(int sectionIndex)
 	{
+		// clip to start
+		if(sectionIndex < 0) {
+			return 0;
+		}
+
+		// clip to end
+		if(sectionIndex >= mAlphabet.size()) {
+			return mCursor.getCount() - 1;
+		}
+
 		return mAlphabet.get(sectionIndex).position;
 	}
 
 	@Override
-	public int getSectionForPosition(int position) 
+	public int getSectionForPosition(int position)
 	{
 		for(int i = 0; i < mAlphabet.size(); ++i) {
 			if(mAlphabet.get(i).position > position)
