@@ -1144,6 +1144,9 @@ public final class PlaybackService extends Service
 	 * Returns TRUE if the mirror link service has been registered
 	 */
 	private MirrorLinkMediaBrowserService getMirrorLinkCallback() {
+		if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+			return null; // does not support mirrorlink
+
 		for (Object o : sCallbacks) {
 			if (o instanceof MirrorLinkMediaBrowserService) {
 				return (MirrorLinkMediaBrowserService)o;
