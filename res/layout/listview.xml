@@ -26,4 +26,5 @@ THE SOFTWARE.
 	android:layout_height="fill_parent"
 	android:divider="@drawable/divider_outside_inset"
 	android:dividerHeight="1dip"
-	android:scrollbarStyle="outsideInset" />
+	android:scrollbarStyle="outsideInset"
+	android:fastScrollEnabled="true"/>
