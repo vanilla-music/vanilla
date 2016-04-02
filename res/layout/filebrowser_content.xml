@@ -56,11 +56,10 @@ THE SOFTWARE.
 	android:id="@+id/list"
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
-	android:divider="?android:attr/dividerHorizontal"
-	android:dividerHeight="1dip"
 	android:listSelector="?android:attr/selectableItemBackground"
+	android:divider="@drawable/divider_outside_inset"
+	android:dividerHeight="1dip"
 	android:scrollbarStyle="outsideInset" />
-
 
 </LinearLayout>
 

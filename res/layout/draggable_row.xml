@@ -30,7 +30,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 		<View
 			android:id="@+id/pmark"
 			android:visibility="gone"
-			android:layout_width="4dip"
+			android:layout_width="@dimen/pmark_size"
 			android:layout_height="@dimen/row_normal_height"
 			android:background="@color/now_playing_marker" />
 
@@ -39,7 +39,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 			android:scaleType="centerCrop"
 			android:layout_width="@dimen/cover_size"
 			android:layout_height="@dimen/cover_size"
-			android:layout_marginLeft="@dimen/cover_padding"
+			android:layout_marginLeft="@dimen/cover_padding_with_pmark"
 			android:layout_gravity="center_vertical"
 			android:visibility="gone" />
 		<TextView
@@ -73,6 +73,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 	<View
 		android:layout_width="match_parent"
 		android:layout_height="1dip"
-		android:background="?android:attr/dividerHorizontal"/>
+		android:background="@drawable/divider_outside_inset" />
 
 </ch.blinkenlights.android.vanilla.DraggableRow>

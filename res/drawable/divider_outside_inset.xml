@@ -1,0 +1,11 @@
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+	android:insetLeft="0dp"
+	android:insetRight="0dp" >
+	<!-- holo version of divider which doesn't really have an inset.
+	     It would be very nice to inherit from "?android:attr/dividerHorizontal"
+	     but this seems to crash on Android 4 -->
+	<shape android:shape="rectangle">
+			<solid android:color="#2affffff"/>
+	</shape>
+</inset>
+
