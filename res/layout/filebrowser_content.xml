@@ -57,9 +57,8 @@ THE SOFTWARE.
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
 	android:listSelector="?android:attr/selectableItemBackground"
-	android:divider="@drawable/divider_outside_inset"
-	android:dividerHeight="1dip"
-	android:scrollbarStyle="outsideInset" />
+	android:divider="@drawable/inset_divider"
+	android:dividerHeight="1dip" />
 
 </LinearLayout>
 

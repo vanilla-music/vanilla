@@ -22,7 +22,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 	android:divider="@null"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
-	android:scrollbarStyle="outsideInset"
 	dslv:drag_enabled="false"
 	dslv:drag_start_mode="onMove"
 	dslv:float_background_color="?float_color"

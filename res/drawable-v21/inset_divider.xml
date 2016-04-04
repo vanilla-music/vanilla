@@ -1,6 +1,6 @@
 <inset xmlns:android="http://schemas.android.com/apk/res/android"
 	android:drawable="?android:attr/dividerHorizontal"
-	android:insetLeft="7sp"
-	android:insetRight="3sp" >
+	android:insetLeft="8sp"
+	android:insetRight="8sp" >
 </inset>
 
