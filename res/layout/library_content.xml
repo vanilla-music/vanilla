@@ -74,18 +74,8 @@ THE SOFTWARE.
 					<include layout="@layout/controls" />
 			</LinearLayout>
 
-			<FrameLayout
-				android:layout_width="fill_parent"
-				android:layout_height="fill_parent">
-				<fragment class="ch.blinkenlights.android.vanilla.ShowQueueFragment"
-					android:id="@+id/queue"
-					android:layout_width="fill_parent"
-					android:layout_height="fill_parent" />
-				<View
-					android:layout_width="fill_parent"
-					android:layout_height="3dp"
-					android:layout_gravity="top"
-					android:background="@drawable/drop_shadow"/>
-			</FrameLayout>
+			<fragment class="ch.blinkenlights.android.vanilla.ShowQueueFragment"
+				android:id="@+id/queue"
+				android:layout_width="fill_parent" android:layout_height="fill_parent" />
 	</ch.blinkenlights.android.vanilla.SlidingView>
 </merge>
