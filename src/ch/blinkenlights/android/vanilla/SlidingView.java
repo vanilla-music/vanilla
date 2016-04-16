@@ -65,6 +65,10 @@ public class SlidingView extends FrameLayout
 	 */
 	private boolean mDidScroll = false;
 	/**
+	 * TRUE if we have to hide the slide on visibility changes
+	 */
+	private boolean mDelayedHide = false;
+	/**
 	 * Reference to the gesture detector
 	 */
 	private GestureDetector mDetector;
@@ -141,10 +145,25 @@ public class SlidingView extends FrameLayout
 	}
 
 	/**
+	 * Same as hideSlide(), but will fire after we are not
+	 * visible anymore
+	 */
+	public void hideSlideDelayed() {
+		mDelayedHide = true;
+	}
+
+	/**
 	 * Returns true if the slide is fully hidden
 	 */
 	public boolean isHidden() {
 		return mCurrentStage == 0;
+	}
+
+	/**
+	 * Returns true if the slide is fully expanded
+	 */
+	public boolean isExpanded() {
+		return mCurrentStage == (mStages.size()-1);
 	}
 
 	/**
@@ -154,6 +173,8 @@ public class SlidingView extends FrameLayout
 	 */
 	private void setExpansionStage(int stage) {
 		mCurrentStage = stage;
+		mDelayedHide = false;
+
 		int pxOff = mStages.get(stage);
 		this
 			.animate()
@@ -255,6 +276,13 @@ public class SlidingView extends FrameLayout
 		}
 	}
 
+	@Override
+	protected void onWindowVisibilityChanged(int state) {
+		super.onWindowVisibilityChanged(state);
+		if (state == View.GONE && mDelayedHide) {
+			hideSlide();
+		}
+	}
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event){

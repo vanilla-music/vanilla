@@ -425,6 +425,8 @@ public class LibraryActivity
 	 */
 	public void openPlaybackActivity()
 	{
+		if (mSlidingView.isExpanded())
+			mSlidingView.hideSlideDelayed();
 		startActivity(new Intent(this, FullPlaybackActivity.class));
 	}
 
