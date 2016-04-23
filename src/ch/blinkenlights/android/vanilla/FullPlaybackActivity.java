@@ -654,4 +654,12 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 
 		return true;
 	}
+
+	@Override
+	public void onSlideFullyExpanded(boolean expanded) {
+		super.onSlideFullyExpanded(expanded);
+		if (expanded)
+			setExtraInfoVisible(false);
+	}
+
 }
