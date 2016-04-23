@@ -66,6 +66,39 @@ THE SOFTWARE.
 				android:orientation="horizontal">
 				<include layout="@layout/bottombar_controls" android:id="@+id/bottombar_controls" />
 			</LinearLayout>
+
+
+	<LinearLayout
+		android:layout_height="wrap_content"
+		android:layout_width="fill_parent"
+		android:layout_gravity="top"
+		android:background="?overlay_background_color"
+		android:elevation="2dp"
+		android:orientation="horizontal">
+		<TextView
+			android:id="@+id/elapsed"
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:layout_gravity="center"
+			android:paddingLeft="5dip" />
+		<SeekBar
+			android:id="@+id/seek_bar"
+			android:layout_height="wrap_content"
+			android:layout_width="0px"
+			android:layout_gravity="center"
+			android:paddingTop="5dip"
+			android:paddingBottom="5dip"
+			android:paddingLeft="18dip"
+			android:paddingRight="18dip"
+			android:layout_weight="1" />
+		<TextView
+			android:id="@+id/duration"
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:layout_gravity="center"
+			android:paddingRight="5dip" />
+	</LinearLayout>
+
 			<LinearLayout
 				android:layout_height="wrap_content"
 				android:layout_width="fill_parent"

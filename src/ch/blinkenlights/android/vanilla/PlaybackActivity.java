@@ -57,12 +57,10 @@ public abstract class PlaybackActivity extends Activity
 	implements TimelineCallback,
 	           Handler.Callback,
 	           View.OnClickListener,
-	           CoverView.Callback,
-	           SlidingView.Callback
+	           CoverView.Callback
 {
 	private Action mUpAction;
 	private Action mDownAction;
-	private Menu mMenu;
 
 	/**
 	 * A Handler running on the UI thread, in contrast with mHandler which runs
@@ -82,7 +80,6 @@ public abstract class PlaybackActivity extends Activity
 	protected ImageButton mPlayPauseButton;
 	protected ImageButton mShuffleButton;
 	protected ImageButton mEndButton;
-	protected SlidingView mSlidingView;
 
 	protected int mState;
 	private long mLastStateEvent;
@@ -318,10 +315,6 @@ public abstract class PlaybackActivity extends Activity
 		mEndButton = (ImageButton)findViewById(R.id.end_action);
 		mEndButton.setOnClickListener(this);
 		registerForContextMenu(mEndButton);
-
-		mSlidingView = (SlidingView)findViewById(R.id.sliding_view);
-		if (mSlidingView != null)
-			mSlidingView.setCallback(this);
 	}
 
 	/**
@@ -385,15 +378,7 @@ public abstract class PlaybackActivity extends Activity
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-		mMenu = menu;
-		menu.add(0, MENU_PREFS, 0, R.string.settings).setIcon(R.drawable.ic_menu_preferences);
-		menu.add(0, MENU_SHOW_QUEUE, 0, R.string.show_queue);
-		menu.add(0, MENU_HIDE_QUEUE, 0, R.string.hide_queue);
-		menu.add(0, MENU_CLEAR_QUEUE, 0, R.string.dequeue_rest);
-		menu.add(0, MENU_EMPTY_QUEUE, 0, R.string.empty_the_queue);
-		menu.add(0, MENU_SAVE_QUEUE_AS_PLAYLIST, 0, R.string.save_as_playlist);
-
-		onSlideFullyExpanded(false);
+		menu.add(0, MENU_PREFS, 10, R.string.settings).setIcon(R.drawable.ic_menu_preferences);
 		return true;
 	}
 
@@ -406,12 +391,6 @@ public abstract class PlaybackActivity extends Activity
 			break;
 		case MENU_CLEAR_QUEUE:
 			PlaybackService.get(this).clearQueue();
-			break;
-		case MENU_SHOW_QUEUE:
-			mSlidingView.expandSlide();
-			break;
-		case MENU_HIDE_QUEUE:
-			mSlidingView.hideSlide();
 			break;
 		case MENU_EMPTY_QUEUE:
 			PlaybackService.get(this).emptyQueue();
@@ -427,33 +406,6 @@ public abstract class PlaybackActivity extends Activity
 		return true;
 	}
 
-
-	/**
-	 * Called by SlidingView to signal a visibility change.
-	 * Toggles the visibility of menu items
-	 *
-	 * @param expanded true if slide fully expanded
-	 */
-	@Override
-	public void onSlideFullyExpanded(boolean expanded) {
-		if (mMenu == null)
-			return; // not initialized yet
-
-		final int[] slide_visible = {MENU_HIDE_QUEUE, MENU_CLEAR_QUEUE, MENU_EMPTY_QUEUE, MENU_SAVE_QUEUE_AS_PLAYLIST};
-		final int[] slide_hidden = {MENU_SHOW_QUEUE, MENU_SORT, MENU_DELETE, MENU_ENQUEUE_ALBUM, MENU_ENQUEUE_ARTIST, MENU_ENQUEUE_GENRE};
-
-		for (int id : slide_visible) {
-			MenuItem item = mMenu.findItem(id);
-			if (item != null)
-				item.setVisible(expanded);
-		}
-
-		for (int id : slide_hidden) {
-			MenuItem item = mMenu.findItem(id);
-			if (item != null)
-				item.setVisible(!expanded);
-		}
-	}
 
 	/**
 	 * Call addToPlaylist with the results from a NewPlaylistDialog stored in
