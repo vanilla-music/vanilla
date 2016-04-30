@@ -239,6 +239,7 @@
   <string name="clear_queue">Lejátszási sor ürítése</string>
   <string name="empty_the_queue">Lejátszási sor ürítése</string>
   <string name="show_queue">Lejátszási sor megjelenítése</string>
+  <string name="hide_queue">Lejátszási sor elrejtése</string>
   <string name="dequeue_rest">Hátralévők eltávolítása</string>
   <string name="queue">Lejátszási sor</string>
   <string name="toggle_controls">Vezérlőelemek megjelenítése</string>

@@ -47,7 +47,7 @@
   <string name="add_to_favorites">Добавить в избранное</string>
   <string name="remove_from_favorites">Удалить из избранного</string>
   <string name="playlist_favorites">Избранное</string>
-  <string name="new_playlist">Новые плейлист</string>
+  <string name="new_playlist">Новый плейлист</string>
   <string name="expand">Развернуть</string>
   <string name="delete">Удалить</string>
   <string name="playback_view">Сейчас играет</string>
@@ -100,7 +100,7 @@
   <string name="files">Файлы</string>
   <string name="none">Ничего</string>
   <string name="unknown">Неизвестный</string>
-  <string name="play_all">Играть все</string>
+  <string name="play_all">Воспроизвести всё</string>
   <string name="enqueue_all">Все в очередь</string>
   <string name="all_songs">Все песни</string>
   <string name="more_from_artist">Больше от того же исполнителя</string>

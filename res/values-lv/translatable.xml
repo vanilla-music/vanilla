@@ -45,6 +45,7 @@
   <string name="save_as_playlist">Saglabāt kā repertuāru...</string>
   <string name="add_to_playlist">Pievienot repertuāru...</string>
   <string name="add_to_favorites">Pievienot iecienītajiem</string>
+  <string name="remove_from_favorites">Izņemt no iecienītajiem</string>
   <string name="playlist_favorites">Iecienītie</string>
   <string name="new_playlist">Jauns repertuārs...</string>
   <string name="expand">Izplest</string>
@@ -71,6 +72,11 @@
     <item quantity="zero">Repertuāram %2$s pievienotas %1$d dziesmas.</item>
     <item quantity="one">Repertuāram %2$s pievienota %1$d dziesma.</item>
     <item quantity="other">Repertuāram %2$s pievienotas %1$d dziesmas.</item>
+  </plurals>
+  <plurals name="removed_from_playlist">
+    <item quantity="zero">No repertuāra %2$s izņemts %1$d dziesmu.</item>
+    <item quantity="one">No repertuāra %2$s izņemta 1 dziesma.</item>
+    <item quantity="other">No repertuāra %2$s izņemtas %1$d dziesmas.</item>
   </plurals>
   <plurals name="deleted">
     <item quantity="zero">Dzēsts %d dziesmu.</item>
@@ -242,6 +248,7 @@
   <string name="clear_queue">Notīrīt rindu</string>
   <string name="empty_the_queue">Tukša rinda</string>
   <string name="show_queue">Rādīt rindu</string>
+  <string name="hide_queue">Paslēpt rindu</string>
   <string name="dequeue_rest">Noņemt no rindas pārējos</string>
   <string name="queue">Rinda</string>
   <string name="toggle_controls">Pārslēgt vadīklas</string>
