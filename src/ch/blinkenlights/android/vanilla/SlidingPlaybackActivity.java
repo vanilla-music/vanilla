@@ -109,7 +109,11 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 
-		mMenu = menu;
+		// ICS sometimes constructs multiple items per view (soft button -> hw button?)
+		// we work around this by assuming that the first seen menu is the real one
+		if (mMenu == null)
+			mMenu = menu;
+
 		menu.add(0, MENU_SHOW_QUEUE, 20, R.string.show_queue);
 		menu.add(0, MENU_HIDE_QUEUE, 20, R.string.hide_queue);
 		menu.add(0, MENU_CLEAR_QUEUE, 20, R.string.dequeue_rest);
