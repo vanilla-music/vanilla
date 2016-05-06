@@ -44,6 +44,8 @@ THE SOFTWARE.
 			android:layout_height="wrap_content"
 			android:layout_width="0px"
 			android:layout_gravity="center"
+			android:minHeight="32dip"
+			android:maxHeight="32dip"
 			android:paddingTop="5dip"
 			android:paddingBottom="5dip"
 			android:paddingLeft="18dip"
@@ -62,7 +64,7 @@ THE SOFTWARE.
 		android:layout_height="fill_parent"
 		android:layout_width="fill_parent"
 		android:layout_gravity="bottom|left"
-		android:layout_marginTop="36dip"
+		android:layout_marginTop="40dip"
 		android:orientation="horizontal"
 		vanilla:slider_handle_id="@+id/queue_slider">
 			<LinearLayout

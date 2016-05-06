@@ -130,6 +130,8 @@ THE SOFTWARE.
 				android:layout_width="0px"
 				android:layout_gravity="center"
 				android:layout_weight="1"
+				android:minHeight="32dip"
+				android:maxHeight="32dip"
 				android:paddingLeft="18dip"
 				android:paddingRight="18dip" />
 			<TextView
