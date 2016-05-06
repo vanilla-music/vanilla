@@ -70,6 +70,10 @@ public class MediaAdapter
 	private static final String SORT_MAGIC_PLAYCOUNT = "__PLAYCOUNT_SORT";
 
 	/**
+	 * The string to use for length==0 db fields
+	 */
+	private static final String DB_NULLSTRING_FALLBACK = "???";
+	/**
 	 * A context to use.
 	 */
 	private final Context mContext;
@@ -536,8 +540,8 @@ public class MediaAdapter
 		if (mProjection.length >= 5) {
 			String line1 = cursor.getString(2);
 			String line2 = cursor.getString(3);
-			line1 = (line1 == null ? "???" : line1);
-			line2 = (line2 == null ? "???" : line2 + ", " + cursor.getString(4));
+			line1 = (line1 == null ? DB_NULLSTRING_FALLBACK : line1);
+			line2 = (line2 == null ? DB_NULLSTRING_FALLBACK : line2 + ", " + cursor.getString(4));
 
 			SpannableStringBuilder sb = new SpannableStringBuilder(line1);
 			sb.append('\n');
@@ -547,7 +551,7 @@ public class MediaAdapter
 			holder.title = line1;
 		} else {
 			String title = cursor.getString(2);
-			if(title == null) { title = "???"; }
+			if(title == null) { title = DB_NULLSTRING_FALLBACK; }
 			holder.text.setText(title);
 			holder.title = title;
 		}
@@ -723,6 +727,7 @@ public class MediaAdapter
 		}
 
 		cursor.moveToFirst();
+		String lastString = null;
 		Object lastKnown = null;
 		Object next;
 		do {
@@ -735,7 +740,11 @@ public class MediaAdapter
 					next = cursor.getInt(sortColumnIndex);
 					break;
 				case Cursor.FIELD_TYPE_STRING:
-					next = cursor.getString(sortColumnIndex).charAt(0);
+					lastString = cursor.getString(sortColumnIndex);
+					if (lastString.length() < 1)
+						lastString = DB_NULLSTRING_FALLBACK;
+
+					next = lastString.charAt(0);
 					break;
 				default:
 					continue;
