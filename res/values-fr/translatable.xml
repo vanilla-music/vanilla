@@ -8,6 +8,7 @@
   <string name="library">Bibliothèque</string>
   <string name="no_shuffle">Désactiver le mode aléatoire</string>
   <string name="shuffle_songs">Morceaux en mode aléatoire</string>
+  <string name="shuffle_songs_continuously">Morceaux continuellement en mode aléatoire</string>
   <string name="shuffle_albums">Albums en mode aléatoire</string>
   <string name="no_repeat">Désactiver la répétition</string>
   <string name="repeat">Répéter</string>
@@ -44,6 +45,7 @@
   <string name="save_as_playlist">Enregistrer en tant que liste de lecture...</string>
   <string name="add_to_playlist">Ajouter a la liste de lecture...</string>
   <string name="add_to_favorites">Ajouter aux favoris</string>
+  <string name="remove_from_favorites">Retirer des favoris</string>
   <string name="playlist_favorites">Favoris</string>
   <string name="new_playlist">Nouvelle liste de lecture...</string>
   <string name="expand">Explorer</string>
@@ -67,6 +69,10 @@
   <plurals name="added_to_playlist">
     <item quantity="one">1 morceau ajouté à la playlist %2$s.</item>
     <item quantity="other">%1$d morceaux ajoutés à la playlist %2$s.</item>
+  </plurals>
+  <plurals name="removed_from_playlist">
+    <item quantity="one">1 moceau enlevé de la playlist %2$s.</item>
+    <item quantity="other">%1$d moceaux enlevés de la playlist %2$s.</item>
   </plurals>
   <plurals name="deleted">
     <item quantity="one">1 morceau supprimé.</item>
@@ -120,7 +126,10 @@
   <string name="volume_title">Volume</string>
   <string name="volume_during_ducking_title">Volume pendant les notifications</string>
   <string name="volume_during_ducking_summary">Volume de lecture :</string>
+  <string name="ignore_audiofocus_loss_summary">Continuer la lecture après une perte complète du focus audio</string>
+  <string name="media_button_title">Contrôlable par casque/bluetooth</string>
   <string name="media_button_summary">Également nécessaire pour les contrôles de l\'écran verrouillé d\'Android ICS</string>
+  <string name="media_button_beep_title">Bip du contrôle casque</string>
   <string name="media_button_beep_summary">Bip lors du changement de morceau par double clic avec le contrôle casque</string>
   <string name="headset_only_title">Sortie externe seulement</string>
   <string name="headset_only_summary">Empêche la lecture depuis les haut-parleurs internes</string>
@@ -128,6 +137,7 @@
   <string name="headset_pause_summary">Mettre en pause lorsque les écouteurs sont déconnectés.</string>
   <string name="headset_launch_title">Lecture à la connexion</string>
   <string name="headset_launch_summary">Lecture à la connexion des écouteurs (fonctionne uniquement lorsque l\'application \"Headphone detector\" est installée).</string>
+  <string name="headset_launch_app_missing">Cette fonctionnalité nécessite l\'installation de l\'application \'Headphone detector\'.\nVoulez vous l\'installer via le Play Store ?</string>
   <string name="replaygain">ReplayGain</string>
   <string name="replaygain_title">Activer le ReplayGain</string>
   <string name="replaygain_summary">Configurer la gestion des informations de ReplayGain</string>
@@ -139,9 +149,11 @@
   <string name="replaygain_untagged_debump_title">Morceaux sans le tag ReplayGain</string>
   <string name="replaygain_untagged_debump_summary">Diminuer le volume de</string>
   <string name="replaygain_preamp_note_title">Note</string>
+  <string name="replaygain_preamp_note_content">Android n\'autorise pas Vanilla Music à augmenter le volume au delà de 100%. Un réglage élevé du Pré-ampli peut provoquer des problèmes à l\'écoute de musique \'calme\'. \n\nLes valeurs recommandées sont:\n-&gt; -3dB pour la musique classique/douce\n-&gt; +3dB pour les enregistrements postérieurs à 2000</string>
   <string name="readahead">Activer la pré-lecture</string>
   <string name="readahead_summary">Pré-lecture du morceau en cours de lecture. Cette option peut résoudre les problèmes de \'décrochage audio\' (dus à une carte SD lente)</string>
   <string name="equalizer">Égaliseur</string>
+  <string name="cycle_continuous_shuffling">Mode aléatoire en continu</string>
   <string name="cycle_continuous_shuffling_summary">Le \"mode aléatoire\" lira les morceaux dans un ordre totalement aléatoire</string>
   <string name="notifications">Notifications</string>
   <string name="notification_mode_title">Mode de notification</string>
@@ -162,6 +174,7 @@
   <string name="controls_in_selector_title">Contrôles dans la bibliothèque</string>
   <string name="controls_in_selector_summary">Afficher le morceaux en cours de lecture et les contrôles de lecture dans l\'écran de bibliothèque</string>
   <string name="default_action_title">Action par défaut</string>
+  <string name="default_playlist_action_title">Action par défaut de la liste de lecture</string>
   <string name="accelerometer_shake">Secouer l\'appareil</string>
   <string name="enable_shake_title">Activer secouer l\'appareil</string>
   <string name="enable_shake_summary">Actif uniquement lorsque la musique est en cours de lecture. Ne fonctionne pas lorsque l\'écran est éteint sur certains appareils.</string>
@@ -172,7 +185,9 @@
   <string name="use_dark_theme_summary">Active le thème \"dark material\"</string>
   <string name="disable_lockscreen_title">Désactiver le verrouillage de l\'écran</string>
   <string name="disable_lockscreen_summary">Empêche le verrouillage de l\'écran lorsque la bibliothèque ou l\'écran de lecture est affiché</string>
+  <string name="use_idle_timeout_title">Activer le délai d\'inactivité</string>
   <string name="use_idle_timeout_summary">Quand l\'option est activée, la lecture s\'arrêtera après la période d\'inactivité donnée</string>
+  <string name="idle_timeout_title">Délai d\'inactivité</string>
   <string name="disable_cover_art_title">Désactiver la jaquette</string>
   <string name="disable_cover_art_summary">Ne charge les couvertures nulle part dans l\'application</string>
   <string name="coverloader_android_title">Charger les illustrations depuis Android</string>
@@ -187,6 +202,7 @@
   <string name="double_tap_summary">Toucher deux fois le widget 1x1 pour ouvrir le lecteur. Implique un délai de 400ms avant que le widget réponde aux actions.</string>
   <string name="scrobble_title">Utiliser l\'API ScrobbleDroid</string>
   <string name="scrobble_summary">Envoyer l\'information de scrobble à Last.fm grâce à ScrobbleDroid ou SimpleLast.fm Scrobbler</string>
+  <string name="stock_broadcast_title">Emuler les notifications natives</string>
   <string name="stock_broadcast_summary">Envoyer les messages de diffusion émulant ceux envoyés par le lecteur d\'origine pour fonctionner avec des contrôles d\'écran de verrouillage tiers, widgets, etc.</string>
   <string name="media_scan">Rafraîchir la bibliothèque</string>
   <string name="tap_to_scan">Toucher pour trouver de la musique dans le stockage externe</string>
@@ -223,6 +239,7 @@
   <string name="clear_queue">Effacer la file d\'attente</string>
   <string name="empty_the_queue">Vider la file d\'attente</string>
   <string name="show_queue">Afficher la file d\'attente</string>
+  <string name="hide_queue">Masquer la file d\'attente</string>
   <string name="dequeue_rest">Enlever le reste de la file d\'attente</string>
   <string name="queue">File d\'attente</string>
   <string name="toggle_controls">Afficher/cacher les contrôles</string>
@@ -237,8 +254,10 @@
   <string name="customize_filebrowser_start">L\'explorateur de fichier démarre à ce répertoire</string>
   <string name="select">Sélectionner</string>
   <string name="autoplaylist_playcounts_title">Création de liste de lecture automatique</string>
-  <string name="autoplaylist_playcounts_summary">Créer automatiquement un</string>
+  <string name="autoplaylist_playcounts_summary">Créer automatiquement une</string>
+  <string name="autoplaylist_playcounts_fmt" formatted="false">%s liste de lecture \'Top %.0f\'</string>
   <string name="autoplaylist_playcounts_disabled">Ne pas créer de liste de lecture automatique</string>
+  <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
   <string name="permission_request_summary">Vanilla Music a besoin d\'une permission de lecture pour afficher votre bibliothèque musicale</string>
   <string name="ok">Ok</string>
 </resources>

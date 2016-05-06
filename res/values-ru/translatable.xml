@@ -253,7 +253,7 @@
   <string name="enqueue_current_artist">Добавить в очередь исполнителя</string>
   <string name="enqueue_current_genre">Добавить в очередь жанр</string>
   <string name="clear_queue">Очистить очередь</string>
-  <string name="empty_the_queue">Пустая очереди</string>
+  <string name="empty_the_queue">Освободить очередь</string>
   <string name="show_queue">Показать очередь</string>
   <string name="hide_queue">Спрятать очередь</string>
   <string name="dequeue_rest">Удалить остальное</string>
