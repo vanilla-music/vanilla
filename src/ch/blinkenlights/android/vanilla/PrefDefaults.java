@@ -52,7 +52,7 @@ public class PrefDefaults {
 	public static final boolean SCROBBLE = false;
 	public static final Action  SHAKE_ACTION = Action.NextSong;
 	public static final int     SHAKE_THRESHOLD = 80;
-	public static final boolean STOCK_BROADCAST = false;
+	public static final boolean STOCK_BROADCAST = true;
 	public static final Action  SWIPE_DOWN_ACTION = Action.Nothing;
 	public static final Action  SWIPE_UP_ACTION = Action.Nothing;
 	public static final String  TAB_ORDER = null;
