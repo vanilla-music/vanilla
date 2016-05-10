@@ -199,6 +199,7 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 		if (fromUser) {
 			mElapsedView.setText(DateUtils.formatElapsedTime(mTimeBuilder, progress * mDuration / 1000000));
+			mUiHandler.removeMessages(MSG_UPDATE_PROGRESS);
 			mUiHandler.removeMessages(MSG_SEEK_TO_PROGRESS);
 			mUiHandler.sendMessageDelayed(mUiHandler.obtainMessage(MSG_SEEK_TO_PROGRESS, progress, 0), 150);
 		}
