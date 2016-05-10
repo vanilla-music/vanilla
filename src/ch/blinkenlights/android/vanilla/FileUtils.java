@@ -18,13 +18,16 @@
 package ch.blinkenlights.android.vanilla;
 
 import java.io.File;
+import java.net.URI;
 import java.net.URLConnection;
+import java.net.URISyntaxException;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Environment;
+import android.util.Log;
 
 
 /**
@@ -44,11 +47,15 @@ public class FileUtils {
 		int type = intent.getIntExtra(LibraryAdapter.DATA_TYPE, MediaUtils.TYPE_INVALID);
 		boolean isFolder = intent.getBooleanExtra(LibraryAdapter.DATA_EXPANDABLE, false);
 		String path = intent.getStringExtra(LibraryAdapter.DATA_FILE);
-
 		if (type == MediaUtils.TYPE_FILE && isFolder == false) {
-			String mimeGuess = URLConnection.guessContentTypeFromName(path);
-			if (mimeGuess != null && mimeGuess.matches("^(image|text)/.+")) {
-				canDispatch = true;
+			try {
+				URI uri = new URI("file", path, null);
+				String mimeGuess = URLConnection.guessContentTypeFromName(uri.toString());
+				if (mimeGuess != null && mimeGuess.matches("^(image|text)/.+")) {
+					canDispatch = true;
+				}
+			} catch (URISyntaxException e) {
+				Log.e("VanillaMusic", "failed to encode "+path+": "+e);
 			}
 		}
 		return canDispatch;
