@@ -613,13 +613,17 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 	}
 
 	@Override
-	protected void performAction(Action action)
-	{
-		if (action == Action.ToggleControls) {
-			setControlsVisible(!mControlsVisible);
-			mHandler.sendEmptyMessage(MSG_SAVE_CONTROLS);
-		} else {
-			super.performAction(action);
+	protected void performAction(Action action) {
+		switch (action) {
+			case ToggleControls:
+				setControlsVisible(!mControlsVisible);
+				mHandler.sendEmptyMessage(MSG_SAVE_CONTROLS);
+				break;
+			case ShowQueue:
+				mSlidingView.expandSlide();
+				break;
+			default:
+				super.performAction(action);
 		}
 	}
 

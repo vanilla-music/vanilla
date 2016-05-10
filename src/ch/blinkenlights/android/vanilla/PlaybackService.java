@@ -2264,7 +2264,8 @@ public final class PlaybackService extends Service
 			showMirrorLinkSafeToast(R.string.queue_cleared, Toast.LENGTH_SHORT);
 			break;
 		case ToggleControls:
-			// Handled in FullPlaybackActivity.performAction
+		case ShowQueue:
+			// These are NOOPs here and should be handled in FullPlaybackActivity
 			break;
 		case SeekForward:
 			if (mCurrentSong != null) {

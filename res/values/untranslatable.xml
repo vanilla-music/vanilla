@@ -51,6 +51,7 @@ THE SOFTWARE.
 		<item>EnqueueArtist</item>
 		<item>EnqueueGenre</item>
 		<item>ClearQueue</item>
+		<item>ShowQueue</item>
 		<item>ToggleControls</item>
 		<item>SeekForward</item>
 		<item>SeekBackward</item>
@@ -70,6 +71,7 @@ THE SOFTWARE.
 		<item>@string/preferences_action_enqueue_current_artist</item>
 		<item>@string/preferences_action_enqueue_current_genre</item>
 		<item>@string/preferences_action_clear_queue</item>
+		<item>@string/preferences_action_show_queue</item>
 		<item>@string/toggle_controls</item>
 		<item>@string/seek_10s_forward</item>
 		<item>@string/seek_10s_backward</item>
