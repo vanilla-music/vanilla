@@ -91,7 +91,7 @@ THE SOFTWARE.
 	<string-array name="default_playlist_action_entry_values">
 		<item>0</item> <!-- play             -->
 		<item>1</item> <!-- enqueue          -->
-		<item>2</item> <!-- last_actin_used  -->
+		<item>2</item> <!-- last_action_used -->
 		<item>3</item> <!-- play_all         -->
 		<item>4</item> <!-- enqueue_all      -->
 		<item>7</item> <!-- play_or_enqueue  -->
@@ -100,17 +100,31 @@ THE SOFTWARE.
 	</string-array>
 	<!-- END playlist action entries definition -->
 
+	<!-- START default action entries definition -->
 	<string-array name="default_action_entries">
+		<item>@string/expand</item>
 		<item>@string/play</item>
 		<item>@string/enqueue</item>
 		<item>@string/last_used_action</item>
 		<item>@string/play_all</item>
 		<item>@string/enqueue_all</item>
-		<item>@string/do_nothing</item>
-		<item>@string/expand</item>
 		<item>@string/play_or_enqueue</item>
 		<item>@string/enqueue_as_next</item>
+		<item>@string/do_nothing</item>
 	</string-array>
+	<string-array name="default_action_entry_values">
+		<item>6</item> <!-- expand           -->
+		<item>0</item> <!-- play             -->
+		<item>1</item> <!-- enqueue          -->
+		<item>2</item> <!-- last_action_used -->
+		<item>3</item> <!-- play_all         -->
+		<item>4</item> <!-- enqueue_all      -->
+		<item>7</item> <!-- play_or_enqueue  -->
+		<item>8</item> <!-- enqueue_as_next  -->
+		<item>5</item> <!-- do_nothing       -->
+	</string-array>
+	<!-- END default action entries definition -->
+
 	<string-array name="notification_mode_entries">
 		<item>@string/never_show</item>
 		<item>@string/show_when_playing</item>

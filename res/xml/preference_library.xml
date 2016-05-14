@@ -34,7 +34,7 @@ THE SOFTWARE.
 		android:key="default_action_int"
 		android:title="@string/default_action_title"
 		android:entries="@array/default_action_entries"
-		android:entryValues="@array/entry_values"
+		android:entryValues="@array/default_action_entry_values"
 		android:defaultValue="6" />
 	<ch.blinkenlights.android.vanilla.ListPreferenceSummary
 		android:key="default_playlist_action"
