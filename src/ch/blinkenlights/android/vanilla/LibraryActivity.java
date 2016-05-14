@@ -53,12 +53,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.CheckBox;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.SearchView;
@@ -827,14 +827,8 @@ public class LibraryActivity
 			return true;
 		case MENU_SORT: {
 			MediaAdapter adapter = (MediaAdapter)mCurrentAdapter;
-			int mode = adapter.getSortMode();
-			int check;
-			if (mode < 0) {
-				check = R.id.descending;
-				mode = ~mode;
-			} else {
-				check = R.id.ascending;
-			}
+			LinearLayout header = (LinearLayout)getLayoutInflater().inflate(R.layout.sort_dialog, null);
+			CheckBox reverseSort = (CheckBox)header.findViewById(R.id.reverse_sort);
 
 			int[] itemIds = adapter.getSortEntries();
 			String[] items = new String[itemIds.length];
@@ -843,8 +837,11 @@ public class LibraryActivity
 				items[i] = res.getString(itemIds[i]);
 			}
 
-			RadioGroup header = (RadioGroup)getLayoutInflater().inflate(R.layout.sort_dialog, null);
-			header.check(check);
+			int mode = adapter.getSortMode();
+			if (mode < 0) {
+				mode =~ mode;
+				reverseSort.setChecked(true);
+			}
 
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle(R.string.sort_by);
@@ -954,9 +951,10 @@ public class LibraryActivity
 		// subtract 1 for header
 		int which = list.getCheckedItemPosition() - 1;
 
-		RadioGroup group = (RadioGroup)list.findViewById(R.id.sort_direction);
-		if (group.getCheckedRadioButtonId() == R.id.descending)
+		CheckBox reverseSort = (CheckBox)list.findViewById(R.id.reverse_sort);
+		if (reverseSort.isChecked()) {
 			which = ~which;
+		}
 
 		mPagerAdapter.setSortMode(which);
 	}
