@@ -233,6 +233,9 @@ public class PlaylistActivity extends Activity
 	 */
 	private void performAction(int action, int position, long audioId)
 	{
+		if (action == LibraryActivity.ACTION_PLAY_OR_ENQUEUE)
+			action = (PlaybackService.get(this).isPlaying() ? LibraryActivity.ACTION_ENQUEUE : LibraryActivity.ACTION_PLAY);
+
 		if (action == LibraryActivity.ACTION_LAST_USED)
 			action = mLastAction;
 
