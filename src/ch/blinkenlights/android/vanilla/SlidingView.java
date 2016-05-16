@@ -172,6 +172,9 @@ public class SlidingView extends FrameLayout
 	 * @param stage the stage to transform to
 	 */
 	private void setExpansionStage(int stage) {
+		if (mStages.size() < 1)
+			return;
+
 		mCurrentStage = stage;
 		mDelayedHide = false;
 
