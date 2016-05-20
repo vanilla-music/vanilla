@@ -186,6 +186,7 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService
 		mHandler = new Handler(mLooper, this);
 
 		updatePlaybackState(null);
+		setSong(0, null);
 	}
 
 	@Override
@@ -420,32 +421,35 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService
 	private void runQuery(List<MediaBrowser.MediaItem> populateMe, int mediaType, MediaAdapter adapter) {
 		populateMe.clear();
 		try {
-			Cursor cursor = adapter.query();
 			Context context = getApplicationContext();
 			ContentResolver resolver = context.getContentResolver();
-
+			Cursor cursor = adapter.query();
+			Song song = new Song(-1);
+			song.artist = "";
+			song.album = "";
 			if (cursor == null) {
 				return;
 			}
 
 			final int flags = (mediaType == MediaUtils.TYPE_SONG || mediaType == MediaUtils.TYPE_PLAYLIST) ? MediaBrowser.MediaItem.FLAG_PLAYABLE : MediaBrowser.MediaItem.FLAG_BROWSABLE;
 			final int count = cursor.getCount();
+			cursor.moveToFirst();
 			for (int j = 0; j != count; ++j) {
-				cursor.moveToPosition(j);
-				final String id = cursor.getString(0);
-				final String label = cursor.getString(2);
-				long mediaId = Long.parseLong(id);
-
-				Song song = MediaUtils.getSongByTypeId(resolver, mediaType, mediaId);
+				final String id = cursor.getString(0); //Long.parseLong(id);
+				song.id = cursor.getLong(0);
+				song.albumId = cursor.getLong(1);
+				song.title = cursor.getString(2);
+				Bitmap cover = (mediaType == MediaUtils.TYPE_SONG || mediaType == MediaUtils.TYPE_ALBUM) ? song.getSmallCover(context) : null;
 				MediaBrowser.MediaItem item = new MediaBrowser.MediaItem(
 					new MediaDescription.Builder()
-						.setMediaId(MediaID.toString(mediaType, mediaId, label))
-						.setTitle(label)
+						.setMediaId(MediaID.toString(mediaType, song.id, song.title))
+						.setTitle(song.title)
 						.setSubtitle(subtitleForMediaType(mediaType))
-						.setIconBitmap(song.getSmallCover(context))
+						.setIconBitmap(cover == null ? CoverBitmap.generatePlaceholderCover(context, 88,88,song.title) : cover)
 						.build(),
 						flags);
 				populateMe.add(item);
+				cursor.moveToNext();
 			}
 
 			cursor.close();
