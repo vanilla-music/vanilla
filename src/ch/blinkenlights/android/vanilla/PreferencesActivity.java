@@ -253,7 +253,7 @@ public class PreferencesActivity extends PreferenceActivity {
 				new AlertDialog.Builder(activity)
 				.setTitle(R.string.headset_launch_title)
 				.setMessage(R.string.headset_launch_app_missing)
-				.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+				.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
 						Intent marketIntent = new Intent(Intent.ACTION_VIEW);
 						marketIntent.setData(Uri.parse("market://details?id="+VPLUG_PACKAGE_NAME));
@@ -261,7 +261,7 @@ public class PreferencesActivity extends PreferenceActivity {
 						getActivity().finish();
 					}
 				})
-				.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+				.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
 						getActivity().finish();
 					}

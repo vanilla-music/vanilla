@@ -54,8 +54,6 @@ THE SOFTWARE.
 	<string name="choose_playlist_name">Choose playlist name</string>
 	<string name="create">Create</string>
 	<string name="overwrite">Overwrite</string>
-	<string name="cancel">Cancel</string>
-	<string name="yes">Yes</string>
 
 	<string name="delete_playlist">Delete playlist %s?</string>
 
@@ -295,6 +293,5 @@ THE SOFTWARE.
 	<string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
 
 	<string name="permission_request_summary">Vanilla Music needs read permission to display your music library</string>
-	<string name="ok">Ok</string>
 	<string name="reverse_sort">Reverse sort</string>
 </resources>

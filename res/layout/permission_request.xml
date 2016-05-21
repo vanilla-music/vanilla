@@ -37,6 +37,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 			android:clickable="false"
 			android:layout_marginRight="8dip"
 			android:layout_gravity="center"
-			android:text="@string/ok" />
+			android:text="@android:string/ok" />
 	</TableRow>
 </TableLayout>
