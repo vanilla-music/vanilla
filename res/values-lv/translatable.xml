@@ -146,15 +146,15 @@
   <string name="headset_launch_title">Atskaņot, kad pievienotas austiņas</string>
   <string name="headset_launch_summary">Atskaņot, kad tiek pievienotas austiņas. (Jābūt instalētai lietotnei \'Headphone detector\'.)</string>
   <string name="headset_launch_app_missing">Šajai iespējai nepieciešams instalēt lietotni \'Headphone detector\'.\nWould vēlaties atvērt Play Store, lai instalētu lietotni?</string>
-  <string name="replaygain">Replay gain</string>
+  <string name="replaygain">ReplayGain</string>
   <string name="replaygain_title">Ieslēgt Replay Gain</string>
-  <string name="replaygain_summary">Konfigurēt Replay Gain informācijas apstrādi</string>
+  <string name="replaygain_summary">Konfigurēt ReplayGain informācijas apstrādi</string>
   <string name="replaygain_track_title">Ieslēgt celiņu Replay Gain</string>
   <string name="replaygain_track_summary">Atskaņot visus celiņus vienādā skaļumā</string>
   <string name="replaygain_album_title">Ieslēgt albuma Replay Gain</string>
   <string name="replaygain_album_summary">Saglabāt albumu dinamiku</string>
-  <string name="replaygain_bump_title">Replay Gain priekšpastiprinājums</string>
-  <string name="replaygain_untagged_debump_title">Dziesmas bez Replay Gain taga</string>
+  <string name="replaygain_bump_title">ReplayGain priekšpastiprinājums</string>
+  <string name="replaygain_untagged_debump_title">Dziesmas bez ReplayGain taga</string>
   <string name="replaygain_untagged_debump_summary">Samazināt skaļumu par</string>
   <string name="replaygain_preamp_note_title">Piezīme</string>
   <string name="replaygain_preamp_note_content">Android neļauj paaugstināt skaļumu virs 100%. Priekšpastiprinājuma iestatīšana uz augstām vērtībām var izraisīt problēmas, ja klausaties \'klusu\' mūziku.
@@ -269,4 +269,5 @@
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
   <string name="permission_request_summary">Vanilla Music lasīšanas atļauja vajadzīga, lai parādītu jūsu mūzikas bibliotēku</string>
   <string name="ok">Labi</string>
+  <string name="reverse_sort">Apgrieztā kārtošana</string>
 </resources>

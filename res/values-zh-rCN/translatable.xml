@@ -130,15 +130,8 @@
   <string name="headset_launch_title">插入时播放</string>
   <string name="headset_launch_summary">当耳机插入时播放。(仅当“耳机检测”应用运行时)</string>
   <string name="headset_launch_app_missing">此特性需要“耳机检测”应用。\n你想打开 Play Store 来安装此应用吗？</string>
-  <string name="replaygain">重播增益</string>
-  <string name="replaygain_title">启用重播增益</string>
-  <string name="replaygain_summary">配置处理回放增益的信息</string>
-  <string name="replaygain_track_title">启用每个音轨重播增益</string>
   <string name="replaygain_track_summary">以同等响度播放所有音乐</string>
-  <string name="replaygain_album_title">启用专辑重播增益</string>
   <string name="replaygain_album_summary">维持专辑力度变化</string>
-  <string name="replaygain_bump_title">重播增益的前置放大器</string>
-  <string name="replaygain_untagged_debump_title">没有重播增益标签的音乐</string>
   <string name="replaygain_untagged_debump_summary">降低音量依据</string>
   <string name="replaygain_preamp_note_title">注意</string>
   <string name="replaygain_preamp_note_content">Android 不允许 Vanilla Music 将音量调到 &gt;100%，将前置放大器设置较高树枝可能会导致聆听比较“安静”的音乐时产生问题。\n\n建议将数值：为安静和古典音乐设置\n-&gt; -3dB \n-&gt; 为新世纪音乐设置+3dB </string>

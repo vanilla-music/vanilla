@@ -130,7 +130,7 @@
   <string name="media_button_title">Kulaklık/Bluetooth denetimleri</string>
   <string name="media_button_summary">Bu aynı zamanda ICS kilit ekranı denetimleri için de gereklidir.</string>
   <string name="media_button_beep_title">Kulaklık denetim bipi</string>
-  <string name="media_button_beep_summary">Kulaklık düğmesine iki kez basıp izi atlayınca biple.</string>
+  <string name="media_button_beep_summary">Kulaklık düğmesine iki kez basınca izi atlayıp biple.</string>
   <string name="headset_only_title">Yalnızca harici çıkış</string>
   <string name="headset_only_summary">Müziğin dahili hoparlörlerden oynatılmasını engeller.</string>
   <string name="headset_pause_title">Çıkarıldığında duraklat</string>
@@ -138,22 +138,22 @@
   <string name="headset_launch_title">Takıldığında oynat</string>
   <string name="headset_launch_summary">Kulaklıklar takıldığında oynatmaya başla (\'Kulaklık Bulucu\' uygulamasının yüklü olmasını gerektirir).</string>
   <string name="headset_launch_app_missing">Bu özellik \'Kulaklık Bulucu\' uygulamasının yüklü olmasını gerektirir.\nBu uygulamayı yüklemek için Play Store\'u şimdi açmak ister misiniz?</string>
-  <string name="replaygain">Ses düzeyi eşitlemesi</string>
-  <string name="replaygain_title">Ses düzeyini eşitle</string>
-  <string name="replaygain_summary">Ses düzeyi eşitleme bilgisini yapılandır</string>
-  <string name="replaygain_track_title">İz başına ses düzeyi eşitlemesini etkinleştir</string>
+  <string name="replaygain">Ses Eşitleme</string>
+  <string name="replaygain_title">Ses Eşitlemeyi etkinleştir</string>
+  <string name="replaygain_summary">Ses Eşitleme bilgisinin nasıl kullanılacağını düzenle</string>
+  <string name="replaygain_track_title">İz başına Ses Eşitlemeyi etkinleştir</string>
   <string name="replaygain_track_summary">Tüm izleri aynı ses düzeyinde oynat</string>
-  <string name="replaygain_album_title">Albüm ses düzeyi eşitlemesini etkinleştir</string>
+  <string name="replaygain_album_title">Albüm Ses Eşitlemeyi etkinleştir</string>
   <string name="replaygain_album_summary">Albüm dinamiklerini koru</string>
-  <string name="replaygain_bump_title">Ses düzeyi eşitleme desibel ayarı</string>
-  <string name="replaygain_untagged_debump_title">SDE etiketi olmayan şarkılar</string>
+  <string name="replaygain_bump_title">Pre-amp Ses Eşitlemesi</string>
+  <string name="replaygain_untagged_debump_title">Ses Eşitleme etiketi olmayan şarkılar</string>
   <string name="replaygain_untagged_debump_summary">Ses düzeyini şu kadar indir:</string>
   <string name="replaygain_preamp_note_title">Not</string>
   <string name="replaygain_preamp_note_content">Android Vanilya Müzik\'in ses düzeyini &gt;%100\'e çıkartmasına izin vermiyor. Pre-amp\'ı daha yüksek bir değere çıkarmak özellikle \"sessiz\" müzikler dinlerken sorunlara neden olabilir.\n\nTavsiye edilen değerler: sessiz/klasik müzik için \n-&gt; -3dB -2000 yılı sonrası kayıtlar için +3dB\'dir.</string>
   <string name="readahead">Önbelleğe yazmayı etkinleştir</string>
   <string name="readahead_summary">Oynatılan şarkıyı belleğe alır. Bu seçenek ses takılması sorunlarını çözebilir (yavaş bir SD karta neden olabilir).</string>
-  <string name="equalizer">Equalizer</string>
-  <string name="cycle_continuous_shuffling">Sürekli karıştırma</string>
+  <string name="equalizer">Ses Efektleri</string>
+  <string name="cycle_continuous_shuffling">Sürekli karıştır</string>
   <string name="cycle_continuous_shuffling_summary">\'Karıştır kipi\' şarkıları tümüyle sırasız olarak çalar</string>
   <string name="notifications">Bildirimler</string>
   <string name="notification_mode_title">Bildirim kipi</string>
@@ -174,7 +174,7 @@
   <string name="controls_in_selector_title">Arşivdeki denetimler</string>
   <string name="controls_in_selector_summary">Arşiv görünümünde şu anda oynatılan şarkıyı ve ortam denetimlerini göster</string>
   <string name="default_action_title">Öntanımlı eylem</string>
-  <string name="default_playlist_action_title">Öntanımlı oynatmalık eylemi</string>
+  <string name="default_playlist_action_title">Oynatmalıklar için öntanımlı eylem</string>
   <string name="accelerometer_shake">İvmeölçer sallama</string>
   <string name="enable_shake_title">İvmeölçer sallamasını etkinleştir</string>
   <string name="enable_shake_summary">Yalnızca müzik çalarken etkindir. Bazı aygıtlarda ekran kapalıyken çalışmaz.</string>
@@ -224,7 +224,7 @@
   <string name="info_on_cover">Bilgi kapak resmi üstünde</string>
   <string name="info_below_cover">Bilgi kapak resmi altında</string>
   <string name="fixed_info">Bilgi üstte sabit</string>
-  <string name="do_nothing">Hiçbir şey yapma</string>
+  <string name="do_nothing">Hiçbir şey yapmaz</string>
   <string name="open_library">Arşivi aç</string>
   <string name="play_pause">Oynat/Duraklat</string>
   <string name="next_song">Sonraki şarkı</string>
@@ -239,6 +239,7 @@
   <string name="clear_queue">Kuyruğu temizle</string>
   <string name="empty_the_queue">Sırayı boşalt</string>
   <string name="show_queue">Kuyruğu göster</string>
+  <string name="hide_queue">Kuyruğu gizle</string>
   <string name="dequeue_rest">Gerisini sıradan çıkar</string>
   <string name="queue">Kuyruk</string>
   <string name="toggle_controls">Denetimleri göster</string>
@@ -249,7 +250,7 @@
   <string name="preferences_action_enqueue_current_album">Albümü kuyruğa ekle</string>
   <string name="preferences_action_enqueue_current_artist">Sanatçıyı kuyruğa ekle</string>
   <string name="preferences_action_enqueue_current_genre">Türü kuyruğa ekle</string>
-  <string name="filebrowser_start">Dosya yöneticisi Ana Ekran</string>
+  <string name="filebrowser_start">Dosya yöneticisi ana ekranı</string>
   <string name="customize_filebrowser_start">Dosya yöneticisi bu dizinde başlar</string>
   <string name="select">Seç</string>
   <string name="autoplaylist_playcounts_title">Kendiliğinden oynatmalık oluşturma</string>
@@ -259,4 +260,5 @@
   <string name="autoplaylist_playcounts_name" formatted="false">En iyi %d</string>
   <string name="permission_request_summary">Vanilya Müzik, müzik arşivinizi görüntüleyebilmek için izninize gereksinim duyar</string>
   <string name="ok">Tamam</string>
+  <string name="reverse_sort">Sıralamayı tersine çevir</string>
 </resources>

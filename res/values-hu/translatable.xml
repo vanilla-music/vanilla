@@ -138,15 +138,15 @@
   <string name="headset_launch_title">Lejátszás csatlakoztatáskor</string>
   <string name="headset_launch_summary">Lejátszás, ha a fejhallgató csatlakozik. (Ehhez szükséges a „Fejhallgató érzékelő” alkalmazás.)</string>
   <string name="headset_launch_app_missing">Ehhez a funkcióhoz szükséges a „Fejhallgató érzékelő” alkalmazás telepítése.\nSzeretné megnyitni a Play Áruházat és telepíteni az alkalmazást?</string>
-  <string name="replaygain">Replay gain</string>
-  <string name="replaygain_title">Replay gain engedélyezése</string>
-  <string name="replaygain_summary">Replay gain információk kezelésének beállítása</string>
-  <string name="replaygain_track_title">Replay gain engedélyezese számokra</string>
+  <string name="replaygain">ReplayGain</string>
+  <string name="replaygain_title">ReplayGain engedélyezése</string>
+  <string name="replaygain_summary">ReplayGain információk kezelésének beállítása</string>
+  <string name="replaygain_track_title">Számonkénti ReplayGain engedélyezése</string>
   <string name="replaygain_track_summary">Minden szám ugyanolyan hangos lejátszása</string>
-  <string name="replaygain_album_title">Replay gain engedélyezése albumokra</string>
+  <string name="replaygain_album_title">Album ReplayGain engedélyezése</string>
   <string name="replaygain_album_summary">Album dinamika megőrzése</string>
-  <string name="replaygain_bump_title">Replay gain előerősítés</string>
-  <string name="replaygain_untagged_debump_title">Számok replay gain tag nélkül</string>
+  <string name="replaygain_bump_title">ReplayGain előerősítés</string>
+  <string name="replaygain_untagged_debump_title">Számok ReplayGain címke nélkül</string>
   <string name="replaygain_untagged_debump_summary">Hangerő csökkentése</string>
   <string name="replaygain_preamp_note_title">Megjegyzés</string>
   <string name="replaygain_preamp_note_content">Az Android nem engedi hogy a Vanilla Zenelejátszó &gt;100% értékre állítsa a hangerőt. Az előerősítés értékének túl magasra emelése problémákat okozhat, ha „halk” zenét hallgat.\n\nAz ajánlott értékek:\n-&gt; -3dB halk/klasszikus zenéhez\n-&gt; +3dB a 2000 utáni felvételekhez</string>
@@ -260,4 +260,5 @@
   <string name="autoplaylist_playcounts_name" formatted="false">Legjobb %d</string>
   <string name="permission_request_summary">A Vanilla zenelejátszónak olvasási engedélyre van szükségre, hogy megjelenítse a gyűjteményét</string>
   <string name="ok">Ok</string>
+  <string name="reverse_sort">Fordított rendezés</string>
 </resources>

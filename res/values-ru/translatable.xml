@@ -154,15 +154,8 @@
   <string name="headset_launch_title">Играть при подключении</string>
   <string name="headset_launch_summary">Играть, когда подключены наушники. (Требует \'Headphone detector\' приложение, которое будет установлено)</string>
   <string name="headset_launch_app_missing">Эта функция требует  \'Headphone detector\' приложение, которое будет установлено.\n Вы хотите открыть Google Play, чтобы установить приложение?</string>
-  <string name="replaygain">ReplayGain</string>
-  <string name="replaygain_title">Включить ReplayGain</string>
-  <string name="replaygain_summary">Настройка обработки информации ReplayGain</string>
-  <string name="replaygain_track_title">Включение на треке ReplayGain</string>
   <string name="replaygain_track_summary">Проигрывать все треки на одинаковой громкости</string>
-  <string name="replaygain_album_title">Включить альбом с ReplayGain</string>
   <string name="replaygain_album_summary">Сохранение динамики альбома</string>
-  <string name="replaygain_bump_title">ReplayGain усиление Pre-Amp</string>
-  <string name="replaygain_untagged_debump_title">Песни без ReplayGain</string>
   <string name="replaygain_untagged_debump_summary">Уменьшить громкость на</string>
   <string name="replaygain_preamp_note_title">Заметка</string>
   <string name="replaygain_preamp_note_content">Android не позволяет Vanilla Music, чтобы увеличить громкость до &amp;gt;100%. Установка предварительного усилителя на высокое значение может вызвать проблемы, если вы слушаете "тихой" музыки. \ Non Рекомендуемые значения: \ n- &amp; GT; -3dB Для бесшумной / классической музыки \ n- &amp; GT; + 3dB для пост-2000 записей</string>

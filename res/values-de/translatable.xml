@@ -136,7 +136,7 @@
   <string name="headset_pause_title">Pausieren, wenn nicht angeschlossen</string>
   <string name="headset_pause_summary">Pausieren, wenn Kopfhörer entfernt wird</string>
   <string name="headset_launch_title">Abspielen beim Anschließen</string>
-  <string name="headset_launch_summary">Abspielen, wenn Kopfhörer angeschlossen wird (erfordert eine installierte „Headphone Detector“-App).</string>
+  <string name="headset_launch_summary">Abspielen, wenn Kopfhörer angeschlossen wird (erfordert eine installierte „Headphone Detector“-App)</string>
   <string name="headset_launch_app_missing">Die Verwendung dieser Funktion benötigt eine bestehende Installation der App „Headphone Detector“.\nMöchten Sie den Play Store öffnen, um die App zu installieren?</string>
   <string name="replaygain">ReplayGain</string>
   <string name="replaygain_title">ReplayGain aktivieren</string>
@@ -149,7 +149,7 @@
   <string name="replaygain_untagged_debump_title">Titel ohne ReplayGain-Informationen</string>
   <string name="replaygain_untagged_debump_summary">Lautstärke senken um: </string>
   <string name="replaygain_preamp_note_title">Hinweis</string>
-  <string name="replaygain_preamp_note_content">Android erlaubt Vanilla Music kein Verändern der Lautstärke auf über 100%. Hohe Werte für den Vorverstärker können bei „stiller“ Musik zu Problemen führen.\n\nEmpfohlene Werte sind:\n-&gt; -3 dB für stille/klassische Musik\n-&gt; +3 dB für Aufnahmen nach dem Jahr 2000.</string>
+  <string name="replaygain_preamp_note_content">Android erlaubt Vanilla Music kein Verändern der Lautstärke auf über 100%. Hohe Werte für den Vorverstärker können bei „stiller“ Musik zu Problemen führen.\n\nEmpfohlene Werte sind:\n-&gt; -3 dB für stille/klassische Musik\n-&gt; +3 dB für Aufnahmen nach dem Jahr 2000</string>
   <string name="readahead">Datei vorauslesen</string>
   <string name="readahead_summary">Aktuell abgespielten Titel im Voraus einlesen (löst Probleme mit langsamen SD-Karten)</string>
   <string name="equalizer">Equalizer</string>
@@ -174,7 +174,7 @@
   <string name="controls_in_selector_title">Steuerelemente in Bibliotheksansicht</string>
   <string name="controls_in_selector_summary">Aktuell abgespielten Titel und Steuerelemente in Bibliotheksansicht anzeigen</string>
   <string name="default_action_title">Standardaktion</string>
-  <string name="default_playlist_action_title">Wiedergabelisten-Standardaktion</string>
+  <string name="default_playlist_action_title">Standardaktion für Wiedergabelisten</string>
   <string name="accelerometer_shake">Schütteln</string>
   <string name="enable_shake_title">Schütteln aktivieren</string>
   <string name="enable_shake_summary">Nur während abgespielter Musik aktiv. Funktioniert auf einigen Geräten nicht bei ausgeschaltetem Bildschirm.</string>
@@ -185,9 +185,9 @@
   <string name="use_dark_theme_summary">Aktiviert das dunkle „Material“-Design</string>
   <string name="disable_lockscreen_title">Bildschirmsperre deaktivieren</string>
   <string name="disable_lockscreen_summary">Bildschirmsperre verhindern, wenn Bibliotheks- oder Wiedergabeansicht aktiv</string>
-  <string name="use_idle_timeout_title">Inaktivitätszeitabschaltung aktivieren</string>
-  <string name="use_idle_timeout_summary">Falls aktiviert, wird die Wiedergabe nach der angegebenen Inaktivität beendet</string>
-  <string name="idle_timeout_title">Inaktivitätszeitabschaltung</string>
+  <string name="use_idle_timeout_title">Anhalten bei Inaktivität</string>
+  <string name="use_idle_timeout_summary">Falls aktiviert, wird die Wiedergabe nach der angegebenen Inaktivitätsdauer angehalten</string>
+  <string name="idle_timeout_title">Inaktivitätsdauer</string>
   <string name="disable_cover_art_title">Cover-Darstellung deaktivieren</string>
   <string name="disable_cover_art_summary">Jegliches Laden von Albumcovern vermeiden</string>
   <string name="coverloader_android_title">Albumcover von Android verwenden</string>
@@ -195,15 +195,15 @@
   <string name="coverloader_vanilla_title">Cover aus Ordner laden</string>
   <string name="coverloader_vanilla_summary">Nach Dateien mit den Namen cover.jpg, album.jpg oder artwork.jpg suchen und diese als Albumcover anzeigen</string>
   <string name="coverloader_shadow_title">Cover aus verstecktem Ordner laden</string>
-  <string name="coverloader_shadow_summary">Albumcover von „/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg“ laden, falls möglich.</string>
+  <string name="coverloader_shadow_summary">Albumcover von „/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg“ laden, falls möglich</string>
   <string name="cover_on_lockscreen_title">Cover auf Sperrbildschirm anzeigen</string>
   <string name="cover_on_lockscreen_summary">Albumcover des derzeit abgespielten Titels auf dem Sperrbildschirm anzeigen</string>
   <string name="double_tap_title">Widget-Doppelantippen</string>
   <string name="double_tap_summary">Doppeltes Antippen des 1x1-Widgets öffnet die Wiedergabeansicht. Verursacht eine Verzögerung von 400 ms, bevor das Widget auf Aktionen reagiert.</string>
   <string name="scrobble_title">ScrobbleDroid-API verwenden</string>
   <string name="scrobble_summary">Zu Last.fm scrobbeln mithilfe von ScrobbleDroid oder Simple Last.fm Scrobbler</string>
-  <string name="stock_broadcast_title">Standardplayer-Benachrichtigungen emulieren</string>
-  <string name="stock_broadcast_summary">Benachrichtigungen senden, welche den normalen Standardplayer emulieren, um mit externen Bildschirmsperre-Steuerelementen, Widgets etc. kompatibel zu sein.</string>
+  <string name="stock_broadcast_title">Standard-Broadcasts emulieren</string>
+  <string name="stock_broadcast_summary">Broadcasts senden, die jene der Standard-App für Musikwiedergabe emulieren, um mit Bildschirmsperre-Steuerelementen, Widgets etc. von Drittanbietern kompatibel zu sein</string>
   <string name="media_scan">Bibliothek aktualisieren</string>
   <string name="tap_to_scan">Antippen, um externem Speicher nach Musik zu durchsuchen</string>
   <string name="scan_in_progress">Suche wird durchgeführt …</string>
@@ -260,4 +260,5 @@
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
   <string name="permission_request_summary">Vanilla Music benötigt Leserechte, um Ihre Musikbibliothek anzuzeigen</string>
   <string name="ok">OK</string>
+  <string name="reverse_sort">Sortierung umkehren</string>
 </resources>

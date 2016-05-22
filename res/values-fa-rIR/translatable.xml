@@ -127,10 +127,6 @@
   <string name="headset_pause_title">هنگامی که جدا می شود پخش متوقف گردد</string>
   <string name="headset_pause_summary">هنگامی که هدفون جدا می شود پخش متوقف گردد.</string>
   <string name="headset_launch_title">هنگامی که متصل می شود پخش گردد</string>
-  <string name="replaygain">اجرای مجدد</string>
-  <string name="replaygain_title">فعال کردن اجرای مجدد</string>
-  <string name="replaygain_track_title">فعال کردن اجرای مجدد هر آهنگ</string>
-  <string name="replaygain_album_title">فعال کردن اجرای مجدد آلبوم</string>
   <string name="replaygain_preamp_note_title">یادداشت</string>
   <string name="equalizer">اکولایزر</string>
   <string name="cycle_continuous_shuffling">تصادفی متوالی</string>

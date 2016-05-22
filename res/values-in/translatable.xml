@@ -56,7 +56,7 @@
   <string name="play_or_enqueue">Diurutkan bila diputar; Putar bila di pause</string>
   <string name="open">Open</string>
   <plurals name="playing">
-    <item quantity="other">% lagu diputar</item>
+    <item quantity="other">%d lagu diputar</item>
   </plurals>
   <plurals name="enqueued">
     <item quantity="other">%d antrian lagu</item>

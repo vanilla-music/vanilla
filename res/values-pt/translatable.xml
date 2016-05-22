@@ -138,15 +138,15 @@
   <string name="headset_launch_title">Reproduzir ao inserir</string>
   <string name="headset_launch_summary">Reproduzir ao inserir os auscultadores (Requer a instalação da aplicação \'Headphone detector\'.)</string>
   <string name="headset_launch_app_missing">Esta funcionalidade requer que a aplicação \'Headphone detector\' esteja instalada.\nGostaria de abrir a loja Google para a instalar?</string>
-  <string name="replaygain">Replay gain</string>
-  <string name="replaygain_title">Ativar replay gain</string>
-  <string name="replaygain_summary">Configurar a gestão de informações replay gain</string>
-  <string name="replaygain_track_title">Ativar replay gain por faixa</string>
+  <string name="replaygain">ReplayGain</string>
+  <string name="replaygain_title">Ativar ReplayGain</string>
+  <string name="replaygain_summary">Configurar gestão de informações ReplayGain</string>
+  <string name="replaygain_track_title">Ativar ReplayGain por faixa</string>
   <string name="replaygain_track_summary">Reproduzir todas as faixas com igual volume</string>
-  <string name="replaygain_album_title">Ativar replay gain por álbum</string>
+  <string name="replaygain_album_title">Ativar ReplayGain por álbum</string>
   <string name="replaygain_album_summary">Manter dinâmica do álbum</string>
-  <string name="replaygain_bump_title">Amplificador replay gain</string>
-  <string name="replaygain_untagged_debump_title">Faixas sem informação replay gain</string>
+  <string name="replaygain_bump_title">Amplificação ReplayGain</string>
+  <string name="replaygain_untagged_debump_title">Faixas sem informação ReplayGain</string>
   <string name="replaygain_untagged_debump_summary">Diminuir volume em</string>
   <string name="replaygain_preamp_note_title">Nota</string>
   <string name="replaygain_preamp_note_content">Os sistemas Android não permitem que o Vanilla Music aumente o volume para valores &gt;100%. A utilização de um valor mais alto do amplificador podem gerar problemas se estiver a ouvir músicas calmas.\n\nOs valores recomendados são:\n-&gt; -3dB para músicas calmas ou clássicas\n-&gt; +3dB para músicas gravadas opós após o ano 2000.</string>
@@ -239,6 +239,7 @@
   <string name="clear_queue">Limpar fila</string>
   <string name="empty_the_queue">Limpar fila de reprodução</string>
   <string name="show_queue">Mostrar fila</string>
+  <string name="hide_queue">Ocultar fila</string>
   <string name="dequeue_rest">Retirar restantes da fila</string>
   <string name="queue">Fila</string>
   <string name="toggle_controls">Alternar controlos</string>
@@ -259,4 +260,5 @@
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
   <string name="permission_request_summary">O Vanilla Music necessita da permissão de leitura para mostrar a sua coleção</string>
   <string name="ok">OK</string>
+  <string name="reverse_sort">Inverter organização</string>
 </resources>

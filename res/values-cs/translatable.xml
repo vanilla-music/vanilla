@@ -146,15 +146,15 @@
   <string name="headset_launch_title">Hrát po připojení</string>
   <string name="headset_launch_summary">Začít přehrávat při připojení sluchátek. (Vyžaduje nainstalovanou aplikaci \'Headphone detector\'.)</string>
   <string name="headset_launch_app_missing">Tato funkce vyžaduje nainstalovanou aplikaci \'Headphone detector\'.\nChcete přesměrovat do Obchodu Play pro její instalaci?</string>
-  <string name="replaygain">Změna hlasitosti přehrávání</string>
-  <string name="replaygain_title">Povolit změnu hlasitosti přehrávání</string>
-  <string name="replaygain_summary">Konfigurovat zpracování informací o změně hlasitosti</string>
-  <string name="replaygain_track_title">Povolit úpravu hlasitosti přehrávání skladeb</string>
+  <string name="replaygain">Udržení hlasitosti</string>
+  <string name="replaygain_title">Povolit udržení hlasitosti</string>
+  <string name="replaygain_summary">Konfigurovat zpracování informace udržení hlasitosti</string>
+  <string name="replaygain_track_title">Povolit udržení hlasitosti jednotlivých skladeb</string>
   <string name="replaygain_track_summary">Přehrávat všechny skladby ve stejné hlasitosti</string>
-  <string name="replaygain_album_title">Povolit úpravu hlasitosti přehrávání alba</string>
+  <string name="replaygain_album_title">Povolit udržení hlasitosti alba</string>
   <string name="replaygain_album_summary">Zachovat dynamiku alba</string>
-  <string name="replaygain_bump_title">Změna hlasitosti přehrávání pre-amp</string>
-  <string name="replaygain_untagged_debump_title">Skladby bez tagu úpravy změny hlasitosti</string>
+  <string name="replaygain_bump_title">Pre-amp udržení hlasitosti</string>
+  <string name="replaygain_untagged_debump_title">Skladby bez tagu udržení hlasitosti</string>
   <string name="replaygain_untagged_debump_summary">Ztlumit o</string>
   <string name="replaygain_preamp_note_title">Poznámka</string>
   <string name="replaygain_preamp_note_content">Android nepovoluje aplikaci Vanilla Music zvýšit hlasitost na &gt;100%. Nastavení Pre-amp na vysokou hodnotu může způsobovat problémy při poslechu \'tiché\' hudby. \n\nDoporučené hodnoty jsou:\n-&gt; -3dB pro tichou/klasickou hudbu\n-&gt; +3dB pro aktuální nahrávky</string>
@@ -247,6 +247,7 @@
   <string name="clear_queue">Vymazat frontu</string>
   <string name="empty_the_queue">Prázdná fronta</string>
   <string name="show_queue">Zobrazit frontu</string>
+  <string name="hide_queue">Skrýt frontu</string>
   <string name="dequeue_rest">Odstranit zbytek z fronty</string>
   <string name="queue">Fronta</string>
   <string name="toggle_controls">Přepnout ovládání</string>
@@ -267,4 +268,5 @@
   <string name="autoplaylist_playcounts_name" formatted="false">Vrchních %d</string>
   <string name="permission_request_summary">Vanilla Music potřebuje povolení pro čtení k zobrazení hudební knihovny</string>
   <string name="ok">Ok</string>
+  <string name="reverse_sort">Opačné pořadí</string>
 </resources>

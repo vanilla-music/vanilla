@@ -132,8 +132,8 @@
   <string name="headset_launch_app_missing">此功能需要安裝“耳機偵測”的應用程式。\n您想要開啟 Play 商店以安裝應用程式嗎？</string>
   <string name="replaygain">重播增益</string>
   <string name="replaygain_title">啟用重播增益</string>
-  <string name="replaygain_summary">組態操作重播增益資訊處理</string>
-  <string name="replaygain_track_title">每曲目重播增益啟用</string>
+  <string name="replaygain_summary">組態重播增益資訊的處理</string>
+  <string name="replaygain_track_title">啟用前置音軌重播增益</string>
   <string name="replaygain_track_summary">以同等響度播放所有曲目</string>
   <string name="replaygain_album_title">啟用專輯重播增益</string>
   <string name="replaygain_album_summary">維持專輯力度變化</string>
@@ -252,4 +252,5 @@
   <string name="autoplaylist_playcounts_name" formatted="false">置頂 %d</string>
   <string name="permission_request_summary">Vanilla 音樂需要讀取的權限，以顯示您的媒體庫</string>
   <string name="ok">確定</string>
+  <string name="reverse_sort">反向排序</string>
 </resources>

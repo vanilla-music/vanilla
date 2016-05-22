@@ -138,15 +138,15 @@
   <string name="headset_launch_title">Toista liitettäessä</string>
   <string name="headset_launch_summary">Toista kun kuulokkeet liitetään. (Vaatii Headphone detector -sovelluksen asennuksen.)</string>
   <string name="headset_launch_app_missing">Tämä toiminto vaatii Headphone detector -sovelluksen asennuksen.\nHaluatko avata Play-kaupan ja asentaa kyseisen sovelluksen?</string>
-  <string name="replaygain">Replay gain</string>
-  <string name="replaygain_title">Käytä Replay gainia</string>
-  <string name="replaygain_summary">Määritä Replay gain -tietojen käsittely</string>
-  <string name="replaygain_track_title">Käytä kappalekohtaista Replay Gainia</string>
+  <string name="replaygain">ReplayGain</string>
+  <string name="replaygain_title">Käytä ReplayGainia</string>
+  <string name="replaygain_summary">Määritä ReplayGain-tietojen käsittely</string>
+  <string name="replaygain_track_title">Käytä kappalekohtaista ReplayGainia</string>
   <string name="replaygain_track_summary">Toista kaikki kappaleet samalla voimakkuudella</string>
-  <string name="replaygain_album_title">Käytä albumikohtaista Replay gainia</string>
+  <string name="replaygain_album_title">Käytä albumikohtaista ReplayGainia</string>
   <string name="replaygain_album_summary">Säilytä albumin dynamiikka</string>
-  <string name="replaygain_bump_title">Replay gainin esivahvistus</string>
-  <string name="replaygain_untagged_debump_title">Kappaleet ilman Replay gain -tunnistetta</string>
+  <string name="replaygain_bump_title">ReplayGainin esivahvistus</string>
+  <string name="replaygain_untagged_debump_title">Kappaleet ilman ReplayGain-tunnistetta</string>
   <string name="replaygain_untagged_debump_summary">Vähennä äänenvoimakkuutta</string>
   <string name="replaygain_preamp_note_title">Huomio</string>
   <string name="readahead">Käytä etukäteen lukemista</string>
@@ -235,6 +235,7 @@
   <string name="clear_queue">Tyhjennä jono</string>
   <string name="empty_the_queue">Tyhjennä jono</string>
   <string name="show_queue">Näytä jono</string>
+  <string name="hide_queue">Piilota jono</string>
   <string name="dequeue_rest">Poista loput jonosta</string>
   <string name="queue">Jono</string>
   <string name="toggle_controls">Näytä/piilota ohjaimet</string>
@@ -255,4 +256,5 @@
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
   <string name="permission_request_summary">Vanilla Music tarvitsee lukuoikeuden näyttääkseen musiikkikirjastosi</string>
   <string name="ok">OK</string>
+  <string name="reverse_sort">Käänteinen järjestys</string>
 </resources>

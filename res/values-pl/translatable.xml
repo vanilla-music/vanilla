@@ -140,15 +140,8 @@
   <string name="headset_launch_title">Odtwarzaj po podłączeniu</string>
   <string name="headset_launch_summary">Automatycznie zacznij odtwarzać dźwięk po podłączeniu słuchawek. (Wymaga zainstalowania aplikacji \'Headphone detector\').</string>
   <string name="headset_launch_app_missing">Ta opcja wymaga zainstalowania aplikacji \'Headphone detector\'\nChcesz otworzyć Sklep Play w celu zainstalowania aplikacji?</string>
-  <string name="replaygain">Wzmocnienie głośności odtwarzania</string>
-  <string name="replaygain_title">Włączenie wzmocnienia głośności odtwarzania</string>
-  <string name="replaygain_summary">Konfiguracja obsługi wzmocnienia dźwięku</string>
-  <string name="replaygain_track_title">Włączenie wzmocnienia dźwięku względem utworu</string>
   <string name="replaygain_track_summary">Odtwarzanie wszystkich utworów z jednakową głośnością</string>
-  <string name="replaygain_album_title">Włączenie wzmocnienia dźwięku względem albumu</string>
   <string name="replaygain_album_summary">Zachowanie dynamiki albumu</string>
-  <string name="replaygain_bump_title">Wstępne wzmocnienie dźwięku</string>
-  <string name="replaygain_untagged_debump_title">Piosenki bez znacznika wzmocnienia dźwięku</string>
   <string name="replaygain_untagged_debump_summary">Ściszenie dzwięku o</string>
   <string name="replaygain_preamp_note_title">Uwaga</string>
   <string name="replaygain_preamp_note_content">Android nie pozwala Vanilla Music na podniesienie głośności dźwięku do &gt;100%. Ustawianie wysokiej wartości przedwzmocnienia dźwięku może powodować problemy, jeżeli słuchasz \"cichego\" utworu. \n\nZalecane wartości to:\n-&gt; -3dB dla cichej/klasycznej muzyki\n-&gt; +3dB dla nagrań po 2000 r.</string>

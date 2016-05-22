@@ -139,14 +139,14 @@
   <string name="headset_launch_summary">Lecture à la connexion des écouteurs (fonctionne uniquement lorsque l\'application \"Headphone detector\" est installée).</string>
   <string name="headset_launch_app_missing">Cette fonctionnalité nécessite l\'installation de l\'application \'Headphone detector\'.\nVoulez vous l\'installer via le Play Store ?</string>
   <string name="replaygain">ReplayGain</string>
-  <string name="replaygain_title">Activer le ReplayGain</string>
-  <string name="replaygain_summary">Configurer la gestion des informations de ReplayGain</string>
-  <string name="replaygain_track_title">Activer le ReplayGain par morceau</string>
+  <string name="replaygain_title">Activer ReplayGain</string>
+  <string name="replaygain_summary">Configurer la gestion des informations pour ReplayGain</string>
+  <string name="replaygain_track_title">Activer ReplayGain par morceau</string>
   <string name="replaygain_track_summary">Lit tous les morceaux à volume équivalent</string>
-  <string name="replaygain_album_title">Activer le ReplayGain par album</string>
+  <string name="replaygain_album_title">Activer ReplayGain par album</string>
   <string name="replaygain_album_summary">Conserve les dynamiques de l\'album</string>
-  <string name="replaygain_bump_title">Pré-amplification du ReplayGain </string>
-  <string name="replaygain_untagged_debump_title">Morceaux sans le tag ReplayGain</string>
+  <string name="replaygain_bump_title">Pré-ampli de ReplayGain</string>
+  <string name="replaygain_untagged_debump_title">Morceaux sans tag pour ReplayGain</string>
   <string name="replaygain_untagged_debump_summary">Diminuer le volume de</string>
   <string name="replaygain_preamp_note_title">Note</string>
   <string name="replaygain_preamp_note_content">Android n\'autorise pas Vanilla Music à augmenter le volume au delà de 100%. Un réglage élevé du Pré-ampli peut provoquer des problèmes à l\'écoute de musique \'calme\'. \n\nLes valeurs recommandées sont:\n-&gt; -3dB pour la musique classique/douce\n-&gt; +3dB pour les enregistrements postérieurs à 2000</string>
@@ -260,4 +260,5 @@
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
   <string name="permission_request_summary">Vanilla Music a besoin d\'une permission de lecture pour afficher votre bibliothèque musicale</string>
   <string name="ok">Ok</string>
+  <string name="reverse_sort">Inverser le tri</string>
 </resources>

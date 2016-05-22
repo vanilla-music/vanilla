@@ -148,7 +148,7 @@
   <string name="headset_launch_app_missing">Ова функција захтева апликацију „Откривач слушалица“.\nЖелите ли да је инсталирате?</string>
   <string name="replaygain">Нивелисање звука</string>
   <string name="replaygain_title">Укључи нивелисање звука</string>
-  <string name="replaygain_summary">Поставке руковања информацијама о нивелисању звука</string>
+  <string name="replaygain_summary">Поставке руковања подацима о нивелисању звука</string>
   <string name="replaygain_track_title">Укључи нивелисање по нумери</string>
   <string name="replaygain_track_summary">Пушта све нумере истом гласноћом</string>
   <string name="replaygain_album_title">Укључи нивелисање албума</string>
@@ -247,6 +247,7 @@
   <string name="clear_queue">Очисти ред</string>
   <string name="empty_the_queue">Испразни ред</string>
   <string name="show_queue">Прикажи ред</string>
+  <string name="hide_queue">Сакриј ред</string>
   <string name="dequeue_rest">Уклони остале из реда</string>
   <string name="queue">Ред пуштања</string>
   <string name="toggle_controls">мења приказ контрола</string>
@@ -267,4 +268,5 @@
   <string name="autoplaylist_playcounts_name" formatted="false">Најбољих %d</string>
   <string name="permission_request_summary">Ванила музика захтева дозволу читања да би приказала вашу музичку библиотеку</string>
   <string name="ok">У реду</string>
+  <string name="reverse_sort">Обрнуто ређање</string>
 </resources>
