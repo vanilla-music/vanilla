@@ -28,11 +28,6 @@ THE SOFTWARE.
 		android:title="@string/playback_on_startup_title"
 		android:summary="@string/playback_on_startup_summary"
 		android:defaultValue="false" />
-	<CheckBoxPreference
-		android:key="use_dark_theme"
-		android:title="@string/use_dark_theme_title"
-		android:summary="@string/use_dark_theme_summary"
-		android:defaultValue="false" />
 	<ch.blinkenlights.android.vanilla.ListPreferenceSummary
 		android:key="display_mode"
 		android:title="@string/display_mode_title"

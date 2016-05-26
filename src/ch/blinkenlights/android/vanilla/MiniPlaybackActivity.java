@@ -37,6 +37,7 @@ public class MiniPlaybackActivity extends PlaybackActivity {
 	@Override
 	public void onCreate(Bundle state)
 	{
+		ThemeHelper.setTheme(this, R.style.PopupDialog);
 		super.onCreate(state);
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);

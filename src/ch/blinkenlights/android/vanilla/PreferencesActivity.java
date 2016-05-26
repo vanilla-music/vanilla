@@ -27,6 +27,7 @@ import android.app.Activity;
 import android.app.AlertDialog.Builder;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -52,7 +53,9 @@ import java.util.List;
 /**
  * The preferences activity in which one can change application preferences.
  */
-public class PreferencesActivity extends PreferenceActivity {
+public class PreferencesActivity extends PreferenceActivity
+	implements SharedPreferences.OnSharedPreferenceChangeListener
+{
 
 	/**
 	 * The package name of our external helper app
@@ -68,6 +71,13 @@ public class PreferencesActivity extends PreferenceActivity {
 	{
 		ThemeHelper.setTheme(this, R.style.BackActionBar);
 		super.onCreate(savedInstanceState);
+		PlaybackService.getSettings(this).registerOnSharedPreferenceChangeListener(this);
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		PlaybackService.getSettings(this).unregisterOnSharedPreferenceChangeListener(this);
 	}
 
 	@Override
@@ -84,6 +94,15 @@ public class PreferencesActivity extends PreferenceActivity {
 			return true;
 		} else {
 			return super.onOptionsItemSelected(item);
+		}
+	}
+
+	@Override
+	public void onSharedPreferenceChanged (SharedPreferences sharedPreferences, String key) {
+		if (PrefKeys.SELECTED_THEME.equals(key)) {
+			// this gets called by all preference instances: we force them to redraw
+			// themselfes if the theme changed
+			recreate();
 		}
 	}
 
@@ -106,13 +125,13 @@ public class PreferencesActivity extends PreferenceActivity {
 		public void onCreate(Bundle savedInstanceState)
 		{
 			super.onCreate(savedInstanceState);
+
 			addPreferencesFromResource(R.xml.preference_replaygain);
-			
 			cbTrackReplayGain = (CheckBoxPreference)findPreference(PrefKeys.ENABLE_TRACK_REPLAYGAIN);
 			cbAlbumReplayGain = (CheckBoxPreference)findPreference(PrefKeys.ENABLE_ALBUM_REPLAYGAIN);
 			sbGainBump = (SeekBarPreference)findPreference(PrefKeys.REPLAYGAIN_BUMP);
 			sbUntaggedDebump = (SeekBarPreference)findPreference(PrefKeys.REPLAYGAIN_UNTAGGED_DEBUMP);
-			
+
 			Preference.OnPreferenceClickListener pcListener = new Preference.OnPreferenceClickListener() {
 				public boolean onPreferenceClick(Preference preference) {
 					updateConfigWidgets();
@@ -164,14 +183,6 @@ public class PreferencesActivity extends PreferenceActivity {
 		{
 			super.onCreate(savedInstanceState);
 			addPreferencesFromResource(R.xml.preference_playback);
-
-			// Hide the dark theme preference if this device
-			// does not support multiple themes
-			PreferenceScreen screen = getPreferenceScreen();
-			CheckBoxPreference dark_theme_pref = (CheckBoxPreference)findPreference("use_dark_theme");
-			if (ThemeHelper.usesHoloTheme()) // not available on 4.x devices
-				screen.removePreference(dark_theme_pref);
-
 		}
 	}
 

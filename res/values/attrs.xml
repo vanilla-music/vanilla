@@ -2,4 +2,8 @@
 	<attr name="overlay_background_color" format="color" />
 	<attr name="overlay_foreground_color" format="color" />
 	<attr name="float_color"              format="color" />
+	<attr name="tabs_background"          format="color" />
+	<attr name="now_playing_marker"       format="color" />
+	<attr name="controls_normal"          format="color" />
+	<attr name="controls_active"          format="color" />
 </resources>

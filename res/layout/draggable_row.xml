@@ -32,7 +32,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 			android:visibility="gone"
 			android:layout_width="@dimen/pmark_size"
 			android:layout_height="@dimen/row_normal_height"
-			android:background="@color/now_playing_marker" />
+			android:background="?now_playing_marker" />
 
 		<ch.blinkenlights.android.vanilla.LazyCoverView
 			android:id="@+id/cover"

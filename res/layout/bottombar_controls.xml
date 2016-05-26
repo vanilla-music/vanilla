@@ -23,7 +23,7 @@
 
 <ch.blinkenlights.android.vanilla.BottomBarControls
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:background="@color/tabs_background"
+	android:background="?tabs_background"
 	android:elevation="8dp"
 	android:orientation="vertical"
 	android:layout_width="fill_parent"

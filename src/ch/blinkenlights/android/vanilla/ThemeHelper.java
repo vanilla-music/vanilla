@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2015-2016 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 package ch.blinkenlights.android.vanilla;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.content.SharedPreferences;
 import android.os.Build;
 
@@ -30,19 +31,26 @@ public class ThemeHelper {
 	 */
 	final public static int setTheme(Context context, int theme)
 	{
-		if (usesDarkTheme(context)) {
+		if(usesHoloTheme() == false) {
+			TypedArray ar = context.getResources().obtainTypedArray(R.array.theme_styles);
+			int themeBase = ar.getResourceId(getSelectedTheme(context), R.style.VanillaBase);
+			ar.recycle();
+
 			switch (theme) {
 				case R.style.Playback:
-					theme = R.style.Dark_Playback;
+					theme = themeBase + (R.style.Playback - R.style.VanillaBase);
 					break;
 				case R.style.Library:
-					theme = R.style.Dark_Library;
+					theme = themeBase + (R.style.Library - R.style.VanillaBase);
 					break;
 				case R.style.BackActionBar:
-					theme = R.style.Dark_BackActionBar;
+					theme = themeBase + (R.style.BackActionBar - R.style.VanillaBase);
+					break;
+				case R.style.PopupDialog:
+					theme = themeBase + (R.style.PopupDialog - R.style.VanillaBase);
 					break;
 				default:
-					break;
+					throw new IllegalArgumentException("setTheme() called with unknown theme!");
 			}
 		}
 		context.setTheme(theme);
@@ -74,10 +82,20 @@ public class ThemeHelper {
 	{
 		boolean useDark = false;
 		if(usesHoloTheme() == false) {
-			SharedPreferences settings = PlaybackService.getSettings(context);
-			useDark = settings.getBoolean(PrefKeys.USE_DARK_THEME, PrefDefaults.USE_DARK_THEME);
+			useDark = (getSelectedTheme(context) % 2 != 0); // odd values are always dark
 		}
 		return useDark;
+	}
+
+	/**
+	 * Returns the user-selected theme id from the shared peferences provider
+	 *
+	 * @param context the context to use
+	 * @return integer of the selected theme
+	 */
+	final private static int getSelectedTheme(Context context) {
+		SharedPreferences settings = PlaybackService.getSettings(context);
+		return Integer.parseInt(settings.getString(PrefKeys.SELECTED_THEME, PrefDefaults.SELECTED_THEME));
 	}
 
 	/**

@@ -59,7 +59,7 @@ THE SOFTWARE.
 			android:launchMode="singleTask" />
 		<activity
 			android:name="MiniPlaybackActivity"
-			android:theme="@style/Dialog"
+			android:theme="@style/PopupDialog"
 			android:excludeFromRecents="true"
 			android:launchMode="singleInstance" />
 		<receiver
@@ -155,7 +155,7 @@ THE SOFTWARE.
 			android:name="PermissionRequestActivity"
 			android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
-		<activity android:name="AudioPickerActivity" android:theme="@style/DialogMinWidth"
+		<activity android:name="AudioPickerActivity" android:theme="@style/PopupDialog"
 			android:excludeFromRecents="true" android:exported="true" >
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW" />

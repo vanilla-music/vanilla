@@ -65,7 +65,7 @@ public class PrefKeys {
 	public static final String REPLAYGAIN_BUMP = "replaygain_bump";
 	public static final String REPLAYGAIN_UNTAGGED_DEBUMP = "replaygain_untagged_debump";
 	public static final String ENABLE_READAHEAD = "enable_readahead";
-	public static final String USE_DARK_THEME = "use_dark_theme";
+	public static final String SELECTED_THEME = "selected_theme";
 	public static final String FILESYSTEM_BROWSE_START = "filesystem_browse_start";
 	public static final String VOLUME_DURING_DUCKING = "volume_during_ducking";
 	public static final String AUTOPLAYLIST_PLAYCOUNTS = "playcounts_autoplaylist";

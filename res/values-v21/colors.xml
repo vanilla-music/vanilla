@@ -14,15 +14,7 @@
 	<color name="vanillaPrimaryDark">#ff263238</color>
 	<color name="vanillaAccent">#ff3e677a</color>
 
-	<!-- now-playing screen buttons tint -->
-	<color name="controls_active">@color/vanillaAccent</color>
-	<color name="controls_normal">@color/material_grey_600</color>
-
-	<!-- showqueue info -->
-	<color name="now_playing_marker">@color/vanillaAccent</color>
-
 	<!-- library tabs -->
-	<color name="tabs_background">@color/vanillaPrimary</color>
 	<color name="tabs_active_indicator">@android:color/background_light</color>
 
 	<!-- themed overlay colors for full playback activity -->

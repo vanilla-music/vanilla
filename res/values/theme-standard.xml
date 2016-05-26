@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+-->
+<resources>
+	<style name="VanillaBase" parent="android:Theme.Holo">
+		<item name="overlay_background_color">#a000</item>
+		<!-- color to use in full_playback text, set to bright_foreground_disabled_holo_light //-->
+		<item name="overlay_foreground_color">#ffb2b2b2</item>
+		<item name="float_color">#f222</item>
+		<item name="tabs_background">#ff1e1e1e</item>
+		<item name="now_playing_marker">@android:color/holo_blue_dark</item>
+		<item name="controls_normal">#fff5f5f5</item>
+		<item name="controls_active">@android:color/holo_blue_dark</item>
+		<item name="android:scrollbarStyle">outsideInset</item>
+	</style>
+
+	<style name="Playback" parent="VanillaBase">
+		<item name="android:actionBarStyle">@style/Universal.PlaybackActionBar</item>
+		<item name="android:windowBackground">@android:color/black</item>
+	</style>
+	<style name="BackActionBar" parent="VanillaBase">
+		<item name="android:actionBarStyle">@style/Universal.PlaybackActionBar</item>
+	</style>
+	<style name="Library" parent="VanillaBase">
+		<item name="android:windowActionBar">false</item>
+		<item name="android:windowNoTitle">true</item>
+	</style>
+
+	<style name="PopupDialog" parent="android:Theme.Holo.Dialog.MinWidth" />
+
+</resources>

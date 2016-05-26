@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2015-2016 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,9 @@
 package ch.blinkenlights.android.vanilla;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.widget.ImageButton;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -27,22 +29,22 @@ import android.graphics.ColorFilter;
 public class VanillaImageButton extends ImageButton {
 
 	private Context mContext;
+	private static int mNormalTint;
+	private static int mActiveTint;
 
 	public VanillaImageButton(Context context) {
-		super(context);
-		mContext = context;
-		updateImageTint(-1);
+		this(context, null);
 	}
 
 	public VanillaImageButton(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		mContext = context;
-		updateImageTint(-1);
+		this(context, attrs, 0);
 	}
 
 	public VanillaImageButton(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		mContext = context;
+		mNormalTint = fetchAttrColor(R.attr.controls_normal);
+		mActiveTint = fetchAttrColor(R.attr.controls_active);
 		updateImageTint(-1);
 	}
 
@@ -52,9 +54,8 @@ public class VanillaImageButton extends ImageButton {
 		this.updateImageTint(resId);
 	}
 
-
 	private void updateImageTint(int resHint) {
-		int filterColor = R.color.controls_normal;
+		int filterColor = mNormalTint;
 
 		switch (resHint) {
 			case R.drawable.repeat_active:
@@ -63,10 +64,18 @@ public class VanillaImageButton extends ImageButton {
 			case R.drawable.shuffle_active:
 			case R.drawable.shuffle_album_active:
 			case R.drawable.random_active:
-				filterColor = R.color.controls_active;
+				filterColor = mActiveTint;
 		}
 
-		this.setColorFilter(mContext.getResources().getColor(filterColor));
+		this.setColorFilter(filterColor);
+	}
+
+	private int fetchAttrColor(int attr) {
+		TypedValue typedValue = new TypedValue();
+		TypedArray a = mContext.obtainStyledAttributes(typedValue.data, new int[] { attr });
+		int color = a.getColor(0, 0);
+		a.recycle();
+		return color;
 	}
 
 }

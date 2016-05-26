@@ -64,7 +64,7 @@ public class PrefDefaults {
 	public static final int     REPLAYGAIN_BUMP = 75; // seek bar is 150 -> 75 == middle == 0
 	public static final int     REPLAYGAIN_UNTAGGED_DEBUMP = 150; // seek bar is 150 -> == 0
 	public static final boolean ENABLE_READAHEAD = false;
-	public static final boolean USE_DARK_THEME = false;
+	public static final String  SELECTED_THEME = "0";
 	public static final String  FILESYSTEM_BROWSE_START = "";
 	public static final int     VOLUME_DURING_DUCKING = 50;
 	public static final int     AUTOPLAYLIST_PLAYCOUNTS = 0;
