@@ -27,7 +27,6 @@ THE SOFTWARE.
 	<string name="no_songs">No songs found on your device.</string>
 	<string name="empty_queue">No songs selected. Pick some from the library or enter random mode by tapping this message.</string>
 	<string name="settings">Settings</string>
-	<string name="library">Library</string>
 	<string name="no_shuffle">No shuffle</string>
 	<string name="shuffle_songs">Shuffle songs</string>
 	<string name="shuffle_songs_continuously">Shuffle songs continuously</string>
@@ -55,8 +54,6 @@ THE SOFTWARE.
 	<string name="choose_playlist_name">Choose playlist name</string>
 	<string name="create">Create</string>
 	<string name="overwrite">Overwrite</string>
-	<string name="cancel">Cancel</string>
-	<string name="yes">Yes</string>
 
 	<string name="delete_playlist">Delete playlist %s?</string>
 
@@ -79,7 +76,6 @@ THE SOFTWARE.
 	<string name="search">Search</string>
 	<string name="done">Done</string>
 	<string name="remove">Remove</string>
-	<string name="clear_search">Clear search</string>
 	<string name="play_or_enqueue">Enqueue if playing; Play if paused</string>
 	<string name="open">Open</string>
 
@@ -116,7 +112,6 @@ THE SOFTWARE.
 	<string name="genres">Genres</string>
 	<string name="files">Files</string>
 
-	<string name="none">None</string>
 	<string name="unknown">Unknown</string>
 	<string name="play_all">Play all</string>
 	<string name="enqueue_all">Enqueue all</string>
@@ -135,12 +130,6 @@ THE SOFTWARE.
 	<string name="album_track">Album, track number</string>
 	<string name="song_playcount">Playcount</string>
 
-	<string name="ascending">Ascending</string>
-	<string name="descending">Descending</string>
-
-	<!-- Notification -->
-	<string name="notification_title_paused">%s (Paused)</string>
-
 	<!-- Preferences -->
 	<plurals name="seconds">
 		<item quantity="one">1 second</item>
@@ -156,7 +145,6 @@ THE SOFTWARE.
 	</plurals>
 
 	<string name="audio">Audio</string>
-	<string name="volume_title">Volume</string>
 	<string name="volume_during_ducking_title">Volume during notification</string>
 	<string name="volume_during_ducking_summary">Playback volume: </string>
 	<string name="ignore_audiofocus_loss_summary">Keep playing on permanent audio focus loss</string>
@@ -173,7 +161,6 @@ THE SOFTWARE.
 	<string name="headset_launch_app_missing">This features requires the \'Headphone detector\' app to be installed.\nWould you like to open the Play Store to install the application?</string>
 
 	<string name="replaygain">ReplayGain</string>
-	<string name="replaygain_title">Enable ReplayGain</string>
 	<string name="replaygain_summary">Configure handling of ReplayGain information</string>
 	<string name="replaygain_track_title">Enable per-track ReplayGain</string>
 	<string name="replaygain_track_summary">Play all tracks at equal loudness</string>
@@ -196,8 +183,6 @@ THE SOFTWARE.
 	<string name="notifications">Notifications</string>
 	<string name="notification_mode_title">Notification mode</string>
 	<string name="notification_action_title">Notification action</string>
-	<string name="notification_invert_color_title">Invert notification color</string>
-	<string name="notification_invert_color_summary">Use white text instead of black text</string>
 
 	<string name="notification_nag">Very verbose notification</string>
 	<string name="notification_nag_summary">Announce song changes using a \'Heads-Up-Notification\'</string>
@@ -212,8 +197,6 @@ THE SOFTWARE.
 	<string name="cover_longpress_action_title">Cover long press action</string>
 
 	<string name="library_screen">Library screen</string>
-	<string name="controls_in_selector_title">Controls in library</string>
-	<string name="controls_in_selector_summary">Show the currently playing song and media controls in the library view</string>
 	<string name="default_action_title">Default action</string>
 	<string name="default_playlist_action_title">Default playlist action</string>
 
@@ -231,8 +214,6 @@ THE SOFTWARE.
 	<string name="use_idle_timeout_title">Enable idle timeout</string>
 	<string name="use_idle_timeout_summary">When active, playback will be stopped after the given period of inactivity</string>
 	<string name="idle_timeout_title">Idle timeout</string>
-	<string name="disable_cover_art_title">Disable cover art</string>
-	<string name="disable_cover_art_summary">Avoid loading cover art anywhere in the application</string>
 
 	<string name="coverloader_android_title">Load artwork from Android</string>
 	<string name="coverloader_android_summary">Query Androids internal media database for album artwork</string>
@@ -252,11 +233,6 @@ THE SOFTWARE.
 	<string name="scrobble_summary">Scrobble to Last.fm through ScrobbleDroid or Simple Last.fm Scrobbler</string>
 	<string name="stock_broadcast_title">Emulate stock broadcasts</string>
 	<string name="stock_broadcast_summary">Send broadcasts emulating those sent by the stock music player to work with 3rd party lockscreen controls, widgets, etc.</string>
-
-	<string name="media_scan">Refresh library</string>
-	<string name="tap_to_scan">Tap to scan external storage for music</string>
-	<string name="scan_in_progress">Scan in progress…</string>
-	<string name="finished_scanning">Finished scanning. Tap to scan again.</string>
 
 	<string name="about">About</string>
 
@@ -292,12 +268,10 @@ THE SOFTWARE.
 	<string name="enqueue_current_album">Enqueue album</string>
 	<string name="enqueue_current_artist">Enqueue artist</string>
 	<string name="enqueue_current_genre">Enqueue genre</string>
-	<string name="clear_queue">Clear queue</string>
 	<string name="empty_the_queue">Empty queue</string>
 	<string name="show_queue">Show queue</string>
 	<string name="hide_queue">Hide queue</string>
 	<string name="dequeue_rest">Dequeue rest</string>
-	<string name="queue">Queue</string>
 	<string name="toggle_controls">Toggle controls</string>
 	<string name="seek_10s_backward">Seek 10 seconds backward</string>
 	<string name="seek_10s_forward">Seek 10 seconds forward</string>
@@ -319,6 +293,5 @@ THE SOFTWARE.
 	<string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
 
 	<string name="permission_request_summary">Vanilla Music needs read permission to display your music library</string>
-	<string name="ok">Ok</string>
 	<string name="reverse_sort">Reverse sort</string>
 </resources>

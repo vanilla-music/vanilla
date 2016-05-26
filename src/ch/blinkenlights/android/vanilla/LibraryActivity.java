@@ -741,7 +741,7 @@ public class LibraryActivity
 						mHandler.sendMessage(mHandler.obtainMessage(MSG_DELETE, intent));
 					}
 				})
-				.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+				.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
 					}
 				});

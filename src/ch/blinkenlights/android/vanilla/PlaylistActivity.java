@@ -176,7 +176,7 @@ public class PlaylistActivity extends Activity
 			String message = getResources().getString(R.string.delete_playlist, mPlaylistName);
 			builder.setMessage(message);
 			builder.setPositiveButton(R.string.delete, this);
-			builder.setNegativeButton(R.string.cancel, this);
+			builder.setNegativeButton(android.R.string.cancel, this);
 			builder.show();
 			break;
 		}
