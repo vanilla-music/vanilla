@@ -7,18 +7,18 @@ use constant THEMES_LIST   => './res/values-v21/themes-list.xml';
 my $THEMES = [
 	{
 		_name => 'standard',
-		light => { colorAccent => '#ff3e677a', colorPrimary => '#ff37474f', colorPrimaryDark => '#ff263238'},
-		dark  => { colorAccent => '#ff3e677a', colorPrimary => '#ff37474f', colorPrimaryDark => '#ff263238'},
+		light => { colorAccent => '#ff3e677a', colorPrimary => '#ff37474f', colorPrimaryDark => '#ff263238', _bg => '#fff0f0f0' },
+		dark  => { colorAccent => '#ff3e677a', colorPrimary => '#ff37474f', colorPrimaryDark => '#ff263238', _bg => '#ff2a2a2a' },
 	},
 	{
 		_name => 'greyish',
-		light => { colorAccent => '#ff212121', colorPrimary => '#ff212121', colorPrimaryDark => '#ff090909'},
-		dark  => { colorAccent => '#ffececec', colorPrimary => '#ff212121', colorPrimaryDark => '#ff090909'},
+		light => { colorAccent => '#ff212121', colorPrimary => '#ff212121', colorPrimaryDark => '#ff090909', _bg => '#fff0f0f0' },
+		dark  => { colorAccent => '#ffececec', colorPrimary => '#ff212121', colorPrimaryDark => '#ff090909', _bg => '#ff2a2a2a' },
 	},
 	{
 		_name => 'orange',
-		light => { colorAccent => '#FFF57F17', colorPrimary => '#FFE65100', colorPrimaryDark => '#FFBF360C'},
-		dark  => { colorAccent => '#FFF57F17', colorPrimary => '#FFE65100', colorPrimaryDark => '#FFBF360C'},
+		light => { colorAccent => '#FFF57F17', colorPrimary => '#FFE65100', colorPrimaryDark => '#FFBF360C', _bg => '#fff0f0f0' },
+		dark  => { colorAccent => '#FFF57F17', colorPrimary => '#FFE65100', colorPrimaryDark => '#FFBF360C', _bg => '#ff2a2a2a' },
 	},
 ];
 
@@ -40,8 +40,10 @@ foreach my $theme_ref (@$THEMES) {
 	# use this loop to also populate the theme list output
 	# assumes that get_theme_xml created two themes per definition (light and dark)
 	foreach my $variant ('', 'Dark.') {
+		my $tvvar = ($variant eq '' ? 'light' : 'dark');
+		my $tvarr = join(",", map { $theme_ref->{$tvvar}->{$_} } qw(colorPrimaryDark _bg colorPrimary));
 		$BUFF_TENTRIES  .= "\t\t<item>$variant".ucfirst($theme_name)."</item>\n";
-		$BUFF_TVALS     .= "\t\t<item>".($THEME_ID)."</item>\n";
+		$BUFF_TVALS     .= "\t\t<item>".($THEME_ID).",$tvarr</item>\n";
 		$BUFF_TSTYLES   .= "\t\t<item>\@style/${theme_id}${variant}VanillaBase</item>\n";
 		$THEME_ID++;
 	}

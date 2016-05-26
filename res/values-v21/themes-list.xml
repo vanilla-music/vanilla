@@ -13,12 +13,12 @@
 
 	<!-- the value stored in the shared preferences for each theme -->
 	<string-array name="theme_values">
-		<item>0</item>
-		<item>1</item>
-		<item>2</item>
-		<item>3</item>
-		<item>4</item>
-		<item>5</item>
+		<item>0,#ff263238,#fff0f0f0,#ff37474f</item>
+		<item>1,#ff263238,#ff2a2a2a,#ff37474f</item>
+		<item>2,#ff090909,#fff0f0f0,#ff212121</item>
+		<item>3,#ff090909,#ff2a2a2a,#ff212121</item>
+		<item>4,#FFBF360C,#fff0f0f0,#FFE65100</item>
+		<item>5,#FFBF360C,#ff2a2a2a,#FFE65100</item>
 	</string-array>
 
 	<!-- the style id for each theme -->
