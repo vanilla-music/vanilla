@@ -74,7 +74,7 @@ public class OggFile extends Common {
 	/* Parses the ogg page at offset 'offset' and returns
 	** [header_size, payload_size, type]
 	*/
-	private long[] parse_ogg_page(RandomAccessFile s, long offset) throws IOException {
+	protected long[] parse_ogg_page(RandomAccessFile s, long offset) throws IOException {
 		long[] result   = new long[3];               // [header_size, payload_size]
 		byte[] p_header = new byte[OGG_PAGE_SIZE];   // buffer for the page header 
 		byte[] scratch;
@@ -155,7 +155,7 @@ public class OggFile extends Common {
 			s.read(buff);
 			id_hash.put("version"         , b2le32(buff, 7));
 			id_hash.put("channels"        , b2u(buff[11]));
-			id_hash.put("samplint_rate"   , b2le32(buff, 12));
+			id_hash.put("sampling_rate"   , b2le32(buff, 12));
 			id_hash.put("bitrate_minimal" , b2le32(buff, 16));
 			id_hash.put("bitrate_nominal" , b2le32(buff, 20));
 			id_hash.put("bitrate_maximal" , b2le32(buff, 24));

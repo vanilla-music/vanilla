@@ -56,8 +56,14 @@ public class Bastp {
 				tags.put("type", "FLAC");
 			}
 			else if(magic.equals("OggS")) {
-				tags = (new OggFile()).getTags(s);
-				tags.put("type", "OGG");
+				// This may be an Opus OR an Ogg Vorbis file
+				tags = (new OpusFile()).getTags(s);
+				if (tags.size() > 0) {
+					tags.put("type", "OPUS");
+				} else {
+					tags = (new OggFile()).getTags(s);
+					tags.put("type", "OGG");
+				}
 			}
 			else if(file_ff[0] == -1 && file_ff[1] == -5) { /* aka 0xfffb in real languages */
 				tags = (new LameHeader()).getTags(s);
