@@ -515,8 +515,8 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 			}
 			mFormat = sb.toString();
 
-			float[] rg = PlaybackService.get(this).getReplayGainValues(song.path);
-			mReplayGain = "track="+rg[0]+"dB, album="+rg[1]+"dB";
+			BastpUtil.GainValues rg = PlaybackService.get(this).getReplayGainValues(song.path);
+			mReplayGain = "base="+rg.base+"dB, track="+rg.track+"dB, album="+rg.album+"dB";
 
 			data.release();
 		}

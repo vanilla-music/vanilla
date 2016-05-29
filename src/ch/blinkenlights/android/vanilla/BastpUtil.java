@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2013-2016 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,61 +23,84 @@ import java.util.HashMap;
 import java.util.Vector;
 
 public class BastpUtil {
+	/**
+	 * Our global instance cache
+	 */
 	private RGLruCache rgCache;
-	
+	/**
+	 * What we return & cache
+	 * These are normalized to conform to EBU R128
+	 */
+	public class GainValues {
+		public float base;
+		public float album;
+		public float track;
+	}
+	/**
+	 * LRU cache for ReplayGain values
+	 */
+	private class RGLruCache extends LruCache<String, GainValues> {
+		public RGLruCache(int size) {
+			super(size);
+		}
+	}
+
+
 	public BastpUtil() {
 		rgCache = new RGLruCache(64); /* Cache up to 64 entries */
 	}
-	
-	
-	/** Returns the ReplayGain values of 'path' as <track,album>
+
+	/**
+	 * Returns a GainValues object for `path'
 	 */
-	public float[] getReplayGainValues(String path) {
+	public GainValues getReplayGainValues(String path) {
 		if(path == null) {
 			// path must not be null
 			path = "//null\\";
 		}
 
-		float[] cached = rgCache.get(path);
-
+		GainValues cached = rgCache.get(path);
 		if(cached == null) {
 			cached = getReplayGainValuesFromFile(path);
 			rgCache.put(path, cached);
 		}
 		return cached;
 	}
-	
-	
-	
-	/** Parse given file and return track,album replay gain values
+
+	/**
+	 *  Parse given file and return track,album replay gain values
 	 */
-	private float[] getReplayGainValuesFromFile(String path) {
-		String[] keys = { "REPLAYGAIN_TRACK_GAIN", "REPLAYGAIN_ALBUM_GAIN" };
-		float[] adjust= { 0f                     , 0f                      };
+	private GainValues getReplayGainValuesFromFile(String path) {
 		HashMap tags  = (new Bastp()).getTags(path);
-		
-		for (int i=0; i<keys.length; i++) {
-			String curKey = keys[i];
-			if(tags.containsKey(curKey)) {
-				String rg_raw = (String)((Vector)tags.get(curKey)).get(0);
-				String rg_numonly = "";
-				float rg_float = 0f;
-				try {
-					String nums = rg_raw.replaceAll("[^0-9.-]","");
-					rg_float = Float.parseFloat(nums);
-				} catch(Exception e) {}
-				adjust[i] = rg_float;
-			}
-		}
-		return adjust;
+		GainValues gv = new GainValues();
+
+		// normal replay gain, add 5dB difference
+		if(tags.containsKey("REPLAYGAIN_TRACK_GAIN"))
+			gv.track = getFloatFromString((String)((Vector)tags.get("REPLAYGAIN_TRACK_GAIN")).get(0)) - 5.0f;
+		if(tags.containsKey("REPLAYGAIN_ALBUM_GAIN"))
+			gv.album = getFloatFromString((String)((Vector)tags.get("REPLAYGAIN_ALBUM_GAIN")).get(0)) - 5.0f;
+
+		// already R128, most likely OPUS
+		if(tags.containsKey("R128_BASTP_BASE_GAIN"))
+			gv.base = getFloatFromString((String)((Vector)tags.get("R128_BASTP_BASE_GAIN")).get(0)) / 256.0f;
+		if(tags.containsKey("R128_TRACK_GAIN"))
+			gv.track = getFloatFromString((String)((Vector)tags.get("R128_TRACK_GAIN")).get(0)) / 256.0f;
+		if(tags.containsKey("R128_ALBUM_GAIN"))
+			gv.album = getFloatFromString((String)((Vector)tags.get("R128_ALBUM_GAIN")).get(0)) / 256.0f;
+
+		return gv;
 	}
-	
-	/** LRU cache for ReplayGain values
+
+	/**
+	 * Parses common replayGain string values
 	 */
-	private class RGLruCache extends LruCache<String, float[]> {
-		public RGLruCache(int size) {
-			super(size);
-		}
+	private float getFloatFromString(String rg_raw) {
+		float rg_float = 0f;
+		try {
+			String nums = rg_raw.replaceAll("[^0-9.-]","");
+			rg_float = Float.parseFloat(nums);
+		} catch(Exception e) {}
+		return rg_float;
 	}
 
 }

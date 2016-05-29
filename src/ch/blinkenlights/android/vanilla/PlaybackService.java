@@ -658,20 +658,20 @@ public final class PlaybackService extends Service
 	 */
 	private void applyReplayGain(VanillaMediaPlayer mp) {
 
-		float[] rg = getReplayGainValues(mp.getDataSource()); /* track, album */
+		BastpUtil.GainValues rg = getReplayGainValues(mp.getDataSource()); /* base, track, album */
 		float adjust = 0f;
 
 		if(mReplayGainAlbumEnabled) {
-			adjust = (rg[0] != 0 ? rg[0] : adjust); /* do we have track adjustment ? */
-			adjust = (rg[1] != 0 ? rg[1] : adjust); /* ..or, even better, album adj? */
+			adjust = (rg.track != 0 ? rg.track : adjust); /* do we have track adjustment ? */
+			adjust = (rg.album != 0 ? rg.album : adjust); /* ..or, even better, album adj? */
 		}
 
 		if(mReplayGainTrackEnabled || (mReplayGainAlbumEnabled && adjust == 0)) {
-			adjust = (rg[1] != 0 ? rg[1] : adjust); /* do we have album adjustment ? */
-			adjust = (rg[0] != 0 ? rg[0] : adjust); /* ..or, even better, track adj? */
+			adjust = (rg.album != 0 ? rg.album : adjust); /* do we have album adjustment ? */
+			adjust = (rg.track != 0 ? rg.track : adjust); /* ..or, even better, track adj? */
 		}
 
-		if(adjust == 0) {
+		if(adjust == 0 && rg.base == 0) {
 			/* No RG value found: decrease volume for untagged song if requested by user */
 			adjust = (mReplayGainUntaggedDeBump-150)/10f;
 		} else {
@@ -699,7 +699,7 @@ public final class PlaybackService extends Service
 	 * Returns the (hopefully cached) replaygain
 	 * values of given file
 	 */
-	public float[] getReplayGainValues(String path) {
+	public BastpUtil.GainValues getReplayGainValues(String path) {
 		return mBastpUtil.getReplayGainValues(path);
 	}
 
