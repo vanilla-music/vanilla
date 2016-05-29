@@ -92,7 +92,7 @@ public class PreferencesTheme extends PreferenceFragment
 		paint.setStyle(Paint.Style.FILL);
 		for (int i=1; i < colors.length; i++) {
 			paint.setColor(colors[i]);
-			canvas.drawRect(0, step*(i-1), size, step*i, paint);
+			canvas.drawRect(0, step*(i-1), size, size, paint);
 		}
 
 		Drawable d = new BitmapDrawable(mContext.getResources(), bitmap);
