@@ -535,6 +535,8 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 			return "AAC";
 		} else if ("audio/vorbis".equals(mime)) {
 			return "Ogg Vorbis";
+		} else if ("application/ogg".equals(mime)) {
+			return "Ogg Vorbis";
 		} else if ("audio/flac".equals(mime)) {
 			return "FLAC";
 		}
