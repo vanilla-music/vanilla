@@ -516,7 +516,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 			mFormat = sb.toString();
 
 			BastpUtil.GainValues rg = PlaybackService.get(this).getReplayGainValues(song.path);
-			mReplayGain = "base="+rg.base+"dB, track="+rg.track+"dB, album="+rg.album+"dB";
+			mReplayGain = String.format("base=%.2f, track=%.2f, album=%.2f", rg.base, rg.track, rg.album);
 
 			data.release();
 		}
