@@ -656,6 +656,7 @@ public class LibraryActivity
 			if (FileUtils.canDispatchIntent(rowData))
 				menu.add(0, MENU_OPEN_EXTERNAL, 0, R.string.open).setIntent(rowData);
 			menu.add(0, MENU_PLAY, 0, R.string.play).setIntent(rowData);
+			menu.add(0,MENU_PLAY_ALL,0,R.string.play_all).setIntent(rowData);
 			menu.add(0, MENU_ENQUEUE_AS_NEXT, 0, R.string.enqueue_as_next).setIntent(rowData);
 			menu.add(0, MENU_ENQUEUE, 0, R.string.enqueue).setIntent(rowData);
 			if (type == MediaUtils.TYPE_PLAYLIST) {
