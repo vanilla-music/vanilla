@@ -5,7 +5,6 @@
   <string name="no_songs">آهنگی روی دستگاه شما پیدا نشد.</string>
   <string name="empty_queue">آهنگی انتخاب نشده. چند آهنگ از مجموعه انتخاب کنید، یا با لمس این پیام وارد حالت تصادفی شوید.</string>
   <string name="settings">تنظیمات</string>
-  <string name="library">مجموعه</string>
   <string name="no_shuffle">بدون تصادفی</string>
   <string name="shuffle_songs">تصادفی‌سازی آهنگ‌ها</string>
   <string name="shuffle_songs_continuously">تصادفی‌سازی پیوسته آهنگ‌ها</string>
@@ -33,8 +32,6 @@
   <string name="choose_playlist_name">انتخاب نام لیست پخش</string>
   <string name="create">ساختن</string>
   <string name="overwrite">جایگزین</string>
-  <string name="cancel">لغو</string>
-  <string name="yes">بله</string>
   <string name="delete_playlist">لیست پخش %s حذف شود؟</string>
   <!--Library-->
   <string name="enqueue">اضافه کردن به صف</string>
@@ -55,7 +52,6 @@
   <string name="search">جستجو</string>
   <string name="done">انجام شد</string>
   <string name="remove">حذف</string>
-  <string name="clear_search">پاکسازی جستجو</string>
   <string name="play_or_enqueue">اضافه به صف اگر در حال پخش، در غیر این صورت شروع به پخش</string>
   <string name="open">بازکردن</string>
   <plurals name="playing">
@@ -83,7 +79,6 @@
   <string name="playlists">لیست‌های پخش</string>
   <string name="genres">ژانرها</string>
   <string name="files">فایل‌ها</string>
-  <string name="none">هیچی</string>
   <string name="unknown">ناشناخته</string>
   <string name="play_all">پخش همه</string>
   <string name="enqueue_all">اضافه‌کردن همه به صف</string>
@@ -100,10 +95,6 @@
   <string name="artist_year">هنرمند، سال</string>
   <string name="album_track">آلبوم، شماره ترک</string>
   <string name="song_playcount">تعداد پخش</string>
-  <string name="ascending">صعودی</string>
-  <string name="descending">نزولی</string>
-  <!--Notification-->
-  <string name="notification_title_paused">%s (توقف)</string>
   <!--Preferences-->
   <plurals name="seconds">
     <item quantity="other">%d ثانیه ها</item>
@@ -115,7 +106,6 @@
     <item quantity="other">%d ساعت ها</item>
   </plurals>
   <string name="audio">صدا</string>
-  <string name="volume_title">حجم صدا</string>
   <string name="volume_during_ducking_title">حجم صدا در زمان اعلان ها</string>
   <string name="volume_during_ducking_summary">میزان صدای پخش:</string>
   <string name="ignore_audiofocus_loss_summary">نگهداشتن اجرای موزیک هنگام از تغییر کردن تمرکز صدا</string>
@@ -133,22 +123,13 @@
   <string name="notifications">اعلان ها</string>
   <string name="notification_mode_title">حالت اعلان ها</string>
   <string name="notification_action_title">عملکرد اعلان ها</string>
-  <string name="notification_invert_color_title">معکوس کردن رنگ اعلان ها</string>
-  <string name="notification_invert_color_summary">استفاده از متن سفید رنگ به جای متن سیاه رنگ</string>
   <string name="playback_screen">صفحه پخش</string>
   <string name="display_mode_title">حالت نمایش</string>
   <string name="library_screen">دیوار مجموعه</string>
-  <string name="controls_in_selector_title">کنترل ها در مجموعه</string>
-  <string name="controls_in_selector_summary">نمایش ترانه در حال اجرا و کنترل های مدیا در صفحه مجموعه</string>
   <string name="disable_lockscreen_title">غیر فعال کردن قفل صفحه</string>
-  <string name="disable_cover_art_title">غیر فعال کردن جلد آلبوم</string>
   <string name="double_tap_title">ویدجت دوبار ضربه</string>
   <string name="stock_broadcast_title">شبیه سازی پخش مخزن</string>
   <string name="stock_broadcast_summary">ارسال به پخش تقلید آن ارسال شده توسط پخش موسیقی به کار با کنترل lockscreen 3rd پارتی، ویدجت ها، و غیره</string>
-  <string name="media_scan">تازه کردن مجموعه</string>
-  <string name="tap_to_scan">برای اسکن حافظه خارجی لمس کنید</string>
-  <string name="scan_in_progress">در حال اکسن کردن...</string>
-  <string name="finished_scanning">اسکن به پایان رسید. کلیک برای اسکن مجدد.</string>
   <string name="about">درباره</string>
   <string name="tabs">ترتیب تب ها</string>
   <string name="customize_tab_order">تنظیم کردن ترتیب و نمایش تب های مجموعه</string>
@@ -177,12 +158,10 @@
   <string name="enqueue_current_album">در نوبت قرار دادن آلبوم</string>
   <string name="enqueue_current_artist">در نوبت قرار دادن خواننده</string>
   <string name="enqueue_current_genre">در نوبت قرار دادن دسته</string>
-  <string name="clear_queue">پاک کردن صف</string>
   <string name="empty_the_queue">صف خالی است</string>
   <string name="show_queue">نمایش صف</string>
   <string name="hide_queue">پنهان کردن صف</string>
   <string name="dequeue_rest">صف بندی مجدد</string>
-  <string name="queue">صف</string>
   <string name="toggle_controls">کنترل های تغییر حالت</string>
   <string name="seek_10s_backward">10 ثانیه به عقب بازگشتن</string>
   <string name="seek_10s_forward">10 ثانیه به جلو رفتن</string>
@@ -200,5 +179,4 @@
   <string name="autoplaylist_playcounts_disabled">یک لیست پخش بصورت خودکار ایجاد نشود</string>
   <string name="autoplaylist_playcounts_name" formatted="false">بالا %d</string>
   <string name="permission_request_summary">وانیلا موزیک برای نمایش کتابخانه موزیک ،نیاز به دسترسی خواندن دارد</string>
-  <string name="ok">بسیار خوب</string>
 </resources>

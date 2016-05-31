@@ -5,7 +5,6 @@
   <string name="no_songs">Jūsu ierīcē netika atrasta neviena dziesma.</string>
   <string name="empty_queue">Nav atlasīta neviena dziesma. Izvēlieties kādu no bibliotēkas vai pārslēdzieties uz nejaušo režīmu, nospiežot uz šī ziņojuma.</string>
   <string name="settings">Iestatījumi</string>
-  <string name="library">Bibliotēka</string>
   <string name="no_shuffle">Nejaukt</string>
   <string name="shuffle_songs">Jaukt dziesmas</string>
   <string name="shuffle_songs_continuously">Sajaukt dziesmas nepārtraukti</string>
@@ -33,8 +32,6 @@
   <string name="choose_playlist_name">Izvēlieties repertuāra nosaukumu</string>
   <string name="create">Izveidot</string>
   <string name="overwrite">Pārrakstīt</string>
-  <string name="cancel">Atcelt</string>
-  <string name="yes">Jā</string>
   <string name="delete_playlist">Dzēst repertuāru %s?</string>
   <!--Library-->
   <string name="enqueue">Ierindot</string>
@@ -55,7 +52,6 @@
   <string name="search">Meklēt</string>
   <string name="done">Padarīts</string>
   <string name="remove">Izņemt</string>
-  <string name="clear_search">Notīrīt meklējumu</string>
   <string name="play_or_enqueue">Ierindot, ja atskaņo; atskaņot, ja nopauzēts</string>
   <string name="open">Atvērt</string>
   <plurals name="playing">
@@ -93,7 +89,6 @@
   <string name="playlists">Repertuāri</string>
   <string name="genres">Žanri</string>
   <string name="files">Faili</string>
-  <string name="none">Nav</string>
   <string name="unknown">Nezināms</string>
   <string name="play_all">Atskaņot visu</string>
   <string name="enqueue_all">Ierindot visu</string>
@@ -110,10 +105,6 @@
   <string name="artist_year">Izpildītājs, gads</string>
   <string name="album_track">Albums, celiņa numurs</string>
   <string name="song_playcount">Atskaņojumu skaits</string>
-  <string name="ascending">Augoši</string>
-  <string name="descending">Dilstoši</string>
-  <!--Notification-->
-  <string name="notification_title_paused">%s (nopauzēts)</string>
   <!--Preferences-->
   <plurals name="seconds">
     <item quantity="zero">%d sekunžu</item>
@@ -131,7 +122,6 @@
     <item quantity="other">%d stundas</item>
   </plurals>
   <string name="audio">Audio</string>
-  <string name="volume_title">Skaļums</string>
   <string name="volume_during_ducking_title">Skaļums paziņojuma laikā</string>
   <string name="volume_during_ducking_summary">Atskaņošanas skaļums:</string>
   <string name="ignore_audiofocus_loss_summary">Turpināt atskaņošanu patstāvīga audio fokusa zaudējuma gadījumā</string>
@@ -147,7 +137,6 @@
   <string name="headset_launch_summary">Atskaņot, kad tiek pievienotas austiņas. (Jābūt instalētai lietotnei \'Headphone detector\'.)</string>
   <string name="headset_launch_app_missing">Šajai iespējai nepieciešams instalēt lietotni \'Headphone detector\'.\nWould vēlaties atvērt Play Store, lai instalētu lietotni?</string>
   <string name="replaygain">ReplayGain</string>
-  <string name="replaygain_title">Ieslēgt Replay Gain</string>
   <string name="replaygain_summary">Konfigurēt ReplayGain informācijas apstrādi</string>
   <string name="replaygain_track_title">Ieslēgt celiņu Replay Gain</string>
   <string name="replaygain_track_summary">Atskaņot visus celiņus vienādā skaļumā</string>
@@ -167,8 +156,6 @@
   <string name="notifications">Paziņojumi</string>
   <string name="notification_mode_title">Paziņojuma režīms</string>
   <string name="notification_action_title">Paziņojuma darbība</string>
-  <string name="notification_invert_color_title">Invertēt paziņojuma krāsu</string>
-  <string name="notification_invert_color_summary">Lietot baltu nevis melnu tekstu</string>
   <string name="notification_nag">Ļoti runīgs paziņojums</string>
   <string name="notification_nag_summary">Paziņot par dziesmas maiņu ar uzekrāna paziņojumu</string>
   <string name="playback_screen">Atskaņošanas ekrāns</string>
@@ -180,8 +167,6 @@
   <string name="cover_press_action_title">Darbība nospiedienam uz vāciņa</string>
   <string name="cover_longpress_action_title">Darbība ilgākam nospiedienam uz vāciņa</string>
   <string name="library_screen">Bibliotēkas ekrāns</string>
-  <string name="controls_in_selector_title">Vadīklas bibliotēkā</string>
-  <string name="controls_in_selector_summary">Bibliotēkas skatā rādīt pašreiz atskaņoto dziesmu un mēdiju vadīklas</string>
   <string name="default_action_title">Noklusētā darbība</string>
   <string name="default_playlist_action_title">Noklusētā repertuāra darbība</string>
   <string name="accelerometer_shake">Akselelometra kratīšana</string>
@@ -190,15 +175,12 @@
   <string name="shake_action_title">Kratīšanas darbība</string>
   <string name="shake_threshold_title">Kratīšanas darbības slieksnis</string>
   <string name="misc_features">Citas iespējas</string>
-  <string name="use_dark_theme_title">Lietot tumšo tēmu</string>
-  <string name="use_dark_theme_summary">Ieslēgt tumšo \'material\' tēmu</string>
+  <string name="theme">Tēma</string>
   <string name="disable_lockscreen_title">Atslēgt slēgekrānu</string>
   <string name="disable_lockscreen_summary">Novērst slēgekrāna aktivizēšanos bibliotēkas vai atskaņošanas ekrānā</string>
   <string name="use_idle_timeout_title">Ieslēgt dīkstāves noildzi</string>
   <string name="use_idle_timeout_summary">Kad aktīva, atskaņošana tiks apturēta pēc norādītā neaktivitātes perioda</string>
   <string name="idle_timeout_title">Dīkstāves noildze</string>
-  <string name="disable_cover_art_title">Atslēgt vāciņa attēlu</string>
-  <string name="disable_cover_art_summary">Neielādēt vāciņu attēlus nevienā vietā programmā</string>
   <string name="coverloader_android_title">Ielādēt vāku attēlus no Android</string>
   <string name="coverloader_android_summary">Vaicāt pēc vāciņa attēla Android iekšējai mēdiju datubāzei</string>
   <string name="coverloader_vanilla_title">Ielādēt vāciņa attēlu no mapes</string>
@@ -213,10 +195,6 @@
   <string name="scrobble_summary">Nosūtīt atskaņojumus servisam Last.fm, izmantojot ScrobbleDroid vai Simple Last.fm Scrobbler</string>
   <string name="stock_broadcast_title">Emulēt pamata raidījumus</string>
   <string name="stock_broadcast_summary">Sūtīt raidījumus, tādējādi emulējot noklusētā mūzikas atskaņotāja sūtītos, lai būtu iespējama trešo pušu slēgekrānu vadīklu, sīkrīku, u.t.t., kontrole.</string>
-  <string name="media_scan">Atsvaidzināt bibliotēku</string>
-  <string name="tap_to_scan">Pieskarieties, lai ārējā glabātuvē skenētu mūzikas failus</string>
-  <string name="scan_in_progress">Notiek skenēšana...</string>
-  <string name="finished_scanning">Skenēšana pabeigta. Pieskarieties, lai skenētu vēlreiz.</string>
   <string name="about">Par</string>
   <string name="tabs">Ciļņu kārtība</string>
   <string name="customize_tab_order">Regulēt bibliotēkas ciļņu kārtību un redzamību</string>
@@ -245,12 +223,10 @@
   <string name="enqueue_current_album">Ierindot albumu</string>
   <string name="enqueue_current_artist">Ierindot izpildītāju</string>
   <string name="enqueue_current_genre">Ierindot žanru</string>
-  <string name="clear_queue">Notīrīt rindu</string>
   <string name="empty_the_queue">Tukša rinda</string>
   <string name="show_queue">Rādīt rindu</string>
   <string name="hide_queue">Paslēpt rindu</string>
   <string name="dequeue_rest">Noņemt no rindas pārējos</string>
-  <string name="queue">Rinda</string>
   <string name="toggle_controls">Pārslēgt vadīklas</string>
   <string name="seek_10s_backward">Iet 10 sekundes atpakaļ</string>
   <string name="seek_10s_forward">Iet 10 sekundes uz priekšu</string>
@@ -268,6 +244,5 @@
   <string name="autoplaylist_playcounts_disabled">Neizveidot automātisko repertuāru</string>
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
   <string name="permission_request_summary">Vanilla Music lasīšanas atļauja vajadzīga, lai parādītu jūsu mūzikas bibliotēku</string>
-  <string name="ok">Labi</string>
   <string name="reverse_sort">Apgrieztā kārtošana</string>
 </resources>

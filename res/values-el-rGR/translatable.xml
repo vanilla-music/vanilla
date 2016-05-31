@@ -5,7 +5,6 @@
   <string name="no_songs">Δεν υπάρχουν τραγούδια που βρέθηκαν στη συσκευή σας.</string>
   <string name="empty_queue">Δεν έχουν επιλεγεί τραγούδια. Διαλέξτε κάποια από τη βιβλιοθήκη ή καταχωρίστε τυχαία κατάσταση πατώντας αυτό το μήνυμα.</string>
   <string name="settings">Ρυθμίσεις</string>
-  <string name="library">Βιβλιοθήκη</string>
   <string name="no_shuffle">Όχι τυχαία αναπαραγωγή</string>
   <string name="shuffle_songs">Τραγούδια τυχαίας αναπαραγωγής</string>
   <string name="shuffle_albums">Αναδιάταξη άλμπουμ</string>
@@ -31,7 +30,6 @@
   <!--New Playlist Dialog-->
   <string name="create">Δημιουργία</string>
   <string name="overwrite">Αντικατάσταση</string>
-  <string name="cancel">Ακύρωση</string>
   <string name="delete_playlist">Διαγραφή λίστας αναπαραγωγής %s?</string>
   <!--Library-->
   <string name="enqueue">Τοποθέτηση στην σειρα αναμονης</string>
@@ -44,7 +42,6 @@
   <string name="search">Αναζήτηση</string>
   <string name="done">Ολοκληρώθηκε</string>
   <string name="remove">Αφαίρεση</string>
-  <string name="clear_search">Απαλοιφή αναζήτησης</string>
   <string name="play_or_enqueue">Τοποθέτηση στην σειρα αναμονης αν παίζει? Αναπαραγωγή εάν διακοπεί</string>
   <plurals name="playing">
     <item quantity="one">1 τραγουδι αναπαραγεται</item>
@@ -72,7 +69,6 @@
   <string name="playlists">Λιστες αναπαραγωγης</string>
   <string name="genres">Είδη μουσικής</string>
   <string name="files">Αρχεια</string>
-  <string name="none">Τιποτα</string>
   <string name="unknown">Αγνωστο</string>
   <string name="more_from_artist">Περισσότερα από τον καλλιτέχνη</string>
   <string name="more_from_album">Περισσότερα από το άλμπουμ</string>
@@ -86,10 +82,6 @@
   <string name="artist_year">Τραγουδιστης, ετος</string>
   <string name="album_track">Αλμπουμ, αριθμος τραγουδιου</string>
   <string name="song_playcount">Σειρα αναπαραγωγών</string>
-  <string name="ascending">Αύξουσα</string>
-  <string name="descending">Φθίνουσα</string>
-  <!--Notification-->
-  <string name="notification_title_paused">%s (Σε παύση)</string>
   <!--Preferences-->
   <plurals name="seconds">
     <item quantity="one">1 δευτερολεπτο</item>
@@ -104,7 +96,6 @@
     <item quantity="other">%d ωρες</item>
   </plurals>
   <string name="audio">Ήχος</string>
-  <string name="volume_title">Ένταση</string>
   <string name="media_button_summary">Αυτό απαιτείται επίσης για τους ελέγχους  ICS lockscreen. </string>
   <string name="media_button_beep_summary">Μπιπ μετά από παράλειψη ενός κομματιού με διπλό κλικ στον έλεγχο ακουστικων.</string>
   <string name="headset_only_summary">Εμποδίζει τη μουσική από το να παίζεται μέσω των εσωτερικών ηχείων.</string>
@@ -117,14 +108,10 @@
   <string name="equalizer">Ισοσταθμιστής</string>
   <string name="cycle_continuous_shuffling_summary">«Τυχαία αναπαραγωγή λειτουργίας» θα παίξει τραγούδια σε εντελώς τυχαία σειρά</string>
   <string name="notifications">Ειδοποιήσεις</string>
-  <string name="notification_invert_color_summary">Χρήση λευκου κείμενου αντί για μαύρο κείμενο</string>
   <string name="playback_on_startup_summary">Άνοιγμα προβολής αναπαραγωγής κατά την εκκίνηση</string>
-  <string name="controls_in_selector_summary">Εμφάνιση του τρέχοντος τραγουδιού και των πολυμεσων κατα την προβολή της βιβλιοθήκης</string>
   <string name="enable_shake_summary">Ενεργό μόνο κατα την αναπαραγωγή μουσικής. Δεν λειτουργεί όταν η οθόνη είναι απενεργοποιημένη σε ορισμένες συσκευές.</string>
-  <string name="use_dark_theme_title">Χρήση σκοτεινου θέματος</string>
   <string name="disable_lockscreen_summary">Αποτροπή της οθόνης κλειδώματος από την ενεργοποίηση, όταν στην οθόνη βιβλιοθήκης ή αναπαραγωγής</string>
   <string name="use_idle_timeout_summary">Όταν είναι ενεργο, η αναπαραγωγή θα σταματήσει μετά το καθορισμένο χρονικό διάστημα αδράνειας</string>
-  <string name="disable_cover_art_summary">Αποφύγετε την τοποθέτηση εξωφύλλου οπουδήποτε στην αίτηση</string>
   <string name="coverloader_android_title">Φόρτωση έργων τέχνης από το Android</string>
   <string name="coverloader_android_summary">Εσωτερική βάση δεδομένων των πολυμέσων και ερώτημα του Android για το εξώφυλλο του άλμπουμ</string>
   <string name="coverloader_vanilla_title">Φόρτωση έργων τέχνης από το φάκελο</string>
@@ -135,9 +122,6 @@
   <string name="scrobble_title">Χρήση του ScrobbleDroid API</string>
   <string name="scrobble_summary">Scrobble στο Last.fm μέσω ScrobbleDroid ή Απλό Last.fm Scrobbler</string>
   <string name="stock_broadcast_summary">Αποστολή εκπομπων απο την μνημη για να συνεργαστουν με τους ελέγχους lockscreen 3τρίτου κόμματος, γραφικά στοιχεία, κ.λπ.</string>
-  <string name="tap_to_scan">Πατήστε για να σαρώσετε το εξωτερικό μέσο αποθήκευσης μουσικής</string>
-  <string name="scan_in_progress">Σάρωση σε εξέλιξη...</string>
-  <string name="finished_scanning">Ολοκληρώθηκε η σάρωση. Πατήστε για να αρχισει ξανα η σάρωση.</string>
   <string name="about">Σχετικά με</string>
   <string name="customize_tab_order">Ρυθμίστε τη σειρά και την προβολή των καρτελών βιβλιοθήκης</string>
   <string name="restore_default">Επαναφορά προεπιλογων</string>
@@ -165,11 +149,9 @@
   <string name="enqueue_current_album">Τοποθέτηση του άλμπουμ στην σειρα αναμονης</string>
   <string name="enqueue_current_artist">Τοποθέτηση του τραγουδιστη στην σειρα αναμονης </string>
   <string name="enqueue_current_genre">Τοποθέτηση του ειδους μουσικης στην σειρα αναμονης</string>
-  <string name="clear_queue">Απαλοιφή της σειρας αναμονης</string>
   <string name="empty_the_queue">Άδειασμα της σειράς αναμονής</string>
   <string name="show_queue">Εμφάνιση της σειράς αναμονής</string>
   <string name="dequeue_rest">Εμφάνιση της υπολοιπης σειράς αναμονής</string>
-  <string name="queue">Σειρά αναμονής</string>
   <string name="toggle_controls">Εναλλαγή ελέγχων</string>
   <string name="filebrowser_start">Αρχική σελίδα του περιηγητή αρχείων</string>
   <string name="customize_filebrowser_start">Ο Περιηγητής Αρχείων να ξεκινά από αυτό τον κατάλογο</string>

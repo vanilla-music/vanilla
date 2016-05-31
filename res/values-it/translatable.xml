@@ -5,7 +5,6 @@
   <string name="no_songs">Nessuna traccia trovata nel tuo dispositivo.</string>
   <string name="empty_queue">Nessuna traccia selezionata. Prendine qualcuna dalla libreria o entra in modalità casuale con un tap in questo messaggio.</string>
   <string name="settings">Impostazioni</string>
-  <string name="library">Libreria</string>
   <string name="no_shuffle">No shuffle</string>
   <string name="shuffle_songs">Brani in shuffle</string>
   <string name="shuffle_songs_continuously">Riproduzione casuale continua</string>
@@ -33,8 +32,6 @@
   <string name="choose_playlist_name">Scegli il nome della playlist</string>
   <string name="create">Crea</string>
   <string name="overwrite">Sovrascrivi</string>
-  <string name="cancel">Annulla</string>
-  <string name="yes">Sí</string>
   <string name="delete_playlist">Eliminare playlist %s?</string>
   <!--Library-->
   <string name="enqueue">Metti in coda</string>
@@ -55,7 +52,6 @@
   <string name="search">Cerca</string>
   <string name="done">Fatto</string>
   <string name="remove">Rimuovi</string>
-  <string name="clear_search">Pulisci cronologia ricerche</string>
   <string name="play_or_enqueue">Metti in coda se in riproduzione; Riproduci se in pausa.</string>
   <string name="open">Apri</string>
   <plurals name="playing">
@@ -88,7 +84,6 @@
   <string name="playlists">Playlist</string>
   <string name="genres">Generi</string>
   <string name="files">File</string>
-  <string name="none">Nessuno</string>
   <string name="unknown">Sconosciuto</string>
   <string name="play_all">Riproduci tutto</string>
   <string name="enqueue_all">Metti in coda tutto</string>
@@ -105,10 +100,6 @@
   <string name="artist_year">Artista, anno</string>
   <string name="album_track">Album, numero di traccia</string>
   <string name="song_playcount">Numero di riproduzioni</string>
-  <string name="ascending">Crescente</string>
-  <string name="descending">Decrescente</string>
-  <!--Notification-->
-  <string name="notification_title_paused">%s (In Pausa)</string>
   <!--Preferences-->
   <plurals name="seconds">
     <item quantity="one">1 secondo</item>
@@ -123,7 +114,6 @@
     <item quantity="other">%d ore</item>
   </plurals>
   <string name="audio">Audio</string>
-  <string name="volume_title">Volume</string>
   <string name="volume_during_ducking_title">Volume durante la notifica</string>
   <string name="volume_during_ducking_summary">Volume playback:</string>
   <string name="media_button_title">Controlli Cuffie/Bluetooth</string>
@@ -149,8 +139,6 @@
   <string name="notifications">Notifiche</string>
   <string name="notification_mode_title">Modalitá di notifica</string>
   <string name="notification_action_title">Azione notifica</string>
-  <string name="notification_invert_color_title">Inverti colore notifica</string>
-  <string name="notification_invert_color_summary">Usa testo in bianco invece di testo in nero</string>
   <string name="notification_nag">Notifiche molto dettagliate</string>
   <string name="notification_nag_summary">Segnala i cambiamenti della canzone usando ¨Heads-Up-Notification¨</string>
   <string name="playback_screen">Schermata playback</string>
@@ -162,8 +150,6 @@
   <string name="cover_press_action_title">Azione tap copertina</string>
   <string name="cover_longpress_action_title">Azione copertina pressione prolungata</string>
   <string name="library_screen">Schermata libreria</string>
-  <string name="controls_in_selector_title">Controlli libreria</string>
-  <string name="controls_in_selector_summary">Mostra il brano in riproduzione e i controlli media nella vista libreria</string>
   <string name="default_action_title">Azione default</string>
   <string name="default_playlist_action_title">Azione playlist default</string>
   <string name="accelerometer_shake">Shake accelerometro</string>
@@ -171,15 +157,11 @@
   <string name="enable_shake_summary">Attivo solamente quando la musica è in riproduzione. In alcuni dispositivi non funziona quando lo schermo è spento.</string>
   <string name="shake_action_title">Azione shake</string>
   <string name="misc_features">Caratteristiche varie</string>
-  <string name="use_dark_theme_title">Usa il tema dark</string>
-  <string name="use_dark_theme_summary">Abilita il tema material dark</string>
   <string name="disable_lockscreen_title">Disabilita lockscreen</string>
   <string name="disable_lockscreen_summary">Previene l\'attivazione della lockscreen quando si è nella libreria o nella schermata playback</string>
   <string name="use_idle_timeout_title">Abilita timeout inattivitá</string>
   <string name="use_idle_timeout_summary">Quando attivo, il playback si fermerà dopo un dato periodo di inattività</string>
   <string name="idle_timeout_title">Timeout inattivitá</string>
-  <string name="disable_cover_art_title">Disabilita copertina</string>
-  <string name="disable_cover_art_summary">Evita il caricamento della copertina ovunque nell\'applicazione</string>
   <string name="coverloader_android_title">Carica copertine da Android</string>
   <string name="coverloader_android_summary">Interroga il database dei media interno di Android per le copertine album</string>
   <string name="coverloader_vanilla_title">Carica copertine da cartella</string>
@@ -191,10 +173,6 @@
   <string name="double_tap_summary">Doppio tap sul 1x1 widget aprirà il riproduttore. Si avrà un ritardo di 400ms prima che il widget risponda all\'azione.</string>
   <string name="scrobble_title">Usa ScrobbleDroid API</string>
   <string name="stock_broadcast_summary">Invia brodcast simulando quelli inviati dal riproduttore musicale nativo con i controlli di 3rd parti, widgets,ecc.</string>
-  <string name="media_scan">Aggiorna libreria</string>
-  <string name="tap_to_scan">Premi per scansionare l\'archivio esterno per la musica</string>
-  <string name="scan_in_progress">Scansione in corso...</string>
-  <string name="finished_scanning">Scansione terminata. Premi per scansionare nuovamente.</string>
   <string name="about">Info</string>
   <string name="customize_tab_order">Modifica l\'ordine e la visibilità delle tab della libreria</string>
   <string name="restore_default">Ripristina impostazioni iniziali</string>
@@ -222,10 +200,8 @@
   <string name="enqueue_current_album">Metti in coda album</string>
   <string name="enqueue_current_artist">Metti in coda artista</string>
   <string name="enqueue_current_genre">Metti in coda genere</string>
-  <string name="clear_queue">Pulisci coda</string>
   <string name="empty_the_queue">Svuota coda</string>
   <string name="show_queue">Mostra in coda</string>
-  <string name="queue">Coda</string>
   <string name="toggle_controls">Controlli Toggle</string>
   <string name="preferences_action_show_queue">Mostra coda</string>
   <string name="preferences_action_clear_queue">Elimina coda</string>
@@ -237,5 +213,4 @@
   <string name="autoplaylist_playcounts_disabled">Non creare playlist automatica</string>
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
   <string name="permission_request_summary">Vanilla Music richiede i permessi di lettura per mostrare la tua libreria musicale.</string>
-  <string name="ok">Ok</string>
 </resources>

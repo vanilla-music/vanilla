@@ -5,7 +5,6 @@
   <string name="no_songs">No hay canciones en su dispositivo.</string>
   <string name="empty_queue">No hay canciones seleccionadas. Elija alguna de la biblioteca o entre en el modo aleatorio pulsando este mensaje.</string>
   <string name="settings">Configuración</string>
-  <string name="library">Biblioteca</string>
   <string name="no_shuffle">Aleatorio no</string>
   <string name="shuffle_songs">Canciones aleatorias</string>
   <string name="shuffle_songs_continuously">Mezclar canciones continuamente</string>
@@ -17,6 +16,7 @@
   <string name="random">Aleatorio</string>
   <string name="random_enabling">Aleatorio activado</string>
   <string name="song_load_failed">Error al cargar la canción %s. Puede ser que esté dañada o que falte.</string>
+  <string name="queue_cleared">Lista limpia</string>
   <string name="cover_art">Carátula.</string>
   <string name="close_notification">Cerrar aviso</string>
   <string name="_genre">género</string>
@@ -29,23 +29,31 @@
   <string name="_year">año</string>
   <string name="_replaygain">ganancia-r</string>
   <!--New Playlist Dialog-->
+  <string name="choose_playlist_name">Escoge nombre de la lista de reproducción</string>
   <string name="create">Crear</string>
   <string name="overwrite">Sobrescribir</string>
-  <string name="cancel">Cancelar</string>
   <string name="delete_playlist">¿Borrar lista de reproducción %s?</string>
   <!--Library-->
   <string name="enqueue">Poner en cola</string>
+  <string name="enqueue_as_next">Reproducir siguiente</string>
   <string name="play">Reproducir</string>
   <string name="edit">Editar</string>
   <string name="rename">Renombrar</string>
+  <string name="save_as_playlist">Guardar como lista de reproducción...</string>
+  <string name="add_to_playlist">Añadir a lista de reproducción...</string>
+  <string name="add_to_favorites">Añadir a favoritos</string>
+  <string name="remove_from_favorites">Eliminar de favoritos</string>
   <string name="playlist_favorites">Favoritos</string>
+  <string name="new_playlist">Nueva lista de reproducción...</string>
   <string name="expand">Expandir</string>
   <string name="delete">Eliminar</string>
+  <string name="playback_view">Reproduciendo ahora</string>
+  <string name="sort_by">Organizar por</string>
   <string name="search">Búsqueda</string>
   <string name="done">Hecho</string>
   <string name="remove">Quitar</string>
-  <string name="clear_search">Borrar búsqueda</string>
   <string name="play_or_enqueue">Poner en cola si hay música reproduciéndose, reproducir si está pausado</string>
+  <string name="open">Abrir</string>
   <plurals name="playing">
     <item quantity="one">1 canción reproduciéndose</item>
     <item quantity="other">%d canciones reproduciéndose.</item>
@@ -72,8 +80,10 @@
   <string name="playlists">Listas de reproducción</string>
   <string name="genres">Géneros</string>
   <string name="files">Archivos</string>
-  <string name="none">Ninguno</string>
   <string name="unknown">Desconocido</string>
+  <string name="play_all">Reproducir todo</string>
+  <string name="enqueue_all">Agregar todo a cola</string>
+  <string name="all_songs">Todas las canciones</string>
   <string name="more_from_artist">Más del artista</string>
   <string name="more_from_album">Más del álbum</string>
   <string name="name">Nombre</string>
@@ -86,10 +96,6 @@
   <string name="artist_year">Artista, año</string>
   <string name="album_track">Álbum, número de pista</string>
   <string name="song_playcount">Número de reproducciones</string>
-  <string name="ascending">Ascendente</string>
-  <string name="descending">Descendente</string>
-  <!--Notification-->
-  <string name="notification_title_paused">%s (en pausa)</string>
   <!--Preferences-->
   <plurals name="seconds">
     <item quantity="one">1 segundo.</item>
@@ -104,12 +110,18 @@
     <item quantity="other">%d horas.</item>
   </plurals>
   <string name="audio">Audio</string>
-  <string name="volume_title">Volumen</string>
+  <string name="volume_during_ducking_title">Duración de notificación del volumen</string>
   <string name="volume_during_ducking_summary">Volumen de reproducción:</string>
+  <string name="media_button_title">Controles Bluetooth/Auriculares</string>
   <string name="media_button_summary">Esto es necesario para los controles del bloqueo de pantalla en ICS.</string>
   <string name="media_button_beep_summary">Pitar luego de saltar una pista con un doble clic sobre el control de los auriculares</string>
+  <string name="headset_only_title">Salida externa unicamente</string>
   <string name="headset_only_summary">Impide que la música suene por los altavoces internos</string>
+  <string name="headset_pause_title">Pausar cuando se desconecte</string>
   <string name="headset_pause_summary">Pausar al desconectar los auriculares.</string>
+  <string name="headset_launch_title">Reproducir cuando se conecte</string>
+  <string name="headset_launch_summary">Reproducir cuando los auriculares se conecten. (Requiere que la app \'Headphone detector\' se encuentre instalada.)</string>
+  <string name="headset_launch_app_missing">Esta característica requiere que la app \'Headphone detector\' se encuentre instalada.\n¿Quisiera abrir la Play Store para instalar la aplicación?</string>
   <string name="replaygain_track_summary">Reproducir todas las pistas a sonoridad equivalente</string>
   <string name="replaygain_album_summary">Preservar álbum dinámico.</string>
   <string name="replaygain_untagged_debump_summary">Reducir volumen un</string>
@@ -117,28 +129,43 @@
   <string name="readahead">Habilitar caché de lectura</string>
   <string name="readahead_summary">Guardar en caché la canción actual. Esta opción puede resolver cortes en la reproducción provocados por una tarjeta SD lenta.</string>
   <string name="equalizer">Ecualizador</string>
+  <string name="cycle_continuous_shuffling">Mezcla continua</string>
+  <string name="cycle_continuous_shuffling_summary">\'Modo mezcla\' reproducirá las canciones en una orden completamente aleatoria</string>
   <string name="notifications">Avisos</string>
-  <string name="notification_invert_color_summary">Usar texto blanco en vez de negro</string>
+  <string name="notification_mode_title">Modo de notificacion</string>
+  <string name="notification_action_title">Acción de la notificacion</string>
+  <string name="playback_screen">Pantalla de reproduccion</string>
+  <string name="playback_on_startup_title">Abrir al inicio</string>
   <string name="playback_on_startup_summary">Abrir vista de reproducción al encender</string>
-  <string name="controls_in_selector_summary">Mostrar la canción actual y los controles en la vista de biblioteca</string>
+  <string name="display_mode_title">Modo de visualizacion</string>
+  <string name="swipe_up_action_title">Acción de arrastre hacia arriba</string>
+  <string name="swipe_down_action_title">Acción de arrastre hacia abajo</string>
+  <string name="cover_press_action_title">Acción de toque en la tapa</string>
+  <string name="cover_longpress_action_title">Acción de toque largo en la tapa</string>
+  <string name="library_screen">Pantalla de libreria</string>
+  <string name="default_action_title">Acción predeterminada</string>
+  <string name="default_playlist_action_title">Acción predeterminada de lista de reproduccion</string>
+  <string name="accelerometer_shake">Agitar acelerometro</string>
   <string name="enable_shake_summary">Solo activo cuando está reproduciendo. En algunos dispositivos no funciona cuando la pantalla está apagada .</string>
-  <string name="use_dark_theme_title">Usar tema oscuro</string>
-  <string name="use_dark_theme_summary">Activa el tema material oscuro</string>
+  <string name="misc_features">Características diversas</string>
+  <string name="theme">Tema</string>
+  <string name="disable_lockscreen_title">Desactivar pantalla de bloqueo</string>
   <string name="disable_lockscreen_summary">Impedir la activación de la pantalla de bloqueo en la librería o en la pantalla de reproducción</string>
+  <string name="use_idle_timeout_title">Activar tiempo de inactividad</string>
   <string name="use_idle_timeout_summary">Cuando activo, la reproducción será interrumpida dado un tiempo de inactividad</string>
-  <string name="disable_cover_art_summary">No cargar carátulas en toda la aplicación</string>
+  <string name="idle_timeout_title">Tiempo de inactividad</string>
   <string name="coverloader_android_title">Cargar carátula desde Android</string>
   <string name="coverloader_android_summary">Consultar la base de datos multimedia interna de Android para encontrar carátulas</string>
   <string name="coverloader_vanilla_title">Cargar carátula desde carpeta</string>
   <string name="coverloader_vanilla_summary">Buscar archivos con imágenes llamados cover.jpg, album.jpg o artwork.jpg y mostrarlos como carátula del álbum</string>
   <string name="coverloader_shadow_title">Cargar carátula desde carpeta oculta</string>
   <string name="coverloader_shadow_summary">Intentar cargar carátulas desde \'/sdcard/Music/.vanilla/ARTISTA/ÁLBUM.jpg\'</string>
+  <string name="cover_on_lockscreen_title">Mostrar caratula en pantalla de bloqueo</string>
+  <string name="cover_on_lockscreen_summary">Mostrar la caratula de la canción en curso en la pantalla de bloqueo</string>
   <string name="double_tap_summary">Tocar dos veces el widget 1x1 abrirá el reproductor. Causa un retraso de 400ms antes de que el widget responda a acciones.</string>
   <string name="scrobble_title">Usar API ScrobbleDroid</string>
-  <string name="tap_to_scan">Toque para buscar música en almacenamiento externo</string>
-  <string name="scan_in_progress">Búsqueda en curso...</string>
-  <string name="finished_scanning">Búsqueda finalizada. Toque para buscar de nuevo.</string>
   <string name="about">Información</string>
+  <string name="tabs">Orden de pestañas</string>
   <string name="customize_tab_order">Especificar qué pestañas mostrar y en qué orden</string>
   <string name="restore_default">Restaurar valores predeterminados</string>
   <!--The following are for the list preferences-->
@@ -147,6 +174,7 @@
   <string name="show_when_playing">Mostrar durante la reproducción (por defecto)</string>
   <string name="always_show">Mostrar siempre</string>
   <string name="open_main_activity">Abrir biblioteca (por defecto)</string>
+  <string name="open_mini_popup">Mostrar notificación en miniatura</string>
   <string name="skip_to_next_song">Saltar a la siguiente canción</string>
   <string name="open_full_player">Abrir reproductor completo</string>
   <string name="info_on_cover">Información encima de la carátula</string>
@@ -164,11 +192,10 @@
   <string name="enqueue_current_album">Poner álbum en cola</string>
   <string name="enqueue_current_artist">Poner artista en cola</string>
   <string name="enqueue_current_genre">Poner genero en cola.</string>
-  <string name="clear_queue">Limpiar cola</string>
   <string name="empty_the_queue">Vaciar cola</string>
   <string name="show_queue">Mostrar cola</string>
+  <string name="hide_queue">Esconder cola</string>
   <string name="dequeue_rest">Eliminar de la cola el resto</string>
-  <string name="queue">Cola</string>
   <string name="toggle_controls">Alternar controles</string>
   <string name="seek_10s_backward">Retroceder 10 segundos</string>
   <string name="seek_10s_forward">Avanzar 10 segundos</string>
@@ -180,4 +207,9 @@
   <string name="filebrowser_start">Carpeta de inicio del administrador de archivos</string>
   <string name="customize_filebrowser_start">Mostrar este directorio al abrir el administrador de archivos</string>
   <string name="select">Seleccionar</string>
+  <string name="autoplaylist_playcounts_title">Creación automática de lista de reproduccion</string>
+  <string name="autoplaylist_playcounts_summary">Crea automáticamente un</string>
+  <string name="autoplaylist_playcounts_disabled">No crear una lista de reproducción automatica</string>
+  <string name="permission_request_summary">Vanilla Music necesita permisos de lectura para mostrar tu biblioteca musical</string>
+  <string name="reverse_sort">Orden invertido</string>
 </resources>

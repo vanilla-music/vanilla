@@ -8,6 +8,7 @@ my $LMAP = {
 	'sr'    => 'sr-rRS',
 	'zh_CN' => 'zh-rCN',
 	'zh_TW' => 'zh-rTW',
+	'pt_BR' => 'pt-rBR',
 	'hu_HU' => 'hu',
 	'it_IT' => 'it',
 	'pl_PL' => 'pl',

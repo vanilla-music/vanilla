@@ -5,7 +5,6 @@
   <string name="no_songs">Na tomto přístroji nebyly nalezeny žádné skladby.</string>
   <string name="empty_queue">Nejsou vybrány žádné skladby. Buď vyberte nějaké ze své sbírky nebo spusťte náhodné přihrávání klepnutím na tuto zprávu.</string>
   <string name="settings">Nastavení</string>
-  <string name="library">Sbírka</string>
   <string name="no_shuffle">Nepřehrávat náhodně</string>
   <string name="shuffle_songs">Náhodné skladby</string>
   <string name="shuffle_songs_continuously">Neustálé náhodné přehrávání</string>
@@ -33,8 +32,6 @@
   <string name="choose_playlist_name">Vybrat jméno playlistu</string>
   <string name="create">Vytvořit</string>
   <string name="overwrite">Přepsat</string>
-  <string name="cancel">Zavřit</string>
-  <string name="yes">Ano</string>
   <string name="delete_playlist">Smazat playlist %s?</string>
   <!--Library-->
   <string name="enqueue">Zařadit do fronty</string>
@@ -55,7 +52,6 @@
   <string name="search">Hledat</string>
   <string name="done">Hotovo</string>
   <string name="remove">Odstranit</string>
-  <string name="clear_search">Vymazat hledání</string>
   <string name="play_or_enqueue">Pokud hraje přidat do fronty; Přehrát pokud pozastaveno</string>
   <string name="open">Otevřít</string>
   <plurals name="playing">
@@ -93,7 +89,6 @@
   <string name="playlists">Playlisty</string>
   <string name="genres">Žánry</string>
   <string name="files">Soubory</string>
-  <string name="none">Žádný</string>
   <string name="unknown">Neznámý</string>
   <string name="play_all">Přehrát vše</string>
   <string name="enqueue_all">Zařadit vše</string>
@@ -110,10 +105,6 @@
   <string name="artist_year">Umělec, rok</string>
   <string name="album_track">Album, číslo skladby</string>
   <string name="song_playcount">Počet přehrání</string>
-  <string name="ascending">Vzestupný</string>
-  <string name="descending">Sestupný</string>
-  <!--Notification-->
-  <string name="notification_title_paused">%s (pozastaveno)</string>
   <!--Preferences-->
   <plurals name="seconds">
     <item quantity="one">1 sekunda</item>
@@ -131,7 +122,6 @@
     <item quantity="other">%d hodin</item>
   </plurals>
   <string name="audio">Audio</string>
-  <string name="volume_title">Hlasitost</string>
   <string name="volume_during_ducking_title">Hlasitost během upozornění</string>
   <string name="volume_during_ducking_summary">Hlasitost přehrávání</string>
   <string name="ignore_audiofocus_loss_summary">Přehrávat dále i při trvalé ztrátě zvukového výstupu</string>
@@ -147,7 +137,6 @@
   <string name="headset_launch_summary">Začít přehrávat při připojení sluchátek. (Vyžaduje nainstalovanou aplikaci \'Headphone detector\'.)</string>
   <string name="headset_launch_app_missing">Tato funkce vyžaduje nainstalovanou aplikaci \'Headphone detector\'.\nChcete přesměrovat do Obchodu Play pro její instalaci?</string>
   <string name="replaygain">Udržení hlasitosti</string>
-  <string name="replaygain_title">Povolit udržení hlasitosti</string>
   <string name="replaygain_summary">Konfigurovat zpracování informace udržení hlasitosti</string>
   <string name="replaygain_track_title">Povolit udržení hlasitosti jednotlivých skladeb</string>
   <string name="replaygain_track_summary">Přehrávat všechny skladby ve stejné hlasitosti</string>
@@ -166,8 +155,6 @@
   <string name="notifications">Upozornění</string>
   <string name="notification_mode_title">Mód upozornění</string>
   <string name="notification_action_title">Akce upozornění</string>
-  <string name="notification_invert_color_title">Obrátit barvu upozornění</string>
-  <string name="notification_invert_color_summary">Použít bílý text místo černého</string>
   <string name="notification_nag">Velmi detailní upozornění</string>
   <string name="notification_nag_summary">Oznamovat změny skladeb za použití \'Heads-Up-Notification\'</string>
   <string name="playback_screen">Obrazovka přehrávání</string>
@@ -179,8 +166,6 @@
   <string name="cover_press_action_title">Akce při ťuknutí na obal</string>
   <string name="cover_longpress_action_title">Akce při dlouhém ťuknutí na obal</string>
   <string name="library_screen">Obrazovka knihovny</string>
-  <string name="controls_in_selector_title">Ovládání v knihovně</string>
-  <string name="controls_in_selector_summary">Zobrazovat přehrávanou skladbu a ovládání v náhledu sbírky</string>
   <string name="default_action_title">Výchozí akce</string>
   <string name="default_playlist_action_title">Výchozí akce playlistu</string>
   <string name="accelerometer_shake">Potřesení</string>
@@ -189,15 +174,12 @@
   <string name="shake_action_title">Akce při potřesení</string>
   <string name="shake_threshold_title">Hodnota síly potřesení</string>
   <string name="misc_features">Ostatní možnosti</string>
-  <string name="use_dark_theme_title">Použít tmavý vzhled</string>
-  <string name="use_dark_theme_summary">Zapne tmavý vzhled aplikace</string>
+  <string name="theme">Vzhled</string>
   <string name="disable_lockscreen_title">Vypnout uzamčení obrazovky</string>
   <string name="disable_lockscreen_summary">Zamezí uzamčení přístroje na obrazovce přehrávání nebo sbírky</string>
   <string name="use_idle_timeout_title">Povolit interval nečinnosti</string>
   <string name="use_idle_timeout_summary">Pokud povoleno, přehrávání bude zastaveno po zadaném intervalu nečinnosti</string>
   <string name="idle_timeout_title">Interval nečinnosti</string>
-  <string name="disable_cover_art_title">Vypnout zobrazení obalu</string>
-  <string name="disable_cover_art_summary">Zamezit načítání obalu kdekoliv v aplikaci</string>
   <string name="coverloader_android_title">Načítat obrázky z Androidu</string>
   <string name="coverloader_android_summary">Prohledávat interní databázi Androidu pro obrázky alb</string>
   <string name="coverloader_vanilla_title">Načítat obrázky z adresáře</string>
@@ -212,10 +194,6 @@
   <string name="scrobble_summary">Posílat na Last.fm přes ScrobbleDroid nebo Simple Last.fm scrobbler</string>
   <string name="stock_broadcast_title">Emulovat základní oznamování</string>
   <string name="stock_broadcast_summary">Posílat upozornění jako to dělá výchozí přehrávač hudby, pro zajištění funkčnosti modulů, ovládání uzamčené obrazovky, atd. poskytovaných třetími stranami.</string>
-  <string name="media_scan">Obnovit knihovnu</string>
-  <string name="tap_to_scan">Ťuknout pro hledání hudby v externím úložišti</string>
-  <string name="scan_in_progress">Probíhá prohledávání...</string>
-  <string name="finished_scanning">Prohledávání ukončeno. Ťuknout pro opakování hledání.</string>
   <string name="about">O aplikaci</string>
   <string name="tabs">Pořadí záložek</string>
   <string name="customize_tab_order">Upravit pořadí a viditelnost záložek sbírky</string>
@@ -244,12 +222,10 @@
   <string name="enqueue_current_album">Zařadit album do fronty</string>
   <string name="enqueue_current_artist">Zařadit umělce do fronty</string>
   <string name="enqueue_current_genre">Zařadit žánr do fronty</string>
-  <string name="clear_queue">Vymazat frontu</string>
   <string name="empty_the_queue">Prázdná fronta</string>
   <string name="show_queue">Zobrazit frontu</string>
   <string name="hide_queue">Skrýt frontu</string>
   <string name="dequeue_rest">Odstranit zbytek z fronty</string>
-  <string name="queue">Fronta</string>
   <string name="toggle_controls">Přepnout ovládání</string>
   <string name="seek_10s_backward">Přeskočit o 10 sekund zpět</string>
   <string name="seek_10s_forward">Přeskočit o 10 sekund vpřed</string>
@@ -267,6 +243,5 @@
   <string name="autoplaylist_playcounts_disabled">Nevytvářet automatický playlist</string>
   <string name="autoplaylist_playcounts_name" formatted="false">Vrchních %d</string>
   <string name="permission_request_summary">Vanilla Music potřebuje povolení pro čtení k zobrazení hudební knihovny</string>
-  <string name="ok">Ok</string>
   <string name="reverse_sort">Opačné pořadí</string>
 </resources>

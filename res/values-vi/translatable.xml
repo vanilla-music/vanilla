@@ -5,7 +5,6 @@
   <string name="no_songs">Không tìm được bài hát nào trên máy của bạn.</string>
   <string name="empty_queue">Chưa chọn bài hát nào. Hãy chọn bài hát từ thư viện nhạc hoặc chạm vào đây để phát ngẫu nhiên.</string>
   <string name="settings">Cài đặt</string>
-  <string name="library">Thư viện</string>
   <string name="no_shuffle">Không trộn bài</string>
   <string name="shuffle_songs">Trộn bài</string>
   <string name="shuffle_songs_continuously">Trộn bài liên tục</string>
@@ -32,7 +31,6 @@
   <!--New Playlist Dialog-->
   <string name="create">Tạo</string>
   <string name="overwrite">Ghi đè</string>
-  <string name="cancel">Huỷ</string>
   <string name="delete_playlist">Xoá danh sách %s?</string>
   <!--Library-->
   <string name="enqueue">Thêm vào danh sách</string>
@@ -45,7 +43,6 @@
   <string name="search">Tìm kiếm</string>
   <string name="done">Xong</string>
   <string name="remove">Xoá</string>
-  <string name="clear_search">Xoá ô tìm kiếm</string>
   <string name="play_or_enqueue">Thêm vào danh sách nếu đang phát nhạc; Phát nếu đang dừng</string>
   <plurals name="playing">
     <item quantity="other">Đang phát %d bài hát.</item>
@@ -60,7 +57,6 @@
   <string name="playlists">Danh sách</string>
   <string name="genres">Thể loại</string>
   <string name="files">Tập tin</string>
-  <string name="none">Không</string>
   <string name="unknown">Không rõ</string>
   <string name="more_from_artist">Các bài hát khác của ca sĩ</string>
   <string name="more_from_album">Các bài hát khác trong album</string>
@@ -74,13 +70,8 @@
   <string name="artist_year">Ca sĩ, năm</string>
   <string name="album_track">Album, số thứ tự bài hát</string>
   <string name="song_playcount">Lượt nghe</string>
-  <string name="ascending">Tăng dần</string>
-  <string name="descending">Giảm dần</string>
-  <!--Notification-->
-  <string name="notification_title_paused">%s (Đang tạm ngừng)</string>
   <!--Preferences-->
   <string name="audio">Âm thanh</string>
-  <string name="volume_title">Âm lượng</string>
   <string name="volume_during_ducking_summary">Âm lượng phát nhạc: </string>
   <string name="media_button_summary">Cần phải bật để kích hoạt điều khiển màn hình khoá trên Android ICS</string>
   <string name="media_button_beep_summary">Phát tiếng bíp sau khi nhấn đúp nút trên tai nghe để chuyển bài</string>
@@ -96,17 +87,12 @@
   <string name="equalizer">Bộ chỉnh âm</string>
   <string name="cycle_continuous_shuffling_summary">Chế độ trộn bài sẽ phát nhạc hoàn toàn ngẫu nhiên</string>
   <string name="notifications">Thông báo</string>
-  <string name="notification_invert_color_summary">Chữ trắng thay cho chữ đen</string>
   <string name="notification_nag">Thông báo rất chi tiết</string>
   <string name="notification_nag_summary">Thông báo chuyển bài bằng \"heads-up notification\"</string>
   <string name="playback_on_startup_summary">Vào giao diện nghe nhạc khi mở ứng dụng</string>
-  <string name="controls_in_selector_summary">Hiện bài đang nghe và nút điều khiển nhạc trong giao diện thư viện</string>
   <string name="enable_shake_summary">Chỉ hoạt động khi đang phát nhạc. Có thể không dùng được khi màn hình tắt đối với một số máy.</string>
-  <string name="use_dark_theme_title">Dùng chủ đề tối</string>
-  <string name="use_dark_theme_summary">Bật chủ đề material tối</string>
   <string name="disable_lockscreen_summary">Không cho màn hình khoá hoạt động khi đang trong giao diện thư viện hoặc phát nhạc</string>
   <string name="use_idle_timeout_summary">Khi bật tính năng này, nhạc sẽ tự dừng sau một khoảng thời gian không có hành động nào xảy ra</string>
-  <string name="disable_cover_art_summary">Tắt hiển thị ảnh album trong toàn ứng dụng</string>
   <string name="coverloader_android_title">Nạp ảnh từ Android</string>
   <string name="coverloader_android_summary">Dùng ảnh trong cơ sở dữ liệu media của Android</string>
   <string name="coverloader_vanilla_title">Nạp ảnh từ thư mục</string>
@@ -117,9 +103,6 @@
   <string name="scrobble_title">Dùng API ScrobbleDroid</string>
   <string name="scrobble_summary">Gửi thông tin nhạc đến Last.fm thông qua ScrobbleDroid hoặc Simple Last.fm Scrobbler</string>
   <string name="stock_broadcast_summary">Giả lập tín hiệu của ứng dụng nghe nhạc gốc trên máy để làm việc với các ứng dụng khoá màn hình, điều khiển nhạc, v.v.</string>
-  <string name="tap_to_scan">Chạm để dò tìm nhạc trong bộ nhớ</string>
-  <string name="scan_in_progress">Đang dò…</string>
-  <string name="finished_scanning">Đã dò xong. Chạm để dò lại.</string>
   <string name="about">Giới thiệu</string>
   <string name="customize_tab_order">Sửa thứ tự tab và ẩn tab</string>
   <string name="restore_default">Đặt lại về mặc định</string>
@@ -147,11 +130,9 @@
   <string name="enqueue_current_album">Thêm album vào danh sách phát</string>
   <string name="enqueue_current_artist">Thêm ca sĩ vào danh sách phát</string>
   <string name="enqueue_current_genre">Thêm thể loại vào danh sách phát</string>
-  <string name="clear_queue">Xoá danh sách phát</string>
   <string name="empty_the_queue">Xoá danh sách phát</string>
   <string name="show_queue">Hiện danh sách phát</string>
   <string name="dequeue_rest">Xoá các bài còn lại khỏi danh sách phát</string>
-  <string name="queue">Danh sách phát</string>
   <string name="toggle_controls">Ẩn/Hiện nút điều khiển</string>
   <string name="seek_10s_backward">Tua lại 10 giây</string>
   <string name="seek_10s_forward">Tua đi 10 giây</string>

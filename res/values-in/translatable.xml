@@ -5,7 +5,6 @@
   <string name="no_songs">Tidak ada lagu ditemukan di device anda</string>
   <string name="empty_queue">Anda belum memilih lagu. Pilih dari pustaka atau ketik mode acak, ketika menyentuh pesan ini</string>
   <string name="settings">Pengaturan</string>
-  <string name="library">Pustaka</string>
   <string name="no_shuffle">Jangan Acak</string>
   <string name="shuffle_songs">Acak Lagu</string>
   <string name="shuffle_albums">Acak Album</string>
@@ -32,8 +31,6 @@
   <string name="choose_playlist_name">Pilih nama daftar putar</string>
   <string name="create">Buat</string>
   <string name="overwrite">Timpa</string>
-  <string name="cancel">Batal</string>
-  <string name="yes">Ya</string>
   <string name="delete_playlist">Hapus daftar putar $s?</string>
   <!--Library-->
   <string name="enqueue">Daftar antri</string>
@@ -52,7 +49,6 @@
   <string name="search">Cari</string>
   <string name="done">Selesai</string>
   <string name="remove">Hapus</string>
-  <string name="clear_search">Bersihkan pencarian</string>
   <string name="play_or_enqueue">Diurutkan bila diputar; Putar bila di pause</string>
   <string name="open">Open</string>
   <plurals name="playing">
@@ -74,7 +70,6 @@
   <string name="playlists">Daftar Putar</string>
   <string name="genres">Genre</string>
   <string name="files">Berkas</string>
-  <string name="none">Kosong</string>
   <string name="unknown">Tidak diketahui</string>
   <string name="all_songs">Semua lagu</string>
   <string name="more_from_artist">Selanjutnya dari artis</string>
@@ -87,10 +82,6 @@
   <string name="artist_album_track">Artis, album, nomor urut</string>
   <string name="artist_album_title">Artis, album, judul</string>
   <string name="artist_year">Artis, tahun</string>
-  <string name="ascending">Kecil ke besar</string>
-  <string name="descending">Besar ke kecil</string>
-  <!--Notification-->
-  <string name="notification_title_paused">%s (Pause)</string>
   <!--Preferences-->
   <plurals name="seconds">
     <item quantity="other">$d detik</item>
@@ -102,7 +93,6 @@
     <item quantity="other">%d jam</item>
   </plurals>
   <string name="audio">Audio</string>
-  <string name="volume_title">Suara</string>
   <string name="media_button_summary">Membutuhkan kontrol pengunci layar ICS</string>
   <string name="headset_only_summary">Non-aktifkan pengeras suara internal</string>
   <string name="headset_pause_summary">Berhentikan ketika headphone dicabut</string>
@@ -116,5 +106,4 @@
   <string name="previous_album">Album sebelumnya</string>
   <string name="select">Pilih</string>
   <string name="autoplaylist_playcounts_disabled">Jangan membuat daftar putar otomatis</string>
-  <string name="ok">Ok</string>
 </resources>

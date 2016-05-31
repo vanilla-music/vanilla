@@ -5,7 +5,6 @@
   <string name="no_songs">在你的设备上未找到音乐。</string>
   <string name="empty_queue">没有选定的音乐。由媒体库或是轻点此信息进入随机模式挑选。</string>
   <string name="settings">设置</string>
-  <string name="library">媒体库</string>
   <string name="no_shuffle">不随机播放</string>
   <string name="shuffle_songs">随机播放音乐</string>
   <string name="shuffle_songs_continuously">连续随机播放音乐</string>
@@ -33,8 +32,6 @@
   <string name="choose_playlist_name">选择播放列表名称</string>
   <string name="create">创建</string>
   <string name="overwrite">覆盖</string>
-  <string name="cancel">取消</string>
-  <string name="yes">好的</string>
   <string name="delete_playlist">删除播放列表 %s ？</string>
   <!--Library-->
   <string name="enqueue">序列</string>
@@ -55,7 +52,6 @@
   <string name="search">搜索</string>
   <string name="done">完成</string>
   <string name="remove">移除</string>
-  <string name="clear_search">清空搜索栏</string>
   <string name="play_or_enqueue">如果播放序列；如果暫停播放</string>
   <string name="open">打开</string>
   <plurals name="playing">
@@ -83,7 +79,6 @@
   <string name="playlists">播放清单</string>
   <string name="genres">风格</string>
   <string name="files">文件</string>
-  <string name="none">无</string>
   <string name="unknown">未知</string>
   <string name="play_all">全部播放</string>
   <string name="enqueue_all">全部加入序列</string>
@@ -100,10 +95,6 @@
   <string name="artist_year">演出者，年份</string>
   <string name="album_track">演出者，曲目号</string>
   <string name="song_playcount">播放次数</string>
-  <string name="ascending">升序</string>
-  <string name="descending">绛序</string>
-  <!--Notification-->
-  <string name="notification_title_paused">%s (已暂停)</string>
   <!--Preferences-->
   <plurals name="seconds">
     <item quantity="other">%d 秒</item>
@@ -115,7 +106,6 @@
     <item quantity="other">%d 小时</item>
   </plurals>
   <string name="audio">音频</string>
-  <string name="volume_title">音量</string>
   <string name="volume_during_ducking_title">通知时的音量</string>
   <string name="volume_during_ducking_summary">回放音量:</string>
   <string name="ignore_audiofocus_loss_summary">失去焦点时持续播放</string>
@@ -143,8 +133,6 @@
   <string name="notifications">通知</string>
   <string name="notification_mode_title">通知模式</string>
   <string name="notification_action_title">通知动作</string>
-  <string name="notification_invert_color_title">通知栏反色</string>
-  <string name="notification_invert_color_summary">用白色文字替代黑色文字</string>
   <string name="notification_nag">非常详尽的通知</string>
   <string name="notification_nag_summary">使用“抬头通知”来告知曲面变换</string>
   <string name="playback_screen">回放画面</string>
@@ -156,8 +144,6 @@
   <string name="cover_press_action_title">轻触专辑封面动作</string>
   <string name="cover_longpress_action_title">长按专辑封面动作</string>
   <string name="library_screen">媒体库画面</string>
-  <string name="controls_in_selector_title">媒体库控制</string>
-  <string name="controls_in_selector_summary">显示当前播放的曲目并在媒体库视图中显示媒体控制按钮</string>
   <string name="default_action_title">默认动作</string>
   <string name="default_playlist_action_title">默认播放列表动作</string>
   <string name="accelerometer_shake">摇动加速度计</string>
@@ -166,15 +152,11 @@
   <string name="shake_action_title">摇动动作</string>
   <string name="shake_threshold_title">摇动力度阈值</string>
   <string name="misc_features">杂项特性</string>
-  <string name="use_dark_theme_title">使用暗色界面</string>
-  <string name="use_dark_theme_summary">使用暗色材质主题</string>
   <string name="disable_lockscreen_title">禁用锁屏</string>
   <string name="disable_lockscreen_summary">在媒体库界面或回放屏幕时禁用锁屏</string>
   <string name="use_idle_timeout_title">启用闲置超时</string>
   <string name="use_idle_timeout_summary">启用时，闲置一段时间后会停止播放</string>
   <string name="idle_timeout_title">闲置超时</string>
-  <string name="disable_cover_art_title">禁用专辑封面</string>
-  <string name="disable_cover_art_summary">不要在此应用的任何情况下载入专辑封面</string>
   <string name="coverloader_android_title">从 Android 设备载入</string>
   <string name="coverloader_android_summary">查询 Android 内部的媒体数据库来做专辑封面</string>
   <string name="coverloader_vanilla_title">从文件夹中载入封面</string>
@@ -189,10 +171,6 @@
   <string name="scrobble_summary">Scrobble 透过 ScrobbleDroid 到 Last.fm 或只是 Last.fm Scrobbler</string>
   <string name="stock_broadcast_title">仿真原生应用的广播</string>
   <string name="stock_broadcast_summary">发送广播以模拟那些由本地原生播放器而产生的效果，例如第三方锁屏控制，小工具等等。</string>
-  <string name="media_scan">刷新媒体库</string>
-  <string name="tap_to_scan">轻触以扫描外部存储的音乐</string>
-  <string name="scan_in_progress">扫描进行中…</string>
-  <string name="finished_scanning">完成扫描。轻触以再次扫描。</string>
   <string name="about">关于</string>
   <string name="tabs">标签页顺序</string>
   <string name="customize_tab_order">调整媒体库标签页的顺序及可见性</string>
@@ -221,11 +199,9 @@
   <string name="enqueue_current_album">以专辑加入序列</string>
   <string name="enqueue_current_artist">以演出者加入序列</string>
   <string name="enqueue_current_genre">以风格加入序列</string>
-  <string name="clear_queue">清空序列</string>
   <string name="empty_the_queue">空序列</string>
   <string name="show_queue">显示序列</string>
   <string name="dequeue_rest">剩余的移出序列</string>
-  <string name="queue">序列</string>
   <string name="toggle_controls">切换控制器</string>
   <string name="seek_10s_backward">向后倒退 10 秒</string>
   <string name="seek_10s_forward">向前快进 10 秒</string>
@@ -243,5 +219,4 @@
   <string name="autoplaylist_playcounts_disabled">不要创建自动播放列表</string>
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
   <string name="permission_request_summary">Vanilla Music 需要读取权限来显示你的音乐媒体库</string>
-  <string name="ok">好的</string>
 </resources>

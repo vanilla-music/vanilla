@@ -5,7 +5,6 @@
   <string name="no_songs">Aucun morceau trouvé sur votre appareil</string>
   <string name="empty_queue">Aucun morceau sélectionné. Choisissez en un depuis la bibliothèque ou activez le mode aléatoire en cliquant sur ce message</string>
   <string name="settings">Paramètres</string>
-  <string name="library">Bibliothèque</string>
   <string name="no_shuffle">Désactiver le mode aléatoire</string>
   <string name="shuffle_songs">Morceaux en mode aléatoire</string>
   <string name="shuffle_songs_continuously">Morceaux continuellement en mode aléatoire</string>
@@ -33,8 +32,6 @@
   <string name="choose_playlist_name">Choisir un nom de liste de lecture</string>
   <string name="create">Créer</string>
   <string name="overwrite">Remplacer</string>
-  <string name="cancel">Annuler</string>
-  <string name="yes">Oui</string>
   <string name="delete_playlist">Supprimer la liste de lecture %s?</string>
   <!--Library-->
   <string name="enqueue">Ajouter à la file d\'attente</string>
@@ -43,7 +40,7 @@
   <string name="edit">Modifier</string>
   <string name="rename">Renommer</string>
   <string name="save_as_playlist">Enregistrer en tant que liste de lecture...</string>
-  <string name="add_to_playlist">Ajouter a la liste de lecture...</string>
+  <string name="add_to_playlist">Ajouter à la liste de lecture...</string>
   <string name="add_to_favorites">Ajouter aux favoris</string>
   <string name="remove_from_favorites">Retirer des favoris</string>
   <string name="playlist_favorites">Favoris</string>
@@ -55,7 +52,6 @@
   <string name="search">Rechercher</string>
   <string name="done">Fait</string>
   <string name="remove">Supprimer</string>
-  <string name="clear_search">Effacer la recherche</string>
   <string name="play_or_enqueue">Ajouter à la file d\'attente si en lecture ; Lire si en pause</string>
   <string name="open">Ouvrir</string>
   <plurals name="playing">
@@ -88,7 +84,6 @@
   <string name="playlists">Playlists</string>
   <string name="genres">Genres</string>
   <string name="files">Fichiers</string>
-  <string name="none">Aucun</string>
   <string name="unknown">Inconnu</string>
   <string name="play_all">Lire tout</string>
   <string name="enqueue_all">Ajouter tout à la file d\'attente</string>
@@ -105,10 +100,6 @@
   <string name="artist_year">Artiste, année</string>
   <string name="album_track">Album, numéro de piste</string>
   <string name="song_playcount">Nombre de lectures</string>
-  <string name="ascending">Croissant</string>
-  <string name="descending">Décroissant</string>
-  <!--Notification-->
-  <string name="notification_title_paused">%s (en pause)</string>
   <!--Preferences-->
   <plurals name="seconds">
     <item quantity="one">1 seconde</item>
@@ -123,7 +114,6 @@
     <item quantity="other">%d heures</item>
   </plurals>
   <string name="audio">Audio</string>
-  <string name="volume_title">Volume</string>
   <string name="volume_during_ducking_title">Volume pendant les notifications</string>
   <string name="volume_during_ducking_summary">Volume de lecture :</string>
   <string name="ignore_audiofocus_loss_summary">Continuer la lecture après une perte complète du focus audio</string>
@@ -139,7 +129,6 @@
   <string name="headset_launch_summary">Lecture à la connexion des écouteurs (fonctionne uniquement lorsque l\'application \"Headphone detector\" est installée).</string>
   <string name="headset_launch_app_missing">Cette fonctionnalité nécessite l\'installation de l\'application \'Headphone detector\'.\nVoulez vous l\'installer via le Play Store ?</string>
   <string name="replaygain">ReplayGain</string>
-  <string name="replaygain_title">Activer ReplayGain</string>
   <string name="replaygain_summary">Configurer la gestion des informations pour ReplayGain</string>
   <string name="replaygain_track_title">Activer ReplayGain par morceau</string>
   <string name="replaygain_track_summary">Lit tous les morceaux à volume équivalent</string>
@@ -158,8 +147,6 @@
   <string name="notifications">Notifications</string>
   <string name="notification_mode_title">Mode de notification</string>
   <string name="notification_action_title">Action de notification</string>
-  <string name="notification_invert_color_title">Inverser la couleur de la notification</string>
-  <string name="notification_invert_color_summary">Texte blanc au lieu de noir</string>
   <string name="notification_nag">Notification très verbeuse</string>
   <string name="notification_nag_summary">Annonce les changements de morceau avec une notification flottante</string>
   <string name="playback_screen">Écran de lecture</string>
@@ -171,8 +158,6 @@
   <string name="cover_press_action_title">Action toucher la jaquette</string>
   <string name="cover_longpress_action_title">Action toucher longuement la jaquette</string>
   <string name="library_screen">Écran de la bibliothèque</string>
-  <string name="controls_in_selector_title">Contrôles dans la bibliothèque</string>
-  <string name="controls_in_selector_summary">Afficher le morceaux en cours de lecture et les contrôles de lecture dans l\'écran de bibliothèque</string>
   <string name="default_action_title">Action par défaut</string>
   <string name="default_playlist_action_title">Action par défaut de la liste de lecture</string>
   <string name="accelerometer_shake">Secouer l\'appareil</string>
@@ -181,15 +166,11 @@
   <string name="shake_action_title">Action secouer</string>
   <string name="shake_threshold_title">Seuil de force de la secousse</string>
   <string name="misc_features">Fonctionnalités diverses</string>
-  <string name="use_dark_theme_title">Utiliser le thème sombre</string>
-  <string name="use_dark_theme_summary">Active le thème \"dark material\"</string>
   <string name="disable_lockscreen_title">Désactiver le verrouillage de l\'écran</string>
   <string name="disable_lockscreen_summary">Empêche le verrouillage de l\'écran lorsque la bibliothèque ou l\'écran de lecture est affiché</string>
   <string name="use_idle_timeout_title">Activer le délai d\'inactivité</string>
   <string name="use_idle_timeout_summary">Quand l\'option est activée, la lecture s\'arrêtera après la période d\'inactivité donnée</string>
   <string name="idle_timeout_title">Délai d\'inactivité</string>
-  <string name="disable_cover_art_title">Désactiver la jaquette</string>
-  <string name="disable_cover_art_summary">Ne charge les couvertures nulle part dans l\'application</string>
   <string name="coverloader_android_title">Charger les illustrations depuis Android</string>
   <string name="coverloader_android_summary">Interroge la base de données \'media\' interne d\'Android pour les illustrations</string>
   <string name="coverloader_vanilla_title">Charger l\'illustration depuis le répertoire</string>
@@ -204,10 +185,6 @@
   <string name="scrobble_summary">Envoyer l\'information de scrobble à Last.fm grâce à ScrobbleDroid ou SimpleLast.fm Scrobbler</string>
   <string name="stock_broadcast_title">Emuler les notifications natives</string>
   <string name="stock_broadcast_summary">Envoyer les messages de diffusion émulant ceux envoyés par le lecteur d\'origine pour fonctionner avec des contrôles d\'écran de verrouillage tiers, widgets, etc.</string>
-  <string name="media_scan">Rafraîchir la bibliothèque</string>
-  <string name="tap_to_scan">Toucher pour trouver de la musique dans le stockage externe</string>
-  <string name="scan_in_progress">Recherche en cours...</string>
-  <string name="finished_scanning">Recherche terminée. Toucher pour analyser à nouveau.</string>
   <string name="about">À propos</string>
   <string name="tabs">Ordre des onglets</string>
   <string name="customize_tab_order">Modifier l\'ordre et la visibilité des onglets de la bibliothèque</string>
@@ -236,12 +213,10 @@
   <string name="enqueue_current_album">Ajouter l\'album à la file d\'attente</string>
   <string name="enqueue_current_artist">Ajouter l\'artiste à la file d\'attente</string>
   <string name="enqueue_current_genre">Ajouter le genre à la file d\'attente</string>
-  <string name="clear_queue">Effacer la file d\'attente</string>
   <string name="empty_the_queue">Vider la file d\'attente</string>
   <string name="show_queue">Afficher la file d\'attente</string>
   <string name="hide_queue">Masquer la file d\'attente</string>
   <string name="dequeue_rest">Enlever le reste de la file d\'attente</string>
-  <string name="queue">File d\'attente</string>
   <string name="toggle_controls">Afficher/cacher les contrôles</string>
   <string name="seek_10s_backward">Aller 10 secondes en arrière</string>
   <string name="seek_10s_forward">Aller 10 secondes en avant</string>
@@ -259,6 +234,5 @@
   <string name="autoplaylist_playcounts_disabled">Ne pas créer de liste de lecture automatique</string>
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
   <string name="permission_request_summary">Vanilla Music a besoin d\'une permission de lecture pour afficher votre bibliothèque musicale</string>
-  <string name="ok">Ok</string>
   <string name="reverse_sort">Inverser le tri</string>
 </resources>

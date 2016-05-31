@@ -5,7 +5,6 @@
   <string name="no_songs">Na urządzeniu nie znaleziono żadnych utworów.</string>
   <string name="empty_queue">Nie wybrano żadnych utworów. Wybierz utwory z biblioteki lub wejdź w tryb losowy poprzez kliknięcie tego komunikatu.</string>
   <string name="settings">Ustawienia</string>
-  <string name="library">Biblioteka</string>
   <string name="no_shuffle">Brak losowego odtwarzania utworów</string>
   <string name="shuffle_songs">Losowe odtwarzanie utworów</string>
   <string name="shuffle_songs_continuously">Losowe odtwarzanie utworów</string>
@@ -33,8 +32,6 @@
   <string name="choose_playlist_name">Nazwa listy odtwarzania</string>
   <string name="create">Utwórz</string>
   <string name="overwrite">Nadpisz</string>
-  <string name="cancel">Anuluj</string>
-  <string name="yes">Tak</string>
   <string name="delete_playlist">Usunąć listę odtwarzania %s?</string>
   <!--Library-->
   <string name="enqueue">Kolejkowanie</string>
@@ -54,7 +51,6 @@
   <string name="search">Szukaj</string>
   <string name="done">Gotowe</string>
   <string name="remove">Skasuj</string>
-  <string name="clear_search">Wyczyść wyszukiwanie</string>
   <string name="play_or_enqueue">Kolejkuj, jeżeli odtwarzane; Odtwórz, jeżeli zapauzowane</string>
   <string name="open">Otwórz</string>
   <plurals name="playing">
@@ -87,7 +83,6 @@
   <string name="playlists">Listy odtwarzania</string>
   <string name="genres">Gatunki muzyczne</string>
   <string name="files">Pliki</string>
-  <string name="none">Żaden</string>
   <string name="unknown">Nieznane</string>
   <string name="play_all">Odtwórz wszystkie</string>
   <string name="enqueue_all">Kolejkuj wszystkie</string>
@@ -104,10 +99,6 @@
   <string name="artist_year">Artysta, rok</string>
   <string name="album_track">Artysta, numer utworu</string>
   <string name="song_playcount">Ilość odtworzeń</string>
-  <string name="ascending">Rosnąco</string>
-  <string name="descending">Malejąco</string>
-  <!--Notification-->
-  <string name="notification_title_paused">%s (Zapauzowane)</string>
   <!--Preferences-->
   <plurals name="seconds">
     <item quantity="one">1 sekunda</item>
@@ -125,7 +116,6 @@
     <item quantity="other">%d godzin</item>
   </plurals>
   <string name="audio">Audio</string>
-  <string name="volume_title">Głośność</string>
   <string name="volume_during_ducking_title">Głośność poczas powiadomień</string>
   <string name="volume_during_ducking_summary">Głośność odtwarzania:</string>
   <string name="ignore_audiofocus_loss_summary">Podtrzymuj odtwarzanie przy całkowitej utracie ostrości dźwięku</string>
@@ -153,8 +143,6 @@
   <string name="notifications">Powiadomienia</string>
   <string name="notification_mode_title">Tryb powiadamiania</string>
   <string name="notification_action_title">Akcja powiadomienia</string>
-  <string name="notification_invert_color_title">Odwróć kolory powiadomienia</string>
-  <string name="notification_invert_color_summary">Używaj białego zamiast czarnego koloru tekstu</string>
   <string name="notification_nag">Pojawiające się powiadomienia na pasku powiadomień</string>
   <string name="notification_nag_summary">Zmiana utworu wyświetla nazwę aktualnie odtwarzanego utwóru w postaci powiadomienia na pasku powiadomień</string>
   <string name="playback_screen">Ekran odtwarzania</string>
@@ -166,8 +154,6 @@
   <string name="cover_press_action_title">Akcja kliknięcia w okładkę</string>
   <string name="cover_longpress_action_title">Akcja długiego kliknięcia na okładkę</string>
   <string name="library_screen">Ekran biblioteki</string>
-  <string name="controls_in_selector_title">Kontrolki odtwarzania w bibliotece</string>
-  <string name="controls_in_selector_summary">Pokazuj aktualnie odtwarzaną piosenkę oraz kotrolki mediów w widoku biblioteki</string>
   <string name="default_action_title">Domyślna akcja</string>
   <string name="default_playlist_action_title">Domyślna akcja listy odtwarzania</string>
   <string name="accelerometer_shake">Potrząśnięcie telefonem - akcelerometr</string>
@@ -176,15 +162,11 @@
   <string name="shake_action_title">Akcja potrząśnięcia</string>
   <string name="shake_threshold_title">Próg wyzwolenia siły potrząśnięcia</string>
   <string name="misc_features">Pozostałe funkcje</string>
-  <string name="use_dark_theme_title">Ciemny motyw</string>
-  <string name="use_dark_theme_summary">Aktywuje ciemny motyw material</string>
   <string name="disable_lockscreen_title">Wyłączenie ekranu blokady</string>
   <string name="disable_lockscreen_summary">Przeciwdziała włączaniu blokady ekranu w momencie przeglądania biblioteki lub ekranu odtwarzania</string>
   <string name="use_idle_timeout_title">Włączenie czasu bezczynności</string>
   <string name="use_idle_timeout_summary">Gdy aktywne, odtwarzanie zostanie zatrzymane po upływie ustawionej wartości czasu nieaktywności</string>
   <string name="idle_timeout_title">Czas bezczynności</string>
-  <string name="disable_cover_art_title">Wyłączenie okładek albumów</string>
-  <string name="disable_cover_art_summary">Unikanie ładowania okładki albumu wszędzie w obrębie aplikacji</string>
   <string name="coverloader_android_title">Załaduj okładkę albumu z systemu Android</string>
   <string name="coverloader_android_summary">Sprawdzanie w wewnętrznej bazie systemu Android w poszukiwaniu okładki albumu</string>
   <string name="coverloader_vanilla_title">Ładowanie okładki albumu z folderu</string>
@@ -199,10 +181,6 @@
   <string name="scrobble_summary">Scrobblowanie do Last.fm poprzez ScrobbleDroid lub Simple Last.fm Scrobbler</string>
   <string name="stock_broadcast_title">Emulowanie systemowych komunikatów</string>
   <string name="stock_broadcast_summary">Wysyła komunikaty udające komunikaty wysyłane przez systemowy odtwarzacz muzyki, aby współpracowały z trzecimi aplikacjami blokad ekranów, widgetów itp.</string>
-  <string name="media_scan">Odśwież bibliotekę</string>
-  <string name="tap_to_scan">Kliknij aby przeskanować zewnętrzną pamięć w poszukiwaniu muzyki</string>
-  <string name="scan_in_progress">Skanowanie w toku...</string>
-  <string name="finished_scanning">Skanowanie zakończone. Dotknij ekran, aby skanować ponownie.</string>
   <string name="about">Na temat</string>
   <string name="tabs">Kolejność zakładek</string>
   <string name="customize_tab_order">Dostosowanie kolejności oraz widoczności zakładek biblioteki</string>
@@ -231,11 +209,9 @@
   <string name="enqueue_current_album">Kolejkuj album</string>
   <string name="enqueue_current_artist">Kolejkuj artystę</string>
   <string name="enqueue_current_genre">Kolejkuj gatunek muzyczny</string>
-  <string name="clear_queue">Wyczyść kolejkę</string>
   <string name="empty_the_queue">Opróżnij kolejkę</string>
   <string name="show_queue">Pokaż kolejkę</string>
   <string name="dequeue_rest">Usuń resztę z kolejki</string>
-  <string name="queue">Kolejka</string>
   <string name="toggle_controls">Przełączaj kontrolki</string>
   <string name="seek_10s_backward">Przewiń 10 sekund do tyłu</string>
   <string name="seek_10s_forward">Przewiń 10 sekund do przodu</string>
@@ -253,5 +229,4 @@
   <string name="autoplaylist_playcounts_disabled">Nie twórz automatycznie listy odtwarzania</string>
   <string name="autoplaylist_playcounts_name" formatted="false">Najczęściej odtwarzane %d</string>
   <string name="permission_request_summary">Vanilla Music potrzebuje uprawnień do wyświetlenia Twojej biblioteki muzycznej</string>
-  <string name="ok">Ok</string>
 </resources>

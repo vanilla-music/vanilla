@@ -5,7 +5,6 @@
   <string name="no_songs">お使いのデバイス上で曲が見つかりませんでした。</string>
   <string name="empty_queue">曲が選択されていません。ライブラリーから選択するか、このメッセージをタップしてランダムモードに入ります。</string>
   <string name="settings">設定</string>
-  <string name="library">ライブラリー</string>
   <string name="no_shuffle">シャッフルなし</string>
   <string name="shuffle_songs">曲をシャッフル</string>
   <string name="shuffle_songs_continuously">連続して曲をシャッフル</string>
@@ -33,8 +32,6 @@
   <string name="choose_playlist_name">プレイリスト名の選択</string>
   <string name="create">作成</string>
   <string name="overwrite">上書</string>
-  <string name="cancel">キャンセル</string>
-  <string name="yes">はい</string>
   <string name="delete_playlist">プレイリスト %s を削除しますか?</string>
   <!--Library-->
   <string name="enqueue">キューに入れる</string>
@@ -55,7 +52,6 @@
   <string name="search">検索</string>
   <string name="done">完了</string>
   <string name="remove">除去</string>
-  <string name="clear_search">検索をクリア</string>
   <string name="play_or_enqueue">再生中はキューに入れる、一時停止中は再生</string>
   <string name="open">開く</string>
   <plurals name="playing">
@@ -83,7 +79,6 @@
   <string name="playlists">プレイリスト</string>
   <string name="genres">ジャンル</string>
   <string name="files">ファイル</string>
-  <string name="none">なし</string>
   <string name="unknown">不明</string>
   <string name="play_all">すべて再生</string>
   <string name="enqueue_all">すべてキューに入れる</string>
@@ -100,10 +95,6 @@
   <string name="artist_year">アーチスト、年</string>
   <string name="album_track">アルバム、トラック番号</string>
   <string name="song_playcount">再生回数</string>
-  <string name="ascending">昇順</string>
-  <string name="descending">降順</string>
-  <!--Notification-->
-  <string name="notification_title_paused">%s (一時停止)</string>
   <!--Preferences-->
   <plurals name="seconds">
     <item quantity="other">%d 秒</item>
@@ -115,7 +106,6 @@
     <item quantity="other">%d 時間</item>
   </plurals>
   <string name="audio">オーディオ</string>
-  <string name="volume_title">音量</string>
   <string name="volume_during_ducking_title">通知時の音量</string>
   <string name="volume_during_ducking_summary">再生音量: </string>
   <string name="ignore_audiofocus_loss_summary">オーディオのフォーカスを失っても永久に再生を続けます</string>
@@ -131,7 +121,6 @@
   <string name="headset_launch_summary">ヘッドホンが差し込まれたときに再生します。 (\'ヘッドフォン検出\' アプリをインストールする必要があります。)</string>
   <string name="headset_launch_app_missing">この機能は、\'ヘッドフォン検出\' アプリをインストールする必要があります。\nPlay ストアを開いて、アプリケーションをインストールしますか?</string>
   <string name="replaygain">リプレイゲイン</string>
-  <string name="replaygain_title">リプレイゲインを有効にする</string>
   <string name="replaygain_summary">リプレイゲイン情報の処理を設定します</string>
   <string name="replaygain_track_title">トラックごとにリプレイゲインを有効にする</string>
   <string name="replaygain_track_summary">同じ音量ですべてのトラックを再生します</string>
@@ -150,8 +139,6 @@
   <string name="notifications">通知</string>
   <string name="notification_mode_title">通知モード</string>
   <string name="notification_action_title">通知操作</string>
-  <string name="notification_invert_color_title">通知の色を反転</string>
-  <string name="notification_invert_color_summary">黒の文字に代えて白の文字を使用します</string>
   <string name="notification_nag">非常に詳細な通知</string>
   <string name="notification_nag_summary">\'Heads-Up-通知\' を使用して曲の変更をお知らせします</string>
   <string name="playback_screen">再生画面</string>
@@ -163,8 +150,6 @@
   <string name="cover_press_action_title">カバーをタップ操作</string>
   <string name="cover_longpress_action_title">カバーを長押し操作</string>
   <string name="library_screen">ライブラリー画面</string>
-  <string name="controls_in_selector_title">ライブラリーのコントロール</string>
-  <string name="controls_in_selector_summary">ライブラリービューに現在再生中の曲やメディアコントロールを表示します</string>
   <string name="default_action_title">デフォルト操作</string>
   <string name="default_playlist_action_title">デフォルト プレイリスト操作</string>
   <string name="accelerometer_shake">加速度センサー シェイク</string>
@@ -173,15 +158,12 @@
   <string name="shake_action_title">シェイク操作</string>
   <string name="shake_threshold_title">シェイクする力の閾値</string>
   <string name="misc_features">その他の機能</string>
-  <string name="use_dark_theme_title">ダークテーマを使用する</string>
-  <string name="use_dark_theme_summary">ダークマテリアルテーマを有効にします</string>
+  <string name="theme">テーマ</string>
   <string name="disable_lockscreen_title">ロック画面を無効にする</string>
   <string name="disable_lockscreen_summary">ライブラリーや再生画面でロック画面が有効になるのを防止します</string>
   <string name="use_idle_timeout_title">アイドル タイムアウトを有効にする</string>
   <string name="use_idle_timeout_summary">有効な場合、一定期間アイドルになると再生が停止されます</string>
   <string name="idle_timeout_title">アイドル タイムアウト</string>
-  <string name="disable_cover_art_title">カバーアートを無効にする</string>
-  <string name="disable_cover_art_summary">アプリケーションにカバーアートを読み込みません</string>
   <string name="coverloader_android_title">Android からアートワークを読み込む</string>
   <string name="coverloader_android_summary">アルバムのアートワークを Android 内部メディアデータベースから読み込みます</string>
   <string name="coverloader_vanilla_title">フォルダからアートワークを読み込む</string>
@@ -196,10 +178,6 @@
   <string name="scrobble_summary">ScrobbleDroid または Simple Last.fm Scrobbler 経由で Last.fm にスクローブルします</string>
   <string name="stock_broadcast_title">既存のブロードキャストをエミュレートする</string>
   <string name="stock_broadcast_summary">サードパーティ製のロック画面コントロール、ウィジェットなどで動作するように、既存の音楽プレーヤーから送信されるブロードキャストをエミュレートして送信します</string>
-  <string name="media_scan">ライブラリーをリフレッシュ</string>
-  <string name="tap_to_scan">タップすると、外部ストレージで音楽をスキャンします</string>
-  <string name="scan_in_progress">スキャンを実行中…</string>
-  <string name="finished_scanning">スキャンが終了しました。タップすると、再度実行します。</string>
   <string name="about">アプリについて</string>
   <string name="tabs">タブ順序</string>
   <string name="customize_tab_order">ライブラリータブの順序と表示を調整します</string>
@@ -228,12 +206,10 @@
   <string name="enqueue_current_album">アルバムをキューに入れる</string>
   <string name="enqueue_current_artist">アーチストをキューに入れる</string>
   <string name="enqueue_current_genre">ジャンルをキューに入れる</string>
-  <string name="clear_queue">キューをクリア</string>
   <string name="empty_the_queue">キューを空にする</string>
   <string name="show_queue">キューを表示</string>
   <string name="hide_queue">キューを非表示</string>
   <string name="dequeue_rest">残りをキューから消す</string>
-  <string name="queue">キュー</string>
   <string name="toggle_controls">コントロールを切り替え</string>
   <string name="seek_10s_backward">10 秒前にシーク</string>
   <string name="seek_10s_forward">10 秒先にシーク</string>
@@ -251,6 +227,5 @@
   <string name="autoplaylist_playcounts_disabled">自動的にプレイリストを作成しない</string>
   <string name="autoplaylist_playcounts_name" formatted="false">トップ %d</string>
   <string name="permission_request_summary">Vanilla Music  が音楽ライブラリを表示するために、読み取りのアクセス許可が必要です</string>
-  <string name="ok">OK</string>
   <string name="reverse_sort">逆順に並び替え</string>
 </resources>

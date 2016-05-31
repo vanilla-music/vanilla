@@ -5,7 +5,6 @@
   <string name="no_songs">在您的裝置上未找到歌曲。</string>
   <string name="empty_queue">沒有選定的歌曲。由媒體庫或是輕點這個訊息進入隨機模式挑選。</string>
   <string name="settings">設定</string>
-  <string name="library">媒體庫</string>
   <string name="no_shuffle">不隨機播放</string>
   <string name="shuffle_songs">隨機播放歌曲</string>
   <string name="shuffle_songs_continuously">連續隨機播放歌曲</string>
@@ -33,8 +32,6 @@
   <string name="choose_playlist_name">選擇播放清單名稱</string>
   <string name="create">建立</string>
   <string name="overwrite">覆寫</string>
-  <string name="cancel">取消</string>
-  <string name="yes">是</string>
   <string name="delete_playlist">刪除播放清單 %s？</string>
   <!--Library-->
   <string name="enqueue">佇列</string>
@@ -55,7 +52,6 @@
   <string name="search">搜尋</string>
   <string name="done">完成</string>
   <string name="remove">移除</string>
-  <string name="clear_search">清除搜尋</string>
   <string name="play_or_enqueue">如果播放佇列；如果暫停播放</string>
   <string name="open">開啟</string>
   <plurals name="playing">
@@ -83,7 +79,6 @@
   <string name="playlists">撥放清單</string>
   <string name="genres">風格</string>
   <string name="files">檔案</string>
-  <string name="none">無</string>
   <string name="unknown">不明的</string>
   <string name="play_all">全部撥放</string>
   <string name="enqueue_all">佇列全部</string>
@@ -100,10 +95,6 @@
   <string name="artist_year">演唱者，年份</string>
   <string name="album_track">專輯，曲目編號</string>
   <string name="song_playcount">播放次數</string>
-  <string name="ascending">遞增</string>
-  <string name="descending">遞減</string>
-  <!--Notification-->
-  <string name="notification_title_paused">%s (已暫停)</string>
   <!--Preferences-->
   <plurals name="seconds">
     <item quantity="other">%d 秒</item>
@@ -115,7 +106,6 @@
     <item quantity="other">%d 小時</item>
   </plurals>
   <string name="audio">音訊</string>
-  <string name="volume_title">音量</string>
   <string name="volume_during_ducking_title">音量在通知</string>
   <string name="volume_during_ducking_summary">播放音量：</string>
   <string name="ignore_audiofocus_loss_summary">在永久性音訊焦點遺失時繼續播放</string>
@@ -131,7 +121,6 @@
   <string name="headset_launch_summary">當耳機插入時播放。(需要安裝“耳機偵測”的應用程式。)</string>
   <string name="headset_launch_app_missing">此功能需要安裝“耳機偵測”的應用程式。\n您想要開啟 Play 商店以安裝應用程式嗎？</string>
   <string name="replaygain">重播增益</string>
-  <string name="replaygain_title">啟用重播增益</string>
   <string name="replaygain_summary">組態重播增益資訊的處理</string>
   <string name="replaygain_track_title">啟用前置音軌重播增益</string>
   <string name="replaygain_track_summary">以同等響度播放所有曲目</string>
@@ -150,8 +139,6 @@
   <string name="notifications">通知</string>
   <string name="notification_mode_title">通知模式</string>
   <string name="notification_action_title">通知啟動</string>
-  <string name="notification_invert_color_title">反轉通知顏色</string>
-  <string name="notification_invert_color_summary">使用白色的文字代替黑色的文字</string>
   <string name="notification_nag">非常詳細的通知</string>
   <string name="notification_nag_summary">通報歌曲的更換使用 \'抬頭顯示通知\'</string>
   <string name="playback_screen">回播畫面</string>
@@ -163,8 +150,6 @@
   <string name="cover_press_action_title">輕點封面動作</string>
   <string name="cover_longpress_action_title">長按封面動作</string>
   <string name="library_screen">媒體庫畫面</string>
-  <string name="controls_in_selector_title">在媒體庫的控制項</string>
-  <string name="controls_in_selector_summary">檢視媒體庫時，顯示目前播放的歌曲和媒體控制</string>
   <string name="default_action_title">預定啟動</string>
   <string name="default_playlist_action_title">預定播放清單啟動</string>
   <string name="accelerometer_shake">搖動速渡感測</string>
@@ -173,15 +158,12 @@
   <string name="shake_action_title">搖動啟用</string>
   <string name="shake_threshold_title">搖動力度界限</string>
   <string name="misc_features">其它各種功能</string>
-  <string name="use_dark_theme_title">使用深色主題</string>
-  <string name="use_dark_theme_summary">啟用深色主題</string>
+  <string name="theme">主題</string>
   <string name="disable_lockscreen_title">停用螢幕鎖</string>
   <string name="disable_lockscreen_summary">啟動後，在媒體庫或播放畫面，會阻止螢幕鎖</string>
   <string name="use_idle_timeout_title">啟用閒置超時</string>
   <string name="use_idle_timeout_summary">當啟動後，在閒置一段時間後會停止播放 </string>
   <string name="idle_timeout_title">閒置超時</string>
-  <string name="disable_cover_art_title">停用封面</string>
-  <string name="disable_cover_art_summary">在應用程式中取消載入任何的封面</string>
   <string name="coverloader_android_title">從 Android 載入封面</string>
   <string name="coverloader_android_summary">查詢 Androids 內部的媒體資料庫，以用於專輯封面</string>
   <string name="coverloader_vanilla_title">從資料夾載入封面</string>
@@ -196,10 +178,6 @@
   <string name="scrobble_summary">Scrobble 透過 ScrobbleDroid 到 Last.fm或單純的 Last.fm Scrobbler</string>
   <string name="stock_broadcast_title">模擬股票廣播</string>
   <string name="stock_broadcast_summary">放送廣播，模擬那些放送股票音樂播放的工作與第三方螢幕鎖控制、小工具等。</string>
-  <string name="media_scan">更新媒體庫</string>
-  <string name="tap_to_scan">輕點以掃描外部 SD 卡的音樂</string>
-  <string name="scan_in_progress">掃描正在處理中…</string>
-  <string name="finished_scanning">掃描已完成。點選再次掃描。</string>
   <string name="about">關於</string>
   <string name="tabs">分頁標簽順序</string>
   <string name="customize_tab_order">調整排列和要顯現的媒體庫分頁標簽</string>
@@ -228,12 +206,10 @@
   <string name="enqueue_current_album">以專輯儲入佇列</string>
   <string name="enqueue_current_artist">以演唱者儲入佇列</string>
   <string name="enqueue_current_genre">以類型儲入佇列</string>
-  <string name="clear_queue">清除佇列</string>
   <string name="empty_the_queue">佇列是空的</string>
   <string name="show_queue">顯示佇列</string>
   <string name="hide_queue">隱藏佇列</string>
   <string name="dequeue_rest">剩餘的移出佇列</string>
-  <string name="queue">佇列</string>
   <string name="toggle_controls">切換控制</string>
   <string name="seek_10s_backward">向後探尋10秒</string>
   <string name="seek_10s_forward">向前探尋10秒</string>
@@ -251,6 +227,5 @@
   <string name="autoplaylist_playcounts_disabled">不要建立自動播放清單</string>
   <string name="autoplaylist_playcounts_name" formatted="false">置頂 %d</string>
   <string name="permission_request_summary">Vanilla 音樂需要讀取的權限，以顯示您的媒體庫</string>
-  <string name="ok">確定</string>
   <string name="reverse_sort">反向排序</string>
 </resources>

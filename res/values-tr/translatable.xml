@@ -5,7 +5,6 @@
   <string name="no_songs">Aygıtınızda hiçbir şarkı bulunamadı.</string>
   <string name="empty_queue">Hiçbir şarkı seçilmedi. Arşivden bir şarkı seçin veya bu iletiye dokunarak karışık kipe geçin.</string>
   <string name="settings">Ayarlar</string>
-  <string name="library">Arşiv</string>
   <string name="no_shuffle">Karıştırma yok</string>
   <string name="shuffle_songs">Şarkıları karışık çal</string>
   <string name="shuffle_songs_continuously">Şarkıları sürekli karıştır</string>
@@ -33,8 +32,6 @@
   <string name="choose_playlist_name">Oynatmalık adını seç</string>
   <string name="create">Oluştur</string>
   <string name="overwrite">Üzerine yaz</string>
-  <string name="cancel">Vazgeç</string>
-  <string name="yes">Evet</string>
   <string name="delete_playlist">Oynatmalık %s silinsin mi?</string>
   <!--Library-->
   <string name="enqueue">Kuyruğa ekle</string>
@@ -55,7 +52,6 @@
   <string name="search">Ara</string>
   <string name="done">Bitti</string>
   <string name="remove">Kaldır</string>
-  <string name="clear_search">Aramayı temizle</string>
   <string name="play_or_enqueue">Oynatma varsa kuyruğa ekle; duraklatıldıysa oynat</string>
   <string name="open">Aç</string>
   <plurals name="playing">
@@ -88,7 +84,6 @@
   <string name="playlists">Oynatmalıklar</string>
   <string name="genres">Türler</string>
   <string name="files">Dosyalar</string>
-  <string name="none">Hiçbiri</string>
   <string name="unknown">Bilinmeyen</string>
   <string name="play_all">Hepsini oynat</string>
   <string name="enqueue_all">Hepsini kuyruğa ekle</string>
@@ -105,10 +100,6 @@
   <string name="artist_year">Sanatçı, yıl</string>
   <string name="album_track">Albüm, iz numarası</string>
   <string name="song_playcount">Oynatma sayısı</string>
-  <string name="ascending">Artan</string>
-  <string name="descending">Azalan</string>
-  <!--Notification-->
-  <string name="notification_title_paused">%s (Duraklatıldı)</string>
   <!--Preferences-->
   <plurals name="seconds">
     <item quantity="one">1 saniye</item>
@@ -123,7 +114,6 @@
     <item quantity="other">%d saat</item>
   </plurals>
   <string name="audio">Ses</string>
-  <string name="volume_title">Ses Düzeyi</string>
   <string name="volume_during_ducking_title">Bildirim sırasında ses düzeyi</string>
   <string name="volume_during_ducking_summary">Oynatma ses düzeyi</string>
   <string name="ignore_audiofocus_loss_summary">Sürekli ses odak kaybında oynatmayı sürdür</string>
@@ -139,7 +129,6 @@
   <string name="headset_launch_summary">Kulaklıklar takıldığında oynatmaya başla (\'Kulaklık Bulucu\' uygulamasının yüklü olmasını gerektirir).</string>
   <string name="headset_launch_app_missing">Bu özellik \'Kulaklık Bulucu\' uygulamasının yüklü olmasını gerektirir.\nBu uygulamayı yüklemek için Play Store\'u şimdi açmak ister misiniz?</string>
   <string name="replaygain">Ses Eşitleme</string>
-  <string name="replaygain_title">Ses Eşitlemeyi etkinleştir</string>
   <string name="replaygain_summary">Ses Eşitleme bilgisinin nasıl kullanılacağını düzenle</string>
   <string name="replaygain_track_title">İz başına Ses Eşitlemeyi etkinleştir</string>
   <string name="replaygain_track_summary">Tüm izleri aynı ses düzeyinde oynat</string>
@@ -158,8 +147,6 @@
   <string name="notifications">Bildirimler</string>
   <string name="notification_mode_title">Bildirim kipi</string>
   <string name="notification_action_title">Bildirim eylemi</string>
-  <string name="notification_invert_color_title">Bildirim rengini terse çevir</string>
-  <string name="notification_invert_color_summary">Siyah metin yerine beyaz metin kullan</string>
   <string name="notification_nag">Tam sözlü bildirim</string>
   <string name="notification_nag_summary">Şarkı değişikliklerini \'Ekran Üstü Bildirimi\' ile göster</string>
   <string name="playback_screen">Oynatma ekranı</string>
@@ -171,8 +158,6 @@
   <string name="cover_press_action_title">Kapağa dokunma eylemi</string>
   <string name="cover_longpress_action_title">Kapağa uzun dokunma eylemi</string>
   <string name="library_screen">Arşiv ekranı</string>
-  <string name="controls_in_selector_title">Arşivdeki denetimler</string>
-  <string name="controls_in_selector_summary">Arşiv görünümünde şu anda oynatılan şarkıyı ve ortam denetimlerini göster</string>
   <string name="default_action_title">Öntanımlı eylem</string>
   <string name="default_playlist_action_title">Oynatmalıklar için öntanımlı eylem</string>
   <string name="accelerometer_shake">İvmeölçer sallama</string>
@@ -181,15 +166,11 @@
   <string name="shake_action_title">Sallama eylemi</string>
   <string name="shake_threshold_title">Sallama güç sınırlaması</string>
   <string name="misc_features">Diğer özellikler</string>
-  <string name="use_dark_theme_title">Karanlık temayı kullan</string>
-  <string name="use_dark_theme_summary">Karanlık temayı etkinleştirir</string>
   <string name="disable_lockscreen_title">Kilit ekranını devre dışı bırak</string>
   <string name="disable_lockscreen_summary">Arşiv ekranında veya oynatma ekranındayken kilit ekranını devre dışı bırak</string>
   <string name="use_idle_timeout_title">Boşta kalma süresini etkinleştir</string>
   <string name="use_idle_timeout_summary">Oynatma belli bir sürelik etkisizliğin ardından durdurulur</string>
   <string name="idle_timeout_title">Boşta kalma süresi</string>
-  <string name="disable_cover_art_title">Kapak resmini devre dışı bırak</string>
-  <string name="disable_cover_art_summary">Uygulamada herhangi bir yerde albüm resmi gösterme</string>
   <string name="coverloader_android_title">Android\'ten albüm resmi yükle</string>
   <string name="coverloader_android_summary">Android iç veritabanını albüm resimleri için sorgula</string>
   <string name="coverloader_vanilla_title">Klasörden albüm resmi yükle</string>
@@ -204,10 +185,6 @@
   <string name="scrobble_summary">Last.fm\'e ScrobbleDroid veya Simple Last.fm Scrobbler ile iskropla.</string>
   <string name="stock_broadcast_title">Varsayılan yayınları öykün</string>
   <string name="stock_broadcast_summary">Varsayılan müzik oynatıcısı tarafından üçüncü parti kilit ekranı denetimleri ve widgetlar ile çalışması için gönderilen yayınları öykün.</string>
-  <string name="media_scan">Arşivi yenile</string>
-  <string name="tap_to_scan">Dış belleği müzik için tara</string>
-  <string name="scan_in_progress">Tarama sürüyor…</string>
-  <string name="finished_scanning">Tarama bitti. Yeniden taramak için dokunun.</string>
   <string name="about">Hakkında</string>
   <string name="tabs">Sekme sırası</string>
   <string name="customize_tab_order">Arşiv sekmelerinin sırası ve görünürlüğünü değiştirir</string>
@@ -236,12 +213,10 @@
   <string name="enqueue_current_album">Bu albümü kuyruğa ekle</string>
   <string name="enqueue_current_artist">Bu sanatçıyı kuyruğa ekle</string>
   <string name="enqueue_current_genre">Bu türü kuyruğa ekle</string>
-  <string name="clear_queue">Kuyruğu temizle</string>
   <string name="empty_the_queue">Sırayı boşalt</string>
   <string name="show_queue">Kuyruğu göster</string>
   <string name="hide_queue">Kuyruğu gizle</string>
   <string name="dequeue_rest">Gerisini sıradan çıkar</string>
-  <string name="queue">Kuyruk</string>
   <string name="toggle_controls">Denetimleri göster</string>
   <string name="seek_10s_backward">10 saniye geri sar</string>
   <string name="seek_10s_forward">10 saniye ileri sar</string>
@@ -259,6 +234,5 @@
   <string name="autoplaylist_playcounts_disabled">Kendiliğinden oynatmalık oluşturma!</string>
   <string name="autoplaylist_playcounts_name" formatted="false">En iyi %d</string>
   <string name="permission_request_summary">Vanilya Müzik, müzik arşivinizi görüntüleyebilmek için izninize gereksinim duyar</string>
-  <string name="ok">Tamam</string>
   <string name="reverse_sort">Sıralamayı tersine çevir</string>
 </resources>

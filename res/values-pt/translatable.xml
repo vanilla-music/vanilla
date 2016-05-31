@@ -5,7 +5,6 @@
   <string name="no_songs">Não foram encontradas músicas</string>
   <string name="empty_queue">Nenhuma faixa selecionada. Escolha algumas na coleção ou aceda ao modo aleatório clicando nesta mensagem.</string>
   <string name="settings">Definições</string>
-  <string name="library">Coleção</string>
   <string name="no_shuffle">Não misturar</string>
   <string name="shuffle_songs">Misturar faixas</string>
   <string name="shuffle_songs_continuously">Misturar faixas continuamente</string>
@@ -33,8 +32,6 @@
   <string name="choose_playlist_name">Escolha o nome da lista de reprodução</string>
   <string name="create">Criar</string>
   <string name="overwrite">Substituir</string>
-  <string name="cancel">Cancelar</string>
-  <string name="yes">Sim</string>
   <string name="delete_playlist">Apagar a lista de reprodução %s?</string>
   <!--Library-->
   <string name="enqueue">Colocar na fila</string>
@@ -55,7 +52,6 @@
   <string name="search">Procura</string>
   <string name="done">Terminado</string>
   <string name="remove">Remover</string>
-  <string name="clear_search">Limpar procura</string>
   <string name="play_or_enqueue">Colocar na fila ou reproduzir se em pausa</string>
   <string name="open">Abrir</string>
   <plurals name="playing">
@@ -88,7 +84,6 @@
   <string name="playlists">Listas de reprodução</string>
   <string name="genres">Géneros</string>
   <string name="files">Ficheiros</string>
-  <string name="none">Nenhum</string>
   <string name="unknown">Desconhecido</string>
   <string name="play_all">Reproduzir tudo</string>
   <string name="enqueue_all">Colocar tudo na fila</string>
@@ -105,10 +100,6 @@
   <string name="artist_year">Artista, ano</string>
   <string name="album_track">Álbum, número de faixa</string>
   <string name="song_playcount">N.º de reproduções</string>
-  <string name="ascending">Ascendente</string>
-  <string name="descending">Descendente</string>
-  <!--Notification-->
-  <string name="notification_title_paused">%s (pausa)</string>
   <!--Preferences-->
   <plurals name="seconds">
     <item quantity="one">1 segundo</item>
@@ -123,7 +114,6 @@
     <item quantity="other">%d horas</item>
   </plurals>
   <string name="audio">Áudio</string>
-  <string name="volume_title">Volume</string>
   <string name="volume_during_ducking_title">Volume durante a notificação</string>
   <string name="volume_during_ducking_summary">Volume de reprodução:</string>
   <string name="ignore_audiofocus_loss_summary">Manter reprodução ao perder o foco áudio</string>
@@ -139,7 +129,6 @@
   <string name="headset_launch_summary">Reproduzir ao inserir os auscultadores (Requer a instalação da aplicação \'Headphone detector\'.)</string>
   <string name="headset_launch_app_missing">Esta funcionalidade requer que a aplicação \'Headphone detector\' esteja instalada.\nGostaria de abrir a loja Google para a instalar?</string>
   <string name="replaygain">ReplayGain</string>
-  <string name="replaygain_title">Ativar ReplayGain</string>
   <string name="replaygain_summary">Configurar gestão de informações ReplayGain</string>
   <string name="replaygain_track_title">Ativar ReplayGain por faixa</string>
   <string name="replaygain_track_summary">Reproduzir todas as faixas com igual volume</string>
@@ -158,8 +147,6 @@
   <string name="notifications">Notificações</string>
   <string name="notification_mode_title">Modo de notificação</string>
   <string name="notification_action_title">Ação na notificação</string>
-  <string name="notification_invert_color_title">Inverter cor da notificação</string>
-  <string name="notification_invert_color_summary">Usar texto branco em vez de preto</string>
   <string name="notification_nag">Notificação muito detalhada</string>
   <string name="notification_nag_summary">Anunciar alteração de faixa com \'Heads-Up-Notification\'</string>
   <string name="playback_screen">Ecrã de reprodução</string>
@@ -171,8 +158,6 @@
   <string name="cover_press_action_title">Ação ao tocar na capa</string>
   <string name="cover_longpress_action_title">Ação com toque longo na capa</string>
   <string name="library_screen">Ecrã da coleção</string>
-  <string name="controls_in_selector_title">Controlos na coleção</string>
-  <string name="controls_in_selector_summary">Mostrar controlos de reprodução e a faixa atual na vista da coleção</string>
   <string name="default_action_title">Ação padrão</string>
   <string name="default_playlist_action_title">Ação padrão na lista de reprodução</string>
   <string name="accelerometer_shake">Acelerador</string>
@@ -181,15 +166,12 @@
   <string name="shake_action_title">Ação ao agitar</string>
   <string name="shake_threshold_title">Limite de agitação</string>
   <string name="misc_features">Outras funções</string>
-  <string name="use_dark_theme_title">Utilizar tema escuro</string>
-  <string name="use_dark_theme_summary">Ativa o novo tema escuro</string>
+  <string name="theme">Tema</string>
   <string name="disable_lockscreen_title">Desativar ecrã de bloqueio</string>
   <string name="disable_lockscreen_summary">Impede a ativação do ecrã de bloqueio, se na vista de reprodução ou na coleção</string>
   <string name="use_idle_timeout_title">Ativar período de inatividade</string>
   <string name="use_idle_timeout_summary">Se ativa, a reprodução será parada após um certo tempo de inatividade</string>
   <string name="idle_timeout_title">Período de inatividade</string>
-  <string name="disable_cover_art_title">Desativar capa de álbum</string>
-  <string name="disable_cover_art_summary">Impede o carregamento da capa do álbum</string>
   <string name="coverloader_android_title">Carregar  imagem do Android</string>
   <string name="coverloader_android_summary">Consulta a capa do álbum na base de dados interna do Android</string>
   <string name="coverloader_vanilla_title">Carregar imagem da pasta</string>
@@ -204,10 +186,6 @@
   <string name="scrobble_summary">Enviar faixas para a Last.fm através de ScrobbleDroid ou Simple Last.fm Scrobbler</string>
   <string name="stock_broadcast_title">Emular comunicações</string>
   <string name="stock_broadcast_summary">Enviar emissões emulando as enviadas pelo reprodutor do Android para poder funcionar com controlos e widgets de terceiros</string>
-  <string name="media_scan">Atualizar coleção</string>
-  <string name="tap_to_scan">Clique para analisar as faixas do cartão SD</string>
-  <string name="scan_in_progress">Análise em curso...</string>
-  <string name="finished_scanning">Análise terminada. Clique para analisar novamente.</string>
   <string name="about">Sobre</string>
   <string name="tabs">Ordem dos separadores</string>
   <string name="customize_tab_order">Ajustar ordem e visibilidade dos separadores</string>
@@ -236,12 +214,10 @@
   <string name="enqueue_current_album">Colocar álbum na fila</string>
   <string name="enqueue_current_artist">Colocar artista na fila</string>
   <string name="enqueue_current_genre">Colocar género na fila</string>
-  <string name="clear_queue">Limpar fila</string>
   <string name="empty_the_queue">Limpar fila de reprodução</string>
   <string name="show_queue">Mostrar fila</string>
   <string name="hide_queue">Ocultar fila</string>
   <string name="dequeue_rest">Retirar restantes da fila</string>
-  <string name="queue">Fila</string>
   <string name="toggle_controls">Alternar controlos</string>
   <string name="seek_10s_backward">Recuar 10 segundos</string>
   <string name="seek_10s_forward">Avançar 10 segundos</string>
@@ -259,6 +235,5 @@
   <string name="autoplaylist_playcounts_disabled">Não criar lista de reprodução automaticamente</string>
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
   <string name="permission_request_summary">O Vanilla Music necessita da permissão de leitura para mostrar a sua coleção</string>
-  <string name="ok">OK</string>
   <string name="reverse_sort">Inverter organização</string>
 </resources>

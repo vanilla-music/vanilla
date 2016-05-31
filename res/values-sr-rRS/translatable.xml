@@ -5,7 +5,6 @@
   <string name="no_songs">Нема песама на вашем уређају.</string>
   <string name="empty_queue">Ништа није изабрано. Изаберите песме из библиотеке или уђите у насумични режим тапом на ову поруку.</string>
   <string name="settings">Поставке</string>
-  <string name="library">Библиотека</string>
   <string name="no_shuffle">Без тумбања</string>
   <string name="shuffle_songs">Претумбај песме</string>
   <string name="shuffle_songs_continuously">Претумбавај песме непрестано</string>
@@ -33,8 +32,6 @@
   <string name="choose_playlist_name">Одредите назив листе нумера</string>
   <string name="create">Направи</string>
   <string name="overwrite">Пребриши</string>
-  <string name="cancel">Одустани</string>
-  <string name="yes">Да</string>
   <string name="delete_playlist">Да обришем листу нумера %s?</string>
   <!--Library-->
   <string name="enqueue">Стави у ред</string>
@@ -55,7 +52,6 @@
   <string name="search">Тражи</string>
   <string name="done">Готово</string>
   <string name="remove">Уклони</string>
-  <string name="clear_search">Очисти претрагу</string>
   <string name="play_or_enqueue">У ред ако је пуштено; пусти ако је паузирано</string>
   <string name="open">Отвори</string>
   <plurals name="playing">
@@ -93,7 +89,6 @@
   <string name="playlists">Листе нумера</string>
   <string name="genres">Жанрови</string>
   <string name="files">Фајлови</string>
-  <string name="none">Ништа</string>
   <string name="unknown">Непознато</string>
   <string name="play_all">Пусти све</string>
   <string name="enqueue_all">Стави све у ред</string>
@@ -110,10 +105,6 @@
   <string name="artist_year">извођачу, години</string>
   <string name="album_track">албуму, нумери</string>
   <string name="song_playcount">броју пуштања</string>
-  <string name="ascending">Растуће</string>
-  <string name="descending">Опадајуће</string>
-  <!--Notification-->
-  <string name="notification_title_paused">%s (паузирана)</string>
   <!--Preferences-->
   <plurals name="seconds">
     <item quantity="one">1 секунда</item>
@@ -131,7 +122,6 @@
     <item quantity="other">%d сати</item>
   </plurals>
   <string name="audio">Звук</string>
-  <string name="volume_title">Јачина звука</string>
   <string name="volume_during_ducking_title">Јачина звука при обавештењу</string>
   <string name="volume_during_ducking_summary">Јачина звука:</string>
   <string name="ignore_audiofocus_loss_summary">Настави пуштање по трајном губитку фокуса</string>
@@ -147,7 +137,6 @@
   <string name="headset_launch_summary">Пуштање музике по укључењу слушалица. (Захтева апликацију „Откривач слушалица“.)</string>
   <string name="headset_launch_app_missing">Ова функција захтева апликацију „Откривач слушалица“.\nЖелите ли да је инсталирате?</string>
   <string name="replaygain">Нивелисање звука</string>
-  <string name="replaygain_title">Укључи нивелисање звука</string>
   <string name="replaygain_summary">Поставке руковања подацима о нивелисању звука</string>
   <string name="replaygain_track_title">Укључи нивелисање по нумери</string>
   <string name="replaygain_track_summary">Пушта све нумере истом гласноћом</string>
@@ -166,8 +155,6 @@
   <string name="notifications">Обавештења</string>
   <string name="notification_mode_title">Приказ обавештења</string>
   <string name="notification_action_title">Радња обавештења</string>
-  <string name="notification_invert_color_title">Обрни боје обавештења</string>
-  <string name="notification_invert_color_summary">Користи бели текст уместо црног</string>
   <string name="notification_nag">Веома исцрпно обавештење</string>
   <string name="notification_nag_summary">Објави промене песама користећи „Heads-Up“ обавештење</string>
   <string name="playback_screen">Екран пуштања</string>
@@ -179,8 +166,6 @@
   <string name="cover_press_action_title">Тап на омот</string>
   <string name="cover_longpress_action_title">Дужи притисак на омот</string>
   <string name="library_screen">Приказ библиотеке</string>
-  <string name="controls_in_selector_title">Контроле у библиотеци</string>
-  <string name="controls_in_selector_summary">Приказ текуће песме и контрола у приказу библиотеке</string>
   <string name="default_action_title">Подразумевана радња</string>
   <string name="default_playlist_action_title">Подразумевана радња листе нумера</string>
   <string name="accelerometer_shake">Протресање телефона</string>
@@ -189,15 +174,12 @@
   <string name="shake_action_title">Протресање</string>
   <string name="shake_threshold_title">Праг силе протресања</string>
   <string name="misc_features">Разне функције</string>
-  <string name="use_dark_theme_title">Користи тамну тему</string>
-  <string name="use_dark_theme_summary">Тамна материјал тема</string>
+  <string name="theme">Тема</string>
   <string name="disable_lockscreen_title">Онемогући закључавање екрана</string>
   <string name="disable_lockscreen_summary">Спречава активирање екрана заључавања при екрану пуштања или библиотеке</string>
   <string name="use_idle_timeout_title">Укључи време мировања</string>
   <string name="use_idle_timeout_summary">Активирано зауставља пуштање након задатог времена неактивности</string>
   <string name="idle_timeout_title">Време мировања</string>
-  <string name="disable_cover_art_title">Искључи омоте</string>
-  <string name="disable_cover_art_summary">Избегава учитавање омота било где у апликацији</string>
   <string name="coverloader_android_title">Учитај омоте са Андроида</string>
   <string name="coverloader_android_summary">Шаље упит унутрашњој медија базу података Андроида за омот албума</string>
   <string name="coverloader_vanilla_title">Учитај омоте из фасцикле</string>
@@ -212,10 +194,6 @@
   <string name="scrobble_summary">Скроблуј на Ласт.фм преко ScrobbleDroid АПИ-ја или једноставног Ласт.фм скроблера</string>
   <string name="stock_broadcast_title">Емулирај уграђена емитовања</string>
   <string name="stock_broadcast_summary">Слање емитовања која опонашају емитовања уграђеног музичког плејера, да би функционисале контроле закључаног екрана и виџети осталих апликација, итд.</string>
-  <string name="media_scan">Освежи библиотеку</string>
-  <string name="tap_to_scan">Тапните за скенирање спољашњег складишта за музику</string>
-  <string name="scan_in_progress">Скенирање у току…</string>
-  <string name="finished_scanning">Скенирање завршено. Тапните за поновно скенирање.</string>
   <string name="about">О програму</string>
   <string name="tabs">Редослед језичака</string>
   <string name="customize_tab_order">Прилагођавање редоследа и видљивости језичака библиотеке</string>
@@ -244,12 +222,10 @@
   <string name="enqueue_current_album">Стави албум у ред</string>
   <string name="enqueue_current_artist">Стави извођача у ред</string>
   <string name="enqueue_current_genre">Стави жанр у ред</string>
-  <string name="clear_queue">Очисти ред</string>
   <string name="empty_the_queue">Испразни ред</string>
   <string name="show_queue">Прикажи ред</string>
   <string name="hide_queue">Сакриј ред</string>
   <string name="dequeue_rest">Уклони остале из реда</string>
-  <string name="queue">Ред пуштања</string>
   <string name="toggle_controls">мења приказ контрола</string>
   <string name="seek_10s_backward">прескаче 10 секунди уназад</string>
   <string name="seek_10s_forward">прескаче 10 секунди унапред</string>
@@ -267,6 +243,5 @@
   <string name="autoplaylist_playcounts_disabled">Не прави аутоматску листу нумера</string>
   <string name="autoplaylist_playcounts_name" formatted="false">Најбољих %d</string>
   <string name="permission_request_summary">Ванила музика захтева дозволу читања да би приказала вашу музичку библиотеку</string>
-  <string name="ok">У реду</string>
   <string name="reverse_sort">Обрнуто ређање</string>
 </resources>
