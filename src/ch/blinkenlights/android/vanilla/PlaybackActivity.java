@@ -635,23 +635,23 @@ public abstract class PlaybackActivity extends Activity
 		PlaybackService.get(this).performAction(action, this);
 	}
 
-	private static final int GROUP_SHUFFLE = 100;
-	private static final int GROUP_FINISH = 101;
+	private static final int CTX_MENU_GRP_SHUFFLE = 200;
+	private static final int CTX_MENU_GRP_FINISH  = 201;
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo)
 	{
 		if (view == mShuffleButton) {
-			menu.add(GROUP_SHUFFLE, SongTimeline.SHUFFLE_NONE, 0, R.string.no_shuffle);
-			menu.add(GROUP_SHUFFLE, SongTimeline.SHUFFLE_SONGS, 0, R.string.shuffle_songs);
-			menu.add(GROUP_SHUFFLE, SongTimeline.SHUFFLE_CONTINUOUS, 0, R.string.shuffle_songs_continuously);
-			menu.add(GROUP_SHUFFLE, SongTimeline.SHUFFLE_ALBUMS, 0, R.string.shuffle_albums);
+			menu.add(CTX_MENU_GRP_SHUFFLE, SongTimeline.SHUFFLE_NONE, 0, R.string.no_shuffle);
+			menu.add(CTX_MENU_GRP_SHUFFLE, SongTimeline.SHUFFLE_SONGS, 0, R.string.shuffle_songs);
+			menu.add(CTX_MENU_GRP_SHUFFLE, SongTimeline.SHUFFLE_CONTINUOUS, 0, R.string.shuffle_songs_continuously);
+			menu.add(CTX_MENU_GRP_SHUFFLE, SongTimeline.SHUFFLE_ALBUMS, 0, R.string.shuffle_albums);
 		} else if (view == mEndButton) {
-		    menu.add(GROUP_FINISH, SongTimeline.FINISH_STOP, 0, R.string.no_repeat);
-			menu.add(GROUP_FINISH, SongTimeline.FINISH_REPEAT, 0, R.string.repeat);
-			menu.add(GROUP_FINISH, SongTimeline.FINISH_REPEAT_CURRENT, 0, R.string.repeat_current_song);
-			menu.add(GROUP_FINISH, SongTimeline.FINISH_STOP_CURRENT, 0, R.string.stop_current_song);
-			menu.add(GROUP_FINISH, SongTimeline.FINISH_RANDOM, 0, R.string.random);
+		    menu.add(CTX_MENU_GRP_FINISH, SongTimeline.FINISH_STOP, 0, R.string.no_repeat);
+			menu.add(CTX_MENU_GRP_FINISH, SongTimeline.FINISH_REPEAT, 0, R.string.repeat);
+			menu.add(CTX_MENU_GRP_FINISH, SongTimeline.FINISH_REPEAT_CURRENT, 0, R.string.repeat_current_song);
+			menu.add(CTX_MENU_GRP_FINISH, SongTimeline.FINISH_STOP_CURRENT, 0, R.string.stop_current_song);
+			menu.add(CTX_MENU_GRP_FINISH, SongTimeline.FINISH_RANDOM, 0, R.string.random);
 		}
 	}
 
@@ -660,9 +660,9 @@ public abstract class PlaybackActivity extends Activity
 	{
 		int group = item.getGroupId();
 		int id = item.getItemId();
-		if (group == GROUP_SHUFFLE)
+		if (group == CTX_MENU_GRP_SHUFFLE)
 			setState(PlaybackService.get(this).setShuffleMode(id));
-		else if (group == GROUP_FINISH)
+		else if (group == CTX_MENU_GRP_FINISH)
 			setState(PlaybackService.get(this).setFinishAction(id));
 		return true;
 	}
