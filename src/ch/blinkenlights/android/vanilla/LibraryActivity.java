@@ -620,20 +620,20 @@ public class LibraryActivity
 		return query;
 	}
 
-	private static final int MENU_PLAY = 0;
-	private static final int MENU_ENQUEUE = 1;
-	private static final int MENU_EXPAND = 2;
-	private static final int MENU_ENQUEUE_AS_NEXT = 3;
-	private static final int MENU_ADD_TO_PLAYLIST = 4;
-	private static final int MENU_NEW_PLAYLIST = 5;
-	private static final int MENU_DELETE = 6;
-	private static final int MENU_RENAME_PLAYLIST = 7;
-	private static final int MENU_SELECT_PLAYLIST = 8;
-	private static final int MENU_PLAY_ALL = 9;
-	private static final int MENU_ENQUEUE_ALL = 10;
-	private static final int MENU_MORE_FROM_ALBUM = 11;
-	private static final int MENU_MORE_FROM_ARTIST = 12;
-	private static final int MENU_OPEN_EXTERNAL = 13;
+	private static final int CTX_MENU_PLAY = 0;
+	private static final int CTX_MENU_ENQUEUE = 1;
+	private static final int CTX_MENU_EXPAND = 2;
+	private static final int CTX_MENU_ENQUEUE_AS_NEXT = 3;
+	private static final int CTX_MENU_ADD_TO_PLAYLIST = 4;
+	private static final int CTX_MENU_NEW_PLAYLIST = 5;
+	private static final int CTX_MENU_DELETE = 6;
+	private static final int CTX_MENU_RENAME_PLAYLIST = 7;
+	private static final int CTX_MENU_SELECT_PLAYLIST = 8;
+	private static final int CTX_MENU_PLAY_ALL = 9;
+	private static final int CTX_MENU_ENQUEUE_ALL = 10;
+	private static final int CTX_MENU_MORE_FROM_ALBUM = 11;
+	private static final int CTX_MENU_MORE_FROM_ARTIST = 12;
+	private static final int CTX_MENU_OPEN_EXTERNAL = 13;
 
 	/**
 	 * Creates a context menu for an adapter row.
@@ -645,30 +645,30 @@ public class LibraryActivity
 	{
 		if (rowData.getLongExtra(LibraryAdapter.DATA_ID, LibraryAdapter.INVALID_ID) == LibraryAdapter.HEADER_ID) {
 			menu.setHeaderTitle(getString(R.string.all_songs));
-			menu.add(0, MENU_PLAY_ALL, 0, R.string.play_all).setIntent(rowData);
-			menu.add(0, MENU_ENQUEUE_ALL, 0, R.string.enqueue_all).setIntent(rowData);
-			menu.addSubMenu(0, MENU_ADD_TO_PLAYLIST, 0, R.string.add_to_playlist).getItem().setIntent(rowData);
+			menu.add(0, CTX_MENU_PLAY_ALL, 0, R.string.play_all).setIntent(rowData);
+			menu.add(0, CTX_MENU_ENQUEUE_ALL, 0, R.string.enqueue_all).setIntent(rowData);
+			menu.addSubMenu(0, CTX_MENU_ADD_TO_PLAYLIST, 0, R.string.add_to_playlist).getItem().setIntent(rowData);
 		} else {
 			int type = rowData.getIntExtra(LibraryAdapter.DATA_TYPE, MediaUtils.TYPE_INVALID);
 
 			menu.setHeaderTitle(rowData.getStringExtra(LibraryAdapter.DATA_TITLE));
 
 			if (FileUtils.canDispatchIntent(rowData))
-				menu.add(0, MENU_OPEN_EXTERNAL, 0, R.string.open).setIntent(rowData);
-			menu.add(0, MENU_PLAY, 0, R.string.play).setIntent(rowData);
-			menu.add(0, MENU_ENQUEUE_AS_NEXT, 0, R.string.enqueue_as_next).setIntent(rowData);
-			menu.add(0, MENU_ENQUEUE, 0, R.string.enqueue).setIntent(rowData);
+				menu.add(0, CTX_MENU_OPEN_EXTERNAL, 0, R.string.open).setIntent(rowData);
+			menu.add(0, CTX_MENU_PLAY, 0, R.string.play).setIntent(rowData);
+			menu.add(0, CTX_MENU_ENQUEUE_AS_NEXT, 0, R.string.enqueue_as_next).setIntent(rowData);
+			menu.add(0, CTX_MENU_ENQUEUE, 0, R.string.enqueue).setIntent(rowData);
 			if (type == MediaUtils.TYPE_PLAYLIST) {
-				menu.add(0, MENU_RENAME_PLAYLIST, 0, R.string.rename).setIntent(rowData);
+				menu.add(0, CTX_MENU_RENAME_PLAYLIST, 0, R.string.rename).setIntent(rowData);
 			} else if (rowData.getBooleanExtra(LibraryAdapter.DATA_EXPANDABLE, false)) {
-				menu.add(0, MENU_EXPAND, 0, R.string.expand).setIntent(rowData);
+				menu.add(0, CTX_MENU_EXPAND, 0, R.string.expand).setIntent(rowData);
 			}
 			if (type == MediaUtils.TYPE_ALBUM || type == MediaUtils.TYPE_SONG)
-				menu.add(0, MENU_MORE_FROM_ARTIST, 0, R.string.more_from_artist).setIntent(rowData);
+				menu.add(0, CTX_MENU_MORE_FROM_ARTIST, 0, R.string.more_from_artist).setIntent(rowData);
 			if (type == MediaUtils.TYPE_SONG)
-				menu.add(0, MENU_MORE_FROM_ALBUM, 0, R.string.more_from_album).setIntent(rowData);
-			menu.addSubMenu(0, MENU_ADD_TO_PLAYLIST, 0, R.string.add_to_playlist).getItem().setIntent(rowData);
-			menu.add(0, MENU_DELETE, 0, R.string.delete).setIntent(rowData);
+				menu.add(0, CTX_MENU_MORE_FROM_ALBUM, 0, R.string.more_from_album).setIntent(rowData);
+			menu.addSubMenu(0, CTX_MENU_ADD_TO_PLAYLIST, 0, R.string.add_to_playlist).getItem().setIntent(rowData);
+			menu.add(0, CTX_MENU_DELETE, 0, R.string.delete).setIntent(rowData);
 		}
 	}
 
@@ -692,29 +692,29 @@ public class LibraryActivity
 		final Intent intent = item.getIntent();
 
 		switch (item.getItemId()) {
-		case MENU_EXPAND:
+		case CTX_MENU_EXPAND:
 			expand(intent);
 			if (mDefaultAction == ACTION_LAST_USED && mLastAction != ACTION_EXPAND) {
 				mLastAction = ACTION_EXPAND;
 				updateHeaders();
 			}
 			break;
-		case MENU_ENQUEUE:
+		case CTX_MENU_ENQUEUE:
 			pickSongs(intent, ACTION_ENQUEUE);
 			break;
-		case MENU_PLAY:
+		case CTX_MENU_PLAY:
 			pickSongs(intent, ACTION_PLAY);
 			break;
-		case MENU_PLAY_ALL:
+		case CTX_MENU_PLAY_ALL:
 			pickSongs(intent, ACTION_PLAY_ALL);
 			break;
-		case MENU_ENQUEUE_ALL:
+		case CTX_MENU_ENQUEUE_ALL:
 			pickSongs(intent, ACTION_ENQUEUE_ALL);
 			break;
-		case MENU_ENQUEUE_AS_NEXT:
+		case CTX_MENU_ENQUEUE_AS_NEXT:
 			pickSongs(intent, ACTION_ENQUEUE_AS_NEXT);
 			break;
-		case MENU_NEW_PLAYLIST: {
+		case CTX_MENU_NEW_PLAYLIST: {
 			PlaylistTask playlistTask = new PlaylistTask(-1, null);
 			playlistTask.query = buildQueryFromIntent(intent, true, false);
 			NewPlaylistDialog dialog = new NewPlaylistDialog(this, null, R.string.create, playlistTask);
@@ -722,14 +722,14 @@ public class LibraryActivity
 			dialog.show();
 			break;
 		}
-		case MENU_RENAME_PLAYLIST: {
+		case CTX_MENU_RENAME_PLAYLIST: {
 			PlaylistTask playlistTask = new PlaylistTask(intent.getLongExtra("id", -1), intent.getStringExtra("title"));
 			NewPlaylistDialog dialog = new NewPlaylistDialog(this, intent.getStringExtra("title"), R.string.rename, playlistTask);
 			dialog.setDismissMessage(mHandler.obtainMessage(MSG_RENAME_PLAYLIST, dialog));
 			dialog.show();
 			break;
 		}
-		case MENU_DELETE:
+		case CTX_MENU_DELETE:
 			String delete_message = getString(R.string.delete_item, intent.getStringExtra("title"));
 			AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 			dialog.setTitle(R.string.delete);
@@ -747,13 +747,13 @@ public class LibraryActivity
 				});
 				dialog.create().show();
 			break;
-		case MENU_OPEN_EXTERNAL: {
+		case CTX_MENU_OPEN_EXTERNAL: {
 			FileUtils.dispatchIntent(this, intent);
 			break;
 		}
-		case MENU_ADD_TO_PLAYLIST: {
+		case CTX_MENU_ADD_TO_PLAYLIST: {
 			SubMenu playlistMenu = item.getSubMenu();
-			playlistMenu.add(0, MENU_NEW_PLAYLIST, 0, R.string.new_playlist).setIntent(intent);
+			playlistMenu.add(0, CTX_MENU_NEW_PLAYLIST, 0, R.string.new_playlist).setIntent(intent);
 			Cursor cursor = Playlist.queryPlaylists(getContentResolver());
 			if (cursor != null) {
 				for (int i = 0, count = cursor.getCount(); i != count; ++i) {
@@ -763,20 +763,20 @@ public class LibraryActivity
 					Intent copy = new Intent(intent);
 					copy.putExtra("playlist", id);
 					copy.putExtra("playlistName", name);
-					playlistMenu.add(0, MENU_SELECT_PLAYLIST, 0, name).setIntent(copy);
+					playlistMenu.add(0, CTX_MENU_SELECT_PLAYLIST, 0, name).setIntent(copy);
 				}
 				cursor.close();
 			}
 			break;
 		}
-		case MENU_SELECT_PLAYLIST:
+		case CTX_MENU_SELECT_PLAYLIST:
 			long playlistId = intent.getLongExtra("playlist", -1);
 			String playlistName = intent.getStringExtra("playlistName");
 			PlaylistTask playlistTask = new PlaylistTask(playlistId, playlistName);
 			playlistTask.query = buildQueryFromIntent(intent, true, false);
 			mHandler.sendMessage(mHandler.obtainMessage(MSG_ADD_TO_PLAYLIST, playlistTask));
 			break;
-		case MENU_MORE_FROM_ARTIST: {
+		case CTX_MENU_MORE_FROM_ARTIST: {
 			String selection;
 			if (intent.getIntExtra(LibraryAdapter.DATA_TYPE, -1) == MediaUtils.TYPE_ALBUM) {
 				selection = "album_id=";
@@ -788,7 +788,7 @@ public class LibraryActivity
 			updateLimiterViews();
 			break;
 		}
-		case MENU_MORE_FROM_ALBUM:
+		case CTX_MENU_MORE_FROM_ALBUM:
 			setLimiter(MediaUtils.TYPE_ALBUM, "_id=" + intent.getLongExtra(LibraryAdapter.DATA_ID, LibraryAdapter.INVALID_ID));
 			updateLimiterViews();
 			break;
