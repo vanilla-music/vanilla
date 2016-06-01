@@ -27,6 +27,7 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
@@ -72,6 +73,11 @@ public class CoverCache {
 	 * Bitmask on how we are going to load coverart
 	 */
 	public static int mCoverLoadMode = 0;
+	/**
+	 * The public downloads directory of this device
+	 */
+	public static final File sDownloadsDir  = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+
 
 	/**
 	 * Constructs a new BitmapCache object
@@ -398,19 +404,24 @@ public class CoverCache {
 					int bestMatchIndex   = COVER_MATCHES.length; // The best cover-index/priority found
 					int loopCount        = 0;                    // Directory items loop counter
 
-					for (final File entry : baseFile.getParentFile().listFiles()) {
-						for (int i=0; i < bestMatchIndex ; i++) {
-							// We are checking each file entry to see if it matches a known
-							// cover pattern. We abort on first hit as the Pattern array is sorted from good->meh
-							if (COVER_MATCHES[i].matcher(entry.toString()).matches()) {
-								bestMatchIndex = i;
-								bestMatchPath = entry.toString();
-								break;
+					// Only start search if the base directory of this file is NOT the public
+					// downloads folder: Picking files from there would lead to a false positive
+					// in most cases
+					if (baseFile.getParentFile().equals(sDownloadsDir) == false) {
+						for (final File entry : baseFile.getParentFile().listFiles()) {
+							for (int i=0; i < bestMatchIndex ; i++) {
+								// We are checking each file entry to see if it matches a known
+								// cover pattern. We abort on first hit as the Pattern array is sorted from good->meh
+								if (COVER_MATCHES[i].matcher(entry.toString()).matches()) {
+									bestMatchIndex = i;
+									bestMatchPath = entry.toString();
+									break;
+								}
 							}
+							// Stop loop if we found the best match or if we looped 50 times
+							if (loopCount++ > 50 || bestMatchIndex == 0)
+								break;
 						}
-						// Stop loop if we found the best match or if we looped 50 times
-						if (loopCount++ > 50 || bestMatchIndex == 0)
-							break;
 					}
 
 					if (bestMatchPath != null) {
