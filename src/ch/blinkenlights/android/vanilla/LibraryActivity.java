@@ -373,11 +373,11 @@ public class LibraryActivity
 	private void pickSongs(Intent intent, int action)
 	{
 		long id = intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
-		int type = intent.getIntExtra("type", MediaUtils.TYPE_INVALID);
+
 		boolean all = false;
 		int mode = action;
-
 		if (action == ACTION_PLAY_ALL || action == ACTION_ENQUEUE_ALL) {
+			int type = mCurrentAdapter.getMediaType();
 			boolean notPlayAllAdapter = type > MediaUtils.TYPE_SONG || id == LibraryAdapter.HEADER_ID;
 			if (mode == ACTION_ENQUEUE_ALL && notPlayAllAdapter) {
 				mode = ACTION_ENQUEUE;
@@ -387,8 +387,8 @@ public class LibraryActivity
 				all = true;
 			}
 		}
-		MediaAdapter adapterSource = (all || id == LibraryAdapter.HEADER_ID ? (MediaAdapter)mPagerAdapter.mAdapters[type] : null);
-		QueryTask query = buildQueryFromIntent(intent, false, adapterSource);
+
+		QueryTask query = buildQueryFromIntent(intent, false, all);
 		query.mode = modeForAction[mode];
 		PlaybackService.get(this).addSongs(query);
 
@@ -593,9 +593,10 @@ public class LibraryActivity
 	 * @param intent An intent created with
 	 * {@link LibraryAdapter#createData(View)}.
 	 * @param empty If true, use the empty projection (only query id).
-	 * @param adapterSource query all songs from this adapter if not null.
+	 * @param all If true query all songs in the adapter; otherwise query based
+	 * on the row selected.
 	 */
-	private QueryTask buildQueryFromIntent(Intent intent, boolean empty, MediaAdapter adapterSource)
+	private QueryTask buildQueryFromIntent(Intent intent, boolean empty, boolean all)
 	{
 		int type = intent.getIntExtra("type", MediaUtils.TYPE_INVALID);
 
@@ -609,8 +610,8 @@ public class LibraryActivity
 		QueryTask query;
 		if (type == MediaUtils.TYPE_FILE) {
 			query = MediaUtils.buildFileQuery(intent.getStringExtra("file"), projection);
-		} else if (adapterSource != null) {
-			query = adapterSource.buildSongQuery(projection);
+		} else if (all || id == LibraryAdapter.HEADER_ID) {
+			query = ((MediaAdapter)mPagerAdapter.mAdapters[type]).buildSongQuery(projection);
 			query.data = id;
 		} else {
 			query = MediaUtils.buildQuery(type, id, projection, null);
@@ -715,7 +716,7 @@ public class LibraryActivity
 			break;
 		case CTX_MENU_NEW_PLAYLIST: {
 			PlaylistTask playlistTask = new PlaylistTask(-1, null);
-			playlistTask.query = buildQueryFromIntent(intent, true, null);
+			playlistTask.query = buildQueryFromIntent(intent, true, false);
 			NewPlaylistDialog dialog = new NewPlaylistDialog(this, null, R.string.create, playlistTask);
 			dialog.setDismissMessage(mHandler.obtainMessage(MSG_NEW_PLAYLIST, dialog));
 			dialog.show();
@@ -772,7 +773,7 @@ public class LibraryActivity
 			long playlistId = intent.getLongExtra("playlist", -1);
 			String playlistName = intent.getStringExtra("playlistName");
 			PlaylistTask playlistTask = new PlaylistTask(playlistId, playlistName);
-			playlistTask.query = buildQueryFromIntent(intent, true, null);
+			playlistTask.query = buildQueryFromIntent(intent, true, false);
 			mHandler.sendMessage(mHandler.obtainMessage(MSG_ADD_TO_PLAYLIST, playlistTask));
 			break;
 		case CTX_MENU_MORE_FROM_ARTIST: {
