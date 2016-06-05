@@ -48,6 +48,7 @@ import android.content.Intent;
 import android.media.audiofx.AudioEffect;
 import android.net.Uri;
 import android.util.TypedValue;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -83,7 +84,14 @@ public class PreferencesActivity extends PreferenceActivity
 	@Override
 	public void onBuildHeaders(List<Header> target)
 	{
-		loadHeadersFromResource(R.xml.preference_headers, target);
+		ArrayList<Header> tmp = new ArrayList<Header>();
+		loadHeadersFromResource(R.xml.preference_headers, tmp);
+
+		for(Header obj : tmp) {
+			// Themes are 5.x only, so do not add PreferencesTheme on holo devices
+			if (!ThemeHelper.usesHoloTheme() || !obj.fragment.equals(PreferencesTheme.class.getName()))
+				target.add(obj);
+		}
 	}
 
 	@Override
