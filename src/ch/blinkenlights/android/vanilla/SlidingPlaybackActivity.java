@@ -17,6 +17,7 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import android.content.Intent;
 import android.text.format.DateUtils;
 import android.os.Message;
 import android.view.Menu;
@@ -162,6 +163,38 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 			return super.handleMessage(message);
 		}
 		return true;
+	}
+
+	/**
+	 * Builds a media query based off the data stored in the given intent.
+	 *
+	 * @param intent An intent created with
+	 * {@link LibraryAdapter#createData(View)}.
+	 * @param empty If true, use the empty projection (only query id).
+	 * @param allSource use this mediaAdapter to queue all hold items
+	 */
+	protected QueryTask buildQueryFromIntent(Intent intent, boolean empty, MediaAdapter allSource)
+	{
+		int type = intent.getIntExtra("type", MediaUtils.TYPE_INVALID);
+
+		String[] projection;
+		if (type == MediaUtils.TYPE_PLAYLIST)
+			projection = empty ? Song.EMPTY_PLAYLIST_PROJECTION : Song.FILLED_PLAYLIST_PROJECTION;
+		else
+			projection = empty ? Song.EMPTY_PROJECTION : Song.FILLED_PROJECTION;
+
+		long id = intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
+		QueryTask query;
+		if (type == MediaUtils.TYPE_FILE) {
+			query = MediaUtils.buildFileQuery(intent.getStringExtra("file"), projection);
+		} else if (allSource != null) {
+			query = allSource.buildSongQuery(projection);
+			query.data = id;
+		} else {
+			query = MediaUtils.buildQuery(type, id, projection, null);
+		}
+
+		return query;
 	}
 
 	/**

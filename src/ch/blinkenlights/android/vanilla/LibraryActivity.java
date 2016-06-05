@@ -388,7 +388,7 @@ public class LibraryActivity
 			}
 		}
 
-		QueryTask query = buildQueryFromIntent(intent, false, all);
+		QueryTask query = buildQueryFromIntent(intent, false, (all ? (MediaAdapter)mCurrentAdapter : null));
 		query.mode = modeForAction[mode];
 		PlaybackService.get(this).addSongs(query);
 
@@ -593,31 +593,16 @@ public class LibraryActivity
 	 * @param intent An intent created with
 	 * {@link LibraryAdapter#createData(View)}.
 	 * @param empty If true, use the empty projection (only query id).
-	 * @param all If true query all songs in the adapter; otherwise query based
-	 * on the row selected.
+	 * @param allSource use this mediaAdapter to queue all hold items
 	 */
-	private QueryTask buildQueryFromIntent(Intent intent, boolean empty, boolean all)
-	{
-		int type = intent.getIntExtra("type", MediaUtils.TYPE_INVALID);
-
-		String[] projection;
-		if (type == MediaUtils.TYPE_PLAYLIST)
-			projection = empty ? Song.EMPTY_PLAYLIST_PROJECTION : Song.FILLED_PLAYLIST_PROJECTION;
-		else
-			projection = empty ? Song.EMPTY_PROJECTION : Song.FILLED_PROJECTION;
-
+	@Override
+	protected QueryTask buildQueryFromIntent(Intent intent, boolean empty, MediaAdapter allSource) {
 		long id = intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
-		QueryTask query;
-		if (type == MediaUtils.TYPE_FILE) {
-			query = MediaUtils.buildFileQuery(intent.getStringExtra("file"), projection);
-		} else if (all || id == LibraryAdapter.HEADER_ID) {
-			query = ((MediaAdapter)mPagerAdapter.mAdapters[type]).buildSongQuery(projection);
-			query.data = id;
-		} else {
-			query = MediaUtils.buildQuery(type, id, projection, null);
+		if (allSource == null && id == LibraryAdapter.HEADER_ID) {
+			// 'all' was not forced, but user clicked on the header: use the current adapter
+			allSource = (MediaAdapter)mCurrentAdapter;
 		}
-
-		return query;
+		return super.buildQueryFromIntent(intent, empty, allSource);
 	}
 
 	private static final int CTX_MENU_PLAY = 0;
@@ -716,7 +701,7 @@ public class LibraryActivity
 			break;
 		case CTX_MENU_NEW_PLAYLIST: {
 			PlaylistTask playlistTask = new PlaylistTask(-1, null);
-			playlistTask.query = buildQueryFromIntent(intent, true, false);
+			playlistTask.query = buildQueryFromIntent(intent, true, null);
 			NewPlaylistDialog dialog = new NewPlaylistDialog(this, null, R.string.create, playlistTask);
 			dialog.setDismissMessage(mHandler.obtainMessage(MSG_NEW_PLAYLIST, dialog));
 			dialog.show();
@@ -773,7 +758,7 @@ public class LibraryActivity
 			long playlistId = intent.getLongExtra("playlist", -1);
 			String playlistName = intent.getStringExtra("playlistName");
 			PlaylistTask playlistTask = new PlaylistTask(playlistId, playlistName);
-			playlistTask.query = buildQueryFromIntent(intent, true, false);
+			playlistTask.query = buildQueryFromIntent(intent, true, null);
 			mHandler.sendMessage(mHandler.obtainMessage(MSG_ADD_TO_PLAYLIST, playlistTask));
 			break;
 		case CTX_MENU_MORE_FROM_ARTIST: {
