@@ -668,8 +668,10 @@ public class LibraryActivity
 	@Override
 	public boolean onContextItemSelected(MenuItem item)
 	{
-		final Intent intent = item.getIntent();
+		if (item.getGroupId() != 0)
+			return super.onContextItemSelected(item);
 
+		final Intent intent = item.getIntent();
 		switch (item.getItemId()) {
 		case CTX_MENU_EXPAND:
 			expand(intent);
