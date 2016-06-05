@@ -141,9 +141,9 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 		return true;
 	}
 
-	protected static final int CTX_MENU_ADD_TO_PLAYLIST = 300;
-	private   static final int CTX_MENU_NEW_PLAYLIST    = 301;
-	private   static final int CTX_MENU_SELECT_PLAYLIST = 302;
+	public  static final int CTX_MENU_ADD_TO_PLAYLIST = 300;
+	private static final int CTX_MENU_NEW_PLAYLIST    = 301;
+	private static final int CTX_MENU_SELECT_PLAYLIST = 302;
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {

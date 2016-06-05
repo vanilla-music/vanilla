@@ -95,16 +95,18 @@ public class ShowQueueFragment extends Fragment
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View listView, ContextMenu.ContextMenuInfo absInfo) {
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)absInfo;
-		Intent intent = new Intent();
-		intent.putExtra("id", info.id);
-		intent.putExtra("position", info.position);
 		Song song = mService.getSongByQueuePosition(info.position);
 
+		Intent intent = new Intent();
+		intent.putExtra("id", song.id);
+		intent.putExtra("type", MediaUtils.TYPE_SONG);
+		intent.putExtra("position", info.position);
 		menu.setHeaderTitle(song.title);
 		menu.add(0, CTX_MENU_PLAY, 0, R.string.play).setIntent(intent).setOnMenuItemClickListener(this);
 		menu.add(0, CTX_MENU_ENQUEUE_ALBUM, 0, R.string.enqueue_current_album).setIntent(intent).setOnMenuItemClickListener(this);
 		menu.add(0, CTX_MENU_ENQUEUE_ARTIST, 0, R.string.enqueue_current_artist).setIntent(intent).setOnMenuItemClickListener(this);
 		menu.add(0, CTX_MENU_ENQUEUE_GENRE, 0, R.string.enqueue_current_genre).setIntent(intent).setOnMenuItemClickListener(this);
+		menu.addSubMenu(0, SlidingPlaybackActivity.CTX_MENU_ADD_TO_PLAYLIST, 0, R.string.add_to_playlist).getItem().setIntent(intent); // handled by fragment parent
 		menu.add(0, CTX_MENU_REMOVE, 0, R.string.remove).setIntent(intent).setOnMenuItemClickListener(this);
 	}
 
