@@ -609,16 +609,13 @@ public class LibraryActivity
 	private static final int CTX_MENU_ENQUEUE = 1;
 	private static final int CTX_MENU_EXPAND = 2;
 	private static final int CTX_MENU_ENQUEUE_AS_NEXT = 3;
-	private static final int CTX_MENU_ADD_TO_PLAYLIST = 4;
-	private static final int CTX_MENU_NEW_PLAYLIST = 5;
-	private static final int CTX_MENU_DELETE = 6;
-	private static final int CTX_MENU_RENAME_PLAYLIST = 7;
-	private static final int CTX_MENU_SELECT_PLAYLIST = 8;
-	private static final int CTX_MENU_PLAY_ALL = 9;
-	private static final int CTX_MENU_ENQUEUE_ALL = 10;
-	private static final int CTX_MENU_MORE_FROM_ALBUM = 11;
-	private static final int CTX_MENU_MORE_FROM_ARTIST = 12;
-	private static final int CTX_MENU_OPEN_EXTERNAL = 13;
+	private static final int CTX_MENU_DELETE = 4;
+	private static final int CTX_MENU_RENAME_PLAYLIST = 5;
+	private static final int CTX_MENU_PLAY_ALL = 6;
+	private static final int CTX_MENU_ENQUEUE_ALL = 7;
+	private static final int CTX_MENU_MORE_FROM_ALBUM = 8;
+	private static final int CTX_MENU_MORE_FROM_ARTIST = 9;
+	private static final int CTX_MENU_OPEN_EXTERNAL = 10;
 
 	/**
 	 * Creates a context menu for an adapter row.
@@ -671,9 +668,6 @@ public class LibraryActivity
 	@Override
 	public boolean onContextItemSelected(MenuItem item)
 	{
-		if (item.getGroupId() != 0)
-			return super.onContextItemSelected(item);
-
 		final Intent intent = item.getIntent();
 
 		switch (item.getItemId()) {
@@ -699,14 +693,6 @@ public class LibraryActivity
 		case CTX_MENU_ENQUEUE_AS_NEXT:
 			pickSongs(intent, ACTION_ENQUEUE_AS_NEXT);
 			break;
-		case CTX_MENU_NEW_PLAYLIST: {
-			PlaylistTask playlistTask = new PlaylistTask(-1, null);
-			playlistTask.query = buildQueryFromIntent(intent, true, null);
-			NewPlaylistDialog dialog = new NewPlaylistDialog(this, null, R.string.create, playlistTask);
-			dialog.setDismissMessage(mHandler.obtainMessage(MSG_NEW_PLAYLIST, dialog));
-			dialog.show();
-			break;
-		}
 		case CTX_MENU_RENAME_PLAYLIST: {
 			PlaylistTask playlistTask = new PlaylistTask(intent.getLongExtra("id", -1), intent.getStringExtra("title"));
 			NewPlaylistDialog dialog = new NewPlaylistDialog(this, intent.getStringExtra("title"), R.string.rename, playlistTask);
@@ -736,31 +722,6 @@ public class LibraryActivity
 			FileUtils.dispatchIntent(this, intent);
 			break;
 		}
-		case CTX_MENU_ADD_TO_PLAYLIST: {
-			SubMenu playlistMenu = item.getSubMenu();
-			playlistMenu.add(0, CTX_MENU_NEW_PLAYLIST, 0, R.string.new_playlist).setIntent(intent);
-			Cursor cursor = Playlist.queryPlaylists(getContentResolver());
-			if (cursor != null) {
-				for (int i = 0, count = cursor.getCount(); i != count; ++i) {
-					cursor.moveToPosition(i);
-					long id = cursor.getLong(0);
-					String name = cursor.getString(1);
-					Intent copy = new Intent(intent);
-					copy.putExtra("playlist", id);
-					copy.putExtra("playlistName", name);
-					playlistMenu.add(0, CTX_MENU_SELECT_PLAYLIST, 0, name).setIntent(copy);
-				}
-				cursor.close();
-			}
-			break;
-		}
-		case CTX_MENU_SELECT_PLAYLIST:
-			long playlistId = intent.getLongExtra("playlist", -1);
-			String playlistName = intent.getStringExtra("playlistName");
-			PlaylistTask playlistTask = new PlaylistTask(playlistId, playlistName);
-			playlistTask.query = buildQueryFromIntent(intent, true, null);
-			mHandler.sendMessage(mHandler.obtainMessage(MSG_ADD_TO_PLAYLIST, playlistTask));
-			break;
 		case CTX_MENU_MORE_FROM_ARTIST: {
 			String selection;
 			if (intent.getIntExtra(LibraryAdapter.DATA_TYPE, -1) == MediaUtils.TYPE_ALBUM) {
@@ -777,6 +738,8 @@ public class LibraryActivity
 			setLimiter(MediaUtils.TYPE_ALBUM, "_id=" + intent.getLongExtra(LibraryAdapter.DATA_ID, LibraryAdapter.INVALID_ID));
 			updateLimiterViews();
 			break;
+		default:
+			return super.onContextItemSelected(item);
 		}
 
 		return true;

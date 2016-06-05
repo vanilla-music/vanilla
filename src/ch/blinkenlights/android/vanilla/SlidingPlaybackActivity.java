@@ -18,10 +18,12 @@
 package ch.blinkenlights.android.vanilla;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.text.format.DateUtils;
 import android.os.Message;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -135,6 +137,57 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 			break;
 		default:
 			return super.onOptionsItemSelected(item);
+		}
+		return true;
+	}
+
+	protected static final int CTX_MENU_ADD_TO_PLAYLIST = 300;
+	private   static final int CTX_MENU_NEW_PLAYLIST    = 301;
+	private   static final int CTX_MENU_SELECT_PLAYLIST = 302;
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		if (item.getGroupId() != 0)
+			return super.onContextItemSelected(item);
+
+		final Intent intent = item.getIntent();
+		switch (item.getItemId()) {
+			case CTX_MENU_ADD_TO_PLAYLIST: {
+				SubMenu playlistMenu = item.getSubMenu();
+				playlistMenu.add(0, CTX_MENU_NEW_PLAYLIST, 0, R.string.new_playlist).setIntent(intent);
+				Cursor cursor = Playlist.queryPlaylists(getContentResolver());
+				if (cursor != null) {
+					for (int i = 0, count = cursor.getCount(); i != count; ++i) {
+						cursor.moveToPosition(i);
+						long id = cursor.getLong(0);
+						String name = cursor.getString(1);
+						Intent copy = new Intent(intent);
+						copy.putExtra("playlist", id);
+						copy.putExtra("playlistName", name);
+						playlistMenu.add(0, CTX_MENU_SELECT_PLAYLIST, 0, name).setIntent(copy);
+					}
+					cursor.close();
+				}
+				break;
+			}
+			case CTX_MENU_NEW_PLAYLIST: {
+				PlaylistTask playlistTask = new PlaylistTask(-1, null);
+				playlistTask.query = buildQueryFromIntent(intent, true, null);
+				NewPlaylistDialog dialog = new NewPlaylistDialog(this, null, R.string.create, playlistTask);
+				dialog.setDismissMessage(mHandler.obtainMessage(MSG_NEW_PLAYLIST, dialog));
+				dialog.show();
+				break;
+			}
+			case CTX_MENU_SELECT_PLAYLIST: {
+				long playlistId = intent.getLongExtra("playlist", -1);
+				String playlistName = intent.getStringExtra("playlistName");
+				PlaylistTask playlistTask = new PlaylistTask(playlistId, playlistName);
+				playlistTask.query = buildQueryFromIntent(intent, true, null);
+				mHandler.sendMessage(mHandler.obtainMessage(MSG_ADD_TO_PLAYLIST, playlistTask));
+				break;
+			}
+			default:
+				throw new IllegalArgumentException("Unhandled item id");
 		}
 		return true;
 	}
