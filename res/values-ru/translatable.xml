@@ -133,7 +133,7 @@
   <string name="volume_during_ducking_title">Громкость во время уведомлений</string>
   <string name="volume_during_ducking_summary">Громкость воспроизведения:</string>
   <string name="ignore_audiofocus_loss_summary">Не останавливаться после полной потери аудио-фокуса</string>
-  <string name="media_button_title">Управление от проводной гарнитуры/Bluetooth</string>
+  <string name="media_button_title">Управление с проводной гарнитуры/Bluetooth</string>
   <string name="media_button_summary">Необходимо для управления воспроизведением с экрана блокировки в ICS (Android 4).</string>
   <string name="media_button_beep_title">Гудок при управлении с проводной гарнитуры</string>
   <string name="media_button_beep_summary">При двойном нажатии на кнопку гарнитуры переход к следующей дорожке сопровождается звуком.</string>
@@ -143,7 +143,7 @@
   <string name="headset_pause_summary">Приостановка при отключении наушников.</string>
   <string name="headset_launch_title">Играть при присоединении</string>
   <string name="headset_launch_summary">Начинать воспроизведение при подключении наушников. (Необходимо приложение \"Headphone detector\")</string>
-  <string name="headset_launch_app_missing">Эта возможность требует установки приложения \"Headphone detector\".\n Желаете установить приложение из Play Store?</string>
+  <string name="headset_launch_app_missing">Эта возможность требует установки приложения \"Headphone detector\".\nЖелаете установить приложение из Play Store?</string>
   <string name="replaygain">Выравнивание громкости (ReplayGain)</string>
   <string name="replaygain_summary">Настройка обработки тегов ReplayGain</string>
   <string name="replaygain_track_title">Применять ReplayGain дорожки</string>
@@ -154,7 +154,7 @@
   <string name="replaygain_untagged_debump_title">Ослабление дорожек без тегов ReplayGain</string>
   <string name="replaygain_untagged_debump_summary">Понизить громкость на</string>
   <string name="replaygain_preamp_note_title">Имейте в виду</string>
-  <string name="replaygain_preamp_note_content">Android не позволяет установить громкость больше 100%. Поэтому прослушивание \"тихой\" музыки при большом предусилении может вызывать проблемы. \n\n Рекомендуемые значения: \n-&gt; -3dB для тихой/классической музыки \n-&gt; +3dB для записей после 2000 года.</string>
+  <string name="replaygain_preamp_note_content">Android не позволяет установить громкость больше 100%. Поэтому прослушивание \"тихой\" музыки при большом предусилении может вызывать проблемы. \n\nРекомендуемые значения: \n-&gt; -3dB для тихой/классической музыки \n-&gt; +3dB для записей после 2000 года.</string>
   <string name="readahead">Применять опережающий кеш</string>
   <string name="readahead_summary">Предварительное кеширование проигрываемой дорожки. Позволяет избавиться от \"выпаданий звуков\", вызываемых медленной картой памяти.</string>
   <string name="equalizer">Эквалайзер</string>
@@ -182,7 +182,7 @@
   <string name="shake_action_title">При встряхивании</string>
   <string name="shake_threshold_title">Порог силы встряхивания</string>
   <string name="misc_features">Различные возможности</string>
-  <string name="theme">Тема</string>
+  <string name="theme">Тема оформления</string>
   <string name="disable_lockscreen_title">Отключить блокировку экрана</string>
   <string name="disable_lockscreen_summary">Не давать включаться блокировке при открытом экране фонотеки или воспроизведения</string>
   <string name="use_idle_timeout_title">Задействовать таймер простоя</string>
@@ -210,7 +210,7 @@
   <string name="last_used_action">Последнее использованное действие</string>
   <string name="never_show">Никогда не показывать</string>
   <string name="show_when_playing">Показывать при воспроизведении (по умолчанию)</string>
-  <string name="always_show">Всегда показывать</string>
+  <string name="always_show">Показывать всегда</string>
   <string name="open_main_activity">Открыть фонотеку (по умолчанию)</string>
   <string name="open_mini_popup">Открыть мини окно</string>
   <string name="skip_to_next_song">Перейти к следующей дорожке</string>
@@ -247,7 +247,7 @@
   <string name="select">Выбрать</string>
   <string name="autoplaylist_playcounts_title">Автоматическое создание плей-листов</string>
   <string name="autoplaylist_playcounts_summary">Автоматически создавать</string>
-  <string name="autoplaylist_playcounts_fmt" formatted="false">плей-лист %s \"Лучшие %.0f\"</string>
+  <string name="autoplaylist_playcounts_fmt" formatted="false">%s плей-лист \"Лучшие %.0f\"</string>
   <string name="autoplaylist_playcounts_disabled">Не создавать плей-лист автоматически</string>
   <string name="autoplaylist_playcounts_name" formatted="false">Лучшие %d</string>
   <string name="permission_request_summary">Vanilla Music необходимо разрешение на чтение, чтобы отобразить Вашу музыку в фонотеке</string>
