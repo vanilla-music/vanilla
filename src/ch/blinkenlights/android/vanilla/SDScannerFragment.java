@@ -158,6 +158,12 @@ public class SDScannerFragment extends Fragment
 		mScanFragment.setScanProgressCallbacks(this);
 	}
 
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		mScanFragment.setScanProgressCallbacks(null);
+	}
+
 	private View findViewById(int viewId) {
 		return getView().findViewById(viewId);
 	}
