@@ -293,4 +293,23 @@ THE SOFTWARE.
 
 	<string name="permission_request_summary">Vanilla Music needs read permission to display your music library</string>
 	<string name="reverse_sort">Reverse sort</string>
+
+	<!-- SD Scanner -->
+
+	<string name="button_start">Start Rescan</string>
+	<string name="database_proc">Examined</string>
+	<string name="delete_proc">Removed reference to</string>
+	<string name="db_label">Will also check existing media database for updated or deleted files.</string>
+	<string name="db_error_failure">Encountered error reading media database, and might miss updated or deleted files or rescan up-to-date files.</string>
+	<string name="db_error_recovered">Encountered error reading media database, but recovered.</string>
+	<string name="db_error_retrying">Encountered error reading media database.  Retrying in 1 second...</string>
+	<string name="final_proc">Processed</string>
+	<string name="path_label">Path to check for new files:</string>
+	<string name="progress_completed_label">Completed, ready to start another scan.</string>
+	<string name="progress_error_bad_path_label">Scan failed: bad path specified for new file search.</string>
+	<string name="progress_filelist_label">Preparing initial list of files...</string>
+	<string name="progress_database_label">Querying database...</string>
+	<string name="progress_unstarted_label">Not yet started.</string>
+	<string name="restrict_label">Ignore updated and deleted files outside of the specified path.</string>
+	<string name="skipping_folder_label">Encountered an error and skipping</string>
 </resources>
