@@ -231,7 +231,7 @@
   <string name="select">Seç</string>
   <string name="autoplaylist_playcounts_title">Kendiliğinden oynatmalık oluşturma</string>
   <string name="autoplaylist_playcounts_summary">Kendiliğinden oluştur:</string>
-  <string name="autoplaylist_playcounts_fmt" formatted="false">\'En iyi %.0f şarkı\' %s</string>
+  <string name="autoplaylist_playcounts_fmt" formatted="false">%s \'En iyi %.0f şarkı\'</string>
   <string name="autoplaylist_playcounts_disabled">Kendiliğinden oynatmalık oluşturma!</string>
   <string name="autoplaylist_playcounts_name" formatted="false">En iyi %d</string>
   <string name="permission_request_summary">Vanilya Müzik, müzik arşivinizi görüntüleyebilmek için izninize gereksinim duyar</string>
