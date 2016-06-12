@@ -312,4 +312,5 @@ THE SOFTWARE.
 	<string name="progress_unstarted_label">Not yet started.</string>
 	<string name="restrict_label">Ignore updated and deleted files outside of the specified path.</string>
 	<string name="skipping_folder_label">Encountered an error and skipping</string>
+	<string name="sdscanner">SD Scanner</string>
 </resources>

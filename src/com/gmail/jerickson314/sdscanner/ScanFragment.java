@@ -165,8 +165,14 @@ public class ScanFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mCallbacks = (ScanProgressCallbacks) activity;
+        if(activity instanceof ScanProgressCallbacks) {
+            mCallbacks = (ScanProgressCallbacks) activity;
+        }
         mApplicationContext = activity.getApplicationContext();
+    }
+
+    public void setScanProgressCallbacks(ScanProgressCallbacks callbacks) {
+        mCallbacks = callbacks;
     }
 
     public ScanFragment() {
