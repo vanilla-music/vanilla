@@ -44,6 +44,7 @@ THE SOFTWARE.
 	<string name="_genre">genre</string>
 	<string name="_track">track</string>
 	<string name="_composer">composer</string>
+	<string name="_path">path</string>
 	<string name="_format">format</string>
 	<string name="_title">title</string>
 	<string name="_artist">artist</string>
