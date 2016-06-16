@@ -100,6 +100,8 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 	private TextView mYearView;
 	private String mComposer;
 	private TextView mComposerView;
+	private String mPath;
+	private TextView mPathView;
 	private String mFormat;
 	private TextView mFormatView;
 	private String mReplayGain;
@@ -163,6 +165,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 		mTrackView = (TextView)findViewById(R.id.track);
 		mYearView = (TextView)findViewById(R.id.year);
 		mComposerView = (TextView)findViewById(R.id.composer);
+		mPathView = (TextView)findViewById(R.id.path);
 		mFormatView = (TextView)findViewById(R.id.format);
 		mReplayGainView = (TextView)findViewById(R.id.replaygain);
 
@@ -475,6 +478,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 		mTrack = null;
 		mYear = null;
 		mComposer = null;
+		mPath = null;
 		mFormat = null;
 		mReplayGain = null;
 
@@ -505,6 +509,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 			}
 			mYear = year;
 
+			mPath = song.path;
 			StringBuilder sb = new StringBuilder(12);
 			sb.append(decodeMimeType(data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE)));
 			String bitrate = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE);
@@ -587,6 +592,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 			mTrackView.setText(mTrack);
 			mYearView.setText(mYear);
 			mComposerView.setText(mComposer);
+			mPathView.setText(mPath);
 			mFormatView.setText(mFormat);
 			mReplayGainView.setText(mReplayGain);
 			break;
