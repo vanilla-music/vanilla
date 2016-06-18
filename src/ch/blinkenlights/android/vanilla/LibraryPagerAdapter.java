@@ -443,6 +443,7 @@ public class LibraryPagerAdapter
 			out.putSerializable("limiter_songs", mSongAdapter.getLimiter());
 		if (mFilesAdapter != null)
 			out.putSerializable("limiter_files", mFilesAdapter.getLimiter());
+
 		maintainPosition();
 		return out;
 	}
@@ -588,7 +589,7 @@ public class LibraryPagerAdapter
 	/**
 	 * Saves the scrolling position of every visible limiter
 	 */
-	public void maintainPosition() {
+	private void maintainPosition() {
 		for (int i = MAX_ADAPTER_COUNT; --i != -1; ) {
 			if (mAdapters[i] != null) {
 				sLruAdapterPos.storePosition(mAdapters[i], mLists[i].getFirstVisiblePosition());
@@ -646,15 +647,14 @@ public class LibraryPagerAdapter
 			break;
 		}
 		case MSG_COMMIT_QUERY: {
-			int pos = 0;
 			int index = message.arg1;
 			mAdapters[index].commitQuery(message.obj);
 
-			Integer curPos = sLruAdapterPos.getPosition(mAdapters[index]);
+			// Restore scrolling position if present and valid
+			Integer curPos = sLruAdapterPos.popPosition(mAdapters[index]);
 			if (curPos != null && curPos < mLists[index].getCount())
-				pos = (int)curPos;
+				mLists[index].setSelection(curPos);
 
-			mLists[index].setSelection(pos);
 			break;
 		}
 		case MSG_SAVE_SORT: {
@@ -861,8 +861,8 @@ public class LibraryPagerAdapter
 		public void storePosition(LibraryAdapter adapter, Integer val) {
 			this.put(_k(adapter), val);
 		}
-		public Integer getPosition(LibraryAdapter adapter) {
-			return this.get(_k(adapter));
+		public Integer popPosition(LibraryAdapter adapter) {
+			return this.remove(_k(adapter));
 		}
 
 		/**

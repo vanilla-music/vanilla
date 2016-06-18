@@ -710,7 +710,6 @@ public class LibraryActivity
 				.setMessage(delete_message)
 				.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
-						mPagerAdapter.maintainPosition(); // remember current scrolling position
 						mHandler.sendMessage(mHandler.obtainMessage(MSG_DELETE, intent));
 					}
 				})
