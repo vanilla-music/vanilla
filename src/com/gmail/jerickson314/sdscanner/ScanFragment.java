@@ -50,7 +50,8 @@ public class ScanFragment extends Fragment {
 
     private static final String[] MEDIA_PROJECTION =
         {MediaStore.MediaColumns.DATA,
-         MediaStore.MediaColumns.DATE_MODIFIED};
+         MediaStore.MediaColumns.DATE_MODIFIED,
+         MediaStore.MediaColumns.SIZE};
 
     private static final String[] STAR = {"*"};
 
@@ -389,6 +390,8 @@ public class ScanFragment extends Fragment {
                     cursor.getColumnIndex(MediaStore.MediaColumns.DATA);
             int modified_column =
                     cursor.getColumnIndex(MediaStore.MediaColumns.DATE_MODIFIED);
+            int size_column =
+                    cursor.getColumnIndex(MediaStore.MediaColumns.SIZE);
             int totalSize = cursor.getCount();
             int currentItem = 0;
             int reportFreq = 0;
@@ -398,7 +401,10 @@ public class ScanFragment extends Fragment {
                 currentItem++;
                 try {
                     File file = new File(cursor.getString(data_column)).getCanonicalFile();
-                    if ((!file.exists() ||
+                    // Ignore non-file backed playlists (size == 0). Fixes playlist removal on scan
+                    // for 4.1
+                    boolean validSize = cursor.getInt(size_column) > 0;
+                    if (validSize && (!file.exists() ||
                              file.lastModified() / 1000L >
                              cursor.getLong(modified_column))
                              && parameters.shouldScan(file, true)) {
