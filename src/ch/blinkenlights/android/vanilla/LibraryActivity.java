@@ -388,6 +388,9 @@ public class LibraryActivity
 			}
 		}
 
+		if (id == LibraryAdapter.HEADER_ID)
+			all = true; // page header was clicked -> force all mode
+
 		QueryTask query = buildQueryFromIntent(intent, false, (all ? (MediaAdapter)mCurrentAdapter : null));
 		query.mode = modeForAction[mode];
 		PlaybackService.get(this).addSongs(query);
@@ -585,24 +588,6 @@ public class LibraryActivity
 			}
 			cursor.close();
 		}
-	}
-
-	/**
-	 * Builds a media query based off the data stored in the given intent.
-	 *
-	 * @param intent An intent created with
-	 * {@link LibraryAdapter#createData(View)}.
-	 * @param empty If true, use the empty projection (only query id).
-	 * @param allSource use this mediaAdapter to queue all hold items
-	 */
-	@Override
-	protected QueryTask buildQueryFromIntent(Intent intent, boolean empty, MediaAdapter allSource) {
-		long id = intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
-		if (allSource == null && id == LibraryAdapter.HEADER_ID) {
-			// 'all' was not forced, but user clicked on the header: use the current adapter
-			allSource = (MediaAdapter)mCurrentAdapter;
-		}
-		return super.buildQueryFromIntent(intent, empty, allSource);
 	}
 
 	private static final int CTX_MENU_PLAY = 0;
