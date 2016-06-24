@@ -843,6 +843,7 @@ public class LibraryActivity
 			SharedPreferences.Editor editor = PlaybackService.getSettings(this).edit();
 			editor.putInt("library_page", message.arg1);
 			editor.apply();
+			super.adjustSpines();
 			break;
 		}
 		case MSG_UPDATE_COVER: {
