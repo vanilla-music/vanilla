@@ -40,7 +40,6 @@ public class PrefKeys {
 	public static final String DOUBLE_TAP = "double_tap";
 	public static final String ENABLE_SHAKE = "enable_shake";
 	public static final String HEADSET_ONLY = "headset_only";
-	public static final String CYCLE_CONTINUOUS_SHUFFLING = "cycle_continuous_shuffling";
 	public static final String HEADSET_PAUSE = "headset_pause";
 	public static final String IDLE_TIMEOUT = "idle_timeout";
 	public static final String LIBRARY_PAGE = "library_page";

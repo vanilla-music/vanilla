@@ -168,24 +168,18 @@ public final class SongTimeline {
 	 */
 	public static final int SHUFFLE_SONGS = 1;
 	/**
-	 * Randomize order of songs and re-shuffle continuously
-	 *
-	 * @see SongTimeline@setShuffleMode(int)
-	 */
-	public static final int SHUFFLE_CONTINUOUS = 2;
-	/**
 	 * Randomize order of albums, preserving the order of tracks inside the
 	 * albums.
 	 *
 	 * @see SongTimeline#setShuffleMode(int)
 	 */
-	public static final int SHUFFLE_ALBUMS = 3;
+	public static final int SHUFFLE_ALBUMS = 2;
 
 	/**
 	 * Icons corresponding to each of the shuffle actions.
 	 */
 	public static final int[] SHUFFLE_ICONS =
-		{ R.drawable.shuffle_inactive, R.drawable.shuffle_active, R.drawable.shuffle_active, R.drawable.shuffle_album_active };
+		{ R.drawable.shuffle_inactive, R.drawable.shuffle_active, R.drawable.shuffle_album_active };
 
 	/**
 	 * Move current position to the previous album.
@@ -614,11 +608,6 @@ public final class SongTimeline {
 		}
 
 		mCurrentPos = pos;
-
-		if (mShuffleMode == SHUFFLE_CONTINUOUS) {
-			reshuffleTimeline();
-		}
-
 	}
 	
 	/**

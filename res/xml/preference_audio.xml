@@ -67,9 +67,4 @@ THE SOFTWARE.
 		android:fragment="ch.blinkenlights.android.vanilla.PreferencesActivity$HeadsetLaunchFragment"
 		android:title="@string/headset_launch_title"
 		android:summary="@string/headset_launch_summary" />
-	<CheckBoxPreference
-		android:key="cycle_continuous_shuffling"
-		android:title="@string/cycle_continuous_shuffling"
-		android:defaultValue="false"
-		android:summary="@string/cycle_continuous_shuffling_summary" />
 </PreferenceScreen>

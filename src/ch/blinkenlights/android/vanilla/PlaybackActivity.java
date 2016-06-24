@@ -644,7 +644,6 @@ public abstract class PlaybackActivity extends Activity
 		if (view == mShuffleButton) {
 			menu.add(CTX_MENU_GRP_SHUFFLE, SongTimeline.SHUFFLE_NONE, 0, R.string.no_shuffle);
 			menu.add(CTX_MENU_GRP_SHUFFLE, SongTimeline.SHUFFLE_SONGS, 0, R.string.shuffle_songs);
-			menu.add(CTX_MENU_GRP_SHUFFLE, SongTimeline.SHUFFLE_CONTINUOUS, 0, R.string.shuffle_songs_continuously);
 			menu.add(CTX_MENU_GRP_SHUFFLE, SongTimeline.SHUFFLE_ALBUMS, 0, R.string.shuffle_albums);
 		} else if (view == mEndButton) {
 		    menu.add(CTX_MENU_GRP_FINISH, SongTimeline.FINISH_STOP, 0, R.string.no_repeat);

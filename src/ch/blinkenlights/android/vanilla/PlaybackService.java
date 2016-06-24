@@ -315,10 +315,6 @@ public final class PlaybackService extends Service
 	 * {@link PlaybackService#createNotificationAction(SharedPreferences)}.
 	 */
 	private PendingIntent mNotificationAction;
-	/**
-	 * If true, use SongTimeline.SHUFFLE_CONTINUOUS while cycling shuffle modes
-	 */
-	private boolean mCycleContinuousShuffling;
 
 	private Looper mLooper;
 	private Handler mHandler;
@@ -464,7 +460,6 @@ public final class PlaybackService extends Service
 		CoverCache.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_SHADOW , PrefDefaults.COVERLOADER_SHADOW)  ? CoverCache.mCoverLoadMode | CoverCache.COVER_MODE_SHADOW  : CoverCache.mCoverLoadMode & ~(CoverCache.COVER_MODE_SHADOW);
 
 		mHeadsetOnly = settings.getBoolean(PrefKeys.HEADSET_ONLY, PrefDefaults.HEADSET_ONLY);
-		mCycleContinuousShuffling = settings.getBoolean(PrefKeys.CYCLE_CONTINUOUS_SHUFFLING, PrefDefaults.CYCLE_CONTINUOUS_SHUFFLING);
 		mStockBroadcast = settings.getBoolean(PrefKeys.STOCK_BROADCAST, PrefDefaults.STOCK_BROADCAST);
 		mNotificationAction = createNotificationAction(settings);
 		mHeadsetPause = getSettings(this).getBoolean(PrefKeys.HEADSET_PAUSE, PrefDefaults.HEADSET_PAUSE);
@@ -853,9 +848,6 @@ public final class PlaybackService extends Service
 			mHeadsetOnly = settings.getBoolean(key, PrefDefaults.HEADSET_ONLY);
 			if (mHeadsetOnly && isSpeakerOn())
 				unsetFlag(FLAG_PLAYING);
-		} else if (PrefKeys.CYCLE_CONTINUOUS_SHUFFLING.equals(key)) {
-			mCycleContinuousShuffling = settings.getBoolean(key, PrefDefaults.CYCLE_CONTINUOUS_SHUFFLING);
-			setShuffleMode(SongTimeline.SHUFFLE_NONE);
 		} else if (PrefKeys.STOCK_BROADCAST.equals(key)) {
 			mStockBroadcast = settings.getBoolean(key, PrefDefaults.STOCK_BROADCAST);
 		} else if (PrefKeys.ENABLE_SHAKE.equals(key) || PrefKeys.SHAKE_ACTION.equals(key)) {
@@ -1257,10 +1249,6 @@ public final class PlaybackService extends Service
 	{
 		synchronized (mStateLock) {
 			int mode = shuffleMode(mState) + 1;
-			if (mCycleContinuousShuffling == true && mode == SongTimeline.SHUFFLE_SONGS)
-				mode++; // skip this mode, advance to continuous
-			if (mCycleContinuousShuffling == false && mode == SongTimeline.SHUFFLE_CONTINUOUS)
-				mode++; // skip this mode, advance to albums
 			if (mode > SongTimeline.SHUFFLE_ALBUMS)
 				mode = SongTimeline.SHUFFLE_NONE; // end reached: switch to none
 			return setShuffleMode(mode);
