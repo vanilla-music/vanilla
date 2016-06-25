@@ -325,13 +325,13 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 			openLibrary(null);
 			break;
 		case MENU_ENQUEUE_ALBUM:
-			PlaybackService.get(this).enqueueFromSong(PlaybackService.get(this).getSong(0), MediaUtils.TYPE_ALBUM);
+			PlaybackService.get(this).enqueueFromSong(song, MediaUtils.TYPE_ALBUM);
 			break;
 		case MENU_ENQUEUE_ARTIST:
-			PlaybackService.get(this).enqueueFromSong(PlaybackService.get(this).getSong(0), MediaUtils.TYPE_ARTIST);
+			PlaybackService.get(this).enqueueFromSong(song, MediaUtils.TYPE_ARTIST);
 			break;
 		case MENU_ENQUEUE_GENRE:
-			PlaybackService.get(this).enqueueFromSong(PlaybackService.get(this).getSong(0), MediaUtils.TYPE_GENRE);
+			PlaybackService.get(this).enqueueFromSong(song, MediaUtils.TYPE_GENRE);
 			break;
 		case MENU_SONG_FAVORITE:
 			long playlistId = Playlist.getFavoritesId(this, true);
