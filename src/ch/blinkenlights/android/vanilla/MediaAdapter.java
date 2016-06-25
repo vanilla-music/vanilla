@@ -741,6 +741,19 @@ public class MediaAdapter
 					break;
 				case Cursor.FIELD_TYPE_STRING:
 					lastString = cursor.getString(sortColumnIndex);
+					lastString = lastString.trim().toUpperCase(); // normalize
+
+					// This is what AOSP's MediaStore.java:1337 does during indexing
+					if (lastString.startsWith("THE "))
+						lastString = lastString.substring(4);
+
+					if (lastString.startsWith("AN "))
+						lastString = lastString.substring(3);
+
+					if (lastString.startsWith("A "))
+						lastString = lastString.substring(2);
+
+					// Ensure that we got at least one char
 					if (lastString.length() < 1)
 						lastString = DB_NULLSTRING_FALLBACK;
 
