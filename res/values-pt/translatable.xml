@@ -22,6 +22,7 @@
   <string name="_genre">género</string>
   <string name="_track">faixa</string>
   <string name="_composer">compositor</string>
+  <string name="_path">caminho</string>
   <string name="_format">formato</string>
   <string name="_title">título</string>
   <string name="_artist">artista</string>
@@ -236,4 +237,22 @@
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
   <string name="permission_request_summary">O Vanilla Music necessita da permissão de leitura para mostrar a sua coleção</string>
   <string name="reverse_sort">Inverter organização</string>
+  <!--SD Scanner-->
+  <string name="button_start">Iniciar reanálise</string>
+  <string name="database_proc">Analisado</string>
+  <string name="delete_proc">Removida a referência a</string>
+  <string name="db_label">Também irá analisar os ficheiros multimédia atualizados ou eliminados.</string>
+  <string name="db_error_failure">Encontrados erros ao ler a base de dados e podem estar em falta os ficheiros atualizados ou eliminados.</string>
+  <string name="db_error_recovered">Encontrados erros ao ler a base de dados, mas foi recuperada.</string>
+  <string name="db_error_retrying">Encontrados erros ao ler a base de dados. Nova tentativa dentro de 1 segundo.</string>
+  <string name="final_proc">Processados</string>
+  <string name="path_label">Caminho para procurar os novos ficheiros:</string>
+  <string name="progress_completed_label">Concluído e pronto para nova análise.</string>
+  <string name="progress_error_bad_path_label">Falha ao analisar. Especificou um caminho inválido.</string>
+  <string name="progress_filelist_label">A preparar lista de ficheiros...</string>
+  <string name="progress_database_label">A consultar base de dados...</string>
+  <string name="progress_unstarted_label">Ainda não iniciada.</string>
+  <string name="restrict_label">Ignorar ficheiros eliminados e atualizados que não estejam no caminho especificado.</string>
+  <string name="skipping_folder_label">Encontrado um erro e a ignorar</string>
+  <string name="sdscanner">Analisador do cartão SD</string>
 </resources>

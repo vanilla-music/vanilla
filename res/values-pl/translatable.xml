@@ -229,4 +229,5 @@
   <string name="autoplaylist_playcounts_disabled">Nie twórz automatycznie listy odtwarzania</string>
   <string name="autoplaylist_playcounts_name" formatted="false">Najczęściej odtwarzane %d</string>
   <string name="permission_request_summary">Vanilla Music potrzebuje uprawnień do wyświetlenia Twojej biblioteki muzycznej</string>
+  <!--SD Scanner-->
 </resources>

@@ -212,4 +212,5 @@
   <string name="autoplaylist_playcounts_disabled">No crear una lista de reproducción automatica</string>
   <string name="permission_request_summary">Vanilla Music necesita permisos de lectura para mostrar tu biblioteca musical</string>
   <string name="reverse_sort">Orden invertido</string>
+  <!--SD Scanner-->
 </resources>

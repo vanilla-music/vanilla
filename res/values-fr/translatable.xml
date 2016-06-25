@@ -235,4 +235,5 @@
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
   <string name="permission_request_summary">Vanilla Music a besoin d\'une permission de lecture pour afficher votre bibliothèque musicale</string>
   <string name="reverse_sort">Inverser le tri</string>
+  <!--SD Scanner-->
 </resources>

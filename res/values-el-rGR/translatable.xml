@@ -156,4 +156,5 @@
   <string name="filebrowser_start">Αρχική σελίδα του περιηγητή αρχείων</string>
   <string name="customize_filebrowser_start">Ο Περιηγητής Αρχείων να ξεκινά από αυτό τον κατάλογο</string>
   <string name="select">Επιλογή</string>
+  <!--SD Scanner-->
 </resources>

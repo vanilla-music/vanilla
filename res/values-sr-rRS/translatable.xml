@@ -22,6 +22,7 @@
   <string name="_genre">жанр</string>
   <string name="_track">нумера</string>
   <string name="_composer">композитор</string>
+  <string name="_path">путања</string>
   <string name="_format">формат</string>
   <string name="_title">наслов</string>
   <string name="_artist">извођач</string>
@@ -244,4 +245,6 @@
   <string name="autoplaylist_playcounts_name" formatted="false">Најбољих %d</string>
   <string name="permission_request_summary">Ванила музика захтева дозволу читања да би приказала вашу музичку библиотеку</string>
   <string name="reverse_sort">Обрнуто ређање</string>
+  <!--SD Scanner-->
+  <string name="sdscanner">СД читач</string>
 </resources>

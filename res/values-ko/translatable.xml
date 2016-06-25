@@ -228,4 +228,5 @@
   <string name="permission_request_summary">Vanilla Music은 음악 라이브러리를 표시하기 위하여 읽기 권한이 필요합니다
 </string>
   <string name="reverse_sort">반대로 정렬</string>
+  <!--SD Scanner-->
 </resources>

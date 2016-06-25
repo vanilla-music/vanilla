@@ -22,6 +22,7 @@
   <string name="_genre">tür</string>
   <string name="_track">iz</string>
   <string name="_composer">besteci</string>
+  <string name="_path">yol</string>
   <string name="_format">biçim</string>
   <string name="_title">başlık</string>
   <string name="_artist">sanatçı</string>
@@ -236,4 +237,22 @@
   <string name="autoplaylist_playcounts_name" formatted="false">En iyi %d</string>
   <string name="permission_request_summary">Vanilya Müzik, müzik arşivinizi görüntüleyebilmek için izninize gereksinim duyar</string>
   <string name="reverse_sort">Sıralamayı tersine çevir</string>
+  <!--SD Scanner-->
+  <string name="button_start">Yeniden taramayı başlat</string>
+  <string name="database_proc">İncelendi</string>
+  <string name="delete_proc">Referans şuraya kaldırıldı</string>
+  <string name="db_label">Var olan ortam veritabanı da güncellenmiş veya silinmiş dosyalar için denetlenecek.</string>
+  <string name="db_error_failure">Ortam veritabanı okunurken bir hata ile karşılaşıldı; güncellenmiş, silinmiş veya güncel dosyaları tararken atlananlar olabilir.</string>
+  <string name="db_error_recovered">Ortam veritabanı okunurken bir hata ile karşılaşıldı, ancak kurtarıldı.</string>
+  <string name="db_error_retrying">Ortam veritabanı okunurken bir hata ile karşılaşıldı; 1 saniye içerisinde yeniden deneniyor...</string>
+  <string name="final_proc">İşlendi</string>
+  <string name="path_label">Yeni dosyaları denetlemek için yol:</string>
+  <string name="progress_completed_label">Tamamlandı; başka bir tarama için hazır.</string>
+  <string name="progress_error_bad_path_label">Tarama yapılamadı: Yeni dosya araması için bozuk yol tanımı.</string>
+  <string name="progress_filelist_label">Dosyaların ön listesi hazırlanıyor...</string>
+  <string name="progress_database_label">Veritabanı sorgulanıyor...</string>
+  <string name="progress_unstarted_label">Henüz başlanmadı.</string>
+  <string name="restrict_label">Tanımlanmış yolun dışındaki güncellenmiş ve silinmiş dosyaları yok say.</string>
+  <string name="skipping_folder_label">Bir hata ile karşılaşıldı, atlanıyor</string>
+  <string name="sdscanner">SD Tarayıcısı</string>
 </resources>

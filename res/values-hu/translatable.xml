@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-  <string name="app_name">Vanilla Zenelejátszó</string>
+  <string name="app_name">Vanilla zenelejátszó</string>
   <!--Playback Activity (main screen)-->
   <string name="no_songs">Nem találhatóak számok az eszközén.</string>
   <string name="empty_queue">Nincs szám kiválasztva. Válasszon a gyűjteményből vagy kapcsolja be a véletlenszerű módot ezt az üzenetet megérintve.</string>
@@ -22,6 +22,7 @@
   <string name="_genre">műfaj</string>
   <string name="_track">szám</string>
   <string name="_composer">zeneszerző</string>
+  <string name="_path">útvonal</string>
   <string name="_format">formátum</string>
   <string name="_title">cím</string>
   <string name="_artist">előadó</string>
@@ -236,4 +237,22 @@
   <string name="autoplaylist_playcounts_name" formatted="false">Legjobb %d</string>
   <string name="permission_request_summary">A Vanilla zenelejátszónak olvasási engedélyre van szükségre, hogy megjelenítse a gyűjteményét</string>
   <string name="reverse_sort">Fordított rendezés</string>
+  <!--SD Scanner-->
+  <string name="button_start">Újraátvizsgálás indítása</string>
+  <string name="database_proc">Megvizsgálva</string>
+  <string name="delete_proc">Hivatkozás eltávoltva:</string>
+  <string name="db_label">Átvizsgálja a létező médiaadatbázist is, frissített vagy törölt fájlok után.</string>
+  <string name="db_error_failure">Hiba történt a médiaadatbázis olvasásakor, a frissült, törölt vagy újraátvizsgált fájlok közül maradhattak ki elemek.</string>
+  <string name="db_error_recovered">Hiba történt a médiaadatbázis olvasásakor, de sikerült helyreállni.</string>
+  <string name="db_error_retrying">Hiba történt a médiaadatbázis olvasásakor. Újrapróbálkozás 1 másodperc múlva…</string>
+  <string name="final_proc">Feldolgozva</string>
+  <string name="path_label">Útvonal ellenőrzése új fájlok után:</string>
+  <string name="progress_completed_label">Befejezve, új átvizsgálás indítására készen.</string>
+  <string name="progress_error_bad_path_label">Átvizsgálás sikertelen: rossz útvonal lett megadva az új kereséshez.</string>
+  <string name="progress_filelist_label">Kezdeti fájllista előkészítése…</string>
+  <string name="progress_database_label">Adatbázis lekérdezése…</string>
+  <string name="progress_unstarted_label">Még nem lett elindítva.</string>
+  <string name="restrict_label">Frissített és törölt fájlok figyelmen kívül hagyása az útvonalon kívül.</string>
+  <string name="skipping_folder_label">Hiba történt és ki lett hagyva</string>
+  <string name="sdscanner">SD átvizsgáló</string>
 </resources>

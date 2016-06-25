@@ -219,4 +219,5 @@
   <string name="autoplaylist_playcounts_disabled">不要创建自动播放列表</string>
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
   <string name="permission_request_summary">Vanilla Music 需要读取权限来显示你的音乐媒体库</string>
+  <!--SD Scanner-->
 </resources>

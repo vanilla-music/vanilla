@@ -179,4 +179,5 @@
   <string name="autoplaylist_playcounts_disabled">یک لیست پخش بصورت خودکار ایجاد نشود</string>
   <string name="autoplaylist_playcounts_name" formatted="false">بالا %d</string>
   <string name="permission_request_summary">وانیلا موزیک برای نمایش کتابخانه موزیک ،نیاز به دسترسی خواندن دارد</string>
+  <!--SD Scanner-->
 </resources>

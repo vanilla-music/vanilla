@@ -144,4 +144,5 @@
   <string name="filebrowser_start">Thư mục gốc</string>
   <string name="customize_filebrowser_start">Trình duyệt tập tin bắt đầu tại đây</string>
   <string name="select">Chọn</string>
+  <!--SD Scanner-->
 </resources>

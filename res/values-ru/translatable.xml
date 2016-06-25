@@ -22,6 +22,7 @@
   <string name="_genre">Жанр</string>
   <string name="_track">Дорожка</string>
   <string name="_composer">Композитор</string>
+  <string name="_path">Путь</string>
   <string name="_format">Формат</string>
   <string name="_title">Название</string>
   <string name="_artist">Исполнитель</string>
@@ -252,4 +253,22 @@
   <string name="autoplaylist_playcounts_name" formatted="false">Лучшие %d</string>
   <string name="permission_request_summary">Vanilla Music необходимо разрешение на чтение, чтобы отобразить Вашу музыку в фонотеке</string>
   <string name="reverse_sort">в обратном порядке</string>
+  <!--SD Scanner-->
+  <string name="button_start">Начать сканирование</string>
+  <string name="database_proc">Проверен</string>
+  <string name="delete_proc">Удалена ссылка на</string>
+  <string name="db_label">Существующая база медиаданных также будет проверена на наличие обновлённых или удалённых файлов.</string>
+  <string name="db_error_failure">Ошибка чтения базы медиаданных; изменённые или удалённые файлы могут остаться незамеченными, а актуальные — проверены повторно.</string>
+  <string name="db_error_recovered">Ошибка чтения базы медиаданных; удалось восстановиться.</string>
+  <string name="db_error_retrying">Ошибка чтения базы медиаданных.  Повторная попытка через 1 секунду...</string>
+  <string name="final_proc">Обработан</string>
+  <string name="path_label">Путь для проверки новых файлов:</string>
+  <string name="progress_completed_label">Завершено, можно начать новое сканирование.</string>
+  <string name="progress_error_bad_path_label">Сканирование не удалось: указан некорректный путь для поиска новых файлов.</string>
+  <string name="progress_filelist_label">Подготовка первоначального списка файлов...</string>
+  <string name="progress_database_label">Запрос базы данных...</string>
+  <string name="progress_unstarted_label">Ещё не начиналось.</string>
+  <string name="restrict_label">Игнорировать обновлённые и удалённые файлы за пределами сканируемой папки.</string>
+  <string name="skipping_folder_label">Ошибка обнаружена и пропущена</string>
+  <string name="sdscanner">SD Scanner</string>
 </resources>

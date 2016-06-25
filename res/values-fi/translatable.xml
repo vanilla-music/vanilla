@@ -232,4 +232,8 @@
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
   <string name="permission_request_summary">Vanilla Music tarvitsee lukuoikeuden näyttääkseen musiikkikirjastosi</string>
   <string name="reverse_sort">Käänteinen järjestys</string>
+  <!--SD Scanner-->
+  <string name="path_label">Polku josta uusia tiedostoja etsitään:</string>
+  <string name="progress_unstarted_label">Ei käynnistetty vielä.</string>
+  <string name="skipping_folder_label">Kohdattiin virhe ja ohitetaan</string>
 </resources>
