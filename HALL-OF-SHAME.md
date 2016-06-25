@@ -26,6 +26,15 @@ This list is a collection of such GPL violating versions published on the Google
 * Does not mention Vanilla Music in the play store entry, crashes in 'About' screen
 * Nasty Ads
 
+### Music Player
+* https://play.google.com/store/apps/details?id=com.itsolbiz.musicplayer
+* Removed 'About' section in App
+* Ads
+
+### Music Player Pro
+* https://play.google.com/store/apps/details?id=com.itsolbiz.musicplayerpro
+* Pay-Version of above GPL violating app
+
 ## Grey area
 
 ### Mp3 Player Download
