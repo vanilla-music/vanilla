@@ -303,9 +303,10 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 	{
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, MENU_DELETE, 30, R.string.delete);
-		menu.add(0, MENU_ENQUEUE_ALBUM, 30, R.string.enqueue_current_album).setIcon(R.drawable.ic_menu_add);
-		menu.add(0, MENU_ENQUEUE_ARTIST, 30, R.string.enqueue_current_artist).setIcon(R.drawable.ic_menu_add);
-		menu.add(0, MENU_ENQUEUE_GENRE, 30, R.string.enqueue_current_genre).setIcon(R.drawable.ic_menu_add);
+		menu.add(0, MENU_ENQUEUE_ALBUM, 30, R.string.enqueue_current_album);
+		menu.add(0, MENU_ENQUEUE_ARTIST, 30, R.string.enqueue_current_artist);
+		menu.add(0, MENU_ENQUEUE_GENRE, 30, R.string.enqueue_current_genre);
+		menu.add(0, MENU_ADD_TO_PLAYLIST, 30, R.string.add_to_playlist);
 		mFavorites = menu.add(0, MENU_SONG_FAVORITE, 0, R.string.add_to_favorites).setIcon(R.drawable.btn_rating_star_off_mtrl_alpha).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
 		// ensure that mFavorites is updated
@@ -316,6 +317,8 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
+		final Song song = mCurrentSong;
+
 		switch (item.getItemId()) {
 		case android.R.id.home:
 		case MENU_LIBRARY:
@@ -331,9 +334,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 			PlaybackService.get(this).enqueueFromSong(PlaybackService.get(this).getSong(0), MediaUtils.TYPE_GENRE);
 			break;
 		case MENU_SONG_FAVORITE:
-			Song song = (PlaybackService.get(this)).getSong(0);
 			long playlistId = Playlist.getFavoritesId(this, true);
-
 			if (song != null) {
 				PlaylistTask playlistTask = new PlaylistTask(playlistId, getString(R.string.playlist_favorites));
 				playlistTask.audioIds = new ArrayList<Long>();
@@ -343,13 +344,21 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 				mHandler.sendEmptyMessage(MSG_LOAD_FAVOURITE_INFO);
 			}
 			break;
+		case MENU_ADD_TO_PLAYLIST:
+			if (song != null) {
+				Intent intent = new Intent();
+				intent.putExtra("type", MediaUtils.TYPE_SONG);
+				intent.putExtra("id", song.id);
+				PlaylistDialog dialog = new PlaylistDialog(this, intent);
+				dialog.show(getFragmentManager(), "PlaylistDialog");
+			}
+			break;
 		case MENU_DELETE:
 			final PlaybackService playbackService = PlaybackService.get(this);
-			final Song sng = playbackService.getSong(0);
 			final PlaybackActivity activity = this;
 
-			if (sng != null) {
-				String delete_message = getString(R.string.delete_file, sng.title);
+			if (song != null) {
+				String delete_message = getString(R.string.delete_file, song.title);
 				AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 				dialog.setTitle(R.string.delete);
 				dialog
@@ -359,7 +368,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 							// MSG_DELETE expects an intent (usually called from listview)
 							Intent intent = new Intent();
 							intent.putExtra(LibraryAdapter.DATA_TYPE, MediaUtils.TYPE_SONG);
-							intent.putExtra(LibraryAdapter.DATA_ID, sng.id);
+							intent.putExtra(LibraryAdapter.DATA_ID, song.id);
 							mHandler.sendMessage(mHandler.obtainMessage(MSG_DELETE, intent));
 						}
 					})

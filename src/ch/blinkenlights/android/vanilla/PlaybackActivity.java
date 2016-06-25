@@ -374,6 +374,7 @@ public abstract class PlaybackActivity extends Activity
 	static final int MENU_SAVE_QUEUE_AS_PLAYLIST = 15;
 	static final int MENU_DELETE = 16;
 	static final int MENU_EMPTY_QUEUE = 17;
+	static final int MENU_ADD_TO_PLAYLIST = 18;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
