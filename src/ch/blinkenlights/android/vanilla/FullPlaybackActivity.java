@@ -341,7 +341,6 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 				playlistTask.audioIds.add(song.id);
 				int action = Playlist.isInPlaylist(getContentResolver(), playlistId, song) ? MSG_REMOVE_FROM_PLAYLIST : MSG_ADD_TO_PLAYLIST;
 				mHandler.sendMessage(mHandler.obtainMessage(action, playlistTask));
-				mHandler.sendEmptyMessage(MSG_LOAD_FAVOURITE_INFO);
 			}
 			break;
 		case MENU_ADD_TO_PLAYLIST:
@@ -609,6 +608,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 		case MSG_UPDATE_POSITION:
 			updateQueuePosition();
 			break;
+		case MSG_NOTIFY_PLAYLIST_CHANGED: // triggers a fav-refresh
 		case MSG_LOAD_FAVOURITE_INFO:
 			if (mCurrentSong != null) {
 				boolean found = Playlist.isInPlaylist(getContentResolver(), Playlist.getFavoritesId(this, false), mCurrentSong);

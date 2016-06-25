@@ -434,6 +434,10 @@ public abstract class PlaybackActivity extends Activity
 	 * Saves the current queue as a playlist
 	 */
 	protected static final int MSG_SAVE_QUEUE_AS_PLAYLIST = 5;
+	/**
+	 * Notification that we changed some playlist members
+	 */
+	protected static final int MSG_NOTIFY_PLAYLIST_CHANGED = 6;
 
 	@Override
 	public boolean handleMessage(Message message)
@@ -491,6 +495,10 @@ public abstract class PlaybackActivity extends Activity
 			delete((Intent)message.obj);
 			break;
 		}
+		case MSG_NOTIFY_PLAYLIST_CHANGED: {
+			// this is a NOOP here: super classes might implement this.
+			break;
+		}
 		default:
 			return false;
 		}
@@ -516,6 +524,7 @@ public abstract class PlaybackActivity extends Activity
 
 		String message = getResources().getQuantityString(R.plurals.added_to_playlist, count, count, playlistTask.name);
 		showToast(message, Toast.LENGTH_SHORT);
+		mHandler.sendEmptyMessage(MSG_NOTIFY_PLAYLIST_CHANGED);
 	}
 
 	/**
@@ -537,6 +546,7 @@ public abstract class PlaybackActivity extends Activity
 
 		String message = getResources().getQuantityString(R.plurals.removed_from_playlist, count, count, playlistTask.name);
 		showToast(message, Toast.LENGTH_SHORT);
+		mHandler.sendEmptyMessage(MSG_NOTIFY_PLAYLIST_CHANGED);
 	}
 
 	/**
