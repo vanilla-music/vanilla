@@ -17,9 +17,14 @@ Vanilla Music player is a [GPLv3](LICENSE) licensed MP3/OGG/FLAC/PCM player for 
 
 Donations
 ===========
-You can donate to Vanilla Musics development via gratipay
+You can donate to Vanilla Musics development via gratipay or Bitcoin
 
 [![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.3.0/dist/gratipay.png)](https://gratipay.com/vanilla-music/)
+
+Bitcoin:
+```
+1JdA6ugjVXfQQcsgYZPRuAX1Tkii9Sfc3p
+```
 
 Community
 ===========
