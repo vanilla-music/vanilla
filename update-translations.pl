@@ -5,7 +5,6 @@ use strict;
 my $LMAP = {
 	'el'    => 'el-rGR',
 	'fa_IR' => 'fa-rIR',
-	'sr'    => 'sr-rRS',
 	'zh_CN' => 'zh-rCN',
 	'zh_TW' => 'zh-rTW',
 	'pt_BR' => 'pt-rBR',
