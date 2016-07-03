@@ -24,6 +24,9 @@ THE SOFTWARE.
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:vanilla="http://schemas.android.com/apk/res/ch.blinkenlights.android.vanilla"
 	android:persistent="true">
+	<PreferenceScreen
+		android:fragment="ch.blinkenlights.android.vanilla.SDScannerFragment"
+		android:title="@string/sdscanner" />
 	<CheckBoxPreference
 		android:key="disable_lockscreen"
 		android:title="@string/disable_lockscreen_title"
