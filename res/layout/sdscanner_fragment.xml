@@ -24,39 +24,12 @@ Copied from SD Scanner's layout/main.xml with minor changes
 	android:paddingBottom="16dp"
 	android:orientation="vertical" >
 	<TextView
-		android:layout_width="match_parent"
-		android:layout_height="48dp"
-		android:gravity="center_vertical"
-		android:text="@string/path_label" />
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		xmlns:tools="http://schemas.android.com/tools"
-		android:layout_width="match_parent"
-		android:layout_height="48dp"
-		android:orientation="horizontal" >
-		<EditText
-			android:id="@+id/path_widget"
-			android:layout_weight="1"
-			android:layout_width="0dp"
-			android:layout_height="match_parent" />
-		<ImageButton
-			android:id="@+id/path_button"
-			android:layout_width="48dp"
-			android:layout_height="wrap_content"
-			android:src="@android:drawable/ic_menu_revert"
-			style="?android:attr/borderlessButtonStyle" />
-	</LinearLayout>
-	<TextView
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:paddingTop="4dp"
-		android:paddingBottom="4dp"
-		android:gravity="center_vertical"
-		android:text="@string/db_label" />
-	<CheckBox
-		android:id="@+id/restrict_checkbox"
+		android:paddingTop="16dp"
+		android:paddingBottom="16dp"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:text="@string/restrict_label" />
+		android:gravity="center_vertical"
+		android:text="@string/sdscan_help" />
 	<Button
 		android:id="@+id/start_button"
 		android:layout_width="match_parent"

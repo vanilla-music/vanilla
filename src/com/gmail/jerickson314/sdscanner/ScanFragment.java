@@ -72,6 +72,8 @@ public class ScanFragment extends Fragment {
     boolean mStartButtonEnabled;
     boolean mHasStarted = false;
 
+    ArrayList<File> mDirectoryScanList;
+
     /**
      * Callback interface used by the fragment to update the Activity.
      */
@@ -204,17 +206,22 @@ public class ScanFragment extends Fragment {
         addDebugMessage(listString.toString());
     }
 
-    public void scannerEnded() {
-        updateProgressNum(0);
-        updateProgressText(R.string.progress_completed_label);
-        updateStartButtonEnabled(true);
-        signalFinished();
+    public void advanceScanner() {
+        if (mDirectoryScanList != null && mDirectoryScanList.isEmpty() == false) {
+            File nextDir = mDirectoryScanList.remove(0);
+            startScan(nextDir, false);
+        } else {
+            updateProgressNum(0);
+            updateProgressText(R.string.progress_completed_label);
+            updateStartButtonEnabled(true);
+            signalFinished();
+        }
     }
 
     public void startMediaScanner(){
         //listPathNamesOnDebug();
         if (mPathNames.size() == 0) {
-            scannerEnded();
+            advanceScanner();
         }
         else {
             MediaScannerConnection.scanFile(
@@ -227,6 +234,15 @@ public class ScanFragment extends Fragment {
                     }
                 });
         }
+    }
+
+    public void startScan(File[] pathList) {
+        mDirectoryScanList = new ArrayList<File>();
+        for (File f : pathList) {
+            if (f.exists() && f.isDirectory())
+                mDirectoryScanList.add(f);
+        }
+        advanceScanner();
     }
 
     public void startScan(File path, boolean restrictDbUpdate) {
@@ -528,7 +544,7 @@ public class ScanFragment extends Fragment {
             int progress = (100 * (mLastGoodProcessedIndex + 1))
                            / mPathNames.size();
             if (progress == 100) {
-                scannerEnded();
+                advanceScanner();
             }
             else {
                 updateProgressNum(progress);
