@@ -35,6 +35,15 @@ This list is a collection of such GPL violating versions published on the Google
 * https://play.google.com/store/apps/details?id=com.itsolbiz.musicplayerpro
 * Pay-Version of above GPL violating app
 
+### Player+
+* https://play.google.com/store/apps/details?id=ch.ibroapps.android.player
+* Claims to use (old) MIT licensed version, but clearly includes GPLv3 licensed code - all copyright removed
+* Contains ads
+
+### Player+ Pro
+* https://play.google.com/store/apps/details?id=ch.ibroapps.android.player.pro
+* Same as 'Player+', but sold for 3$
+
 ## Grey area
 
 ### Mp3 Player Download
