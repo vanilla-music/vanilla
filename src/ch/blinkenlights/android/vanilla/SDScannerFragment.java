@@ -41,7 +41,7 @@ import java.io.IOException;
 public class SDScannerFragment extends Fragment
 		implements ScanFragment.ScanProgressCallbacks
 {
-	ScanFragment mScanFragment;
+	private static ScanFragment mScanFragment;
 
 	/**
 	 * List of common directories with media files
@@ -119,12 +119,14 @@ public class SDScannerFragment extends Fragment
 		super.onCreate(savedInstanceState);
 
 		FragmentManager fm = getFragmentManager();
-		mScanFragment = (ScanFragment) fm.findFragmentByTag("scan");
 
-		if (mScanFragment == null) {
+		if (mScanFragment == null)
+			mScanFragment = (ScanFragment) fm.findFragmentByTag("scan");
+
+		if (mScanFragment == null)
 			mScanFragment = new ScanFragment();
-			fm.beginTransaction().add(mScanFragment, "scan").commit();
-		}
+
+		fm.beginTransaction().add(mScanFragment, "scan").commit();
 		mScanFragment.setScanProgressCallbacks(this);
 	}
 
