@@ -17,11 +17,12 @@
   <string name="random_enabling">Aleatorio activado</string>
   <string name="song_load_failed">Error al cargar la canción %s. Puede ser que esté dañada o que falte.</string>
   <string name="queue_cleared">Lista limpia</string>
-  <string name="cover_art">Carátula.</string>
-  <string name="close_notification">Cerrar aviso</string>
+  <string name="cover_art">Carátula</string>
+  <string name="close_notification">Cerrar notificación</string>
   <string name="_genre">género</string>
   <string name="_track">pista</string>
   <string name="_composer">compositor</string>
+  <string name="_path">ruta</string>
   <string name="_format">formato</string>
   <string name="_title">título</string>
   <string name="_artist">artista</string>
@@ -65,6 +66,10 @@
   <plurals name="added_to_playlist">
     <item quantity="one">1 canción ha sido agregada a la lista de reproducción %2$s.</item>
     <item quantity="other">%1$d canciones han sido agregadas a la lista de reproducción %2$s.</item>
+  </plurals>
+  <plurals name="removed_from_playlist">
+    <item quantity="one">1 canción ha sido quitada de la lista de reproducción %2$s</item>
+    <item quantity="other">%1$d canciones han sido quitadas de la lista de reproducción %2$s.</item>
   </plurals>
   <plurals name="deleted">
     <item quantity="one">1 canción eliminada.</item>
@@ -110,8 +115,9 @@
     <item quantity="other">%d horas.</item>
   </plurals>
   <string name="audio">Audio</string>
-  <string name="volume_during_ducking_title">Duración de notificación del volumen</string>
+  <string name="volume_during_ducking_title">Volumen durante notificaciones</string>
   <string name="volume_during_ducking_summary">Volumen de reproducción:</string>
+  <string name="ignore_audiofocus_loss_summary">Continuar reproduciendo tras haber perdido permanentemente control sobre el audio </string>
   <string name="media_button_title">Controles Bluetooth/Auriculares</string>
   <string name="media_button_summary">Esto es necesario para los controles del bloqueo de pantalla en ICS.</string>
   <string name="media_button_beep_summary">Pitar luego de saltar una pista con un doble clic sobre el control de los auriculares</string>
@@ -122,31 +128,43 @@
   <string name="headset_launch_title">Reproducir cuando se conecte</string>
   <string name="headset_launch_summary">Reproducir cuando los auriculares se conecten. (Requiere que la app \'Headphone detector\' se encuentre instalada.)</string>
   <string name="headset_launch_app_missing">Esta característica requiere que la app \'Headphone detector\' se encuentre instalada.\n¿Quisiera abrir la Play Store para instalar la aplicación?</string>
+  <string name="replaygain">ReplayGain</string>
+  <string name="replaygain_summary">Configurar el manejo de la información de ganancia de reproducción, ReplayGain</string>
+  <string name="replaygain_track_title">Habilitar ganancia de reproducción por pista</string>
   <string name="replaygain_track_summary">Reproducir todas las pistas a sonoridad equivalente</string>
-  <string name="replaygain_album_summary">Preservar álbum dinámico.</string>
+  <string name="replaygain_album_title">Habilitar ReplayGain en álbumes</string>
+  <string name="replaygain_album_summary">Preservar dinámica del álbum.</string>
+  <string name="replaygain_bump_title">Pre-amplificación ReplayGain</string>
+  <string name="replaygain_untagged_debump_title">Canciones sin la etiqueta ReplayGain</string>
   <string name="replaygain_untagged_debump_summary">Reducir volumen un</string>
   <string name="replaygain_preamp_note_title">Nota</string>
+  <string name="replaygain_preamp_note_content">Android no permite a Vanilla Music aumentar el volumen a &gt;100%. Establecer el pre-amplificador a valor alto puede resultar un problema si estás escuchando musica \"tranquila\".\n\nLos valores recomendados son:\n-&gt; -3dB para música clásica/apacible\n-&gt; +3dB para grabaciones pos-2000</string>
   <string name="readahead">Habilitar caché de lectura</string>
   <string name="readahead_summary">Guardar en caché la canción actual. Esta opción puede resolver cortes en la reproducción provocados por una tarjeta SD lenta.</string>
   <string name="equalizer">Ecualizador</string>
   <string name="cycle_continuous_shuffling">Mezcla continua</string>
-  <string name="cycle_continuous_shuffling_summary">\'Modo mezcla\' reproducirá las canciones en una orden completamente aleatoria</string>
-  <string name="notifications">Avisos</string>
-  <string name="notification_mode_title">Modo de notificacion</string>
-  <string name="notification_action_title">Acción de la notificacion</string>
-  <string name="playback_screen">Pantalla de reproduccion</string>
+  <string name="cycle_continuous_shuffling_summary">\'Modo mezcla\' reproducirá las canciones en un orden completamente aleatorio</string>
+  <string name="notifications">Notificaciones</string>
+  <string name="notification_mode_title">Modo de notificación</string>
+  <string name="notification_action_title">Acción de la notificación</string>
+  <string name="notification_nag">Notificación muy detallada</string>
+  <string name="notification_nag_summary">Anunciar cambios en la canción usando una notificación Heads-Up</string>
+  <string name="playback_screen">Pantalla de reproducción</string>
   <string name="playback_on_startup_title">Abrir al inicio</string>
   <string name="playback_on_startup_summary">Abrir vista de reproducción al encender</string>
-  <string name="display_mode_title">Modo de visualizacion</string>
-  <string name="swipe_up_action_title">Acción de arrastre hacia arriba</string>
-  <string name="swipe_down_action_title">Acción de arrastre hacia abajo</string>
-  <string name="cover_press_action_title">Acción de toque en la tapa</string>
-  <string name="cover_longpress_action_title">Acción de toque largo en la tapa</string>
-  <string name="library_screen">Pantalla de libreria</string>
+  <string name="display_mode_title">Modo de visualización</string>
+  <string name="swipe_up_action_title">Acción de deslizar hacia arriba</string>
+  <string name="swipe_down_action_title">Acción de deslizar hacia abajo</string>
+  <string name="cover_press_action_title">Acción de toque en la carátula</string>
+  <string name="cover_longpress_action_title">Acción de toque largo en la carátula</string>
+  <string name="library_screen">Pantalla de biblioteca</string>
   <string name="default_action_title">Acción predeterminada</string>
   <string name="default_playlist_action_title">Acción predeterminada de lista de reproduccion</string>
-  <string name="accelerometer_shake">Agitar acelerometro</string>
+  <string name="accelerometer_shake">Sacudida de acelerómetro</string>
+  <string name="enable_shake_title">Activar la sacudida de acelerómetro</string>
   <string name="enable_shake_summary">Solo activo cuando está reproduciendo. En algunos dispositivos no funciona cuando la pantalla está apagada .</string>
+  <string name="shake_action_title">Acción de sacudir</string>
+  <string name="shake_threshold_title">Umbral de sacudida</string>
   <string name="misc_features">Características diversas</string>
   <string name="theme">Tema</string>
   <string name="disable_lockscreen_title">Desactivar pantalla de bloqueo</string>
@@ -162,8 +180,10 @@
   <string name="coverloader_shadow_summary">Intentar cargar carátulas desde \'/sdcard/Music/.vanilla/ARTISTA/ÁLBUM.jpg\'</string>
   <string name="cover_on_lockscreen_title">Mostrar caratula en pantalla de bloqueo</string>
   <string name="cover_on_lockscreen_summary">Mostrar la caratula de la canción en curso en la pantalla de bloqueo</string>
+  <string name="double_tap_title">Doble toque en widget</string>
   <string name="double_tap_summary">Tocar dos veces el widget 1x1 abrirá el reproductor. Causa un retraso de 400ms antes de que el widget responda a acciones.</string>
   <string name="scrobble_title">Usar API ScrobbleDroid</string>
+  <string name="scrobble_summary">Enviar estadísticas de preferencias musicales a Last.fm por medio de ScrobbleDroid o Simple Last.fm Scrobbler</string>
   <string name="about">Información</string>
   <string name="tabs">Orden de pestañas</string>
   <string name="customize_tab_order">Especificar qué pestañas mostrar y en qué orden</string>
@@ -209,8 +229,26 @@
   <string name="select">Seleccionar</string>
   <string name="autoplaylist_playcounts_title">Creación automática de lista de reproduccion</string>
   <string name="autoplaylist_playcounts_summary">Crea automáticamente un</string>
+  <string name="autoplaylist_playcounts_fmt" formatted="false">%s lista de reproducción con el \'Top %.0f\'</string>
   <string name="autoplaylist_playcounts_disabled">No crear una lista de reproducción automatica</string>
+  <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
   <string name="permission_request_summary">Vanilla Music necesita permisos de lectura para mostrar tu biblioteca musical</string>
   <string name="reverse_sort">Orden invertido</string>
   <!--SD Scanner-->
+  <string name="button_start">Iniciar reescaneo</string>
+  <string name="database_proc">Examinado</string>
+  <string name="delete_proc">Eliminada la referencia a</string>
+  <string name="db_label">También revisará la base de datos existente en búsqueda de archivos actualizados o borrados.</string>
+  <string name="db_error_recovered">Se encontró un error leyendo la base de datos de medios, pero fue resuelto.</string>
+  <string name="db_error_retrying">Se encontró un error leyendo la base de datos de medios. Reintentando en 1 segundo...</string>
+  <string name="final_proc">Procesado</string>
+  <string name="path_label">Ruta para examinar en busca de nuevos archivos:</string>
+  <string name="progress_completed_label">Completo, listo para iniciar otro escaneo.</string>
+  <string name="progress_error_bad_path_label">Falló el escaneo: la ruta especificada para buscar nuevos archivos no es válida.</string>
+  <string name="progress_filelist_label">Preparando la lista de archivos inicial...</string>
+  <string name="progress_database_label">Consultando base de datos...</string>
+  <string name="progress_unstarted_label">Aún no iniciado.</string>
+  <string name="restrict_label">Ignorar archivos borrados y actualizados fuera de la ruta especificada.</string>
+  <string name="skipping_folder_label">Se encontró un error, omitiendo</string>
+  <string name="sdscanner">Escáner de SD</string>
 </resources>
