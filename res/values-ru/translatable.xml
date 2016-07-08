@@ -88,7 +88,7 @@
   <string name="delete_file_failed">Сбой при удалении %s.</string>
   <string name="deleted_item">\"%s\" удалена.</string>
   <string name="delete_item">Убрать \"%s\"?</string>
-  <string name="delete_file">Удалить файл \'%s\'?</string>
+  <string name="delete_file">Удалить файл \"%s\"?</string>
   <string name="artists">Исполнители</string>
   <string name="albums">Альбомы</string>
   <string name="songs">Песни</string>
@@ -248,12 +248,13 @@
   <string name="select">Выбрать</string>
   <string name="autoplaylist_playcounts_title">Автоматическое создание плей-листов</string>
   <string name="autoplaylist_playcounts_summary">Автоматически создавать</string>
-  <string name="autoplaylist_playcounts_fmt" formatted="false">%s плей-лист \"Лучшие %.0f\"</string>
+  <string name="autoplaylist_playcounts_fmt" formatted="false">%s плей-лист \"%.0f лучших\"</string>
   <string name="autoplaylist_playcounts_disabled">Не создавать плей-лист автоматически</string>
-  <string name="autoplaylist_playcounts_name" formatted="false">Лучшие %d</string>
+  <string name="autoplaylist_playcounts_name" formatted="false">%d лучших </string>
   <string name="permission_request_summary">Vanilla Music необходимо разрешение на чтение, чтобы отобразить Вашу музыку в фонотеке</string>
   <string name="reverse_sort">в обратном порядке</string>
   <!--SD Scanner-->
+  <string name="sdscan_help">Запуск сканирования в Vanilla Music приведёт к перестройке всей базы медиаданных.</string>
   <string name="button_start">Начать сканирование</string>
   <string name="database_proc">Проверен</string>
   <string name="delete_proc">Удалена ссылка на</string>
@@ -262,13 +263,11 @@
   <string name="db_error_recovered">Ошибка чтения базы медиаданных; удалось восстановиться.</string>
   <string name="db_error_retrying">Ошибка чтения базы медиаданных.  Повторная попытка через 1 секунду...</string>
   <string name="final_proc">Обработан</string>
-  <string name="path_label">Путь для проверки новых файлов:</string>
   <string name="progress_completed_label">Завершено, можно начать новое сканирование.</string>
   <string name="progress_error_bad_path_label">Сканирование не удалось: указан некорректный путь для поиска новых файлов.</string>
   <string name="progress_filelist_label">Подготовка первоначального списка файлов...</string>
   <string name="progress_database_label">Запрос базы данных...</string>
   <string name="progress_unstarted_label">Ещё не начиналось.</string>
-  <string name="restrict_label">Игнорировать обновлённые и удалённые файлы за пределами сканируемой папки.</string>
   <string name="skipping_folder_label">Ошибка обнаружена и пропущена</string>
   <string name="sdscanner">SD Scanner</string>
 </resources>

@@ -246,7 +246,6 @@
   <string name="permission_request_summary">Ванила музика захтева дозволу читања да би приказала вашу музичку библиотеку</string>
   <string name="reverse_sort">Обрнуто ређање</string>
   <!--SD Scanner-->
-  <string name="path_label">Путања за тражење нових фајлова:</string>
   <string name="progress_database_label">Шаљем упит бази података...</string>
   <string name="sdscanner">СД читач</string>
 </resources>

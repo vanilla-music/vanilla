@@ -230,6 +230,7 @@
   <string name="permission_request_summary">Vanilla 音樂需要讀取的權限，以顯示您的媒體庫</string>
   <string name="reverse_sort">反向排序</string>
   <!--SD Scanner-->
+  <string name="sdscan_help">開始重新掃描會使 Vanilla Music 觸發媒體資料庫完全重建。</string>
   <string name="button_start">開始重新掃描</string>
   <string name="database_proc">檢查</string>
   <string name="delete_proc">刪除參考</string>
@@ -238,13 +239,11 @@
   <string name="db_error_recovered">讀取媒體資料庫時遇到錯誤，但已恢復。</string>
   <string name="db_error_retrying">讀取媒體資料庫時遇到錯誤。在 1 秒鐘內重試...</string>
   <string name="final_proc">已處理</string>
-  <string name="path_label">為新檔案檢查路徑：</string>
   <string name="progress_completed_label">已完成，準備開始另一次掃描。</string>
   <string name="progress_error_bad_path_label">掃描失敗：搜尋新檔案所指定的路徑錯誤。</string>
   <string name="progress_filelist_label">正在準備初始化清單的檔案...</string>
   <string name="progress_database_label">查詢資料庫</string>
   <string name="progress_unstarted_label">尚未開始。</string>
-  <string name="restrict_label">忽略在指定路徑之外的更新和已刪除的檔案。</string>
   <string name="skipping_folder_label">遇到錯誤跳過</string>
   <string name="sdscanner">SD 掃描</string>
 </resources>

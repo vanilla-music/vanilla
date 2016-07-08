@@ -242,13 +242,11 @@
   <string name="db_error_recovered">Se encontró un error leyendo la base de datos de medios, pero fue resuelto.</string>
   <string name="db_error_retrying">Se encontró un error leyendo la base de datos de medios. Reintentando en 1 segundo...</string>
   <string name="final_proc">Procesado</string>
-  <string name="path_label">Ruta para examinar en busca de nuevos archivos:</string>
   <string name="progress_completed_label">Completo, listo para iniciar otro escaneo.</string>
   <string name="progress_error_bad_path_label">Falló el escaneo: la ruta especificada para buscar nuevos archivos no es válida.</string>
   <string name="progress_filelist_label">Preparando la lista de archivos inicial...</string>
   <string name="progress_database_label">Consultando base de datos...</string>
   <string name="progress_unstarted_label">Aún no iniciado.</string>
-  <string name="restrict_label">Ignorar archivos borrados y actualizados fuera de la ruta especificada.</string>
   <string name="skipping_folder_label">Se encontró un error, omitiendo</string>
   <string name="sdscanner">Escáner de SD</string>
 </resources>

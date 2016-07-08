@@ -246,13 +246,11 @@
   <string name="db_error_recovered">Riscontrato errore nella lettura del database dei file multimediali, ma recuperato.</string>
   <string name="db_error_retrying">Riscontrato errore nella lettura del database dei file multimediali.  Nuovo tentativo tra 1 secondo...</string>
   <string name="final_proc">Elaborati</string>
-  <string name="path_label">Percorso in cui cercare nuovi file:</string>
   <string name="progress_completed_label">Completato, pronto per avviare un\'altra scansione.</string>
   <string name="progress_error_bad_path_label">Scansione non riuscita: specificato percorso non valido per la ricerca di nuovi file.</string>
   <string name="progress_filelist_label">Elenco iniziale dei file in preparazione...</string>
   <string name="progress_database_label">Interrogazione database in corso...</string>
   <string name="progress_unstarted_label">Non ancora avviato.</string>
-  <string name="restrict_label">Ignora file aggiornati ed eliminati fuori dal percorso specificato.</string>
   <string name="skipping_folder_label">Riscontrato un errore e omissione in corso</string>
   <string name="sdscanner">Scanner SD</string>
 </resources>

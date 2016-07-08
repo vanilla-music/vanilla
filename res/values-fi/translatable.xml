@@ -22,6 +22,7 @@
   <string name="_genre">lajityyppi</string>
   <string name="_track">kappale</string>
   <string name="_composer">säveltäjä</string>
+  <string name="_path">polku</string>
   <string name="_format">muoto</string>
   <string name="_title">nimi</string>
   <string name="_artist">esittäjä</string>
@@ -168,7 +169,9 @@
   <string name="theme">Teema</string>
   <string name="disable_lockscreen_title">Estä lukitusnäyttö</string>
   <string name="disable_lockscreen_summary">Estä lukitusnäytön aktivoituminen kirjasto- ja toistonäkymässä</string>
+  <string name="use_idle_timeout_title">Käytä joutenolon aikakatkaisua</string>
   <string name="use_idle_timeout_summary">Kun käytössä, toisto lopetetaan tietyn joutoajan jälkeen</string>
+  <string name="idle_timeout_title">Joutenolon aikakatkaisu</string>
   <string name="coverloader_android_title">Lataa kuvitus Androidista</string>
   <string name="coverloader_android_summary">Etsi kuvitusta Androidin sisäisestä mediatietokannasta</string>
   <string name="coverloader_vanilla_title">Lataa kuvitus kansiosta</string>
@@ -233,7 +236,6 @@
   <string name="permission_request_summary">Vanilla Music tarvitsee lukuoikeuden näyttääkseen musiikkikirjastosi</string>
   <string name="reverse_sort">Käänteinen järjestys</string>
   <!--SD Scanner-->
-  <string name="path_label">Polku josta uusia tiedostoja etsitään:</string>
   <string name="progress_unstarted_label">Ei käynnistetty vielä.</string>
   <string name="skipping_folder_label">Kohdattiin virhe ja ohitetaan</string>
 </resources>

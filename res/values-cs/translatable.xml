@@ -22,6 +22,7 @@
   <string name="_genre">žánr</string>
   <string name="_track">stopa</string>
   <string name="_composer">skladatel</string>
+  <string name="_path">cesta</string>
   <string name="_format">formát</string>
   <string name="_title">název</string>
   <string name="_artist">umělec</string>
@@ -245,4 +246,5 @@
   <string name="permission_request_summary">Vanilla Music potřebuje povolení pro čtení k zobrazení hudební knihovny</string>
   <string name="reverse_sort">Opačné pořadí</string>
   <!--SD Scanner-->
+  <string name="sdscanner">SD skener</string>
 </resources>
