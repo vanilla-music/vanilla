@@ -189,6 +189,8 @@
   <string name="use_idle_timeout_title">Задействовать таймер простоя</string>
   <string name="use_idle_timeout_summary">Воспроизведение остановится после определенного периода бездействия</string>
   <string name="idle_timeout_title">Время ожидания</string>
+  <string name="enable_scroll_to_song_title">Прокрутка до песни</string>
+  <string name="enable_scroll_to_song_summary">Прокручивать до текущей песни/альбома/исполнителя в списках библиотеки</string>
   <string name="coverloader_android_title">Загружать обложки из баз Android</string>
   <string name="coverloader_android_summary">Запрашивать обложки из встроенной базы медиа данных ОС Android</string>
   <string name="coverloader_vanilla_title">Загружать обложки из папки</string>

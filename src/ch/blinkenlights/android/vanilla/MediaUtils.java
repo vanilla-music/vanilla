@@ -341,7 +341,7 @@ public class MediaUtils {
 		String[] projection = { "_id" };
 		Uri uri = MediaStore.Audio.Genres.getContentUriForAudioId("external", (int)id);
 		Cursor cursor = queryResolver(resolver, uri, projection, null, null, null);
-		
+
 		if (cursor != null) {
 			if (cursor.moveToNext())
 				return cursor.getLong(0);
@@ -381,7 +381,7 @@ public class MediaUtils {
 		if (albumShuffle) {
 			List<Song> tempList = new ArrayList<Song>(list);
 			Collections.sort(tempList);
-			
+
 			// Build map of albumId to start index in sorted list
 			Map<Long, Integer> albumStartIndices = new HashMap<Long, Integer>();
 			int index = 0;
@@ -391,11 +391,11 @@ public class MediaUtils {
 				}
 				index++;
 			}
-			
+
 			//Extract album list and shuffle
 			List<Long> shuffledAlbums = new ArrayList<Long>(albumStartIndices.keySet());
 			Collections.shuffle(shuffledAlbums, random);
-			
+
 			//Build Song list from album list
 			list.clear();
 			for (Long albumId : shuffledAlbums) {
@@ -588,16 +588,16 @@ public class MediaUtils {
 						break;
 					}
 				}
-				
+
 				pfx = (new File(pfx)).getParent();
 				if(pfx == null)
 					break; /* hit root */
 			}
 		}
-		
+
 		return path;
 	}
-	
+
 	/**
 	* Adds a final slash if the path points to an existing directory
 	*/
@@ -680,6 +680,30 @@ public class MediaUtils {
 		}
 
 		return matrixCursor;
+	}
+
+	/**
+	 * Retrieve ID of specified media type for requested song. This works only for
+	 * media-oriented types: {@link #TYPE_ARTIST}, {@link #TYPE_ALBUM}, {@link #TYPE_SONG}
+	 * @param song requested song
+	 * @param mType media type e.g. {@link #TYPE_ARTIST}
+     * @return ID of media type, {@link #TYPE_INVALID} if unsupported
+     */
+	public static long getCurrentIdForType(Song song, int mType)
+	{
+		if(song == null)
+			return TYPE_INVALID;
+
+		switch(mType) {
+			case TYPE_ARTIST:
+				return song.artistId;
+			case TYPE_ALBUM:
+				return song.albumId;
+			case TYPE_SONG:
+				return song.id;
+			default:
+				return TYPE_INVALID;
+		}
 	}
 
 }

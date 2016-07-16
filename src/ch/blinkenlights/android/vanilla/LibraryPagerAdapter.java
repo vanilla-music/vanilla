@@ -26,7 +26,7 @@ package ch.blinkenlights.android.vanilla;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.ContentObserver;
-import android.os.Build;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -35,6 +35,7 @@ import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -47,6 +48,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.LinearLayout;
 import java.util.Arrays;
+
+import static android.graphics.drawable.GradientDrawable.Orientation.RIGHT_LEFT;
 
 /**
  * PagerAdapter that manages the library media ListViews.
@@ -848,6 +851,39 @@ public class LibraryPagerAdapter
 		} else {
 			Intent intent = id == -1 ? createHeaderIntent(view) : mCurrentAdapter.createData(view);
 			mActivity.onItemClicked(intent);
+		}
+	}
+
+	/**
+	 * Perform usability-related actions on pager and contained lists, e.g. highlight current song
+	 * or scroll to it if opted-in
+	 * @param song song that is currently playing, can be null
+     */
+	public void onSongChange(Song song) {
+		int type = mTabOrder[mCurrentPage];
+		long id = MediaUtils.getCurrentIdForType(song, type);
+		if (id == -1) // unknown type
+			return;
+
+		ListView view = mLists[type];
+		if (view == null) // not initialized yet, nothing to do
+			return;
+
+		// scroll to song on song change if opted-in
+		SharedPreferences sharedPrefs = PlaybackService.getSettings(mActivity);
+		boolean shouldScroll = sharedPrefs.getBoolean(PrefKeys.ENABLE_SCROLL_TO_SONG, PrefDefaults.ENABLE_SCROLL_TO_SONG);
+		if(shouldScroll) {
+			int middlePos = (view.getFirstVisiblePosition() + view.getLastVisiblePosition()) / 2;
+			for (int pos = 0; pos < view.getCount(); pos++) {
+				if (view.getItemIdAtPosition(pos) == id) {
+					if (Math.abs(middlePos - pos) < 30) {
+						view.smoothScrollToPosition(pos);
+					} else {
+						view.setSelection(pos);
+					}
+					break;
+				}
+			}
 		}
 	}
 

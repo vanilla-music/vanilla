@@ -28,39 +28,30 @@ import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.PaintDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.support.iosched.tabs.VanillaTabLayout;
 import android.support.v4.view.ViewPager;
-import android.text.Editable;
 import android.text.TextUtils;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.HorizontalScrollView;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.SearchView;
 
 import java.io.File;
@@ -872,8 +863,10 @@ public class LibraryActivity
 		super.onSongChange(song);
 
 		mBottomBarControls.setSong(song);
-		if (song != null)
+		if (song != null) {
 			mHandler.sendMessage(mHandler.obtainMessage(MSG_UPDATE_COVER, song));
+			mPagerAdapter.onSongChange(song);
+		}
 	}
 
 	@Override

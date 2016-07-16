@@ -24,7 +24,7 @@
 package ch.blinkenlights.android.vanilla;
 
 /**
- * SharedPreference keys. Must be kept in sync with PrefDefaults.java.
+ * SharedPreference keys. Must be kept in sync with {@link PrefDefaults}.
  */
 public class PrefKeys {
 	public static final String COVER_LONGPRESS_ACTION = "cover_longpress_action";
@@ -69,4 +69,5 @@ public class PrefKeys {
 	public static final String VOLUME_DURING_DUCKING = "volume_during_ducking";
 	public static final String AUTOPLAYLIST_PLAYCOUNTS = "playcounts_autoplaylist";
 	public static final String IGNORE_AUDIOFOCUS_LOSS = "ignore_audiofocus_loss";
+	public static final String ENABLE_SCROLL_TO_SONG = "enable_scroll_to_song";
 }
