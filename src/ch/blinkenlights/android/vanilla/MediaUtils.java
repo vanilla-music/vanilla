@@ -33,7 +33,11 @@ import java.util.Vector;
 import java.util.zip.CRC32;
 
 import junit.framework.Assert;
+
+import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
+import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
@@ -42,6 +46,7 @@ import android.text.TextUtils;
 import android.database.MatrixCursor;
 import android.media.MediaMetadataRetriever;
 import android.util.Log;
+import android.widget.Toast;
 
 
 /**
@@ -341,7 +346,7 @@ public class MediaUtils {
 		String[] projection = { "_id" };
 		Uri uri = MediaStore.Audio.Genres.getContentUriForAudioId("external", (int)id);
 		Cursor cursor = queryResolver(resolver, uri, projection, null, null, null);
-		
+
 		if (cursor != null) {
 			if (cursor.moveToNext())
 				return cursor.getLong(0);
@@ -381,7 +386,7 @@ public class MediaUtils {
 		if (albumShuffle) {
 			List<Song> tempList = new ArrayList<Song>(list);
 			Collections.sort(tempList);
-			
+
 			// Build map of albumId to start index in sorted list
 			Map<Long, Integer> albumStartIndices = new HashMap<Long, Integer>();
 			int index = 0;
@@ -391,11 +396,11 @@ public class MediaUtils {
 				}
 				index++;
 			}
-			
+
 			//Extract album list and shuffle
 			List<Long> shuffledAlbums = new ArrayList<Long>(albumStartIndices.keySet());
 			Collections.shuffle(shuffledAlbums, random);
-			
+
 			//Build Song list from album list
 			list.clear();
 			for (Long albumId : shuffledAlbums) {
@@ -505,6 +510,40 @@ public class MediaUtils {
 	}
 
 	/**
+	 * Creates and sends share intent across the system. Includes all eligible songs found
+	 * within this type and id (e.g. all songs in album, all songs for this artist etc.)
+	 * @param ctx context to execute resolving on
+	 * @param type media type to look for e.g. {@link MediaUtils#TYPE_SONG}
+	 * @param id id of item to send
+	 */
+	public static void shareMedia(Context ctx, int type, long id) {
+		if (type == TYPE_INVALID || id <= 0) { // invalid
+			return;
+		}
+
+		ContentResolver resolver = ctx.getContentResolver();
+		String[] projection = new String [] { MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DATA };
+		Cursor cursor = buildQuery(type, id, projection, null).runQuery(resolver);
+		if(cursor == null) {
+			return;
+		}
+
+		try {
+			while (cursor.moveToNext()) { // for all songs resolved...
+				File songFile = new File(cursor.getString(1));
+				Intent share = new Intent(Intent.ACTION_SEND);
+				share.setType("audio/*");
+				share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(songFile));
+				ctx.startActivity(Intent.createChooser(share, ctx.getResources().getString(R.string.sendto)));
+			}
+		} catch (ActivityNotFoundException ex) {
+			Toast.makeText(ctx, R.string.no_receiving_apps, Toast.LENGTH_SHORT).show();
+		} finally {
+			cursor.close();
+		}
+	}
+
+	/**
 	 * Returns the first matching song (or NULL) of given type + id combination
 	 *
 	 * @param resolver A ContentResolver to use.
@@ -588,16 +627,16 @@ public class MediaUtils {
 						break;
 					}
 				}
-				
+
 				pfx = (new File(pfx)).getParent();
 				if(pfx == null)
 					break; /* hit root */
 			}
 		}
-		
+
 		return path;
 	}
-	
+
 	/**
 	* Adds a final slash if the path points to an existing directory
 	*/
