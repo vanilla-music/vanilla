@@ -215,6 +215,9 @@ THE SOFTWARE.
 	<string name="use_idle_timeout_summary">When active, playback will be stopped after the given period of inactivity</string>
 	<string name="idle_timeout_title">Idle timeout</string>
 
+	<string name="enable_scroll_to_song_title">Scroll to song title</string>
+	<string name="enable_scroll_to_song_summary">Scroll to currently playing song/album/artist in library lists</string>
+
 	<string name="coverloader_android_title">Load artwork from Android</string>
 	<string name="coverloader_android_summary">Query Androids internal media database for album artwork</string>
 

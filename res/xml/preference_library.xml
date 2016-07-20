@@ -42,6 +42,11 @@ THE SOFTWARE.
 		android:entries="@array/default_playlist_action_entries"
 		android:entryValues="@array/default_playlist_action_entry_values"
 		android:defaultValue="0" />
+	<CheckBoxPreference
+		android:key="enable_scroll_to_song"
+		android:title="@string/enable_scroll_to_song_title"
+		android:summary="@string/enable_scroll_to_song_summary"
+		android:defaultValue="false" />
 	<PreferenceScreen
 		android:title="@string/filebrowser_start"
 		android:summary="@string/customize_filebrowser_start">
