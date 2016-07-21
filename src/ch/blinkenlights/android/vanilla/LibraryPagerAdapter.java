@@ -49,8 +49,6 @@ import android.widget.TextView;
 import android.widget.LinearLayout;
 import java.util.Arrays;
 
-import static android.graphics.drawable.GradientDrawable.Orientation.RIGHT_LEFT;
-
 /**
  * PagerAdapter that manages the library media ListViews.
  */
