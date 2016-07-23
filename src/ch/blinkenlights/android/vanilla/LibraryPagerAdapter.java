@@ -857,13 +857,16 @@ public class LibraryPagerAdapter
 	 * @param song song that is currently playing, can be null
      */
 	public void onSongChange(Song song) {
-		int type = mTabOrder[mCurrentPage];
-		long id = MediaUtils.getCurrentIdForType(song, type);
-		if (id == -1) // unknown type
+		if (mCurrentPage == -1) // no page active, nothing to do
 			return;
 
+		int type = mTabOrder[mCurrentPage];
 		ListView view = mLists[type];
 		if (view == null) // not initialized yet, nothing to do
+			return;
+
+		long id = MediaUtils.getCurrentIdForType(song, type);
+		if (id == -1) // unknown type
 			return;
 
 		// scroll to song on song change if opted-in
