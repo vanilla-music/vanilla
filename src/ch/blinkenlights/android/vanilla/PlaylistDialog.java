@@ -44,6 +44,10 @@ public class PlaylistDialog extends DialogFragment
 	 */
 	private Intent mIntent;
 	/**
+	 * The media adapter to pass on which will be used to query all songs
+	 */
+	private MediaAdapter mAllSrc;
+	/**
 	 * Array of all found playlist names
 	 */
 	private String[] mItemName;
@@ -60,14 +64,15 @@ public class PlaylistDialog extends DialogFragment
 	 * Our callback interface
 	 */
 	public interface Callback {
-		void appendToPlaylistFromIntent(Intent intent);
-		void createNewPlaylistFromIntent(Intent intent);
+		void appendToPlaylistFromIntent(Intent intent, MediaAdapter allSource);
+		void createNewPlaylistFromIntent(Intent intent, MediaAdapter allSource);
 	}
 
 
-	PlaylistDialog(Callback callback, Intent intent) {
+	PlaylistDialog(Callback callback, Intent intent, MediaAdapter allSource) {
 		mCallback = callback;
 		mIntent = intent;
+		mAllSrc = allSource;
 	}
 
 	@Override
@@ -100,12 +105,12 @@ public class PlaylistDialog extends DialogFragment
 	@Override
 	public void onClick(DialogInterface dialog, int which) {
 		if (mItemValue[which] == VALUE_CREATE_PLAYLIST) {
-			mCallback.createNewPlaylistFromIntent(mIntent);
+			mCallback.createNewPlaylistFromIntent(mIntent, mAllSrc);
 		} else {
 			Intent copy = new Intent(mIntent);
 			copy.putExtra("playlist", mItemValue[which]);
 			copy.putExtra("playlistName", mItemName[which]);
-			mCallback.appendToPlaylistFromIntent(copy);
+			mCallback.appendToPlaylistFromIntent(copy, mAllSrc);
 		}
 	}
 }

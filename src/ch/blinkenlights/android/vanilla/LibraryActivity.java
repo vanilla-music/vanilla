@@ -718,6 +718,11 @@ public class LibraryActivity
 			setLimiter(MediaUtils.TYPE_ALBUM, "_id=" + intent.getLongExtra(LibraryAdapter.DATA_ID, LibraryAdapter.INVALID_ID));
 			updateLimiterViews();
 			break;
+		case CTX_MENU_ADD_TO_PLAYLIST:
+			long id = intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
+			PlaylistDialog plDialog = new PlaylistDialog(this, intent, (id == LibraryAdapter.HEADER_ID ? (MediaAdapter)mCurrentAdapter : null));
+			plDialog.show(getFragmentManager(), "PlaylistDialog");
+			break;
 		default:
 			return super.onContextItemSelected(item);
 		}

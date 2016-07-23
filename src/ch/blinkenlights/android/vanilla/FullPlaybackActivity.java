@@ -348,7 +348,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 				Intent intent = new Intent();
 				intent.putExtra("type", MediaUtils.TYPE_SONG);
 				intent.putExtra("id", song.id);
-				PlaylistDialog dialog = new PlaylistDialog(this, intent);
+				PlaylistDialog dialog = new PlaylistDialog(this, intent, null);
 				dialog.show(getFragmentManager(), "PlaylistDialog");
 			}
 			break;
