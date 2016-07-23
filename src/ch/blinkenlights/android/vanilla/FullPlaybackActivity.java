@@ -354,7 +354,8 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 			}
 			break;
 		case MENU_SHARE:
-			MediaUtils.shareMedia(FullPlaybackActivity.this, MediaUtils.TYPE_SONG, song.id);
+			if (song != null)
+				MediaUtils.shareMedia(this, MediaUtils.TYPE_SONG, song.id);
 			break;
 		case MENU_DELETE:
 			final PlaybackService playbackService = PlaybackService.get(this);
