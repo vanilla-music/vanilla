@@ -307,6 +307,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 		menu.add(0, MENU_ENQUEUE_ARTIST, 30, R.string.enqueue_current_artist);
 		menu.add(0, MENU_ENQUEUE_GENRE, 30, R.string.enqueue_current_genre);
 		menu.add(0, MENU_ADD_TO_PLAYLIST, 30, R.string.add_to_playlist);
+		menu.add(0, MENU_SHARE, 30, R.string.share);
 		mFavorites = menu.add(0, MENU_SONG_FAVORITE, 0, R.string.add_to_favorites).setIcon(R.drawable.btn_rating_star_off_mtrl_alpha).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
 		// ensure that mFavorites is updated
@@ -351,6 +352,9 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 				PlaylistDialog dialog = new PlaylistDialog(this, intent, null);
 				dialog.show(getFragmentManager(), "PlaylistDialog");
 			}
+			break;
+		case MENU_SHARE:
+			MediaUtils.shareMedia(FullPlaybackActivity.this, MediaUtils.TYPE_SONG, song.id);
 			break;
 		case MENU_DELETE:
 			final PlaybackService playbackService = PlaybackService.get(this);

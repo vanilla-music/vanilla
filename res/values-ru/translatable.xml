@@ -255,6 +255,9 @@
   <string name="autoplaylist_playcounts_name" formatted="false">%d лучших </string>
   <string name="permission_request_summary">Vanilla Music необходимо разрешение на чтение, чтобы отобразить Вашу музыку в фонотеке</string>
   <string name="reverse_sort">в обратном порядке</string>
+  <string name="share">Поделиться…</string>
+  <string name="sendto">Отправить…</string>
+  <string name="no_receiving_apps">Нет подходящих приложений для отправки!</string>
   <!--SD Scanner-->
   <string name="sdscan_help">Запуск сканирования в Vanilla Music приведёт к перестройке всей базы медиаданных.</string>
   <string name="button_start">Начать сканирование</string>
