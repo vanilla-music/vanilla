@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2013-2016 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.MenuItem;
 import android.view.Menu;
+import android.widget.AdapterView;
 import android.widget.TextView;
 import android.widget.Button;
 import android.widget.ListView;
@@ -31,7 +32,9 @@ import android.widget.Toast;
 import android.content.SharedPreferences;
 
 
-public class FilebrowserStartActivity extends Activity {
+public class FilebrowserStartActivity extends Activity
+	implements AdapterView.OnItemClickListener
+{
 	
 	private ListView mListView;
 	private TextView mPathDisplay;
@@ -49,12 +52,13 @@ public class FilebrowserStartActivity extends Activity {
 		setContentView(R.layout.filebrowser_content);
 		mCurrentPath = (String)FileUtils.getFilesystemBrowseStart(this).getAbsolutePath();
 		mPrefEditor  = PlaybackService.getSettings(this).edit();
-		mListAdapter = new FilebrowserStartAdapter((FilebrowserStartActivity)this, 0);
+		mListAdapter = new FilebrowserStartAdapter(this, 0);
 		mPathDisplay = (TextView) findViewById(R.id.path_display);
 		mListView    = (ListView) findViewById(R.id.list);
 		mSaveButton  = (Button) findViewById(R.id.save_button);
 
 		mListView.setAdapter(mListAdapter);
+		mListView.setOnItemClickListener(this);
 
 		mSaveButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
@@ -63,24 +67,25 @@ public class FilebrowserStartActivity extends Activity {
 				finish();
 			}});
 	}
-	
-	/*
-	** Called when we are displayed (again)
-	** This will always refresh the whole song list
-	*/
+
+	/**
+	 * Called when we are displayed (again)
+	 * This will always refresh the whole song list
+	 */
 	@Override
 	public void onResume() {
 		super.onResume();
 		refreshDirectoryList();
 	}
 	
-	/*
-	** Create a bare-bones actionbar
-	*/
+	/**
+	 * Create a bare-bones actionbar
+	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		return true;
 	}
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
@@ -91,11 +96,14 @@ public class FilebrowserStartActivity extends Activity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
-	/*
-	** Enters selected directory at 'pos'
-	*/
-	public void onDirectoryClicked(int pos) {
+
+	/**
+	 * Called if user taps a row
+	 */
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+		ViewHolder holder = (ViewHolder)view.getTag();
+		int pos = (int)holder.id;
 		String dirent = mListAdapter.getItem(pos);
 		
 		if(pos == 0) {
@@ -110,10 +118,10 @@ public class FilebrowserStartActivity extends Activity {
 		
 		refreshDirectoryList();
 	}
-	
-	/*
-	** display mCurrentPath in the dialog
-	*/
+
+	/**
+	 * display mCurrentPath in the dialog
+	 */
 	private void refreshDirectoryList() {
 		File path = new File(mCurrentPath);
 		File[]dirs = path.listFiles();

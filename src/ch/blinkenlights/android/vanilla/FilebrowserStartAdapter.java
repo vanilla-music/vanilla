@@ -31,18 +31,13 @@ import android.graphics.drawable.Drawable;
 
 public class FilebrowserStartAdapter
 	extends ArrayAdapter<String>
-	implements View.OnClickListener
 {
 	
-	private final FilebrowserStartActivity mActivity;
-	private final Drawable mFolderIcon;
 	private final LayoutInflater mInflater;
 
-	public FilebrowserStartAdapter(FilebrowserStartActivity activity, int resource) {
-		super(activity, resource);
-		mActivity   = activity;
-		mFolderIcon = activity.getResources().getDrawable(R.drawable.folder);
-		mInflater   = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	public FilebrowserStartAdapter(Context context, int resource) {
+		super(context, resource);
+		mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 
 	@Override
@@ -54,8 +49,7 @@ public class FilebrowserStartAdapter
 			row = (DraggableRow)mInflater.inflate(R.layout.draggable_row, null);
 			row.setupLayout(DraggableRow.LAYOUT_LISTVIEW);
 
-			row.getCoverView().setImageDrawable(mFolderIcon);
-			row.setOnClickListener(this);
+			row.getCoverView().setImageResource(R.drawable.folder);
 
 			holder = new ViewHolder();
 			row.setTag(holder);
@@ -68,12 +62,6 @@ public class FilebrowserStartAdapter
 		holder.id = pos;
 		row.getTextView().setText(label);
 		return row;
-	}
-
-	@Override
-	public void onClick(View view) {
-		ViewHolder holder = (ViewHolder)view.getTag();
-		mActivity.onDirectoryClicked((int)holder.id);
 	}
 
 }
