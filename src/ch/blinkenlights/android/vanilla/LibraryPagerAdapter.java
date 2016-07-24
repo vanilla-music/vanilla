@@ -844,7 +844,7 @@ public class LibraryPagerAdapter
 	public void onItemClick (AdapterView<?> parent, View view, int position, long id) {
 		int type = (Integer)parent.getTag();
 		if (type == MediaUtils.TYPE_FILE) {
-			mFilesAdapter.onHandleRowClick(view);
+			mFilesAdapter.onClick(view);
 		} else {
 			Intent intent = id == -1 ? createHeaderIntent(view) : mCurrentAdapter.createData(view);
 			mActivity.onItemClicked(intent);

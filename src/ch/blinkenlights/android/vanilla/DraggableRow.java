@@ -109,16 +109,6 @@ public class DraggableRow extends LinearLayout implements Checkable {
 	}
 
 	/**
-	 * Only make interesting parts clickable
-	 */
-	@Override
-	public void setOnClickListener(View.OnClickListener listener) {
-		mTextView.setOnClickListener(listener);
-		mCoverView.setOnClickListener(listener);
-		mDragger.setOnClickListener(listener);
-	}
-
-	/**
 	 * We glue tags to the text view to make getTag() simpler and consistent
 	 * with the on click listener interception
 	 */
