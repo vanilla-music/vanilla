@@ -89,7 +89,7 @@ public class TabOrderAdapter extends BaseAdapter {
 	{
 		DraggableRow view;
 		if (convert == null) {
-			view = (DraggableRow)mInflater.inflate(R.layout.draggable_row, null);
+			view = (DraggableRow)mInflater.inflate(R.layout.draggable_row, parent, false);
 			view.setupLayout(DraggableRow.LAYOUT_CHECKBOXES);
 		} else {
 			view = (DraggableRow)convert;

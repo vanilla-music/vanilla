@@ -30,7 +30,8 @@ THE SOFTWARE.
 	android:layout_width="fill_parent">
 	<com.mobeta.android.dslv.DragSortListView
 		android:id="@+id/list"
-		android:divider="@null"
+		android:divider="@drawable/inset_divider"
+		android:dividerHeight="1dip"
 		android:layout_height="0px"
 		android:layout_width="fill_parent"
 		android:layout_weight="1"

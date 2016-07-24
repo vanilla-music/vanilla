@@ -636,7 +636,7 @@ public class MediaAdapter
 	public void onClick(View view)
 	{
 		int id = view.getId();
-		view = (View)view.getParent().getParent(); // get view of linear layout, not the click consumer
+		view = (View)view.getParent(); // get view of linear layout, not the click consumer
 		Intent intent = createData(view);
 		mActivity.onItemExpanded(intent);
 	}
