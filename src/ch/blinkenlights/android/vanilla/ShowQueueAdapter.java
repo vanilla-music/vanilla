@@ -64,7 +64,7 @@ public class ShowQueueAdapter
 		} else {
 			LayoutInflater inflater = ((Activity)mContext).getLayoutInflater();
 			row = (DraggableRow)inflater.inflate(mResource, parent, false);
-			row.setupLayout(DraggableRow.LAYOUT_COVERVIEW);
+			row.setupLayout(DraggableRow.LAYOUT_DRAGGABLE);
 		}
 
 		Song song = getItem(position);

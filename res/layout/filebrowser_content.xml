@@ -52,13 +52,12 @@ THE SOFTWARE.
 		android:background="?android:attr/dividerHorizontal"
 	/>
 
-<ListView
-	android:id="@+id/list"
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content"
-	android:listSelector="?android:attr/selectableItemBackground"
-	android:divider="@drawable/inset_divider"
-	android:dividerHeight="1dip" />
+	<ListView
+		android:id="@+id/list"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:listSelector="?android:attr/selectableItemBackground"
+		android:divider="@null" />
 
 </LinearLayout>
 

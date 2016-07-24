@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2015 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2013-2016 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,36 +47,32 @@ public class FilebrowserStartAdapter
 
 	@Override
 	public View getView(int pos, View convertView, ViewGroup parent) {
-		View view;
+		DraggableRow row;
 		ViewHolder holder;
 
 		if (convertView == null) {
-			view = mInflater.inflate(R.layout.library_row_expandable, null);
+			row = (DraggableRow)mInflater.inflate(R.layout.draggable_row, null);
+			row.setupLayout(DraggableRow.LAYOUT_LISTVIEW);
+
+			row.getCoverView().setImageDrawable(mFolderIcon);
+			row.setOnClickListener(this);
+
 			holder = new ViewHolder();
-			holder.text = (TextView)view.findViewById(R.id.text);
-			holder.divider = view.findViewById(R.id.divider);
-			holder.cover = (LazyCoverView)view.findViewById(R.id.cover);
-
-			holder.arrow = (ImageView)view.findViewById(R.id.arrow);
-
-			holder.cover.setImageDrawable(mFolderIcon);
-			holder.text.setOnClickListener(this);
-			holder.cover.setVisibility(View.VISIBLE);
-			view.setTag(holder);
+			row.setTag(holder);
 		} else {
-			view = convertView;
-			holder = (ViewHolder)view.getTag();
+			row = (DraggableRow)convertView;
+			holder = (ViewHolder)row.getTag();
 		}
 
 		String label = getItem(pos);
 		holder.id = pos;
-		holder.text.setText(label);
-		return view;
+		row.getTextView().setText(label);
+		return row;
 	}
 
 	@Override
 	public void onClick(View view) {
-		ViewHolder holder = (ViewHolder)((View)view.getParent()).getTag();
+		ViewHolder holder = (ViewHolder)view.getTag();
 		mActivity.onDirectoryClicked((int)holder.id);
 	}
 

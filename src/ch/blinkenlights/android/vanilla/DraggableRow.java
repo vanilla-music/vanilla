@@ -46,7 +46,8 @@ public class DraggableRow extends LinearLayout implements Checkable {
 	 * Layout types for use with setupLayout
 	 */
 	public static final int LAYOUT_CHECKBOXES =  1;
-	public static final int LAYOUT_COVERVIEW  =  2;
+	public static final int LAYOUT_DRAGGABLE  =  2;
+	public static final int LAYOUT_LISTVIEW   =  3;
 
 
 	public DraggableRow(Context context, AttributeSet attrs) {
@@ -76,9 +77,13 @@ public class DraggableRow extends LinearLayout implements Checkable {
 					mCheckBox.setVisibility(View.VISIBLE);
 					showDragger(true);
 					break;
-				case LAYOUT_COVERVIEW:
+				case LAYOUT_DRAGGABLE:
 					mCoverView.setVisibility(View.VISIBLE);
 					showDragger(true);
+					break;
+				case LAYOUT_LISTVIEW:
+					mCoverView.setVisibility(View.VISIBLE);
+					mDragger.setImageResource(R.drawable.arrow);
 					break;
 				default:
 					break; // do not care
@@ -101,6 +106,30 @@ public class DraggableRow extends LinearLayout implements Checkable {
 	@Override
 	public void toggle() {
 		setChecked(!mChecked);
+	}
+
+	/**
+	 * Only make interesting parts clickable
+	 */
+	@Override
+	public void setOnClickListener(View.OnClickListener listener) {
+		mTextView.setOnClickListener(listener);
+		mCoverView.setOnClickListener(listener);
+		mDragger.setOnClickListener(listener);
+	}
+
+	/**
+	 * We glue tags to the text view to make getTag() simpler and consistent
+	 * with the on click listener interception
+	 */
+	@Override
+	public void setTag(Object tag) {
+		mTextView.setTag(tag);
+	}
+
+	@Override
+	public Object getTag() {
+		return mTextView.getTag();
 	}
 
 	/**
