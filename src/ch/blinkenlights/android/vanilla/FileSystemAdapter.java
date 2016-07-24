@@ -48,7 +48,6 @@ import java.util.regex.Pattern;
 public class FileSystemAdapter
 	extends BaseAdapter
 	implements LibraryAdapter
-	         , View.OnClickListener
 {
 	private static final Pattern SPACE_SPLIT = Pattern.compile("\\s+");
 	private static final Pattern FILE_SEPARATOR = Pattern.compile(File.separator);
@@ -200,7 +199,6 @@ public class FileSystemAdapter
 
 			holder = new ViewHolder();
 			row.setTag(holder);
-			row.setOnClickListener(this);
 			row.getCoverView().setImageDrawable(mFolderIcon);
 		} else {
 			row = (DraggableRow)convertView;
@@ -306,8 +304,12 @@ public class FileSystemAdapter
 		return intent;
 	}
 
-	@Override
-	public void onClick(View view) {
+	/**
+	 * A row was clicked: this was dispatched by LibraryPagerAdapter
+	 *
+	 * @param View view which was clicked
+	 */
+	public void onViewClicked(View view) {
 		Intent intent = createData(view);
 		boolean isFolder = intent.getBooleanExtra(LibraryAdapter.DATA_EXPANDABLE, false);
 
