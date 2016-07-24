@@ -25,8 +25,4 @@ import android.widget.ImageView;
 public class ViewHolder {
 	public long id;
 	public String title;
-	public TextView text;
-	public View divider;
-	public ImageView arrow;
-	public LazyCoverView cover;
 }

@@ -165,9 +165,9 @@ public class LibraryPagerAdapter
 	 * song limiters.
 	 */
 	private String mHeaderText;
-	private LinearLayout mArtistHeader;
-	private LinearLayout mAlbumHeader;
-	private LinearLayout mSongHeader;
+	private DraggableRow mArtistHeader;
+	private DraggableRow mAlbumHeader;
+	private DraggableRow mSongHeader;
 	/**
 	 * The current filter text, or null if none.
 	 */
@@ -311,24 +311,24 @@ public class LibraryPagerAdapter
 			LibraryActivity activity = mActivity;
 			LayoutInflater inflater = activity.getLayoutInflater();
 			LibraryAdapter adapter;
-			LinearLayout header = null;
+			DraggableRow header = null;
 
 			switch (type) {
 			case MediaUtils.TYPE_ARTIST:
 				adapter = mArtistAdapter = new MediaAdapter(activity, MediaUtils.TYPE_ARTIST, mPendingArtistLimiter, activity);
 				mArtistAdapter.setExpandable(mSongsPosition != -1 || mAlbumsPosition != -1);
-				mArtistHeader = header = (LinearLayout)inflater.inflate(R.layout.library_row_expandable, null);
+				mArtistHeader = header = (DraggableRow)inflater.inflate(R.layout.draggable_row, null);
 				break;
 			case MediaUtils.TYPE_ALBUM:
 				adapter = mAlbumAdapter = new MediaAdapter(activity, MediaUtils.TYPE_ALBUM, mPendingAlbumLimiter, activity);
 				mAlbumAdapter.setExpandable(mSongsPosition != -1);
 				mPendingAlbumLimiter = null;
-				mAlbumHeader = header = (LinearLayout)inflater.inflate(R.layout.library_row_expandable, null);
+				mAlbumHeader = header = (DraggableRow)inflater.inflate(R.layout.draggable_row, null);
 				break;
 			case MediaUtils.TYPE_SONG:
 				adapter = mSongAdapter = new MediaAdapter(activity, MediaUtils.TYPE_SONG, mPendingSongLimiter, activity);
 				mPendingSongLimiter = null;
-				mSongHeader = header = (LinearLayout)inflater.inflate(R.layout.library_row_expandable, null);
+				mSongHeader = header = (DraggableRow)inflater.inflate(R.layout.draggable_row, null);
 				break;
 			case MediaUtils.TYPE_PLAYLIST:
 				adapter = mPlaylistAdapter = new MediaAdapter(activity, MediaUtils.TYPE_PLAYLIST, null, activity);
@@ -351,8 +351,7 @@ public class LibraryPagerAdapter
 
 			view.setTag(type);
 			if (header != null) {
-				TextView headerText = (TextView)header.findViewById(R.id.text);
-				headerText.setText(mHeaderText);
+				header.getTextView().setText(mHeaderText);
 				header.setTag(new ViewHolder()); // behave like a normal library row
 				view.addHeaderView(header);
 			}
@@ -455,11 +454,11 @@ public class LibraryPagerAdapter
 	public void setHeaderText(String text)
 	{
 		if (mArtistHeader != null)
-			((TextView)mArtistHeader.findViewById(R.id.text)).setText(text);
+			mArtistHeader.getTextView().setText(text);
 		if (mAlbumHeader != null)
-			((TextView)mAlbumHeader.findViewById(R.id.text)).setText(text);
+			mAlbumHeader.getTextView().setText(text);
 		if (mSongHeader != null)
-			((TextView)mSongHeader.findViewById(R.id.text)).setText(text);
+			mSongHeader.getTextView().setText(text);
 		mHeaderText = text;
 	}
 

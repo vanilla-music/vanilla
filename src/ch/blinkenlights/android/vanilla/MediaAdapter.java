@@ -508,29 +508,25 @@ public class MediaAdapter
 	}
 
 	@Override
-	public View getView(int position, View view, ViewGroup parent)
+	public View getView(int position, View convertView, ViewGroup parent)
 	{
+		DraggableRow row;
 		ViewHolder holder;
 
-		if (view == null) {
+		if (convertView == null) {
 			// We must create a new view if we're not given a recycle view or
 			// if the recycle view has the wrong layout.
+			row = (DraggableRow)mInflater.inflate(R.layout.draggable_row, null);
+			row.setupLayout(DraggableRow.LAYOUT_LISTVIEW);
 
-			view = mInflater.inflate(R.layout.library_row_expandable, null);
 			holder = new ViewHolder();
-			view.setTag(holder);
+			row.setTag(holder);
 
-			holder.text = (TextView)view.findViewById(R.id.text);
-			holder.divider = (View)view.findViewById(R.id.divider);
-			holder.arrow = (ImageView)view.findViewById(R.id.arrow);
-			holder.cover = (LazyCoverView)view.findViewById(R.id.cover);
-			holder.arrow.setOnClickListener(this);
-
-			holder.divider.setVisibility(mExpandable ? View.VISIBLE : View.GONE);
-			holder.arrow.setVisibility(mExpandable ? View.VISIBLE : View.GONE);
-			holder.cover.setVisibility(mCoverCacheType != MediaUtils.TYPE_INVALID ? View.VISIBLE : View.GONE);
+			row.setDraggerOnClickListener(this);
+			row.showDragger(mExpandable);
 		} else {
-			holder = (ViewHolder)view.getTag();
+			row = (DraggableRow)convertView;
+			holder = (ViewHolder)row.getTag();
 		}
 
 		Cursor cursor = mCursor;
@@ -547,18 +543,18 @@ public class MediaAdapter
 			sb.append('\n');
 			sb.append(line2);
 			sb.setSpan(new ForegroundColorSpan(Color.GRAY), line1.length() + 1, sb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-			holder.text.setText(sb);
+			row.getTextView().setText(sb);
 			holder.title = line1;
 		} else {
 			String title = cursor.getString(2);
 			if(title == null) { title = DB_NULLSTRING_FALLBACK; }
-			holder.text.setText(title);
+			row.getTextView().setText(title);
 			holder.title = title;
 		}
 
-		holder.cover.setCover(mCoverCacheType, cacheId, holder.title);
+		row.getCoverView().setCover(mCoverCacheType, cacheId, holder.title);
 
-		return view;
+		return row;
 	}
 
 	/**
@@ -640,7 +636,7 @@ public class MediaAdapter
 	public void onClick(View view)
 	{
 		int id = view.getId();
-		view = (View)view.getParent(); // get view of linear layout, not the click consumer
+		view = (View)view.getParent().getParent(); // get view of linear layout, not the click consumer
 		Intent intent = createData(view);
 		mActivity.onItemExpanded(intent);
 	}

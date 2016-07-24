@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2014-2016 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@ package ch.blinkenlights.android.vanilla;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ImageView;
@@ -45,9 +46,10 @@ public class DraggableRow extends LinearLayout implements Checkable {
 	/**
 	 * Layout types for use with setupLayout
 	 */
-	public static final int LAYOUT_CHECKBOXES =  1;
-	public static final int LAYOUT_DRAGGABLE  =  2;
-	public static final int LAYOUT_LISTVIEW   =  3;
+	public static final int LAYOUT_TEXTONLY   = 0;
+	public static final int LAYOUT_CHECKBOXES = 1;
+	public static final int LAYOUT_DRAGGABLE  = 2;
+	public static final int LAYOUT_LISTVIEW   = 3;
 
 
 	public DraggableRow(Context context, AttributeSet attrs) {
@@ -85,6 +87,7 @@ public class DraggableRow extends LinearLayout implements Checkable {
 					mCoverView.setVisibility(View.VISIBLE);
 					mDragger.setImageResource(R.drawable.arrow);
 					break;
+				case LAYOUT_TEXTONLY:
 				default:
 					break; // do not care
 			}
@@ -137,6 +140,14 @@ public class DraggableRow extends LinearLayout implements Checkable {
 	 */
 	public void showDragger(boolean state) {
 		mDragger.setVisibility( state ? View.VISIBLE : View.INVISIBLE );
+	}
+
+	public void setDraggerOnClickListener(View.OnClickListener listener) {
+		TypedValue v = new TypedValue();
+		getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, v, true);
+
+		mDragger.setBackgroundResource(v.resourceId);
+		mDragger.setOnClickListener(listener);
 	}
 
 	/**
