@@ -516,7 +516,7 @@ public class MediaAdapter
 		if (convertView == null) {
 			// We must create a new view if we're not given a recycle view or
 			// if the recycle view has the wrong layout.
-			row = (DraggableRow)mInflater.inflate(R.layout.draggable_row, null);
+			row = (DraggableRow)mInflater.inflate(R.layout.draggable_row, parent, false);
 			row.setupLayout(DraggableRow.LAYOUT_LISTVIEW);
 
 			holder = new ViewHolder();

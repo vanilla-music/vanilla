@@ -46,7 +46,7 @@ public class FilebrowserStartAdapter
 		ViewHolder holder;
 
 		if (convertView == null) {
-			row = (DraggableRow)mInflater.inflate(R.layout.draggable_row, null);
+			row = (DraggableRow)mInflater.inflate(R.layout.draggable_row, parent, false);
 			row.setupLayout(DraggableRow.LAYOUT_LISTVIEW);
 
 			row.getCoverView().setImageResource(R.drawable.folder);
