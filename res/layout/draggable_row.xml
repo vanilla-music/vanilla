@@ -45,12 +45,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 		android:layout_height="@dimen/row_normal_height"
 		android:layout_marginLeft="@dimen/text_padding"
 		android:layout_weight="1" />
-	<View
-		android:id="@+id/divider"
-		android:layout_width="@dimen/divider_size"
-		android:layout_height="fill_parent"
-		android:visibility="gone"
-		android:background="?android:attr/dividerHorizontal" />
 	<CheckedTextView
 		android:id="@+id/checkbox"
 		android:visibility="gone"
