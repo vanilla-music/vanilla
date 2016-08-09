@@ -392,7 +392,7 @@ public class CoverCache {
 				InputStream inputStream = null;
 				InputStream sampleInputStream = null; // same as inputStream but used for getSampleSize
 
-				if ((song.path != null) && (CoverCache.mCoverLoadMode & CoverCache.COVER_MODE_VANILLA) != 0) {
+				if ((CoverCache.mCoverLoadMode & CoverCache.COVER_MODE_VANILLA) != 0) {
 					final File baseFile  = new File(song.path);  // File object of queried song
 					String bestMatchPath = null;                 // The best cover-path we found
 					int bestMatchIndex   = COVER_MATCHES.length; // The best cover-index/priority found
