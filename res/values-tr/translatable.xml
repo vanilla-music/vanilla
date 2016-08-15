@@ -173,6 +173,8 @@
   <string name="use_idle_timeout_title">Boşta kalma süresini etkinleştir</string>
   <string name="use_idle_timeout_summary">Oynatma belli bir sürelik etkisizliğin ardından durdurulur</string>
   <string name="idle_timeout_title">Boşta kalma süresi</string>
+  <string name="enable_scroll_to_song_title">Şarkı adına kaydır</string>
+  <string name="enable_scroll_to_song_summary">Şu anda oynatılan şarkı/albüm/sanatçı konumuna kaydır</string>
   <string name="coverloader_android_title">Android\'ten albüm resmi yükle</string>
   <string name="coverloader_android_summary">Android iç veritabanını albüm resimleri için sorgula</string>
   <string name="coverloader_vanilla_title">Klasörden albüm resmi yükle</string>
@@ -237,7 +239,11 @@
   <string name="autoplaylist_playcounts_name" formatted="false">En iyi %d</string>
   <string name="permission_request_summary">Vanilya Müzik, müzik arşivinizi görüntüleyebilmek için izninize gereksinim duyar</string>
   <string name="reverse_sort">Sıralamayı tersine çevir</string>
+  <string name="share">Paylaş…</string>
+  <string name="sendto">Gönder…</string>
+  <string name="no_receiving_apps">Bu ortam türü için uygun uygulama bulunamadı.</string>
   <!--SD Scanner-->
+  <string name="sdscan_help">Yeni bir tarama başlatmak Vanilya Müzik\'in bütün ortam veritabanını yeniden inşa etmesini gerektirir.</string>
   <string name="button_start">Yeniden taramayı başlat</string>
   <string name="database_proc">İncelendi</string>
   <string name="delete_proc">Referans şuraya kaldırıldı</string>

@@ -36,8 +36,8 @@
   <string name="delete_playlist">Wiedergabeliste %s löschen?</string>
   <!--Library-->
   <string name="enqueue">Einreihen</string>
-  <string name="enqueue_as_next">Als nächstes abspielen</string>
-  <string name="play">Abspielen</string>
+  <string name="enqueue_as_next">Als nächstes wiedergeben</string>
+  <string name="play">Wiedergeben</string>
   <string name="edit">Bearbeiten</string>
   <string name="rename">Umbenennen</string>
   <string name="save_as_playlist">Als Wiedergabeliste speichern …</string>
@@ -53,11 +53,11 @@
   <string name="search">Suche</string>
   <string name="done">Fertig</string>
   <string name="remove">Entfernen</string>
-  <string name="play_or_enqueue">Einreihen bei aktiver Wiedergabe oder abspielen, falls pausiert</string>
+  <string name="play_or_enqueue">Einreihen während Wiedergabe oder wiedergeben, falls pausiert</string>
   <string name="open">Öffnen</string>
   <plurals name="playing">
-    <item quantity="one">1 Titel wird abgespielt.</item>
-    <item quantity="other">%d Titel werden abgespielt.</item>
+    <item quantity="one">1 Titel wird wiedergegeben.</item>
+    <item quantity="other">%d Titel werden wiedergegeben.</item>
   </plurals>
   <plurals name="enqueued">
     <item quantity="one">1 Titel eingereiht.</item>
@@ -76,9 +76,9 @@
     <item quantity="other">%d Titel gelöscht.</item>
   </plurals>
   <string name="delete_file_failed">Löschen von %s fehlgeschlagen.</string>
-  <string name="deleted_item">„%s“ wurde gelöscht.</string>
-  <string name="delete_item">„%s“ löschen?</string>
-  <string name="delete_file">Datei „%s“ löschen?</string>
+  <string name="deleted_item">»%s« wurde gelöscht.</string>
+  <string name="delete_item">»%s« löschen?</string>
+  <string name="delete_file">Datei »%s« löschen?</string>
   <string name="artists">Interpreten</string>
   <string name="albums">Alben</string>
   <string name="songs">Titel</string>
@@ -86,7 +86,7 @@
   <string name="genres">Genres</string>
   <string name="files">Dateien</string>
   <string name="unknown">Unbekannt</string>
-  <string name="play_all">Alle abspielen</string>
+  <string name="play_all">Alle wiedergeben</string>
   <string name="enqueue_all">Alle einreihen</string>
   <string name="all_songs">Alle Titel</string>
   <string name="more_from_artist">Mehr vom Interpreten</string>
@@ -100,7 +100,7 @@
   <string name="artist_album_title">Interpret, Album, Titel</string>
   <string name="artist_year">Interpret, Jahr</string>
   <string name="album_track">Album, Titelnummer</string>
-  <string name="song_playcount">Abspielhäufigkeit</string>
+  <string name="song_playcount">Wiedergabehäufigkeit</string>
   <!--Preferences-->
   <plurals name="seconds">
     <item quantity="one">1 Sekunde</item>
@@ -126,22 +126,22 @@
   <string name="headset_only_summary">Verhindert die Musikwiedergabe über interne Lautsprecher</string>
   <string name="headset_pause_title">Pausieren, wenn nicht angeschlossen</string>
   <string name="headset_pause_summary">Pausieren, wenn Kopfhörer entfernt wird</string>
-  <string name="headset_launch_title">Abspielen beim Anschließen</string>
-  <string name="headset_launch_summary">Abspielen, wenn Kopfhörer angeschlossen wird (erfordert eine installierte „Headphone Detector“-App)</string>
-  <string name="headset_launch_app_missing">Die Verwendung dieser Funktion benötigt eine bestehende Installation der App „Headphone Detector“.\nMöchten Sie den Play Store öffnen, um die App zu installieren?</string>
+  <string name="headset_launch_title">Wiedergeben beim Anschließen</string>
+  <string name="headset_launch_summary">Wiedergeben, wenn Kopfhörer angeschlossen wird (erfordert eine installierte »Headphone Detector«-App)</string>
+  <string name="headset_launch_app_missing">Die Verwendung dieser Funktion benötigt eine bestehende Installation der App »Headphone Detector«.\nMöchten Sie den Play Store öffnen, um die App zu installieren?</string>
   <string name="replaygain">ReplayGain</string>
   <string name="replaygain_summary">ReplayGain-Einstellungen</string>
   <string name="replaygain_track_title">Per-Titel-ReplayGain aktivieren</string>
-  <string name="replaygain_track_summary">Alle Titel in einheitlicher Lautstärke abspielen</string>
+  <string name="replaygain_track_summary">Alle Titel in einheitlicher Lautstärke wiedergeben</string>
   <string name="replaygain_album_title">Album-ReplayGain aktivieren</string>
   <string name="replaygain_album_summary">Lautstärke von Alben beibehalten</string>
   <string name="replaygain_bump_title">ReplayGain-Vorverstärker</string>
   <string name="replaygain_untagged_debump_title">Titel ohne ReplayGain-Informationen</string>
   <string name="replaygain_untagged_debump_summary">Lautstärke senken um: </string>
   <string name="replaygain_preamp_note_title">Hinweis</string>
-  <string name="replaygain_preamp_note_content">Android erlaubt Vanilla Music kein Verändern der Lautstärke auf über 100%. Hohe Werte für den Vorverstärker können bei „stiller“ Musik zu Problemen führen.\n\nEmpfohlene Werte sind:\n-&gt; -3 dB für stille/klassische Musik\n-&gt; +3 dB für Aufnahmen nach dem Jahr 2000</string>
+  <string name="replaygain_preamp_note_content">Android erlaubt Vanilla Music kein Verändern der Lautstärke auf über 100%. Hohe Werte für den Vorverstärker können bei »stiller« Musik zu Problemen führen.\n\nEmpfohlene Werte sind:\n-&gt; -3 dB für stille/klassische Musik\n-&gt; +3 dB für Aufnahmen nach dem Jahr 2000</string>
   <string name="readahead">Datei vorauslesen</string>
-  <string name="readahead_summary">Aktuell abgespielten Titel im Voraus einlesen (löst Probleme mit langsamen SD-Karten)</string>
+  <string name="readahead_summary">Aktuell wiedergegebenen Titel im Voraus einlesen (löst Probleme mit langsamen SD-Karten)</string>
   <string name="equalizer">Equalizer</string>
   <string name="cycle_continuous_shuffling">Dauerzufallswiedergabe</string>
   <string name="cycle_continuous_shuffling_summary">Titel werden fortlaufend neu durchgemischt</string>
@@ -149,7 +149,7 @@
   <string name="notification_mode_title">Benachrichtigungsmodus</string>
   <string name="notification_action_title">Benachrichtigungsaktion</string>
   <string name="notification_nag">Auffällige Benachrichtigung</string>
-  <string name="notification_nag_summary">Titelwechsel als „Heads-Up“-Benachrichtigung anzeigen</string>
+  <string name="notification_nag_summary">Titelwechsel als »Heads-Up«-Benachrichtigung anzeigen</string>
   <string name="playback_screen">Wiedergabeansicht</string>
   <string name="playback_on_startup_title">Beim Start öffnen</string>
   <string name="playback_on_startup_summary">Wiedergabeansicht beim Start öffnen</string>
@@ -163,7 +163,7 @@
   <string name="default_playlist_action_title">Standardaktion für Wiedergabelisten</string>
   <string name="accelerometer_shake">Schütteln</string>
   <string name="enable_shake_title">Schütteln aktivieren</string>
-  <string name="enable_shake_summary">Nur während abgespielter Musik aktiv. Funktioniert auf einigen Geräten nicht bei ausgeschaltetem Bildschirm.</string>
+  <string name="enable_shake_summary">Nur während Musikwiedergabe aktiv. Funktioniert auf einigen Geräten nicht bei ausgeschaltetem Bildschirm.</string>
   <string name="shake_action_title">Aktion beim Schütteln</string>
   <string name="shake_threshold_title">Schwellwert beim Schütteln</string>
   <string name="misc_features">Sonstige Funktionen</string>
@@ -173,14 +173,16 @@
   <string name="use_idle_timeout_title">Anhalten bei Inaktivität</string>
   <string name="use_idle_timeout_summary">Falls aktiviert, wird die Wiedergabe nach der angegebenen Inaktivitätsdauer angehalten</string>
   <string name="idle_timeout_title">Inaktivitätsdauer</string>
+  <string name="enable_scroll_to_song_title">Zum Titelnamen scrollen</string>
+  <string name="enable_scroll_to_song_summary">In Bibliothekslisten zum aktuell wiedergegeben Titel/Album/Interpreten scrollen</string>
   <string name="coverloader_android_title">Albumcover von Android verwenden</string>
   <string name="coverloader_android_summary">Androids interne Mediendatenbank für Albumcover verwenden</string>
   <string name="coverloader_vanilla_title">Cover aus Ordner laden</string>
-  <string name="coverloader_vanilla_summary">Nach Dateien mit den Namen cover.jpg, album.jpg oder artwork.jpg suchen und diese als Albumcover anzeigen</string>
+  <string name="coverloader_vanilla_summary">Nach Dateien mit den Namen »cover.jpg«, »album.jpg« oder »artwork.jpg« suchen und diese als Albumcover anzeigen</string>
   <string name="coverloader_shadow_title">Cover aus verstecktem Ordner laden</string>
-  <string name="coverloader_shadow_summary">Albumcover von „/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg“ laden, falls möglich</string>
+  <string name="coverloader_shadow_summary">Albumcover von »/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg« laden, falls möglich</string>
   <string name="cover_on_lockscreen_title">Cover auf Sperrbildschirm anzeigen</string>
-  <string name="cover_on_lockscreen_summary">Albumcover des derzeit abgespielten Titels auf dem Sperrbildschirm anzeigen</string>
+  <string name="cover_on_lockscreen_summary">Albumcover des aktuell wiedergegebenen Titels auf dem Sperrbildschirm anzeigen</string>
   <string name="double_tap_title">Widget-Doppelantippen</string>
   <string name="double_tap_summary">Doppeltes Antippen des 1x1-Widgets öffnet die Wiedergabeansicht. Verursacht eine Verzögerung von 400 ms, bevor das Widget auf Aktionen reagiert.</string>
   <string name="scrobble_title">ScrobbleDroid-API verwenden</string>
@@ -205,7 +207,7 @@
   <string name="fixed_info">Info oben fixiert</string>
   <string name="do_nothing">Keine</string>
   <string name="open_library">Bibliothek öffnen</string>
-  <string name="play_pause">Wiedergabe/Pause</string>
+  <string name="play_pause">Wiedergeben/Pause</string>
   <string name="next_song">Nächster Titel</string>
   <string name="previous_song">Vorheriger Titel</string>
   <string name="next_album">Nächstes Album</string>
@@ -232,14 +234,17 @@
   <string name="select">Auswählen</string>
   <string name="autoplaylist_playcounts_title">Wiedergabeliste automatisch erstellen</string>
   <string name="autoplaylist_playcounts_summary">Automatisches Erstellen einer</string>
-  <string name="autoplaylist_playcounts_fmt" formatted="false">%s „Top %.0f“-Wiedergabeliste</string>
+  <string name="autoplaylist_playcounts_fmt" formatted="false">%s »Top %.0f«-Wiedergabeliste</string>
   <string name="autoplaylist_playcounts_disabled">Keine automatische Wiedergabeliste erstellen</string>
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
   <string name="permission_request_summary">Vanilla Music benötigt Leserechte, um Ihre Musikbibliothek anzuzeigen</string>
   <string name="reverse_sort">Sortierung umkehren</string>
+  <string name="share">Teilen …</string>
+  <string name="sendto">Senden an …</string>
+  <string name="no_receiving_apps">Keine kompatiblen Apps für diesen Medientyp gefunden!</string>
   <!--SD Scanner-->
-  <string name="sdscan_help">Erneut Durchsuchen bewirkt einen vollständigen Neuaufbau der Mediendatenbank.</string>
-  <string name="button_start">Erneut durchsuchen</string>
+  <string name="sdscan_help">Neu Durchsuchen bewirkt einen vollständigen Neuaufbau der Mediendatenbank.</string>
+  <string name="button_start">Neu durchsuchen</string>
   <string name="database_proc">Untersucht</string>
   <string name="delete_proc">Referenz entfernt auf</string>
   <string name="db_label">Bestehende Mediendatenbank wird auch auf aktualisierte oder gelöschte Dateien überprüft werden</string>

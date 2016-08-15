@@ -189,8 +189,8 @@
   <string name="use_idle_timeout_title">Задействовать таймер простоя</string>
   <string name="use_idle_timeout_summary">Воспроизведение остановится после определенного периода бездействия</string>
   <string name="idle_timeout_title">Время ожидания</string>
-  <string name="enable_scroll_to_song_title">Прокрутка до песни</string>
-  <string name="enable_scroll_to_song_summary">Прокручивать до текущей песни/альбома/исполнителя в списках библиотеки</string>
+  <string name="enable_scroll_to_song_title">Пролистывать до названия</string>
+  <string name="enable_scroll_to_song_summary">Пролистывание списков фонотеки к текущей дорожке/альбому/исполнителю.</string>
   <string name="coverloader_android_title">Загружать обложки из баз Android</string>
   <string name="coverloader_android_summary">Запрашивать обложки из встроенной базы медиа данных ОС Android</string>
   <string name="coverloader_vanilla_title">Загружать обложки из папки</string>
@@ -257,7 +257,7 @@
   <string name="reverse_sort">в обратном порядке</string>
   <string name="share">Поделиться…</string>
   <string name="sendto">Отправить…</string>
-  <string name="no_receiving_apps">Нет подходящих приложений для отправки!</string>
+  <string name="no_receiving_apps">Нет приложений для обработки такого типа файла!</string>
   <!--SD Scanner-->
   <string name="sdscan_help">Запуск сканирования в Vanilla Music приведёт к перестройке всей базы медиаданных.</string>
   <string name="button_start">Начать сканирование</string>

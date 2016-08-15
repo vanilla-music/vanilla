@@ -172,6 +172,8 @@
   <string name="use_idle_timeout_title">Käytä joutenolon aikakatkaisua</string>
   <string name="use_idle_timeout_summary">Kun käytössä, toisto lopetetaan tietyn joutoajan jälkeen</string>
   <string name="idle_timeout_title">Joutenolon aikakatkaisu</string>
+  <string name="enable_scroll_to_song_title">Vieritä kappaleen nimeen</string>
+  <string name="enable_scroll_to_song_summary">Vieritä parhaillaan toistettavan kappaleeseen/albumiin/esittäjään kirjastoluettelossa</string>
   <string name="coverloader_android_title">Lataa kuvitus Androidista</string>
   <string name="coverloader_android_summary">Etsi kuvitusta Androidin sisäisestä mediatietokannasta</string>
   <string name="coverloader_vanilla_title">Lataa kuvitus kansiosta</string>
@@ -235,7 +237,10 @@
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
   <string name="permission_request_summary">Vanilla Music tarvitsee lukuoikeuden näyttääkseen musiikkikirjastosi</string>
   <string name="reverse_sort">Käänteinen järjestys</string>
+  <string name="share">Jaa…</string>
+  <string name="sendto">Lähetä…</string>
   <!--SD Scanner-->
+  <string name="database_proc">Tutkittu</string>
   <string name="progress_unstarted_label">Ei käynnistetty vielä.</string>
   <string name="skipping_folder_label">Kohdattiin virhe ja ohitetaan</string>
 </resources>

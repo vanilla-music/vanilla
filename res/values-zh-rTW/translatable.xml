@@ -25,7 +25,7 @@
   <string name="_path">路徑</string>
   <string name="_format">格式</string>
   <string name="_title">標題</string>
-  <string name="_artist">演出者</string>
+  <string name="_artist">演唱者</string>
   <string name="_album">專輯</string>
   <string name="_year">年份</string>
   <string name="_replaygain">重播增益</string>
@@ -165,6 +165,8 @@
   <string name="use_idle_timeout_title">啟用閒置超時</string>
   <string name="use_idle_timeout_summary">當啟動後，在閒置一段時間後會停止播放 </string>
   <string name="idle_timeout_title">閒置超時</string>
+  <string name="enable_scroll_to_song_title">卷動到歌曲標題</string>
+  <string name="enable_scroll_to_song_summary">在媒體庫清單，卷動到目前播放的歌曲/專輯/演唱者</string>
   <string name="coverloader_android_title">從 Android 載入封面</string>
   <string name="coverloader_android_summary">查詢 Androids 內部的媒體資料庫，以用於專輯封面</string>
   <string name="coverloader_vanilla_title">從資料夾載入封面</string>
@@ -229,6 +231,9 @@
   <string name="autoplaylist_playcounts_name" formatted="false">置頂 %d</string>
   <string name="permission_request_summary">Vanilla 音樂需要讀取的權限，以顯示您的媒體庫</string>
   <string name="reverse_sort">反向排序</string>
+  <string name="share">分享…</string>
+  <string name="sendto">傳送到…</string>
+  <string name="no_receiving_apps">該媒體類型未找到相應接受的應用程式！</string>
   <!--SD Scanner-->
   <string name="sdscan_help">開始重新掃描會使 Vanilla Music 觸發媒體資料庫完全重建。</string>
   <string name="button_start">開始重新掃描</string>

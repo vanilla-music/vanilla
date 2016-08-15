@@ -7,7 +7,7 @@
   <string name="settings">Impostazioni</string>
   <string name="no_shuffle">No shuffle</string>
   <string name="shuffle_songs">Brani in shuffle</string>
-  <string name="shuffle_songs_continuously">Riproduzione casuale brani continua</string>
+  <string name="shuffle_songs_continuously">Riproduci continuamente brani casualmente</string>
   <string name="shuffle_albums">Album in shuffle</string>
   <string name="no_repeat">Ripeti off</string>
   <string name="repeat">Ripeti on</string>
@@ -238,6 +238,7 @@
   <string name="permission_request_summary">Vanilla Music richiede i permessi di lettura per visualizzare la libreria musicale</string>
   <string name="reverse_sort">Ordinamento inverso</string>
   <!--SD Scanner-->
+  <string name="sdscan_help">L\'avvio di una nuova scansione scatena una ricostruzione completa del database dei file multimediali.</string>
   <string name="button_start">Avvia nuova scansione</string>
   <string name="database_proc">Esaminati</string>
   <string name="delete_proc">Rimosso riferimento a</string>

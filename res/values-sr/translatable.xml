@@ -181,6 +181,8 @@
   <string name="use_idle_timeout_title">Укључи време мировања</string>
   <string name="use_idle_timeout_summary">Активирано зауставља пуштање након задатог времена неактивности</string>
   <string name="idle_timeout_title">Време мировања</string>
+  <string name="enable_scroll_to_song_title">Клизај на наслов песме</string>
+  <string name="enable_scroll_to_song_summary">Клизање на текућу песму/албум/извођача у приказу библиотеке</string>
   <string name="coverloader_android_title">Учитај омоте са Андроида</string>
   <string name="coverloader_android_summary">Шаље упит унутрашњој медија базу података Андроида за омот албума</string>
   <string name="coverloader_vanilla_title">Учитај омоте из фасцикле</string>
@@ -245,7 +247,10 @@
   <string name="autoplaylist_playcounts_name" formatted="false">Најбољих %d</string>
   <string name="permission_request_summary">Ванила музика захтева дозволу читања да би приказала вашу музичку библиотеку</string>
   <string name="reverse_sort">Обрнуто ређање</string>
+  <string name="share">Дели…</string>
+  <string name="sendto">Пошаљи за…</string>
   <!--SD Scanner-->
+  <string name="final_proc">Обрађено</string>
   <string name="progress_database_label">Шаљем упит бази података...</string>
   <string name="sdscanner">СД читач</string>
 </resources>

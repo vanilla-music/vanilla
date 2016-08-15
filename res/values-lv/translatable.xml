@@ -182,6 +182,8 @@
   <string name="use_idle_timeout_title">Ieslēgt dīkstāves noildzi</string>
   <string name="use_idle_timeout_summary">Kad aktīva, atskaņošana tiks apturēta pēc norādītā neaktivitātes perioda</string>
   <string name="idle_timeout_title">Dīkstāves noildze</string>
+  <string name="enable_scroll_to_song_title">Tīt uz dziesmas nosaukumu</string>
+  <string name="enable_scroll_to_song_summary">Biliotēkas sarakstos tīt uz pašreiz atskaņoto dziesmu/albumu/izpildītāju</string>
   <string name="coverloader_android_title">Ielādēt vāku attēlus no Android</string>
   <string name="coverloader_android_summary">Vaicāt pēc vāciņa attēla Android iekšējai mēdiju datubāzei</string>
   <string name="coverloader_vanilla_title">Ielādēt vāciņa attēlu no mapes</string>
@@ -246,7 +248,11 @@
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
   <string name="permission_request_summary">Vanilla Music lasīšanas atļauja vajadzīga, lai parādītu jūsu mūzikas bibliotēku</string>
   <string name="reverse_sort">Apgrieztā kārtošana</string>
+  <string name="share">Dalīties..</string>
+  <string name="sendto">Sūtīt uz...</string>
+  <string name="no_receiving_apps">Šim mēdija tipam netika atrastas saņemošās lietotnes!</string>
   <!--SD Scanner-->
+  <string name="sdscan_help">Palaižot pārskenēšanu, programma veiks pilnu mēdiju datubāzes pārbūvi.</string>
   <string name="button_start">Sākt pārskenēšanu</string>
   <string name="database_proc">Apskatīts</string>
   <string name="delete_proc">Noņemta atsauce uz</string>

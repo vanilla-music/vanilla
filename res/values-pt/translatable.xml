@@ -173,6 +173,8 @@
   <string name="use_idle_timeout_title">Ativar período de inatividade</string>
   <string name="use_idle_timeout_summary">Se ativa, a reprodução será parada após um certo tempo de inatividade</string>
   <string name="idle_timeout_title">Período de inatividade</string>
+  <string name="enable_scroll_to_song_title">Seguir faixa</string>
+  <string name="enable_scroll_to_song_summary">Ir para a faixa/álbum/artista atual na lista da coleção</string>
   <string name="coverloader_android_title">Carregar  imagem do Android</string>
   <string name="coverloader_android_summary">Consulta a capa do álbum na base de dados interna do Android</string>
   <string name="coverloader_vanilla_title">Carregar imagem da pasta</string>
@@ -237,6 +239,9 @@
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
   <string name="permission_request_summary">O Vanilla Music necessita da permissão de leitura para mostrar a sua coleção</string>
   <string name="reverse_sort">Inverter organização</string>
+  <string name="share">Partilhar...</string>
+  <string name="sendto">Enviar para...</string>
+  <string name="no_receiving_apps">Não foram encontradas aplicações para este tipo multimédia!</string>
   <!--SD Scanner-->
   <string name="sdscan_help">Se iniciar a reanálise, o Vanilla Music irá recriar a sua base de dados multimédia.</string>
   <string name="button_start">Iniciar reanálise</string>

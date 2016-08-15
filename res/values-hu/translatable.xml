@@ -173,6 +173,8 @@
   <string name="use_idle_timeout_title">Tétlenségi időtúllépés engedélyezése</string>
   <string name="use_idle_timeout_summary">Ha aktív, akkor a lejátszás leállításra kerül a megadott tétlenségi idő lejárta után</string>
   <string name="idle_timeout_title">Tétlenségi időtúllépés</string>
+  <string name="enable_scroll_to_song_title">Görgetés a szám címéhez</string>
+  <string name="enable_scroll_to_song_summary">Görgetés a most játszott számhoz/albumhoz/előadóhoz a gyűjtemény listákban</string>
   <string name="coverloader_android_title">Borítók betöltése az Androidból</string>
   <string name="coverloader_android_summary">Az Android belső adatbázisának lekérdezése az albumborítóért</string>
   <string name="coverloader_vanilla_title">Borítók betöltése mappából</string>
@@ -237,6 +239,9 @@
   <string name="autoplaylist_playcounts_name" formatted="false">Legjobb %d</string>
   <string name="permission_request_summary">A Vanilla zenelejátszónak olvasási engedélyre van szükségre, hogy megjelenítse a gyűjteményét</string>
   <string name="reverse_sort">Fordított rendezés</string>
+  <string name="share">Megosztás…</string>
+  <string name="sendto">Küldés…</string>
+  <string name="no_receiving_apps">Nem található fogadóalkalmazás ehhez a médiatípushoz!</string>
   <!--SD Scanner-->
   <string name="sdscan_help">Az újraátvizsgálás elindításának hatására a Vanilla zenelejátszó elkezdi újraépíteni a teljes médiaadatbázist.</string>
   <string name="button_start">Újraátvizsgálás indítása</string>

@@ -165,6 +165,8 @@
   <string name="use_idle_timeout_title">アイドル タイムアウトを有効にする</string>
   <string name="use_idle_timeout_summary">有効な場合、一定期間アイドルになると再生が停止されます</string>
   <string name="idle_timeout_title">アイドル タイムアウト</string>
+  <string name="enable_scroll_to_song_title">曲のタイトルにスクロール</string>
+  <string name="enable_scroll_to_song_summary">ライブラリーリストの現在再生中の曲/アルバム/アーティストにスクロールします</string>
   <string name="coverloader_android_title">Android からアートワークを読み込む</string>
   <string name="coverloader_android_summary">アルバムのアートワークを Android 内部メディアデータベースから読み込みます</string>
   <string name="coverloader_vanilla_title">フォルダからアートワークを読み込む</string>
@@ -229,6 +231,9 @@
   <string name="autoplaylist_playcounts_name" formatted="false">トップ %d</string>
   <string name="permission_request_summary">Vanilla Music  が音楽ライブラリを表示するために、読み取りのアクセス許可が必要です</string>
   <string name="reverse_sort">逆順に並び替え</string>
+  <string name="share">共有…</string>
+  <string name="sendto">送信…</string>
+  <string name="no_receiving_apps">このメディアタイプの受信アプリが見つかりません!</string>
   <!--SD Scanner-->
   <string name="sdscan_help">再スキャンが開始すると、Vanilla Music はメディアデータベースのフル再構築を起動します。</string>
   <string name="button_start">再スキャンを開始</string>
