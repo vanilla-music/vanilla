@@ -24,20 +24,20 @@ THE SOFTWARE.
 	<string name="app_name">Vanilla Music</string>
 
 	<!-- Playback Activity (main screen) -->
-	<string name="no_songs">No songs found on your device.</string>
-	<string name="empty_queue">No songs selected. Pick some from the library or enter random mode by tapping this message.</string>
+	<string name="no_songs">No tracks found on your device.</string>
+	<string name="empty_queue">No tracks selected. Pick some from the library or enter random mode by tapping this message.</string>
 	<string name="settings">Settings</string>
 	<string name="no_shuffle">No shuffle</string>
-	<string name="shuffle_songs">Shuffle songs</string>
-	<string name="shuffle_songs_continuously">Shuffle songs continuously</string>
+	<string name="shuffle_songs">Shuffle tracks</string>
+	<string name="shuffle_songs_continuously">Shuffle tracks continuously</string>
 	<string name="shuffle_albums">Shuffle albums</string>
 	<string name="no_repeat">No repeat</string>
 	<string name="repeat">Repeat</string>
-	<string name="repeat_current_song">Repeat current song</string>
-	<string name="stop_current_song">Stop after current song</string>
+	<string name="repeat_current_song">Repeat current track</string>
+	<string name="stop_current_song">Stop after current track</string>
 	<string name="random">Random</string>
 	<string name="random_enabling">Random enabled</string>
-	<string name="song_load_failed">Failed to load song %s. It may be corrupt or missing.</string>
+	<string name="song_load_failed">Failed to load track %s. It may be corrupt or missing.</string>
 	<string name="queue_cleared">Queue cleared.</string>
 	<string name="cover_art">Cover art</string>
 	<string name="close_notification">Close notification</string>
@@ -81,24 +81,24 @@ THE SOFTWARE.
 	<string name="open">Open</string>
 
 	<plurals name="playing">
-		<item quantity="one">1 song playing.</item>
-		<item quantity="other">%d songs playing.</item>
+		<item quantity="one">1 track playing.</item>
+		<item quantity="other">%d tracks playing.</item>
 	</plurals>
 	<plurals name="enqueued">
-		<item quantity="one">1 song enqueued.</item>
-		<item quantity="other">%d songs enqueued.</item>
+		<item quantity="one">1 track enqueued.</item>
+		<item quantity="other">%d tracks enqueued.</item>
 	</plurals>
 	<plurals name="added_to_playlist">
-		<item quantity="one">1 song added to playlist %2$s.</item>
-		<item quantity="other">%1$d songs added to playlist %2$s.</item>
+		<item quantity="one">1 track added to playlist %2$s.</item>
+		<item quantity="other">%1$d tracks added to playlist %2$s.</item>
 	</plurals>
 	<plurals name="removed_from_playlist">
-		<item quantity="one">1 song removed from playlist %2$s.</item>
-		<item quantity="other">%1$d songs removed from playlist %2$s.</item>
+		<item quantity="one">1 track removed from playlist %2$s.</item>
+		<item quantity="other">%1$d tracks removed from playlist %2$s.</item>
 	</plurals>
 	<plurals name="deleted">
-		<item quantity="one">1 song deleted.</item>
-		<item quantity="other">%d songs deleted.</item>
+		<item quantity="one">1 track deleted.</item>
+		<item quantity="other">%d tracks deleted.</item>
 	</plurals>
 	<string name="delete_file_failed">Failed to delete %s.</string>
 
@@ -108,7 +108,7 @@ THE SOFTWARE.
 
 	<string name="artists">Artists</string>
 	<string name="albums">Albums</string>
-	<string name="songs">Songs</string>
+	<string name="songs">Tracks</string>
 	<string name="playlists">Playlists</string>
 	<string name="genres">Genres</string>
 	<string name="files">Files</string>
@@ -116,7 +116,7 @@ THE SOFTWARE.
 	<string name="unknown">Unknown</string>
 	<string name="play_all">Play all</string>
 	<string name="enqueue_all">Enqueue all</string>
-	<string name="all_songs">All songs</string>
+	<string name="all_songs">All tracks</string>
 	<string name="more_from_artist">More from artist</string>
 	<string name="more_from_album">More from album</string>
 
@@ -168,25 +168,25 @@ THE SOFTWARE.
 	<string name="replaygain_album_title">Enable album ReplayGain</string>
 	<string name="replaygain_album_summary">Preserve album dynamics</string>
 	<string name="replaygain_bump_title">ReplayGain pre-amp</string>
-	<string name="replaygain_untagged_debump_title">Songs without ReplayGain tag</string>
+	<string name="replaygain_untagged_debump_title">Tracks without ReplayGain tag</string>
 	<string name="replaygain_untagged_debump_summary">Decrease volume by</string>
 	<string name="replaygain_preamp_note_title">Note</string>
 	<string name="replaygain_preamp_note_content">Android does not allow Vanilla Music to raise the volume to >100%. Setting the Pre-amp to a high value may cause issues if you are listening to \'quiet\' music. \n\nRecommended values are:\n-> -3dB for silent/classical music\n-> +3dB for post-2000 recordings</string>
 
 	<string name="readahead">Enable readahead</string>
-	<string name="readahead_summary">Readahead the currently playing song. This option may solve \'audio dropout\' issues. (caused by a slow SD card)</string>
+	<string name="readahead_summary">Readahead the currently playing track. This option may solve \'audio dropout\' issues. (caused by a slow SD card)</string>
 
 	<string name="equalizer">Equalizer</string>
 
 	<string name="cycle_continuous_shuffling">Continuous shuffle</string>
-	<string name="cycle_continuous_shuffling_summary">\'Shuffle mode\' will play songs in completely random order</string>
+	<string name="cycle_continuous_shuffling_summary">\'Shuffle mode\' will play tracks in completely random order</string>
 
 	<string name="notifications">Notifications</string>
 	<string name="notification_mode_title">Notification mode</string>
 	<string name="notification_action_title">Notification action</string>
 
 	<string name="notification_nag">Very verbose notification</string>
-	<string name="notification_nag_summary">Announce song changes using a \'Heads-Up-Notification\'</string>
+	<string name="notification_nag_summary">Announce track changes using a \'Heads-Up-Notification\'</string>
 
 	<string name="playback_screen">Playback screen</string>
 	<string name="playback_on_startup_title">Open on startup</string>
@@ -215,8 +215,8 @@ THE SOFTWARE.
 	<string name="use_idle_timeout_summary">When active, playback will be stopped after the given period of inactivity</string>
 	<string name="idle_timeout_title">Idle timeout</string>
 
-	<string name="enable_scroll_to_song_title">Scroll to song title</string>
-	<string name="enable_scroll_to_song_summary">Scroll to currently playing song/album/artist in library lists</string>
+	<string name="enable_scroll_to_song_title">Scroll to track title</string>
+	<string name="enable_scroll_to_song_summary">Scroll to currently playing track/album/artist in library lists</string>
 
 	<string name="coverloader_android_title">Load artwork from Android</string>
 	<string name="coverloader_android_summary">Query Androids internal media database for album artwork</string>
@@ -228,7 +228,7 @@ THE SOFTWARE.
 	<string name="coverloader_shadow_summary">Try to load artwork from \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\'</string>
 
 	<string name="cover_on_lockscreen_title">Show artwork on lockscreen</string>
-	<string name="cover_on_lockscreen_summary">Display the artwork of the currently playing song on the lockscreen</string>
+	<string name="cover_on_lockscreen_summary">Display the artwork of the currently playing track on the lockscreen</string>
 
 	<string name="double_tap_title">Double tap widget</string>
 	<string name="double_tap_summary">Double-tapping the 1x1 widget will open the player. Incurs a 400ms delay before the widget responds to actions.</string>
@@ -252,7 +252,7 @@ THE SOFTWARE.
 
 	<string name="open_main_activity">Open library (default)</string>
 	<string name="open_mini_popup">Open mini popup</string>
-	<string name="skip_to_next_song">Skip to next song</string>
+	<string name="skip_to_next_song">Skip to next track</string>
 	<string name="open_full_player">Open full player</string>
 
 	<string name="info_on_cover">Info on cover art</string>
@@ -262,8 +262,8 @@ THE SOFTWARE.
 	<string name="do_nothing">Do nothing</string>
 	<string name="open_library">Open library</string>
 	<string name="play_pause">Play/Pause</string>
-	<string name="next_song">Next song</string>
-	<string name="previous_song">Previous song</string>
+	<string name="next_song">Next track</string>
+	<string name="previous_song">Previous track</string>
 	<string name="next_album">Next album</string>
 	<string name="previous_album">Previous album</string>
 	<string name="cycle_repeat_mode">Cycle repeat mode</string>
