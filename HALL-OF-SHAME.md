@@ -15,6 +15,11 @@ This list is a collection of such GPL violating versions published on the Google
 
 ## Blunt violations
 
+### MyMusic
+* https://play.google.com/store/apps/details?id=com.appcode.mymusic
+* Removed 'About' section in App
+* Full screen ads
+
 ### MP3 Music Delta Pro
 * https://play.google.com/store/apps/details?id=com.extra.DeltaMusic
 * Removed 'About' section in App
