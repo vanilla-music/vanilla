@@ -1544,7 +1544,7 @@ public final class PlaybackService extends Service
 			break;
 		case MSG_UPDATE_PLAYCOUNTS:
 			Song song = (Song)message.obj;
-			mPlayCounts.countSong(song);
+			mPlayCounts.countSong(song, true);
 			// Update the playcounts playlist in ~20% of all cases if enabled
 			if (mAutoPlPlaycounts > 0 && Math.random() > 0.8) {
 				ContentResolver resolver = getContentResolver();

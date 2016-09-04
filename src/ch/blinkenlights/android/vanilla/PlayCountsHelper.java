@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2014-2016 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,13 +31,14 @@ public class PlayCountsHelper extends SQLiteOpenHelper {
 	 * SQL constants and CREATE TABLE statements used by 
 	 * this java class
 	 */
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 	private static final String DATABASE_NAME = "playcounts.db";
 	private static final String TABLE_PLAYCOUNTS = "playcounts";
 	private static final String DATABASE_CREATE = "CREATE TABLE "+TABLE_PLAYCOUNTS + " ("
 	  + "type      INTEGER, "
 	  + "type_id   BIGINT, "
-	  + "playcount INTEGER);";
+	  + "playcount INTEGER, "
+	  + "skipcount INTEGER);";
 	private static final String INDEX_UNIQUE_CREATE = "CREATE UNIQUE INDEX idx_uniq ON "+TABLE_PLAYCOUNTS
 	  + " (type, type_id);";
 	private static final String INDEX_TYPE_CREATE = "CREATE INDEX idx_type ON "+TABLE_PLAYCOUNTS
@@ -59,18 +60,22 @@ public class PlayCountsHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase dbh, int oldVersion, int newVersion) {
-		// first db -> nothing to upgrade
+		if (oldVersion < 2) {
+			dbh.execSQL("ALTER TABLE "+TABLE_PLAYCOUNTS+" ADD COLUMN skipcount INTEGER");
+			dbh.execSQL("UPDATE "+TABLE_PLAYCOUNTS+" SET skipcount=0");
+		}
 	}
 
 	/**
-	 * Counts this song object as 'played'
+	 * Counts this song object as 'played' or 'skipped'
 	 */
-	public void countSong(Song song) {
+	public void countSong(Song song, boolean played) {
 		long id = Song.getId(song);
-		
+		final String column = played ? "playcount" : "skipcount";
+
 		SQLiteDatabase dbh = getWritableDatabase();
-		dbh.execSQL("INSERT OR IGNORE INTO "+TABLE_PLAYCOUNTS+" (type, type_id, playcount) VALUES ("+MediaUtils.TYPE_SONG+", "+id+", 0);"); // Creates row if not exists
-		dbh.execSQL("UPDATE "+TABLE_PLAYCOUNTS+" SET playcount=playcount+1 WHERE type="+MediaUtils.TYPE_SONG+" AND type_id="+id+";");
+		dbh.execSQL("INSERT OR IGNORE INTO "+TABLE_PLAYCOUNTS+" (type, type_id, playcount, skipcount) VALUES ("+MediaUtils.TYPE_SONG+", "+id+", 0, 0);"); // Creates row if not exists
+		dbh.execSQL("UPDATE "+TABLE_PLAYCOUNTS+" SET "+column+"="+column+"+1 WHERE type="+MediaUtils.TYPE_SONG+" AND type_id="+id+";");
 		dbh.close();
 
 		performGC(MediaUtils.TYPE_SONG);
