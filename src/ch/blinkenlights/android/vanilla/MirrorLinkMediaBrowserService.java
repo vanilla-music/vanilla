@@ -25,6 +25,7 @@ import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.provider.MediaStore;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -83,6 +84,9 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService
 
 	// Indicates whether the service was started.
 	private boolean mServiceStarted;
+
+	// The fallback cover image resource encoded as bitmap
+	private static Bitmap sFallbackBitmap;
 
 	private Looper mLooper;
 	private Handler mHandler;
@@ -159,6 +163,10 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService
 					.build(), MediaBrowser.MediaItem.FLAG_BROWSABLE
 		));
 
+		// initialise the fallback bitmap
+		if (sFallbackBitmap == null) {
+			sFallbackBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.fallback_cover);
+		}
 
 		// Start a new MediaSession
 		mSession = new MediaSession(this, "VanillaMediaBrowserService");
@@ -433,27 +441,40 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService
 			final int flags = (mediaType == MediaUtils.TYPE_SONG || mediaType == MediaUtils.TYPE_PLAYLIST) ? MediaBrowser.MediaItem.FLAG_PLAYABLE : MediaBrowser.MediaItem.FLAG_BROWSABLE;
 			final int count = cursor.getCount();
 			cursor.moveToFirst();
-			for (int j = 0; j != count; ++j) {
+			for (int j = 0; j < count; ++j) {
 				final Long id = cursor.getLong(0);
 				String title = cursor.getString(2);
 				Bitmap cover = null;
 				if(mediaType == MediaUtils.TYPE_SONG) {
-					song.populate(cursor);
-					if(song.isFilled()) {
-						cover = song.getSmallCover(context);
+					if(j < 50) {
+						song.populate(cursor);
+						song.flags = 0;
+						if(song.isFilled()) {
+							cover = song.getSmallCover(context);
+						}
+						if(cover == null) {
+							cover = sFallbackBitmap;
+						}
 					}
-				} else if((mediaType == MediaUtils.TYPE_ALBUM) || (mediaType == MediaUtils.TYPE_ARTIST)) {
-					Song songForCover = MediaUtils.getSongByTypeId(resolver, mediaType, id);
-					if(songForCover != null && songForCover.isFilled()) {
-						cover = songForCover.getSmallCover(context);
+				} else if((mediaType == MediaUtils.TYPE_ALBUM)) {
+					if(j < 50) {
+						Song songForCover = MediaUtils.getSongByTypeId(resolver, mediaType, id);
+						if(songForCover != null && songForCover.isFilled()) {
+							cover = songForCover.getSmallCover(context);
+						}
+						if(cover == null) {
+							cover = sFallbackBitmap;
+						}
 					}
+				} else {
+					cover = CoverBitmap.generatePlaceholderCover(context, 88,88, title);
 				}
 				MediaBrowser.MediaItem item = new MediaBrowser.MediaItem(
 					new MediaDescription.Builder()
 						.setMediaId(MediaID.toString(mediaType, id, title))
 						.setTitle(title)
 						.setSubtitle(subtitleForMediaType(mediaType))
-						.setIconBitmap(cover == null ? CoverBitmap.generatePlaceholderCover(context, 88,88, title) : cover )
+						.setIconBitmap(cover)
 						.build(),
 						flags);
 				populateMe.add(item);
