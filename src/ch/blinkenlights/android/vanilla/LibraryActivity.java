@@ -675,10 +675,16 @@ public class LibraryActivity
 			pickSongs(intent, ACTION_ENQUEUE_AS_NEXT);
 			break;
 		case CTX_MENU_RENAME_PLAYLIST: {
-			PlaylistTask playlistTask = new PlaylistTask(intent.getLongExtra("id", -1), intent.getStringExtra("title"));
-			NewPlaylistDialog dialog = new NewPlaylistDialog(this, intent.getStringExtra("title"), R.string.rename, playlistTask);
-			dialog.setDismissMessage(mHandler.obtainMessage(MSG_RENAME_PLAYLIST, dialog));
-			dialog.show();
+			final String playlistName = intent.getStringExtra("title");
+			final long playlistId = intent.getLongExtra("id", -1);
+			PlaylistInputDialog dialog = new PlaylistInputDialog(new PlaylistInputDialog.Callback() {
+				@Override
+				public void onSuccess(String input) {
+					PlaylistTask playlistTask = new PlaylistTask(playlistId, input);
+					mHandler.sendMessage(mHandler.obtainMessage(MSG_RENAME_PLAYLIST, playlistTask));
+				}
+			}, playlistName, R.string.rename);
+			dialog.show(getFragmentManager(), "RenamePlaylistInputDialog");
 			break;
 		}
 		case CTX_MENU_DELETE:

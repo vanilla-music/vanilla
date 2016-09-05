@@ -371,11 +371,10 @@ public abstract class PlaybackActivity extends Activity
 	static final int MENU_SONG_FAVORITE = 12;
 	static final int MENU_SHOW_QUEUE = 13;
 	static final int MENU_HIDE_QUEUE = 14;
-	static final int MENU_SAVE_QUEUE_AS_PLAYLIST = 15;
-	static final int MENU_DELETE = 16;
-	static final int MENU_EMPTY_QUEUE = 17;
-	static final int MENU_ADD_TO_PLAYLIST = 18;
-	static final int MENU_SHARE = 19;
+	static final int MENU_DELETE = 15;
+	static final int MENU_EMPTY_QUEUE = 16;
+	static final int MENU_ADD_TO_PLAYLIST = 17;
+	static final int MENU_SHARE = 18;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
@@ -397,11 +396,6 @@ public abstract class PlaybackActivity extends Activity
 		case MENU_EMPTY_QUEUE:
 			PlaybackService.get(this).emptyQueue();
 			break;
-		case MENU_SAVE_QUEUE_AS_PLAYLIST:
-			NewPlaylistDialog dialog = new NewPlaylistDialog(this, null, R.string.create, null);
-			dialog.setOnDismissListener(new SaveAsPlaylistDismiss());
-			dialog.show();
-			break;
 		default:
 			return false;
 		}
@@ -410,10 +404,9 @@ public abstract class PlaybackActivity extends Activity
 
 
 	/**
-	 * Call addToPlaylist with the results from a NewPlaylistDialog stored in
-	 * obj.
+	 * Same as MSG_ADD_TO_PLAYLIST but creates the new playlist on-the-fly (or overwrites an existing list)
 	 */
-	protected static final int MSG_NEW_PLAYLIST = 0;
+	protected static final int MSG_CREATE_PLAYLIST = 0;
 	/**
 	 * Call renamePlaylist with the results from a NewPlaylistDialog stored in
 	 * obj.
@@ -434,7 +427,7 @@ public abstract class PlaybackActivity extends Activity
 	/**
 	 * Saves the current queue as a playlist
 	 */
-	protected static final int MSG_SAVE_QUEUE_AS_PLAYLIST = 5;
+	protected static final int MSG_ADD_QUEUE_TO_PLAYLIST = 5;
 	/**
 	 * Notification that we changed some playlist members
 	 */
@@ -444,16 +437,12 @@ public abstract class PlaybackActivity extends Activity
 	public boolean handleMessage(Message message)
 	{
 		switch (message.what) {
-		case MSG_NEW_PLAYLIST: {
-			NewPlaylistDialog dialog = (NewPlaylistDialog)message.obj;
-			if (dialog.isAccepted()) {
-				String name = dialog.getText();
-				long playlistId = Playlist.createPlaylist(getContentResolver(), name);
-				PlaylistTask playlistTask = dialog.getPlaylistTask();
-				playlistTask.name = name;
-				playlistTask.playlistId = playlistId;
-				mHandler.sendMessage(mHandler.obtainMessage(MSG_ADD_TO_PLAYLIST, playlistTask));
-			}
+		case MSG_CREATE_PLAYLIST: {
+			PlaylistTask playlistTask = (PlaylistTask)message.obj;
+			int nextAction = message.arg1;
+			long playlistId = Playlist.createPlaylist(getContentResolver(), playlistTask.name);
+			playlistTask.playlistId = playlistId;
+			mHandler.sendMessage(mHandler.obtainMessage(nextAction, playlistTask));
 			break;
 		}
 		case MSG_ADD_TO_PLAYLIST: {
@@ -461,12 +450,9 @@ public abstract class PlaybackActivity extends Activity
 			addToPlaylist(playlistTask);
 			break;
 		}
-		case MSG_SAVE_QUEUE_AS_PLAYLIST: {
-			String playlistName = (String)message.obj;
-			long playlistId = Playlist.createPlaylist(getContentResolver(), playlistName);
-			PlaylistTask playlistTask = new PlaylistTask(playlistId, playlistName);
+		case MSG_ADD_QUEUE_TO_PLAYLIST: {
+			PlaylistTask playlistTask = (PlaylistTask)message.obj;
 			playlistTask.audioIds = new ArrayList<Long>();
-
 			Song song;
 			PlaybackService service = PlaybackService.get(this);
 			for (int i=0; ; i++) {
@@ -475,7 +461,6 @@ public abstract class PlaybackActivity extends Activity
 					break;
 				playlistTask.audioIds.add(song.id);
 			}
-
 			addToPlaylist(playlistTask);
 			break;
 		}
@@ -485,11 +470,8 @@ public abstract class PlaybackActivity extends Activity
 			break;
 		}
 		case MSG_RENAME_PLAYLIST: {
-			NewPlaylistDialog dialog = (NewPlaylistDialog)message.obj;
-			if (dialog.isAccepted()) {
-				long playlistId = dialog.getPlaylistTask().playlistId;
-				Playlist.renamePlaylist(getContentResolver(), playlistId, dialog.getText());
-			}
+			PlaylistTask playlistTask = (PlaylistTask)message.obj;
+			Playlist.renamePlaylist(getContentResolver(), playlistTask.playlistId, playlistTask.name);
 			break;
 		}
 		case MSG_DELETE: {
@@ -678,19 +660,4 @@ public abstract class PlaybackActivity extends Activity
 		return true;
 	}
 
-	/**
-	 * Fired if user dismisses the create-playlist dialog
-	 *
-	 * @param dialogInterface the dismissed interface dialog
-	 */
-	class SaveAsPlaylistDismiss implements DialogInterface.OnDismissListener {
-		@Override
-		public void onDismiss(DialogInterface dialogInterface) {
-			NewPlaylistDialog dialog = (NewPlaylistDialog)dialogInterface;
-			if (dialog.isAccepted()) {
-				String playlistName = dialog.getText();
-				mHandler.sendMessage(mHandler.obtainMessage(MSG_SAVE_QUEUE_AS_PLAYLIST, playlistName));
-			}
-		}
-	}
 }

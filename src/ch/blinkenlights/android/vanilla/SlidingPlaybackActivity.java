@@ -126,10 +126,12 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 		menu.add(0, MENU_HIDE_QUEUE, 20, R.string.hide_queue);
 		menu.add(0, MENU_CLEAR_QUEUE, 20, R.string.dequeue_rest);
 		menu.add(0, MENU_EMPTY_QUEUE, 20, R.string.empty_the_queue);
-		menu.add(0, MENU_SAVE_QUEUE_AS_PLAYLIST, 20, R.string.save_as_playlist);
+		menu.add(0, MENU_SAVE_QUEUE, 20, R.string.save_as_playlist);
 		onSlideFullyExpanded(false);
 		return true;
 	}
+
+	static final int MENU_SAVE_QUEUE = 300;
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -140,13 +142,18 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 		case MENU_HIDE_QUEUE:
 			mSlidingView.hideSlide();
 			break;
+		case MENU_SAVE_QUEUE:
+			PlaylistDialog dialog = new PlaylistDialog(this, null, null);
+			dialog.show(getFragmentManager(), "PlaylistDialog");
+			break;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 		return true;
 	}
 
-	public  static final int CTX_MENU_ADD_TO_PLAYLIST = 300;
+
+	static final int CTX_MENU_ADD_TO_PLAYLIST = 300;
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
@@ -167,31 +174,27 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 	}
 
 	/**
-	 * Called by PlaylistDialog.Callback to prompt for the new
-	 * playlist name
-	 *
-	 * @param intent The intent holding the selected data
-	 */
-	public void createNewPlaylistFromIntent(Intent intent, MediaAdapter allSource) {
-		PlaylistTask playlistTask = new PlaylistTask(-1, null);
-		playlistTask.query = buildQueryFromIntent(intent, true, allSource);
-		NewPlaylistDialog dialog = new NewPlaylistDialog(this, null, R.string.create, playlistTask);
-		dialog.setDismissMessage(mHandler.obtainMessage(MSG_NEW_PLAYLIST, dialog));
-		dialog.show();
-	}
-
-	/**
 	 * Called by PlaylistDialog.Callback to append data to
 	 * a playlist
 	 *
 	 * @param intent The intent holding the selected data
 	 */
-	public void appendToPlaylistFromIntent(Intent intent, MediaAdapter allSource) {
-		long playlistId = intent.getLongExtra("playlist", -1);
-		String playlistName = intent.getStringExtra("playlistName");
-		PlaylistTask playlistTask = new PlaylistTask(playlistId, playlistName);
-		playlistTask.query = buildQueryFromIntent(intent, true, allSource);
-		mHandler.sendMessage(mHandler.obtainMessage(MSG_ADD_TO_PLAYLIST, playlistTask));
+	public void updatePlaylistFromPlaylistDialog(PlaylistDialog.Data data) {
+		PlaylistTask playlistTask = new PlaylistTask(data.id, data.name);
+		int action = -1;
+
+		if (data.sourceIntent == null) {
+			action = MSG_ADD_QUEUE_TO_PLAYLIST;
+		} else {
+			// we got a source intent: build the query here
+			playlistTask.query = buildQueryFromIntent(data.sourceIntent, true, data.allSource);
+			action = MSG_ADD_TO_PLAYLIST;
+		}
+		if (playlistTask.playlistId < 0) {
+			mHandler.sendMessage(mHandler.obtainMessage(MSG_CREATE_PLAYLIST, action, 0, playlistTask));
+		} else {
+			mHandler.sendMessage(mHandler.obtainMessage(action, playlistTask));
+		}
 	}
 
 	/**
@@ -327,7 +330,7 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 		if (mMenu == null)
 			return; // not initialized yet
 
-		final int[] slide_visible = {MENU_HIDE_QUEUE, MENU_CLEAR_QUEUE, MENU_EMPTY_QUEUE, MENU_SAVE_QUEUE_AS_PLAYLIST};
+		final int[] slide_visible = {MENU_HIDE_QUEUE, MENU_CLEAR_QUEUE, MENU_EMPTY_QUEUE, MENU_SAVE_QUEUE};
 		final int[] slide_hidden = {MENU_SHOW_QUEUE, MENU_SORT, MENU_DELETE, MENU_ENQUEUE_ALBUM, MENU_ENQUEUE_ARTIST, MENU_ENQUEUE_GENRE, MENU_ADD_TO_PLAYLIST, MENU_SHARE};
 
 		for (int id : slide_visible) {
