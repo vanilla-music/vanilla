@@ -421,40 +421,47 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService
 	private void runQuery(List<MediaBrowser.MediaItem> populateMe, int mediaType, MediaAdapter adapter) {
 		populateMe.clear();
 		try {
-			Context context = getApplicationContext();
-			ContentResolver resolver = context.getContentResolver();
-			Cursor cursor = adapter.query();
-			Song song = new Song(-1);
-			song.artist = "";
-			song.album = "";
-			if (cursor == null) {
-				return;
+			final Context context = getApplicationContext();
+			final ContentResolver resolver = context.getContentResolver();
+			Cursor cursor;
+			if(mediaType == MediaUtils.TYPE_SONG) {
+				cursor = adapter.buildSongQuery(Song.FILLED_PROJECTION).runQuery(resolver);
+			} else {
+				cursor = adapter.query();
 			}
-
+			Song song = new Song(-1);
 			final int flags = (mediaType == MediaUtils.TYPE_SONG || mediaType == MediaUtils.TYPE_PLAYLIST) ? MediaBrowser.MediaItem.FLAG_PLAYABLE : MediaBrowser.MediaItem.FLAG_BROWSABLE;
 			final int count = cursor.getCount();
 			cursor.moveToFirst();
 			for (int j = 0; j != count; ++j) {
-				final String id = cursor.getString(0); //Long.parseLong(id);
-				song.id = cursor.getLong(0);
-				song.albumId = cursor.getLong(1);
-				song.title = cursor.getString(2);
-				Bitmap cover = (mediaType == MediaUtils.TYPE_SONG || mediaType == MediaUtils.TYPE_ALBUM) ? song.getSmallCover(context) : null;
+				final Long id = cursor.getLong(0);
+				String title = cursor.getString(2);
+				Bitmap cover = null;
+				if(mediaType == MediaUtils.TYPE_SONG) {
+					song.populate(cursor);
+					if(song.isFilled()) {
+						cover = song.getSmallCover(context);
+					}
+				} else if((mediaType == MediaUtils.TYPE_ALBUM) || (mediaType == MediaUtils.TYPE_ARTIST)) {
+					Song songForCover = MediaUtils.getSongByTypeId(resolver, mediaType, id);
+					if(songForCover != null && songForCover.isFilled()) {
+						cover = songForCover.getSmallCover(context);
+					}
+				}
 				MediaBrowser.MediaItem item = new MediaBrowser.MediaItem(
 					new MediaDescription.Builder()
-						.setMediaId(MediaID.toString(mediaType, song.id, song.title))
-						.setTitle(song.title)
+						.setMediaId(MediaID.toString(mediaType, id, title))
+						.setTitle(title)
 						.setSubtitle(subtitleForMediaType(mediaType))
-						.setIconBitmap(cover == null ? CoverBitmap.generatePlaceholderCover(context, 88,88,song.title) : cover)
+						.setIconBitmap(cover == null ? CoverBitmap.generatePlaceholderCover(context, 88,88, title) : cover )
 						.build(),
 						flags);
 				populateMe.add(item);
 				cursor.moveToNext();
 			}
-
 			cursor.close();
 		} catch (Exception e) {
-			Log.d("VanillaMusic","Failed retrieving Media");
+			Log.d("VanillaMusic","Failed retrieving Media " + e.toString());
 		}
 	}
 
