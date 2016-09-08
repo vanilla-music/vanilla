@@ -32,6 +32,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.view.WindowManager;
 import android.widget.EditText;
 
 public class PlaylistInputDialog extends DialogFragment
@@ -88,6 +89,8 @@ public class PlaylistInputDialog extends DialogFragment
 			.setPositiveButton(mActionRes, this)
 			.setNegativeButton(android.R.string.cancel, this);
 		mDialog = builder.create();
+		mDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
 		return mDialog;
 	}
 
