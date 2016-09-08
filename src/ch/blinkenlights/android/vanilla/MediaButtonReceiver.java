@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2016 Adrian Ulrich <adrian@blinkenlights.ch>
  * Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -30,8 +31,8 @@ import android.content.SharedPreferences;
 import android.media.AsyncPlayer;
 import android.media.AudioManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.SystemClock;
+import android.os.Handler;
 import android.view.KeyEvent;
 
 /**
@@ -39,7 +40,7 @@ import android.view.KeyEvent;
  * appropriately.
  */
 public class MediaButtonReceiver extends BroadcastReceiver {
-		/**
+	/**
 	 * If another button event is received before this time in milliseconds
 	 * expires, the event with be considered a double click.
 	 */
@@ -54,6 +55,10 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 	 * Time of the last play/pause click. Used to detect double-clicks.
 	 */
 	private static long sLastClickTime = 0;
+	/**
+	 * The class which will fire delayed events
+	 */
+	private static DelayedClickCounter sDelayedClickCounter;
 	/**
 	 * Whether a beep should be played in response to double clicks be used.
 	 * 1 for yes, 0 for no, -1 for uninitialized.
@@ -135,12 +140,14 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 		case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
 			// single click: pause/resume.
 			// double click: next track
-
+			// triple click: previous track
 			if (action == KeyEvent.ACTION_DOWN) {
 				long time = SystemClock.uptimeMillis();
 				if (time - sLastClickTime < DOUBLE_CLICK_DELAY) {
 					beep(context);
-					act = PlaybackService.ACTION_NEXT_SONG_AUTOPLAY;
+					sDelayedClickCounter = new DelayedClickCounter(context, time);
+					Handler handler = new Handler();
+					handler.postDelayed(sDelayedClickCounter, DOUBLE_CLICK_DELAY);
 				} else {
 					act = PlaybackService.ACTION_TOGGLE_PLAYBACK;
 				}
@@ -167,14 +174,64 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 			return false;
 		}
 
-		if (act != null) {
-			Intent intent = new Intent(context, PlaybackService.class);
-			intent.setAction(act);
-			context.startService(intent);
-		}
-
+		runAction(context, act);
 		return true;
 	}
+
+
+	/**
+	 * Passes an action to PlaybackService
+	 *
+	 * @param context the context to use
+	 * @param act the action to pass on
+	 */
+	private static void runAction(Context context, String act) {
+		if (act == null)
+			return;
+
+		Intent intent = new Intent(context, PlaybackService.class);
+		intent.setAction(act);
+		context.startService(intent);
+	}
+
+
+	/**
+	 * Runable to run a delayed action
+	 * Inspects sLastClickTime and sDelayedClicks to guess what to do
+	 *
+	 * @param context the context to use
+	 * @param serial the value of sLastClickTime during creation, used to identify stale events
+	 */
+	private static class DelayedClickCounter implements Runnable {
+		private Context mContext;
+		private long mSerial;
+		private static int sDelayedClicks;
+
+		public DelayedClickCounter(Context context, long serial) {
+			mContext = context;
+			mSerial = serial;
+		}
+
+		@Override
+		public void run() {
+			sDelayedClicks++;
+			if (mSerial != sLastClickTime)
+				return; // just count the click, don't fire.
+
+			String act = null;
+			switch (sDelayedClicks) {
+				case 1:
+					act = PlaybackService.ACTION_NEXT_SONG_AUTOPLAY;
+					break;
+				default:
+					act = PlaybackService.ACTION_PREVIOUS_SONG_AUTOPLAY;
+			}
+			sDelayedClicks = 0;
+			runAction(mContext, act);
+		}
+	}
+
+
 
 	@Override
 	public void onReceive(Context context, Intent intent)
