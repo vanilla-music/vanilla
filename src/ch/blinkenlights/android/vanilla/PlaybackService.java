@@ -991,7 +991,10 @@ public final class PlaybackService extends Service
 				if (mNotificationMode != NEVER)
 					startForeground(NOTIFICATION_ID, createNotification(mCurrentSong, mState, mNotificationMode));
 
-				mAudioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+				final int result = mAudioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+				if (result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+					unsetFlag(FLAG_PLAYING);
+				}
 
 				mHandler.removeMessages(MSG_ENTER_SLEEP_STATE);
 				try {
@@ -2140,9 +2143,10 @@ public final class PlaybackService extends Service
 		case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
 		case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
 			synchronized (mStateLock) {
-				mTransientAudioLoss = (mState & FLAG_PLAYING) != 0;
-				if(mTransientAudioLoss) {
-					if (type == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
+				if((mState & FLAG_PLAYING) != 0) {
+					mTransientAudioLoss = true;
+					
+					if(type == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
 						setFlag(FLAG_DUCKING);
 					} else {
 						mForceNotificationVisible = true;
