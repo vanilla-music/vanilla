@@ -54,4 +54,10 @@ THE SOFTWARE.
 			android:targetPackage="ch.blinkenlights.android.vanilla"
 			android:targetClass="ch.blinkenlights.android.vanilla.FilebrowserStartActivity" />
 	</PreferenceScreen>
+	<CheckBoxPreference
+		android:key="filesystem_browse_start_limit"
+		android:title="@string/filebrowser_start_limit"
+		android:summary="@string/filebrowser_start_limit_summary"
+		android:defaultValue="false" />
+		/>
 </PreferenceScreen>

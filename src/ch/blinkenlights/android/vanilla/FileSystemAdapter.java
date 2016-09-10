@@ -227,6 +227,46 @@ public class FileSystemAdapter
 	@Override
 	public void setLimiter(Limiter limiter)
 	{
+		// If the settings tell us to limit the browser to the home directory and its descendants.
+		if (FileUtils.getFilesystemBrowseStartLimit(mActivity)) {
+			if (limiter == null) {
+				return;
+			}
+
+			// Don't allow to get past BrowseStart
+			if (mLimiter != null) {
+				File browseStart = FileUtils.getFilesystemBrowseStart(mActivity);
+
+				File newLimiterFile = (File)limiter.data;
+
+				boolean isDescendantOfBrowserStart = false;
+
+				// If the new limiter is browseStart itself, consider it a descendant.
+				if (newLimiterFile.compareTo(browseStart) == 0) {
+					isDescendantOfBrowserStart = true;
+				}
+				else {
+					File currentParent = newLimiterFile.getParentFile();
+					while (currentParent != null) {
+						if (currentParent.compareTo(browseStart) == 0) {
+							isDescendantOfBrowserStart = true;
+							break;
+						}
+
+						currentParent = currentParent.getParentFile();
+					}
+				}
+
+				// Don't allow navigating to non-descendants of BrowseStart.
+				if (!isDescendantOfBrowserStart)
+				{
+					// Default back to BrowseStart
+					limiter = buildLimiter(browseStart);
+				}
+			}
+		}
+
+
 		if (mFileObserver != null)
 			mFileObserver.stopWatching();
 		mFileObserver = null;
