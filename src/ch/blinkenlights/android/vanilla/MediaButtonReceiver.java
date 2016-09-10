@@ -56,10 +56,6 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 	 */
 	private static long sLastClickTime = 0;
 	/**
-	 * The class which will fire delayed events
-	 */
-	private static DelayedClickCounter sDelayedClickCounter;
-	/**
 	 * Whether a beep should be played in response to double clicks be used.
 	 * 1 for yes, 0 for no, -1 for uninitialized.
 	 */
@@ -145,9 +141,9 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 				long time = SystemClock.uptimeMillis();
 				if (time - sLastClickTime < DOUBLE_CLICK_DELAY) {
 					beep(context);
-					sDelayedClickCounter = new DelayedClickCounter(context, time);
 					Handler handler = new Handler();
-					handler.postDelayed(sDelayedClickCounter, DOUBLE_CLICK_DELAY);
+					DelayedClickCounter dcc = new DelayedClickCounter(context, time);
+					handler.postDelayed(dcc, DOUBLE_CLICK_DELAY);
 				} else {
 					act = PlaybackService.ACTION_TOGGLE_PLAYBACK;
 				}
