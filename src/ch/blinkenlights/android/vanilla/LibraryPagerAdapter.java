@@ -568,6 +568,10 @@ public class LibraryPagerAdapter
 				requestRequery(mSongAdapter);
 			}
 			tab = mArtistsPosition;
+			if (tab == -1)
+				tab = mAlbumsPosition;
+			if (tab == -1)
+				tab = mSongsPosition;
 			break;
 		case MediaUtils.TYPE_FILE:
 			if (mFilesAdapter == null) {
