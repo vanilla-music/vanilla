@@ -400,7 +400,13 @@ public final class CoverBitmap {
 		final float textSize = width * 0.4f;
 
 		title = title.replaceFirst("(?i)^The ", ""); // 'The\s' shall not be a part of the string we are drawing.
+		title = title.replaceAll("[ <>_-]", ""); // Remove clutter, so eg. J-Rock becomes JR
 		String subText = (title+"  ").substring(0,2);
+
+		// Use only the first char if it is 'wide'
+		if(Character.UnicodeBlock.of(subText.charAt(0)) == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS) {
+			subText = subText.substring(0,1);
+		}
 
 		Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
 		Canvas canvas = new Canvas(bitmap);
