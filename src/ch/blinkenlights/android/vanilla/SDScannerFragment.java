@@ -19,6 +19,8 @@ package ch.blinkenlights.android.vanilla;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.method.ScrollingMovementMethod;
@@ -34,6 +36,8 @@ import com.gmail.jerickson314.sdscanner.UIStringGenerator;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * Fragment version of the MainActivity from the SD Scanner app
@@ -46,8 +50,13 @@ public class SDScannerFragment extends Fragment
 	/**
 	 * List of common directories with media files
 	 */
-	private File[] mScanTargetStages = { Environment.getExternalStorageDirectory(), new File("/storage/sdcard1") };
+	private File[] mScanTargetStages = {};
 
+	@Override
+	public void onAttach(Context context) {
+		super.onAttach(context);
+		mScanTargetStages = getScanTargets(context);
+	}
 
 	@Override
 	public void updateProgressNum(int progressNum) {
@@ -144,4 +153,54 @@ public class SDScannerFragment extends Fragment
 		mScanFragment.startScan(mScanTargetStages);
 	}
 
+	/**
+	 * Creates a list of directories that can be scanned. Uses
+	 * {@link Environment#getExternalStorageDirectory} and {@link Context#getExternalFilesDirs}
+	 * (on KITKAT+).
+	 *
+	 * @param context The context
+	 * @return A list of unique directories that can be scanned.
+	 */
+	private File[] getScanTargets(Context context) {
+		ArrayList<File> scanTargets = new ArrayList<>();
+		// Put canonical paths into a HashSet to avoid duplicates
+		HashSet<String> possibleTargets = new HashSet<>();
+		try {
+			possibleTargets.add(Environment.getExternalStorageDirectory().getCanonicalPath());
+		} catch (IOException e) {
+			// Shouldn't happen, but just in case it does add the external storage dir directly
+			scanTargets.add(Environment.getExternalStorageDirectory());
+		}
+
+		File sdcard1 = new File("/storage/sdcard1");
+		if (sdcard1.exists()) {
+			try {
+				possibleTargets.add(sdcard1.getCanonicalPath());
+			} catch (IOException e) {
+				// Shouldn't happen, but just in case it does add the "storage/sdcard1" dir directly
+				scanTargets.add(sdcard1);
+			}
+		}
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+			// Attempt to divine external storage directories from 'getExternalFilesDirs'
+			File[] externalFilesDirs = context.getExternalFilesDirs(null);
+			String packageDirSuffix = "/Android/data/" + context.getPackageName() + "/files";
+			for (int i = 0; i < externalFilesDirs.length; i++) {
+				try {
+					String storageDir = externalFilesDirs[i].getCanonicalPath().replace(packageDirSuffix, "");
+					possibleTargets.add(storageDir);
+				} catch (IOException e) {
+
+				}
+			}
+		}
+		for (String possibleTarget : possibleTargets) {
+			File file = new File(possibleTarget);
+			if (file.exists()) {
+				scanTargets.add(file);
+			}
+		}
+		return scanTargets.toArray(new File[scanTargets.size()]);
+	}
 }
