@@ -99,6 +99,11 @@ public class MediaUtils {
 	public static final String ALBUM_SORT = "album_key,track";
 
 	/**
+	 * The default sort order for files. Simply use the path
+	 */
+	public static final String FILE_SORT = "_data";
+
+	/**
 	 * Cached random instance.
 	 */
 	private static Random sRandom;
@@ -668,7 +673,7 @@ public class MediaUtils {
 		String[] qargs = { path };
 
 		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-		QueryTask result = new QueryTask(media, projection, query, qargs, DEFAULT_SORT);
+		QueryTask result = new QueryTask(media, projection, query, qargs, FILE_SORT);
 		result.type = TYPE_FILE;
 		return result;
 	}
