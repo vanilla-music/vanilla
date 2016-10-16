@@ -35,18 +35,18 @@ public class OpusFile extends OggFile {
 		// contain the OpusHeader while the 2nd MUST contain the
 		// OggHeader payload: https://wiki.xiph.org/OggOpus
 		long pos = 0;
-		long offsets[] = parse_ogg_page(s, pos);
+		PageInfo pi =  parse_stream_page(s, pos);
 
 		HashMap tags = new HashMap();
-		HashMap opus_head = parse_opus_head(s, pos+offsets[0], offsets[1]);
-		pos += offsets[0]+offsets[1];
+		HashMap opus_head = parse_opus_head(s, pos+pi.header_len, pi.payload_len);
+		pos += pi.header_len+pi.payload_len;
 
 		// Check if we parsed a version number and ensure it doesn't have any
 		// of the upper 4 bits set (eg: <= 15)
 		if(opus_head.containsKey("version") && (Integer)opus_head.get("version") <= 0xF) {
 			// Get next page: The spec requires this to be an OpusTags head
-			offsets = parse_ogg_page(s, pos);
-			tags = parse_opus_vorbis_comment(s, pos+offsets[0], offsets[1]);
+			pi = parse_stream_page(s, pos);
+			tags = parse_opus_vorbis_comment(s, pos+pi.header_len, pi.payload_len);
 			// ...and merge replay gain intos into the tags map
 			calculate_gain(opus_head, tags);
 		}
@@ -121,7 +121,7 @@ public class OpusFile extends OggFile {
 		if((new String(magic, 0, magic_len)).equals("OpusTags") == false)
 			xdie("Damaged packet found!");
 
-		return parse_vorbis_comment(s, offset+magic_len, pl_len-magic_len);
+		return parse_vorbis_comment(s, this, offset+magic_len, pl_len-magic_len);
 	}
 
 }

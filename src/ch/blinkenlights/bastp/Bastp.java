@@ -26,10 +26,10 @@ import java.util.HashMap;
 
 
 public class Bastp {
-	
+
 	public Bastp() {
 	}
-	
+
 	public HashMap getTags(String fname) {
 		HashMap tags = new HashMap();
 		try {

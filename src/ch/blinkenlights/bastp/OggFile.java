@@ -23,7 +23,7 @@ import java.io.RandomAccessFile;
 import java.util.HashMap;
 
 
-public class OggFile extends Common {
+public class OggFile extends Common implements PageInfo.PageParser {
 
 	private static final int OGG_PAGE_SIZE           = 27;  // Static size of an OGG Page
 	private static final int OGG_TYPE_IDENTIFICATION = 1;   // Identification header
@@ -42,15 +42,15 @@ public class OggFile extends Common {
 		HashMap identification = new HashMap();
 		
 		for( ; retry > 0 ; retry-- ) {
-			long res[] = parse_ogg_page(s, offset);
-			if(res[2] == OGG_TYPE_IDENTIFICATION) {
-				identification = parse_ogg_vorbis_identification(s, offset+res[0], res[1]);
+			PageInfo pi = parse_stream_page(s, offset);
+			if(pi.type == OGG_TYPE_IDENTIFICATION) {
+				identification = parse_ogg_vorbis_identification(s, offset+pi.header_len, pi.payload_len);
 				need_id = false;
-			} else if(res[2] == OGG_TYPE_COMMENT) {
-				tags = parse_ogg_vorbis_comment(s, offset+res[0], res[1]);
+			} else if(pi.type == OGG_TYPE_COMMENT) {
+				tags = parse_ogg_vorbis_comment(s, offset+pi.header_len, pi.payload_len);
 				need_tags = false;
 			}
-			offset += res[0] + res[1];
+			offset += pi.header_len + pi.payload_len;
 			if (need_tags == false && need_id == false) {
 				break;
 			}
@@ -71,10 +71,10 @@ public class OggFile extends Common {
 	}
 	
 	
-	/* Parses the ogg page at offset 'offset' and returns
-	** [header_size, payload_size, type]
-	*/
-	protected long[] parse_ogg_page(RandomAccessFile s, long offset) throws IOException {
+	/**
+	 * Parses the ogg page at offset 'offset'
+	 */
+	public PageInfo parse_stream_page(RandomAccessFile s, long offset) throws IOException {
 		long[] result   = new long[3];               // [header_size, payload_size]
 		byte[] p_header = new byte[OGG_PAGE_SIZE];   // buffer for the page header 
 		byte[] scratch;
@@ -101,18 +101,18 @@ public class OggFile extends Common {
 				psize += b2u(scratch[i]); 
 			}
 		}
-		
-		// populate result array
-		result[0] = (s.getFilePointer() - offset);
-		result[1] = psize;
-		result[2] = -1;
-		
+
+		PageInfo pi    = new PageInfo();
+		pi.header_len  = (s.getFilePointer() - offset);
+		pi.payload_len = psize;
+		pi.type        = -1;
+
 		/* next byte is most likely the type -> pre-read */
 		if(psize >= 1 && s.read(p_header, 0, 1) == 1) {
-			result[2] = b2u(p_header[0]);
+			pi.type = b2u(p_header[0]);
 		}
-		
-		return result;
+
+		return pi;
 	}
 	
 	/* In 'vorbiscomment' field is prefixed with \3vorbis in OGG files
@@ -131,7 +131,7 @@ public class OggFile extends Common {
 		if( (new String(pfx, 0, pfx_len)).equals("\3vorbis") == false )
 			xdie("Damaged packet found!");
 		
-		return parse_vorbis_comment(s, offset+pfx_len, pl_len-pfx_len);
+		return parse_vorbis_comment(s, this, offset+pfx_len, pl_len-pfx_len);
 	}
 
 	/*
