@@ -444,7 +444,8 @@ public class CoverCache {
 				}
 
 				if (inputStream == null && (CoverCache.mCoverLoadMode & CoverCache.COVER_MODE_ANDROID) != 0) {
-					Uri uri =  Uri.parse("content://media/external/audio/media/" + song.id + "/albumart");
+					Uri uri =  Uri.parse("content://media/external/audio/albumart/"+song.albumId);
+
 					ContentResolver res = mContext.getContentResolver();
 					sampleInputStream = res.openInputStream(uri);
 					if (sampleInputStream != null) // cache misses are VERY expensive here, so we check if the first open worked
