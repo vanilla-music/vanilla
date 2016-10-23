@@ -128,7 +128,7 @@ public class PlaylistInputDialog extends DialogFragment
 			mDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
 		} else {
 			mDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(true);
-			ContentResolver resolver = getContext().getContentResolver();
+			ContentResolver resolver = getActivity().getContentResolver();
 			int res = Playlist.getPlaylist(resolver, string) == -1 ? mActionRes : R.string.overwrite;
 			mDialog.getButton(DialogInterface.BUTTON_POSITIVE).setText(res);
 		}
