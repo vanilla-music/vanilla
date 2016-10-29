@@ -55,45 +55,20 @@
   <string name="remove">Izņemt</string>
   <string name="play_or_enqueue">Ierindot, ja atskaņo; atskaņot, ja nopauzēts</string>
   <string name="open">Atvērt</string>
-  <plurals name="playing">
-    <item quantity="zero">Atskaņo %d dziesmu.</item>
-    <item quantity="one">Atskaņo %d dziesmu.</item>
-    <item quantity="other">Atskaņo %d dziesmas.</item>
-  </plurals>
-  <plurals name="enqueued">
-    <item quantity="zero">Ierindotas %d dziesmas.</item>
-    <item quantity="one">Ierindota %d dziesma.</item>
-    <item quantity="other">Ierindotas %d dziesmas.</item>
-  </plurals>
-  <plurals name="added_to_playlist">
-    <item quantity="zero">Repertuāram %2$s pievienotas %1$d dziesmas.</item>
-    <item quantity="one">Repertuāram %2$s pievienota %1$d dziesma.</item>
-    <item quantity="other">Repertuāram %2$s pievienotas %1$d dziesmas.</item>
-  </plurals>
-  <plurals name="removed_from_playlist">
-    <item quantity="zero">No repertuāra %2$s izņemts %1$d dziesmu.</item>
-    <item quantity="one">No repertuāra %2$s izņemta 1 dziesma.</item>
-    <item quantity="other">No repertuāra %2$s izņemtas %1$d dziesmas.</item>
-  </plurals>
-  <plurals name="deleted">
-    <item quantity="zero">Dzēsts %d dziesmu.</item>
-    <item quantity="one">Dzēsta 1 dziesma.</item>
-    <item quantity="other">Dzēstas %d dziesmas.</item>
-  </plurals>
   <string name="delete_file_failed">Neizdevās izdzēst %s.</string>
   <string name="deleted_item">Izdzēsa \'%s\'.</string>
   <string name="delete_item">Dzēst \'%s\'?</string>
   <string name="delete_file">Dzēst failu \'%s\'?</string>
   <string name="artists">Izpildītāji</string>
   <string name="albums">Albumi</string>
-  <string name="songs">Dziesmas</string>
+  <string name="songs">Celiņi</string>
   <string name="playlists">Repertuāri</string>
   <string name="genres">Žanri</string>
   <string name="files">Faili</string>
   <string name="unknown">Nezināms</string>
   <string name="play_all">Atskaņot visu</string>
   <string name="enqueue_all">Ierindot visu</string>
-  <string name="all_songs">Visas dziesmas</string>
+  <string name="all_songs">Visi celiņi</string>
   <string name="more_from_artist">Vairāk no izpildītāja</string>
   <string name="more_from_album">Vairāk no albuma</string>
   <string name="name">Nosaukums</string>
@@ -107,21 +82,6 @@
   <string name="album_track">Albums, celiņa numurs</string>
   <string name="song_playcount">Atskaņojumu skaits</string>
   <!--Preferences-->
-  <plurals name="seconds">
-    <item quantity="zero">%d sekunžu</item>
-    <item quantity="one">%d sekunde</item>
-    <item quantity="other">%d sekundes</item>
-  </plurals>
-  <plurals name="minutes">
-    <item quantity="zero">%d minūšu</item>
-    <item quantity="one">%d minūte</item>
-    <item quantity="other">%d minūtes</item>
-  </plurals>
-  <plurals name="hours">
-    <item quantity="zero">%d stundu</item>
-    <item quantity="one">%d stunda</item>
-    <item quantity="other">%d stundas</item>
-  </plurals>
   <string name="audio">Audio</string>
   <string name="volume_during_ducking_title">Skaļums paziņojuma laikā</string>
   <string name="volume_during_ducking_summary">Atskaņošanas skaļums:</string>
@@ -144,7 +104,7 @@
   <string name="replaygain_album_title">Ieslēgt albuma Replay Gain</string>
   <string name="replaygain_album_summary">Saglabāt albumu dinamiku</string>
   <string name="replaygain_bump_title">ReplayGain priekšpastiprinājums</string>
-  <string name="replaygain_untagged_debump_title">Dziesmas bez ReplayGain taga</string>
+  <string name="replaygain_untagged_debump_title">Celiņi bez ReplayGain taga</string>
   <string name="replaygain_untagged_debump_summary">Samazināt skaļumu par</string>
   <string name="replaygain_preamp_note_title">Piezīme</string>
   <string name="replaygain_preamp_note_content">Android neļauj paaugstināt skaļumu virs 100%. Priekšpastiprinājuma iestatīšana uz augstām vērtībām var izraisīt problēmas, ja klausaties \'klusu\' mūziku.

@@ -6,8 +6,8 @@
   <string name="empty_queue">Nincs szám kiválasztva. Válasszon a gyűjteményből vagy kapcsolja be a véletlenszerű módot ezt az üzenetet megérintve.</string>
   <string name="settings">Beállítások</string>
   <string name="no_shuffle">Nincs keverés</string>
-  <string name="shuffle_songs">Számok keverése</string>
-  <string name="shuffle_songs_continuously">Számok folyamatos keverése</string>
+  <string name="shuffle_songs">Számok lejátszása véletlenszerűen</string>
+  <string name="shuffle_songs_continuously">Számok folyamatos lejátszása véletlenszerűen</string>
   <string name="shuffle_albums">Albumok keverése</string>
   <string name="no_repeat">Nincs ismétlés</string>
   <string name="repeat">Ismétlés</string>
@@ -88,7 +88,7 @@
   <string name="unknown">Ismeretlen</string>
   <string name="play_all">Összes lejátszása</string>
   <string name="enqueue_all">Összes sorbaállítása</string>
-  <string name="all_songs">Összes szám</string>
+  <string name="all_songs">Minden szám</string>
   <string name="more_from_artist">Több ettől az előadótól</string>
   <string name="more_from_album">Több erről az albumról</string>
   <string name="name">Név</string>
@@ -103,15 +103,15 @@
   <string name="song_playcount">Lejátszások száma</string>
   <!--Preferences-->
   <plurals name="seconds">
-    <item quantity="one">1 másodperc</item>
+    <item quantity="one">%d másodperc</item>
     <item quantity="other">%d másodperc</item>
   </plurals>
   <plurals name="minutes">
-    <item quantity="one">1 perc</item>
+    <item quantity="one">%d perc</item>
     <item quantity="other">%d perc</item>
   </plurals>
   <plurals name="hours">
-    <item quantity="one">1 óra</item>
+    <item quantity="one">%d óra</item>
     <item quantity="other">%d óra</item>
   </plurals>
   <string name="audio">Audió</string>
@@ -182,7 +182,7 @@
   <string name="coverloader_shadow_title">Borítók betöltése rejtett mappából</string>
   <string name="coverloader_shadow_summary">Borító betöltésének kísérlete innen: „/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg”</string>
   <string name="cover_on_lockscreen_title">Borító megjelenítése a zárképernyőn</string>
-  <string name="cover_on_lockscreen_summary">A most játszott szám albumborítójának megjelenítése a zárképernyő</string>
+  <string name="cover_on_lockscreen_summary">A most játszott szám albumborítójának megjelenítése a zárképernyőn</string>
   <string name="double_tap_title">Dupla érintés a vezérlőelemen</string>
   <string name="double_tap_summary">Az 1x1-es verzérlőelem a dupla érintés megnyitja a lejátszót. 400ms késleltés történik mielőtt a vezérlőelem válaszol a műveletekre.</string>
   <string name="scrobble_title">A ScrobbleDroid API használata</string>

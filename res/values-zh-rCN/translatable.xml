@@ -2,20 +2,13 @@
 <resources>
   <string name="app_name">Vanilla Music</string>
   <!--Playback Activity (main screen)-->
-  <string name="no_songs">在你的设备上未找到音乐。</string>
-  <string name="empty_queue">没有选定的音乐。由媒体库或是轻点此信息进入随机模式挑选。</string>
   <string name="settings">设置</string>
   <string name="no_shuffle">不随机播放</string>
-  <string name="shuffle_songs">随机播放音乐</string>
-  <string name="shuffle_songs_continuously">连续随机播放音乐</string>
   <string name="shuffle_albums">随机播放专辑</string>
   <string name="no_repeat">不重复播放</string>
   <string name="repeat">重复播放</string>
-  <string name="repeat_current_song">重播当前曲目</string>
-  <string name="stop_current_song">当前曲目之后停止</string>
   <string name="random">随机</string>
   <string name="random_enabling">启用随机</string>
-  <string name="song_load_failed">载入音乐 %s 失败。它可能已经损坏或遗失。</string>
   <string name="queue_cleared">序列已清除</string>
   <string name="cover_art">专辑封面</string>
   <string name="close_notification">关闭通知</string>
@@ -54,35 +47,18 @@
   <string name="remove">移除</string>
   <string name="play_or_enqueue">如果播放序列；如果暫停播放</string>
   <string name="open">打开</string>
-  <plurals name="playing">
-    <item quantity="other">正在播放 %d 首音乐。</item>
-  </plurals>
-  <plurals name="enqueued">
-    <item quantity="other">%d 首音乐存入序列。</item>
-  </plurals>
-  <plurals name="added_to_playlist">
-    <item quantity="other">%1$d 首音乐已经加入播放列表 %2$s。</item>
-  </plurals>
-  <plurals name="removed_from_playlist">
-    <item quantity="other">%1$d 首音乐已经从播放列表 %2$s 移除。</item>
-  </plurals>
-  <plurals name="deleted">
-    <item quantity="other">%d 首音乐已删除。</item>
-  </plurals>
   <string name="delete_file_failed">删除 %s 失败。</string>
   <string name="deleted_item">“%s”已删除。</string>
   <string name="delete_item">删除“%s”？</string>
   <string name="delete_file">删除文件“%s”？</string>
   <string name="artists">演出者</string>
   <string name="albums">专辑</string>
-  <string name="songs">音乐</string>
   <string name="playlists">播放清单</string>
   <string name="genres">风格</string>
   <string name="files">文件</string>
   <string name="unknown">未知</string>
   <string name="play_all">全部播放</string>
   <string name="enqueue_all">全部加入序列</string>
-  <string name="all_songs">全部音乐</string>
   <string name="more_from_artist">更多来自演出者</string>
   <string name="more_from_album">更多来自专辑</string>
   <string name="name">名称</string>
@@ -96,15 +72,6 @@
   <string name="album_track">演出者，曲目号</string>
   <string name="song_playcount">播放次数</string>
   <!--Preferences-->
-  <plurals name="seconds">
-    <item quantity="other">%d 秒</item>
-  </plurals>
-  <plurals name="minutes">
-    <item quantity="other">%d 分钟</item>
-  </plurals>
-  <plurals name="hours">
-    <item quantity="other">%d 小时</item>
-  </plurals>
   <string name="audio">音频</string>
   <string name="volume_during_ducking_title">通知时的音量</string>
   <string name="volume_during_ducking_summary">回放音量:</string>
@@ -126,15 +93,12 @@
   <string name="replaygain_preamp_note_title">注意</string>
   <string name="replaygain_preamp_note_content">Android 不允许 Vanilla Music 将音量调到 &gt;100%，将前置放大器设置较高树枝可能会导致聆听比较“安静”的音乐时产生问题。\n\n建议将数值：为安静和古典音乐设置\n-&gt; -3dB \n-&gt; 为新世纪音乐设置+3dB </string>
   <string name="readahead">启用预先读取</string>
-  <string name="readahead_summary">预先读取当前播放的音乐。此功能可以解决“音频滞后”的问题。(由慢速 SD 卡导致的)</string>
   <string name="equalizer">均衡器</string>
   <string name="cycle_continuous_shuffling">继续随机播放</string>
-  <string name="cycle_continuous_shuffling_summary">“随机模式”将会以完全随机顺序播放音乐</string>
   <string name="notifications">通知</string>
   <string name="notification_mode_title">通知模式</string>
   <string name="notification_action_title">通知动作</string>
   <string name="notification_nag">非常详尽的通知</string>
-  <string name="notification_nag_summary">使用“抬头通知”来告知曲面变换</string>
   <string name="playback_screen">回放画面</string>
   <string name="playback_on_startup_title">启动时打开</string>
   <string name="playback_on_startup_summary">启动时打开播放界面</string>
@@ -164,7 +128,6 @@
   <string name="coverloader_shadow_title">从隐藏文件载入封面</string>
   <string name="coverloader_shadow_summary">尝试从 \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\' 中载入封面图</string>
   <string name="cover_on_lockscreen_title">锁屏时显示专辑封面</string>
-  <string name="cover_on_lockscreen_summary">锁屏时显示当前播放音乐的专辑封面</string>
   <string name="double_tap_title">双触小挂件</string>
   <string name="double_tap_summary">双击 1 x 1 的小工具将会打开播放器。小工具做出响应之前会有 400 毫秒延迟。</string>
   <string name="scrobble_title">使用 ScrobbleDroid API</string>
@@ -182,7 +145,6 @@
   <string name="always_show">永远显示</string>
   <string name="open_main_activity">打开媒体库 (默认)</string>
   <string name="open_mini_popup">打开迷你弹出框</string>
-  <string name="skip_to_next_song">跳到下一首</string>
   <string name="open_full_player">打开完整播放器</string>
   <string name="info_on_cover">信息在封面之上</string>
   <string name="info_below_cover">信息在封面之下</string>
@@ -190,8 +152,6 @@
   <string name="do_nothing">什么也不做</string>
   <string name="open_library">打开媒体库</string>
   <string name="play_pause">播放 / 暂停</string>
-  <string name="next_song">下一曲</string>
-  <string name="previous_song">上一首</string>
   <string name="next_album">下一专辑</string>
   <string name="previous_album">上一专辑</string>
   <string name="cycle_repeat_mode">循环重复模式</string>

@@ -2,8 +2,8 @@
 <resources>
   <string name="app_name">Vanilla Music</string>
   <!--Playback Activity (main screen)-->
-  <string name="no_songs">Keine Titel auf dem Gerät gefunden.</string>
-  <string name="empty_queue">Keine Titel ausgewählt. Wählen Sie Titel aus der Bibliothek oder starten Sie die Zufallswiedergabe durch Antippen dieser Nachricht.</string>
+  <string name="no_songs">Keine Titel auf Ihrem Gerät gefunden.</string>
+  <string name="empty_queue">Keine Titel ausgewählt. Wählen Sie einige aus der Bibliothek oder starten Sie die Zufallswiedergabe durch Antippen dieser Nachricht.</string>
   <string name="settings">Einstellungen</string>
   <string name="no_shuffle">Keine Zufallswiedergabe</string>
   <string name="shuffle_songs">Zufallswiedergabe Titel</string>
@@ -103,15 +103,15 @@
   <string name="song_playcount">Wiedergabehäufigkeit</string>
   <!--Preferences-->
   <plurals name="seconds">
-    <item quantity="one">1 Sekunde</item>
+    <item quantity="one">%d Sekunde</item>
     <item quantity="other">%d Sekunden</item>
   </plurals>
   <plurals name="minutes">
-    <item quantity="one">1 Minute</item>
+    <item quantity="one">%d Minute</item>
     <item quantity="other">%d Minuten</item>
   </plurals>
   <plurals name="hours">
-    <item quantity="one">1 Stunde</item>
+    <item quantity="one">%d Stunde</item>
     <item quantity="other">%d Stunden</item>
   </plurals>
   <string name="audio">Audio</string>
@@ -141,7 +141,7 @@
   <string name="replaygain_preamp_note_title">Hinweis</string>
   <string name="replaygain_preamp_note_content">Android erlaubt Vanilla Music kein Verändern der Lautstärke auf über 100%. Hohe Werte für den Vorverstärker können bei »stiller« Musik zu Problemen führen.\n\nEmpfohlene Werte sind:\n-&gt; -3 dB für stille/klassische Musik\n-&gt; +3 dB für Aufnahmen nach dem Jahr 2000</string>
   <string name="readahead">Datei vorauslesen</string>
-  <string name="readahead_summary">Aktuell wiedergegebenen Titel im Voraus einlesen (löst Probleme mit langsamen SD-Karten)</string>
+  <string name="readahead_summary">Aktuell wiedergegebenen Titel im Voraus einlesen (löst ggf. Audioprobleme mit langsamen SD-Karten)</string>
   <string name="equalizer">Equalizer</string>
   <string name="cycle_continuous_shuffling">Dauerzufallswiedergabe</string>
   <string name="cycle_continuous_shuffling_summary">Titel werden fortlaufend neu durchgemischt</string>

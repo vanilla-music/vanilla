@@ -2,20 +2,20 @@
 <resources>
   <string name="app_name">Ванила музика</string>
   <!--Playback Activity (main screen)-->
-  <string name="no_songs">Нема песама на вашем уређају.</string>
-  <string name="empty_queue">Ништа није изабрано. Изаберите песме из библиотеке или уђите у насумични режим тапом на ову поруку.</string>
+  <string name="no_songs">Нема нумера на вашем уређају.</string>
+  <string name="empty_queue">Ништа није изабрано. Изаберите нумере из библиотеке или уђите у насумични режим тапом на ову поруку.</string>
   <string name="settings">Поставке</string>
   <string name="no_shuffle">Без тумбања</string>
-  <string name="shuffle_songs">Претумбај песме</string>
-  <string name="shuffle_songs_continuously">Претумбавај песме непрестано</string>
+  <string name="shuffle_songs">Претумбај нумере</string>
+  <string name="shuffle_songs_continuously">Претумбавај нумере непрестано</string>
   <string name="shuffle_albums">Претумбај албуме</string>
   <string name="no_repeat">Не понављај</string>
   <string name="repeat">Понављај</string>
-  <string name="repeat_current_song">Понови текућу песму</string>
-  <string name="stop_current_song">Заустави након текуће песме</string>
+  <string name="repeat_current_song">Понови текућу нумеру</string>
+  <string name="stop_current_song">Заустави након текуће нумере</string>
   <string name="random">Насумично</string>
   <string name="random_enabling">Насумичност укључена</string>
-  <string name="song_load_failed">Неуспех учитавања песме %s. Можда је фајл оштећен или га нема.</string>
+  <string name="song_load_failed">Неуспех учитавања нумере %s. Можда је фајл оштећен или га нема.</string>
   <string name="queue_cleared">Ред пуштања очишћен.</string>
   <string name="cover_art">Омот</string>
   <string name="close_notification">Затвори обавештење</string>
@@ -56,19 +56,19 @@
   <string name="play_or_enqueue">У ред ако је пуштено; пусти ако је паузирано</string>
   <string name="open">Отвори</string>
   <plurals name="playing">
-    <item quantity="one">1 песма пуштена.</item>
-    <item quantity="few">%d песме пуштене.</item>
-    <item quantity="other">%d песама пуштено.</item>
+    <item quantity="one">1 нумера пуштена.</item>
+    <item quantity="few">%d нумере пуштене.</item>
+    <item quantity="other">%d нумера пуштено.</item>
   </plurals>
   <plurals name="enqueued">
-    <item quantity="one">1 песма стављена у ред.</item>
-    <item quantity="few">%d песме стављене у ред.</item>
-    <item quantity="other">%d песама стављено у ред.</item>
+    <item quantity="one">1 нумера стављена у ред.</item>
+    <item quantity="few">%d нумере стављене у ред.</item>
+    <item quantity="other">%d нумера стављено у ред.</item>
   </plurals>
   <plurals name="added_to_playlist">
-    <item quantity="one">1 песма додата у листу нумера %2$s.</item>
-    <item quantity="few">%1$d песме додате у листу нумера %2$s.</item>
-    <item quantity="other">%1$d песама додато у листу нумера %2$s.</item>
+    <item quantity="one">1 песма додата на листу нумера %2$s.</item>
+    <item quantity="few">%1$d песме додате на листу нумера %2$s.</item>
+    <item quantity="other">%1$d песама додато на листу нумера %2$s.</item>
   </plurals>
   <plurals name="removed_from_playlist">
     <item quantity="one">1 песма уклоњена са листе нумера %2$s.</item>
@@ -76,9 +76,9 @@
     <item quantity="other">%1$d песама уклоњено са листе нумера %2$s.</item>
   </plurals>
   <plurals name="deleted">
-    <item quantity="one">1 песма обрисана.</item>
-    <item quantity="few">%d песме обрисане.</item>
-    <item quantity="other">%d песама обрисано.</item>
+    <item quantity="one">1 нумера обрисана.</item>
+    <item quantity="few">%d нумере обрисане.</item>
+    <item quantity="other">%d нумера обрисано.</item>
   </plurals>
   <string name="delete_file_failed">Брисање %s није успело.</string>
   <string name="deleted_item">„%s“ обрисана.</string>
@@ -86,14 +86,14 @@
   <string name="delete_file">Да обришем фајл „%s“?</string>
   <string name="artists">Извођачи</string>
   <string name="albums">Албуми</string>
-  <string name="songs">Песме</string>
+  <string name="songs">Нумере</string>
   <string name="playlists">Листе нумера</string>
   <string name="genres">Жанрови</string>
   <string name="files">Фајлови</string>
   <string name="unknown">Непознато</string>
   <string name="play_all">Пусти све</string>
   <string name="enqueue_all">Стави све у ред</string>
-  <string name="all_songs">Све песме</string>
+  <string name="all_songs">Све нумере</string>
   <string name="more_from_artist">Још од извођача</string>
   <string name="more_from_album">Још са албума</string>
   <string name="name">називу</string>
@@ -108,17 +108,17 @@
   <string name="song_playcount">броју пуштања</string>
   <!--Preferences-->
   <plurals name="seconds">
-    <item quantity="one">1 секунда</item>
+    <item quantity="one">%d секунда</item>
     <item quantity="few">%d секунде</item>
     <item quantity="other">%d секунди</item>
   </plurals>
   <plurals name="minutes">
-    <item quantity="one">1 минута</item>
+    <item quantity="one">%d минута</item>
     <item quantity="few">%d минуте</item>
     <item quantity="other">%d минута</item>
   </plurals>
   <plurals name="hours">
-    <item quantity="one">1 сат</item>
+    <item quantity="one">%d сат</item>
     <item quantity="few">%d сата</item>
     <item quantity="other">%d сати</item>
   </plurals>
@@ -144,20 +144,20 @@
   <string name="replaygain_album_title">Укључи нивелисање албума</string>
   <string name="replaygain_album_summary">Очувај динамику албума</string>
   <string name="replaygain_bump_title">Предпојачање нивелисања</string>
-  <string name="replaygain_untagged_debump_title">Песме без ознаке нивелисања</string>
+  <string name="replaygain_untagged_debump_title">Нумере без ознаке нивелисања</string>
   <string name="replaygain_untagged_debump_summary">Умањи јачину звука за</string>
   <string name="replaygain_preamp_note_title">Напомена</string>
   <string name="replaygain_preamp_note_content">Андроид не дозвољава Ванила музици да повећа јачину звука &gt;100%. Постављање претпојачања на високу вредност може да узрокује проблеме ако слушате „тиху“ музику. \n\nПрепоручене вредности су:\n-&gt; -3dB за тиху/класичну музику\n-&gt; +3dB за снимке након 2000-е</string>
   <string name="readahead">Укључи предучитавање</string>
-  <string name="readahead_summary">Предучитавање текуће песме. Ова опција може да реши проблеме са „испуштањем звука“ (које узрокује спора СД картица).</string>
+  <string name="readahead_summary">Предучитавање текуће нумере. Ова опција може да реши проблеме са „испуштањем звука“ (које узрокује спора СД картица).</string>
   <string name="equalizer">Еквилајзер</string>
   <string name="cycle_continuous_shuffling">Непрестано тумбање</string>
-  <string name="cycle_continuous_shuffling_summary">У режиму „тумбања“ песме се пуштају насумично</string>
+  <string name="cycle_continuous_shuffling_summary">У режиму „тумбања“ нумере се пуштају насумично</string>
   <string name="notifications">Обавештења</string>
   <string name="notification_mode_title">Приказ обавештења</string>
   <string name="notification_action_title">Радња обавештења</string>
   <string name="notification_nag">Веома исцрпно обавештење</string>
-  <string name="notification_nag_summary">Објави промене песама користећи „Heads-Up“ обавештење</string>
+  <string name="notification_nag_summary">Објави промене нумера користећи „Heads-Up“ обавештење</string>
   <string name="playback_screen">Екран пуштања</string>
   <string name="playback_on_startup_title">Отвори по покретању</string>
   <string name="playback_on_startup_summary">Отвара екран пуштања по покретању</string>
@@ -181,8 +181,8 @@
   <string name="use_idle_timeout_title">Укључи време мировања</string>
   <string name="use_idle_timeout_summary">Активирано зауставља пуштање након задатог времена неактивности</string>
   <string name="idle_timeout_title">Време мировања</string>
-  <string name="enable_scroll_to_song_title">Клизај на наслов песме</string>
-  <string name="enable_scroll_to_song_summary">Клизање на текућу песму/албум/извођача у приказу библиотеке</string>
+  <string name="enable_scroll_to_song_title">Клизај на наслов нумере</string>
+  <string name="enable_scroll_to_song_summary">Клизање на текућу нумеру/албум/извођача у приказу библиотеке</string>
   <string name="coverloader_android_title">Учитај омоте са Андроида</string>
   <string name="coverloader_android_summary">Шаље упит унутрашњој медија базу података Андроида за омот албума</string>
   <string name="coverloader_vanilla_title">Учитај омоте из фасцикле</string>
@@ -190,7 +190,7 @@
   <string name="coverloader_shadow_title">Учитај омоте из сакривене фасцикле</string>
   <string name="coverloader_shadow_summary">Покушава учитавање омота са „/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg“</string>
   <string name="cover_on_lockscreen_title">Прикажи омот на екрану закључавања</string>
-  <string name="cover_on_lockscreen_summary">Приказ омота текуће песме на екрану закључавања</string>
+  <string name="cover_on_lockscreen_summary">Приказ омота текуће нумере на екрану закључавања</string>
   <string name="double_tap_title">Двотап на виџет</string>
   <string name="double_tap_summary">Двотап на 1x1 виџет отвара плејер. Опција поставља застој од 400ms пре одзива виџета на радње.</string>
   <string name="scrobble_title">Користи ScrobbleDroid АПИ</string>
@@ -208,7 +208,7 @@
   <string name="always_show">увек</string>
   <string name="open_main_activity">отвара библиотеку (подраз.)</string>
   <string name="open_mini_popup">отвара искачуће прозорче</string>
-  <string name="skip_to_next_song">пушта следећу песму</string>
+  <string name="skip_to_next_song">пушта следећу нумеру</string>
   <string name="open_full_player">отвара цео плејер</string>
   <string name="info_on_cover">на омоту</string>
   <string name="info_below_cover">испод омота</string>
@@ -216,8 +216,8 @@
   <string name="do_nothing">не ради ништа</string>
   <string name="open_library">отвара библиотеку</string>
   <string name="play_pause">пушта/паузира</string>
-  <string name="next_song">пушта следећу песму</string>
-  <string name="previous_song">пушта претходну песму</string>
+  <string name="next_song">пушта следећу нумеру</string>
+  <string name="previous_song">пушта претходну нумеру</string>
   <string name="next_album">пушта следећи албум</string>
   <string name="previous_album">пушта претходни албум</string>
   <string name="cycle_repeat_mode">мења режим понављања</string>
@@ -249,6 +249,7 @@
   <string name="reverse_sort">Обрнуто ређање</string>
   <string name="share">Дели…</string>
   <string name="sendto">Пошаљи за…</string>
+  <string name="no_receiving_apps">Нема апликација за овај тип фајла!</string>
   <!--SD Scanner-->
   <string name="final_proc">Обрађено</string>
   <string name="progress_database_label">Шаљем упит бази података...</string>

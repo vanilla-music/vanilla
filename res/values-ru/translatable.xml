@@ -35,8 +35,8 @@
   <string name="overwrite">Затереть</string>
   <string name="delete_playlist">Удалить плей-лист %s?</string>
   <!--Library-->
-  <string name="enqueue">В очередь</string>
-  <string name="enqueue_as_next">Следующей в очередь</string>
+  <string name="enqueue">В конец очереди</string>
+  <string name="enqueue_as_next">Далее в очередь</string>
   <string name="play">Воспроизвести</string>
   <string name="edit">Подправить</string>
   <string name="rename">Переименовать</string>
@@ -62,27 +62,27 @@
     <item quantity="other">Воспроизведение %d дорожек.</item>
   </plurals>
   <plurals name="enqueued">
-    <item quantity="one">Добавлена 1 дорожка.</item>
-    <item quantity="few">Добавлено %d дорожки.</item>
-    <item quantity="many">Добавлено %d дорожек.</item>
+    <item quantity="one">Добавлено дорожек: 1.</item>
+    <item quantity="few">Добавлено дорожек: %d.</item>
+    <item quantity="many">Добавлено дорожек: %d.</item>
     <item quantity="other">Добавлено дорожек: %d.</item>
   </plurals>
   <plurals name="added_to_playlist">
-    <item quantity="one">В плей-лист %2$s добавлена 1 дорожка.</item>
-    <item quantity="few">В плей-лист %2$s добавлено %1$d дорожки.</item>
-    <item quantity="many">В плей-лист %2$s добавлено %1$d дорожек.</item>
+    <item quantity="one">В плей-лист %2$s добавлено дорожек: 1.</item>
+    <item quantity="few">В плей-лист %2$s добавлено дорожек: %1$d.</item>
+    <item quantity="many">В плей-лист %2$s добавлено дорожек: %1$d.</item>
     <item quantity="other">В плей-лист %2$s добавлено дорожек: %1$d.</item>
   </plurals>
   <plurals name="removed_from_playlist">
-    <item quantity="one">Из плей-листа %2$s убрана 1 дорожка.</item>
-    <item quantity="few">Из плей-листа %2$s убрано %1$d дорожки.</item>
-    <item quantity="many">Из плей-листа %2$s убрано %1$d дорожек.</item>
+    <item quantity="one">Из плей-листа %2$s убрано дорожек: 1.</item>
+    <item quantity="few">Из плей-листа %2$s убрано дорожек: %1$d.</item>
+    <item quantity="many">Из плей-листа %2$s убрано дорожек: %1$d.</item>
     <item quantity="other">Из плей-листа %2$s убрано дорожек: %1$d.</item>
   </plurals>
   <plurals name="deleted">
-    <item quantity="one">Удалена 1 дорожка.</item>
-    <item quantity="few">Удалено %d дорожки.</item>
-    <item quantity="many">Удалено %d дорожек.</item>
+    <item quantity="one">Удалено дорожек: 1.</item>
+    <item quantity="few">Удалено дорожек: %d.</item>
+    <item quantity="many">Удалено дорожек: %d.</item>
     <item quantity="other">Удалено дорожек: %d.</item>
   </plurals>
   <string name="delete_file_failed">Сбой при удалении %s.</string>
@@ -91,7 +91,7 @@
   <string name="delete_file">Удалить файл \"%s\"?</string>
   <string name="artists">Исполнители</string>
   <string name="albums">Альбомы</string>
-  <string name="songs">Песни</string>
+  <string name="songs">Дорожки</string>
   <string name="playlists">Плей-листы</string>
   <string name="genres">Жанры</string>
   <string name="files">Файлы</string>
@@ -113,19 +113,19 @@
   <string name="song_playcount">по популярности</string>
   <!--Preferences-->
   <plurals name="seconds">
-    <item quantity="one">1 секунда</item>
+    <item quantity="one">%d секунда</item>
     <item quantity="few">%d секунды</item>
     <item quantity="many">%d секунд</item>
     <item quantity="other">%d секунд</item>
   </plurals>
   <plurals name="minutes">
-    <item quantity="one">1 минута</item>
+    <item quantity="one">%d минута</item>
     <item quantity="few">%d минуты</item>
     <item quantity="many">%d минут</item>
     <item quantity="other">%d минут</item>
   </plurals>
   <plurals name="hours">
-    <item quantity="one">1 час</item>
+    <item quantity="one">%d час</item>
     <item quantity="few">%d часа</item>
     <item quantity="many">%d часов</item>
     <item quantity="other">%d часов</item>

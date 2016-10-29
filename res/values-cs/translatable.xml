@@ -2,20 +2,13 @@
 <resources>
   <string name="app_name">Vanilla Music</string>
   <!--Playback Activity (main screen)-->
-  <string name="no_songs">Na tomto přístroji nebyly nalezeny žádné skladby.</string>
-  <string name="empty_queue">Nejsou vybrány žádné skladby. Buď vyberte nějaké ze své sbírky nebo spusťte náhodné přihrávání klepnutím na tuto zprávu.</string>
   <string name="settings">Nastavení</string>
   <string name="no_shuffle">Nepřehrávat náhodně</string>
-  <string name="shuffle_songs">Náhodné skladby</string>
-  <string name="shuffle_songs_continuously">Neustálé náhodné přehrávání</string>
   <string name="shuffle_albums">Náhodná alba</string>
   <string name="no_repeat">Neopakovat</string>
   <string name="repeat">Opakovat</string>
-  <string name="repeat_current_song">Opakovat aktuální skladbu</string>
-  <string name="stop_current_song">Zastavit po aktuální skladbě</string>
   <string name="random">Náhodně</string>
   <string name="random_enabling">Náhodné přehrávání povoleno</string>
-  <string name="song_load_failed">Selhalo načtení skladby %s. Je poškozena nebo chybí.</string>
   <string name="queue_cleared">Fronta vyčištěna.</string>
   <string name="cover_art">Obal</string>
   <string name="close_notification">Zavřít upozornění</string>
@@ -55,45 +48,18 @@
   <string name="remove">Odstranit</string>
   <string name="play_or_enqueue">Pokud hraje přidat do fronty; Přehrát pokud pozastaveno</string>
   <string name="open">Otevřít</string>
-  <plurals name="playing">
-    <item quantity="one">Hraje 1 skladba.</item>
-    <item quantity="few">Hrají %d skladby.</item>
-    <item quantity="other">Hraje %d skladeb.</item>
-  </plurals>
-  <plurals name="enqueued">
-    <item quantity="one">Přidána 1 skladba.</item>
-    <item quantity="few">Přidány %d skladby.</item>
-    <item quantity="other">Přidáno %d skladeb.</item>
-  </plurals>
-  <plurals name="added_to_playlist">
-    <item quantity="one">1 skladba přidána do playlistu %2$s.</item>
-    <item quantity="few">%1$d skladby přidány do playlistu %2$s.</item>
-    <item quantity="other">%1$d skladeb přidáno do playlistu %2$s.</item>
-  </plurals>
-  <plurals name="removed_from_playlist">
-    <item quantity="one">1 skladba odstraněna z playlistu %2$s.</item>
-    <item quantity="few">%1$d skladby odstraněny z playlistu %2$s.</item>
-    <item quantity="other">%1$d skladeb odstraněno z playlistu %2$s.</item>
-  </plurals>
-  <plurals name="deleted">
-    <item quantity="one">1 skladba smazána.</item>
-    <item quantity="few">%d skladby smazány.</item>
-    <item quantity="other">%d skladeb smazáno.</item>
-  </plurals>
   <string name="delete_file_failed">Selhalo smazání %s.</string>
   <string name="deleted_item">\'%s\' smazáno.</string>
   <string name="delete_item">Smazat \'%s\'?</string>
   <string name="delete_file">Smazat soubor \'%s\'?</string>
   <string name="artists">Umělec</string>
   <string name="albums">Alba</string>
-  <string name="songs">Skladby</string>
   <string name="playlists">Playlisty</string>
   <string name="genres">Žánry</string>
   <string name="files">Soubory</string>
   <string name="unknown">Neznámý</string>
   <string name="play_all">Přehrát vše</string>
   <string name="enqueue_all">Zařadit vše</string>
-  <string name="all_songs">Všechny skladby</string>
   <string name="more_from_artist">Více od umělce</string>
   <string name="more_from_album">Více z alba</string>
   <string name="name">Název</string>
@@ -107,21 +73,6 @@
   <string name="album_track">Album, číslo skladby</string>
   <string name="song_playcount">Počet přehrání</string>
   <!--Preferences-->
-  <plurals name="seconds">
-    <item quantity="one">1 sekunda</item>
-    <item quantity="few">%d sekundy</item>
-    <item quantity="other">%d sekund</item>
-  </plurals>
-  <plurals name="minutes">
-    <item quantity="one">1 minuta</item>
-    <item quantity="few">%d minuty</item>
-    <item quantity="other">%d minut</item>
-  </plurals>
-  <plurals name="hours">
-    <item quantity="one">1 hodina</item>
-    <item quantity="few">%d hodiny</item>
-    <item quantity="other">%d hodin</item>
-  </plurals>
   <string name="audio">Audio</string>
   <string name="volume_during_ducking_title">Hlasitost během upozornění</string>
   <string name="volume_during_ducking_summary">Hlasitost přehrávání</string>
@@ -144,20 +95,16 @@
   <string name="replaygain_album_title">Povolit udržení hlasitosti alba</string>
   <string name="replaygain_album_summary">Zachovat dynamiku alba</string>
   <string name="replaygain_bump_title">Pre-amp udržení hlasitosti</string>
-  <string name="replaygain_untagged_debump_title">Skladby bez tagu udržení hlasitosti</string>
   <string name="replaygain_untagged_debump_summary">Ztlumit o</string>
   <string name="replaygain_preamp_note_title">Poznámka</string>
   <string name="replaygain_preamp_note_content">Android nepovoluje aplikaci Vanilla Music zvýšit hlasitost na &gt;100%. Nastavení Pre-amp na vysokou hodnotu může způsobovat problémy při poslechu \'tiché\' hudby. \n\nDoporučené hodnoty jsou:\n-&gt; -3dB pro tichou/klasickou hudbu\n-&gt; +3dB pro aktuální nahrávky</string>
   <string name="readahead">Povolit předčítání</string>
-  <string name="readahead_summary">Předčítat přehrávané skladby. Toto nastavení může vyřešit problém vynechávání zvuku. (způsobené pomalou SD kartou)</string>
   <string name="equalizer">Ekvalizér</string>
   <string name="cycle_continuous_shuffling">Neustále náhodně</string>
-  <string name="cycle_continuous_shuffling_summary">\'Náhodný mód\' přehrává skladby v náhodném pořadí</string>
   <string name="notifications">Upozornění</string>
   <string name="notification_mode_title">Mód upozornění</string>
   <string name="notification_action_title">Akce upozornění</string>
   <string name="notification_nag">Velmi detailní upozornění</string>
-  <string name="notification_nag_summary">Oznamovat změny skladeb za použití \'Heads-Up-Notification\'</string>
   <string name="playback_screen">Obrazovka přehrávání</string>
   <string name="playback_on_startup_title">Otevřít při spuštění</string>
   <string name="playback_on_startup_summary">Při spuštění otevřít náhled přehrávání</string>
@@ -188,7 +135,6 @@
   <string name="coverloader_shadow_title">Načítat obrázky ze skrytého adresáře</string>
   <string name="coverloader_shadow_summary">Zkoušet načítat obrázky z umístění \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\'</string>
   <string name="cover_on_lockscreen_title">Zobrazit obal na uzamčené obrazovce</string>
-  <string name="cover_on_lockscreen_summary">Zobrazí hudební obal aktuálně přehrávané skladby na uzamčené obrazovce</string>
   <string name="double_tap_title">Widget dvojkliku</string>
   <string name="double_tap_summary">Dvojité ťuknutí na 1x1 widget otevře přehrávač. Zpoždění odpovědi widgetu na akci je 400ms.</string>
   <string name="scrobble_title">Použít ScrobbleDroid API</string>
@@ -206,7 +152,6 @@
   <string name="always_show">Vždy zobrazovat</string>
   <string name="open_main_activity">Otevřít sbírku (výchozí)</string>
   <string name="open_mini_popup">Otevřít mini popup</string>
-  <string name="skip_to_next_song">Přeskočit na další skladbu</string>
   <string name="open_full_player">Otevřít přehrávač</string>
   <string name="info_on_cover">Informace o obalu</string>
   <string name="info_below_cover">Informace pod obalem</string>
@@ -214,8 +159,6 @@
   <string name="do_nothing">Nedělat nic</string>
   <string name="open_library">Otevřít sbírku</string>
   <string name="play_pause">Přehrát/Pozastavit</string>
-  <string name="next_song">Další skladba</string>
-  <string name="previous_song">Předchozí skladba</string>
   <string name="next_album">Další album</string>
   <string name="previous_album">Předchozí album</string>
   <string name="cycle_repeat_mode">Procházet mód opakování</string>

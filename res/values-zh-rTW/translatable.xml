@@ -2,17 +2,17 @@
 <resources>
   <string name="app_name">Vanilla Music</string>
   <!--Playback Activity (main screen)-->
-  <string name="no_songs">在您的裝置上未找到歌曲。</string>
+  <string name="no_songs">您的裝置上沒有發現任何曲目。</string>
   <string name="empty_queue">沒有選定的歌曲。由媒體庫或是輕點這個訊息進入隨機模式挑選。</string>
   <string name="settings">設定</string>
   <string name="no_shuffle">不隨機播放</string>
-  <string name="shuffle_songs">隨機播放歌曲</string>
-  <string name="shuffle_songs_continuously">連續隨機播放歌曲</string>
+  <string name="shuffle_songs">隨機播放曲目</string>
+  <string name="shuffle_songs_continuously">持續隨機播放曲目</string>
   <string name="shuffle_albums">隨機播放專輯</string>
   <string name="no_repeat">不重複播放</string>
   <string name="repeat">重複播放</string>
-  <string name="repeat_current_song">重複播放目前的歌曲</string>
-  <string name="stop_current_song">在目前歌曲播放後停止</string>
+  <string name="repeat_current_song">重複目前曲目</string>
+  <string name="stop_current_song">目前曲目後停止</string>
   <string name="random">隨機</string>
   <string name="random_enabling">啟用隨機</string>
   <string name="song_load_failed">載入 %s 歌曲失敗。它可能已損壞或遺失。</string>
@@ -65,7 +65,7 @@
     <item quantity="other">%1$d 歌曲已加入到播放清單 %2$s。</item>
   </plurals>
   <plurals name="removed_from_playlist">
-    <item quantity="other"> %1$d 的歌曲已從播放清單 %2$s 中移除。</item>
+    <item quantity="other">%1$d 的歌曲已從播放清單 %2$s 中移除。</item>
   </plurals>
   <plurals name="deleted">
     <item quantity="other">已刪除歌曲 %d</item>
@@ -76,14 +76,14 @@
   <string name="delete_file">刪除檔案 \'%s\'？</string>
   <string name="artists">演唱者</string>
   <string name="albums">專輯</string>
-  <string name="songs">歌曲</string>
+  <string name="songs">曲目</string>
   <string name="playlists">撥放清單</string>
   <string name="genres">風格</string>
   <string name="files">檔案</string>
   <string name="unknown">不明的</string>
   <string name="play_all">全部撥放</string>
   <string name="enqueue_all">佇列全部</string>
-  <string name="all_songs">全部歌曲</string>
+  <string name="all_songs">所有曲目</string>
   <string name="more_from_artist">更多來自演唱者</string>
   <string name="more_from_album">更多來自專輯</string>
   <string name="name">名稱</string>
@@ -165,8 +165,8 @@
   <string name="use_idle_timeout_title">啟用閒置超時</string>
   <string name="use_idle_timeout_summary">當啟動後，在閒置一段時間後會停止播放 </string>
   <string name="idle_timeout_title">閒置超時</string>
-  <string name="enable_scroll_to_song_title">卷動到歌曲標題</string>
-  <string name="enable_scroll_to_song_summary">在媒體庫清單，卷動到目前播放的歌曲/專輯/演唱者</string>
+  <string name="enable_scroll_to_song_title">捲動到歌曲標題</string>
+  <string name="enable_scroll_to_song_summary">在媒體庫清單，捲動到目前播放的歌曲/專輯/演唱者</string>
   <string name="coverloader_android_title">從 Android 載入封面</string>
   <string name="coverloader_android_summary">查詢 Androids 內部的媒體資料庫，以用於專輯封面</string>
   <string name="coverloader_vanilla_title">從資料夾載入封面</string>
@@ -174,7 +174,7 @@
   <string name="coverloader_shadow_title">從隱藏資料夾載入封面</string>
   <string name="coverloader_shadow_summary">試著從 \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\' 載入封面</string>
   <string name="cover_on_lockscreen_title">在螢幕鎖定時，顯示封面</string>
-  <string name="cover_on_lockscreen_summary">顯示目前播放歌曲的封面，在鎖定螢幕上</string>
+  <string name="cover_on_lockscreen_summary">在螢幕鎖定畫面上，顯示目前播放歌曲的封面</string>
   <string name="double_tap_title">雙點擊小工具</string>
   <string name="double_tap_summary">雙點擊 1 x 1 小工具將打開播放機。小工具的操作做出回應之前，會引起400ms的延遲。</string>
   <string name="scrobble_title">使用 ScrobbleDroid 的 API</string>
@@ -201,7 +201,7 @@
   <string name="open_library">開啟媒體庫</string>
   <string name="play_pause">播放/暫停</string>
   <string name="next_song">下首歌曲</string>
-  <string name="previous_song">前首歌曲</string>
+  <string name="previous_song">前一首歌曲</string>
   <string name="next_album">下張專輯</string>
   <string name="previous_album">上張專輯</string>
   <string name="cycle_repeat_mode">循環重覆模式</string>

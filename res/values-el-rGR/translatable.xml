@@ -2,19 +2,13 @@
 <resources>
   <string name="app_name">Vanilla Music</string>
   <!--Playback Activity (main screen)-->
-  <string name="no_songs">Δεν υπάρχουν τραγούδια που βρέθηκαν στη συσκευή σας.</string>
-  <string name="empty_queue">Δεν έχουν επιλεγεί τραγούδια. Διαλέξτε κάποια από τη βιβλιοθήκη ή καταχωρίστε τυχαία κατάσταση πατώντας αυτό το μήνυμα.</string>
   <string name="settings">Ρυθμίσεις</string>
   <string name="no_shuffle">Όχι τυχαία αναπαραγωγή</string>
-  <string name="shuffle_songs">Τραγούδια τυχαίας αναπαραγωγής</string>
   <string name="shuffle_albums">Αναδιάταξη άλμπουμ</string>
   <string name="no_repeat">Όχι επανάληψη</string>
   <string name="repeat">Επανάληψη</string>
-  <string name="repeat_current_song">Επανάληψη τρέχοντος τραγουδιού</string>
-  <string name="stop_current_song">Διακοπή μετά το τρέχον τραγούδι</string>
   <string name="random">Τυχαίο</string>
   <string name="random_enabling">Τυχαίο ενεργοποιημένο</string>
-  <string name="song_load_failed">Απέτυχε η φόρτωση του τραγουδιού %s. Μπορεί να είναι κατεστραμμένο ή ελλείποντα.</string>
   <string name="queue_cleared">Εκκαθάριση της σειράς αναμονής.</string>
   <string name="cover_art">Εξωφυλλο</string>
   <string name="close_notification">Κλείσιμο κοινοποίησης</string>
@@ -43,29 +37,12 @@
   <string name="done">Ολοκληρώθηκε</string>
   <string name="remove">Αφαίρεση</string>
   <string name="play_or_enqueue">Τοποθέτηση στην σειρα αναμονης αν παίζει? Αναπαραγωγή εάν διακοπεί</string>
-  <plurals name="playing">
-    <item quantity="one">1 τραγουδι αναπαραγεται</item>
-    <item quantity="other">%d τραγουδια αναπαραγονται.</item>
-  </plurals>
-  <plurals name="enqueued">
-    <item quantity="one">1 τραγουδι στην σειρα αναμονης</item>
-    <item quantity="other">%d τραγουδια στην σειρα αναμονης</item>
-  </plurals>
-  <plurals name="added_to_playlist">
-    <item quantity="one">1 τραγούδι προστέθηκε στη λίστα αναπαραγωγής %2$s.</item>
-    <item quantity="other">%1$d τραγούδια προστέθηκαν στη λίστα αναπαραγωγής %2$s.</item>
-  </plurals>
-  <plurals name="deleted">
-    <item quantity="one">Διαγράφεται 1 τραγούδι.</item>
-    <item quantity="other">%d διαγραμμένα τραγούδια.</item>
-  </plurals>
   <string name="delete_file_failed">Αποτυχία διαγραφής %s.</string>
   <string name="deleted_item">\'%s\' διαγράφεται.</string>
   <string name="delete_item">Διαγραφή \'%s\'?</string>
   <string name="delete_file">Διαγραφή αρχείου \'%s\'?</string>
   <string name="artists">Τραγουδιστες</string>
   <string name="albums">Αλμπουμ</string>
-  <string name="songs">Τραγουδια</string>
   <string name="playlists">Λιστες αναπαραγωγης</string>
   <string name="genres">Είδη μουσικής</string>
   <string name="files">Αρχεια</string>
@@ -83,18 +60,6 @@
   <string name="album_track">Αλμπουμ, αριθμος τραγουδιου</string>
   <string name="song_playcount">Σειρα αναπαραγωγών</string>
   <!--Preferences-->
-  <plurals name="seconds">
-    <item quantity="one">1 δευτερολεπτο</item>
-    <item quantity="other">%d δευτερολεπτα</item>
-  </plurals>
-  <plurals name="minutes">
-    <item quantity="one">1 λεπτο</item>
-    <item quantity="other">%d λεπτα</item>
-  </plurals>
-  <plurals name="hours">
-    <item quantity="one">1 ωρα</item>
-    <item quantity="other">%d ωρες</item>
-  </plurals>
   <string name="audio">Ήχος</string>
   <string name="media_button_summary">Αυτό απαιτείται επίσης για τους ελέγχους  ICS lockscreen. </string>
   <string name="media_button_beep_summary">Μπιπ μετά από παράλειψη ενός κομματιού με διπλό κλικ στον έλεγχο ακουστικων.</string>
@@ -104,9 +69,7 @@
   <string name="replaygain_album_summary">Διατήρηση της δυναμικής του άλμπουμ</string>
   <string name="replaygain_untagged_debump_summary">Μείωση έντασης κατά</string>
   <string name="readahead">Ενεργοποίηση του readahead</string>
-  <string name="readahead_summary">Readahead τρέχοντος τραγουδιού. Αυτή η επιλογή μπορεί να λύσει τα ζητήματα «εγκατάλειψης του ήχου». (που προκαλείται από μια αργή κάρτα SD)</string>
   <string name="equalizer">Ισοσταθμιστής</string>
-  <string name="cycle_continuous_shuffling_summary">«Τυχαία αναπαραγωγή λειτουργίας» θα παίξει τραγούδια σε εντελώς τυχαία σειρά</string>
   <string name="notifications">Ειδοποιήσεις</string>
   <string name="playback_on_startup_summary">Άνοιγμα προβολής αναπαραγωγής κατά την εκκίνηση</string>
   <string name="enable_shake_summary">Ενεργό μόνο κατα την αναπαραγωγή μουσικής. Δεν λειτουργεί όταν η οθόνη είναι απενεργοποιημένη σε ορισμένες συσκευές.</string>
@@ -132,7 +95,6 @@
   <string name="always_show">Εμφανιση παντα</string>
   <string name="open_main_activity">Άνοιγμα βιβλιοθήκης (προεπιλογή)</string>
   <string name="open_mini_popup">Άνοιγμα μίνι αναδυόμενου παράθυρου</string>
-  <string name="skip_to_next_song">Μετάβαση στο επόμενο τραγούδι</string>
   <string name="open_full_player">Άνοιγμα πλήρους player</string>
   <string name="info_on_cover">Πληροφορίες στο εξώφυλλο</string>
   <string name="info_below_cover">Πληροφορίες κάτω από το εξώφυλλο</string>
@@ -140,8 +102,6 @@
   <string name="do_nothing">Καμμια δραση</string>
   <string name="open_library">Άνοιγμα βιβλιοθήκης</string>
   <string name="play_pause">Αναπαραγωγή/Παύση</string>
-  <string name="next_song">Επόμενο τραγούδι</string>
-  <string name="previous_song">Προηγούμενο τραγούδι</string>
   <string name="next_album">Επόμενο άλμπουμ</string>
   <string name="previous_album">Προηγούμενο άλμπουμ</string>
   <string name="cycle_repeat_mode">Επανάληψη λειτουργίας του κύκλου</string>

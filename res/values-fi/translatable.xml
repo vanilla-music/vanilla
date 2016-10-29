@@ -3,11 +3,11 @@
   <string name="app_name">Vanilla Music</string>
   <!--Playback Activity (main screen)-->
   <string name="no_songs">Laitteeltasi ei löytynyt kappaleita.</string>
-  <string name="empty_queue">Kappaleita ei ole valittu. Valitse kappaleita kirjastosta tai siirry satunnaistilaan napauttamalla tätä viestiä.</string>
+  <string name="empty_queue">Kappaleita ei ole valittu. Valitse kappaleita kirjastosta tai toista satunnaisia napauttamalla tätä viestiä.</string>
   <string name="settings">Asetukset</string>
   <string name="no_shuffle">Ei sekoitusta</string>
   <string name="shuffle_songs">Sekoita kappaleet</string>
-  <string name="shuffle_songs_continuously">Sekoita kappaleita jatkuvasti</string>
+  <string name="shuffle_songs_continuously">Sekoita kappaleet jatkuvasti</string>
   <string name="shuffle_albums">Sekoita albumit</string>
   <string name="no_repeat">Ei kertausta</string>
   <string name="repeat">Kertaa</string>
@@ -15,7 +15,7 @@
   <string name="stop_current_song">Pysäytä nykyisen kappaleen jälkeen</string>
   <string name="random">Satunnainen</string>
   <string name="random_enabling">Satunnainen käytössä</string>
-  <string name="song_load_failed">Kappaleen %s lataus epäonnistui. Se saattaa olla rikki tai poistettu.</string>
+  <string name="song_load_failed">Kappaleen %s lataaminen epäonnistui. Tiedosto saattaa olla rikki tai sitä ei löydy.</string>
   <string name="queue_cleared">Jono tyhjennetty.</string>
   <string name="cover_art">Kansikuvitus</string>
   <string name="close_notification">Sulje ilmoitus</string>
@@ -56,20 +56,20 @@
   <string name="play_or_enqueue">Lisää jonoon jos toistetaan; toista jos keskeytetty</string>
   <string name="open">Avaa</string>
   <plurals name="playing">
-    <item quantity="one">1 kappale toistettavana.</item>
-    <item quantity="other">%d kappaletta toistettavana.</item>
+    <item quantity="one">Toistetaan 1 kappaletta.</item>
+    <item quantity="other">Toistetaan %d kappaletta.</item>
   </plurals>
   <plurals name="enqueued">
-    <item quantity="one">1 kappale jonossa.</item>
-    <item quantity="other">%d kappaletta jonossa.</item>
+    <item quantity="one">1 kappale asetettu jonoon.</item>
+    <item quantity="other">%d kappaletta asetettu jonoon.</item>
   </plurals>
   <plurals name="added_to_playlist">
     <item quantity="one">1 kappale lisätty soittolistaan %2$s.</item>
     <item quantity="other">%1$d kappaletta lisätty soittolistaan %2$s.</item>
   </plurals>
   <plurals name="removed_from_playlist">
-    <item quantity="one">1 kappale poistettu soittolistalta %2$s.</item>
-    <item quantity="other">%1$d kappaletta poistettu soittolistalta %2$s.</item>
+    <item quantity="one">1 kappale poistettu soittolistasta %2$s.</item>
+    <item quantity="other">%1$d kappaletta poistettu soittolistasta %2$s.</item>
   </plurals>
   <plurals name="deleted">
     <item quantity="one">1 kappale poistettu.</item>
@@ -103,15 +103,15 @@
   <string name="song_playcount">Toistokerrat</string>
   <!--Preferences-->
   <plurals name="seconds">
-    <item quantity="one">1 sekunti</item>
+    <item quantity="one">%d sekunti</item>
     <item quantity="other">%d sekuntia</item>
   </plurals>
   <plurals name="minutes">
-    <item quantity="one">1 minuutti</item>
+    <item quantity="one">%d minuutti</item>
     <item quantity="other">%d minuuttia</item>
   </plurals>
   <plurals name="hours">
-    <item quantity="one">1 tunti</item>
+    <item quantity="one">%d tunti</item>
     <item quantity="other">%d tuntia</item>
   </plurals>
   <string name="audio">Ääni</string>
@@ -140,7 +140,6 @@
   <string name="replaygain_untagged_debump_summary">Vähennä äänenvoimakkuutta</string>
   <string name="replaygain_preamp_note_title">Huomio</string>
   <string name="readahead">Käytä etukäteen lukemista</string>
-  <string name="readahead_summary">Lue etukäteen toistettava kappale. Tämä valinta saattaa auttaa, jos ääni katkeilee, ja syynä on hidas SD-muistikortti.</string>
   <string name="equalizer">Taajuuskorjain</string>
   <string name="cycle_continuous_shuffling">Jatkuva sekoitus</string>
   <string name="cycle_continuous_shuffling_summary">\"Sekoitustila\" toistaa kappaleet satunnaisessa järjestyksessä</string>
@@ -148,7 +147,6 @@
   <string name="notification_mode_title">Ilmoitustila</string>
   <string name="notification_action_title">Ilmoitustoiminto</string>
   <string name="notification_nag">Erittäin runsas ilmoitus</string>
-  <string name="notification_nag_summary">Ilmoita kappalevaihdoksista käyttäen \"Heads-Up\"-ilmoituksia</string>
   <string name="playback_screen">Toistonäkymä</string>
   <string name="playback_on_startup_title">Avaa käynnistäessä</string>
   <string name="playback_on_startup_summary">Avaa toistonäkymä käynnistäessä</string>
@@ -173,7 +171,7 @@
   <string name="use_idle_timeout_summary">Kun käytössä, toisto lopetetaan tietyn joutoajan jälkeen</string>
   <string name="idle_timeout_title">Joutenolon aikakatkaisu</string>
   <string name="enable_scroll_to_song_title">Vieritä kappaleen nimeen</string>
-  <string name="enable_scroll_to_song_summary">Vieritä parhaillaan toistettavan kappaleeseen/albumiin/esittäjään kirjastoluettelossa</string>
+  <string name="enable_scroll_to_song_summary">Vieritä parhaillaan toistettavaan kappaleeseen/albumiin/esittäjään kirjastonäkymässä</string>
   <string name="coverloader_android_title">Lataa kuvitus Androidista</string>
   <string name="coverloader_android_summary">Etsi kuvitusta Androidin sisäisestä mediatietokannasta</string>
   <string name="coverloader_vanilla_title">Lataa kuvitus kansiosta</string>
@@ -181,8 +179,8 @@
   <string name="coverloader_shadow_title">Lataa kuvitus piilotetusta kansiosta</string>
   <string name="coverloader_shadow_summary">Yritä ladata kuvitus polusta \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\'</string>
   <string name="cover_on_lockscreen_title">Näytä kuvitus lukitusnäytöllä</string>
-  <string name="cover_on_lockscreen_summary">Näytä toistettavan kappaleen kuvitus lukitusnäytöllä</string>
-  <string name="double_tap_title">Kaksoisnapautuksen widget</string>
+  <string name="cover_on_lockscreen_summary">Näytä toistettavan kappaleen kansikuvitus lukitusnäytöllä</string>
+  <string name="double_tap_title">Kaksoisnapautus-widget</string>
   <string name="double_tap_summary">1x1-widgetin kaksoisnapautus avaa soittimen. Asettaa 400 ms viiveen, ennen kuin widget vastaa toimintoon.</string>
   <string name="scrobble_title">Käytä ScrobbleDroid API:a</string>
   <string name="scrobble_summary">Lähetä toistotiedot Last.fm:ään käyttäen ScrobbleDroidia tai Simple Last.fm Scrobbleria</string>
@@ -239,8 +237,18 @@
   <string name="reverse_sort">Käänteinen järjestys</string>
   <string name="share">Jaa…</string>
   <string name="sendto">Lähetä…</string>
+  <string name="no_receiving_apps">Tälle mediatyypille ei löytynyt vastaanottavia sovelluksia!</string>
   <!--SD Scanner-->
+  <string name="sdscan_help">Tarkastuksen käynnistäminen uudelleen aiheuttaa Vanilla Musicin rakentavan mediatietokannan kokonaan uudelleen.</string>
+  <string name="button_start">Käynnistä tarkastus uudelleen</string>
   <string name="database_proc">Tutkittu</string>
+  <string name="db_label">Tarkistetaan myös olemassa olevia mediatietokanta päivitettyjen tai poistettujen tiedostojen varalta.</string>
+  <string name="final_proc">Käsitelty</string>
+  <string name="progress_completed_label">Valmis, valmiina uuden tarkastuksen aloittamiseen.</string>
+  <string name="progress_error_bad_path_label">Tarkastus epäonnistui: uutta tiedostohakua varten määritettiin virheellinen polku.</string>
+  <string name="progress_filelist_label">Valmistellaan ensimmäistä tiedostoluetteloa...</string>
+  <string name="progress_database_label">Kysellään tietokantaa...</string>
   <string name="progress_unstarted_label">Ei käynnistetty vielä.</string>
   <string name="skipping_folder_label">Kohdattiin virhe ja ohitetaan</string>
+  <string name="sdscanner">Muistikortin tarkastus</string>
 </resources>

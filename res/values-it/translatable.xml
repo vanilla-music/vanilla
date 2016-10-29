@@ -2,20 +2,20 @@
 <resources>
   <string name="app_name">Vanilla Music</string>
   <!--Playback Activity (main screen)-->
-  <string name="no_songs">Nessuna traccia trovata nel tuo dispositivo.</string>
-  <string name="empty_queue">Nessuna traccia selezionata. Prendine qualcuna dalla libreria o entra in modalità casuale con un tap in questo messaggio.</string>
+  <string name="no_songs">Nessun brano trovato sul tuo dispositivo.</string>
+  <string name="empty_queue">Nessuna traccia selezionata. Scegline alcune dalla libreria o entra nella modalità casuale premendo su questo messaggio.</string>
   <string name="settings">Impostazioni</string>
   <string name="no_shuffle">No shuffle</string>
-  <string name="shuffle_songs">Brani in shuffle</string>
-  <string name="shuffle_songs_continuously">Riproduci continuamente brani casualmente</string>
+  <string name="shuffle_songs">Mischia brani</string>
+  <string name="shuffle_songs_continuously">Mischia brani continuamente</string>
   <string name="shuffle_albums">Album in shuffle</string>
   <string name="no_repeat">Ripeti off</string>
   <string name="repeat">Ripeti on</string>
-  <string name="repeat_current_song">Ripeti brano corrente</string>
-  <string name="stop_current_song">Stop dopo questo brano</string>
+  <string name="repeat_current_song">Ripeti attuale brano</string>
+  <string name="stop_current_song">Fermati dopo l\'attuale brano</string>
   <string name="random">Casuale</string>
   <string name="random_enabling">Casuale on</string>
-  <string name="song_load_failed">Impossibile caricare il brano %s. Potrebbe essere danneggiato o assente.</string>
+  <string name="song_load_failed">Impossibile caricare il brano %s. Può essere corrotto o mancante.</string>
   <string name="queue_cleared">Coda svuotata.</string>
   <string name="cover_art">Copertina</string>
   <string name="close_notification">Chiudi notifica</string>
@@ -56,24 +56,24 @@
   <string name="play_or_enqueue">Metti in coda se in riproduzione; Riproduci se in pausa.</string>
   <string name="open">Apri</string>
   <plurals name="playing">
-    <item quantity="one">1 traccia in riproduzione.</item>
-    <item quantity="other">%d tracce in riproduzione.</item>
+    <item quantity="one">1 brano in riproduzione.</item>
+    <item quantity="other">%d brani in riproduzione.</item>
   </plurals>
   <plurals name="enqueued">
-    <item quantity="one">1 canzone in coda.</item>
-    <item quantity="other">%d tracce in coda.</item>
+    <item quantity="one">1 brano in coda.</item>
+    <item quantity="other">%d brani in coda.</item>
   </plurals>
   <plurals name="added_to_playlist">
-    <item quantity="one">1 traccia aggiunta alla playlist %2$s.</item>
-    <item quantity="other">%1$d tracce aggiunde alla playlist %2$s.</item>
+    <item quantity="one">1 brano aggiunto alla playlist %2$s.</item>
+    <item quantity="other">%1$d brani aggiunti alla playlist %2$s.</item>
   </plurals>
   <plurals name="removed_from_playlist">
     <item quantity="one">1 brano rimosso dalla playlist %2$s.</item>
     <item quantity="other">%1$d brani rimossi dalla playlist %2$s.</item>
   </plurals>
   <plurals name="deleted">
-    <item quantity="one">1 traccia eliminata.</item>
-    <item quantity="other">%d brani eliminati.</item>
+    <item quantity="one">1 brano rimosso.</item>
+    <item quantity="other">%d brani rimossi.</item>
   </plurals>
   <string name="delete_file_failed">Impossibile eliminare %s.</string>
   <string name="deleted_item">\'%s\' eliminato.</string>
@@ -103,15 +103,15 @@
   <string name="song_playcount">Numero di riproduzioni</string>
   <!--Preferences-->
   <plurals name="seconds">
-    <item quantity="one">1 secondo</item>
+    <item quantity="one">%d secondo</item>
     <item quantity="other">%d secondi</item>
   </plurals>
   <plurals name="minutes">
-    <item quantity="one">1 minuto</item>
+    <item quantity="one">%d minuto</item>
     <item quantity="other">%d minuti</item>
   </plurals>
   <plurals name="hours">
-    <item quantity="one">1 ora</item>
+    <item quantity="one">%d ora</item>
     <item quantity="other">%d ore</item>
   </plurals>
   <string name="audio">Audio</string>
@@ -133,23 +133,23 @@
   <string name="replaygain_summary">Configura la gestione delle informazioni ReplayGain</string>
   <string name="replaygain_track_title">Attiva ReplayGain per traccia</string>
   <string name="replaygain_track_summary">Riproduci tutte le tracce allo stesso volume</string>
-  <string name="replaygain_album_title">Attiva ReplayGain album</string>
+  <string name="replaygain_album_title">Attiva ReplayGain per album</string>
   <string name="replaygain_album_summary">Conserva la struttura dell\'album</string>
   <string name="replaygain_bump_title">Pre-amplificazione ReplayGain</string>
-  <string name="replaygain_untagged_debump_title">Brani senza tag ReplayGain</string>
+  <string name="replaygain_untagged_debump_title">Brani senza tag per ReplayGain</string>
   <string name="replaygain_untagged_debump_summary">Diminuisci il volume per</string>
   <string name="replaygain_preamp_note_title">Nota</string>
   <string name="replaygain_preamp_note_content">Android non consente a Vanilla Music di alzare il volume a &gt;100%. L\'impostazione della pre-amplificazione a un valore elevato potrebbe provocare dei problemi se stai ascoltando musica \"poco rumorosa\".\n\nI valori consigliati sono:\n-&gt; -3 dB per musica silenziosa/classica\n-&gt; +3 dB per registrazioni post-2000</string>
   <string name="readahead">Abilita precaricamento</string>
-  <string name="readahead_summary">Precarica il brano in riproduzione. Questa opzione potrebbe risolvere i problemi come il \'lag audio\'. (Causati da una SD card lenta)</string>
+  <string name="readahead_summary">Leggi l\'attuale brano in riproduzione. Questa opzione può risolvere i problemi di \"perdita d\'audio\" (causati da una lenta scheda SD).</string>
   <string name="equalizer">Equalizzatore</string>
   <string name="cycle_continuous_shuffling">Riproduzione casuale continua</string>
-  <string name="cycle_continuous_shuffling_summary">La \"modalità di riproduzione casuale continua\" riprodurrà i brani in ordine completamente casuale</string>
+  <string name="cycle_continuous_shuffling_summary">\"Modalità casuale\" riprodurrà i brani in ordine completamente casuale</string>
   <string name="notifications">Notifiche</string>
   <string name="notification_mode_title">Modalità di notifica</string>
   <string name="notification_action_title">Azione notifica</string>
   <string name="notification_nag">Notifica molto dettagliata</string>
-  <string name="notification_nag_summary">Annuncia i cambiamenti del brano utilizzando una \"notifica heads-up\"</string>
+  <string name="notification_nag_summary">Annuncia cambi di brano con una notifica \"heads-up\"</string>
   <string name="playback_screen">Schermata riproduzione</string>
   <string name="playback_on_startup_title">Apri all\'avvio</string>
   <string name="playback_on_startup_summary">Apri vista playback all\'avvio</string>
@@ -180,7 +180,6 @@
   <string name="coverloader_shadow_title">Carica copertine da cartella nascosta</string>
   <string name="coverloader_shadow_summary">Prova a caricare copertine da \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\'</string>
   <string name="cover_on_lockscreen_title">Mostra copertina sulla schermata di blocco</string>
-  <string name="cover_on_lockscreen_summary">Visualizza la copertina del brano attualmente in riproduzione sulla schermata di blocco</string>
   <string name="double_tap_title">Widget di doppio tocco</string>
   <string name="double_tap_summary">Doppio tap sul 1x1 widget aprirà il riproduttore. Si avrà un ritardo di 400ms prima che il widget risponda all\'azione.</string>
   <string name="scrobble_title">Usa ScrobbleDroid API</string>
@@ -198,7 +197,6 @@
   <string name="always_show">Mostra sempre</string>
   <string name="open_main_activity">Apri libreria (default)</string>
   <string name="open_mini_popup">Apri mini popup</string>
-  <string name="skip_to_next_song">Salta al brano successivo</string>
   <string name="open_full_player">Apri riproduttore completo</string>
   <string name="info_on_cover">Info sulla copertina</string>
   <string name="info_below_cover">Info sotto la copertina</string>
@@ -206,8 +204,6 @@
   <string name="do_nothing">Non fare niente</string>
   <string name="open_library">Apri libreria</string>
   <string name="play_pause">Riproduci/Pausa</string>
-  <string name="next_song">Brano successivo</string>
-  <string name="previous_song">Brano precedente</string>
   <string name="next_album">Album successivo</string>
   <string name="previous_album">Album precedente</string>
   <string name="cycle_repeat_mode">Modalità ciclica ripeti</string>
@@ -237,6 +233,9 @@
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
   <string name="permission_request_summary">Vanilla Music richiede i permessi di lettura per visualizzare la libreria musicale</string>
   <string name="reverse_sort">Ordinamento inverso</string>
+  <string name="share">Condividi…</string>
+  <string name="sendto">Invia a…</string>
+  <string name="no_receiving_apps">Nessuna app di ricezione trovata per questo tipo di file multimediale!</string>
   <!--SD Scanner-->
   <string name="sdscan_help">L\'avvio di una nuova scansione scatena una ricostruzione completa del database dei file multimediali.</string>
   <string name="button_start">Avvia nuova scansione</string>

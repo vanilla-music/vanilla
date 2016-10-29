@@ -2,8 +2,8 @@
 <resources>
   <string name="app_name">Vanilla Music</string>
   <!--Playback Activity (main screen)-->
-  <string name="no_songs">Não foram encontradas músicas</string>
-  <string name="empty_queue">Nenhuma faixa selecionada. Escolha algumas na coleção ou aceda ao modo aleatório clicando nesta mensagem.</string>
+  <string name="no_songs">Não foram encontradas faixas.</string>
+  <string name="empty_queue">Não selecionou as faixas. Escolha algumas da sua coleção ou ative o modo aleatório tocando nesta mensagem.</string>
   <string name="settings">Definições</string>
   <string name="no_shuffle">Não misturar</string>
   <string name="shuffle_songs">Misturar faixas</string>
@@ -12,10 +12,10 @@
   <string name="no_repeat">Não repetir</string>
   <string name="repeat">Repetir</string>
   <string name="repeat_current_song">Repetir faixa atual</string>
-  <string name="stop_current_song">Parar após a faixa atual</string>
+  <string name="stop_current_song">Parar após esta faixa</string>
   <string name="random">Aleatório</string>
   <string name="random_enabling">Modo aleatório ativado</string>
-  <string name="song_load_failed">Falha ao carregar %s. Pode estar danificada ou em falta.</string>
+  <string name="song_load_failed">Falha ao carregar a faixa %s. Pode estar danificada ou em falta.</string>
   <string name="queue_cleared">Fila de reprodução limpa</string>
   <string name="cover_art">Capa de álbum</string>
   <string name="close_notification">Fechar notificação</string>
@@ -56,24 +56,24 @@
   <string name="play_or_enqueue">Colocar na fila ou reproduzir se em pausa</string>
   <string name="open">Abrir</string>
   <plurals name="playing">
-    <item quantity="one">1 faixa em reprodução</item>
-    <item quantity="other">%d faixas em reprodução</item>
+    <item quantity="one">1 faixa em reprodução.</item>
+    <item quantity="other">%d faixas em reprodução.</item>
   </plurals>
   <plurals name="enqueued">
-    <item quantity="one">1 faixa na fila</item>
-    <item quantity="other">%d faixas na fila</item>
+    <item quantity="one">1 faixa colocada na fila.</item>
+    <item quantity="other">%d faixas colocadas na fila.</item>
   </plurals>
   <plurals name="added_to_playlist">
-    <item quantity="one">1 faixa adicionada à lista de reprodução %2$s</item>
-    <item quantity="other">%1$d faixas adicionadas à de reprodução %2$s</item>
+    <item quantity="one">1 faixa adicionada à lista de reprodução %2$s.</item>
+    <item quantity="other">%1$d faixas adicionadas à lista de reprodução %2$s.</item>
   </plurals>
   <plurals name="removed_from_playlist">
     <item quantity="one">1 faixa removida da lista de reprodução %2$s.</item>
     <item quantity="other">%1$d faixas removidas da lista de reprodução %2$s.</item>
   </plurals>
   <plurals name="deleted">
-    <item quantity="one">1 faixa apagada</item>
-    <item quantity="other">%d faixas apagadas</item>
+    <item quantity="one">1 faixa apagada.</item>
+    <item quantity="other">%d faixas apagadas.</item>
   </plurals>
   <string name="delete_file_failed">Falha ao apagar %s</string>
   <string name="deleted_item">%s foi apagado</string>
@@ -103,15 +103,15 @@
   <string name="song_playcount">N.º de reproduções</string>
   <!--Preferences-->
   <plurals name="seconds">
-    <item quantity="one">1 segundo</item>
+    <item quantity="one">%d segundo</item>
     <item quantity="other">%d segundos</item>
   </plurals>
   <plurals name="minutes">
-    <item quantity="one">1 minuto</item>
-    <item quantity="other">%d minutos</item>
+    <item quantity="one">%d minuto</item>
+    <item quantity="other">%d minuto</item>
   </plurals>
   <plurals name="hours">
-    <item quantity="one">1 hora</item>
+    <item quantity="one">%d hora</item>
     <item quantity="other">%d horas</item>
   </plurals>
   <string name="audio">Áudio</string>
@@ -139,7 +139,7 @@
   <string name="replaygain_untagged_debump_title">Faixas sem informação ReplayGain</string>
   <string name="replaygain_untagged_debump_summary">Diminuir volume em</string>
   <string name="replaygain_preamp_note_title">Nota</string>
-  <string name="replaygain_preamp_note_content">Os sistemas Android não permitem que o Vanilla Music aumente o volume para valores &gt;100%. A utilização de um valor mais alto do amplificador podem gerar problemas se estiver a ouvir músicas calmas.\n\nOs valores recomendados são:\n-&gt; -3dB para músicas calmas ou clássicas\n-&gt; +3dB para músicas gravadas opós após o ano 2000.</string>
+  <string name="replaygain_preamp_note_content">Os sistemas Android não permitem que o Vanilla Music aumente o volume para valores &gt;100%. A utilização de um valor mais alto do amplificador pode gerar problemas se estiver a ouvir músicas calmas.\n\nOs valores recomendados são:\n-&gt; -3dB para músicas calmas ou clássicas\n-&gt; +3dB para músicas gravadas após o ano 2000.</string>
   <string name="readahead">Ativar \'readahead\'</string>
   <string name="readahead_summary">\'Readahead\' da faixa atual. A opção pode resolver os erros \'audio dropout\'. (Causados por um cartão SD lento)</string>
   <string name="equalizer">Equalizador</string>
@@ -173,8 +173,8 @@
   <string name="use_idle_timeout_title">Ativar período de inatividade</string>
   <string name="use_idle_timeout_summary">Se ativa, a reprodução será parada após um certo tempo de inatividade</string>
   <string name="idle_timeout_title">Período de inatividade</string>
-  <string name="enable_scroll_to_song_title">Seguir faixa</string>
-  <string name="enable_scroll_to_song_summary">Ir para a faixa/álbum/artista atual na lista da coleção</string>
+  <string name="enable_scroll_to_song_title">Deslocar para o título</string>
+  <string name="enable_scroll_to_song_summary">Ir para o título da faixa/álbum/artista nas listas da coleção</string>
   <string name="coverloader_android_title">Carregar  imagem do Android</string>
   <string name="coverloader_android_summary">Consulta a capa do álbum na base de dados interna do Android</string>
   <string name="coverloader_vanilla_title">Carregar imagem da pasta</string>

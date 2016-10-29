@@ -2,19 +2,13 @@
 <resources>
   <string name="app_name">Vanilla Music</string>
   <!--Playback Activity (main screen)-->
-  <string name="no_songs">Tidak ada lagu ditemukan di device anda</string>
-  <string name="empty_queue">Anda belum memilih lagu. Pilih dari pustaka atau ketik mode acak, ketika menyentuh pesan ini</string>
   <string name="settings">Pengaturan</string>
   <string name="no_shuffle">Jangan Acak</string>
-  <string name="shuffle_songs">Acak Lagu</string>
   <string name="shuffle_albums">Acak Album</string>
   <string name="no_repeat">Jangan diulang</string>
   <string name="repeat">Ulangi</string>
-  <string name="repeat_current_song">Ulangi lagu ini</string>
-  <string name="stop_current_song">Berhenti setelah lagu ini</string>
   <string name="random">Acak</string>
   <string name="random_enabling">Secara acak diaktifkan</string>
-  <string name="song_load_failed">Gagal menambah lagu %s. Mungkin file korup atau hilang</string>
   <string name="queue_cleared">Daftar lagu dibersihkan</string>
   <string name="cover_art">Kover Album</string>
   <string name="close_notification">Tutup notifikasi</string>
@@ -51,27 +45,13 @@
   <string name="remove">Hapus</string>
   <string name="play_or_enqueue">Diurutkan bila diputar; Putar bila di pause</string>
   <string name="open">Open</string>
-  <plurals name="playing">
-    <item quantity="other">%d lagu diputar</item>
-  </plurals>
-  <plurals name="enqueued">
-    <item quantity="other">%d antrian lagu</item>
-  </plurals>
-  <plurals name="added_to_playlist">
-    <item quantity="other">%1$d lagu ditambahkan ke daftar putar %2$s.</item>
-  </plurals>
-  <plurals name="deleted">
-    <item quantity="other">%d lagu dihapus</item>
-  </plurals>
   <string name="delete_file_failed">Gagal menghapus %s.</string>
   <string name="artists">Artis</string>
   <string name="albums">Album</string>
-  <string name="songs">Lagu</string>
   <string name="playlists">Daftar Putar</string>
   <string name="genres">Genre</string>
   <string name="files">Berkas</string>
   <string name="unknown">Tidak diketahui</string>
-  <string name="all_songs">Semua lagu</string>
   <string name="more_from_artist">Selanjutnya dari artis</string>
   <string name="more_from_album">selanjutnya dari album</string>
   <string name="name">Nama</string>
@@ -83,15 +63,6 @@
   <string name="artist_album_title">Artis, album, judul</string>
   <string name="artist_year">Artis, tahun</string>
   <!--Preferences-->
-  <plurals name="seconds">
-    <item quantity="other">$d detik</item>
-  </plurals>
-  <plurals name="minutes">
-    <item quantity="other">%d menit</item>
-  </plurals>
-  <plurals name="hours">
-    <item quantity="other">%d jam</item>
-  </plurals>
   <string name="audio">Audio</string>
   <string name="media_button_summary">Membutuhkan kontrol pengunci layar ICS</string>
   <string name="headset_only_summary">Non-aktifkan pengeras suara internal</string>
@@ -100,8 +71,6 @@
   <string name="notifications">Pemberitahuan</string>
   <string name="about">Tentang</string>
   <!--The following are for the list preferences-->
-  <string name="next_song">Lagu selanjutnya</string>
-  <string name="previous_song">Lagu sebelumnya</string>
   <string name="next_album">Album selanjutnya</string>
   <string name="previous_album">Album sebelumnya</string>
   <string name="select">Pilih</string>

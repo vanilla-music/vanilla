@@ -2,20 +2,20 @@
 <resources>
   <string name="app_name">Vanilla Music</string>
   <!--Playback Activity (main screen)-->
-  <string name="no_songs">お使いのデバイス上で曲が見つかりませんでした。</string>
-  <string name="empty_queue">曲が選択されていません。ライブラリーから選択するか、このメッセージをタップしてランダムモードに入ります。</string>
+  <string name="no_songs">お使いのデバイス上でトラックが見つかりませんでした。</string>
+  <string name="empty_queue">トラックが選択されていません。ライブラリーから選択するか、このメッセージをタップしてランダムモードに入ります。</string>
   <string name="settings">設定</string>
   <string name="no_shuffle">シャッフルなし</string>
-  <string name="shuffle_songs">曲をシャッフル</string>
-  <string name="shuffle_songs_continuously">連続して曲をシャッフル</string>
+  <string name="shuffle_songs">トラックをシャッフル</string>
+  <string name="shuffle_songs_continuously">連続してトラックをシャッフル</string>
   <string name="shuffle_albums">アルバムをシャッフル</string>
   <string name="no_repeat">繰り返しなし</string>
   <string name="repeat">繰り返し</string>
-  <string name="repeat_current_song">現在の曲を繰り返す</string>
-  <string name="stop_current_song">現在の曲の後で停止</string>
+  <string name="repeat_current_song">現在のトラックを繰り返す</string>
+  <string name="stop_current_song">現在のトラックの後で停止</string>
   <string name="random">ランダム</string>
   <string name="random_enabling">ランダムを有効にしました</string>
-  <string name="song_load_failed">曲 %s を読み込みできませんでした。破損しているか見つかりません。</string>
+  <string name="song_load_failed">トラック %s を読み込みできませんでした。破損しているか見つかりません。</string>
   <string name="queue_cleared">キューをクリアしました。</string>
   <string name="cover_art">カバーアート</string>
   <string name="close_notification">通知を閉じる</string>
@@ -56,19 +56,19 @@
   <string name="play_or_enqueue">再生中はキューに入れる、一時停止中は再生</string>
   <string name="open">開く</string>
   <plurals name="playing">
-    <item quantity="other">%d 曲を再生中。</item>
+    <item quantity="other">%d トラックを再生中。</item>
   </plurals>
   <plurals name="enqueued">
-    <item quantity="other">%d 曲をキューに入れました。</item>
+    <item quantity="other">%d トラックをキューに入れました。</item>
   </plurals>
   <plurals name="added_to_playlist">
-    <item quantity="other">%1$d 曲をプレイリスト %2$s に追加しました。</item>
+    <item quantity="other">%1$d トラックをプレイリスト %2$s に追加しました。</item>
   </plurals>
   <plurals name="removed_from_playlist">
-    <item quantity="other">%1$d 曲をプレイリスト %2$s から削除しました。</item>
+    <item quantity="other">%1$d トラックをプレイリスト %2$s から削除しました。</item>
   </plurals>
   <plurals name="deleted">
-    <item quantity="other">%d 曲を削除しました。</item>
+    <item quantity="other">%d トラックを削除しました。</item>
   </plurals>
   <string name="delete_file_failed">%s を削除できませんでした。</string>
   <string name="deleted_item">\'%s\' を</string>
@@ -76,14 +76,14 @@
   <string name="delete_file">ファイル \'%s\' を削除しますか?</string>
   <string name="artists">アーチスト</string>
   <string name="albums">アルバム</string>
-  <string name="songs">曲</string>
+  <string name="songs">トラック</string>
   <string name="playlists">プレイリスト</string>
   <string name="genres">ジャンル</string>
   <string name="files">ファイル</string>
   <string name="unknown">不明</string>
   <string name="play_all">すべて再生</string>
   <string name="enqueue_all">すべてキューに入れる</string>
-  <string name="all_songs">すべての曲</string>
+  <string name="all_songs">すべてのトラック</string>
   <string name="more_from_artist">アーチストからさらに</string>
   <string name="more_from_album">アルバムからさらに</string>
   <string name="name">名前</string>
@@ -128,20 +128,20 @@
   <string name="replaygain_album_title">アルバムリプレイゲインを有効にする</string>
   <string name="replaygain_album_summary">アルバムのダイナミクスを保持します</string>
   <string name="replaygain_bump_title">リプレイゲイン プリアンプ</string>
-  <string name="replaygain_untagged_debump_title">リプレイゲイン タグがない曲</string>
+  <string name="replaygain_untagged_debump_title">リプレイゲイン タグがないトラック</string>
   <string name="replaygain_untagged_debump_summary">音量を下げる</string>
   <string name="replaygain_preamp_note_title">注意</string>
   <string name="replaygain_preamp_note_content">Android で Vanilla Music の音量を &gt;100% に上げることはできません。プリアンプを高い値に設定することは、\'静かな\' 音楽を聴いているときに問題になります。\n\n推奨の値は:\n-&gt; -3dB : 静かな/クラシック音楽\n-&gt; +3dB : post-2000 の録音</string>
   <string name="readahead">先読みを有効にする</string>
-  <string name="readahead_summary">現在再生中の曲を先読みします。このオプションは、(遅いSDカードによって引き起こされる) \'オーディオ ドロップアウト\' の問題を解決することがあります。</string>
+  <string name="readahead_summary">現在再生中のトラックを先読みします。このオプションは、(遅いSDカードによって引き起こされる) \'オーディオ ドロップアウト\' の問題を解決することがあります。</string>
   <string name="equalizer">イコライザー</string>
   <string name="cycle_continuous_shuffling">連続シャッフル</string>
-  <string name="cycle_continuous_shuffling_summary">\'シャッフルモード\' は、完全にランダムな順序で曲を再生します</string>
+  <string name="cycle_continuous_shuffling_summary">\'シャッフルモード\' は、完全にランダムな順序でトラックを再生します</string>
   <string name="notifications">通知</string>
   <string name="notification_mode_title">通知モード</string>
   <string name="notification_action_title">通知操作</string>
   <string name="notification_nag">非常に詳細な通知</string>
-  <string name="notification_nag_summary">\'Heads-Up-通知\' を使用して曲の変更をお知らせします</string>
+  <string name="notification_nag_summary">\'Heads-Up-通知\' を使用してトラックの変更をお知らせします</string>
   <string name="playback_screen">再生画面</string>
   <string name="playback_on_startup_title">起動時に開く</string>
   <string name="playback_on_startup_summary">起動時に再生ビューを開きます</string>
@@ -165,8 +165,8 @@
   <string name="use_idle_timeout_title">アイドル タイムアウトを有効にする</string>
   <string name="use_idle_timeout_summary">有効な場合、一定期間アイドルになると再生が停止されます</string>
   <string name="idle_timeout_title">アイドル タイムアウト</string>
-  <string name="enable_scroll_to_song_title">曲のタイトルにスクロール</string>
-  <string name="enable_scroll_to_song_summary">ライブラリーリストの現在再生中の曲/アルバム/アーティストにスクロールします</string>
+  <string name="enable_scroll_to_song_title">トラックのタイトルにスクロール</string>
+  <string name="enable_scroll_to_song_summary">ライブラリーリストの現在再生中のトラック/アルバム/アーティストにスクロールします</string>
   <string name="coverloader_android_title">Android からアートワークを読み込む</string>
   <string name="coverloader_android_summary">アルバムのアートワークを Android 内部メディアデータベースから読み込みます</string>
   <string name="coverloader_vanilla_title">フォルダからアートワークを読み込む</string>
@@ -174,7 +174,7 @@
   <string name="coverloader_shadow_title">隠しフォルダからアートワークを読み込む</string>
   <string name="coverloader_shadow_summary">\'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\' からアートワークの読み込みを試行します</string>
   <string name="cover_on_lockscreen_title">ロック画面にアートワークを表示</string>
-  <string name="cover_on_lockscreen_summary">ロック画面に現在再生している曲のアートワークを表示します</string>
+  <string name="cover_on_lockscreen_summary">ロック画面に現在再生しているトラックのアートワークを表示します</string>
   <string name="double_tap_title">ダブルタップ ウィジェット</string>
   <string name="double_tap_summary">1x1 のウィジェットをダブルタップするとプレーヤーを開きます。ウィジェットが操作に応答する前に 400ms の遅延が発生します。</string>
   <string name="scrobble_title">ScrobbleDroid API を使用する</string>
@@ -192,7 +192,7 @@
   <string name="always_show">常に表示</string>
   <string name="open_main_activity">ライブラリーを開く (デフォルト)</string>
   <string name="open_mini_popup">小さいポップアップを開く</string>
-  <string name="skip_to_next_song">次の曲にスキップ</string>
+  <string name="skip_to_next_song">次のトラックにスキップ</string>
   <string name="open_full_player">完全なプレイヤーを開く</string>
   <string name="info_on_cover">カバーアート上に情報</string>
   <string name="info_below_cover">カバーアートの下に情報</string>
@@ -200,8 +200,8 @@
   <string name="do_nothing">何もしない</string>
   <string name="open_library">ライブラリーを開く</string>
   <string name="play_pause">再生/一時停止</string>
-  <string name="next_song">次の曲</string>
-  <string name="previous_song">前の曲</string>
+  <string name="next_song">次のトラック</string>
+  <string name="previous_song">前のトラック</string>
   <string name="next_album">次のアルバム</string>
   <string name="previous_album">前のアルバム</string>
   <string name="cycle_repeat_mode">繰り返し再生モード</string>

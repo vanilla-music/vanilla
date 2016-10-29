@@ -2,20 +2,13 @@
 <resources>
   <string name="app_name">Vanilla Music</string>
   <!--Playback Activity (main screen)-->
-  <string name="no_songs">Na urządzeniu nie znaleziono żadnych utworów.</string>
-  <string name="empty_queue">Nie wybrano żadnych utworów. Wybierz utwory z biblioteki lub wejdź w tryb losowy poprzez kliknięcie tego komunikatu.</string>
   <string name="settings">Ustawienia</string>
   <string name="no_shuffle">Brak losowego odtwarzania utworów</string>
-  <string name="shuffle_songs">Losowe odtwarzanie utworów</string>
-  <string name="shuffle_songs_continuously">Losowe odtwarzanie utworów</string>
   <string name="shuffle_albums">Losowe odtwarzanie albumów</string>
   <string name="no_repeat">Bez powtarzania</string>
   <string name="repeat">Powtarzanie</string>
-  <string name="repeat_current_song">Powtarzaj aktualnie odtwarzany utwór</string>
-  <string name="stop_current_song">Zatrzymaj po aktualnie odtwarzanym utworze</string>
   <string name="random">Przypadkowa kolejność odtwarzania utworów</string>
   <string name="random_enabling">Włączona przypadkową kolejność odtwarzania utworów</string>
-  <string name="song_load_failed">Błąd ładowania utworu %s. Może być uszkodzony lub usunięty.</string>
   <string name="queue_cleared">Kolejka wyczyszczona.</string>
   <string name="cover_art">Okładka</string>
   <string name="close_notification">Zamknij powiadomienia</string>
@@ -53,40 +46,18 @@
   <string name="remove">Skasuj</string>
   <string name="play_or_enqueue">Kolejkuj, jeżeli odtwarzane; Odtwórz, jeżeli zapauzowane</string>
   <string name="open">Otwórz</string>
-  <plurals name="playing">
-    <item quantity="one">Odtwarzanie 1 utworu.</item>
-    <item quantity="few">Odtwarzanie %d utworów.</item>
-    <item quantity="other">Odtwarzanie %d utworów.</item>
-  </plurals>
-  <plurals name="enqueued">
-    <item quantity="one">Kolejkowanie 1 piosenki.</item>
-    <item quantity="few">Kolejkowanie %d piosenek.</item>
-    <item quantity="other">Kolejkowanie %d piosenek.</item>
-  </plurals>
-  <plurals name="added_to_playlist">
-    <item quantity="one">1 utwór dodany do listy odtwarzania %2$s.</item>
-    <item quantity="few">%1$d utworów dodanych do listy odtwarzania %2$s.</item>
-    <item quantity="other">%1$d utworów dodanych do listy odtwarzania %2$s.</item>
-  </plurals>
-  <plurals name="deleted">
-    <item quantity="one">1 utwór usunięty.</item>
-    <item quantity="few">%d utworów usuniętych.</item>
-    <item quantity="other">%d utworów usuniętych.</item>
-  </plurals>
   <string name="delete_file_failed">Nie można usunąć %s.</string>
   <string name="deleted_item">\'%s\' usunięte.</string>
   <string name="delete_item">Usunąć \'%s\'?</string>
   <string name="delete_file">Usunąć plik \'%s\'?</string>
   <string name="artists">Artyści</string>
   <string name="albums">Albumy</string>
-  <string name="songs">Utwory</string>
   <string name="playlists">Listy odtwarzania</string>
   <string name="genres">Gatunki muzyczne</string>
   <string name="files">Pliki</string>
   <string name="unknown">Nieznane</string>
   <string name="play_all">Odtwórz wszystkie</string>
   <string name="enqueue_all">Kolejkuj wszystkie</string>
-  <string name="all_songs">Wszystkie utwory</string>
   <string name="more_from_artist">Więcej od tego artysty</string>
   <string name="more_from_album">Więcej z tego albumu</string>
   <string name="name">Imię</string>
@@ -100,21 +71,6 @@
   <string name="album_track">Artysta, numer utworu</string>
   <string name="song_playcount">Ilość odtworzeń</string>
   <!--Preferences-->
-  <plurals name="seconds">
-    <item quantity="one">1 sekunda</item>
-    <item quantity="few">%d sekund</item>
-    <item quantity="other">%d sekund</item>
-  </plurals>
-  <plurals name="minutes">
-    <item quantity="one">1 minuta</item>
-    <item quantity="few">%d minut</item>
-    <item quantity="other">%d minut</item>
-  </plurals>
-  <plurals name="hours">
-    <item quantity="one">1 godzina</item>
-    <item quantity="few">%d godzin</item>
-    <item quantity="other">%d godzin</item>
-  </plurals>
   <string name="audio">Audio</string>
   <string name="volume_during_ducking_title">Głośność poczas powiadomień</string>
   <string name="volume_during_ducking_summary">Głośność odtwarzania:</string>
@@ -136,15 +92,12 @@
   <string name="replaygain_preamp_note_title">Uwaga</string>
   <string name="replaygain_preamp_note_content">Android nie pozwala Vanilla Music na podniesienie głośności dźwięku do &gt;100%. Ustawianie wysokiej wartości przedwzmocnienia dźwięku może powodować problemy, jeżeli słuchasz \"cichego\" utworu. \n\nZalecane wartości to:\n-&gt; -3dB dla cichej/klasycznej muzyki\n-&gt; +3dB dla nagrań po 2000 r.</string>
   <string name="readahead">Włączenie wczytywania z wyprzedzeniem</string>
-  <string name="readahead_summary">Wczytuj z wyprzedzeniem aktualnie odtwarzany utwór. Ta opcja może rozwiązać problemy z \'zanikiem audio\'. (spowodowane wolną kartą SD)</string>
   <string name="equalizer">Equalizer</string>
   <string name="cycle_continuous_shuffling">Ciągłe losowanie</string>
-  <string name="cycle_continuous_shuffling_summary">Ciągłe losowanie będzie odtwarzać utwory w zupełnie przypadkowej kolejności</string>
   <string name="notifications">Powiadomienia</string>
   <string name="notification_mode_title">Tryb powiadamiania</string>
   <string name="notification_action_title">Akcja powiadomienia</string>
   <string name="notification_nag">Pojawiające się powiadomienia na pasku powiadomień</string>
-  <string name="notification_nag_summary">Zmiana utworu wyświetla nazwę aktualnie odtwarzanego utwóru w postaci powiadomienia na pasku powiadomień</string>
   <string name="playback_screen">Ekran odtwarzania</string>
   <string name="playback_on_startup_title">Otwórz na starcie</string>
   <string name="playback_on_startup_summary">Otwieranie ekranu odtwarzania na starcie</string>
@@ -174,7 +127,6 @@
   <string name="coverloader_shadow_title">Ładowanie okladek albumów z ukrytych folderów</string>
   <string name="coverloader_shadow_summary">Spróbuj załadować okładkęalbumu z \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\'</string>
   <string name="cover_on_lockscreen_title">Pokazuj okładkę albumu na ekranie blokady</string>
-  <string name="cover_on_lockscreen_summary">Wyświetlanie okładki albumu aktualnie odtwarzanego utworu na ekranie blokady</string>
   <string name="double_tap_title">Dwukrotne kliknięcie widgetu</string>
   <string name="double_tap_summary">Podwójne kliknięcie widgetu 1x1 otworzy odtwarzacz. Wprowadza zwłokę 400ms zanim widget odpowie na akcję.</string>
   <string name="scrobble_title">Używanie API ScrobbleDroid</string>
@@ -192,7 +144,6 @@
   <string name="always_show">Zawsze pokazuj</string>
   <string name="open_main_activity">Otwórz bibliotekę (domyślne)</string>
   <string name="open_mini_popup">Otwórz mini wyskakujące okienko</string>
-  <string name="skip_to_next_song">Przeskocz do następnego utworu</string>
   <string name="open_full_player">Otwórz odtwarzacz</string>
   <string name="info_on_cover">Info na okładce albumu</string>
   <string name="info_below_cover">Info pod okładką albumu</string>
@@ -200,8 +151,6 @@
   <string name="do_nothing">Nie rób nic</string>
   <string name="open_library">Otwórz bibliotekę</string>
   <string name="play_pause">Odtwóz/zapauzuj</string>
-  <string name="next_song">Następny utwór</string>
-  <string name="previous_song">Poprzedni utwór</string>
   <string name="next_album">Następny album</string>
   <string name="previous_album">Poprzedni album</string>
   <string name="cycle_repeat_mode">Tryb powtarzania</string>

@@ -2,20 +2,13 @@
 <resources>
   <string name="app_name">Vanilla Music</string>
   <!--Playback Activity (main screen)-->
-  <string name="no_songs">No hay canciones en su dispositivo.</string>
-  <string name="empty_queue">No hay canciones seleccionadas. Elija alguna de la biblioteca o entre en el modo aleatorio pulsando este mensaje.</string>
   <string name="settings">Configuración</string>
   <string name="no_shuffle">Aleatorio no</string>
-  <string name="shuffle_songs">Canciones aleatorias</string>
-  <string name="shuffle_songs_continuously">Mezclar canciones continuamente</string>
   <string name="shuffle_albums">Albumes aleatorios</string>
   <string name="no_repeat">No repetir</string>
   <string name="repeat">Repetir</string>
-  <string name="repeat_current_song">Repetir la canción actual</string>
-  <string name="stop_current_song">Parar después de la canción actual</string>
   <string name="random">Aleatorio</string>
   <string name="random_enabling">Aleatorio activado</string>
-  <string name="song_load_failed">Error al cargar la canción %s. Puede ser que esté dañada o que falte.</string>
   <string name="queue_cleared">Lista limpia</string>
   <string name="cover_art">Carátula</string>
   <string name="close_notification">Cerrar notificación</string>
@@ -55,40 +48,18 @@
   <string name="remove">Quitar</string>
   <string name="play_or_enqueue">Poner en cola si hay música reproduciéndose, reproducir si está pausado</string>
   <string name="open">Abrir</string>
-  <plurals name="playing">
-    <item quantity="one">1 canción reproduciéndose</item>
-    <item quantity="other">%d canciones reproduciéndose.</item>
-  </plurals>
-  <plurals name="enqueued">
-    <item quantity="one">1 canción en cola</item>
-    <item quantity="other">%d canciones en cola.</item>
-  </plurals>
-  <plurals name="added_to_playlist">
-    <item quantity="one">1 canción ha sido agregada a la lista de reproducción %2$s.</item>
-    <item quantity="other">%1$d canciones han sido agregadas a la lista de reproducción %2$s.</item>
-  </plurals>
-  <plurals name="removed_from_playlist">
-    <item quantity="one">1 canción ha sido quitada de la lista de reproducción %2$s</item>
-    <item quantity="other">%1$d canciones han sido quitadas de la lista de reproducción %2$s.</item>
-  </plurals>
-  <plurals name="deleted">
-    <item quantity="one">1 canción eliminada.</item>
-    <item quantity="other">%d canciones eliminadas.</item>
-  </plurals>
   <string name="delete_file_failed">Error al eliminar %s.</string>
   <string name="deleted_item">\'%s\' eliminado.</string>
   <string name="delete_item">¿Eliminar \'%s\'?</string>
   <string name="delete_file">¿Eliminar el archivo \'%s\'?</string>
   <string name="artists">Artistas</string>
   <string name="albums">Álbumes</string>
-  <string name="songs">Canciones</string>
   <string name="playlists">Listas de reproducción</string>
   <string name="genres">Géneros</string>
   <string name="files">Archivos</string>
   <string name="unknown">Desconocido</string>
   <string name="play_all">Reproducir todo</string>
   <string name="enqueue_all">Agregar todo a cola</string>
-  <string name="all_songs">Todas las canciones</string>
   <string name="more_from_artist">Más del artista</string>
   <string name="more_from_album">Más del álbum</string>
   <string name="name">Nombre</string>
@@ -102,24 +73,13 @@
   <string name="album_track">Álbum, número de pista</string>
   <string name="song_playcount">Número de reproducciones</string>
   <!--Preferences-->
-  <plurals name="seconds">
-    <item quantity="one">1 segundo.</item>
-    <item quantity="other">%d segundos.</item>
-  </plurals>
-  <plurals name="minutes">
-    <item quantity="one">1 minuto.</item>
-    <item quantity="other">%d minutos.</item>
-  </plurals>
-  <plurals name="hours">
-    <item quantity="one">1 hora.</item>
-    <item quantity="other">%d horas.</item>
-  </plurals>
   <string name="audio">Audio</string>
   <string name="volume_during_ducking_title">Volumen durante notificaciones</string>
   <string name="volume_during_ducking_summary">Volumen de reproducción:</string>
   <string name="ignore_audiofocus_loss_summary">Continuar reproduciendo tras haber perdido permanentemente control sobre el audio </string>
   <string name="media_button_title">Controles Bluetooth/Auriculares</string>
   <string name="media_button_summary">Esto es necesario para los controles del bloqueo de pantalla en ICS.</string>
+  <string name="media_button_beep_title">Pitido de control de auriculares</string>
   <string name="media_button_beep_summary">Pitar luego de saltar una pista con un doble clic sobre el control de los auriculares</string>
   <string name="headset_only_title">Salida externa unicamente</string>
   <string name="headset_only_summary">Impide que la música suene por los altavoces internos</string>
@@ -135,20 +95,16 @@
   <string name="replaygain_album_title">Habilitar ReplayGain en álbumes</string>
   <string name="replaygain_album_summary">Preservar dinámica del álbum.</string>
   <string name="replaygain_bump_title">Pre-amplificación ReplayGain</string>
-  <string name="replaygain_untagged_debump_title">Canciones sin la etiqueta ReplayGain</string>
   <string name="replaygain_untagged_debump_summary">Reducir volumen un</string>
   <string name="replaygain_preamp_note_title">Nota</string>
   <string name="replaygain_preamp_note_content">Android no permite a Vanilla Music aumentar el volumen a &gt;100%. Establecer el pre-amplificador a valor alto puede resultar un problema si estás escuchando musica \"tranquila\".\n\nLos valores recomendados son:\n-&gt; -3dB para música clásica/apacible\n-&gt; +3dB para grabaciones pos-2000</string>
   <string name="readahead">Habilitar caché de lectura</string>
-  <string name="readahead_summary">Guardar en caché la canción actual. Esta opción puede resolver cortes en la reproducción provocados por una tarjeta SD lenta.</string>
   <string name="equalizer">Ecualizador</string>
   <string name="cycle_continuous_shuffling">Mezcla continua</string>
-  <string name="cycle_continuous_shuffling_summary">\'Modo mezcla\' reproducirá las canciones en un orden completamente aleatorio</string>
   <string name="notifications">Notificaciones</string>
   <string name="notification_mode_title">Modo de notificación</string>
   <string name="notification_action_title">Acción de la notificación</string>
   <string name="notification_nag">Notificación muy detallada</string>
-  <string name="notification_nag_summary">Anunciar cambios en la canción usando una notificación Heads-Up</string>
   <string name="playback_screen">Pantalla de reproducción</string>
   <string name="playback_on_startup_title">Abrir al inicio</string>
   <string name="playback_on_startup_summary">Abrir vista de reproducción al encender</string>
@@ -179,7 +135,6 @@
   <string name="coverloader_shadow_title">Cargar carátula desde carpeta oculta</string>
   <string name="coverloader_shadow_summary">Intentar cargar carátulas desde \'/sdcard/Music/.vanilla/ARTISTA/ÁLBUM.jpg\'</string>
   <string name="cover_on_lockscreen_title">Mostrar caratula en pantalla de bloqueo</string>
-  <string name="cover_on_lockscreen_summary">Mostrar la caratula de la canción en curso en la pantalla de bloqueo</string>
   <string name="double_tap_title">Doble toque en widget</string>
   <string name="double_tap_summary">Tocar dos veces el widget 1x1 abrirá el reproductor. Causa un retraso de 400ms antes de que el widget responda a acciones.</string>
   <string name="scrobble_title">Usar API ScrobbleDroid</string>
@@ -195,7 +150,6 @@
   <string name="always_show">Mostrar siempre</string>
   <string name="open_main_activity">Abrir biblioteca (por defecto)</string>
   <string name="open_mini_popup">Mostrar notificación en miniatura</string>
-  <string name="skip_to_next_song">Saltar a la siguiente canción</string>
   <string name="open_full_player">Abrir reproductor completo</string>
   <string name="info_on_cover">Información encima de la carátula</string>
   <string name="info_below_cover">Información debajo de la carátula</string>
@@ -203,8 +157,6 @@
   <string name="do_nothing">No hacer nada</string>
   <string name="open_library">Abrir biblioteca</string>
   <string name="play_pause">Reproducir/Pausar</string>
-  <string name="next_song">Siguiente canción</string>
-  <string name="previous_song">Canción anterior</string>
   <string name="next_album">Siguiente álbum</string>
   <string name="previous_album">Álbum anterior</string>
   <string name="cycle_repeat_mode">Modo repetición en ciclo</string>
@@ -234,6 +186,8 @@
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
   <string name="permission_request_summary">Vanilla Music necesita permisos de lectura para mostrar tu biblioteca musical</string>
   <string name="reverse_sort">Orden invertido</string>
+  <string name="share">Compartir...</string>
+  <string name="sendto">Enviar a...</string>
   <!--SD Scanner-->
   <string name="button_start">Iniciar reescaneo</string>
   <string name="database_proc">Examinado</string>

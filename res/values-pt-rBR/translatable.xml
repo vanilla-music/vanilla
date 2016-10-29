@@ -2,20 +2,13 @@
 <resources>
   <string name="app_name">Vanilla Music</string>
   <!--Playback Activity (main screen)-->
-  <string name="no_songs">Nenhuma música encontrada em seu dispositivo</string>
-  <string name="empty_queue">Nenhuma música selecionada. Escolha algumas da biblioteca ou entre no modo aleatório tocando nesta mensagem.</string>
   <string name="settings">Configurações</string>
   <string name="no_shuffle">Não misturar</string>
-  <string name="shuffle_songs">Misturar faixas</string>
-  <string name="shuffle_songs_continuously">Misturar faixas continuamente</string>
   <string name="shuffle_albums">Misturar álbuns</string>
   <string name="no_repeat">Não repetir</string>
   <string name="repeat">Repetir</string>
-  <string name="repeat_current_song">Repetir a faixa atual</string>
-  <string name="stop_current_song">Parar após a faixa atual</string>
   <string name="random">Aleatório </string>
   <string name="random_enabling">Modo aleatório ativado</string>
-  <string name="song_load_failed">Falha ao carregar %s. Ela pode estar corrompida ou foi apagada</string>
   <string name="queue_cleared">Fila de reprodução limpa</string>
   <string name="cover_art">Capa de álbum</string>
   <string name="close_notification">Fechar notificação</string>
@@ -54,40 +47,18 @@
   <string name="remove">Remover</string>
   <string name="play_or_enqueue">Colocar na fila; Reproduzir se estiver em pausa</string>
   <string name="open">Abrir</string>
-  <plurals name="playing">
-    <item quantity="one">1 faixa em reprodução</item>
-    <item quantity="other">%d faixas em reprodução</item>
-  </plurals>
-  <plurals name="enqueued">
-    <item quantity="one">1 faixa na fila</item>
-    <item quantity="other">%d faixas na fila</item>
-  </plurals>
-  <plurals name="added_to_playlist">
-    <item quantity="one">1 faixa foi adicionada a playlist %2$s.</item>
-    <item quantity="other">%1$d faixas adicionadas a playlist %2$s.</item>
-  </plurals>
-  <plurals name="removed_from_playlist">
-    <item quantity="one">1 faixa removida da playlist %2$s.</item>
-    <item quantity="other">%1$d faixas removidas da playlist %2$s.</item>
-  </plurals>
-  <plurals name="deleted">
-    <item quantity="one">1 faixa deletada</item>
-    <item quantity="other">%d faixas deletadas</item>
-  </plurals>
   <string name="delete_file_failed">Falha ao deletar %s.</string>
   <string name="deleted_item">\'%s\' deletada.</string>
   <string name="delete_item">Deletar \'%s\'?</string>
   <string name="delete_file">Deletar o arquivo \'%s\'?</string>
   <string name="artists">Artistas</string>
   <string name="albums">Álbuns </string>
-  <string name="songs">Faixas</string>
   <string name="playlists">Playlists</string>
   <string name="genres">Gêneros</string>
   <string name="files">Arquivos</string>
   <string name="unknown">Desconhecido</string>
   <string name="play_all">Tocar tudo</string>
   <string name="enqueue_all">Colocar tudo na fila</string>
-  <string name="all_songs">Todas faixas</string>
   <string name="more_from_artist">Mais do artista</string>
   <string name="more_from_album">Mais do álbum</string>
   <string name="name">Nome</string>
@@ -101,18 +72,6 @@
   <string name="album_track">Álbum, número da faixa</string>
   <string name="song_playcount">Número de reproduções</string>
   <!--Preferences-->
-  <plurals name="seconds">
-    <item quantity="one">1 segundo</item>
-    <item quantity="other">%d segundos</item>
-  </plurals>
-  <plurals name="minutes">
-    <item quantity="one">1 minuto</item>
-    <item quantity="other">%d minutos</item>
-  </plurals>
-  <plurals name="hours">
-    <item quantity="one">1 hora</item>
-    <item quantity="other">%d horas</item>
-  </plurals>
   <string name="audio">Áudio</string>
   <string name="volume_during_ducking_title">Volume durante uma notificação</string>
   <string name="volume_during_ducking_summary">Volume de reprodução:</string>
@@ -135,20 +94,16 @@
   <string name="replaygain_album_title">Ativar álbum ReplayGain</string>
   <string name="replaygain_album_summary">Preservar dinâmica do álbum </string>
   <string name="replaygain_bump_title">ReplayGain pré-amplificado</string>
-  <string name="replaygain_untagged_debump_title">Faixas sem a tag ReplayGain</string>
   <string name="replaygain_untagged_debump_summary">Diminuir volume por</string>
   <string name="replaygain_preamp_note_title">Nota</string>
   <string name="replaygain_preamp_note_content">Sistemas Android não permitem que o Vanilla Music aumente o volume para valores acima de &gt;100%. A configuração de um valor mais alto do que o recomendado podem gerar problemas se estiver a ouvir músicas calmas.\n\nOs valores recomendados são:\n-&gt; -3dB para músicas Calmas/Clássicas \n-&gt; +3dB  gravadas após-2000.</string>
   <string name="readahead">Ativar readahead</string>
-  <string name="readahead_summary">Readahead da faixa atual. Esta opção pode resolver os erros \'audio dropout\'. (Causados por um cartão SD lento)</string>
   <string name="equalizer">Equalizador</string>
   <string name="cycle_continuous_shuffling">Misturar continuamente</string>
-  <string name="cycle_continuous_shuffling_summary">\'Modo misturar\' ele reproduz as faixas aleatoriamente </string>
   <string name="notifications">Notificações</string>
   <string name="notification_mode_title">Modo notificação </string>
   <string name="notification_action_title">Ação da notificação</string>
   <string name="notification_nag">Notificação bem detalhada</string>
-  <string name="notification_nag_summary">Anunciar mudanças de faixas quando estiver usando um \'Heads-up-Notification\'</string>
   <string name="playback_screen">Tela de reprodução</string>
   <string name="playback_on_startup_title">Abrir quando iniciar</string>
   <string name="playback_on_startup_summary">Abrir lista de reprodução no inicio</string>
@@ -179,7 +134,6 @@
   <string name="coverloader_shadow_title">Carregar capa de álbum de uma pasta oculta</string>
   <string name="coverloader_shadow_summary">Tentar carregar uma capa de álbum para \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\'</string>
   <string name="cover_on_lockscreen_title">Mostrar capa do album na tela de bloqueio</string>
-  <string name="cover_on_lockscreen_summary">Mostrar capa do album da faixa em reprodução na tela de bloqueio</string>
   <string name="double_tap_title">Duplo toque no widget</string>
   <string name="double_tap_summary">Ao tocar duas vezes no widget 1x1 o reprodutor será aberto. Pode háver um atraso de 400-600 ms antes de abrir.</string>
   <string name="scrobble_title">Usar ScrobbeDroid API</string>
@@ -197,7 +151,6 @@
   <string name="always_show">Sempre mostrar</string>
   <string name="open_main_activity">Abrir biblioteca (padrão)</string>
   <string name="open_mini_popup">Abrir mini popup</string>
-  <string name="skip_to_next_song">Avançar para próxima faixa</string>
   <string name="open_full_player">Abrir player completo</string>
   <string name="info_on_cover">Informações na capa do álbum</string>
   <string name="info_below_cover">Informações abaixo da capa do álbum</string>
@@ -205,8 +158,6 @@
   <string name="do_nothing">Nada</string>
   <string name="open_library">Abrir biblioteca</string>
   <string name="play_pause">Reproduzir/Pausar</string>
-  <string name="next_song">Próxima faixa</string>
-  <string name="previous_song">Faixa anterior</string>
   <string name="next_album">Próximo álbum</string>
   <string name="previous_album">Álbum anterior</string>
   <string name="cycle_repeat_mode">Modo ciclo de repetição</string>

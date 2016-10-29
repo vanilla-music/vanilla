@@ -2,20 +2,13 @@
 <resources>
   <string name="app_name">وانیلا موزیک</string>
   <!--Playback Activity (main screen)-->
-  <string name="no_songs">آهنگی روی دستگاه شما پیدا نشد.</string>
-  <string name="empty_queue">آهنگی انتخاب نشده. چند آهنگ از مجموعه انتخاب کنید، یا با لمس این پیام وارد حالت تصادفی شوید.</string>
   <string name="settings">تنظیمات</string>
   <string name="no_shuffle">بدون تصادفی</string>
-  <string name="shuffle_songs">تصادفی‌سازی آهنگ‌ها</string>
-  <string name="shuffle_songs_continuously">تصادفی‌سازی پیوسته آهنگ‌ها</string>
   <string name="shuffle_albums">تصادفی‌سازی آلبوم‌ها</string>
   <string name="no_repeat">بدون تکرار</string>
   <string name="repeat">تکرار</string>
-  <string name="repeat_current_song">تکرار آهنگ فعلی</string>
-  <string name="stop_current_song">توقف بعد از آهنگ فعلی</string>
   <string name="random">تصادفی</string>
   <string name="random_enabling">فعال کردن حالت تصادفی</string>
-  <string name="song_load_failed">بارگذاری آهنگ %s ناموفق بود. شاید فایل خراب باشد و یا موجود نباشد.</string>
   <string name="queue_cleared">صف خالی شد.</string>
   <string name="cover_art">جلد آلبوم</string>
   <string name="close_notification">بستن اعلان</string>
@@ -54,35 +47,18 @@
   <string name="remove">حذف</string>
   <string name="play_or_enqueue">اضافه به صف اگر در حال پخش، در غیر این صورت شروع به پخش</string>
   <string name="open">بازکردن</string>
-  <plurals name="playing">
-    <item quantity="other">%d آهنگ در حال پخش.</item>
-  </plurals>
-  <plurals name="enqueued">
-    <item quantity="other">%d آهنگ به صف اضافه شد.</item>
-  </plurals>
-  <plurals name="added_to_playlist">
-    <item quantity="other">%1$d آهنگ به لیست پخش %2$s اضافه شد.</item>
-  </plurals>
-  <plurals name="removed_from_playlist">
-    <item quantity="other">%1$d آهنگ از لیست پخش %2$s حذف شد.</item>
-  </plurals>
-  <plurals name="deleted">
-    <item quantity="other">%d آهنگ پاک شد.</item>
-  </plurals>
   <string name="delete_file_failed">حذف %s ناموفق بود.</string>
   <string name="deleted_item">\'%s\' حذف شد.</string>
   <string name="delete_item">\'%s\' پاک شود؟</string>
   <string name="delete_file">فایل \'%s\' پاک شود؟</string>
   <string name="artists">هنرمندان</string>
   <string name="albums">آلبوم‌ها</string>
-  <string name="songs">آهنگ‌ها</string>
   <string name="playlists">لیست‌های پخش</string>
   <string name="genres">ژانرها</string>
   <string name="files">فایل‌ها</string>
   <string name="unknown">ناشناخته</string>
   <string name="play_all">پخش همه</string>
   <string name="enqueue_all">اضافه‌کردن همه به صف</string>
-  <string name="all_songs">همه آهنگ‌ها</string>
   <string name="more_from_artist">آهنگ‌های بیشتر از این هنرمند</string>
   <string name="more_from_album">آهنگ‌های بیشتر از این آلبوم</string>
   <string name="name">نام</string>
@@ -96,15 +72,6 @@
   <string name="album_track">آلبوم، شماره ترک</string>
   <string name="song_playcount">تعداد پخش</string>
   <!--Preferences-->
-  <plurals name="seconds">
-    <item quantity="other">%d ثانیه ها</item>
-  </plurals>
-  <plurals name="minutes">
-    <item quantity="other">%d دقیقه ها</item>
-  </plurals>
-  <plurals name="hours">
-    <item quantity="other">%d ساعت ها</item>
-  </plurals>
   <string name="audio">صدا</string>
   <string name="volume_during_ducking_title">حجم صدا در زمان اعلان ها</string>
   <string name="volume_during_ducking_summary">میزان صدای پخش:</string>
@@ -141,7 +108,6 @@
   <string name="always_show">همیشه نمایش دهد</string>
   <string name="open_main_activity">باز کردن مجموعه(پیش فرض)</string>
   <string name="open_mini_popup">باز کردن پنجره کوچک</string>
-  <string name="skip_to_next_song">رد شدن از آهنگ بعدی</string>
   <string name="open_full_player">باز کردن کامل پخش کننده</string>
   <string name="info_on_cover">اطلاعات بر روی جلد آلبوم قرار داده شود</string>
   <string name="info_below_cover">اطلاعات در پایین جلد آلبوم قرار داده شود</string>
@@ -149,8 +115,6 @@
   <string name="do_nothing">کاری انجام نمی شود</string>
   <string name="open_library">بازکردن مجموعه</string>
   <string name="play_pause">پخش/عدم پخش</string>
-  <string name="next_song">آهنگ بعدی</string>
-  <string name="previous_song">آهنگ قبلی</string>
   <string name="next_album">آلبوم بعدی</string>
   <string name="previous_album">آلبوم قبلی</string>
   <string name="cycle_repeat_mode">چرخه حالت تکراری</string>
