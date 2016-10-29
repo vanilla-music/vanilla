@@ -125,6 +125,7 @@ THE SOFTWARE.
 	<string name="year">Year</string>
 	<string name="date_added">Date added</string>
 	<string name="artist_album">Artist, album</string>
+	<string name="artist_year_album">Artist, year, album</string>
 	<string name="artist_album_track">Artist, album, track number</string>
 	<string name="artist_album_title">Artist, album, title</string>
 	<string name="artist_year">Artist, year</string>

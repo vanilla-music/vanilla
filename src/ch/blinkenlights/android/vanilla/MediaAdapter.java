@@ -201,15 +201,15 @@ public class MediaAdapter
 			// Why is there no artist_key column constant in the album MediaStore? The column does seem to exist.
 			mFieldKeys = new String[] { MediaStore.Audio.Albums.ALBUM_KEY, "artist_key" };
 			mSongSort = MediaUtils.ALBUM_SORT;
-			mSortEntries = new int[] { R.string.name, R.string.artist_album, R.string.year, R.string.number_of_tracks, R.string.date_added };
-			mSortValues = new String[] { "album_key %1$s", "artist_key %1$s,album_key %1$s", "minyear %1$s,album_key %1$s", "numsongs %1$s,album_key %1$s", "_id %1$s" };
+			mSortEntries = new int[] { R.string.name, R.string.artist_album, R.string.artist_year_album, R.string.number_of_tracks, R.string.date_added };
+			mSortValues = new String[] { "album_key %1$s", "artist_key %1$s,album_key %1$s", "artist_key %1$s,minyear %1$s,album_key %1$s", "numsongs %1$s,album_key %1$s", "_id %1$s" };
 			break;
 		case MediaUtils.TYPE_SONG:
 			mStore = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 			mFields = new String[] { MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.ARTIST };
 			mFieldKeys = new String[] { MediaStore.Audio.Media.TITLE_KEY, MediaStore.Audio.Media.ALBUM_KEY, MediaStore.Audio.Media.ARTIST_KEY };
 			mSortEntries = new int[] { R.string.name, R.string.artist_album_track, R.string.artist_album_title,
-			                           R.string.artist_year, R.string.album_track,
+			                           R.string.artist_year_album, R.string.album_track,
 			                           R.string.year, R.string.date_added, R.string.song_playcount };
 			mSortValues = new String[] { "title_key %1$s", "artist_key %1$s,album_key %1$s,track", "artist_key %1$s,album_key %1$s,title_key %1$s",
 			                             "artist_key %1$s,year %1$s,album_key %1$s, track", "album_key %1$s,track",
