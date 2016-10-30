@@ -575,7 +575,7 @@ public class MediaUtils {
 	 *
 	 * @param resolver A ContentResolver to use.
 	 */
-	public static Song randomSong(ContentResolver resolver)
+	public static Song getRandomSong(ContentResolver resolver)
 	{
 		long[] songs = sAllSongs;
 
@@ -591,6 +591,7 @@ public class MediaUtils {
 		}
 
 		Song result = getSongByTypeId(resolver, MediaUtils.TYPE_SONG, sAllSongs[sAllSongsIdx]);
+		result.flags |= Song.FLAG_RANDOM;
 		sAllSongsIdx++;
 		return result;
 	}
