@@ -238,6 +238,10 @@ public final class SongTimeline {
 	 * Hash code of mSongs while mShuffleCache was generated
 	 */
 	private int mShuffleTicket;
+	/**
+	 * The last song we added randomly by calling MediaUtils.getRandomSong()
+	 */
+	private Song mLastRandomSong;
 
 	// for saveActiveSongs()
 	private Song mSavedPrevious;
@@ -485,10 +489,28 @@ public final class SongTimeline {
 	 */
 	public void setFinishAction(int action)
 	{
-		saveActiveSongs();
-		mFinishAction = action;
-		broadcastChangedSongs();
-		changed();
+		synchronized (this) {
+			saveActiveSongs();
+
+			if (mFinishAction == FINISH_RANDOM) {
+				// Remove the last song if we are going out of RANDOM mode and we
+				// are currently playing the 2nd last one.
+				int lastSongPos = getLength() - 1;
+				if (getPosition()+1 == lastSongPos) {
+					Song lastSong = mSongs.get(lastSongPos);
+					if (lastSong.isRandom() && lastSong.equals(mLastRandomSong)) {
+						mSongs.remove(lastSongPos);
+					}
+				}
+				// forget about the last random song, even if it survived (eg: was switching modes while not playing
+				// the 2nd last song -> the last song is now considered to be part of the queue)
+				mLastRandomSong = null;
+			}
+
+			mFinishAction = action;
+			broadcastChangedSongs();
+			changed();
+		}
 	}
 
 	/**
@@ -558,6 +580,7 @@ public final class SongTimeline {
 					if (song == null)
 						return null;
 					timeline.add(song);
+					mLastRandomSong = song;
 					// Keep the queue at 20 items to avoid growing forever
 					// Note that we do not broadcast the addition of this song, as it
 					// was virtually 'always there'
