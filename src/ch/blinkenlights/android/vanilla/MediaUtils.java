@@ -91,17 +91,17 @@ public class MediaUtils {
 	 * The default sort order for media queries. First artist, then album, then
 	 * track number.
 	 */
-	public static final String DEFAULT_SORT = "artist_key,album_key,track";
+	private static final String DEFAULT_SORT = "artist_key,album_key,track";
 
 	/**
 	 * The default sort order for albums. First the album, then tracknumber
 	 */
-	public static final String ALBUM_SORT = "album_key,track";
+	private static final String ALBUM_SORT = "album_key,track";
 
 	/**
 	 * The default sort order for files. Simply use the path
 	 */
-	public static final String FILE_SORT = "_data";
+	private static final String FILE_SORT = "_data";
 
 	/**
 	 * Cached random instance.
