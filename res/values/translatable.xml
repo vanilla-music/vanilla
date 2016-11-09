@@ -233,8 +233,8 @@ THE SOFTWARE.
 
 	<string name="double_tap_title">Double tap widget</string>
 	<string name="double_tap_summary">Double-tapping the 1x1 widget will open the player. Incurs a 400ms delay before the widget responds to actions.</string>
-	<string name="scrobble_title">Use ScrobbleDroid API</string>
-	<string name="scrobble_summary">Scrobble to Last.fm through ScrobbleDroid or Simple Last.fm Scrobbler</string>
+	<string name="scrobble_title">Use Scrobble Droid API</string>
+	<string name="scrobble_summary">Scrobble to Last.fm through Scrobble Droid or Simple Last.fm Scrobbler</string>
 	<string name="stock_broadcast_title">Emulate stock broadcasts</string>
 	<string name="stock_broadcast_summary">Send broadcasts emulating those sent by the stock music player to work with 3rd party lockscreen controls, widgets, etc.</string>
 
