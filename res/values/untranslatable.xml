@@ -142,5 +142,7 @@ THE SOFTWARE.
 		<item>@string/fixed_info</item>
 	</string-array>
 
+	<string name="empty"></string>
+
 
 </resources>

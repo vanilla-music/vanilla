@@ -57,6 +57,5 @@ Copied from SD Scanner's layout/main.xml with minor changes
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:gravity="center_vertical"
-		android:text="" />
+		android:text="@string/empty" />
 </LinearLayout>
-
