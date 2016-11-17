@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2013-2016 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,10 +25,10 @@ import java.util.Enumeration;
 
 
 public class ID3v2File extends Common {
-	private static int ID3_ENC_LATIN   = 0x00;
-	private static int ID3_ENC_UTF16LE = 0x01;
-	private static int ID3_ENC_UTF16BE = 0x02;
-	private static int ID3_ENC_UTF8    = 0x03;
+	private static final int ID3_ENC_LATIN   = 0x00;
+	private static final int ID3_ENC_UTF16   = 0x01;
+	private static final int ID3_ENC_UTF16BE = 0x02;
+	private static final int ID3_ENC_UTF8    = 0x03;
 	
 	public ID3v2File() {
 	}
@@ -137,23 +137,46 @@ public class ID3v2File extends Common {
 	/* Converts a raw byte-stream text into a java String */
 	private String getDecodedString(byte[] raw) {
 		int encid = raw[0] & 0xFF;
-		int len   = raw.length;
-		String v  = "";
+		int skip  = 1;
+		String cs = "ISO-8859-1";
+		String rv  = "";
 		try {
-			if(encid == ID3_ENC_LATIN) {
-				v = new String(raw, 1, len-1, "ISO-8859-1");
+			switch (encid) {
+				case ID3_ENC_UTF8:
+					cs = "UTF-8";
+					break;
+				case ID3_ENC_UTF16BE:
+					cs = "UTF-16BE";
+					skip = 3;
+					break;
+				case ID3_ENC_UTF16:
+					cs = "UTF-16";
+					if (raw.length > 4) {
+						if ((raw[1]&0xFF) == 0xFE && (raw[2]&0XFF) == 0xFF && (raw[3]&0xFF) == 0x00 && (raw[4]&0xFF) == 0x00) {
+							// buggy tag written by lame?!
+							raw[3] = raw[2];
+							raw[4] = raw[1];
+							skip = 3;
+						} else if((raw[1]&0xFF) == 0xFF && (raw[2]&0XFF) == 0x00 && (raw[3]&0xFF) == 0xFE) {
+							// ?!, but seen in the wild
+							raw[2] = raw[1];
+							skip = 2;
+						}
+					}
+					break;
+				case ID3_ENC_LATIN:
+				default:
+					// uses defaults
 			}
-			else if (encid == ID3_ENC_UTF8) {
-				v = new String(raw, 1, len-1, "UTF-8");
-			}
-			else if (encid == ID3_ENC_UTF16LE) {
-				v = new String(raw, 3, len-3, "UTF-16LE");
-			}
-			else if (encid == ID3_ENC_UTF16BE) {
-				v = new String(raw, 3, len-3, "UTF-16BE");
+
+			rv = new String(raw, skip, raw.length-skip, cs);
+
+			if (rv.length() > 0 && rv.substring(rv.length()-1).equals("\0")) {
+				// SOME tag writers seem to null terminate strings, some don't...
+				rv = rv.substring(0, rv.length()-1);
 			}
 		} catch(Exception e) {}
-		return v;
+		return rv;
 	}
 	
 }
