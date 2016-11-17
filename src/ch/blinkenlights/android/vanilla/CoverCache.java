@@ -458,11 +458,13 @@ public class CoverCache {
 					bopts.inJustDecodeBounds = true;
 
 					final int inSampleSize   = getSampleSize(sampleInputStream, bopts, maxPxCount);
-
 					/* reuse bopts: we are now REALLY going to decode the image */
 					bopts.inJustDecodeBounds = false;
 					bopts.inSampleSize       = inSampleSize;
-					return BitmapFactory.decodeStream(inputStream, null, bopts);
+					Bitmap bitmap = BitmapFactory.decodeStream(inputStream, null, bopts);
+					sampleInputStream.close();
+					inputStream.close();
+					return bitmap;
 				}
 			} catch (Exception e) {
 				// no cover art found
