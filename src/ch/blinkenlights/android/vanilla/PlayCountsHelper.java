@@ -46,7 +46,7 @@ public class PlayCountsHelper {
 		Cursor cursor = MediaLibrary.queryLibrary(context, MediaLibrary.TABLE_SONGS, new String[]{ MediaLibrary.SongColumns._ID }, MediaLibrary.SongColumns.PLAYCOUNT+" > 0", null, MediaLibrary.SongColumns.PLAYCOUNT+" DESC");
 		while (cursor.moveToNext() && limit > 0) {
 			payload.add(cursor.getLong(0));
-			limit --;
+			limit--;
 		}
 		cursor.close();
 		return payload;
