@@ -28,7 +28,7 @@ import ch.blinkenlights.android.medialibrary.MediaLibrary;
 import android.content.Context;
 import android.content.ContentValues;
 import android.database.Cursor;
-
+import android.text.TextUtils;
 import java.util.ArrayList;
 
 import android.content.ContentResolver;
@@ -135,23 +135,19 @@ public class Playlist {
 	 * Removes a set of audioIds from the given playlist. Should be
 	 * run on a background thread.
 	 *
-	 * @param resolver A ContentResolver to use.
-	 * @param playlistId The MediaStore.Audio.Playlist id of the playlist to
+	 * @param context the context to use
+	 * @param playlistId id of the playlist to
 	 * modify.
-	 * @param audioIds An ArrayList with all IDs to add
-	 * @return The number of songs that were added to the playlist.
+	 * @param audioIds An ArrayList with all IDs to drop
+	 * @return The number of songs that were removed from the playlist
 	 */
-	public static int removeFromPlaylist(ContentResolver resolver, long playlistId, ArrayList<Long> audioIds) {
+	public static int removeFromPlaylist(Context context, long playlistId, ArrayList<Long> audioIds) {
 		if (playlistId == -1)
 			return 0;
 
-		int count = 0;
-		Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId);
-		for (long id : audioIds) {
-			String where = MediaStore.Audio.Playlists.Members.AUDIO_ID + "=" + id;
-			count += resolver.delete(uri, where, null);
-		}
-		return count;
+		String idList = TextUtils.join(", ", audioIds);
+		String selection = MediaLibrary.PlaylistSongColumns.SONG_ID+" IN ("+idList+") AND "+MediaLibrary.PlaylistSongColumns.PLAYLIST_ID+"="+playlistId;
+		return MediaLibrary.removeFromPlaylist(context, selection, null);
 	}
 
 	/**

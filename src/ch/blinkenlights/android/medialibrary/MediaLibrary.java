@@ -162,6 +162,18 @@ public class MediaLibrary  {
 	}
 
 	/**
+	 * Removes a set of items from a playlist
+	 *
+	 * @param context the context to use
+	 * @param selection the selection for the items to drop
+	 * @param selectionArgs arguments for `selection'
+	 * @return the number of deleted rows, -1 on error
+	 */
+	public static int removeFromPlaylist(Context context, String selection, String[] selectionArgs) {
+		return getBackend(context).delete(MediaLibrary.TABLE_PLAYLISTS_SONGS, selection, selectionArgs);
+	}
+
+	/**
 	 * Registers a new content observer for the media library
 	 *
 	 * @param context the context to use

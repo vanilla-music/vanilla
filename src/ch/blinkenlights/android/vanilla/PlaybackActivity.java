@@ -524,7 +524,7 @@ public abstract class PlaybackActivity extends Activity
 		}
 
 		if (playlistTask.audioIds != null) {
-			count += Playlist.removeFromPlaylist(getContentResolver(), playlistTask.playlistId, playlistTask.audioIds);
+			count += Playlist.removeFromPlaylist(getApplicationContext(), playlistTask.playlistId, playlistTask.audioIds);
 		}
 
 		String message = getResources().getQuantityString(R.plurals.removed_from_playlist, count, count, playlistTask.name);
