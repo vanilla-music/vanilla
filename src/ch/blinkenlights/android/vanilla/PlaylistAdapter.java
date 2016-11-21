@@ -225,12 +225,8 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 		changeCursor(runQuery());
 	}
 
-	public void removeItem(int position)
-	{
-		//ContentResolver resolver = mContext.getContentResolver();
-		//Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", mPlaylistId);
-		//resolver.delete(ContentUris.withAppendedId(uri, getItemId(position)), null, null);
-		// FIXME OBSOLETED
+	public void removeItem(int position) {
+		MediaLibrary.removeFromPlaylist(mContext, MediaLibrary.PlaylistSongColumns._ID+"="+getItemId(position), null);
 		mUiHandler.sendEmptyMessage(MSG_RUN_QUERY);
 	}
 
