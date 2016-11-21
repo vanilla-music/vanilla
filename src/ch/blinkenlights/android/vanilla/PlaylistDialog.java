@@ -83,7 +83,7 @@ public class PlaylistDialog extends DialogFragment
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		Cursor cursor = Playlist.queryPlaylists(getActivity().getContentResolver());
+		Cursor cursor = Playlist.queryPlaylists(getActivity());
 		if (cursor == null)
 			return null;
 

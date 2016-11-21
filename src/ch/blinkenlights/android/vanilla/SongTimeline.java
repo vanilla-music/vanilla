@@ -23,6 +23,8 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import ch.blinkenlights.android.medialibrary.MediaLibrary;
+
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
@@ -326,7 +328,7 @@ public final class SongTimeline {
 
 				// Fill the selection with the ids of all the saved songs
 				// and initialize the timeline with unpopulated songs.
-				StringBuilder selection = new StringBuilder("_ID IN (");
+				StringBuilder selection = new StringBuilder(MediaLibrary.SongColumns._ID+" IN (");
 				for (int i = 0; i != n; ++i) {
 					long id = in.readLong();
 					if (id == -1)
@@ -346,10 +348,8 @@ public final class SongTimeline {
 				// return its results in.
 				Collections.sort(songs, new IdComparator());
 
-				ContentResolver resolver = mContext.getContentResolver();
-				Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-
-				Cursor cursor = MediaUtils.queryResolver(resolver, media, Song.FILLED_PROJECTION, selection.toString(), null, "_id");
+				QueryTask query = new QueryTask(MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS, Song.FILLED_PROJECTION, selection.toString(), null, MediaLibrary.SongColumns._ID);
+				Cursor cursor = query.runQuery(mContext);
 				if (cursor != null) {
 					if (cursor.getCount() != 0) {
 						cursor.moveToNext();
@@ -576,7 +576,7 @@ public final class SongTimeline {
 				return null;
 			} else if (pos == size) {
 				if (mFinishAction == FINISH_RANDOM) {
-					song = MediaUtils.getRandomSong(mContext.getContentResolver());
+					song = MediaUtils.getRandomSong(mContext);
 					if (song == null)
 						return null;
 					timeline.add(song);
@@ -700,7 +700,7 @@ public final class SongTimeline {
 	 */
 	public int addSongs(Context context, QueryTask query)
 	{
-		Cursor cursor = query.runQuery(context.getContentResolver());
+		Cursor cursor = query.runQuery(context);
 		if (cursor == null) {
 			return 0;
 		}

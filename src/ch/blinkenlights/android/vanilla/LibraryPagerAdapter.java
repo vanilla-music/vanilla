@@ -214,7 +214,6 @@ public class LibraryPagerAdapter
 		mUiHandler = new Handler(this);
 		mWorkerHandler = new Handler(workerLooper, this);
 		mCurrentPage = -1;
-		activity.getContentResolver().registerContentObserver(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, true, mPlaylistObserver);
 	}
 
 	/**

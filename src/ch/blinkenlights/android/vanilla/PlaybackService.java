@@ -23,6 +23,8 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import ch.blinkenlights.android.medialibrary.MediaLibrary;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -420,10 +422,6 @@ public final class PlaybackService extends Service
 	 * Reference to precreated BASTP Object
 	 */
 	private BastpUtil mBastpUtil;
-	/**
-	 * Reference to Playcounts helper class
-	 */
-	private PlayCountsHelper mPlayCounts;
 
 	@Override
 	public void onCreate()
@@ -434,8 +432,6 @@ public final class PlaybackService extends Service
 		mTimeline = new SongTimeline(this);
 		mTimeline.setCallback(this);
 		int state = loadState();
-
-		mPlayCounts = new PlayCountsHelper(this);
 
 		mMediaPlayer = getNewMediaPlayer();
 		mPreparedMediaPlayer = getNewMediaPlayer();
@@ -488,7 +484,7 @@ public final class PlaybackService extends Service
 		filter.addAction(Intent.ACTION_SCREEN_ON);
 		registerReceiver(mReceiver, filter);
 
-		getContentResolver().registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, mObserver);
+		MediaLibrary.registerContentObserver(getApplicationContext(), mObserver);
 
 		mRemoteControlClient = new RemoteControl().getClient(this);
 		mRemoteControlClient.initializeRemote();
@@ -1298,7 +1294,7 @@ public final class PlaybackService extends Service
 		Song song = mTimeline.shiftCurrentSong(delta);
 		mCurrentSong = song;
 		if (song == null) {
-			if (MediaUtils.isSongAvailable(getContentResolver())) {
+			if (MediaUtils.isSongAvailable(getApplicationContext())) {
 				int flag = finishAction(mState) == SongTimeline.FINISH_RANDOM ? FLAG_ERROR : FLAG_EMPTY_QUEUE;
 				synchronized (mStateLock) {
 					updateState((mState | flag) & ~FLAG_NO_MEDIA);
@@ -1448,7 +1444,7 @@ public final class PlaybackService extends Service
 
 	public void onMediaChange()
 	{
-		if (MediaUtils.isSongAvailable(getContentResolver())) {
+		if (MediaUtils.isSongAvailable(getApplicationContext())) {
 			if ((mState & FLAG_NO_MEDIA) != 0)
 				setCurrentSong(0);
 		} else {
@@ -1569,15 +1565,15 @@ public final class PlaybackService extends Service
 		case MSG_UPDATE_PLAYCOUNTS:
 			Song song = (Song)message.obj;
 			boolean played = message.arg1 == 1;
-			mPlayCounts.countSong(song, played);
+			PlayCountsHelper.countSong(getApplicationContext(), song, played);
 			// Update the playcounts playlist in ~20% of all cases if enabled
 			if (mAutoPlPlaycounts > 0 && Math.random() > 0.8) {
 				ContentResolver resolver = getContentResolver();
 				// Add an invisible whitespace to adjust our sorting
 				String playlistName = "\u200B"+getString(R.string.autoplaylist_playcounts_name, mAutoPlPlaycounts);
-				long id = Playlist.createPlaylist(resolver, playlistName);
-				ArrayList<Long> items = mPlayCounts.getTopSongs(mAutoPlPlaycounts);
-				Playlist.addToPlaylist(resolver, id, items);
+				long id = Playlist.createPlaylist(getApplicationContext(), playlistName);
+				ArrayList<Long> items = PlayCountsHelper.getTopSongs(getApplicationContext(), mAutoPlPlaycounts);
+				Playlist.addToPlaylist(getApplicationContext(), id, items);
 			}
 
 
@@ -1670,25 +1666,20 @@ public final class PlaybackService extends Service
 	public int deleteMedia(int type, long id)
 	{
 		int count = 0;
-
-		ContentResolver resolver = getContentResolver();
-		String[] projection = new String [] { MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DATA };
-		Cursor cursor = MediaUtils.buildQuery(type, id, projection, null).runQuery(resolver);
+		String[] projection = new String [] { MediaLibrary.SongColumns._ID, MediaLibrary.SongColumns.PATH };
+		Cursor cursor = MediaUtils.buildQuery(type, id, projection, null).runQuery(getApplicationContext());
 
 		if (cursor != null) {
 			while (cursor.moveToNext()) {
 				if (new File(cursor.getString(1)).delete()) {
 					long songId = cursor.getLong(0);
-					String where = MediaStore.Audio.Media._ID + '=' + songId;
-					resolver.delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, where, null);
+					MediaLibrary.removeSong(getApplicationContext(), songId);
 					mTimeline.removeSong(songId);
 					++count;
 				}
 			}
-
 			cursor.close();
 		}
-
 		return count;
 	}
 
@@ -1788,6 +1779,7 @@ public final class PlaybackService extends Service
 		mHandler.sendMessage(mHandler.obtainMessage(MSG_QUERY, query));
 	}
 
+
 	/**
 	 * Enqueues all the songs with the same album/artist/genre as the passed
 	 * song.
@@ -1813,7 +1805,7 @@ public final class PlaybackService extends Service
 			id = song.albumId;
 			break;
 		case MediaUtils.TYPE_GENRE:
-			id = MediaUtils.queryGenreForSong(getContentResolver(), song.id);
+			id = MediaUtils.queryGenreForSong(getApplicationContext(), song.id);
 			break;
 		default:
 			throw new IllegalArgumentException("Unsupported media type: " + type);

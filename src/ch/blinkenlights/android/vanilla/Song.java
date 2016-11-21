@@ -22,6 +22,8 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import ch.blinkenlights.android.medialibrary.MediaLibrary;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -47,36 +49,27 @@ public class Song implements Comparable<Song> {
 
 
 	public static final String[] EMPTY_PROJECTION = {
-		MediaStore.Audio.Media._ID,
+		MediaLibrary.SongColumns._ID,
 	};
 
 	public static final String[] FILLED_PROJECTION = {
-		MediaStore.Audio.Media._ID,
-		MediaStore.Audio.Media.DATA,
-		MediaStore.Audio.Media.TITLE,
-		MediaStore.Audio.Media.ALBUM,
-		MediaStore.Audio.Media.ARTIST,
-		MediaStore.Audio.Media.ALBUM_ID,
-		MediaStore.Audio.Media.ARTIST_ID,
-		MediaStore.Audio.Media.DURATION,
-		MediaStore.Audio.Media.TRACK,
+		MediaLibrary.SongColumns._ID,
+		MediaLibrary.SongColumns.PATH,
+		MediaLibrary.SongColumns.TITLE,
+		MediaLibrary.AlbumColumns.ALBUM,
+		MediaLibrary.ContributorColumns.ARTIST,
+		MediaLibrary.SongColumns.ALBUM_ID,
+		MediaLibrary.ContributorColumns.ARTIST_ID,
+		MediaLibrary.SongColumns.DURATION,
+		MediaLibrary.SongColumns.SONG_NUMBER,
 	};
 
 	public static final String[] EMPTY_PLAYLIST_PROJECTION = {
-		MediaStore.Audio.Playlists.Members.AUDIO_ID,
+		MediaLibrary.PlaylistSongColumns.SONG_ID,
 	};
 
-	public static final String[] FILLED_PLAYLIST_PROJECTION = {
-		MediaStore.Audio.Playlists.Members.AUDIO_ID,
-		MediaStore.Audio.Playlists.Members.DATA,
-		MediaStore.Audio.Playlists.Members.TITLE,
-		MediaStore.Audio.Playlists.Members.ALBUM,
-		MediaStore.Audio.Playlists.Members.ARTIST,
-		MediaStore.Audio.Playlists.Members.ALBUM_ID,
-		MediaStore.Audio.Playlists.Members.ARTIST_ID,
-		MediaStore.Audio.Playlists.Members.DURATION,
-		MediaStore.Audio.Playlists.Members.TRACK,
-	};
+	public static final String[] FILLED_PLAYLIST_PROJECTION =
+		FILLED_PROJECTION; // Same, as playlists are just a view of the view
 
 
 	/**

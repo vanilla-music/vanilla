@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2015 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2014-2016 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
@@ -124,10 +125,24 @@ public class AudioPickerActivity extends PlaybackActivity {
 		Song song = new Song(-1);
 		Cursor cursor = null;
 
-		if (uri.getScheme().equals("content"))
-			cursor = MediaUtils.queryResolver(getContentResolver(), uri, Song.FILLED_PROJECTION, null, null, null);
-		if (uri.getScheme().equals("file"))
+		if (uri.getScheme().equals("content")) {
+			// check if the native content resolver has a path for this
+			Cursor pathCursor = getContentResolver().query(uri, new String[]{ MediaStore.Audio.Media.DATA }, null, null, null);
+			if (pathCursor != null) {
+				if (pathCursor.moveToNext()) {
+					String mediaPath = pathCursor.getString(0);
+					if (mediaPath != null) { // this happens on android 4.x sometimes?!
+						QueryTask query = MediaUtils.buildFileQuery(mediaPath, Song.FILLED_PROJECTION);
+						cursor = query.runQuery(this);
+					}
+				}
+				pathCursor.close();
+			}
+		}
+
+		if (uri.getScheme().equals("file")) {
 			cursor = MediaUtils.getCursorForFileQuery(uri.getPath());
+		}
 
 		if (cursor != null) {
 			if (cursor.moveToNext()) {

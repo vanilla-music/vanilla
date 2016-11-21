@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2011 Christopher Eby <kreed@kreed.org>
- * Copyright (C) 2015 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2015-2016 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,8 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import ch.blinkenlights.android.medialibrary.MediaLibrary;
+
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -38,19 +40,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
-import android.provider.MediaStore.Audio.Playlists.Members;
 
 /**
  * CursorAdapter backed by MediaStore playlists.
  */
 public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
+
 	private static final String[] PROJECTION = new String[] {
-		MediaStore.Audio.Playlists.Members._ID,
-		MediaStore.Audio.Playlists.Members.TITLE,
-		MediaStore.Audio.Playlists.Members.ARTIST,
-		MediaStore.Audio.Playlists.Members.AUDIO_ID,
-		MediaStore.Audio.Playlists.Members.ALBUM_ID,
-		MediaStore.Audio.Playlists.Members.PLAY_ORDER,
+		MediaLibrary.PlaylistSongColumns._ID,
+		MediaLibrary.SongColumns.TITLE,
+		MediaLibrary.ContributorColumns.ARTIST,
+		MediaLibrary.PlaylistSongColumns.SONG_ID,
+		MediaLibrary.SongColumns.ALBUM_ID,
+		MediaLibrary.PlaylistSongColumns.POSITION,
 	};
 
 	private final Context mContext;
@@ -142,7 +144,7 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 	{
 		switch (message.what) {
 		case MSG_RUN_QUERY: {
-			Cursor cursor = runQuery(mContext.getContentResolver());
+			Cursor cursor = runQuery();
 			mUiHandler.sendMessage(mUiHandler.obtainMessage(MSG_UPDATE_CURSOR, cursor));
 			break;
 		}
@@ -159,13 +161,12 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 	/**
 	 * Query the playlist songs.
 	 *
-	 * @param resolver A ContentResolver to query with.
 	 * @return The resulting cursor.
 	 */
-	private Cursor runQuery(ContentResolver resolver)
+	private Cursor runQuery()
 	{
-		QueryTask query = MediaUtils.buildPlaylistQuery(mPlaylistId, PROJECTION, null);
-		return query.runQuery(resolver);
+		QueryTask query = MediaUtils.buildPlaylistQuery(mPlaylistId, PROJECTION);
+		return query.runQuery(mContext);
 	}
 
 	/**
@@ -184,10 +185,8 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 			// this can happen when the adapter changes during the drag
 			return;
 
-		// The Android API contains a method to move a playlist item, however,
-		// it has only been available since Froyo and doesn't seem to work
-		// after a song has been removed from the playlist (I think?).
-
+/*
+ * FIXME OBSOLETED
 		ContentResolver resolver = mContext.getContentResolver();
 		Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", mPlaylistId);
 		Cursor cursor = getCursor();
@@ -222,15 +221,16 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 
 		// insert the new rows
 		resolver.bulkInsert(uri, values);
-
-		changeCursor(runQuery(resolver));
+*/
+		changeCursor(runQuery());
 	}
 
 	public void removeItem(int position)
 	{
-		ContentResolver resolver = mContext.getContentResolver();
-		Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", mPlaylistId);
-		resolver.delete(ContentUris.withAppendedId(uri, getItemId(position)), null, null);
+		//ContentResolver resolver = mContext.getContentResolver();
+		//Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", mPlaylistId);
+		//resolver.delete(ContentUris.withAppendedId(uri, getItemId(position)), null, null);
+		// FIXME OBSOLETED
 		mUiHandler.sendEmptyMessage(MSG_RUN_QUERY);
 	}
 

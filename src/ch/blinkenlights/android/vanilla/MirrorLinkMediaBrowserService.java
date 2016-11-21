@@ -422,7 +422,6 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService
 		try {
 			Cursor cursor = adapter.query();
 			Context context = getApplicationContext();
-			ContentResolver resolver = context.getContentResolver();
 
 			if (cursor == null) {
 				return;
@@ -436,7 +435,7 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService
 				final String label = cursor.getString(2);
 				long mediaId = Long.parseLong(id);
 
-				Song song = MediaUtils.getSongByTypeId(resolver, mediaType, mediaId);
+				Song song = MediaUtils.getSongByTypeId(context, mediaType, mediaId);
 				MediaBrowser.MediaItem item = new MediaBrowser.MediaItem(
 					new MediaDescription.Builder()
 						.setMediaId(MediaID.toString(mediaType, mediaId, label))

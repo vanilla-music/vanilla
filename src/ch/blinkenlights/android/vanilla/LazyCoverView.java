@@ -137,7 +137,7 @@ public class LazyCoverView extends ImageView
 				if (bitmap == null) {
 					if (payload.key.mediaType == MediaUtils.TYPE_ALBUM) {
 						// We only display real covers for queries using the album id as key
-						Song song = MediaUtils.getSongByTypeId(mContext.getContentResolver(), payload.key.mediaType, payload.key.mediaId);
+						Song song = MediaUtils.getSongByTypeId(mContext, payload.key.mediaType, payload.key.mediaId);
 						if (song != null) {
 							bitmap = song.getSmallCover(mContext);
 						}
