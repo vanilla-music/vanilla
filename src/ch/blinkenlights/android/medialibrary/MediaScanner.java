@@ -103,7 +103,7 @@ public class MediaScanner implements Handler.Callback {
 
 	private void scanFile(File file) {
 		String path  = file.getAbsolutePath();
-		long songId  = hash63(path);
+		long songId  = MediaLibrary.hash63(path);
 
 		HashMap tags = (new Bastp()).getTags(path);
 		if (tags.containsKey("type") == false)
@@ -140,9 +140,9 @@ Log.v("VanillaMusic", "> Found mime "+((String)tags.get("type")));
 		String songnum = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER);
 		String composer = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_COMPOSER);
 
-		long albumId = hash63(album);
-		long artistId = hash63(artist);
-		long composerId = hash63(composer);
+		long albumId = MediaLibrary.hash63(album);
+		long artistId = MediaLibrary.hash63(artist);
+		long composerId = MediaLibrary.hash63(composer);
 
 		ContentValues v = new ContentValues();
 		v.put(MediaLibrary.SongColumns._ID,        songId);
@@ -190,7 +190,7 @@ Log.v("VanillaMusic", "> Found mime "+((String)tags.get("type")));
 		if (tags.containsKey("GENRE")) {
 			Vector<String> genres = (Vector)tags.get("GENRE");
 			for (String genre : genres) {
-				long genreId = hash63(genre);
+				long genreId = MediaLibrary.hash63(genre);
 				v.clear();
 				v.put(MediaLibrary.GenreColumns._ID,         genreId);
 				v.put(MediaLibrary.GenreColumns._GENRE,      genre);
@@ -206,23 +206,6 @@ Log.v("VanillaMusic", "> Found mime "+((String)tags.get("type")));
 
 		Log.v("VanillaMusic", "MediaScanner: inserted "+path);
 	}
-
-
-	/**
-	 * Simple 63 bit hash function for strings
-	 */
-	private long hash63(String str) {
-		if (str == null)
-			return 0;
-
-		long hash = 0;
-		int len = str.length();
-		for (int i = 0; i < len ; i++) {
-			hash = 31*hash + str.charAt(i);
-		}
-		return (hash < 0 ? hash*-1 : hash);
-	}
-
 
 }
 

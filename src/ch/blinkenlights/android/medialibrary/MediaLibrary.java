@@ -109,6 +109,7 @@ public class MediaLibrary  {
 	 */
 	public static long createPlaylist(Context context, String name) {
 		ContentValues v = new ContentValues();
+		v.put(MediaLibrary.PlaylistColumns._ID, hash63(name));
 		v.put(MediaLibrary.PlaylistColumns.NAME, name);
 		return getBackend(context).insert(MediaLibrary.TABLE_PLAYLISTS, null, v);
 	}
@@ -199,6 +200,24 @@ public class MediaLibrary  {
 	 */
 	public static String keyFor(String name) {
 		return MediaStore.Audio.keyFor(name);
+	}
+
+	/**
+	 * Simple 63 bit hash function for strings
+	 *
+	 * @param str the string to hash
+	 * @return a positive long
+	 */
+	public static long hash63(String str) {
+		if (str == null)
+			return 0;
+
+		long hash = 0;
+		int len = str.length();
+		for (int i = 0; i < len ; i++) {
+			hash = 31*hash + str.charAt(i);
+		}
+		return (hash < 0 ? hash*-1 : hash);
 	}
 
 	// Columns of Song entries
