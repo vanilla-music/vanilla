@@ -182,19 +182,11 @@ public class ShowQueueFragment extends Fragment
 	public void refreshSongQueueList(final boolean scroll) {
 		getActivity().runOnUiThread(new Runnable(){
 			public void run() {
-				int i, stotal, spos;
-				stotal = mService.getTimelineLength();   /* Total number of songs in queue */
-				spos   = mService.getTimelinePosition(); /* Current position in queue      */
-
-				mListAdapter.clear();                    /* Flush all existing entries...  */
-				mListAdapter.highlightRow(spos);         /* and highlight current position */
-
-				for(i=0 ; i<stotal; i++) {
-					mListAdapter.add(mService.getSongByQueuePosition(i));
-				}
+				int pos = mService.getTimelinePosition();
+				mListAdapter.setData(mService, pos);
 
 				if(scroll)
-					scrollToCurrentSong(spos);
+					scrollToCurrentSong(pos);
 			}
 		});
 	}
