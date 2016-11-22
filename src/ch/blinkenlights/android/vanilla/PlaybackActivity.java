@@ -471,7 +471,7 @@ public abstract class PlaybackActivity extends Activity
 		}
 		case MSG_RENAME_PLAYLIST: {
 			PlaylistTask playlistTask = (PlaylistTask)message.obj;
-			Playlist.renamePlaylist(getContentResolver(), playlistTask.playlistId, playlistTask.name);
+			Playlist.renamePlaylist(getApplicationContext(), playlistTask.playlistId, playlistTask.name);
 			break;
 		}
 		case MSG_DELETE: {

@@ -164,20 +164,12 @@ public class Playlist {
 	/**
 	 * Rename the playlist with the given id.
 	 *
-	 * @param resolver A ContentResolver to use.
+	 * @param context the context to use
 	 * @param id The Media.Audio.Playlists id of the playlist.
 	 * @param newName The new name for the playlist.
 	 */
-	public static void renamePlaylist(ContentResolver resolver, long id, String newName)
-	{
-	/*
-	 * FIXME: OBSOLETED CODE
-		long newId = createPlaylist(resolver, newName);
-		if (newId != -1) { // new playlist created -> move stuff over
-			_copyToPlaylist(resolver, id, newId);
-			deletePlaylist(resolver, id);
-		}
-	*/
+	public static void renamePlaylist(Context context, long id, String newName) {
+		MediaLibrary.renamePlaylist(context, id, newName);
 	}
 
 	/**

@@ -123,7 +123,7 @@ public class MediaLibrary  {
 	 */
 	public static boolean removePlaylist(Context context, long id) {
 		// first, wipe all songs
-		getBackend(context).delete(MediaLibrary.TABLE_PLAYLISTS_SONGS, MediaLibrary.PlaylistSongColumns.PLAYLIST_ID+"="+id, null);
+		removeFromPlaylist(context, MediaLibrary.PlaylistSongColumns.PLAYLIST_ID+"="+id, null);
 		int rows = getBackend(context).delete(MediaLibrary.TABLE_PLAYLISTS, MediaLibrary.PlaylistColumns._ID+"="+id, null);
 		return (rows > 0);
 	}
@@ -172,6 +172,26 @@ public class MediaLibrary  {
 	 */
 	public static int removeFromPlaylist(Context context, String selection, String[] selectionArgs) {
 		return getBackend(context).delete(MediaLibrary.TABLE_PLAYLISTS_SONGS, selection, selectionArgs);
+	}
+
+	/**
+	 * Renames an existing playlist
+	 *
+	 * @param context the context to use
+	 * @param playlistId the id of the playlist to rename
+	 * @param newName the new name of the playlist
+	 * @return the id of the new playlist, -1 on error
+	 */
+	public static long renamePlaylist(Context context, long playlistId, String newName) {
+		long newId = createPlaylist(context, newName);
+		if (newId >= 0) {
+			String selection = MediaLibrary.PlaylistSongColumns.PLAYLIST_ID+"="+playlistId;
+			ContentValues v = new ContentValues();
+			v.put(MediaLibrary.PlaylistSongColumns.PLAYLIST_ID, newId);
+			getBackend(context).update(MediaLibrary.TABLE_PLAYLISTS_SONGS, v, selection, null, true);
+			removePlaylist(context, playlistId);
+		}
+		return newId;
 	}
 
 	/**
