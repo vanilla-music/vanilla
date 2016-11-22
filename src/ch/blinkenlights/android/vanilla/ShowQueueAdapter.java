@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2014 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2013-2016 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@ import android.content.Context;
 import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.view.LayoutInflater;
 import android.widget.TextView;
 
@@ -31,30 +31,86 @@ import android.text.style.ForegroundColorSpan;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 
-public class ShowQueueAdapter
-	extends ArrayAdapter<Song>
-	 {
-	
+public class ShowQueueAdapter extends BaseAdapter {
+	/**
+	 * The resource to pass to the inflater
+	 */
 	private int mResource;
+	/**
+	 * The position we are going to mark as 'active'
+	 */
 	private int mHighlightRow;
+	/**
+	 * The context to use
+	 */
 	private Context mContext;
+	/**
+	 * The playback service reference to query
+	 */
+	private PlaybackService mService;
 
 	public ShowQueueAdapter(Context context, int resource) {
-		super(context, resource);
+		super();
 		mResource = resource;
 		mContext = context;
 		mHighlightRow = -1;
 	}
 
 	/**
-	* Tells the adapter to highlight a specific row id
-	* Set this to -1 to disable the feature
+	* Configures our data source
+	*
+	* @param service the playback service instance to use
+	* @param pos the row to highlight, setting this to -1 disables the feature
 	*/
-	public void highlightRow(int pos) {
+	public void setData(PlaybackService service, int pos) {
+		mService = service;
 		mHighlightRow = pos;
+		notifyDataSetChanged();
 	}
 
+	/**
+	 * Returns the number of songs in this adapter
+	 *
+	 * @return the number of songs in this adapter
+	 */
+	@Override
+	public int getCount() {
+		return (mService == null ? 0 : mService.getTimelineLength());
+	}
 
+	/**
+	 * Returns the song at given position
+	 *
+	 * @param pos the position to query
+	 * @return a Song object
+	 */
+	@Override
+	public Song getItem(int pos) {
+		return mService.getSongByQueuePosition(pos);
+	}
+
+	/**
+	 * Returns the item id at `pos'
+	 *
+	 * @param pos the position to query
+	 * @return the song.id at this position
+	 */
+	@Override
+	public long getItemId(int pos) {
+		return getItem(pos).id;
+	}
+
+	/**
+	 * Returns always `true' as song.id's are stable
+	 */
+	@Override
+	public boolean hasStableIds() {
+		return true;
+	}
+
+	/**
+	 * Returns the view
+	 */
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		DraggableRow row;
