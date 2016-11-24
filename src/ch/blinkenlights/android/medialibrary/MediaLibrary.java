@@ -95,9 +95,8 @@ public class MediaLibrary  {
 	 */
 	public static void updateSongPlayCounts(Context context, long id, boolean played) {
 		final String column = played ? MediaLibrary.SongColumns.PLAYCOUNT : MediaLibrary.SongColumns.SKIPCOUNT;
-		ContentValues v = new ContentValues();
-		v.put(column, column+" + 1");
-		getBackend(context).update(MediaLibrary.TABLE_SONGS, v, MediaLibrary.SongColumns._ID+"="+id, null, false);
+		String selection = MediaLibrary.SongColumns._ID+"="+id;
+		getBackend(context).execSQL("UPDATE "+MediaLibrary.TABLE_SONGS+" SET "+column+"="+column+"+1 WHERE "+selection);
 	}
 
 	/**
@@ -141,9 +140,9 @@ public class MediaLibrary  {
 		// First we need to get the position of the last item
 		String[] projection = { MediaLibrary.PlaylistSongColumns.POSITION };
 		String selection = MediaLibrary.PlaylistSongColumns.PLAYLIST_ID+"="+playlistId;
-		String order = MediaLibrary.PlaylistSongColumns.POSITION;
+		String order = MediaLibrary.PlaylistSongColumns.POSITION+" DESC";
 		Cursor cursor = queryLibrary(context, MediaLibrary.TABLE_PLAYLISTS_SONGS, projection, selection, null, order);
-		if (cursor.moveToLast())
+		if (cursor.moveToFirst())
 			pos = cursor.getLong(0) + 1;
 		cursor.close();
 
@@ -188,10 +187,52 @@ public class MediaLibrary  {
 			String selection = MediaLibrary.PlaylistSongColumns.PLAYLIST_ID+"="+playlistId;
 			ContentValues v = new ContentValues();
 			v.put(MediaLibrary.PlaylistSongColumns.PLAYLIST_ID, newId);
-			getBackend(context).update(MediaLibrary.TABLE_PLAYLISTS_SONGS, v, selection, null, true);
+			getBackend(context).update(MediaLibrary.TABLE_PLAYLISTS_SONGS, v, selection, null);
 			removePlaylist(context, playlistId);
 		}
 		return newId;
+	}
+
+	/**
+	 * Moves an item in a playlist. Note: both items should be in the
+	 * same playlist - 'fun things' will happen otherwise.
+	 *
+	 * @param context the context to use
+	 * @param from the _id of the 'dragged' element
+	 * @param to the _id of the 'repressed' element
+	 */
+	public static void movePlaylistItem(Context context, long from, long to) {
+		long fromPos, toPos, playlistId;
+
+		String[] projection = { MediaLibrary.PlaylistSongColumns.POSITION, MediaLibrary.PlaylistSongColumns.PLAYLIST_ID };
+		String selection = MediaLibrary.PlaylistSongColumns._ID+"=";
+
+		// Get playlist id and position of the 'from' item
+		Cursor cursor = queryLibrary(context, MediaLibrary.TABLE_PLAYLISTS_SONGS, projection, selection+Long.toString(from), null, null);
+		cursor.moveToFirst();
+		fromPos = cursor.getLong(0);
+		playlistId = cursor.getLong(1);
+		cursor.close();
+
+		// Get position of the target item
+		cursor = queryLibrary(context, MediaLibrary.TABLE_PLAYLISTS_SONGS, projection, selection+Long.toString(to), null, null);
+		cursor.moveToFirst();
+		toPos = cursor.getLong(0);
+		cursor.close();
+
+		// Moving down -> We actually want to be below the target
+		if (toPos > fromPos)
+			toPos++;
+
+		// shift all rows +1
+		String setArg = MediaLibrary.PlaylistSongColumns.POSITION+"="+MediaLibrary.PlaylistSongColumns.POSITION+"+1";
+		selection = MediaLibrary.PlaylistSongColumns.PLAYLIST_ID+"="+playlistId+" AND "+MediaLibrary.PlaylistSongColumns.POSITION+" >= "+toPos;
+		getBackend(context).execSQL("UPDATE "+MediaLibrary.TABLE_PLAYLISTS_SONGS+" SET "+setArg+" WHERE "+selection);
+
+		ContentValues v = new ContentValues();
+		v.put(MediaLibrary.PlaylistSongColumns.POSITION, toPos);
+		selection = MediaLibrary.PlaylistSongColumns._ID+"="+from;
+		getBackend(context).update(MediaLibrary.TABLE_PLAYLISTS_SONGS, v, selection, null);
 	}
 
 	/**

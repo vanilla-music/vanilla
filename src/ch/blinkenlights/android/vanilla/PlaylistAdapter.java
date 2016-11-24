@@ -185,43 +185,7 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 			// this can happen when the adapter changes during the drag
 			return;
 
-/*
- * FIXME OBSOLETED
-		ContentResolver resolver = mContext.getContentResolver();
-		Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", mPlaylistId);
-		Cursor cursor = getCursor();
-
-		int start = Math.min(from, to);
-		int end = Math.max(from, to);
-
-		long order;
-		if (start == 0) {
-			order = 0;
-		} else {
-			cursor.moveToPosition(start - 1);
-			order = cursor.getLong(5) + 1;
-		}
-
-		cursor.moveToPosition(end);
-		long endOrder = cursor.getLong(5);
-
-		// clear the rows we are replacing
-		String[] args = new String[] { Long.toString(order), Long.toString(endOrder) };
-		resolver.delete(uri, "play_order >= ? AND play_order <= ?", args);
-
-		// create the new rows
-		ContentValues[] values = new ContentValues[end - start + 1];
-		for (int i = start, j = 0; i <= end; ++i, ++j, ++order) {
-			cursor.moveToPosition(i == to ? from : i > to ? i - 1 : i + 1);
-			ContentValues value = new ContentValues(2);
-			value.put(MediaStore.Audio.Playlists.Members.PLAY_ORDER, Long.valueOf(order));
-			value.put(MediaStore.Audio.Playlists.Members.AUDIO_ID, cursor.getLong(3));
-			values[j] = value;
-		}
-
-		// insert the new rows
-		resolver.bulkInsert(uri, values);
-*/
+		MediaLibrary.movePlaylistItem(mContext, getItemId(from), getItemId(to));
 		changeCursor(runQuery());
 	}
 
