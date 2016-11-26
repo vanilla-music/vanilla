@@ -41,6 +41,10 @@ public class ShowQueueAdapter extends BaseAdapter {
 	 */
 	private int mHighlightRow;
 	/**
+	 * The cached number of songs
+	 */
+	private int mSongCount;
+	/**
 	 * The context to use
 	 */
 	private Context mContext;
@@ -65,6 +69,7 @@ public class ShowQueueAdapter extends BaseAdapter {
 	public void setData(PlaybackService service, int pos) {
 		mService = service;
 		mHighlightRow = pos;
+		mSongCount = service.getTimelineLength();
 		notifyDataSetChanged();
 	}
 
@@ -75,7 +80,13 @@ public class ShowQueueAdapter extends BaseAdapter {
 	 */
 	@Override
 	public int getCount() {
-		return (mService == null ? 0 : mService.getTimelineLength());
+		// Note: This is only updated by setData() to avoid races with the listView if
+		//       the timeline changes: The listView checks if getCount() changed without
+		//       a call to notifyDataSetChanged() and panics if it detected such a condition.
+		//       This can happen to us as onLayout() might get called before setData() was called during
+		//       a queue update. So we simply cache the count to avoid this crash and won't update it until
+		//       setData() is called by our parent.
+		return mSongCount;
 	}
 
 	/**
@@ -86,7 +97,8 @@ public class ShowQueueAdapter extends BaseAdapter {
 	 */
 	@Override
 	public Song getItem(int pos) {
-		return mService.getSongByQueuePosition(pos);
+		Song item = mService.getSongByQueuePosition(pos);
+		return (item != null ? item : new Song(-1));
 	}
 
 	/**
@@ -125,7 +137,7 @@ public class ShowQueueAdapter extends BaseAdapter {
 
 		Song song = getItem(position);
 
-		if (song != null) { // unlikely to fail but seems to happen in the wild.
+		if (song.isFilled()) {
 			SpannableStringBuilder sb = new SpannableStringBuilder(song.title);
 			sb.append('\n');
 			sb.append(song.album+", "+song.artist);
