@@ -203,7 +203,7 @@ public class Playlist {
 
 		boolean found = false;
 		String selection = MediaLibrary.PlaylistSongColumns.PLAYLIST_ID+"=? AND "+MediaLibrary.PlaylistSongColumns.SONG_ID+"=?";
-		String[] selectionArgs = { ""+playlistId, ""+song.id };
+		String[] selectionArgs = { Long.toString(playlistId), Long.toString(song.id) };
 
 		Cursor cursor = MediaLibrary.queryLibrary(context, MediaLibrary.TABLE_PLAYLISTS_SONGS, Song.EMPTY_PLAYLIST_PROJECTION, selection, selectionArgs, null);
 		if (cursor != null) {

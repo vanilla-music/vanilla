@@ -255,7 +255,7 @@ public class CoverCache {
 				dbh.delete(TABLE_NAME, "1", null);
 			} else if (availableSpace < 0) {
 				// Try to evict all expired entries first
-				int affected = dbh.delete(TABLE_NAME, "expires < ?", new String[] {""+getUnixTime()});
+				int affected = dbh.delete(TABLE_NAME, "expires < ?", new String[] { Long.toString(getUnixTime())});
 				if (affected > 0)
 					availableSpace = maxCacheSize - getUsedSpace();
 
@@ -266,7 +266,7 @@ public class CoverCache {
 						while (cursor.moveToNext() && availableSpace < 0) {
 							int id = cursor.getInt(0);
 							int size = cursor.getInt(1);
-							dbh.delete(TABLE_NAME, "id=?", new String[] {""+id});
+							dbh.delete(TABLE_NAME, "id=?", new String[] { Long.toString(id) });
 							availableSpace += size;
 						}
 						cursor.close();
@@ -361,7 +361,7 @@ public class CoverCache {
 
 			SQLiteDatabase dbh = getWritableDatabase(); // may also delete
 			String selection = "id=?";
-			String[] selectionArgs = { ""+key.hashCode() };
+			String[] selectionArgs = { Long.toString(key.hashCode()) };
 			Cursor cursor = dbh.query(TABLE_NAME, FULL_PROJECTION, selection, selectionArgs, null, null, null);
 			if (cursor != null) {
 				if (cursor.moveToFirst()) {

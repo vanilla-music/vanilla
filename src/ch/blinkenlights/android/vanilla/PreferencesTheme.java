@@ -55,7 +55,7 @@ public class PreferencesTheme extends PreferenceFragment
 			pref.setPersistent(false);
 			pref.setOnPreferenceClickListener(this);
 			pref.setTitle(entries[i]);
-			pref.setKey(""+attrs[0]); // that's actually our value
+			pref.setKey(Long.toString(attrs[0])); // that's actually our value
 			pref.setIcon(generateThemePreview(attrs));
 			screen.addPreference(pref);
 		}

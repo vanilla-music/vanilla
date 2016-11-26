@@ -230,7 +230,7 @@ public class MediaUtils {
 	public static long queryGenreForSong(Context context, long id) {
 		String[] projection = { MediaLibrary.GenreSongColumns._GENRE_ID };
 		String query = MediaLibrary.GenreSongColumns.SONG_ID+"=?";
-		String[] queryArgs = new String[] { id+"" };
+		String[] queryArgs = new String[] { Long.toString(id) };
 
 		Cursor cursor = MediaLibrary.queryLibrary(context, MediaLibrary.TABLE_GENRES_SONGS, projection, query, queryArgs, null); 
 		if (cursor != null) {
