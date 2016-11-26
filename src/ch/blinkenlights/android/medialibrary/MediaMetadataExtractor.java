@@ -19,8 +19,10 @@ package ch.blinkenlights.android.medialibrary;
 
 import ch.blinkenlights.bastp.Bastp;
 import android.media.MediaMetadataRetriever;
-import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 	// Well known tags
@@ -38,6 +40,11 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 	public final static String TRACK_NUMBER = "TRACK_NUM";
 	public final static String TITLE        = "TITLE";
 	public final static String YEAR         = "YEAR";
+
+	/**
+	 * Regexp used to match a year in a date field
+	 */
+	private static final Pattern sExtractYear = Pattern.compile("(\\d{4})");
 
 	/**
 	 * Constructor for MediaMetadataExtractor
@@ -131,6 +138,19 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 				put(map[i+1], tags);
 			}
 		}
+
+		// Try to guess YEAR from date field if only DATE was specified
+		// We expect it to match \d{4}
+		if (containsKey(YEAR) == false && bastp.containsKey("DATE")) {
+			ArrayList<String> dateList = (ArrayList<String>)bastp.get("DATE");
+			Matcher dateMatch = sExtractYear.matcher(dateList.get(0));
+			if (dateMatch.matches()) {
+				ArrayList<String> year = new ArrayList<String>(1);
+				year.add(dateMatch.group(1));
+				this.put(YEAR, year);
+			}
+		}
+
 	}
 
 	/**
