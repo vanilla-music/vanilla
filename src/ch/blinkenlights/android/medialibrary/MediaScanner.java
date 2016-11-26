@@ -52,6 +52,11 @@ public class MediaScanner implements Handler.Callback {
 		mHandler = new Handler(handlerThread.getLooper(), this);
 	}
 
+	/**
+	 * Initiates a scan at given directory
+	 *
+	 * @param dir the directory to scan
+	 */
 	public void startScan(File dir) {
 		mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_DIRECTORY, 1, 0, dir));
 	}
@@ -78,9 +83,17 @@ public class MediaScanner implements Handler.Callback {
 		return true;
 	}
 
-
+	/**
+	 * Scans a directory for indexable files
+	 *
+	 * @param dir the directory to scan
+	 * @param recursive scan subdirs if true
+	 */
 	private void scanDirectory(File dir, boolean recursive) {
 		if (dir.isDirectory() == false)
+			return;
+
+		if (new File(dir, ".nomedia").exists())
 			return;
 
 		File[] dirents = dir.listFiles();
@@ -89,21 +102,34 @@ public class MediaScanner implements Handler.Callback {
 
 		for (File file : dirents) {
 			if (file.isFile()) {
-				Log.v("VanillaMusic", "MediaScanner: inspecting file "+file);
-				//scanFile(file);
 				mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_FILE, 0, 0, file));
-			}
-			else if (file.isDirectory() && recursive) {
-				Log.v("VanillaMusic", "MediaScanner: scanning subdir "+file);
-				//scanDirectory(file, recursive);
+			} else if (file.isDirectory() && recursive) {
 				mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_DIRECTORY, 1, 0, file));
 			}
 		}
 	}
 
+	/**
+	 * Returns true if the file should be scanned
+	 *
+	 * @param file the file to inspect
+	 * @return boolean
+	 */
+	private boolean isWhitelisted(File file) {
+		return true;
+	}
+
+	/**
+	 * Scans a single file and adds it to the database
+	 *
+	 * @param file the file to scan
+	 */
 	private void scanFile(File file) {
 		String path  = file.getAbsolutePath();
 		long songId  = MediaLibrary.hash63(path);
+
+		if (isWhitelisted(file) == false)
+			return;
 
 		if (mBackend.isSongExisting(songId)) {
 			Log.v("VanillaMusic", "Skipping already known song with id "+songId);
