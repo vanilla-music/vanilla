@@ -29,6 +29,7 @@ import android.os.Process;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.regex.Pattern;
 
 public class MediaScanner implements Handler.Callback {
 	/**
@@ -39,7 +40,10 @@ public class MediaScanner implements Handler.Callback {
 	 * Our message handler
 	 */
 	private Handler mHandler;
-
+	/**
+	 * Files we are ignoring based on their filename
+	 */
+	private static final Pattern sIgnoredNames = Pattern.compile("^([^\\.]+|.+\\.(jpe?g|gif|png|bmp|webm|txt|pdf|avi|mp4|mkv|zip|tgz|xml))$", Pattern.CASE_INSENSITIVE);
 	/**
 	 * Constructs a new MediaScanner instance
 	 *
@@ -110,13 +114,13 @@ public class MediaScanner implements Handler.Callback {
 	}
 
 	/**
-	 * Returns true if the file should be scanned
+	 * Returns true if the file should not be scanned
 	 *
 	 * @param file the file to inspect
 	 * @return boolean
 	 */
-	private boolean isWhitelisted(File file) {
-		return true;
+	private boolean isBlacklisted(File file) {
+		return sIgnoredNames.matcher(file.getName()).matches();
 	}
 
 	/**
@@ -128,7 +132,7 @@ public class MediaScanner implements Handler.Callback {
 		String path  = file.getAbsolutePath();
 		long songId  = MediaLibrary.hash63(path);
 
-		if (isWhitelisted(file) == false)
+		if (isBlacklisted(file))
 			return;
 
 		if (mBackend.isSongExisting(songId)) {
@@ -185,7 +189,7 @@ public class MediaScanner implements Handler.Callback {
 		v.clear();
 		v.put(MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID, artistId);
 		v.put(MediaLibrary.ContributorSongColumns.SONG_ID,         songId);
-		v.put(MediaLibrary.ContributorSongColumns.ROLE,            0);
+		v.put(MediaLibrary.ContributorSongColumns.ROLE,            MediaLibrary.ROLE_ARTIST);
 		mBackend.insert(MediaLibrary.TABLE_CONTRIBUTORS_SONGS, null, v);
 
 		// Composers are optional: only add if we found it
@@ -201,7 +205,7 @@ public class MediaScanner implements Handler.Callback {
 			v.clear();
 			v.put(MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID, composerId);
 			v.put(MediaLibrary.ContributorSongColumns.SONG_ID,         songId);
-			v.put(MediaLibrary.ContributorSongColumns.ROLE,            1);
+			v.put(MediaLibrary.ContributorSongColumns.ROLE,            MediaLibrary.ROLE_COMPOSER);
 			mBackend.insert(MediaLibrary.TABLE_CONTRIBUTORS_SONGS, null, v);
 		}
 
