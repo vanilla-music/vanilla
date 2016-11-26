@@ -33,7 +33,6 @@ import android.app.backup.BackupManager;
 import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -1568,12 +1567,12 @@ public final class PlaybackService extends Service
 			PlayCountsHelper.countSong(getApplicationContext(), song, played);
 			// Update the playcounts playlist in ~20% of all cases if enabled
 			if (mAutoPlPlaycounts > 0 && Math.random() > 0.8) {
-				ContentResolver resolver = getContentResolver();
+				Context context = getApplicationContext();
 				// Add an invisible whitespace to adjust our sorting
 				String playlistName = getString(R.string.autoplaylist_playcounts_name, mAutoPlPlaycounts);
-				long id = Playlist.createPlaylist(getApplicationContext(), playlistName);
-				ArrayList<Long> items = PlayCountsHelper.getTopSongs(getApplicationContext(), mAutoPlPlaycounts);
-				Playlist.addToPlaylist(getApplicationContext(), id, items);
+				long id = Playlist.createPlaylist(context, playlistName);
+				ArrayList<Long> items = PlayCountsHelper.getTopSongs(context, mAutoPlPlaycounts);
+				Playlist.addToPlaylist(context, id, items);
 			}
 
 

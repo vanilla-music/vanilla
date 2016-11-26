@@ -52,7 +52,7 @@ public class QueryTask {
 
 	/**
 	 * Create the tasks. All arguments are passed directly to
-	 * ContentResolver.query().
+	 * MediaLibrary.runQuery().
 	 */
 	public QueryTask(String table, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
 		this.table = table;

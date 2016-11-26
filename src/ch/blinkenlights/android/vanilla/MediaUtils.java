@@ -39,7 +39,6 @@ import android.util.Log;
 import junit.framework.Assert;
 
 import android.content.ActivityNotFoundException;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -405,7 +404,7 @@ public class MediaUtils {
 	/**
 	 * Returns the first matching song (or NULL) of given type + id combination
 	 *
-	 * @param resolver A ContentResolver to use.
+	 * @param context A Context to use.
 	 * @param type The MediaTye to query
 	 * @param id The id of given type to query
 	 */

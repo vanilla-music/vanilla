@@ -25,8 +25,6 @@ package ch.blinkenlights.android.vanilla;
 
 import ch.blinkenlights.android.medialibrary.MediaLibrary;
 
-import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -34,7 +32,6 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +39,7 @@ import android.widget.CursorAdapter;
 import android.widget.TextView;
 
 /**
- * CursorAdapter backed by MediaStore playlists.
+ * CursorAdapter backed by MediaLibrary playlists.
  */
 public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 
@@ -83,7 +80,7 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 	/**
 	 * Set the id of the backing playlist.
 	 *
-	 * @param id The MediaStore id of a playlist.
+	 * @param id The id of a playlist.
 	 */
 	public void setPlaylistId(long id)
 	{

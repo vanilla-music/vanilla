@@ -33,7 +33,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
-import android.content.ContentResolver;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;

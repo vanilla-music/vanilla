@@ -31,10 +31,6 @@ import android.database.Cursor;
 import android.text.TextUtils;
 import java.util.ArrayList;
 
-import android.content.ContentResolver;
-import android.content.ContentUris;
-import android.net.Uri;
-import android.provider.MediaStore;
 /**
  * Provides various playlist-related utility functions.
  */
@@ -47,7 +43,7 @@ public class Playlist {
 	 */
 	public static Cursor queryPlaylists(Context context) {
 		final String[] projection = { MediaLibrary.PlaylistColumns._ID, MediaLibrary.PlaylistColumns.NAME };
-		final String sort = MediaStore.Audio.Playlists.NAME;
+		final String sort = MediaLibrary.PlaylistColumns.NAME;
 		return MediaLibrary.queryLibrary(context, MediaLibrary.TABLE_PLAYLISTS, projection, null, null, sort);
 	}
 
@@ -99,7 +95,7 @@ public class Playlist {
 	 * run on a background thread.
 	 *
 	 * @param context the context to use
-	 * @param playlistId The MediaStore.Audio.Playlist id of the playlist to
+	 * @param playlistId The playlist id of the playlist to
 	 * modify.
 	 * @param query The query to run. The audio id should be the first column.
 	 * @return The number of songs that were added to the playlist.
@@ -120,7 +116,7 @@ public class Playlist {
 	 * run on a background thread.
 	 *
 	 * @param context the context to use
-	 * @param playlistId The MediaStore.Audio.Playlist id of the playlist to
+	 * @param playlistId The playlist id of the playlist to
 	 * modify.
 	 * @param audioIds An ArrayList with all IDs to add
 	 * @return The number of songs that were added to the playlist.

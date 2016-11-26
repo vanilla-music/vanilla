@@ -18,7 +18,6 @@
 package ch.blinkenlights.android.medialibrary;
 
 import android.content.Context;
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.ContentObserver;
 import android.database.DatabaseUtils;
