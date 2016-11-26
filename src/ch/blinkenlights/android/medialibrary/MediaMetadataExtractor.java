@@ -33,6 +33,7 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 	public final static String DISC_NUMBER  = "DISC_NUMBER";
 	public final static String DURATION     = "DURATION";
 	public final static String GENRE        = "GENRE";
+	public final static String MIME_TYPE    = "MIME";
 	public final static String TRACK_COUNT  = "TRACK_COUNT";
 	public final static String TRACK_NUMBER = "TRACK_NUM";
 	public final static String TITLE        = "TITLE";
@@ -43,7 +44,7 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 	 *
 	 * @param path the path to scan
 	 */
-	MediaMetadataExtractor(String path) {
+	public MediaMetadataExtractor(String path) {
 		extractMetadata(path);
 	}
 
@@ -92,6 +93,10 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 		ArrayList<String> bitrate = new ArrayList<String>(1);
 		bitrate.add(mediaTags.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE));
 		this.put(BITRATE, bitrate);
+
+		ArrayList<String> mime = new ArrayList<String>(1);
+		mime.add(mediaTags.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE));
+		this.put(MIME_TYPE, mime);
 
 
 		// ...but we are using bastp for FLAC, OGG and OPUS as it handles them well

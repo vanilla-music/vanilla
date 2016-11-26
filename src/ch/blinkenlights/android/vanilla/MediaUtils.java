@@ -23,6 +23,7 @@
 package ch.blinkenlights.android.vanilla;
 
 import ch.blinkenlights.android.medialibrary.MediaLibrary;
+import ch.blinkenlights.android.medialibrary.MediaMetadataExtractor;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -31,7 +32,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.zip.CRC32;
 
 import android.util.Log;
 
@@ -46,7 +46,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.database.MatrixCursor;
-import android.media.MediaMetadataRetriever;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -537,18 +536,11 @@ public class MediaUtils {
 	 * */
 	public static Cursor getCursorForFileQuery(String path) {
 		MatrixCursor matrixCursor = new MatrixCursor(Song.FILLED_PROJECTION);
-		MediaMetadataRetriever data = new MediaMetadataRetriever();
-
-		try {
-			data.setDataSource(path);
-		} catch (Exception e) {
-				Log.w("VanillaMusic", "Failed to extract metadata from " + path);
-		}
-
-		String title = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
-		String album = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM);
-		String artist = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
-		String duration = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+		MediaMetadataExtractor tags = new MediaMetadataExtractor(path);
+		String title = tags.getFirst(MediaMetadataExtractor.TITLE);
+		String album = tags.getFirst(MediaMetadataExtractor.ALBUM);
+		String artist = tags.getFirst(MediaMetadataExtractor.ARTIST);
+		String duration = tags.getFirst(MediaMetadataExtractor.DURATION);
 
 		if (duration != null) { // looks like we will be able to play this file
 			// Vanilla requires each file to be identified by its unique id in the media database.
@@ -556,9 +548,9 @@ public class MediaUtils {
 			// using the negative crc32 sum of the path value. While this is not perfect
 			// (the same file may be accessed using various paths) it's the fastest method
 			// and far good enough.
-			CRC32 crc = new CRC32();
-			crc.update(path.getBytes());
-			Long songId = (Long)(2+crc.getValue())*-1; // must at least be -2 (-1 defines Song-Object to be empty)
+			long songId = MediaLibrary.hash63(path) * -1;
+			if (songId > -2)
+				songId = -2; // must be less than -1 (-1 defines an empty song object)
 
 			// Build minimal fake-database entry for this file
 			Object[] objData = new Object[] { songId, path, "", "", "", 0, 0, 0, 0 };
