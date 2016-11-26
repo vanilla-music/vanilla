@@ -340,17 +340,9 @@ public class MediaLibrary  {
 		 */
 		public static final String ALBUM_SORT = "album_sort";
 		/**
-		 * How many songs are on this album
-		 */
-		public static final String SONG_COUNT = "song_count";
-		/**
 		 * The disc number of this album
 		 */
 		public static final String DISC_NUMBER = "disc_num";
-		/**
-		 * The total amount of discs
-		 */
-		public static final String DISC_COUNT = "disc_count";
 		/**
 		 * The primary contributor / artist reference for this album
 		 */
