@@ -125,6 +125,13 @@ public class MediaSchema {
 	 +";";
 
 	/**
+	 * Index to select a song from a playlist quickly
+	 */
+	private static final String INDEX_IDX_PLAYLIST_ID_SONG = "CREATE INDEX idx_playlist_id_song ON "+MediaLibrary.TABLE_PLAYLISTS_SONGS
+	 +" ("+MediaLibrary.PlaylistSongColumns.PLAYLIST_ID+", "+MediaLibrary.PlaylistSongColumns.SONG_ID+")"
+	 +";";
+
+	/**
 	 * Additional columns to select for artist info
 	 */
 	private static final String VIEW_ARTIST_SELECT = "_artist."+MediaLibrary.ContributorColumns._CONTRIBUTOR+" AS "+MediaLibrary.ContributorColumns.ARTIST
@@ -189,6 +196,7 @@ public class MediaSchema {
 		dbh.execSQL(DATABASE_CREATE_PLAYLISTS);
 		dbh.execSQL(DATABASE_CREATE_PLAYLISTS_SONGS);
 		dbh.execSQL(INDEX_IDX_PLAYLIST_ID);
+		dbh.execSQL(INDEX_IDX_PLAYLIST_ID_SONG);
 		dbh.execSQL(VIEW_CREATE_SONGS_ALBUMS_ARTISTS);
 		dbh.execSQL(VIEW_CREATE_ALBUMS_ARTISTS);
 		dbh.execSQL(VIEW_CREATE_ARTISTS);
