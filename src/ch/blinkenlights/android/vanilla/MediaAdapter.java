@@ -313,6 +313,10 @@ public class MediaAdapter
 		// Fetch current sorting mode and sort by disc+track if we are going to look up the songs table
 		String sortRaw = mAdapterSortValues[mode];
 		if (returnSongs) {
+			// songs returned from the artist tab should also sort by album
+			if (mType == MediaUtils.TYPE_ARTIST)
+				sortRaw += ", "+MediaLibrary.AlbumColumns.ALBUM_SORT+" %1$s";
+			// and this is for all types:
 			sortRaw += ", "+MediaLibrary.AlbumColumns.DISC_NUMBER+", "+MediaLibrary.SongColumns.SONG_NUMBER;
 		}
 
