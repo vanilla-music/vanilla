@@ -97,7 +97,7 @@ public class MediaUtils {
 	/**
 	 * The default sort order for albums. First the album, then songnumber
 	 */
-	private static final String ALBUM_SORT = "artist_sort,disc_num,song_num";
+	private static final String ALBUM_SORT = "album_sort,disc_num,song_num";
 
 	/**
 	 * The default sort order for files. Simply use the path
