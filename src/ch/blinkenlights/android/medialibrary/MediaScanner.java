@@ -27,8 +27,8 @@ import android.os.Message;
 import android.os.Process;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Vector;
 
 public class MediaScanner implements Handler.Callback {
 	/**
@@ -105,90 +105,83 @@ public class MediaScanner implements Handler.Callback {
 		String path  = file.getAbsolutePath();
 		long songId  = MediaLibrary.hash63(path);
 
-		HashMap tags = (new Bastp()).getTags(path);
-		if (tags.containsKey("type") == false)
-			return; // no tags found
-
-Log.v("VanillaMusic", "> Found mime "+((String)tags.get("type")));
-
 		if (mBackend.isSongExisting(songId)) {
 			Log.v("VanillaMusic", "Skipping already known song with id "+songId);
 			return;
 		}
 
-		MediaMetadataRetriever data = new MediaMetadataRetriever();
-		try {
-			data.setDataSource(path);
-		} catch (Exception e) {
-				Log.w("VanillaMusic", "Failed to extract metadata from " + path);
-		}
+		MediaMetadataExtractor tags = new MediaMetadataExtractor(path);
+		if (tags.isEmpty())
+			return; // file does not contain audio data
 
-		String duration = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-		if (duration == null)
-			return; // not a supported media file!
+		// Get tags which always must be set
+		String title = tags.getFirst(MediaMetadataExtractor.TITLE);
+		if (title == null)
+			title = "Untitled";
 
-		if (data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_AUDIO) == null)
-			return; // no audio -> do not index
+		String album = tags.getFirst(MediaMetadataExtractor.ALBUM);
+		if (album == null)
+			album = "No Album";
 
-		if (data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_VIDEO) != null)
-			return; // has a video stream -> do not index
+		String artist = tags.getFirst(MediaMetadataExtractor.ARTIST);
+		if (artist == null)
+			artist = "No Artist";
 
-		String title = (tags.containsKey("TITLE") ? (String)((Vector)tags.get("TITLE")).get(0) : "Untitled");
-		String album = (tags.containsKey("ALBUM") ? (String)((Vector)tags.get("ALBUM")).get(0) : "No Album");
-		String artist = (tags.containsKey("ARTIST") ? (String)((Vector)tags.get("ARTIST")).get(0) : "Unknown Artist");
-
-		String songnum = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER);
-		String composer = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_COMPOSER);
 
 		long albumId = MediaLibrary.hash63(album);
 		long artistId = MediaLibrary.hash63(artist);
-		long composerId = MediaLibrary.hash63(composer);
 
 		ContentValues v = new ContentValues();
-		v.put(MediaLibrary.SongColumns._ID,        songId);
-		v.put(MediaLibrary.SongColumns.TITLE,      title);
-		v.put(MediaLibrary.SongColumns.TITLE_SORT, MediaLibrary.keyFor(title));
-		v.put(MediaLibrary.SongColumns.ALBUM_ID,   albumId);
-		v.put(MediaLibrary.SongColumns.DURATION,   duration);
-		v.put(MediaLibrary.SongColumns.SONG_NUMBER,songnum);
-		v.put(MediaLibrary.SongColumns.PATH,       path);
+		v.put(MediaLibrary.SongColumns._ID,         songId);
+		v.put(MediaLibrary.SongColumns.TITLE,       title);
+		v.put(MediaLibrary.SongColumns.TITLE_SORT,  MediaLibrary.keyFor(title));
+		v.put(MediaLibrary.SongColumns.ALBUM_ID,    albumId);
+		v.put(MediaLibrary.SongColumns.DURATION,    tags.getFirst(MediaMetadataExtractor.DURATION));
+		v.put(MediaLibrary.SongColumns.SONG_NUMBER, tags.getFirst(MediaMetadataExtractor.TRACK_NUMBER));
+		v.put(MediaLibrary.SongColumns.PATH,        path);
 		mBackend.insert(MediaLibrary.TABLE_SONGS, null, v);
 
 		v.clear();
-		v.put(MediaLibrary.AlbumColumns._ID,            albumId);
-		v.put(MediaLibrary.AlbumColumns.ALBUM,          album);
-		v.put(MediaLibrary.AlbumColumns.ALBUM_SORT,     MediaLibrary.keyFor(album));
+		v.put(MediaLibrary.AlbumColumns._ID,               albumId);
+		v.put(MediaLibrary.AlbumColumns.ALBUM,             album);
+		v.put(MediaLibrary.AlbumColumns.ALBUM_SORT,        MediaLibrary.keyFor(album));
 		v.put(MediaLibrary.AlbumColumns.PRIMARY_ARTIST_ID, artistId);
+		v.put(MediaLibrary.AlbumColumns.YEAR,              tags.getFirst(MediaMetadataExtractor.YEAR));
+		v.put(MediaLibrary.AlbumColumns.DISC_NUMBER,       tags.getFirst(MediaMetadataExtractor.DISC_NUMBER));
 		mBackend.insert(MediaLibrary.TABLE_ALBUMS, null, v);
 
 		v.clear();
-		v.put(MediaLibrary.ContributorColumns._ID,              artistId);
+		v.put(MediaLibrary.ContributorColumns._ID,               artistId);
 		v.put(MediaLibrary.ContributorColumns._CONTRIBUTOR,      artist);
 		v.put(MediaLibrary.ContributorColumns._CONTRIBUTOR_SORT, MediaLibrary.keyFor(artist));
 		mBackend.insert(MediaLibrary.TABLE_CONTRIBUTORS, null, v);
 
 		v.clear();
 		v.put(MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID, artistId);
-		v.put(MediaLibrary.ContributorSongColumns.SONG_ID,       songId);
-		v.put(MediaLibrary.ContributorSongColumns.ROLE,           0);
+		v.put(MediaLibrary.ContributorSongColumns.SONG_ID,         songId);
+		v.put(MediaLibrary.ContributorSongColumns.ROLE,            0);
 		mBackend.insert(MediaLibrary.TABLE_CONTRIBUTORS_SONGS, null, v);
 
+		// Composers are optional: only add if we found it
+		String composer = tags.getFirst(MediaMetadataExtractor.COMPOSER);
 		if (composer != null) {
+			long composerId = MediaLibrary.hash63(composer);
 			v.clear();
-			v.put(MediaLibrary.ContributorColumns._ID,              composerId);
+			v.put(MediaLibrary.ContributorColumns._ID,               composerId);
 			v.put(MediaLibrary.ContributorColumns._CONTRIBUTOR,      composer);
 			v.put(MediaLibrary.ContributorColumns._CONTRIBUTOR_SORT, MediaLibrary.keyFor(composer));
 			mBackend.insert(MediaLibrary.TABLE_CONTRIBUTORS, null, v);
 
 			v.clear();
 			v.put(MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID, composerId);
-			v.put(MediaLibrary.ContributorSongColumns.SONG_ID,       songId);
-			v.put(MediaLibrary.ContributorSongColumns.ROLE,           1);
+			v.put(MediaLibrary.ContributorSongColumns.SONG_ID,         songId);
+			v.put(MediaLibrary.ContributorSongColumns.ROLE,            1);
 			mBackend.insert(MediaLibrary.TABLE_CONTRIBUTORS_SONGS, null, v);
 		}
 
-		if (tags.containsKey("GENRE")) {
-			Vector<String> genres = (Vector)tags.get("GENRE");
+		// A song might be in multiple genres
+		if (tags.containsKey(MediaMetadataExtractor.GENRE)) {
+			ArrayList<String> genres = tags.get(MediaMetadataExtractor.GENRE);
 			for (String genre : genres) {
 				long genreId = MediaLibrary.hash63(genre);
 				v.clear();

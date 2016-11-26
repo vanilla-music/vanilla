@@ -53,8 +53,8 @@ public class MediaLibrary  {
 					sBackend = new MediaLibraryBackend(context);
 
 					sScanner = new MediaScanner(sBackend);
-					File dir = new File("/storage");
-//					sScanner.startScan(dir);
+					File dir = new File("/storage/emulated/0");
+					sScanner.startScan(dir);
 				}
 //			}
 		}
