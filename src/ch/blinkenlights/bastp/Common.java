@@ -21,7 +21,7 @@ package ch.blinkenlights.bastp;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.HashMap;
-import java.util.Vector;
+import java.util.ArrayList;
 
 public class Common {
 	private static final int MAX_COMMENT_SIZE = 512;
@@ -144,12 +144,12 @@ public class Common {
 
 	public void addTagEntry(HashMap tags, String key, String value) {
 		if(tags.containsKey(key)) {
-			((Vector)tags.get(key)).add(value); // just add to existing vector
+			((ArrayList)tags.get(key)).add(value); // just add to existing vector
 		}
 		else {
-			Vector vx = new Vector();
-			vx.add(value);
-			tags.put(key, vx);
+			ArrayList l = new ArrayList<String>();
+			l.add(value);
+			tags.put(key, l);
 		}
 	}
 	
