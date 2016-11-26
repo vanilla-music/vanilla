@@ -41,6 +41,9 @@ public class MediaLibrary  {
 	public static final String VIEW_SONGS_ALBUMS_ARTISTS  = "_songs_albums_artists";
 	public static final String VIEW_PLAYLIST_SONGS        = "_playlists_songs";
 
+	public static final int ROLE_ARTIST                   = 0;
+	public static final int ROLE_COMPOSER                 = 1;
+
 	private static MediaLibraryBackend sBackend;
 
 	private static MediaScanner sScanner;
