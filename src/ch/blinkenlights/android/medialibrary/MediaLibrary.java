@@ -22,6 +22,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.ContentObserver;
 import android.provider.MediaStore;
+import android.os.Environment;
 
 import java.util.ArrayList;
 import java.io.File;
@@ -56,8 +57,9 @@ public class MediaLibrary  {
 					sBackend = new MediaLibraryBackend(context);
 
 					sScanner = new MediaScanner(sBackend);
-					File dir = new File("/storage/emulated/0");
-					sScanner.startScan(dir);
+					for (File dir : discoverMediaPaths()) {
+						sScanner.startScan(dir);
+					}
 				}
 //			}
 		}
@@ -282,6 +284,25 @@ public class MediaLibrary  {
 			hash = 31*hash + str.charAt(i);
 		}
 		return (hash < 0 ? hash*-1 : hash);
+	}
+
+	/**
+	 * Returns the guessed media paths for this device
+	 *
+	 * @return array with guessed directories
+	 */
+	public static File[] discoverMediaPaths() {
+		ArrayList<File> scanTargets = new ArrayList<File>();
+
+		// this should always exist
+		scanTargets.add(Environment.getExternalStorageDirectory());
+
+		// this *may* exist
+		File sdCard = new File("/storage/sdcard1");
+		if (sdCard.isDirectory())
+			scanTargets.add(sdCard);
+
+		return scanTargets.toArray(new File[scanTargets.size()]);
 	}
 
 	// Columns of Song entries
