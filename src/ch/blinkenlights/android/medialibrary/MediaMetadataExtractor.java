@@ -44,7 +44,15 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 	/**
 	 * Regexp used to match a year in a date field
 	 */
-	private static final Pattern sExtractYear = Pattern.compile("(\\d{4})");
+	private static final Pattern sFilterYear = Pattern.compile("(\\d{4})");
+	/**
+	 * Regexp matching the first lefthand integer
+	 */
+	private static final Pattern sFilterLeftInt = Pattern.compile("^0*(\\d+)");
+	/**
+	 * Regexp matching anything
+	 */
+	private static final Pattern sFilterAny = Pattern.compile("^(.*)$");
 
 	/**
 	 * Constructor for MediaMetadataExtractor
@@ -132,23 +140,24 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 		String[] map = new String[]{ "TITLE", TITLE, "ARTIST", ARTIST, "ALBUM", ALBUM, "ALBUMARTIST", ALBUMARTIST, "COMPOSER", COMPOSER, "GENRE", GENRE,
 		                             "TRACKNUMBER", TRACK_NUMBER, "TRACKTOTAL", TRACK_COUNT, "DISCNUMBER", DISC_NUMBER, "DISCTOTAL", DISC_COUNT,
 		                             "YEAR", YEAR };
+		// switch to integer filter if i >= x
+		int filterByIntAt = 12;
+		// the filter we are normally using
+		Pattern filter = sFilterAny;
+
 		for (int i=0; i<map.length; i+=2) {
+			if (i >= filterByIntAt)
+				filter = sFilterLeftInt;
+
 			if (bastp.containsKey(map[i])) {
-				ArrayList<String> tags = (ArrayList<String>)bastp.get(map[i]);
-				put(map[i+1], tags);
+				addFiltered(filter, map[i+1], (ArrayList<String>)bastp.get(map[i]));
 			}
 		}
 
 		// Try to guess YEAR from date field if only DATE was specified
 		// We expect it to match \d{4}
 		if (containsKey(YEAR) == false && bastp.containsKey("DATE")) {
-			ArrayList<String> dateList = (ArrayList<String>)bastp.get("DATE");
-			Matcher dateMatch = sExtractYear.matcher(dateList.get(0));
-			if (dateMatch.matches()) {
-				ArrayList<String> year = new ArrayList<String>(1);
-				year.add(dateMatch.group(1));
-				this.put(YEAR, year);
-			}
+			addFiltered(sFilterYear, YEAR, (ArrayList<String>)bastp.get("DATE"));
 		}
 
 	}
@@ -163,15 +172,39 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 		                             MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST, MediaMetadataRetriever.METADATA_KEY_COMPOSER, MediaMetadataRetriever.METADATA_KEY_GENRE,
 		                             MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER, MediaMetadataRetriever.METADATA_KEY_YEAR };
 		String[] selfMap = new String[]{  TITLE, ARTIST, ALBUM, ALBUMARTIST, COMPOSER, GENRE, TRACK_NUMBER, YEAR };
+		int filterByIntAt = 6;
+		Pattern filter = sFilterAny;
+
 		for (int i=0; i<selfMap.length; i++) {
 			String data = tags.extractMetadata(mediaMap[i]);
+			if (i >= filterByIntAt)
+				filter = sFilterLeftInt;
+
 			if (data != null) {
 				ArrayList<String> md = new ArrayList<String>(1);
 				md.add(data);
-				put(selfMap[i], md);
+				addFiltered(filter, selfMap[i], md);
 			}
 		}
 	}
 
+	/**
+	 * Matches all elements of `data' with `filter' and adds the result as `key'
+	 *
+	 * @param filter the pattern to use, result is expected to be in capture group 1
+	 * @param key the key to use for the data to put
+	 * @param data the array list to inspect
+	 */
+	private void addFiltered(Pattern filter, String key, ArrayList<String> data) {
+		ArrayList<String> list = new ArrayList<String>();
+		for (String s : data) {
+			Matcher matcher = filter.matcher(s);
+			if (matcher.matches()) {
+				list.add(matcher.group(1));
+			}
+		}
+		if (list.size() > 0)
+			put(key, list);
+	}
 
 }
