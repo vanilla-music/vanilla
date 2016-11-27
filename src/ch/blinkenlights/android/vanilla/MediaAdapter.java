@@ -196,7 +196,7 @@ public class MediaAdapter
 			mFieldKeys = new String[] { MediaLibrary.AlbumColumns.ALBUM_SORT, MediaLibrary.ContributorColumns.ARTIST_SORT };
 			mSortEntries = new int[] { R.string.name, R.string.artist_album, R.string.year, R.string.date_added };
 			mAdapterSortValues = new String[] { MediaLibrary.AlbumColumns.ALBUM_SORT+" %1$s", MediaLibrary.ContributorColumns.ARTIST_SORT+" %1$s,"+MediaLibrary.AlbumColumns.ALBUM_SORT+" %1$s",
-			                                    MediaLibrary.AlbumColumns.YEAR+" %1$s", MediaLibrary.AlbumColumns.MTIME+" %1$s" };
+			                                    MediaLibrary.AlbumColumns.PRIMARY_ALBUM_YEAR+" %1$s", MediaLibrary.AlbumColumns.MTIME+" %1$s" };
 			break;
 		case MediaUtils.TYPE_SONG:
 			mSource = MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS;
@@ -207,7 +207,7 @@ public class MediaAdapter
 			                                    MediaLibrary.ContributorColumns.ARTIST_SORT+" %1$s,"+MediaLibrary.AlbumColumns.ALBUM_SORT+" %1$s,"+MediaLibrary.AlbumColumns.DISC_NUMBER+","+MediaLibrary.SongColumns.SONG_NUMBER,
 			                                    MediaLibrary.ContributorColumns.ARTIST_SORT+" %1$s,"+MediaLibrary.AlbumColumns.ALBUM_SORT+" %1$s,"+MediaLibrary.SongColumns.TITLE_SORT+" %1$s",
 			                                    MediaLibrary.AlbumColumns.ALBUM_SORT+" %1$s,"+MediaLibrary.AlbumColumns.DISC_NUMBER+","+MediaLibrary.SongColumns.SONG_NUMBER,
-			                                    MediaLibrary.AlbumColumns.YEAR+" %1$s,"+MediaLibrary.AlbumColumns.ALBUM_SORT+" %1$s,"+MediaLibrary.AlbumColumns.DISC_NUMBER+","+MediaLibrary.SongColumns.SONG_NUMBER,
+			                                    MediaLibrary.SongColumns.YEAR+" %1$s,"+MediaLibrary.AlbumColumns.ALBUM_SORT+" %1$s,"+MediaLibrary.AlbumColumns.DISC_NUMBER+","+MediaLibrary.SongColumns.SONG_NUMBER,
 			                                    MediaLibrary.SongColumns.MTIME+" %1$s",
 			                                    MediaLibrary.SongColumns.PLAYCOUNT+" %1$s",
 			                                  };

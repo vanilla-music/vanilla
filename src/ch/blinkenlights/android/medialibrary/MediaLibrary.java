@@ -307,6 +307,10 @@ public class MediaLibrary  {
 		 */
 		public static final String ALBUM_ID = "album_id";
 		/**
+		 * The year of this song
+		 */
+		public static final String YEAR = "year";
+		/**
 		 * How often the song was played
 		 */
 		public static final String PLAYCOUNT = "playcount";
@@ -353,7 +357,7 @@ public class MediaLibrary  {
 		/**
 		 * The year of this album
 		 */
-		public static final String YEAR = "year";
+		public static final String PRIMARY_ALBUM_YEAR = "primary_album_year";
 		/**
 		 * The mtime of this item
 		 */
