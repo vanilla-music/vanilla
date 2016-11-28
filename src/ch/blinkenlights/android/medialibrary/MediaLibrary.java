@@ -45,9 +45,18 @@ public class MediaLibrary  {
 	public static final int ROLE_ARTIST                   = 0;
 	public static final int ROLE_COMPOSER                 = 1;
 
+	/**
+	 * Our static backend instance
+	 */
 	private static MediaLibraryBackend sBackend;
-
+	/**
+	 * An instance to the created scanner thread during our own creation
+	 */
 	private static MediaScanner sScanner;
+	/**
+	 * The observer to call-back during database changes
+	 */
+	private static ContentObserver sContentObserver;
 
 	private static MediaLibraryBackend getBackend(Context context) {
 		if (sBackend == null) {
@@ -66,6 +75,28 @@ public class MediaLibrary  {
 		return sBackend;
 	}
 
+	/**
+	 * Registers a new content observer for the media library
+	 *
+	 * @param context the context to use
+	 * @param observer the content observer we are going to call on changes
+	 */
+	public static void registerContentObserver(ContentObserver observer) {
+		if (sContentObserver == null) {
+			sContentObserver = observer;
+		} else {
+			throw new IllegalStateException("ContentObserver was already registered");
+		}
+	}
+
+	/**
+	 * Broadcasts a change to the observer, which will queue and dispatch
+	 * the event to any registered observer
+	 */
+	static void notifyObserver() {
+		if (sContentObserver != null)
+			sContentObserver.onChange(true);
+	}
 
 	/**
 	 * Perform a media query on the database, returns a cursor
@@ -86,9 +117,14 @@ public class MediaLibrary  {
 	 *
 	 * @param context the context to use
 	 * @param id the song id to delete
+	 * @return the number of affected rows
 	 */
-	public static void removeSong(Context context, long id) {
-		getBackend(context).delete(TABLE_SONGS, SongColumns._ID+"="+id, null);
+	public static int removeSong(Context context, long id) {
+		int rows = getBackend(context).delete(TABLE_SONGS, SongColumns._ID+"="+id, null);
+
+		if (rows > 0)
+			notifyObserver();
+		return rows;
 	}
 
 	/**
@@ -115,7 +151,11 @@ public class MediaLibrary  {
 		ContentValues v = new ContentValues();
 		v.put(MediaLibrary.PlaylistColumns._ID, hash63(name));
 		v.put(MediaLibrary.PlaylistColumns.NAME, name);
-		return getBackend(context).insert(MediaLibrary.TABLE_PLAYLISTS, null, v);
+		long id = getBackend(context).insert(MediaLibrary.TABLE_PLAYLISTS, null, v);
+
+		if (id != -1)
+			notifyObserver();
+		return id;
 	}
 
 	/**
@@ -129,7 +169,11 @@ public class MediaLibrary  {
 		// first, wipe all songs
 		removeFromPlaylist(context, MediaLibrary.PlaylistSongColumns.PLAYLIST_ID+"="+id, null);
 		int rows = getBackend(context).delete(MediaLibrary.TABLE_PLAYLISTS, MediaLibrary.PlaylistColumns._ID+"="+id, null);
-		return (rows > 0);
+		boolean removed = (rows > 0);
+
+		if (removed)
+			notifyObserver();
+		return removed;
 	}
 
 	/**
@@ -163,7 +207,11 @@ public class MediaLibrary  {
 			bulk.add(v);
 			pos++;
 		}
-		return getBackend(context).bulkInsert(MediaLibrary.TABLE_PLAYLISTS_SONGS, null, bulk);
+		int rows = getBackend(context).bulkInsert(MediaLibrary.TABLE_PLAYLISTS_SONGS, null, bulk);
+
+		if (rows > 0)
+			notifyObserver();
+		return rows;
 	}
 
 	/**
@@ -175,7 +223,11 @@ public class MediaLibrary  {
 	 * @return the number of deleted rows, -1 on error
 	 */
 	public static int removeFromPlaylist(Context context, String selection, String[] selectionArgs) {
-		return getBackend(context).delete(MediaLibrary.TABLE_PLAYLISTS_SONGS, selection, selectionArgs);
+		int rows = getBackend(context).delete(MediaLibrary.TABLE_PLAYLISTS_SONGS, selection, selectionArgs);
+
+		if (rows > 0)
+			notifyObserver();
+		return rows;
 	}
 
 	/**
@@ -195,6 +247,9 @@ public class MediaLibrary  {
 			getBackend(context).update(MediaLibrary.TABLE_PLAYLISTS_SONGS, v, selection, null);
 			removePlaylist(context, playlistId);
 		}
+
+		if (newId != -1)
+			notifyObserver();
 		return newId;
 	}
 
@@ -238,25 +293,10 @@ public class MediaLibrary  {
 		v.put(MediaLibrary.PlaylistSongColumns.POSITION, toPos);
 		selection = MediaLibrary.PlaylistSongColumns._ID+"="+from;
 		getBackend(context).update(MediaLibrary.TABLE_PLAYLISTS_SONGS, v, selection, null);
+
+		notifyObserver();
 	}
 
-	/**
-	 * Registers a new content observer for the media library
-	 *
-	 * @param context the context to use
-	 * @param observer the content observer we are going to call on changes
-	 */
-	public static void registerContentObserver(Context context, ContentObserver observer) {
-		getBackend(context).registerContentObserver(observer);
-	}
-
-	/**
-	 * Returns true if we are currently scanning for media
-	 */
-	public static boolean isScannerRunning(Context context) {
-		// FIXME: IMPLEMENT THIS
-		return false;
-	}
 
 	/**
 	 * Returns the 'key' of given string used for sorting and searching

@@ -483,7 +483,7 @@ public final class PlaybackService extends Service
 		filter.addAction(Intent.ACTION_SCREEN_ON);
 		registerReceiver(mReceiver, filter);
 
-		MediaLibrary.registerContentObserver(getApplicationContext(), mObserver);
+		MediaLibrary.registerContentObserver(mObserver);
 
 		mRemoteControlClient = new RemoteControl().getClient(this);
 		mRemoteControlClient.initializeRemote();

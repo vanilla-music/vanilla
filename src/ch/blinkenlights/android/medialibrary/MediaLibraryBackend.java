@@ -19,7 +19,6 @@ package ch.blinkenlights.android.medialibrary;
 
 import android.content.Context;
 import android.content.ContentValues;
-import android.database.ContentObserver;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -54,10 +53,6 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	 * Regexp to detect costy artist_id queries which we can optimize
 	 */
 	private static final Pattern sQueryMatchArtistSearch = Pattern.compile("(^|.+ )"+MediaLibrary.ContributorColumns.ARTIST_ID+"=(\\d+)$");
-	/**
-	 * A list of registered content observers
-	 */
-	private ContentObserver mContentObserver;
 
 	/**
 	* Constructor for the MediaLibraryBackend helper
@@ -102,28 +97,6 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	}
 
 	/**
-	 * Registers a new observer which we call on database changes
-	 *
-	 * @param observer the observer to register
-	 */
-	public void registerContentObserver(ContentObserver observer) {
-		if (mContentObserver == null) {
-			mContentObserver = observer;
-		} else {
-			throw new IllegalStateException("ContentObserver was already registered");
-		}
-	}
-
-	/**
-	 * Sends a callback to the registered observer
-	 */
-	private void notifyObserver() {
-		if (mContentObserver != null)
-			mContentObserver.onChange(true);
-	}
-
-
-	/**
 	 * Wrapper for SQLiteDatabse.delete() function
 	 *
 	 * @param table the table to delete data from
@@ -136,7 +109,6 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 		int res = dbh.delete(table, whereClause, whereArgs);
 		if (res > 0) {
 			cleanOrphanedEntries();
-			notifyObserver();
 		}
 		return res;
 	}
@@ -153,11 +125,6 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	public int update (String table, ContentValues values, String whereClause, String[] whereArgs) {
 		SQLiteDatabase dbh = getWritableDatabase();
 		int res = dbh.update(table, values, whereClause, whereArgs);
-		if (res > 0) {
-			// Note: we are not running notifyObserver for performance reasons here
-			// Code which changes relations should just delete + re-insert data
-			notifyObserver();
-		}
 		return res;
 	}
 
@@ -185,8 +152,6 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 			// avoid logspam as done by insert()
 		}
 
-		if (result != -1)
-			notifyObserver();
 		return result;
 	}
 
@@ -218,9 +183,6 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 		} finally {
 			dbh.endTransaction();
 		}
-
-		if (count > 0)
-			notifyObserver();
 
 		return count;
 	}

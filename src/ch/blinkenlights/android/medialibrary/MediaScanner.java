@@ -25,6 +25,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.os.Process;
+import android.os.SystemClock;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,6 +33,14 @@ import java.util.HashMap;
 import java.util.regex.Pattern;
 
 public class MediaScanner implements Handler.Callback {
+	/**
+	 * How long to wait until we post an update notification
+	 */
+	private final static int SCAN_NOTIFY_DELAY_MS = 1200;
+	/**
+	 * At which (up-)time we shall trigger the next notification
+	 */
+	private long mNextNotification = 0;
 	/**
 	 * The backend instance we are acting on
 	 */
@@ -66,7 +75,8 @@ public class MediaScanner implements Handler.Callback {
 	}
 
 	private static final int MSG_SCAN_DIRECTORY = 1;
-	private static final int MSG_SCAN_FILE      = 2;
+	private static final int MSG_ADD_FILE       = 2;
+
 	@Override
 	public boolean handleMessage(Message message) {
 		File file = (File)message.obj;
@@ -76,14 +86,27 @@ public class MediaScanner implements Handler.Callback {
 				scanDirectory(file, recursive);
 				break;
 			}
-			case MSG_SCAN_FILE: {
-				scanFile(file);
+			case MSG_ADD_FILE: {
+				long now = SystemClock.uptimeMillis();
+				boolean changed = addFile(file);
+
+				// Notify the observer if this was the last message OR if the deadline was reached
+				if (mHandler.hasMessages(MSG_ADD_FILE) == false || (mNextNotification != 0 && now >= mNextNotification)) {
+					MediaLibrary.notifyObserver();
+					mNextNotification = 0;
+				}
+
+				// Initiate a new notification trigger if the old one fired and we got a change
+				if (changed && mNextNotification == 0)
+					mNextNotification = now + SCAN_NOTIFY_DELAY_MS;
+
 				break;
 			}
 			default: {
 				throw new IllegalArgumentException();
 			}
 		}
+
 		return true;
 	}
 
@@ -106,7 +129,7 @@ public class MediaScanner implements Handler.Callback {
 
 		for (File file : dirents) {
 			if (file.isFile()) {
-				mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_FILE, 0, 0, file));
+				mHandler.sendMessage(mHandler.obtainMessage(MSG_ADD_FILE, 0, 0, file));
 			} else if (file.isDirectory() && recursive) {
 				mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_DIRECTORY, 1, 0, file));
 			}
@@ -126,23 +149,24 @@ public class MediaScanner implements Handler.Callback {
 	/**
 	 * Scans a single file and adds it to the database
 	 *
-	 * @param file the file to scan
+	 * @param file the file to add
+	 * @return true if we modified the database
 	 */
-	private void scanFile(File file) {
+	private boolean addFile(File file) {
 		String path  = file.getAbsolutePath();
 		long songId  = MediaLibrary.hash63(path);
 
 		if (isBlacklisted(file))
-			return;
+			return false;
 
 		if (mBackend.isSongExisting(songId)) {
 			Log.v("VanillaMusic", "Skipping already known song with id "+songId);
-			return;
+			return false;
 		}
 
 		MediaMetadataExtractor tags = new MediaMetadataExtractor(path);
 		if (tags.isEmpty())
-			return; // file does not contain audio data
+			return false; // file does not contain audio data
 
 		// Get tags which always must be set
 		String title = tags.getFirst(MediaMetadataExtractor.TITLE);
@@ -227,8 +251,8 @@ public class MediaScanner implements Handler.Callback {
 				mBackend.insert(MediaLibrary.TABLE_GENRES_SONGS, null, v);
 			}
 		}
-
 		Log.v("VanillaMusic", "MediaScanner: inserted "+path);
+		return true;
 	}
 
 }
