@@ -157,9 +157,20 @@ public class MediaScanner implements Handler.Callback {
 		if (isBlacklisted(file))
 			return false;
 
-		if (mBackend.isSongExisting(songId)) {
+
+		long dbEntryMtime = mBackend.getSongMtime(songId) * 1000; // this is in unixtime -> convert to 'ms'
+		long fileMtime = file.lastModified();
+		boolean needsPurge = false;
+
+		if (dbEntryMtime >= fileMtime) {
 			Log.v("VanillaMusic", "Skipping already known song with id "+songId);
 			return false;
+		}
+
+		if (dbEntryMtime != 0) {
+			// fixme: drops play counts :-(
+			mBackend.delete(MediaLibrary.TABLE_SONGS, MediaLibrary.SongColumns._ID+"="+songId, null);
+			needsPurge = true;
 		}
 
 		MediaMetadataExtractor tags = new MediaMetadataExtractor(path);
@@ -249,6 +260,9 @@ public class MediaScanner implements Handler.Callback {
 				mBackend.insert(MediaLibrary.TABLE_GENRES_SONGS, null, v);
 			}
 		}
+		if (needsPurge)
+			mBackend.cleanOrphanedEntries();
+
 		Log.v("VanillaMusic", "MediaScanner: inserted "+path);
 		return true;
 	}

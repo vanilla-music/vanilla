@@ -32,7 +32,7 @@ public class MediaSchema {
 	  + MediaLibrary.SongColumns.ALBUM_ID     +" INTEGER NOT NULL, "
 	  + MediaLibrary.SongColumns.PLAYCOUNT    +" INTEGER NOT NULL DEFAULT 0, "
 	  + MediaLibrary.SongColumns.SKIPCOUNT    +" INTEGER NOT NULL DEFAULT 0, "
-	  + MediaLibrary.SongColumns.MTIME        +" TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "
+	  + MediaLibrary.SongColumns.MTIME        +" TIMESTAMP DEFAULT (strftime('%s', CURRENT_TIMESTAMP)), "
 	  + MediaLibrary.SongColumns.DURATION     +" INTEGER NOT NULL, "
 	  + MediaLibrary.SongColumns.PATH         +" VARCHAR(4096) NOT NULL "
 	  + ");";

@@ -86,14 +86,18 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	}
 
 	/**
-	 * Returns true if given song id is already present in the library
+	 * Returns the modification time of a song, 0 if the song does not exist
 	 *
 	 * @param id the song id to query
-	 * @return true if a song with given id exists
+	 * @return the modification time of this song
 	 */
-	public boolean isSongExisting(long id) {
-		long count = DatabaseUtils.queryNumEntries(getReadableDatabase(), MediaLibrary.TABLE_SONGS, MediaLibrary.SongColumns._ID+"=?", new String[]{""+id});
-		return count != 0;
+	public long getSongMtime(long id) {
+		long mtime = 0;
+		Cursor cursor = query(false, MediaLibrary.TABLE_SONGS, new String[]{ MediaLibrary.SongColumns.MTIME }, MediaLibrary.SongColumns._ID+"="+Long.toString(id), null, null, null, null, "1");
+		if (cursor.moveToFirst())
+			mtime = cursor.getLong(0);
+		cursor.close();
+		return mtime;
 	}
 
 	/**
@@ -106,11 +110,7 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	 */
 	public int delete(String table, String whereClause, String[] whereArgs) {
 		SQLiteDatabase dbh = getWritableDatabase();
-		int res = dbh.delete(table, whereClause, whereArgs);
-		if (res > 0) {
-			cleanOrphanedEntries();
-		}
-		return res;
+		return dbh.delete(table, whereClause, whereArgs);
 	}
 
 	/**
@@ -124,8 +124,7 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	 */
 	public int update (String table, ContentValues values, String whereClause, String[] whereArgs) {
 		SQLiteDatabase dbh = getWritableDatabase();
-		int res = dbh.update(table, values, whereClause, whereArgs);
-		return res;
+		return dbh.update(table, values, whereClause, whereArgs);
 	}
 
 	/**
@@ -153,6 +152,18 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 		}
 
 		return result;
+	}
+
+	/**
+	 * Purges orphaned entries from the media library
+	 */
+	public void cleanOrphanedEntries() {
+		SQLiteDatabase dbh = getWritableDatabase();
+		dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_ALBUMS+" WHERE "+MediaLibrary.AlbumColumns._ID+" NOT IN (SELECT "+MediaLibrary.SongColumns.ALBUM_ID+" FROM "+MediaLibrary.TABLE_SONGS+");");
+		dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_GENRES_SONGS+" WHERE "+MediaLibrary.GenreSongColumns.SONG_ID+" NOT IN (SELECT "+MediaLibrary.SongColumns._ID+" FROM "+MediaLibrary.TABLE_SONGS+");");
+		dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_GENRES+" WHERE "+MediaLibrary.GenreColumns._ID+" NOT IN (SELECT "+MediaLibrary.GenreSongColumns._GENRE_ID+" FROM "+MediaLibrary.TABLE_GENRES_SONGS+");");
+		dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+" WHERE "+MediaLibrary.ContributorSongColumns.SONG_ID+" NOT IN (SELECT "+MediaLibrary.SongColumns._ID+" FROM "+MediaLibrary.TABLE_SONGS+");");
+		dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_CONTRIBUTORS+" WHERE "+MediaLibrary.ContributorColumns._ID+" NOT IN (SELECT "+MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID+" FROM "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+");");
 	}
 
 	/**
@@ -264,18 +275,6 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 		final String query = "SELECT "+target+" FROM "+MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS+" WHERE "
 		                    +MediaLibrary.SongColumns._ID+" IN ("+genreSelect+") GROUP BY "+target;
 		return query;
-	}
-
-	/**
-	 * Purges orphaned entries from the media library
-	 */
-	private void cleanOrphanedEntries() {
-		SQLiteDatabase dbh = getWritableDatabase();
-		dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_ALBUMS+" WHERE "+MediaLibrary.AlbumColumns._ID+" NOT IN (SELECT "+MediaLibrary.SongColumns.ALBUM_ID+" FROM "+MediaLibrary.TABLE_SONGS+");");
-		dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_GENRES_SONGS+" WHERE "+MediaLibrary.GenreSongColumns.SONG_ID+" NOT IN (SELECT "+MediaLibrary.SongColumns._ID+" FROM "+MediaLibrary.TABLE_SONGS+");");
-		dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_GENRES+" WHERE "+MediaLibrary.GenreColumns._ID+" NOT IN (SELECT "+MediaLibrary.GenreSongColumns._GENRE_ID+" FROM "+MediaLibrary.TABLE_GENRES_SONGS+");");
-		dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+" WHERE "+MediaLibrary.ContributorSongColumns.SONG_ID+" NOT IN (SELECT "+MediaLibrary.SongColumns._ID+" FROM "+MediaLibrary.TABLE_SONGS+");");
-		dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_CONTRIBUTORS+" WHERE "+MediaLibrary.ContributorColumns._ID+" NOT IN (SELECT "+MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID+" FROM "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+");");
 	}
 
 	/**

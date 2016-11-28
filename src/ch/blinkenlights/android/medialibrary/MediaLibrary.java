@@ -122,8 +122,10 @@ public class MediaLibrary  {
 	public static int removeSong(Context context, long id) {
 		int rows = getBackend(context).delete(TABLE_SONGS, SongColumns._ID+"="+id, null);
 
-		if (rows > 0)
+		if (rows > 0) {
+			getBackend(context).cleanOrphanedEntries();
 			notifyObserver();
+		}
 		return rows;
 	}
 
@@ -197,7 +199,7 @@ public class MediaLibrary  {
 
 		ArrayList<ContentValues> bulk = new ArrayList<ContentValues>();
 		for (Long id : ids) {
-			if (getBackend(context).isSongExisting(id) == false)
+			if (getBackend(context).getSongMtime(id) == 0)
 				continue;
 
 			ContentValues v = new ContentValues();
