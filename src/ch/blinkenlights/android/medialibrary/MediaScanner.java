@@ -71,7 +71,7 @@ public class MediaScanner implements Handler.Callback {
 	 * @param dir the directory to scan
 	 */
 	public void startScan(File dir) {
-		mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_DIRECTORY, 1, 0, dir));
+		mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_DIRECTORY, 0, 0, dir));
 	}
 
 	private static final int MSG_SCAN_DIRECTORY = 1;
@@ -82,8 +82,7 @@ public class MediaScanner implements Handler.Callback {
 		File file = (File)message.obj;
 		switch (message.what) {
 			case MSG_SCAN_DIRECTORY: {
-				boolean recursive = (message.arg1 == 0 ? false : true);
-				scanDirectory(file, recursive);
+				scanDirectory(file);
 				break;
 			}
 			case MSG_ADD_FILE: {
@@ -114,9 +113,8 @@ public class MediaScanner implements Handler.Callback {
 	 * Scans a directory for indexable files
 	 *
 	 * @param dir the directory to scan
-	 * @param recursive scan subdirs if true
 	 */
-	private void scanDirectory(File dir, boolean recursive) {
+	private void scanDirectory(File dir) {
 		if (dir.isDirectory() == false)
 			return;
 
@@ -130,8 +128,8 @@ public class MediaScanner implements Handler.Callback {
 		for (File file : dirents) {
 			if (file.isFile()) {
 				mHandler.sendMessage(mHandler.obtainMessage(MSG_ADD_FILE, 0, 0, file));
-			} else if (file.isDirectory() && recursive) {
-				mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_DIRECTORY, 1, 0, file));
+			} else if (file.isDirectory()) {
+				mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_DIRECTORY, 0, 0, file));
 			}
 		}
 	}
