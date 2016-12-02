@@ -1181,7 +1181,6 @@ public final class PlaybackService extends Service
 		synchronized (mStateLock) {
 			if ((mState & FLAG_EMPTY_QUEUE) != 0) {
 				setFinishAction(SongTimeline.FINISH_RANDOM);
-				setCurrentSong(0);
 				showMirrorLinkSafeToast(R.string.random_enabling, Toast.LENGTH_SHORT);
 			}
 
