@@ -53,12 +53,6 @@ public class SDScannerFragment extends Fragment
 	private File[] mScanTargetStages = {};
 
 	@Override
-	public void onAttach(Context context) {
-		super.onAttach(context);
-		mScanTargetStages = getScanTargets(context);
-	}
-
-	@Override
 	public void updateProgressNum(int progressNum) {
 		ProgressBar progressBar = (ProgressBar)findViewById(R.id.progress_bar);
 		progressBar.setProgress(progressNum);
@@ -126,6 +120,8 @@ public class SDScannerFragment extends Fragment
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+
+		mScanTargetStages = getScanTargets(getActivity().getApplicationContext());
 
 		FragmentManager fm = getFragmentManager();
 
