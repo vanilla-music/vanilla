@@ -315,6 +315,20 @@ public class MediaLibrary  {
 		notifyObserver();
 	}
 
+	/**
+	 * Returns the number of songs in the music library
+	 *
+	 * @param context the context to use
+	 * @return the number of songs
+	 */
+	public static int getLibrarySize(Context context) {
+		int count = 0;
+		Cursor cursor = queryLibrary(context, TABLE_SONGS, new String[]{"count(*)"}, null, null, null);
+		if (cursor.moveToFirst())
+			count = cursor.getInt(0);
+		cursor.close();
+		return count;
+	}
 
 	/**
 	 * Returns the 'key' of given string used for sorting and searching

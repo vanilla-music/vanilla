@@ -313,15 +313,7 @@ public class MediaUtils {
 	 */
 	public static boolean isSongAvailable(Context context) {
 		if (sSongCount == -1) {
-			QueryTask query = new QueryTask(MediaLibrary.TABLE_SONGS, new String[]{"count(*)"}, null, null, null);
-			Cursor cursor = query.runQuery(context);
-			if (cursor == null) {
-				sSongCount = 0;
-			} else {
-				cursor.moveToFirst();
-				sSongCount = cursor.getInt(0);
-				cursor.close();
-			}
+			sSongCount = MediaLibrary.getLibrarySize(context);
 		}
 
 		return sSongCount != 0;
