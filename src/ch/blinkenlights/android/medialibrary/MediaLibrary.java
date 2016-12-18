@@ -57,24 +57,40 @@ public class MediaLibrary  {
 	 * The observer to call-back during database changes
 	 */
 	private static ContentObserver sContentObserver;
+	/**
+	 * The lock we are using during object creation
+	 */
+	private static final Object[] sWait = new Object[0];
 
 	private static MediaLibraryBackend getBackend(Context context) {
 		if (sBackend == null) {
 			// -> unlikely
-//			synchronized(sLock) {
+			synchronized(sWait) {
 				if (sBackend == null) {
 					sBackend = new MediaLibraryBackend(context);
-
 					sScanner = new MediaScanner(sBackend);
-					sScanner.startNativeLibraryScan(context);
-					sScanner.startUpdateScan();
-					for (File dir : discoverMediaPaths()) {
-						sScanner.startFullScan(dir);
-					}
 				}
-//			}
+			}
 		}
 		return sBackend;
+	}
+
+	public static void scanLibrary(Context context, boolean forceFull, boolean drop) {
+		MediaLibraryBackend backend = getBackend(context); // also initialized sScanner
+		if (drop) {
+			backend.execSQL("DELETE FROM "+MediaLibrary.TABLE_SONGS);
+			forceFull = true;
+			// fixme: should clean orphaned AFTER scan finished
+		}
+
+		if (forceFull) {
+			for (File dir : discoverMediaPaths()) {
+				sScanner.startFullScan(dir);
+			}
+			sScanner.startUpdateScan(); // also gets rid of deleted files
+		} else {
+			// fixme: implement smart scanner with startNativeLibraryScan();
+		}
 	}
 
 	/**
