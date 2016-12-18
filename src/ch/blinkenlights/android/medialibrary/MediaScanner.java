@@ -80,8 +80,6 @@ public class MediaScanner implements Handler.Callback {
 	/**
 	 * Performs a full check of the current media library, scanning for
 	 * removed or changed files
-	 *
-	 * @param context the context to use
 	 */
 	void startUpdateScan() {
 		Cursor cursor = mBackend.query(false, MediaLibrary.TABLE_SONGS, new String[]{MediaLibrary.SongColumns.PATH}, null, null, null, null, null, null);
@@ -91,6 +89,8 @@ public class MediaScanner implements Handler.Callback {
 
 	/**
 	 * Queries all items found in androids native media database
+	 *
+	 * @param context the context to use
 	 */
 	void startNativeLibraryScan(Context context) {
 		String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0";
