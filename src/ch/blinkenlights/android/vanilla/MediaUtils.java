@@ -145,6 +145,11 @@ public class MediaUtils {
 		StringBuilder selection = new StringBuilder();
 		String sort = DEFAULT_SORT;
 
+		if (select != null) {
+			selection.append(select);
+			selection.append(" AND ");
+		}
+
 		switch (type) {
 		case TYPE_SONG:
 			selection.append(MediaLibrary.SongColumns._ID);
@@ -165,11 +170,6 @@ public class MediaUtils {
 
 		selection.append('=');
 		selection.append(id);
-
-		if (select != null) {
-			selection.append(" AND ");
-			selection.append(select);
-		}
 
 		QueryTask result = new QueryTask(MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS, projection, selection.toString(), null, sort);
 		result.type = type;
