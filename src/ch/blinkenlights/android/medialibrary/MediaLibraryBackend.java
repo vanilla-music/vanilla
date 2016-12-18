@@ -91,7 +91,7 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	 * @param id the song id to query
 	 * @return the modification time of this song
 	 */
-	public long getSongMtime(long id) {
+	long getSongMtime(long id) {
 		long mtime = 0;
 		Cursor cursor = query(false, MediaLibrary.TABLE_SONGS, new String[]{ MediaLibrary.SongColumns.MTIME }, MediaLibrary.SongColumns._ID+"="+Long.toString(id), null, null, null, null, "1");
 		if (cursor.moveToFirst())
@@ -108,7 +108,7 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	 * @param whereArgs arguments to selection
 	 * @return the number of affected rows
 	 */
-	public int delete(String table, String whereClause, String[] whereArgs) {
+	int delete(String table, String whereClause, String[] whereArgs) {
 		SQLiteDatabase dbh = getWritableDatabase();
 		return dbh.delete(table, whereClause, whereArgs);
 	}
@@ -122,7 +122,7 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	 * @param whereArgs arguments to selection
 	 * @return the number of affected rows
 	 */
-	public int update (String table, ContentValues values, String whereClause, String[] whereArgs) {
+	int update (String table, ContentValues values, String whereClause, String[] whereArgs) {
 		SQLiteDatabase dbh = getWritableDatabase();
 		return dbh.update(table, values, whereClause, whereArgs);
 	}
@@ -132,7 +132,7 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	 *
 	 * @param sql the raw sql string
 	 */
-	public void execSQL(String sql) {
+	void execSQL(String sql) {
 		getWritableDatabase().execSQL(sql);
 	}
 
@@ -143,7 +143,7 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	 * @param nullColumnHack android hackery (see SQLiteDatabase documentation)
 	 * @param values the values to insert
 	 */
-	public long insert (String table, String nullColumnHack, ContentValues values) {
+	long insert (String table, String nullColumnHack, ContentValues values) {
 		long result = -1;
 		try {
 			result = getWritableDatabase().insertOrThrow(table, nullColumnHack, values);
@@ -157,7 +157,7 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	/**
 	 * Purges orphaned entries from the media library
 	 */
-	public void cleanOrphanedEntries() {
+	void cleanOrphanedEntries() {
 		SQLiteDatabase dbh = getWritableDatabase();
 		dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_ALBUMS+" WHERE "+MediaLibrary.AlbumColumns._ID+" NOT IN (SELECT "+MediaLibrary.SongColumns.ALBUM_ID+" FROM "+MediaLibrary.TABLE_SONGS+");");
 		dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_GENRES_SONGS+" WHERE "+MediaLibrary.GenreSongColumns.SONG_ID+" NOT IN (SELECT "+MediaLibrary.SongColumns._ID+" FROM "+MediaLibrary.TABLE_SONGS+");");
@@ -175,7 +175,7 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	 * @param valuesList an array list of ContentValues to insert
 	 * @return the number of inserted rows
 	 */
-	public int bulkInsert (String table, String nullColumnHack, ArrayList<ContentValues> valuesList) {
+	int bulkInsert (String table, String nullColumnHack, ArrayList<ContentValues> valuesList) {
 		SQLiteDatabase dbh = getWritableDatabase();
 
 		int count = 0;
@@ -202,7 +202,7 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	/**
 	 * Wrappr for SQLiteDatabase.query() function
 	 */
-	public Cursor query (boolean distinct, String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy, String limit) {
+	Cursor query (boolean distinct, String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy, String limit) {
 
 		if (selection != null) {
 			if (MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS.equals(table)) {

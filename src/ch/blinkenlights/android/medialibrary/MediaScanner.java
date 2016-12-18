@@ -58,7 +58,7 @@ public class MediaScanner implements Handler.Callback {
 	 *
 	 * @param backend the backend to use
 	 */
-	public MediaScanner(MediaLibraryBackend backend) {
+	MediaScanner(MediaLibraryBackend backend) {
 		mBackend = backend;
 		HandlerThread handlerThread = new HandlerThread("MediaScannerThred", Process.THREAD_PRIORITY_LOWEST);
 		handlerThread.start();
@@ -70,7 +70,7 @@ public class MediaScanner implements Handler.Callback {
 	 *
 	 * @param dir the directory to scan
 	 */
-	public void startScan(File dir) {
+	void startScan(File dir) {
 		mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_DIRECTORY, 0, 0, dir));
 	}
 
