@@ -77,6 +77,14 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 	}
 
 	/**
+	 * Returns true if this file contains any (interesting) tags
+	 * @return true if file is considered to be tagged
+	 */
+	public boolean isTagged() {
+		return (containsKey(TITLE) || containsKey(ALBUM) || containsKey(ARTIST));
+	}
+
+	/**
 	 * Attempts to populate this instance with tags found in given path
 	 *
 	 * @param path the path to parse
