@@ -66,8 +66,9 @@ public class MediaLibrary  {
 					sBackend = new MediaLibraryBackend(context);
 
 					sScanner = new MediaScanner(sBackend);
+					sScanner.startUpdateScan();
 					for (File dir : discoverMediaPaths()) {
-						sScanner.startScan(dir);
+						sScanner.startFullScan(dir);
 					}
 				}
 //			}

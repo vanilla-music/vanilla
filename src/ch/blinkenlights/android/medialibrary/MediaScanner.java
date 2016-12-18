@@ -19,6 +19,7 @@ package ch.blinkenlights.android.medialibrary;
 
 import ch.blinkenlights.bastp.Bastp;
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.media.MediaMetadataRetriever;
 import android.util.Log;
 import android.os.Handler;
@@ -70,22 +71,34 @@ public class MediaScanner implements Handler.Callback {
 	 *
 	 * @param dir the directory to scan
 	 */
-	void startScan(File dir) {
+	void startFullScan(File dir) {
 		mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_DIRECTORY, 0, 0, dir));
+	}
+
+	/**
+	 * Performs a full check of the current media library, scanning for
+	 * removed or changed files
+	 */
+	void startUpdateScan() {
+		Cursor cursor = mBackend.query(false, MediaLibrary.TABLE_SONGS, new String[]{MediaLibrary.SongColumns.PATH}, null, null, null, null, null, null);
+		if (cursor != null)
+			mHandler.sendMessage(mHandler.obtainMessage(MSG_UPDATE_LIBRARY, 0, 0, cursor));
 	}
 
 	private static final int MSG_SCAN_DIRECTORY = 1;
 	private static final int MSG_ADD_FILE       = 2;
+	private static final int MSG_UPDATE_LIBRARY = 3;
 
 	@Override
 	public boolean handleMessage(Message message) {
-		File file = (File)message.obj;
 		switch (message.what) {
 			case MSG_SCAN_DIRECTORY: {
-				scanDirectory(file);
+				File directory = (File)message.obj;
+				scanDirectory(directory);
 				break;
 			}
 			case MSG_ADD_FILE: {
+				File file = (File)message.obj;
 				long now = SystemClock.uptimeMillis();
 				boolean changed = addFile(file);
 
@@ -99,6 +112,15 @@ public class MediaScanner implements Handler.Callback {
 				if (changed && mNextNotification == 0)
 					mNextNotification = now + SCAN_NOTIFY_DELAY_MS;
 
+				break;
+			}
+			case MSG_UPDATE_LIBRARY: {
+				Cursor cursor = (Cursor)message.obj;
+				while (cursor.moveToNext()) {
+					File update = new File(cursor.getString(0));
+					mHandler.sendMessage(mHandler.obtainMessage(MSG_ADD_FILE, 0, 0, update));
+				}
+				cursor.close();
 				break;
 			}
 			default: {
@@ -162,12 +184,12 @@ public class MediaScanner implements Handler.Callback {
 		boolean needsInsert = true;
 		boolean needsCleanup = false;
 
-		if (dbEntryMtime >= fileMtime) {
-			return false; // on-disk mtime is older than db mtime -> nothing to do
+		if (fileMtime > 0 && dbEntryMtime >= fileMtime) {
+			return false; // on-disk mtime is older than db mtime and it still exists -> nothing to do
 		}
 
 		if (dbEntryMtime != 0) {
-			// file on disk is newer: delete old entry and re-insert it
+			// DB entry exists but is outdated - drop current entry and maybe re-insert it
 			// fixme: drops play counts :-(
 			mBackend.delete(MediaLibrary.TABLE_SONGS, MediaLibrary.SongColumns._ID+"="+songId, null);
 			needsCleanup = true;
