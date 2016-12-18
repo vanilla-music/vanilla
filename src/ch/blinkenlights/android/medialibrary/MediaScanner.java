@@ -18,10 +18,12 @@
 package ch.blinkenlights.android.medialibrary;
 
 import ch.blinkenlights.bastp.Bastp;
+import android.content.Context;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.media.MediaMetadataRetriever;
 import android.util.Log;
+import android.provider.MediaStore;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
@@ -78,9 +80,22 @@ public class MediaScanner implements Handler.Callback {
 	/**
 	 * Performs a full check of the current media library, scanning for
 	 * removed or changed files
+	 *
+	 * @param context the context to use
 	 */
 	void startUpdateScan() {
 		Cursor cursor = mBackend.query(false, MediaLibrary.TABLE_SONGS, new String[]{MediaLibrary.SongColumns.PATH}, null, null, null, null, null, null);
+		if (cursor != null)
+			mHandler.sendMessage(mHandler.obtainMessage(MSG_UPDATE_LIBRARY, 0, 0, cursor));
+	}
+
+	/**
+	 * Queries all items found in androids native media database
+	 */
+	void startNativeLibraryScan(Context context) {
+		String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0";
+		String[] projection = { MediaStore.MediaColumns.DATA };
+		Cursor cursor = context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection, null, null);
 		if (cursor != null)
 			mHandler.sendMessage(mHandler.obtainMessage(MSG_UPDATE_LIBRARY, 0, 0, cursor));
 	}
@@ -117,8 +132,11 @@ public class MediaScanner implements Handler.Callback {
 			case MSG_UPDATE_LIBRARY: {
 				Cursor cursor = (Cursor)message.obj;
 				while (cursor.moveToNext()) {
-					File update = new File(cursor.getString(0));
-					mHandler.sendMessage(mHandler.obtainMessage(MSG_ADD_FILE, 0, 0, update));
+					String path = cursor.getString(0);
+					if (path != null) {
+						File update = new File(path);
+						mHandler.sendMessage(mHandler.obtainMessage(MSG_ADD_FILE, 0, 0, update));
+					}
 				}
 				cursor.close();
 				break;
