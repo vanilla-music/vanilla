@@ -19,7 +19,6 @@ package ch.blinkenlights.android.medialibrary;
 
 import android.content.Context;
 import android.content.ContentValues;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.Cursor;
@@ -42,10 +41,6 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	 */
 	private static final String DATABASE_NAME = "media-library.db";
 	/**
-	 * The tag to use for log messages
-	 */
-	private static final String TAG = "VanillaMediaLibraryBackend";
-	/**
 	 * Regexp to detect genre queries which we can optimize
 	 */
 	private static final Pattern sQueryMatchGenreSearch = Pattern.compile("(^|.+ )"+MediaLibrary.GenreSongColumns._GENRE_ID+"=(\\d+)$");
@@ -57,7 +52,7 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	/**
 	* Constructor for the MediaLibraryBackend helper
 	*
-	* @param Context the context to use
+	* @param context the context to use
 	*/
 	MediaLibraryBackend(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -260,9 +255,8 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	 * @return an SQL string which should return song id's for the queried genre
 	 */
 	private String buildSongIdFromGenreSelect(String genreId) {
-		final String query = "SELECT "+MediaLibrary.GenreSongColumns.SONG_ID+" FROM "+MediaLibrary.TABLE_GENRES_SONGS+" WHERE "
-		                     +MediaLibrary.GenreSongColumns._GENRE_ID+"="+genreId+" GROUP BY "+MediaLibrary.GenreSongColumns.SONG_ID;
-		return query;
+		return "SELECT "+MediaLibrary.GenreSongColumns.SONG_ID+" FROM "+MediaLibrary.TABLE_GENRES_SONGS+" WHERE "
+		                +MediaLibrary.GenreSongColumns._GENRE_ID+"="+genreId+" GROUP BY "+MediaLibrary.GenreSongColumns.SONG_ID;
 	}
 
 	/**
@@ -273,9 +267,8 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	 * @return an SQL string
 	 */
 	private String buildSongIdFromGenreSelect(String target, String genreSelect) {
-		final String query = "SELECT "+target+" FROM "+MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS+" WHERE "
-		                    +MediaLibrary.SongColumns._ID+" IN ("+genreSelect+") GROUP BY "+target;
-		return query;
+		return "SELECT "+target+" FROM "+MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS+" WHERE "
+		                +MediaLibrary.SongColumns._ID+" IN ("+genreSelect+") GROUP BY "+target;
 	}
 
 	/**
@@ -307,8 +300,8 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 			while(dryRun.moveToNext()) {
 				results++;
 			}
+			dryRun.close();
 		}
-		dryRun.close();
 		long tookMs = System.currentTimeMillis() - startAt;
 		Log.v(LT, "--- finished in "+tookMs+" ms with count="+results);
 	}

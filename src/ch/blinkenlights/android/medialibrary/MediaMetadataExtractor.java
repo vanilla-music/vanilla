@@ -88,10 +88,9 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 	 * Attempts to populate this instance with tags found in given path
 	 *
 	 * @param path the path to parse
-	 * @return void, but populates `this'
 	 */
 	private void extractMetadata(String path) {
-		if (isEmpty() == false)
+		if (!isEmpty())
 			throw new IllegalStateException("Expected to be called on a clean HashMap");
 
 		HashMap bastpTags = (new Bastp()).getTags(path);
@@ -109,15 +108,15 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 		}
 
 		// Bastp can not read the duration and bitrates, so we always get it from the system
-		ArrayList<String> duration = new ArrayList<String>(1);
+		ArrayList<String> duration = new ArrayList<>(1);
 		duration.add(mediaTags.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
 		this.put(DURATION, duration);
 
-		ArrayList<String> bitrate = new ArrayList<String>(1);
+		ArrayList<String> bitrate = new ArrayList<>(1);
 		bitrate.add(mediaTags.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE));
 		this.put(BITRATE, bitrate);
 
-		ArrayList<String> mime = new ArrayList<String>(1);
+		ArrayList<String> mime = new ArrayList<>(1);
 		mime.add(mediaTags.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE));
 		this.put(MIME_TYPE, mime);
 
@@ -164,7 +163,7 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 
 		// Try to guess YEAR from date field if only DATE was specified
 		// We expect it to match \d{4}
-		if (containsKey(YEAR) == false && bastp.containsKey("DATE")) {
+		if (!containsKey(YEAR) && bastp.containsKey("DATE")) {
 			addFiltered(sFilterYear, YEAR, (ArrayList<String>)bastp.get("DATE"));
 		}
 
@@ -204,7 +203,7 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 	 * @param data the array list to inspect
 	 */
 	private void addFiltered(Pattern filter, String key, ArrayList<String> data) {
-		ArrayList<String> list = new ArrayList<String>();
+		ArrayList<String> list = new ArrayList<>();
 		for (String s : data) {
 			Matcher matcher = filter.matcher(s);
 			if (matcher.matches()) {

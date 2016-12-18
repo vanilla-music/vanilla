@@ -80,7 +80,6 @@ public class MediaLibrary  {
 	/**
 	 * Registers a new content observer for the media library
 	 *
-	 * @param context the context to use
 	 * @param observer the content observer we are going to call on changes
 	 */
 	public static void registerContentObserver(ContentObserver observer) {
@@ -136,7 +135,6 @@ public class MediaLibrary  {
 	 *
 	 * @param context the context to use
 	 * @param id the song id to update
-	 * @return boolean true if song was played, false if skipped
 	 */
 	public static void updateSongPlayCounts(Context context, long id, boolean played) {
 		final String column = played ? MediaLibrary.SongColumns.PLAYCOUNT : MediaLibrary.SongColumns.SKIPCOUNT;
@@ -199,7 +197,7 @@ public class MediaLibrary  {
 			pos = cursor.getLong(0) + 1;
 		cursor.close();
 
-		ArrayList<ContentValues> bulk = new ArrayList<ContentValues>();
+		ArrayList<ContentValues> bulk = new ArrayList<>();
 		for (Long id : ids) {
 			if (getBackend(context).getSongMtime(id) == 0)
 				continue;
@@ -336,7 +334,7 @@ public class MediaLibrary  {
 	 * @return array with guessed directories
 	 */
 	public static File[] discoverMediaPaths() {
-		ArrayList<File> scanTargets = new ArrayList<File>();
+		ArrayList<File> scanTargets = new ArrayList<>();
 
 		// this should always exist
 		scanTargets.add(Environment.getExternalStorageDirectory());
@@ -354,47 +352,47 @@ public class MediaLibrary  {
 		/**
 		 * The id of this song in the database
 		 */
-		public static final String _ID = "_id";
+		String _ID = "_id";
 		/**
 		 * The title of this song
 		 */
-		public static final String TITLE = "title";
+		String TITLE = "title";
 		/**
 		 * The sortable title of this song
 		 */
-		public static final String TITLE_SORT = "title_sort";
+		String TITLE_SORT = "title_sort";
 		/**
 		 * The position in the album of this song
 		 */
-		public static final String SONG_NUMBER = "song_num";
+		String SONG_NUMBER = "song_num";
 		/**
 		 * The album where this song belongs to
 		 */
-		public static final String ALBUM_ID = "album_id";
+		String ALBUM_ID = "album_id";
 		/**
 		 * The year of this song
 		 */
-		public static final String YEAR = "year";
+		String YEAR = "year";
 		/**
 		 * How often the song was played
 		 */
-		public static final String PLAYCOUNT = "playcount";
+		String PLAYCOUNT = "playcount";
 		/**
 		 * How often the song was skipped
 		 */
-		public static final String SKIPCOUNT = "skipcount";
+		String SKIPCOUNT = "skipcount";
 		/**
 		 * The duration of this song
 		 */
-		public static final String DURATION = "duration";
+		String DURATION = "duration";
 		/**
 		 * The path to the music file
 		 */
-		public static final String PATH = "path";
+		String PATH = "path";
 		/**
 		 * The mtime of this item
 		 */
-		public static final String MTIME = "mtime";
+		String MTIME = "mtime";
 	}
 
 	// Columns of Album entries
@@ -402,31 +400,31 @@ public class MediaLibrary  {
 		/**
 		 * The id of this album in the database
 		 */
-		public static final String _ID = SongColumns._ID;
+		String _ID = SongColumns._ID;
 		/**
 		 * The title of this album
 		 */
-		public static final String ALBUM = "album";
+		String ALBUM = "album";
 		/**
 		 * The sortable title of this album
 		 */
-		public static final String ALBUM_SORT = "album_sort";
+		String ALBUM_SORT = "album_sort";
 		/**
 		 * The disc number of this album
 		 */
-		public static final String DISC_NUMBER = "disc_num";
+		String DISC_NUMBER = "disc_num";
 		/**
 		 * The primary contributor / artist reference for this album
 		 */
-		public static final String PRIMARY_ARTIST_ID = "primary_artist_id";
+		String PRIMARY_ARTIST_ID = "primary_artist_id";
 		/**
 		 * The year of this album
 		 */
-		public static final String PRIMARY_ALBUM_YEAR = "primary_album_year";
+		String PRIMARY_ALBUM_YEAR = "primary_album_year";
 		/**
 		 * The mtime of this item
 		 */
-		public static final String MTIME = "mtime";
+		String MTIME = "mtime";
 	}
 
 	// Columns of Contributors entries
@@ -434,31 +432,31 @@ public class MediaLibrary  {
 		/**
 		 * The id of this contributor
 		 */
-		public static final String _ID = SongColumns._ID;
+		String _ID = SongColumns._ID;
 		/**
 		 * The name of this contributor
 		 */
-		public static final String _CONTRIBUTOR = "_contributor";
+		String _CONTRIBUTOR = "_contributor";
 		/**
 		 * The sortable title of this contributor
 		 */
-		public static final String _CONTRIBUTOR_SORT = "_contributor_sort";
+		String _CONTRIBUTOR_SORT = "_contributor_sort";
 		/**
 		 * The mtime of this item
 		 */
-		public static final String MTIME = "mtime";
+		String MTIME = "mtime";
 		/**
 		 * ONLY IN VIEWS - the artist
 		 */
-		public static final String ARTIST = "artist";
+		String ARTIST = "artist";
 		/**
 		 * ONLY IN VIEWS - the artist_sort key
 		 */
-		public static final String ARTIST_SORT = "artist_sort";
+		String ARTIST_SORT = "artist_sort";
 		/**
 		 * ONLY IN VIEWS - the artist id
 		 */
-		public static final String ARTIST_ID = "artist_id";
+		String ARTIST_ID = "artist_id";
 	}
 
 	// Songs <-> Contributor mapping
@@ -466,15 +464,15 @@ public class MediaLibrary  {
 		/**
 		 * The role of this entry
 		 */
-		public static final String ROLE = "role";
+		String ROLE = "role";
 		/**
 		 * the contirbutor id this maps to
 		 */
-		public static final String _CONTRIBUTOR_ID = "_contributor_id";
+		String _CONTRIBUTOR_ID = "_contributor_id";
 		/**
 		 * the song this maps to
 		 */
-		public static final String SONG_ID = "song_id";
+		String SONG_ID = "song_id";
 	}
 
 	// Columns of Genres entries
@@ -482,15 +480,15 @@ public class MediaLibrary  {
 		/**
 		 * The id of this genre
 		 */
-		public static final String _ID = SongColumns._ID;
+		String _ID = SongColumns._ID;
 		/**
 		 * The name of this genre
 		 */
-		public static final String _GENRE = "_genre";
+		String _GENRE = "_genre";
 		/**
 		 * The sortable title of this genre
 		 */
-		public static final String _GENRE_SORT = "_genre_sort";
+		String _GENRE_SORT = "_genre_sort";
 	}
 
 	// Songs <-> Contributor mapping
@@ -498,11 +496,11 @@ public class MediaLibrary  {
 		/**
 		 * the genre id this maps to
 		 */
-		public static final String _GENRE_ID = "_genre_id";
+		String _GENRE_ID = "_genre_id";
 		/**
 		 * the song this maps to
 		 */
-		public static final String SONG_ID = "song_id";
+		String SONG_ID = "song_id";
 	}
 
 	// Playlists
@@ -510,11 +508,11 @@ public class MediaLibrary  {
 		/**
 		 * The id of this playlist
 		 */
-		public static final String _ID = SongColumns._ID;
+		String _ID = SongColumns._ID;
 		/**
 		 * The name of this playlist
 		 */
-		 public static final String NAME = "name";
+		 String NAME = "name";
 	}
 
 	// Song <-> Playlist mapping
@@ -522,19 +520,18 @@ public class MediaLibrary  {
 		/**
 		 * The ID of this entry
 		 */
-		public static final String _ID = SongColumns._ID;
+		String _ID = SongColumns._ID;
 		/**
 		 * The playlist this entry belongs to
 		 */
-		public static final String PLAYLIST_ID = "playlist_id";
+		String PLAYLIST_ID = "playlist_id";
 		/**
 		 * The song this entry references to
 		 */
-		public static final String SONG_ID = "song_id";
+		String SONG_ID = "song_id";
 		/**
 		 * The order attribute
 		 */
-		public static final String POSITION = "position";
+		String POSITION = "position";
 	}
-
 }

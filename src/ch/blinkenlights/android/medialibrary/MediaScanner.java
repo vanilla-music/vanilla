@@ -17,11 +17,9 @@
 
 package ch.blinkenlights.android.medialibrary;
 
-import ch.blinkenlights.bastp.Bastp;
 import android.content.Context;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.media.MediaMetadataRetriever;
 import android.util.Log;
 import android.provider.MediaStore;
 import android.os.Handler;
@@ -32,7 +30,6 @@ import android.os.SystemClock;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.regex.Pattern;
 
 public class MediaScanner implements Handler.Callback {
@@ -118,7 +115,7 @@ public class MediaScanner implements Handler.Callback {
 				boolean changed = addFile(file);
 
 				// Notify the observer if this was the last message OR if the deadline was reached
-				if (mHandler.hasMessages(MSG_ADD_FILE) == false || (mNextNotification != 0 && now >= mNextNotification)) {
+				if (!mHandler.hasMessages(MSG_ADD_FILE) || (mNextNotification != 0 && now >= mNextNotification)) {
 					MediaLibrary.notifyObserver();
 					mNextNotification = 0;
 				}
@@ -155,7 +152,7 @@ public class MediaScanner implements Handler.Callback {
 	 * @param dir the directory to scan
 	 */
 	private void scanDirectory(File dir) {
-		if (dir.isDirectory() == false)
+		if (!dir.isDirectory())
 			return;
 
 		if (new File(dir, ".nomedia").exists())
@@ -214,7 +211,7 @@ public class MediaScanner implements Handler.Callback {
 		}
 
 		MediaMetadataExtractor tags = new MediaMetadataExtractor(path);
-		if (tags.isTagged() == false) {
+		if (!tags.isTagged()) {
 			needsInsert = false; // does not have any useable metadata: wont insert even if it is a playable file
 		}
 
