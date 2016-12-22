@@ -96,6 +96,7 @@
   <string name="year">Vuosi</string>
   <string name="date_added">Lisäyspäivä</string>
   <string name="artist_album">Esittäjä, albumi</string>
+  <string name="artist_year_album">Esittäjä, vuosi, albumi</string>
   <string name="artist_album_track">Esittäjä, albumi, kappalenumero</string>
   <string name="artist_album_title">Esittäjä, albumi, nimi</string>
   <string name="artist_year">Esittäjä, vuosi</string>
@@ -182,8 +183,6 @@
   <string name="cover_on_lockscreen_summary">Näytä toistettavan kappaleen kansikuvitus lukitusnäytöllä</string>
   <string name="double_tap_title">Kaksoisnapautus-widget</string>
   <string name="double_tap_summary">1x1-widgetin kaksoisnapautus avaa soittimen. Asettaa 400 ms viiveen, ennen kuin widget vastaa toimintoon.</string>
-  <string name="scrobble_title">Käytä ScrobbleDroid API:a</string>
-  <string name="scrobble_summary">Lähetä toistotiedot Last.fm:ään käyttäen ScrobbleDroidia tai Simple Last.fm Scrobbleria</string>
   <string name="stock_broadcast_summary">Lähetä vakiosoitinta emuloivia yleislähetyksiä. Auttaa kolmansien osapuolten lukitusnäyttöohjainten, widgettien yms. toimivuuden kanssa.</string>
   <string name="about">Tietoja</string>
   <string name="tabs">Välilehtien järjestys</string>
@@ -243,6 +242,7 @@
   <string name="button_start">Käynnistä tarkastus uudelleen</string>
   <string name="database_proc">Tutkittu</string>
   <string name="db_label">Tarkistetaan myös olemassa olevia mediatietokanta päivitettyjen tai poistettujen tiedostojen varalta.</string>
+  <string name="db_error_retrying">Mediatietokantaa luettaessa tapahtui virhe. Yritetään uudelleen 1 sekunnin kuluttua...</string>
   <string name="final_proc">Käsitelty</string>
   <string name="progress_completed_label">Valmis, valmiina uuden tarkastuksen aloittamiseen.</string>
   <string name="progress_error_bad_path_label">Tarkastus epäonnistui: uutta tiedostohakua varten määritettiin virheellinen polku.</string>

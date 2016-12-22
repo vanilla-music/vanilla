@@ -137,8 +137,6 @@
   <string name="cover_on_lockscreen_title">Mostrar caratula en pantalla de bloqueo</string>
   <string name="double_tap_title">Doble toque en widget</string>
   <string name="double_tap_summary">Tocar dos veces el widget 1x1 abrirá el reproductor. Causa un retraso de 400ms antes de que el widget responda a acciones.</string>
-  <string name="scrobble_title">Usar API ScrobbleDroid</string>
-  <string name="scrobble_summary">Enviar estadísticas de preferencias musicales a Last.fm por medio de ScrobbleDroid o Simple Last.fm Scrobbler</string>
   <string name="about">Información</string>
   <string name="tabs">Orden de pestañas</string>
   <string name="customize_tab_order">Especificar qué pestañas mostrar y en qué orden</string>

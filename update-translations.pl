@@ -12,6 +12,7 @@ my $LMAP = {
 	'it_IT' => 'it',
 	'pl_PL' => 'pl',
 	'id'    => 'in',
+	'he_IL' => 'iw',
 };
 
 

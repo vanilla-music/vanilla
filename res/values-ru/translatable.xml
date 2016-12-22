@@ -106,6 +106,7 @@
   <string name="year">по году</string>
   <string name="date_added">по дате добавления</string>
   <string name="artist_album">по исполнителю и альбомам</string>
+  <string name="artist_year_album">по исполнителю, году и альбомам</string>
   <string name="artist_album_track">по исполнителю, альбомам и номеру дорожки</string>
   <string name="artist_album_title">по исполнителю, альбомам и названию</string>
   <string name="artist_year">по исполнителю и году</string>
@@ -201,8 +202,8 @@
   <string name="cover_on_lockscreen_summary">Показывать обложку текущей дорожки на экране блокировки</string>
   <string name="double_tap_title">Двойное касание виджета</string>
   <string name="double_tap_summary">Двойное касание виджета 1×1 вызовет проигрыватель. Добавляет 400мс задержку к реакции виджета на действия.</string>
-  <string name="scrobble_title">Задействовать API ScrobbleDroid</string>
-  <string name="scrobble_summary">Отсылать статистику на Last.FM при помощи ScrobbleDroid или Simple Last.FM Scrobbler</string>
+  <string name="scrobble_title">Задействовать API Scrobble Droid</string>
+  <string name="scrobble_summary">Отсылать статистику на Last.FM при помощи Scrobble Droid или Simple Last.FM Scrobbler</string>
   <string name="stock_broadcast_title">Имитировать стандартное поведение</string>
   <string name="stock_broadcast_summary">Отправлять широковещательные сообщения, имитирующие поведение стандартного музыкального проигрывателя, для совместимости со сторонними элементами управления экранов блокировки, виджетами и т.п.</string>
   <string name="about">О программе</string>

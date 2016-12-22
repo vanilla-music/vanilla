@@ -96,6 +96,7 @@
   <string name="year">Év</string>
   <string name="date_added">Hozzáadás dátuma</string>
   <string name="artist_album">Előadó, album</string>
+  <string name="artist_year_album">Előadó, év, album</string>
   <string name="artist_album_track">Előadó, album, szám sorszáma</string>
   <string name="artist_album_title">Előadó, album, cím</string>
   <string name="artist_year">Előadó, év</string>
@@ -185,8 +186,8 @@
   <string name="cover_on_lockscreen_summary">A most játszott szám albumborítójának megjelenítése a zárképernyőn</string>
   <string name="double_tap_title">Dupla érintés a vezérlőelemen</string>
   <string name="double_tap_summary">Az 1x1-es verzérlőelem a dupla érintés megnyitja a lejátszót. 400ms késleltés történik mielőtt a vezérlőelem válaszol a műveletekre.</string>
-  <string name="scrobble_title">A ScrobbleDroid API használata</string>
-  <string name="scrobble_summary">Megosztás a Last.fm-el a ScrobbleDroid-al vagy a Simple Last.fm Scrobble programmal</string>
+  <string name="scrobble_title">A Scrobble Droid API használata</string>
+  <string name="scrobble_summary">Megosztás a Last.fm-el a Scrobble Droidon vagy a Simple Last.fm Scrobbleren keresztül</string>
   <string name="stock_broadcast_title">Gyári események utánzása</string>
   <string name="stock_broadcast_summary">A gyári médialejátszó eseményeinek utánzása, a harmadik fél által készített zárképernyőkkel és vezérlőelemekkel való együttműködés miatt.</string>
   <string name="about">Névjegy</string>

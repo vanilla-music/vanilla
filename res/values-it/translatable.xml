@@ -5,7 +5,7 @@
   <string name="no_songs">Nessun brano trovato sul tuo dispositivo.</string>
   <string name="empty_queue">Nessuna traccia selezionata. Scegline alcune dalla libreria o entra nella modalità casuale premendo su questo messaggio.</string>
   <string name="settings">Impostazioni</string>
-  <string name="no_shuffle">No shuffle</string>
+  <string name="no_shuffle">Non mischiare</string>
   <string name="shuffle_songs">Mischia brani</string>
   <string name="shuffle_songs_continuously">Mischia brani continuamente</string>
   <string name="shuffle_albums">Album in shuffle</string>
@@ -182,8 +182,6 @@
   <string name="cover_on_lockscreen_title">Mostra copertina sulla schermata di blocco</string>
   <string name="double_tap_title">Widget di doppio tocco</string>
   <string name="double_tap_summary">Doppio tap sul 1x1 widget aprirà il riproduttore. Si avrà un ritardo di 400ms prima che il widget risponda all\'azione.</string>
-  <string name="scrobble_title">Usa ScrobbleDroid API</string>
-  <string name="scrobble_summary">Effettua lo scrobbling a Last.fm tramite ScrobbleDroid o Simple Last.fm Scrobbler</string>
   <string name="stock_broadcast_title">Emula broadcast preinstallato</string>
   <string name="stock_broadcast_summary">Invia brodcast simulando quelli inviati dal riproduttore musicale nativo con i controlli di 3rd parti, widgets,ecc.</string>
   <string name="about">Info</string>

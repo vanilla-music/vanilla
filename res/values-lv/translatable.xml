@@ -55,6 +55,11 @@
   <string name="remove">Izņemt</string>
   <string name="play_or_enqueue">Ierindot, ja atskaņo; atskaņot, ja nopauzēts</string>
   <string name="open">Atvērt</string>
+  <plurals name="enqueued">
+    <item quantity="zero">Ierindots %d dziesmu.</item>
+    <item quantity="one">Ierindota 1 dziesma.</item>
+    <item quantity="other">Ierindotas %d dziesmas.</item>
+  </plurals>
   <string name="delete_file_failed">Neizdevās izdzēst %s.</string>
   <string name="deleted_item">Izdzēsa \'%s\'.</string>
   <string name="delete_item">Dzēst \'%s\'?</string>
@@ -154,8 +159,6 @@
   <string name="cover_on_lockscreen_summary">Rādīt pašreiz atskaņotās dziesmas albuma vāciņu slēgekrānā</string>
   <string name="double_tap_title">Dubultpiesitiena sīkrīks</string>
   <string name="double_tap_summary">Izdarot dubultpieskārienu 1x1 izmēra sīkrīkam, tiks atvērts atskaņotājs. Rada 400 ms aizturi, pirms sīkrīks atbildēs uz darbībām.</string>
-  <string name="scrobble_title">Lietot ScrobbleDroid API</string>
-  <string name="scrobble_summary">Nosūtīt atskaņojumus servisam Last.fm, izmantojot ScrobbleDroid vai Simple Last.fm Scrobbler</string>
   <string name="stock_broadcast_title">Emulēt pamata raidījumus</string>
   <string name="stock_broadcast_summary">Sūtīt raidījumus, tādējādi emulējot noklusētā mūzikas atskaņotāja sūtītos, lai būtu iespējama trešo pušu slēgekrānu vadīklu, sīkrīku, u.t.t., kontrole.</string>
   <string name="about">Par</string>

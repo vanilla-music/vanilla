@@ -96,6 +96,7 @@
   <string name="year">Ano</string>
   <string name="date_added">Data de adição</string>
   <string name="artist_album">Artista, álbum</string>
+  <string name="artist_year_album">Artista, ano, álbum</string>
   <string name="artist_album_track">Artista, álbum, número de faixa</string>
   <string name="artist_album_title">Artista, álbum, título</string>
   <string name="artist_year">Artista, ano</string>
@@ -185,8 +186,8 @@
   <string name="cover_on_lockscreen_summary">Mostra a imagem do faixa em reprodução no ecrã de bloqueio</string>
   <string name="double_tap_title">Duplo toque no widget</string>
   <string name="double_tap_summary">Ao clicar duas vezes no widget 1x1, abre o reprodutor. Tem um atraso de 400 ms antes de responder às ações.</string>
-  <string name="scrobble_title">Usar API ScrobbleDroid</string>
-  <string name="scrobble_summary">Enviar faixas para a Last.fm através de ScrobbleDroid ou Simple Last.fm Scrobbler</string>
+  <string name="scrobble_title">Usar API Scrobble Droid</string>
+  <string name="scrobble_summary">Enviar faixas para a Last.fm através de Scrobble Droid ou Simple Last.fm Scrobbler</string>
   <string name="stock_broadcast_title">Emular comunicações</string>
   <string name="stock_broadcast_summary">Enviar emissões emulando as enviadas pelo reprodutor do Android para poder funcionar com controlos e widgets de terceiros</string>
   <string name="about">Sobre</string>

@@ -2,19 +2,27 @@
 <resources>
   <string name="app_name">Vanilla Music</string>
   <!--Playback Activity (main screen)-->
+  <string name="no_songs">在你的设备上找不到任何曲目。</string>
+  <string name="empty_queue">未选择曲目。请从库中选择一些曲目或点此消息进入随机模式。</string>
   <string name="settings">设置</string>
   <string name="no_shuffle">不随机播放</string>
+  <string name="shuffle_songs">随机播放曲目</string>
+  <string name="shuffle_songs_continuously">连续随机播放曲目</string>
   <string name="shuffle_albums">随机播放专辑</string>
   <string name="no_repeat">不重复播放</string>
   <string name="repeat">重复播放</string>
+  <string name="repeat_current_song">重复当前曲目</string>
+  <string name="stop_current_song">当前曲目后停止</string>
   <string name="random">随机</string>
   <string name="random_enabling">启用随机</string>
+  <string name="song_load_failed">不能加载曲目 %s。有可能损坏或丢失。</string>
   <string name="queue_cleared">序列已清除</string>
   <string name="cover_art">专辑封面</string>
   <string name="close_notification">关闭通知</string>
   <string name="_genre">类型</string>
   <string name="_track">曲目</string>
   <string name="_composer">作曲</string>
+  <string name="_path">路径</string>
   <string name="_format">格式</string>
   <string name="_title">标题</string>
   <string name="_artist">演出者</string>
@@ -47,18 +55,35 @@
   <string name="remove">移除</string>
   <string name="play_or_enqueue">如果播放序列；如果暫停播放</string>
   <string name="open">打开</string>
+  <plurals name="playing">
+    <item quantity="other">正在播放 %d 首曲目。</item>
+  </plurals>
+  <plurals name="enqueued">
+    <item quantity="other">队列里有 %d 首曲目。</item>
+  </plurals>
+  <plurals name="added_to_playlist">
+    <item quantity="other">%1$d 首曲目已加入播放列表 %2$s。</item>
+  </plurals>
+  <plurals name="removed_from_playlist">
+    <item quantity="other">%1$d 首曲目已经移出播放列表 %2$s。</item>
+  </plurals>
+  <plurals name="deleted">
+    <item quantity="other">%d 首曲目已删除。</item>
+  </plurals>
   <string name="delete_file_failed">删除 %s 失败。</string>
   <string name="deleted_item">“%s”已删除。</string>
   <string name="delete_item">删除“%s”？</string>
   <string name="delete_file">删除文件“%s”？</string>
   <string name="artists">演出者</string>
   <string name="albums">专辑</string>
+  <string name="songs">曲目</string>
   <string name="playlists">播放清单</string>
   <string name="genres">风格</string>
   <string name="files">文件</string>
   <string name="unknown">未知</string>
   <string name="play_all">全部播放</string>
   <string name="enqueue_all">全部加入序列</string>
+  <string name="all_songs">全部曲目</string>
   <string name="more_from_artist">更多来自演出者</string>
   <string name="more_from_album">更多来自专辑</string>
   <string name="name">名称</string>
@@ -66,12 +91,22 @@
   <string name="year">年份</string>
   <string name="date_added">添加日期</string>
   <string name="artist_album">演出者，专辑</string>
+  <string name="artist_year_album">演出者，年份，专辑</string>
   <string name="artist_album_track">演出者，专辑，曲目号</string>
   <string name="artist_album_title">演出者，专辑，标题</string>
   <string name="artist_year">演出者，年份</string>
   <string name="album_track">演出者，曲目号</string>
   <string name="song_playcount">播放次数</string>
   <!--Preferences-->
+  <plurals name="seconds">
+    <item quantity="other">%d 秒</item>
+  </plurals>
+  <plurals name="minutes">
+    <item quantity="other">%d 分钟</item>
+  </plurals>
+  <plurals name="hours">
+    <item quantity="other">%d 小时</item>
+  </plurals>
   <string name="audio">音频</string>
   <string name="volume_during_ducking_title">通知时的音量</string>
   <string name="volume_during_ducking_summary">回放音量:</string>
@@ -87,18 +122,27 @@
   <string name="headset_launch_title">插入时播放</string>
   <string name="headset_launch_summary">当耳机插入时播放。(仅当“耳机检测”应用运行时)</string>
   <string name="headset_launch_app_missing">此特性需要“耳机检测”应用。\n你想打开 Play Store 来安装此应用吗？</string>
+  <string name="replaygain">回放增益</string>
+  <string name="replaygain_summary">配置处理回放增益的信息</string>
+  <string name="replaygain_track_title">启用每曲目的回放增益</string>
   <string name="replaygain_track_summary">以同等响度播放所有音乐</string>
+  <string name="replaygain_album_title">启用专辑回放增益</string>
   <string name="replaygain_album_summary">维持专辑力度变化</string>
+  <string name="replaygain_bump_title">专辑回放增益</string>
+  <string name="replaygain_untagged_debump_title">没有回放增益标签的曲目</string>
   <string name="replaygain_untagged_debump_summary">降低音量依据</string>
   <string name="replaygain_preamp_note_title">注意</string>
   <string name="replaygain_preamp_note_content">Android 不允许 Vanilla Music 将音量调到 &gt;100%，将前置放大器设置较高树枝可能会导致聆听比较“安静”的音乐时产生问题。\n\n建议将数值：为安静和古典音乐设置\n-&gt; -3dB \n-&gt; 为新世纪音乐设置+3dB </string>
   <string name="readahead">启用预先读取</string>
+  <string name="readahead_summary">预读当前播放的曲目。此选项可以解决“音频卡顿”现象 (因为慢速 SD 所引起)。</string>
   <string name="equalizer">均衡器</string>
   <string name="cycle_continuous_shuffling">继续随机播放</string>
+  <string name="cycle_continuous_shuffling_summary">“随机模式”会以完全随机顺序播放曲目</string>
   <string name="notifications">通知</string>
   <string name="notification_mode_title">通知模式</string>
   <string name="notification_action_title">通知动作</string>
   <string name="notification_nag">非常详尽的通知</string>
+  <string name="notification_nag_summary">以“抬头通知”的方式通知曲目改变</string>
   <string name="playback_screen">回放画面</string>
   <string name="playback_on_startup_title">启动时打开</string>
   <string name="playback_on_startup_summary">启动时打开播放界面</string>
@@ -116,11 +160,14 @@
   <string name="shake_action_title">摇动动作</string>
   <string name="shake_threshold_title">摇动力度阈值</string>
   <string name="misc_features">杂项特性</string>
+  <string name="theme">主题</string>
   <string name="disable_lockscreen_title">禁用锁屏</string>
   <string name="disable_lockscreen_summary">在媒体库界面或回放屏幕时禁用锁屏</string>
   <string name="use_idle_timeout_title">启用闲置超时</string>
   <string name="use_idle_timeout_summary">启用时，闲置一段时间后会停止播放</string>
   <string name="idle_timeout_title">闲置超时</string>
+  <string name="enable_scroll_to_song_title">滚动到曲目标题</string>
+  <string name="enable_scroll_to_song_summary">在库列表中滚动到当前播放的曲目/专辑/艺术家</string>
   <string name="coverloader_android_title">从 Android 设备载入</string>
   <string name="coverloader_android_summary">查询 Android 内部的媒体数据库来做专辑封面</string>
   <string name="coverloader_vanilla_title">从文件夹中载入封面</string>
@@ -128,10 +175,11 @@
   <string name="coverloader_shadow_title">从隐藏文件载入封面</string>
   <string name="coverloader_shadow_summary">尝试从 \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\' 中载入封面图</string>
   <string name="cover_on_lockscreen_title">锁屏时显示专辑封面</string>
+  <string name="cover_on_lockscreen_summary">在锁屏界面显示当前播放曲目的专辑封面</string>
   <string name="double_tap_title">双触小挂件</string>
   <string name="double_tap_summary">双击 1 x 1 的小工具将会打开播放器。小工具做出响应之前会有 400 毫秒延迟。</string>
-  <string name="scrobble_title">使用 ScrobbleDroid API</string>
-  <string name="scrobble_summary">Scrobble 透过 ScrobbleDroid 到 Last.fm 或只是 Last.fm Scrobbler</string>
+  <string name="scrobble_title">使用 </string>
+  <string name="scrobble_summary">Last.fm 的歌曲记录通过 Scrobble Droid 或 Simple Last.fm Scrobbler</string>
   <string name="stock_broadcast_title">仿真原生应用的广播</string>
   <string name="stock_broadcast_summary">发送广播以模拟那些由本地原生播放器而产生的效果，例如第三方锁屏控制，小工具等等。</string>
   <string name="about">关于</string>
@@ -145,6 +193,7 @@
   <string name="always_show">永远显示</string>
   <string name="open_main_activity">打开媒体库 (默认)</string>
   <string name="open_mini_popup">打开迷你弹出框</string>
+  <string name="skip_to_next_song">跳到下一曲目</string>
   <string name="open_full_player">打开完整播放器</string>
   <string name="info_on_cover">信息在封面之上</string>
   <string name="info_below_cover">信息在封面之下</string>
@@ -152,6 +201,8 @@
   <string name="do_nothing">什么也不做</string>
   <string name="open_library">打开媒体库</string>
   <string name="play_pause">播放 / 暂停</string>
+  <string name="next_song">下一曲目</string>
+  <string name="previous_song">上一曲目</string>
   <string name="next_album">下一专辑</string>
   <string name="previous_album">上一专辑</string>
   <string name="cycle_repeat_mode">循环重复模式</string>
@@ -161,6 +212,7 @@
   <string name="enqueue_current_genre">以风格加入序列</string>
   <string name="empty_the_queue">空序列</string>
   <string name="show_queue">显示序列</string>
+  <string name="hide_queue">隐藏序列</string>
   <string name="dequeue_rest">剩余的移出序列</string>
   <string name="toggle_controls">切换控制器</string>
   <string name="seek_10s_backward">向后倒退 10 秒</string>
@@ -179,5 +231,25 @@
   <string name="autoplaylist_playcounts_disabled">不要创建自动播放列表</string>
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
   <string name="permission_request_summary">Vanilla Music 需要读取权限来显示你的音乐媒体库</string>
+  <string name="reverse_sort">反序</string>
+  <string name="share">共享…</string>
+  <string name="sendto">发送给…</string>
+  <string name="no_receiving_apps">没有为此媒体类型找到接收的 app！</string>
   <!--SD Scanner-->
+  <string name="sdscan_help">开始的重新扫描会导致 Vanilla Music 触发媒体数据的完全重构。</string>
+  <string name="button_start">开始重新扫描</string>
+  <string name="database_proc">已检查</string>
+  <string name="delete_proc">移除参考到</string>
+  <string name="db_label">将为已更新或已删除的文件检查存在的媒体数据库。</string>
+  <string name="db_error_failure">读入媒体数据库的时候遇到错误，也许丢失已更新或已删除的文件或需要重新扫描最新的文件。</string>
+  <string name="db_error_recovered">读入媒体数据库时遇到错误，但已修复。</string>
+  <string name="db_error_retrying">读入媒体数据库时遇到错误。1 秒后重试…</string>
+  <string name="final_proc">已处理</string>
+  <string name="progress_completed_label">已完成，准备开始下一次扫描。</string>
+  <string name="progress_error_bad_path_label">扫描失败。指定给新文件搜索的路径错误。</string>
+  <string name="progress_filelist_label">准备初始文件列表…</string>
+  <string name="progress_database_label">正将数据库加入序列…</string>
+  <string name="progress_unstarted_label">尚没有开始。</string>
+  <string name="skipping_folder_label">遇到错误并跳过</string>
+  <string name="sdscanner">SD 卡扫描器</string>
 </resources>

@@ -135,8 +135,6 @@
   <string name="cover_on_lockscreen_title">Hiện ảnh album ở màn hình khoá</string>
   <string name="double_tap_title">Nhấn đúp widget</string>
   <string name="double_tap_summary">Nhấn đúp tiện ích (widget) 1x1 sẽ mở trình chơi nhạc. Có độ trễ 400ms.</string>
-  <string name="scrobble_title">Dùng API ScrobbleDroid</string>
-  <string name="scrobble_summary">Gửi thông tin nhạc đến Last.fm thông qua ScrobbleDroid hoặc Simple Last.fm Scrobbler</string>
   <string name="stock_broadcast_title">Giả lập thông báo mặc định</string>
   <string name="stock_broadcast_summary">Giả lập tín hiệu của ứng dụng nghe nhạc gốc trên máy để làm việc với các ứng dụng khoá màn hình, điều khiển nhạc, v.v.</string>
   <string name="about">Giới thiệu</string>

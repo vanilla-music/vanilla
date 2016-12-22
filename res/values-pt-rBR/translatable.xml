@@ -136,8 +136,6 @@
   <string name="cover_on_lockscreen_title">Mostrar capa do album na tela de bloqueio</string>
   <string name="double_tap_title">Duplo toque no widget</string>
   <string name="double_tap_summary">Ao tocar duas vezes no widget 1x1 o reprodutor será aberto. Pode háver um atraso de 400-600 ms antes de abrir.</string>
-  <string name="scrobble_title">Usar ScrobbeDroid API</string>
-  <string name="scrobble_summary">Enviar faixas para a Last.fm atráves de ScrobbleDroid ou por Simple Last.fm Scrobbler</string>
   <string name="stock_broadcast_title">Emular stock broadcasts</string>
   <string name="stock_broadcast_summary">Enviar transmissões pelo reprodutor do Android para poder funcionar com 3rd party de controles, widgets, etc.</string>
   <string name="about">Sobre</string>

@@ -82,8 +82,6 @@
   <string name="coverloader_shadow_title">Φόρτωση έργων τέχνης από κρυφό φάκελο</string>
   <string name="coverloader_shadow_summary">Προσπαθήστε να φορτώσετε έργα τέχνης από \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\'</string>
   <string name="double_tap_summary">Διπλό χτύπημα στο γραφικό στοιχείο 1x1 θα ανοίξει το πρόγραμμα αναπαραγωγής. Διατρέχει 400μδευ καθυστέρηση πριν το γραφικό στοιχείο ανταποκριθει στις ενέργειες.</string>
-  <string name="scrobble_title">Χρήση του ScrobbleDroid API</string>
-  <string name="scrobble_summary">Scrobble στο Last.fm μέσω ScrobbleDroid ή Απλό Last.fm Scrobbler</string>
   <string name="stock_broadcast_summary">Αποστολή εκπομπων απο την μνημη για να συνεργαστουν με τους ελέγχους lockscreen 3τρίτου κόμματος, γραφικά στοιχεία, κ.λπ.</string>
   <string name="about">Σχετικά με</string>
   <string name="customize_tab_order">Ρυθμίστε τη σειρά και την προβολή των καρτελών βιβλιοθήκης</string>

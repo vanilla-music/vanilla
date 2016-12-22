@@ -101,6 +101,7 @@
   <string name="year">години</string>
   <string name="date_added">датуму додавања</string>
   <string name="artist_album">извођачу, албуму</string>
+  <string name="artist_year_album">извођачу, години, албуму</string>
   <string name="artist_album_track">извођачу, албуму, нумери</string>
   <string name="artist_album_title">извођачу, албуму, наслову</string>
   <string name="artist_year">извођачу, години</string>
@@ -193,8 +194,6 @@
   <string name="cover_on_lockscreen_summary">Приказ омота текуће нумере на екрану закључавања</string>
   <string name="double_tap_title">Двотап на виџет</string>
   <string name="double_tap_summary">Двотап на 1x1 виџет отвара плејер. Опција поставља застој од 400ms пре одзива виџета на радње.</string>
-  <string name="scrobble_title">Користи ScrobbleDroid АПИ</string>
-  <string name="scrobble_summary">Скроблуј на Ласт.фм преко ScrobbleDroid АПИ-ја или једноставног Ласт.фм скроблера</string>
   <string name="stock_broadcast_title">Емулирај уграђена емитовања</string>
   <string name="stock_broadcast_summary">Слање емитовања која опонашају емитовања уграђеног музичког плејера, да би функционисале контроле закључаног екрана и виџети осталих апликација, итд.</string>
   <string name="about">О програму</string>

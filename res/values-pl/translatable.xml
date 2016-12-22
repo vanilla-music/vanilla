@@ -129,8 +129,6 @@
   <string name="cover_on_lockscreen_title">Pokazuj okładkę albumu na ekranie blokady</string>
   <string name="double_tap_title">Dwukrotne kliknięcie widgetu</string>
   <string name="double_tap_summary">Podwójne kliknięcie widgetu 1x1 otworzy odtwarzacz. Wprowadza zwłokę 400ms zanim widget odpowie na akcję.</string>
-  <string name="scrobble_title">Używanie API ScrobbleDroid</string>
-  <string name="scrobble_summary">Scrobblowanie do Last.fm poprzez ScrobbleDroid lub Simple Last.fm Scrobbler</string>
   <string name="stock_broadcast_title">Emulowanie systemowych komunikatów</string>
   <string name="stock_broadcast_summary">Wysyła komunikaty udające komunikaty wysyłane przez systemowy odtwarzacz muzyki, aby współpracowały z trzecimi aplikacjami blokad ekranów, widgetów itp.</string>
   <string name="about">Na temat</string>

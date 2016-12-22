@@ -96,6 +96,7 @@
   <string name="year">Jahr</string>
   <string name="date_added">Erstellungsdatum</string>
   <string name="artist_album">Interpret, Album</string>
+  <string name="artist_year_album">Interpret, Jahr, Album</string>
   <string name="artist_album_track">Interpret, Album, Titelnummer</string>
   <string name="artist_album_title">Interpret, Album, Titel</string>
   <string name="artist_year">Interpret, Jahr</string>
@@ -185,8 +186,8 @@
   <string name="cover_on_lockscreen_summary">Albumcover des aktuell wiedergegebenen Titels auf dem Sperrbildschirm anzeigen</string>
   <string name="double_tap_title">Widget-Doppelantippen</string>
   <string name="double_tap_summary">Doppeltes Antippen des 1x1-Widgets öffnet die Wiedergabeansicht. Verursacht eine Verzögerung von 400 ms, bevor das Widget auf Aktionen reagiert.</string>
-  <string name="scrobble_title">ScrobbleDroid-API verwenden</string>
-  <string name="scrobble_summary">Zu Last.fm scrobbeln mithilfe von ScrobbleDroid oder Simple Last.fm Scrobbler</string>
+  <string name="scrobble_title">Scrobble Droid-API verwenden</string>
+  <string name="scrobble_summary">Zu Last.fm scrobbeln mithilfe von »Scrobble Droid« oder »Simple Last.fm Scrobbler«</string>
   <string name="stock_broadcast_title">Standard-Broadcasts emulieren</string>
   <string name="stock_broadcast_summary">Broadcasts senden, die jene der Standard-App für Musikwiedergabe emulieren, um mit Bildschirmsperre-Steuerelementen, Widgets etc. von Drittanbietern kompatibel zu sein</string>
   <string name="about">Über</string>

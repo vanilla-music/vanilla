@@ -2,19 +2,27 @@
 <resources>
   <string name="app_name">Vanilla Music</string>
   <!--Playback Activity (main screen)-->
+  <string name="no_songs">Aucun morceau trouvé sur votre appareil.</string>
+  <string name="empty_queue">Aucun morceau sélectionné. Choisissez-en un depuis la bibliothèque ou activez le mode aléatoire en cliquant sur ce message.</string>
   <string name="settings">Paramètres</string>
-  <string name="no_shuffle">Désactiver le mode aléatoire</string>
+  <string name="no_shuffle">Non aléatoire</string>
+  <string name="shuffle_songs">Morceaux en mode aléatoire</string>
+  <string name="shuffle_songs_continuously">Morceaux toujours en mode aléatoire</string>
   <string name="shuffle_albums">Albums en mode aléatoire</string>
   <string name="no_repeat">Désactiver la répétition</string>
   <string name="repeat">Répéter</string>
+  <string name="repeat_current_song">Répéter le morceau en cours</string>
+  <string name="stop_current_song">Arrêt après le morceau en cours</string>
   <string name="random">Aléatoire</string>
   <string name="random_enabling">Aléatoire activé</string>
+  <string name="song_load_failed">Échec lors du chargement du morceau %s. Le fichier est peut être corrompu ou manquant.</string>
   <string name="queue_cleared">File d\'attente effacée</string>
   <string name="cover_art">Jaquette</string>
   <string name="close_notification">Fermer la notification</string>
   <string name="_genre">genre</string>
   <string name="_track">morceau</string>
   <string name="_composer">compositeur</string>
+  <string name="_path">cible</string>
   <string name="_format">format</string>
   <string name="_title">titre</string>
   <string name="_artist">artiste</string>
@@ -47,18 +55,40 @@
   <string name="remove">Supprimer</string>
   <string name="play_or_enqueue">Ajouter à la file d\'attente si en lecture ; Lire si en pause</string>
   <string name="open">Ouvrir</string>
+  <plurals name="playing">
+    <item quantity="one">1 morceau en lecture.</item>
+    <item quantity="other">%d morceaux en lecture.</item>
+  </plurals>
+  <plurals name="enqueued">
+    <item quantity="one">1 morceau dans la file d\'attente.</item>
+    <item quantity="other">%d morceaux dans la file d\'attente.</item>
+  </plurals>
+  <plurals name="added_to_playlist">
+    <item quantity="one">1 morceau ajouté à la playlist %2$s.</item>
+    <item quantity="other">%1$d morceaux ajoutés à la playlist %2$s.</item>
+  </plurals>
+  <plurals name="removed_from_playlist">
+    <item quantity="one">1 morceau enlevé de la playlist %2$s.</item>
+    <item quantity="other">%1$d morceaux enlevés de la playlist %2$s.</item>
+  </plurals>
+  <plurals name="deleted">
+    <item quantity="one">1 morceau supprimé.</item>
+    <item quantity="other">%d morceaux supprimés.</item>
+  </plurals>
   <string name="delete_file_failed">Échec lors de la suppression %s.</string>
   <string name="deleted_item">\'%s\' supprimé.</string>
   <string name="delete_item">Supprimer \'%s\'?</string>
   <string name="delete_file">Effacer le fichier \'%s\'?</string>
   <string name="artists">Artistes</string>
   <string name="albums">Albums</string>
+  <string name="songs">Morceaux</string>
   <string name="playlists">Playlists</string>
   <string name="genres">Genres</string>
   <string name="files">Fichiers</string>
   <string name="unknown">Inconnu</string>
   <string name="play_all">Lire tout</string>
   <string name="enqueue_all">Ajouter tout à la file d\'attente</string>
+  <string name="all_songs">Tous les morceaux</string>
   <string name="more_from_artist">Plus de cet artiste</string>
   <string name="more_from_album">Plus de cet album</string>
   <string name="name">Nom</string>
@@ -66,12 +96,25 @@
   <string name="year">Année</string>
   <string name="date_added">Date d\'ajout</string>
   <string name="artist_album">Artiste, album</string>
+  <string name="artist_year_album">Artiste, année, album</string>
   <string name="artist_album_track">Artiste, album, numéro de piste</string>
   <string name="artist_album_title">Artiste, album, titre</string>
   <string name="artist_year">Artiste, année</string>
   <string name="album_track">Album, numéro de piste</string>
   <string name="song_playcount">Nombre de lectures</string>
   <!--Preferences-->
+  <plurals name="seconds">
+    <item quantity="one">%d seconde</item>
+    <item quantity="other">%d secondes</item>
+  </plurals>
+  <plurals name="minutes">
+    <item quantity="one">%d minute</item>
+    <item quantity="other">%d minutes</item>
+  </plurals>
+  <plurals name="hours">
+    <item quantity="one">%d heure</item>
+    <item quantity="other">%d heures</item>
+  </plurals>
   <string name="audio">Audio</string>
   <string name="volume_during_ducking_title">Volume pendant les notifications</string>
   <string name="volume_during_ducking_summary">Volume de lecture :</string>
@@ -94,16 +137,20 @@
   <string name="replaygain_album_title">Activer ReplayGain par album</string>
   <string name="replaygain_album_summary">Conserve les dynamiques de l\'album</string>
   <string name="replaygain_bump_title">Pré-ampli de ReplayGain</string>
+  <string name="replaygain_untagged_debump_title">Morceaux sans le tag ReplayGain</string>
   <string name="replaygain_untagged_debump_summary">Diminuer le volume de</string>
   <string name="replaygain_preamp_note_title">Note</string>
   <string name="replaygain_preamp_note_content">Android n\'autorise pas Vanilla Music à augmenter le volume au delà de 100%. Un réglage élevé du Pré-ampli peut provoquer des problèmes à l\'écoute de musique \'calme\'. \n\nLes valeurs recommandées sont:\n-&gt; -3dB pour la musique classique/douce\n-&gt; +3dB pour les enregistrements postérieurs à 2000</string>
   <string name="readahead">Activer la pré-lecture</string>
+  <string name="readahead_summary">Pré-lecture du morceau en cours de lecture. Cette option peut résoudre les problèmes de perte de niveau (dus à une carte SD lente)</string>
   <string name="equalizer">Égaliseur</string>
   <string name="cycle_continuous_shuffling">Mode aléatoire en continu</string>
+  <string name="cycle_continuous_shuffling_summary">Le \"mode aléatoire\" lira les morceaux dans un ordre totalement aléatoire</string>
   <string name="notifications">Notifications</string>
   <string name="notification_mode_title">Mode de notification</string>
   <string name="notification_action_title">Action de notification</string>
   <string name="notification_nag">Notification très verbeuse</string>
+  <string name="notification_nag_summary">Annonce les changements de morceau avec une notification flottante</string>
   <string name="playback_screen">Écran de lecture</string>
   <string name="playback_on_startup_title">Ouvrir au démarrage</string>
   <string name="playback_on_startup_summary">Ouvrir l\'écran de lecture au démarrage</string>
@@ -121,11 +168,14 @@
   <string name="shake_action_title">Action secouer</string>
   <string name="shake_threshold_title">Seuil de force de la secousse</string>
   <string name="misc_features">Fonctionnalités diverses</string>
+  <string name="theme">Thème</string>
   <string name="disable_lockscreen_title">Désactiver le verrouillage de l\'écran</string>
   <string name="disable_lockscreen_summary">Empêche le verrouillage de l\'écran lorsque la bibliothèque ou l\'écran de lecture est affiché</string>
   <string name="use_idle_timeout_title">Activer le délai d\'inactivité</string>
   <string name="use_idle_timeout_summary">Quand l\'option est activée, la lecture s\'arrêtera après la période d\'inactivité donnée</string>
   <string name="idle_timeout_title">Délai d\'inactivité</string>
+  <string name="enable_scroll_to_song_title">Faire défiler jusqu\'au titre du morceau</string>
+  <string name="enable_scroll_to_song_summary">Afficher le morceau/album/artiste en cours de lecture dans les listes de la bibliothèque</string>
   <string name="coverloader_android_title">Charger les illustrations depuis Android</string>
   <string name="coverloader_android_summary">Interroge la base de données \'media\' interne d\'Android pour les illustrations</string>
   <string name="coverloader_vanilla_title">Charger l\'illustration depuis le répertoire</string>
@@ -133,10 +183,11 @@
   <string name="coverloader_shadow_title">Charger l\'illustration depuis le répertoire caché</string>
   <string name="coverloader_shadow_summary">Essaie de charger l\'illustration depuis \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\'</string>
   <string name="cover_on_lockscreen_title">Afficher la jaquette sur l\'écran de verrouillage</string>
+  <string name="cover_on_lockscreen_summary">Afficher la jaquette du morceau en lecture sur l\'écran de verrouillage</string>
   <string name="double_tap_title">Toucher deux fois le widget</string>
   <string name="double_tap_summary">Toucher deux fois le widget 1x1 pour ouvrir le lecteur. Implique un délai de 400ms avant que le widget réponde aux actions.</string>
-  <string name="scrobble_title">Utiliser l\'API ScrobbleDroid</string>
-  <string name="scrobble_summary">Envoyer l\'information de scrobble à Last.fm grâce à ScrobbleDroid ou SimpleLast.fm Scrobbler</string>
+  <string name="scrobble_title">Utiliser l\'API Scrobble Droid</string>
+  <string name="scrobble_summary">Envoyer l\'information de scrobble à Last.fm grâce à Scrobble Droid ou SimpleLast.fm Scrobbler</string>
   <string name="stock_broadcast_title">Emuler les notifications natives</string>
   <string name="stock_broadcast_summary">Envoyer les messages de diffusion émulant ceux envoyés par le lecteur d\'origine pour fonctionner avec des contrôles d\'écran de verrouillage tiers, widgets, etc.</string>
   <string name="about">À propos</string>
@@ -150,6 +201,7 @@
   <string name="always_show">Toujours afficher</string>
   <string name="open_main_activity">Ouvrir la bibliothèque (défaut)</string>
   <string name="open_mini_popup">Ouvrir mini popup</string>
+  <string name="skip_to_next_song">Passer au morceau suivant</string>
   <string name="open_full_player">Ouvrir le lecteur complet</string>
   <string name="info_on_cover">Info sur la couverture</string>
   <string name="info_below_cover">Info sous la couverture</string>
@@ -157,6 +209,8 @@
   <string name="do_nothing">Ne rien faire</string>
   <string name="open_library">Ouvrir la bibliothèque</string>
   <string name="play_pause">Lecture/Pause</string>
+  <string name="next_song">Morceau suivant</string>
+  <string name="previous_song">Morceau précédent</string>
   <string name="next_album">Album suivant</string>
   <string name="previous_album">Album précédent</string>
   <string name="cycle_repeat_mode">Mode répétition cyclique</string>
@@ -186,5 +240,20 @@
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
   <string name="permission_request_summary">Vanilla Music a besoin d\'une permission de lecture pour afficher votre bibliothèque musicale</string>
   <string name="reverse_sort">Inverser le tri</string>
+  <string name="share">Partager...</string>
+  <string name="sendto">Envoyer à…</string>
   <!--SD Scanner-->
+  <string name="database_proc">Examiner </string>
+  <string name="delete_proc">Enlever la référence à</string>
+  <string name="db_label">Vérifiera également la base de données multimédia existante pour les fichiers mis à jour ou supprimés.</string>
+  <string name="db_error_failure">A rencontré une erreur en lisant la base de données multimédia et il pourrait manquer des fichiers à jour ou supprimés</string>
+  <string name="db_error_recovered">A rencontré une erreur en lisant la base de données multimédia, mais c\'est rétabli.</string>
+  <string name="db_error_retrying">A rencontré une erreur en lisant la base de données multimédia. Rééssayera dans 1 seconde...</string>
+  <string name="final_proc">Traité</string>
+  <string name="progress_completed_label">Terminé, prêt à commencer une autre analyse.</string>
+  <string name="progress_error_bad_path_label">L\'analyse a échoué: mauvais chemin d\'accès spécifié pour la recherche d\'un nouveau fichier.</string>
+  <string name="progress_filelist_label">Préparation de la liste initiale des fichiers</string>
+  <string name="progress_database_label">Examination de la base de données</string>
+  <string name="progress_unstarted_label">Pas encore commencé.</string>
+  <string name="sdscanner">Scanneur carte SD</string>
 </resources>
