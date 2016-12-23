@@ -25,6 +25,7 @@ import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.provider.MediaStore;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -83,6 +84,9 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService
 
 	// Indicates whether the service was started.
 	private boolean mServiceStarted;
+
+	// The fallback cover image resource encoded as bitmap
+	private static Bitmap sFallbackBitmap;
 
 	private Looper mLooper;
 	private Handler mHandler;
@@ -159,6 +163,10 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService
 					.build(), MediaBrowser.MediaItem.FLAG_BROWSABLE
 		));
 
+		// initialise the fallback bitmap
+		if (sFallbackBitmap == null) {
+			sFallbackBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.fallback_cover);
+		}
 
 		// Start a new MediaSession
 		mSession = new MediaSession(this, "VanillaMediaBrowserService");
@@ -186,6 +194,7 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService
 		mHandler = new Handler(mLooper, this);
 
 		updatePlaybackState(null);
+		setSong(0, null);
 	}
 
 	@Override
@@ -420,37 +429,60 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService
 	private void runQuery(List<MediaBrowser.MediaItem> populateMe, int mediaType, MediaAdapter adapter) {
 		populateMe.clear();
 		try {
-			Cursor cursor = adapter.query();
-			Context context = getApplicationContext();
-			ContentResolver resolver = context.getContentResolver();
-
-			if (cursor == null) {
-				return;
+			final Context context = getApplicationContext();
+			final ContentResolver resolver = context.getContentResolver();
+			Cursor cursor;
+			if(mediaType == MediaUtils.TYPE_SONG) {
+				cursor = adapter.buildSongQuery(Song.FILLED_PROJECTION).runQuery(resolver);
+			} else {
+				cursor = adapter.query();
 			}
-
+			Song song = new Song(-1);
 			final int flags = (mediaType == MediaUtils.TYPE_SONG || mediaType == MediaUtils.TYPE_PLAYLIST) ? MediaBrowser.MediaItem.FLAG_PLAYABLE : MediaBrowser.MediaItem.FLAG_BROWSABLE;
 			final int count = cursor.getCount();
-			for (int j = 0; j != count; ++j) {
-				cursor.moveToPosition(j);
-				final String id = cursor.getString(0);
-				final String label = cursor.getString(2);
-				long mediaId = Long.parseLong(id);
-
-				Song song = MediaUtils.getSongByTypeId(resolver, mediaType, mediaId);
+			cursor.moveToFirst();
+			for (int j = 0; j < count; ++j) {
+				final Long id = cursor.getLong(0);
+				String title = cursor.getString(2);
+				Bitmap cover = null;
+				if(mediaType == MediaUtils.TYPE_SONG) {
+					if(j < 50) {
+						song.populate(cursor);
+						song.flags = 0;
+						if(song.isFilled()) {
+							cover = song.getSmallCover(context);
+						}
+						if(cover == null) {
+							cover = sFallbackBitmap;
+						}
+					}
+				} else if((mediaType == MediaUtils.TYPE_ALBUM)) {
+					if(j < 50) {
+						Song songForCover = MediaUtils.getSongByTypeId(resolver, mediaType, id);
+						if(songForCover != null && songForCover.isFilled()) {
+							cover = songForCover.getSmallCover(context);
+						}
+						if(cover == null) {
+							cover = sFallbackBitmap;
+						}
+					}
+				} else {
+					cover = CoverBitmap.generatePlaceholderCover(context, 88,88, title);
+				}
 				MediaBrowser.MediaItem item = new MediaBrowser.MediaItem(
 					new MediaDescription.Builder()
-						.setMediaId(MediaID.toString(mediaType, mediaId, label))
-						.setTitle(label)
+						.setMediaId(MediaID.toString(mediaType, id, title))
+						.setTitle(title)
 						.setSubtitle(subtitleForMediaType(mediaType))
-						.setIconBitmap(song.getSmallCover(context))
+						.setIconBitmap(cover)
 						.build(),
 						flags);
 				populateMe.add(item);
+				cursor.moveToNext();
 			}
-
 			cursor.close();
 		} catch (Exception e) {
-			Log.d("VanillaMusic","Failed retrieving Media");
+			Log.d("VanillaMusic","Failed retrieving Media " + e.toString());
 		}
 	}
 
