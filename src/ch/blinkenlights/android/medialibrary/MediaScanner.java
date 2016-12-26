@@ -19,14 +19,15 @@ package ch.blinkenlights.android.medialibrary;
 
 import android.content.Context;
 import android.content.ContentValues;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.ContentObserver;
 import android.util.Log;
 import android.provider.MediaStore;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.os.Process;
-import android.os.SystemClock;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -34,108 +35,123 @@ import java.util.regex.Pattern;
 
 public class MediaScanner implements Handler.Callback {
 	/**
-	 * How long to wait until we post an update notification
+	 * Our scan plan
 	 */
-	private final static int SCAN_NOTIFY_DELAY_MS = 1200;
-	/**
-	 * At which (up-)time we shall trigger the next notification
-	 */
-	private long mNextNotification = 0;
-	/**
-	 * The backend instance we are acting on
-	 */
-	private MediaLibraryBackend mBackend;
+	private MediaScanPlan mScanPlan;
 	/**
 	 * Our message handler
 	 */
 	private Handler mHandler;
 	/**
-	 * Files we are ignoring based on their filename
+	 * The context to use for native library queries
 	 */
-	private static final Pattern sIgnoredNames = Pattern.compile("^([^\\.]+|.+\\.(jpe?g|gif|png|bmp|webm|txt|pdf|avi|mp4|mkv|zip|tgz|xml))$", Pattern.CASE_INSENSITIVE);
+	private Context mContext;
 	/**
-	 * Constructs a new MediaScanner instance
-	 *
-	 * @param backend the backend to use
+	 * Instance of a media backend
 	 */
-	MediaScanner(MediaLibraryBackend backend) {
+	private MediaLibraryBackend mBackend;
+
+
+	MediaScanner(Context context, MediaLibraryBackend backend) {
+		mContext = context;
 		mBackend = backend;
-		HandlerThread handlerThread = new HandlerThread("MediaScannerThred", Process.THREAD_PRIORITY_LOWEST);
+		mScanPlan = new MediaScanPlan();
+		HandlerThread handlerThread = new HandlerThread("MediaScannerThread", Process.THREAD_PRIORITY_LOWEST);
 		handlerThread.start();
 		mHandler = new Handler(handlerThread.getLooper(), this);
+
+		// the content observer to use
+		ContentObserver mObserver = new ContentObserver(null) {
+			@Override
+			public void onChange(boolean self) {
+				startQuickScan();
+			}
+		};
+		context.getContentResolver().registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, false, mObserver);
 	}
 
 	/**
-	 * Initiates a scan at given directory
+	 * Performs a 'fast' scan by checking the native and our own
+	 * library for new and changed files
+	 */
+	public void startNormalScan() {
+		mScanPlan.addNextStep(RPC_NATIVE_VRFY, null)
+			.addNextStep(RPC_LIBRARY_VRFY, null);
+	}
+
+	/**
+	 * Performs a 'slow' scan by inspecting all files on the device
+	 */
+	public void startFullScan() {
+		for (File dir : MediaLibrary.discoverMediaPaths()) {
+			mScanPlan.addNextStep(RPC_READ_DIR, dir);
+		}
+		mScanPlan.addNextStep(RPC_LIBRARY_VRFY, null);
+		mScanPlan.addNextStep(RPC_NATIVE_VRFY, null);
+		mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_RPC, RPC_NOOP, 0));
+	}
+
+	/**
+	 * Called by the content observer if a change in the media library
+	 * has been detected
+	 */
+	public void startQuickScan() {
+		if (!mHandler.hasMessages(MSG_SCAN_RPC)) {
+			mScanPlan.addNextStep(RPC_NATIVE_VRFY, null)
+				.addOptionalStep(RPC_LIBRARY_VRFY, null); // only runs if previous scan found no change
+			mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_SCAN_RPC, RPC_NOOP, 0), 1400);
+		}
+	}
+
+	/**
+	 * Returns some scan statistics
 	 *
-	 * @param dir the directory to scan
+	 * @return a stats object
 	 */
-	void startFullScan(File dir) {
-		mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_DIRECTORY, 0, 0, dir));
+	MediaScanPlan.Statistics getScanStatistics() {
+		return mScanPlan.getStatistics();
 	}
 
-	/**
-	 * Performs a full check of the current media library, scanning for
-	 * removed or changed files
-	 */
-	void startUpdateScan() {
-		Cursor cursor = mBackend.query(false, MediaLibrary.TABLE_SONGS, new String[]{MediaLibrary.SongColumns.PATH}, null, null, null, null, null, null);
-		if (cursor != null)
-			mHandler.sendMessage(mHandler.obtainMessage(MSG_UPDATE_LIBRARY, 0, 0, cursor));
-	}
-
-	/**
-	 * Queries all items found in androids native media database
-	 *
-	 * @param context the context to use
-	 */
-	void startNativeLibraryScan(Context context) {
-		String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0";
-		String[] projection = { MediaStore.MediaColumns.DATA };
-		Cursor cursor = context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection, null, null);
-		if (cursor != null)
-			mHandler.sendMessage(mHandler.obtainMessage(MSG_UPDATE_LIBRARY, 0, 0, cursor));
-	}
-
-	private static final int MSG_SCAN_DIRECTORY = 1;
-	private static final int MSG_ADD_FILE       = 2;
-	private static final int MSG_UPDATE_LIBRARY = 3;
+	private static final int MSG_SCAN_RPC      = 0;
+	private static final int MSG_NOTIFY_CHANGE = 1;
+	private static final int RPC_NOOP          = 100;
+	private static final int RPC_READ_DIR      = 101;
+	private static final int RPC_INSPECT_FILE  = 102;
+	private static final int RPC_LIBRARY_VRFY  = 103;
+	private static final int RPC_NATIVE_VRFY   = 104;
 
 	@Override
 	public boolean handleMessage(Message message) {
-		switch (message.what) {
-			case MSG_SCAN_DIRECTORY: {
-				File directory = (File)message.obj;
-				scanDirectory(directory);
+		int rpc = (message.what == MSG_SCAN_RPC ? message.arg1 : message.what);
+
+		switch (rpc) {
+			case MSG_NOTIFY_CHANGE: {
+				MediaLibrary.notifyObserver();
 				break;
 			}
-			case MSG_ADD_FILE: {
-				File file = (File)message.obj;
-				long now = SystemClock.uptimeMillis();
-				boolean changed = addFile(file);
-
-				// Notify the observer if this was the last message OR if the deadline was reached
-				if (!mHandler.hasMessages(MSG_ADD_FILE) || (mNextNotification != 0 && now >= mNextNotification)) {
-					MediaLibrary.notifyObserver();
-					mNextNotification = 0;
-				}
-
-				// Initiate a new notification trigger if the old one fired and we got a change
-				if (changed && mNextNotification == 0)
-					mNextNotification = now + SCAN_NOTIFY_DELAY_MS;
-
+			case RPC_NOOP: {
+				// just used to trigger the initial scan
 				break;
 			}
-			case MSG_UPDATE_LIBRARY: {
-				Cursor cursor = (Cursor)message.obj;
-				while (cursor.moveToNext()) {
-					String path = cursor.getString(0);
-					if (path != null) {
-						File update = new File(path);
-						mHandler.sendMessage(mHandler.obtainMessage(MSG_ADD_FILE, 0, 0, update));
-					}
+			case RPC_INSPECT_FILE: {
+				final File file = (File)message.obj;
+				boolean changed = rpcInspectFile(file);
+				mScanPlan.registerProgress(file.toString(), changed);
+				if (changed && !mHandler.hasMessages(MSG_NOTIFY_CHANGE)) {
+					mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_NOTIFY_CHANGE), 500);
 				}
-				cursor.close();
+				break;
+			}
+			case RPC_READ_DIR: {
+				rpcReadDirectory((File)message.obj);
+				break;
+			}
+			case RPC_LIBRARY_VRFY: {
+				rpcLibraryVerify((Cursor)message.obj);
+				break;
+			}
+			case RPC_NATIVE_VRFY: {
+				rpcNativeVerify((Cursor)message.obj, message.arg2);
 				break;
 			}
 			default: {
@@ -143,15 +159,82 @@ public class MediaScanner implements Handler.Callback {
 			}
 		}
 
+		if (message.what == MSG_SCAN_RPC && !mHandler.hasMessages(MSG_SCAN_RPC)) {
+			MediaScanPlan.Step step = mScanPlan.getNextStep();
+			if (step == null) {
+				Log.v("VanillaMusic", "--- all scanners finished ---");
+			} else {
+				Log.v("VanillaMusic", "--- starting scan of type "+step.msg);
+				mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_RPC, step.msg, 0, step.arg));
+			}
+		}
+
 		return true;
 	}
 
 	/**
-	 * Scans a directory for indexable files
+	 * Scans the android library, inspecting every found file
+	 *
+	 * @param cursor the cursor we are using
+	 * @param mtime the mtime to carry over, ignored if cursor is null
+	 */
+	private void rpcNativeVerify(Cursor cursor, int mtime) {
+		if (cursor == null) {
+			mtime = getSetScanMark(-1); // starting a new scan -> read stored mtime from preferences
+			String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0 AND "+ MediaStore.MediaColumns.DATE_MODIFIED +" > " + mtime;
+			String sort = MediaStore.MediaColumns.DATE_MODIFIED;
+			String[] projection = { MediaStore.MediaColumns.DATA, MediaStore.MediaColumns.DATE_MODIFIED };
+			try {
+				cursor = mContext.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection, null, sort);
+			} catch(SecurityException e) {
+				Log.e("VanillaMusic", "rpcNativeVerify failed: "+e);
+			}
+		}
+
+		if (cursor == null)
+			return; // still null.. fixme: handle me better
+
+		if (cursor.moveToNext()) {
+			String path = cursor.getString(0);
+			mtime = cursor.getInt(1);
+			if (path != null) { // this seems to be a thing...
+				File entry = new File(path);
+				mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_RPC, RPC_INSPECT_FILE, 0, entry));
+				mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_RPC, RPC_NATIVE_VRFY, mtime, cursor));
+			}
+		} else {
+			cursor.close();
+			getSetScanMark(mtime);
+			Log.v("VanillaMusic", "NativeLibraryScanner finished, mtime mark is now at "+mtime);
+		}
+	}
+
+
+	/**
+	 * Scans every file in our own library and checks for changes
+	 *
+	 * @param cursor the cursor we are using
+	 */
+	private void rpcLibraryVerify(Cursor cursor) {
+		if (cursor == null)
+			cursor = mBackend.query(false, MediaLibrary.TABLE_SONGS, new String[]{MediaLibrary.SongColumns.PATH}, null, null, null, null, null, null);
+
+		if (cursor.moveToNext()) {
+			File entry = new File(cursor.getString(0));
+			mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_RPC, RPC_INSPECT_FILE, 0, entry));
+			mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_RPC, RPC_LIBRARY_VRFY, 0, cursor));
+		} else {
+			cursor.close();
+		}
+	}
+
+	/**
+	 * Loops trough given directory and adds all found
+	 * files to the scan queue
 	 *
 	 * @param dir the directory to scan
 	 */
-	private void scanDirectory(File dir) {
+	private void rpcReadDirectory(File dir) {
 		if (!dir.isDirectory())
 			return;
 
@@ -163,31 +246,18 @@ public class MediaScanner implements Handler.Callback {
 			return;
 
 		for (File file : dirents) {
-			if (file.isFile()) {
-				mHandler.sendMessage(mHandler.obtainMessage(MSG_ADD_FILE, 0, 0, file));
-			} else if (file.isDirectory()) {
-				mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_DIRECTORY, 0, 0, file));
-			}
+			int rpc = (file.isFile() ? RPC_INSPECT_FILE : RPC_READ_DIR);
+			mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_RPC, rpc, 0, file));
 		}
 	}
 
 	/**
-	 * Returns true if the file should not be scanned
-	 *
-	 * @param file the file to inspect
-	 * @return boolean
-	 */
-	private boolean isBlacklisted(File file) {
-		return sIgnoredNames.matcher(file.getName()).matches();
-	}
-
-	/**
-	 * Scans a single file and adds it to the database
+	 * Inspects a single file and adds it to the database or removes it. maybe.
 	 *
 	 * @param file the file to add
 	 * @return true if we modified the database
 	 */
-	private boolean addFile(File file) {
+	private boolean rpcInspectFile(File file) {
 		String path  = file.getAbsolutePath();
 		long songId  = MediaLibrary.hash63(path);
 
@@ -309,5 +379,133 @@ public class MediaScanner implements Handler.Callback {
 		return (needsInsert || needsCleanup);
 	}
 
+	private static final Pattern sIgnoredNames = Pattern.compile("^([^\\.]+|.+\\.(jpe?g|gif|png|bmp|webm|txt|pdf|avi|mp4|mkv|zip|tgz|xml))$", Pattern.CASE_INSENSITIVE);
+	/**
+	 * Returns true if the file should not be scanned
+	 *
+	 * @param file the file to inspect
+	 * @return boolean
+	 */
+	private boolean isBlacklisted(File file) {
+		return sIgnoredNames.matcher(file.getName()).matches();
+	}
+
+
+	/**
+	 * Clunky shortcut to preferences editor
+	 *
+	 * @param newVal the new value to store, ignored if < 0
+	 * @return the value previously set, or 0 as a default
+	 */
+	private int getSetScanMark(int newVal) {
+		final String prefKey = "native_last_mtime";
+		SharedPreferences sharedPref = mContext.getSharedPreferences("scanner_preferences", Context.MODE_PRIVATE);
+		int oldVal = sharedPref.getInt(prefKey, 0);
+
+		if (newVal >= 0) {
+			SharedPreferences.Editor editor = sharedPref.edit();
+			editor.putInt(prefKey, newVal);
+			editor.apply();
+		}
+
+		return oldVal;
+	}
+
+	// MediaScanPlan describes how we are going to perform the media scan
+	class MediaScanPlan {
+		class Step {
+			int msg;
+			Object arg;
+			boolean optional;
+			Step (int msg, Object arg, boolean optional) {
+				this.msg = msg;
+				this.arg = arg;
+				this.optional = optional;
+			}
+		}
+
+		class Statistics {
+			String lastFile;
+			int seen = 0;
+			int changed = 0;
+			void reset() {
+				this.seen = 0;
+				this.changed = 0;
+				this.lastFile = null;
+			}
+		}
+
+		/**
+		 * All steps in this plan
+		 */
+		private ArrayList<Step> mSteps;
+		/**
+		 * Statistics of the currently running step
+		 */
+		private Statistics mStats;
+
+		MediaScanPlan() {
+			mSteps = new ArrayList<>();
+			mStats = new Statistics();
+		}
+
+		Statistics getStatistics() {
+			return mStats;
+		}
+
+		/**
+		 * Called by the scanner to signal that a file was handled
+		 *
+		 * @param path the file we scanned
+		 * @param changed true if this triggered a database update
+		 */
+		void registerProgress(String path, boolean changed) {
+			mStats.lastFile = path;
+			mStats.seen++;
+			if (changed) {
+				mStats.changed++;
+			}
+		}
+
+		/**
+		 * Adds the next step in our plan
+		 *
+		 * @param msg the message to add
+		 * @param arg the argument to msg
+		 */
+		MediaScanPlan addNextStep(int msg, Object arg) {
+			mSteps.add(new Step(msg, arg, false));
+			return this;
+		}
+
+		/**
+		 * Adds an optional step to our plan. This will NOT
+		 * run if the previous step caused database changes
+		 *
+		 * @param msg the message to add
+		 * @param arg the argument to msg
+		 */
+		MediaScanPlan addOptionalStep(int msg, Object arg) {
+			mSteps.add(new Step(msg, arg, true));
+			return this;
+		}
+
+		/**
+		 * Returns the next step of our scan plan
+		 *
+		 * @return a new step object, null if we hit the end
+		 */
+		Step getNextStep() {
+			Step next = (mSteps.size() != 0 ? mSteps.remove(0) : null);
+			if (next != null) {
+				if (next.optional && mStats.changed != 0) {
+					next = null;
+					mSteps.clear();
+				}
+			}
+			mStats.reset();
+			return next;
+		}
+	}
 }
 

@@ -68,13 +68,21 @@ public class MediaLibrary  {
 			synchronized(sWait) {
 				if (sBackend == null) {
 					sBackend = new MediaLibraryBackend(context);
-					sScanner = new MediaScanner(sBackend);
+					sScanner = new MediaScanner(context, sBackend);
+					sScanner.startQuickScan();
 				}
 			}
 		}
 		return sBackend;
 	}
 
+	/**
+	 * Triggers a rescan of the library
+	 *
+	 * @param context the context to use
+	 * @param forceFull starts a full / slow scan if true
+	 * @param drop drop the existing library if true
+	 */
 	public static void scanLibrary(Context context, boolean forceFull, boolean drop) {
 		MediaLibraryBackend backend = getBackend(context); // also initialized sScanner
 		if (drop) {
@@ -84,14 +92,27 @@ public class MediaLibrary  {
 		}
 
 		if (forceFull) {
-			for (File dir : discoverMediaPaths()) {
-				sScanner.startFullScan(dir);
-			}
-			sScanner.startUpdateScan(); // also gets rid of deleted files
+			sScanner.startFullScan();
 		} else {
-			// fixme: implement smart scanner with startNativeLibraryScan();
+			sScanner.startNormalScan();
 		}
 	}
+
+	/**
+	 * Whacky function to get the current scan progress
+	 *
+	 * @param context the context to use
+	 * @return a description of the progress, null if no scan is running
+	 */
+	public static String describeScanProgress(Context context) {
+		MediaLibraryBackend backend = getBackend(context); // also initialized sScanner
+		MediaScanner.MediaScanPlan.Statistics stats = sScanner.getScanStatistics();
+		String msg = null;
+		if (stats.lastFile != null)
+			msg = "seen files = "+stats.seen+", changes made = "+stats.changed+", currently scanning = "+stats.lastFile;
+		return msg;
+	}
+
 
 	/**
 	 * Registers a new content observer for the media library

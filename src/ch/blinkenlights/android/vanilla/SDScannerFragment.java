@@ -22,10 +22,16 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import java.util.Timer;
+import java.util.TimerTask;
+import android.util.Log;
 
 public class SDScannerFragment extends Fragment
 {
+
+	private Timer mTimer;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -44,16 +50,44 @@ public class SDScannerFragment extends Fragment
 		});
 	}
 
-	/** Called when the activity is first created. */
 	@Override
-	public void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
+	public void onResume() {
+		super.onResume();
+		Log.v("VanillaMusic", "onResume! "+mTimer);
+
+		mTimer = new Timer();
+		mTimer.scheduleAtFixedRate((new TimerTask() {
+			@Override
+			public void run() {
+				getActivity().runOnUiThread(new Runnable(){
+					public void run() {
+						updateProgress();
+					}
+				});
+			}}), 0, 120);
 	}
 
+	@Override
+	public void onPause() {
+		super.onPause();
+		Log.v("VanillaMusic", "onPause "+mTimer);
+		if (mTimer != null) {
+			mTimer.cancel();
+			mTimer = null;
+		}
+	}
+
+	private void updateProgress() {
+		View button = getActivity().findViewById(R.id.start_button);
+		TextView progress = (TextView)getActivity().findViewById(R.id.progress_label);
+		String scanText = MediaLibrary.describeScanProgress(getActivity());
+		progress.setText(scanText);
+		button.setEnabled(scanText == null);
+	}
 
 	public void startButtonPressed(View view) {
 		MediaLibrary.scanLibrary(getActivity(), true, false);
+		updateProgress();
 	}
 
 }
