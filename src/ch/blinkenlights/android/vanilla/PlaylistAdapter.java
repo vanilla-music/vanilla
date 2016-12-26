@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2011 Christopher Eby <kreed@kreed.org>
- * Copyright (C) 2015 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2015-2016 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,8 +23,8 @@
 
 package ch.blinkenlights.android.vanilla;
 
-import android.content.ContentResolver;
-import android.content.ContentUris;
+import ch.blinkenlights.android.medialibrary.MediaLibrary;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -32,25 +32,24 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
-import android.provider.MediaStore.Audio.Playlists.Members;
 
 /**
- * CursorAdapter backed by MediaStore playlists.
+ * CursorAdapter backed by MediaLibrary playlists.
  */
 public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
+
 	private static final String[] PROJECTION = new String[] {
-		MediaStore.Audio.Playlists.Members._ID,
-		MediaStore.Audio.Playlists.Members.TITLE,
-		MediaStore.Audio.Playlists.Members.ARTIST,
-		MediaStore.Audio.Playlists.Members.AUDIO_ID,
-		MediaStore.Audio.Playlists.Members.ALBUM_ID,
-		MediaStore.Audio.Playlists.Members.PLAY_ORDER,
+		MediaLibrary.PlaylistSongColumns._ID,
+		MediaLibrary.SongColumns.TITLE,
+		MediaLibrary.ContributorColumns.ARTIST,
+		MediaLibrary.PlaylistSongColumns.SONG_ID,
+		MediaLibrary.SongColumns.ALBUM_ID,
+		MediaLibrary.PlaylistSongColumns.POSITION,
 	};
 
 	private final Context mContext;
@@ -81,7 +80,7 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 	/**
 	 * Set the id of the backing playlist.
 	 *
-	 * @param id The MediaStore id of a playlist.
+	 * @param id The id of a playlist.
 	 */
 	public void setPlaylistId(long id)
 	{
@@ -142,7 +141,7 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 	{
 		switch (message.what) {
 		case MSG_RUN_QUERY: {
-			Cursor cursor = runQuery(mContext.getContentResolver());
+			Cursor cursor = runQuery();
 			mUiHandler.sendMessage(mUiHandler.obtainMessage(MSG_UPDATE_CURSOR, cursor));
 			break;
 		}
@@ -159,13 +158,12 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 	/**
 	 * Query the playlist songs.
 	 *
-	 * @param resolver A ContentResolver to query with.
 	 * @return The resulting cursor.
 	 */
-	private Cursor runQuery(ContentResolver resolver)
+	private Cursor runQuery()
 	{
-		QueryTask query = MediaUtils.buildPlaylistQuery(mPlaylistId, PROJECTION, null);
-		return query.runQuery(resolver);
+		QueryTask query = MediaUtils.buildPlaylistQuery(mPlaylistId, PROJECTION);
+		return query.runQuery(mContext);
 	}
 
 	/**
@@ -184,53 +182,12 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 			// this can happen when the adapter changes during the drag
 			return;
 
-		// The Android API contains a method to move a playlist item, however,
-		// it has only been available since Froyo and doesn't seem to work
-		// after a song has been removed from the playlist (I think?).
-
-		ContentResolver resolver = mContext.getContentResolver();
-		Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", mPlaylistId);
-		Cursor cursor = getCursor();
-
-		int start = Math.min(from, to);
-		int end = Math.max(from, to);
-
-		long order;
-		if (start == 0) {
-			order = 0;
-		} else {
-			cursor.moveToPosition(start - 1);
-			order = cursor.getLong(5) + 1;
-		}
-
-		cursor.moveToPosition(end);
-		long endOrder = cursor.getLong(5);
-
-		// clear the rows we are replacing
-		String[] args = new String[] { Long.toString(order), Long.toString(endOrder) };
-		resolver.delete(uri, "play_order >= ? AND play_order <= ?", args);
-
-		// create the new rows
-		ContentValues[] values = new ContentValues[end - start + 1];
-		for (int i = start, j = 0; i <= end; ++i, ++j, ++order) {
-			cursor.moveToPosition(i == to ? from : i > to ? i - 1 : i + 1);
-			ContentValues value = new ContentValues(2);
-			value.put(MediaStore.Audio.Playlists.Members.PLAY_ORDER, Long.valueOf(order));
-			value.put(MediaStore.Audio.Playlists.Members.AUDIO_ID, cursor.getLong(3));
-			values[j] = value;
-		}
-
-		// insert the new rows
-		resolver.bulkInsert(uri, values);
-
-		changeCursor(runQuery(resolver));
+		MediaLibrary.movePlaylistItem(mContext, getItemId(from), getItemId(to));
+		changeCursor(runQuery());
 	}
 
-	public void removeItem(int position)
-	{
-		ContentResolver resolver = mContext.getContentResolver();
-		Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", mPlaylistId);
-		resolver.delete(ContentUris.withAppendedId(uri, getItemId(position)), null, null);
+	public void removeItem(int position) {
+		MediaLibrary.removeFromPlaylist(mContext, MediaLibrary.PlaylistSongColumns._ID+"="+getItemId(position), null);
 		mUiHandler.sendEmptyMessage(MSG_RUN_QUERY);
 	}
 

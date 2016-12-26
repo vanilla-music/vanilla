@@ -23,17 +23,17 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import ch.blinkenlights.android.medialibrary.MediaMetadataExtractor;
+
 import java.util.ArrayList;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.media.MediaMetadataRetriever;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
-import android.content.ContentResolver;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -340,7 +340,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 				PlaylistTask playlistTask = new PlaylistTask(playlistId, getString(R.string.playlist_favorites));
 				playlistTask.audioIds = new ArrayList<Long>();
 				playlistTask.audioIds.add(song.id);
-				int action = Playlist.isInPlaylist(getContentResolver(), playlistId, song) ? MSG_REMOVE_FROM_PLAYLIST : MSG_ADD_TO_PLAYLIST;
+				int action = Playlist.isInPlaylist(this, playlistId, song) ? MSG_REMOVE_FROM_PLAYLIST : MSG_ADD_TO_PLAYLIST;
 				mHandler.sendMessage(mHandler.obtainMessage(action, playlistTask));
 			}
 			break;
@@ -496,36 +496,17 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 		mReplayGain = null;
 
 		if(song != null) {
+			MediaMetadataExtractor data = new MediaMetadataExtractor(song.path);
 
-			MediaMetadataRetriever data = new MediaMetadataRetriever();
-
-			try {
-				data.setDataSource(song.path);
-			} catch (Exception e) {
-				Log.w("VanillaMusic", "Failed to extract metadata from " + song.path);
-			}
-
-			mGenre = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_GENRE);
-			mTrack = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER);
-			String composer = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_COMPOSER);
-			if (composer == null)
-				composer = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_WRITER);
-			mComposer = composer;
-
-			String year = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_YEAR);
-			if (year == null || "0".equals(year)) {
-				year = null;
-			} else {
-				int dash = year.indexOf('-');
-				if (dash != -1)
-					year = year.substring(0, dash);
-			}
-			mYear = year;
-
+			mGenre = data.getFirst(MediaMetadataExtractor.GENRE);
+			mTrack = data.getFirst(MediaMetadataExtractor.TRACK_NUMBER);
+			mComposer = data.getFirst(MediaMetadataExtractor.COMPOSER);
+			mYear = data.getFirst(MediaMetadataExtractor.YEAR);
 			mPath = song.path;
+
 			StringBuilder sb = new StringBuilder(12);
-			sb.append(decodeMimeType(data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE)));
-			String bitrate = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE);
+			sb.append(decodeMimeType(data.getFirst(MediaMetadataExtractor.MIME_TYPE)));
+			String bitrate = data.getFirst(MediaMetadataExtractor.BITRATE);
 			if (bitrate != null && bitrate.length() > 3) {
 				sb.append(' ');
 				sb.append(bitrate.substring(0, bitrate.length() - 3));
@@ -535,8 +516,6 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 
 			BastpUtil.GainValues rg = PlaybackService.get(this).getReplayGainValues(song.path);
 			mReplayGain = String.format("base=%.2f, track=%.2f, album=%.2f", rg.base, rg.track, rg.album);
-
-			data.release();
 		}
 
 		mUiHandler.sendEmptyMessage(MSG_COMMIT_INFO);
@@ -616,7 +595,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 		case MSG_NOTIFY_PLAYLIST_CHANGED: // triggers a fav-refresh
 		case MSG_LOAD_FAVOURITE_INFO:
 			if (mCurrentSong != null) {
-				boolean found = Playlist.isInPlaylist(getContentResolver(), Playlist.getFavoritesId(this, false), mCurrentSong);
+				boolean found = Playlist.isInPlaylist(this, Playlist.getFavoritesId(this, false), mCurrentSong);
 				mUiHandler.sendMessage(mUiHandler.obtainMessage(MSG_COMMIT_FAVOURITE_INFO, found));
 			}
 			break;

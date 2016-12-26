@@ -1,36 +1,33 @@
 /*
- * Copyright (C) 2011 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2016 Adrian Ulrich <adrian@blinkenlights.ch>
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>. 
  */
+
 
 package ch.blinkenlights.android.vanilla;
 
-import android.content.ContentResolver;
+import ch.blinkenlights.android.medialibrary.MediaLibrary;
+
+import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
 
 /**
  * Represents a pending query.
  */
 public class QueryTask {
-	public Uri uri;
+	public final String table;
 	public final String[] projection;
 	public final String selection;
 	public final String[] selectionArgs;
@@ -55,11 +52,10 @@ public class QueryTask {
 
 	/**
 	 * Create the tasks. All arguments are passed directly to
-	 * ContentResolver.query().
+	 * MediaLibrary.runQuery().
 	 */
-	public QueryTask(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder)
-	{
-		this.uri = uri;
+	public QueryTask(String table, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+		this.table = table;
 		this.projection = projection;
 		this.selection = selection;
 		this.selectionArgs = selectionArgs;
@@ -69,10 +65,9 @@ public class QueryTask {
 	/**
 	 * Run the query. Should be called on a background thread.
 	 *
-	 * @param resolver The ContentResolver to query with.
+	 * @param context The Context to use
 	 */
-	public Cursor runQuery(ContentResolver resolver)
-	{
-		return MediaUtils.queryResolver(resolver, uri, projection, selection, selectionArgs, sortOrder);
+	public Cursor runQuery(Context context) {
+		return MediaLibrary.queryLibrary(context, table, projection, selection, selectionArgs, sortOrder);
 	}
 }

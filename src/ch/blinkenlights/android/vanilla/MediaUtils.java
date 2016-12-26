@@ -22,6 +22,9 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import ch.blinkenlights.android.medialibrary.MediaLibrary;
+import ch.blinkenlights.android.medialibrary.MediaMetadataExtractor;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,12 +32,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.zip.CRC32;
+
+import android.util.Log;
 
 import junit.framework.Assert;
 
 import android.content.ActivityNotFoundException;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -43,7 +46,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.database.MatrixCursor;
-import android.media.MediaMetadataRetriever;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -88,19 +90,19 @@ public class MediaUtils {
 
 	/**
 	 * The default sort order for media queries. First artist, then album, then
-	 * track number.
+	 * song number.
 	 */
-	private static final String DEFAULT_SORT = "artist_key,album_key,track";
+	private static final String DEFAULT_SORT = "artist_sort,album_sort,disc_num,song_num";
 
 	/**
-	 * The default sort order for albums. First the album, then tracknumber
+	 * The default sort order for albums. First the album, then songnumber
 	 */
-	private static final String ALBUM_SORT = "album_key,track";
+	private static final String ALBUM_SORT = "album_sort,disc_num,song_num";
 
 	/**
 	 * The default sort order for files. Simply use the path
 	 */
-	private static final String FILE_SORT = "_data";
+	private static final String FILE_SORT = "path";
 
 	/**
 	 * Cached random instance.
@@ -140,20 +142,27 @@ public class MediaUtils {
 	 */
 	private static QueryTask buildMediaQuery(int type, long id, String[] projection, String select)
 	{
-		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 		StringBuilder selection = new StringBuilder();
 		String sort = DEFAULT_SORT;
 
+		if (select != null) {
+			selection.append(select);
+			selection.append(" AND ");
+		}
+
 		switch (type) {
 		case TYPE_SONG:
-			selection.append(MediaStore.Audio.Media._ID);
+			selection.append(MediaLibrary.SongColumns._ID);
 			break;
 		case TYPE_ARTIST:
-			selection.append(MediaStore.Audio.Media.ARTIST_ID);
+			selection.append(MediaLibrary.ContributorColumns.ARTIST_ID);
 			break;
 		case TYPE_ALBUM:
-			selection.append(MediaStore.Audio.Media.ALBUM_ID);
+			selection.append(MediaLibrary.SongColumns.ALBUM_ID);
 			sort = ALBUM_SORT;
+			break;
+		case TYPE_GENRE:
+			selection.append(MediaLibrary.GenreSongColumns._GENRE_ID);
 			break;
 		default:
 			throw new IllegalArgumentException("Invalid type specified: " + type);
@@ -161,14 +170,8 @@ public class MediaUtils {
 
 		selection.append('=');
 		selection.append(id);
-		selection.append(" AND length(_data) AND "+MediaStore.Audio.Media.IS_MUSIC);
 
-		if (select != null) {
-			selection.append(" AND ");
-			selection.append(select);
-		}
-
-		QueryTask result = new QueryTask(media, projection, selection.toString(), null, sort);
+		QueryTask result = new QueryTask(MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS, projection, selection.toString(), null, sort);
 		result.type = type;
 		return result;
 	}
@@ -179,137 +182,14 @@ public class MediaUtils {
 	 *
 	 * @param id The id of the playlist in MediaStore.Audio.Playlists.
 	 * @param projection The columns to query.
-	 * @param selection The selection to pass to the query, or null.
 	 * @return The initialized query.
 	 */
-	public static QueryTask buildPlaylistQuery(long id, String[] projection, String selection)
-	{
-		Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", id);
-		String sort = MediaStore.Audio.Playlists.Members.PLAY_ORDER;
-		QueryTask result = new QueryTask(uri, projection, selection, null, sort);
+	public static QueryTask buildPlaylistQuery(long id, String[] projection) {
+		String sort = MediaLibrary.PlaylistSongColumns.POSITION;
+		String selection = MediaLibrary.PlaylistSongColumns.PLAYLIST_ID+"="+id;
+		QueryTask result = new QueryTask(MediaLibrary.VIEW_PLAYLIST_SONGS, projection, selection, null, sort);
 		result.type = TYPE_PLAYLIST;
 		return result;
-	}
-
-	/**
-	 * Builds a query that will return all the songs in the genre with the
-	 * given id.
-	 *
-	 * @param id The id of the genre in MediaStore.Audio.Genres.
-	 * @param projection The columns to query.
-	 * @param selection The selection to pass to the query, or null.
-	 * @param selectionArgs The arguments to substitute into the selection.
-	 * @param sort The sort order.
-	 * @param type The media type to query and return
-	 * @param returnSongs returns matching songs instead of `type' if true
-	 */
-	public static QueryTask buildGenreQuery(long id, String[] projection, String selection, String[] selectionArgs, String sort, int type, boolean returnSongs)
-	{
-		// Note: This function works on a raw sql query with way too much internal
-		// knowledge about the mediaProvider SQL table layout. Yes: it's ugly.
-		// The reason for this mess is that android has a very crippled genre implementation
-		// and does, for example, not allow us to query the albumbs beloging to a genre.
-
-		Uri uri = MediaStore.Audio.Genres.Members.getContentUri("external", id);
-		String[] clonedProjection = projection.clone(); // we modify the projection, but this should not be visible to the caller
-		String sql = "";
-		String authority = "audio";
-
-		if (type == TYPE_ARTIST)
-			authority = "artist_info";
-		if (type == TYPE_ALBUM)
-			authority = "album_info";
-
-		// Our raw SQL query includes the album_info table (well: it's actually a view)
-		// which shares some columns with audio.
-		// This regexp should matche duplicate column names and forces them to use
-		// the audio table as a source
-		final String _FORCE_AUDIO_SRC = "(^|[ |,\\(])(_id|album(_\\w+)?|artist(_\\w+)?)";
-
-		// Prefix the SELECTed rows with the current table authority name
-		for (int i=0 ;i<clonedProjection.length; i++) {
-			if (clonedProjection[i].equals("0") == false) // do not prefix fake rows
-				clonedProjection[i] = (returnSongs ? "audio" : authority)+"."+clonedProjection[i];
-		}
-
-		sql += TextUtils.join(", ", clonedProjection);
-		sql += " FROM audio_genres_map_noid, audio" + (authority.equals("audio") ? "" : ", "+authority);
-		sql += " WHERE(audio._id = audio_id AND genre_id=?)";
-
-		if (selection != null && selection.length() > 0)
-			sql += " AND("+selection.replaceAll(_FORCE_AUDIO_SRC, "$1audio.$2")+")";
-
-		if (type == TYPE_ARTIST)
-			sql += " AND(artist_info._id = audio.artist_id)" + (returnSongs ? "" : " GROUP BY artist_info._id");
-
-		if (type == TYPE_ALBUM)
-			sql += " AND(album_info._id = audio.album_id)" + (returnSongs ? "" : " GROUP BY album_info._id");
-
-		if (sort != null && sort.length() > 0)
-			sql += " ORDER BY "+sort.replaceAll(_FORCE_AUDIO_SRC, "$1audio.$2");
-
-		// We are now turning this into an sql injection. Fun times.
-		clonedProjection[0] = sql +" --";
-
-		QueryTask result = new QueryTask(uri, clonedProjection, selection, selectionArgs, sort);
-		result.type = TYPE_GENRE;
-		return result;
-	}
-
-	/**
-	 * Creates a {@link QueryTask} for genres. The query will select only genres that have at least
-	 * one song associated with them.
-	 *
-	 * @param projection The fields of the genre table that should be returned.
-	 * @param selection Additional constraints for the query (added to the WHERE section). '?'s
-	 * will be replaced by values in {@code selectionArgs}. Can be null.
-	 * @param selectionArgs Arguments for {@code selection}. Can be null. See
-	 * {@link android.content.ContentProvider#query(Uri, String[], String, String[], String)}
-	 * @param sort How the returned genres should be sorted (added to the ORDER BY section)
-	 * @return The QueryTask for the genres
-	 */
-	public static QueryTask buildGenreExcludeEmptyQuery(String[] projection, String selection, String[] selectionArgs, String sort) {
-		/*
-		 * An example SQLite query that we're building in this function
-			SELECT DISTINCT _id, name
-			FROM audio_genres
-			WHERE
-				EXISTS(
-					SELECT audio_id, genre_id, audio._id
-					FROM audio_genres_map, audio
-					WHERE (genre_id == audio_genres._id)
-						AND (audio_id == audio._id))
-			ORDER BY name DESC
-		 */
-		Uri uri = MediaStore.Audio.Genres.getContentUri("external");
-		StringBuilder sql = new StringBuilder();
-		// Don't want multiple identical genres
-		sql.append("DISTINCT ");
-
-		// Add the projection fields to the query
-		sql.append(TextUtils.join(", ", projection)).append(' ');
-
-		sql.append("FROM audio_genres ");
-		// Limit to genres that contain at least one valid song
-		sql.append("WHERE EXISTS( ")
-			.append("SELECT audio_id, genre_id, audio._id ")
-			.append("FROM audio_genres_map, audio ")
-			.append("WHERE (genre_id == audio_genres._id) AND (audio_id == audio._id) ")
-			.append(") ");
-
-		if (!TextUtils.isEmpty(selection))
-			sql.append(" AND(" + selection + ") ");
-
-		if(!TextUtils.isEmpty(sort))
-			sql.append(" ORDER BY ").append(sort);
-
-		// Ignore the framework generated query
-		sql.append(" -- ");
-		String[] injectedProjection = new String[1];
-		injectedProjection[0] = sql.toString();
-
-		// Don't pass the selection/sort as we've already added it to the query
-		return new QueryTask(uri, injectedProjection, null, selectionArgs, null);
 	}
 
 	/**
@@ -328,11 +208,10 @@ public class MediaUtils {
 		case TYPE_ARTIST:
 		case TYPE_ALBUM:
 		case TYPE_SONG:
+		case TYPE_GENRE:
 			return buildMediaQuery(type, id, projection, selection);
 		case TYPE_PLAYLIST:
-			return buildPlaylistQuery(id, projection, selection);
-		case TYPE_GENRE:
-			return buildGenreQuery(id, projection, selection, null,  MediaStore.Audio.Genres.Members.TITLE_KEY, TYPE_SONG, true);
+			return buildPlaylistQuery(id, projection);
 		default:
 			throw new IllegalArgumentException("Specified type not valid: " + type);
 		}
@@ -342,15 +221,15 @@ public class MediaUtils {
 	 * Query the MediaStore to determine the id of the genre the song belongs
 	 * to.
 	 *
-	 * @param resolver A ContentResolver to use.
+	 * @param context The context to use
 	 * @param id The id of the song to query the genre for.
 	 */
-	public static long queryGenreForSong(ContentResolver resolver, long id)
-	{
-		String[] projection = { "_id" };
-		Uri uri = MediaStore.Audio.Genres.getContentUriForAudioId("external", (int)id);
-		Cursor cursor = queryResolver(resolver, uri, projection, null, null, null);
+	public static long queryGenreForSong(Context context, long id) {
+		String[] projection = { MediaLibrary.GenreSongColumns._GENRE_ID };
+		String query = MediaLibrary.GenreSongColumns.SONG_ID+"=?";
+		String[] queryArgs = new String[] { Long.toString(id) };
 
+		Cursor cursor = MediaLibrary.queryLibrary(context, MediaLibrary.TABLE_GENRES_SONGS, projection, query, queryArgs, null); 
 		if (cursor != null) {
 			if (cursor.moveToNext())
 				return cursor.getLong(0);
@@ -378,7 +257,7 @@ public class MediaUtils {
 	/**
 	 * Shuffle a Song list using Collections.shuffle().
 	 *
-	 * @param albumShuffle If true, preserve the order of tracks inside albums.
+	 * @param albumShuffle If true, preserve the order of songs inside albums.
 	 */
 	public static void shuffle(List<Song> list, boolean albumShuffle)
 	{
@@ -428,24 +307,13 @@ public class MediaUtils {
 	/**
 	 * Determine if any songs are available from the library.
 	 *
-	 * @param resolver A ContentResolver to use.
+	 * @param context The Context to use
 	 * @return True if it's possible to retrieve any songs, false otherwise. For
 	 * example, false could be returned if there are no songs in the library.
 	 */
-	public static boolean isSongAvailable(ContentResolver resolver)
-	{
+	public static boolean isSongAvailable(Context context) {
 		if (sSongCount == -1) {
-			Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-			String selection = MediaStore.Audio.Media.IS_MUSIC;
-			selection += " AND length(_data)";
-			Cursor cursor = queryResolver(resolver, media, new String[]{"count(_id)"}, selection, null, null);
-			if (cursor == null) {
-				sSongCount = 0;
-			} else {
-				cursor.moveToFirst();
-				sSongCount = cursor.getInt(0);
-				cursor.close();
-			}
+			sSongCount = MediaLibrary.getLibrarySize(context);
 		}
 
 		return sSongCount != 0;
@@ -455,14 +323,11 @@ public class MediaUtils {
 	 * Returns a shuffled array contaning the ids of all the songs on the
 	 * device's library.
 	 *
-	 * @param resolver A ContentResolver to use.
+	 * @param context The Context to use
 	 */
-	private static long[] queryAllSongs(ContentResolver resolver)
-	{
-		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-		String selection = MediaStore.Audio.Media.IS_MUSIC;
-		selection += " AND length(_data)";
-		Cursor cursor = queryResolver(resolver, media, Song.EMPTY_PROJECTION, selection, null, null);
+	private static long[] queryAllSongs(Context context) {
+		QueryTask query = new QueryTask(MediaLibrary.TABLE_SONGS, Song.EMPTY_PROJECTION, null, null, null);
+		Cursor cursor = query.runQuery(context);
 		if (cursor == null || cursor.getCount() == 0) {
 			sSongCount = 0;
 			return null;
@@ -484,29 +349,9 @@ public class MediaUtils {
 	}
 
 	/**
-	 * Runs a query on the passed content resolver.
-	 * Catches (and returns null on) SecurityException (= user revoked read permission)
-	 *
-	 * @param resolver The content resolver to use
-	 * @param uri the uri to query
-	 * @param projection the projection to use
-	 * @param selection the selection to use
-	 * @param selectionArgs arguments for the selection
-	 * @param sortOrder sort order of the returned result
-	 *
-	 * @return a cursor or null
+	 * Called if we detected a medium change
+	 * This flushes some cached data
 	 */
-	public static Cursor queryResolver(ContentResolver resolver, Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder)
-	{
-		Cursor cursor = null;
-		try {
-			cursor = resolver.query(uri, projection, selection, selectionArgs, sortOrder);
-		} catch(java.lang.SecurityException e) {
-			// we do not have read permission - just return a null cursor
-		}
-		return cursor;
-	}
-
 	public static void onMediaChange()
 	{
 		sSongCount = -1;
@@ -525,9 +370,8 @@ public class MediaUtils {
 			return;
 		}
 
-		ContentResolver resolver = ctx.getContentResolver();
-		String[] projection = new String [] { MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DATA };
-		Cursor cursor = buildQuery(type, id, projection, null).runQuery(resolver);
+		String[] projection = new String [] { MediaLibrary.SongColumns._ID, MediaLibrary.SongColumns.PATH };
+		Cursor cursor = buildQuery(type, id, projection, null).runQuery(ctx);
 		if(cursor == null) {
 			return;
 		}
@@ -550,14 +394,14 @@ public class MediaUtils {
 	/**
 	 * Returns the first matching song (or NULL) of given type + id combination
 	 *
-	 * @param resolver A ContentResolver to use.
+	 * @param context A Context to use.
 	 * @param type The MediaTye to query
 	 * @param id The id of given type to query
 	 */
-	public static Song getSongByTypeId(ContentResolver resolver, int type, long id) {
+	public static Song getSongByTypeId(Context context, int type, long id) {
 		Song song = new Song(-1);
 		QueryTask query = buildQuery(type, id, Song.FILLED_PROJECTION, null);
-		Cursor cursor = query.runQuery(resolver);
+		Cursor cursor = query.runQuery(context);
 		if (cursor != null) {
 			if (cursor.getCount() > 0) {
 				cursor.moveToPosition(0);
@@ -572,14 +416,14 @@ public class MediaUtils {
 	 * Returns a song randomly selected from all the songs in the Android
 	 * MediaStore.
 	 *
-	 * @param resolver A ContentResolver to use.
+	 * @param context The Context to use
 	 */
-	public static Song getRandomSong(ContentResolver resolver)
+	public static Song getRandomSong(Context context)
 	{
 		long[] songs = sAllSongs;
 
 		if (songs == null) {
-			songs = queryAllSongs(resolver);
+			songs = queryAllSongs(context);
 			if (songs == null)
 				return null;
 			sAllSongs = songs;
@@ -589,7 +433,7 @@ public class MediaUtils {
 			shuffle(sAllSongs);
 		}
 
-		Song result = getSongByTypeId(resolver, MediaUtils.TYPE_SONG, sAllSongs[sAllSongsIdx]);
+		Song result = getSongByTypeId(context, MediaUtils.TYPE_SONG, sAllSongs[sAllSongsIdx]);
 		result.flags |= Song.FLAG_RANDOM;
 		sAllSongsIdx++;
 		return result;
@@ -669,11 +513,10 @@ public class MediaUtils {
 		   -> ended with a % for the LIKE query
 		*/
 		path = addDirEndSlash(sanitizeMediaPath(path)) + "%";
-		final String query = "_data LIKE ? AND "+MediaStore.Audio.Media.IS_MUSIC;
+		final String query = MediaLibrary.SongColumns.PATH+" LIKE ?";
 		String[] qargs = { path };
 
-		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-		QueryTask result = new QueryTask(media, projection, query, qargs, FILE_SORT);
+		QueryTask result = new QueryTask(MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS, projection, query, qargs, FILE_SORT);
 		result.type = TYPE_FILE;
 		return result;
 	}
@@ -685,18 +528,11 @@ public class MediaUtils {
 	 * */
 	public static Cursor getCursorForFileQuery(String path) {
 		MatrixCursor matrixCursor = new MatrixCursor(Song.FILLED_PROJECTION);
-		MediaMetadataRetriever data = new MediaMetadataRetriever();
-
-		try {
-			data.setDataSource(path);
-		} catch (Exception e) {
-				Log.w("VanillaMusic", "Failed to extract metadata from " + path);
-		}
-
-		String title = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
-		String album = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM);
-		String artist = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
-		String duration = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+		MediaMetadataExtractor tags = new MediaMetadataExtractor(path);
+		String title = tags.getFirst(MediaMetadataExtractor.TITLE);
+		String album = tags.getFirst(MediaMetadataExtractor.ALBUM);
+		String artist = tags.getFirst(MediaMetadataExtractor.ARTIST);
+		String duration = tags.getFirst(MediaMetadataExtractor.DURATION);
 
 		if (duration != null) { // looks like we will be able to play this file
 			// Vanilla requires each file to be identified by its unique id in the media database.
@@ -704,9 +540,9 @@ public class MediaUtils {
 			// using the negative crc32 sum of the path value. While this is not perfect
 			// (the same file may be accessed using various paths) it's the fastest method
 			// and far good enough.
-			CRC32 crc = new CRC32();
-			crc.update(path.getBytes());
-			Long songId = (Long)(2+crc.getValue())*-1; // must at least be -2 (-1 defines Song-Object to be empty)
+			long songId = MediaLibrary.hash63(path) * -1;
+			if (songId > -2)
+				songId = -2; // must be less than -1 (-1 defines an empty song object)
 
 			// Build minimal fake-database entry for this file
 			Object[] objData = new Object[] { songId, path, "", "", "", 0, 0, 0, 0 };

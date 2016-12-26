@@ -440,7 +440,7 @@ public abstract class PlaybackActivity extends Activity
 		case MSG_CREATE_PLAYLIST: {
 			PlaylistTask playlistTask = (PlaylistTask)message.obj;
 			int nextAction = message.arg1;
-			long playlistId = Playlist.createPlaylist(getContentResolver(), playlistTask.name);
+			long playlistId = Playlist.createPlaylist(this, playlistTask.name);
 			playlistTask.playlistId = playlistId;
 			mHandler.sendMessage(mHandler.obtainMessage(nextAction, playlistTask));
 			break;
@@ -471,7 +471,7 @@ public abstract class PlaybackActivity extends Activity
 		}
 		case MSG_RENAME_PLAYLIST: {
 			PlaylistTask playlistTask = (PlaylistTask)message.obj;
-			Playlist.renamePlaylist(getContentResolver(), playlistTask.playlistId, playlistTask.name);
+			Playlist.renamePlaylist(getApplicationContext(), playlistTask.playlistId, playlistTask.name);
 			break;
 		}
 		case MSG_DELETE: {
@@ -498,11 +498,11 @@ public abstract class PlaybackActivity extends Activity
 		int count = 0;
 
 		if (playlistTask.query != null) {
-			count += Playlist.addToPlaylist(getContentResolver(), playlistTask.playlistId, playlistTask.query);
+			count += Playlist.addToPlaylist(this, playlistTask.playlistId, playlistTask.query);
 		}
 
 		if (playlistTask.audioIds != null) {
-			count += Playlist.addToPlaylist(getContentResolver(), playlistTask.playlistId, playlistTask.audioIds);
+			count += Playlist.addToPlaylist(this, playlistTask.playlistId, playlistTask.audioIds);
 		}
 
 		String message = getResources().getQuantityString(R.plurals.added_to_playlist, count, count, playlistTask.name);
@@ -524,7 +524,7 @@ public abstract class PlaybackActivity extends Activity
 		}
 
 		if (playlistTask.audioIds != null) {
-			count += Playlist.removeFromPlaylist(getContentResolver(), playlistTask.playlistId, playlistTask.audioIds);
+			count += Playlist.removeFromPlaylist(getApplicationContext(), playlistTask.playlistId, playlistTask.audioIds);
 		}
 
 		String message = getResources().getQuantityString(R.plurals.removed_from_playlist, count, count, playlistTask.name);
@@ -553,7 +553,7 @@ public abstract class PlaybackActivity extends Activity
 				message = res.getString(R.string.delete_file_failed, file);
 			}
 		} else if (type == MediaUtils.TYPE_PLAYLIST) {
-			Playlist.deletePlaylist(getContentResolver(), id);
+			Playlist.deletePlaylist(this, id);
 		} else {
 			int count = PlaybackService.get(this).deleteMedia(type, id);
 			message = res.getQuantityString(R.plurals.deleted, count, count);

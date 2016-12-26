@@ -25,7 +25,6 @@ package ch.blinkenlights.android.vanilla;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -128,8 +127,7 @@ public class PlaylistInputDialog extends DialogFragment
 			mDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
 		} else {
 			mDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(true);
-			ContentResolver resolver = getActivity().getContentResolver();
-			int res = Playlist.getPlaylist(resolver, string) == -1 ? mActionRes : R.string.overwrite;
+			int res = Playlist.getPlaylist(getActivity(), string) == -1 ? mActionRes : R.string.overwrite;
 			mDialog.getButton(DialogInterface.BUTTON_POSITIVE).setText(res);
 		}
 	}

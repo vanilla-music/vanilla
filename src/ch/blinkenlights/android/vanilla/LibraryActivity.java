@@ -23,8 +23,9 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import ch.blinkenlights.android.medialibrary.MediaLibrary;
+
 import android.app.AlertDialog;
-import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -547,7 +548,7 @@ public class LibraryActivity
 
 	/**
 	 * Set a new limiter of the given type built from the first
-	 * MediaStore.Audio.Media row that matches the selection.
+	 * MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS row that matches the selection.
 	 *
 	 * @param limiterType The type of limiter to create. Must be either
 	 * MediaUtils.TYPE_ARTIST or MediaUtils.TYPE_ALBUM.
@@ -555,10 +556,10 @@ public class LibraryActivity
 	 */
 	private void setLimiter(int limiterType, String selection)
 	{
-		ContentResolver resolver = getContentResolver();
-		Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-		String[] projection = new String[] { MediaStore.Audio.Media.ARTIST_ID, MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM };
-		Cursor cursor = MediaUtils.queryResolver(resolver, uri, projection, selection, null, null);
+		String[] projection = new String[] { MediaLibrary.ContributorColumns.ARTIST_ID, MediaLibrary.SongColumns.ALBUM_ID, MediaLibrary.ContributorColumns.ARTIST, MediaLibrary.AlbumColumns.ALBUM };
+		QueryTask query = new QueryTask(MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS, projection, selection, null, null);
+		Cursor cursor = query.runQuery(getApplicationContext());
+
 		if (cursor != null) {
 			if (cursor.moveToNext()) {
 				String[] fields;
@@ -566,11 +567,11 @@ public class LibraryActivity
 				switch (limiterType) {
 				case MediaUtils.TYPE_ARTIST:
 					fields = new String[] { cursor.getString(2) };
-					data = String.format("artist_id=%d", cursor.getLong(0));
+					data = String.format(MediaLibrary.ContributorColumns.ARTIST_ID+"=%d", cursor.getLong(0));
 					break;
 				case MediaUtils.TYPE_ALBUM:
 					fields = new String[] { cursor.getString(2), cursor.getString(3) };
-					data = String.format("album_id=%d", cursor.getLong(1));
+					data = String.format(MediaLibrary.SongColumns.ALBUM_ID+"=%d", cursor.getLong(1));
 					break;
 				default:
 					throw new IllegalArgumentException("setLimiter() does not support limiter type " + limiterType);

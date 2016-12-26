@@ -250,7 +250,7 @@ public class PlaylistActivity extends Activity
 		}
 		case LibraryActivity.ACTION_PLAY_ALL:
 		case LibraryActivity.ACTION_ENQUEUE_ALL: {
-			QueryTask query = MediaUtils.buildPlaylistQuery(mPlaylistId, Song.FILLED_PLAYLIST_PROJECTION, null);
+			QueryTask query = MediaUtils.buildPlaylistQuery(mPlaylistId, Song.FILLED_PLAYLIST_PROJECTION);
 			query.mode = MODE_FOR_ACTION[action];
 			query.data = position - mListView.getHeaderViewsCount();
 			PlaybackService.get(this).addSongs(query);
@@ -275,7 +275,7 @@ public class PlaylistActivity extends Activity
 	public void onClick(DialogInterface dialog, int which)
 	{
 		if (which == DialogInterface.BUTTON_POSITIVE) {
-			Playlist.deletePlaylist(getContentResolver(), mPlaylistId);
+			Playlist.deletePlaylist(this, mPlaylistId);
 			finish();
 		}
 		dialog.dismiss();
