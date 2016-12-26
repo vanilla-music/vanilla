@@ -9,8 +9,6 @@
 		<item>Dark.Greyish</item>
 		<item>Orange</item>
 		<item>Dark.Orange</item>
-		<item>Blue</item>
-		<item>Dark.Blue</item>
 	</string-array>
 
 	<!-- the value stored in the shared preferences for each theme -->
@@ -21,8 +19,6 @@
 		<item>3,#ff090909,#ff2a2a2a,#ff212121</item>
 		<item>4,#FFBF360C,#fff0f0f0,#FFE65100</item>
 		<item>5,#FFBF360C,#ff2a2a2a,#FFE65100</item>
-		<item>6,#FF01579B,#fff0f0f0,#FF0277BD</item>
-		<item>7,#FF01579B,#ff2a2a2a,#FF0277BD</item>
 	</string-array>
 
 	<!-- the style id for each theme -->
@@ -33,7 +29,5 @@
 		<item>@style/Greyish.Dark.VanillaBase</item>
 		<item>@style/Orange.VanillaBase</item>
 		<item>@style/Orange.Dark.VanillaBase</item>
-		<item>@style/Blue.VanillaBase</item>
-		<item>@style/Blue.Dark.VanillaBase</item>
 	</integer-array>
 </resources>

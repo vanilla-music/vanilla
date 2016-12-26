@@ -20,11 +20,6 @@ my $THEMES = [
 		light => { colorAccent => '#FFF57F17', colorPrimary => '#FFE65100', colorPrimaryDark => '#FFBF360C', _bg => '#fff0f0f0' },
 		dark  => { colorAccent => '#FFF57F17', colorPrimary => '#FFE65100', colorPrimaryDark => '#FFBF360C', _bg => '#ff2a2a2a' },
 	},
-	{
-		_name => 'blue',
-		light => { colorAccent => '#FF00bcd4', colorPrimary => '#FF0277BD', colorPrimaryDark => '#FF01579B', _bg => '#fff0f0f0' },
-		dark  => { colorAccent => '#FF00bcd4', colorPrimary => '#FF0277BD', colorPrimaryDark => '#FF01579B', _bg => '#ff2a2a2a' },
-	},
 ];
 
 my $BUFF_TENTRIES = '';
