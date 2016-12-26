@@ -27,7 +27,7 @@ THE SOFTWARE.
 	android:orientation="horizontal">
 	<ImageView
 		android:id="@+id/cover"
-		android:scaleType="fitCenter"
+		android:scaleType="centerCrop"
 		android:layout_width="64dip"
 		android:layout_height="64dip"
 		android:layout_marginRight="8dip"

@@ -23,7 +23,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 	<ImageView
 		android:id="@+id/cover"
-		android:scaleType="fitCenter"
+		android:scaleType="centerCrop"
 		android:layout_width="128dp"
 		android:layout_height="128dp"
 		android:layout_marginRight="8dp"

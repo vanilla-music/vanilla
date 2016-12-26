@@ -27,7 +27,7 @@ THE SOFTWARE.
 	>
 	<ImageView
 		android:id="@+id/cover"
-		android:scaleType="fitCenter"
+		android:scaleType="centerCrop"
 		android:layout_width="64dp"
 		android:layout_height="64dp"
 		android:layout_marginRight="8dp"
