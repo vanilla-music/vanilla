@@ -568,7 +568,7 @@ public class MediaAdapter
 	 */
 	public void setSortMode(int i)
 	{
-		mSortMode = (i < mSortEntries.length ? i : 0);
+		mSortMode = (Math.abs(i) < mSortEntries.length ? i : 0);
 	}
 
 	/**
