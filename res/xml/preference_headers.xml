@@ -25,6 +25,9 @@ THE SOFTWARE.
 		android:fragment="ch.blinkenlights.android.vanilla.PreferencesActivity$AudioFragment"
 		android:title="@string/audio" />
 	<header
+		android:fragment="ch.blinkenlights.android.vanilla.PreferencesMediaLibrary"
+		android:title="@string/media_library" />
+	<header
 		android:fragment="ch.blinkenlights.android.vanilla.PreferencesActivity$PlaybackFragment"
 		android:title="@string/playback_screen" />
 	<header

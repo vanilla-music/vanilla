@@ -86,8 +86,7 @@ public class MediaLibrary  {
 	public static void scanLibrary(Context context, boolean forceFull, boolean drop) {
 		MediaLibraryBackend backend = getBackend(context); // also initialized sScanner
 		if (drop) {
-			backend.execSQL("DELETE FROM "+MediaLibrary.TABLE_SONGS);
-			forceFull = true;
+			sScanner.flushDatabase();
 			// fixme: should clean orphaned AFTER scan finished
 		}
 
@@ -109,7 +108,7 @@ public class MediaLibrary  {
 		MediaScanner.MediaScanPlan.Statistics stats = sScanner.getScanStatistics();
 		String msg = null;
 		if (stats.lastFile != null)
-			msg = "seen files = "+stats.seen+", changes made = "+stats.changed+", currently scanning = "+stats.lastFile;
+			msg = stats.lastFile+" ("+stats.changed+" / "+stats.seen+")";
 		return msg;
 	}
 
@@ -161,7 +160,7 @@ public class MediaLibrary  {
 		int rows = getBackend(context).delete(TABLE_SONGS, SongColumns._ID+"="+id, null);
 
 		if (rows > 0) {
-			getBackend(context).cleanOrphanedEntries();
+			getBackend(context).cleanOrphanedEntries(true);
 			notifyObserver();
 		}
 		return rows;

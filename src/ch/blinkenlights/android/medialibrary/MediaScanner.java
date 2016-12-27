@@ -77,6 +77,7 @@ public class MediaScanner implements Handler.Callback {
 	public void startNormalScan() {
 		mScanPlan.addNextStep(RPC_NATIVE_VRFY, null)
 			.addNextStep(RPC_LIBRARY_VRFY, null);
+		mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_RPC, RPC_NOOP, 0));
 	}
 
 	/**
@@ -101,6 +102,15 @@ public class MediaScanner implements Handler.Callback {
 				.addOptionalStep(RPC_LIBRARY_VRFY, null); // only runs if previous scan found no change
 			mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_SCAN_RPC, RPC_NOOP, 0), 1400);
 		}
+	}
+
+	/**
+	 * Drops the media library
+	 */
+	public void flushDatabase() {
+		mBackend.delete(MediaLibrary.TABLE_SONGS, null, null);
+		mBackend.cleanOrphanedEntries(false); // -> keep playlists
+		getSetScanMark(0);
 	}
 
 	/**
@@ -373,7 +383,7 @@ public class MediaScanner implements Handler.Callback {
 
 
 		if (needsCleanup)
-			mBackend.cleanOrphanedEntries();
+			mBackend.cleanOrphanedEntries(true);
 
 		Log.v("VanillaMusic", "MediaScanner: inserted "+path);
 		return (needsInsert || needsCleanup);
