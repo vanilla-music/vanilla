@@ -56,10 +56,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 		android:stretchColumns="1">
 		<TableRow>
 			<TextView
-			android:text="@string/media_stats_songs"
+			android:text="@string/media_stats_tracks"
 			android:padding="3dip" />
 			<TextView
-			android:id="@+id/media_stats_songs"
+			android:id="@+id/media_stats_tracks"
 			android:text="@string/empty"
 			android:gravity="right"
 			android:padding="3dip" />

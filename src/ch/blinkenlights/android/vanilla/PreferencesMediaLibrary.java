@@ -46,9 +46,9 @@ public class PreferencesMediaLibrary extends Fragment
 	 */
 	private TextView mProgress;
 	/**
-	 * The number of songs on this device
+	 * The number of tracks on this device
 	 */;
-	private TextView mStatsSongs;
+	private TextView mStatsTracks;
 	/**
 	 * The number of hours of music we have
 	 */
@@ -73,7 +73,7 @@ public class PreferencesMediaLibrary extends Fragment
 
 		mStartButton = (View)view.findViewById(R.id.start_button);
 		mProgress = (TextView)view.findViewById(R.id.media_stats_progress);
-		mStatsSongs = (TextView)view.findViewById(R.id.media_stats_songs);
+		mStatsTracks = (TextView)view.findViewById(R.id.media_stats_tracks);
 		mStatsPlaytime = (TextView)view.findViewById(R.id.media_stats_playtime);
 		mFullScanCheck = (CheckBox)view.findViewById(R.id.media_scan_full);
 		mDropDbCheck = (CheckBox)view.findViewById(R.id.media_scan_drop_db);
@@ -122,7 +122,7 @@ public class PreferencesMediaLibrary extends Fragment
 		mStartButton.setEnabled(scanText == null);
 
 		Integer songCount = MediaLibrary.getLibrarySize(context);
-		mStatsSongs.setText(songCount.toString());
+		mStatsTracks.setText(songCount.toString());
 
 		Float playtime = calculateDuration(context) / 3600000F;
 		mStatsPlaytime.setText(playtime.toString());

@@ -310,7 +310,7 @@ THE SOFTWARE.
 	<string name="media_scan_start">Start scan</string>
 	<string name="media_statistics">Statistics</string>
 
-	<string name="media_stats_songs">Number of songs</string>
+	<string name="media_stats_tracks">Number of tracks</string>
 	<string name="media_stats_playtime">Play time (Hours)</string>
 	<string name="media_stats_progress">Scan progress</string>
 </resources>
