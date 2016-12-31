@@ -19,6 +19,9 @@ package ch.blinkenlights.android.medialibrary;
 
 import ch.blinkenlights.android.vanilla.R;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+
 import android.content.Context;
 import android.content.ContentValues;
 import android.content.SharedPreferences;
@@ -30,8 +33,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.os.Process;
-
-import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -59,7 +60,10 @@ public class MediaScanner implements Handler.Callback {
 	 * Set by KICKSTART rpc
 	 */
 	private boolean mIsInitialScan;
-
+	/**
+	 * The id we are using for the scan notification
+	 */
+	private int NOTIFICATION_ID = 56162;
 
 	MediaScanner(Context context, MediaLibraryBackend backend) {
 		mContext = context;
@@ -155,15 +159,14 @@ public class MediaScanner implements Handler.Callback {
 				if (mIsInitialScan) {
 					mIsInitialScan = false;
 					PlaylistBridge.importAndroidPlaylists(mContext);
-					toastMsg(R.string.media_library_import_ended);
 				}
+				updateNotification(false);
 				break;
 			}
 			case RPC_KICKSTART: {
 				// a new scan was triggered: check if this is a 'initial / from scratch' scan
 				if (!mIsInitialScan && getSetScanMark(-1) == 0) {
 					mIsInitialScan = true;
-					toastMsg(R.string.media_library_import_started);
 				}
 				break;
 			}
@@ -174,6 +177,7 @@ public class MediaScanner implements Handler.Callback {
 				if (changed && !mHandler.hasMessages(MSG_NOTIFY_CHANGE)) {
 					mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_NOTIFY_CHANGE), 500);
 				}
+				updateNotification(true);
 				break;
 			}
 			case RPC_READ_DIR: {
@@ -204,6 +208,32 @@ public class MediaScanner implements Handler.Callback {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Triggers an update to the scan progress notification
+	 *
+	 * @param visible if true, the notification is visible (and will get updated)
+	 */
+	private void updateNotification(boolean visible) {
+		MediaScanPlan.Statistics stats = mScanPlan.getStatistics();
+		NotificationManager manager = (NotificationManager) mContext.getSystemService(mContext.NOTIFICATION_SERVICE);
+
+		if (visible) {
+			int icon = R.drawable.status_scan_0 + (stats.seen % 5);
+			String title = mContext.getResources().getString(R.string.media_library_scan_running);
+			String content = stats.lastFile;
+
+			Notification notification = new Notification.Builder(mContext)
+				.setContentTitle(title)
+				.setContentText(content)
+				.setSmallIcon(icon)
+				.setOngoing(true)
+				.build();
+			manager.notify(NOTIFICATION_ID, notification);
+		} else {
+			manager.cancel(NOTIFICATION_ID);
+		}
 	}
 
 	/**
@@ -445,16 +475,6 @@ public class MediaScanner implements Handler.Callback {
 		return oldVal;
 	}
 
-	/**
-	 * Creates a toast message
-	 * Not sure if this should really be here - a callback to the
-	 * observer would probably be nicer
-	 *
-	 * @param id the message id to display
-	 */
-	private void toastMsg(int resId) {
-		Toast.makeText(mContext, resId, Toast.LENGTH_SHORT).show();
-	}
 
 	// MediaScanPlan describes how we are going to perform the media scan
 	class MediaScanPlan {
