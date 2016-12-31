@@ -50,7 +50,6 @@ import java.util.regex.Pattern;
 import java.util.ArrayList;
 import java.lang.StringBuilder;
 
-import android.util.Log;
 /**
  * MediaAdapter provides an adapter backed by a MediaStore content provider.
  * It generates simple one- or two-line text views to display each media
@@ -287,11 +286,6 @@ public class MediaAdapter
 	 * @param returnSongs return songs instead of mType if true.
 	 */
 	private QueryTask buildQuery(String[] projection, boolean returnSongs) {
-		Log.v("VanillaMusic", "constrain = "+mConstraint);
-		Log.v("VanillaMusic", "limiter = "+ (mLimiter == null ? "NULL" : mLimiter.data));
-		Log.v("VanillaMusic", "sortMode = "+mSortMode);
-
-
 		String source = mSource;
 		String constraint = mConstraint;
 		Limiter limiter = mLimiter;
