@@ -17,6 +17,8 @@
 
 package ch.blinkenlights.android.medialibrary;
 
+import ch.blinkenlights.android.vanilla.R;
+
 import android.content.Context;
 import android.content.ContentValues;
 import android.content.SharedPreferences;
@@ -28,6 +30,8 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.os.Process;
+
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -50,6 +54,11 @@ public class MediaScanner implements Handler.Callback {
 	 * Instance of a media backend
 	 */
 	private MediaLibraryBackend mBackend;
+	/**
+	 * True if this is a from-scratch import
+	 * Set by KICKSTART rpc
+	 */
+	private boolean mIsInitialScan;
 
 
 	MediaScanner(Context context, MediaLibraryBackend backend) {
@@ -77,7 +86,7 @@ public class MediaScanner implements Handler.Callback {
 	public void startNormalScan() {
 		mScanPlan.addNextStep(RPC_NATIVE_VRFY, null)
 			.addNextStep(RPC_LIBRARY_VRFY, null);
-		mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_RPC, RPC_NOOP, 0));
+		mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_RPC, RPC_KICKSTART, 0));
 	}
 
 	/**
@@ -89,7 +98,7 @@ public class MediaScanner implements Handler.Callback {
 		}
 		mScanPlan.addNextStep(RPC_LIBRARY_VRFY, null);
 		mScanPlan.addNextStep(RPC_NATIVE_VRFY, null);
-		mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_RPC, RPC_NOOP, 0));
+		mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_RPC, RPC_KICKSTART, 0));
 	}
 
 	/**
@@ -102,7 +111,7 @@ public class MediaScanner implements Handler.Callback {
 		if (!mHandler.hasMessages(MSG_SCAN_RPC)) {
 			mScanPlan.addNextStep(RPC_NATIVE_VRFY, null)
 				.addOptionalStep(RPC_LIBRARY_VRFY, null); // only runs if previous scan found no change
-			mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_SCAN_RPC, RPC_NOOP, 0), delay);
+			mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_SCAN_RPC, RPC_KICKSTART, 0), delay);
 		}
 	}
 
@@ -125,8 +134,9 @@ public class MediaScanner implements Handler.Callback {
 	}
 
 	private static final int MSG_SCAN_RPC      = 0;
-	private static final int MSG_NOTIFY_CHANGE = 1;
-	private static final int RPC_NOOP          = 100;
+	private static final int MSG_SCAN_FINISHED = 1;
+	private static final int MSG_NOTIFY_CHANGE = 2;
+	private static final int RPC_KICKSTART     = 100;
 	private static final int RPC_READ_DIR      = 101;
 	private static final int RPC_INSPECT_FILE  = 102;
 	private static final int RPC_LIBRARY_VRFY  = 103;
@@ -141,8 +151,20 @@ public class MediaScanner implements Handler.Callback {
 				MediaLibrary.notifyObserver();
 				break;
 			}
-			case RPC_NOOP: {
-				// just used to trigger the initial scan
+			case MSG_SCAN_FINISHED: {
+				if (mIsInitialScan) {
+					mIsInitialScan = false;
+					PlaylistBridge.importAndroidPlaylists(mContext);
+					toastMsg(R.string.media_library_import_ended);
+				}
+				break;
+			}
+			case RPC_KICKSTART: {
+				// a new scan was triggered: check if this is a 'initial / from scratch' scan
+				if (!mIsInitialScan && getSetScanMark(-1) == 0) {
+					mIsInitialScan = true;
+					toastMsg(R.string.media_library_import_started);
+				}
 				break;
 			}
 			case RPC_INSPECT_FILE: {
@@ -174,7 +196,7 @@ public class MediaScanner implements Handler.Callback {
 		if (message.what == MSG_SCAN_RPC && !mHandler.hasMessages(MSG_SCAN_RPC)) {
 			MediaScanPlan.Step step = mScanPlan.getNextStep();
 			if (step == null) {
-				Log.v("VanillaMusic", "--- all scanners finished ---");
+				mHandler.sendEmptyMessage(MSG_SCAN_FINISHED);
 			} else {
 				Log.v("VanillaMusic", "--- starting scan of type "+step.msg);
 				mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_RPC, step.msg, 0, step.arg));
@@ -421,6 +443,17 @@ public class MediaScanner implements Handler.Callback {
 		}
 
 		return oldVal;
+	}
+
+	/**
+	 * Creates a toast message
+	 * Not sure if this should really be here - a callback to the
+	 * observer would probably be nicer
+	 *
+	 * @param id the message id to display
+	 */
+	private void toastMsg(int resId) {
+		Toast.makeText(mContext, resId, Toast.LENGTH_SHORT).show();
 	}
 
 	// MediaScanPlan describes how we are going to perform the media scan

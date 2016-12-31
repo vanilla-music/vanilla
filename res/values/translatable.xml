@@ -313,4 +313,7 @@ THE SOFTWARE.
 	<string name="media_stats_tracks">Number of tracks</string>
 	<string name="media_stats_playtime">Play time (Hours)</string>
 	<string name="media_stats_progress">Scan progress</string>
+
+	<string name="media_library_import_started">Scanning your media library, this might take some time</string>
+	<string name="media_library_import_ended">Media library scan finished!</string>
 </resources>
