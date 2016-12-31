@@ -6,8 +6,8 @@
   <string name="empty_queue">Não selecionou as faixas. Escolha algumas da sua coleção ou ative o modo aleatório tocando nesta mensagem.</string>
   <string name="settings">Definições</string>
   <string name="no_shuffle">Não misturar</string>
-  <string name="shuffle_songs">Misturar faixas</string>
-  <string name="shuffle_songs_continuously">Misturar faixas continuamente</string>
+  <string name="shuffle_songs">Baralhar faixas</string>
+  <string name="shuffle_songs_continuously">Baralhar faixas continuamente</string>
   <string name="shuffle_albums">Misturar álbuns</string>
   <string name="no_repeat">Não repetir</string>
   <string name="repeat">Repetir</string>
@@ -150,7 +150,7 @@
   <string name="notification_mode_title">Modo de notificação</string>
   <string name="notification_action_title">Ação na notificação</string>
   <string name="notification_nag">Notificação muito detalhada</string>
-  <string name="notification_nag_summary">Anunciar alteração de faixa com \'Heads-Up-Notification\'</string>
+  <string name="notification_nag_summary">Anunciar alteração de faixa com notificação \'Heads-Up\'</string>
   <string name="playback_screen">Ecrã de reprodução</string>
   <string name="playback_on_startup_title">Abrir ao iniciar</string>
   <string name="playback_on_startup_summary">Abrir vista de reprodução ao iniciar</string>
@@ -243,21 +243,13 @@
   <string name="share">Partilhar...</string>
   <string name="sendto">Enviar para...</string>
   <string name="no_receiving_apps">Não foram encontradas aplicações para este tipo multimédia!</string>
-  <!--SD Scanner-->
-  <string name="sdscan_help">Se iniciar a reanálise, o Vanilla Music irá recriar a sua base de dados multimédia.</string>
-  <string name="button_start">Iniciar reanálise</string>
-  <string name="database_proc">Analisado</string>
-  <string name="delete_proc">Removida a referência a</string>
-  <string name="db_label">Também irá analisar os ficheiros multimédia atualizados ou eliminados.</string>
-  <string name="db_error_failure">Encontrados erros ao ler a base de dados e podem estar em falta os ficheiros atualizados ou eliminados.</string>
-  <string name="db_error_recovered">Encontrados erros ao ler a base de dados, mas foi recuperada.</string>
-  <string name="db_error_retrying">Encontrados erros ao ler a base de dados. Nova tentativa dentro de 1 segundo.</string>
-  <string name="final_proc">Processados</string>
-  <string name="progress_completed_label">Concluído e pronto para nova análise.</string>
-  <string name="progress_error_bad_path_label">Falha ao analisar. Especificou um caminho inválido.</string>
-  <string name="progress_filelist_label">A preparar lista de ficheiros...</string>
-  <string name="progress_database_label">A consultar base de dados...</string>
-  <string name="progress_unstarted_label">Ainda não iniciada.</string>
-  <string name="skipping_folder_label">Encontrado um erro e a ignorar</string>
-  <string name="sdscanner">Analisador do cartão SD</string>
+  <string name="media_library">Coleção multimédia</string>
+  <string name="media_scan_header">Analisador multimédia</string>
+  <string name="media_scan_full">Análise total do sistema (lento)</string>
+  <string name="media_scan_drop_db">Limpar itens da base de dados (PERIGOSO)</string>
+  <string name="media_scan_start">Iniciar análise</string>
+  <string name="media_statistics">Estatísticas</string>
+  <string name="media_stats_tracks">Número de faixas</string>
+  <string name="media_stats_playtime">Tempo de reprodução (horas)</string>
+  <string name="media_stats_progress">Evolução da análise</string>
 </resources>

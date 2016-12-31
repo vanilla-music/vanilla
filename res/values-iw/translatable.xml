@@ -243,21 +243,4 @@
   <string name="share">שתף...</string>
   <string name="sendto">שלח אל...</string>
   <string name="no_receiving_apps">לא נמצאו יישומים עבור סוג קובץ זה!</string>
-  <!--SD Scanner-->
-  <string name="sdscan_help">התחלת סריקה מחדש עלולה לגרום ל- Vanilla Music לבניה מחדש של מסד נתוני המדיה.</string>
-  <string name="button_start">התחל בסריקה מחדש</string>
-  <string name="database_proc">נבחן</string>
-  <string name="delete_proc">הוסרה ההתייחסות</string>
-  <string name="db_label">יבדוק גם במסד נתונים קיים לצורך עדכון או מחיקת קבצים.</string>
-  <string name="db_error_failure">נתקל בשגיאה בקריאת מסד נתוני המדיה ויתכן כי הושמטו קבצים שעודכנו או נמחקו, או קבצי סריקה מחדש עדכניים.</string>
-  <string name="db_error_recovered">נתקל בשגיאה בקריאת נתוני מסד נתוני המדיה, אך הבעיה נפתרה.</string>
-  <string name="db_error_retrying">נתקל בשגיאה בקריאת נתוני מסד נתוני המדיה. מנסה שוב בעוד שנייה...</string>
-  <string name="final_proc">המשך</string>
-  <string name="progress_completed_label">הושלם, מוכן להתחלת עוד סריקה.</string>
-  <string name="progress_error_bad_path_label">סריקה נכשלה:  הוזן נתיב שגוי עבור חיפוש קובץ חדש</string>
-  <string name="progress_filelist_label">מכין רשימת קבצים ראשונית...</string>
-  <string name="progress_database_label">סורק מסד נתונים</string>
-  <string name="progress_unstarted_label">טרם החל. </string>
-  <string name="skipping_folder_label">נתקל בשגיאה ומדלג</string>
-  <string name="sdscanner">סורק SD</string>
 </resources>

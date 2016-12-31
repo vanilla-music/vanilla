@@ -243,21 +243,13 @@
   <string name="share">Megosztás…</string>
   <string name="sendto">Küldés…</string>
   <string name="no_receiving_apps">Nem található fogadóalkalmazás ehhez a médiatípushoz!</string>
-  <!--SD Scanner-->
-  <string name="sdscan_help">Az újraátvizsgálás elindításának hatására a Vanilla zenelejátszó elkezdi újraépíteni a teljes médiaadatbázist.</string>
-  <string name="button_start">Újraátvizsgálás indítása</string>
-  <string name="database_proc">Megvizsgálva</string>
-  <string name="delete_proc">Hivatkozás eltávoltva:</string>
-  <string name="db_label">Átvizsgálja a létező médiaadatbázist is, frissített vagy törölt fájlok után.</string>
-  <string name="db_error_failure">Hiba történt a médiaadatbázis olvasásakor, a frissült, törölt vagy újraátvizsgált fájlok közül maradhattak ki elemek.</string>
-  <string name="db_error_recovered">Hiba történt a médiaadatbázis olvasásakor, de sikerült helyreállni.</string>
-  <string name="db_error_retrying">Hiba történt a médiaadatbázis olvasásakor. Újrapróbálkozás 1 másodperc múlva…</string>
-  <string name="final_proc">Feldolgozva</string>
-  <string name="progress_completed_label">Befejezve, új átvizsgálás indítására készen.</string>
-  <string name="progress_error_bad_path_label">Átvizsgálás sikertelen: rossz útvonal lett megadva az új kereséshez.</string>
-  <string name="progress_filelist_label">Kezdeti fájllista előkészítése…</string>
-  <string name="progress_database_label">Adatbázis lekérdezése…</string>
-  <string name="progress_unstarted_label">Még nem lett elindítva.</string>
-  <string name="skipping_folder_label">Hiba történt és ki lett hagyva</string>
-  <string name="sdscanner">SD átvizsgáló</string>
+  <string name="media_library">Médiagyűjtemény</string>
+  <string name="media_scan_header">Médiaátvizsgáló</string>
+  <string name="media_scan_full">A teljes fájlrendszer átvizsgálása (lassú)</string>
+  <string name="media_scan_drop_db">Média-adatbázis eldobása (veszélyzóna!)</string>
+  <string name="media_scan_start">Átvizsgálás indítása</string>
+  <string name="media_statistics">Statisztika</string>
+  <string name="media_stats_tracks">Számok száma</string>
+  <string name="media_stats_playtime">Lejátszási idő (órában)</string>
+  <string name="media_stats_progress">Átvizsgálás folyamata</string>
 </resources>

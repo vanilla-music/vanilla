@@ -251,21 +251,4 @@
   <string name="share">Sdílet...</string>
   <string name="sendto">Odeslat na...</string>
   <string name="no_receiving_apps">Nebyla nalezena žádná aplikace pro příjem tohoto typu souboru!</string>
-  <!--SD Scanner-->
-  <string name="sdscan_help">Spuštění opětovného skenu ve Vanilla Music spustí kompletní sestavení databáze médií.</string>
-  <string name="button_start">Spustit opětovný sken</string>
-  <string name="database_proc">Prozkoumáno</string>
-  <string name="delete_proc">Odebrán odkaz na</string>
-  <string name="db_label">Prověří také existující databáze médií na aktualizované nebo smazané soubory.</string>
-  <string name="db_error_failure">Došlo k chybě při čtení databáze médií, mohlo dojít k přehlédnutí aktualizovaných nebo smazaných souborů, nebo neoskenování aktuálních souborů.</string>
-  <string name="db_error_recovered">Došlo k chybě čtení databáze médií, zotavení bylo možné.</string>
-  <string name="db_error_retrying">Došlo k chybě čtení databáze médií. Opakování za 1 sekundu...</string>
-  <string name="final_proc">Zpracováno</string>
-  <string name="progress_completed_label">Dokončeno, je možné spustit další sken.</string>
-  <string name="progress_error_bad_path_label">Sken selhal: zadána chybná cesta pro hledání nových souborů.</string>
-  <string name="progress_filelist_label">Příprava výchozího seznamu souborů...</string>
-  <string name="progress_database_label">Dotazování databáze...</string>
-  <string name="progress_unstarted_label">Nebylo zatím spuštěno.</string>
-  <string name="skipping_folder_label">Zaznamenána chyba a přeskočení</string>
-  <string name="sdscanner">SD skener</string>
 </resources>

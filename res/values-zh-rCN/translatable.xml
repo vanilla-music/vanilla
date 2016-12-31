@@ -235,21 +235,4 @@
   <string name="share">共享…</string>
   <string name="sendto">发送给…</string>
   <string name="no_receiving_apps">没有为此媒体类型找到接收的 app！</string>
-  <!--SD Scanner-->
-  <string name="sdscan_help">开始的重新扫描会导致 Vanilla Music 触发媒体数据的完全重构。</string>
-  <string name="button_start">开始重新扫描</string>
-  <string name="database_proc">已检查</string>
-  <string name="delete_proc">移除参考到</string>
-  <string name="db_label">将为已更新或已删除的文件检查存在的媒体数据库。</string>
-  <string name="db_error_failure">读入媒体数据库的时候遇到错误，也许丢失已更新或已删除的文件或需要重新扫描最新的文件。</string>
-  <string name="db_error_recovered">读入媒体数据库时遇到错误，但已修复。</string>
-  <string name="db_error_retrying">读入媒体数据库时遇到错误。1 秒后重试…</string>
-  <string name="final_proc">已处理</string>
-  <string name="progress_completed_label">已完成，准备开始下一次扫描。</string>
-  <string name="progress_error_bad_path_label">扫描失败。指定给新文件搜索的路径错误。</string>
-  <string name="progress_filelist_label">准备初始文件列表…</string>
-  <string name="progress_database_label">正将数据库加入序列…</string>
-  <string name="progress_unstarted_label">尚没有开始。</string>
-  <string name="skipping_folder_label">遇到错误并跳过</string>
-  <string name="sdscanner">SD 卡扫描器</string>
 </resources>

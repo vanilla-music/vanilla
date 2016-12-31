@@ -242,18 +242,4 @@
   <string name="reverse_sort">Inverser le tri</string>
   <string name="share">Partager...</string>
   <string name="sendto">Envoyer à…</string>
-  <!--SD Scanner-->
-  <string name="database_proc">Examiner </string>
-  <string name="delete_proc">Enlever la référence à</string>
-  <string name="db_label">Vérifiera également la base de données multimédia existante pour les fichiers mis à jour ou supprimés.</string>
-  <string name="db_error_failure">A rencontré une erreur en lisant la base de données multimédia et il pourrait manquer des fichiers à jour ou supprimés</string>
-  <string name="db_error_recovered">A rencontré une erreur en lisant la base de données multimédia, mais c\'est rétabli.</string>
-  <string name="db_error_retrying">A rencontré une erreur en lisant la base de données multimédia. Rééssayera dans 1 seconde...</string>
-  <string name="final_proc">Traité</string>
-  <string name="progress_completed_label">Terminé, prêt à commencer une autre analyse.</string>
-  <string name="progress_error_bad_path_label">L\'analyse a échoué: mauvais chemin d\'accès spécifié pour la recherche d\'un nouveau fichier.</string>
-  <string name="progress_filelist_label">Préparation de la liste initiale des fichiers</string>
-  <string name="progress_database_label">Examination de la base de données</string>
-  <string name="progress_unstarted_label">Pas encore commencé.</string>
-  <string name="sdscanner">Scanneur carte SD</string>
 </resources>

@@ -184,12 +184,4 @@
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
   <string name="permission_request_summary">Vanilla Music cần quyền đọc dữ liệu để hiển thị thư viện nhạc của bạn</string>
   <string name="reverse_sort">Sắp xếp ngược lại</string>
-  <!--SD Scanner-->
-  <string name="sdscan_help">Quét lại để Vanilla Music xây dựng lại cơ sở dữ liệu.</string>
-  <string name="button_start">Quét lại</string>
-  <string name="database_proc">Đã kiểm tra</string>
-  <string name="db_error_retrying">Có lỗi khi đọc cơ sở dữ liệu. Sẽ thử lại sau 1 giây…</string>
-  <string name="progress_completed_label">Đã hoàn tất, sẵn sàng quét lại.</string>
-  <string name="progress_unstarted_label">Chưa bắt đầu.</string>
-  <string name="sdscanner">Quét thẻ SD</string>
 </resources>

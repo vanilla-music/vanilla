@@ -259,21 +259,13 @@
   <string name="share">Поделиться…</string>
   <string name="sendto">Отправить…</string>
   <string name="no_receiving_apps">Нет приложений для обработки такого типа файла!</string>
-  <!--SD Scanner-->
-  <string name="sdscan_help">Запуск сканирования в Vanilla Music приведёт к перестройке всей базы медиаданных.</string>
-  <string name="button_start">Начать сканирование</string>
-  <string name="database_proc">Проверен</string>
-  <string name="delete_proc">Удалена ссылка на</string>
-  <string name="db_label">Существующая база медиаданных также будет проверена на наличие обновлённых или удалённых файлов.</string>
-  <string name="db_error_failure">Ошибка чтения базы медиаданных; изменённые или удалённые файлы могут остаться незамеченными, а актуальные — проверены повторно.</string>
-  <string name="db_error_recovered">Ошибка чтения базы медиаданных; удалось восстановиться.</string>
-  <string name="db_error_retrying">Ошибка чтения базы медиаданных.  Повторная попытка через 1 секунду...</string>
-  <string name="final_proc">Обработан</string>
-  <string name="progress_completed_label">Завершено, можно начать новое сканирование.</string>
-  <string name="progress_error_bad_path_label">Сканирование не удалось: указан некорректный путь для поиска новых файлов.</string>
-  <string name="progress_filelist_label">Подготовка первоначального списка файлов...</string>
-  <string name="progress_database_label">Запрос базы данных...</string>
-  <string name="progress_unstarted_label">Ещё не начиналось.</string>
-  <string name="skipping_folder_label">Ошибка обнаружена и пропущена</string>
-  <string name="sdscanner">SD Scanner</string>
+  <string name="media_library">Библиотека носителей</string>
+  <string name="media_scan_header">Сканер носителей</string>
+  <string name="media_scan_full">Полное сканирование файловой системы (медленное)</string>
+  <string name="media_scan_drop_db">Очистить базу данных носителя (опасно!)</string>
+  <string name="media_scan_start">Начать сканирование</string>
+  <string name="media_statistics">Статистика</string>
+  <string name="media_stats_tracks">Количество дорожек</string>
+  <string name="media_stats_playtime">Воспроизведено (часов)</string>
+  <string name="media_stats_progress">Выполняется сканирование</string>
 </resources>

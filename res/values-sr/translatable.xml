@@ -194,6 +194,8 @@
   <string name="cover_on_lockscreen_summary">Приказ омота текуће нумере на екрану закључавања</string>
   <string name="double_tap_title">Двотап на виџет</string>
   <string name="double_tap_summary">Двотап на 1x1 виџет отвара плејер. Опција поставља застој од 400ms пре одзива виџета на радње.</string>
+  <string name="scrobble_title">Користи Scrobble Droid АПИ</string>
+  <string name="scrobble_summary">Скроблуј на Ласт.фм преко Scrobble Droid АПИ-ја или једноставног Ласт.фм скроблера</string>
   <string name="stock_broadcast_title">Емулирај уграђена емитовања</string>
   <string name="stock_broadcast_summary">Слање емитовања која опонашају емитовања уграђеног музичког плејера, да би функционисале контроле закључаног екрана и виџети осталих апликација, итд.</string>
   <string name="about">О програму</string>
@@ -249,8 +251,13 @@
   <string name="share">Дели…</string>
   <string name="sendto">Пошаљи за…</string>
   <string name="no_receiving_apps">Нема апликација за овај тип фајла!</string>
-  <!--SD Scanner-->
-  <string name="final_proc">Обрађено</string>
-  <string name="progress_database_label">Шаљем упит бази података...</string>
-  <string name="sdscanner">СД читач</string>
+  <string name="media_library">Библиотека</string>
+  <string name="media_scan_header">Очитавач медија</string>
+  <string name="media_scan_full">Очитај читав фајлсистем (споро)</string>
+  <string name="media_scan_drop_db">Очисти базу података медија (опасност!)</string>
+  <string name="media_scan_start">Почни очитавање</string>
+  <string name="media_statistics">Статистике</string>
+  <string name="media_stats_tracks">Број нумера</string>
+  <string name="media_stats_playtime">Време пуштања (сати)</string>
+  <string name="media_stats_progress">Напредак очитавања</string>
 </resources>

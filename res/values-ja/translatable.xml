@@ -235,21 +235,13 @@
   <string name="share">共有…</string>
   <string name="sendto">送信…</string>
   <string name="no_receiving_apps">このメディアタイプの受信アプリが見つかりません!</string>
-  <!--SD Scanner-->
-  <string name="sdscan_help">再スキャンが開始すると、Vanilla Music はメディアデータベースのフル再構築を起動します。</string>
-  <string name="button_start">再スキャンを開始</string>
-  <string name="database_proc">検査しました</string>
-  <string name="delete_proc">参照を削除しました</string>
-  <string name="db_label">更新または削除されたファイルを既存のメディアデータベースもチェックします。</string>
-  <string name="db_error_failure">メディアデータベースで読み取りエラーが発生しました。誤ってファイルを更新または削除した可能性があります。最新ファイルを再スキャンしてください。</string>
-  <string name="db_error_recovered">メディアデータベースで読み取りエラーが発生しましたが、回復しました。</string>
-  <string name="db_error_retrying">メディアデータベースで読み取りエラーが発生しました。 1 秒後に再試行します...</string>
-  <string name="final_proc">処理しました</string>
-  <string name="progress_completed_label">完了しました。別のスキャンを開始する準備ができました。</string>
-  <string name="progress_error_bad_path_label">スキャンに失敗しました: 新しいファイル検索で指定されたパスに誤りがあります。</string>
-  <string name="progress_filelist_label">ファイルの初期リストを準備しています...</string>
-  <string name="progress_database_label">データベースの問い合わせ中...</string>
-  <string name="progress_unstarted_label">まだ開始されていません。</string>
-  <string name="skipping_folder_label">エラーが発生しました。スキップします</string>
-  <string name="sdscanner">SD スキャナー</string>
+  <string name="media_library">メディアライブラリー</string>
+  <string name="media_scan_header">メディアスキャナー</string>
+  <string name="media_scan_full">ファイルシステム全体をスキャン (遅い)</string>
+  <string name="media_scan_drop_db">メディアデータベースをフラッシュ (危険!)</string>
+  <string name="media_scan_start">スキャンを開始</string>
+  <string name="media_statistics">統計</string>
+  <string name="media_stats_tracks">トラックの番号</string>
+  <string name="media_stats_playtime">演奏時間 (時間)</string>
+  <string name="media_stats_progress">スキャンの進行状況</string>
 </resources>
