@@ -69,7 +69,7 @@ public class MediaLibrary  {
 				if (sBackend == null) {
 					sBackend = new MediaLibraryBackend(context);
 					sScanner = new MediaScanner(context, sBackend);
-					sScanner.startQuickScan();
+					sScanner.startQuickScan(50);
 				}
 			}
 		}

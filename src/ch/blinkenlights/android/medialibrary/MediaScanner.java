@@ -64,7 +64,7 @@ public class MediaScanner implements Handler.Callback {
 		ContentObserver mObserver = new ContentObserver(null) {
 			@Override
 			public void onChange(boolean self) {
-				startQuickScan();
+				startQuickScan(1500);
 			}
 		};
 		context.getContentResolver().registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, false, mObserver);
@@ -95,12 +95,14 @@ public class MediaScanner implements Handler.Callback {
 	/**
 	 * Called by the content observer if a change in the media library
 	 * has been detected
+	 *
+	 * @param delay how many ms we should wait (used to coalesce multiple calls)
 	 */
-	public void startQuickScan() {
+	public void startQuickScan(int delay) {
 		if (!mHandler.hasMessages(MSG_SCAN_RPC)) {
 			mScanPlan.addNextStep(RPC_NATIVE_VRFY, null)
 				.addOptionalStep(RPC_LIBRARY_VRFY, null); // only runs if previous scan found no change
-			mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_SCAN_RPC, RPC_NOOP, 0), 1400);
+			mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_SCAN_RPC, RPC_NOOP, 0), delay);
 		}
 	}
 
