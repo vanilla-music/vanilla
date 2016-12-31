@@ -33,6 +33,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.os.Process;
+import android.os.SystemClock;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -60,6 +61,10 @@ public class MediaScanner implements Handler.Callback {
 	 * Set by KICKSTART rpc
 	 */
 	private boolean mIsInitialScan;
+	/**
+	 * Timestamp in half-seconds since last notification
+	 */
+	private int mLastNotification;
 	/**
 	 * The id we are using for the scan notification
 	 */
@@ -220,17 +225,21 @@ public class MediaScanner implements Handler.Callback {
 		NotificationManager manager = (NotificationManager) mContext.getSystemService(mContext.NOTIFICATION_SERVICE);
 
 		if (visible) {
-			int icon = R.drawable.status_scan_0 + (stats.seen % 5);
-			String title = mContext.getResources().getString(R.string.media_library_scan_running);
-			String content = stats.lastFile;
+			int nowTime = (int)(SystemClock.uptimeMillis() / 500);
+			if (nowTime != mLastNotification) {
+				mLastNotification = nowTime;
+				int icon = R.drawable.status_scan_0 + (mLastNotification % 5);
+				String title = mContext.getResources().getString(R.string.media_library_scan_running);
+				String content = stats.lastFile;
 
-			Notification notification = new Notification.Builder(mContext)
-				.setContentTitle(title)
-				.setContentText(content)
-				.setSmallIcon(icon)
-				.setOngoing(true)
-				.build();
-			manager.notify(NOTIFICATION_ID, notification);
+				Notification notification = new Notification.Builder(mContext)
+					.setContentTitle(title)
+					.setContentText(content)
+					.setSmallIcon(icon)
+					.setOngoing(true)
+					.build();
+				manager.notify(NOTIFICATION_ID, notification);
+			}
 		} else {
 			manager.cancel(NOTIFICATION_ID);
 		}
