@@ -44,7 +44,7 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 	/**
 	 * Regexp used to match a year in a date field
 	 */
-	private static final Pattern sFilterYear = Pattern.compile("(\\d{4})");
+	private static final Pattern sFilterYear = Pattern.compile(".*(\\d{4}).*");
 	/**
 	 * Regexp matching the first lefthand integer
 	 */
