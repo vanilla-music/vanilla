@@ -416,6 +416,10 @@ public class MediaLibrary  {
 		 */
 		String SONG_NUMBER = "song_num";
 		/**
+		 * The disc in a multi-disc album containing this song
+		 */
+		String DISC_NUMBER = "disc_num";
+		/**
 		 * The album where this song belongs to
 		 */
 		String ALBUM_ID = "album_id";
@@ -459,10 +463,6 @@ public class MediaLibrary  {
 		 * The sortable title of this album
 		 */
 		String ALBUM_SORT = "album_sort";
-		/**
-		 * The disc number of this album
-		 */
-		String DISC_NUMBER = "disc_num";
 		/**
 		 * The primary contributor / artist reference for this album
 		 */

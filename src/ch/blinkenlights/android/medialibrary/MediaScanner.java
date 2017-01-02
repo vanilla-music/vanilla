@@ -383,6 +383,7 @@ public class MediaScanner implements Handler.Callback {
 			v.put(MediaLibrary.SongColumns.ALBUM_ID,    albumId);
 			v.put(MediaLibrary.SongColumns.DURATION,    tags.getFirst(MediaMetadataExtractor.DURATION));
 			v.put(MediaLibrary.SongColumns.SONG_NUMBER, tags.getFirst(MediaMetadataExtractor.TRACK_NUMBER));
+			v.put(MediaLibrary.SongColumns.DISC_NUMBER, tags.getFirst(MediaMetadataExtractor.DISC_NUMBER));
 			v.put(MediaLibrary.SongColumns.YEAR,        tags.getFirst(MediaMetadataExtractor.YEAR));
 			v.put(MediaLibrary.SongColumns.PATH,        path);
 			mBackend.insert(MediaLibrary.TABLE_SONGS, null, v);
@@ -393,7 +394,6 @@ public class MediaScanner implements Handler.Callback {
 			v.put(MediaLibrary.AlbumColumns.ALBUM_SORT,        MediaLibrary.keyFor(album));
 			v.put(MediaLibrary.AlbumColumns.PRIMARY_ARTIST_ID, artistId);
 			v.put(MediaLibrary.AlbumColumns.PRIMARY_ALBUM_YEAR,tags.getFirst(MediaMetadataExtractor.YEAR));
-			v.put(MediaLibrary.AlbumColumns.DISC_NUMBER,       tags.getFirst(MediaMetadataExtractor.DISC_NUMBER));
 			mBackend.insert(MediaLibrary.TABLE_ALBUMS, null, v);
 
 			v.clear();

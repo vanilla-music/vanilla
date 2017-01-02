@@ -35,7 +35,7 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	/**
 	 * The database version we are using
 	 */
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 20170101;
 	/**
 	 * on-disk file to store the database
 	 */
@@ -78,6 +78,7 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	 */
 	@Override
 	public void onUpgrade(SQLiteDatabase dbh, int oldVersion, int newVersion) {
+		MediaSchema.upgradeDatabaseSchema(dbh, oldVersion);
 	}
 
 	/**

@@ -203,10 +203,10 @@ public class MediaAdapter
 			mFieldKeys = new String[] { MediaLibrary.SongColumns.TITLE_SORT, MediaLibrary.AlbumColumns.ALBUM_SORT, MediaLibrary.ContributorColumns.ARTIST_SORT };
 			mSortEntries = new int[] { R.string.name, R.string.artist_album_track, R.string.artist_album_title, R.string.album_track, R.string.year, R.string.date_added, R.string.song_playcount };
 			mAdapterSortValues = new String[] { MediaLibrary.SongColumns.TITLE_SORT+" %1$s",
-			                                    MediaLibrary.ContributorColumns.ARTIST_SORT+" %1$s,"+MediaLibrary.AlbumColumns.ALBUM_SORT+" %1$s,"+MediaLibrary.AlbumColumns.DISC_NUMBER+","+MediaLibrary.SongColumns.SONG_NUMBER,
+			                                    MediaLibrary.ContributorColumns.ARTIST_SORT+" %1$s,"+MediaLibrary.AlbumColumns.ALBUM_SORT+" %1$s,"+MediaLibrary.SongColumns.DISC_NUMBER+","+MediaLibrary.SongColumns.SONG_NUMBER,
 			                                    MediaLibrary.ContributorColumns.ARTIST_SORT+" %1$s,"+MediaLibrary.AlbumColumns.ALBUM_SORT+" %1$s,"+MediaLibrary.SongColumns.TITLE_SORT+" %1$s",
-			                                    MediaLibrary.AlbumColumns.ALBUM_SORT+" %1$s,"+MediaLibrary.AlbumColumns.DISC_NUMBER+","+MediaLibrary.SongColumns.SONG_NUMBER,
-			                                    MediaLibrary.SongColumns.YEAR+" %1$s,"+MediaLibrary.AlbumColumns.ALBUM_SORT+" %1$s,"+MediaLibrary.AlbumColumns.DISC_NUMBER+","+MediaLibrary.SongColumns.SONG_NUMBER,
+			                                    MediaLibrary.AlbumColumns.ALBUM_SORT+" %1$s,"+MediaLibrary.SongColumns.DISC_NUMBER+","+MediaLibrary.SongColumns.SONG_NUMBER,
+			                                    MediaLibrary.SongColumns.YEAR+" %1$s,"+MediaLibrary.AlbumColumns.ALBUM_SORT+" %1$s,"+MediaLibrary.SongColumns.DISC_NUMBER+","+MediaLibrary.SongColumns.SONG_NUMBER,
 			                                    MediaLibrary.SongColumns.MTIME+" %1$s",
 			                                    MediaLibrary.SongColumns.PLAYCOUNT+" %1$s",
 			                                  };
@@ -311,7 +311,7 @@ public class MediaAdapter
 			if (mType == MediaUtils.TYPE_ARTIST)
 				sortRaw += ", "+MediaLibrary.AlbumColumns.ALBUM_SORT+" %1$s";
 			// and this is for all types:
-			sortRaw += ", "+MediaLibrary.AlbumColumns.DISC_NUMBER+", "+MediaLibrary.SongColumns.SONG_NUMBER;
+			sortRaw += ", "+MediaLibrary.SongColumns.DISC_NUMBER+", "+MediaLibrary.SongColumns.SONG_NUMBER;
 		}
 
 		// ...and assemble the SQL string we are really going to use

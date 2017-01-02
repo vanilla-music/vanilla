@@ -28,6 +28,7 @@ public class MediaSchema {
 	  + MediaLibrary.SongColumns.TITLE        +" TEXT NOT NULL, "
 	  + MediaLibrary.SongColumns.TITLE_SORT   +" VARCHAR(64) NOT NULL, "
 	  + MediaLibrary.SongColumns.SONG_NUMBER  +" INTEGER, "
+	  + MediaLibrary.SongColumns.DISC_NUMBER  +" INTEGER, "
 	  + MediaLibrary.SongColumns.YEAR         +" INTEGER, "
 	  + MediaLibrary.SongColumns.ALBUM_ID     +" INTEGER NOT NULL, "
 	  + MediaLibrary.SongColumns.PLAYCOUNT    +" INTEGER NOT NULL DEFAULT 0, "
@@ -44,7 +45,6 @@ public class MediaSchema {
 	  + MediaLibrary.AlbumColumns._ID               +" INTEGER PRIMARY KEY, "
 	  + MediaLibrary.AlbumColumns.ALBUM             +" TEXT NOT NULL, "
 	  + MediaLibrary.AlbumColumns.ALBUM_SORT        +" VARCHAR(64) NOT NULL, "
-	  + MediaLibrary.AlbumColumns.DISC_NUMBER       +" INTEGER, "
 	  + MediaLibrary.AlbumColumns.PRIMARY_ALBUM_YEAR+" INTEGER, "
 	  + MediaLibrary.AlbumColumns.PRIMARY_ARTIST_ID +" INTEGER NOT NULL DEFAULT 0, "
 	  + MediaLibrary.AlbumColumns.MTIME             +" TIMESTAMP DEFAULT CURRENT_TIMESTAMP "
@@ -200,6 +200,23 @@ public class MediaSchema {
 		dbh.execSQL(VIEW_CREATE_ALBUMS_ARTISTS);
 		dbh.execSQL(VIEW_CREATE_ARTISTS);
 		dbh.execSQL(VIEW_CREATE_PLAYLIST_SONGS);
+	}
+
+	/**
+	 * Upgrades an existing database
+	 *
+	 * @param dbh the writeable dbh to use
+	 * @param oldVersion the version of the old (aka: existing) database
+	 */
+	public static void upgradeDatabaseSchema(SQLiteDatabase dbh, int oldVersion) {
+		if (oldVersion < 20170101) {
+			// this is ugly but was never released as a stable version, so
+			// it's good enough to keep playlists for testers
+			dbh.execSQL("DROP TABLE songs");
+			dbh.execSQL("DROP TABLE albums");
+			dbh.execSQL(DATABASE_CREATE_SONGS);
+			dbh.execSQL(DATABASE_CREATE_ALBUMS);
+		}
 	}
 
 }
