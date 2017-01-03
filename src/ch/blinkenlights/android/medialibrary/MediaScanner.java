@@ -362,16 +362,19 @@ public class MediaScanner implements Handler.Callback {
 			// Get tags which always must be set
 			String title = tags.getFirst(MediaMetadataExtractor.TITLE);
 			if (title == null)
-				title = "Untitled";
+				title = "<"+file.getName()+">";
 
 			String album = tags.getFirst(MediaMetadataExtractor.ALBUM);
 			if (album == null)
-				album = "No Album";
+				album = "<No Album>";
 
 			String artist = tags.getFirst(MediaMetadataExtractor.ARTIST);
 			if (artist == null)
-				artist = "No Artist";
+				artist = "<No Artist>";
 
+			String discNumber = tags.getFirst(MediaMetadataExtractor.DISC_NUMBER);
+			if (discNumber == null)
+				discNumber = "1"; // untagged, but most likely '1' - this prevents annoying sorting issues with partially tagged files
 
 			long albumId = MediaLibrary.hash63(album);
 			long artistId = MediaLibrary.hash63(artist);
@@ -383,7 +386,7 @@ public class MediaScanner implements Handler.Callback {
 			v.put(MediaLibrary.SongColumns.ALBUM_ID,    albumId);
 			v.put(MediaLibrary.SongColumns.DURATION,    tags.getFirst(MediaMetadataExtractor.DURATION));
 			v.put(MediaLibrary.SongColumns.SONG_NUMBER, tags.getFirst(MediaMetadataExtractor.TRACK_NUMBER));
-			v.put(MediaLibrary.SongColumns.DISC_NUMBER, tags.getFirst(MediaMetadataExtractor.DISC_NUMBER));
+			v.put(MediaLibrary.SongColumns.DISC_NUMBER, discNumber);
 			v.put(MediaLibrary.SongColumns.YEAR,        tags.getFirst(MediaMetadataExtractor.YEAR));
 			v.put(MediaLibrary.SongColumns.PATH,        path);
 			mBackend.insert(MediaLibrary.TABLE_SONGS, null, v);

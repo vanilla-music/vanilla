@@ -217,6 +217,10 @@ public class MediaSchema {
 			dbh.execSQL(DATABASE_CREATE_SONGS);
 			dbh.execSQL(DATABASE_CREATE_ALBUMS);
 		}
+
+		if (oldVersion < 20170102) {
+			dbh.execSQL("UPDATE songs SET disc_num=1 WHERE disc_num IS null");
+		}
 	}
 
 }
