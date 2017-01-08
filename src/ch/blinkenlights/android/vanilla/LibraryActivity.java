@@ -26,9 +26,14 @@ package ch.blinkenlights.android.vanilla;
 import ch.blinkenlights.android.medialibrary.MediaLibrary;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -38,7 +43,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.MediaStore;
 import android.support.iosched.tabs.VanillaTabLayout;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
@@ -56,6 +60,11 @@ import android.widget.TextView;
 import android.widget.SearchView;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import junit.framework.Assert;
 
 /**
@@ -140,6 +149,19 @@ public class LibraryActivity
 	 */
 	private long mLastActedId;
 	/**
+	 * Holds last intent that was passed to the context menu
+	 */
+	private Intent mLastRequestedCtx;
+	/**
+	 * Plugin descriptions and packages.
+	 * Keys are plugin names, values are their packages
+	 */
+	private Map<String, ApplicationInfo> mPlugins = new HashMap<>();
+	/**
+	 * Broadcast receiver for plugin collecting
+	 */
+	private BroadcastReceiver mPluginInfoReceiver;
+	/**
 	 * The pager adapter that manages each media ListView.
 	 */
 	public LibraryPagerAdapter mPagerAdapter;
@@ -172,6 +194,7 @@ public class LibraryActivity
 		mViewPager = pager;
 
 		SharedPreferences settings = PlaybackService.getSettings(this);
+		mPluginInfoReceiver = new PluginBroadcastReceiver();
 
 		mBottomBarControls = (BottomBarControls)findViewById(R.id.bottombar_controls);
 		mBottomBarControls.setOnClickListener(this);
@@ -195,6 +218,43 @@ public class LibraryActivity
 		bindControlButtons();
 	}
 
+	/**
+	 * Shows plugin selection dialog. Be sure that {@link #mLastRequestedCtx} is initialized
+	 * and {@link #mPlugins} are populated before calling this.
+	 *
+	 * @see PluginBroadcastReceiver
+	 */
+	private void showPluginMenu() {
+		Set<String> pluginNames = mPlugins.keySet();
+		final String[] pNamesArr = pluginNames.toArray(new String[pluginNames.size()]);
+		new AlertDialog.Builder(this)
+				.setItems(pNamesArr, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						long id = mLastRequestedCtx.getLongExtra("id", LibraryAdapter.INVALID_ID);
+						Song resolved = MediaUtils.getSongByTypeId(LibraryActivity.this, MediaUtils.TYPE_SONG, id);
+						if (resolved != null) {
+							ApplicationInfo selected = mPlugins.get(pNamesArr[which]);
+							Intent request = new Intent(PluginUtils.ACTION_LAUNCH_PLUGIN);
+							request.setPackage(selected.packageName);
+							request.putExtra(PluginUtils.EXTRA_PARAM_URI, Uri.fromFile(new File(resolved.path)));
+							request.putExtra(PluginUtils.EXTRA_PARAM_SONG_TITLE, resolved.title);
+							request.putExtra(PluginUtils.EXTRA_PARAM_SONG_ARTIST, resolved.artist);
+							request.putExtra(PluginUtils.EXTRA_PARAM_SONG_ALBUM, resolved.album);
+							startService(request);
+						}
+
+						mLastRequestedCtx = null;
+					}
+				})
+				.setOnCancelListener(new DialogInterface.OnCancelListener() {
+					@Override
+					public void onCancel(DialogInterface dialog) {
+						mLastRequestedCtx = null;
+					}
+				}).create().show();
+	}
+
 	@Override
 	public void onRestart()
 	{
@@ -211,6 +271,18 @@ public class LibraryActivity
 		mDefaultAction = Integer.parseInt(settings.getString(PrefKeys.DEFAULT_ACTION_INT, PrefDefaults.DEFAULT_ACTION_INT));
 		mLastActedId = LibraryAdapter.INVALID_ID;
 		updateHeaders();
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		registerReceiver(mPluginInfoReceiver, new IntentFilter(PluginUtils.ACTION_HANDLE_PLUGIN_PARAMS));
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		unregisterReceiver(mPluginInfoReceiver);
 	}
 
 	/**
@@ -593,6 +665,7 @@ public class LibraryActivity
 	private static final int CTX_MENU_MORE_FROM_ALBUM = 8;
 	private static final int CTX_MENU_MORE_FROM_ARTIST = 9;
 	private static final int CTX_MENU_OPEN_EXTERNAL = 10;
+	private static final int CTX_MENU_PLUGINS = 11;
 
 	/**
 	 * Creates a context menu for an adapter row.
@@ -627,8 +700,11 @@ public class LibraryActivity
 			}
 			if (type == MediaUtils.TYPE_ALBUM || type == MediaUtils.TYPE_SONG)
 				menu.add(0, CTX_MENU_MORE_FROM_ARTIST, 0, R.string.more_from_artist).setIntent(rowData);
-			if (type == MediaUtils.TYPE_SONG)
+			if (type == MediaUtils.TYPE_SONG) {
 				menu.add(0, CTX_MENU_MORE_FROM_ALBUM, 0, R.string.more_from_album).setIntent(rowData);
+				if (PluginUtils.checkPlugins(this))
+					menu.add(0, CTX_MENU_PLUGINS, 1, R.string.plugins).setIntent(rowData); // last in order
+			}
 			menu.addSubMenu(0, CTX_MENU_ADD_TO_PLAYLIST, 0, R.string.add_to_playlist).getItem().setIntent(rowData);
 			menu.add(0, CTX_MENU_DELETE, 0, R.string.delete).setIntent(rowData);
 		}
@@ -707,6 +783,15 @@ public class LibraryActivity
 			break;
 		case CTX_MENU_OPEN_EXTERNAL: {
 			FileUtils.dispatchIntent(this, intent);
+			break;
+		}
+		case CTX_MENU_PLUGINS: {
+			// obtain list of plugins anew - some plugins may be installed/deleted
+			mPlugins.clear();
+			mLastRequestedCtx = intent;
+			Intent requestPlugins = new Intent(PluginUtils.ACTION_REQUEST_PLUGIN_PARAMS);
+			intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+			sendBroadcast(requestPlugins);
 			break;
 		}
 		case CTX_MENU_MORE_FROM_ARTIST: {
@@ -923,4 +1008,20 @@ public class LibraryActivity
 		}
 	}
 
+	private class PluginBroadcastReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			List<ResolveInfo> resolved = getPackageManager().queryBroadcastReceivers(new Intent(PluginUtils.ACTION_REQUEST_PLUGIN_PARAMS), 0);
+			if (PluginUtils.ACTION_HANDLE_PLUGIN_PARAMS.equals(intent.getAction())) {
+				// plugin answered, store it in the map
+				String pluginName = intent.getStringExtra(PluginUtils.EXTRA_PARAM_PLUGIN_NAME);
+				ApplicationInfo info = intent.getParcelableExtra(PluginUtils.EXTRA_PARAM_PLUGIN_APP);
+				mPlugins.put(pluginName, info);
+
+				if (mPlugins.size() == resolved.size()) { // got all plugins
+					showPluginMenu();
+				}
+			}
+		}
+	}
 }
