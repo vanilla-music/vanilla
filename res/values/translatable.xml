@@ -315,4 +315,7 @@ THE SOFTWARE.
 	<string name="media_stats_progress">Scan progress</string>
 
 	<string name="media_library_scan_running">Scanning media library…</string>
+
+    <!-- Plugin system -->
+    <string name="plugins">Plugins</string>
 </resources>
