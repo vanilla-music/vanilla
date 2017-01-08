@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2016-2017 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -215,6 +215,19 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 
 					selection += MediaLibrary.SongColumns._ID+" IN (SELECT "+MediaLibrary.ContributorSongColumns.SONG_ID+" FROM "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+" WHERE "
 					          + MediaLibrary.ContributorSongColumns.ROLE+"=0 AND "+MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID+"="+artistId+")";
+				}
+			}
+
+			if (MediaLibrary.VIEW_ALBUMS_ARTISTS.equals(table)) {
+				// looking up artists by albums will magically return every album where this
+				// artist has at least one item (while still using the primary_artist_id as the artist key)
+				Matcher artistMatch = sQueryMatchArtistSearch.matcher(selection);
+				if (artistMatch.matches()) {
+					selection = artistMatch.group(1);
+					final String artistId = artistMatch.group(2);
+					selection += MediaLibrary.SongColumns._ID+" IN (SELECT DISTINCT "+MediaLibrary.SongColumns.ALBUM_ID+" FROM "+MediaLibrary.TABLE_SONGS+" WHERE "
+					          + MediaLibrary.SongColumns._ID+" IN (SELECT "+MediaLibrary.ContributorSongColumns.SONG_ID+" FROM "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+" WHERE "
+					          + MediaLibrary.ContributorSongColumns.ROLE+"=0 AND "+MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID+"="+artistId+"))";
 				}
 			}
 
