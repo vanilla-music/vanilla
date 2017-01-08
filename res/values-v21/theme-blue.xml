@@ -23,10 +23,10 @@
 		<item name="overlay_foreground_color">@color/overlay_foreground_light</item>
 		<item name="float_color">@color/material_grey_400</item>
 		<item name="tabs_background">#FF0277BD</item>
-		<item name="now_playing_marker">#FF00bcd4</item>
+		<item name="now_playing_marker">#FF03A9F4</item>
 		<item name="controls_normal">@color/material_grey_600</item>
-		<item name="controls_active">#FF00bcd4</item>
-		<item name="android:colorAccent">#FF00bcd4</item>
+		<item name="controls_active">#FF03A9F4</item>
+		<item name="android:colorAccent">#FF03A9F4</item>
 		<item name="android:colorPrimary">#FF0277BD</item>
 		<item name="android:colorPrimaryDark">#FF01579B</item>
 	</style>
@@ -46,7 +46,7 @@
 
 	<style name="Blue.PopupDialog" parent="android:Theme.Material.Light.Dialog.MinWidth">
 		<item name="controls_normal">@color/material_grey_600</item>
-		<item name="controls_active">#FF00bcd4</item>
+		<item name="controls_active">#FF03A9F4</item>
 	</style>
 
 	<!-- dark theme -->
@@ -55,10 +55,10 @@
 		<item name="overlay_foreground_color">@color/overlay_foreground_dark</item>
 		<item name="float_color">@color/material_grey_900</item>
 		<item name="tabs_background">#FF0277BD</item>
-		<item name="now_playing_marker">#FF00bcd4</item>
+		<item name="now_playing_marker">#FF03A9F4</item>
 		<item name="controls_normal">@color/material_grey_600</item>
-		<item name="controls_active">#FF00bcd4</item>
-		<item name="android:colorAccent">#FF00bcd4</item>
+		<item name="controls_active">#FF03A9F4</item>
+		<item name="android:colorAccent">#FF03A9F4</item>
 		<item name="android:colorPrimary">#FF0277BD</item>
 		<item name="android:colorPrimaryDark">#FF01579B</item>
 	</style>
@@ -78,7 +78,7 @@
 
 	<style name="Blue.Dark.PopupDialog" parent="android:Theme.Material.Dialog.MinWidth">
 		<item name="controls_normal">@color/material_grey_600</item>
-		<item name="controls_active">#FF00bcd4</item>
+		<item name="controls_active">#FF03A9F4</item>
 	</style>
 
 </resources>

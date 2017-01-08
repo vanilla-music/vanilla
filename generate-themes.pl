@@ -22,8 +22,8 @@ my $THEMES = [
 	},
 	{
 		_name => 'blue',
-		light => { colorAccent => '#FF00bcd4', colorPrimary => '#FF0277BD', colorPrimaryDark => '#FF01579B', _bg => '#fff0f0f0' },
-		dark  => { colorAccent => '#FF00bcd4', colorPrimary => '#FF0277BD', colorPrimaryDark => '#FF01579B', _bg => '#ff2a2a2a' },
+		light => { colorAccent => '#FF03A9F4', colorPrimary => '#FF0277BD', colorPrimaryDark => '#FF01579B', _bg => '#fff0f0f0' },
+		dark  => { colorAccent => '#FF03A9F4', colorPrimary => '#FF0277BD', colorPrimaryDark => '#FF01579B', _bg => '#ff2a2a2a' },
 	},
 ];
 
