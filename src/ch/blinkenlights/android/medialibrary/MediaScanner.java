@@ -339,8 +339,8 @@ public class MediaScanner implements Handler.Callback {
 
 		long dbEntryMtime = mBackend.getSongMtime(songId) * 1000; // this is in unixtime -> convert to 'ms'
 		long fileMtime = file.lastModified();
-		boolean needsInsert = true;
-		boolean needsCleanup = false;
+		boolean hasChanged = false;
+		boolean mustInsert = true;
 
 		if (fileMtime > 0 && dbEntryMtime >= fileMtime) {
 			return false; // on-disk mtime is older than db mtime and it still exists -> nothing to do
@@ -350,15 +350,22 @@ public class MediaScanner implements Handler.Callback {
 			// DB entry exists but is outdated - drop current entry and maybe re-insert it
 			// fixme: drops play counts :-(
 			mBackend.delete(MediaLibrary.TABLE_SONGS, MediaLibrary.SongColumns._ID+"="+songId, null);
-			needsCleanup = true;
+			hasChanged = true;
 		}
 
 		MediaMetadataExtractor tags = new MediaMetadataExtractor(path);
 		if (!tags.isTagged()) {
-			needsInsert = false; // does not have any useable metadata: wont insert even if it is a playable file
+			mustInsert = false; // does not have any useable metadata: won't insert even if it is a playable file
 		}
 
-		if (needsInsert) {
+		if (hasChanged) {
+			boolean purgeUserData = (mustInsert ? false : true);
+			mBackend.cleanOrphanedEntries(purgeUserData);
+		}
+
+		if (mustInsert) {
+			hasChanged = true;
+
 			// Get tags which always must be set
 			String title = tags.getFirst(MediaMetadataExtractor.TITLE);
 			if (title == null)
@@ -445,14 +452,10 @@ public class MediaScanner implements Handler.Callback {
 					mBackend.insert(MediaLibrary.TABLE_GENRES_SONGS, null, v);
 				}
 			}
-		} // end if (needsInsert)
-
-
-		if (needsCleanup)
-			mBackend.cleanOrphanedEntries(true);
+		} // end if (mustInsert)
 
 		Log.v("VanillaMusic", "MediaScanner: inserted "+path);
-		return (needsInsert || needsCleanup);
+		return hasChanged;
 	}
 
 	private static final Pattern sIgnoredNames = Pattern.compile("^([^\\.]+|.+\\.(jpe?g|gif|png|bmp|webm|txt|pdf|avi|mp4|mkv|zip|tgz|xml))$", Pattern.CASE_INSENSITIVE);
