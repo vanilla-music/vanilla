@@ -40,6 +40,8 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 public class MediaScanner implements Handler.Callback {
+	//Ignore MP3s smaller than 512Kb
+	private static final long MIN_FILE_LENGTH = 1024 * 512;
 	/**
 	 * Our scan plan
 	 */
@@ -69,6 +71,10 @@ public class MediaScanner implements Handler.Callback {
 	 * The id we are using for the scan notification
 	 */
 	private int NOTIFICATION_ID = 56162;
+	/**
+	 * If true skip files less than a specified size.
+	 */
+	private boolean mIgnoreSmallFiles = false;
 
 	MediaScanner(Context context, MediaLibraryBackend backend) {
 		mContext = context;
@@ -337,6 +343,10 @@ public class MediaScanner implements Handler.Callback {
 		if (isBlacklisted(file))
 			return false;
 
+		if (mIgnoreSmallFiles && isFileTooSmall(file)) {
+			return false;
+		}
+
 		long dbEntryMtime = mBackend.getSongMtime(songId) * 1000; // this is in unixtime -> convert to 'ms'
 		long fileMtime = file.lastModified();
 		boolean hasChanged = false;
@@ -458,6 +468,10 @@ public class MediaScanner implements Handler.Callback {
 		return hasChanged;
 	}
 
+	private boolean isFileTooSmall(File file) {
+		return file.length() < MIN_FILE_LENGTH;
+	}
+
 	private static final Pattern sIgnoredNames = Pattern.compile("^([^\\.]+|.+\\.(jpe?g|gif|png|bmp|webm|txt|pdf|avi|mp4|mkv|zip|tgz|xml))$", Pattern.CASE_INSENSITIVE);
 	/**
 	 * Returns true if the file should not be scanned
@@ -488,6 +502,10 @@ public class MediaScanner implements Handler.Callback {
 		}
 
 		return oldVal;
+	}
+
+	public void setIgnoreSmallFiles(boolean ignoreSmallFiles) {
+		this.mIgnoreSmallFiles = ignoreSmallFiles;
 	}
 
 

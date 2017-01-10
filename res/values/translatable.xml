@@ -307,6 +307,7 @@ THE SOFTWARE.
 	<string name="media_scan_header">Media scanner</string>
 	<string name="media_scan_full">Scan full filesystem (Slow)</string>
 	<string name="media_scan_drop_db">Flush media database (Dangerzone!)</string>
+	<string name="media_scan_ignore_small">Ignore abnormally small files</string>
 	<string name="media_scan_start">Start scan</string>
 	<string name="media_statistics">Statistics</string>
 

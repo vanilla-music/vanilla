@@ -78,13 +78,15 @@ public class MediaLibrary  {
 
 	/**
 	 * Triggers a rescan of the library
-	 *
-	 * @param context the context to use
+	 *  @param context the context to use
 	 * @param forceFull starts a full / slow scan if true
-	 * @param drop drop the existing library if true
-	 */
-	public static void scanLibrary(Context context, boolean forceFull, boolean drop) {
+     * @param drop drop the existing library if true
+     * @param ignoreSmallFiles ignore files less than a specific size.
+     */
+	public static void scanLibrary(Context context, boolean forceFull, boolean drop, boolean ignoreSmallFiles) {
 		MediaLibraryBackend backend = getBackend(context); // also initialized sScanner
+
+		sScanner.setIgnoreSmallFiles(ignoreSmallFiles);
 		if (drop) {
 			sScanner.flushDatabase();
 			// fixme: should clean orphaned AFTER scan finished

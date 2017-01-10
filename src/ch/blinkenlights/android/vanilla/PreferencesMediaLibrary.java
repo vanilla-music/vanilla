@@ -58,6 +58,10 @@ public class PreferencesMediaLibrary extends Fragment
 	 */
 	private CheckBox mFullScanCheck;
 	/**
+	 * Ignore files smaller than ch.blinkenlights.android.medialibrary.MediaScanner#MIN_FILE_LENGTH
+	 */
+	private CheckBox mIgnoreSmallFiles;
+	/**
 	 * Checkbox for drop
 	 */
 	private CheckBox mDropDbCheck;
@@ -76,6 +80,7 @@ public class PreferencesMediaLibrary extends Fragment
 		mStatsTracks = (TextView)view.findViewById(R.id.media_stats_tracks);
 		mStatsPlaytime = (TextView)view.findViewById(R.id.media_stats_playtime);
 		mFullScanCheck = (CheckBox)view.findViewById(R.id.media_scan_full);
+		mIgnoreSmallFiles = (CheckBox)view.findViewById(R.id.media_scan_ignore_small_files);
 		mDropDbCheck = (CheckBox)view.findViewById(R.id.media_scan_drop_db);
 
 		mStartButton.setOnClickListener(new View.OnClickListener() {
@@ -152,7 +157,7 @@ public class PreferencesMediaLibrary extends Fragment
 	 * @param view the view which was pressed
 	 */
 	public void startButtonPressed(View view) {
-		MediaLibrary.scanLibrary(getActivity(), mFullScanCheck.isChecked(), mDropDbCheck.isChecked());
+		MediaLibrary.scanLibrary(getActivity(), mFullScanCheck.isChecked(), mDropDbCheck.isChecked(), mIgnoreSmallFiles.isChecked());
 		updateProgress();
 	}
 
