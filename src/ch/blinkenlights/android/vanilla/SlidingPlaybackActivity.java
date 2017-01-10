@@ -143,7 +143,7 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 			mSlidingView.hideSlide();
 			break;
 		case MENU_SAVE_QUEUE:
-			PlaylistDialog dialog = new PlaylistDialog(this, null, null);
+			PlaylistDialog dialog = PlaylistDialog.newInstance(this, null, null);
 			dialog.show(getFragmentManager(), "PlaylistDialog");
 			break;
 		default:
@@ -163,7 +163,7 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 		final Intent intent = item.getIntent();
 		switch (item.getItemId()) {
 			case CTX_MENU_ADD_TO_PLAYLIST: {
-				PlaylistDialog dialog = new PlaylistDialog(this, intent, null);
+				PlaylistDialog dialog = PlaylistDialog.newInstance(this, intent, null);
 				dialog.show(getFragmentManager(), "PlaylistDialog");
 				break;
 			}

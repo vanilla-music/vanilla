@@ -34,6 +34,24 @@ import android.os.Bundle;
 public class PlaylistDialog extends DialogFragment
 	implements DialogInterface.OnClickListener
 {
+	/**
+	 * Default constructor as required by Gradle Release Lint
+	 */
+	public PlaylistDialog() {
+	}
+
+	/**
+	 * Creates a new playlist dialog to assemble a playlist using an intent.
+	 * Uses a static constructor method to satisfy Gradle Release Lint.
+	 */
+	public static PlaylistDialog newInstance(Callback callback, Intent intent, MediaAdapter allSource) {
+		PlaylistDialog pd = new PlaylistDialog();
+		pd.mCallback = callback;
+		pd.mData = pd.new Data();
+		pd.mData.sourceIntent = intent;
+		pd.mData.allSource = allSource;
+		return pd;
+	}
 
 	/**
 	 * A class implementing our callback interface
@@ -71,15 +89,6 @@ public class PlaylistDialog extends DialogFragment
 		public MediaAdapter allSource;
 	}
 
-	/**
-	 * Creates a new playlist dialog to assemble a playlist using an intent
-	 */
-	PlaylistDialog(Callback callback, Intent intent, MediaAdapter allSource) {
-		mCallback = callback;
-		mData = new PlaylistDialog.Data();
-		mData.sourceIntent = intent;
-		mData.allSource = allSource;
-	}
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -112,7 +121,7 @@ public class PlaylistDialog extends DialogFragment
 	public void onClick(DialogInterface dialog, int which) {
 		switch (which) {
 			case BUTTON_CREATE_PLAYLIST:
-				PlaylistInputDialog newDialog = new PlaylistInputDialog(new PlaylistInputDialog.Callback() {
+				PlaylistInputDialog newDialog = PlaylistInputDialog.newInstance(new PlaylistInputDialog.Callback() {
 					@Override
 					public void onSuccess(String input) {
 						mData.id = -1;
