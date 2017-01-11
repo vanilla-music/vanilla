@@ -51,3 +51,8 @@ This list is a collection of such GPL violating versions published on the Google
 * https://play.google.com/store/apps/details?id=com.mp3.volume.booster.equalizer
 * Keeps original copyright message and links to this repo (good) but fails to provide access to the modified source (bad)
 * Has Ads
+
+### Music Player 2017
+* https://play.google.com/store/apps/details?id=com.mekayazilim.android.musicplayer
+* Keeps original copyright message - does not provide modified source
+* Has TONS of advertisements.
