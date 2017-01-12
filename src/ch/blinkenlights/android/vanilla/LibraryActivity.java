@@ -754,7 +754,7 @@ public class LibraryActivity
 		case CTX_MENU_RENAME_PLAYLIST: {
 			final String playlistName = intent.getStringExtra("title");
 			final long playlistId = intent.getLongExtra("id", -1);
-			PlaylistInputDialog dialog = new PlaylistInputDialog(new PlaylistInputDialog.Callback() {
+			PlaylistInputDialog dialog = PlaylistInputDialog.newInstance(new PlaylistInputDialog.Callback() {
 				@Override
 				public void onSuccess(String input) {
 					PlaylistTask playlistTask = new PlaylistTask(playlistId, input);
@@ -812,7 +812,7 @@ public class LibraryActivity
 			break;
 		case CTX_MENU_ADD_TO_PLAYLIST:
 			long id = intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
-			PlaylistDialog plDialog = new PlaylistDialog(this, intent, (id == LibraryAdapter.HEADER_ID ? (MediaAdapter)mCurrentAdapter : null));
+			PlaylistDialog plDialog = PlaylistDialog.newInstance(this, intent, (id == LibraryAdapter.HEADER_ID ? (MediaAdapter)mCurrentAdapter : null));
 			plDialog.show(getFragmentManager(), "PlaylistDialog");
 			break;
 		default:

@@ -17,6 +17,10 @@ allprojects {
 apply plugin: 'com.android.application'
 
 android {
+    lintOptions {
+        disable 'MissingTranslation'
+    }
+
     compileSdkVersion 24
     buildToolsVersion "24.0.2"
 

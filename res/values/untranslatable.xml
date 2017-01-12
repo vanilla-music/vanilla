@@ -21,7 +21,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
 <resources>
-	<string-array name="entry_values">
+	<string-array translatable="false" name="entry_values">
 		<!-- Note: even if this was an integer-array, these would be converted
 		     to strings anyway.
 		     http://code.google.com/p/android/issues/detail?id=2096 -->

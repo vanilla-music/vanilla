@@ -37,6 +37,26 @@ import android.widget.EditText;
 public class PlaylistInputDialog extends DialogFragment
 	implements DialogInterface.OnClickListener, TextWatcher
 {
+	/**
+	 * Default constructor as required by Gradle Release Lint
+	 */
+	public PlaylistInputDialog() {
+	}
+
+	/**
+	 * Creates a new instance.
+	 * Uses a static constructor method to satisfy Gradle Release Lint.
+	 * @param callback the callback to call back
+	 * @param initialText the initial value mEditText
+	 * @param actionRes the label of the positive button
+	 */
+	public static PlaylistInputDialog newInstance(Callback callback, String initialText, int actionRes) {
+		PlaylistInputDialog pid = new PlaylistInputDialog();
+		pid.mCallback = callback;
+		pid.mInitialText = initialText;
+		pid.mActionRes = actionRes;
+		return pid;
+	}
 
 	public interface Callback {
 		void onSuccess(String input);
@@ -63,18 +83,6 @@ public class PlaylistInputDialog extends DialogFragment
 	 * The instance of the alert dialog
 	 */
 	private AlertDialog mDialog;
-
-	/**
-	 * Creates a new instance
-	 * @param callback the callback to call back
-	 * @param initialText the initial value mEditText
-	 * @param actionRes the label of the positive button
-	 */
-	PlaylistInputDialog(Callback callback, String initialText, int actionRes) {
-		mCallback = callback;
-		mInitialText = initialText;
-		mActionRes = actionRes;
-	}
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {

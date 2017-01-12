@@ -5,7 +5,6 @@
   <string name="no_songs">На вашому пристрої не знайдено пісень.</string>
   <string name="empty_queue">Не вибрано пісень. Додайте їх з бібліотеки або натисніть тут для додавання любих.</string>
   <string name="settings">Параметри</string>
-  <string name="library">Бібліотека</string>
   <string name="no_shuffle">Не відтворювати у випадковому порядку</string>
   <string name="shuffle_songs">Випадкові пісні</string>
   <string name="shuffle_albums">Випадкові альбоми</string>
@@ -30,7 +29,6 @@
   <string name="choose_playlist_name">Введіть назву списку</string>
   <string name="create">Створити</string>
   <string name="overwrite">Перезаписати</string>
-  <string name="cancel">Скасувати</string>
   <string name="delete_playlist">Видалити список %s?</string>
   <string name="enqueue">Видалити з черги</string>
   <string name="play">Грати</string>
@@ -45,9 +43,7 @@
   <string name="search">Знайти</string>
   <string name="done">Виконано</string>
   <string name="remove">Усунути</string>
-  <string name="clear_search">Очистити пошук</string>
   <string name="play_or_enqueue">Видали з черги при відтворенні; Відтворити при зупиненні</string>
-  <string name="deleted">%s видалено.</string>
   <string name="delete_file_failed">Не вдалося видалити %s.</string>
   <string name="artists">Виконавець</string>
   <string name="albums">Альбоми</string>
@@ -55,7 +51,6 @@
   <string name="playlists">Списки</string>
   <string name="genres">Жанри</string>
   <string name="files">Файли</string>
-  <string name="none">Немає</string>
   <string name="unknown">Невідомий</string>
   <string name="play_all">Відтворити все</string>
   <string name="enqueue_all">Очистити чергу</string>
@@ -70,12 +65,7 @@
   <string name="artist_album_track">Виконавець, альбом, номер пісні</string>
   <string name="artist_album_title">Виконавець, альбом, назва</string>
   <string name="artist_year">Виконавець, рік</string>
-  <string name="ascending">За зростанням</string>
-  <string name="descending">За спаданням</string>
-  <string name="notification_title_paused">%s (призупинено)</string>
   <string name="audio">Аудіо</string>
-  <string name="queue">Черга</string>
-  <string name="volume_title">Гучність</string>
   <string name="media_button_title">Гарнітура/Bluetooth керування</string>
   <string name="media_button_summary">Це потрібно для контролю на екрані блокування Android 4.0 і вище.</string>
   <string name="media_button_beep_title">Звуковий сигнал при управлінні з гарнітури</string>
@@ -84,13 +74,9 @@
   <string name="headset_only_summary">Заборонити відтворення музики через гучномовець.</string>
   <string name="headset_pause_title">Призупиняти при від’єднанні</string>
   <string name="headset_pause_summary">Призупиняє при від’єднанні навушників.</string>
-  <string name="headset_play_title">Продовжувати при приєднанні</string>
-  <string name="headset_play_summary">Продовжувати при приєднанні навушників (Спрацює лише при запущеному сервісі)</string>
   <string name="notifications">Сповіщення</string>
   <string name="notification_mode_title">Режим сповіщення</string>
   <string name="notification_action_title">Дія сповіщення</string>
-  <string name="notification_invert_color_title">Інвертувати колір сповіщення</string>
-  <string name="notification_invert_color_summary">Показувати білий текст замість чорного</string>
   <string name="playback_screen">Екран відтворення</string>
   <string name="playback_on_startup_title">Відкривати при запуску</string>
   <string name="playback_on_startup_summary">Показувати екран відтворення при запуску</string>
@@ -100,8 +86,6 @@
   <string name="cover_press_action_title">Дія при натиску на обкладинку</string>
   <string name="cover_longpress_action_title">Дія при утриманні на обкладинці</string>
   <string name="library_screen">Екран бібліотеки</string>
-  <string name="controls_in_selector_title">Елементи керування в бібліотеці</string>
-  <string name="controls_in_selector_summary">Показувати поточну пісню та елементи керування в бібліотеці</string>
   <string name="default_action_title">Стандартна дія</string>
   <string name="default_playlist_action_title">Стандартна дія списку</string>
   <string name="accelerometer_shake">Струс акселерометра</string>
@@ -115,18 +99,12 @@
   <string name="use_idle_timeout_title">Зупиняти при неактивності</string>
   <string name="use_idle_timeout_summary">Коли увімкнено, відтворення буде зупинено після певного періоду бездіяльності</string>
   <string name="idle_timeout_title">Час простою</string>
-  <string name="disable_cover_art_title">Вимкнути обкладинки</string>
-  <string name="disable_cover_art_summary">Не завантажує обкладинки у всій програмі</string>
   <string name="double_tap_title">Віджет з подвійним натиском</string>
   <string name="double_tap_summary">ПОдвійний тап по віджеті 1х1 відкриє плеєр. Віджет чекає 400мс перед реагуванням на дію.</string>
   <string name="scrobble_title">Використовувати ScrobbleDroid API</string>
   <string name="scrobble_summary">Відсилати до Last.FM через ScrobbleDroid або простим Scrobbler Last.FM</string>
   <string name="stock_broadcast_title">Емулювати звичайні події</string>
   <string name="stock_broadcast_summary">Посилати події, які відсилає стандартний плеєр для роботи інших віджетів та ін.</string>
-  <string name="media_scan">Оновити бібліотеку</string>
-  <string name="tap_to_scan">Натисніть для сканування зовнішнього сховища</string>
-  <string name="scan_in_progress">Сканування…</string>
-  <string name="finished_scanning">Сканування закінчено. Натисніть для сканування ще раз.</string>
   <string name="about">Про програму</string>
   <string name="tabs">Порядок вкладок</string>
   <string name="customize_tab_order">Налаштуйте порядок та видимість тегів у бібліотеці</string>
@@ -153,7 +131,6 @@
   <string name="enqueue_current_album">Видалити альбом з черги</string>
   <string name="enqueue_current_artist">Видалити виконавця з черги</string>
   <string name="enqueue_current_genre">Видалити жанр з черги</string>
-  <string name="clear_queue">Очистити чергу</string>
   <string name="toggle_controls">Перемкнути відображення елементів керування</string>
   <plurals name="playing">
     <item quantity="one">1 пісня грає.</item>
