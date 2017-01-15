@@ -252,4 +252,7 @@
   <string name="media_stats_tracks">Número de faixas</string>
   <string name="media_stats_playtime">Tempo de reprodução (horas)</string>
   <string name="media_stats_progress">Evolução da análise</string>
+  <string name="media_library_scan_running">A analisar coleção...</string>
+  <!--Plugin system-->
+  <string name="plugins">Suplementos</string>
 </resources>

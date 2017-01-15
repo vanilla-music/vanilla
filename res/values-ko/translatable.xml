@@ -215,4 +215,5 @@
   <string name="share">공유...</string>
   <string name="sendto">전송함...</string>
   <string name="no_receiving_apps">해당 미디어 타입을 수신하는 앱을 찾을 수 없습니다!</string>
+  <!--Plugin system-->
 </resources>

@@ -154,4 +154,5 @@
   <string name="previous_album">Album sebelumnya</string>
   <string name="select">Pilih</string>
   <string name="autoplaylist_playcounts_disabled">Jangan membuat daftar putar otomatis</string>
+  <!--Plugin system-->
 </resources>

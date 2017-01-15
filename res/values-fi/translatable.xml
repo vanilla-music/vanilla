@@ -184,6 +184,7 @@
   <string name="double_tap_title">Kaksoisnapautus-widget</string>
   <string name="double_tap_summary">1x1-widgetin kaksoisnapautus avaa soittimen. Asettaa 400 ms viiveen, ennen kuin widget vastaa toimintoon.</string>
   <string name="scrobble_title">Käytä Scrobble Droid API:a</string>
+  <string name="scrobble_summary">Lähetä kuuntelutiedot Last.fm:ään Scrobble Droidia tai Simple Last.fm Scrobbleria käyttäen</string>
   <string name="stock_broadcast_summary">Lähetä vakiosoitinta emuloivia yleislähetyksiä. Auttaa kolmansien osapuolten lukitusnäyttöohjainten, widgettien yms. toimivuuden kanssa.</string>
   <string name="about">Tietoja</string>
   <string name="tabs">Välilehtien järjestys</string>
@@ -247,4 +248,7 @@
   <string name="media_stats_tracks">Kappaleiden määrä</string>
   <string name="media_stats_playtime">Toistoaika (tuntia)</string>
   <string name="media_stats_progress">Skannauksen edistyminen</string>
+  <string name="media_library_scan_running">Skannataan mediakirjastoa…</string>
+  <!--Plugin system-->
+  <string name="plugins">Liitännäiset</string>
 </resources>

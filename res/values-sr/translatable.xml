@@ -260,4 +260,6 @@
   <string name="media_stats_tracks">Број нумера</string>
   <string name="media_stats_playtime">Време пуштања (сати)</string>
   <string name="media_stats_progress">Напредак очитавања</string>
+  <string name="media_library_scan_running">Очитавам библиотеку медија…</string>
+  <!--Plugin system-->
 </resources>

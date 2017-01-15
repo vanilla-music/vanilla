@@ -252,4 +252,7 @@
   <string name="media_stats_tracks">Számok száma</string>
   <string name="media_stats_playtime">Lejátszási idő (órában)</string>
   <string name="media_stats_progress">Átvizsgálás folyamata</string>
+  <string name="media_library_scan_running">Médiagyűjtemény átvizsgálása…</string>
+  <!--Plugin system-->
+  <string name="plugins">Bővítmények</string>
 </resources>

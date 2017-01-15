@@ -234,4 +234,5 @@
   <string name="share">Condividi…</string>
   <string name="sendto">Invia a…</string>
   <string name="no_receiving_apps">Nessuna app di ricezione trovata per questo tipo di file multimediale!</string>
+  <!--Plugin system-->
 </resources>

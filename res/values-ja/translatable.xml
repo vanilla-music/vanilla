@@ -244,4 +244,7 @@
   <string name="media_stats_tracks">トラックの番号</string>
   <string name="media_stats_playtime">演奏時間 (時間)</string>
   <string name="media_stats_progress">スキャンの進行状況</string>
+  <string name="media_library_scan_running">メディアライブラリーのスキャン中…</string>
+  <!--Plugin system-->
+  <string name="plugins">プラグイン</string>
 </resources>

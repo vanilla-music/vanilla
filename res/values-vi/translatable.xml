@@ -184,4 +184,5 @@
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
   <string name="permission_request_summary">Vanilla Music cần quyền đọc dữ liệu để hiển thị thư viện nhạc của bạn</string>
   <string name="reverse_sort">Sắp xếp ngược lại</string>
+  <!--Plugin system-->
 </resources>

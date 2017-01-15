@@ -242,4 +242,5 @@
   <string name="reverse_sort">Inverser le tri</string>
   <string name="share">Partager...</string>
   <string name="sendto">Envoyer à…</string>
+  <!--Plugin system-->
 </resources>

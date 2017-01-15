@@ -240,4 +240,5 @@
   <string name="share">Paylaş…</string>
   <string name="sendto">Gönder…</string>
   <string name="no_receiving_apps">Bu ortam türü için uygun uygulama bulunamadı.</string>
+  <!--Plugin system-->
 </resources>

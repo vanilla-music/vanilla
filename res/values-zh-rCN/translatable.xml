@@ -235,4 +235,5 @@
   <string name="share">共享…</string>
   <string name="sendto">发送给…</string>
   <string name="no_receiving_apps">没有为此媒体类型找到接收的 app！</string>
+  <!--Plugin system-->
 </resources>

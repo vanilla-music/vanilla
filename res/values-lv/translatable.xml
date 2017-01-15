@@ -60,6 +60,16 @@
     <item quantity="one">Ierindota 1 dziesma.</item>
     <item quantity="other">Ierindotas %d dziesmas.</item>
   </plurals>
+  <plurals name="removed_from_playlist">
+    <item quantity="zero">No repertuāra %2$s izņemts %1$d celiņu.</item>
+    <item quantity="one">No repertuāra %2$s izņemts 1 celiņš.</item>
+    <item quantity="other">No repertuāra %2$s izņemti %1$d celiņi.</item>
+  </plurals>
+  <plurals name="deleted">
+    <item quantity="zero">Izdzēsts %d celiņu.</item>
+    <item quantity="one">Izdzēsts 1 celiņš.</item>
+    <item quantity="other">Izdzēsti %d celiņi.</item>
+  </plurals>
   <string name="delete_file_failed">Neizdevās izdzēst %s.</string>
   <string name="deleted_item">Izdzēsa \'%s\'.</string>
   <string name="delete_item">Dzēst \'%s\'?</string>
@@ -81,12 +91,28 @@
   <string name="year">Gads</string>
   <string name="date_added">Pievienošanas datums</string>
   <string name="artist_album">Izpildītājs, albums</string>
+  <string name="artist_year_album">Izpildītājs, gads, albums</string>
   <string name="artist_album_track">Izpildītājs, albums, celiņa numurs</string>
   <string name="artist_album_title">Izpildītājs, albums, nosaukums</string>
   <string name="artist_year">Izpildītājs, gads</string>
   <string name="album_track">Albums, celiņa numurs</string>
   <string name="song_playcount">Atskaņojumu skaits</string>
   <!--Preferences-->
+  <plurals name="seconds">
+    <item quantity="zero">%d sekunžu</item>
+    <item quantity="one">%d sekunde</item>
+    <item quantity="other">%d sekundes</item>
+  </plurals>
+  <plurals name="minutes">
+    <item quantity="zero">%d minūšu</item>
+    <item quantity="one">%d minūte</item>
+    <item quantity="other">%d minūtes</item>
+  </plurals>
+  <plurals name="hours">
+    <item quantity="zero">%d stundu</item>
+    <item quantity="one">%d stunda</item>
+    <item quantity="other">%d stundas</item>
+  </plurals>
   <string name="audio">Audio</string>
   <string name="volume_during_ducking_title">Skaļums paziņojuma laikā</string>
   <string name="volume_during_ducking_summary">Atskaņošanas skaļums:</string>
@@ -159,6 +185,8 @@
   <string name="cover_on_lockscreen_summary">Rādīt pašreiz atskaņotās dziesmas albuma vāciņu slēgekrānā</string>
   <string name="double_tap_title">Dubultpiesitiena sīkrīks</string>
   <string name="double_tap_summary">Izdarot dubultpieskārienu 1x1 izmēra sīkrīkam, tiks atvērts atskaņotājs. Rada 400 ms aizturi, pirms sīkrīks atbildēs uz darbībām.</string>
+  <string name="scrobble_title">Lietot Scrobble Droid API</string>
+  <string name="scrobble_summary">Nosūtīt atskaņojumus uz Last.fm, izmantojot Scrobble Droid vai Simple Last.fm Scrobbler</string>
   <string name="stock_broadcast_title">Emulēt pamata raidījumus</string>
   <string name="stock_broadcast_summary">Sūtīt raidījumus, tādējādi emulējot noklusētā mūzikas atskaņotāja sūtītos, lai būtu iespējama trešo pušu slēgekrānu vadīklu, sīkrīku, u.t.t., kontrole.</string>
   <string name="about">Par</string>
@@ -214,4 +242,16 @@
   <string name="share">Dalīties..</string>
   <string name="sendto">Sūtīt uz...</string>
   <string name="no_receiving_apps">Šim mēdija tipam netika atrastas saņemošās lietotnes!</string>
+  <string name="media_library">Multivides bibliotēka</string>
+  <string name="media_scan_header">Multivides skenētājs</string>
+  <string name="media_scan_full">Veikt pilnu failu sistēmas skenēšanu (lēni)</string>
+  <string name="media_scan_drop_db">Izmest mēdiju datubāzi (bīstami!)</string>
+  <string name="media_scan_start">Sākt skenēšanu</string>
+  <string name="media_statistics">Statistika</string>
+  <string name="media_stats_tracks">Celiņu skaits</string>
+  <string name="media_stats_playtime">Atskaņošanas laiks (stundas)</string>
+  <string name="media_stats_progress">Skenēšanas progress</string>
+  <string name="media_library_scan_running">Skenē multivides bibliotēku</string>
+  <!--Plugin system-->
+  <string name="plugins">Spraudņi</string>
 </resources>

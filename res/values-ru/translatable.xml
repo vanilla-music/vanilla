@@ -268,4 +268,7 @@
   <string name="media_stats_tracks">Количество дорожек</string>
   <string name="media_stats_playtime">Воспроизведено (часов)</string>
   <string name="media_stats_progress">Выполняется сканирование</string>
+  <string name="media_library_scan_running">Сканируется библиотека носителей...</string>
+  <!--Plugin system-->
+  <string name="plugins">Модули</string>
 </resources>

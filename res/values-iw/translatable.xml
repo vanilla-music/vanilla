@@ -243,4 +243,5 @@
   <string name="share">שתף...</string>
   <string name="sendto">שלח אל...</string>
   <string name="no_receiving_apps">לא נמצאו יישומים עבור סוג קובץ זה!</string>
+  <!--Plugin system-->
 </resources>

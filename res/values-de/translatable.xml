@@ -252,4 +252,7 @@
   <string name="media_stats_tracks">Titelanzahl</string>
   <string name="media_stats_playtime">Wiedergabedauer (Stunden)</string>
   <string name="media_stats_progress">Suchfortschritt</string>
+  <string name="media_library_scan_running">Medienbibliothek wird durchsucht …</string>
+  <!--Plugin system-->
+  <string name="plugins">Erweiterungen</string>
 </resources>

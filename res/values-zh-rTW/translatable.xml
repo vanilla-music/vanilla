@@ -244,4 +244,7 @@
   <string name="media_stats_tracks">曲目數</string>
   <string name="media_stats_playtime">撥放時間 (小時)</string>
   <string name="media_stats_progress">掃描進行中</string>
+  <string name="media_library_scan_running">正在掃描媒體庫…</string>
+  <!--Plugin system-->
+  <string name="plugins">外掛</string>
 </resources>
