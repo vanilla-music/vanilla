@@ -125,6 +125,15 @@ public class MediaScanner implements Handler.Callback {
 	}
 
 	/**
+	 * Stops a running scan
+	 */
+	public void abortScan() {
+		mHandler.removeMessages(MSG_SCAN_RPC);
+		mScanPlan.clear();
+		mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_RPC, RPC_KICKSTART, 0));
+	}
+
+	/**
 	 * Drops the media library
 	 */
 	public void flushDatabase() {
@@ -545,6 +554,14 @@ public class MediaScanner implements Handler.Callback {
 			if (changed) {
 				mStats.changed++;
 			}
+		}
+
+		/**
+		 * Flushes all progress, turning the object into a fresh state
+		 */
+		void clear() {
+			mSteps.clear();
+			mStats.reset();
 		}
 
 		/**

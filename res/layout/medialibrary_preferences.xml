@@ -85,5 +85,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 		android:layout_height="wrap_content"
 		android:text="@string/empty" />
 
+	<Button
+		android:id="@+id/cancel_button"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="end"
+		android:text="@android:string/cancel">
+		<requestFocus />
+	</Button>
+
 
 </LinearLayout>

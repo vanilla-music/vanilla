@@ -83,7 +83,7 @@ public class MediaLibrary  {
 	 * @param forceFull starts a full / slow scan if true
 	 * @param drop drop the existing library if true
 	 */
-	public static void scanLibrary(Context context, boolean forceFull, boolean drop) {
+	public static void startLibraryScan(Context context, boolean forceFull, boolean drop) {
 		MediaLibraryBackend backend = getBackend(context); // also initialized sScanner
 		if (drop) {
 			sScanner.flushDatabase();
@@ -95,6 +95,16 @@ public class MediaLibrary  {
 		} else {
 			sScanner.startNormalScan();
 		}
+	}
+
+	/**
+	 * Stops any running scan
+	 *
+	 * @param context the context to use
+	 */
+	public static void abortLibraryScan(Context context) {
+		MediaLibraryBackend backend = getBackend(context); // also initialized sScanner
+		sScanner.abortScan();
 	}
 
 	/**
