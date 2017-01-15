@@ -68,7 +68,15 @@ public class MediaScanner implements Handler.Callback {
 	/**
 	 * The id we are using for the scan notification
 	 */
-	private int NOTIFICATION_ID = 56162;
+	private static final int NOTIFICATION_ID = 56162;
+	/**
+	 * The preference key to store the last mtime
+	 */
+	private static final String PREF_KEY_MTIME = "native_last_mtime";
+	/**
+	 * The preference key to store the native audio size
+	 */
+	private static final String PREF_KEY_DBCOUNT = "native_audio_db_count";
 
 	MediaScanner(Context context, MediaLibraryBackend backend) {
 		mContext = context;
@@ -117,10 +125,8 @@ public class MediaScanner implements Handler.Callback {
 	 * @param delay how many ms we should wait (used to coalesce multiple calls)
 	 */
 	public void startQuickScan(int delay) {
-		if (!mHandler.hasMessages(MSG_SCAN_RPC)) {
-			mScanPlan.addNextStep(RPC_NATIVE_VRFY, null)
-				.addOptionalStep(RPC_LIBRARY_VRFY, null); // only runs if previous scan found no change
-			mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_SCAN_RPC, RPC_KICKSTART, 0), delay);
+		if (!mHandler.hasMessages(MSG_GUESS_QUICKSCAN) && !mHandler.hasMessages(MSG_SCAN_RPC)) {
+			mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_GUESS_QUICKSCAN, 0, 0), delay);
 		}
 	}
 
@@ -139,7 +145,7 @@ public class MediaScanner implements Handler.Callback {
 	public void flushDatabase() {
 		mBackend.delete(MediaLibrary.TABLE_SONGS, null, null);
 		mBackend.cleanOrphanedEntries(false); // -> keep playlists
-		getSetScanMark(0);
+		getSetPreference(PREF_KEY_MTIME, 0);
 	}
 
 	/**
@@ -151,14 +157,15 @@ public class MediaScanner implements Handler.Callback {
 		return mScanPlan.getStatistics();
 	}
 
-	private static final int MSG_SCAN_RPC      = 0;
-	private static final int MSG_SCAN_FINISHED = 1;
-	private static final int MSG_NOTIFY_CHANGE = 2;
-	private static final int RPC_KICKSTART     = 100;
-	private static final int RPC_READ_DIR      = 101;
-	private static final int RPC_INSPECT_FILE  = 102;
-	private static final int RPC_LIBRARY_VRFY  = 103;
-	private static final int RPC_NATIVE_VRFY   = 104;
+	private static final int MSG_SCAN_RPC         = 0;
+	private static final int MSG_SCAN_FINISHED    = 1;
+	private static final int MSG_NOTIFY_CHANGE    = 2;
+	private static final int MSG_GUESS_QUICKSCAN  = 3;
+	private static final int RPC_KICKSTART        = 100;
+	private static final int RPC_READ_DIR         = 101;
+	private static final int RPC_INSPECT_FILE     = 102;
+	private static final int RPC_LIBRARY_VRFY     = 103;
+	private static final int RPC_NATIVE_VRFY      = 104;
 
 	@Override
 	public boolean handleMessage(Message message) {
@@ -177,9 +184,13 @@ public class MediaScanner implements Handler.Callback {
 				updateNotification(false);
 				break;
 			}
+			case MSG_GUESS_QUICKSCAN: {
+				guessQuickScanPlan();
+				break;
+			}
 			case RPC_KICKSTART: {
 				// a new scan was triggered: check if this is a 'initial / from scratch' scan
-				if (!mIsInitialScan && getSetScanMark(-1) == 0) {
+				if (!mIsInitialScan && getSetPreference(PREF_KEY_MTIME, -1) == 0) {
 					mIsInitialScan = true;
 				}
 				break;
@@ -255,6 +266,42 @@ public class MediaScanner implements Handler.Callback {
 	}
 
 	/**
+	 * Checks the state of the native media db to deceide if we are going to
+	 * check for deleted or new/modified items
+	 */
+	private void guessQuickScanPlan() {
+		int lastSeenDbSize = getSetPreference(PREF_KEY_DBCOUNT, -1);
+		String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0";
+		String[] projection = { "COUNT(*)" };
+		Cursor cursor = null;
+		try {
+			cursor = mContext.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection, null, null);
+		} catch (SecurityException e) {
+			Log.e("VanillaMusic", "rpcObserveRemoval query failed: "+e);
+		}
+
+		if (cursor == null)
+			return;
+
+		cursor.moveToFirst();
+		int currentDbSize = cursor.getInt(0);
+		cursor.close();
+
+		// Store new db size
+		getSetPreference(PREF_KEY_DBCOUNT, currentDbSize);
+
+		if (currentDbSize < lastSeenDbSize) {
+			// db is smaller! check for deleted files
+			mScanPlan.addNextStep(RPC_LIBRARY_VRFY, null);
+		} else {
+			// same size or more entries -> check only for modifications
+			mScanPlan.addNextStep(RPC_NATIVE_VRFY, null);
+		}
+
+		mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_RPC, RPC_KICKSTART, 0));
+	}
+
+	/**
 	 * Scans the android library, inspecting every found file
 	 *
 	 * @param cursor the cursor we are using
@@ -262,7 +309,7 @@ public class MediaScanner implements Handler.Callback {
 	 */
 	private void rpcNativeVerify(Cursor cursor, int mtime) {
 		if (cursor == null) {
-			mtime = getSetScanMark(-1); // starting a new scan -> read stored mtime from preferences
+			mtime = getSetPreference(PREF_KEY_MTIME, -1); // starting a new scan -> read stored mtime from preferences
 			String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0 AND "+ MediaStore.MediaColumns.DATE_MODIFIED +" > " + mtime;
 			String sort = MediaStore.MediaColumns.DATE_MODIFIED;
 			String[] projection = { MediaStore.MediaColumns.DATA, MediaStore.MediaColumns.DATE_MODIFIED };
@@ -286,11 +333,10 @@ public class MediaScanner implements Handler.Callback {
 			}
 		} else {
 			cursor.close();
-			getSetScanMark(mtime);
+			getSetPreference(PREF_KEY_MTIME, mtime);
 			Log.v("VanillaMusic", "NativeLibraryScanner finished, mtime mark is now at "+mtime);
 		}
 	}
-
 
 	/**
 	 * Scans every file in our own library and checks for changes
@@ -485,12 +531,11 @@ public class MediaScanner implements Handler.Callback {
 	 * @param newVal the new value to store, ignored if < 0
 	 * @return the value previously set, or 0 as a default
 	 */
-	private int getSetScanMark(int newVal) {
-		final String prefKey = "native_last_mtime";
+	private int getSetPreference(String prefKey, int newVal) {
 		SharedPreferences sharedPref = mContext.getSharedPreferences("scanner_preferences", Context.MODE_PRIVATE);
 		int oldVal = sharedPref.getInt(prefKey, 0);
 
-		if (newVal >= 0) {
+		if (newVal >= 0 && newVal != oldVal) {
 			SharedPreferences.Editor editor = sharedPref.edit();
 			editor.putInt(prefKey, newVal);
 			editor.apply();
@@ -503,13 +548,16 @@ public class MediaScanner implements Handler.Callback {
 	// MediaScanPlan describes how we are going to perform the media scan
 	class MediaScanPlan {
 		class Step {
+			private static final int MODE_NORMAL   = 1; // this step is always run
+			private static final int MODE_OPTIONAL = 2; // only run if previous step found NO changes
+			private static final int MODE_CHAINED  = 3; // only run if previous step DID find changes
 			int msg;
 			Object arg;
-			boolean optional;
-			Step (int msg, Object arg, boolean optional) {
+			int mode;
+			Step (int msg, Object arg, int mode) {
 				this.msg = msg;
 				this.arg = arg;
-				this.optional = optional;
+				this.mode = mode;
 			}
 		}
 
@@ -571,7 +619,7 @@ public class MediaScanner implements Handler.Callback {
 		 * @param arg the argument to msg
 		 */
 		MediaScanPlan addNextStep(int msg, Object arg) {
-			mSteps.add(new Step(msg, arg, false));
+			mSteps.add(new Step(msg, arg, Step.MODE_NORMAL));
 			return this;
 		}
 
@@ -583,7 +631,19 @@ public class MediaScanner implements Handler.Callback {
 		 * @param arg the argument to msg
 		 */
 		MediaScanPlan addOptionalStep(int msg, Object arg) {
-			mSteps.add(new Step(msg, arg, true));
+			mSteps.add(new Step(msg, arg, Step.MODE_OPTIONAL));
+			return this;
+		}
+
+		/**
+		 * Adds a chained step to our plan. This will ONLY
+		 * run if the previous step caused database changes
+		 *
+		 * @param msg the message to add
+		 * @param arg the argument to msg
+		 */
+		MediaScanPlan addChainedStep(int msg, Object arg) {
+			mSteps.add(new Step(msg, arg, Step.MODE_CHAINED));
 			return this;
 		}
 
@@ -595,7 +655,11 @@ public class MediaScanner implements Handler.Callback {
 		Step getNextStep() {
 			Step next = (mSteps.size() != 0 ? mSteps.remove(0) : null);
 			if (next != null) {
-				if (next.optional && mStats.changed != 0) {
+				if (next.mode == Step.MODE_OPTIONAL && mStats.changed != 0) {
+					next = null;
+					mSteps.clear();
+				}
+				if (next.mode == Step.MODE_CHAINED && mStats.changed == 0) {
 					next = null;
 					mSteps.clear();
 				}
