@@ -137,8 +137,8 @@ public class PreferencesMediaLibrary extends Fragment
 		Integer songCount = MediaLibrary.getLibrarySize(context);
 		mStatsTracks.setText(songCount.toString());
 
-		Float playtime = calculateDuration(context) / 3600000F;
-		mStatsPlaytime.setText(playtime.toString());
+		float playtime = calculateDuration(context) / 3600000F;
+		mStatsPlaytime.setText(String.format("%.1f", playtime));
 	}
 
 	/**
@@ -147,12 +147,12 @@ public class PreferencesMediaLibrary extends Fragment
 	 * @param context the context to use
 	 * @return the play time of the library in ms
 	 */
-	public int calculateDuration(Context context) {
-		int duration = 0;
+	public long calculateDuration(Context context) {
+		long duration = 0;
 		Cursor cursor = MediaLibrary.queryLibrary(context, MediaLibrary.TABLE_SONGS, new String[]{"SUM("+MediaLibrary.SongColumns.DURATION+")"}, null, null, null);
 		if (cursor != null) {
 			if (cursor.moveToFirst()) {
-				duration = cursor.getInt(0);
+				duration = cursor.getLong(0);
 			}
 			cursor.close();
 		}
