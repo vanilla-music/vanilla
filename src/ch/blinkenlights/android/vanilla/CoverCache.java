@@ -419,8 +419,8 @@ public class CoverCache {
 									break;
 								}
 							}
-							// Stop loop if we found the best match or if we looped 50 times
-							if (loopCount++ > 50 || bestMatchIndex == 0)
+							// Stop loop if we found the best match or if we looped 150 times
+							if (loopCount++ > 150 || bestMatchIndex == 0)
 								break;
 						}
 					}
