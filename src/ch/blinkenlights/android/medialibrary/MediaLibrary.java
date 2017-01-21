@@ -37,6 +37,7 @@ public class MediaLibrary  {
 	public static final String TABLE_GENRES_SONGS         = "genres_songs";
 	public static final String TABLE_PLAYLISTS            = "playlists";
 	public static final String TABLE_PLAYLISTS_SONGS      = "playlists_songs";
+	public static final String TABLE_PREFERENCES          = "preferences";
 	public static final String VIEW_ARTISTS               = "_artists";
 	public static final String VIEW_ALBUMS_ARTISTS        = "_albums_artists";
 	public static final String VIEW_SONGS_ALBUMS_ARTISTS  = "_songs_albums_artists";
@@ -593,5 +594,17 @@ public class MediaLibrary  {
 		 * The order attribute
 		 */
 		String POSITION = "position";
+	}
+
+	// Preference keys
+	public interface PreferenceColumns {
+		/**
+		 * The key of this preference
+		 */
+		String KEY = "key";
+		/**
+		 * The value of this preference
+		 */
+		String VALUE = "value";
 	}
 }

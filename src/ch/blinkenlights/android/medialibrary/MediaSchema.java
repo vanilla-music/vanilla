@@ -117,6 +117,13 @@ public class MediaSchema {
 	  + ");";
 
 	/**
+	 * SQL schema for our preferences
+	 */
+	private static final String DATABASE_CREATE_PREFERENCES = "CREATE TABLE "+ MediaLibrary.TABLE_PREFERENCES + " ("
+	  + MediaLibrary.PreferenceColumns.KEY   +" INTEGER PRIMARY KEY, "
+	  + MediaLibrary.PreferenceColumns.VALUE +" INTEGER NOT NULL "
+	  + ");";
+	/**
 	 * Index to select a playlist quickly
 	 */
 	private static final String INDEX_IDX_PLAYLIST_ID = "CREATE INDEX idx_playlist_id ON "+MediaLibrary.TABLE_PLAYLISTS_SONGS
@@ -200,6 +207,7 @@ public class MediaSchema {
 		dbh.execSQL(VIEW_CREATE_ALBUMS_ARTISTS);
 		dbh.execSQL(VIEW_CREATE_ARTISTS);
 		dbh.execSQL(VIEW_CREATE_PLAYLIST_SONGS);
+		dbh.execSQL(DATABASE_CREATE_PREFERENCES);
 	}
 
 	/**
@@ -221,6 +229,22 @@ public class MediaSchema {
 		if (oldVersion < 20170102) {
 			dbh.execSQL("UPDATE songs SET disc_num=1 WHERE disc_num IS null");
 		}
+
+		if (oldVersion < 20170120) {
+			dbh.execSQL(DATABASE_CREATE_PREFERENCES);
+			triggerFullMediaScan(dbh);
+		}
+	}
+
+	/**
+	 * Changes the mtime of all songs and flushes the scanner progress / preferences
+	 * This triggers a full rebuild of the library on startup
+	 *
+	 * @param dbh the writeable dbh to use
+	 */
+	private static void triggerFullMediaScan(SQLiteDatabase dbh) {
+		dbh.execSQL("UPDATE "+MediaLibrary.TABLE_SONGS+" SET "+MediaLibrary.SongColumns.MTIME+"=0");
+		dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_PREFERENCES);
 	}
 
 }

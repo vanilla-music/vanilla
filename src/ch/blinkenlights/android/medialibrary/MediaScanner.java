@@ -532,16 +532,7 @@ public class MediaScanner implements Handler.Callback {
 	 * @return the value previously set, or 0 as a default
 	 */
 	private int getSetPreference(String prefKey, int newVal) {
-		SharedPreferences sharedPref = mContext.getSharedPreferences("scanner_preferences", Context.MODE_PRIVATE);
-		int oldVal = sharedPref.getInt(prefKey, 0);
-
-		if (newVal >= 0 && newVal != oldVal) {
-			SharedPreferences.Editor editor = sharedPref.edit();
-			editor.putInt(prefKey, newVal);
-			editor.apply();
-		}
-
-		return oldVal;
+		return mBackend.getSetPreference(prefKey, newVal);
 	}
 
 
