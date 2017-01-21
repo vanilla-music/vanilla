@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2016 - 2017 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,6 +53,161 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 	 * Regexp matching anything
 	 */
 	private static final Pattern sFilterAny = Pattern.compile("^(.*)$");
+	/**
+	 * Genres as defined by androids own MediaScanner.java
+	 */
+	private static final String[] ID3_GENRES = {
+		"Blues",
+		"Classic Rock",
+		"Country",
+		"Dance",
+		"Disco",
+		"Funk",
+		"Grunge",
+		"Hip-Hop",
+		"Jazz",
+		"Metal",
+		"New Age",
+		"Oldies",
+		"Other",
+		"Pop",
+		"R&B",
+		"Rap",
+		"Reggae",
+		"Rock",
+		"Techno",
+		"Industrial",
+		"Alternative",
+		"Ska",
+		"Death Metal",
+		"Pranks",
+		"Soundtrack",
+		"Euro-Techno",
+		"Ambient",
+		"Trip-Hop",
+		"Vocal",
+		"Jazz+Funk",
+		"Fusion",
+		"Trance",
+		"Classical",
+		"Instrumental",
+		"Acid",
+		"House",
+		"Game",
+		"Sound Clip",
+		"Gospel",
+		"Noise",
+		"AlternRock",
+		"Bass",
+		"Soul",
+		"Punk",
+		"Space",
+		"Meditative",
+		"Instrumental Pop",
+		"Instrumental Rock",
+		"Ethnic",
+		"Gothic",
+		"Darkwave",
+		"Techno-Industrial",
+		"Electronic",
+		"Pop-Folk",
+		"Eurodance",
+		"Dream",
+		"Southern Rock",
+		"Comedy",
+		"Cult",
+		"Gangsta",
+		"Top 40",
+		"Christian Rap",
+		"Pop/Funk",
+		"Jungle",
+		"Native American",
+		"Cabaret",
+		"New Wave",
+		"Psychadelic",
+		"Rave",
+		"Showtunes",
+		"Trailer",
+		"Lo-Fi",
+		"Tribal",
+		"Acid Punk",
+		"Acid Jazz",
+		"Polka",
+		"Retro",
+		"Musical",
+		"Rock & Roll",
+		"Hard Rock",
+		// The following genres are Winamp extensions
+		"Folk",
+		"Folk-Rock",
+		"National Folk",
+		"Swing",
+		"Fast Fusion",
+		"Bebob",
+		"Latin",
+		"Revival",
+		"Celtic",
+		"Bluegrass",
+		"Avantgarde",
+		"Gothic Rock",
+		"Progressive Rock",
+		"Psychedelic Rock",
+		"Symphonic Rock",
+		"Slow Rock",
+		"Big Band",
+		"Chorus",
+		"Easy Listening",
+		"Acoustic",
+		"Humour",
+		"Speech",
+		"Chanson",
+		"Opera",
+		"Chamber Music",
+		"Sonata",
+		"Symphony",
+		"Booty Bass",
+		"Primus",
+		"Porn Groove",
+		"Satire",
+		"Slow Jam",
+		"Club",
+		"Tango",
+		"Samba",
+		"Folklore",
+		"Ballad",
+		"Power Ballad",
+		"Rhythmic Soul",
+		"Freestyle",
+		"Duet",
+		"Punk Rock",
+		"Drum Solo",
+		"A capella",
+		"Euro-House",
+		"Dance Hall",
+		"Goa",
+		"Drum & Bass",
+		"Club-House",
+		"Hardcore",
+		"Terror",
+		"Indie",
+		"Britpop",
+		"Negerpunk",
+		"Polsk Punk",
+		"Beat",
+		"Christian Gangsta",
+		"Heavy Metal",
+		"Black Metal",
+		"Crossover",
+		"Contemporary Christian",
+		"Christian Rock",
+		"Merengue",
+		"Salsa",
+		"Thrash Metal",
+		"Anime",
+		"JPop",
+		"Synthpop",
+		// 148 goes here, Winamp 5.6 would have 148 -> 191 these ¯\_(ツ)_/¯
+	};
 
 	/**
 	 * Constructor for MediaMetadataExtractor
@@ -132,6 +287,7 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 				break;
 			default:
 				populateSelf(mediaTags);
+				convertNumericGenre();
 		}
 
 		mediaTags.release();
@@ -212,6 +368,31 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 		}
 		if (list.size() > 0)
 			put(key, list);
+	}
+
+	/**
+	 * Detects legacy numeric-genre definitions and
+	 * replaces them with one of ID3_GENRES[]
+	 */
+	private void convertNumericGenre() {
+		int genreIdx = -1;
+		String rawGenre = getFirst(GENRE);
+
+		if (rawGenre == null)
+			return; // no genre, nothing to do
+
+		try {
+			genreIdx = Integer.parseInt(rawGenre);
+		} catch (NumberFormatException exception) { /* genre not set or not a number */ }
+
+		if (genreIdx >= 0 && genreIdx < ID3_GENRES.length) {
+			ArrayList<String> data = new ArrayList<String>(1);
+			data.add(ID3_GENRES[genreIdx]);
+
+			remove(GENRE);
+			addFiltered(sFilterAny, GENRE, data);
+		}
+
 	}
 
 }
