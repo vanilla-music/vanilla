@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.io.FileInputStream;
 
 public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 	// Well known tags
@@ -251,7 +252,9 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 		HashMap bastpTags = (new Bastp()).getTags(path);
 		MediaMetadataRetriever mediaTags = new MediaMetadataRetriever();
 		try {
-			mediaTags.setDataSource(path);
+			FileInputStream fis = new FileInputStream(path);
+			mediaTags.setDataSource(fis.getFD());
+			fis.close();
 		} catch (Exception e) { /* we will later just check the contents of mediaTags */ }
 
 		// Check if this is an useable audio file
