@@ -233,11 +233,25 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 	}
 
 	/**
-	 * Returns true if this file contains any (interesting) tags
-	 * @return true if file is considered to be tagged
+	 * Returns true if this file contains any (interesting) data
+	 * @return true if file is considered to be media data
 	 */
-	public boolean isTagged() {
-		return (containsKey(TITLE) || containsKey(ALBUM) || containsKey(ARTIST));
+	public boolean isMediaFile() {
+		// We consider the file to be OK if it has some tags
+		if (containsKey(TITLE) || containsKey(ALBUM) || containsKey(ARTIST))
+			return true;
+
+		// Otherwise, check if the bitrate makes sense for an audio file.
+		// That is: more than 60kbit/s but less than 1600kbit/s
+		String rawBitrate = getFirst(BITRATE);
+		if (rawBitrate != null) {
+			int bitrate = Integer.parseInt(rawBitrate);
+			if (bitrate > 60000 && bitrate < 1600000)
+				return true;
+		}
+
+		// so this does not look like audio:
+		return false;
 	}
 
 	/**

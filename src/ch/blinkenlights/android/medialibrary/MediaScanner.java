@@ -409,7 +409,7 @@ public class MediaScanner implements Handler.Callback {
 		}
 
 		MediaMetadataExtractor tags = new MediaMetadataExtractor(path);
-		if (!tags.isTagged()) {
+		if (!tags.isMediaFile()) {
 			mustInsert = false; // does not have any useable metadata: won't insert even if it is a playable file
 		}
 
