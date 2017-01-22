@@ -447,10 +447,9 @@ public class CoverCache {
 				if (inputStream == null && (CoverCache.mCoverLoadMode & CoverCache.COVER_MODE_ANDROID) != 0) {
 					long albumId = -1;
 					ContentResolver res = mContext.getContentResolver();
-					Uri contentUri = MediaStore.Audio.Media.getContentUriForPath(song.path);
 
 					// Lookup the album id assigned to this path in the android media store
-					Cursor cursor = res.query(contentUri,  new String[]{ MediaStore.Audio.Media.ALBUM_ID }, MediaStore.Audio.Media.DATA+"=?", new String[] { song.path }, null);
+					Cursor cursor = res.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,  new String[]{ MediaStore.Audio.Media.ALBUM_ID }, MediaStore.Audio.Media.DATA+"=?", new String[] { song.path }, null);
 					if (cursor.moveToFirst()) {
 						albumId = cursor.getLong(0);
 					}
