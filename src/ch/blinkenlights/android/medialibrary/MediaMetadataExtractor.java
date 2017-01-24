@@ -49,7 +49,7 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 	/**
 	 * Regexp matching the first lefthand integer
 	 */
-	private static final Pattern sFilterLeftInt = Pattern.compile("^0*(\\d+)");
+	private static final Pattern sFilterLeftInt = Pattern.compile("^0*(\\d+).*$");
 	/**
 	 * Regexp matching anything
 	 */
