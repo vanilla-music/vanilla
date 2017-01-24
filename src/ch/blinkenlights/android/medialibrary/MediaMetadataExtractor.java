@@ -211,6 +211,11 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 	};
 
 	/**
+	 * True if we consider the file to be a good media item
+	 */
+	private boolean mIsMediaFile = false;
+
+	/**
 	 * Constructor for MediaMetadataExtractor
 	 *
 	 * @param path the path to scan
@@ -237,21 +242,7 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 	 * @return true if file is considered to be media data
 	 */
 	public boolean isMediaFile() {
-		// We consider the file to be OK if it has some tags
-		if (containsKey(TITLE) || containsKey(ALBUM) || containsKey(ARTIST))
-			return true;
-
-		// Otherwise, check if the bitrate makes sense for an audio file.
-		// That is: more than 60kbit/s but less than 1600kbit/s
-		String rawBitrate = getFirst(BITRATE);
-		if (rawBitrate != null) {
-			int bitrate = Integer.parseInt(rawBitrate);
-			if (bitrate > 60000 && bitrate < 1600000)
-				return true;
-		}
-
-		// so this does not look like audio:
-		return false;
+		return mIsMediaFile;
 	}
 
 	/**
@@ -306,6 +297,10 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 				populateSelf(mediaTags);
 				convertNumericGenre();
 		}
+
+		// We consider this a media file if it has some common tags OR
+		// if bastp was able to parse it (which is stricter than Androids own parser)
+		mIsMediaFile = (containsKey(TITLE) || containsKey(ALBUM) || containsKey(ARTIST) || !bastpType.equals(""));
 
 		mediaTags.release();
 	}
