@@ -188,6 +188,10 @@ public class LibraryPagerAdapter
 	 * The position of the genres page, or -1 if it is hidden.
 	 */
 	public int mGenresPosition = -1;
+	/**
+	 * The position of the files page, or -1 if it is hidden.
+	 */
+	public int mFilesPosition = -1;
 
 	private final ContentObserver mPlaylistObserver = new ContentObserver(null) {
 		@Override
@@ -270,6 +274,7 @@ public class LibraryPagerAdapter
 		int albumsPosition = -1;
 		int artistsPosition = -1;
 		int genresPosition = -1;
+		int filesPosition = -1;
 		for (int i = mTabCount; --i != -1; ) {
 			switch (order[i]) {
 			case MediaUtils.TYPE_ALBUM:
@@ -283,6 +288,9 @@ public class LibraryPagerAdapter
 				break;
 			case MediaUtils.TYPE_GENRE:
 				genresPosition = i;
+				break;
+			case MediaUtils.TYPE_FILE:
+				filesPosition =i;
 				break;
 			}
 		}
@@ -298,6 +306,7 @@ public class LibraryPagerAdapter
 		mAlbumsPosition = albumsPosition;
 		mArtistsPosition = artistsPosition;
 		mGenresPosition = genresPosition;
+		mFilesPosition = filesPosition;
 	}
 
 	@Override
@@ -579,7 +588,7 @@ public class LibraryPagerAdapter
 				mFilesAdapter.setLimiter(limiter);
 				requestRequery(mFilesAdapter);
 			}
-			tab = -1;
+			tab = mFilesPosition;
 			break;
 		default:
 			throw new IllegalArgumentException("Unsupported limiter type: " + limiter.type);

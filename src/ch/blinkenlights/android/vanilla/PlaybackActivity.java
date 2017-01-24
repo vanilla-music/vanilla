@@ -375,6 +375,7 @@ public abstract class PlaybackActivity extends Activity
 	static final int MENU_EMPTY_QUEUE = 16;
 	static final int MENU_ADD_TO_PLAYLIST = 17;
 	static final int MENU_SHARE = 18;
+	static final int MENU_OPEN_FOLDER = 19;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
@@ -608,6 +609,16 @@ public abstract class PlaybackActivity extends Activity
 			intent.putExtra("albumId", song.albumId);
 			intent.putExtra("album", song.album);
 			intent.putExtra("artist", song.artist);
+		}
+		startActivity(intent);
+	}
+
+	public void openFolder(Song song)
+	{
+		Intent intent = new Intent(this, LibraryActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		if (song != null) {
+			intent.putExtra("path", song.path);
 		}
 		startActivity(intent);
 	}

@@ -303,6 +303,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 	{
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, MENU_DELETE, 30, R.string.delete);
+		menu.add(0, MENU_OPEN_FOLDER, 30, R.string.open_folder);
 		menu.add(0, MENU_ENQUEUE_ALBUM, 30, R.string.enqueue_current_album);
 		menu.add(0, MENU_ENQUEUE_ARTIST, 30, R.string.enqueue_current_artist);
 		menu.add(0, MENU_ENQUEUE_GENRE, 30, R.string.enqueue_current_genre);
@@ -352,6 +353,9 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 				PlaylistDialog dialog = PlaylistDialog.newInstance(this, intent, null);
 				dialog.show(getFragmentManager(), "PlaylistDialog");
 			}
+			break;
+		case MENU_OPEN_FOLDER:
+			openFolder(song);
 			break;
 		case MENU_SHARE:
 			if (song != null)
