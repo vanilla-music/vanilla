@@ -790,7 +790,7 @@ public final class PlaybackService extends Service
 	private void triggerReadAhead() {
 		Song song = mCurrentSong;
 		if((mState & FLAG_PLAYING) != 0 && song != null) {
-			mReadahead.setSource(song.path);
+			mReadahead.setSong(song);
 		} else {
 			mReadahead.pause();
 		}

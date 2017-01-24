@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2015 - 2017 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,21 +35,22 @@ class ReadaheadThread implements Handler.Callback {
 	 */
 	private static final int BYTES_PER_READ = 32768;
 	/**
-	 * How many milliseconds to wait between reads. 125*32768 = ~256kb/s. This should be fast enough for flac files
-	 */
-	private static final int MS_DELAY_PER_READ = 125;
-	/**
 	 * Our message handler
 	 */
 	private Handler mHandler;
 	/**
 	 * The global (current) file input stream
 	 */
-	private FileInputStream mFis;
+	private FileInputStream mInputStream;
 	/**
-	 * The filesystem path used to create the current mFis
+	 * The filesystem path used to create the current mInputStream
 	 */
 	private String mPath;
+	/**
+	 * The calculated delay between `BYTES_PER_READ' sized
+	 * read operations
+	 */
+	private long mReadDelay;
 	/**
 	 * Scratch space to read junk data
 	 */
@@ -67,52 +68,59 @@ class ReadaheadThread implements Handler.Callback {
 	 * Aborts all current in-flight RPCs, pausing the readahead operation
 	 */
 	public void pause() {
-		mHandler.removeMessages(MSG_SET_PATH);
+		mHandler.removeMessages(MSG_SET_SONG);
 		mHandler.removeMessages(MSG_READ_CHUNK);
 	}
 
 	/**
-	 * Starts a new readahead operation. Will resume if `path' equals
+	 * Starts a new readahead operation. Will resume if `song.path' equals
 	 * the currently open file
 	 *
 	 * @param path The path to read ahead
 	 */
-	public void setSource(String path) {
+	public void setSong(final Song song) {
 		pause(); // cancell all in-flight rpc's
-		mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_SET_PATH, path), 1000);
+		mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_SET_SONG, song), 1000);
 	}
 
-	private static final int MSG_SET_PATH = 1;
+	private static final int MSG_SET_SONG = 1;
 	private static final int MSG_READ_CHUNK = 2;
 	@Override
 	public boolean handleMessage(Message message) {
 		switch (message.what) {
-			case MSG_SET_PATH: {
-				String path = (String)message.obj;
+			case MSG_SET_SONG: {
+				Song song = (Song)message.obj;
 
-				if (mFis != null && mPath.equals(path) == false) {
+				if (mInputStream != null && !mPath.equals(song.path)) {
 					// current file does not match requested one: clean it
 					try {
-						mFis.close();
+						mInputStream.close();
 					} catch (IOException e) {
 						Log.e("VanillaMusic", "Failed to close file: "+e);
 					}
-					mFis = null;
 					mPath = null;
+					mReadDelay = 0;
+					mInputStream = null;
 				}
 
-				if (mFis == null) {
+				if (mInputStream == null) {
 					// need to open new input stream
 					try {
-						FileInputStream fis = new FileInputStream(path);
-						mFis = fis;
-						mPath = path;
+						mPath = song.path;
+						mInputStream = new FileInputStream(mPath);
+						double requiredReads = mInputStream.available() / BYTES_PER_READ;
+
+						if (requiredReads > 1) {
+							mReadDelay = (long)(0.90 * song.duration / requiredReads); // run ~10% ahead
+						}
 					} catch (FileNotFoundException e) {
-						Log.e("VanillaMusic", "Failed to open file "+path+": "+e);
+						Log.e("VanillaMusic", "Failed to song "+ song +": "+e);
+					} catch (IOException e) {
+						Log.e("VanillaMusic", "IO Exception on "+ song +": "+e);
 					}
 				}
 
-				if (mFis != null) {
+				if (mInputStream != null) {
 					mHandler.sendEmptyMessage(MSG_READ_CHUNK);
 				}
 				break;
@@ -120,12 +128,12 @@ class ReadaheadThread implements Handler.Callback {
 			case MSG_READ_CHUNK: {
 				int bytesRead = -1;
 				try {
-					bytesRead = mFis.read(mScratch);
+					bytesRead = mInputStream.read(mScratch);
 				} catch (IOException e) {
 					// fs error or eof: stop in any case
 				}
 				if (bytesRead >= 0) {
-					mHandler.sendEmptyMessageDelayed(MSG_READ_CHUNK, MS_DELAY_PER_READ);
+					mHandler.sendEmptyMessageDelayed(MSG_READ_CHUNK, mReadDelay);
 				} else {
 					Log.d("VanillaMusic", "Readahead for "+mPath+" finished");
 				}
