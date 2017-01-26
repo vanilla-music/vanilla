@@ -1061,11 +1061,7 @@ public final class PlaybackService extends Service
 
 		mRemoteControlClient.updateRemote(mCurrentSong, mState, mForceNotificationVisible);
 
-		if (mStockBroadcast)
-			stockMusicBroadcast();
-		if (mScrobble)
-			scrobble();
-
+		scrobbleBroadcast();
 	}
 
 	/**
@@ -1099,31 +1095,37 @@ public final class PlaybackService extends Service
 	}
 
 	/**
-	 * Send a broadcast emulating that of the stock music player.
+	 * Scrobbles and broadcasts the currently playing song
 	 */
-	private void stockMusicBroadcast()
-	{
+	private void scrobbleBroadcast() {
 		Song song = mCurrentSong;
-		Intent intent = new Intent("com.android.music.playstatechanged");
-		intent.putExtra("playing", (mState & FLAG_PLAYING) != 0);
-		if (song != null) {
-			intent.putExtra("track", song.title);
-			intent.putExtra("album", song.album);
-			intent.putExtra("artist", song.artist);
-			intent.putExtra("songid", song.id);
-			intent.putExtra("albumid", song.albumId);
-		}
-		sendBroadcast(intent);
-	}
+		if (song == null)
+			return;
 
-	private void scrobble()
-	{
-		Song song = mCurrentSong;
-		Intent intent = new Intent("net.jjc1138.android.scrobbler.action.MUSIC_STATUS");
-		intent.putExtra("playing", (mState & FLAG_PLAYING) != 0);
-		if (song != null)
-			intent.putExtra("id", (int)song.id);
-		sendBroadcast(intent);
+		if (!mStockBroadcast && !mScrobble)
+			return;
+
+		long[] androidIds = MediaUtils.getAndroidMediaIds(getApplicationContext(), song);
+		if (mStockBroadcast) {
+			Intent intent = new Intent("com.android.music.playstatechanged");
+			intent.putExtra("playing", (mState & FLAG_PLAYING) != 0);
+			if (androidIds[0] != -1) {
+				intent.putExtra("track", song.title);
+				intent.putExtra("album", song.album);
+				intent.putExtra("artist", song.artist);
+				intent.putExtra("songid", androidIds[0]);
+				intent.putExtra("albumid", androidIds[1]);
+			}
+			sendBroadcast(intent);
+		}
+
+		if (mScrobble) {
+			Intent intent = new Intent("net.jjc1138.android.scrobbler.action.MUSIC_STATUS");
+			intent.putExtra("playing", (mState & FLAG_PLAYING) != 0);
+			if (androidIds[0] != -1)
+				intent.putExtra("id", androidIds[0]);
+			sendBroadcast(intent);
+		}
 	}
 
 	private void updateNotification()

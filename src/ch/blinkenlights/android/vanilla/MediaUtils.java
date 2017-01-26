@@ -563,6 +563,25 @@ public class MediaUtils {
 	}
 
 	/**
+	 * Returns the id's used by Androids native media database for given song
+	 *
+	 * @param context the context to use
+	 * @param song the song to query
+	 * @return long { song_id, album_id, artist_id } - all set to -1 on error
+	 */
+	public static long[] getAndroidMediaIds(Context context, Song song) {
+		long[] result = { -1, -1, -1 };
+		String[] projection = new String[]{ MediaStore.Audio.Media._ID, MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.ARTIST_ID };
+		Cursor cursor = context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, MediaStore.Audio.Media.DATA+"=?", new String[] { song.path }, null);
+		if (cursor.moveToFirst()) {
+			for (int i=0; i<result.length; i++)
+				result[i] = cursor.getLong(i);
+		}
+		cursor.close();
+		return result;
+	}
+
+	/**
 	 * Retrieve ID of specified media type for requested song. This works only for
 	 * media-oriented types: {@link #TYPE_ARTIST}, {@link #TYPE_ALBUM}, {@link #TYPE_SONG}
 	 * @param song requested song
