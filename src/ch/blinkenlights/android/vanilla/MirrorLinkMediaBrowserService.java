@@ -20,7 +20,6 @@ package ch.blinkenlights.android.vanilla;
 import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.ContentResolver;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -755,16 +754,20 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService
 		}
 
 		if(song != null) {
-			MediaMetadata metadata = new MediaMetadata.Builder()
-				.putString(MediaMetadata.METADATA_KEY_MEDIA_ID, Long.toString(song.id))
-				.putString(MediaMetadata.METADATA_KEY_ALBUM, song.album)
-				.putString(MediaMetadata.METADATA_KEY_ARTIST, song.artist)
-				.putLong(MediaMetadata.METADATA_KEY_DURATION, song.duration)
-				.putString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI, "content://media/external/audio/media/" + Long.toString(song.id) + "/albumart")
-				.putString(MediaMetadata.METADATA_KEY_TITLE, song.title)
-				.putLong(MediaMetadata.METADATA_KEY_TRACK_NUMBER, song.trackNumber)
-				.build();
-			mSession.setMetadata(metadata);
+			long[] androidIds = MediaUtils.getAndroidMediaIds(getApplicationContext(), song);
+			long songId = androidIds[0];
+			if (songId != -1) {
+				MediaMetadata metadata = new MediaMetadata.Builder()
+					.putString(MediaMetadata.METADATA_KEY_MEDIA_ID, Long.toString(songId))
+					.putString(MediaMetadata.METADATA_KEY_ALBUM, song.album)
+					.putString(MediaMetadata.METADATA_KEY_ARTIST, song.artist)
+					.putLong(MediaMetadata.METADATA_KEY_DURATION, song.duration)
+					.putString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI, "content://media/external/audio/media/" + Long.toString(songId) + "/albumart")
+					.putString(MediaMetadata.METADATA_KEY_TITLE, song.title)
+					.putLong(MediaMetadata.METADATA_KEY_TRACK_NUMBER, song.trackNumber)
+					.build();
+				mSession.setMetadata(metadata);
+			}
 		}
 	}
 

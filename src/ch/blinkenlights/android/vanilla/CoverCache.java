@@ -28,7 +28,6 @@ import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
@@ -445,15 +444,9 @@ public class CoverCache {
 				}
 
 				if (inputStream == null && (CoverCache.mCoverLoadMode & CoverCache.COVER_MODE_ANDROID) != 0) {
-					long albumId = -1;
 					ContentResolver res = mContext.getContentResolver();
-
-					// Lookup the album id assigned to this path in the android media store
-					Cursor cursor = res.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,  new String[]{ MediaStore.Audio.Media.ALBUM_ID }, MediaStore.Audio.Media.DATA+"=?", new String[] { song.path }, null);
-					if (cursor.moveToFirst()) {
-						albumId = cursor.getLong(0);
-					}
-					cursor.close();
+					long[] androidIds = MediaUtils.getAndroidMediaIds(mContext, song);
+					long albumId = androidIds[1];
 
 					if (albumId != -1) {
 						// now we can query for the album art path if we found an album id
