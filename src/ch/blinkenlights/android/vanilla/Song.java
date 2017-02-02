@@ -224,7 +224,7 @@ public class Song implements Comparable<Song> {
 	 * @return The album art or null if no album art could be found
 	 */
 	private Bitmap getCoverInternal(Context context, int size) {
-		if (CoverCache.mCoverLoadMode == 0 || id == -1 || (flags & FLAG_NO_COVER) != 0)
+		if (CoverCache.mCoverLoadMode == 0 || id <= -1 || (flags & FLAG_NO_COVER) != 0)
 			return null;
 
 		if (sCoverCache == null)
