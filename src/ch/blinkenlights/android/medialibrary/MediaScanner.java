@@ -424,7 +424,7 @@ public class MediaScanner implements Handler.Callback {
 			// Get tags which always must be set
 			String title = tags.getFirst(MediaMetadataExtractor.TITLE);
 			if (title == null)
-				title = "<"+file.getName()+">";
+				title = file.getName();
 
 			String album = tags.getFirst(MediaMetadataExtractor.ALBUM);
 			if (album == null)
