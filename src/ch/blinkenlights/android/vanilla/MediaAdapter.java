@@ -560,9 +560,10 @@ public class MediaAdapter
 	 * is negative, the inverse of the index will be used and sort order will
 	 * be reversed.
 	 */
-	public void setSortMode(int i)
+	public void setSortMode(int mode)
 	{
-		mSortMode = (Math.abs(i) < mSortEntries.length ? i : 0);
+		int index = ( mode < 0 ? ~mode : mode); // 'negative' modes are actually inverted indexes
+		mSortMode = index < mSortEntries.length ? mode : 0;
 	}
 
 	/**
