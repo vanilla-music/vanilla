@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2013 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2017 Google Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,7 +87,8 @@ public class Bastp {
 				magic.substring(8,11).equals("M4A") ||  // Apple audio
 				magic.substring(8,11).equals("M4V") ||  // Apple video
 				magic.substring(8,12).equals("mp42") || // generic MP4, e.g. FAAC
-				magic.substring(8,12).equals("isom")    // generic MP4, e.g. ffmpeg
+				magic.substring(8,12).equals("isom") || // generic MP4, e.g. ffmpeg
+				magic.substring(8,12).equals("dash")    // IEC 23009-1 data
 			)) {
 				tags = (new Mp4File()).getTags(s);
 				tags.put("type", "MP4");
