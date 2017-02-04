@@ -106,10 +106,10 @@ public class MediaLibrary  {
 		if (prefs == null) {
 			MediaLibraryBackend backend = getBackend(context);
 			prefs = new MediaLibrary.Preferences();
-			prefs.forceBastp = backend.getSetPreference(PREF_KEY_FORCE_BASTP, 0) != 0;
-			prefs.groupAlbumsByFolder = backend.getSetPreference(PREF_KEY_GROUP_ALBUMS, 1) != 0;
-			prefs._nativeLibraryCount = backend.getSetPreference(PREF_KEY_NATIVE_LIBRARY_COUNT, 0);
-			prefs._nativeLastMtime = backend.getSetPreference(PREF_KEY_NATIVE_LAST_MTIME, 0);
+			prefs.forceBastp = backend.getSetPreference(PREF_KEY_FORCE_BASTP, -1) != 0;
+			prefs.groupAlbumsByFolder = backend.getSetPreference(PREF_KEY_GROUP_ALBUMS, -1) != 0;
+			prefs._nativeLibraryCount = backend.getSetPreference(PREF_KEY_NATIVE_LIBRARY_COUNT, -1);
+			prefs._nativeLastMtime = backend.getSetPreference(PREF_KEY_NATIVE_LAST_MTIME, -1);
 			sPreferences = prefs; // cached for frequent access
 		}
 		return prefs;
