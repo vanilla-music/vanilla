@@ -214,6 +214,10 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 	 * True if we consider the file to be a good media item
 	 */
 	private boolean mIsMediaFile = false;
+	/**
+	 * True if we should try bastp for 'experimental' formats
+	 */
+	private boolean mForceBastp = false;
 
 	/**
 	 * Constructor for MediaMetadataExtractor
@@ -221,6 +225,17 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 	 * @param path the path to scan
 	 */
 	public MediaMetadataExtractor(String path) {
+		this(path, false);
+	}
+
+	/**
+	 * Constructor for MediaMetadataExtractor
+	 *
+	 * @param path the path to scan
+	 * @param forceBastp always prefer bastp if possible
+	 */
+	public MediaMetadataExtractor(String path, boolean forceBastp) {
+		mForceBastp = forceBastp;
 		extractMetadata(path);
 	}
 
@@ -293,10 +308,17 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 			case "OPUS":
 				populateSelf(bastpTags);
 				break;
+			case "MP3/ID3v2":
+				// ^-- these tagreaders are not fully stable, but can be enabled on demand
+				if(mForceBastp) {
+					populateSelf(bastpTags);
+					break;
+				}
+				// else: fallthrough
 			default:
 				populateSelf(mediaTags);
-				convertNumericGenre();
 		}
+		convertNumericGenre();
 
 		// We consider this a media file if it has some common tags OR
 		// if bastp was able to parse it (which is stricter than Androids own parser)

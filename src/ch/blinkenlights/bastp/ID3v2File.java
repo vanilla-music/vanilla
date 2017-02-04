@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2013-2016 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2017 Google Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -115,6 +116,10 @@ public class ID3v2File extends Common {
 		lu.put("TIT2", "TITLE");
 		lu.put("TALB", "ALBUM");
 		lu.put("TPE1", "ARTIST");
+		lu.put("TYER", "YEAR");
+		lu.put("TRCK", "TRACKNUMBER");
+		lu.put("TCON", "GENRE");
+		lu.put("TCOM", "COMPOSER");
 		
 		if(lu.containsKey(k)) {
 			/* A normal, known key: translate into Ogg-Frame name */
