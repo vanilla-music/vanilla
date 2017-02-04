@@ -46,6 +46,24 @@ public class MediaLibrary  {
 	public static final int ROLE_ARTIST                   = 0;
 	public static final int ROLE_COMPOSER                 = 1;
 
+	private static final String PREF_KEY_FORCE_BASTP          = "force_bastp";
+	private static final String PREF_KEY_GROUP_ALBUMS         = "group_albums";
+	private static final String PREF_KEY_NATIVE_LIBRARY_COUNT = "native_audio_db_count";
+	private static final String PREF_KEY_NATIVE_LAST_MTIME    = "native_last_mtime";
+
+	/**
+	 * Options used by the MediaScanner class
+	 */
+	public static class Preferences {
+		public boolean forceBastp;
+		public boolean groupAlbumsByFolder;
+		int _nativeLibraryCount;
+		int _nativeLastMtime;
+	}
+	/**
+	 * Cached preferences, may be null
+	 */
+	private static Preferences sPreferences;
 	/**
 	 * Our static backend instance
 	 */
@@ -75,6 +93,42 @@ public class MediaLibrary  {
 			}
 		}
 		return sBackend;
+	}
+
+	/**
+	 * Returns the scanner preferences
+	 *
+	 * @param context the context to use
+	 * @return MediaLibrary.Preferences
+	 */
+	public static MediaLibrary.Preferences getPreferences(Context context) {
+		MediaLibrary.Preferences prefs = sPreferences;
+		if (prefs == null) {
+			MediaLibraryBackend backend = getBackend(context);
+			prefs = new MediaLibrary.Preferences();
+			prefs.forceBastp = backend.getSetPreference(PREF_KEY_FORCE_BASTP, 0) != 0;
+			prefs.groupAlbumsByFolder = backend.getSetPreference(PREF_KEY_GROUP_ALBUMS, 1) != 0;
+			prefs._nativeLibraryCount = backend.getSetPreference(PREF_KEY_NATIVE_LIBRARY_COUNT, 0);
+			prefs._nativeLastMtime = backend.getSetPreference(PREF_KEY_NATIVE_LAST_MTIME, 0);
+			sPreferences = prefs; // cached for frequent access
+		}
+		return prefs;
+	}
+
+	/**
+	 * Updates the scanner preferences
+	 *
+	 * @param context the context to use
+	 * @param prefs the preferences to store - this will update ALL fields, so you are
+	 *              supposed to first call getPreferences() to obtain the current values
+	 */
+	public static void setPreferences(Context context, MediaLibrary.Preferences prefs) {
+		MediaLibraryBackend backend = getBackend(context);
+		backend.getSetPreference(PREF_KEY_FORCE_BASTP, prefs.forceBastp ? 1 : 0);
+		backend.getSetPreference(PREF_KEY_GROUP_ALBUMS, prefs.groupAlbumsByFolder ? 1 : 0);
+		backend.getSetPreference(PREF_KEY_NATIVE_LIBRARY_COUNT, prefs._nativeLibraryCount);
+		backend.getSetPreference(PREF_KEY_NATIVE_LAST_MTIME, prefs._nativeLastMtime);
+		sPreferences = null;
 	}
 
 	/**

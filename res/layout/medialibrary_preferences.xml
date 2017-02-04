@@ -26,6 +26,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 	<TextView
 		style="?android:attr/listSeparatorTextViewStyle"
 		android:textColor="?overlay_foreground_color"
+		android:text="@string/media_scan_preferences" />
+	<CheckBox android:id="@+id/media_scan_group_albums"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/media_scan_group_albums" />
+	<CheckBox android:id="@+id/media_scan_force_bastp"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/media_scan_force_bastp" />
+
+	<TextView
+		style="?android:attr/listSeparatorTextViewStyle"
+		android:textColor="?overlay_foreground_color"
 		android:text="@string/media_scan_header" />
 
 	<CheckBox android:id="@+id/media_scan_full"

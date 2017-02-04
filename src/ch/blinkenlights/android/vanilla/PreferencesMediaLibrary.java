@@ -1,24 +1,28 @@
 /*
- * Copyright (C) 2016 Xiao Bao Clark
- * Copyright (C) 2016 Adrian Ulrich
+ * Copyright (C) 2017 Adrian Ulrich <adrian@blinkenlights.ch>
  *
- * This program is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package ch.blinkenlights.android.vanilla;
 
 import ch.blinkenlights.android.medialibrary.MediaLibrary;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -29,9 +33,8 @@ import android.widget.TextView;
 
 import java.util.Timer;
 import java.util.TimerTask;
-import android.util.Log;
 
-public class PreferencesMediaLibrary extends Fragment
+public class PreferencesMediaLibrary extends Fragment implements View.OnClickListener
 {
 	/**
 	 * The ugly timer which fires every 200ms
@@ -65,6 +68,18 @@ public class PreferencesMediaLibrary extends Fragment
 	 * Checkbox for drop
 	 */
 	private CheckBox mDropDbCheck;
+	/**
+	 * Checkbox for album group option
+	 */
+	private CheckBox mGroupAlbumsCheck;
+	/**
+	 * Checkbox for targreader flavor
+	 */
+	private CheckBox mForceBastpCheck;
+	/**
+	 * Set if we should start a full scan due to option changes
+	 */
+	private boolean mFullScanPending;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -82,20 +97,14 @@ public class PreferencesMediaLibrary extends Fragment
 		mStatsPlaytime = (TextView)view.findViewById(R.id.media_stats_playtime);
 		mFullScanCheck = (CheckBox)view.findViewById(R.id.media_scan_full);
 		mDropDbCheck = (CheckBox)view.findViewById(R.id.media_scan_drop_db);
+		mGroupAlbumsCheck = (CheckBox)view.findViewById(R.id.media_scan_group_albums);
+		mForceBastpCheck = (CheckBox)view.findViewById(R.id.media_scan_force_bastp);
 
-		mStartButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				startButtonPressed(v);
-			}
-		});
-
-		mCancelButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				cancelButtonPressed(v);
-			}
-		});
+		// Bind onClickListener to some elements
+		mStartButton.setOnClickListener(this);
+		mCancelButton.setOnClickListener(this);
+		mGroupAlbumsCheck.setOnClickListener(this);
+		mForceBastpCheck.setOnClickListener(this);
 	}
 
 	@Override
@@ -113,6 +122,8 @@ public class PreferencesMediaLibrary extends Fragment
 					}
 				});
 			}}), 0, 200);
+
+		updatePreferences(null);
 	}
 
 	@Override
@@ -122,6 +133,79 @@ public class PreferencesMediaLibrary extends Fragment
 			mTimer.cancel();
 			mTimer = null;
 		}
+
+		if (mFullScanPending) {
+			MediaLibrary.startLibraryScan(getActivity(), true, true);
+			mFullScanPending = false;
+		}
+	}
+
+	@Override
+	public void onClick(View view) {
+		switch (view.getId()) {
+			case R.id.start_button:
+				startButtonPressed(view);
+				break;
+			case R.id.cancel_button:
+				cancelButtonPressed(view);
+				break;
+			case R.id.media_scan_group_albums:
+			case R.id.media_scan_force_bastp:
+				confirmUpdatePreferences((CheckBox)view);
+				break;
+		}
+	}
+
+	/**
+	 * Wrapper for updatePreferences() which warns the user about
+	 * possible consequences.
+	 *
+	 * @param checkbox the checkbox which was changed
+	 */
+	private void confirmUpdatePreferences(final CheckBox checkbox) {
+		if (mFullScanPending) {
+			// User was already warned, so we can just dispatch this
+			// without nagging again
+			updatePreferences(checkbox);
+			return;
+		}
+
+		new AlertDialog.Builder(getActivity())
+			.setTitle(R.string.media_scan_preferences_change_title)
+			.setMessage(R.string.media_scan_preferences_change_message)
+			.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					mFullScanPending = true;
+					updatePreferences(checkbox);
+				}
+			})
+			.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					// restore old condition if use does not want to proceed
+					checkbox.setChecked(!checkbox.isChecked());
+				}
+			})
+			.show();
+	}
+
+	/**
+	 * Initializes and updates the scanner preferences
+	 *
+	 * @param checkbox the item to update, may be null
+	 * @return void but sets the checkboxes to their correct state
+	 */
+	private void updatePreferences(CheckBox checkbox) {
+		MediaLibrary.Preferences prefs = MediaLibrary.getPreferences(getActivity());
+
+		if (checkbox == mGroupAlbumsCheck)
+			prefs.groupAlbumsByFolder = mGroupAlbumsCheck.isChecked();
+		if (checkbox == mForceBastpCheck)
+			prefs.forceBastp = mForceBastpCheck.isChecked();
+
+		MediaLibrary.setPreferences(getActivity(), prefs);
+
+		mGroupAlbumsCheck.setChecked(prefs.groupAlbumsByFolder);
+		mForceBastpCheck.setChecked(prefs.forceBastp);
 	}
 
 	/**
@@ -130,9 +214,15 @@ public class PreferencesMediaLibrary extends Fragment
 	private void updateProgress() {
 		Context context = getActivity();
 		String scanText = MediaLibrary.describeScanProgress(getActivity());
+		boolean scanIdle = scanText == null;
+
 		mProgress.setText(scanText);
-		mStartButton.setEnabled(scanText == null);
-		mCancelButton.setVisibility(scanText == null ? View.GONE : View.VISIBLE);
+		mStartButton.setEnabled(scanIdle);
+		mDropDbCheck.setEnabled(scanIdle);
+		mFullScanCheck.setEnabled(scanIdle);
+		mForceBastpCheck.setEnabled(scanIdle);
+		mGroupAlbumsCheck.setEnabled(scanIdle);
+		mCancelButton.setVisibility(scanIdle ? View.GONE : View.VISIBLE);
 
 		Integer songCount = MediaLibrary.getLibrarySize(context);
 		mStatsTracks.setText(songCount.toString());

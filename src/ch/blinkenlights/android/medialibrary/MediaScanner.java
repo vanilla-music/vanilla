@@ -69,14 +69,6 @@ public class MediaScanner implements Handler.Callback {
 	 * The id we are using for the scan notification
 	 */
 	private static final int NOTIFICATION_ID = 56162;
-	/**
-	 * The preference key to store the last mtime
-	 */
-	private static final String PREF_KEY_MTIME = "native_last_mtime";
-	/**
-	 * The preference key to store the native audio size
-	 */
-	private static final String PREF_KEY_DBCOUNT = "native_audio_db_count";
 
 	MediaScanner(Context context, MediaLibraryBackend backend) {
 		mContext = context;
@@ -145,7 +137,10 @@ public class MediaScanner implements Handler.Callback {
 	public void flushDatabase() {
 		mBackend.delete(MediaLibrary.TABLE_SONGS, null, null);
 		mBackend.cleanOrphanedEntries(false); // -> keep playlists
-		getSetPreference(PREF_KEY_MTIME, 0);
+
+		MediaLibrary.Preferences prefs = MediaLibrary.getPreferences(mContext);
+		prefs._nativeLastMtime = 0;
+		MediaLibrary.setPreferences(mContext, prefs);
 	}
 
 	/**
@@ -190,7 +185,7 @@ public class MediaScanner implements Handler.Callback {
 			}
 			case RPC_KICKSTART: {
 				// a new scan was triggered: check if this is a 'initial / from scratch' scan
-				if (!mIsInitialScan && getSetPreference(PREF_KEY_MTIME, -1) == 0) {
+				if (!mIsInitialScan && MediaLibrary.getPreferences(mContext)._nativeLastMtime == 0) {
 					mIsInitialScan = true;
 				}
 				break;
@@ -270,7 +265,7 @@ public class MediaScanner implements Handler.Callback {
 	 * check for deleted or new/modified items
 	 */
 	private void guessQuickScanPlan() {
-		int lastSeenDbSize = getSetPreference(PREF_KEY_DBCOUNT, -1);
+		int lastSeenDbSize = MediaLibrary.getPreferences(mContext)._nativeLibraryCount;
 		String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0";
 		String[] projection = { "COUNT(*)" };
 		Cursor cursor = null;
@@ -288,7 +283,9 @@ public class MediaScanner implements Handler.Callback {
 		cursor.close();
 
 		// Store new db size
-		getSetPreference(PREF_KEY_DBCOUNT, currentDbSize);
+		MediaLibrary.Preferences prefs = MediaLibrary.getPreferences(mContext);
+		prefs._nativeLibraryCount = currentDbSize;
+		MediaLibrary.setPreferences(mContext, prefs);
 
 		if (currentDbSize < lastSeenDbSize) {
 			// db is smaller! check for deleted files
@@ -309,7 +306,7 @@ public class MediaScanner implements Handler.Callback {
 	 */
 	private void rpcNativeVerify(Cursor cursor, int mtime) {
 		if (cursor == null) {
-			mtime = getSetPreference(PREF_KEY_MTIME, -1); // starting a new scan -> read stored mtime from preferences
+			mtime = MediaLibrary.getPreferences(mContext)._nativeLastMtime; // starting a new scan -> read stored mtime from preferences
 			String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0 AND "+ MediaStore.MediaColumns.DATE_MODIFIED +" > " + mtime;
 			String sort = MediaStore.MediaColumns.DATE_MODIFIED;
 			String[] projection = { MediaStore.MediaColumns.DATA, MediaStore.MediaColumns.DATE_MODIFIED };
@@ -333,7 +330,9 @@ public class MediaScanner implements Handler.Callback {
 			}
 		} else {
 			cursor.close();
-			getSetPreference(PREF_KEY_MTIME, mtime);
+			MediaLibrary.Preferences prefs = MediaLibrary.getPreferences(mContext);
+			prefs._nativeLastMtime = mtime;
+			MediaLibrary.setPreferences(mContext, prefs);
 			Log.v("VanillaMusic", "NativeLibraryScanner finished, mtime mark is now at "+mtime);
 		}
 	}
@@ -524,17 +523,6 @@ public class MediaScanner implements Handler.Callback {
 	private boolean isBlacklisted(File file) {
 		boolean blacklisted = sIgnoredFilenames.matcher(file.getName()).matches() || sIgnoredDirectories.matcher(file.getPath()).matches();
 		return blacklisted;
-	}
-
-
-	/**
-	 * Clunky shortcut to preferences editor
-	 *
-	 * @param newVal the new value to store, ignored if < 0
-	 * @return the value previously set, or 0 as a default
-	 */
-	private int getSetPreference(String prefKey, int newVal) {
-		return mBackend.getSetPreference(prefKey, newVal);
 	}
 
 
