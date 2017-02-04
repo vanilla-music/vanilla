@@ -19,12 +19,15 @@ package ch.blinkenlights.android.medialibrary;
 
 import ch.blinkenlights.bastp.Bastp;
 import android.media.MediaMetadataRetriever;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import java.io.FileInputStream;
 
+import android.util.Log;
 public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 	// Well known tags
 	public final static String ALBUM        = "ALBUM";
@@ -269,16 +272,29 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 		if (!isEmpty())
 			throw new IllegalStateException("Expected to be called on a clean HashMap");
 
+		Log.v("VanillaMusic", "Extracting tags from "+path);
+
 		HashMap bastpTags = (new Bastp()).getTags(path);
 		MediaMetadataRetriever mediaTags = new MediaMetadataRetriever();
+		boolean nativelyReadable = false;
+
 		try {
 			FileInputStream fis = new FileInputStream(path);
-			mediaTags.setDataSource(fis.getFD());
+			try {
+				mediaTags.setDataSource(fis.getFD());
+				nativelyReadable = true;
+			} catch (Exception e) {
+				Log.v("VanillaMusic", "Error calling setDataSource for "+path+": "+e);
+			}
 			fis.close();
-		} catch (Exception e) { /* we will later just check the contents of mediaTags */ }
+		} catch (Exception e) {
+			nativelyReadable = false;
+			Log.v("VanillaMusic", "Error creating fis for "+path+": "+e);
+		}
 
 		// Check if this is an useable audio file
-		if (mediaTags.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_AUDIO) == null ||
+		if (nativelyReadable == false ||
+		    mediaTags.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_AUDIO) == null ||
 		    mediaTags.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_VIDEO) != null ||
 		    mediaTags.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION) == null) {
 		    mediaTags.release();
