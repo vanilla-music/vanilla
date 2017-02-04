@@ -385,6 +385,7 @@ public class MediaScanner implements Handler.Callback {
 	 * @return true if we modified the database
 	 */
 	private boolean rpcInspectFile(File file) {
+		MediaLibrary.Preferences prefs = MediaLibrary.getPreferences(mContext);
 		String path  = file.getAbsolutePath();
 		long songId  = MediaLibrary.hash63(path);
 
@@ -437,8 +438,13 @@ public class MediaScanner implements Handler.Callback {
 			if (discNumber == null)
 				discNumber = "1"; // untagged, but most likely '1' - this prevents annoying sorting issues with partially tagged files
 
-			long albumId = MediaLibrary.hash63(album);
 			long artistId = MediaLibrary.hash63(artist);
+			long albumId = MediaLibrary.hash63(album);
+
+			// Overwrite albumId with a hash that included the parent dir if set in preferences
+			if (prefs.groupAlbumsByFolder) {
+				albumId = MediaLibrary.hash63(album + "\n" + file.getParent());
+			}
 
 			ContentValues v = new ContentValues();
 			v.put(MediaLibrary.SongColumns._ID,         songId);
