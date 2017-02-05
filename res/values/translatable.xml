@@ -308,7 +308,7 @@ THE SOFTWARE.
 	<string name="media_scan_full">Scan full filesystem (Slow)</string>
 	<string name="media_scan_drop_db">Flush media database (Dangerzone!)</string>
 	<string name="media_scan_start">Start scan</string>
-	<string name="media_scan_force_bastp">Always use builtin tagreader</string>
+	<string name="media_scan_force_bastp">Always use built-in tag reader</string>
 	<string name="media_scan_group_albums">Group albums by folder</string>
 	<string name="media_statistics">Statistics</string>
 	<string name="media_stats_tracks">Number of tracks</string>
