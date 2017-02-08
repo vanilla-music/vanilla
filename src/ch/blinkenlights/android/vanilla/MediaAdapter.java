@@ -186,14 +186,14 @@ public class MediaAdapter
 			mSource = MediaLibrary.VIEW_ARTISTS;
 			mFields = new String[] { MediaLibrary.ContributorColumns.ARTIST };
 			mFieldKeys = new String[] { MediaLibrary.ContributorColumns.ARTIST_SORT };
-			mSortEntries = new int[] { R.string.name, R.string.date_added };
+			mSortEntries = new int[] { R.string.title, R.string.date_added };
 			mAdapterSortValues = new String[] { MediaLibrary.ContributorColumns.ARTIST_SORT+" %1$s", MediaLibrary.ContributorColumns.MTIME+" %1$s" };
 			break;
 		case MediaUtils.TYPE_ALBUM:
 			mSource = MediaLibrary.VIEW_ALBUMS_ARTISTS;
 			mFields = new String[] { MediaLibrary.AlbumColumns.ALBUM, MediaLibrary.ContributorColumns.ARTIST };
 			mFieldKeys = new String[] { MediaLibrary.AlbumColumns.ALBUM_SORT, MediaLibrary.ContributorColumns.ARTIST_SORT };
-			mSortEntries = new int[] { R.string.name, R.string.artist_album, R.string.year, R.string.date_added };
+			mSortEntries = new int[] { R.string.title, R.string.artist_album, R.string.year, R.string.date_added };
 			mAdapterSortValues = new String[] { MediaLibrary.AlbumColumns.ALBUM_SORT+" %1$s", MediaLibrary.ContributorColumns.ARTIST_SORT+" %1$s,"+MediaLibrary.AlbumColumns.ALBUM_SORT+" %1$s",
 			                                    MediaLibrary.AlbumColumns.PRIMARY_ALBUM_YEAR+" %1$s", MediaLibrary.AlbumColumns.MTIME+" %1$s" };
 			break;
@@ -201,7 +201,7 @@ public class MediaAdapter
 			mSource = MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS;
 			mFields = new String[] { MediaLibrary.SongColumns.TITLE, MediaLibrary.AlbumColumns.ALBUM, MediaLibrary.ContributorColumns.ARTIST };
 			mFieldKeys = new String[] { MediaLibrary.SongColumns.TITLE_SORT, MediaLibrary.AlbumColumns.ALBUM_SORT, MediaLibrary.ContributorColumns.ARTIST_SORT };
-			mSortEntries = new int[] { R.string.name, R.string.artist_album_track, R.string.artist_album_title, R.string.album_track, R.string.year, R.string.date_added, R.string.song_playcount };
+			mSortEntries = new int[] { R.string.title, R.string.artist_album_track, R.string.artist_album_title, R.string.album_track, R.string.year, R.string.date_added, R.string.song_playcount };
 			mAdapterSortValues = new String[] { MediaLibrary.SongColumns.TITLE_SORT+" %1$s",
 			                                    MediaLibrary.ContributorColumns.ARTIST_SORT+" %1$s,"+MediaLibrary.AlbumColumns.ALBUM_SORT+" %1$s,"+MediaLibrary.SongColumns.DISC_NUMBER+","+MediaLibrary.SongColumns.SONG_NUMBER,
 			                                    MediaLibrary.ContributorColumns.ARTIST_SORT+" %1$s,"+MediaLibrary.AlbumColumns.ALBUM_SORT+" %1$s,"+MediaLibrary.SongColumns.TITLE_SORT+" %1$s",
@@ -218,7 +218,7 @@ public class MediaAdapter
 			mSource = MediaLibrary.TABLE_PLAYLISTS;
 			mFields = new String[] { MediaLibrary.PlaylistColumns.NAME };
 			mFieldKeys = null;
-			mSortEntries = new int[] { R.string.name, R.string.date_added };
+			mSortEntries = new int[] { R.string.title, R.string.date_added };
 			mAdapterSortValues = new String[] { MediaLibrary.PlaylistColumns.NAME+" %1$s", MediaLibrary.PlaylistColumns._ID+" %1$s" };
 			mExpandable = true;
 			break;
@@ -226,7 +226,7 @@ public class MediaAdapter
 			mSource = MediaLibrary.TABLE_GENRES;
 			mFields = new String[] { MediaLibrary.GenreColumns._GENRE };
 			mFieldKeys = new String[] { MediaLibrary.GenreColumns._GENRE_SORT };
-			mSortEntries = new int[] { R.string.name };
+			mSortEntries = new int[] { R.string.title };
 			mAdapterSortValues = new String[] { MediaLibrary.GenreColumns._GENRE_SORT+" %1$s" };
 			break;
 		default:

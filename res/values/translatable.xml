@@ -120,7 +120,7 @@ THE SOFTWARE.
 	<string name="more_from_artist">More from artist</string>
 	<string name="more_from_album">More from album</string>
 
-	<string name="name">Name</string>
+	<string name="title">Title</string>
 	<string name="number_of_tracks">Number of tracks</string>
 	<string name="year">Year</string>
 	<string name="date_added">Date added</string>
