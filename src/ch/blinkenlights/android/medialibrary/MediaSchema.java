@@ -243,7 +243,7 @@ public class MediaSchema {
 	 * @param dbh the writeable dbh to use
 	 */
 	private static void triggerFullMediaScan(SQLiteDatabase dbh) {
-		dbh.execSQL("UPDATE "+MediaLibrary.TABLE_SONGS+" SET "+MediaLibrary.SongColumns.MTIME+"=0");
+		dbh.execSQL("UPDATE "+MediaLibrary.TABLE_SONGS+" SET "+MediaLibrary.SongColumns.MTIME+"=1");
 		// wipes non-bools only - not nice but good enough for now
 		dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_PREFERENCES+" WHERE "+MediaLibrary.PreferenceColumns.VALUE+" < 2");
 	}
