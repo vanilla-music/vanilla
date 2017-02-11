@@ -519,7 +519,7 @@ public class MediaScanner implements Handler.Callback {
 	}
 
 	private static final Pattern sIgnoredFilenames = Pattern.compile("^([^\\.]+|.+\\.(jpe?g|gif|png|bmp|webm|txt|pdf|avi|mp4|mkv|zip|tgz|xml))$", Pattern.CASE_INSENSITIVE);
-	private static final Pattern sIgnoredDirectories = Pattern.compile("^.+/(Android/data|Notifications|Ringtones)/.+$", Pattern.CASE_INSENSITIVE);
+	private static final Pattern sIgnoredDirectories = Pattern.compile("^.+/(Android/data|Alarms|Notifications|Ringtones)/.+$", Pattern.CASE_INSENSITIVE);
 	/**
 	 * Returns true if the file should not be scanned
 	 *
