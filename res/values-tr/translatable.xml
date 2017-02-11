@@ -91,11 +91,11 @@
   <string name="all_songs">Tüm parçalar</string>
   <string name="more_from_artist">Bu sanatçıdan daha fazla</string>
   <string name="more_from_album">Bu albümden daha fazla</string>
-  <string name="name">Ad</string>
   <string name="number_of_tracks">Parça sayısı</string>
   <string name="year">Yıl</string>
   <string name="date_added">Eklenme günayı</string>
   <string name="artist_album">Sanatçı, albüm</string>
+  <string name="artist_year_album">Sanatçı, yıl, albüm</string>
   <string name="artist_album_track">Sanatçı, albüm, parça numarası</string>
   <string name="artist_album_title">Sanatçı, albüm, başlık</string>
   <string name="artist_year">Sanatçı, yıl</string>
@@ -185,6 +185,8 @@
   <string name="cover_on_lockscreen_summary">Şu anda oynatılan parçanın albüm resmini kilit ekranında göster</string>
   <string name="double_tap_title">İkili dokunma pencereciği</string>
   <string name="double_tap_summary">1x1 widget\'a iki kez basmak oynatıcıyı açar. 400ms\'lik bir gecikme ile çalışır.</string>
+  <string name="scrobble_title">Scrobble Droid API\'sini kullan</string>
+  <string name="scrobble_summary">Last.fm\'e Scrobble Droid veya Simple Last.fm Scrobbler kullanarak işleyin</string>
   <string name="stock_broadcast_title">Varsayılan yayınları öykün</string>
   <string name="stock_broadcast_summary">Varsayılan müzik oynatıcısı tarafından üçüncü parti kilit ekranı denetimleri ve widgetlar ile çalışması için gönderilen yayınları öykün.</string>
   <string name="about">Hakkında</string>
@@ -240,5 +242,16 @@
   <string name="share">Paylaş…</string>
   <string name="sendto">Gönder…</string>
   <string name="no_receiving_apps">Bu ortam türü için uygun uygulama bulunamadı.</string>
+  <string name="media_library">Ortam arşivi</string>
+  <string name="media_scan_header">Ortam tarayıcısı</string>
+  <string name="media_scan_full">Tüm dosya dizgesini tara (yavaş)</string>
+  <string name="media_scan_drop_db">Ortam veritabanını temizle</string>
+  <string name="media_scan_start">Taramayı başlat</string>
+  <string name="media_statistics">İstatistikler</string>
+  <string name="media_stats_tracks">Parça sayısı</string>
+  <string name="media_stats_playtime">Çalma süresi (saat)</string>
+  <string name="media_stats_progress">Tarama durumu</string>
+  <string name="media_library_scan_running">Ortam arşivi taranıyor...</string>
   <!--Plugin system-->
+  <string name="plugins">Eklentiler</string>
 </resources>

@@ -96,7 +96,6 @@
   <string name="all_songs">Све нумере</string>
   <string name="more_from_artist">Још од извођача</string>
   <string name="more_from_album">Још са албума</string>
-  <string name="name">називу</string>
   <string name="number_of_tracks">броју нумера</string>
   <string name="year">години</string>
   <string name="date_added">датуму додавања</string>
@@ -256,10 +255,12 @@
   <string name="media_scan_full">Очитај читав фајлсистем (споро)</string>
   <string name="media_scan_drop_db">Очисти базу података медија (опасност!)</string>
   <string name="media_scan_start">Почни очитавање</string>
+  <string name="media_scan_group_albums">Групиши албуме по фасцикли</string>
   <string name="media_statistics">Статистике</string>
   <string name="media_stats_tracks">Број нумера</string>
   <string name="media_stats_playtime">Време пуштања (сати)</string>
   <string name="media_stats_progress">Напредак очитавања</string>
   <string name="media_library_scan_running">Очитавам библиотеку медија…</string>
   <!--Plugin system-->
+  <string name="plugins">Прикључци</string>
 </resources>

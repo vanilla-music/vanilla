@@ -101,7 +101,7 @@
   <string name="all_songs">Все дорожки</string>
   <string name="more_from_artist">Ещё от того же исполнителя</string>
   <string name="more_from_album">Ещё из того же альбома</string>
-  <string name="name">по названию</string>
+  <string name="title">по названию</string>
   <string name="number_of_tracks">по числу дорожек</string>
   <string name="year">по году</string>
   <string name="date_added">по дате добавления</string>
@@ -264,11 +264,16 @@
   <string name="media_scan_full">Полное сканирование файловой системы (медленное)</string>
   <string name="media_scan_drop_db">Очистить базу данных носителя (опасно!)</string>
   <string name="media_scan_start">Начать сканирование</string>
+  <string name="media_scan_force_bastp">Всегда использовать встроенный считыватель тегов</string>
+  <string name="media_scan_group_albums">Группировать альбомы по папкам</string>
   <string name="media_statistics">Статистика</string>
   <string name="media_stats_tracks">Количество дорожек</string>
   <string name="media_stats_playtime">Воспроизведено (часов)</string>
   <string name="media_stats_progress">Выполняется сканирование</string>
   <string name="media_library_scan_running">Сканируется библиотека носителей...</string>
+  <string name="media_scan_preferences">Настройки сканера</string>
+  <string name="media_scan_preferences_change_title">Настройки сканера изменены</string>
+  <string name="media_scan_preferences_change_message">Изменение этой настройки приведёт к полному сканированию библиотеки. Продолжить?</string>
   <!--Plugin system-->
   <string name="plugins">Модули</string>
 </resources>

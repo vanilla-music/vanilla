@@ -86,7 +86,7 @@
   <string name="all_songs">すべてのトラック</string>
   <string name="more_from_artist">アーチストからさらに</string>
   <string name="more_from_album">アルバムからさらに</string>
-  <string name="name">名前</string>
+  <string name="title">タイトル</string>
   <string name="number_of_tracks">トラックの名前</string>
   <string name="year">年</string>
   <string name="date_added">追加した日付</string>
@@ -240,11 +240,16 @@
   <string name="media_scan_full">ファイルシステム全体をスキャン (遅い)</string>
   <string name="media_scan_drop_db">メディアデータベースをフラッシュ (危険!)</string>
   <string name="media_scan_start">スキャンを開始</string>
+  <string name="media_scan_force_bastp">常に内蔵のタグリーダーを使用する</string>
+  <string name="media_scan_group_albums">フォルダごとにアルバムをグループ化する</string>
   <string name="media_statistics">統計</string>
   <string name="media_stats_tracks">トラックの番号</string>
   <string name="media_stats_playtime">演奏時間 (時間)</string>
   <string name="media_stats_progress">スキャンの進行状況</string>
   <string name="media_library_scan_running">メディアライブラリーのスキャン中…</string>
+  <string name="media_scan_preferences">スキャナーオプション</string>
+  <string name="media_scan_preferences_change_title">スキャナーオプションを変更しました</string>
+  <string name="media_scan_preferences_change_message">このオプションを変更すると、ライブラリーのフル再スキャンが始まります。 続行しますか?</string>
   <!--Plugin system-->
   <string name="plugins">プラグイン</string>
 </resources>

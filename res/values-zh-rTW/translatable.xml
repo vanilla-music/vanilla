@@ -86,7 +86,7 @@
   <string name="all_songs">所有曲目</string>
   <string name="more_from_artist">更多來自演唱者</string>
   <string name="more_from_album">更多來自專輯</string>
-  <string name="name">名稱</string>
+  <string name="title">標題</string>
   <string name="number_of_tracks">曲目數</string>
   <string name="year">年份</string>
   <string name="date_added">已加入資料</string>
@@ -240,11 +240,16 @@
   <string name="media_scan_full">掃描所有的檔案系統 (很慢)</string>
   <string name="media_scan_drop_db">更新媒體資料庫 (危險地帶！)</string>
   <string name="media_scan_start">開始掃描</string>
+  <string name="media_scan_force_bastp">始終使用內建的標簽閱讀器</string>
+  <string name="media_scan_group_albums">按檔案夾群集封面</string>
   <string name="media_statistics">統計</string>
   <string name="media_stats_tracks">曲目數</string>
   <string name="media_stats_playtime">撥放時間 (小時)</string>
   <string name="media_stats_progress">掃描進行中</string>
   <string name="media_library_scan_running">正在掃描媒體庫…</string>
+  <string name="media_scan_preferences">掃描選項</string>
+  <string name="media_scan_preferences_change_title">掃描選項已更改</string>
+  <string name="media_scan_preferences_change_message">更改此選項，將開始對您的媒體庫作完整的重新掃描。您想繼續嗎？</string>
   <!--Plugin system-->
   <string name="plugins">外掛</string>
 </resources>

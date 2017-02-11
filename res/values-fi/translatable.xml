@@ -91,7 +91,7 @@
   <string name="all_songs">Kaikki kappaleet</string>
   <string name="more_from_artist">Lisää esittäjältä</string>
   <string name="more_from_album">Lisää albumilta</string>
-  <string name="name">Nimi</string>
+  <string name="title">Nimi</string>
   <string name="number_of_tracks">Kappaleiden määrä</string>
   <string name="year">Vuosi</string>
   <string name="date_added">Lisäyspäivä</string>
@@ -244,11 +244,16 @@
   <string name="media_scan_full">Skannaa koko tiedostojärjestelmä (hidas)</string>
   <string name="media_scan_drop_db">Tyhjennä täysin mediatietokanta (vaara!)</string>
   <string name="media_scan_start">Aloita skannaus</string>
+  <string name="media_scan_force_bastp">Käytä aina sisäänrakennettua tunnistelukijaa</string>
+  <string name="media_scan_group_albums">Ryhmitä albumit kansioittain</string>
   <string name="media_statistics">Tilastot</string>
   <string name="media_stats_tracks">Kappaleiden määrä</string>
   <string name="media_stats_playtime">Toistoaika (tuntia)</string>
   <string name="media_stats_progress">Skannauksen edistyminen</string>
   <string name="media_library_scan_running">Skannataan mediakirjastoa…</string>
+  <string name="media_scan_preferences">Skannerivalinnat</string>
+  <string name="media_scan_preferences_change_title">Skannerivalinnat muuttuivat</string>
+  <string name="media_scan_preferences_change_message">Tämän valinnan muuttaminen käynnistää kirjaston täyden läpikäynnin. Haluatko jatkaa?</string>
   <!--Plugin system-->
   <string name="plugins">Liitännäiset</string>
 </resources>

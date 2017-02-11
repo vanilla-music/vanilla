@@ -91,7 +91,7 @@
   <string name="all_songs">Minden szám</string>
   <string name="more_from_artist">Több ettől az előadótól</string>
   <string name="more_from_album">Több erről az albumról</string>
-  <string name="name">Név</string>
+  <string name="title">Cím</string>
   <string name="number_of_tracks">Számok sorszáma</string>
   <string name="year">Év</string>
   <string name="date_added">Hozzáadás dátuma</string>
@@ -245,14 +245,19 @@
   <string name="no_receiving_apps">Nem található fogadóalkalmazás ehhez a médiatípushoz!</string>
   <string name="media_library">Médiagyűjtemény</string>
   <string name="media_scan_header">Médiaátvizsgáló</string>
-  <string name="media_scan_full">A teljes fájlrendszer átvizsgálása (lassú)</string>
+  <string name="media_scan_full">Teljes fájlrendszer átvizsgálása (lassú)</string>
   <string name="media_scan_drop_db">Média-adatbázis eldobása (veszélyzóna!)</string>
   <string name="media_scan_start">Átvizsgálás indítása</string>
+  <string name="media_scan_force_bastp">Mindig a beépített címkeolvasót használja</string>
+  <string name="media_scan_group_albums">Albumok csoportosítása mappánként</string>
   <string name="media_statistics">Statisztika</string>
-  <string name="media_stats_tracks">Számok száma</string>
+  <string name="media_stats_tracks">Számok darabszáma</string>
   <string name="media_stats_playtime">Lejátszási idő (órában)</string>
   <string name="media_stats_progress">Átvizsgálás folyamata</string>
   <string name="media_library_scan_running">Médiagyűjtemény átvizsgálása…</string>
+  <string name="media_scan_preferences">Átvizsgáló beállítások</string>
+  <string name="media_scan_preferences_change_title">Átvizsgáló beállítások módosítva</string>
+  <string name="media_scan_preferences_change_message">A beállítás megváltoztatása a gyűjtemény teljes átvizsgálását okozza. Folytatja?</string>
   <!--Plugin system-->
   <string name="plugins">Bővítmények</string>
 </resources>

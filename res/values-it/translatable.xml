@@ -91,11 +91,12 @@
   <string name="all_songs">Tutti i brani</string>
   <string name="more_from_artist">Di più dall\'artista</string>
   <string name="more_from_album">Di più da quest\'album</string>
-  <string name="name">Nome</string>
+  <string name="title">Titolo</string>
   <string name="number_of_tracks">Numero di tracce</string>
   <string name="year">Anno</string>
   <string name="date_added">Aggiunto in data</string>
   <string name="artist_album">Artista, album</string>
+  <string name="artist_year_album">Artista, anno, album</string>
   <string name="artist_album_track">Artista, album, numero di traccia</string>
   <string name="artist_album_title">Artista, album, titolo</string>
   <string name="artist_year">Artista, anno</string>
@@ -195,6 +196,7 @@
   <string name="always_show">Mostra sempre</string>
   <string name="open_main_activity">Apri libreria (default)</string>
   <string name="open_mini_popup">Apri mini popup</string>
+  <string name="skip_to_next_song">Salta al brano successivo</string>
   <string name="open_full_player">Apri riproduttore completo</string>
   <string name="info_on_cover">Info sulla copertina</string>
   <string name="info_below_cover">Info sotto la copertina</string>
@@ -202,6 +204,8 @@
   <string name="do_nothing">Non fare niente</string>
   <string name="open_library">Apri libreria</string>
   <string name="play_pause">Riproduci/Pausa</string>
+  <string name="next_song">Brano successivo</string>
+  <string name="previous_song">Brano precedente</string>
   <string name="next_album">Album successivo</string>
   <string name="previous_album">Album precedente</string>
   <string name="cycle_repeat_mode">Modalità ciclica ripeti</string>
@@ -234,5 +238,11 @@
   <string name="share">Condividi…</string>
   <string name="sendto">Invia a…</string>
   <string name="no_receiving_apps">Nessuna app di ricezione trovata per questo tipo di file multimediale!</string>
+  <string name="media_scan_full">Scansiona l\'intero sistema (lento)</string>
+  <string name="media_scan_start">Inizia scansione</string>
+  <string name="media_statistics">Statistiche</string>
+  <string name="media_stats_tracks">Numero di tracce</string>
+  <string name="media_stats_playtime">Tempo di riproduzione (Ore)</string>
+  <string name="media_library_scan_running">Scansione libreria multimediale...</string>
   <!--Plugin system-->
 </resources>

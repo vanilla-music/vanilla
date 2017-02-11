@@ -2,8 +2,8 @@
 <resources>
   <string name="app_name">Vanilla Music</string>
   <!--Playback Activity (main screen)-->
-  <string name="no_songs">Jūsu ierīcē netika atrasta neviena dziesma.</string>
-  <string name="empty_queue">Nav atlasīta neviena dziesma. Izvēlieties kādu no bibliotēkas vai pārslēdzieties uz nejaušo režīmu, nospiežot uz šī ziņojuma.</string>
+  <string name="no_songs">Jūsu ierīcē netika atrasts neviens celiņš.</string>
+  <string name="empty_queue">Nav izvēlēts neviens celiņš. Izvēlieties dažus no bibliotēkas vai ievadiet nejaušās izvēles režīmu, nospiežot uz šī ziņojuma.</string>
   <string name="settings">Iestatījumi</string>
   <string name="no_shuffle">Nejaukt</string>
   <string name="shuffle_songs">Jaukt dziesmas</string>
@@ -55,6 +55,11 @@
   <string name="remove">Izņemt</string>
   <string name="play_or_enqueue">Ierindot, ja atskaņo; atskaņot, ja nopauzēts</string>
   <string name="open">Atvērt</string>
+  <plurals name="playing">
+    <item quantity="zero">Atskaņo %d celiņu.</item>
+    <item quantity="one">Atskaņo 1 celiņu.</item>
+    <item quantity="other">Atskaņo %d celiņus.</item>
+  </plurals>
   <plurals name="enqueued">
     <item quantity="zero">Ierindots %d dziesmu.</item>
     <item quantity="one">Ierindota 1 dziesma.</item>
@@ -86,7 +91,7 @@
   <string name="all_songs">Visi celiņi</string>
   <string name="more_from_artist">Vairāk no izpildītāja</string>
   <string name="more_from_album">Vairāk no albuma</string>
-  <string name="name">Nosaukums</string>
+  <string name="title">Nosaukums</string>
   <string name="number_of_tracks">Celiņu skaits</string>
   <string name="year">Gads</string>
   <string name="date_added">Pievienošanas datums</string>
@@ -247,11 +252,16 @@
   <string name="media_scan_full">Veikt pilnu failu sistēmas skenēšanu (lēni)</string>
   <string name="media_scan_drop_db">Izmest mēdiju datubāzi (bīstami!)</string>
   <string name="media_scan_start">Sākt skenēšanu</string>
+  <string name="media_scan_force_bastp">Vienmēr izmantot iebūvēto tagu lasītāju</string>
+  <string name="media_scan_group_albums">Grupēt albumus pēc mapēm</string>
   <string name="media_statistics">Statistika</string>
   <string name="media_stats_tracks">Celiņu skaits</string>
   <string name="media_stats_playtime">Atskaņošanas laiks (stundas)</string>
   <string name="media_stats_progress">Skenēšanas progress</string>
   <string name="media_library_scan_running">Skenē multivides bibliotēku</string>
+  <string name="media_scan_preferences">Skenētāja opcijas</string>
+  <string name="media_scan_preferences_change_title">Skenētāja opcijas izmainītas</string>
+  <string name="media_scan_preferences_change_message">Mainot šo opciju, tiks sākta pilna jūsu bibliotēkas pārskenēšana. Vai vēlaties turpināt?</string>
   <!--Plugin system-->
   <string name="plugins">Spraudņi</string>
 </resources>

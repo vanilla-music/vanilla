@@ -91,7 +91,7 @@
   <string name="all_songs">Alle Titel</string>
   <string name="more_from_artist">Mehr vom Interpreten</string>
   <string name="more_from_album">Mehr aus dem Album</string>
-  <string name="name">Name</string>
+  <string name="title">Titel</string>
   <string name="number_of_tracks">Titelanzahl</string>
   <string name="year">Jahr</string>
   <string name="date_added">Erstellungsdatum</string>
@@ -248,11 +248,16 @@
   <string name="media_scan_full">Gesamtes Dateisystem durchsuchen (langsam)</string>
   <string name="media_scan_drop_db">Mediendatenbank leeren (Gefahrenzone!)</string>
   <string name="media_scan_start">Suche starten</string>
+  <string name="media_scan_force_bastp">Immer integrierten Tag-Leser verwenden</string>
+  <string name="media_scan_group_albums">Alben nach Ordner gruppieren</string>
   <string name="media_statistics">Statistiken</string>
   <string name="media_stats_tracks">Titelanzahl</string>
   <string name="media_stats_playtime">Wiedergabedauer (Stunden)</string>
   <string name="media_stats_progress">Suchfortschritt</string>
   <string name="media_library_scan_running">Medienbibliothek wird durchsucht …</string>
+  <string name="media_scan_preferences">Suchoptionen</string>
+  <string name="media_scan_preferences_change_title">Suchoptionen geändert</string>
+  <string name="media_scan_preferences_change_message">Durch Ändern dieser Option wird ein erneutes, vollständiges Durchsuchen Ihrer Bibliothek veranlasst. Möchten Sie fortfahren?</string>
   <!--Plugin system-->
   <string name="plugins">Erweiterungen</string>
 </resources>

@@ -91,7 +91,7 @@
   <string name="all_songs">Todas as faixas</string>
   <string name="more_from_artist">Mais deste artista</string>
   <string name="more_from_album">Mais deste álbum</string>
-  <string name="name">Nome</string>
+  <string name="title">Título</string>
   <string name="number_of_tracks">Número de faixas</string>
   <string name="year">Ano</string>
   <string name="date_added">Data de adição</string>
@@ -248,11 +248,16 @@
   <string name="media_scan_full">Análise total do sistema (lento)</string>
   <string name="media_scan_drop_db">Limpar itens da base de dados (PERIGOSO)</string>
   <string name="media_scan_start">Iniciar análise</string>
+  <string name="media_scan_force_bastp">Utilizar sempre o leitor nativo</string>
+  <string name="media_scan_group_albums">Agrupar álbuns por pasta</string>
   <string name="media_statistics">Estatísticas</string>
   <string name="media_stats_tracks">Número de faixas</string>
   <string name="media_stats_playtime">Tempo de reprodução (horas)</string>
   <string name="media_stats_progress">Evolução da análise</string>
   <string name="media_library_scan_running">A analisar coleção...</string>
+  <string name="media_scan_preferences">Opções do analisador</string>
+  <string name="media_scan_preferences_change_title">Opções alteradas</string>
+  <string name="media_scan_preferences_change_message">Ao alterar esta opção, irá iniciar uma nova análise da coleção. Gostaria de continuar?</string>
   <!--Plugin system-->
   <string name="plugins">Suplementos</string>
 </resources>
