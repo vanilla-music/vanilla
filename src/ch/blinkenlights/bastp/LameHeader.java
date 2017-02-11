@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2013 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2017 Google Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +20,7 @@ package ch.blinkenlights.bastp;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Enumeration;
 
@@ -47,9 +49,61 @@ public class LameHeader extends Common {
 	}
 	
 	public HashMap getTags(RandomAccessFile s) throws IOException {
-		return parseLameHeader(s, 0);
+		HashMap rgain = parseLameHeader(s, 0);
+		HashMap tags = parseV1Header(s, s.length()-128);
+
+		// Add replay gain info to returned object if available
+		for (String k : Arrays.asList("REPLAYGAIN_TRACK_GAIN", "REPLAYGAIN_ALBUM_GAIN")) {
+			if (rgain.containsKey(k))
+				tags.put(k, rgain.get(k));
+		}
+
+		return tags;
 	}
-	
+
+	/**
+	 * Attempts to parse ID3v1(.1) information from given RandomAccessFile
+	 *
+	 * @param s the seekable RandomAccessFile
+	 * @param offset position of the ID3v1 tag
+	 */
+	private HashMap parseV1Header(RandomAccessFile s, long offset) throws IOException {
+		HashMap tags = new HashMap();
+		byte[] tag  = new byte[3];
+		byte[] year = new byte[4];
+		byte[] str  = new byte[30];
+
+		s.seek(offset);
+		s.read(tag);
+
+		if("TAG".equals(new String(tag))) {
+			for (String name : Arrays.asList("TITLE", "ARTIST", "ALBUM")) {
+				s.read(str);
+				String value = new String(str, "ISO-8859-1").trim();
+				if (value.length() > 0)
+					addTagEntry(tags, name, value);
+			}
+
+			// year is a string for whatever reason...
+			s.read(year);
+			String y = new String(year).trim();
+			if (y.length() > 0)
+				addTagEntry(tags, "YEAR", y);
+
+			s.skipBytes(28); // skip comment field
+			s.read(tag);
+
+			if (tag[0] == 0 && tag[1] != 0) // tag[0] == 0 -> is id3v1.1 compatible
+				addTagEntry(tags, "TRACKNUMBER", String.format("%d", tag[1]));
+
+			if (tag[2] != 0)
+				addTagEntry(tags, "GENRE", String.format("%d", tag[2]));
+		}
+
+
+		return tags;
+	}
+
 	public HashMap parseLameHeader(RandomAccessFile s, long offset) throws IOException {
 		HashMap tags = new HashMap();
 		byte[] chunk = new byte[12];
