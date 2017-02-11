@@ -9,7 +9,7 @@ Vanilla Music player is a [GPLv3](LICENSE) licensed MP3/OGG/FLAC/PCM player for 
 * headset/Bluetooth controls
 * accelerometer/shake control
 * cover art support
-* [ScrobbleDroid](https://code.google.com/p/scrobbledroid/) support for Last.fm integration
+* [Simple Last.fm Scrobbler](https://github.com/tgwizard/sls) support
 
 [<img src="https://f-droid.org/badge/get-it-on.png"
       alt="Get it on F-Droid"
