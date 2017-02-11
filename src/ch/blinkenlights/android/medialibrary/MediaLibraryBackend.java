@@ -35,7 +35,7 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	/**
 	 * The database version we are using
 	 */
-	private static final int DATABASE_VERSION = 20170120;
+	private static final int DATABASE_VERSION = 20170211;
 	/**
 	 * on-disk file to store the database
 	 */

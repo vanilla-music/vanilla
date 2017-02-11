@@ -234,6 +234,12 @@ public class MediaSchema {
 			dbh.execSQL(DATABASE_CREATE_PREFERENCES);
 			triggerFullMediaScan(dbh);
 		}
+
+		if (oldVersion < 20170211) {
+			// older versions of triggerFullMediaScan did this by mistake
+			dbh.execSQL("UPDATE songs SET mtime=1 WHERE mtime=0");
+		}
+
 	}
 
 	/**
@@ -245,7 +251,7 @@ public class MediaSchema {
 	private static void triggerFullMediaScan(SQLiteDatabase dbh) {
 		dbh.execSQL("UPDATE "+MediaLibrary.TABLE_SONGS+" SET "+MediaLibrary.SongColumns.MTIME+"=1");
 		// wipes non-bools only - not nice but good enough for now
-		dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_PREFERENCES+" WHERE "+MediaLibrary.PreferenceColumns.VALUE+" < 2");
+		dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_PREFERENCES+" WHERE "+MediaLibrary.PreferenceColumns.VALUE+" > 1");
 	}
 
 }
