@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2016 Ian Harmon
+ * Copyright (C) 2017 Google Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package ch.blinkenlights.bastp;
 
 import java.io.IOException;
@@ -30,8 +48,35 @@ public class Mp4File extends Common {
 	// only these tags are returned. others may be parsed, but discarded.
 	final static List<String> ALLOWED_TAGS = Arrays.asList(
 		"replaygain_track_gain",
-		"replaygain_album_gain"
+		"replaygain_album_gain",
+		"title",
+		"album",
+		"artist",
+		"genre",
+		"year",
+		"tracknumber",
+		"discnumber"
 	);
+
+	// mapping between atom <-> vorbis tags
+	final static HashMap<String, String> ATOM_TAGS;
+	static {
+		ATOM_TAGS = new HashMap<String, String>();
+		ATOM_TAGS.put("�nam", "title");
+		ATOM_TAGS.put("�alb", "album");
+		ATOM_TAGS.put("�ART", "artist");
+		ATOM_TAGS.put("�gen", "genre");
+		ATOM_TAGS.put("�day", "year");
+		ATOM_TAGS.put("trkn", "tracknumber");
+		ATOM_TAGS.put("disk", "discnumber");
+	}
+
+	// These tags are 32bit integers, not strings.
+	final static List<String> BINARY_TAGS = Arrays.asList(
+		"tracknumber",
+		"discnumber"
+	);
+
 	// maximum size for tag names or values
 	final static int MAX_BUFFER_SIZE = 512;
 	// only used when developing
@@ -91,22 +136,28 @@ public class Mp4File extends Common {
 				boolean approachingTagAtom = false;
 				boolean onMetaAtom = false;
 				boolean onTagAtom = false;
+				String fourAtom = null;
 				// compare everything in the current path hierarchy and the new atom as well
 				// this is a bit repetitive as-is, but shouldn't be noticeable
 				for (int i = 0; i <= path.size(); i++) {
 					String thisAtomName = (i < path.size()) ? path.get(i).name : atomName;
-					if ((i == 0 && thisAtomName.equals("moov")) ||
-						(i == 1 && thisAtomName.equals("udta")) ||
-						(i == 2 && thisAtomName.equals("meta")) ||
-						(i == 3 && thisAtomName.equals("ilst")) ||
-						(i == 4 && thisAtomName.equals("----")) ||
-						(i == 5 && (thisAtomName.equals("name") || thisAtomName.equals("data")))
+					if ((i == 0 && thisAtomName.equals("moov"))         ||
+						(i == 1 && thisAtomName.equals("udta"))         ||
+						(i == 2 && thisAtomName.equals("meta"))         ||
+						(i == 3 && thisAtomName.equals("ilst"))         ||
+						(i == 4 && thisAtomName.equals("----"))         ||
+						(i == 4 && ATOM_TAGS.containsKey(thisAtomName)) ||
+						(i == 5 && (thisAtomName.equals("name")         || thisAtomName.equals("data")))
 					) {
 						approachingTagAtom = true;
 						// if we're at the end of the current hierarchy, mark if it's the [meta] or a tag atom.
 						if (i == path.size()) {
 							onMetaAtom = thisAtomName.equals("meta");
 							onTagAtom = (thisAtomName.equals("name") || thisAtomName.equals("data"));
+						}
+						// depth is 4 and this is a known atom: rembemer this!
+						if (i == 4 && ATOM_TAGS.containsKey(thisAtomName)) {
+							fourAtom = ATOM_TAGS.get(thisAtomName);
 						}
 					}
 					// quit as soon as we know we're not on the road to a tag atom
@@ -141,10 +192,14 @@ public class Mp4File extends Common {
 							// skip flags/null bytes
 							s.skipBytes(8);
 
+							// use the 'fourAtom' value if we did not have a tag name
+							tagName = (tagName == null ? fourAtom : tagName);
 							// read the tag
-							String tagValue = new String(readIntoBuffer(s, atomSize-(ATOM_HEADER_SIZE+8)));
+							byte[] tagBuffer = readIntoBuffer(s, atomSize-(ATOM_HEADER_SIZE+8));
+
 							if (ALLOWED_TAGS.contains(tagName))
 							{
+								String tagValue = (BINARY_TAGS.contains(tagName) ? String.format("%d", b2be32(tagBuffer, 0)) : new String(tagBuffer, "UTF-8"));
 								if (PRINT_DEBUG) {
 									System.out.println(String.format("parsed tag '%s': '%s'\n", tagName, tagValue));
 								}

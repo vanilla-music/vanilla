@@ -326,6 +326,7 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 				break;
 			case "MP3/ID3v2":
 			case "MP3/Lame":
+			case "MP4":
 				// ^-- these tagreaders are not fully stable, but can be enabled on demand
 				if(mForceBastp) {
 					populateSelf(bastpTags);
