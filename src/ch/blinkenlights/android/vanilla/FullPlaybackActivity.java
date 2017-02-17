@@ -169,6 +169,30 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 		mFormatView = (TextView)findViewById(R.id.format);
 		mReplayGainView = (TextView)findViewById(R.id.replaygain);
 
+		TableRow artistRow = (TableRow)findViewById(R.id.artist_row);
+		TableRow titleRow = (TableRow)findViewById(R.id.title_row);
+		TableRow albumRow = (TableRow)findViewById(R.id.album_row);
+		TableRow genreRow = (TableRow)findViewById(R.id.genre_row);
+		TableRow pathRow = (TableRow)findViewById(R.id.path_row);
+
+		artistRow.setOnClickListener(this);
+		titleRow.setOnClickListener(this);
+		albumRow.setOnClickListener(this);
+		genreRow.setOnClickListener(this);
+		pathRow.setOnClickListener(this);
+
+		artistRow.setOnLongClickListener(this);
+		titleRow.setOnLongClickListener(this);
+		albumRow.setOnLongClickListener(this);
+		genreRow.setOnLongClickListener(this);
+		pathRow.setOnLongClickListener(this);
+
+		artistRow.setClickable(false);
+		titleRow.setClickable(false);
+		albumRow.setClickable(false);
+		genreRow.setClickable(false);
+		pathRow.setClickable(false);
+
 		bindControlButtons();
 
 		setControlsVisible(settings.getBoolean(PrefKeys.VISIBLE_CONTROLS, PrefDefaults.VISIBLE_CONTROLS));
@@ -303,7 +327,6 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 	{
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, MENU_DELETE, 30, R.string.delete);
-		menu.add(0, MENU_OPEN_FOLDER, 30, R.string.open_folder);
 		menu.add(0, MENU_ENQUEUE_ALBUM, 30, R.string.enqueue_current_album);
 		menu.add(0, MENU_ENQUEUE_ARTIST, 30, R.string.enqueue_current_artist);
 		menu.add(0, MENU_ENQUEUE_GENRE, 30, R.string.enqueue_current_genre);
@@ -353,9 +376,6 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 				PlaylistDialog dialog = PlaylistDialog.newInstance(this, intent, null);
 				dialog.show(getFragmentManager(), "PlaylistDialog");
 			}
-			break;
-		case MENU_OPEN_FOLDER:
-			openFolder(song);
 			break;
 		case MENU_SHARE:
 			if (song != null)
@@ -477,6 +497,25 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 		int visibility = visible ? View.VISIBLE : View.GONE;
 		for (int i = table.getChildCount() - 1; --i != 2; ) {
 			table.getChildAt(i).setVisibility(visibility);
+		}
+		TableRow artistRow = (TableRow)findViewById(R.id.artist_row);
+		TableRow titleRow = (TableRow)findViewById(R.id.title_row);
+		TableRow albumRow = (TableRow)findViewById(R.id.album_row);
+		TableRow genreRow = (TableRow)findViewById(R.id.genre_row);
+		TableRow pathRow = (TableRow)findViewById(R.id.path_row);
+
+		if (visible) {
+			artistRow.setClickable(true);
+			titleRow.setClickable(true);
+			albumRow.setClickable(true);
+			genreRow.setClickable(true);
+			pathRow.setClickable(true);
+		} else {
+			artistRow.setClickable(false);
+			titleRow.setClickable(false);
+			albumRow.setClickable(false);
+			genreRow.setClickable(false);
+			pathRow.setClickable(false);
 		}
 		mExtraInfoVisible = visible;
 		if (visible && !mHandler.hasMessages(MSG_LOAD_EXTRA_INFO)) {
@@ -639,8 +678,39 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 			setState(PlaybackService.get(this).setFinishAction(SongTimeline.FINISH_RANDOM));
 		} else if (view == mCoverView) {
 			performAction(mCoverPressAction);
-		} else if (view.getId() == R.id.info_table) {
-			openLibrary(mCurrentSong);
+		} else if ((view.getId() == R.id.title_row) || (view.getId() == R.id.album_row)
+				|| (view.getId() == R.id.info_table)) {
+			Intent intent = new Intent(this, LibraryActivity.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			if (mCurrentSong != null) {
+				intent.putExtra("albumId", mCurrentSong.albumId);
+				intent.putExtra("album", mCurrentSong.album);
+				intent.putExtra("artist", mCurrentSong.artist);
+			}
+			startActivity(intent);
+		} else if (view.getId() == R.id.artist_row) {
+			Intent intent = new Intent(this, LibraryActivity.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			if (mCurrentSong != null) {
+				intent.putExtra("artist", mCurrentSong.artist);
+				intent.putExtra("artistId", mCurrentSong.artistId);
+			}
+			startActivity(intent);
+		} else if (view.getId() == R.id.genre_row) {
+			Intent intent = new Intent(this, LibraryActivity.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			if (mCurrentSong != null) {
+				intent.putExtra("genre", mCurrentSong.album);
+			}
+			startActivity(intent);
+		} else if (view.getId() == R.id.path_row) {
+			Intent intent = new Intent(this, LibraryActivity.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			if (mCurrentSong != null) {
+				intent.putExtra("path", mCurrentSong.path);
+			}
+			startActivity(intent);
+
 		} else {
 			super.onClick(view);
 		}
@@ -654,6 +724,11 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 			performAction(mCoverLongPressAction);
 			break;
 		case R.id.info_table:
+		case R.id.title_row:
+		case R.id.artist_row:
+		case R.id.album_row:
+		case R.id.genre_row:
+		case R.id.path_row:
 			setExtraInfoVisible(!mExtraInfoVisible);
 			mHandler.sendEmptyMessage(MSG_SAVE_CONTROLS);
 			break;

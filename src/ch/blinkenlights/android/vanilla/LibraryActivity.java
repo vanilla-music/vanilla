@@ -315,9 +315,11 @@ public class LibraryActivity
 	private void loadSelectorIntent(Intent intent)
 	{
 		long albumId = intent.getLongExtra("albumId", -1);
+		long artistId = intent.getLongExtra("artistId", -1);
 		String path = intent.getStringExtra("path");
+		String artist = intent.getStringExtra("artist");
 		if (albumId != -1) {
-			String[] fields = { intent.getStringExtra("artist"), intent.getStringExtra("album") };
+			String[] fields = {intent.getStringExtra("artist"), intent.getStringExtra("album")};
 			String data = String.format("album_id=%d", albumId);
 			Limiter limiter = new Limiter(MediaUtils.TYPE_ALBUM, fields, data);
 			int tab = mPagerAdapter.setLimiter(limiter);
@@ -325,9 +327,17 @@ public class LibraryActivity
 				updateLimiterViews();
 			else
 				mViewPager.setCurrentItem(tab);
+		} else if (artistId != -1) {
+			String[] fields = {intent.getStringExtra("artist")};
+			String data = String.format("artist_id=%d", artistId);
+			Limiter limiter = new Limiter(MediaUtils.TYPE_ARTIST, fields, data);
+			int tab = mPagerAdapter.setLimiter(limiter);
+			if (tab == -1 || tab == mViewPager.getCurrentItem())
+				updateLimiterViews();
+			else
+				mViewPager.setCurrentItem(tab);
 		} else if (path != null) {
 			int tab = mPagerAdapter.setLimiter(FileSystemAdapter.buildLimiter(new File(path).getParentFile()));
-
 			if (tab == -1 || tab == mViewPager.getCurrentItem())
 				updateLimiterViews();
 			else
