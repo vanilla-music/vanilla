@@ -495,6 +495,23 @@ public class MediaScanner implements Handler.Callback {
 				mBackend.insert(MediaLibrary.TABLE_CONTRIBUTORS_SONGS, null, v);
 			}
 
+			// Same as with composer: albumartist is an optional tag
+			String albumartist = tags.getFirst(MediaMetadataExtractor.ALBUMARTIST);
+			if (albumartist != null) {
+				long albumartistId = MediaLibrary.hash63(albumartist);
+				v.clear();
+				v.put(MediaLibrary.ContributorColumns._ID,               albumartistId);
+				v.put(MediaLibrary.ContributorColumns._CONTRIBUTOR,      albumartist);
+				v.put(MediaLibrary.ContributorColumns._CONTRIBUTOR_SORT, MediaLibrary.keyFor(albumartist));
+				mBackend.insert(MediaLibrary.TABLE_CONTRIBUTORS, null, v);
+
+				v.clear();
+				v.put(MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID, albumartistId);
+				v.put(MediaLibrary.ContributorSongColumns.SONG_ID,         songId);
+				v.put(MediaLibrary.ContributorSongColumns.ROLE,            MediaLibrary.ROLE_ALBUMARTIST);
+				mBackend.insert(MediaLibrary.TABLE_CONTRIBUTORS_SONGS, null, v);
+			}
+
 			// A song might be in multiple genres
 			if (tags.containsKey(MediaMetadataExtractor.GENRE)) {
 				ArrayList<String> genres = tags.get(MediaMetadataExtractor.GENRE);

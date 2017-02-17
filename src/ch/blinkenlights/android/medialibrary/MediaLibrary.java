@@ -45,6 +45,7 @@ public class MediaLibrary  {
 
 	public static final int ROLE_ARTIST                   = 0;
 	public static final int ROLE_COMPOSER                 = 1;
+	public static final int ROLE_ALBUMARTIST              = 2;
 
 	private static final String PREF_KEY_FORCE_BASTP          = "force_bastp";
 	private static final String PREF_KEY_GROUP_ALBUMS         = "group_albums";
