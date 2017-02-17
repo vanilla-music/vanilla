@@ -52,6 +52,8 @@ public class Mp4File extends Common {
 		"title",
 		"album",
 		"artist",
+		"albumartist",
+		"composer",
 		"genre",
 		"year",
 		"tracknumber",
@@ -65,6 +67,8 @@ public class Mp4File extends Common {
 		ATOM_TAGS.put("�nam", "title");
 		ATOM_TAGS.put("�alb", "album");
 		ATOM_TAGS.put("�ART", "artist");
+		ATOM_TAGS.put("aART", "albumartist");
+		ATOM_TAGS.put("�wrt", "composer");
 		ATOM_TAGS.put("�gen", "genre");
 		ATOM_TAGS.put("�day", "year");
 		ATOM_TAGS.put("trkn", "tracknumber");
