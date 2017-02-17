@@ -277,7 +277,8 @@ public class FileSystemAdapter
 		@Override
 		public void onEvent(int event, String path)
 		{
-			mActivity.mPagerAdapter.postRequestRequery(FileSystemAdapter.this);
+			if (path != null) // Android bug? We seem to receive MOVE_SELF events
+				mActivity.mPagerAdapter.postRequestRequery(FileSystemAdapter.this);
 		}
 	}
 
