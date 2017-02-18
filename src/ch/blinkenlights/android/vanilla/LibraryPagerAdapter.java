@@ -577,6 +577,10 @@ public class LibraryPagerAdapter
 				mPendingFileLimiter = limiter;
 			} else {
 				mFilesAdapter.setLimiter(limiter);
+				// forcefully jump to beginning - commit query might restore a saved position
+				// but if it doesn't we would end up at the same scrolling position in a new
+				// folder which is uncool.
+				mLists[MediaUtils.TYPE_FILE].setSelection(0);
 				requestRequery(mFilesAdapter);
 			}
 			tab = -1;
