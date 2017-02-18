@@ -652,14 +652,11 @@ public class LibraryPagerAdapter
 			int index = message.arg1;
 			mAdapters[index].commitQuery(message.obj);
 
+			// Restore scrolling position if present and valid
 			Integer curPos = sLruAdapterPos.popPosition(mAdapters[index]);
-			if (curPos == null || curPos >= mLists[index].getCount()) {
-				// we got no cached data or it is out of bounds
-				curPos = 0;
-			}
+			if (curPos != null && curPos < mLists[index].getCount())
+				mLists[index].setSelection(curPos);
 
-			// curPos is now either 0 or a cached position -> jump to this position
-			mLists[index].setSelection(curPos);
 			break;
 		}
 		case MSG_SAVE_SORT: {
