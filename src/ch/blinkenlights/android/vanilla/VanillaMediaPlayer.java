@@ -23,12 +23,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.audiofx.AudioEffect;
+import android.net.Uri;
 import android.os.Build;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 
-public class VanillaMediaPlayer extends MediaPlayer {
+
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+
+public class VanillaMediaPlayer extends SimpleExoPlayer {
 
 	private Context mContext;
 	private String mDataSource;
@@ -40,9 +51,13 @@ public class VanillaMediaPlayer extends MediaPlayer {
 	/**
 	 * Constructs a new VanillaMediaPlayer class
 	 */
-	public VanillaMediaPlayer(Context context) {
-		super();
+	public VanillaMediaPlayer(Context context, DefaultTrackSelector trackSelector, DefaultLoadControl loadControl) {
+		super(context, trackSelector, loadControl, null, 0, 0); // fixme: is 0 ok here ?
 		mContext = context;
+	}
+
+	public boolean isPlaying() {
+		return getPlaybackState() == STATE_READY;
 	}
 
 	/**
@@ -51,7 +66,7 @@ public class VanillaMediaPlayer extends MediaPlayer {
 	public void reset() {
 		mDataSource = null;
 		mHasNextMediaPlayer = false;
-		super.reset();
+		stop();
 	}
 
 	/**
@@ -70,9 +85,12 @@ public class VanillaMediaPlayer extends MediaPlayer {
 		// The MediaPlayer function expects a file:// like string but also accepts *most* absolute unix paths (= paths with no colon)
 		// We could therefore encode the path into a full URI, but a much quicker way is to simply use
 		// setDataSource(FileDescriptor) as the framework code would end up calling this function anyways (MediaPlayer.java:1100 (6.0))
-		FileInputStream fis = new FileInputStream(path);
-		super.setDataSource(fis.getFD());
-		fis.close(); // this is OK according to the SDK documentation!
+
+		DefaultDataSourceFactory dataSourceFactory = new DefaultDataSourceFactory(mContext, "VanillaMusic");
+		DefaultExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
+		ExtractorMediaSource mediaSource = new ExtractorMediaSource(Uri.parse("file://"+path), dataSourceFactory, extractorsFactory, null, null);
+
+		prepare(mediaSource);
 		mDataSource = path;
 	}
 
@@ -88,8 +106,8 @@ public class VanillaMediaPlayer extends MediaPlayer {
 	 */
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	public void setNextMediaPlayer(VanillaMediaPlayer next) {
-		super.setNextMediaPlayer(next);
-		mHasNextMediaPlayer = (next != null);
+//		super.setNextMediaPlayer(next);
+//		mHasNextMediaPlayer = (next != null);
 	}
 
 	/**
@@ -163,7 +181,7 @@ public class VanillaMediaPlayer extends MediaPlayer {
 			volume *= mDuckingFactor;
 		}
 
-		setVolume(volume, volume);
+		setVolume(volume);
 	}
 
 }

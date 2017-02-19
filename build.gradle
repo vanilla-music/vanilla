@@ -16,10 +16,16 @@ allprojects {
 
 apply plugin: 'com.android.application'
 
+
 android {
     lintOptions {
         disable 'MissingTranslation'
     }
+
+dependencies {
+ compile 'com.google.android.exoplayer:exoplayer:r2.2.0'
+}
+
 
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
