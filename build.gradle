@@ -21,13 +21,13 @@ android {
         disable 'MissingTranslation'
     }
 
-    compileSdkVersion 24
-    buildToolsVersion "24.0.2"
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
 
     defaultConfig {
         applicationId "ch.blinkenlights.android.vanilla"
         minSdkVersion 15
-        targetSdkVersion 24
+        targetSdkVersion 25
     }
 
     sourceSets {
