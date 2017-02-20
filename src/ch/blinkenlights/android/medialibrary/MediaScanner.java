@@ -237,6 +237,7 @@ public class MediaScanner implements Handler.Callback {
 	 */
 	private void updateNotification(boolean visible) {
 		MediaScanPlan.Statistics stats = mScanPlan.getStatistics();
+		MediaLibrary.Preferences prefs = MediaLibrary.getPreferences(mContext);
 		NotificationManager manager = (NotificationManager) mContext.getSystemService(mContext.NOTIFICATION_SERVICE);
 
 		if (visible) {
@@ -248,11 +249,12 @@ public class MediaScanner implements Handler.Callback {
 				String content = stats.lastFile;
 
 				Notification notification = new Notification.Builder(mContext)
+					.setProgress(prefs._nativeLibraryCount, stats.seen, false)
 					.setContentTitle(title)
 					.setContentText(content)
 					.setSmallIcon(icon)
 					.setOngoing(true)
-					.build();
+					.getNotification(); // build() is API 16 :-/
 				manager.notify(NOTIFICATION_ID, notification);
 			}
 		} else {
