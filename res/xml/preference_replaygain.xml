@@ -22,7 +22,7 @@ THE SOFTWARE.
 -->
 <PreferenceScreen
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:vanilla="http://schemas.android.com/apk/res/ch.blinkenlights.android.vanilla"
+	xmlns:vanilla="http://schemas.android.com/apk/res-auto"
 	android:persistent="true">
 	<CheckBoxPreference
 		android:key="enable_track_replaygain"
@@ -57,11 +57,11 @@ THE SOFTWARE.
 		vanilla:sbpSummaryFormat="%s %.1fdB"
 		vanilla:sbpSummaryValueAddition="-150"
 		vanilla:sbpSummaryValueMultiplication="0.1" />
-		
+
 	<Preference
 		android:selectable="false"
 		android:title="@string/replaygain_preamp_note_title"
 		android:summary="@string/replaygain_preamp_note_content"
 		/>
-		
+
 </PreferenceScreen>

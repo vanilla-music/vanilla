@@ -22,7 +22,7 @@ THE SOFTWARE.
 -->
 <PreferenceScreen
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:vanilla="http://schemas.android.com/apk/res/ch.blinkenlights.android.vanilla"
+	xmlns:vanilla="http://schemas.android.com/apk/res-auto"
 	android:persistent="true">
 	<CheckBoxPreference
 		android:key="enable_shake"

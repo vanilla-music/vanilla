@@ -19,6 +19,7 @@ apply plugin: 'com.android.application'
 android {
     lintOptions {
         disable 'MissingTranslation'
+        disable 'ExtraTranslation'
     }
 
     compileSdkVersion 25
@@ -34,15 +35,40 @@ android {
         main {
             manifest.srcFile 'AndroidManifest.xml'
             java.srcDirs = ['src']
-            resources.srcDirs = ['src']
             aidl.srcDirs = ['src']
-            renderscript.srcDirs = ['src']
             res.srcDirs = ['res']
             assets.srcDirs = ['assets']
+        }
+
+        nightly {
+            res.srcDirs = ['resNightly']
         }
     }
 
     buildTypes {
+        nightly {
+            def buildId = 'date +%s'.execute().in.readLines()[0]
+
+            versionNameSuffix '-' + buildId
+            applicationIdSuffix '.nightly'
+
+            preBuild.finalizedBy 'customPrepareResources'
+
+            task ('customPrepareResources') {
+                doLast {
+                    println 'Converting icons to nightly...'
+                    fileTree('res').include('drawable-*/icon.png').each {
+                        println it
+                        "mogrify -fuzz 40% -fill 'rgb(0,102,102)' -opaque 'rgb(255,102,0)' $it".execute()
+                    }
+
+                    println 'Replacing `about` info to nightly...'
+                    def about = file('assets/about.html')
+                    about.text = about.text.replaceAll('<b>Version.*', "<b>Nightly build ID:</b> ${buildId}<br><br>")
+                }
+            }
+        }
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
