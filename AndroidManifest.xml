@@ -23,8 +23,8 @@ THE SOFTWARE.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="ch.blinkenlights.android.vanilla"
-	android:versionName="1.0.49"
-	android:versionCode="10490"
+	android:versionName="1.0.50"
+	android:versionCode="10500"
 	android:installLocation="auto">
 	<uses-sdk android:minSdkVersion="15" android:targetSdkVersion="25" />
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
