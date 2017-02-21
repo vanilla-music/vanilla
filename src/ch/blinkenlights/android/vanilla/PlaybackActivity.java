@@ -610,13 +610,17 @@ public abstract class PlaybackActivity extends Activity
 					intent.putExtra("albumId", song.albumId);
 					intent.putExtra("album", song.album);
 					intent.putExtra("artist", song.artist);
+					break;
 				case MediaUtils.TYPE_ARTIST:
-					intent.putExtra("artist", song.artist);
 					intent.putExtra("artistId", song.artistId);
+					intent.putExtra("artist", song.artist);
+					break;
 				case MediaUtils.TYPE_GENRE:
-					intent.putExtra("genre", song.album);
+					// Fallthrough until it's implemented
+					//intent.putExtra("genre", song.);
 				case MediaUtils.TYPE_FILE:
 					intent.putExtra("path", song.path);
+					break;
 			}
 		}
 		startActivity(intent);
