@@ -169,20 +169,20 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 		mFormatView = (TextView)findViewById(R.id.format);
 		mReplayGainView = (TextView)findViewById(R.id.replaygain);
 
-		TableRow artistRow = (TableRow)findViewById(R.id.artist_row);
 		TableRow titleRow = (TableRow)findViewById(R.id.title_row);
+		TableRow artistRow = (TableRow)findViewById(R.id.artist_row);
 		TableRow albumRow = (TableRow)findViewById(R.id.album_row);
 		TableRow genreRow = (TableRow)findViewById(R.id.genre_row);
 		TableRow pathRow = (TableRow)findViewById(R.id.path_row);
 
-		artistRow.setOnClickListener(this);
 		titleRow.setOnClickListener(this);
+		artistRow.setOnClickListener(this);
 		albumRow.setOnClickListener(this);
 		genreRow.setOnClickListener(this);
 		pathRow.setOnClickListener(this);
 
-		artistRow.setOnLongClickListener(this);
 		titleRow.setOnLongClickListener(this);
+		artistRow.setOnLongClickListener(this);
 		albumRow.setOnLongClickListener(this);
 		genreRow.setOnLongClickListener(this);
 		pathRow.setOnLongClickListener(this);
@@ -492,14 +492,14 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 		for (int i = table.getChildCount() - 1; --i != 2; ) {
 			table.getChildAt(i).setVisibility(visibility);
 		}
-		TableRow artistRow = (TableRow)findViewById(R.id.artist_row);
 		TableRow titleRow = (TableRow)findViewById(R.id.title_row);
+		TableRow artistRow = (TableRow)findViewById(R.id.artist_row);
 		TableRow albumRow = (TableRow)findViewById(R.id.album_row);
 		TableRow genreRow = (TableRow)findViewById(R.id.genre_row);
 		TableRow pathRow = (TableRow)findViewById(R.id.path_row);
 
-		artistRow.setClickable(visible);
 		titleRow.setClickable(visible);
+		artistRow.setClickable(visible);
 		albumRow.setClickable(visible);
 		genreRow.setClickable(visible);
 		pathRow.setClickable(visible);
