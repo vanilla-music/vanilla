@@ -318,7 +318,7 @@ public class LibraryActivity
 		long artistId = intent.getLongExtra("artistId", -1);
 		String path = intent.getStringExtra("path");
 		if (albumId != -1) {
-			String[] fields = {intent.getStringExtra("artist"), intent.getStringExtra("album")};
+			String[] fields = { intent.getStringExtra("artist"), intent.getStringExtra("album") };
 			String data = String.format("album_id=%d", albumId);
 			Limiter limiter = new Limiter(MediaUtils.TYPE_ALBUM, fields, data);
 			int tab = mPagerAdapter.setLimiter(limiter);
@@ -327,7 +327,7 @@ public class LibraryActivity
 			else
 				mViewPager.setCurrentItem(tab);
 		} else if (artistId != -1) {
-			String[] fields = {intent.getStringExtra("artist")};
+			String[] fields = { intent.getStringExtra("artist") };
 			String data = String.format("artist_id=%d", artistId);
 			Limiter limiter = new Limiter(MediaUtils.TYPE_ARTIST, fields, data);
 			int tab = mPagerAdapter.setLimiter(limiter);
