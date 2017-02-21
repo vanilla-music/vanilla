@@ -600,14 +600,24 @@ public abstract class PlaybackActivity extends Activity
 	 *
 	 * @param song If non-null, will open the library focused on this song.
 	 */
-	public void openLibrary(Song song)
+	public void openLibrary(Song song, int type)
 	{
 		Intent intent = new Intent(this, LibraryActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		if (song != null) {
-			intent.putExtra("albumId", song.albumId);
-			intent.putExtra("album", song.album);
-			intent.putExtra("artist", song.artist);
+			switch(type) {
+				case MediaUtils.TYPE_ALBUM:
+					intent.putExtra("albumId", song.albumId);
+					intent.putExtra("album", song.album);
+					intent.putExtra("artist", song.artist);
+				case MediaUtils.TYPE_ARTIST:
+					intent.putExtra("artist", song.artist);
+					intent.putExtra("artistId", song.artistId);
+				case MediaUtils.TYPE_GENRE:
+					intent.putExtra("genre", song.album);
+				case MediaUtils.TYPE_FILE:
+					intent.putExtra("path", song.path);
+			}
 		}
 		startActivity(intent);
 	}

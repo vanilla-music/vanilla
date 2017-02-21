@@ -187,12 +187,6 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 		genreRow.setOnLongClickListener(this);
 		pathRow.setOnLongClickListener(this);
 
-		artistRow.setClickable(false);
-		titleRow.setClickable(false);
-		albumRow.setClickable(false);
-		genreRow.setClickable(false);
-		pathRow.setClickable(false);
-
 		bindControlButtons();
 
 		setControlsVisible(settings.getBoolean(PrefKeys.VISIBLE_CONTROLS, PrefDefaults.VISIBLE_CONTROLS));
@@ -347,7 +341,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 		switch (item.getItemId()) {
 		case android.R.id.home:
 		case MENU_LIBRARY:
-			openLibrary(null);
+			openLibrary(null, MediaUtils.TYPE_INVALID);
 			break;
 		case MENU_ENQUEUE_ALBUM:
 			PlaybackService.get(this).enqueueFromSong(song, MediaUtils.TYPE_ALBUM);
@@ -417,7 +411,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 	@Override
 	public boolean onSearchRequested()
 	{
-		openLibrary(null);
+		openLibrary(null, MediaUtils.TYPE_INVALID);
 		return false;
 	}
 
@@ -504,19 +498,12 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 		TableRow genreRow = (TableRow)findViewById(R.id.genre_row);
 		TableRow pathRow = (TableRow)findViewById(R.id.path_row);
 
-		if (visible) {
-			artistRow.setClickable(true);
-			titleRow.setClickable(true);
-			albumRow.setClickable(true);
-			genreRow.setClickable(true);
-			pathRow.setClickable(true);
-		} else {
-			artistRow.setClickable(false);
-			titleRow.setClickable(false);
-			albumRow.setClickable(false);
-			genreRow.setClickable(false);
-			pathRow.setClickable(false);
-		}
+		artistRow.setClickable(visible);
+		titleRow.setClickable(visible);
+		albumRow.setClickable(visible);
+		genreRow.setClickable(visible);
+		pathRow.setClickable(visible);
+
 		mExtraInfoVisible = visible;
 		if (visible && !mHandler.hasMessages(MSG_LOAD_EXTRA_INFO)) {
 			mHandler.sendEmptyMessage(MSG_LOAD_EXTRA_INFO);
@@ -680,37 +667,13 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 			performAction(mCoverPressAction);
 		} else if ((view.getId() == R.id.title_row) || (view.getId() == R.id.album_row)
 				|| (view.getId() == R.id.info_table)) {
-			Intent intent = new Intent(this, LibraryActivity.class);
-			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			if (mCurrentSong != null) {
-				intent.putExtra("albumId", mCurrentSong.albumId);
-				intent.putExtra("album", mCurrentSong.album);
-				intent.putExtra("artist", mCurrentSong.artist);
-			}
-			startActivity(intent);
+			openLibrary(mCurrentSong, MediaUtils.TYPE_ALBUM);
 		} else if (view.getId() == R.id.artist_row) {
-			Intent intent = new Intent(this, LibraryActivity.class);
-			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			if (mCurrentSong != null) {
-				intent.putExtra("artist", mCurrentSong.artist);
-				intent.putExtra("artistId", mCurrentSong.artistId);
-			}
-			startActivity(intent);
+			openLibrary(mCurrentSong, MediaUtils.TYPE_ARTIST);
 		} else if (view.getId() == R.id.genre_row) {
-			Intent intent = new Intent(this, LibraryActivity.class);
-			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			if (mCurrentSong != null) {
-				intent.putExtra("genre", mCurrentSong.album);
-			}
-			startActivity(intent);
+			openLibrary(mCurrentSong, MediaUtils.TYPE_GENRE);
 		} else if (view.getId() == R.id.path_row) {
-			Intent intent = new Intent(this, LibraryActivity.class);
-			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			if (mCurrentSong != null) {
-				intent.putExtra("path", mCurrentSong.path);
-			}
-			startActivity(intent);
-
+			openLibrary(mCurrentSong, MediaUtils.TYPE_FILE);
 		} else {
 			super.onClick(view);
 		}

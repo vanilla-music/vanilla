@@ -317,7 +317,6 @@ public class LibraryActivity
 		long albumId = intent.getLongExtra("albumId", -1);
 		long artistId = intent.getLongExtra("artistId", -1);
 		String path = intent.getStringExtra("path");
-		String artist = intent.getStringExtra("artist");
 		if (albumId != -1) {
 			String[] fields = {intent.getStringExtra("artist"), intent.getStringExtra("album")};
 			String data = String.format("album_id=%d", albumId);
