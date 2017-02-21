@@ -86,6 +86,7 @@
   <string name="all_songs">全部曲目</string>
   <string name="more_from_artist">更多来自演出者</string>
   <string name="more_from_album">更多来自专辑</string>
+  <string name="title">标题</string>
   <string name="number_of_tracks">曲目号</string>
   <string name="year">年份</string>
   <string name="date_added">添加日期</string>
@@ -234,5 +235,21 @@
   <string name="share">共享…</string>
   <string name="sendto">发送给…</string>
   <string name="no_receiving_apps">没有为此媒体类型找到接收的 app！</string>
+  <string name="media_library">媒体库</string>
+  <string name="media_scan_header">媒体扫描器</string>
+  <string name="media_scan_full">扫描整个文件系统 (较慢)</string>
+  <string name="media_scan_drop_db">清空媒体数据库 (危险！)</string>
+  <string name="media_scan_start">开始扫描</string>
+  <string name="media_scan_force_bastp">始终使用内置标签阅读器</string>
+  <string name="media_scan_group_albums">按文件夹分组封面</string>
+  <string name="media_statistics">统计</string>
+  <string name="media_stats_tracks">曲目数</string>
+  <string name="media_stats_playtime">播放时间 (小时)</string>
+  <string name="media_stats_progress">扫描进度</string>
+  <string name="media_library_scan_running">正在媒体库…</string>
+  <string name="media_scan_preferences">扫面器选项</string>
+  <string name="media_scan_preferences_change_title">扫面器选项已更改</string>
+  <string name="media_scan_preferences_change_message">更改此选项将完全重新开始扫描您的媒体库。你想继续吗？</string>
   <!--Plugin system-->
+  <string name="plugins">插件</string>
 </resources>
