@@ -72,7 +72,7 @@ in project settings.
 
 Nightly Builds
 ---------------------
-Automatically created builds are available from http://android.eqmx.net/android/vanilla/
+Automatically created builds are available from http://android.eqmx.net/android/vanilla/VanillaMusic-nightly.apk
 
 Documentation
 =============
