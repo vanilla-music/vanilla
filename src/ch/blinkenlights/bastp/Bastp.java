@@ -93,6 +93,10 @@ public class Bastp {
 				tags = (new Mp4File()).getTags(s);
 				tags.put("type", "MP4");
 			}
+			else if(magic.substring(0,4).equals("MThd")) {
+				tags = (new MidiFile()).getTags(s);
+				tags.put("type", "MIDI");
+			}
 
 		}
 		catch (IOException e) {
