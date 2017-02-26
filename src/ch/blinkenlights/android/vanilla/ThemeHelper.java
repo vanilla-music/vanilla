@@ -36,7 +36,6 @@ public class ThemeHelper {
 
 			switch (theme) {
 				case R.style.Playback:
-					//theme = themeBase + (R.style.Playback - R.style.VanillaBase);
 					ar = context.getResources().obtainTypedArray(R.array.theme_category_playback);
 					break;
 				case R.style.Library:
