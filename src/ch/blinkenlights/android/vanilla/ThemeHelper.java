@@ -29,32 +29,33 @@ public class ThemeHelper {
 	 * Will automatically swap the theme with an alternative
 	 * version if the user requested us to use it
 	 */
-	final public static int setTheme(Context context, int theme)
+	final public static void setTheme(Context context, int theme)
 	{
 		if(usesHoloTheme() == false) {
-			TypedArray ar = context.getResources().obtainTypedArray(R.array.theme_styles);
-			int themeBase = ar.getResourceId(getSelectedTheme(context), R.style.VanillaBase);
-			ar.recycle();
+			TypedArray ar = null;
 
 			switch (theme) {
 				case R.style.Playback:
-					theme = themeBase + (R.style.Playback - R.style.VanillaBase);
+					//theme = themeBase + (R.style.Playback - R.style.VanillaBase);
+					ar = context.getResources().obtainTypedArray(R.array.theme_category_playback);
 					break;
 				case R.style.Library:
-					theme = themeBase + (R.style.Library - R.style.VanillaBase);
+					ar = context.getResources().obtainTypedArray(R.array.theme_category_library);
 					break;
 				case R.style.BackActionBar:
-					theme = themeBase + (R.style.BackActionBar - R.style.VanillaBase);
+					ar = context.getResources().obtainTypedArray(R.array.theme_category_backactionbar);
 					break;
 				case R.style.PopupDialog:
-					theme = themeBase + (R.style.PopupDialog - R.style.VanillaBase);
+					ar = context.getResources().obtainTypedArray(R.array.theme_category_popupdialog);
 					break;
 				default:
 					throw new IllegalArgumentException("setTheme() called with unknown theme!");
 			}
+			theme = ar.getResourceId(getSelectedTheme(context), -1);
+			ar.recycle();
 		}
+
 		context.setTheme(theme);
-		return theme;
 	}
 
 	/**
