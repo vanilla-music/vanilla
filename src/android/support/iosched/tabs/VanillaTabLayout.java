@@ -40,7 +40,7 @@ public class VanillaTabLayout extends SlidingTabLayout {
 	public VanillaTabLayout(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		setSelectedIndicatorColors(context.getResources().getColor(ch.blinkenlights.android.vanilla.R.color.tabs_active_indicator));
-		setDistributeEvenly(true);
+		setDistributeEvenly(false);
 	}
 
 	/**
