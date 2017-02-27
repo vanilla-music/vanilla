@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.audiofx.AudioEffect;
+import android.media.audiofx.Equalizer;
 import android.net.Uri;
 import android.os.Build;
 
@@ -30,8 +31,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 
+import com.google.android.exoplayer2.C;
+import com.google.android.exoplayer2.decoder.DecoderCounters;
 import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.audio.AudioRendererEventListener;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
@@ -39,7 +44,9 @@ import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 
-public class VanillaMediaPlayer extends SimpleExoPlayer {
+import android.util.Log;
+
+public class VanillaMediaPlayer extends SimpleExoPlayer implements AudioRendererEventListener {
 
 	private Context mContext;
 	private String mDataSource;
@@ -48,12 +55,16 @@ public class VanillaMediaPlayer extends SimpleExoPlayer {
 	private float mDuckingFactor = Float.NaN;
 	private boolean mIsDucking = false;
 
+	private int mAudioSessionId = C.AUDIO_SESSION_ID_UNSET;
+
 	/**
 	 * Constructs a new VanillaMediaPlayer class
 	 */
 	public VanillaMediaPlayer(Context context, DefaultTrackSelector trackSelector, DefaultLoadControl loadControl) {
 		super(context, trackSelector, loadControl, null, 0, 0); // fixme: is 0 ok here ?
 		mContext = context;
+		setAudioStreamType(C.STREAM_TYPE_MUSIC);
+		setAudioDebugListener(this);
 	}
 
 	public boolean isPlaying() {
@@ -121,9 +132,14 @@ public class VanillaMediaPlayer extends SimpleExoPlayer {
 	/**
 	 * Creates a new AudioEffect for our AudioSession
 	 */
-	public void openAudioFx() {
+	private void openAudioFx() {
+	Log.v("VanillaMusic", "OPEN audioFX "+mAudioSessionId);
+		int id = mAudioSessionId;
+		if (id == C.AUDIO_SESSION_ID_UNSET)
+			return;
+
 		Intent i = new Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION);
-		i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, this.getAudioSessionId());
+		i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, id);
 		i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mContext.getPackageName());
 		mContext.sendBroadcast(i);
 	}
@@ -132,8 +148,13 @@ public class VanillaMediaPlayer extends SimpleExoPlayer {
 	 * Releases a previously claimed audio session id
 	 */
 	public void closeAudioFx() {
+	Log.v("VanillaMusic", "CLOSE audioFX "+mAudioSessionId);
+		int id = mAudioSessionId;
+		if (id == C.AUDIO_SESSION_ID_UNSET)
+			return;
+
 		Intent i = new Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION);
-		i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, this.getAudioSessionId());
+		i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, id);
 		i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mContext.getPackageName());
 		mContext.sendBroadcast(i);
 	}
@@ -184,4 +205,36 @@ public class VanillaMediaPlayer extends SimpleExoPlayer {
 		setVolume(volume);
 	}
 
+
+	////// AudioRendererEventListener
+	@Override
+	public void onAudioDisabled(DecoderCounters counters) {
+		Log.v("VanillaMusic", "onAudioDisabled");
+	}
+
+	@Override
+	public void onAudioEnabled(DecoderCounters counters) {
+	Log.v("VanillaMusic", "onAudioEnabled");
+	}
+
+	@Override
+	public void onAudioTrackUnderrun(int bufferSize, long bufferSizeMs, long elapsedSinceLastFeedMs) {
+	Log.v("VanillaMusic", "track underrun!");
+	}
+
+	@Override
+	public void onAudioInputFormatChanged(Format format) {
+	Log.v("VanillaMusic", "format change!");
+	}
+
+	@Override
+	public void onAudioDecoderInitialized(String decoderName, long initializedTimestampMs, long initializationDurationMs) {
+	Log.v("VanillaMusic", "onAudioDecoderInitialized!");
+	}
+
+	@Override
+	public void onAudioSessionId(int audioSessionId) {
+		//mAudioSessionId = audioSessionId;
+		Log.v("VanillaMusic", "Audio session id changed to: "+audioSessionId);
+	}
 }
