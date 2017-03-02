@@ -79,6 +79,7 @@ THE SOFTWARE.
 	<string name="remove">Remove</string>
 	<string name="play_or_enqueue">Enqueue if playing; Play if paused</string>
 	<string name="open">Open</string>
+	<string name="go_home">Home directory</string>
 
 	<plurals name="playing">
 		<item quantity="one">1 track playing.</item>

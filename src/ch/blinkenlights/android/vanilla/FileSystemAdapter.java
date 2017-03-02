@@ -133,7 +133,7 @@ public class FileSystemAdapter
 		mFolderIcon = activity.getResources().getDrawable(R.drawable.folder);
 		mInflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		if (limiter == null) {
-			limiter = buildLimiter( FileUtils.getFilesystemBrowseStart(activity) );
+			limiter = buildHomeLimiter(activity);
 		}
 		setLimiter(limiter);
 	}
@@ -250,6 +250,16 @@ public class FileSystemAdapter
 	{
 		String[] fields = FILE_SEPARATOR.split(file.getPath().substring(1));
 		return new Limiter(MediaUtils.TYPE_FILE, fields, file);
+	}
+
+	/**
+	 * Builds the limiter pointing to our home directory
+	 *
+	 * @param context the context to use
+	 * @return A limiter which is configured as 'home' directory
+	 */
+	public static Limiter buildHomeLimiter(Context context) {
+		return buildLimiter(FileUtils.getFilesystemBrowseStart(context));
 	}
 
 	@Override

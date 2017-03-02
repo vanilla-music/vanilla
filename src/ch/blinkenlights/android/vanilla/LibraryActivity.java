@@ -828,6 +828,7 @@ public class LibraryActivity
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, MENU_PLAYBACK, 0, R.string.playback_view);
 		menu.add(0, MENU_SEARCH, 0, R.string.search).setIcon(R.drawable.ic_menu_search).setVisible(false);
+		menu.add(0, MENU_GO_HOME, 30, R.string.go_home);
 		menu.add(0, MENU_SORT, 30, R.string.sort_by).setIcon(R.drawable.ic_menu_sort_alphabetically);
 		return true;
 	}
@@ -836,7 +837,9 @@ public class LibraryActivity
 	public boolean onPrepareOptionsMenu(Menu menu)
 	{
 		LibraryAdapter adapter = mCurrentAdapter;
-		menu.findItem(MENU_SORT).setEnabled(adapter != null && adapter.getMediaType() != MediaUtils.TYPE_FILE);
+		boolean isLibraryAdapter = (adapter != null && adapter.getMediaType() != MediaUtils.TYPE_FILE);
+		menu.findItem(MENU_GO_HOME).setVisible(!isLibraryAdapter);
+		menu.findItem(MENU_SORT).setEnabled(isLibraryAdapter);
 		return super.onPrepareOptionsMenu(menu);
 	}
 
@@ -846,10 +849,14 @@ public class LibraryActivity
 		switch (item.getItemId()) {
 		case MENU_SEARCH:
 			mBottomBarControls.showSearch(true);
-			return true;
+			break;
 		case MENU_PLAYBACK:
 			openPlaybackActivity();
-			return true;
+			break;
+		case MENU_GO_HOME:
+			mPagerAdapter.setLimiter(FileSystemAdapter.buildHomeLimiter(getApplicationContext()));
+			updateLimiterViews();
+			break;
 		case MENU_SORT: {
 			MediaAdapter adapter = (MediaAdapter)mCurrentAdapter;
 			LinearLayout header = (LinearLayout)getLayoutInflater().inflate(R.layout.sort_dialog, null);
@@ -877,11 +884,12 @@ public class LibraryActivity
 			dialog.getListView().addHeaderView(header);
 			dialog.setOnDismissListener(this);
 			dialog.show();
-			return true;
+			break;
 		}
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+		return true;
 	}
 
 	/**
