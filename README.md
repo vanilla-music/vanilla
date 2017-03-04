@@ -18,7 +18,7 @@ Vanilla Music player is a [GPLv3](LICENSE) licensed MP3/OGG/FLAC/PCM player for 
 Plugins
 ===========
 
-Vanilla Music also includes support for plugin, this is a list of some existing plugins:
+Vanilla Music also includes support for plugins, this is a list of some existing plugins:
 * [Cover fetcher](https://play.google.com/store/apps/details?id=com.kanedias.vanilla.coverfetch)
 * [Lyrics search](https://play.google.com/store/apps/details?id=com.kanedias.vanilla.lyrics)
 * [Tag editor](https://play.google.com/store/apps/details?id=com.kanedias.vanilla.audiotag)
