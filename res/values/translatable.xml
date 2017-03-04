@@ -109,6 +109,8 @@ THE SOFTWARE.
 
 	<string name="artists">Artists</string>
 	<string name="albums">Albums</string>
+	<string name="albumartists">Album Artists</string>
+	<string name="composers">Composers</string>
 	<string name="songs">Tracks</string>
 	<string name="playlists">Playlists</string>
 	<string name="genres">Genres</string>

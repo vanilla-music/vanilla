@@ -145,7 +145,22 @@ public class MediaSchema {
 	                                               +",_artist."+MediaLibrary.ContributorColumns._ID+" AS "+MediaLibrary.ContributorColumns.ARTIST_ID;
 
 	/**
-	 * View which includes song, album and artist information
+	 * Additional columns to select for albumartist info
+	 */
+	private static final String VIEW_ALBUMARTIST_SELECT = "_albumartist."+MediaLibrary.ContributorColumns._CONTRIBUTOR+" AS "+MediaLibrary.ContributorColumns.ALBUMARTIST
+	                                                    +",_albumartist."+MediaLibrary.ContributorColumns._CONTRIBUTOR_SORT+" AS "+MediaLibrary.ContributorColumns.ALBUMARTIST_SORT
+	                                                    +",_albumartist."+MediaLibrary.ContributorColumns._ID+" AS "+MediaLibrary.ContributorColumns.ALBUMARTIST_ID;
+
+	/**
+	 * Additional columns to select for composer info
+	 */
+	private static final String VIEW_COMPOSER_SELECT = "_composer."+MediaLibrary.ContributorColumns._CONTRIBUTOR+" AS "+MediaLibrary.ContributorColumns.COMPOSER
+	                                                  +",_composer."+MediaLibrary.ContributorColumns._CONTRIBUTOR_SORT+" AS "+MediaLibrary.ContributorColumns.COMPOSER_SORT
+	                                                  +",_composer."+MediaLibrary.ContributorColumns._ID+" AS "+MediaLibrary.ContributorColumns.COMPOSER_ID;
+
+
+	/**
+	 * View which includes song, album and artist information, enough for a filled song projection
 	 */
 	private static final String VIEW_CREATE_SONGS_ALBUMS_ARTISTS = "CREATE VIEW "+ MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS+ " AS "
 	  + "SELECT *, " + VIEW_ARTIST_SELECT + " FROM " + MediaLibrary.TABLE_SONGS
@@ -153,6 +168,26 @@ public class MediaSchema {
 	  +" LEFT JOIN "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+" ON "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+"."+MediaLibrary.ContributorSongColumns.ROLE+"="+MediaLibrary.ROLE_ARTIST
 	  +" AND "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+"."+MediaLibrary.ContributorSongColumns.SONG_ID+" = "+MediaLibrary.TABLE_SONGS+"."+MediaLibrary.SongColumns._ID
 	  +" LEFT JOIN "+MediaLibrary.TABLE_CONTRIBUTORS+" AS _artist ON _artist."+MediaLibrary.ContributorColumns._ID+" = "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+"."+MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID
+	  +" ;";
+
+	/**
+	 * View wich includes SONGS_ALBUMS_ARTISTS and any other contributors
+	 * This view should only be used if needed as the SQL query is pretty expensive
+	 */
+	private static final String VIEW_CREATE_SONGS_ALBUMS_ARTISTS_HUGE = "CREATE VIEW "+ MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS_HUGE+" AS "
+	  + "SELECT *, "+ VIEW_ALBUMARTIST_SELECT +", "+ VIEW_COMPOSER_SELECT +" FROM "+MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS
+	  // albumartists
+	  +" LEFT JOIN "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+" as __albumartists"
+	  +" ON  __albumartists."+MediaLibrary.ContributorSongColumns.ROLE+"="+MediaLibrary.ROLE_ALBUMARTIST
+	  +" AND __albumartists."+MediaLibrary.ContributorSongColumns.SONG_ID+" = "+MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS+"."+MediaLibrary.SongColumns._ID
+	  +" LEFT JOIN "+MediaLibrary.TABLE_CONTRIBUTORS+" AS _albumartist ON"
+	  +"  _albumartist."+MediaLibrary.ContributorColumns._ID+" = __albumartists."+MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID
+	  // composers
+	  +" LEFT JOIN "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+" as __composers"
+	  +" ON  __composers."+MediaLibrary.ContributorSongColumns.ROLE+"="+MediaLibrary.ROLE_COMPOSER
+	  +" AND __composers."+MediaLibrary.ContributorSongColumns.SONG_ID+" = "+MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS+"."+MediaLibrary.SongColumns._ID
+	  +" LEFT JOIN "+MediaLibrary.TABLE_CONTRIBUTORS+" AS _composer ON"
+	  +"  _composer."+MediaLibrary.ContributorColumns._ID+" = __composers."+MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID
 	  +" ;";
 
 	/**
@@ -171,6 +206,24 @@ public class MediaSchema {
 	  + "SELECT *, " + VIEW_ARTIST_SELECT + " FROM "+MediaLibrary.TABLE_CONTRIBUTORS+" AS _artist WHERE "+MediaLibrary.ContributorColumns._ID+" IN "
 	  +" (SELECT "+MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID+" FROM "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS
 	  +" WHERE "+MediaLibrary.ContributorSongColumns.ROLE+"="+MediaLibrary.ROLE_ARTIST+" GROUP BY "+MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID+")"
+	  +" ;";
+
+	/**
+	 * View which includes albumArtists information
+	 */
+	private static final String VIEW_CREATE_ALBUMARTISTS = "CREATE VIEW "+ MediaLibrary.VIEW_ALBUMARTISTS+ " AS "
+	  + "SELECT *, " + VIEW_ALBUMARTIST_SELECT + " FROM "+MediaLibrary.TABLE_CONTRIBUTORS+" AS _albumartist WHERE "+MediaLibrary.ContributorColumns._ID+" IN "
+	  +" (SELECT "+MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID+" FROM "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS
+	  +" WHERE "+MediaLibrary.ContributorSongColumns.ROLE+"="+MediaLibrary.ROLE_ALBUMARTIST+" GROUP BY "+MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID+")"
+	  +" ;";
+
+	/**
+	 * View which includes composer information
+	 */
+	private static final String VIEW_CREATE_COMPOSERS = "CREATE VIEW "+ MediaLibrary.VIEW_COMPOSERS+ " AS "
+	  + "SELECT *, " + VIEW_COMPOSER_SELECT + " FROM "+MediaLibrary.TABLE_CONTRIBUTORS+" AS _composer WHERE "+MediaLibrary.ContributorColumns._ID+" IN "
+	  +" (SELECT "+MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID+" FROM "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS
+	  +" WHERE "+MediaLibrary.ContributorSongColumns.ROLE+"="+MediaLibrary.ROLE_COMPOSER+" GROUP BY "+MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID+")"
 	  +" ;";
 
 	/**
@@ -204,8 +257,11 @@ public class MediaSchema {
 		dbh.execSQL(INDEX_IDX_PLAYLIST_ID);
 		dbh.execSQL(INDEX_IDX_PLAYLIST_ID_SONG);
 		dbh.execSQL(VIEW_CREATE_SONGS_ALBUMS_ARTISTS);
+		dbh.execSQL(VIEW_CREATE_SONGS_ALBUMS_ARTISTS_HUGE);
 		dbh.execSQL(VIEW_CREATE_ALBUMS_ARTISTS);
 		dbh.execSQL(VIEW_CREATE_ARTISTS);
+		dbh.execSQL(VIEW_CREATE_ALBUMARTISTS);
+		dbh.execSQL(VIEW_CREATE_COMPOSERS);
 		dbh.execSQL(VIEW_CREATE_PLAYLIST_SONGS);
 		dbh.execSQL(DATABASE_CREATE_PREFERENCES);
 	}
@@ -238,6 +294,12 @@ public class MediaSchema {
 		if (oldVersion < 20170211) {
 			// older versions of triggerFullMediaScan did this by mistake
 			dbh.execSQL("UPDATE songs SET mtime=1 WHERE mtime=0");
+		}
+
+		if (oldVersion < 20170217) {
+			dbh.execSQL(VIEW_CREATE_ALBUMARTISTS);
+			dbh.execSQL(VIEW_CREATE_COMPOSERS);
+			dbh.execSQL(VIEW_CREATE_SONGS_ALBUMS_ARTISTS_HUGE);
 		}
 
 	}

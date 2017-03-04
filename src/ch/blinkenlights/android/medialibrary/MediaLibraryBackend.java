@@ -35,7 +35,7 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	/**
 	 * The database version we are using
 	 */
-	private static final int DATABASE_VERSION = 20170211;
+	private static final int DATABASE_VERSION = 20170217;
 	/**
 	 * on-disk file to store the database
 	 */
@@ -48,6 +48,14 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	 * Regexp to detect costy artist_id queries which we can optimize
 	 */
 	private static final Pattern sQueryMatchArtistSearch = Pattern.compile("(^|.+ )"+MediaLibrary.ContributorColumns.ARTIST_ID+"=(\\d+)$");
+	/**
+	 * Regexp to detect costy albumartist_id queries which we can optimize
+	 */
+	private static final Pattern sQueryMatchAlbArtistSearch = Pattern.compile("(^|.+ )"+MediaLibrary.ContributorColumns.ALBUMARTIST_ID+"=(\\d+)$");
+	/**
+	 * Regexp to detect costy composer_id queries which we can optimize
+	 */
+	private static final Pattern sQueryMatchComposerSearch = Pattern.compile("(^|.+ )"+MediaLibrary.ContributorColumns.COMPOSER_ID+"=(\\d+)$");
 
 	/**
 	* Constructor for the MediaLibraryBackend helper
@@ -232,29 +240,36 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	 */
 	Cursor query (boolean distinct, String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy, String limit) {
 
+		if (MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS_HUGE.equals(table)) {
+			Log.v("VanillaMusic", "+++ warning : using HUGE table in genquery!");
+		}
+
 		if (selection != null) {
 			if (MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS.equals(table)) {
 				// artist matches in the song-view are costy: try to give sqlite a hint
-				Matcher artistMatch = sQueryMatchArtistSearch.matcher(selection);
-				if (artistMatch.matches()) {
-					selection = artistMatch.group(1);
-					final String artistId = artistMatch.group(2);
+				String[] contributorMatch = extractVirtualColumn(selection);
+				if (contributorMatch != null) {
+					selection = contributorMatch[0];
+					final String contributorId = contributorMatch[1];
+					final String contributorRole = contributorMatch[2];
 
 					selection += MediaLibrary.SongColumns._ID+" IN (SELECT "+MediaLibrary.ContributorSongColumns.SONG_ID+" FROM "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+" WHERE "
-					          + MediaLibrary.ContributorSongColumns.ROLE+"=0 AND "+MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID+"="+artistId+")";
+					          + MediaLibrary.ContributorSongColumns.ROLE+"="+contributorRole+" AND "+MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID+"="+contributorId+")";
 				}
 			}
 
 			if (MediaLibrary.VIEW_ALBUMS_ARTISTS.equals(table)) {
 				// looking up artists by albums will magically return every album where this
 				// artist has at least one item (while still using the primary_artist_id as the artist key)
-				Matcher artistMatch = sQueryMatchArtistSearch.matcher(selection);
-				if (artistMatch.matches()) {
-					selection = artistMatch.group(1);
-					final String artistId = artistMatch.group(2);
+				String[] contributorMatch = extractVirtualColumn(selection);
+				if (contributorMatch != null) {
+					selection = contributorMatch[0];
+					final String contributorId = contributorMatch[1];
+					final String contributorRole = contributorMatch[2];
+
 					selection += MediaLibrary.SongColumns._ID+" IN (SELECT DISTINCT "+MediaLibrary.SongColumns.ALBUM_ID+" FROM "+MediaLibrary.TABLE_SONGS+" WHERE "
 					          + MediaLibrary.SongColumns._ID+" IN (SELECT "+MediaLibrary.ContributorSongColumns.SONG_ID+" FROM "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+" WHERE "
-					          + MediaLibrary.ContributorSongColumns.ROLE+"=0 AND "+MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID+"="+artistId+"))";
+					          + MediaLibrary.ContributorSongColumns.ROLE+"="+contributorRole+" AND "+MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID+"="+contributorId+"))";
 				}
 			}
 
@@ -265,17 +280,33 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 				final String genreId = genreMatch.group(2); // and extract the searched genre id
 				final String songsQuery = buildSongIdFromGenreSelect(genreId);
 
-				if(table.equals(MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS)) {
+				if(table.equals(MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS)      ||
+				   table.equals(MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS_HUGE) ) {
 					selection += MediaLibrary.SongColumns._ID+" IN ("+songsQuery+") ";
 				}
 
-				if (table.equals(MediaLibrary.VIEW_ARTISTS)) {
-					selection += MediaLibrary.ContributorColumns.ARTIST_ID+" IN ("+ buildSongIdFromGenreSelect(MediaLibrary.ContributorColumns.ARTIST_ID, songsQuery)+") ";
+				if (table.equals(MediaLibrary.VIEW_ALBUMS_ARTISTS)) {
+					selection += MediaLibrary.AlbumColumns._ID+" IN ("+
+						buildSongIdFromGenreSelect(MediaLibrary.SongColumns.ALBUM_ID, MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS, songsQuery)+") ";
 				}
 
-				if (table.equals(MediaLibrary.VIEW_ALBUMS_ARTISTS)) {
-					selection += MediaLibrary.AlbumColumns._ID+" IN ("+ buildSongIdFromGenreSelect(MediaLibrary.SongColumns.ALBUM_ID, songsQuery)+") ";
+				if (table.equals(MediaLibrary.VIEW_ARTISTS)) {
+					selection += MediaLibrary.ContributorColumns.ARTIST_ID+" IN ("+
+						buildSongIdFromGenreSelect(MediaLibrary.ContributorColumns.ARTIST_ID, MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS, songsQuery)+") ";
 				}
+
+				if (table.equals(MediaLibrary.VIEW_ALBUMARTISTS)) {
+					selection += MediaLibrary.ContributorColumns.ALBUMARTIST_ID+" IN ("+
+						buildSongIdFromGenreSelect(MediaLibrary.ContributorColumns.ALBUMARTIST_ID, MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS_HUGE, songsQuery)+") ";
+					Log.v("VanillaMusic", "+++ warning: huge genrequery for albumartist!");
+				}
+
+				if (table.equals(MediaLibrary.VIEW_COMPOSERS)) {
+					selection += MediaLibrary.ContributorColumns.COMPOSER_ID+" IN ("+
+						buildSongIdFromGenreSelect(MediaLibrary.ContributorColumns.COMPOSER_ID, MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS_HUGE, songsQuery)+") ";
+					Log.v("VanillaMusic", "+++ warning: huge genrequery composer!");
+				}
+
 			}
 		}
 
@@ -295,6 +326,26 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	}
 
 	/**
+	 * Detects queries for artists, composers and albumartists and returns the
+	 * role of the contributor.
+	 *
+	 * @param sql the raw sql query
+	 * @return String[]{ sql-part, contributor-id, contributor-role }
+	 */
+	private String[] extractVirtualColumn(String sql) {
+		final Pattern[] pattern = new Pattern[]{ sQueryMatchArtistSearch, sQueryMatchComposerSearch, sQueryMatchAlbArtistSearch };
+		final int[] roles = { MediaLibrary.ROLE_ARTIST, MediaLibrary.ROLE_COMPOSER, MediaLibrary.ROLE_ALBUMARTIST };
+
+		for (int i=0; i < roles.length; i++) {
+			Matcher matcher = pattern[i].matcher(sql);
+			if (matcher.matches()) {
+				return new String[]{ matcher.group(1), matcher.group(2), String.format("%d", roles[i]) };
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Returns a select query to get all songs from a genre
 	 *
 	 * @param genreId the id to query as a string
@@ -309,11 +360,12 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	 * Returns a select query to get artists or albums from a genre
 	 *
 	 * @param target the target to query
+	 * @param table the table to query
 	 * @param genreSelect the select string generated by buildSongIdFromGenreSelect
 	 * @return an SQL string
 	 */
-	private String buildSongIdFromGenreSelect(String target, String genreSelect) {
-		return "SELECT "+target+" FROM "+MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS+" WHERE "
+	private String buildSongIdFromGenreSelect(String target, String table, String genreSelect) {
+		return "SELECT "+target+" FROM "+ table +" WHERE "
 		                +MediaLibrary.SongColumns._ID+" IN ("+genreSelect+") GROUP BY "+target;
 	}
 

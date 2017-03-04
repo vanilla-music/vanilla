@@ -63,30 +63,38 @@ public class MediaUtils {
 	 */
 	public static final int TYPE_ARTIST = 0;
 	/**
+	 * Type indicating an id represents an albumartist
+	 */
+	public static final int TYPE_ALBARTIST = 1;
+	/**
+	 * Type indicating an id represents a composer
+	 */
+	public static final int TYPE_COMPOSER = 2;
+	/**
 	 * Type indicating an id represents an album.
 	 */
-	public static final int TYPE_ALBUM = 1;
+	public static final int TYPE_ALBUM = 3;
 	/**
 	 * Type indicating an id represents a song.
 	 */
-	public static final int TYPE_SONG = 2;
+	public static final int TYPE_SONG = 4;
 	/**
 	 * Type indicating an id represents a playlist.
 	 */
-	public static final int TYPE_PLAYLIST = 3;
+	public static final int TYPE_PLAYLIST = 5;
 	/**
 	 * Type indicating ids represent genres.
 	 */
-	public static final int TYPE_GENRE = 4;
+	public static final int TYPE_GENRE = 6;
 	/**
 	 * Special type for files and folders. Most methods do not accept this type
 	 * since files have no MediaStore id and require special handling.
 	 */
-	public static final int TYPE_FILE = 5;
+	public static final int TYPE_FILE = 7;
 	/**
 	 * The number of different valid media types.
 	 */
-	public static final int TYPE_COUNT = 6;
+	public static final int TYPE_COUNT = 8;
 
 	/**
 	 * The default sort order for media queries. First artist, then album, then
@@ -157,6 +165,12 @@ public class MediaUtils {
 		case TYPE_ARTIST:
 			selection.append(MediaLibrary.ContributorColumns.ARTIST_ID);
 			break;
+		case TYPE_ALBARTIST:
+			selection.append(MediaLibrary.ContributorColumns.ALBUMARTIST_ID);
+			break;
+		case TYPE_COMPOSER:
+			selection.append(MediaLibrary.ContributorColumns.COMPOSER_ID);
+			break;
 		case TYPE_ALBUM:
 			selection.append(MediaLibrary.SongColumns.ALBUM_ID);
 			sort = ALBUM_SORT;
@@ -206,6 +220,8 @@ public class MediaUtils {
 	{
 		switch (type) {
 		case TYPE_ARTIST:
+		case TYPE_ALBARTIST:
+		case TYPE_COMPOSER:
 		case TYPE_ALBUM:
 		case TYPE_SONG:
 		case TYPE_GENRE:

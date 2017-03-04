@@ -95,10 +95,10 @@ public class TabOrderActivity extends Activity
 	 */
 	public void restoreDefault()
 	{
-		mAdapter.setTabIds(LibraryPagerAdapter.DEFAULT_ORDER.clone());
+		mAdapter.setTabIds(LibraryPagerAdapter.DEFAULT_TAB_ORDER.clone());
 		DragSortListView list = mList;
 		for (int i = 0; i != LibraryPagerAdapter.MAX_ADAPTER_COUNT; ++i) {
-			list.setItemChecked(i, true);
+			list.setItemChecked(i, LibraryPagerAdapter.DEFAULT_TAB_VISIBILITY[i]);
 		}
 		save();
 	}

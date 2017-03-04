@@ -29,19 +29,22 @@ import java.io.File;
 
 public class MediaLibrary  {
 
-	public static final String TABLE_SONGS                = "songs";
-	public static final String TABLE_ALBUMS               = "albums";
-	public static final String TABLE_CONTRIBUTORS         = "contributors";
-	public static final String TABLE_CONTRIBUTORS_SONGS   = "contributors_songs";
-	public static final String TABLE_GENRES               = "genres";
-	public static final String TABLE_GENRES_SONGS         = "genres_songs";
-	public static final String TABLE_PLAYLISTS            = "playlists";
-	public static final String TABLE_PLAYLISTS_SONGS      = "playlists_songs";
-	public static final String TABLE_PREFERENCES          = "preferences";
-	public static final String VIEW_ARTISTS               = "_artists";
-	public static final String VIEW_ALBUMS_ARTISTS        = "_albums_artists";
-	public static final String VIEW_SONGS_ALBUMS_ARTISTS  = "_songs_albums_artists";
-	public static final String VIEW_PLAYLIST_SONGS        = "_playlists_songs";
+	public static final String TABLE_SONGS                    = "songs";
+	public static final String TABLE_ALBUMS                   = "albums";
+	public static final String TABLE_CONTRIBUTORS             = "contributors";
+	public static final String TABLE_CONTRIBUTORS_SONGS       = "contributors_songs";
+	public static final String TABLE_GENRES                   = "genres";
+	public static final String TABLE_GENRES_SONGS             = "genres_songs";
+	public static final String TABLE_PLAYLISTS                = "playlists";
+	public static final String TABLE_PLAYLISTS_SONGS          = "playlists_songs";
+	public static final String TABLE_PREFERENCES              = "preferences";
+	public static final String VIEW_ARTISTS                   = "_artists";
+	public static final String VIEW_ALBUMARTISTS              = "_albumartists";
+	public static final String VIEW_COMPOSERS                 = "_composers";
+	public static final String VIEW_ALBUMS_ARTISTS            = "_albums_artists";
+	public static final String VIEW_SONGS_ALBUMS_ARTISTS      = "_songs_albums_artists";
+	public static final String VIEW_SONGS_ALBUMS_ARTISTS_HUGE = "_songs_albums_artists_huge";
+	public static final String VIEW_PLAYLIST_SONGS            = "_playlists_songs";
 
 	public static final int ROLE_ARTIST                   = 0;
 	public static final int ROLE_COMPOSER                 = 1;
@@ -561,6 +564,7 @@ public class MediaLibrary  {
 		 * The mtime of this item
 		 */
 		String MTIME = "mtime";
+
 		/**
 		 * ONLY IN VIEWS - the artist
 		 */
@@ -573,6 +577,33 @@ public class MediaLibrary  {
 		 * ONLY IN VIEWS - the artist id
 		 */
 		String ARTIST_ID = "artist_id";
+
+		/**
+		 * ONLY IN VIEWS - the albumartist
+		 */
+		String ALBUMARTIST = "albumartist";
+		/**
+		 * ONLY IN VIEWS - the albumartist_sort key
+		 */
+		String ALBUMARTIST_SORT = "albumartist_sort";
+		/**
+		 * ONLY IN VIEWS - the albumartist id
+		 */
+		String ALBUMARTIST_ID = "albumartist_id";
+
+		/**
+		 * ONLY IN VIEWS - the composer
+		 */
+		String COMPOSER = "composer";
+		/**
+		 * ONLY IN VIEWS - the composer_sort key
+		 */
+		String COMPOSER_SORT = "composer_sort";
+		/**
+		 * ONLY IN VIEWS - the composer id
+		 */
+		String COMPOSER_ID = "composer_id";
+
 	}
 
 	// Songs <-> Contributor mapping

@@ -47,6 +47,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.LinearLayout;
 import java.util.Arrays;
+import java.util.ArrayList;
 
 /**
  * PagerAdapter that manages the library media ListViews.
@@ -62,18 +63,25 @@ public class LibraryPagerAdapter
 	 * The number of unique list types. The number of visible lists may be
 	 * smaller.
 	 */
-	public static final int MAX_ADAPTER_COUNT = 6;
+	public static final int MAX_ADAPTER_COUNT = MediaUtils.TYPE_COUNT;
 	/**
 	 * The human-readable title for each list. The positions correspond to the
 	 * MediaUtils ids, so e.g. TITLES[MediaUtils.TYPE_SONG] = R.string.songs
 	 */
-	public static final int[] TITLES = { R.string.artists, R.string.albums, R.string.songs,
-	                                     R.string.playlists, R.string.genres, R.string.files };
+	public static final int[] TITLES = { R.string.artists, R.string.albumartists, R.string.composers,
+	                                     R.string.albums, R.string.songs, R.string.playlists,
+	                                     R.string.genres, R.string.files };
 	/**
 	 * Default tab order.
 	 */
-	public static final int[] DEFAULT_ORDER = { MediaUtils.TYPE_ARTIST, MediaUtils.TYPE_ALBUM, MediaUtils.TYPE_SONG,
-	                                            MediaUtils.TYPE_PLAYLIST, MediaUtils.TYPE_GENRE, MediaUtils.TYPE_FILE };
+	public static final int[] DEFAULT_TAB_ORDER = { MediaUtils.TYPE_ARTIST, MediaUtils.TYPE_ALBARTIST, MediaUtils.TYPE_COMPOSER,
+	                                                MediaUtils.TYPE_ALBUM, MediaUtils.TYPE_SONG, MediaUtils.TYPE_PLAYLIST,
+	                                                MediaUtils.TYPE_GENRE, MediaUtils.TYPE_FILE };
+	/**
+	 * The default visibility of tabs
+	 */
+	public static final boolean[] DEFAULT_TAB_VISIBILITY = { true, false, false, true, true, true, true, true };
+
 	/**
 	 * The user-chosen tab order.
 	 */
@@ -99,6 +107,14 @@ public class LibraryPagerAdapter
 	 * The artist adapter instance, also stored at mAdapters[MediaUtils.TYPE_ARTIST].
 	 */
 	private MediaAdapter mArtistAdapter;
+	/**
+	 * The albumartist adapter instance, also stored at mAdapters[MediaUtils.TYPE_ALBART].
+	 */
+	private MediaAdapter mAlbArtAdapter;
+	/**
+	 * The composer adapter instance, also stored at mAdapters[MediaUtils.TYPE_COMPOSER].
+	 */
+	private MediaAdapter mComposerAdapter;
 	/**
 	 * The album adapter instance, also stored at mAdapters[MediaUtils.TYPE_ALBUM].
 	 */
@@ -136,6 +152,14 @@ public class LibraryPagerAdapter
 	 */
 	private Limiter mPendingArtistLimiter;
 	/**
+	 * A limiter that should be set when the albumartist adapter is created.
+	 */
+	private Limiter mPendingAlbArtLimiter;
+	/**
+	 * A limiter that should be set when the composer adapter is created.
+	 */
+	private Limiter mPendingComposerLimiter;
+	/**
 	 * A limiter that should be set when the album adapter is created.
 	 */
 	private Limiter mPendingAlbumLimiter;
@@ -165,9 +189,10 @@ public class LibraryPagerAdapter
 	 * song limiters.
 	 */
 	private String mHeaderText;
-	private DraggableRow mArtistHeader;
-	private DraggableRow mAlbumHeader;
-	private DraggableRow mSongHeader;
+	/**
+	 * A list of header rows which require test updates
+	 */
+	private ArrayList<DraggableRow> mHeaderViews = new ArrayList();
 	/**
 	 * The current filter text, or null if none.
 	 */
@@ -224,27 +249,30 @@ public class LibraryPagerAdapter
 	public boolean loadTabOrder()
 	{
 		String in = PlaybackService.getSettings(mActivity).getString(PrefKeys.TAB_ORDER, PrefDefaults.TAB_ORDER);
-		int[] order;
-		int count;
-		if (in == null || in.length() != MAX_ADAPTER_COUNT) {
-			order = DEFAULT_ORDER;
-			count = MAX_ADAPTER_COUNT;
-		} else {
+		int[] order = new int[MAX_ADAPTER_COUNT];
+		int count = 0;
+		if (in != null && in.length() == MAX_ADAPTER_COUNT) {
 			char[] chars = in.toCharArray();
 			order = new int[MAX_ADAPTER_COUNT];
-			count = 0;
 			for (int i = 0; i != MAX_ADAPTER_COUNT; ++i) {
 				char v = chars[i];
 				if (v >= 128) {
 					v -= 128;
 					if (v >= MediaUtils.TYPE_COUNT) {
-						// invalid media type; use default order
-						order = DEFAULT_ORDER;
-						count = MAX_ADAPTER_COUNT;
+						// invalid media type, ignore all data
+						count = 0;
 						break;
 					}
 					order[count++] = v;
 				}
+			}
+		}
+
+		// set default tabs if none were loaded
+		if (count == 0) {
+			for (int i=0; i != MAX_ADAPTER_COUNT; i++) {
+				if (DEFAULT_TAB_VISIBILITY[i])
+					order[count++] = DEFAULT_TAB_ORDER[i];
 			}
 		}
 
@@ -316,18 +344,28 @@ public class LibraryPagerAdapter
 			case MediaUtils.TYPE_ARTIST:
 				adapter = mArtistAdapter = new MediaAdapter(activity, MediaUtils.TYPE_ARTIST, mPendingArtistLimiter, activity);
 				mArtistAdapter.setExpandable(mSongsPosition != -1 || mAlbumsPosition != -1);
-				mArtistHeader = header = (DraggableRow)inflater.inflate(R.layout.draggable_row, null);
+				header = (DraggableRow)inflater.inflate(R.layout.draggable_row, null);
+				break;
+			case MediaUtils.TYPE_ALBARTIST:
+				adapter = mAlbArtAdapter = new MediaAdapter(activity, MediaUtils.TYPE_ALBARTIST, mPendingAlbArtLimiter, activity);
+				mAlbArtAdapter.setExpandable(mSongsPosition != -1 || mAlbumsPosition != -1);
+				header = (DraggableRow)inflater.inflate(R.layout.draggable_row, null);
+				break;
+			case MediaUtils.TYPE_COMPOSER:
+				adapter = mComposerAdapter = new MediaAdapter(activity, MediaUtils.TYPE_COMPOSER, mPendingComposerLimiter, activity);
+				mComposerAdapter.setExpandable(mSongsPosition != -1 || mAlbumsPosition != -1);
+				header = (DraggableRow)inflater.inflate(R.layout.draggable_row, null);
 				break;
 			case MediaUtils.TYPE_ALBUM:
 				adapter = mAlbumAdapter = new MediaAdapter(activity, MediaUtils.TYPE_ALBUM, mPendingAlbumLimiter, activity);
 				mAlbumAdapter.setExpandable(mSongsPosition != -1);
 				mPendingAlbumLimiter = null;
-				mAlbumHeader = header = (DraggableRow)inflater.inflate(R.layout.draggable_row, null);
+				header = (DraggableRow)inflater.inflate(R.layout.draggable_row, null);
 				break;
 			case MediaUtils.TYPE_SONG:
 				adapter = mSongAdapter = new MediaAdapter(activity, MediaUtils.TYPE_SONG, mPendingSongLimiter, activity);
 				mPendingSongLimiter = null;
-				mSongHeader = header = (DraggableRow)inflater.inflate(R.layout.draggable_row, null);
+				header = (DraggableRow)inflater.inflate(R.layout.draggable_row, null);
 				break;
 			case MediaUtils.TYPE_PLAYLIST:
 				adapter = mPlaylistAdapter = new MediaAdapter(activity, MediaUtils.TYPE_PLAYLIST, null, activity);
@@ -353,6 +391,7 @@ public class LibraryPagerAdapter
 				header.getTextView().setText(mHeaderText);
 				header.setTag(new ViewHolder()); // behave like a normal library row
 				view.addHeaderView(header);
+				mHeaderViews.add(header);
 			}
 			view.setAdapter(adapter);
 			if (type != MediaUtils.TYPE_FILE)
@@ -424,6 +463,8 @@ public class LibraryPagerAdapter
 	{
 		Bundle in = (Bundle)state;
 		mPendingArtistLimiter = (Limiter)in.getSerializable("limiter_artists");
+		mPendingAlbArtLimiter = (Limiter)in.getSerializable("limiter_albumartists");
+		mPendingComposerLimiter = (Limiter)in.getSerializable("limiter_composer");
 		mPendingAlbumLimiter = (Limiter)in.getSerializable("limiter_albums");
 		mPendingSongLimiter = (Limiter)in.getSerializable("limiter_songs");
 		mPendingFileLimiter = (Limiter)in.getSerializable("limiter_files");
@@ -435,6 +476,10 @@ public class LibraryPagerAdapter
 		Bundle out = new Bundle(10);
 		if (mArtistAdapter != null)
 			out.putSerializable("limiter_artists", mArtistAdapter.getLimiter());
+		if (mAlbArtAdapter != null)
+			out.putSerializable("limiter_albumartists", mAlbArtAdapter.getLimiter());
+		if (mComposerAdapter != null)
+			out.putSerializable("limiter_composer", mComposerAdapter.getLimiter());
 		if (mAlbumAdapter != null)
 			out.putSerializable("limiter_albums", mAlbumAdapter.getLimiter());
 		if (mSongAdapter != null)
@@ -452,12 +497,9 @@ public class LibraryPagerAdapter
 	 */
 	public void setHeaderText(String text)
 	{
-		if (mArtistHeader != null)
-			mArtistHeader.getTextView().setText(text);
-		if (mAlbumHeader != null)
-			mAlbumHeader.getTextView().setText(text);
-		if (mSongHeader != null)
-			mSongHeader.getTextView().setText(text);
+		for(DraggableRow row : mHeaderViews) {
+			row.getTextView().setText(text);
+		}
 		mHeaderText = text;
 	}
 
@@ -484,6 +526,20 @@ public class LibraryPagerAdapter
 				mArtistAdapter.setLimiter(null);
 				loadSortOrder(mArtistAdapter);
 				requestRequery(mArtistAdapter);
+			}
+			if (mAlbArtAdapter == null) {
+				mPendingAlbArtLimiter = null;
+			} else {
+				mAlbArtAdapter.setLimiter(null);
+				loadSortOrder(mAlbArtAdapter);
+				requestRequery(mAlbArtAdapter);
+			}
+			if (mComposerAdapter == null) {
+				mPendingComposerLimiter = null;
+			} else {
+				mComposerAdapter.setLimiter(null);
+				loadSortOrder(mComposerAdapter);
+				requestRequery(mComposerAdapter);
 			}
 			if (mAlbumAdapter == null) {
 				mPendingAlbumLimiter = null;
@@ -526,6 +582,8 @@ public class LibraryPagerAdapter
 			tab = mSongsPosition;
 			break;
 		case MediaUtils.TYPE_ARTIST:
+		case MediaUtils.TYPE_ALBARTIST:
+		case MediaUtils.TYPE_COMPOSER:
 			if (mAlbumAdapter == null) {
 				mPendingAlbumLimiter = limiter;
 			} else {
@@ -551,6 +609,20 @@ public class LibraryPagerAdapter
 				mArtistAdapter.setLimiter(limiter);
 				loadSortOrder(mArtistAdapter);
 				requestRequery(mArtistAdapter);
+			}
+			if (mAlbArtAdapter == null) {
+				mPendingAlbArtLimiter = limiter;
+			} else {
+				mAlbArtAdapter.setLimiter(limiter);
+				loadSortOrder(mAlbArtAdapter);
+				requestRequery(mAlbArtAdapter);
+			}
+			if (mComposerAdapter == null) {
+				mPendingComposerLimiter = limiter;
+			} else {
+				mComposerAdapter.setLimiter(limiter);
+				loadSortOrder(mComposerAdapter);
+				requestRequery(mComposerAdapter);
 			}
 			if (mAlbumAdapter == null) {
 				mPendingAlbumLimiter = limiter;
