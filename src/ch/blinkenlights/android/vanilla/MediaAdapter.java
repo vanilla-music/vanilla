@@ -504,11 +504,14 @@ public class MediaAdapter
 		cursor.moveToPosition(position);
 		holder.id = cursor.getLong(0);
 		long cacheId = cursor.getLong(1);
-		if (mProjection.length >= 5) {
+		if (mProjection.length >= 4) {
 			String line1 = cursor.getString(2);
 			String line2 = cursor.getString(3);
 			line1 = (line1 == null ? DB_NULLSTRING_FALLBACK : line1);
-			line2 = (line2 == null ? DB_NULLSTRING_FALLBACK : line2 + ", " + cursor.getString(4));
+			line2 = (line2 == null ? DB_NULLSTRING_FALLBACK : line2);
+
+			if (mProjection.length >= 5)
+				line2 += ", " + cursor.getString(4);
 
 			SpannableStringBuilder sb = new SpannableStringBuilder(line1);
 			sb.append('\n');
