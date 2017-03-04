@@ -144,11 +144,6 @@ public class LibraryActivity
 	 */
 	private int mLastAction = ACTION_PLAY;
 	/**
-	 * The id of the media that was last pressed in the current adapter. Used to
-	 * open the playback activity when an item is pressed twice.
-	 */
-	private long mLastActedId;
-	/**
 	 * Holds last intent that was passed to the context menu
 	 */
 	private Intent mLastRequestedCtx;
@@ -269,7 +264,6 @@ public class LibraryActivity
 
 		SharedPreferences settings = PlaybackService.getSettings(this);
 		mDefaultAction = Integer.parseInt(settings.getString(PrefKeys.DEFAULT_ACTION_INT, PrefDefaults.DEFAULT_ACTION_INT));
-		mLastActedId = LibraryAdapter.INVALID_ID;
 		updateHeaders();
 	}
 
@@ -459,8 +453,6 @@ public class LibraryActivity
 		query.mode = modeForAction[mode];
 		PlaybackService.get(this).addSongs(query);
 
-		mLastActedId = id;
-
 		if (mDefaultAction == ACTION_LAST_USED && mLastAction != action) {
 			mLastAction = action;
 			updateHeaders();
@@ -510,8 +502,6 @@ public class LibraryActivity
 
 		if (action == ACTION_EXPAND && rowData.getBooleanExtra(LibraryAdapter.DATA_EXPANDABLE, false)) {
 			onItemExpanded(rowData);
-		} else if (rowData.getLongExtra(LibraryAdapter.DATA_ID, LibraryAdapter.INVALID_ID) == mLastActedId) {
-			openPlaybackActivity();
 		} else if (action != ACTION_DO_NOTHING) {
 			if (action == ACTION_EXPAND) {
 				// default to playing when trying to expand something that can't
@@ -1004,7 +994,6 @@ public class LibraryActivity
 	public void onPageChanged(int position, LibraryAdapter adapter)
 	{
 		mCurrentAdapter = adapter;
-		mLastActedId = LibraryAdapter.INVALID_ID;
 		updateLimiterViews();
 		if (adapter != null && (adapter.getLimiter() == null || adapter.getMediaType() == MediaUtils.TYPE_FILE)) {
 			// Save current page so it is opened on next startup. Don't save if
