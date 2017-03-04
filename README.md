@@ -15,6 +15,16 @@ Vanilla Music player is a [GPLv3](LICENSE) licensed MP3/OGG/FLAC/PCM player for 
       alt="Get it on F-Droid"
       height="80">](https://f-droid.org/app/ch.blinkenlights.android.vanilla)
 
+Plugins
+===========
+
+Vanilla Music also includes support for plugin, this is a list of some existing plugins:
+* [Cover fetcher](https://play.google.com/store/apps/details?id=com.kanedias.vanilla.coverfetch)
+* [Lyrics search](https://play.google.com/store/apps/details?id=com.kanedias.vanilla.lyrics)
+* [Tag editor](https://play.google.com/store/apps/details?id=com.kanedias.vanilla.audiotag)
+* [Headphone detector](https://play.google.com/store/apps/details?id=ch.blinkenlights.android.vanillaplug)
+
+
 Donations
 ===========
 You can donate to Vanilla Musics development via gratipay or Bitcoin
