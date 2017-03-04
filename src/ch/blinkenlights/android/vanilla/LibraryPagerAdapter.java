@@ -377,6 +377,7 @@ public class LibraryPagerAdapter
 			case MediaUtils.TYPE_FILE:
 				adapter = mFilesAdapter = new FileSystemAdapter(activity, mPendingFileLimiter);
 				mPendingFileLimiter = null;
+				header = (DraggableRow)inflater.inflate(R.layout.draggable_row, null);
 				break;
 			default:
 				throw new IllegalArgumentException("Invalid media type: " + type);
@@ -914,17 +915,18 @@ public class LibraryPagerAdapter
 	{
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
 		View targetView = info.targetView;
-		Intent intent = info.id == -1 ? createHeaderIntent(targetView) : mCurrentAdapter.createData(targetView);
+		Intent intent = info.id == LibraryAdapter.HEADER_ID ? createHeaderIntent(targetView) : mCurrentAdapter.createData(targetView);
 		mActivity.onCreateContextMenu(menu, intent);
 	}
 
 	@Override
 	public void onItemClick (AdapterView<?> parent, View view, int position, long id) {
 		int type = (Integer)parent.getTag();
+		Intent intent = id == LibraryAdapter.HEADER_ID ? createHeaderIntent(view) : mCurrentAdapter.createData(view);
+
 		if (type == MediaUtils.TYPE_FILE) {
-			mFilesAdapter.onViewClicked(view);
+			mFilesAdapter.onItemClicked(intent);
 		} else {
-			Intent intent = id == -1 ? createHeaderIntent(view) : mCurrentAdapter.createData(view);
 			mActivity.onItemClicked(intent);
 		}
 	}

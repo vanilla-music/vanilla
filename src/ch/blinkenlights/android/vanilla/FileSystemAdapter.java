@@ -141,7 +141,7 @@ public class FileSystemAdapter
 	@Override
 	public Object query()
 	{
-		File file = mLimiter == null ? new File("/") : (File)mLimiter.data;
+		File file = getLimiterPath();
 
 		if (mFileObserver == null) {
 			mFileObserver = new Observer(file.getPath());
@@ -240,6 +240,15 @@ public class FileSystemAdapter
 	}
 
 	/**
+	 * Returns the unixpath represented by this limiter
+	 *
+	 * @return the file of this limiter represents
+	 */
+	private File getLimiterPath() {
+		return mLimiter == null ? new File("/") : (File)mLimiter.data;
+	}
+
+	/**
 	 * Builds a limiter from the given folder. Only files contained in the
 	 * given folder will be shown if the limiter is set on this adapter.
 	 *
@@ -316,12 +325,24 @@ public class FileSystemAdapter
 	}
 
 	/**
+	 * Returns all songs represented by this adapter.
+	 * Note that this will do a recursive query!
+	 *
+	 * @param projection the projection to use
+	 * @return a query task
+	 */
+	@Override
+	public QueryTask buildSongQuery(String[] projection) {
+		File path = getLimiterPath();
+		return MediaUtils.buildFileQuery(path.getPath(), projection);
+	}
+
+	/**
 	 * A row was clicked: this was dispatched by LibraryPagerAdapter
 	 *
-	 * @param View view which was clicked
+	 * @param intent likely created by createData()
 	 */
-	public void onViewClicked(View view) {
-		Intent intent = createData(view);
+	public void onItemClicked(Intent intent) {
 		boolean isFolder = intent.getBooleanExtra(LibraryAdapter.DATA_EXPANDABLE, false);
 
 		if (FileUtils.canDispatchIntent(intent) && FileUtils.dispatchIntent(mActivity, intent))

@@ -406,6 +406,7 @@ public class MediaAdapter
 	 *
 	 * @param projection The columns to query.
 	 */
+	@Override
 	public QueryTask buildSongQuery(String[] projection)
 	{
 		QueryTask query = buildQuery(projection, true);

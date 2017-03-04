@@ -85,6 +85,14 @@ public interface LibraryAdapter extends ListAdapter {
 	Object query();
 
 	/**
+	 * Retrieve a query which will fetch all songs represented by
+	 * this adapter.
+	 *
+	 * @return a query task.
+	 */
+	QueryTask buildSongQuery(String[] projection);
+
+	/**
 	 * Update the adapter with the given data.
 	 *
 	 * Must be called on the UI thread.
