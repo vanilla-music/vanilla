@@ -415,7 +415,7 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 		for (String s : data) {
 			Matcher matcher = filter.matcher(s);
 			if (matcher.matches()) {
-				list.add(matcher.group(1));
+				list.add(matcher.group(1).trim());
 			}
 		}
 		if (list.size() > 0)
