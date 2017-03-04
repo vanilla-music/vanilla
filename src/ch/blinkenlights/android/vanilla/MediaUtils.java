@@ -63,29 +63,29 @@ public class MediaUtils {
 	 */
 	public static final int TYPE_ARTIST = 0;
 	/**
-	 * Type indicating an id represents an albumartist
-	 */
-	public static final int TYPE_ALBARTIST = 1;
-	/**
-	 * Type indicating an id represents a composer
-	 */
-	public static final int TYPE_COMPOSER = 2;
-	/**
 	 * Type indicating an id represents an album.
 	 */
-	public static final int TYPE_ALBUM = 3;
+	public static final int TYPE_ALBUM = 1;
 	/**
 	 * Type indicating an id represents a song.
 	 */
-	public static final int TYPE_SONG = 4;
+	public static final int TYPE_SONG = 2;
 	/**
 	 * Type indicating an id represents a playlist.
 	 */
-	public static final int TYPE_PLAYLIST = 5;
+	public static final int TYPE_PLAYLIST = 3;
 	/**
 	 * Type indicating ids represent genres.
 	 */
-	public static final int TYPE_GENRE = 6;
+	public static final int TYPE_GENRE = 4;
+	/**
+	 * Type indicating an id represents an albumartist
+	 */
+	public static final int TYPE_ALBARTIST = 5;
+	/**
+	 * Type indicating an id represents a composer
+	 */
+	public static final int TYPE_COMPOSER = 6;
 	/**
 	 * Special type for files and folders. Most methods do not accept this type
 	 * since files have no MediaStore id and require special handling.

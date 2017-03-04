@@ -68,9 +68,8 @@ public class LibraryPagerAdapter
 	 * The human-readable title for each list. The positions correspond to the
 	 * MediaUtils ids, so e.g. TITLES[MediaUtils.TYPE_SONG] = R.string.songs
 	 */
-	public static final int[] TITLES = { R.string.artists, R.string.albumartists, R.string.composers,
-	                                     R.string.albums, R.string.songs, R.string.playlists,
-	                                     R.string.genres, R.string.files };
+	public static final int[] TITLES = { R.string.artists, R.string.albums, R.string.songs, R.string.playlists,
+	                                     R.string.genres, R.string.albumartists, R.string.composers, R.string.files };
 	/**
 	 * Default tab order.
 	 */
