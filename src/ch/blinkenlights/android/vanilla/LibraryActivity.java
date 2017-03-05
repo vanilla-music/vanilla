@@ -232,7 +232,7 @@ public class LibraryActivity
 							ApplicationInfo selected = mPlugins.get(pNamesArr[which]);
 							Intent request = new Intent(PluginUtils.ACTION_LAUNCH_PLUGIN);
 							request.setPackage(selected.packageName);
-							request.putExtra(PluginUtils.EXTRA_PARAM_URI, Uri.fromFile(new File(resolved.path)));
+							request.putExtra(PluginUtils.EXTRA_PARAM_URI, resolved.uri);
 							request.putExtra(PluginUtils.EXTRA_PARAM_SONG_TITLE, resolved.title);
 							request.putExtra(PluginUtils.EXTRA_PARAM_SONG_ARTIST, resolved.artist);
 							request.putExtra(PluginUtils.EXTRA_PARAM_SONG_ALBUM, resolved.album);
