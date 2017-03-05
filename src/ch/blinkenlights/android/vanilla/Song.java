@@ -27,7 +27,9 @@ import ch.blinkenlights.android.medialibrary.MediaLibrary;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.provider.MediaStore;
+
 /**
  * Represents a Song backed by the MediaStore. Includes basic metadata and
  * utilities to retrieve songs from the MediaStore.
@@ -99,9 +101,9 @@ public class Song implements Comparable<Song> {
 	public long artistId;
 
 	/**
-	 * Path to the data for this song
+	 * Uri of this song
 	 */
-	public String path;
+	public Uri uri;
 
 	/**
 	 * Song title
@@ -162,7 +164,7 @@ public class Song implements Comparable<Song> {
 	 */
 	public boolean isFilled()
 	{
-		return (id != -1 && path != null);
+		return (id != -1 && uri != null);
 	}
 
 	/**
@@ -173,7 +175,7 @@ public class Song implements Comparable<Song> {
 	public void populate(Cursor cursor)
 	{
 		id = cursor.getLong(0);
-		path = cursor.getString(1);
+		uri = Uri.parse(cursor.getString(1));
 		title = cursor.getString(2);
 		album = cursor.getString(3);
 		artist = cursor.getString(4);
@@ -240,7 +242,7 @@ public class Song implements Comparable<Song> {
 	@Override
 	public String toString()
 	{
-		return String.format("%d %d %s", id, albumId, path);
+		return String.format("%d %d %s", id, albumId, uri.toString());
 	}
 
 	/**
