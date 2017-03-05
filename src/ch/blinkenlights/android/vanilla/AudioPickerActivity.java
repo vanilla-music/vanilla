@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2016 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2014-2017 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,7 +67,7 @@ public class AudioPickerActivity extends PlaybackActivity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.audiopicker);
 
-		String displayName = new File(mSong.path).getName();
+		String displayName = mSong.uri.toString();
 		TextView filePath = (TextView)findViewById(R.id.filepath);
 		filePath.setText(displayName);
 
@@ -102,7 +102,7 @@ public class AudioPickerActivity extends PlaybackActivity {
 
 		// This code is not reached unless mSong is filled and non-empty
 		if (mSong.id < 0) {
-			query = MediaUtils.buildFileQuery(mSong.path, Song.FILLED_PROJECTION);
+			query = MediaUtils.buildUriQuery(mSong.uri, Song.FILLED_PROJECTION);
 		} else {
 			query = MediaUtils.buildQuery(MediaUtils.TYPE_SONG, mSong.id, Song.FILLED_PROJECTION, null);
 		}
@@ -126,13 +126,15 @@ public class AudioPickerActivity extends PlaybackActivity {
 		Cursor cursor = null;
 
 		if (uri.getScheme().equals("content")) {
-			// check if the native content resolver has a path for this
+			// check if the native content resolver has a path for this.
+			// if it does, then we can map this file to our own database entry.
 			Cursor pathCursor = getContentResolver().query(uri, new String[]{ MediaStore.Audio.Media.DATA }, null, null, null);
 			if (pathCursor != null) {
 				if (pathCursor.moveToNext()) {
 					String mediaPath = pathCursor.getString(0);
 					if (mediaPath != null) { // this happens on android 4.x sometimes?!
-						QueryTask query = MediaUtils.buildFileQuery(mediaPath, Song.FILLED_PROJECTION);
+						File mediaFile = new File(mediaPath);
+						QueryTask query = MediaUtils.buildUriQuery(Uri.fromFile(mediaFile), Song.FILLED_PROJECTION);
 						cursor = query.runQuery(this);
 					}
 				}
@@ -140,8 +142,8 @@ public class AudioPickerActivity extends PlaybackActivity {
 			}
 		}
 
-		if (uri.getScheme().equals("file")) {
-			cursor = MediaUtils.getCursorForFileQuery(uri.getPath());
+		if (cursor == null) {
+			cursor = MediaUtils.getCursorForUriQuery(getApplicationContext(), uri);
 		}
 
 		if (cursor != null) {
