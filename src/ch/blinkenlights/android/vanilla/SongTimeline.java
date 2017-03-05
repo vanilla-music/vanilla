@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
- * Copyright (C) 2015 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2015-2017 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -712,10 +712,12 @@ public final class SongTimeline {
 		int added = 0;                 // Items actually added to the queue
 
 		if (count == 0 && type == MediaUtils.TYPE_FILE && query.selectionArgs.length == 1) {
-			String pathQuery = query.selectionArgs[0];
-			pathQuery = pathQuery.substring(0,pathQuery.length()-1); // remove '%' -> this used to be an sql query!
+			String sqlQuery = query.selectionArgs[0];
+			sqlQuery = sqlQuery.substring(0, sqlQuery.length()-1); // remove '%' -> this used to be an sql query!
 			cursor.close(); // close old version
-			cursor = MediaUtils.getCursorForFileQuery(pathQuery);
+
+			Uri uri = Uri.parse(sqlQuery);
+			cursor = MediaUtils.getCursorForUriQuery(context, uri);
 			count = cursor.getCount();
 		}
 
