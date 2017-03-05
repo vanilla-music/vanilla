@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
- * Copyright (C) 2015-2016 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2015-2017 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,7 @@ package ch.blinkenlights.android.vanilla;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.FileObserver;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -333,8 +334,8 @@ public class FileSystemAdapter
 	 */
 	@Override
 	public QueryTask buildSongQuery(String[] projection) {
-		File path = getLimiterPath();
-		return MediaUtils.buildFileQuery(path.getPath(), projection);
+		Uri uri = Uri.fromFile(getLimiterPath());
+		return MediaUtils.buildUriQuery(uri, projection);
 	}
 
 	/**
