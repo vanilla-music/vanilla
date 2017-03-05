@@ -496,13 +496,13 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 		mReplayGain = null;
 
 		if(song != null) {
-			MediaMetadataExtractor data = new MediaMetadataExtractor(song.path);
+			MediaMetadataExtractor data = new MediaMetadataExtractor(this, song.uri);
 
 			mGenre = data.getFirst(MediaMetadataExtractor.GENRE);
 			mTrack = data.getFirst(MediaMetadataExtractor.TRACK_NUMBER);
 			mComposer = data.getFirst(MediaMetadataExtractor.COMPOSER);
 			mYear = data.getFirst(MediaMetadataExtractor.YEAR);
-			mPath = song.path;
+			mPath = song.uri.getPath();
 
 			StringBuilder sb = new StringBuilder(12);
 			sb.append(decodeMimeType(data.getFirst(MediaMetadataExtractor.MIME_TYPE)));
@@ -514,8 +514,9 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 			}
 			mFormat = sb.toString();
 
-			BastpUtil.GainValues rg = PlaybackService.get(this).getReplayGainValues(song.path);
+			BastpUtil.GainValues rg = PlaybackService.get(this).getReplayGainValues(song.uri);
 			mReplayGain = String.format("base=%.2f, track=%.2f, album=%.2f", rg.base, rg.track, rg.album);
+
 		}
 
 		mUiHandler.sendEmptyMessage(MSG_COMMIT_INFO);
