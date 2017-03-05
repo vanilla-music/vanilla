@@ -27,6 +27,7 @@ import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.ContentObserver;
+import android.net.Uri;
 import android.util.Log;
 import android.provider.MediaStore;
 import android.os.Handler;
@@ -388,8 +389,11 @@ public class MediaScanner implements Handler.Callback {
 	 */
 	private boolean rpcInspectFile(File file) {
 		MediaLibrary.Preferences prefs = MediaLibrary.getPreferences(mContext);
-		String path  = file.getAbsolutePath();
-		long songId  = MediaLibrary.hash63(path);
+		Uri uri = Uri.fromFile(file);
+
+		// We calculate the songId using the path instead of the URI
+		// as the same URI can be encoded in multiple ways.
+		long songId  = MediaLibrary.hash63(file.getAbsolutePath());
 
 		if (isBlacklisted(file))
 			return false;
@@ -410,7 +414,7 @@ public class MediaScanner implements Handler.Callback {
 			hasChanged = true;
 		}
 
-		MediaMetadataExtractor tags = new MediaMetadataExtractor(path, prefs.forceBastp);
+		MediaMetadataExtractor tags = new MediaMetadataExtractor(mContext, uri, prefs.forceBastp);
 		if (!tags.isMediaFile()) {
 			mustInsert = false; // does not have any useable metadata: won't insert even if it is a playable file
 		}
@@ -457,7 +461,7 @@ public class MediaScanner implements Handler.Callback {
 			v.put(MediaLibrary.SongColumns.SONG_NUMBER, tags.getFirst(MediaMetadataExtractor.TRACK_NUMBER));
 			v.put(MediaLibrary.SongColumns.DISC_NUMBER, discNumber);
 			v.put(MediaLibrary.SongColumns.YEAR,        tags.getFirst(MediaMetadataExtractor.YEAR));
-			v.put(MediaLibrary.SongColumns.PATH,        path);
+			v.put(MediaLibrary.SongColumns.PATH,        uri.toString());
 			mBackend.insert(MediaLibrary.TABLE_SONGS, null, v);
 
 			v.clear();
@@ -533,7 +537,7 @@ public class MediaScanner implements Handler.Callback {
 			}
 		} // end if (mustInsert)
 
-		Log.v("VanillaMusic", "MediaScanner: inserted "+path);
+		Log.v("VanillaMusic", "MediaScanner: inserted "+uri);
 		return hasChanged;
 	}
 
