@@ -46,6 +46,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -620,8 +621,8 @@ public final class PlaybackService extends Service
 		return mp;
 	}
 
-	public void prepareMediaPlayer(VanillaMediaPlayer mp, String path) throws IOException{
-		mp.setDataSource(path);
+	public void prepareMediaPlayer(VanillaMediaPlayer mp, Uri uri) throws IOException{
+		mp.setDataSource(uri);
 		mp.prepare();
 		applyReplayGain(mp);
 	}
@@ -708,10 +709,10 @@ public final class PlaybackService extends Service
 
 	/**
 	 * Returns the (hopefully cached) replaygain
-	 * values of given file
+	 * values of given uri
 	 */
-	public BastpUtil.GainValues getReplayGainValues(String path) {
-		return mBastpUtil.getReplayGainValues(path);
+	public BastpUtil.GainValues getReplayGainValues(Uri uri) {
+		return mBastpUtil.getReplayGainValues(uri);
 	}
 
 	/**
@@ -760,11 +761,11 @@ public final class PlaybackService extends Service
 
 		if(doGapless == true) {
 			try {
-				if(nextSong.path.equals(mPreparedMediaPlayer.getDataSource()) == false) {
+				if(nextSong.uri.equals(mPreparedMediaPlayer.getDataSource()) == false) {
 					// Prepared MP has a different data source: We need to re-initalize
 					// it and set it as the next MP for the active media player
 					mPreparedMediaPlayer.reset();
-					prepareMediaPlayer(mPreparedMediaPlayer, nextSong.path);
+					prepareMediaPlayer(mPreparedMediaPlayer, nextSong.uri);
 					mMediaPlayer.setNextMediaPlayer(mPreparedMediaPlayer);
 				}
 				if(mMediaPlayer.hasNextMediaPlayer() == false) {
@@ -1339,7 +1340,7 @@ public final class PlaybackService extends Service
 				mPreparedMediaPlayer = tmpPlayer; // this was mMediaPlayer and is in reset() state
 			}
 			else {
-				prepareMediaPlayer(mMediaPlayer, song.path);
+				prepareMediaPlayer(mMediaPlayer, song.uri);
 			}
 
 
@@ -1362,7 +1363,7 @@ public final class PlaybackService extends Service
 			}
 			mSkipBroken = 0; /* File not broken, reset skip counter */
 		} catch (IOException e) {
-			mErrorMessage = getResources().getString(R.string.song_load_failed, song.path);
+			mErrorMessage = getResources().getString(R.string.song_load_failed, song.uri);
 			updateState(mState | FLAG_ERROR);
 			showMirrorLinkSafeToast(mErrorMessage, Toast.LENGTH_LONG);
 			Log.e("VanillaMusic", "IOException", e);
