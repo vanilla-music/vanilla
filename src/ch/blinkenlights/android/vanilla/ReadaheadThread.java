@@ -18,6 +18,7 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import android.net.Uri;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
@@ -35,6 +36,10 @@ class ReadaheadThread implements Handler.Callback {
 	 */
 	private static final int BYTES_PER_READ = 32768;
 	/**
+	 * Scheme of local files (Eg: what we are reading ahead)
+	 */
+	private static final String SCHEME_FILE = "file";
+	/**
 	 * Our message handler
 	 */
 	private Handler mHandler;
@@ -43,9 +48,9 @@ class ReadaheadThread implements Handler.Callback {
 	 */
 	private FileInputStream mInputStream;
 	/**
-	 * The filesystem path used to create the current mInputStream
+	 * The uri used to create the current mInputStream
 	 */
-	private String mPath;
+	private Uri mUri;
 	/**
 	 * The calculated delay between `BYTES_PER_READ' sized
 	 * read operations
@@ -91,14 +96,14 @@ class ReadaheadThread implements Handler.Callback {
 			case MSG_SET_SONG: {
 				Song song = (Song)message.obj;
 
-				if (mInputStream != null && !mPath.equals(song.path)) {
+				if (mInputStream != null && !mUri.equals(song.uri)) {
 					// current file does not match requested one: clean it
 					try {
 						mInputStream.close();
 					} catch (IOException e) {
 						Log.e("VanillaMusic", "Failed to close file: "+e);
 					}
-					mPath = null;
+					mUri = null;
 					mReadDelay = 0;
 					mInputStream = null;
 				}
@@ -106,8 +111,15 @@ class ReadaheadThread implements Handler.Callback {
 				if (mInputStream == null) {
 					// need to open new input stream
 					try {
-						mPath = song.path;
-						mInputStream = new FileInputStream(mPath);
+						mUri = song.uri;
+
+						if (!SCHEME_FILE.equals(mUri.getScheme())) {
+							// abort if uri has no file:// scheme as reading ahead
+							// a stream doesn't make much sense.
+							throw new IOException("Not a local scheme");
+						}
+
+						mInputStream = new FileInputStream(mUri.getPath());
 						double requiredReads = mInputStream.available() / BYTES_PER_READ;
 
 						if (requiredReads > 1) {
@@ -135,7 +147,7 @@ class ReadaheadThread implements Handler.Callback {
 				if (bytesRead >= 0) {
 					mHandler.sendEmptyMessageDelayed(MSG_READ_CHUNK, mReadDelay);
 				} else {
-					Log.d("VanillaMusic", "Readahead for "+mPath+" finished");
+					Log.d("VanillaMusic", "Readahead for "+mUri+" finished");
 				}
 			}
 			default: {
