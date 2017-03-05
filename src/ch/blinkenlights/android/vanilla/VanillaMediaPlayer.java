@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2015-2017 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,15 +23,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.audiofx.AudioEffect;
+import android.net.Uri;
 import android.os.Build;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 
 public class VanillaMediaPlayer extends MediaPlayer {
 
 	private Context mContext;
-	private String mDataSource;
+	private Uri mDataSource;
 	private boolean mHasNextMediaPlayer;
 	private float mReplayGain = Float.NaN;
 	private float mDuckingFactor = Float.NaN;
@@ -66,20 +66,15 @@ public class VanillaMediaPlayer extends MediaPlayer {
 	/**
 	 * Sets the data source to use
 	 */
-	public void setDataSource(String path) throws IOException, IllegalArgumentException, SecurityException, IllegalStateException {
-		// The MediaPlayer function expects a file:// like string but also accepts *most* absolute unix paths (= paths with no colon)
-		// We could therefore encode the path into a full URI, but a much quicker way is to simply use
-		// setDataSource(FileDescriptor) as the framework code would end up calling this function anyways (MediaPlayer.java:1100 (6.0))
-		FileInputStream fis = new FileInputStream(path);
-		super.setDataSource(fis.getFD());
-		fis.close(); // this is OK according to the SDK documentation!
-		mDataSource = path;
+	public void setDataSource(Uri uri) throws IOException, IllegalArgumentException, SecurityException, IllegalStateException {
+		super.setDataSource(mContext, uri);
+		mDataSource = uri;
 	}
 
 	/**
 	 * Returns the configured data source, may be null
 	 */
-	public String getDataSource() {
+	public Uri getDataSource() {
 		return mDataSource;
 	}
 
