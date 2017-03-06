@@ -25,13 +25,24 @@ package ch.blinkenlights.android.vanilla;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -75,6 +86,19 @@ public abstract class PlaybackActivity extends Activity
 	 * The looper for the worker thread.
 	 */
 	protected Looper mLooper;
+	/**
+	 * Broadcast receiver for plugin collecting
+	 */
+	private BroadcastReceiver mPluginInfoReceiver;
+	/**
+	 * Holds last intent that was passed to the context menu
+	 */
+	private Intent mLastRequestedCtx;
+	/**
+	 * Plugin descriptions and packages.
+	 * Keys are plugin names, values are their packages
+	 */
+	private Map<String, ApplicationInfo> mPlugins = new HashMap<>();
 
 	protected CoverView mCoverView;
 	protected ImageButton mPlayPauseButton;
@@ -91,6 +115,8 @@ public abstract class PlaybackActivity extends Activity
 		super.onCreate(state);
 
 		PlaybackService.addTimelineCallback(this);
+
+		mPluginInfoReceiver = new PluginBroadcastReceiver();
 
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
@@ -138,6 +164,7 @@ public abstract class PlaybackActivity extends Activity
 	public void onResume()
 	{
 		super.onResume();
+		registerReceiver(mPluginInfoReceiver, new IntentFilter(PluginUtils.ACTION_HANDLE_PLUGIN_PARAMS));
 		if (PlaybackService.hasInstance()) {
 			PlaybackService service = PlaybackService.get(this);
 			service.userActionTriggered();
@@ -145,6 +172,11 @@ public abstract class PlaybackActivity extends Activity
 
 	}
 
+	@Override
+	protected void onPause() {
+		super.onPause();
+		unregisterReceiver(mPluginInfoReceiver);
+	}
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event)
@@ -375,7 +407,8 @@ public abstract class PlaybackActivity extends Activity
 	static final int MENU_EMPTY_QUEUE = 16;
 	static final int MENU_ADD_TO_PLAYLIST = 17;
 	static final int MENU_SHARE = 18;
-	static final int MENU_GO_HOME= 19;
+	static final int MENU_GO_HOME = 19;
+	static final int MENU_PLUGINS = 20; // used in FullPlaybackActivity
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
@@ -659,6 +692,82 @@ public abstract class PlaybackActivity extends Activity
 		else if (group == CTX_MENU_GRP_FINISH)
 			setState(PlaybackService.get(this).setFinishAction(id));
 		return true;
+	}
+
+	/**
+	 * Sends broadcast query that wakes plugins are queries them for info.
+	 * Answers are later processed in {@link PluginBroadcastReceiver}
+	 *
+	 * @param songIntent intent containing song id as {@link Long} in its "id" extra.
+	 */
+	protected void queryPluginsForIntent(Intent songIntent) {
+		// obtain list of plugins anew - some plugins may be installed/deleted
+		mPlugins.clear();
+		mLastRequestedCtx = songIntent;
+		Intent requestPlugins = new Intent(PluginUtils.ACTION_REQUEST_PLUGIN_PARAMS);
+		requestPlugins.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+		sendBroadcast(requestPlugins);
+	}
+
+	/**
+	 * Broadcast receiver that handles return intents from queried plugins.
+	 * Answered ones are stored in {@link #mPlugins}.
+	 * Shows plugin menu once all queried plugins have answered.
+	 *
+	 * @see #showPluginMenu()
+	 */
+	private class PluginBroadcastReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			List<ResolveInfo> resolved = getPackageManager().queryBroadcastReceivers(new Intent(PluginUtils.ACTION_REQUEST_PLUGIN_PARAMS), 0);
+			if (PluginUtils.ACTION_HANDLE_PLUGIN_PARAMS.equals(intent.getAction())) {
+				// plugin answered, store it in the map
+				String pluginName = intent.getStringExtra(PluginUtils.EXTRA_PARAM_PLUGIN_NAME);
+				ApplicationInfo info = intent.getParcelableExtra(PluginUtils.EXTRA_PARAM_PLUGIN_APP);
+				mPlugins.put(pluginName, info);
+
+				if (mPlugins.size() == resolved.size()) { // got all plugins
+					showPluginMenu();
+				}
+			}
+		}
+	}
+
+	/**
+	 * Shows plugin selection dialog. Be sure that {@link #mLastRequestedCtx} is initialized
+	 * and {@link #mPlugins} are populated before calling this.
+	 *
+	 * @see PluginBroadcastReceiver
+	 */
+	private void showPluginMenu() {
+		Set<String> pluginNames = mPlugins.keySet();
+		final String[] pNamesArr = pluginNames.toArray(new String[pluginNames.size()]);
+		new AlertDialog.Builder(this)
+				.setItems(pNamesArr, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						long id = mLastRequestedCtx.getLongExtra("id", LibraryAdapter.INVALID_ID);
+						Song resolved = MediaUtils.getSongByTypeId(PlaybackActivity.this, MediaUtils.TYPE_SONG, id);
+						if (resolved != null) {
+							ApplicationInfo selected = mPlugins.get(pNamesArr[which]);
+							Intent request = new Intent(PluginUtils.ACTION_LAUNCH_PLUGIN);
+							request.setPackage(selected.packageName);
+							request.putExtra(PluginUtils.EXTRA_PARAM_URI, Uri.fromFile(new File(resolved.path)));
+							request.putExtra(PluginUtils.EXTRA_PARAM_SONG_TITLE, resolved.title);
+							request.putExtra(PluginUtils.EXTRA_PARAM_SONG_ARTIST, resolved.artist);
+							request.putExtra(PluginUtils.EXTRA_PARAM_SONG_ALBUM, resolved.album);
+							startService(request);
+						}
+
+						mLastRequestedCtx = null;
+					}
+				})
+				.setOnCancelListener(new DialogInterface.OnCancelListener() {
+					@Override
+					public void onCancel(DialogInterface dialog) {
+						mLastRequestedCtx = null;
+					}
+				}).create().show();
 	}
 
 }
