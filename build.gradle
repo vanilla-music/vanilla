@@ -39,32 +39,9 @@ android {
             res.srcDirs = ['res']
             assets.srcDirs = ['assets']
         }
-
-        nightly {
-            res.srcDirs = ['resNightly']
-        }
     }
 
     buildTypes {
-        nightly {
-            def buildId   = 'date +%s'.execute().in.readLines()[0]
-            def buildDate = 'date'.execute().in.readLines()[0]
-            def buildHost = 'hostname'.execute().in.readLines()[0]
-
-            versionNameSuffix '-' + buildId
-            applicationIdSuffix '.nightly'
-
-            preBuild.finalizedBy 'customPrepareResources'
-
-            task ('customPrepareResources') {
-                doLast {
-                    println 'Replacing `about` info to nightly...'
-                    def about = file('assets/about.html')
-                    about.text = about.text.replaceAll('<b>Version.*', "<b>Nightly build ID:</b> ${buildId}<br><i>Built on ${buildHost} at ${buildDate}</i><br><br>")
-                }
-            }
-        }
-
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
