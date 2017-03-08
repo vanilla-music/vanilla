@@ -380,9 +380,11 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 			}
 			break;
 			case MENU_PLUGINS:
-				Intent songIntent = new Intent();
-				songIntent.putExtra("id", song.id);
-				queryPluginsForIntent(songIntent);
+				if (song != null) {
+					Intent songIntent = new Intent();
+					songIntent.putExtra("id", song.id);
+					queryPluginsForIntent(songIntent);
+				}
 				break;
 		default:
 			return super.onOptionsItemSelected(item);
