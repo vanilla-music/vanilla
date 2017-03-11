@@ -315,10 +315,6 @@ public final class PlaybackService extends Service
 	 * {@link PlaybackService#createNotificationAction(SharedPreferences)}.
 	 */
 	private PendingIntent mNotificationAction;
-	/**
-	 * Flag to indicate if currently playing in audiobook mode
-	 */
-	private boolean mAudiobook = false;
 
 	private Looper mLooper;
 	private Handler mHandler;
@@ -730,9 +726,6 @@ public final class PlaybackService extends Service
 				mMediaPlayerAudioFxActive = false;
 			}
 			saveState(mMediaPlayer.getCurrentPosition());
-			if(mAudiobook) {
-				mAudiobook = MediaLibrary.setBookmarkIdNecessary(this, mCurrentSong, getPosition());
-			}
 		}
 
 		if (mWakeLock != null && mWakeLock.isHeld())
@@ -1201,9 +1194,6 @@ public final class PlaybackService extends Service
 	public int pause()
 	{
 		synchronized (mStateLock) {
-			if(mAudiobook) {
-				mAudiobook = MediaLibrary.setBookmarkIdNecessary(this, mCurrentSong, getPosition());
-			}
 			mTransientAudioLoss = false; // do not resume playback as this pause was user initiated
 			int state = updateState(mState & ~FLAG_PLAYING & ~FLAG_DUCKING);
 			userActionTriggered();
@@ -1296,10 +1286,6 @@ public final class PlaybackService extends Service
 	{
 		if (mMediaPlayer == null)
 			return null;
-
-		if(mAudiobook) {
-			mAudiobook = MediaLibrary.setBookmarkIdNecessary(this, mCurrentSong, getPosition());
-		}
 
 		if (mMediaPlayer.isPlaying())
 			mMediaPlayer.stop();
@@ -1758,7 +1744,6 @@ public final class PlaybackService extends Service
 	public void runQuery(QueryTask query)
 	{
 		int count = mTimeline.addSongs(this, query);
-		handleAudiobook(query);
 
 		int text;
 
@@ -1766,7 +1751,6 @@ public final class PlaybackService extends Service
 		case SongTimeline.MODE_PLAY:
 		case SongTimeline.MODE_PLAY_POS_FIRST:
 		case SongTimeline.MODE_PLAY_ID_FIRST:
-		case SongTimeline.MODE_AUDIOBOOK:
 			text = R.plurals.playing;
 			if (count != 0 && (mState & FLAG_PLAYING) == 0)
 				setFlag(FLAG_PLAYING);
@@ -2166,9 +2150,6 @@ public final class PlaybackService extends Service
 			mTransientAudioLoss = false;
 			mForceNotificationVisible = true;
 			unsetFlag(FLAG_PLAYING);
-			if(mAudiobook) {
-				mAudiobook = MediaLibrary.setBookmarkIdNecessary(this, mCurrentSong, getPosition());
-			}
 			break;
 		case AudioManager.AUDIOFOCUS_GAIN:
 			if (mTransientAudioLoss) {
@@ -2363,24 +2344,6 @@ public final class PlaybackService extends Service
 	 */
 	public void removeSongPosition(int which) {
 		mTimeline.removeSongPosition(which);
-	}
-
-	private void handleAudiobook(QueryTask query) {
-		if(SongTimeline.MODE_AUDIOBOOK == query.mode) {
-			mAudiobook = false;
-			setShuffleMode(SongTimeline.SHUFFLE_NONE);
-			setFinishAction(SongTimeline.FINISH_STOP);
-			Song song = ((Audiobook)query.modeData).getSong();
-			if(null != song) {
-				mPendingSeekSong = song.id;
-				mPendingSeek = (int) ((Audiobook) query.modeData).getPosition();
-				mTimeline.setCurrentQueuePosition(((Audiobook)query.modeData).getTimelineIndex());
-				setCurrentSong(0);
-			}
-			mAudiobook = true;
-		} else {
-			mAudiobook = false;
-		}
 	}
 
 }

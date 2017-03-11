@@ -51,11 +51,6 @@ public class QueryTask {
 	public long data;
 
 	/**
-	 * Additional data applicable to certain mode values. may be null
-	 */
-	public Object modeData;
-
-	/**
 	 * Create the tasks. All arguments are passed directly to
 	 * MediaLibrary.runQuery().
 	 */
