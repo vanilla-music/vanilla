@@ -21,15 +21,19 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.os.Environment;
 import android.provider.MediaStore;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
+import ch.blinkenlights.android.vanilla.Audiobook;
 import ch.blinkenlights.android.vanilla.MediaUtils;
 import ch.blinkenlights.android.vanilla.QueryTask;
+import ch.blinkenlights.android.vanilla.Song;
 
 public class MediaLibrary  {
 
@@ -42,6 +46,8 @@ public class MediaLibrary  {
 	public static final String TABLE_PLAYLISTS                = "playlists";
 	public static final String TABLE_PLAYLISTS_SONGS          = "playlists_songs";
 	public static final String TABLE_PREFERENCES              = "preferences";
+	public static final String TABLE_AUDIOBOOKS               = "audiobooks";
+	public static final String TABLE_AUDIOBOOKS_SONGS         = "audiobooks_songs";
 	public static final String VIEW_ARTISTS                   = "_artists";
 	public static final String VIEW_ALBUMARTISTS              = "_albumartists";
 	public static final String VIEW_COMPOSERS                 = "_composers";
@@ -496,6 +502,126 @@ public class MediaLibrary  {
 	}
 
 	/**
+	 * Adds and audiobook entry to the audiobook database and entries for all song IDs included in the
+	 * audiobook-song table
+	 * @param context the caller context
+	 * @param songIDs the IDs of the songs that are include din the audiobook
+	 * @param path the path to the root of the audibook
+	 */
+	public static void addAudiobook(Context context, List<Long> songIDs, String path) {
+		if(null != songIDs && !songIDs.isEmpty()) {
+			ContentValues v = new ContentValues();
+			long audiobookID = hash63(UUID.randomUUID().toString());
+			v.put(MediaLibrary.AudiobookColumns._ID, audiobookID);
+			v.put(AudiobookColumns.PATH, new File(path).isDirectory() ? path : null);
+			long id = getBackend(context).insert(TABLE_AUDIOBOOKS, null, v);
+			ArrayList<ContentValues> bulk = new ArrayList<>();
+			for (Long songID : songIDs) {
+				v = new ContentValues();
+				v.put(AudiobookSongColumns.SONG_ID, songID);
+				v.put(AudiobookSongColumns.AUDIOBOOK_ID, audiobookID);
+				bulk.add(v);
+			}
+			getBackend(context).bulkInsert(TABLE_AUDIOBOOKS_SONGS, null, bulk);
+		}
+	}
+
+	/**
+	 * Removes and audiobook entry from the audiobook table and deletes all associated entries from the
+	 * audiobook-song table
+	 * @param context the caller context
+	 * @param songIDs lont of song ids included in the audiobook to be removed
+	 */
+	public static void removeAudiobook(Context context, List<Long> songIDs) {
+		if(null != songIDs && !songIDs.isEmpty()) {
+			Cursor cursor = getBackend(context).query(true, TABLE_AUDIOBOOKS_SONGS, new String[]{AudiobookSongColumns.AUDIOBOOK_ID},
+					AudiobookSongColumns.SONG_ID + " = " + String.valueOf(songIDs.get(0)),
+					null, null, null, null, null);
+			if(null != cursor && cursor.getCount() > 0) {
+				cursor.moveToNext();
+				long audiobookID = cursor.getLong(0);
+				cursor.close();
+				getBackend(context).delete(TABLE_AUDIOBOOKS_SONGS,
+						AudiobookSongColumns.AUDIOBOOK_ID + " = " + String.valueOf(audiobookID), null);
+				getBackend(context).delete(TABLE_AUDIOBOOKS, AudiobookColumns._ID + " = " + String.valueOf(audiobookID), null);
+			}
+		}
+	}
+
+	/**
+	 * Returns the id of the audiobook associated with the given song
+	 * @param context the caller context
+	 * @param song the Song instance to search for using its id
+	 * @return the id of the audiobook or -1 if not found
+	 */
+	public static long getAudiobookIDFromTrack(Context context, Song song) {
+		Cursor cursor = getBackend(context).query(true, TABLE_AUDIOBOOKS_SONGS, new String[]{AudiobookSongColumns.AUDIOBOOK_ID},
+				AudiobookSongColumns.SONG_ID + " = " + String.valueOf(Song.getId(song)),
+				null, null, null, null, null);
+		if(null != cursor && cursor.getCount() > 0) {
+			cursor.moveToNext();
+			long audiobookID = cursor.getLong(0);
+			cursor.close();
+			return audiobookID;
+		}
+		return -1;
+	}
+
+	/**
+	 * Tests if the file path is included in any audiobook
+	 * @param context the caller context
+	 * @param path the path to search for
+	 * @return true if the path is part of any audiobook, false otherwise
+	 */
+	public static boolean isPathInAudiobook(Context context, String path) {
+		Cursor cursor = getBackend(context).query(true, TABLE_AUDIOBOOKS, new String[] {AudiobookColumns._ID},
+				"instr(" + DatabaseUtils.sqlEscapeString(path) + "," + AudiobookColumns.PATH + ")", null, null, null, null, null);
+		return null != cursor && cursor.getCount() > 0;
+	}
+
+	/**
+	 * Sets the bookmark information in the associated audiobook entry if there is an audiobook
+	 * associated with the specified song
+	 * @param context the caller context
+	 * @param song the song in which a bookmark may be set
+	 * @param position the position in the song to use for the bookmark
+	 * @return true if the bookmark was set, false otherwise
+	 */
+	public static boolean setBookmarkIdNecessary(Context context, Song song, int position) {
+		if(null != song) {
+			long audiobookID = getAudiobookIDFromTrack(context, song);
+			if (-1 != audiobookID) {
+				ContentValues vals = new ContentValues();
+				vals.put(AudiobookColumns.SONG_ID, Song.getId(song));
+				vals.put(AudiobookColumns.LOCATION, position);
+				getBackend(context).update(TABLE_AUDIOBOOKS, vals, AudiobookColumns._ID + " = " + audiobookID, null);
+				return true;
+			}
+			return false;
+		}
+		return false;
+	}
+
+	/**
+	 * Returns the audiobook associated with the given path
+	 * @param context the caller context
+	 * @param path the root path ofthe audiobook
+	 * @return an Audiobook instance which has the specified root path or null if none exists
+	 */
+	public static Audiobook getAudiobookEntry(Context context, String path) {
+		Audiobook audiobook = null;
+		Cursor cursor = getBackend(context).query(true, TABLE_AUDIOBOOKS,
+				new String[] {AudiobookColumns.SONG_ID, AudiobookColumns.LOCATION},
+				AudiobookColumns.PATH + " = " + DatabaseUtils.sqlEscapeString(path), null, null, null, null, null);
+		if(null != cursor && cursor.getCount() > 0) {
+			cursor.moveToNext();
+			audiobook = new Audiobook(path, cursor.getLong(0), cursor.getLong(1));
+			cursor.close();
+		}
+		return audiobook;
+	}
+
+	/**
 	 * Returns the number of songs in the music library
 	 *
 	 * @param context the context to use
@@ -787,5 +913,37 @@ public class MediaLibrary  {
 		 * The value of this preference
 		 */
 		String VALUE = "value";
+	}
+
+	// Audiobooks
+	public interface AudiobookColumns {
+		/**
+		 * The id of this reference
+		 */
+		String _ID = "audiobook_id";
+		/**
+		 * The root path of the audiobook
+		 */
+		String PATH = "path";
+		/**
+		 * The id of the last song played
+		 */
+		String SONG_ID = SongColumns._ID;
+		/**
+		 * The location of the last song played
+		 */
+		String LOCATION = "location";
+	}
+
+	// Audiobook <-> Song mapping
+	public interface AudiobookSongColumns {
+		/**
+		 * the audiobook id this maps to
+		 */
+		String AUDIOBOOK_ID = AudiobookColumns._ID;
+		/**
+		 * the song this maps to
+		 */
+		String SONG_ID = SongColumns._ID;
 	}
 }

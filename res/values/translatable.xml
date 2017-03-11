@@ -82,6 +82,9 @@ THE SOFTWARE.
 	<string name="go_home">Home directory</string>
 	<string name="exclude_from_shuffle">Exclude from shuffle</string>
 	<string name="include_in_shuffle">Include in shuffle</string>
+	<string name="mark_as_audiobook">Mark as audiobook</string>
+	<string name="unmark_as_audiobook">Unmark as audiobook</string>
+	<string name="audiobook">Audiobook</string>
 
 	<plurals name="playing">
 		<item quantity="one">1 track playing.</item>

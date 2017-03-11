@@ -123,6 +123,34 @@ public class MediaSchema {
 	  + MediaLibrary.PreferenceColumns.KEY   +" INTEGER PRIMARY KEY, "
 	  + MediaLibrary.PreferenceColumns.VALUE +" INTEGER NOT NULL "
 	  + ");";
+
+	/**
+	 * SQL schema of audiobooks table
+	 */
+	private static final String DATABASE_CREATE_AUDIOBOOKS = "CREATE TABLE IF NOT EXISTS " + MediaLibrary.TABLE_AUDIOBOOKS + " ("
+			+ MediaLibrary.AudiobookColumns._ID 		   + " INTEGER PRIMARY KEY, "
+			+ MediaLibrary.AudiobookColumns.PATH           + " VARCHAR(4096), "
+			+ MediaLibrary.AudiobookColumns.SONG_ID        + " INTEGER , "
+			+ MediaLibrary.AudiobookColumns.LOCATION       + " INTEGER "
+			+ ");";
+
+	/**
+	 * SQL Schema of 'audiobook<->songs' table
+	 */
+	private static final String DATABASE_CREATE_AUDIOBOOKS_SONGS = "CREATE TABLE IF NOT EXISTS "+ MediaLibrary.TABLE_AUDIOBOOKS_SONGS + " ("
+			+ MediaLibrary.AudiobookSongColumns.AUDIOBOOK_ID    +" INTEGER, "
+			+ MediaLibrary.AudiobookSongColumns.SONG_ID    		+" INTEGER, "
+			+ "PRIMARY KEY("+ MediaLibrary.AudiobookSongColumns.AUDIOBOOK_ID +","
+			+ 				   MediaLibrary.AudiobookSongColumns.SONG_ID +") "
+			+ ");";
+
+	/**
+	 * Index to select a song from an audiobook quickly
+	 */
+	private static final String INDEX_IDX_AUDIOBOOK_ID_SONG = "CREATE INDEX idx_audiobook_id_song ON "+MediaLibrary.TABLE_AUDIOBOOKS_SONGS
+			+" ("+MediaLibrary.AudiobookSongColumns.SONG_ID+")"
+			+";";
+
 	/**
 	 * Index to select a playlist quickly
 	 */
@@ -271,6 +299,9 @@ public class MediaSchema {
 		dbh.execSQL(VIEW_CREATE_PLAYLIST_SONGS);
 		dbh.execSQL(DATABASE_CREATE_PREFERENCES);
 		dbh.execSQL(DATABASE_SONGS_ADD_NO_SHUFFLE_COLUMN);
+		dbh.execSQL(DATABASE_CREATE_AUDIOBOOKS);
+		dbh.execSQL(DATABASE_CREATE_AUDIOBOOKS_SONGS);
+		dbh.execSQL(INDEX_IDX_AUDIOBOOK_ID_SONG);
 	}
 
 	/**
@@ -313,6 +344,11 @@ public class MediaSchema {
 			dbh.execSQL(DATABASE_SONGS_ADD_NO_SHUFFLE_COLUMN);
 		}
 
+		if(oldVersion < 20170312) {
+			dbh.execSQL(DATABASE_CREATE_AUDIOBOOKS);
+			dbh.execSQL(DATABASE_CREATE_AUDIOBOOKS_SONGS);
+			dbh.execSQL(INDEX_IDX_AUDIOBOOK_ID_SONG);
+		}
 	}
 
 	/**

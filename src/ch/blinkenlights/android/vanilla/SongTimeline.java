@@ -23,12 +23,11 @@
 
 package ch.blinkenlights.android.vanilla;
 
-import ch.blinkenlights.android.medialibrary.MediaLibrary;
-
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
-import android.provider.MediaStore;
+
+import junit.framework.Assert;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -37,7 +36,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.ListIterator;
-import junit.framework.Assert;
+
+import ch.blinkenlights.android.medialibrary.MediaLibrary;
 
 /**
  * Contains the list of currently playing songs, implements repeat and shuffle
@@ -155,6 +155,11 @@ public final class SongTimeline {
 	 * @see SongTimeline#addSongs(Context, QueryTask)
 	 */
 	public static final int MODE_ENQUEUE_AS_NEXT = 7;
+
+	/**
+	 * Designates audiobook playback mode
+	 */
+	public static final int MODE_AUDIOBOOK = 8;
 
 	/**
 	 * Disable shuffle.
@@ -747,6 +752,7 @@ public final class SongTimeline {
 			case MODE_PLAY:
 			case MODE_PLAY_POS_FIRST:
 			case MODE_PLAY_ID_FIRST:
+			case MODE_AUDIOBOOK:
 				timeline.clear();
 				mCurrentPos = 0;
 				break;
@@ -783,6 +789,10 @@ public final class SongTimeline {
 				if (jumpSong == null) {
 					if ((mode == MODE_PLAY_POS_FIRST || mode == MODE_ENQUEUE_POS_FIRST) && j == data) {
 						jumpSong = song;
+					} else if(mode == MODE_AUDIOBOOK) {
+						if(Song.getId(song) == ((Audiobook)query.modeData).getSongID()) {
+							jumpSong = song;
+						}
 					} else if (mode == MODE_PLAY_ID_FIRST || mode == MODE_ENQUEUE_ID_FIRST) {
 						long id;
 						switch (type) {
@@ -805,16 +815,23 @@ public final class SongTimeline {
 			}
 
 			cursor.close();
-
+			if(MODE_AUDIOBOOK == mode) {
+				setShuffleMode(SHUFFLE_NONE);
+			}
 			if (mShuffleMode != SHUFFLE_NONE)
 				MediaUtils.shuffle(timeline.subList(start, timeline.size()), mShuffleMode == SHUFFLE_ALBUMS);
 
 			if (jumpSong != null) {
 				int jumpPos = timeline.indexOf(jumpSong);
-				if (jumpPos != start) {
-					// Get the sublist twice to avoid a ConcurrentModificationException.
-					timeline.addAll(timeline.subList(start, jumpPos));
-					timeline.subList(start, jumpPos).clear();
+				if(MODE_AUDIOBOOK == mode) {
+					((Audiobook)query.modeData).setSong(jumpSong);
+					((Audiobook)query.modeData).setTimelineIndex(jumpPos);
+				} else {
+					if (jumpPos != start) {
+						// Get the sublist twice to avoid a ConcurrentModificationException.
+						timeline.addAll(timeline.subList(start, jumpPos));
+						timeline.subList(start, jumpPos).clear();
+					}
 				}
 			}
 

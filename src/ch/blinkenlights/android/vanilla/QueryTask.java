@@ -18,10 +18,10 @@
 
 package ch.blinkenlights.android.vanilla;
 
-import ch.blinkenlights.android.medialibrary.MediaLibrary;
-
 import android.content.Context;
 import android.database.Cursor;
+
+import ch.blinkenlights.android.medialibrary.MediaLibrary;
 
 /**
  * Represents a pending query.
@@ -49,6 +49,11 @@ public class QueryTask {
 	 * documentation for details.
 	 */
 	public long data;
+
+	/**
+	 * Additional data applicable to certain mode values. may be null
+	 */
+	public Object modeData;
 
 	/**
 	 * Create the tasks. All arguments are passed directly to
