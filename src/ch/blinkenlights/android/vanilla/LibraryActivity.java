@@ -23,8 +23,6 @@
 
 package ch.blinkenlights.android.vanilla;
 
-import ch.blinkenlights.android.medialibrary.MediaLibrary;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -50,12 +48,16 @@ import android.widget.CheckBox;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.SearchView;
-
-import java.io.File;
+import android.widget.TextView;
 
 import junit.framework.Assert;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import ch.blinkenlights.android.medialibrary.MediaLibrary;
 
 /**
  * The library activity where songs to play can be selected from the library.
@@ -406,6 +408,45 @@ public class LibraryActivity
 	}
 
 	/**
+	 * Sets the no shuffle flag for all songs designated by the given intent
+	 * @param intent row data for the parent directory or file
+	 * @return List of song ids processed
+	 */
+	private List<Long> handleExcludeFromShuffle(Intent intent) {
+		List<Long> songIDs = getSongIds(intent);
+		MediaLibrary.addToNoShuffle(this, songIDs);
+		return songIDs;
+	}
+
+	/**
+	 * Clears the no shuffle flag for all songs designated by the given intent
+	 * @param intent row data for the parent directory or file
+	 * @return List of song ids processed
+	 */
+	private List<Long> handleIncludeInShuffle(Intent intent) {
+		List<Long> songIDs = getSongIds(intent);
+		MediaLibrary.removeFromNoShuffle(this, songIDs);
+		return songIDs;
+	}
+
+	/**
+	 * Returns a list of the songs ids specified by the given intent
+	 * @param intent row data for the parent directory or file
+	 * @return List of song ids processed
+	 */
+	private List<Long> getSongIds(Intent intent) {
+		QueryTask query = buildQueryFromIntent(intent, true, null);
+		List<Long> ids = new ArrayList<>();
+		Cursor cursor = query.runQuery(this);
+		if (cursor != null) {
+			while (cursor.moveToNext()) {
+				ids.add(cursor.getLong(0));
+			}
+		}
+		return ids;
+	}
+
+	/**
 	 * Open the playback activity and close any activities above it in the
 	 * stack.
 	 */
@@ -583,6 +624,8 @@ public class LibraryActivity
 	private static final int CTX_MENU_MORE_FROM_ARTIST = 9;
 	private static final int CTX_MENU_OPEN_EXTERNAL = 10;
 	private static final int CTX_MENU_PLUGINS = 11;
+	private static final int CTX_MENU_EXCLUDE_FROM_SHUFFLE = 12;
+	private static final int CTX_MENU_INCLUDE_IN_SHUFFLE = 13;
 
 	/**
 	 * Creates a context menu for an adapter row.
@@ -623,6 +666,11 @@ public class LibraryActivity
 					menu.add(0, CTX_MENU_PLUGINS, 1, R.string.plugins).setIntent(rowData); // last in order
 			}
 			menu.addSubMenu(0, CTX_MENU_ADD_TO_PLAYLIST, 0, R.string.add_to_playlist).getItem().setIntent(rowData);
+			if(type == MediaUtils.TYPE_FILE) {
+				boolean isNoShuffle = MediaLibrary.isNoShuffle(this, getSongIds(rowData));
+				menu.add(0, isNoShuffle ? CTX_MENU_INCLUDE_IN_SHUFFLE : CTX_MENU_EXCLUDE_FROM_SHUFFLE, 0,
+						isNoShuffle ? R.string.include_in_shuffle : R.string.exclude_from_shuffle).setIntent(rowData);
+			}
 			menu.add(0, CTX_MENU_DELETE, 0, R.string.delete).setIntent(rowData);
 		}
 	}
@@ -726,6 +774,12 @@ public class LibraryActivity
 			long id = intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
 			PlaylistDialog plDialog = PlaylistDialog.newInstance(this, intent, (id == LibraryAdapter.HEADER_ID ? (MediaAdapter)mCurrentAdapter : null));
 			plDialog.show(getFragmentManager(), "PlaylistDialog");
+			break;
+		case CTX_MENU_EXCLUDE_FROM_SHUFFLE:
+			handleExcludeFromShuffle(intent);
+			break;
+		case CTX_MENU_INCLUDE_IN_SHUFFLE:
+			handleIncludeInShuffle(intent);
 			break;
 		default:
 			return super.onContextItemSelected(item);

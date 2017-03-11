@@ -240,6 +240,12 @@ public class MediaSchema {
 	  +" ;";
 
 	/**
+	 * Add no shuffle column to songs table
+	 */
+	private static final String DATABASE_SONGS_ADD_NO_SHUFFLE_COLUMN = "ALTER TABLE " + MediaLibrary.TABLE_SONGS + " ADD COLUMN " + MediaLibrary.SongColumns.NO_SHUFFLE + " INTEGER";
+
+
+	/**
 	 * Creates a new database schema on dbh
 	 *
 	 * @param dbh the writeable dbh to act on
@@ -264,6 +270,7 @@ public class MediaSchema {
 		dbh.execSQL(VIEW_CREATE_COMPOSERS);
 		dbh.execSQL(VIEW_CREATE_PLAYLIST_SONGS);
 		dbh.execSQL(DATABASE_CREATE_PREFERENCES);
+		dbh.execSQL(DATABASE_SONGS_ADD_NO_SHUFFLE_COLUMN);
 	}
 
 	/**
@@ -300,6 +307,10 @@ public class MediaSchema {
 			dbh.execSQL(VIEW_CREATE_ALBUMARTISTS);
 			dbh.execSQL(VIEW_CREATE_COMPOSERS);
 			dbh.execSQL(VIEW_CREATE_SONGS_ALBUMS_ARTISTS_HUGE);
+		}
+
+		if(oldVersion < 20170311) {
+			dbh.execSQL(DATABASE_SONGS_ADD_NO_SHUFFLE_COLUMN);
 		}
 
 	}

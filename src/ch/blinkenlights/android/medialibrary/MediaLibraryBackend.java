@@ -17,12 +17,13 @@
 
 package ch.blinkenlights.android.medialibrary;
 
-import android.content.Context;
 import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.database.Cursor;
 import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,7 +36,7 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	/**
 	 * The database version we are using
 	 */
-	private static final int DATABASE_VERSION = 20170217;
+	private static final int DATABASE_VERSION = 20170311;
 	/**
 	 * on-disk file to store the database
 	 */

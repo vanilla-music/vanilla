@@ -17,15 +17,19 @@
 
 package ch.blinkenlights.android.medialibrary;
 
-import android.content.Context;
 import android.content.ContentValues;
-import android.database.Cursor;
+import android.content.Context;
 import android.database.ContentObserver;
-import android.provider.MediaStore;
+import android.database.Cursor;
 import android.os.Environment;
+import android.provider.MediaStore;
 
-import java.util.ArrayList;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import ch.blinkenlights.android.vanilla.MediaUtils;
+import ch.blinkenlights.android.vanilla.QueryTask;
 
 public class MediaLibrary  {
 
@@ -405,6 +409,93 @@ public class MediaLibrary  {
 	}
 
 	/**
+	 * Sets the no shuffle flag for all songs with the deignated ids
+	 * @param context caller context
+	 * @param ids the songs ids to set
+	 */
+	public static void addToNoShuffle(Context context, List<Long> ids) {
+		updateNoShuffleColumn(context, ids, true);
+	}
+
+	/**
+	 * Clears the no shuffle flag for all songs with the deignated ids
+	 * @param context caller context
+	 * @param ids the songs ids to set
+	 */
+	public static void removeFromNoShuffle(Context context, List<Long> ids) {
+		updateNoShuffleColumn(context, ids, false);
+	}
+
+	/**
+	 * Perorms an update operation on the song table setting or clearing the no shuffle column
+	 * @param context caller context
+	 * @param ids the ids of thr song rows to update
+	 * @param isNoShuffle true if the no shuffle flag is to be set, false otherwise
+	 */
+	private static void updateNoShuffleColumn(Context context, List<Long> ids, boolean isNoShuffle) {
+		if(null != ids && !ids.isEmpty()) {
+			ContentValues contentValues = new ContentValues();
+			contentValues.put(SongColumns.NO_SHUFFLE, isNoShuffle ? 1 : 0);
+			String idList = buildIdListString(ids);
+			getBackend(context).update(TABLE_SONGS, contentValues, SongColumns._ID + " IN " + idList, null);
+			MediaUtils.onMediaChange();
+		}
+	}
+
+	/**
+	 * Returns a string fo the for (id, id2, id3...)
+	 * @param ids List of ids to process
+	 * @return a string fo the for (id, id2, id3...)
+	 */
+	private static String buildIdListString(List<Long> ids) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("(");
+		for (int i = 0; i < ids.size(); i++) {
+            sb.append(String.valueOf(ids.get(i)));
+            if (i < ids.size() - 1) {
+                sb.append(",");
+            }
+        }
+		sb.append(")");
+		return sb.toString();
+	}
+
+	/**
+	 * Tests if the any of the songs ids in the list have the no shuffle flag set
+	 * @param context the caller context
+	 * @param ids the song ids to test
+	 * @return true id any of the song ids have the no shuffle flag set, false otherwise
+	 */
+	public static boolean isNoShuffle(Context context, List<Long> ids) {
+		String idList = buildIdListString(ids);
+		Cursor cursor = null;
+		cursor = getBackend(context).query(true, TABLE_SONGS, new String[] {SongColumns._ID},
+				SongColumns._ID + " IN " + idList + " AND " + SongColumns.NO_SHUFFLE + " = 1", null,
+				null, null, null, null);
+		return cursor != null && cursor.getCount() > 0;
+	}
+
+	/**
+	 * Returns a list of song ids that have the no shuffle flag set
+	 * @param context the caller context
+	 * @return a list of song ids that have the no shuffle flag set
+	 */
+	public static List<Long> getNoShuffleSongIDs(Context context) {
+		List<Long> noShuffleIDs = new ArrayList<>();
+		QueryTask query = new QueryTask(TABLE_SONGS, new String[]{SongColumns._ID}, SongColumns.NO_SHUFFLE + " = 1" , null, null);
+		Cursor cursor = query.runQuery(context);
+		if (cursor != null && cursor.getCount() > 0) {
+			int noShuffleCount = cursor.getCount();
+			for (int i = 0; i != noShuffleCount; ++i) {
+				if (cursor.moveToNext())
+					noShuffleIDs.add(cursor.getLong(0));
+			}
+			cursor.close();
+		}
+		return noShuffleIDs;
+	}
+
+	/**
 	 * Returns the number of songs in the music library
 	 *
 	 * @param context the context to use
@@ -516,6 +607,10 @@ public class MediaLibrary  {
 		 * The mtime of this item
 		 */
 		String MTIME = "mtime";
+		/**
+		 * Flag to indicate no shuffle
+		 */
+		String NO_SHUFFLE = "no_shuffle";
 	}
 
 	// Columns of Album entries
