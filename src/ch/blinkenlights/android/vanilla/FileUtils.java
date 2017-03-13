@@ -48,13 +48,9 @@ public class FileUtils {
 		boolean isFolder = intent.getBooleanExtra(LibraryAdapter.DATA_EXPANDABLE, false);
 		Uri uri = Uri.parse(intent.getStringExtra(LibraryAdapter.DATA_URI));
 		if (type == MediaUtils.TYPE_FILE && isFolder == false) {
-			try {
-				String mimeGuess = URLConnection.guessContentTypeFromName(uri.toString());
-				if (mimeGuess != null && mimeGuess.matches("^(image|text)/.+")) {
-					canDispatch = true;
-				}
-			} catch (URISyntaxException e) {
-				Log.e("VanillaMusic", "failed to encode " + uri.toString() +": "+e);
+			String mimeGuess = URLConnection.guessContentTypeFromName(uri.toString());
+			if (mimeGuess != null && mimeGuess.matches("^(image|text)/.+")) {
+				canDispatch = true;
 			}
 		}
 		return canDispatch;
