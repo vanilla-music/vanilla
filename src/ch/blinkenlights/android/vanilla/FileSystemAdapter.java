@@ -313,7 +313,7 @@ public class FileSystemAdapter
 		intent.putExtra(LibraryAdapter.DATA_ID, holder.id);
 		intent.putExtra(LibraryAdapter.DATA_TITLE, ((DraggableRow)view).getTextView().getText().toString());
 		intent.putExtra(LibraryAdapter.DATA_EXPANDABLE, file.isDirectory());
-		intent.putExtra(LibraryAdapter.DATA_URI, Uri.fromFile(file));
+		intent.putExtra(LibraryAdapter.DATA_URI, Uri.fromFile(file).toString());
 		return intent;
 	}
 
