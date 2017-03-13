@@ -394,10 +394,10 @@ public class MediaUtils {
 
 		try {
 			while (cursor.moveToNext()) { // for all songs resolved...
-				File songFile = new File(cursor.getString(1));
+				Uri uri = Uri.parse(cursor.getString(1));
 				Intent share = new Intent(Intent.ACTION_SEND);
 				share.setType("audio/*");
-				share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(songFile));
+				share.putExtra(Intent.EXTRA_STREAM, uri);
 				ctx.startActivity(Intent.createChooser(share, ctx.getResources().getString(R.string.sendto)));
 			}
 		} catch (ActivityNotFoundException ex) {
