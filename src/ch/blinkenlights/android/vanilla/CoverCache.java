@@ -389,17 +389,19 @@ public class CoverCache {
 		 * @param maxPxCount the maximum amount of pixels to return (30*30 = 900)
 		 */
 		public Bitmap createBitmap(Song song, long maxPxCount) {
-			if (song.id < 0) {
-				// Unindexed song: return early
-				return null;
-			}
+			if (song.id < 0)
+				return null; // Unindexed song, return early
+
+			if (! "file".equals(song.uri.getScheme()))
+				return null; // Not a local file, do not even try...
 
 			try {
 				InputStream inputStream = null;
 				InputStream sampleInputStream = null; // same as inputStream but used for getSampleSize
 
 				if ((CoverCache.mCoverLoadMode & CoverCache.COVER_MODE_VANILLA) != 0) {
-					final File baseFile  = new File(song.path);  // File object of queried song
+					final String path    = song.uri.getPath();   // The local fs path of this uri
+					final File baseFile  = new File(path);       // File object of queried song
 					String bestMatchPath = null;                 // The best cover-path we found
 					int bestMatchIndex   = COVER_MATCHES.length; // The best cover-index/priority found
 					int loopCount        = 0;                    // Directory items loop counter
