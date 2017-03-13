@@ -587,8 +587,9 @@ public class MediaUtils {
 	 */
 	public static long[] getAndroidMediaIds(Context context, Song song) {
 		long[] result = { -1, -1, -1 };
+		String path = song.uri.getPath();
 		String[] projection = new String[]{ MediaStore.Audio.Media._ID, MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.ARTIST_ID };
-		Cursor cursor = context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, MediaStore.Audio.Media.DATA+"=?", new String[] { song.path }, null);
+		Cursor cursor = context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, MediaStore.Audio.Media.DATA+"=?", new String[] { path }, null);
 		if (cursor.moveToFirst()) {
 			for (int i=0; i<result.length; i++)
 				result[i] = cursor.getLong(i);
