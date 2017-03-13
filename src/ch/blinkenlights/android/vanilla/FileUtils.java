@@ -46,16 +46,15 @@ public class FileUtils {
 
 		int type = intent.getIntExtra(LibraryAdapter.DATA_TYPE, MediaUtils.TYPE_INVALID);
 		boolean isFolder = intent.getBooleanExtra(LibraryAdapter.DATA_EXPANDABLE, false);
-		String path = intent.getStringExtra(LibraryAdapter.DATA_FILE);
+		Uri uri = Uri.parse(intent.getStringExtra(LibraryAdapter.DATA_URI));
 		if (type == MediaUtils.TYPE_FILE && isFolder == false) {
 			try {
-				URI uri = new URI("file", path, null);
 				String mimeGuess = URLConnection.guessContentTypeFromName(uri.toString());
 				if (mimeGuess != null && mimeGuess.matches("^(image|text)/.+")) {
 					canDispatch = true;
 				}
 			} catch (URISyntaxException e) {
-				Log.e("VanillaMusic", "failed to encode "+path+": "+e);
+				Log.e("VanillaMusic", "failed to encode " + uri.toString() +": "+e);
 			}
 		}
 		return canDispatch;
@@ -71,10 +70,8 @@ public class FileUtils {
 	public static boolean dispatchIntent(LibraryActivity activity, Intent intent) {
 		boolean handled = true;
 
-		String path = intent.getStringExtra(LibraryAdapter.DATA_FILE);
-		String mimeGuess = URLConnection.guessContentTypeFromName(path);
-		File file = new File(path);
-		Uri uri = Uri.fromFile(file);
+		Uri uri = Uri.parse(intent.getStringExtra(LibraryAdapter.DATA_URI));
+		String mimeGuess = URLConnection.guessContentTypeFromName(uri.toString());
 
 		Intent extView = new Intent(Intent.ACTION_VIEW);
 		extView.setDataAndType(uri, mimeGuess);

@@ -20,6 +20,7 @@ package ch.blinkenlights.android.vanilla;
 import android.content.Intent;
 import android.database.Cursor;
 import android.text.format.DateUtils;
+import android.net.Uri;
 import android.os.Message;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -247,7 +248,8 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 			query = allSource.buildSongQuery(projection);
 			query.data = id;
 		} else if (type == MediaUtils.TYPE_FILE) {
-			query = MediaUtils.buildFileQuery(intent.getStringExtra("file"), projection);
+			Uri uri = Uri.parse(intent.getStringExtra(LibraryAdapter.DATA_URI));
+			query = MediaUtils.buildUriQuery(uri, projection);
 		} else {
 			query = MediaUtils.buildQuery(type, id, projection, null);
 		}

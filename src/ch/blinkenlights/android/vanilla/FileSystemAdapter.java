@@ -313,15 +313,7 @@ public class FileSystemAdapter
 		intent.putExtra(LibraryAdapter.DATA_ID, holder.id);
 		intent.putExtra(LibraryAdapter.DATA_TITLE, ((DraggableRow)view).getTextView().getText().toString());
 		intent.putExtra(LibraryAdapter.DATA_EXPANDABLE, file.isDirectory());
-
-		String path;
-		try {
-			path = file.getCanonicalPath();
-		} catch (IOException e) {
-			path = file.getAbsolutePath();
-			Log.e("VanillaMusic", "Failed to canonicalize path", e);
-		}
-		intent.putExtra(LibraryAdapter.DATA_FILE, path);
+		intent.putExtra(LibraryAdapter.DATA_URI, Uri.fromFile(file));
 		return intent;
 	}
 

@@ -134,10 +134,10 @@ public interface LibraryAdapter extends ListAdapter {
 	 */
 	String DATA_TYPE = "type";
 	/**
-	 * Extra for row data: canonical file path. type: String. Only present if
+	 * Extra for row data: a serialized URI. type: String. Only present if
 	 * type is {@link MediaUtils#TYPE_FILE}.
 	 */
-	String DATA_FILE = "file";
+	String DATA_URI = "uri";
 	/**
 	 * Extra for row data: if true, row has expander arrow. type: boolean.
 	 */
