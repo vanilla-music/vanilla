@@ -539,12 +539,13 @@ public class MediaUtils {
 
 	/**
 	 * Returns a (possibly empty) Cursor for given file path
-	 * @param path The path to the file to be queried
+	 * @param context the context to use
+	 * @param uri the uri to query
 	 * @return A new Cursor object
 	 * */
-	public static Cursor getCursorForFileQuery(String path) {
+	public static Cursor getCursorForUriQuery(Context context, Uri uri) {
 		MatrixCursor matrixCursor = new MatrixCursor(Song.FILLED_PROJECTION);
-		MediaMetadataExtractor tags = new MediaMetadataExtractor(path);
+		MediaMetadataExtractor tags = new MediaMetadataExtractor(context, uri);
 		String title = tags.getFirst(MediaMetadataExtractor.TITLE);
 		String album = tags.getFirst(MediaMetadataExtractor.ALBUM);
 		String artist = tags.getFirst(MediaMetadataExtractor.ARTIST);
@@ -556,12 +557,12 @@ public class MediaUtils {
 			// using the negative crc32 sum of the path value. While this is not perfect
 			// (the same file may be accessed using various paths) it's the fastest method
 			// and far good enough.
-			long songId = MediaLibrary.hash63(path) * -1;
+			long songId = MediaLibrary.hash63(uri.toString()) * -1;
 			if (songId > -2)
 				songId = -2; // must be less than -1 (-1 defines an empty song object)
 
 			// Build minimal fake-database entry for this file
-			Object[] objData = new Object[] { songId, path, "", "", "", 0, 0, 0, 0 };
+			Object[] objData = new Object[] { songId, uri.toString(), "", "", "", 0, 0, 0, 0 };
 
 			if (title != null)
 				objData[2] = title;
