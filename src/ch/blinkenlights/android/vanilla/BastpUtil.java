@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2013-2017 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
  
 package ch.blinkenlights.android.vanilla;
 
+import android.net.Uri;
 import android.util.LruCache;
 import ch.blinkenlights.bastp.Bastp;
 import java.util.ArrayList;
@@ -50,13 +51,13 @@ public class BastpUtil {
 	}
 
 	/**
-	 * Returns a GainValues object for `path'
+	 * Returns a GainValues object for `uri'
 	 */
-	public GainValues getReplayGainValues(String path) {
-		if(path == null) {
-			// path must not be null
-			path = "//null\\";
-		}
+	public GainValues getReplayGainValues(Uri uri) {
+		String path = ":invalid:";
+
+		if("file".equals(uri.getScheme()))
+			path = uri.getPath();
 
 		GainValues cached = rgCache.get(path);
 		if(cached == null) {
