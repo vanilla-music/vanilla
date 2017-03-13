@@ -515,23 +515,24 @@ public class MediaUtils {
 	}
 
 	/**
-	 * Build a query that will contain all the media under the given path.
+	 * Build a query that will contain all the media under the given uri path.
 	 *
-	 * @param path The path, e.g. /mnt/sdcard/music/
+	 * @param uri the uri to query
 	 * @param projection The columns to query
 	 * @return The initialized query.
 	 */
-	public static QueryTask buildFileQuery(String path, String[] projection)
-	{
-		/* make sure that the path is:
+	public static QueryTask buildUriQuery(Uri uri, String[] projection) {
+		/* make sure that the uri path is:
 		   -> fixed-up to point to the real mountpoint if user browsed to the mediadir symlink
 		   -> terminated with a / if it is a directory
 		   -> ended with a % for the LIKE query
 		*/
-		path = addDirEndSlash(sanitizeMediaPath(path)) + "%";
+		// path = addDirEndSlash(sanitizeMediaPath(path)) + "%";
+		// FIXME : re-implement sanitizeMediaPath and addDirEndSlash for uri support!
+		String path = uri.toString() + "%";
 		final String query = MediaLibrary.SongColumns.PATH+" LIKE ?";
 		String[] qargs = { path };
-
+Log.v("VanillaMusic", "FIXME: Should have sanitized "+uri.toString());
 		QueryTask result = new QueryTask(MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS, projection, query, qargs, FILE_SORT);
 		result.type = TYPE_FILE;
 		return result;
