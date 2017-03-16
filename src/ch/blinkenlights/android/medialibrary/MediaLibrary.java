@@ -71,7 +71,7 @@ public class MediaLibrary  {
 	/**
 	 * Our static backend instance
 	 */
-	private static MediaLibraryBackend sBackend;
+	private volatile static MediaLibraryBackend sBackend;
 	/**
 	 * An instance to the created scanner thread during our own creation
 	 */
