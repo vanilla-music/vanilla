@@ -305,8 +305,9 @@ public class MediaSchema {
 
 		if (oldVersion < 20170324 && oldVersion >= 20170120) {
 			// Added a string field to allow for string based preferences
-			dbh.execSQL("DROP TABLE preferences");
-			dbh.execSQL(DATABASE_CREATE_PREFERENCES);
+			dbh.execSQL("ALTER TABLE " + MediaLibrary.TABLE_PREFERENCES +
+				" ADD COLUMN " + MediaLibrary.PreferenceColumns.STRING +
+				" TEXT");
 		}
 	}
 
