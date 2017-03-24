@@ -228,7 +228,8 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 		mForceBastpCheck.setChecked(prefs.forceBastp);
 
 		// Only change mWhitelistText if its contents have changed
-		if (!prefs.whitelist.contentEquals(mWhitelistText.getText())) {
+		if (prefs.whitelist != null &&
+				!prefs.whitelist.contentEquals(mWhitelistText.getText())) {
 			mWhitelistText.setText(prefs.whitelist);
 		}
 	}
