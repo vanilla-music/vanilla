@@ -29,6 +29,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.Timer;
@@ -77,6 +78,10 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 	 */
 	private CheckBox mForceBastpCheck;
 	/**
+	 * EditText for a path that should be let through the blacklist
+	 */
+	private EditText mWhitelistText;
+	/**
 	 * Set if we should start a full scan due to option changes
 	 */
 	private boolean mFullScanPending;
@@ -99,6 +104,8 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 		mDropDbCheck = (CheckBox)view.findViewById(R.id.media_scan_drop_db);
 		mGroupAlbumsCheck = (CheckBox)view.findViewById(R.id.media_scan_group_albums);
 		mForceBastpCheck = (CheckBox)view.findViewById(R.id.media_scan_force_bastp);
+		mWhitelistText = (EditText)view.findViewById(R.id.media_scan_whitelist);
+		// mWhitelistText = new EditText(getActivity());
 
 		// Bind onClickListener to some elements
 		mStartButton.setOnClickListener(this);
@@ -135,7 +142,7 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 		}
 
 		if (mFullScanPending) {
-			MediaLibrary.startLibraryScan(getActivity(), true, true);
+			MediaLibrary.startLibraryScan(getActivity(), mWhitelistText.getText().toString(), true, true);
 			mFullScanPending = false;
 		}
 	}
@@ -255,7 +262,7 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 	 * @param view the view which was pressed
 	 */
 	public void startButtonPressed(View view) {
-		MediaLibrary.startLibraryScan(getActivity(), mFullScanCheck.isChecked(), mDropDbCheck.isChecked());
+		MediaLibrary.startLibraryScan(getActivity(), mWhitelistText.getText().toString(), mFullScanCheck.isChecked(), mDropDbCheck.isChecked());
 		updateProgress();
 	}
 

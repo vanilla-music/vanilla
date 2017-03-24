@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>. 
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package ch.blinkenlights.android.medialibrary;
@@ -142,8 +142,9 @@ public class MediaLibrary  {
 	 * @param forceFull starts a full / slow scan if true
 	 * @param drop drop the existing library if true
 	 */
-	public static void startLibraryScan(Context context, boolean forceFull, boolean drop) {
+	public static void startLibraryScan(Context context, String whitelist, boolean forceFull, boolean drop) {
 		MediaLibraryBackend backend = getBackend(context); // also initialized sScanner
+		sScanner.setWhitelist(whitelist);
 		if (drop) {
 			sScanner.flushDatabase();
 			// fixme: should clean orphaned AFTER scan finished
@@ -459,9 +460,9 @@ public class MediaLibrary  {
 		scanTargets.add(Environment.getExternalStorageDirectory());
 
 		// this *may* exist
-		File sdCard = new File("/storage/sdcard1");
-		if (sdCard.isDirectory())
-			scanTargets.add(sdCard);
+		File storage = new File("/storage");
+		if (storage.isDirectory())
+			scanTargets.add(storage);
 
 		return scanTargets.toArray(new File[scanTargets.size()]);
 	}

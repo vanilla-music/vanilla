@@ -35,6 +35,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:text="@string/media_scan_force_bastp" />
+	<TextView
+		style="?android:attr/listSeparatorTextViewStyle"
+		android:textColor="?overlay_foreground_color"
+		android:text="@string/media_scan_preferences" />
+	<EditText android:id="@+id/media_scan_whitelist"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/media_scan_whitelist" />
 
 	<TextView
 		style="?android:attr/listSeparatorTextViewStyle"

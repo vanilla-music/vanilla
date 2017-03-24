@@ -31,6 +31,8 @@ import android.widget.Toast;
 
 import java.net.InetAddress;
 
+import android.util.Log;
+
 public class SlidingPlaybackActivity extends PlaybackActivity
 	implements SlidingView.Callback,
 	           SeekBar.OnSeekBarChangeListener,
@@ -247,6 +249,7 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 			query = allSource.buildSongQuery(projection);
 			query.data = id;
 		} else if (type == MediaUtils.TYPE_FILE) {
+			Log.d("vanilla", "file query");
 			query = MediaUtils.buildFileQuery(intent.getStringExtra("file"), projection);
 		} else {
 			query = MediaUtils.buildQuery(type, id, projection, null);

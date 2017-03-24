@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>. 
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package ch.blinkenlights.android.medialibrary;
@@ -103,6 +103,7 @@ public class MediaScanner implements Handler.Callback {
 	 */
 	public void startFullScan() {
 		for (File dir : MediaLibrary.discoverMediaPaths()) {
+			Log.d("vanilla", "scanning " + dir);
 			mScanPlan.addNextStep(RPC_READ_DIR, dir);
 		}
 		mScanPlan.addNextStep(RPC_LIBRARY_VRFY, null);
@@ -375,6 +376,7 @@ public class MediaScanner implements Handler.Callback {
 			return;
 
 		for (File file : dirents) {
+			// Log.d("vanilla", "inspect " + file);
 			int rpc = (file.isFile() ? RPC_INSPECT_FILE : RPC_READ_DIR);
 			mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_RPC, rpc, 0, file));
 		}
@@ -391,7 +393,11 @@ public class MediaScanner implements Handler.Callback {
 		String path  = file.getAbsolutePath();
 		long songId  = MediaLibrary.hash63(path);
 
-		if (isBlacklisted(file))
+		// Log.d("vanilla", "path " + path);
+		// Log.d("vanilla", "songId " + songId);
+		// Log.d("vanilla", "isBlacklisted(file) " + isBlacklisted(file));
+
+		if (!isWhitelisted(file) && isBlacklisted(file))
 			return false;
 
 		long dbEntryMtime = mBackend.getSongMtime(songId) * 1000; // this is in unixtime -> convert to 'ms'
@@ -537,6 +543,26 @@ public class MediaScanner implements Handler.Callback {
 		return hasChanged;
 	}
 
+	private static String whitelist = "";
+	/**
+	 * Returns true if the file should be scanned
+	 *
+	 * @param file the file to inspect
+	 * @return boolean
+	 */
+	public void setWhitelist(String whitelist) {
+		this.whitelist = whitelist;
+	}
+	/**
+	 * Returns true if the file should be scanned
+	 *
+	 * @param file the file to inspect
+	 * @return boolean
+	 */
+	private boolean isWhitelisted(File file) {
+		return whitelist != null && whitelist.length() > 0 && file.getPath().startsWith(whitelist);
+	}
+
 	private static final Pattern sIgnoredFilenames = Pattern.compile("^([^\\.]+|.+\\.(jpe?g|gif|png|bmp|webm|txt|pdf|avi|mp4|mkv|zip|tgz|xml))$", Pattern.CASE_INSENSITIVE);
 	private static final Pattern sIgnoredDirectories = Pattern.compile("^.+/(Android/data|Alarms|Notifications|Ringtones)/.+$", Pattern.CASE_INSENSITIVE);
 	/**
@@ -675,4 +701,3 @@ public class MediaScanner implements Handler.Callback {
 		}
 	}
 }
-
