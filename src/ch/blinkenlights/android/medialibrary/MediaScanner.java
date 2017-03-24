@@ -109,7 +109,6 @@ public class MediaScanner implements Handler.Callback {
 		whitelist = MediaLibrary.getPreferences(mContext).whitelist;
 
 		for (File dir : MediaLibrary.discoverMediaPaths()) {
-			Log.d("vanilla", "scanning " + dir);
 			mScanPlan.addNextStep(RPC_READ_DIR, dir);
 		}
 		mScanPlan.addNextStep(RPC_LIBRARY_VRFY, null);
@@ -382,7 +381,6 @@ public class MediaScanner implements Handler.Callback {
 			return;
 
 		for (File file : dirents) {
-			// Log.d("vanilla", "inspect " + file);
 			int rpc = (file.isFile() ? RPC_INSPECT_FILE : RPC_READ_DIR);
 			mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_RPC, rpc, 0, file));
 		}
@@ -398,10 +396,6 @@ public class MediaScanner implements Handler.Callback {
 		MediaLibrary.Preferences prefs = MediaLibrary.getPreferences(mContext);
 		String path  = file.getAbsolutePath();
 		long songId  = MediaLibrary.hash63(path);
-
-		// Log.d("vanilla", "path " + path);
-		// Log.d("vanilla", "songId " + songId);
-		// Log.d("vanilla", "isBlacklisted(file) " + isBlacklisted(file));
 
 		if (!isWhitelisted(file) && isBlacklisted(file))
 			return false;
