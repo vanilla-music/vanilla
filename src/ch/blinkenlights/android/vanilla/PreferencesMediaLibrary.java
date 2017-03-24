@@ -25,6 +25,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -105,7 +108,15 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 		mGroupAlbumsCheck = (CheckBox)view.findViewById(R.id.media_scan_group_albums);
 		mForceBastpCheck = (CheckBox)view.findViewById(R.id.media_scan_force_bastp);
 		mWhitelistText = (EditText)view.findViewById(R.id.media_scan_whitelist);
-		// mWhitelistText = new EditText(getActivity());
+
+		// Set whitelist listener
+		mWhitelistText.addTextChangedListener(new TextWatcher() {
+			public void afterTextChanged(Editable s) {
+				updatePreferences(mWhitelistText);
+			}
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+			public void onTextChanged(CharSequence s, int start, int before, int count) {}
+		});
 
 		// Bind onClickListener to some elements
 		mStartButton.setOnClickListener(this);
@@ -142,7 +153,7 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 		}
 
 		if (mFullScanPending) {
-			MediaLibrary.startLibraryScan(getActivity(), mWhitelistText.getText().toString(), true, true);
+			MediaLibrary.startLibraryScan(getActivity(), true, true);
 			mFullScanPending = false;
 		}
 	}
@@ -198,21 +209,28 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 	/**
 	 * Initializes and updates the scanner preferences
 	 *
-	 * @param checkbox the item to update, may be null
-	 * @return void but sets the checkboxes to their correct state
+	 * @param control the input control to update, may be null
+	 * @return void but sets the input controls to their correct states
 	 */
-	private void updatePreferences(CheckBox checkbox) {
+	private void updatePreferences(TextView control) {
 		MediaLibrary.Preferences prefs = MediaLibrary.getPreferences(getActivity());
 
-		if (checkbox == mGroupAlbumsCheck)
+		if (control == mGroupAlbumsCheck)
 			prefs.groupAlbumsByFolder = mGroupAlbumsCheck.isChecked();
-		if (checkbox == mForceBastpCheck)
+		if (control == mForceBastpCheck)
 			prefs.forceBastp = mForceBastpCheck.isChecked();
+		if (control == mWhitelistText)
+			prefs.whitelist = mWhitelistText.getText().toString();
 
 		MediaLibrary.setPreferences(getActivity(), prefs);
 
 		mGroupAlbumsCheck.setChecked(prefs.groupAlbumsByFolder);
 		mForceBastpCheck.setChecked(prefs.forceBastp);
+
+		// Only change mWhitelistText if its contents have changed
+		if (!prefs.whitelist.contentEquals(mWhitelistText.getText())) {
+			mWhitelistText.setText(prefs.whitelist);
+		}
 	}
 
 	/**
@@ -262,7 +280,7 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 	 * @param view the view which was pressed
 	 */
 	public void startButtonPressed(View view) {
-		MediaLibrary.startLibraryScan(getActivity(), mWhitelistText.getText().toString(), mFullScanCheck.isChecked(), mDropDbCheck.isChecked());
+		MediaLibrary.startLibraryScan(getActivity(), mFullScanCheck.isChecked(), mDropDbCheck.isChecked());
 		updateProgress();
 	}
 

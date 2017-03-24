@@ -93,6 +93,9 @@ public class MediaScanner implements Handler.Callback {
 	 * library for new and changed files
 	 */
 	public void startNormalScan() {
+		// Update whitelist
+		whitelist = MediaLibrary.getPreferences(mContext).whitelist;
+
 		mScanPlan.addNextStep(RPC_NATIVE_VRFY, null)
 			.addNextStep(RPC_LIBRARY_VRFY, null);
 		mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_RPC, RPC_KICKSTART, 0));
@@ -102,6 +105,9 @@ public class MediaScanner implements Handler.Callback {
 	 * Performs a 'slow' scan by inspecting all files on the device
 	 */
 	public void startFullScan() {
+		// Update whitelist
+		whitelist = MediaLibrary.getPreferences(mContext).whitelist;
+
 		for (File dir : MediaLibrary.discoverMediaPaths()) {
 			Log.d("vanilla", "scanning " + dir);
 			mScanPlan.addNextStep(RPC_READ_DIR, dir);
@@ -543,22 +549,13 @@ public class MediaScanner implements Handler.Callback {
 		return hasChanged;
 	}
 
+	/**
+	 * Returns true if the file should be scanned
+	 *
+	 * @param file the file to inspect
+	 * @return boolean
+	 */
 	private static String whitelist = "";
-	/**
-	 * Returns true if the file should be scanned
-	 *
-	 * @param file the file to inspect
-	 * @return boolean
-	 */
-	public void setWhitelist(String whitelist) {
-		this.whitelist = whitelist;
-	}
-	/**
-	 * Returns true if the file should be scanned
-	 *
-	 * @param file the file to inspect
-	 * @return boolean
-	 */
 	private boolean isWhitelisted(File file) {
 		return whitelist != null && whitelist.length() > 0 && file.getPath().startsWith(whitelist);
 	}

@@ -38,11 +38,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 	<TextView
 		style="?android:attr/listSeparatorTextViewStyle"
 		android:textColor="?overlay_foreground_color"
-		android:text="@string/media_scan_preferences" />
+		android:text="@string/media_scan_whitelist" />
 	<EditText android:id="@+id/media_scan_whitelist"
 		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="@string/media_scan_whitelist" />
+		android:layout_height="wrap_content" />
 
 	<TextView
 		style="?android:attr/listSeparatorTextViewStyle"

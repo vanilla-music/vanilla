@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>. 
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package ch.blinkenlights.android.medialibrary;
@@ -127,6 +127,33 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 		if (newVal >= 0 && newVal != oldVal) {
 			dbh.execSQL("INSERT OR REPLACE INTO "+MediaLibrary.TABLE_PREFERENCES+" ("+MediaLibrary.PreferenceColumns.KEY+", "+MediaLibrary.PreferenceColumns.VALUE+") "
 			            +" VALUES("+key+", "+newVal+")");
+		}
+		return oldVal;
+	}
+
+	/**
+	 * Simple interface to set and get preference values as strings
+	 *
+	 * @param stringKey the key to use
+	 * @param newVal the string value to set
+	 *
+	 * Note: The new value will only be set if it is not null
+	 *       Lookup failures will return null
+	 */
+	String getSetPreference(String stringKey, String newVal) {
+		String oldVal = null; // this is returned if we found nothing
+		int key = Math.abs(stringKey.hashCode());
+		SQLiteDatabase dbh = getWritableDatabase();
+
+		Cursor cursor = dbh.query(MediaLibrary.TABLE_PREFERENCES, new String[] { MediaLibrary.PreferenceColumns.STRING }, MediaLibrary.PreferenceColumns.KEY+"="+key, null, null, null, null, null);
+		if (cursor.moveToFirst()) {
+			oldVal = cursor.getString(0);
+		}
+		cursor.close();
+
+		if (newVal != null && !newVal.equals(oldVal)) {
+			dbh.execSQL("INSERT OR REPLACE INTO "+MediaLibrary.TABLE_PREFERENCES+" ("+MediaLibrary.PreferenceColumns.KEY+", "+MediaLibrary.PreferenceColumns.VALUE+", "+MediaLibrary.PreferenceColumns.STRING+") "
+			            +" VALUES("+key+", -1, \'"+newVal+"\')");
 		}
 		return oldVal;
 	}
