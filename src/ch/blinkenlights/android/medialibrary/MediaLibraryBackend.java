@@ -31,7 +31,7 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	/**
 	 * Enables or disables debugging
 	 */
-	private static final boolean DEBUG = false;
+	private static final boolean DEBUG = true;
 	/**
 	 * The database version we are using
 	 */
