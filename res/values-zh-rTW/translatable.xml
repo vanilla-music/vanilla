@@ -55,6 +55,7 @@
   <string name="remove">移除</string>
   <string name="play_or_enqueue">如果播放佇列；如果暫停播放</string>
   <string name="open">開啟</string>
+  <string name="go_home">主目錄</string>
   <plurals name="playing">
     <item quantity="other">播放歌曲 %d。</item>
   </plurals>
@@ -76,6 +77,8 @@
   <string name="delete_file">刪除檔案 \'%s\'？</string>
   <string name="artists">演唱者</string>
   <string name="albums">專輯</string>
+  <string name="albumartists">專輯的演唱者</string>
+  <string name="composers">作曲</string>
   <string name="songs">曲目</string>
   <string name="playlists">撥放清單</string>
   <string name="genres">風格</string>

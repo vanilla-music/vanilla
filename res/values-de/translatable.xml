@@ -55,6 +55,7 @@
   <string name="remove">Entfernen</string>
   <string name="play_or_enqueue">Einreihen während Wiedergabe oder wiedergeben, falls pausiert</string>
   <string name="open">Öffnen</string>
+  <string name="go_home">Benutzerverzeichnis</string>
   <plurals name="playing">
     <item quantity="one">1 Titel wird wiedergegeben.</item>
     <item quantity="other">%d Titel werden wiedergegeben.</item>
@@ -81,6 +82,8 @@
   <string name="delete_file">Datei »%s« löschen?</string>
   <string name="artists">Interpreten</string>
   <string name="albums">Alben</string>
+  <string name="albumartists">Albuminterpreten</string>
+  <string name="composers">Komponisten</string>
   <string name="songs">Titel</string>
   <string name="playlists">Wiedergabelisten</string>
   <string name="genres">Genres</string>

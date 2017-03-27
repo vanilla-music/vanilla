@@ -55,6 +55,7 @@
   <string name="remove">Poista</string>
   <string name="play_or_enqueue">Lisää jonoon jos toistetaan; toista jos keskeytetty</string>
   <string name="open">Avaa</string>
+  <string name="go_home">Kotihakemisto</string>
   <plurals name="playing">
     <item quantity="one">Toistetaan 1 kappaletta.</item>
     <item quantity="other">Toistetaan %d kappaletta.</item>
@@ -81,6 +82,8 @@
   <string name="delete_file">Poistetaanko tiedosto \'%s\'?</string>
   <string name="artists">Esittäjät</string>
   <string name="albums">Albumit</string>
+  <string name="albumartists">Albumin esittäjät</string>
+  <string name="composers">Säveltäjät</string>
   <string name="songs">Kappaleet</string>
   <string name="playlists">Soittolistat</string>
   <string name="genres">Tyylilajit</string>

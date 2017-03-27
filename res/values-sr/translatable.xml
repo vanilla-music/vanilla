@@ -55,6 +55,7 @@
   <string name="remove">Уклони</string>
   <string name="play_or_enqueue">У ред ако је пуштено; пусти ако је паузирано</string>
   <string name="open">Отвори</string>
+  <string name="go_home">Почетна фасцикла</string>
   <plurals name="playing">
     <item quantity="one">1 нумера пуштена.</item>
     <item quantity="few">%d нумере пуштене.</item>
@@ -86,6 +87,8 @@
   <string name="delete_file">Да обришем фајл „%s“?</string>
   <string name="artists">Извођачи</string>
   <string name="albums">Албуми</string>
+  <string name="albumartists">Извођачи албума</string>
+  <string name="composers">Композитори</string>
   <string name="songs">Нумере</string>
   <string name="playlists">Листе нумера</string>
   <string name="genres">Жанрови</string>
@@ -96,6 +99,7 @@
   <string name="all_songs">Све нумере</string>
   <string name="more_from_artist">Још од извођача</string>
   <string name="more_from_album">Још са албума</string>
+  <string name="title">Наслов</string>
   <string name="number_of_tracks">броју нумера</string>
   <string name="year">години</string>
   <string name="date_added">датуму додавања</string>
@@ -255,12 +259,16 @@
   <string name="media_scan_full">Очитај читав фајлсистем (споро)</string>
   <string name="media_scan_drop_db">Очисти базу података медија (опасност!)</string>
   <string name="media_scan_start">Почни очитавање</string>
+  <string name="media_scan_force_bastp">Увек користи уграђени читач ознака</string>
   <string name="media_scan_group_albums">Групиши албуме по фасцикли</string>
   <string name="media_statistics">Статистике</string>
   <string name="media_stats_tracks">Број нумера</string>
   <string name="media_stats_playtime">Време пуштања (сати)</string>
   <string name="media_stats_progress">Напредак очитавања</string>
   <string name="media_library_scan_running">Очитавам библиотеку медија…</string>
+  <string name="media_scan_preferences">Опције скенера</string>
+  <string name="media_scan_preferences_change_title">Опције скенера измењене</string>
+  <string name="media_scan_preferences_change_message">Измена ове опције ће покренути потпуно скенирање ваше библиотеке. Желите ли да наставите?</string>
   <!--Plugin system-->
   <string name="plugins">Прикључци</string>
 </resources>

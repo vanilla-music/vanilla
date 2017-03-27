@@ -25,7 +25,7 @@
   <string name="_path">パス</string>
   <string name="_format">形式</string>
   <string name="_title">タイトル</string>
-  <string name="_artist">アーチスト</string>
+  <string name="_artist">アーティスト</string>
   <string name="_album">アルバム</string>
   <string name="_year">年</string>
   <string name="_replaygain">ﾘﾌﾟﾚｲｹﾞｲﾝ</string>
@@ -55,6 +55,7 @@
   <string name="remove">除去</string>
   <string name="play_or_enqueue">再生中はキューに入れる、一時停止中は再生</string>
   <string name="open">開く</string>
+  <string name="go_home">ホームディレクトリー</string>
   <plurals name="playing">
     <item quantity="other">%d トラックを再生中。</item>
   </plurals>
@@ -74,8 +75,10 @@
   <string name="deleted_item">\'%s\' を</string>
   <string name="delete_item">\'%s\' を削除しますか?</string>
   <string name="delete_file">ファイル \'%s\' を削除しますか?</string>
-  <string name="artists">アーチスト</string>
+  <string name="artists">アーティスト</string>
   <string name="albums">アルバム</string>
+  <string name="albumartists">アルバム アーティスト</string>
+  <string name="composers">作曲家</string>
   <string name="songs">トラック</string>
   <string name="playlists">プレイリスト</string>
   <string name="genres">ジャンル</string>
@@ -84,17 +87,17 @@
   <string name="play_all">すべて再生</string>
   <string name="enqueue_all">すべてキューに入れる</string>
   <string name="all_songs">すべてのトラック</string>
-  <string name="more_from_artist">アーチストからさらに</string>
+  <string name="more_from_artist">アーティストからさらに</string>
   <string name="more_from_album">アルバムからさらに</string>
   <string name="title">タイトル</string>
   <string name="number_of_tracks">トラックの名前</string>
   <string name="year">年</string>
   <string name="date_added">追加した日付</string>
-  <string name="artist_album">アーチスト、アルバム</string>
-  <string name="artist_year_album">アーチスト、年、アルバム</string>
-  <string name="artist_album_track">アーチスト、アルバム、トラック番号</string>
-  <string name="artist_album_title">アーチスト、アルバム、タイトル</string>
-  <string name="artist_year">アーチスト、年</string>
+  <string name="artist_album">アーティスト、アルバム</string>
+  <string name="artist_year_album">アーティスト、年、アルバム</string>
+  <string name="artist_album_track">アーティスト、アルバム、トラック番号</string>
+  <string name="artist_album_title">アーティスト、アルバム、タイトル</string>
+  <string name="artist_year">アーティスト、年</string>
   <string name="album_track">アルバム、トラック番号</string>
   <string name="song_playcount">再生回数</string>
   <!--Preferences-->
@@ -208,7 +211,7 @@
   <string name="cycle_repeat_mode">繰り返し再生モード</string>
   <string name="cycle_shuffle_mode">サイクル シャッフルモード</string>
   <string name="enqueue_current_album">アルバムをキューに入れる</string>
-  <string name="enqueue_current_artist">アーチストをキューに入れる</string>
+  <string name="enqueue_current_artist">アーティストをキューに入れる</string>
   <string name="enqueue_current_genre">ジャンルをキューに入れる</string>
   <string name="empty_the_queue">キューを空にする</string>
   <string name="show_queue">キューを表示</string>
@@ -220,7 +223,7 @@
   <string name="preferences_action_show_queue">キューを表示</string>
   <string name="preferences_action_clear_queue">キューをクリア</string>
   <string name="preferences_action_enqueue_current_album">アルバムをキューに入れる</string>
-  <string name="preferences_action_enqueue_current_artist">アーチストをキューに入れる</string>
+  <string name="preferences_action_enqueue_current_artist">アーティストをキューに入れる</string>
   <string name="preferences_action_enqueue_current_genre">ジャンルをキューに入れる</string>
   <string name="filebrowser_start">ファイルブラウザー ホーム</string>
   <string name="customize_filebrowser_start">ファイルブラウザーはこのディレクトリーから開始します</string>
