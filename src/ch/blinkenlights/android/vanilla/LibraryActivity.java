@@ -280,22 +280,21 @@ public class LibraryActivity
 				switch (limiter.type) {
 				case MediaUtils.TYPE_ALBUM:
 					setLimiter(MediaUtils.TYPE_ARTIST, limiter.data.toString());
-					pos = mPagerAdapter.mAlbumsPosition;
+					pos = mPagerAdapter.getMediaTypePosition(limiter.type);
 					break;
 				case MediaUtils.TYPE_ARTIST:
-					mPagerAdapter.clearLimiter(MediaUtils.TYPE_ARTIST);
-					pos = mPagerAdapter.mArtistsPosition;
-					break;
+				case MediaUtils.TYPE_ALBARTIST:
+				case MediaUtils.TYPE_COMPOSER:
 				case MediaUtils.TYPE_GENRE:
-					mPagerAdapter.clearLimiter(MediaUtils.TYPE_GENRE);
-					pos = mPagerAdapter.mGenresPosition;
+					mPagerAdapter.clearLimiter(limiter.type);
+					pos = mPagerAdapter.getMediaTypePosition(limiter.type);
 					break;
 				case MediaUtils.TYPE_FILE:
 					if(limiter.names.length > 1) {
 						File parentFile = ((File)limiter.data).getParentFile();
 						mPagerAdapter.setLimiter(FileSystemAdapter.buildLimiter(parentFile));
 					} else {
-						mPagerAdapter.clearLimiter(MediaUtils.TYPE_FILE);
+						mPagerAdapter.clearLimiter(limiter.type);
 					}
 					break;
 				}
