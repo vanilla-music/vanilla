@@ -18,7 +18,11 @@
 package ch.blinkenlights.android.medialibrary;
 
 import ch.blinkenlights.bastp.Bastp;
+
+import android.content.Context;
 import android.media.MediaMetadataRetriever;
+import android.net.Uri;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +31,6 @@ import java.util.regex.Pattern;
 
 import java.io.FileInputStream;
 
-import android.util.Log;
 public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 	// Well known tags
 	public final static String ALBUM        = "ALBUM";
@@ -225,21 +228,23 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 	/**
 	 * Constructor for MediaMetadataExtractor
 	 *
+	 * @param context the context to use
 	 * @param path the path to scan
 	 */
-	public MediaMetadataExtractor(String path) {
-		this(path, false);
+	public MediaMetadataExtractor(Context context, Uri uri) {
+		this(context, uri, false);
 	}
 
 	/**
 	 * Constructor for MediaMetadataExtractor
 	 *
-	 * @param path the path to scan
+	 * @pparam context the context to use
+	 * @param uri the uri to scan
 	 * @param forceBastp always prefer bastp if possible
 	 */
-	public MediaMetadataExtractor(String path, boolean forceBastp) {
+	public MediaMetadataExtractor(Context context, Uri uri, boolean forceBastp) {
 		mForceBastp = forceBastp;
-		extractMetadata(path);
+		extractMetadata(context, uri);
 	}
 
 	/**
@@ -266,30 +271,24 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 	/**
 	 * Attempts to populate this instance with tags found in given path
 	 *
-	 * @param path the path to parse
+	 * @param context the context to use
+	 * @param uri the uri to parse
 	 */
-	private void extractMetadata(String path) {
+	private void extractMetadata(Context context, Uri uri) {
 		if (!isEmpty())
 			throw new IllegalStateException("Expected to be called on a clean HashMap");
 
-		Log.v("VanillaMusic", "Extracting tags from "+path);
+		Log.v("VanillaMusic", "Extracting tags from "+ uri.toString());
 
-		HashMap bastpTags = (new Bastp()).getTags(path);
+		HashMap bastpTags = new HashMap();
 		MediaMetadataRetriever mediaTags = new MediaMetadataRetriever();
 		boolean nativelyReadable = false;
 
 		try {
-			FileInputStream fis = new FileInputStream(path);
-			try {
-				mediaTags.setDataSource(fis.getFD());
-				nativelyReadable = true;
-			} catch (Exception e) {
-				Log.v("VanillaMusic", "Error calling setDataSource for "+path+": "+e);
-			}
-			fis.close();
+			mediaTags.setDataSource(context, uri);
+			nativelyReadable = true;
 		} catch (Exception e) {
-			nativelyReadable = false;
-			Log.v("VanillaMusic", "Error creating fis for "+path+": "+e);
+			Log.v("VanillaMusic", "Error calling setDataSource for " + uri.toString() + ": " + e);
 		}
 
 		// Check if this is an useable audio file
@@ -300,6 +299,10 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 		    mediaTags.release();
 			return;
 		}
+
+		// bastp is only used for plain normal files (no content:// uris)
+		if ("file".equals(uri.getScheme()))
+			bastpTags = (new Bastp()).getTags(uri.getPath());
 
 		// Bastp can not read the duration and bitrates, so we always get it from the system
 		ArrayList<String> duration = new ArrayList<>(1);
