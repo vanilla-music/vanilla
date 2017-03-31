@@ -476,8 +476,11 @@ public class MediaUtils {
 	* This is an ugly hack: The tries to 'guess' if given path
 	* is also accessible using a fuse mount
 	*/
-	private static String sanitizeMediaPath(String path) {
+	private static Uri sanitizeMediaUri(Uri uri) {
+		if (!"file".equals(uri.getScheme()))
+			return uri; // nothing to do for non local files
 
+		String path    = uri.getPath();
 		String exPath  = Environment.getExternalStorageDirectory().getAbsolutePath();
 		File exStorage = new File(exPath+"/Android");
 		long exLastmod = exStorage.lastModified();
@@ -499,19 +502,25 @@ public class MediaUtils {
 			}
 		}
 
-		return path;
+		return Uri.fromFile(new File(path));
 	}
 
 	/**
 	* Adds a final slash if the path points to an existing directory
+	*
+	* @param uri the URI to inspect
+	* @return a fixed up URI
 	*/
-	private static String addDirEndSlash(String path) {
-		if(path.length() > 0 && path.charAt(path.length()-1) != '/') {
-			if( (new File(path)).isDirectory() ) {
-				path += "/";
+	private static Uri addUriEndSlash(Uri uri) {
+		if ("file".equals(uri.getScheme())) {
+			String path = uri.getPath();
+			if (path.length() > 0 && path.charAt(path.length()-1) != '/') {
+				if ((new File(path)).isDirectory()) {
+					uri = Uri.parse(uri.toString() + '/');
+				}
 			}
 		}
-		return path;
+		return uri;
 	}
 
 	/**
@@ -527,13 +536,9 @@ public class MediaUtils {
 		   -> terminated with a / if it is a directory
 		   -> ended with a % for the LIKE query
 		*/
-		// path = addDirEndSlash(sanitizeMediaPath(path)) + "%";
-		// FIXME : re-implement sanitizeMediaPath and addDirEndSlash for uri support!
-		String path = uri.toString() + "%";
+		String queryPath = addUriEndSlash(sanitizeMediaUri(uri)).toString() + "%";
 		final String query = MediaLibrary.SongColumns.PATH+" LIKE ?";
-		String[] qargs = { path };
-Log.v("VanillaMusic", "FIXME: Should have sanitized "+uri.toString());
-		QueryTask result = new QueryTask(MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS, projection, query, qargs, FILE_SORT);
+		QueryTask result = new QueryTask(MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS, projection, query, new String[] { queryPath }, FILE_SORT);
 		result.type = TYPE_FILE;
 		return result;
 	}
