@@ -350,7 +350,8 @@ public class MediaScanner implements Handler.Callback {
 			cursor = mBackend.query(false, MediaLibrary.TABLE_SONGS, new String[]{MediaLibrary.SongColumns.PATH}, null, null, null, null, null, null);
 
 		if (cursor.moveToNext()) {
-			File entry = new File(cursor.getString(0));
+			Uri uri = Uri.parse(cursor.getString(0));
+			File entry = new File(uri.getPath());
 			mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_RPC, RPC_INSPECT_FILE, 0, entry));
 			mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_RPC, RPC_LIBRARY_VRFY, 0, cursor));
 		} else {
