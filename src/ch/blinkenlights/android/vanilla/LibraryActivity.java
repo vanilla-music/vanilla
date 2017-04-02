@@ -185,7 +185,7 @@ public class LibraryActivity
 			pager.setCurrentItem(page);
 		}
 
-		loadAlbumIntent(getIntent());
+		loadLimiterIntent(getIntent());
 		bindControlButtons();
 	}
 
@@ -230,22 +230,22 @@ public class LibraryActivity
 	}
 
 	/**
-	 * If the given intent has album data, set a limiter built from that
+	 * If the given intent has type data, set a limiter built from that
 	 * data.
 	 */
-	private void loadAlbumIntent(Intent intent)
+	private void loadLimiterIntent(Intent intent)
 	{
-		long albumId = intent.getLongExtra("albumId", -1);
-		if (albumId != -1) {
-			String[] fields = { intent.getStringExtra("artist"), intent.getStringExtra("album") };
-			String data = String.format("album_id=%d", albumId);
-			Limiter limiter = new Limiter(MediaUtils.TYPE_ALBUM, fields, data);
+		int type = intent.getIntExtra("type", -1);
+		long id = intent.getLongExtra("id", -1);
+		if (type != -1 && id != -1) {
+			MediaAdapter adapter = new MediaAdapter(this, type, null, null);
+			adapter.commitQuery(adapter.query());
+			Limiter limiter = adapter.buildLimiter(id);
 			int tab = mPagerAdapter.setLimiter(limiter);
 			if (tab == -1 || tab == mViewPager.getCurrentItem())
 				updateLimiterViews();
 			else
 				mViewPager.setCurrentItem(tab);
-
 		}
 	}
 
@@ -256,7 +256,7 @@ public class LibraryActivity
 			return;
 
 		checkForLaunch(intent);
-		loadAlbumIntent(intent);
+		loadLimiterIntent(intent);
 	}
 
 	@Override

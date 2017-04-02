@@ -393,9 +393,9 @@ public abstract class PlaybackActivity extends Activity
 
 	static final int MENU_SORT = 1;
 	static final int MENU_PREFS = 2;
-	static final int MENU_LIBRARY = 3;
-	static final int MENU_PLAYBACK = 5;
-	static final int MENU_SEARCH = 7;
+	static final int MENU_PLAYBACK = 3;
+	static final int MENU_SEARCH = 4;
+	static final int MENU_ENQUEUE = 7; // toplevel menu, has no action
 	static final int MENU_ENQUEUE_ALBUM = 8;
 	static final int MENU_ENQUEUE_ARTIST = 9;
 	static final int MENU_ENQUEUE_GENRE = 10;
@@ -409,6 +409,10 @@ public abstract class PlaybackActivity extends Activity
 	static final int MENU_SHARE = 18;
 	static final int MENU_GO_HOME = 19;
 	static final int MENU_PLUGINS = 20; // used in FullPlaybackActivity
+	static final int MENU_MORE = 21; // toplevel menu, has no own action
+	static final int MENU_MORE_ALBUM = 22;
+	static final int MENU_MORE_ARTIST = 23;
+	static final int MENU_MORE_GENRE = 24;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
@@ -633,15 +637,29 @@ public abstract class PlaybackActivity extends Activity
 	 * Open the library activity.
 	 *
 	 * @param song If non-null, will open the library focused on this song.
+	 * @param type the media type to switch to for 'song'
 	 */
-	public void openLibrary(Song song)
+	public void openLibrary(Song song, int type)
 	{
 		Intent intent = new Intent(this, LibraryActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		if (song != null) {
-			intent.putExtra("albumId", song.albumId);
-			intent.putExtra("album", song.album);
-			intent.putExtra("artist", song.artist);
+			long id = -1;
+			switch(type) {
+				case MediaUtils.TYPE_ARTIST:
+					id = song.artistId;
+				break;
+				case MediaUtils.TYPE_ALBUM:
+					id = song.albumId;
+				break;
+				case MediaUtils.TYPE_GENRE:
+					id = MediaUtils.queryGenreForSong(this, song.id);
+				break;
+				default:
+					throw new IllegalArgumentException("Invalid media type " + type);
+			}
+			intent.putExtra("type", type);
+			intent.putExtra("id", id);
 		}
 		startActivity(intent);
 	}

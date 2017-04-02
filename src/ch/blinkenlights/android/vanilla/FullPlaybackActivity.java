@@ -36,6 +36,7 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -298,13 +299,22 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 	{
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, MENU_DELETE, 30, R.string.delete);
-		menu.add(0, MENU_ENQUEUE_ALBUM, 30, R.string.enqueue_current_album);
-		menu.add(0, MENU_ENQUEUE_ARTIST, 30, R.string.enqueue_current_artist);
-		menu.add(0, MENU_ENQUEUE_GENRE, 30, R.string.enqueue_current_genre);
+		SubMenu enqueueMenu = menu.addSubMenu(0, MENU_ENQUEUE, 30, R.string.enqueue_current);
+		SubMenu moreMenu = menu.addSubMenu(0, MENU_MORE, 30, R.string.more_from_current);
 		menu.add(0, MENU_ADD_TO_PLAYLIST, 30, R.string.add_to_playlist);
 		menu.add(0, MENU_SHARE, 30, R.string.share);
 		menu.add(0, MENU_PLUGINS, 30, R.string.plugins);
 		mFavorites = menu.add(0, MENU_SONG_FAVORITE, 0, R.string.add_to_favorites).setIcon(R.drawable.btn_rating_star_off_mtrl_alpha).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+		// Subitems of 'enqueue...'
+		enqueueMenu.add(0, MENU_ENQUEUE_ALBUM, 30, R.string._album);
+		enqueueMenu.add(0, MENU_ENQUEUE_ARTIST, 30, R.string._artist);
+		enqueueMenu.add(0, MENU_ENQUEUE_GENRE, 30, R.string._genre);
+
+		// Subitems of 'more from...'
+		moreMenu.add(0, MENU_MORE_ALBUM, 30, R.string._album);
+		moreMenu.add(0, MENU_MORE_ARTIST, 30, R.string._artist);
+		moreMenu.add(0, MENU_MORE_GENRE, 30, R.string._genre);
 
 		// ensure that mFavorites is updated
 		mHandler.sendEmptyMessage(MSG_LOAD_FAVOURITE_INFO);
@@ -318,8 +328,16 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 
 		switch (item.getItemId()) {
 		case android.R.id.home:
-		case MENU_LIBRARY:
-			openLibrary(null);
+			openLibrary(null, -1);
+			break;
+		case MENU_MORE_ALBUM:
+			openLibrary(song, MediaUtils.TYPE_ALBUM);
+			break;
+		case MENU_MORE_ARTIST:
+			openLibrary(song, MediaUtils.TYPE_ARTIST);
+			break;
+		case MENU_MORE_GENRE:
+			openLibrary(song, MediaUtils.TYPE_GENRE);
 			break;
 		case MENU_ENQUEUE_ALBUM:
 			PlaybackService.get(this).enqueueFromSong(song, MediaUtils.TYPE_ALBUM);
@@ -396,7 +414,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 	@Override
 	public boolean onSearchRequested()
 	{
-		openLibrary(null);
+		openLibrary(null, -1);
 		return false;
 	}
 
@@ -639,7 +657,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 		} else if (view == mCoverView) {
 			performAction(mCoverPressAction);
 		} else if (view.getId() == R.id.info_table) {
-			openLibrary(mCurrentSong);
+			openLibrary(mCurrentSong, MediaUtils.TYPE_ALBUM);
 		} else {
 			super.onClick(view);
 		}
