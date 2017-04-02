@@ -32,6 +32,7 @@ import android.provider.MediaStore;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
+import android.os.PowerManager;
 import android.os.Process;
 import android.os.SystemClock;
 
@@ -52,6 +53,10 @@ public class MediaScanner implements Handler.Callback {
 	 * The context to use for native library queries
 	 */
 	private Context mContext;
+	/**
+	 * The wake lock we hold during the scan
+	 */
+	private PowerManager.WakeLock mWakeLock;
 	/**
 	 * Instance of a media backend
 	 */
@@ -77,6 +82,7 @@ public class MediaScanner implements Handler.Callback {
 		HandlerThread handlerThread = new HandlerThread("MediaScannerThread", Process.THREAD_PRIORITY_LOWEST);
 		handlerThread.start();
 		mHandler = new Handler(handlerThread.getLooper(), this);
+		mWakeLock = ((PowerManager)context.getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicIndexerLock");
 
 		// the content observer to use
 		ContentObserver mObserver = new ContentObserver(null) {
@@ -257,8 +263,14 @@ public class MediaScanner implements Handler.Callback {
 					.getNotification(); // build() is API 16 :-/
 				manager.notify(NOTIFICATION_ID, notification);
 			}
+
+			if (!mWakeLock.isHeld())
+				mWakeLock.acquire();
 		} else {
 			manager.cancel(NOTIFICATION_ID);
+
+			if (mWakeLock.isHeld())
+				mWakeLock.release();
 		}
 	}
 
