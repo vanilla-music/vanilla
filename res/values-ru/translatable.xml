@@ -55,6 +55,7 @@
   <string name="remove">Убрать</string>
   <string name="play_or_enqueue">В очередь при воспроизведении; Воспроизвести при паузе</string>
   <string name="open">Открыть</string>
+  <string name="go_home">Начальная папка</string>
   <plurals name="playing">
     <item quantity="one">Воспроизведение 1 дорожки.</item>
     <item quantity="few">Воспроизведение %d дорожек.</item>
@@ -91,6 +92,8 @@
   <string name="delete_file">Удалить файл \"%s\"?</string>
   <string name="artists">Исполнители</string>
   <string name="albums">Альбомы</string>
+  <string name="albumartists">Исполнители альбомов</string>
+  <string name="composers">Композиторы</string>
   <string name="songs">Дорожки</string>
   <string name="playlists">Плей-листы</string>
   <string name="genres">Жанры</string>

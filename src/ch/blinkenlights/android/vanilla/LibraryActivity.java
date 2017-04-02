@@ -26,20 +26,14 @@ package ch.blinkenlights.android.vanilla;
 import ch.blinkenlights.android.medialibrary.MediaLibrary;
 
 import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.PaintDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -60,10 +54,6 @@ import android.widget.TextView;
 import android.widget.SearchView;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import junit.framework.Assert;
 
@@ -144,19 +134,6 @@ public class LibraryActivity
 	 */
 	private int mLastAction = ACTION_PLAY;
 	/**
-	 * Holds last intent that was passed to the context menu
-	 */
-	private Intent mLastRequestedCtx;
-	/**
-	 * Plugin descriptions and packages.
-	 * Keys are plugin names, values are their packages
-	 */
-	private Map<String, ApplicationInfo> mPlugins = new HashMap<>();
-	/**
-	 * Broadcast receiver for plugin collecting
-	 */
-	private BroadcastReceiver mPluginInfoReceiver;
-	/**
 	 * The pager adapter that manages each media ListView.
 	 */
 	public LibraryPagerAdapter mPagerAdapter;
@@ -189,7 +166,6 @@ public class LibraryActivity
 		mViewPager = pager;
 
 		SharedPreferences settings = PlaybackService.getSettings(this);
-		mPluginInfoReceiver = new PluginBroadcastReceiver();
 
 		mBottomBarControls = (BottomBarControls)findViewById(R.id.bottombar_controls);
 		mBottomBarControls.setOnClickListener(this);
@@ -213,43 +189,6 @@ public class LibraryActivity
 		bindControlButtons();
 	}
 
-	/**
-	 * Shows plugin selection dialog. Be sure that {@link #mLastRequestedCtx} is initialized
-	 * and {@link #mPlugins} are populated before calling this.
-	 *
-	 * @see PluginBroadcastReceiver
-	 */
-	private void showPluginMenu() {
-		Set<String> pluginNames = mPlugins.keySet();
-		final String[] pNamesArr = pluginNames.toArray(new String[pluginNames.size()]);
-		new AlertDialog.Builder(this)
-				.setItems(pNamesArr, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						long id = mLastRequestedCtx.getLongExtra("id", LibraryAdapter.INVALID_ID);
-						Song resolved = MediaUtils.getSongByTypeId(LibraryActivity.this, MediaUtils.TYPE_SONG, id);
-						if (resolved != null) {
-							ApplicationInfo selected = mPlugins.get(pNamesArr[which]);
-							Intent request = new Intent(PluginUtils.ACTION_LAUNCH_PLUGIN);
-							request.setPackage(selected.packageName);
-							request.putExtra(PluginUtils.EXTRA_PARAM_URI, resolved.uri);
-							request.putExtra(PluginUtils.EXTRA_PARAM_SONG_TITLE, resolved.title);
-							request.putExtra(PluginUtils.EXTRA_PARAM_SONG_ARTIST, resolved.artist);
-							request.putExtra(PluginUtils.EXTRA_PARAM_SONG_ALBUM, resolved.album);
-							startService(request);
-						}
-
-						mLastRequestedCtx = null;
-					}
-				})
-				.setOnCancelListener(new DialogInterface.OnCancelListener() {
-					@Override
-					public void onCancel(DialogInterface dialog) {
-						mLastRequestedCtx = null;
-					}
-				}).create().show();
-	}
-
 	@Override
 	public void onRestart()
 	{
@@ -265,18 +204,6 @@ public class LibraryActivity
 		SharedPreferences settings = PlaybackService.getSettings(this);
 		mDefaultAction = Integer.parseInt(settings.getString(PrefKeys.DEFAULT_ACTION_INT, PrefDefaults.DEFAULT_ACTION_INT));
 		updateHeaders();
-	}
-
-	@Override
-	public void onResume() {
-		super.onResume();
-		registerReceiver(mPluginInfoReceiver, new IntentFilter(PluginUtils.ACTION_HANDLE_PLUGIN_PARAMS));
-	}
-
-	@Override
-	public void onPause() {
-		super.onPause();
-		unregisterReceiver(mPluginInfoReceiver);
 	}
 
 	/**
@@ -353,22 +280,21 @@ public class LibraryActivity
 				switch (limiter.type) {
 				case MediaUtils.TYPE_ALBUM:
 					setLimiter(MediaUtils.TYPE_ARTIST, limiter.data.toString());
-					pos = mPagerAdapter.mAlbumsPosition;
+					pos = mPagerAdapter.getMediaTypePosition(limiter.type);
 					break;
 				case MediaUtils.TYPE_ARTIST:
-					mPagerAdapter.clearLimiter(MediaUtils.TYPE_ARTIST);
-					pos = mPagerAdapter.mArtistsPosition;
-					break;
+				case MediaUtils.TYPE_ALBARTIST:
+				case MediaUtils.TYPE_COMPOSER:
 				case MediaUtils.TYPE_GENRE:
-					mPagerAdapter.clearLimiter(MediaUtils.TYPE_GENRE);
-					pos = mPagerAdapter.mGenresPosition;
+					mPagerAdapter.clearLimiter(limiter.type);
+					pos = mPagerAdapter.getMediaTypePosition(limiter.type);
 					break;
 				case MediaUtils.TYPE_FILE:
 					if(limiter.names.length > 1) {
 						File parentFile = ((File)limiter.data).getParentFile();
 						mPagerAdapter.setLimiter(FileSystemAdapter.buildLimiter(parentFile));
 					} else {
-						mPagerAdapter.clearLimiter(MediaUtils.TYPE_FILE);
+						mPagerAdapter.clearLimiter(limiter.type);
 					}
 					break;
 				}
@@ -776,12 +702,7 @@ public class LibraryActivity
 			break;
 		}
 		case CTX_MENU_PLUGINS: {
-			// obtain list of plugins anew - some plugins may be installed/deleted
-			mPlugins.clear();
-			mLastRequestedCtx = intent;
-			Intent requestPlugins = new Intent(PluginUtils.ACTION_REQUEST_PLUGIN_PARAMS);
-			intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-			sendBroadcast(requestPlugins);
+			queryPluginsForIntent(intent);
 			break;
 		}
 		case CTX_MENU_MORE_FROM_ARTIST: {
@@ -1002,23 +923,6 @@ public class LibraryActivity
 			// (the files almost always have a limiter)
 			Handler handler = mHandler;
 			handler.sendMessage(mHandler.obtainMessage(MSG_SAVE_PAGE, position, 0));
-		}
-	}
-
-	private class PluginBroadcastReceiver extends BroadcastReceiver {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			List<ResolveInfo> resolved = getPackageManager().queryBroadcastReceivers(new Intent(PluginUtils.ACTION_REQUEST_PLUGIN_PARAMS), 0);
-			if (PluginUtils.ACTION_HANDLE_PLUGIN_PARAMS.equals(intent.getAction())) {
-				// plugin answered, store it in the map
-				String pluginName = intent.getStringExtra(PluginUtils.EXTRA_PARAM_PLUGIN_NAME);
-				ApplicationInfo info = intent.getParcelableExtra(PluginUtils.EXTRA_PARAM_PLUGIN_APP);
-				mPlugins.put(pluginName, info);
-
-				if (mPlugins.size() == resolved.size()) { // got all plugins
-					showPluginMenu();
-				}
-			}
 		}
 	}
 }

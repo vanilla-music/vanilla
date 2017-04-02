@@ -55,6 +55,7 @@
   <string name="remove">Remover</string>
   <string name="play_or_enqueue">Colocar na fila ou reproduzir se em pausa</string>
   <string name="open">Abrir</string>
+  <string name="go_home">Diretório inicial</string>
   <plurals name="playing">
     <item quantity="one">1 faixa em reprodução.</item>
     <item quantity="other">%d faixas em reprodução.</item>
@@ -81,6 +82,8 @@
   <string name="delete_file">Apagar o ficheiro %s?</string>
   <string name="artists">Artistas</string>
   <string name="albums">Álbuns</string>
+  <string name="albumartists">Artistas do álbum</string>
+  <string name="composers">Compositores</string>
   <string name="songs">Faixas</string>
   <string name="playlists">Listas de reprodução</string>
   <string name="genres">Géneros</string>

@@ -196,22 +196,7 @@ public class LibraryPagerAdapter
 	 * The current filter text, or null if none.
 	 */
 	private String mFilter;
-	/**
-	 * The position of the songs page, or -1 if it is hidden.
-	 */
-	public int mSongsPosition = -1;
-	/**
-	 * The position of the albums page, or -1 if it is hidden.
-	 */
-	public int mAlbumsPosition = -1;
-	/**
-	 * The position of the artists page, or -1 if it is hidden.
-	 */
-	public int mArtistsPosition = -1;
-	/**
-	 * The position of the genres page, or -1 if it is hidden.
-	 */
-	public int mGenresPosition = -1;
+
 
 	private final ContentObserver mPlaylistObserver = new ContentObserver(null) {
 		@Override
@@ -292,39 +277,12 @@ public class LibraryPagerAdapter
 	 */
 	public void computeExpansions()
 	{
-		int[] order = mTabOrder;
-		int songsPosition = -1;
-		int albumsPosition = -1;
-		int artistsPosition = -1;
-		int genresPosition = -1;
-		for (int i = mTabCount; --i != -1; ) {
-			switch (order[i]) {
-			case MediaUtils.TYPE_ALBUM:
-				albumsPosition = i;
-				break;
-			case MediaUtils.TYPE_SONG:
-				songsPosition = i;
-				break;
-			case MediaUtils.TYPE_ARTIST:
-				artistsPosition = i;
-				break;
-			case MediaUtils.TYPE_GENRE:
-				genresPosition = i;
-				break;
-			}
-		}
-
 		if (mArtistAdapter != null)
-			mArtistAdapter.setExpandable(songsPosition != -1 || albumsPosition != -1);
+			mArtistAdapter.setExpandable(getMediaTypePosition(MediaUtils.TYPE_SONG) != -1 || getMediaTypePosition(MediaUtils.TYPE_ALBUM) != -1);
 		if (mAlbumAdapter != null)
-			mAlbumAdapter.setExpandable(songsPosition != -1);
+			mAlbumAdapter.setExpandable(getMediaTypePosition(MediaUtils.TYPE_SONG) != -1);
 		if (mGenreAdapter != null)
-			mGenreAdapter.setExpandable(songsPosition != -1);
-
-		mSongsPosition = songsPosition;
-		mAlbumsPosition = albumsPosition;
-		mArtistsPosition = artistsPosition;
-		mGenresPosition = genresPosition;
+			mGenreAdapter.setExpandable(getMediaTypePosition(MediaUtils.TYPE_SONG) != -1);
 	}
 
 	@Override
@@ -342,22 +300,22 @@ public class LibraryPagerAdapter
 			switch (type) {
 			case MediaUtils.TYPE_ARTIST:
 				adapter = mArtistAdapter = new MediaAdapter(activity, MediaUtils.TYPE_ARTIST, mPendingArtistLimiter, activity);
-				mArtistAdapter.setExpandable(mSongsPosition != -1 || mAlbumsPosition != -1);
+				mArtistAdapter.setExpandable(getMediaTypePosition(MediaUtils.TYPE_SONG) != -1 || getMediaTypePosition(MediaUtils.TYPE_ALBUM) != -1);
 				header = (DraggableRow)inflater.inflate(R.layout.draggable_row, null);
 				break;
 			case MediaUtils.TYPE_ALBARTIST:
 				adapter = mAlbArtAdapter = new MediaAdapter(activity, MediaUtils.TYPE_ALBARTIST, mPendingAlbArtLimiter, activity);
-				mAlbArtAdapter.setExpandable(mSongsPosition != -1 || mAlbumsPosition != -1);
+				mAlbArtAdapter.setExpandable(getMediaTypePosition(MediaUtils.TYPE_SONG) != -1 || getMediaTypePosition(MediaUtils.TYPE_ALBUM) != -1);
 				header = (DraggableRow)inflater.inflate(R.layout.draggable_row, null);
 				break;
 			case MediaUtils.TYPE_COMPOSER:
 				adapter = mComposerAdapter = new MediaAdapter(activity, MediaUtils.TYPE_COMPOSER, mPendingComposerLimiter, activity);
-				mComposerAdapter.setExpandable(mSongsPosition != -1 || mAlbumsPosition != -1);
+				mComposerAdapter.setExpandable(getMediaTypePosition(MediaUtils.TYPE_SONG) != -1 || getMediaTypePosition(MediaUtils.TYPE_ALBUM) != -1);
 				header = (DraggableRow)inflater.inflate(R.layout.draggable_row, null);
 				break;
 			case MediaUtils.TYPE_ALBUM:
 				adapter = mAlbumAdapter = new MediaAdapter(activity, MediaUtils.TYPE_ALBUM, mPendingAlbumLimiter, activity);
-				mAlbumAdapter.setExpandable(mSongsPosition != -1);
+				mAlbumAdapter.setExpandable(getMediaTypePosition(MediaUtils.TYPE_SONG) != -1);
 				mPendingAlbumLimiter = null;
 				header = (DraggableRow)inflater.inflate(R.layout.draggable_row, null);
 				break;
@@ -371,7 +329,7 @@ public class LibraryPagerAdapter
 				break;
 			case MediaUtils.TYPE_GENRE:
 				adapter = mGenreAdapter = new MediaAdapter(activity, MediaUtils.TYPE_GENRE, null, activity);
-				mGenreAdapter.setExpandable(mSongsPosition != -1);
+				mGenreAdapter.setExpandable(getMediaTypePosition(MediaUtils.TYPE_SONG) != -1);
 				break;
 			case MediaUtils.TYPE_FILE:
 				adapter = mFilesAdapter = new FileSystemAdapter(activity, mPendingFileLimiter);
@@ -413,12 +371,8 @@ public class LibraryPagerAdapter
 	public int getItemPosition(Object item)
 	{
 		int type = (Integer)((ListView)item).getTag();
-		int[] order = mTabOrder;
-		for (int i = mTabCount; --i != -1; ) {
-			if (order[i] == type)
-				return i;
-		}
-		return POSITION_NONE;
+		int pos = getMediaTypePosition(type);
+		return pos == -1 ? POSITION_NONE : pos;
 	}
 
 	@Override
@@ -579,7 +533,7 @@ public class LibraryPagerAdapter
 				loadSortOrder(mSongAdapter);
 				requestRequery(mSongAdapter);
 			}
-			tab = mSongsPosition;
+			tab = getMediaTypePosition(MediaUtils.TYPE_SONG);
 			break;
 		case MediaUtils.TYPE_ARTIST:
 		case MediaUtils.TYPE_ALBARTIST:
@@ -598,9 +552,9 @@ public class LibraryPagerAdapter
 				loadSortOrder(mSongAdapter);
 				requestRequery(mSongAdapter);
 			}
-			tab = mAlbumsPosition;
+			tab = getMediaTypePosition(MediaUtils.TYPE_ALBUM);
 			if (tab == -1)
-				tab = mSongsPosition;
+				tab = getMediaTypePosition(MediaUtils.TYPE_SONG);
 			break;
 		case MediaUtils.TYPE_GENRE:
 			if (mArtistAdapter == null) {
@@ -638,11 +592,11 @@ public class LibraryPagerAdapter
 				loadSortOrder(mSongAdapter);
 				requestRequery(mSongAdapter);
 			}
-			tab = mArtistsPosition;
+			tab = getMediaTypePosition(MediaUtils.TYPE_ARTIST);
 			if (tab == -1)
-				tab = mAlbumsPosition;
+				tab = getMediaTypePosition(MediaUtils.TYPE_ALBUM);
 			if (tab == -1)
-				tab = mSongsPosition;
+				tab = getMediaTypePosition(MediaUtils.TYPE_SONG);
 			break;
 		case MediaUtils.TYPE_FILE:
 			if (mFilesAdapter == null) {
@@ -684,6 +638,20 @@ public class LibraryPagerAdapter
 		if (current == null)
 			return null;
 		return current.getLimiter();
+	}
+
+	/**
+	 * Returns the tab position of given media type, -1 if not visible.
+	 *
+	 * @return int
+	 */
+	public int getMediaTypePosition(int type) {
+		int[] order = mTabOrder;
+		for (int i = mTabCount; --i != -1; ) {
+			if (order[i] == type)
+				return i;
+		}
+		return -1;
 	}
 
 	/**

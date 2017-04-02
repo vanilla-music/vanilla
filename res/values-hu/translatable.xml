@@ -55,6 +55,7 @@
   <string name="remove">Eltávolítás</string>
   <string name="play_or_enqueue">Sorhoz adás lejátszás közben; Lejátszás ha szüneteltett</string>
   <string name="open">Megnyitás</string>
+  <string name="go_home">Saját könyvtár</string>
   <plurals name="playing">
     <item quantity="one">1 szám lejátszása.</item>
     <item quantity="other">%d szám lejátszása.</item>
@@ -81,6 +82,8 @@
   <string name="delete_file">Törli a(z) „%s” fájlt?</string>
   <string name="artists">Előadók</string>
   <string name="albums">Albumok</string>
+  <string name="albumartists">Album előadók</string>
+  <string name="composers">Zeneszerzők</string>
   <string name="songs">Számok</string>
   <string name="playlists">Lejátszólisták</string>
   <string name="genres">Műfajok</string>

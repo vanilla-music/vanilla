@@ -55,6 +55,7 @@
   <string name="remove">Rimuovi</string>
   <string name="play_or_enqueue">Metti in coda se in riproduzione; Riproduci se in pausa.</string>
   <string name="open">Apri</string>
+  <string name="go_home">Cartella home</string>
   <plurals name="playing">
     <item quantity="one">1 brano in riproduzione.</item>
     <item quantity="other">%d brani in riproduzione.</item>
@@ -81,6 +82,8 @@
   <string name="delete_file">Eliminare il file \"%s\"?</string>
   <string name="artists">Artisti</string>
   <string name="albums">Album</string>
+  <string name="albumartists">Artisti album</string>
+  <string name="composers">Compositori</string>
   <string name="songs">Brani</string>
   <string name="playlists">Playlist</string>
   <string name="genres">Generi</string>
@@ -174,6 +177,8 @@
   <string name="use_idle_timeout_title">Attiva timeout di inattività</string>
   <string name="use_idle_timeout_summary">Quando attivo, il playback si fermerà dopo un dato periodo di inattività</string>
   <string name="idle_timeout_title">Timeout inattività</string>
+  <string name="enable_scroll_to_song_title">Scorri al titolo del brano</string>
+  <string name="enable_scroll_to_song_summary">Scorri nelle liste della libreria al brano/album/artista attualmente in riproduzione</string>
   <string name="coverloader_android_title">Carica copertine da Android</string>
   <string name="coverloader_android_summary">Interroga il database dei media interno di Android per le copertine album</string>
   <string name="coverloader_vanilla_title">Carica copertine da cartella</string>
@@ -181,8 +186,11 @@
   <string name="coverloader_shadow_title">Carica copertine da cartella nascosta</string>
   <string name="coverloader_shadow_summary">Prova a caricare copertine da \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\'</string>
   <string name="cover_on_lockscreen_title">Mostra copertina sulla schermata di blocco</string>
+  <string name="cover_on_lockscreen_summary">Mostra la copertina del brano in riproduzione nella schermata di blocco schermo</string>
   <string name="double_tap_title">Widget di doppio tocco</string>
   <string name="double_tap_summary">Doppio tap sul 1x1 widget aprirà il riproduttore. Si avrà un ritardo di 400ms prima che il widget risponda all\'azione.</string>
+  <string name="scrobble_title">Usa la API Scrobble Droid</string>
+  <string name="scrobble_summary">Effettua lo scrobbling a Last.fm tramite Scrobble Droid o Simple Last.fm Scrobbler</string>
   <string name="stock_broadcast_title">Emula broadcast preinstallato</string>
   <string name="stock_broadcast_summary">Invia brodcast simulando quelli inviati dal riproduttore musicale nativo con i controlli di 3rd parti, widgets,ecc.</string>
   <string name="about">Info</string>
@@ -238,11 +246,21 @@
   <string name="share">Condividi…</string>
   <string name="sendto">Invia a…</string>
   <string name="no_receiving_apps">Nessuna app di ricezione trovata per questo tipo di file multimediale!</string>
+  <string name="media_library">Libreria multimediale</string>
+  <string name="media_scan_header">Scansione file multimediali</string>
   <string name="media_scan_full">Scansiona l\'intero sistema (lento)</string>
+  <string name="media_scan_drop_db">Svuota il database dei file multimediali (Attenzione!)</string>
   <string name="media_scan_start">Inizia scansione</string>
+  <string name="media_scan_force_bastp">Usa sempre il lettore di tag incorporato</string>
+  <string name="media_scan_group_albums">Raggruppa gli album per cartella</string>
   <string name="media_statistics">Statistiche</string>
   <string name="media_stats_tracks">Numero di tracce</string>
   <string name="media_stats_playtime">Tempo di riproduzione (Ore)</string>
+  <string name="media_stats_progress">Progresso della scansione</string>
   <string name="media_library_scan_running">Scansione libreria multimediale...</string>
+  <string name="media_scan_preferences">Opzioni per la scansione</string>
+  <string name="media_scan_preferences_change_title">Opzioni per la scansione modificate</string>
+  <string name="media_scan_preferences_change_message">La modifica di questa opzione avvierà una scansione completa della tua libreria. Continuare?</string>
   <!--Plugin system-->
+  <string name="plugins">Plugin</string>
 </resources>

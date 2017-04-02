@@ -29,8 +29,6 @@ import java.util.ArrayList;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
@@ -40,13 +38,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.SeekBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 
@@ -308,6 +303,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 		menu.add(0, MENU_ENQUEUE_GENRE, 30, R.string.enqueue_current_genre);
 		menu.add(0, MENU_ADD_TO_PLAYLIST, 30, R.string.add_to_playlist);
 		menu.add(0, MENU_SHARE, 30, R.string.share);
+		menu.add(0, MENU_PLUGINS, 30, R.string.plugins);
 		mFavorites = menu.add(0, MENU_SONG_FAVORITE, 0, R.string.add_to_favorites).setIcon(R.drawable.btn_rating_star_off_mtrl_alpha).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
 		// ensure that mFavorites is updated
@@ -383,6 +379,13 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 				dialog.create().show();
 			}
 			break;
+			case MENU_PLUGINS:
+				if (song != null) {
+					Intent songIntent = new Intent();
+					songIntent.putExtra("id", song.id);
+					queryPluginsForIntent(songIntent);
+				}
+				break;
 		default:
 			return super.onOptionsItemSelected(item);
 		}

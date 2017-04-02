@@ -55,6 +55,7 @@
   <string name="remove">Izņemt</string>
   <string name="play_or_enqueue">Ierindot, ja atskaņo; atskaņot, ja nopauzēts</string>
   <string name="open">Atvērt</string>
+  <string name="go_home">Mājas mape</string>
   <plurals name="playing">
     <item quantity="zero">Atskaņo %d celiņu.</item>
     <item quantity="one">Atskaņo 1 celiņu.</item>
