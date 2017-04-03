@@ -116,6 +116,11 @@ THE SOFTWARE.
 	<string name="genres">Genres</string>
 	<string name="files">Files</string>
 
+	<string name="artist">Artist</string>
+	<string name="album">Album</string>
+	<string name="genre">Genre</string>
+	<string name="folder">Folder</string>
+
 	<string name="unknown">Unknown</string>
 	<string name="play_all">Play all</string>
 	<string name="enqueue_all">Enqueue all</string>
