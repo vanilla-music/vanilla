@@ -235,12 +235,21 @@ public class LibraryActivity
 	 */
 	private void loadLimiterIntent(Intent intent)
 	{
+		Limiter limiter = null;
+
 		int type = intent.getIntExtra("type", -1);
 		long id = intent.getLongExtra("id", -1);
-		if (type != -1 && id != -1) {
+		String folder = intent.getStringExtra("folder");
+
+		if (type == MediaUtils.TYPE_FILE && folder != null) {
+			limiter = FileSystemAdapter.buildLimiter(new File(folder));
+		} else if (type != -1 && id != -1) {
 			MediaAdapter adapter = new MediaAdapter(this, type, null, null);
 			adapter.commitQuery(adapter.query());
-			Limiter limiter = adapter.buildLimiter(id);
+			limiter = adapter.buildLimiter(id);
+		}
+
+		if (limiter != null) {
 			int tab = mPagerAdapter.setLimiter(limiter);
 			if (tab == -1 || tab == mViewPager.getCurrentItem())
 				updateLimiterViews();

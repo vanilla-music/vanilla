@@ -609,7 +609,7 @@ public class LibraryPagerAdapter
 				mLists[MediaUtils.TYPE_FILE].setSelection(0);
 				requestRequery(mFilesAdapter);
 			}
-			tab = -1;
+			tab = getMediaTypePosition(MediaUtils.TYPE_FILE);
 			break;
 		default:
 			throw new IllegalArgumentException("Unsupported limiter type: " + limiter.type);

@@ -312,9 +312,10 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 		enqueueMenu.add(0, MENU_ENQUEUE_GENRE, 30, R.string.genre);
 
 		// Subitems of 'more from...'
-		moreMenu.add(0, MENU_MORE_ALBUM, 30, R.string._album);
-		moreMenu.add(0, MENU_MORE_ARTIST, 30, R.string._artist);
-		moreMenu.add(0, MENU_MORE_GENRE, 30, R.string._genre);
+		moreMenu.add(0, MENU_MORE_ALBUM, 30, R.string.album);
+		moreMenu.add(0, MENU_MORE_ARTIST, 30, R.string.artist);
+		moreMenu.add(0, MENU_MORE_GENRE, 30, R.string.genre);
+		moreMenu.add(0, MENU_MORE_FOLDER, 30, R.string.folder);
 
 		// ensure that mFavorites is updated
 		mHandler.sendEmptyMessage(MSG_LOAD_FAVOURITE_INFO);
@@ -338,6 +339,9 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 			break;
 		case MENU_MORE_GENRE:
 			openLibrary(song, MediaUtils.TYPE_GENRE);
+			break;
+		case MENU_MORE_FOLDER:
+			openLibrary(song, MediaUtils.TYPE_FILE);
 			break;
 		case MENU_ENQUEUE_ALBUM:
 			PlaybackService.get(this).enqueueFromSong(song, MediaUtils.TYPE_ALBUM);

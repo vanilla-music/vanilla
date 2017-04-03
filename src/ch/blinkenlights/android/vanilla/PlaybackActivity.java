@@ -413,6 +413,7 @@ public abstract class PlaybackActivity extends Activity
 	static final int MENU_MORE_ALBUM = 22;
 	static final int MENU_MORE_ARTIST = 23;
 	static final int MENU_MORE_GENRE = 24;
+	static final int MENU_MORE_FOLDER = 25;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
@@ -645,6 +646,7 @@ public abstract class PlaybackActivity extends Activity
 		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		if (song != null) {
 			long id = -1;
+			String folder = null;
 			switch(type) {
 				case MediaUtils.TYPE_ARTIST:
 					id = song.artistId;
@@ -655,11 +657,16 @@ public abstract class PlaybackActivity extends Activity
 				case MediaUtils.TYPE_GENRE:
 					id = MediaUtils.queryGenreForSong(this, song.id);
 				break;
+				case MediaUtils.TYPE_FILE:
+					File file = new File(song.path);
+					folder = file.getParent();
+					break;
 				default:
 					throw new IllegalArgumentException("Invalid media type " + type);
 			}
 			intent.putExtra("type", type);
 			intent.putExtra("id", id);
+			intent.putExtra("folder", folder);
 		}
 		startActivity(intent);
 	}
