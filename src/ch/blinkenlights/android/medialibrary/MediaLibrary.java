@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>. 
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package ch.blinkenlights.android.medialibrary;
@@ -54,6 +54,7 @@ public class MediaLibrary  {
 	private static final String PREF_KEY_GROUP_ALBUMS         = "group_albums";
 	private static final String PREF_KEY_NATIVE_LIBRARY_COUNT = "native_audio_db_count";
 	private static final String PREF_KEY_NATIVE_LAST_MTIME    = "native_last_mtime";
+	private static final String PREF_KEY_WHITELIST            = "whitelist";
 
 	/**
 	 * Options used by the MediaScanner class
@@ -61,6 +62,7 @@ public class MediaLibrary  {
 	public static class Preferences {
 		public boolean forceBastp;
 		public boolean groupAlbumsByFolder;
+		public String whitelist;
 		int _nativeLibraryCount;
 		int _nativeLastMtime;
 	}
@@ -112,6 +114,7 @@ public class MediaLibrary  {
 			prefs = new MediaLibrary.Preferences();
 			prefs.forceBastp = backend.getSetPreference(PREF_KEY_FORCE_BASTP, -1) != 0;
 			prefs.groupAlbumsByFolder = backend.getSetPreference(PREF_KEY_GROUP_ALBUMS, -1) != 0;
+			prefs.whitelist = backend.getSetPreference(PREF_KEY_WHITELIST, null);
 			prefs._nativeLibraryCount = backend.getSetPreference(PREF_KEY_NATIVE_LIBRARY_COUNT, -1);
 			prefs._nativeLastMtime = backend.getSetPreference(PREF_KEY_NATIVE_LAST_MTIME, -1);
 			sPreferences = prefs; // cached for frequent access
@@ -130,6 +133,7 @@ public class MediaLibrary  {
 		MediaLibraryBackend backend = getBackend(context);
 		backend.getSetPreference(PREF_KEY_FORCE_BASTP, prefs.forceBastp ? 1 : 0);
 		backend.getSetPreference(PREF_KEY_GROUP_ALBUMS, prefs.groupAlbumsByFolder ? 1 : 0);
+		backend.getSetPreference(PREF_KEY_WHITELIST, prefs.whitelist);
 		backend.getSetPreference(PREF_KEY_NATIVE_LIBRARY_COUNT, prefs._nativeLibraryCount);
 		backend.getSetPreference(PREF_KEY_NATIVE_LAST_MTIME, prefs._nativeLastMtime);
 		sPreferences = null;
@@ -459,9 +463,9 @@ public class MediaLibrary  {
 		scanTargets.add(Environment.getExternalStorageDirectory());
 
 		// this *may* exist
-		File sdCard = new File("/storage/sdcard1");
-		if (sdCard.isDirectory())
-			scanTargets.add(sdCard);
+		File storage = new File("/storage");
+		if (storage.isDirectory())
+			scanTargets.add(storage);
 
 		return scanTargets.toArray(new File[scanTargets.size()]);
 	}
@@ -692,5 +696,9 @@ public class MediaLibrary  {
 		 * The value of this preference
 		 */
 		String VALUE = "value";
+		/**
+		 * The string value of this preference
+		 */
+		String STRING = "string";
 	}
 }

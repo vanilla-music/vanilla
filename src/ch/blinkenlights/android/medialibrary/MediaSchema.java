@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>. 
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package ch.blinkenlights.android.medialibrary;
@@ -121,7 +121,8 @@ public class MediaSchema {
 	 */
 	private static final String DATABASE_CREATE_PREFERENCES = "CREATE TABLE "+ MediaLibrary.TABLE_PREFERENCES + " ("
 	  + MediaLibrary.PreferenceColumns.KEY   +" INTEGER PRIMARY KEY, "
-	  + MediaLibrary.PreferenceColumns.VALUE +" INTEGER NOT NULL "
+	  + MediaLibrary.PreferenceColumns.VALUE +" INTEGER NOT NULL, "
+	  + MediaLibrary.PreferenceColumns.STRING +" TEXT "
 	  + ");";
 	/**
 	 * Index to select a playlist quickly
@@ -302,6 +303,12 @@ public class MediaSchema {
 			dbh.execSQL(VIEW_CREATE_SONGS_ALBUMS_ARTISTS_HUGE);
 		}
 
+		if (oldVersion < 20170324 && oldVersion >= 20170120) {
+			// Added a string field to allow for string based preferences
+			dbh.execSQL("ALTER TABLE " + MediaLibrary.TABLE_PREFERENCES +
+				" ADD COLUMN " + MediaLibrary.PreferenceColumns.STRING +
+				" TEXT");
+		}
 	}
 
 	/**

@@ -320,6 +320,7 @@ THE SOFTWARE.
 	<string name="media_scan_start">Start scan</string>
 	<string name="media_scan_force_bastp">Always use built-in tag reader</string>
 	<string name="media_scan_group_albums">Group albums by folder</string>
+	<string name="media_scan_whitelist">Scan all files in this directory</string>
 	<string name="media_statistics">Statistics</string>
 	<string name="media_stats_tracks">Number of tracks</string>
 	<string name="media_stats_playtime">Play time (Hours)</string>

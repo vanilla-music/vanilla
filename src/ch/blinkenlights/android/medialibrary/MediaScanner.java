@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>. 
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package ch.blinkenlights.android.medialibrary;
@@ -99,6 +99,9 @@ public class MediaScanner implements Handler.Callback {
 	 * library for new and changed files
 	 */
 	public void startNormalScan() {
+		// Update whitelist
+		whitelist = MediaLibrary.getPreferences(mContext).whitelist;
+
 		mScanPlan.addNextStep(RPC_NATIVE_VRFY, null)
 			.addNextStep(RPC_LIBRARY_VRFY, null);
 		mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_RPC, RPC_KICKSTART, 0));
@@ -108,6 +111,9 @@ public class MediaScanner implements Handler.Callback {
 	 * Performs a 'slow' scan by inspecting all files on the device
 	 */
 	public void startFullScan() {
+		// Update whitelist
+		whitelist = MediaLibrary.getPreferences(mContext).whitelist;
+
 		for (File dir : MediaLibrary.discoverMediaPaths()) {
 			mScanPlan.addNextStep(RPC_READ_DIR, dir);
 		}
@@ -403,7 +409,7 @@ public class MediaScanner implements Handler.Callback {
 		String path  = file.getAbsolutePath();
 		long songId  = MediaLibrary.hash63(path);
 
-		if (isBlacklisted(file))
+		if (!isWhitelisted(file) && isBlacklisted(file))
 			return false;
 
 		long dbEntryMtime = mBackend.getSongMtime(songId) * 1000; // this is in unixtime -> convert to 'ms'
@@ -549,6 +555,17 @@ public class MediaScanner implements Handler.Callback {
 		return hasChanged;
 	}
 
+	/**
+	 * Returns true if the file should be scanned
+	 *
+	 * @param file the file to inspect
+	 * @return boolean
+	 */
+	private static String whitelist = "";
+	private boolean isWhitelisted(File file) {
+		return whitelist != null && whitelist.length() > 0 && file.getPath().startsWith(whitelist);
+	}
+
 	private static final Pattern sIgnoredFilenames = Pattern.compile("^([^\\.]+|.+\\.(jpe?g|gif|png|bmp|webm|txt|pdf|avi|mp4|mkv|zip|tgz|xml))$", Pattern.CASE_INSENSITIVE);
 	private static final Pattern sIgnoredDirectories = Pattern.compile("^.+/(Android/data|Alarms|Notifications|Ringtones)/.+$", Pattern.CASE_INSENSITIVE);
 	/**
@@ -687,4 +704,3 @@ public class MediaScanner implements Handler.Callback {
 		}
 	}
 }
-
