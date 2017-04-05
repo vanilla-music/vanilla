@@ -95,4 +95,14 @@ public class FileUtils {
 		String folder = prefs.getString(PrefKeys.FILESYSTEM_BROWSE_START, PrefDefaults.FILESYSTEM_BROWSE_START);
 		return new File( folder.equals("") ? Environment.getExternalStorageDirectory().getAbsolutePath() : folder );
 	}
+
+	/**
+	 * Called by FileSystem adapter to check if browsing
+	 * directories should be limited to the home folder.
+	 */
+	public static boolean getFilesystemBrowseStartLimit(Context context) {
+		SharedPreferences prefs = PlaybackService.getSettings(context);
+		boolean limit = prefs.getBoolean(PrefKeys.FILESYSTEM_BROWSE_START_LIMIT, PrefDefaults.FILESYSTEM_BROWSE_START_LIMIT);
+		return limit;
+	}
 }

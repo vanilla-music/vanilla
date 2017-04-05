@@ -301,6 +301,7 @@ public class LibraryActivity
 				case MediaUtils.TYPE_FILE:
 					if(limiter.names.length > 1) {
 						File parentFile = ((File)limiter.data).getParentFile();
+
 						mPagerAdapter.setLimiter(FileSystemAdapter.buildLimiter(parentFile));
 					} else {
 						mPagerAdapter.clearLimiter(limiter.type);
