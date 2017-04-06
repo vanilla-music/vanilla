@@ -759,7 +759,7 @@ public class LibraryActivity
 		LibraryAdapter adapter = mCurrentAdapter;
 		boolean isLibraryAdapter = (adapter != null && adapter.getMediaType() != MediaUtils.TYPE_FILE);
 		menu.findItem(MENU_GO_HOME).setVisible(!isLibraryAdapter);
-		menu.findItem(MENU_SORT).setEnabled(isLibraryAdapter);
+		menu.findItem(MENU_SORT).setEnabled(adapter != null);
 		return super.onPrepareOptionsMenu(menu);
 	}
 
@@ -778,7 +778,7 @@ public class LibraryActivity
 			updateLimiterViews();
 			break;
 		case MENU_SORT: {
-			MediaAdapter adapter = (MediaAdapter)mCurrentAdapter;
+			SortableAdapter adapter = (SortableAdapter)mCurrentAdapter;
 			LinearLayout header = (LinearLayout)getLayoutInflater().inflate(R.layout.sort_dialog, null);
 			CheckBox reverseSort = (CheckBox)header.findViewById(R.id.reverse_sort);
 
@@ -789,11 +789,8 @@ public class LibraryActivity
 				items[i] = res.getString(itemIds[i]);
 			}
 
-			int mode = adapter.getSortMode();
-			if (mode < 0) {
-				mode =~ mode;
-				reverseSort.setChecked(true);
-			}
+			int mode = adapter.getSortModeIndex();
+			reverseSort.setChecked(adapter.isSortDescending());
 
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle(R.string.sort_by);

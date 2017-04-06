@@ -95,4 +95,13 @@ public class FileUtils {
 		String folder = prefs.getString(PrefKeys.FILESYSTEM_BROWSE_START, PrefDefaults.FILESYSTEM_BROWSE_START);
 		return new File( folder.equals("") ? Environment.getExternalStorageDirectory().getAbsolutePath() : folder );
 	}
+
+	/**
+	 * Return the file extension for a given filename (including dot).
+	 * Empty string is returned if there is no extension.
+	 */
+	public static String getFileExtension(String filename) {
+		int index = filename.lastIndexOf(".");
+		return index > 0 ? filename.substring(index) : "";
+	}
 }
