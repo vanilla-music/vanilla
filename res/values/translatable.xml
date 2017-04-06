@@ -121,6 +121,11 @@ THE SOFTWARE.
 	<string name="genre">Genre</string>
 	<string name="folder">Folder</string>
 
+	<string name="filename">Filename</string>
+	<string name="file_size">File size</string>
+	<string name="file_time">Modification time</string>
+	<string name="extension">Extension</string>
+
 	<string name="unknown">Unknown</string>
 	<string name="play_all">Play all</string>
 	<string name="enqueue_all">Enqueue all</string>
