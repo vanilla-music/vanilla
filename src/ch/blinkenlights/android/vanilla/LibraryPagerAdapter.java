@@ -466,7 +466,6 @@ public class LibraryPagerAdapter
 				mPendingFileLimiter = null;
 			} else {
 				mFilesAdapter.setLimiter(null);
-				loadSortOrder(mFilesAdapter);
 				requestRequery(mFilesAdapter);
 			}
 		} else {
@@ -603,7 +602,6 @@ public class LibraryPagerAdapter
 				// but if it doesn't we would end up at the same scrolling position in a new
 				// folder which is uncool.
 				mLists[MediaUtils.TYPE_FILE].setSelection(0);
-				loadSortOrder(mFilesAdapter);
 				requestRequery(mFilesAdapter);
 			}
 			tab = getMediaTypePosition(MediaUtils.TYPE_FILE);

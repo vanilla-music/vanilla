@@ -548,6 +548,9 @@ public class MediaAdapter
 		return MediaUtils.TYPE_INVALID;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getDefaultSortMode()
 	{
@@ -557,6 +560,9 @@ public class MediaAdapter
 		return 0;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getSortSettingsKey() {
 		return String.format("sort_%d_%d", getMediaType(), getLimiterType());

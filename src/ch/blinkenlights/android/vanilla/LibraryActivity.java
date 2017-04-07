@@ -757,8 +757,8 @@ public class LibraryActivity
 	public boolean onPrepareOptionsMenu(Menu menu)
 	{
 		LibraryAdapter adapter = mCurrentAdapter;
-		boolean isLibraryAdapter = (adapter != null && adapter.getMediaType() != MediaUtils.TYPE_FILE);
-		menu.findItem(MENU_GO_HOME).setVisible(!isLibraryAdapter);
+		menu.findItem(MENU_GO_HOME).setVisible(
+				adapter != null && adapter.getMediaType() == MediaUtils.TYPE_FILE);
 		menu.findItem(MENU_SORT).setEnabled(adapter != null);
 		return super.onPrepareOptionsMenu(menu);
 	}

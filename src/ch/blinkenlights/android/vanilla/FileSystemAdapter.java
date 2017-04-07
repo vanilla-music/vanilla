@@ -142,8 +142,11 @@ public class FileSystemAdapter
 						order = FileUtils.getFileExtension(a.getName())
 								.compareToIgnoreCase(FileUtils.getFileExtension(b.getName()));
 						break;
-					default:
+					case SORT_NAME:
 						order = a.getName().compareToIgnoreCase(b.getName());
+						break;
+					default:
+						throw new IllegalArgumentException("Invalid sort mode: " + mode);
 				}
 				return (isSortDescending() ? -1 : 1) * order;
 			} else if (bIsFolder) {
