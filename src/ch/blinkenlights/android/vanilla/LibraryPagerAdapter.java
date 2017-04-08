@@ -31,10 +31,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Parcelable;
-import android.provider.MediaStore;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -42,10 +40,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.util.LruCache;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.LinearLayout;
 import java.util.Arrays;
 import java.util.ArrayList;
 
@@ -352,8 +347,8 @@ public class LibraryPagerAdapter
 				mHeaderViews.add(header);
 			}
 			view.setAdapter(adapter);
-			if (type != MediaUtils.TYPE_FILE)
-				loadSortOrder((MediaAdapter)adapter);
+			if (adapter instanceof SortableAdapter)
+				loadSortOrder((SortableAdapter)adapter);
 
 			adapter.setFilter(mFilter);
 
@@ -704,9 +699,9 @@ public class LibraryPagerAdapter
 			break;
 		}
 		case MSG_SAVE_SORT: {
-			MediaAdapter adapter = (MediaAdapter)message.obj;
+			SortableAdapter adapter = (SortableAdapter)message.obj;
 			SharedPreferences.Editor editor = PlaybackService.getSettings(mActivity).edit();
-			editor.putInt(String.format("sort_%d_%d", adapter.getMediaType(), adapter.getLimiterType()), adapter.getSortMode());
+			editor.putInt(adapter.getSortSettingsKey(), adapter.getSortMode());
 			editor.apply();
 			break;
 		}
@@ -795,9 +790,9 @@ public class LibraryPagerAdapter
 	 *
 	 * @param adapter The adapter to load for.
 	 */
-	public void loadSortOrder(MediaAdapter adapter)
+	public void loadSortOrder(SortableAdapter adapter)
 	{
-		String key = String.format("sort_%d_%d", adapter.getMediaType(), adapter.getLimiterType());
+		String key = adapter.getSortSettingsKey();
 		int def = adapter.getDefaultSortMode();
 		int sort = PlaybackService.getSettings(mActivity).getInt(key, def);
 		adapter.setSortMode(sort);
@@ -813,12 +808,12 @@ public class LibraryPagerAdapter
 	 */
 	public void setSortMode(int mode)
 	{
-		MediaAdapter adapter = (MediaAdapter)mCurrentAdapter;
+		SortableAdapter adapter = (SortableAdapter)mCurrentAdapter;
 		if (mode == adapter.getSortMode())
 			return;
 
 		adapter.setSortMode(mode);
-		requestRequery(adapter);
+		requestRequery(mCurrentAdapter);
 
 		Handler handler = mWorkerHandler;
 		handler.sendMessage(handler.obtainMessage(MSG_SAVE_SORT, adapter));

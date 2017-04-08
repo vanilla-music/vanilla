@@ -30,7 +30,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.graphics.Color;
-import android.net.Uri;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.text.Spannable;
@@ -39,10 +38,7 @@ import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.SectionIndexer;
-import android.widget.TextView;
 
 import java.util.Arrays;
 import java.util.List;
@@ -62,7 +58,7 @@ import java.lang.StringBuilder;
  * See getLimiter and setLimiter for details.
  */
 public class MediaAdapter
-		extends BaseAdapter
+		extends SortableAdapter
 		implements LibraryAdapter
 		, View.OnClickListener
 		, SectionIndexer
@@ -124,20 +120,10 @@ public class MediaAdapter
 	 */
 	private String mConstraint;
 	/**
-	 * The human-readable descriptions for each sort mode.
-	 */
-	private int[] mSortEntries;
-	/**
 	 * An array ORDER BY expressions for each sort mode. %1$s is replaced by
 	 * ASC or DESC as appropriate before being passed to the query.
 	 */
 	private String[] mAdapterSortValues;
-	/**
-	 * The index of the current of the current sort mode in mSortValues, or
-	 * the inverse of the index (in which case sort should be descending
-	 * instead of ascending).
-	 */
-	private int mSortMode;
 	/**
 	 * If true, show the expander button on each row.
 	 */
@@ -309,14 +295,8 @@ public class MediaAdapter
 		String[] enrichedProjection = projection;
 
 		// Assemble the sort string as requested by the user
-		int mode = mSortMode;
-		String sortDir;
-		if (mode < 0) {
-			mode = ~mode;
-			sortDir = "DESC";
-		} else {
-			sortDir = "ASC";
-		}
+		int mode = getSortModeIndex();
+		String sortDir = isSortDescending() ? "DESC" : "ASC";
 
 		// Fetch current sorting mode and sort by disc+track if we are going to look up the songs table
 		String sortRaw = mAdapterSortValues[mode];
@@ -569,33 +549,9 @@ public class MediaAdapter
 	}
 
 	/**
-	 * Return the available sort modes for this adapter.
-	 *
-	 * @return An array containing the resource ids of the sort mode strings.
+	 * {@inheritDoc}
 	 */
-	public int[] getSortEntries()
-	{
-		return mSortEntries;
-	}
-
-	/**
-	 * Set the sorting mode. The adapter should be re-queried after changing
-	 * this.
-	 *
-	 * @param i The index of the sort mode in the sort entries array. If this
-	 * is negative, the inverse of the index will be used and sort order will
-	 * be reversed.
-	 */
-	public void setSortMode(int mode)
-	{
-		int index = ( mode < 0 ? ~mode : mode); // 'negative' modes are actually inverted indexes
-		mSortMode = index < mSortEntries.length ? mode : 0;
-	}
-
-	/**
-	 * Returns the sort mode that should be used if no preference is saved. This
-	 * may very based on the active limiter.
-	 */
+	@Override
 	public int getDefaultSortMode()
 	{
 		int type = mType;
@@ -605,11 +561,11 @@ public class MediaAdapter
 	}
 
 	/**
-	 * Return the current sort mode set on this adapter.
+	 * {@inheritDoc}
 	 */
-	public int getSortMode()
-	{
-		return mSortMode;
+	@Override
+	public String getSortSettingsKey() {
+		return String.format("sort_%d_%d", getMediaType(), getLimiterType());
 	}
 
 	/**

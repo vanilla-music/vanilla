@@ -31,9 +31,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -46,11 +43,37 @@ import java.util.regex.Pattern;
  * is set through a {@link Limiter} and rows are displayed using MediaViews.
  */
 public class FileSystemAdapter
-	extends BaseAdapter
+	extends SortableAdapter
 	implements LibraryAdapter
 {
 	private static final Pattern SPACE_SPLIT = Pattern.compile("\\s+");
 	private static final Pattern FILE_SEPARATOR = Pattern.compile(File.separator);
+
+	/**
+	 * Sort by filename.
+	 */
+	private static final int SORT_NAME = 0;
+	/**
+	 * Sort by file size.
+	 */
+	private static final int SORT_SIZE = 1;
+	/**
+	 * Sort by file modification time.
+	 */
+	private static final int SORT_TIME = 2;
+	/**
+	 * Sort by file extension.
+	 */
+	private static final int SORT_EXT = 3;
+	/**
+	 * The IDs of human-readable descriptions for each sort mode.
+	 * Must be consistent with SORT_* fields.
+	 */
+	private static final int[] SORT_RES_IDS = new int[] {
+			R.string.filename,
+			R.string.file_size,
+			R.string.file_time,
+			R.string.extension };
 
 	/**
 	 * The owner LibraryActivity.
@@ -96,7 +119,7 @@ public class FileSystemAdapter
 		}
 	};
 	/**
-	 * Sorts folders before files first, then sorts alphabetically by name.
+	 * Sorts folders before files first, then sorts by current sort mode.
 	 */
 	private final Comparator<File> mFileComparator = new Comparator<File>() {
 		@Override
@@ -105,7 +128,27 @@ public class FileSystemAdapter
 			boolean aIsFolder = a.isDirectory();
 			boolean bIsFolder = b.isDirectory();
 			if (bIsFolder == aIsFolder) {
-				return a.getName().compareToIgnoreCase(b.getName());
+				int mode = aIsFolder ? SORT_NAME : getSortModeIndex();
+				int order;
+				switch (mode) {
+					case SORT_SIZE:
+						order = Long.valueOf(a.length()).compareTo(Long.valueOf(b.length()));
+						break;
+					case SORT_TIME:
+						order = Long.valueOf(a.lastModified())
+								.compareTo(Long.valueOf(b.lastModified()));
+						break;
+					case SORT_EXT:
+						order = FileUtils.getFileExtension(a.getName())
+								.compareToIgnoreCase(FileUtils.getFileExtension(b.getName()));
+						break;
+					case SORT_NAME:
+						order = a.getName().compareToIgnoreCase(b.getName());
+						break;
+					default:
+						throw new IllegalArgumentException("Invalid sort mode: " + mode);
+				}
+				return (isSortDescending() ? -1 : 1) * order;
 			} else if (bIsFolder) {
 				return 1;
 			}
@@ -136,6 +179,7 @@ public class FileSystemAdapter
 			limiter = buildHomeLimiter(activity);
 		}
 		setLimiter(limiter);
+		mSortEntries = SORT_RES_IDS;
 	}
 
 	@Override
@@ -322,6 +366,16 @@ public class FileSystemAdapter
 		}
 		intent.putExtra(LibraryAdapter.DATA_FILE, path);
 		return intent;
+	}
+
+	@Override
+	public int getDefaultSortMode() {
+		return SORT_NAME;
+	}
+
+	@Override
+	public String getSortSettingsKey() {
+		return "sort_filesystem";
 	}
 
 	/**
