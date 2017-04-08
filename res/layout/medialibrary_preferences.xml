@@ -99,9 +99,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 			android:text="@android:string/cancel">
 		</Button>
 
-		<TextView
-			android:id="@+id/media_stats_progress"
+		<ProgressBar
+			android:id="@+id/media_stats_progress_bar"
 			android:paddingTop="24dp"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			style="?android:attr/progressBarStyleHorizontal" />
+
+		<TextView
+			android:id="@+id/media_stats_progress_text"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:text="@string/empty" />

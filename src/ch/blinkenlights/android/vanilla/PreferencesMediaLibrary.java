@@ -29,6 +29,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.Timer;
@@ -51,7 +52,11 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 	/**
 	 * The debug / progress text describing the scan status
 	 */
-	private TextView mProgress;
+	private TextView mProgressText;
+	/**
+	 * The progress bar
+	 */
+	private ProgressBar mProgressBar;
 	/**
 	 * The number of tracks on this device
 	 */;
@@ -92,7 +97,8 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 
 		mStartButton = (View)view.findViewById(R.id.start_button);
 		mCancelButton = (View)view.findViewById(R.id.cancel_button);
-		mProgress = (TextView)view.findViewById(R.id.media_stats_progress);
+		mProgressText = (TextView)view.findViewById(R.id.media_stats_progress_text);
+		mProgressBar = (ProgressBar)view.findViewById(R.id.media_stats_progress_bar);
 		mStatsTracks = (TextView)view.findViewById(R.id.media_stats_tracks);
 		mStatsPlaytime = (TextView)view.findViewById(R.id.media_stats_playtime);
 		mFullScanCheck = (CheckBox)view.findViewById(R.id.media_scan_full);
@@ -213,16 +219,22 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 	 */
 	private void updateProgress() {
 		Context context = getActivity();
-		String scanText = MediaLibrary.describeScanProgress(getActivity());
-		boolean scanIdle = scanText == null;
+		MediaLibrary.ScanProgress progress = MediaLibrary.describeScanProgress(getActivity());
 
-		mProgress.setText(scanText);
-		mStartButton.setEnabled(scanIdle);
-		mDropDbCheck.setEnabled(scanIdle);
-		mFullScanCheck.setEnabled(scanIdle);
-		mForceBastpCheck.setEnabled(scanIdle);
-		mGroupAlbumsCheck.setEnabled(scanIdle);
-		mCancelButton.setVisibility(scanIdle ? View.GONE : View.VISIBLE);
+		boolean idle = !progress.isRunning;
+		mProgressText.setText(progress.lastFile);
+		mProgressBar.setMax(progress.total);
+		mProgressBar.setProgress(progress.seen);
+
+		mStartButton.setEnabled(idle);
+		mDropDbCheck.setEnabled(idle);
+		mFullScanCheck.setEnabled(idle);
+		mForceBastpCheck.setEnabled(idle);
+		mGroupAlbumsCheck.setEnabled(idle);
+
+		mCancelButton.setVisibility(idle ? View.GONE : View.VISIBLE);
+		mProgressText.setVisibility(idle ? View.GONE : View.VISIBLE);
+		mProgressBar.setVisibility(idle ? View.GONE : View.VISIBLE);
 
 		Integer songCount = MediaLibrary.getLibrarySize(context);
 		mStatsTracks.setText(songCount.toString());

@@ -64,6 +64,19 @@ public class MediaLibrary  {
 		int _nativeLibraryCount;
 		int _nativeLastMtime;
 	}
+
+	/**
+	 * The progress of a currently scan, if any
+	 * is running
+	 */
+	public static class ScanProgress {
+		public boolean isRunning;
+		public String lastFile;
+		public int seen;
+		public int changed;
+		public int total;
+	}
+
 	/**
 	 * Cached preferences, may be null
 	 */
@@ -170,15 +183,11 @@ public class MediaLibrary  {
 	 * Whacky function to get the current scan progress
 	 *
 	 * @param context the context to use
-	 * @return a description of the progress, null if no scan is running
+	 * @return a description of the progress
 	 */
-	public static String describeScanProgress(Context context) {
+	public static MediaLibrary.ScanProgress describeScanProgress(Context context) {
 		MediaLibraryBackend backend = getBackend(context); // also initialized sScanner
-		MediaScanner.MediaScanPlan.Statistics stats = sScanner.getScanStatistics();
-		String msg = null;
-		if (stats.lastFile != null)
-			msg = stats.lastFile+" ("+stats.changed+" / "+stats.seen+")";
-		return msg;
+		return sScanner.describeScanProgress();
 	}
 
 

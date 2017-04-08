@@ -152,10 +152,20 @@ public class MediaScanner implements Handler.Callback {
 	/**
 	 * Returns some scan statistics
 	 *
-	 * @return a stats object
+	 * @return a MediaLibrary.ScanProgress object
 	 */
-	MediaScanPlan.Statistics getScanStatistics() {
-		return mScanPlan.getStatistics();
+	public MediaLibrary.ScanProgress describeScanProgress() {
+		MediaLibrary.ScanProgress progress = new MediaLibrary.ScanProgress();
+		MediaLibrary.Preferences prefs = MediaLibrary.getPreferences(mContext);
+		MediaScanPlan.Statistics stats = mScanPlan.getStatistics();
+
+		progress.isRunning = (stats.lastFile != null);
+		progress.lastFile = stats.lastFile;
+		progress.seen = stats.seen;
+		progress.changed = stats.changed;
+		progress.total = prefs._nativeLibraryCount;
+
+		return progress;
 	}
 
 	private static final int MSG_SCAN_RPC         = 0;
@@ -242,8 +252,7 @@ public class MediaScanner implements Handler.Callback {
 	 * @param visible if true, the notification is visible (and will get updated)
 	 */
 	private void updateNotification(boolean visible) {
-		MediaScanPlan.Statistics stats = mScanPlan.getStatistics();
-		MediaLibrary.Preferences prefs = MediaLibrary.getPreferences(mContext);
+		MediaLibrary.ScanProgress progress = describeScanProgress();
 		NotificationManager manager = (NotificationManager) mContext.getSystemService(mContext.NOTIFICATION_SERVICE);
 
 		if (visible) {
@@ -252,10 +261,10 @@ public class MediaScanner implements Handler.Callback {
 				mLastNotification = nowTime;
 				int icon = R.drawable.status_scan_0 + (mLastNotification % 5);
 				String title = mContext.getResources().getString(R.string.media_library_scan_running);
-				String content = stats.lastFile;
+				String content = progress.lastFile;
 
 				Notification notification = new Notification.Builder(mContext)
-					.setProgress(prefs._nativeLibraryCount, stats.seen, false)
+					.setProgress(progress.total, progress.seen, false)
 					.setContentTitle(title)
 					.setContentText(content)
 					.setSmallIcon(icon)
