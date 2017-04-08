@@ -347,8 +347,8 @@ public class LibraryPagerAdapter
 				mHeaderViews.add(header);
 			}
 			view.setAdapter(adapter);
-			if (adapter instanceof SortableAdapter)
-				loadSortOrder((SortableAdapter)adapter);
+
+			loadSortOrder((SortableAdapter)adapter);
 
 			adapter.setFilter(mFilter);
 
@@ -473,35 +473,30 @@ public class LibraryPagerAdapter
 				mPendingArtistLimiter = null;
 			} else {
 				mArtistAdapter.setLimiter(null);
-				loadSortOrder(mArtistAdapter);
 				requestRequery(mArtistAdapter);
 			}
 			if (mAlbArtAdapter == null) {
 				mPendingAlbArtLimiter = null;
 			} else {
 				mAlbArtAdapter.setLimiter(null);
-				loadSortOrder(mAlbArtAdapter);
 				requestRequery(mAlbArtAdapter);
 			}
 			if (mComposerAdapter == null) {
 				mPendingComposerLimiter = null;
 			} else {
 				mComposerAdapter.setLimiter(null);
-				loadSortOrder(mComposerAdapter);
 				requestRequery(mComposerAdapter);
 			}
 			if (mAlbumAdapter == null) {
 				mPendingAlbumLimiter = null;
 			} else {
 				mAlbumAdapter.setLimiter(null);
-				loadSortOrder(mAlbumAdapter);
 				requestRequery(mAlbumAdapter);
 			}
 			if (mSongAdapter == null) {
 				mPendingSongLimiter = null;
 			} else {
 				mSongAdapter.setLimiter(null);
-				loadSortOrder(mSongAdapter);
 				requestRequery(mSongAdapter);
 			}
 		}
@@ -525,7 +520,6 @@ public class LibraryPagerAdapter
 				mPendingSongLimiter = limiter;
 			} else {
 				mSongAdapter.setLimiter(limiter);
-				loadSortOrder(mSongAdapter);
 				requestRequery(mSongAdapter);
 			}
 			tab = getMediaTypePosition(MediaUtils.TYPE_SONG);
@@ -537,14 +531,12 @@ public class LibraryPagerAdapter
 				mPendingAlbumLimiter = limiter;
 			} else {
 				mAlbumAdapter.setLimiter(limiter);
-				loadSortOrder(mAlbumAdapter);
 				requestRequery(mAlbumAdapter);
 			}
 			if (mSongAdapter == null) {
 				mPendingSongLimiter = limiter;
 			} else {
 				mSongAdapter.setLimiter(limiter);
-				loadSortOrder(mSongAdapter);
 				requestRequery(mSongAdapter);
 			}
 			tab = getMediaTypePosition(MediaUtils.TYPE_ALBUM);
@@ -556,35 +548,30 @@ public class LibraryPagerAdapter
 				mPendingArtistLimiter = limiter;
 			} else {
 				mArtistAdapter.setLimiter(limiter);
-				loadSortOrder(mArtistAdapter);
 				requestRequery(mArtistAdapter);
 			}
 			if (mAlbArtAdapter == null) {
 				mPendingAlbArtLimiter = limiter;
 			} else {
 				mAlbArtAdapter.setLimiter(limiter);
-				loadSortOrder(mAlbArtAdapter);
 				requestRequery(mAlbArtAdapter);
 			}
 			if (mComposerAdapter == null) {
 				mPendingComposerLimiter = limiter;
 			} else {
 				mComposerAdapter.setLimiter(limiter);
-				loadSortOrder(mComposerAdapter);
 				requestRequery(mComposerAdapter);
 			}
 			if (mAlbumAdapter == null) {
 				mPendingAlbumLimiter = limiter;
 			} else {
 				mAlbumAdapter.setLimiter(limiter);
-				loadSortOrder(mAlbumAdapter);
 				requestRequery(mAlbumAdapter);
 			}
 			if (mSongAdapter == null) {
 				mPendingSongLimiter = limiter;
 			} else {
 				mSongAdapter.setLimiter(limiter);
-				loadSortOrder(mSongAdapter);
 				requestRequery(mSongAdapter);
 			}
 			tab = getMediaTypePosition(MediaUtils.TYPE_ARTIST);

@@ -759,7 +759,6 @@ public class LibraryActivity
 		LibraryAdapter adapter = mCurrentAdapter;
 		menu.findItem(MENU_GO_HOME).setVisible(
 				adapter != null && adapter.getMediaType() == MediaUtils.TYPE_FILE);
-		menu.findItem(MENU_SORT).setEnabled(adapter != null);
 		return super.onPrepareOptionsMenu(menu);
 	}
 
