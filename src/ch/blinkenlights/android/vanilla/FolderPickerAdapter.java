@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2013-2017 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,13 +29,13 @@ import android.widget.TextView;
 import android.widget.ArrayAdapter;
 import android.graphics.drawable.Drawable;
 
-public class FilebrowserStartAdapter
+public class FolderPickerAdapter
 	extends ArrayAdapter<String>
 {
 	
 	private final LayoutInflater mInflater;
 
-	public FilebrowserStartAdapter(Context context, int resource) {
+	public FolderPickerAdapter(Context context, int resource) {
 		super(context, resource);
 		mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2017 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,131 +17,32 @@
 
 package ch.blinkenlights.android.vanilla;
 
-import java.util.Arrays;
-import java.io.File;
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.View;
-import android.view.MenuItem;
-import android.view.Menu;
-import android.widget.AdapterView;
-import android.widget.TextView;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.Toast;
 import android.content.SharedPreferences;
 
+import java.io.File;
 
-public class FilebrowserStartActivity extends Activity
-	implements AdapterView.OnItemClickListener
-{
-	
-	private ListView mListView;
-	private TextView mPathDisplay;
-	private Button mSaveButton;
-	private FilebrowserStartAdapter mListAdapter;
-	private String mCurrentPath;
+public class FilebrowserStartActivity extends FolderPickerActivity {
+
 	private SharedPreferences.Editor mPrefEditor;
-	
+
 	@Override  
 	public void onCreate(Bundle savedInstanceState) {
-		ThemeHelper.setTheme(this, R.style.BackActionBar);
 		super.onCreate(savedInstanceState);
+		mPrefEditor = PlaybackService.getSettings(this).edit();
 
-		setTitle(R.string.filebrowser_start);
-		setContentView(R.layout.filebrowser_content);
-		mCurrentPath = (String)FileUtils.getFilesystemBrowseStart(this).getAbsolutePath();
-		mPrefEditor  = PlaybackService.getSettings(this).edit();
-		mListAdapter = new FilebrowserStartAdapter(this, 0);
-		mPathDisplay = (TextView) findViewById(R.id.path_display);
-		mListView    = (ListView) findViewById(R.id.list);
-		mSaveButton  = (Button) findViewById(R.id.save_button);
-
-		mListView.setAdapter(mListAdapter);
-		mListView.setOnItemClickListener(this);
-
-		mSaveButton.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				mPrefEditor.putString(PrefKeys.FILESYSTEM_BROWSE_START, mCurrentPath);
-				mPrefEditor.commit();
-				finish();
-			}});
+		// Make sure that we display the current selection
+		File startPath = FileUtils.getFilesystemBrowseStart(this);
+		setCurrentDirectory(startPath);
 	}
 
-	/**
-	 * Called when we are displayed (again)
-	 * This will always refresh the whole song list
-	 */
-	@Override
-	public void onResume() {
-		super.onResume();
-		refreshDirectoryList();
-	}
-	
-	/**
-	 * Create a bare-bones actionbar
-	 */
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		return true;
-	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item)
-	{
-		if (item.getItemId() == android.R.id.home) {
-			finish();
-			return true;
-		} else {
-			return super.onOptionsItemSelected(item);
-		}
+	public void onFolderSelected(File directory) {
+		mPrefEditor.putString(PrefKeys.FILESYSTEM_BROWSE_START, directory.getAbsolutePath());
+		mPrefEditor.commit();
+		finish();
 	}
 
-	/**
-	 * Called if user taps a row
-	 */
-	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		ViewHolder holder = (ViewHolder)view.getTag();
-		int pos = (int)holder.id;
-		String dirent = mListAdapter.getItem(pos);
-		
-		if(pos == 0) {
-			mCurrentPath = (new File(mCurrentPath)).getParent();
-		}
-		else {
-			mCurrentPath += "/" + dirent;
-		}
-		
-		/* let java fixup any strange paths */
-		mCurrentPath = (new File(mCurrentPath == null ? "/" : mCurrentPath)).getAbsolutePath();
-		
-		refreshDirectoryList();
-	}
-
-	/**
-	 * display mCurrentPath in the dialog
-	 */
-	private void refreshDirectoryList() {
-		File path = new File(mCurrentPath);
-		File[]dirs = path.listFiles();
-		
-		mListAdapter.clear();
-		mListAdapter.add("../");
-		
-		if(dirs != null) {
-			Arrays.sort(dirs);
-			for(File fentry: dirs) {
-				if(fentry.isDirectory()) {
-					mListAdapter.add(fentry.getName());
-				}
-			}
-		}
-		else {
-			Toast.makeText(this, "Failed to display "+mCurrentPath, Toast.LENGTH_SHORT).show();
-		}
-		mPathDisplay.setText(mCurrentPath);
-		mListView.setSelectionFromTop(0, 0);
-	}
-	
 }
