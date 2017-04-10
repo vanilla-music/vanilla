@@ -43,7 +43,6 @@ public class FolderPickerAdapter
 	@Override
 	public View getView(int pos, View convertView, ViewGroup parent) {
 		DraggableRow row;
-		ViewHolder holder;
 
 		if (convertView == null) {
 			row = (DraggableRow)mInflater.inflate(R.layout.draggable_row, parent, false);
@@ -51,15 +50,11 @@ public class FolderPickerAdapter
 
 			row.getCoverView().setImageResource(R.drawable.folder);
 
-			holder = new ViewHolder();
-			row.setTag(holder);
 		} else {
 			row = (DraggableRow)convertView;
-			holder = (ViewHolder)row.getTag();
 		}
 
 		String label = getItem(pos);
-		holder.id = pos;
 		row.getTextView().setText(label);
 		return row;
 	}

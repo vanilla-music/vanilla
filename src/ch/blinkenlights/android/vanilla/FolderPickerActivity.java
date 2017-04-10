@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2013-2017 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.mobeta.android.dslv.DragSortListView;
 
 public abstract class FolderPickerActivity extends Activity
 	implements AdapterView.OnItemClickListener
@@ -42,7 +43,7 @@ public abstract class FolderPickerActivity extends Activity
 	/**
 	 * Our listview
 	 */
-	private ListView mListView;
+	private DragSortListView mListView;
 	/**
 	 * View displaying the current path
 	 */
@@ -67,7 +68,7 @@ public abstract class FolderPickerActivity extends Activity
 		mCurrentPath = new File("/");
 		mListAdapter = new FolderPickerAdapter(this, 0);
 		mPathDisplay = (TextView) findViewById(R.id.path_display);
-		mListView    = (ListView) findViewById(R.id.list);
+		mListView    = (DragSortListView)findViewById(R.id.list);
 		mSaveButton  = (Button) findViewById(R.id.save_button);
 
 		mListView.setAdapter(mListAdapter);
@@ -129,12 +130,10 @@ public abstract class FolderPickerActivity extends Activity
 	 * Called if user taps a row
 	 */
 	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		ViewHolder holder = (ViewHolder)view.getTag();
-		int pos = (int)holder.id;
+	public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
 		String dirent = mListAdapter.getItem(pos);
-
 		File newPath = null;
+
 		if(pos == 0) {
 			newPath = mCurrentPath.getParentFile();
 		}

@@ -20,7 +20,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:dslv="http://schemas.android.com/apk/res-auto"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
 	android:orientation="vertical" >
@@ -52,12 +54,14 @@ THE SOFTWARE.
 		android:background="?android:attr/dividerHorizontal"
 	/>
 
-	<ListView
+	<com.mobeta.android.dslv.DragSortListView
 		android:id="@+id/list"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:listSelector="?android:attr/selectableItemBackground"
 		android:divider="@drawable/inset_divider"
-		android:dividerHeight="1dip" />
+		android:dividerHeight="1dip"
+		android:layout_height="0px"
+		android:layout_width="fill_parent"
+		android:layout_weight="1"
+		android:choiceMode="multipleChoice"
+		dslv:drag_enabled="false" />
 
 </LinearLayout>
