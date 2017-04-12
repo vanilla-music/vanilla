@@ -303,7 +303,11 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 		SubMenu moreMenu = menu.addSubMenu(0, MENU_MORE, 30, R.string.more_from_current);
 		menu.addSubMenu(0, MENU_ADD_TO_PLAYLIST, 30, R.string.add_to_playlist);
 		menu.add(0, MENU_SHARE, 30, R.string.share);
-		menu.add(0, MENU_PLUGINS, 30, R.string.plugins);
+
+		if (PluginUtils.checkPlugins(this)) {
+			menu.add(0, MENU_PLUGINS, 30, R.string.plugins);
+		}
+
 		mFavorites = menu.add(0, MENU_SONG_FAVORITE, 0, R.string.add_to_favorites).setIcon(R.drawable.btn_rating_star_off_mtrl_alpha).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
 		// Subitems of 'enqueue...'
