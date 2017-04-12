@@ -22,8 +22,15 @@
 
 package ch.blinkenlights.android.vanilla;
 
-import ch.blinkenlights.android.medialibrary.MediaLibrary;
-import ch.blinkenlights.android.medialibrary.MediaMetadataExtractor;
+import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.database.MatrixCursor;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -33,21 +40,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import android.util.Log;
-
-import junit.framework.Assert;
-
-import android.content.ActivityNotFoundException;
-import android.content.Context;
-import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.text.TextUtils;
-import android.database.MatrixCursor;
-import android.util.Log;
-import android.widget.Toast;
+import ch.blinkenlights.android.medialibrary.MediaLibrary;
+import ch.blinkenlights.android.medialibrary.MediaMetadataExtractor;
 
 
 /**
@@ -342,7 +336,8 @@ public class MediaUtils {
 	 * @param context The Context to use
 	 */
 	private static long[] queryAllSongs(Context context) {
-		QueryTask query = new QueryTask(MediaLibrary.TABLE_SONGS, Song.EMPTY_PROJECTION, null, null, null);
+		QueryTask query = new QueryTask(MediaLibrary.TABLE_SONGS, Song.EMPTY_PROJECTION,
+                MediaLibrary.SongColumns.NO_SHUFFLE + " != 1 OR " + MediaLibrary.SongColumns.NO_SHUFFLE + " ISNULL", null, null);
 		Cursor cursor = query.runQuery(context);
 		if (cursor == null || cursor.getCount() == 0) {
 			sSongCount = 0;

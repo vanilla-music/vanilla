@@ -23,12 +23,11 @@
 
 package ch.blinkenlights.android.vanilla;
 
-import ch.blinkenlights.android.medialibrary.MediaLibrary;
-
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
-import android.provider.MediaStore;
+
+import junit.framework.Assert;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -37,7 +36,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.ListIterator;
-import junit.framework.Assert;
+
+import ch.blinkenlights.android.medialibrary.MediaLibrary;
 
 /**
  * Contains the list of currently playing songs, implements repeat and shuffle
