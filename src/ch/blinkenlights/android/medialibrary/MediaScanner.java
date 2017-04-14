@@ -108,8 +108,9 @@ public class MediaScanner implements Handler.Callback {
 	 * Performs a 'slow' scan by inspecting all files on the device
 	 */
 	public void startFullScan() {
-		for (File dir : MediaLibrary.discoverMediaPaths()) {
-			mScanPlan.addNextStep(RPC_READ_DIR, dir);
+		MediaLibrary.Preferences prefs = MediaLibrary.getPreferences(mContext);
+		for (String path : prefs.mediaFolders) {
+			mScanPlan.addNextStep(RPC_READ_DIR, new File(path));
 		}
 		mScanPlan.addNextStep(RPC_LIBRARY_VRFY, null);
 		mScanPlan.addNextStep(RPC_NATIVE_VRFY, null);
@@ -559,7 +560,6 @@ public class MediaScanner implements Handler.Callback {
 	}
 
 	private static final Pattern sIgnoredFilenames = Pattern.compile("^([^\\.]+|.+\\.(jpe?g|gif|png|bmp|webm|txt|pdf|avi|mp4|mkv|zip|tgz|xml))$", Pattern.CASE_INSENSITIVE);
-	private static final Pattern sIgnoredDirectories = Pattern.compile("^.+/(Android/data|Alarms|Notifications|Ringtones)/.+$", Pattern.CASE_INSENSITIVE);
 	/**
 	 * Returns true if the file should not be scanned
 	 *
@@ -567,8 +567,30 @@ public class MediaScanner implements Handler.Callback {
 	 * @return boolean
 	 */
 	private boolean isBlacklisted(File file) {
-		boolean blacklisted = sIgnoredFilenames.matcher(file.getName()).matches() || sIgnoredDirectories.matcher(file.getPath()).matches();
-		return blacklisted;
+		if (sIgnoredFilenames.matcher(file.getName()).matches())
+			return true;
+
+		int wlPoints = -1;
+		int blPoints = -1;
+
+		for (String path : MediaLibrary.getPreferences(mContext).mediaFolders) {
+			if (path.length() > wlPoints &&
+			    file.getPath().startsWith(path)) {
+				wlPoints = path.length();
+			}
+		}
+
+		for (String path : MediaLibrary.getPreferences(mContext).blacklistedFolders) {
+			if (path.length() > blPoints &&
+			    file.getPath().startsWith(path)) {
+				blPoints = path.length();
+			}
+		}
+
+		// Consider a file to be blacklisted if it is not
+		// present in any whitelisted dir OR if we found
+		// a blacklist entry with a longer prefix.
+		return (wlPoints < 0 || blPoints > wlPoints);
 	}
 
 

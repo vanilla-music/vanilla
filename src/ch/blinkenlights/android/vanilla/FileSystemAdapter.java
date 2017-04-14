@@ -48,6 +48,8 @@ public class FileSystemAdapter
 {
 	private static final Pattern SPACE_SPLIT = Pattern.compile("\\s+");
 	private static final Pattern FILE_SEPARATOR = Pattern.compile(File.separator);
+	private static final Pattern GUESS_MUSIC = Pattern.compile("^([^\\.]+|.+\\.(mp3|ogg|mka|opus|flac|aac|m4a|wav))$", Pattern.CASE_INSENSITIVE);
+	private static final Pattern GUESS_IMAGE = Pattern.compile("^([^\\.]+|.+\\.(gif|jpe?g|png|bmp|tiff?))$", Pattern.CASE_INSENSITIVE);
 
 	/**
 	 * Sort by filename.
@@ -243,19 +245,17 @@ public class FileSystemAdapter
 
 			holder = new ViewHolder();
 			row.setTag(holder);
-			row.getCoverView().setImageDrawable(mFolderIcon);
 		} else {
 			row = (DraggableRow)convertView;
 			holder = (ViewHolder)row.getTag();
 		}
 
-		File file = mFiles[pos];
-		boolean isDirectory = file.isDirectory();
 		holder.id = pos;
 
+		final File file = mFiles[pos];
 		row.getTextView().setText(file.getName());
-		row.getCoverView().setVisibility(isDirectory ? View.VISIBLE : View.GONE);
-		row.showDragger(isDirectory);
+		row.showDragger(file.isDirectory());
+		row.getCoverView().setImageDrawable(getDrawableForFile(file));
 		return row;
 	}
 
@@ -281,6 +281,25 @@ public class FileSystemAdapter
 	public Limiter getLimiter()
 	{
 		return mLimiter;
+	}
+
+	/**
+	 * Returns a drawable for given file.
+	 * This function is rather fast as the file type is guessed
+	 * based on the extension.
+	 *
+	 * @return drawable for the guessed mime type
+	 */
+	private Drawable getDrawableForFile(File file) {
+		int res = R.drawable.file_document;
+		if (file.isDirectory()) {
+			res = R.drawable.folder;
+		} else if (GUESS_MUSIC.matcher(file.getName()).matches()) {
+			res = R.drawable.file_music;
+		} else if (GUESS_IMAGE.matcher(file.getName()).matches()) {
+			res = R.drawable.file_image;
+		}
+		return mActivity.getResources().getDrawable(res);
 	}
 
 	/**

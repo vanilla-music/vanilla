@@ -35,7 +35,7 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	/**
 	 * The database version we are using
 	 */
-	private static final int DATABASE_VERSION = 20170217;
+	private static final int DATABASE_VERSION = 20170407;
 	/**
 	 * on-disk file to store the database
 	 */
@@ -102,33 +102,6 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 			mtime = cursor.getLong(0);
 		cursor.close();
 		return mtime;
-	}
-
-	/**
-	 * Simple interface to set and get preference values
-	 *
-	 * @param stringKey the key to use
-	 * @param newVal the value to set
-	 *
-	 * Note: The new value will only be set if it is >= 0
-	 *       Lookup failures will return 0
-	 */
-	int getSetPreference(String stringKey, int newVal) {
-		int oldVal = 0; // this is returned if we found nothing
-		int key = Math.abs(stringKey.hashCode());
-		SQLiteDatabase dbh = getWritableDatabase();
-
-		Cursor cursor = dbh.query(MediaLibrary.TABLE_PREFERENCES, new String[] { MediaLibrary.PreferenceColumns.VALUE }, MediaLibrary.PreferenceColumns.KEY+"="+key, null, null, null, null, null);
-		if (cursor.moveToFirst()) {
-			oldVal = cursor.getInt(0);
-		}
-		cursor.close();
-
-		if (newVal >= 0 && newVal != oldVal) {
-			dbh.execSQL("INSERT OR REPLACE INTO "+MediaLibrary.TABLE_PREFERENCES+" ("+MediaLibrary.PreferenceColumns.KEY+", "+MediaLibrary.PreferenceColumns.VALUE+") "
-			            +" VALUES("+key+", "+newVal+")");
-		}
-		return oldVal;
 	}
 
 	/**

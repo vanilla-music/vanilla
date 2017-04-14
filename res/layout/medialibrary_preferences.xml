@@ -42,6 +42,25 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 		<TextView
 			style="?android:attr/listSeparatorTextViewStyle"
 			android:textColor="?overlay_foreground_color"
+			android:text="@string/media_folders_header" />
+
+		<TextView
+			android:id="@+id/media_directories"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="-" />
+
+		<Button
+			android:id="@+id/edit_button"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="end"
+			android:text="@string/edit">
+		</Button>
+
+		<TextView
+			style="?android:attr/listSeparatorTextViewStyle"
+			android:textColor="?overlay_foreground_color"
 			android:text="@string/media_scan_header" />
 
 		<CheckBox android:id="@+id/media_scan_full"

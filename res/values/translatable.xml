@@ -303,6 +303,7 @@ THE SOFTWARE.
 	<string name="filebrowser_start">Filebrowser home</string>
 	<string name="customize_filebrowser_start">Filebrowser starts at this directory</string>
 	<string name="select">Select</string>
+	<string name="save">Save</string>
 
 
 	<string name="autoplaylist_playcounts_title">Automatic playlist creation</string>
@@ -319,6 +320,7 @@ THE SOFTWARE.
 	<string name="no_receiving_apps">No receiving apps found for this media type!</string>
 
 	<string name="media_library">Media library</string>
+	<string name="media_folders_header">Indexed directories</string>
 	<string name="media_scan_header">Media scanner</string>
 	<string name="media_scan_full">Scan full filesystem (Slow)</string>
 	<string name="media_scan_drop_db">Flush media database (Dangerzone!)</string>
@@ -334,6 +336,11 @@ THE SOFTWARE.
 	<string name="media_scan_preferences_change_title">Scanner options changed</string>
 	<string name="media_scan_preferences_change_message">Changing this option will start a full rescan of your library. Would you like to continue?</string>
 
+	<!-- Folder selector -->
+	<string name="hint_long_press_to_modify_folder">Long press to modify folder options</string>
+	<string name="folder_include">Include</string>
+	<string name="folder_exclude">Exclude</string>
+	<string name="folder_neutral">Neutral</string>
     <!-- Plugin system -->
     <string name="plugins">Plugins</string>
 </resources>

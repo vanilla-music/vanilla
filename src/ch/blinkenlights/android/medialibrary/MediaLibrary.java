@@ -23,8 +23,14 @@ import android.database.Cursor;
 import android.database.ContentObserver;
 import android.provider.MediaStore;
 import android.os.Environment;
+import android.util.Log;
 
 import java.util.ArrayList;
+
+import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
+
 import java.io.File;
 
 public class MediaLibrary  {
@@ -37,7 +43,6 @@ public class MediaLibrary  {
 	public static final String TABLE_GENRES_SONGS             = "genres_songs";
 	public static final String TABLE_PLAYLISTS                = "playlists";
 	public static final String TABLE_PLAYLISTS_SONGS          = "playlists_songs";
-	public static final String TABLE_PREFERENCES              = "preferences";
 	public static final String VIEW_ARTISTS                   = "_artists";
 	public static final String VIEW_ALBUMARTISTS              = "_albumartists";
 	public static final String VIEW_COMPOSERS                 = "_composers";
@@ -50,17 +55,16 @@ public class MediaLibrary  {
 	public static final int ROLE_COMPOSER                 = 1;
 	public static final int ROLE_ALBUMARTIST              = 2;
 
-	private static final String PREF_KEY_FORCE_BASTP          = "force_bastp";
-	private static final String PREF_KEY_GROUP_ALBUMS         = "group_albums";
-	private static final String PREF_KEY_NATIVE_LIBRARY_COUNT = "native_audio_db_count";
-	private static final String PREF_KEY_NATIVE_LAST_MTIME    = "native_last_mtime";
+	public static final String PREFERENCES_FILE = "_prefs-v1.obj";
 
 	/**
 	 * Options used by the MediaScanner class
 	 */
-	public static class Preferences {
+	public static class Preferences implements Serializable {
 		public boolean forceBastp;
 		public boolean groupAlbumsByFolder;
+		public ArrayList<String> mediaFolders;
+		public ArrayList<String> blacklistedFolders;
 		int _nativeLibraryCount;
 		int _nativeLastMtime;
 	}
@@ -121,15 +125,61 @@ public class MediaLibrary  {
 	public static MediaLibrary.Preferences getPreferences(Context context) {
 		MediaLibrary.Preferences prefs = sPreferences;
 		if (prefs == null) {
-			MediaLibraryBackend backend = getBackend(context);
-			prefs = new MediaLibrary.Preferences();
-			prefs.forceBastp = backend.getSetPreference(PREF_KEY_FORCE_BASTP, -1) != 0;
-			prefs.groupAlbumsByFolder = backend.getSetPreference(PREF_KEY_GROUP_ALBUMS, -1) != 0;
-			prefs._nativeLibraryCount = backend.getSetPreference(PREF_KEY_NATIVE_LIBRARY_COUNT, -1);
-			prefs._nativeLastMtime = backend.getSetPreference(PREF_KEY_NATIVE_LAST_MTIME, -1);
+			try (ObjectInputStream ois = new ObjectInputStream(context.openFileInput(PREFERENCES_FILE))) {
+				prefs = (MediaLibrary.Preferences)ois.readObject();
+			} catch (Exception e) {
+				Log.w("VanillaMusic", "Returning default media-library preferences due to error: "+ e);
+			}
+
+			if (prefs == null)
+				prefs = new MediaLibrary.Preferences();
+
+			if (prefs.mediaFolders == null || prefs.mediaFolders.size() == 0)
+				prefs.mediaFolders = discoverDefaultMediaPaths();
+
+			if (prefs.blacklistedFolders == null) // we allow this to be empty, but it must not be null.
+				prefs.blacklistedFolders = discoverDefaultBlacklistedPaths();
+
 			sPreferences = prefs; // cached for frequent access
 		}
 		return prefs;
+	}
+
+	/**
+	 * Returns the guessed media paths for this device
+	 *
+	 * @return array with guessed directories
+	 */
+	private static ArrayList<String> discoverDefaultMediaPaths() {
+		ArrayList<String> defaultPaths = new ArrayList<>();
+
+		// this should always exist
+		defaultPaths.add(Environment.getExternalStorageDirectory().getAbsolutePath());
+
+		// this *may* exist
+		File sdCard = new File("/storage/sdcard1");
+		if (sdCard.isDirectory())
+			defaultPaths.add(sdCard.getAbsolutePath());
+		return defaultPaths;
+	}
+
+	/**
+	 * Returns default paths which should be blacklisted
+	 *
+	 * @return array with guessed blacklist
+	 */
+	private static ArrayList<String> discoverDefaultBlacklistedPaths() {
+		final String[] defaultBlacklistPostfix = { "Android/data", "Alarms", "Notifications", "Ringtones" };
+		ArrayList<String> defaultPaths = new ArrayList<>();
+
+		for (String path : discoverDefaultMediaPaths()) {
+			for (int i = 0; i < defaultBlacklistPostfix.length; i++) {
+				File guess = new File(path + "/" + defaultBlacklistPostfix[i]);
+				if (guess.isDirectory())
+					defaultPaths.add(guess.getAbsolutePath());
+			}
+		}
+		return defaultPaths;
 	}
 
 	/**
@@ -141,11 +191,14 @@ public class MediaLibrary  {
 	 */
 	public static void setPreferences(Context context, MediaLibrary.Preferences prefs) {
 		MediaLibraryBackend backend = getBackend(context);
-		backend.getSetPreference(PREF_KEY_FORCE_BASTP, prefs.forceBastp ? 1 : 0);
-		backend.getSetPreference(PREF_KEY_GROUP_ALBUMS, prefs.groupAlbumsByFolder ? 1 : 0);
-		backend.getSetPreference(PREF_KEY_NATIVE_LIBRARY_COUNT, prefs._nativeLibraryCount);
-		backend.getSetPreference(PREF_KEY_NATIVE_LAST_MTIME, prefs._nativeLastMtime);
-		sPreferences = null;
+
+		try (ObjectOutputStream oos = new ObjectOutputStream(context.openFileOutput(PREFERENCES_FILE, 0))) {
+			oos.writeObject(prefs);
+		} catch (Exception e) {
+			Log.w("VanillaMusic", "Failed to store media preferences: " + e);
+		}
+
+		sPreferences = prefs;
 	}
 
 	/**
@@ -454,25 +507,6 @@ public class MediaLibrary  {
 			hash = 31*hash + str.charAt(i);
 		}
 		return (hash < 0 ? hash*-1 : hash);
-	}
-
-	/**
-	 * Returns the guessed media paths for this device
-	 *
-	 * @return array with guessed directories
-	 */
-	public static File[] discoverMediaPaths() {
-		ArrayList<File> scanTargets = new ArrayList<>();
-
-		// this should always exist
-		scanTargets.add(Environment.getExternalStorageDirectory());
-
-		// this *may* exist
-		File sdCard = new File("/storage/sdcard1");
-		if (sdCard.isDirectory())
-			scanTargets.add(sdCard);
-
-		return scanTargets.toArray(new File[scanTargets.size()]);
 	}
 
 	// Columns of Song entries

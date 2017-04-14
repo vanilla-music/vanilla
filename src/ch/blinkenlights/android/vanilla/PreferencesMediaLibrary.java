@@ -23,6 +23,7 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -50,6 +51,10 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 	 */
 	private View mCancelButton;
 	/**
+	 * The edit-media-folders button
+	 */
+	private View mEditButton;
+	/**
 	 * The debug / progress text describing the scan status
 	 */
 	private TextView mProgressText;
@@ -65,6 +70,10 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 	 * The number of hours of music we have
 	 */
 	private TextView mStatsPlaytime;
+	/**
+	 * A list of scanned media directories
+	 */
+	private TextView mMediaDirectories;
 	/**
 	 * Checkbox for full scan
 	 */
@@ -85,6 +94,10 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 	 * Set if we should start a full scan due to option changes
 	 */
 	private boolean mFullScanPending;
+	/**
+	 * Set if we are in the edit dialog
+	 */
+	private boolean mIsEditingDirectories;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -97,10 +110,12 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 
 		mStartButton = (View)view.findViewById(R.id.start_button);
 		mCancelButton = (View)view.findViewById(R.id.cancel_button);
+		mEditButton = (View)view.findViewById(R.id.edit_button);
 		mProgressText = (TextView)view.findViewById(R.id.media_stats_progress_text);
 		mProgressBar = (ProgressBar)view.findViewById(R.id.media_stats_progress_bar);
 		mStatsTracks = (TextView)view.findViewById(R.id.media_stats_tracks);
 		mStatsPlaytime = (TextView)view.findViewById(R.id.media_stats_playtime);
+		mMediaDirectories = (TextView)view.findViewById(R.id.media_directories);
 		mFullScanCheck = (CheckBox)view.findViewById(R.id.media_scan_full);
 		mDropDbCheck = (CheckBox)view.findViewById(R.id.media_scan_drop_db);
 		mGroupAlbumsCheck = (CheckBox)view.findViewById(R.id.media_scan_group_albums);
@@ -109,6 +124,7 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 		// Bind onClickListener to some elements
 		mStartButton.setOnClickListener(this);
 		mCancelButton.setOnClickListener(this);
+		mEditButton.setOnClickListener(this);
 		mGroupAlbumsCheck.setOnClickListener(this);
 		mForceBastpCheck.setOnClickListener(this);
 	}
@@ -129,6 +145,9 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 				});
 			}}), 0, 200);
 
+		if (mIsEditingDirectories)
+			mIsEditingDirectories = false;
+
 		updatePreferences(null);
 	}
 
@@ -140,7 +159,7 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 			mTimer = null;
 		}
 
-		if (mFullScanPending) {
+		if (mFullScanPending && !mIsEditingDirectories) {
 			MediaLibrary.startLibraryScan(getActivity(), true, true);
 			mFullScanPending = false;
 		}
@@ -154,6 +173,11 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 				break;
 			case R.id.cancel_button:
 				cancelButtonPressed(view);
+				break;
+			case R.id.edit_button:
+				mIsEditingDirectories = true;
+				mFullScanPending = true;
+				startActivity(new Intent(getActivity(), MediaFoldersSelectionActivity.class));
 				break;
 			case R.id.media_scan_group_albums:
 			case R.id.media_scan_force_bastp:
@@ -212,6 +236,16 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 
 		mGroupAlbumsCheck.setChecked(prefs.groupAlbumsByFolder);
 		mForceBastpCheck.setChecked(prefs.forceBastp);
+
+		String txt = "";
+		for (String path : prefs.mediaFolders) {
+			txt += "✔ " + path + "\n";
+		}
+		for (String path : prefs.blacklistedFolders) {
+			txt += "✘ " + path + "\n";
+		}
+		mMediaDirectories.setText(txt);
+
 	}
 
 	/**
@@ -227,6 +261,7 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 		mProgressBar.setProgress(progress.seen);
 
 		mStartButton.setEnabled(idle);
+		mEditButton.setEnabled(idle);
 		mDropDbCheck.setEnabled(idle);
 		mFullScanCheck.setEnabled(idle);
 		mForceBastpCheck.setEnabled(idle);
