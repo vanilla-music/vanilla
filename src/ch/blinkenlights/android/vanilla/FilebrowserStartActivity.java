@@ -37,7 +37,7 @@ public class FilebrowserStartActivity extends FolderPickerActivity {
 
 		// Make sure that we display the current selection
 		File startPath = FileUtils.getFilesystemBrowseStart(this);
-		setCurrentDirectory(startPath);
+		setCurrentDir(startPath);
 	}
 
 

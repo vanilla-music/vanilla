@@ -39,7 +39,7 @@ public class MediaFoldersSelectionActivity extends FolderPickerActivity {
 		File startPath = FileUtils.getFilesystemBrowseStart(this);
 
 		// Make sure that we display the current selection
-		setCurrentDirectory(startPath);
+		setCurrentDir(startPath);
 		enableTritasticSelect(true, prefs.mediaFolders, prefs.blacklistedFolders);
 	}
 

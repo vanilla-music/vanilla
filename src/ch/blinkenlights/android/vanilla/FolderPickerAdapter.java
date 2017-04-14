@@ -23,13 +23,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.ArrayAdapter;
 import android.graphics.drawable.Drawable;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.ArrayList;
 
 public class FolderPickerAdapter
 	extends ArrayAdapter<FolderPickerAdapter.Item>
@@ -46,11 +47,28 @@ public class FolderPickerAdapter
 		}
 	}
 
+	/**
+	 * Our layout inflater instance
+	 */
 	private final LayoutInflater mInflater;
+	/**
+	 * The currently set directory
+	 */
+	private File mCurrentDir;
+	/**
+	 * A list of paths marked as 'included'
+	 */
+	private ArrayList<String> mIncludedDirs;
+	/**
+	 * A list of paths marked as 'excluded'
+	 */
+	private ArrayList<String> mExcludedDirs;
+
 
 	public FolderPickerAdapter(Context context, int resource) {
 		super(context, resource);
 		mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		mCurrentDir = new File("/");
 	}
 
 	@Override
@@ -72,4 +90,101 @@ public class FolderPickerAdapter
 		return row;
 	}
 
+	/**
+	 * Returns the currently set directory
+	 */
+	public File getCurrentDir() {
+		return mCurrentDir;
+	}
+
+	/**
+	 * Changes the currently active directory
+	 */
+	public void setCurrentDir(File dir) {
+		mCurrentDir = dir;
+		refresh();
+	}
+
+	/**
+	 * Returns the list of included directories
+	 *
+	 * @return arraylist - may be null
+	 */
+	public ArrayList<String> getIncludedDirs() {
+		return mIncludedDirs;
+	}
+
+	/**
+	 * Sets the included dirlist
+	 *
+	 * @param list the arraylist to use
+	 */
+	public void setIncludedDirs(ArrayList<String> list) {
+		mIncludedDirs = verifyDirs(list);
+		refresh();
+	}
+
+	/**
+	 * Returns the list of excluded directories
+	 *
+	 * @return arraylist - may be null
+	 */
+	public ArrayList<String> getExcludedDirs() {
+		return mExcludedDirs;
+	}
+
+	/**
+	 * Sets the excluded dirlist
+	 *
+	 * @param list the arraylist to use
+	 */
+	public void setExcludedDirs(ArrayList<String> list) {
+		mExcludedDirs = verifyDirs(list);
+		refresh();
+	}
+
+	/**
+	 * Returns list, weeding out non-existing or invalid dirs
+	 *
+	 * @param list the list to check
+	 * @return list the checked list
+	 */
+	private ArrayList<String> verifyDirs(ArrayList<String> list) {
+		if (list == null)
+			return null;
+
+		ArrayList<String> result = new ArrayList<String>();
+		for (String path : list) {
+			File file = new File(path);
+			if (file.isDirectory())
+				result.add(path);
+		}
+		return result;
+	}
+
+	/**
+	 * Refreshes the current ArrayList
+	 */
+	private void refresh() {
+		File path = mCurrentDir;
+		File[]dirs = path.listFiles();
+
+		clear();
+		add(new FolderPickerAdapter.Item("../", null, 0));
+
+		if(dirs != null) {
+			Arrays.sort(dirs);
+			for(File fentry: dirs) {
+				if(fentry.isDirectory()) {
+					int color = 0;
+					if (mIncludedDirs != null && mIncludedDirs.contains(fentry.getAbsolutePath()))
+						color = 0xff00c853;
+					if (mExcludedDirs != null && mExcludedDirs.contains(fentry.getAbsolutePath()))
+						color = 0xffd50000;
+					Item item = new Item(fentry.getName(), fentry, color);
+					add(item);
+				}
+			}
+		}
+	}
 }
