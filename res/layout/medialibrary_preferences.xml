@@ -48,7 +48,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 			android:id="@+id/media_directories"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:text="-" />
+			android:text="@string/seperator" />
 
 		<Button
 			android:id="@+id/edit_button"

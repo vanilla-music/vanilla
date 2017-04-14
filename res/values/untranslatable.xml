@@ -143,6 +143,7 @@ THE SOFTWARE.
 	</string-array>
 
 	<string name="empty"></string>
+	<string name="seperator">-</string>
 
 
 </resources>
