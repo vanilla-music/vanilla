@@ -19,6 +19,7 @@ package ch.blinkenlights.android.vanilla;
 
 import android.content.Context;
 import android.app.Activity;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,6 +53,10 @@ public class FolderPickerAdapter
 	 */
 	private final LayoutInflater mInflater;
 	/**
+	 * The external storage directory as reported by the OS
+	 */
+	final private File mStorageDir;
+	/**
 	 * The currently set directory
 	 */
 	private File mCurrentDir;
@@ -68,7 +73,8 @@ public class FolderPickerAdapter
 	public FolderPickerAdapter(Context context, int resource) {
 		super(context, resource);
 		mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		mCurrentDir = new File("/");
+		mStorageDir = Environment.getExternalStorageDirectory();
+		mCurrentDir = mStorageDir;
 	}
 
 	@Override
@@ -172,7 +178,16 @@ public class FolderPickerAdapter
 		clear();
 		add(new FolderPickerAdapter.Item("../", null, 0));
 
-		if(dirs != null) {
+		// Hack alert: Android >= 6.0's default storage root directory
+		// is usually not readable. That's not a big issue but
+		// can be very annoying for users who browse around.
+		// We are therefore detecting this and will 'simulate'
+		// the existence of the default storage root.
+		if (dirs == null && mStorageDir.getParentFile().equals(path)) {
+			dirs = new File[] { mStorageDir };
+		}
+
+		if (dirs != null) {
 			Arrays.sort(dirs);
 			for(File fentry: dirs) {
 				if(fentry.isDirectory()) {
