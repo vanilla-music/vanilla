@@ -118,6 +118,7 @@ public class ID3v2File extends Common {
 		lu.put("TPE1", "ARTIST");
 		lu.put("TPE2", "ALBUMARTIST");
 		lu.put("TYER", "YEAR");
+		lu.put("TPOS", "DISCNUMBER");
 		lu.put("TRCK", "TRACKNUMBER");
 		lu.put("TCON", "GENRE");
 		lu.put("TCOM", "COMPOSER");

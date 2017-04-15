@@ -385,8 +385,8 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 	private void populateSelf(MediaMetadataRetriever tags) {
 		int[] mediaMap = new int[] { MediaMetadataRetriever.METADATA_KEY_TITLE, MediaMetadataRetriever.METADATA_KEY_ARTIST, MediaMetadataRetriever.METADATA_KEY_ALBUM,
 		                             MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST, MediaMetadataRetriever.METADATA_KEY_COMPOSER, MediaMetadataRetriever.METADATA_KEY_GENRE,
-		                             MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER, MediaMetadataRetriever.METADATA_KEY_YEAR };
-		String[] selfMap = new String[]{  TITLE, ARTIST, ALBUM, ALBUMARTIST, COMPOSER, GENRE, TRACK_NUMBER, YEAR };
+		                             MediaMetadataRetriever.METADATA_KEY_DISC_NUMBER, MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER, MediaMetadataRetriever.METADATA_KEY_YEAR };
+		String[] selfMap = new String[]{  TITLE, ARTIST, ALBUM, ALBUMARTIST, COMPOSER, GENRE, DISC_NUMBER, TRACK_NUMBER, YEAR };
 		int filterByIntAt = 6;
 		Pattern filter = sFilterAny;
 
