@@ -696,8 +696,14 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 	@Override
 	public void onSlideFullyExpanded(boolean expanded) {
 		super.onSlideFullyExpanded(expanded);
-		if (expanded)
+
+		setControlsVisible(true);
+		if (expanded) {
 			setExtraInfoVisible(false);
+		} else {
+			SharedPreferences settings = PlaybackService.getSettings(this);
+			setExtraInfoVisible(settings.getBoolean(PrefKeys.VISIBLE_EXTRA_INFO, PrefDefaults.VISIBLE_EXTRA_INFO));
+		}
 	}
 
 }
