@@ -28,9 +28,11 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.FileObserver;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -306,7 +308,7 @@ public class FileSystemAdapter
 	 */
 	private int getImageResourceForFile(File file) {
 		int res = R.drawable.file_document;
-		if (NAME_PARENT_FOLDER.equals(file.getName())) {
+		if (pointsToParentFolder(file)) {
 			res = R.drawable.arrow_up;
 		} else if (file.isDirectory()) {
 			res = R.drawable.folder;
@@ -328,6 +330,16 @@ public class FileSystemAdapter
 	}
 
 	/**
+	 * Returns true if the filename of 'file' indicates that
+	 * it points to '..'
+	 *
+	 * @return true if given file points to the parent folder
+	 */
+	private static boolean pointsToParentFolder(File file) {
+		return NAME_PARENT_FOLDER.equals(file.getName());
+	}
+
+	/**
 	 * Builds a limiter from the given folder. Only files contained in the
 	 * given folder will be shown if the limiter is set on this adapter.
 	 *
@@ -336,7 +348,7 @@ public class FileSystemAdapter
 	 */
 	public static Limiter buildLimiter(File file)
 	{
-		if (NAME_PARENT_FOLDER.equals(file.getName()))
+		if (pointsToParentFolder(file))
 			file = file.getParentFile().getParentFile();
 		String[] fields = FILE_SEPARATOR.split(file.getPath().substring(1));
 		return new Limiter(MediaUtils.TYPE_FILE, fields, file);
@@ -393,15 +405,7 @@ public class FileSystemAdapter
 		intent.putExtra(LibraryAdapter.DATA_ID, holder.id);
 		intent.putExtra(LibraryAdapter.DATA_TITLE, ((DraggableRow)view).getTextView().getText().toString());
 		intent.putExtra(LibraryAdapter.DATA_EXPANDABLE, file.isDirectory());
-
-		String path;
-		try {
-			path = file.getCanonicalPath();
-		} catch (IOException e) {
-			path = file.getAbsolutePath();
-			Log.e("VanillaMusic", "Failed to canonicalize path", e);
-		}
-		intent.putExtra(LibraryAdapter.DATA_FILE, path);
+		intent.putExtra(LibraryAdapter.DATA_FILE, file.getAbsolutePath());
 		return intent;
 	}
 
@@ -444,5 +448,20 @@ public class FileSystemAdapter
 		} else {
 			mActivity.onItemClicked(intent);
 		}
+	}
+
+	/**
+	 * Context menu of a row: this was dispatched by LibraryPAgerAdapter
+	 *
+	 * @param menu the context menu to populate
+	 * @param intent likely created by createData()
+	 */
+	public void onCreateContextMenu(ContextMenu menu, Intent intent) {
+		String path = intent.getStringExtra(LibraryAdapter.DATA_FILE);
+		boolean isParentRow = (path != null && pointsToParentFolder(new File(path)));
+
+		if (!isParentRow)
+			mActivity.onCreateContextMenu(menu, intent);
+		// else: no context menu
 	}
 }

@@ -851,8 +851,7 @@ public class LibraryPagerAdapter
 	 */
 	private static Intent createHeaderIntent(View header)
 	{
-		header = (View)header.getParent(); // tag is set on parent view of header
-		int type = (Integer)header.getTag();
+		int type = (Integer)((View)header.getParent()).getTag(); // tag is set on parent view of header
 		Intent intent = new Intent();
 		intent.putExtra(LibraryAdapter.DATA_ID, LibraryAdapter.HEADER_ID);
 		intent.putExtra(LibraryAdapter.DATA_TYPE, type);
@@ -865,13 +864,19 @@ public class LibraryPagerAdapter
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
 		View targetView = info.targetView;
 		Intent intent = info.id == LibraryAdapter.HEADER_ID ? createHeaderIntent(targetView) : mCurrentAdapter.createData(targetView);
-		mActivity.onCreateContextMenu(menu, intent);
+		int type = (Integer)((View)targetView.getParent()).getTag();
+
+		if (type == MediaUtils.TYPE_FILE) {
+			mFilesAdapter.onCreateContextMenu(menu, intent);
+		} else {
+			mActivity.onCreateContextMenu(menu, intent);
+		}
 	}
 
 	@Override
 	public void onItemClick (AdapterView<?> parent, View view, int position, long id) {
-		int type = (Integer)parent.getTag();
 		Intent intent = id == LibraryAdapter.HEADER_ID ? createHeaderIntent(view) : mCurrentAdapter.createData(view);
+		int type = (Integer)((View)view.getParent()).getTag();
 
 		if (type == MediaUtils.TYPE_FILE) {
 			mFilesAdapter.onItemClicked(intent);
