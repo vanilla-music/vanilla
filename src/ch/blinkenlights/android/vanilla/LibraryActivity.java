@@ -299,12 +299,8 @@ public class LibraryActivity
 					pos = mPagerAdapter.getMediaTypePosition(limiter.type);
 					break;
 				case MediaUtils.TYPE_FILE:
-					if(limiter.names.length > 1) {
-						File parentFile = ((File)limiter.data).getParentFile();
-						mPagerAdapter.setLimiter(FileSystemAdapter.buildLimiter(parentFile));
-					} else {
-						mPagerAdapter.clearLimiter(limiter.type);
-					}
+					File parentFile = ((File)limiter.data).getParentFile();
+					mPagerAdapter.setLimiter(FileSystemAdapter.buildLimiter(parentFile));
 					break;
 				}
 				if (pos == -1) {

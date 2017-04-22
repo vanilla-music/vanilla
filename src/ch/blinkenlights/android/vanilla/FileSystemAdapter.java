@@ -35,7 +35,9 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Collections;
 import java.util.regex.Pattern;
 
 /**
@@ -50,7 +52,14 @@ public class FileSystemAdapter
 	private static final Pattern FILE_SEPARATOR = Pattern.compile(File.separator);
 	private static final Pattern GUESS_MUSIC = Pattern.compile("^(.+\\.(mp3|ogg|mka|opus|flac|aac|m4a|wav))$", Pattern.CASE_INSENSITIVE);
 	private static final Pattern GUESS_IMAGE = Pattern.compile("^(.+\\.(gif|jpe?g|png|bmp|tiff?))$", Pattern.CASE_INSENSITIVE);
-
+	/**
+	 * The string (but also valid path!) to use to indicate the parent directory
+	 */
+	private static final String NAME_PARENT_FOLDER = "..";
+	/**
+	 * The root directory of the device
+	 */
+	private final File mFsRoot = new File("/");
 	/**
 	 * Sort by filename.
 	 */
@@ -93,10 +102,6 @@ public class FileSystemAdapter
 	 * The files and folders in the current directory.
 	 */
 	private File[] mFiles;
-	/**
-	 * The folder icon shown for folder rows.
-	 */
-	private final Drawable mFolderIcon;
 	/**
 	 * The currently active filter, entered by the user from the search box.
 	 */
@@ -175,7 +180,6 @@ public class FileSystemAdapter
 	{
 		mActivity = activity;
 		mLimiter = limiter;
-		mFolderIcon = activity.getResources().getDrawable(R.drawable.folder);
 		mInflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		if (limiter == null) {
 			limiter = buildHomeLimiter(activity);
@@ -193,10 +197,16 @@ public class FileSystemAdapter
 			mFileObserver = new Observer(file.getPath());
 		}
 
-		File[] files = file.listFiles(mFileFilter);
-		if (files != null)
-			Arrays.sort(files, mFileComparator);
-		return files;
+		File[] readdir = file.listFiles(mFileFilter);
+		if (readdir == null)
+			readdir = new File[]{};
+
+		ArrayList<File> files = new ArrayList<File>(Arrays.asList(readdir));
+		Collections.sort(files, mFileComparator);
+		if (!mFsRoot.equals(file))
+			files.add(0, new File(file, NAME_PARENT_FOLDER));
+
+		return files.toArray(new File[files.size()]);
 	}
 
 	@Override
@@ -255,7 +265,7 @@ public class FileSystemAdapter
 		final File file = mFiles[pos];
 		row.getTextView().setText(file.getName());
 		row.showDragger(file.isDirectory());
-		row.getCoverView().setImageDrawable(getDrawableForFile(file));
+		row.getCoverView().setImageResource(getImageResourceForFile(file));
 		return row;
 	}
 
@@ -274,6 +284,10 @@ public class FileSystemAdapter
 		if (mFileObserver != null)
 			mFileObserver.stopWatching();
 		mFileObserver = null;
+
+		if (limiter != null && mFsRoot.equals(limiter.data))
+			limiter = null; // Filtering by mFsRoot is like having no filter
+
 		mLimiter = limiter;
 	}
 
@@ -284,22 +298,24 @@ public class FileSystemAdapter
 	}
 
 	/**
-	 * Returns a drawable for given file.
+	 * Returns a drawable resource id for given file.
 	 * This function is rather fast as the file type is guessed
 	 * based on the extension.
 	 *
-	 * @return drawable for the guessed mime type
+	 * @return resource id to use.
 	 */
-	private Drawable getDrawableForFile(File file) {
+	private int getImageResourceForFile(File file) {
 		int res = R.drawable.file_document;
-		if (file.isDirectory()) {
+		if (NAME_PARENT_FOLDER.equals(file.getName())) {
+			res = R.drawable.arrow_up;
+		} else if (file.isDirectory()) {
 			res = R.drawable.folder;
 		} else if (GUESS_MUSIC.matcher(file.getName()).matches()) {
 			res = R.drawable.file_music;
 		} else if (GUESS_IMAGE.matcher(file.getName()).matches()) {
 			res = R.drawable.file_image;
 		}
-		return mActivity.getResources().getDrawable(res);
+		return res;
 	}
 
 	/**
@@ -320,6 +336,8 @@ public class FileSystemAdapter
 	 */
 	public static Limiter buildLimiter(File file)
 	{
+		if (NAME_PARENT_FOLDER.equals(file.getName()))
+			file = file.getParentFile().getParentFile();
 		String[] fields = FILE_SEPARATOR.split(file.getPath().substring(1));
 		return new Limiter(MediaUtils.TYPE_FILE, fields, file);
 	}
