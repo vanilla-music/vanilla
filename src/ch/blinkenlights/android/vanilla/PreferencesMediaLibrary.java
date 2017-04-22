@@ -98,6 +98,10 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 	 * Set if we are in the edit dialog
 	 */
 	private boolean mIsEditingDirectories;
+	/**
+	 * The original state of our media folders.
+	 */
+	private String mInitialMediaFolders;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -145,8 +149,19 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 				});
 			}}), 0, 200);
 
-		if (mIsEditingDirectories)
+		// We got freshly created and user didn't have a chance
+		// to edit anything: remember this state
+		if (mInitialMediaFolders == null)
+			mInitialMediaFolders = getMediaFoldersDescription();
+
+		// Returned from edit dialog
+		if (mIsEditingDirectories) {
 			mIsEditingDirectories = false;
+			// trigger a scan if user changed its preferences
+			// in the edit dialog
+			if (!mInitialMediaFolders.equals(getMediaFoldersDescription()))
+				mFullScanPending = true;
+		}
 
 		updatePreferences(null);
 	}
@@ -159,8 +174,10 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 			mTimer = null;
 		}
 
+		// User exited this view -> scan if needed
 		if (mFullScanPending && !mIsEditingDirectories) {
 			MediaLibrary.startLibraryScan(getActivity(), true, true);
+			mInitialMediaFolders = null;
 			mFullScanPending = false;
 		}
 	}
@@ -175,9 +192,7 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 				cancelButtonPressed(view);
 				break;
 			case R.id.edit_button:
-				mIsEditingDirectories = true;
-				mFullScanPending = true;
-				startActivity(new Intent(getActivity(), MediaFoldersSelectionActivity.class));
+				editButtonPressed(view);
 				break;
 			case R.id.media_scan_group_albums:
 			case R.id.media_scan_force_bastp:
@@ -206,7 +221,7 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 			.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 					mFullScanPending = true;
-					updatePreferences(checkbox);
+					confirmUpdatePreferences(checkbox);
 				}
 			})
 			.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -236,16 +251,24 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 
 		mGroupAlbumsCheck.setChecked(prefs.groupAlbumsByFolder);
 		mForceBastpCheck.setChecked(prefs.forceBastp);
+		mMediaDirectories.setText(getMediaFoldersDescription());
+	}
 
-		String txt = "";
+	/**
+	 * Returns a textual representation of the media folder state
+	 *
+	 * @return string describing our directory scan preferences
+	 */
+	private String getMediaFoldersDescription() {
+		MediaLibrary.Preferences prefs = MediaLibrary.getPreferences(getActivity());
+		String description = "";
 		for (String path : prefs.mediaFolders) {
-			txt += "✔ " + path + "\n";
+			description += "✔ " + path + "\n";
 		}
 		for (String path : prefs.blacklistedFolders) {
-			txt += "✘ " + path + "\n";
+			description += "✘ " + path + "\n";
 		}
-		mMediaDirectories.setText(txt);
-
+		return description;
 	}
 
 	/**
@@ -314,6 +337,40 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 	public void cancelButtonPressed(View view) {
 		MediaLibrary.abortLibraryScan(getActivity());
 		updateProgress();
+	}
+
+	/**
+	 * Called when the user hits the edit button
+	 *
+	 * @param view the view which was pressed
+	 */
+	private void editButtonPressed(final View view) {
+		if (mFullScanPending) {
+			// no need to nag if we are scanning anyway
+			startMediaFoldersSelection();
+			return;
+		}
+
+		new AlertDialog.Builder(getActivity())
+			.setTitle(R.string.media_scan_preferences_change_title)
+			.setMessage(R.string.media_scan_preferences_change_message)
+			.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					startMediaFoldersSelection();
+				}
+			})
+			.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {}
+			})
+			.show();
+	}
+
+	/**
+	 * Launches the edit dialog
+	 */
+	private void startMediaFoldersSelection() {
+			mIsEditingDirectories = true;
+			startActivity(new Intent(getActivity(), MediaFoldersSelectionActivity.class));
 	}
 
 }
