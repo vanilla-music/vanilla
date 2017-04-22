@@ -862,7 +862,8 @@ public class LibraryActivity
 	@Override
 	public void onMediaChange()
 	{
-		mPagerAdapter.invalidateData();
+		if (mPagerAdapter != null)
+			mPagerAdapter.invalidateData();
 	}
 
 	@Override
