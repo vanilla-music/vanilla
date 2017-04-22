@@ -212,7 +212,6 @@ public class MediaLibrary  {
 		MediaLibraryBackend backend = getBackend(context); // also initialized sScanner
 		if (drop) {
 			sScanner.flushDatabase();
-			// fixme: should clean orphaned AFTER scan finished
 		}
 
 		if (forceFull) {
@@ -291,7 +290,7 @@ public class MediaLibrary  {
 		int rows = getBackend(context).delete(TABLE_SONGS, SongColumns._ID+"="+id, null);
 
 		if (rows > 0) {
-			getBackend(context).cleanOrphanedEntries(true);
+			getBackend(context).cleanOrphanedEntries();
 			notifyObserver();
 		}
 		return rows;

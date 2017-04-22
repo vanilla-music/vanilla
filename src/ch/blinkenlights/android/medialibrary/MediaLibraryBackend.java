@@ -41,6 +41,11 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	 */
 	private static final String DATABASE_NAME = "media-library.db";
 	/**
+	 * The magic mtime to use for songs which are in PENDING_DELETION state.
+	 * This is NOT 0 as the mtime is always expected to be > 0 for existing rows
+	 */
+	private static final int PENDING_DELETION_MTIME = 1;
+	/**
 	 * Regexp to detect genre queries which we can optimize
 	 */
 	private static final Pattern sQueryMatchGenreSearch = Pattern.compile("(^|.+ )"+MediaLibrary.GenreSongColumns._GENRE_ID+"=(\\d+)$");
@@ -160,21 +165,28 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	}
 
 	/**
+	 * Marks all songs as 'deleteable' - but doesn't delete them yet.
+	 * Calling cleanOrphanedEntries() would take care of the actual deletion.
+	 * This is a hacky way to get rid of all songs that a scan didn't touch.
+	 */
+	void setPendingDeletion() {
+		SQLiteDatabase dbh = getWritableDatabase();
+		dbh.execSQL("UPDATE "+MediaLibrary.TABLE_SONGS+" SET "+MediaLibrary.SongColumns.MTIME+"="+PENDING_DELETION_MTIME);
+	}
+
+	/**
 	 * Purges orphaned entries from the media library
 	 *
-	 * @param purgeUserData also delete user data, such as playlists if true
 	 */
-	void cleanOrphanedEntries(boolean purgeUserData) {
+	void cleanOrphanedEntries() {
 		SQLiteDatabase dbh = getWritableDatabase();
+		dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_SONGS+" WHERE "+MediaLibrary.SongColumns.MTIME+"="+PENDING_DELETION_MTIME);
 		dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_ALBUMS+" WHERE "+MediaLibrary.AlbumColumns._ID+" NOT IN (SELECT "+MediaLibrary.SongColumns.ALBUM_ID+" FROM "+MediaLibrary.TABLE_SONGS+");");
 		dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_GENRES_SONGS+" WHERE "+MediaLibrary.GenreSongColumns.SONG_ID+" NOT IN (SELECT "+MediaLibrary.SongColumns._ID+" FROM "+MediaLibrary.TABLE_SONGS+");");
 		dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_GENRES+" WHERE "+MediaLibrary.GenreColumns._ID+" NOT IN (SELECT "+MediaLibrary.GenreSongColumns._GENRE_ID+" FROM "+MediaLibrary.TABLE_GENRES_SONGS+");");
 		dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+" WHERE "+MediaLibrary.ContributorSongColumns.SONG_ID+" NOT IN (SELECT "+MediaLibrary.SongColumns._ID+" FROM "+MediaLibrary.TABLE_SONGS+");");
 		dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_CONTRIBUTORS+" WHERE "+MediaLibrary.ContributorColumns._ID+" NOT IN (SELECT "+MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID+" FROM "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+");");
-
-		if (purgeUserData) {
-			dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_PLAYLISTS_SONGS+" WHERE "+MediaLibrary.PlaylistSongColumns.SONG_ID+" NOT IN (SELECT "+MediaLibrary.SongColumns._ID+" FROM "+MediaLibrary.TABLE_SONGS+");");
-		}
+		dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_PLAYLISTS_SONGS+" WHERE "+MediaLibrary.PlaylistSongColumns.SONG_ID+" NOT IN (SELECT "+MediaLibrary.SongColumns._ID+" FROM "+MediaLibrary.TABLE_SONGS+");");
 	}
 
 	/**

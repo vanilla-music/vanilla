@@ -67,6 +67,10 @@ public class MediaScanner implements Handler.Callback {
 	 */
 	private boolean mIsInitialScan;
 	/**
+	 * True if we must cleanup orphaned entries after the scan finished.
+	 */
+	private boolean mPendingCleanup;
+	/**
 	 * Timestamp in half-seconds since last notification
 	 */
 	private int mLastNotification;
@@ -139,11 +143,11 @@ public class MediaScanner implements Handler.Callback {
 	}
 
 	/**
-	 * Drops the media library
+	 * Prepares a flush of the databse.
 	 */
 	public void flushDatabase() {
-		mBackend.delete(MediaLibrary.TABLE_SONGS, null, null);
-		mBackend.cleanOrphanedEntries(false); // -> keep playlists
+		mBackend.setPendingDeletion();
+		mPendingCleanup = true;
 
 		MediaLibrary.Preferences prefs = MediaLibrary.getPreferences(mContext);
 		prefs._nativeLastMtime = 0;
@@ -193,6 +197,13 @@ public class MediaScanner implements Handler.Callback {
 					mIsInitialScan = false;
 					PlaylistBridge.importAndroidPlaylists(mContext);
 				}
+				if (mPendingCleanup) {
+					mPendingCleanup = false;
+					mBackend.cleanOrphanedEntries();
+				}
+				// make sure to notify about changes which cleanOrphanedEntries
+				// might have caused
+				mHandler.sendEmptyMessage(MSG_NOTIFY_CHANGE);
 				updateNotification(false);
 				break;
 			}
@@ -239,7 +250,7 @@ public class MediaScanner implements Handler.Callback {
 			if (step == null) {
 				mHandler.sendEmptyMessage(MSG_SCAN_FINISHED);
 			} else {
-				Log.v("VanillaMusic", "--- starting scan of type "+step.msg);
+				Log.v("VanillaMusic", "xxx --- starting scan of type "+step.msg);
 				mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_RPC, step.msg, 0, step.arg));
 			}
 		}
@@ -421,7 +432,7 @@ public class MediaScanner implements Handler.Callback {
 		long playCount = 0;
 		long skipCount = 0;
 		boolean hasChanged = false;
-		boolean mustInsert = true;
+		boolean mustInsert = false;
 
 		if (fileMtime > 0 && dbEntryMtime >= fileMtime) {
 			return false; // on-disk mtime is older than db mtime and it still exists -> nothing to do
@@ -433,18 +444,14 @@ public class MediaScanner implements Handler.Callback {
 			playCount = mBackend.getColumnFromSongId(MediaLibrary.SongColumns.PLAYCOUNT, songId);
 			skipCount = mBackend.getColumnFromSongId(MediaLibrary.SongColumns.SKIPCOUNT, songId);
 			mBackend.delete(MediaLibrary.TABLE_SONGS, MediaLibrary.SongColumns._ID+"="+songId, null);
-			hasChanged = true;
+			mPendingCleanup = true; // we deleted an entry, so we must also cleanup playlists, artists, etc...
+			hasChanged = true; // notify caller about change even if we are not going to re-insert this file.
 		}
 
+		// Check if we are willing to insert this file
+		// This is the case if we consider it to be playable on this device.
 		MediaMetadataExtractor tags = new MediaMetadataExtractor(path, prefs.forceBastp);
-		if (!tags.isMediaFile()) {
-			mustInsert = false; // does not have any useable metadata: won't insert even if it is a playable file
-		}
-
-		if (hasChanged) {
-			boolean purgeUserData = (mustInsert ? false : true);
-			mBackend.cleanOrphanedEntries(purgeUserData);
-		}
+		mustInsert = tags.isMediaFile();
 
 		if (mustInsert) {
 			hasChanged = true;
