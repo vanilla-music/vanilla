@@ -88,6 +88,14 @@
   <string name="playlists">Lejátszólisták</string>
   <string name="genres">Műfajok</string>
   <string name="files">Fájlok</string>
+  <string name="artist">Előadó</string>
+  <string name="album">Album</string>
+  <string name="genre">Műfaj</string>
+  <string name="folder">Mappa</string>
+  <string name="filename">Fájlnév</string>
+  <string name="file_size">Fájlméret</string>
+  <string name="file_time">Módosítás ideje</string>
+  <string name="extension">Kiterjesztés</string>
   <string name="unknown">Ismeretlen</string>
   <string name="play_all">Összes lejátszása</string>
   <string name="enqueue_all">Összes sorbaállítása</string>
@@ -118,7 +126,7 @@
     <item quantity="one">%d óra</item>
     <item quantity="other">%d óra</item>
   </plurals>
-  <string name="audio">Audió</string>
+  <string name="audio">Hang</string>
   <string name="volume_during_ducking_title">Hangerő értesítések alatt</string>
   <string name="volume_during_ducking_summary">Lejátszási hangerő:</string>
   <string name="ignore_audiofocus_loss_summary">Lejátszás folytatása az audió fókusz végleges elvesztésekor</string>
@@ -221,6 +229,8 @@
   <string name="enqueue_current_album">Album sorba állítása</string>
   <string name="enqueue_current_artist">Előadó sorba állítása</string>
   <string name="enqueue_current_genre">Műfaj sorba állítása</string>
+  <string name="enqueue_current">Sorbaállítás…</string>
+  <string name="more_from_current">Több innen…</string>
   <string name="empty_the_queue">Lejátszási sor ürítése</string>
   <string name="show_queue">Lejátszási sor megjelenítése</string>
   <string name="hide_queue">Lejátszási sor elrejtése</string>
@@ -261,6 +271,7 @@
   <string name="media_scan_preferences">Átvizsgáló beállítások</string>
   <string name="media_scan_preferences_change_title">Átvizsgáló beállítások módosítva</string>
   <string name="media_scan_preferences_change_message">A beállítás megváltoztatása a gyűjtemény teljes átvizsgálását okozza. Folytatja?</string>
+  <!--Folder selector-->
   <!--Plugin system-->
   <string name="plugins">Bővítmények</string>
 </resources>

@@ -252,6 +252,7 @@
   <string name="media_stats_playtime">Çalma süresi (saat)</string>
   <string name="media_stats_progress">Tarama durumu</string>
   <string name="media_library_scan_running">Ortam arşivi taranıyor...</string>
+  <!--Folder selector-->
   <!--Plugin system-->
   <string name="plugins">Eklentiler</string>
 </resources>

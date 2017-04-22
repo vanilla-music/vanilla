@@ -250,6 +250,7 @@
   <string name="media_scan_preferences">扫面器选项</string>
   <string name="media_scan_preferences_change_title">扫面器选项已更改</string>
   <string name="media_scan_preferences_change_message">更改此选项将完全重新开始扫描您的媒体库。你想继续吗？</string>
+  <!--Folder selector-->
   <!--Plugin system-->
   <string name="plugins">插件</string>
 </resources>

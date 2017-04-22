@@ -82,10 +82,20 @@
   <string name="delete_file">Dzēst failu \'%s\'?</string>
   <string name="artists">Izpildītāji</string>
   <string name="albums">Albumi</string>
+  <string name="albumartists">Albuma izpildītāji</string>
+  <string name="composers">Komponisti</string>
   <string name="songs">Celiņi</string>
   <string name="playlists">Repertuāri</string>
   <string name="genres">Žanri</string>
   <string name="files">Faili</string>
+  <string name="artist">Izpildītājs</string>
+  <string name="album">Albums</string>
+  <string name="genre">Žanrs</string>
+  <string name="folder">Mape</string>
+  <string name="filename">Faila nosaukums</string>
+  <string name="file_size">Faila izmērs</string>
+  <string name="file_time">Mainīšanas laiks</string>
+  <string name="extension">Paplašinājums</string>
   <string name="unknown">Nezināms</string>
   <string name="play_all">Atskaņot visu</string>
   <string name="enqueue_all">Ierindot visu</string>
@@ -223,6 +233,8 @@
   <string name="enqueue_current_album">Ierindot albumu</string>
   <string name="enqueue_current_artist">Ierindot izpildītāju</string>
   <string name="enqueue_current_genre">Ierindot žanru</string>
+  <string name="enqueue_current">Ierindot...</string>
+  <string name="more_from_current">Vairāk no...</string>
   <string name="empty_the_queue">Tukša rinda</string>
   <string name="show_queue">Rādīt rindu</string>
   <string name="hide_queue">Paslēpt rindu</string>
@@ -238,6 +250,7 @@
   <string name="filebrowser_start">Failu pārlūka mājas</string>
   <string name="customize_filebrowser_start">Failu pārlūks atvērsies šajā mapē</string>
   <string name="select">Izvēlēties</string>
+  <string name="save">Saglabāt</string>
   <string name="autoplaylist_playcounts_title">Automātiska repertuāra izveide</string>
   <string name="autoplaylist_playcounts_summary">Automātiski izveidot</string>
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s \'Top %.0f\' repertuāru</string>
@@ -249,6 +262,7 @@
   <string name="sendto">Sūtīt uz...</string>
   <string name="no_receiving_apps">Šim mēdija tipam netika atrastas saņemošās lietotnes!</string>
   <string name="media_library">Multivides bibliotēka</string>
+  <string name="media_folders_header">Indeksētās mapes</string>
   <string name="media_scan_header">Multivides skenētājs</string>
   <string name="media_scan_full">Veikt pilnu failu sistēmas skenēšanu (lēni)</string>
   <string name="media_scan_drop_db">Izmest mēdiju datubāzi (bīstami!)</string>
@@ -263,6 +277,11 @@
   <string name="media_scan_preferences">Skenētāja opcijas</string>
   <string name="media_scan_preferences_change_title">Skenētāja opcijas izmainītas</string>
   <string name="media_scan_preferences_change_message">Mainot šo opciju, tiks sākta pilna jūsu bibliotēkas pārskenēšana. Vai vēlaties turpināt?</string>
+  <!--Folder selector-->
+  <string name="hint_long_press_to_modify_folder">Ilgais nospiediens, lai mainītu mapes opcijas</string>
+  <string name="folder_include">Iekļaut</string>
+  <string name="folder_exclude">Izslēgt</string>
+  <string name="folder_neutral">Neitrāls</string>
   <!--Plugin system-->
   <string name="plugins">Spraudņi</string>
 </resources>

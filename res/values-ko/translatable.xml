@@ -251,6 +251,7 @@
   <string name="media_scan_preferences">검색 옵션</string>
   <string name="media_scan_preferences_change_title">검색 옵션이 변경되었습니다</string>
   <string name="media_scan_preferences_change_message">이 옵션을 변경하면 라이브러리를 모두 재 검색합니다. 계속 하시겠습니까?</string>
+  <!--Folder selector-->
   <!--Plugin system-->
   <string name="plugins">플러그인</string>
 </resources>

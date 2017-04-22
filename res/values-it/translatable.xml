@@ -88,6 +88,14 @@
   <string name="playlists">Playlist</string>
   <string name="genres">Generi</string>
   <string name="files">File</string>
+  <string name="artist">Artista</string>
+  <string name="album">Album</string>
+  <string name="genre">Genere</string>
+  <string name="folder">Cartella</string>
+  <string name="filename">Nome file</string>
+  <string name="file_size">Dimensione file</string>
+  <string name="file_time">Data di modifica</string>
+  <string name="extension">Estensione</string>
   <string name="unknown">Sconosciuto</string>
   <string name="play_all">Riproduci tutto</string>
   <string name="enqueue_all">Metti tutto in coda</string>
@@ -221,6 +229,8 @@
   <string name="enqueue_current_album">Metti in coda album</string>
   <string name="enqueue_current_artist">Metti in coda artista</string>
   <string name="enqueue_current_genre">Metti in coda genere</string>
+  <string name="enqueue_current">Metti in coda...</string>
+  <string name="more_from_current">Di più da...</string>
   <string name="empty_the_queue">Svuota coda</string>
   <string name="show_queue">Mostra in coda</string>
   <string name="hide_queue">Nascondi coda</string>
@@ -236,6 +246,7 @@
   <string name="filebrowser_start">Home ricerca file</string>
   <string name="customize_filebrowser_start">La ricerca file inizia da questa cartella</string>
   <string name="select">Seleziona</string>
+  <string name="save">Salva</string>
   <string name="autoplaylist_playcounts_title">Creazione playlist automatica</string>
   <string name="autoplaylist_playcounts_summary">Crea automaticamente una</string>
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s playlist \"Top %.0f\"</string>
@@ -247,6 +258,7 @@
   <string name="sendto">Invia a…</string>
   <string name="no_receiving_apps">Nessuna app di ricezione trovata per questo tipo di file multimediale!</string>
   <string name="media_library">Libreria multimediale</string>
+  <string name="media_folders_header">Cartelle indicizzate</string>
   <string name="media_scan_header">Scansione file multimediali</string>
   <string name="media_scan_full">Scansiona l\'intero sistema (lento)</string>
   <string name="media_scan_drop_db">Svuota il database dei file multimediali (Attenzione!)</string>
@@ -261,6 +273,11 @@
   <string name="media_scan_preferences">Opzioni per la scansione</string>
   <string name="media_scan_preferences_change_title">Opzioni per la scansione modificate</string>
   <string name="media_scan_preferences_change_message">La modifica di questa opzione avvierà una scansione completa della tua libreria. Continuare?</string>
+  <!--Folder selector-->
+  <string name="hint_long_press_to_modify_folder">Tieni premuto per modificare le opzioni per la cartella</string>
+  <string name="folder_include">Includi</string>
+  <string name="folder_exclude">Escludi</string>
+  <string name="folder_neutral">Neutrale</string>
   <!--Plugin system-->
   <string name="plugins">Plugin</string>
 </resources>

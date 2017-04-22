@@ -83,6 +83,14 @@
   <string name="playlists">プレイリスト</string>
   <string name="genres">ジャンル</string>
   <string name="files">ファイル</string>
+  <string name="artist">アーティスト</string>
+  <string name="album">アルバム</string>
+  <string name="genre">ジャンル</string>
+  <string name="folder">フォルダー</string>
+  <string name="filename">ファイル名</string>
+  <string name="file_size">ファイルサイズ</string>
+  <string name="file_time">更新時刻</string>
+  <string name="extension">拡張子</string>
   <string name="unknown">不明</string>
   <string name="play_all">すべて再生</string>
   <string name="enqueue_all">すべてキューに入れる</string>
@@ -213,6 +221,8 @@
   <string name="enqueue_current_album">アルバムをキューに入れる</string>
   <string name="enqueue_current_artist">アーティストをキューに入れる</string>
   <string name="enqueue_current_genre">ジャンルをキューに入れる</string>
+  <string name="enqueue_current">キューに入れる…</string>
+  <string name="more_from_current">さらに…</string>
   <string name="empty_the_queue">キューを空にする</string>
   <string name="show_queue">キューを表示</string>
   <string name="hide_queue">キューを非表示</string>
@@ -228,6 +238,7 @@
   <string name="filebrowser_start">ファイルブラウザー ホーム</string>
   <string name="customize_filebrowser_start">ファイルブラウザーはこのディレクトリーから開始します</string>
   <string name="select">選択</string>
+  <string name="save">保存</string>
   <string name="autoplaylist_playcounts_title">自動プレイリスト作成</string>
   <string name="autoplaylist_playcounts_summary">自動的に作成</string>
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s \'トップ %.0f\' プレイリスト</string>
@@ -239,6 +250,7 @@
   <string name="sendto">送信…</string>
   <string name="no_receiving_apps">このメディアタイプの受信アプリが見つかりません!</string>
   <string name="media_library">メディアライブラリー</string>
+  <string name="media_folders_header">インデックス済ディレクトリー</string>
   <string name="media_scan_header">メディアスキャナー</string>
   <string name="media_scan_full">ファイルシステム全体をスキャン (遅い)</string>
   <string name="media_scan_drop_db">メディアデータベースをフラッシュ (危険!)</string>
@@ -253,6 +265,11 @@
   <string name="media_scan_preferences">スキャナーオプション</string>
   <string name="media_scan_preferences_change_title">スキャナーオプションを変更しました</string>
   <string name="media_scan_preferences_change_message">このオプションを変更すると、ライブラリーのフル再スキャンが始まります。 続行しますか?</string>
+  <!--Folder selector-->
+  <string name="hint_long_press_to_modify_folder">長押ししてフォルダーオプションを変更します</string>
+  <string name="folder_include">含む</string>
+  <string name="folder_exclude">除外</string>
+  <string name="folder_neutral">中立</string>
   <!--Plugin system-->
   <string name="plugins">プラグイン</string>
 </resources>

@@ -88,6 +88,14 @@
   <string name="playlists">Wiedergabelisten</string>
   <string name="genres">Genres</string>
   <string name="files">Dateien</string>
+  <string name="artist">Interpret</string>
+  <string name="album">Album</string>
+  <string name="genre">Genre</string>
+  <string name="folder">Ordner</string>
+  <string name="filename">Dateiname</string>
+  <string name="file_size">Dateigröße</string>
+  <string name="file_time">Änderungsdatum</string>
+  <string name="extension">Erweiterung</string>
   <string name="unknown">Unbekannt</string>
   <string name="play_all">Alle wiedergeben</string>
   <string name="enqueue_all">Alle einreihen</string>
@@ -221,6 +229,8 @@
   <string name="enqueue_current_album">Album einreihen</string>
   <string name="enqueue_current_artist">Interpret einreihen</string>
   <string name="enqueue_current_genre">Genre einreihen</string>
+  <string name="enqueue_current">Einreihen …</string>
+  <string name="more_from_current">Mehr von …</string>
   <string name="empty_the_queue">Warteschlange verwerfen</string>
   <string name="show_queue">Warteschlange anzeigen</string>
   <string name="hide_queue">Warteschlange ausblenden</string>
@@ -236,6 +246,7 @@
   <string name="filebrowser_start">Startordner</string>
   <string name="customize_filebrowser_start">Dateimanager startet in diesem Ordner</string>
   <string name="select">Auswählen</string>
+  <string name="save">Speichern</string>
   <string name="autoplaylist_playcounts_title">Wiedergabeliste automatisch erstellen</string>
   <string name="autoplaylist_playcounts_summary">Automatisches Erstellen einer</string>
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s »Top %.0f«-Wiedergabeliste</string>
@@ -247,6 +258,7 @@
   <string name="sendto">Senden an …</string>
   <string name="no_receiving_apps">Keine kompatiblen Apps für diesen Medientyp gefunden!</string>
   <string name="media_library">Medienbibliothek</string>
+  <string name="media_folders_header">Indizierte Verzeichnisse</string>
   <string name="media_scan_header">Mediensuche</string>
   <string name="media_scan_full">Gesamtes Dateisystem durchsuchen (langsam)</string>
   <string name="media_scan_drop_db">Mediendatenbank leeren (Gefahrenzone!)</string>
@@ -261,6 +273,11 @@
   <string name="media_scan_preferences">Suchoptionen</string>
   <string name="media_scan_preferences_change_title">Suchoptionen geändert</string>
   <string name="media_scan_preferences_change_message">Durch Ändern dieser Option wird ein erneutes, vollständiges Durchsuchen Ihrer Bibliothek veranlasst. Möchten Sie fortfahren?</string>
+  <!--Folder selector-->
+  <string name="hint_long_press_to_modify_folder">Gedrückt halten für Ordneroptionen</string>
+  <string name="folder_include">Einschließen</string>
+  <string name="folder_exclude">Ausschließen</string>
+  <string name="folder_neutral">Neutral</string>
   <!--Plugin system-->
   <string name="plugins">Erweiterungen</string>
 </resources>

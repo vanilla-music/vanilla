@@ -88,6 +88,14 @@
   <string name="playlists">Soittolistat</string>
   <string name="genres">Tyylilajit</string>
   <string name="files">Tiedostot</string>
+  <string name="artist">Esittäjä</string>
+  <string name="album">Albumi</string>
+  <string name="genre">Tyylilaji</string>
+  <string name="folder">Kansio</string>
+  <string name="filename">Tiedostonimi</string>
+  <string name="file_size">Tiedoston koko</string>
+  <string name="file_time">Muokkausaika</string>
+  <string name="extension">Pääte</string>
   <string name="unknown">Tuntematon</string>
   <string name="play_all">Toista kaikki</string>
   <string name="enqueue_all">Jonota kaikki</string>
@@ -217,6 +225,8 @@
   <string name="enqueue_current_album">Lisää albumi jonoon</string>
   <string name="enqueue_current_artist">Lisää esittäjä jonoon</string>
   <string name="enqueue_current_genre">Lisää lajityyppi jonoon</string>
+  <string name="enqueue_current">Aseta jonoon…</string>
+  <string name="more_from_current">Lisää…</string>
   <string name="empty_the_queue">Tyhjennä jono</string>
   <string name="show_queue">Näytä jono</string>
   <string name="hide_queue">Piilota jono</string>
@@ -232,6 +242,7 @@
   <string name="filebrowser_start">Tiedostohallinnan aloitus</string>
   <string name="customize_filebrowser_start">Tiedostohallinta käynnistyy tästä kansiosta</string>
   <string name="select">Valitse</string>
+  <string name="save">Tallenna</string>
   <string name="autoplaylist_playcounts_title">Automaattisen soittolistan luonti</string>
   <string name="autoplaylist_playcounts_summary">Luo automaattisesti</string>
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s \'Top %.0f\' -soittolista</string>
@@ -243,6 +254,7 @@
   <string name="sendto">Lähetä…</string>
   <string name="no_receiving_apps">Tälle mediatyypille ei löytynyt vastaanottavia sovelluksia!</string>
   <string name="media_library">Mediakirjasto</string>
+  <string name="media_folders_header">Indeksoidut kansiot</string>
   <string name="media_scan_header">Mediaskanneri</string>
   <string name="media_scan_full">Skannaa koko tiedostojärjestelmä (hidas)</string>
   <string name="media_scan_drop_db">Tyhjennä täysin mediatietokanta (vaara!)</string>
@@ -257,6 +269,11 @@
   <string name="media_scan_preferences">Skannerivalinnat</string>
   <string name="media_scan_preferences_change_title">Skannerivalinnat muuttuivat</string>
   <string name="media_scan_preferences_change_message">Tämän valinnan muuttaminen käynnistää kirjaston täyden läpikäynnin. Haluatko jatkaa?</string>
+  <!--Folder selector-->
+  <string name="hint_long_press_to_modify_folder">Pitkä painallus muokkaa kansiovalintoja</string>
+  <string name="folder_include">Sisällytä</string>
+  <string name="folder_exclude">Ohita</string>
+  <string name="folder_neutral">Neutraali</string>
   <!--Plugin system-->
   <string name="plugins">Liitännäiset</string>
 </resources>

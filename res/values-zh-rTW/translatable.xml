@@ -19,13 +19,13 @@
   <string name="queue_cleared">佇列已清除。</string>
   <string name="cover_art">封面</string>
   <string name="close_notification">關閉通知</string>
-  <string name="_genre">類型</string>
+  <string name="_genre">流派</string>
   <string name="_track">曲目</string>
   <string name="_composer">作曲</string>
   <string name="_path">路徑</string>
   <string name="_format">格式</string>
   <string name="_title">標題</string>
-  <string name="_artist">演唱者</string>
+  <string name="_artist">演出者</string>
   <string name="_album">專輯</string>
   <string name="_year">年份</string>
   <string name="_replaygain">重播增益</string>
@@ -75,29 +75,37 @@
   <string name="deleted_item">已刪除 \'%s\'。</string>
   <string name="delete_item">刪除 \'%s\'？</string>
   <string name="delete_file">刪除檔案 \'%s\'？</string>
-  <string name="artists">演唱者</string>
+  <string name="artists">演出者</string>
   <string name="albums">專輯</string>
-  <string name="albumartists">專輯的演唱者</string>
+  <string name="albumartists">專輯的演出者</string>
   <string name="composers">作曲</string>
   <string name="songs">曲目</string>
   <string name="playlists">撥放清單</string>
-  <string name="genres">風格</string>
+  <string name="genres">流派</string>
   <string name="files">檔案</string>
+  <string name="artist">演出者</string>
+  <string name="album">專輯</string>
+  <string name="genre">流派</string>
+  <string name="folder">Folder</string>
+  <string name="filename">檔案名稱</string>
+  <string name="file_size">檔案大小</string>
+  <string name="file_time">修改時間</string>
+  <string name="extension">擴充</string>
   <string name="unknown">不明的</string>
   <string name="play_all">全部撥放</string>
   <string name="enqueue_all">佇列全部</string>
   <string name="all_songs">所有曲目</string>
-  <string name="more_from_artist">更多來自演唱者</string>
+  <string name="more_from_artist">更多來的自演出者</string>
   <string name="more_from_album">更多來自專輯</string>
   <string name="title">標題</string>
   <string name="number_of_tracks">曲目數</string>
   <string name="year">年份</string>
   <string name="date_added">已加入資料</string>
-  <string name="artist_album">演唱者，專輯</string>
-  <string name="artist_year_album">演唱者、年份、專輯</string>
-  <string name="artist_album_track">演唱者，專輯，曲目編號</string>
-  <string name="artist_album_title">演唱者，專輯，標題</string>
-  <string name="artist_year">演唱者，年份</string>
+  <string name="artist_album">演出者、專輯</string>
+  <string name="artist_year_album">演出者、年份、專輯</string>
+  <string name="artist_album_track">演出者、專輯、曲目編號</string>
+  <string name="artist_album_title">演出者、專輯、標題</string>
+  <string name="artist_year">演出者、年份</string>
   <string name="album_track">專輯，曲目編號</string>
   <string name="song_playcount">播放次數</string>
   <!--Preferences-->
@@ -170,7 +178,7 @@
   <string name="use_idle_timeout_summary">當啟動後，在閒置一段時間後會停止播放 </string>
   <string name="idle_timeout_title">閒置超時</string>
   <string name="enable_scroll_to_song_title">捲動到歌曲標題</string>
-  <string name="enable_scroll_to_song_summary">在媒體庫清單，捲動到目前播放的歌曲/專輯/演唱者</string>
+  <string name="enable_scroll_to_song_summary">在媒體庫清單，捲動到目前播放的歌曲/專輯/演出者</string>
   <string name="coverloader_android_title">從 Android 載入封面</string>
   <string name="coverloader_android_summary">查詢 Androids 內部的媒體資料庫，以用於專輯封面</string>
   <string name="coverloader_vanilla_title">從資料夾載入封面</string>
@@ -211,8 +219,10 @@
   <string name="cycle_repeat_mode">循環重覆模式</string>
   <string name="cycle_shuffle_mode">循環隨機模式</string>
   <string name="enqueue_current_album">以專輯儲入佇列</string>
-  <string name="enqueue_current_artist">以演唱者儲入佇列</string>
-  <string name="enqueue_current_genre">以類型儲入佇列</string>
+  <string name="enqueue_current_artist">以演出者存入佇列</string>
+  <string name="enqueue_current_genre">以流派存入佇列</string>
+  <string name="enqueue_current">佇列…</string>
+  <string name="more_from_current">更多來自…</string>
   <string name="empty_the_queue">佇列是空的</string>
   <string name="show_queue">顯示佇列</string>
   <string name="hide_queue">隱藏佇列</string>
@@ -223,11 +233,12 @@
   <string name="preferences_action_show_queue">顯示佇列</string>
   <string name="preferences_action_clear_queue">清除佇列</string>
   <string name="preferences_action_enqueue_current_album">以專輯儲入佇列</string>
-  <string name="preferences_action_enqueue_current_artist">以演唱者儲入佇列</string>
-  <string name="preferences_action_enqueue_current_genre">以類型儲入佇列</string>
+  <string name="preferences_action_enqueue_current_artist">以演出者存入佇列</string>
+  <string name="preferences_action_enqueue_current_genre">以流派存入佇列</string>
   <string name="filebrowser_start">啟始目錄</string>
   <string name="customize_filebrowser_start">在此目錄開始瀏覽檔案</string>
   <string name="select">選擇</string>
+  <string name="save">儲存</string>
   <string name="autoplaylist_playcounts_title">自動播放清單建立</string>
   <string name="autoplaylist_playcounts_summary">自動建立一個</string>
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s \'Top %.0f\' 播放清單</string>
@@ -239,6 +250,7 @@
   <string name="sendto">傳送到…</string>
   <string name="no_receiving_apps">該媒體類型未找到相應接受的應用程式！</string>
   <string name="media_library">媒體庫</string>
+  <string name="media_folders_header">索引目錄</string>
   <string name="media_scan_header">媒體掃描</string>
   <string name="media_scan_full">掃描所有的檔案系統 (很慢)</string>
   <string name="media_scan_drop_db">更新媒體資料庫 (危險地帶！)</string>
@@ -253,6 +265,11 @@
   <string name="media_scan_preferences">掃描選項</string>
   <string name="media_scan_preferences_change_title">掃描選項已更改</string>
   <string name="media_scan_preferences_change_message">更改此選項，將開始對您的媒體庫作完整的重新掃描。您想繼續嗎？</string>
+  <!--Folder selector-->
+  <string name="hint_long_press_to_modify_folder">長按修改資料夾選項</string>
+  <string name="folder_include">包含</string>
+  <string name="folder_exclude">排除</string>
+  <string name="folder_neutral">中立</string>
   <!--Plugin system-->
   <string name="plugins">外掛</string>
 </resources>

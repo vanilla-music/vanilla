@@ -88,6 +88,13 @@
   <string name="playlists">Listas de reprodução</string>
   <string name="genres">Géneros</string>
   <string name="files">Ficheiros</string>
+  <string name="artist">Artista</string>
+  <string name="album">Álbum</string>
+  <string name="genre">Género</string>
+  <string name="folder">Pasta</string>
+  <string name="filename">Nome do ficheiro</string>
+  <string name="file_size">Tamanho do ficheiro</string>
+  <string name="extension">Extensão</string>
   <string name="unknown">Desconhecido</string>
   <string name="play_all">Reproduzir tudo</string>
   <string name="enqueue_all">Colocar tudo na fila</string>
@@ -221,6 +228,8 @@
   <string name="enqueue_current_album">Colocar álbum na fila</string>
   <string name="enqueue_current_artist">Colocar artista na fila</string>
   <string name="enqueue_current_genre">Colocar género na fila</string>
+  <string name="enqueue_current">Colocar na fila...</string>
+  <string name="more_from_current">Mais de...</string>
   <string name="empty_the_queue">Limpar fila de reprodução</string>
   <string name="show_queue">Mostrar fila</string>
   <string name="hide_queue">Ocultar fila</string>
@@ -236,6 +245,7 @@
   <string name="filebrowser_start">Pasta inicial do explorador</string>
   <string name="customize_filebrowser_start">O explorador de ficheiros abre esta pasta</string>
   <string name="select">Selecionar</string>
+  <string name="save">Guardar</string>
   <string name="autoplaylist_playcounts_title">Criação automática de listas de reprodução</string>
   <string name="autoplaylist_playcounts_summary">Criar automaticamente</string>
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s uma lista de reprodução \'Top %.0f\'</string>
@@ -247,6 +257,7 @@
   <string name="sendto">Enviar para...</string>
   <string name="no_receiving_apps">Não foram encontradas aplicações para este tipo multimédia!</string>
   <string name="media_library">Coleção multimédia</string>
+  <string name="media_folders_header">Diretórios indexados</string>
   <string name="media_scan_header">Analisador multimédia</string>
   <string name="media_scan_full">Análise total do sistema (lento)</string>
   <string name="media_scan_drop_db">Limpar itens da base de dados (PERIGOSO)</string>
@@ -261,6 +272,11 @@
   <string name="media_scan_preferences">Opções do analisador</string>
   <string name="media_scan_preferences_change_title">Opções alteradas</string>
   <string name="media_scan_preferences_change_message">Ao alterar esta opção, irá iniciar uma nova análise da coleção. Gostaria de continuar?</string>
+  <!--Folder selector-->
+  <string name="hint_long_press_to_modify_folder">Toque longo para alterar as opções da pasta</string>
+  <string name="folder_include">Incluir</string>
+  <string name="folder_exclude">Excluir</string>
+  <string name="folder_neutral">Neutra</string>
   <!--Plugin system-->
   <string name="plugins">Suplementos</string>
 </resources>

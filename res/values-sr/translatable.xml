@@ -93,6 +93,14 @@
   <string name="playlists">Листе нумера</string>
   <string name="genres">Жанрови</string>
   <string name="files">Фајлови</string>
+  <string name="artist">Извођач</string>
+  <string name="album">Албум</string>
+  <string name="genre">Жанр</string>
+  <string name="folder">Фасцикла</string>
+  <string name="filename">Назив фајла</string>
+  <string name="file_size">Величина фајла</string>
+  <string name="file_time">Време измене</string>
+  <string name="extension">Наставак</string>
   <string name="unknown">Непознато</string>
   <string name="play_all">Пусти све</string>
   <string name="enqueue_all">Стави све у ред</string>
@@ -229,6 +237,8 @@
   <string name="enqueue_current_album">Стави албум у ред</string>
   <string name="enqueue_current_artist">Стави извођача у ред</string>
   <string name="enqueue_current_genre">Стави жанр у ред</string>
+  <string name="enqueue_current">Стави у ред…</string>
+  <string name="more_from_current">Још од…</string>
   <string name="empty_the_queue">Испразни ред</string>
   <string name="show_queue">Прикажи ред</string>
   <string name="hide_queue">Сакриј ред</string>
@@ -244,6 +254,7 @@
   <string name="filebrowser_start">Почетна страница</string>
   <string name="customize_filebrowser_start">Прегледач фајлова почиње од ове фасцикле</string>
   <string name="select">Изабери</string>
+  <string name="save">Сачувај</string>
   <string name="autoplaylist_playcounts_title">Аутоматске листе нумера</string>
   <string name="autoplaylist_playcounts_summary">Аутоматски направи</string>
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s „Најбоље %.0f“ листу</string>
@@ -255,6 +266,7 @@
   <string name="sendto">Пошаљи за…</string>
   <string name="no_receiving_apps">Нема апликација за овај тип фајла!</string>
   <string name="media_library">Библиотека</string>
+  <string name="media_folders_header">Индексиране фасцикле</string>
   <string name="media_scan_header">Очитавач медија</string>
   <string name="media_scan_full">Очитај читав фајлсистем (споро)</string>
   <string name="media_scan_drop_db">Очисти базу података медија (опасност!)</string>
@@ -269,6 +281,11 @@
   <string name="media_scan_preferences">Опције скенера</string>
   <string name="media_scan_preferences_change_title">Опције скенера измењене</string>
   <string name="media_scan_preferences_change_message">Измена ове опције ће покренути потпуно скенирање ваше библиотеке. Желите ли да наставите?</string>
+  <!--Folder selector-->
+  <string name="hint_long_press_to_modify_folder">Притисните и задржите да измените опције фасцикле</string>
+  <string name="folder_include">Укључи</string>
+  <string name="folder_exclude">Искључи</string>
+  <string name="folder_neutral">Неутрално</string>
   <!--Plugin system-->
   <string name="plugins">Прикључци</string>
 </resources>

@@ -98,6 +98,14 @@
   <string name="playlists">Плей-листы</string>
   <string name="genres">Жанры</string>
   <string name="files">Файлы</string>
+  <string name="artist">исполнителя</string>
+  <string name="album">альбома</string>
+  <string name="genre">жанра</string>
+  <string name="folder">папки</string>
+  <string name="filename">по имени файла</string>
+  <string name="file_size">по размеру файла</string>
+  <string name="file_time">по давности файла</string>
+  <string name="extension">по типу файла</string>
   <string name="unknown">Неизвестный</string>
   <string name="play_all">Воспроизвести всё</string>
   <string name="enqueue_all">Всё в очередь</string>
@@ -237,6 +245,8 @@
   <string name="enqueue_current_album">Заполнить очередь альбомом</string>
   <string name="enqueue_current_artist">Заполнить очередь исполнителем</string>
   <string name="enqueue_current_genre">Заполнить очередь жанром</string>
+  <string name="enqueue_current">В конец очереди…</string>
+  <string name="more_from_current">Ещё того же…</string>
   <string name="empty_the_queue">Очистить всю очередь</string>
   <string name="show_queue">Показать очередь</string>
   <string name="hide_queue">Спрятать очередь</string>
@@ -252,6 +262,7 @@
   <string name="filebrowser_start">Домашняя папка браузера файлов</string>
   <string name="customize_filebrowser_start">Браузер файлов открывает эту папку</string>
   <string name="select">Выбрать</string>
+  <string name="save">Сохранить</string>
   <string name="autoplaylist_playcounts_title">Автоматическое создание плей-листов</string>
   <string name="autoplaylist_playcounts_summary">Автоматически создавать</string>
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s плей-лист \"%.0f лучших\"</string>
@@ -263,6 +274,7 @@
   <string name="sendto">Отправить…</string>
   <string name="no_receiving_apps">Нет приложений для обработки такого типа файла!</string>
   <string name="media_library">Библиотека носителей</string>
+  <string name="media_folders_header">Проиндексированные директории</string>
   <string name="media_scan_header">Сканер носителей</string>
   <string name="media_scan_full">Полное сканирование файловой системы (медленное)</string>
   <string name="media_scan_drop_db">Очистить базу данных носителя (опасно!)</string>
@@ -271,12 +283,17 @@
   <string name="media_scan_group_albums">Группировать альбомы по папкам</string>
   <string name="media_statistics">Статистика</string>
   <string name="media_stats_tracks">Количество дорожек</string>
-  <string name="media_stats_playtime">Воспроизведено (часов)</string>
+  <string name="media_stats_playtime">Длительность (часов)</string>
   <string name="media_stats_progress">Выполняется сканирование</string>
   <string name="media_library_scan_running">Сканируется библиотека носителей...</string>
   <string name="media_scan_preferences">Настройки сканера</string>
   <string name="media_scan_preferences_change_title">Настройки сканера изменены</string>
   <string name="media_scan_preferences_change_message">Изменение этой настройки приведёт к полному сканированию библиотеки. Продолжить?</string>
+  <!--Folder selector-->
+  <string name="hint_long_press_to_modify_folder">Изменение настроек папки долгим нажатием</string>
+  <string name="folder_include">Включить</string>
+  <string name="folder_exclude">Исключить</string>
+  <string name="folder_neutral">Оставить</string>
   <!--Plugin system-->
   <string name="plugins">Модули</string>
 </resources>

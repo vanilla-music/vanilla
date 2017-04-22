@@ -250,5 +250,6 @@
   <string name="share">Sdílet...</string>
   <string name="sendto">Odeslat na...</string>
   <string name="no_receiving_apps">Nebyla nalezena žádná aplikace pro příjem tohoto typu souboru!</string>
+  <!--Folder selector-->
   <!--Plugin system-->
 </resources>

@@ -185,5 +185,6 @@
   <string name="reverse_sort">Orden invertido</string>
   <string name="share">Compartir...</string>
   <string name="sendto">Enviar a...</string>
+  <!--Folder selector-->
   <!--Plugin system-->
 </resources>
