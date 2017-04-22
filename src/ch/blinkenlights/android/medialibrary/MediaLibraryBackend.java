@@ -90,14 +90,15 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	}
 
 	/**
-	 * Returns the modification time of a song, 0 if the song does not exist
+	 * Returns the `long' value stored in the column of the given id.
 	 *
+	 * @param column the column to return of `id'
 	 * @param id the song id to query
-	 * @return the modification time of this song
+	 * @return the value of `column'
 	 */
-	long getSongMtime(long id) {
+	long getColumnFromSongId(String column, long id) {
 		long mtime = 0;
-		Cursor cursor = query(false, MediaLibrary.TABLE_SONGS, new String[]{ MediaLibrary.SongColumns.MTIME }, MediaLibrary.SongColumns._ID+"="+Long.toString(id), null, null, null, null, "1");
+		Cursor cursor = query(false, MediaLibrary.TABLE_SONGS, new String[]{ column }, MediaLibrary.SongColumns._ID+"="+Long.toString(id), null, null, null, null, "1");
 		if (cursor.moveToFirst())
 			mtime = cursor.getLong(0);
 		cursor.close();

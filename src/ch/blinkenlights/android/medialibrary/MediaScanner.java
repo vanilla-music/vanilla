@@ -416,8 +416,10 @@ public class MediaScanner implements Handler.Callback {
 		if (isBlacklisted(file))
 			return false;
 
-		long dbEntryMtime = mBackend.getSongMtime(songId) * 1000; // this is in unixtime -> convert to 'ms'
+		long dbEntryMtime = mBackend.getColumnFromSongId(MediaLibrary.SongColumns.MTIME, songId) * 1000; // this is in unixtime -> convert to 'ms'
 		long fileMtime = file.lastModified();
+		long playCount = 0;
+		long skipCount = 0;
 		boolean hasChanged = false;
 		boolean mustInsert = true;
 
@@ -427,7 +429,9 @@ public class MediaScanner implements Handler.Callback {
 
 		if (dbEntryMtime != 0) {
 			// DB entry exists but is outdated - drop current entry and maybe re-insert it
-			// fixme: drops play counts :-(
+			// this tries to preserve play and skipcounts of the song
+			playCount = mBackend.getColumnFromSongId(MediaLibrary.SongColumns.PLAYCOUNT, songId);
+			skipCount = mBackend.getColumnFromSongId(MediaLibrary.SongColumns.SKIPCOUNT, songId);
 			mBackend.delete(MediaLibrary.TABLE_SONGS, MediaLibrary.SongColumns._ID+"="+songId, null);
 			hasChanged = true;
 		}
@@ -479,6 +483,8 @@ public class MediaScanner implements Handler.Callback {
 			v.put(MediaLibrary.SongColumns.SONG_NUMBER, tags.getFirst(MediaMetadataExtractor.TRACK_NUMBER));
 			v.put(MediaLibrary.SongColumns.DISC_NUMBER, discNumber);
 			v.put(MediaLibrary.SongColumns.YEAR,        tags.getFirst(MediaMetadataExtractor.YEAR));
+			v.put(MediaLibrary.SongColumns.PLAYCOUNT,   playCount);
+			v.put(MediaLibrary.SongColumns.SKIPCOUNT,   skipCount);
 			v.put(MediaLibrary.SongColumns.PATH,        path);
 			mBackend.insert(MediaLibrary.TABLE_SONGS, null, v);
 

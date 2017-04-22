@@ -366,7 +366,7 @@ public class MediaLibrary  {
 
 		ArrayList<ContentValues> bulk = new ArrayList<>();
 		for (Long id : ids) {
-			if (getBackend(context).getSongMtime(id) == 0)
+			if (getBackend(context).getColumnFromSongId(MediaLibrary.SongColumns.MTIME, id) == 0) // no mtime? song does not exist.
 				continue;
 
 			ContentValues v = new ContentValues();
