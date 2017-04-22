@@ -57,6 +57,10 @@ public class FolderPickerAdapter
 	 */
 	final private File mStorageDir;
 	/**
+	 * The filesystem root
+	 */
+	final private File mFsRoot = new File("/");
+	/**
 	 * The currently set directory
 	 */
 	private File mCurrentDir;
@@ -91,7 +95,9 @@ public class FolderPickerAdapter
 		}
 
 		Item item = (Item)getItem(pos);
+		int res = (item.file == null ? R.drawable.arrow_up : R.drawable.folder);
 		row.getTextView().setText(item.name);
+		row.getCoverView().setImageResource(res);
 		row.getCoverView().setColorFilter(item.color);
 		return row;
 	}
@@ -176,7 +182,9 @@ public class FolderPickerAdapter
 		File[]dirs = path.listFiles();
 
 		clear();
-		add(new FolderPickerAdapter.Item("../", null, 0));
+
+		if (!mFsRoot.equals(path))
+			add(new FolderPickerAdapter.Item("..", null, 0));
 
 		// Hack alert: Android >= 6.0's default storage root directory
 		// is usually not readable. That's not a big issue but

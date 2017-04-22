@@ -153,7 +153,8 @@ public abstract class FolderPickerActivity extends Activity
 		File curPath = mListAdapter.getCurrentDir();
 		File newPath = null;
 
-		if(pos == 0) {
+		if(item.file == null) {
+			// This is the '..' entry
 			newPath = curPath.getParentFile();
 		}
 		else {
