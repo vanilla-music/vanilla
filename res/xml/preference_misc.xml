@@ -30,6 +30,11 @@ THE SOFTWARE.
 		android:summary="@string/disable_lockscreen_summary"
 		android:defaultValue="false" />
 	<CheckBoxPreference
+		android:key="keep_screen_on"
+		android:title="@string/keep_screen_on_title"
+		android:summary="@string/keep_screen_on_summary"
+		android:defaultValue="false" />
+	<CheckBoxPreference
 		android:key="use_idle_timeout"
 		android:title="@string/use_idle_timeout_title"
 		android:summary="@string/use_idle_timeout_summary"

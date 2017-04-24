@@ -152,12 +152,20 @@ public abstract class PlaybackActivity extends Activity
 
 		Window window = getWindow();
 
+		// Set lockscreen preference
 		if (prefs.getBoolean(PrefKeys.DISABLE_LOCKSCREEN, PrefDefaults.DISABLE_LOCKSCREEN))
 			window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
 					| WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
 		else
 			window.clearFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
 					| WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+
+		// Set screen-on preference
+		if (prefs.getBoolean(PrefKeys.KEEP_SCREEN_ON, PrefDefaults.KEEP_SCREEN_ON))
+			window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		else
+			window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
 	}
 
 	@Override

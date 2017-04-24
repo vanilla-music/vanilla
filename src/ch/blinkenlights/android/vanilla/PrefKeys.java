@@ -70,4 +70,5 @@ public class PrefKeys {
 	public static final String AUTOPLAYLIST_PLAYCOUNTS = "playcounts_autoplaylist";
 	public static final String IGNORE_AUDIOFOCUS_LOSS = "ignore_audiofocus_loss";
 	public static final String ENABLE_SCROLL_TO_SONG = "enable_scroll_to_song";
+	public static final String KEEP_SCREEN_ON = "keep_screen_on";
 }
