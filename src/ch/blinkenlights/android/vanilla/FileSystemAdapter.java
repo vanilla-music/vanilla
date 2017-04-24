@@ -266,7 +266,6 @@ public class FileSystemAdapter
 
 		final File file = mFiles[pos];
 		row.getTextView().setText(file.getName());
-		row.showDragger(file.isDirectory());
 		row.getCoverView().setImageResource(getImageResourceForFile(file));
 		return row;
 	}
