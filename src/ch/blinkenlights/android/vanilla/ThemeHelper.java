@@ -111,10 +111,10 @@ public class ThemeHelper {
 	 * is a big mess
 	 */
 	final public static int[] getDefaultCoverColors(Context context) {
-		int[] colors_holo_yolo         = { 0xff000000, 0xff606060, 0xff404040, 0x88000000 };
-		int[] colors_material_light    = { 0xffeeeeee, 0xffd6d7d7, 0xffd6d7d7, 0x55ffffff };
-		int[] colors_material_dark     = { 0xff303030, 0xff606060, 0xff404040, 0x33ffffff };
-		int[] colors_marshmallow_light = { 0xfffafafa, 0xffd6d7d7, 0xffd6d7d7, 0x55ffffff };
+		int[] colors_holo_yolo         = { 0xff000000, 0xff404040 };
+		int[] colors_material_light    = { 0xffeeeeee, 0xffd6d7d7 };
+		int[] colors_material_dark     = { 0xff303030, 0xff404040 };
+		int[] colors_marshmallow_light = { 0xfffafafa, 0xffd6d7d7 };
 		int[] colors_marshmallow_dark  = colors_material_dark;
 		if (usesHoloTheme()) // pre material device
 			return colors_holo_yolo;

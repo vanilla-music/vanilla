@@ -28,7 +28,6 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
@@ -335,7 +334,7 @@ public final class CoverBitmap {
 	}
 
 	/**
-	 * Generate the default cover (a rendition of a CD). Returns a square iamge.
+	 * Generate the default cover (a rendition of a music note). Returns a square iamge.
 	 * Both dimensions are the lesser of width and height.
 	 *
 	 * @param width The max width
@@ -345,43 +344,38 @@ public final class CoverBitmap {
 	public static Bitmap generateDefaultCover(Context context, int width, int height)
 	{
 		int size = Math.min(width, height);
-		int halfSize = size / 2;
-		int eightSize = size / 8;
 
 		int[] colors = ThemeHelper.getDefaultCoverColors(context);
 		int rgb_background = colors[0];
-		int rgb_gardient_begin = colors[1];
-		int rgb_gardient_end = colors[2];
-		int rgb_center = colors[3];
+		int rgb_note_inner = colors[1];
+
+		final int line_thickness = size / 10;
+		final int line_vertical = line_thickness*5;
+		final int line_horizontal = line_thickness*3;
+		final int circle_radius = line_thickness*2;
+
+		final int total_len_x = circle_radius*2 + line_horizontal - line_thickness; // total length of x axis
+		final int total_len_y = circle_radius + line_vertical + (line_thickness/2); // total length of y axis
+		final int xoff = circle_radius + (size - total_len_x)/2;                    // 'center offset' of x
+		final int yoff = size - circle_radius - (size - total_len_y)/2;             // 'center offset' of y
 
 		Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
 		bitmap.eraseColor(rgb_background);
 
-		LinearGradient gradient = new LinearGradient(size, 0, 0, size, rgb_gardient_begin, rgb_gardient_end, Shader.TileMode.CLAMP);
-		RectF oval = new RectF(eightSize, 0, size - eightSize, size);
-
 		Paint paint = new Paint();
 		paint.setAntiAlias(true);
+		paint.setColor(rgb_note_inner);
 
 		Canvas canvas = new Canvas(bitmap);
-		canvas.rotate(-45, halfSize, halfSize);
-
-		paint.setShader(gradient);
-		canvas.translate(size / 20, size / 20);
-		canvas.scale(0.9f, 0.9f);
-		canvas.drawOval(oval, paint);
-
-		paint.setShader(null);
-		paint.setColor(rgb_center);
-		canvas.translate(size / 3, size / 3);
-		canvas.scale(0.333f, 0.333f);
-		canvas.drawOval(oval, paint);
-
-		paint.setShader(null);
-		paint.setColor(rgb_background);
-		canvas.translate(size / 3, size / 3);
-		canvas.scale(0.333f, 0.333f);
-		canvas.drawOval(oval, paint);
+		// main circle
+		canvas.drawCircle(xoff, yoff, circle_radius, paint);
+		// vertical line
+		int lpos = xoff + circle_radius - line_thickness; // lpos + thickness will touch the outer right edge of the circle
+		int tpos = yoff - line_vertical;                  // tpos + vertical will be the center of the circle
+		canvas.drawRoundRect(new RectF(lpos, tpos, lpos+line_thickness, yoff), 0, 0, paint);
+		// horizontal line
+		int hdiff = tpos - (line_thickness/2); // shift this up by half of the thickness to have the circle radius touch the top of the vertical line
+		canvas.drawRoundRect(new RectF(lpos, hdiff, lpos+line_horizontal, hdiff+line_thickness), line_thickness, line_thickness, paint);
 
 		return bitmap;
 	}
