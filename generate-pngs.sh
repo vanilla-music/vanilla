@@ -20,11 +20,11 @@ gen() {
 }
 
 for i in orig/*.svgz; do
-	gen "$i" mdpi 90
-	gen "$i" hdpi 135
-	gen "$i" xhdpi 180
-	gen "$i" xxhdpi 270
+	gen "$i" mdpi 96
+	gen "$i" hdpi 144
+	gen "$i" xhdpi 192
+	gen "$i" xxhdpi 288
 done
 
 # GOOG tells us to use xxx-hdpi only for launcher icons
-gen "orig/icon.svgz" xxxhdpi 360
+gen "orig/icon.svgz" xxxhdpi 384
