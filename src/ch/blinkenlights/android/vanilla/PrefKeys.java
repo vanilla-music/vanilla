@@ -48,6 +48,7 @@ public class PrefKeys {
 	public static final String NOTIFICATION_ACTION = "notification_action";
 	public static final String NOTIFICATION_MODE = "notification_mode";
 	public static final String NOTIFICATION_NAG = "notification_nag";
+	public static final String NOTIFICATION_PRIVATE = "notification_private";
 	public static final String PLAYBACK_ON_STARTUP = "playback_on_startup";
 	public static final String SCROBBLE = "scrobble";
 	public static final String SHAKE_ACTION = "shake_action";

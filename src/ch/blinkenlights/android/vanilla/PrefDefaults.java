@@ -47,6 +47,7 @@ public class PrefDefaults {
 	public static final String  NOTIFICATION_ACTION = "0";
 	public static final String  NOTIFICATION_MODE = "1";
 	public static final boolean NOTIFICATION_NAG = false;
+	public static final boolean NOTIFICATION_PRIVATE = false;
 	public static final boolean PLAYBACK_ON_STARTUP = false;
 	public static final boolean SCROBBLE = false;
 	public static final Action  SHAKE_ACTION = Action.NextSong;
