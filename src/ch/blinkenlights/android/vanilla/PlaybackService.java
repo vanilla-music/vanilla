@@ -46,6 +46,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.audiofx.AudioEffect;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -617,6 +618,9 @@ public final class PlaybackService extends Service
 		mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		mp.setOnCompletionListener(this);
 		mp.setOnErrorListener(this);
+		Intent i = new Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION);
+		i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mp.getAudioSessionId());
+		i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, getPackageName());
 		return mp;
 	}
 
