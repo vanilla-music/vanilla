@@ -590,11 +590,13 @@ public class MediaUtils {
 		String[] projection = new String[]{ MediaStore.Audio.Media._ID, MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.ARTIST_ID };
 		try {
 			Cursor cursor = context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, MediaStore.Audio.Media.DATA+"=?", new String[] { song.path }, null);
-			if (cursor.moveToFirst()) {
-				for (int i=0; i<result.length; i++)
-					result[i] = cursor.getLong(i);
+			if (cursor != null) {
+				if (cursor.moveToFirst()) {
+					for (int i=0; i<result.length; i++)
+						result[i] = cursor.getLong(i);
+				}
+				cursor.close();
 			}
-			cursor.close();
 		} catch (SecurityException e) {
 			Log.e("VanillaMusic", "Wowies: No permission to read EXTERNAL_CONTENT_URI for song "+song.path+": "+e);
 		}
