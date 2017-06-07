@@ -304,6 +304,10 @@ public final class PlaybackService extends Service
 	 */
 	private boolean mNotificationNag;
 	/**
+	 * If true, create a notification as private
+	 */
+	private boolean mNotificationPrivate;
+	/**
 	 * If true, audio will not be played through the speaker.
 	 */
 	private boolean mHeadsetOnly;
@@ -447,6 +451,7 @@ public final class PlaybackService extends Service
 		settings.registerOnSharedPreferenceChangeListener(this);
 		mNotificationMode = Integer.parseInt(settings.getString(PrefKeys.NOTIFICATION_MODE, PrefDefaults.NOTIFICATION_MODE));
 		mNotificationNag = settings.getBoolean(PrefKeys.NOTIFICATION_NAG, PrefDefaults.NOTIFICATION_NAG);
+		mNotificationPrivate = settings.getBoolean(PrefKeys.NOTIFICATION_PRIVATE, PrefDefaults.NOTIFICATION_PRIVATE);
 		mScrobble = settings.getBoolean(PrefKeys.SCROBBLE, PrefDefaults.SCROBBLE);
 		mIdleTimeout = settings.getBoolean(PrefKeys.USE_IDLE_TIMEOUT, PrefDefaults.USE_IDLE_TIMEOUT) ? settings.getInt(PrefKeys.IDLE_TIMEOUT, PrefDefaults.IDLE_TIMEOUT) : 0;
 
@@ -841,6 +846,9 @@ public final class PlaybackService extends Service
 		} else if (PrefKeys.NOTIFICATION_NAG.equals(key)) {
 			mNotificationNag = settings.getBoolean(PrefKeys.NOTIFICATION_NAG, PrefDefaults.NOTIFICATION_NAG);
 			// no need to update notification: happens on next event
+		} else if (PrefKeys.NOTIFICATION_PRIVATE.equals(key)) {
+			mNotificationPrivate = settings.getBoolean(PrefKeys.NOTIFICATION_PRIVATE, PrefDefaults.NOTIFICATION_PRIVATE);
+			updateNotification();
 		} else if (PrefKeys.SCROBBLE.equals(key)) {
 			mScrobble = settings.getBoolean(PrefKeys.SCROBBLE, PrefDefaults.SCROBBLE);
 		} else if (PrefKeys.MEDIA_BUTTON.equals(key) || PrefKeys.MEDIA_BUTTON_BEEP.equals(key)) {
@@ -2098,12 +2106,32 @@ public final class PlaybackService extends Service
 		notification.icon = R.drawable.status_icon;
 		notification.flags |= Notification.FLAG_ONGOING_EVENT;
 		notification.contentIntent = mNotificationAction;
+
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
 			// expanded view is available since 4.1
 			notification.bigContentView = expanded;
 		}
+
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-			notification.visibility = Notification.VISIBILITY_PUBLIC;
+			if (!mNotificationPrivate) {
+				notification.visibility = Notification.VISIBILITY_PUBLIC;
+			} else {
+				RemoteViews viewsPublic = new RemoteViews(getPackageName(), R.layout.notification);
+				viewsPublic.setInt(R.id.title, "setText", R.string.app_name);
+
+				viewsPublic.setImageViewResource(R.id.cover, R.drawable.icon);
+				viewsPublic.setImageViewResource(R.id.play_pause, playButton);
+				viewsPublic.setOnClickPendingIntent(R.id.play_pause, PendingIntent.getService(this, 0, playPause, 0));
+				viewsPublic.setOnClickPendingIntent(R.id.next, PendingIntent.getService(this, 0, next, 0));
+				viewsPublic.setOnClickPendingIntent(R.id.close, PendingIntent.getService(this, 0, close, 0));
+				viewsPublic.setViewVisibility(R.id.close, closeButtonVisibility);
+
+				Notification notificationPublic = notification.clone();
+				notificationPublic.contentView = viewsPublic;
+
+				notification.visibility = Notification.VISIBILITY_PRIVATE;
+				notification.publicVersion = notificationPublic;
+			}
 		}
 
 		if(mNotificationNag) {
@@ -2137,7 +2165,7 @@ public final class PlaybackService extends Service
 			synchronized (mStateLock) {
 				if((mState & FLAG_PLAYING) != 0) {
 					mTransientAudioLoss = true;
-					
+
 					if(type == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
 						setFlag(FLAG_DUCKING);
 					} else {
