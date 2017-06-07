@@ -23,14 +23,17 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.widget.ImageButton;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
+import android.graphics.Paint;
 
 public class VanillaImageButton extends ImageButton {
 
 	private Context mContext;
 	private static int mNormalTint;
 	private static int mActiveTint;
+	private int mCircleColor;
 
 	public VanillaImageButton(Context context) {
 		this(context, null);
@@ -45,6 +48,13 @@ public class VanillaImageButton extends ImageButton {
 		mContext = context;
 		mNormalTint = fetchAttrColor(R.attr.controls_normal);
 		mActiveTint = fetchAttrColor(R.attr.controls_active);
+
+		if (attrs != null) {
+			TypedArray a = mContext.obtainStyledAttributes(attrs, R.styleable.VanillaImageButton, 0, 0);
+			mCircleColor = a.getColor(R.styleable.VanillaImageButton_backgroundCircleColor, 0);
+			a.recycle();
+		}
+
 		updateImageTint(-1);
 	}
 
@@ -52,6 +62,22 @@ public class VanillaImageButton extends ImageButton {
 	public void setImageResource(int resId) {
 		super.setImageResource(resId);
 		this.updateImageTint(resId);
+	}
+
+	@Override
+	public void onDraw(Canvas canvas) {
+		if (mCircleColor != 0) {
+			// Draw a circle on the background, but only
+			// if the color is set.
+			final int x = getWidth() / 2;
+			final int y = getHeight() / 2;
+			final float r = (x > y ? y : x);
+			Paint paint = new Paint();
+			paint.setColor(mCircleColor);
+			paint.setAntiAlias(true);
+			canvas.drawCircle(x, y, r*0.90f, paint);
+		}
+		super.onDraw(canvas);
 	}
 
 	private void updateImageTint(int resHint) {

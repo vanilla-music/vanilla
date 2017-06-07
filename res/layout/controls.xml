@@ -20,7 +20,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:vib="http://schemas.android.com/apk/res-auto">
 	<ch.blinkenlights.android.vanilla.VanillaImageButton
 		android:id="@+id/shuffle"
 		android:layout_height="fill_parent"
@@ -47,6 +48,7 @@ THE SOFTWARE.
 		android:background="?android:attr/selectableItemBackground"
 		android:scaleType="fitCenter"
 		android:src="@drawable/play"
+		vib:backgroundCircleColor="?background_circle_color"
 		android:contentDescription="@string/play_pause" />
 	<ch.blinkenlights.android.vanilla.VanillaImageButton
 		android:id="@+id/next"
