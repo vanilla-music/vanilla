@@ -56,7 +56,7 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 	/**
 	 * Regexp matching anything
 	 */
-	private static final Pattern sFilterAny = Pattern.compile("^(.*)$");
+	private static final Pattern sFilterAny = Pattern.compile("^([\\s\\S]*)$");
 	/**
 	 * Genres as defined by androids own MediaScanner.java
 	 */
