@@ -24,6 +24,8 @@ THE SOFTWARE.
 	xmlns:vib="http://schemas.android.com/apk/res-auto">
 	<ch.blinkenlights.android.vanilla.VanillaImageButton
 		android:id="@+id/shuffle"
+		android:paddingTop="@dimen/controls_padding"
+		android:paddingBottom="@dimen/controls_padding"
 		android:layout_height="fill_parent"
 		android:layout_width="0px"
 		android:layout_weight="1"
@@ -33,6 +35,8 @@ THE SOFTWARE.
 		android:contentDescription="@string/cycle_shuffle_mode" />
 	<ch.blinkenlights.android.vanilla.VanillaImageButton
 		android:id="@+id/previous"
+		android:paddingTop="@dimen/controls_padding"
+		android:paddingBottom="@dimen/controls_padding"
 		android:layout_height="fill_parent"
 		android:layout_width="0px"
 		android:layout_weight="1"
@@ -42,6 +46,8 @@ THE SOFTWARE.
 		android:contentDescription="@string/previous_song" />
 	<ch.blinkenlights.android.vanilla.VanillaImageButton
 		android:id="@+id/play_pause"
+		android:paddingTop="@dimen/controls_padding"
+		android:paddingBottom="@dimen/controls_padding"
 		android:layout_height="fill_parent"
 		android:layout_width="0px"
 		android:layout_weight="1"
@@ -52,6 +58,8 @@ THE SOFTWARE.
 		android:contentDescription="@string/play_pause" />
 	<ch.blinkenlights.android.vanilla.VanillaImageButton
 		android:id="@+id/next"
+		android:paddingTop="@dimen/controls_padding"
+		android:paddingBottom="@dimen/controls_padding"
 		android:layout_height="fill_parent"
 		android:layout_width="0px"
 		android:layout_weight="1"
@@ -61,6 +69,8 @@ THE SOFTWARE.
 		android:contentDescription="@string/next_song" />
 	<ch.blinkenlights.android.vanilla.VanillaImageButton
 		android:id="@+id/end_action"
+		android:paddingTop="@dimen/controls_padding"
+		android:paddingBottom="@dimen/controls_padding"
 		android:layout_height="fill_parent"
 		android:layout_width="0px"
 		android:layout_weight="1"

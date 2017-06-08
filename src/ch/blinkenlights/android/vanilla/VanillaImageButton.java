@@ -75,7 +75,7 @@ public class VanillaImageButton extends ImageButton {
 			Paint paint = new Paint();
 			paint.setColor(mCircleColor);
 			paint.setAntiAlias(true);
-			canvas.drawCircle(x, y, r*0.90f, paint);
+			canvas.drawCircle(x, y, r*0.80f, paint);
 		}
 		super.onDraw(canvas);
 	}
