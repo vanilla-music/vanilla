@@ -331,7 +331,8 @@ THE SOFTWARE.
 	<string name="media_scan_group_albums">Group albums by folder</string>
 	<string name="media_statistics">Statistics</string>
 	<string name="media_stats_tracks">Number of tracks</string>
-	<string name="media_stats_playtime">Play time (Hours)</string>
+	<string name="media_stats_library_playtime">Total playing time (Hours)</string>
+	<string name="media_stats_listen_playtime">Hours of music played so far</string>
 	<string name="media_stats_progress">Scan progress</string>
 	<string name="media_library_scan_running">Scanning media library…</string>
 	<string name="media_scan_preferences">Scanner options</string>

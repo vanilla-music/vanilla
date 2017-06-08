@@ -69,7 +69,11 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 	/**
 	 * The number of hours of music we have
 	 */
-	private TextView mStatsPlaytime;
+	private TextView mStatsLibraryPlaytime;
+	/**
+	 * The total listening time
+	 */
+	private TextView mStatsListenPlaytime;
 	/**
 	 * A list of scanned media directories
 	 */
@@ -118,7 +122,8 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 		mProgressText = (TextView)view.findViewById(R.id.media_stats_progress_text);
 		mProgressBar = (ProgressBar)view.findViewById(R.id.media_stats_progress_bar);
 		mStatsTracks = (TextView)view.findViewById(R.id.media_stats_tracks);
-		mStatsPlaytime = (TextView)view.findViewById(R.id.media_stats_playtime);
+		mStatsLibraryPlaytime = (TextView)view.findViewById(R.id.media_stats_library_playtime);
+		mStatsListenPlaytime = (TextView)view.findViewById(R.id.media_stats_listen_playtime);
 		mMediaDirectories = (TextView)view.findViewById(R.id.media_directories);
 		mFullScanCheck = (CheckBox)view.findViewById(R.id.media_scan_full);
 		mDropDbCheck = (CheckBox)view.findViewById(R.id.media_scan_drop_db);
@@ -276,7 +281,7 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 	 */
 	private void updateProgress() {
 		Context context = getActivity();
-		MediaLibrary.ScanProgress progress = MediaLibrary.describeScanProgress(getActivity());
+		MediaLibrary.ScanProgress progress = MediaLibrary.describeScanProgress(context);
 
 		boolean idle = !progress.isRunning;
 		mProgressText.setText(progress.lastFile);
@@ -297,19 +302,23 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 		Integer songCount = MediaLibrary.getLibrarySize(context);
 		mStatsTracks.setText(songCount.toString());
 
-		float playtime = calculateDuration(context) / 3600000F;
-		mStatsPlaytime.setText(String.format("%.1f", playtime));
+		float libraryPlaytime = calculateSongSum(context, MediaLibrary.SongColumns.DURATION) / 3600000F;
+		mStatsLibraryPlaytime.setText(String.format("%.1f", libraryPlaytime));
+
+		float listenPlaytime = calculateSongSum(context, MediaLibrary.SongColumns.PLAYCOUNT+"*"+MediaLibrary.SongColumns.DURATION) / 3600000F;
+		mStatsListenPlaytime.setText(String.format("%.1f", listenPlaytime));
 	}
 
 	/**
-	 * Queries the media library and calculates the total amount of playtime in ms
+	 * Queries the media library and calculates the sum of given column.
 	 *
 	 * @param context the context to use
+	 * @param column the column to sum up
 	 * @return the play time of the library in ms
 	 */
-	public long calculateDuration(Context context) {
+	public long calculateSongSum(Context context, String column) {
 		long duration = 0;
-		Cursor cursor = MediaLibrary.queryLibrary(context, MediaLibrary.TABLE_SONGS, new String[]{"SUM("+MediaLibrary.SongColumns.DURATION+")"}, null, null, null);
+		Cursor cursor = MediaLibrary.queryLibrary(context, MediaLibrary.TABLE_SONGS, new String[]{"SUM("+column+")"}, null, null, null);
 		if (cursor != null) {
 			if (cursor.moveToFirst()) {
 				duration = cursor.getLong(0);

@@ -100,11 +100,21 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 			</TableRow>
 			<TableRow>
 				<TextView
-					android:text="@string/media_stats_playtime"
+					android:text="@string/media_stats_library_playtime"
 					android:padding="3dip" />
 				<TextView
 					android:text="@string/empty"
-					android:id="@+id/media_stats_playtime"
+					android:id="@+id/media_stats_library_playtime"
+					android:gravity="right"
+					android:padding="3dip" />
+			</TableRow>
+			<TableRow>
+				<TextView
+					android:text="@string/media_stats_listen_playtime"
+					android:padding="3dip" />
+				<TextView
+					android:text="@string/empty"
+					android:id="@+id/media_stats_listen_playtime"
 					android:gravity="right"
 					android:padding="3dip" />
 			</TableRow>
