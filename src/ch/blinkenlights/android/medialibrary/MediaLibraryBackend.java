@@ -177,25 +177,23 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	/**
 	 * Purges orphaned entries from the media library
 	 *
+	 * @param fullCleanup also remove orphaned playlist entries and songs marked for deletion.
 	 */
-	void cleanOrphanedEntries() {
+	void cleanOrphanedEntries(boolean fullCleanup) {
 		SQLiteDatabase dbh = getWritableDatabase();
-		// These are not orphaned, but corrupted entries: This song exists multiple times as we have
-		// multiple artist or album references. Just nuke it as we can't tell which entry is correct.
-		// A re-scan will re-add the song (once).
-		dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_SONGS+" WHERE "+MediaLibrary.SongColumns._ID+" IN ("+
-		                "SELECT "+MediaLibrary.SongColumns._ID+" FROM "+MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS+" GROUP BY "+
-		                MediaLibrary.SongColumns._ID+" HAVING count("+MediaLibrary.SongColumns._ID+") > 1)");
 
-		// Remove all songs which are marked for deletion
-		dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_SONGS+" WHERE "+MediaLibrary.SongColumns.MTIME+"="+PENDING_DELETION_MTIME);
+		// Remove all songs which are marked for deletion and playlist orphaned playlist entries.
+		if (fullCleanup) {
+			dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_SONGS+" WHERE "+MediaLibrary.SongColumns.MTIME+"="+PENDING_DELETION_MTIME);
+			dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_PLAYLISTS_SONGS+" WHERE "+MediaLibrary.PlaylistSongColumns.SONG_ID+" NOT IN (SELECT "+MediaLibrary.SongColumns._ID+" FROM "+MediaLibrary.TABLE_SONGS+");");
+		}
+
 		// And remove any orphaned references.
 		dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_ALBUMS+" WHERE "+MediaLibrary.AlbumColumns._ID+" NOT IN (SELECT "+MediaLibrary.SongColumns.ALBUM_ID+" FROM "+MediaLibrary.TABLE_SONGS+");");
 		dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_GENRES_SONGS+" WHERE "+MediaLibrary.GenreSongColumns.SONG_ID+" NOT IN (SELECT "+MediaLibrary.SongColumns._ID+" FROM "+MediaLibrary.TABLE_SONGS+");");
 		dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_GENRES+" WHERE "+MediaLibrary.GenreColumns._ID+" NOT IN (SELECT "+MediaLibrary.GenreSongColumns._GENRE_ID+" FROM "+MediaLibrary.TABLE_GENRES_SONGS+");");
 		dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+" WHERE "+MediaLibrary.ContributorSongColumns.SONG_ID+" NOT IN (SELECT "+MediaLibrary.SongColumns._ID+" FROM "+MediaLibrary.TABLE_SONGS+");");
 		dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_CONTRIBUTORS+" WHERE "+MediaLibrary.ContributorColumns._ID+" NOT IN (SELECT "+MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID+" FROM "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+");");
-		dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_PLAYLISTS_SONGS+" WHERE "+MediaLibrary.PlaylistSongColumns.SONG_ID+" NOT IN (SELECT "+MediaLibrary.SongColumns._ID+" FROM "+MediaLibrary.TABLE_SONGS+");");
 	}
 
 	/**

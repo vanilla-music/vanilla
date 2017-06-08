@@ -290,7 +290,7 @@ public class MediaLibrary  {
 		int rows = getBackend(context).delete(TABLE_SONGS, SongColumns._ID+"="+id, null);
 
 		if (rows > 0) {
-			getBackend(context).cleanOrphanedEntries();
+			getBackend(context).cleanOrphanedEntries(true);
 			notifyObserver();
 		}
 		return rows;

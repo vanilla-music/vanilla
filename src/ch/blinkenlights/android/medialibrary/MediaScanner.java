@@ -67,7 +67,7 @@ public class MediaScanner implements Handler.Callback {
 	 */
 	private boolean mIsInitialScan;
 	/**
-	 * True if we must cleanup orphaned entries after the scan finished.
+	 * True if we must do a full cleanup of orphaned entries after the scan finished.
 	 */
 	private boolean mPendingCleanup;
 	/**
@@ -199,7 +199,7 @@ public class MediaScanner implements Handler.Callback {
 				}
 				if (mPendingCleanup) {
 					mPendingCleanup = false;
-					mBackend.cleanOrphanedEntries();
+					mBackend.cleanOrphanedEntries(true);
 				}
 				// make sure to notify about changes which cleanOrphanedEntries
 				// might have caused
@@ -443,8 +443,11 @@ public class MediaScanner implements Handler.Callback {
 			// this tries to preserve play and skipcounts of the song
 			playCount = mBackend.getColumnFromSongId(MediaLibrary.SongColumns.PLAYCOUNT, songId);
 			skipCount = mBackend.getColumnFromSongId(MediaLibrary.SongColumns.SKIPCOUNT, songId);
+			// Remove the song from the database for now but do not delete any
+			// playlist references to it.
 			mBackend.delete(MediaLibrary.TABLE_SONGS, MediaLibrary.SongColumns._ID+"="+songId, null);
-			mPendingCleanup = true; // we deleted an entry, so we must also cleanup playlists, artists, etc...
+			mBackend.cleanOrphanedEntries(false);
+			mPendingCleanup = true; // Ensure that we run a full cleanup after all scans finished, to get rid of orphaned playlist entries.
 			hasChanged = true; // notify caller about change even if we are not going to re-insert this file.
 		}
 

@@ -293,6 +293,13 @@ public class MediaSchema {
 			dbh.execSQL("DROP TABLE preferences");
 		}
 
+		if (oldVersion >= 20170407 && oldVersion < 20170608) {
+			// renames were buggy for some time -> get rid of duplicates
+			dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_SONGS+" WHERE "+MediaLibrary.SongColumns._ID+" IN ("+
+				"SELECT "+MediaLibrary.SongColumns._ID+" FROM "+MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS+" GROUP BY "+
+				MediaLibrary.SongColumns._ID+" HAVING count("+MediaLibrary.SongColumns._ID+") > 1)");
+		}
+
 	}
 
 }
