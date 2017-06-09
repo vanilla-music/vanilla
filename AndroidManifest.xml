@@ -174,7 +174,6 @@ THE SOFTWARE.
 				<action android:name="android.intent.action.VIEW" />
 				<category android:name="android.intent.category.DEFAULT" />
 				<data android:scheme="content"/>
-				<data android:host="media"/>
 				<data android:mimeType="audio/*"/>
 				<data android:mimeType="application/ogg"/>
 				<data android:mimeType="application/x-ogg"/>

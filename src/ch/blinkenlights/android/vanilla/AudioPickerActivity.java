@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2016 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2014-2017 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,10 @@ import android.widget.TextView;
 import android.widget.Button;
 
 import java.io.File;
-
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 public class AudioPickerActivity extends PlaybackActivity {
 
@@ -126,17 +129,10 @@ public class AudioPickerActivity extends PlaybackActivity {
 		Cursor cursor = null;
 
 		if (uri.getScheme().equals("content")) {
-			// check if the native content resolver has a path for this
-			Cursor pathCursor = getContentResolver().query(uri, new String[]{ MediaStore.Audio.Media.DATA }, null, null, null);
-			if (pathCursor != null) {
-				if (pathCursor.moveToNext()) {
-					String mediaPath = pathCursor.getString(0);
-					if (mediaPath != null) { // this happens on android 4.x sometimes?!
-						QueryTask query = MediaUtils.buildFileQuery(mediaPath, Song.FILLED_PROJECTION);
-						cursor = query.runQuery(this);
-					}
-				}
-				pathCursor.close();
+			if (uri.getHost().equals("media")) {
+				cursor = getCursorForMediaContent(uri);
+			} else {
+				cursor = getCursorForAnyContent(uri);
 			}
 		}
 
@@ -153,4 +149,65 @@ public class AudioPickerActivity extends PlaybackActivity {
 		return song.isFilled() ? song : null;
 	}
 
+	/**
+	 * Returns the cursor for a file stored in androids media library.
+	 *
+	 * @param uri the uri to query - expected to be content://media/...
+	 * @return cursor the cursor, may be null.
+	 */
+	private Cursor getCursorForMediaContent(Uri uri) {
+		Cursor cursor = null;
+		Cursor pathCursor = getContentResolver().query(uri, new String[]{ MediaStore.Audio.Media.DATA }, null, null, null);
+		if (pathCursor != null) {
+			if (pathCursor.moveToNext()) {
+				String mediaPath = pathCursor.getString(0);
+				if (mediaPath != null) { // this happens on android 4.x sometimes?!
+					QueryTask query = MediaUtils.buildFileQuery(mediaPath, Song.FILLED_PROJECTION);
+					cursor = query.runQuery(this);
+				}
+			}
+			pathCursor.close();
+		}
+		return cursor;
+	}
+
+	/**
+	 * Returns the cursor for any content:// uri. The contents will be stored
+	 * in our application cache.
+	 *
+	 * @param uri the uri to query
+	 * @return cursor the cursor, may be null.
+	 */
+	private Cursor getCursorForAnyContent(Uri uri) {
+		Cursor cursor = null;
+		File outFile = null;
+		InputStream ins = null;
+		OutputStream ous = null;
+
+		// Cache a local copy, this should really run in a background thread, but we
+		// are usually reading local files, which is fast enough.
+		try {
+			byte[] buffer = new byte[8192];
+			ins = getContentResolver().openInputStream(uri);
+			outFile = File.createTempFile("cached-download-", ".bin", getCacheDir());
+			ous = new FileOutputStream(outFile);
+
+			int len = 0;
+			while ((len = ins.read(buffer)) != -1) {
+				ous.write(buffer, 0, len);
+			}
+			outFile.deleteOnExit();
+		} catch (IOException e) {
+			if (outFile != null)
+				outFile.delete();
+			outFile = null; // signals failure.
+		} finally {
+			try { if (ins != null) ins.close(); } catch(IOException e) {}
+			try { if (ous != null) ous.close(); } catch(IOException e) {}
+		}
+
+		if (outFile != null)
+			cursor = MediaUtils.getCursorForFileQuery(outFile.getPath());
+		return cursor;
+	}
 }
