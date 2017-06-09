@@ -775,7 +775,7 @@ public final class SongTimeline {
 					continue;
 				}
 
-				timeline.add(start + j, song);
+				timeline.add(start + added, song);
 				added++;
 
 				if (jumpSong == null) {
