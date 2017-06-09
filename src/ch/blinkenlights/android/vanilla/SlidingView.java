@@ -289,11 +289,14 @@ public class SlidingView extends FrameLayout
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event){
-		// Fix up the event offset as we are moving the view itself.
-		// This is required to get flings correctly detected
-		event.setLocation(event.getRawX(), event.getRawY());
+		// The GestureDetector needs a motion event where the raw coordinates
+		// equal the 'relative' ones to calculate flings correctly.
+		// We are therefore creating a faked motion event because we'd like to
+		// use the real one for everything else.
+		MotionEvent fakeEvent = MotionEvent.obtain(event);
+		fakeEvent.setLocation(event.getRawX(), event.getRawY());
+		mDetector.onTouchEvent(fakeEvent);
 
-		mDetector.onTouchEvent(event);
 		float y = event.getRawY();
 		float dy = y - mPreviousY;    // diff Y
 		float vy = getTranslationY(); // view Y
