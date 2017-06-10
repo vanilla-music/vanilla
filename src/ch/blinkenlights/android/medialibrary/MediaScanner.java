@@ -575,7 +575,7 @@ public class MediaScanner implements Handler.Callback {
 		return hasChanged;
 	}
 
-	private static final Pattern sIgnoredFilenames = Pattern.compile("^([^\\.]+|.+\\.(jpe?g|gif|png|bmp|webm|txt|pdf|avi|mp4|mkv|zip|tgz|xml))$", Pattern.CASE_INSENSITIVE);
+	private static final Pattern sIgnoredFilenames = Pattern.compile("^([^\\.]+|.+\\.(jpe?g|gif|png|bmp|webm|txt|pdf|avi|mp4|mkv|zip|tgz|xml|tmp|bin))$", Pattern.CASE_INSENSITIVE);
 	/**
 	 * Returns true if the file should not be scanned
 	 *
