@@ -43,12 +43,18 @@ THE SOFTWARE.
 			android:src="@drawable/icon" />
 		<TextView
 			android:id="@+id/filepath"
+			android:visibility="gone"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
 			android:layout_marginBottom="16dip"
 			android:layout_marginTop="16dip"
 			android:layout_marginLeft="16dip"
 			android:layout_marginRight="8dip" />
+		<ProgressBar
+			android:id="@+id/progress"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_vertical|center_horizontal" />
 	</LinearLayout>
 
 	<LinearLayout
@@ -63,6 +69,7 @@ THE SOFTWARE.
 			android:layout_height="wrap_content"
 			android:layout_weight="1"
 			android:text="@android:string/cancel"
+			android:enabled="false"
 			android:singleLine="true" />
 		<Button
 			style="?android:attr/buttonBarButtonStyle"
@@ -71,6 +78,7 @@ THE SOFTWARE.
 			android:layout_height="wrap_content"
 			android:layout_weight="1"
 			android:text="@string/enqueue"
+			android:enabled="false"
 			android:singleLine="true" />
 		<Button
 			style="?android:attr/buttonBarButtonStyle"
@@ -79,6 +87,7 @@ THE SOFTWARE.
 			android:layout_height="wrap_content"
 			android:layout_weight="1"
 			android:text="@string/play"
+			android:enabled="false"
 			android:singleLine="true" />
 	</LinearLayout>
 </LinearLayout>
