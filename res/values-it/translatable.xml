@@ -182,6 +182,8 @@
   <string name="theme">Tema</string>
   <string name="disable_lockscreen_title">Disattiva schermata di blocco</string>
   <string name="disable_lockscreen_summary">Previene l\'attivazione della lockscreen quando si è nella libreria o nella schermata playback</string>
+  <string name="keep_screen_on_title">Mantenere acceso lo schermo</string>
+  <string name="keep_screen_on_summary">Mantenere lo schermo (e il dispositivo) accesi mentre Vanilla Music è visibile</string>
   <string name="use_idle_timeout_title">Attiva timeout di inattività</string>
   <string name="use_idle_timeout_summary">Quando attivo, il playback si fermerà dopo un dato periodo di inattività</string>
   <string name="idle_timeout_title">Timeout inattività</string>
@@ -267,7 +269,6 @@
   <string name="media_scan_group_albums">Raggruppa gli album per cartella</string>
   <string name="media_statistics">Statistiche</string>
   <string name="media_stats_tracks">Numero di tracce</string>
-  <string name="media_stats_playtime">Tempo di riproduzione (Ore)</string>
   <string name="media_stats_progress">Progresso della scansione</string>
   <string name="media_library_scan_running">Scansione libreria multimediale...</string>
   <string name="media_scan_preferences">Opzioni per la scansione</string>

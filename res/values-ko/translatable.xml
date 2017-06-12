@@ -245,7 +245,6 @@
   <string name="media_scan_group_albums">폴더별로 앨범을 묶음</string>
   <string name="media_statistics">통계</string>
   <string name="media_stats_tracks">트랙 갯수</string>
-  <string name="media_stats_playtime">재생 시간 (시)</string>
   <string name="media_stats_progress">검색 진행중</string>
   <string name="media_library_scan_running">미디어 라이브러리 검색중...</string>
   <string name="media_scan_preferences">검색 옵션</string>

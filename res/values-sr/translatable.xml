@@ -190,6 +190,8 @@
   <string name="theme">Тема</string>
   <string name="disable_lockscreen_title">Онемогући закључавање екрана</string>
   <string name="disable_lockscreen_summary">Спречава активирање екрана заључавања при екрану пуштања или библиотеке</string>
+  <string name="keep_screen_on_title">Држи екран укљученим</string>
+  <string name="keep_screen_on_summary">Држи екран (и уређај) будним док је Ванила музика видљива </string>
   <string name="use_idle_timeout_title">Укључи време мировања</string>
   <string name="use_idle_timeout_summary">Активирано зауставља пуштање након задатог времена неактивности</string>
   <string name="idle_timeout_title">Време мировања</string>
@@ -275,7 +277,6 @@
   <string name="media_scan_group_albums">Групиши албуме по фасцикли</string>
   <string name="media_statistics">Статистике</string>
   <string name="media_stats_tracks">Број нумера</string>
-  <string name="media_stats_playtime">Време пуштања (сати)</string>
   <string name="media_stats_progress">Напредак очитавања</string>
   <string name="media_library_scan_running">Очитавам библиотеку медија…</string>
   <string name="media_scan_preferences">Опције скенера</string>

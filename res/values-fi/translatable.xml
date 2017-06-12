@@ -179,6 +179,8 @@
   <string name="theme">Teema</string>
   <string name="disable_lockscreen_title">Estä lukitusnäyttö</string>
   <string name="disable_lockscreen_summary">Estä lukitusnäytön aktivoituminen kirjasto- ja toistonäkymässä</string>
+  <string name="keep_screen_on_title">Pidä näyttö päällä</string>
+  <string name="keep_screen_on_summary">Pidä näyttö (ja laite) päällä, kun Vanilla Music on esillä</string>
   <string name="use_idle_timeout_title">Käytä joutenolon aikakatkaisua</string>
   <string name="use_idle_timeout_summary">Kun käytössä, toisto lopetetaan tietyn joutoajan jälkeen</string>
   <string name="idle_timeout_title">Joutenolon aikakatkaisu</string>
@@ -263,7 +265,8 @@
   <string name="media_scan_group_albums">Ryhmitä albumit kansioittain</string>
   <string name="media_statistics">Tilastot</string>
   <string name="media_stats_tracks">Kappaleiden määrä</string>
-  <string name="media_stats_playtime">Toistoaika (tuntia)</string>
+  <string name="media_stats_library_playtime">Toistoaika yhteensä (tunneissa)</string>
+  <string name="media_stats_listen_playtime">Musiikkia toistettu tunteina yhteensä</string>
   <string name="media_stats_progress">Skannauksen edistyminen</string>
   <string name="media_library_scan_running">Skannataan mediakirjastoa…</string>
   <string name="media_scan_preferences">Skannerivalinnat</string>

@@ -94,6 +94,7 @@
   <string name="folder">Pasta</string>
   <string name="filename">Nome do ficheiro</string>
   <string name="file_size">Tamanho do ficheiro</string>
+  <string name="file_time">Data de modificação</string>
   <string name="extension">Extensão</string>
   <string name="unknown">Desconhecido</string>
   <string name="play_all">Reproduzir tudo</string>
@@ -181,6 +182,8 @@
   <string name="theme">Tema</string>
   <string name="disable_lockscreen_title">Desativar ecrã de bloqueio</string>
   <string name="disable_lockscreen_summary">Impede a ativação do ecrã de bloqueio, se na vista de reprodução ou na coleção</string>
+  <string name="keep_screen_on_title">Manter ecrã ativo</string>
+  <string name="keep_screen_on_summary">Mantém o ecrã (e o dispositivo) ativo se a aplicação estiver visível</string>
   <string name="use_idle_timeout_title">Ativar período de inatividade</string>
   <string name="use_idle_timeout_summary">Se ativa, a reprodução será parada após um certo tempo de inatividade</string>
   <string name="idle_timeout_title">Período de inatividade</string>
@@ -266,7 +269,8 @@
   <string name="media_scan_group_albums">Agrupar álbuns por pasta</string>
   <string name="media_statistics">Estatísticas</string>
   <string name="media_stats_tracks">Número de faixas</string>
-  <string name="media_stats_playtime">Tempo de reprodução (horas)</string>
+  <string name="media_stats_library_playtime">Tempo total de reprodução (horas)</string>
+  <string name="media_stats_listen_playtime">Horas de reprodução até à data</string>
   <string name="media_stats_progress">Evolução da análise</string>
   <string name="media_library_scan_running">A analisar coleção...</string>
   <string name="media_scan_preferences">Opções do analisador</string>

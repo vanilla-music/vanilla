@@ -198,6 +198,8 @@
   <string name="theme">Тема оформления</string>
   <string name="disable_lockscreen_title">Отключить блокировку экрана</string>
   <string name="disable_lockscreen_summary">Не давать включаться блокировке при открытом экране фонотеки или воспроизведения</string>
+  <string name="keep_screen_on_title">Не гасить экран</string>
+  <string name="keep_screen_on_summary">Отключать энергосбережение экрана (и устройства) пока Vanilla Music на виду</string>
   <string name="use_idle_timeout_title">Задействовать таймер простоя</string>
   <string name="use_idle_timeout_summary">Воспроизведение остановится после определенного периода бездействия</string>
   <string name="idle_timeout_title">Время ожидания</string>
@@ -283,7 +285,8 @@
   <string name="media_scan_group_albums">Группировать альбомы по папкам</string>
   <string name="media_statistics">Статистика</string>
   <string name="media_stats_tracks">Количество дорожек</string>
-  <string name="media_stats_playtime">Длительность (часов)</string>
+  <string name="media_stats_library_playtime">Общее время воспроизведения в часах</string>
+  <string name="media_stats_listen_playtime">Воспроизведено музыки на текущий момент</string>
   <string name="media_stats_progress">Выполняется сканирование</string>
   <string name="media_library_scan_running">Сканируется библиотека носителей...</string>
   <string name="media_scan_preferences">Настройки сканера</string>

@@ -55,6 +55,7 @@
   <string name="remove">Hapus</string>
   <string name="play_or_enqueue">Diurutkan bila diputar; Putar bila di pause</string>
   <string name="open">Open</string>
+  <string name="go_home">Beranda</string>
   <plurals name="playing">
     <item quantity="other">Memainkan %d lagu.</item>
   </plurals>
@@ -76,16 +77,26 @@
   <string name="delete_file">Hapus berkas \'%s\'?</string>
   <string name="artists">Artis</string>
   <string name="albums">Album</string>
+  <string name="albumartists">Album Artis</string>
   <string name="songs">Lagu</string>
   <string name="playlists">Daftar Putar</string>
   <string name="genres">Genre</string>
   <string name="files">Berkas</string>
+  <string name="artist">Artis</string>
+  <string name="album">Album</string>
+  <string name="genre">Genre</string>
+  <string name="folder">Folder</string>
+  <string name="filename">Nama berkas</string>
+  <string name="file_size">Ukuran berkas</string>
+  <string name="file_time">Diubah</string>
+  <string name="extension">Ekstensi</string>
   <string name="unknown">Tidak diketahui</string>
   <string name="play_all">Mainkan semua</string>
   <string name="enqueue_all">Antrekan semua</string>
   <string name="all_songs">Seluruh lagu</string>
   <string name="more_from_artist">Selanjutnya dari artis</string>
   <string name="more_from_album">selanjutnya dari album</string>
+  <string name="title">Judul</string>
   <string name="number_of_tracks">Jumlah lagu</string>
   <string name="year">Tahun</string>
   <string name="date_added">Tanggal ditambah</string>

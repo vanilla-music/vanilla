@@ -244,7 +244,6 @@
   <string name="media_scan_group_albums">按文件夹分组封面</string>
   <string name="media_statistics">统计</string>
   <string name="media_stats_tracks">曲目数</string>
-  <string name="media_stats_playtime">播放时间 (小时)</string>
   <string name="media_stats_progress">扫描进度</string>
   <string name="media_library_scan_running">正在媒体库…</string>
   <string name="media_scan_preferences">扫面器选项</string>

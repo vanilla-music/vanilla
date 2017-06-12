@@ -182,6 +182,8 @@
   <string name="theme">Téma</string>
   <string name="disable_lockscreen_title">Zárképernyő letiltása</string>
   <string name="disable_lockscreen_summary">A zárképernyő letiltása a gyűjtemény és a lejátszás képernyőknél</string>
+  <string name="keep_screen_on_title">Képernyő bekapcsolva tartása</string>
+  <string name="keep_screen_on_summary">A képernyő (és az eszköz) ébren tartása, ha a Vanilla Music látható</string>
   <string name="use_idle_timeout_title">Tétlenségi időtúllépés engedélyezése</string>
   <string name="use_idle_timeout_summary">Ha aktív, akkor a lejátszás leállításra kerül a megadott tétlenségi idő lejárta után</string>
   <string name="idle_timeout_title">Tétlenségi időtúllépés</string>
@@ -246,6 +248,7 @@
   <string name="filebrowser_start">Fájlböngésző kezdőmappája</string>
   <string name="customize_filebrowser_start">A fájlböngésző ebben a mappában indul</string>
   <string name="select">Kiváalsztás</string>
+  <string name="save">Mentés</string>
   <string name="autoplaylist_playcounts_title">Automatikus lejátszólista-létrehozás</string>
   <string name="autoplaylist_playcounts_summary">Hozzon létre automatikusan egy</string>
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s „Legjobb %.0f” lejátszólistát</string>
@@ -257,6 +260,7 @@
   <string name="sendto">Küldés…</string>
   <string name="no_receiving_apps">Nem található fogadóalkalmazás ehhez a médiatípushoz!</string>
   <string name="media_library">Médiagyűjtemény</string>
+  <string name="media_folders_header">Indexelt könyvtárak</string>
   <string name="media_scan_header">Médiaátvizsgáló</string>
   <string name="media_scan_full">Teljes fájlrendszer átvizsgálása (lassú)</string>
   <string name="media_scan_drop_db">Média-adatbázis eldobása (veszélyzóna!)</string>
@@ -265,13 +269,18 @@
   <string name="media_scan_group_albums">Albumok csoportosítása mappánként</string>
   <string name="media_statistics">Statisztika</string>
   <string name="media_stats_tracks">Számok darabszáma</string>
-  <string name="media_stats_playtime">Lejátszási idő (órában)</string>
+  <string name="media_stats_library_playtime">Teljes lejátszási idő (órában)</string>
+  <string name="media_stats_listen_playtime">Eddig lejátszott zene hossza órákban</string>
   <string name="media_stats_progress">Átvizsgálás folyamata</string>
   <string name="media_library_scan_running">Médiagyűjtemény átvizsgálása…</string>
   <string name="media_scan_preferences">Átvizsgáló beállítások</string>
   <string name="media_scan_preferences_change_title">Átvizsgáló beállítások módosítva</string>
   <string name="media_scan_preferences_change_message">A beállítás megváltoztatása a gyűjtemény teljes átvizsgálását okozza. Folytatja?</string>
   <!--Folder selector-->
+  <string name="hint_long_press_to_modify_folder">Nyomja meg hosszan a mappabeállítások módosításához</string>
+  <string name="folder_include">Belevétel</string>
+  <string name="folder_exclude">Kihagyás</string>
+  <string name="folder_neutral">Semleges</string>
   <!--Plugin system-->
   <string name="plugins">Bővítmények</string>
 </resources>

@@ -182,6 +182,8 @@
   <string name="theme">Design</string>
   <string name="disable_lockscreen_title">Bildschirmsperre deaktivieren</string>
   <string name="disable_lockscreen_summary">Bildschirmsperre verhindern, wenn Bibliotheks- oder Wiedergabeansicht aktiv</string>
+  <string name="keep_screen_on_title">Bildschirm nicht ausschalten</string>
+  <string name="keep_screen_on_summary">Bildschirm (und Gerät) eingeschaltet lassen, während Vanilla Music sichtbar ist</string>
   <string name="use_idle_timeout_title">Anhalten bei Inaktivität</string>
   <string name="use_idle_timeout_summary">Falls aktiviert, wird die Wiedergabe nach der angegebenen Inaktivitätsdauer angehalten</string>
   <string name="idle_timeout_title">Inaktivitätsdauer</string>
@@ -267,7 +269,8 @@
   <string name="media_scan_group_albums">Alben nach Ordner gruppieren</string>
   <string name="media_statistics">Statistiken</string>
   <string name="media_stats_tracks">Titelanzahl</string>
-  <string name="media_stats_playtime">Wiedergabedauer (Stunden)</string>
+  <string name="media_stats_library_playtime">Wiedergabedauer (Stunden)</string>
+  <string name="media_stats_listen_playtime">Bisher wiedergegebene Musik in Stunden</string>
   <string name="media_stats_progress">Suchfortschritt</string>
   <string name="media_library_scan_running">Medienbibliothek wird durchsucht …</string>
   <string name="media_scan_preferences">Suchoptionen</string>

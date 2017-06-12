@@ -271,7 +271,6 @@
   <string name="media_scan_group_albums">Grupēt albumus pēc mapēm</string>
   <string name="media_statistics">Statistika</string>
   <string name="media_stats_tracks">Celiņu skaits</string>
-  <string name="media_stats_playtime">Atskaņošanas laiks (stundas)</string>
   <string name="media_stats_progress">Skenēšanas progress</string>
   <string name="media_library_scan_running">Skenē multivides bibliotēku</string>
   <string name="media_scan_preferences">Skenētāja opcijas</string>
