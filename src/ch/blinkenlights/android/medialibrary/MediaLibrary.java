@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2016-2017 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.ContentObserver;
 import android.provider.MediaStore;
+import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 
@@ -135,10 +136,10 @@ public class MediaLibrary  {
 				prefs = new MediaLibrary.Preferences();
 
 			if (prefs.mediaFolders == null || prefs.mediaFolders.size() == 0)
-				prefs.mediaFolders = discoverDefaultMediaPaths();
+				prefs.mediaFolders = discoverDefaultMediaPaths(context);
 
 			if (prefs.blacklistedFolders == null) // we allow this to be empty, but it must not be null.
-				prefs.blacklistedFolders = discoverDefaultBlacklistedPaths();
+				prefs.blacklistedFolders = discoverDefaultBlacklistedPaths(context);
 
 			sPreferences = prefs; // cached for frequent access
 		}
@@ -150,16 +151,25 @@ public class MediaLibrary  {
 	 *
 	 * @return array with guessed directories
 	 */
-	private static ArrayList<String> discoverDefaultMediaPaths() {
+	private static ArrayList<String> discoverDefaultMediaPaths(Context context) {
 		ArrayList<String> defaultPaths = new ArrayList<>();
 
-		// this should always exist
-		defaultPaths.add(Environment.getExternalStorageDirectory().getAbsolutePath());
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			for (File file : context.getExternalMediaDirs()) {
+				String path = file.getAbsolutePath();
+				int match = path.indexOf("/Android/media/"); // From Environment.DIR_ANDROID + Environment.DIR_MEDIA (both hidden)
+				if (match >= 0)
+					defaultPaths.add(path.substring(0, match));
+			}
+		} else {
+			// this should always exist
+			defaultPaths.add(Environment.getExternalStorageDirectory().getAbsolutePath());
+			// this *may* exist
+			File sdCard = new File("/storage/sdcard1");
+			if (sdCard.isDirectory())
+				defaultPaths.add(sdCard.getAbsolutePath());
+		}
 
-		// this *may* exist
-		File sdCard = new File("/storage/sdcard1");
-		if (sdCard.isDirectory())
-			defaultPaths.add(sdCard.getAbsolutePath());
 		return defaultPaths;
 	}
 
@@ -168,11 +178,11 @@ public class MediaLibrary  {
 	 *
 	 * @return array with guessed blacklist
 	 */
-	private static ArrayList<String> discoverDefaultBlacklistedPaths() {
+	private static ArrayList<String> discoverDefaultBlacklistedPaths(Context context) {
 		final String[] defaultBlacklistPostfix = { "Android/data", "Alarms", "Notifications", "Ringtones" };
 		ArrayList<String> defaultPaths = new ArrayList<>();
 
-		for (String path : discoverDefaultMediaPaths()) {
+		for (String path : discoverDefaultMediaPaths(context)) {
 			for (int i = 0; i < defaultBlacklistPostfix.length; i++) {
 				File guess = new File(path + "/" + defaultBlacklistPostfix[i]);
 				if (guess.isDirectory())
