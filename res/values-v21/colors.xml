@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<!-- framework colors -->
-	<color name="material_grey_300">#ffeeeeee</color>
+	<color name="material_grey_200">#eeeeee</color>
+	<color name="material_grey_300">#e0e0e0</color>
 	<color name="material_grey_400">#bdbdbd</color>
 	<color name="material_grey_500">#ffa3a3a3</color>
 	<color name="material_grey_600">#ff757575</color>
