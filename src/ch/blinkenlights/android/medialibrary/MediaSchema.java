@@ -75,7 +75,8 @@ public class MediaSchema {
 	/**
 	 * song, role index on contributors_songs table
 	 */
-	private static final String INDEX_IDX_CONTRIBUTORS_SONGS = "CREATE INDEX idx_contributors_songs ON "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS
+	private static final String NAME_IDX_CONTRIBUTORS_SONGS = "idx_contributors_songs";
+	private static final String INDEX_IDX_CONTRIBUTORS_SONGS = "CREATE INDEX "+NAME_IDX_CONTRIBUTORS_SONGS+" ON "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS
 	  +" ("+MediaLibrary.ContributorSongColumns.SONG_ID+", "+MediaLibrary.ContributorSongColumns.ROLE+")"
 	  +";";
 
@@ -158,7 +159,8 @@ public class MediaSchema {
 	private static final String VIEW_CREATE_SONGS_ALBUMS_ARTISTS = "CREATE VIEW "+ MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS+ " AS "
 	  + "SELECT *, " + VIEW_ARTIST_SELECT + " FROM " + MediaLibrary.TABLE_SONGS
 	  +" LEFT JOIN "+MediaLibrary.TABLE_ALBUMS+" ON "+MediaLibrary.TABLE_SONGS+"."+MediaLibrary.SongColumns.ALBUM_ID+" = "+MediaLibrary.TABLE_ALBUMS+"."+MediaLibrary.AlbumColumns._ID
-	  +" LEFT JOIN "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+" ON "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+"."+MediaLibrary.ContributorSongColumns.ROLE+"="+MediaLibrary.ROLE_ARTIST
+	  +" LEFT JOIN "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+" INDEXED BY "+NAME_IDX_CONTRIBUTORS_SONGS
+	  +" ON "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+"."+MediaLibrary.ContributorSongColumns.ROLE+"="+MediaLibrary.ROLE_ARTIST
 	  +" AND "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+"."+MediaLibrary.ContributorSongColumns.SONG_ID+" = "+MediaLibrary.TABLE_SONGS+"."+MediaLibrary.SongColumns._ID
 	  +" LEFT JOIN "+MediaLibrary.TABLE_CONTRIBUTORS+" AS _artist ON _artist."+MediaLibrary.ContributorColumns._ID+" = "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+"."+MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID
 	  +" ;";
@@ -170,13 +172,13 @@ public class MediaSchema {
 	private static final String VIEW_CREATE_SONGS_ALBUMS_ARTISTS_HUGE = "CREATE VIEW "+ MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS_HUGE+" AS "
 	  + "SELECT *, "+ VIEW_ALBUMARTIST_SELECT +", "+ VIEW_COMPOSER_SELECT +" FROM "+MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS
 	  // albumartists
-	  +" LEFT JOIN "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+" as __albumartists"
+	  +" LEFT JOIN "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+" as __albumartists INDEXED BY "+NAME_IDX_CONTRIBUTORS_SONGS
 	  +" ON  __albumartists."+MediaLibrary.ContributorSongColumns.ROLE+"="+MediaLibrary.ROLE_ALBUMARTIST
 	  +" AND __albumartists."+MediaLibrary.ContributorSongColumns.SONG_ID+" = "+MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS+"."+MediaLibrary.SongColumns._ID
 	  +" LEFT JOIN "+MediaLibrary.TABLE_CONTRIBUTORS+" AS _albumartist ON"
 	  +"  _albumartist."+MediaLibrary.ContributorColumns._ID+" = __albumartists."+MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID
 	  // composers
-	  +" LEFT JOIN "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+" as __composers"
+	  +" LEFT JOIN "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+" as __composers INDEXED BY "+NAME_IDX_CONTRIBUTORS_SONGS
 	  +" ON  __composers."+MediaLibrary.ContributorSongColumns.ROLE+"="+MediaLibrary.ROLE_COMPOSER
 	  +" AND __composers."+MediaLibrary.ContributorSongColumns.SONG_ID+" = "+MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS+"."+MediaLibrary.SongColumns._ID
 	  +" LEFT JOIN "+MediaLibrary.TABLE_CONTRIBUTORS+" AS _composer ON"
@@ -227,7 +229,8 @@ public class MediaSchema {
 	  +" LEFT JOIN "+MediaLibrary.TABLE_SONGS+" ON "+MediaLibrary.TABLE_PLAYLISTS_SONGS+"."+MediaLibrary.PlaylistSongColumns.SONG_ID+"="+MediaLibrary.TABLE_SONGS+"."+MediaLibrary.SongColumns._ID
 	  // -> same sql as VIEW_CREATE_SONGS_ALBUMS_ARTISTS follows:
 	  +" LEFT JOIN "+MediaLibrary.TABLE_ALBUMS+" ON "+MediaLibrary.TABLE_SONGS+"."+MediaLibrary.SongColumns.ALBUM_ID+" = "+MediaLibrary.TABLE_ALBUMS+"."+MediaLibrary.AlbumColumns._ID
-	  +" LEFT JOIN "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+" ON "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+"."+MediaLibrary.ContributorSongColumns.ROLE+"="+MediaLibrary.ROLE_ARTIST
+	  +" LEFT JOIN "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+" INDEXED BY "+NAME_IDX_CONTRIBUTORS_SONGS
+	  +" ON "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+"."+MediaLibrary.ContributorSongColumns.ROLE+"="+MediaLibrary.ROLE_ARTIST
 	  +" AND "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+"."+MediaLibrary.ContributorSongColumns.SONG_ID+" = "+MediaLibrary.TABLE_SONGS+"."+MediaLibrary.SongColumns._ID
 	  +" LEFT JOIN "+MediaLibrary.TABLE_CONTRIBUTORS+" AS _artist ON _artist."+MediaLibrary.ContributorColumns._ID+" = "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+"."+MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID
 	  +" ;";
@@ -303,6 +306,18 @@ public class MediaSchema {
 			dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_GENRES+" WHERE "+MediaLibrary.GenreColumns._ID+" NOT IN (SELECT "+MediaLibrary.GenreSongColumns._GENRE_ID+" FROM "+MediaLibrary.TABLE_GENRES_SONGS+");");
 			dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+" WHERE "+MediaLibrary.ContributorSongColumns.SONG_ID+" NOT IN (SELECT "+MediaLibrary.SongColumns._ID+" FROM "+MediaLibrary.TABLE_SONGS+");");
 			dbh.execSQL("DELETE FROM "+MediaLibrary.TABLE_CONTRIBUTORS+" WHERE "+MediaLibrary.ContributorColumns._ID+" NOT IN (SELECT "+MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID+" FROM "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+");");
+		}
+
+		if (oldVersion < 20170619) {
+			// Android 4.x tends to not use idx_contributors_songs, resulting in full table scans.
+			// We will force the use of this index on views doing a LEFT JOIN as it doesn't cause
+			// any harm to newer sqlite versions. (We know that this is the best index to use).
+			dbh.execSQL("DROP VIEW "+MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS);
+			dbh.execSQL("DROP VIEW "+MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS_HUGE);
+			dbh.execSQL("DROP VIEW "+MediaLibrary.VIEW_PLAYLIST_SONGS);
+			dbh.execSQL(VIEW_CREATE_SONGS_ALBUMS_ARTISTS);
+			dbh.execSQL(VIEW_CREATE_SONGS_ALBUMS_ARTISTS_HUGE);
+			dbh.execSQL(VIEW_CREATE_PLAYLIST_SONGS);
 		}
 
 	}
