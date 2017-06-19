@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
- * Copyright (C) 2015 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2015-2017 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -315,6 +315,9 @@ public class LibraryActivity
 		case KeyEvent.KEYCODE_MENU:
 			// We intercept these to avoid showing the activity-default menu
 			mBottomBarControls.openMenu();
+			break;
+		case KeyEvent.KEYCODE_SEARCH:
+			mBottomBarControls.showSearch(true);
 			break;
 		default:
 			return false;
