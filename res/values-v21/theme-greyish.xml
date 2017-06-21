@@ -24,10 +24,10 @@
 		<item name="float_color">@color/material_grey_400</item>
 		<item name="background_circle_color">@color/material_grey_300</item>
 		<item name="tabs_background">#ff212121</item>
-		<item name="now_playing_marker">#ff212121</item>
-		<item name="controls_normal">@color/material_grey_900</item>
-		<item name="controls_active">#ff212121</item>
-		<item name="android:colorAccent">#ff212121</item>
+		<item name="now_playing_marker">#ff000000</item>
+		<item name="controls_normal">@color/material_grey_600</item>
+		<item name="controls_active">#ff000000</item>
+		<item name="android:colorAccent">#ff000000</item>
 		<item name="android:colorPrimary">#ff212121</item>
 		<item name="android:colorPrimaryDark">#ff090909</item>
 	</style>
@@ -47,8 +47,8 @@
 
 	<style name="Greyish.PopupDialog" parent="android:Theme.Material.Light.Dialog.MinWidth">
 		<item name="background_circle_color">@color/material_grey_300</item>
-		<item name="controls_normal">@color/material_grey_900</item>
-		<item name="controls_active">#ff212121</item>
+		<item name="controls_normal">@color/material_grey_600</item>
+		<item name="controls_active">#ff000000</item>
 	</style>
 
 	<!-- dark theme -->
@@ -58,10 +58,10 @@
 		<item name="float_color">@color/material_grey_900</item>
 		<item name="background_circle_color">@color/material_grey_700</item>
 		<item name="tabs_background">#ff212121</item>
-		<item name="now_playing_marker">#ffececec</item>
-		<item name="controls_normal">@color/material_grey_300</item>
-		<item name="controls_active">#ffececec</item>
-		<item name="android:colorAccent">#ffececec</item>
+		<item name="now_playing_marker">#ffffffff</item>
+		<item name="controls_normal">@color/material_grey_600</item>
+		<item name="controls_active">#ffffffff</item>
+		<item name="android:colorAccent">#ffffffff</item>
 		<item name="android:colorPrimary">#ff212121</item>
 		<item name="android:colorPrimaryDark">#ff090909</item>
 	</style>
@@ -81,8 +81,8 @@
 
 	<style name="Greyish.Dark.PopupDialog" parent="android:Theme.Material.Dialog.MinWidth">
 		<item name="background_circle_color">@color/material_grey_700</item>
-		<item name="controls_normal">@color/material_grey_300</item>
-		<item name="controls_active">#ffececec</item>
+		<item name="controls_normal">@color/material_grey_600</item>
+		<item name="controls_active">#ffffffff</item>
 	</style>
 
 </resources>

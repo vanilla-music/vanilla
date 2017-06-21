@@ -7,23 +7,23 @@ use constant THEMES_LIST   => './res/values-v21/themes-list.xml';
 my $THEMES = [
 	{
 		_name => 'standard',
-		light => { colorAccent => '#ff3e677a', colorPrimary => '#ff37474f', colorPrimaryDark => '#ff263238', _bg => '#fff0f0f0' },
-		dark  => { colorAccent => '#ff3e677a', colorPrimary => '#ff37474f', colorPrimaryDark => '#ff263238', _bg => '#ff2a2a2a' },
+		light => { colorAccent => '#ff3e677a', colorPrimary => '#ff37474f', colorPrimaryDark => '#ff263238', controlsNormal=>'@color/material_grey_900', _bg => '#fff0f0f0' },
+		dark  => { colorAccent => '#ff3e677a', colorPrimary => '#ff37474f', colorPrimaryDark => '#ff263238', controlsNormal=>'@color/material_grey_300', _bg => '#ff2a2a2a' },
 	},
 	{
 		_name => 'greyish',
-		light => { colorAccent => '#ff212121', colorPrimary => '#ff212121', colorPrimaryDark => '#ff090909', _bg => '#fff0f0f0' },
-		dark  => { colorAccent => '#ffececec', colorPrimary => '#ff212121', colorPrimaryDark => '#ff090909', _bg => '#ff2a2a2a' },
+		light => { colorAccent => '#ff000000', colorPrimary => '#ff212121', colorPrimaryDark => '#ff090909', controlsNormal=>'@color/material_grey_600', _bg => '#fff0f0f0' },
+		dark  => { colorAccent => '#ffffffff', colorPrimary => '#ff212121', colorPrimaryDark => '#ff090909', controlsNormal=>'@color/material_grey_600', _bg => '#ff2a2a2a' },
 	},
 	{
 		_name => 'orange',
-		light => { colorAccent => '#FFF57F17', colorPrimary => '#FFE65100', colorPrimaryDark => '#FFBF360C', _bg => '#fff0f0f0' },
-		dark  => { colorAccent => '#FFF57F17', colorPrimary => '#FFE65100', colorPrimaryDark => '#FFBF360C', _bg => '#ff2a2a2a' },
+		light => { colorAccent => '#FFF57F17', colorPrimary => '#FFE65100', colorPrimaryDark => '#FFBF360C', controlsNormal=>'@color/material_grey_900', _bg => '#fff0f0f0' },
+		dark  => { colorAccent => '#FFF57F17', colorPrimary => '#FFE65100', colorPrimaryDark => '#FFBF360C', controlsNormal=>'@color/material_grey_300', _bg => '#ff2a2a2a' },
 	},
 	{
 		_name => 'blue',
-		light => { colorAccent => '#FF03A9F4', colorPrimary => '#FF0277BD', colorPrimaryDark => '#FF01579B', _bg => '#fff0f0f0' },
-		dark  => { colorAccent => '#FF03A9F4', colorPrimary => '#FF0277BD', colorPrimaryDark => '#FF01579B', _bg => '#ff2a2a2a' },
+		light => { colorAccent => '#FF03A9F4', colorPrimary => '#FF0277BD', colorPrimaryDark => '#FF01579B', controlsNormal=>'@color/material_grey_900', _bg => '#fff0f0f0' },
+		dark  => { colorAccent => '#FF03A9F4', colorPrimary => '#FF0277BD', colorPrimaryDark => '#FF01579B', controlsNormal=>'@color/material_grey_300', _bg => '#ff2a2a2a' },
 	},
 ];
 
@@ -117,7 +117,7 @@ my $DATA = << "EOF";
 		<item name="background_circle_color">\@color/material_grey_300</item>
 		<item name="tabs_background">$this->{light}->{colorPrimary}</item>
 		<item name="now_playing_marker">$this->{light}->{colorAccent}</item>
-		<item name="controls_normal">\@color/material_grey_900</item>
+		<item name="controls_normal">$this->{light}->{controlsNormal}</item>
 		<item name="controls_active">$this->{light}->{colorAccent}</item>
 		<item name="android:colorAccent">$this->{light}->{colorAccent}</item>
 		<item name="android:colorPrimary">$this->{light}->{colorPrimary}</item>
@@ -139,7 +139,7 @@ my $DATA = << "EOF";
 
 	<style name="${tid}PopupDialog" parent="android:Theme.Material.Light.Dialog.MinWidth">
 		<item name="background_circle_color">\@color/material_grey_300</item>
-		<item name="controls_normal">\@color/material_grey_900</item>
+		<item name="controls_normal">$this->{light}->{controlsNormal}</item>
 		<item name="controls_active">$this->{light}->{colorAccent}</item>
 	</style>
 
@@ -151,7 +151,7 @@ my $DATA = << "EOF";
 		<item name="background_circle_color">\@color/material_grey_700</item>
 		<item name="tabs_background">$this->{dark}->{colorPrimary}</item>
 		<item name="now_playing_marker">$this->{dark}->{colorAccent}</item>
-		<item name="controls_normal">\@color/material_grey_300</item>
+		<item name="controls_normal">$this->{dark}->{controlsNormal}</item>
 		<item name="controls_active">$this->{dark}->{colorAccent}</item>
 		<item name="android:colorAccent">$this->{dark}->{colorAccent}</item>
 		<item name="android:colorPrimary">$this->{dark}->{colorPrimary}</item>
@@ -173,7 +173,7 @@ my $DATA = << "EOF";
 
 	<style name="${tid}Dark.PopupDialog" parent="android:Theme.Material.Dialog.MinWidth">
 		<item name="background_circle_color">\@color/material_grey_700</item>
-		<item name="controls_normal">\@color/material_grey_300</item>
+		<item name="controls_normal">$this->{dark}->{controlsNormal}</item>
 		<item name="controls_active">$this->{dark}->{colorAccent}</item>
 	</style>
 
