@@ -40,11 +40,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SectionIndexer;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.ArrayList;
 import java.lang.StringBuilder;
+
 
 /**
  * MediaAdapter provides an adapter backed by a MediaStore content provider.
@@ -677,6 +680,8 @@ public class MediaAdapter
 		}
 
 		cursor.moveToFirst();
+
+		SimpleDateFormat dfmt = new SimpleDateFormat("yyyy-MM-dd");
 		String lastString = null;
 		Object lastKnown = null;
 		Object next;
@@ -687,7 +692,12 @@ public class MediaAdapter
 			int type = cursor.getType(sortColumnIndex);
 			switch (type) {
 				case Cursor.FIELD_TYPE_INTEGER:
-					next = cursor.getInt(sortColumnIndex);
+					int value = cursor.getInt(sortColumnIndex);
+					if (columnName.equals(MediaLibrary.SongColumns.MTIME)) {
+						next = dfmt.format(new Date(value * 1000L));
+					} else {
+						next = value;
+					}
 					break;
 				case Cursor.FIELD_TYPE_STRING:
 					lastString = cursor.getString(sortColumnIndex);
