@@ -46,6 +46,10 @@ THE SOFTWARE.
 		<item name="android:windowNoTitle">true</item>
 	</style>
 
-	<style name="PopupDialog" parent="android:Theme.Holo.Dialog.MinWidth" />
+	<style name="PopupDialog" parent="android:Theme.Holo.Dialog.MinWidth">
+		<item name="background_circle_color">#4A4A4A</item>
+		<item name="controls_normal">#fff5f5f5</item>
+		<item name="controls_active">@android:color/holo_blue_dark</item>
+	</style>
 
 </resources>
