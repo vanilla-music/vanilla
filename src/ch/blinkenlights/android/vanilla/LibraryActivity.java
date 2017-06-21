@@ -187,6 +187,10 @@ public class LibraryActivity
 
 		loadLimiterIntent(getIntent());
 		bindControlButtons();
+
+		if (state != null && state.getBoolean("launch_search")) {
+			mBottomBarControls.showSearch(true);
+		}
 	}
 
 	@Override

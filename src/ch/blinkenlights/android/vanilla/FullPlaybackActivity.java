@@ -433,14 +433,20 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 		case KeyEvent.KEYCODE_DPAD_RIGHT:
 			shiftCurrentSong(SongTimeline.SHIFT_NEXT_SONG);
 			findViewById(R.id.next).requestFocus();
-			return true;
+			break;
 		case KeyEvent.KEYCODE_DPAD_LEFT:
 			shiftCurrentSong(SongTimeline.SHIFT_PREVIOUS_SONG);
 			findViewById(R.id.previous).requestFocus();
-			return true;
+			break;
+		case KeyEvent.KEYCODE_SEARCH:
+			Intent librarySearch = new Intent(this, LibraryActivity.class);
+			librarySearch.putExtra("launch_search", true);
+			startActivity(librarySearch);
+			break;
+		default:
+			return super.onKeyDown(keyCode, event);
 		}
-
-		return super.onKeyDown(keyCode, event);
+		return true;
 	}
 
 	@Override
