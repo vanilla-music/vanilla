@@ -25,6 +25,11 @@ my $THEMES = [
 		light => { colorAccent => '#FF03A9F4', colorPrimary => '#FF0277BD', colorPrimaryDark => '#FF01579B', controlsNormal=>'@color/material_grey_900', _bg => '#fff0f0f0' },
 		dark  => { colorAccent => '#FF03A9F4', colorPrimary => '#FF0277BD', colorPrimaryDark => '#FF01579B', controlsNormal=>'@color/material_grey_300', _bg => '#ff2a2a2a' },
 	},
+	{
+		_name => 'red',
+		light => { colorAccent => '#ffd50000', colorPrimary => '#ffc62828', colorPrimaryDark => '#ffb71c1c', controlsNormal=>'@color/material_grey_900', _bg => '#fff0f0f0' },
+		dark  => { colorAccent => '#ffd50000', colorPrimary => '#ffc62828', colorPrimaryDark => '#ffb71c1c', controlsNormal=>'@color/material_grey_300', _bg => '#ff2a2a2a' },
+	},
 ];
 
 
