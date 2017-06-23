@@ -55,6 +55,7 @@
   <string name="remove">Supprimer</string>
   <string name="play_or_enqueue">Ajouter à la file d\'attente si en lecture ; Lire si en pause</string>
   <string name="open">Ouvrir</string>
+  <string name="go_home">Dossier principal</string>
   <plurals name="playing">
     <item quantity="one">1 morceau en lecture.</item>
     <item quantity="other">%d morceaux en lecture.</item>
@@ -81,16 +82,27 @@
   <string name="delete_file">Effacer le fichier \'%s\'?</string>
   <string name="artists">Artistes</string>
   <string name="albums">Albums</string>
+  <string name="albumartists">Artiste de l\'album</string>
+  <string name="composers">Compositeur</string>
   <string name="songs">Morceaux</string>
   <string name="playlists">Playlists</string>
   <string name="genres">Genres</string>
   <string name="files">Fichiers</string>
+  <string name="artist">Artiste</string>
+  <string name="album">Album</string>
+  <string name="genre">Genre</string>
+  <string name="folder">Dossier</string>
+  <string name="filename">Titre</string>
+  <string name="file_size">Taille</string>
+  <string name="file_time">Date de modification</string>
+  <string name="extension">Extension</string>
   <string name="unknown">Inconnu</string>
   <string name="play_all">Lire tout</string>
   <string name="enqueue_all">Ajouter tout à la file d\'attente</string>
   <string name="all_songs">Tous les morceaux</string>
   <string name="more_from_artist">Plus de cet artiste</string>
   <string name="more_from_album">Plus de cet album</string>
+  <string name="title">Titre</string>
   <string name="number_of_tracks">Nombre de pistes</string>
   <string name="year">Année</string>
   <string name="date_added">Date d\'ajout</string>
@@ -170,6 +182,8 @@
   <string name="theme">Thème</string>
   <string name="disable_lockscreen_title">Désactiver le verrouillage de l\'écran</string>
   <string name="disable_lockscreen_summary">Empêche le verrouillage de l\'écran lorsque la bibliothèque ou l\'écran de lecture est affiché</string>
+  <string name="keep_screen_on_title">Maintenir l\'écran allumé</string>
+  <string name="keep_screen_on_summary">Maintient l\'écran (et l\'appareil) en éveil orsque Vanilla est visible</string>
   <string name="use_idle_timeout_title">Activer le délai d\'inactivité</string>
   <string name="use_idle_timeout_summary">Quand l\'option est activée, la lecture s\'arrêtera après la période d\'inactivité donnée</string>
   <string name="idle_timeout_title">Délai d\'inactivité</string>
@@ -217,6 +231,8 @@
   <string name="enqueue_current_album">Ajouter l\'album à la file d\'attente</string>
   <string name="enqueue_current_artist">Ajouter l\'artiste à la file d\'attente</string>
   <string name="enqueue_current_genre">Ajouter le genre à la file d\'attente</string>
+  <string name="enqueue_current">Ajouter à la file d\'attente...</string>
+  <string name="more_from_current">Filtrer par...</string>
   <string name="empty_the_queue">Vider la file d\'attente</string>
   <string name="show_queue">Afficher la file d\'attente</string>
   <string name="hide_queue">Masquer la file d\'attente</string>
@@ -232,6 +248,7 @@
   <string name="filebrowser_start">Accueil explorateur de fichier</string>
   <string name="customize_filebrowser_start">L\'explorateur de fichier démarre à ce répertoire</string>
   <string name="select">Sélectionner</string>
+  <string name="save">Sauvegarder</string>
   <string name="autoplaylist_playcounts_title">Création de liste de lecture automatique</string>
   <string name="autoplaylist_playcounts_summary">Créer automatiquement une</string>
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s liste de lecture \'Top %.0f\'</string>
@@ -241,6 +258,28 @@
   <string name="reverse_sort">Inverser le tri</string>
   <string name="share">Partager...</string>
   <string name="sendto">Envoyer à…</string>
+  <string name="media_library"> Bibliothèque multimédia</string>
+  <string name="media_folders_header">Dossiers indexés</string>
+  <string name="media_scan_header">Scanner médias</string>
+  <string name="media_scan_full">Scanner tout le système de fichiers (Lent)</string>
+  <string name="media_scan_drop_db">Nettoyer la base de données (Dangereux)</string>
+  <string name="media_scan_start">Lancer le scan</string>
+  <string name="media_scan_force_bastp">Toujours utiliser le lecteur de tag interne</string>
+  <string name="media_scan_group_albums">Grouper les albums par dossier</string>
+  <string name="media_statistics">Statistiques</string>
+  <string name="media_stats_tracks">Nombre de pistes</string>
+  <string name="media_stats_library_playtime">Durée totale (en heures)</string>
+  <string name="media_stats_listen_playtime">Durée totale écoutée</string>
+  <string name="media_stats_progress">Progression du scan</string>
+  <string name="media_library_scan_running">Scan en cours</string>
+  <string name="media_scan_preferences">Options du scanner</string>
+  <string name="media_scan_preferences_change_title">Avertissement</string>
+  <string name="media_scan_preferences_change_message">Toute modification entraînera un scan complet de la bibliothèque. Voulez-vous continuer ?</string>
   <!--Folder selector-->
+  <string name="hint_long_press_to_modify_folder">Appuyez longuement pour modifier les options des dossiers</string>
+  <string name="folder_include">Inclure</string>
+  <string name="folder_exclude">Exclure</string>
+  <string name="folder_neutral">Neutre</string>
   <!--Plugin system-->
+  <string name="plugins">Plugins</string>
 </resources>
