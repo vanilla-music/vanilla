@@ -2101,6 +2101,9 @@ public final class PlaybackService extends Service
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
 			// expanded view is available since 4.1
 			notification.bigContentView = expanded;
+			// 4.1 also knows about notification priorities
+			// HIGH is one higher than the default.
+			notification.priority = Notification.PRIORITY_HIGH;
 		}
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 			notification.visibility = Notification.VISIBILITY_PUBLIC;
