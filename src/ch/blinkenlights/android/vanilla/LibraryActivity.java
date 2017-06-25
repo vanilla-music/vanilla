@@ -366,19 +366,19 @@ public class LibraryActivity
 	 * {@link LibraryAdapter#createData(View)}.
 	 * @param action One of LibraryActivity.ACTION_*
 	 */
-	private void pickSongs(Intent intent, int action)
+	private void pickSongs(Intent intent, final int action)
 	{
+		int effectiveAction = action; // mutable copy
 		long id = intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
 
 		boolean all = false;
-		int mode = action;
 		if (action == ACTION_PLAY_ALL || action == ACTION_ENQUEUE_ALL) {
 			int type = mCurrentAdapter.getMediaType();
 			boolean notPlayAllAdapter = type > MediaUtils.TYPE_SONG || id == LibraryAdapter.HEADER_ID;
-			if (mode == ACTION_ENQUEUE_ALL && notPlayAllAdapter) {
-				mode = ACTION_ENQUEUE;
-			} else if (mode == ACTION_PLAY_ALL && notPlayAllAdapter) {
-				mode = ACTION_PLAY;
+			if (effectiveAction == ACTION_ENQUEUE_ALL && notPlayAllAdapter) {
+				effectiveAction = ACTION_ENQUEUE;
+			} else if (effectiveAction == ACTION_PLAY_ALL && notPlayAllAdapter) {
+				effectiveAction = ACTION_PLAY;
 			} else {
 				all = true;
 			}
@@ -388,7 +388,7 @@ public class LibraryActivity
 			all = true; // page header was clicked -> force all mode
 
 		QueryTask query = buildQueryFromIntent(intent, false, (all ? mCurrentAdapter : null));
-		query.mode = modeForAction[mode];
+		query.mode = modeForAction[effectiveAction];
 		PlaybackService.get(this).addSongs(query);
 
 		if (mDefaultAction == ACTION_LAST_USED && mLastAction != action) {
