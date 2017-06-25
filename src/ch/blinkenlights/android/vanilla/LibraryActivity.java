@@ -52,6 +52,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import java.io.File;
 
@@ -63,8 +64,8 @@ import junit.framework.Assert;
 public class LibraryActivity
 	extends SlidingPlaybackActivity
 	implements DialogInterface.OnClickListener
-	         , DialogInterface.OnDismissListener
-	         , SearchView.OnQueryTextListener
+			 , DialogInterface.OnDismissListener
+			 , SearchView.OnQueryTextListener
 {
 
 
@@ -360,7 +361,7 @@ public class LibraryActivity
 	}
 
 	/**
-	 * Adds songs matching the data from the given intent to the song timelime.
+	 * Adds songs matching the data from the given intent to the song timeline.
 	 *
 	 * @param intent An intent created with
 	 * {@link LibraryAdapter#createData(View)}.
@@ -370,10 +371,22 @@ public class LibraryActivity
 	{
 		int effectiveAction = action; // mutable copy
 		long id = intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
+		int type = mCurrentAdapter.getMediaType();
+
+		// special handling if we pick one song to be played that is already in queue
+		boolean songPicked = (id >= 0 && type == MediaUtils.TYPE_SONG); // not invalid, not play all
+		if (songPicked && effectiveAction == ACTION_PLAY) {
+			int songPosInQueue = PlaybackService.get(this).getQueuePositionForSong(id);
+			if (songPosInQueue > -1) {
+				// we picked for play one song that is already present in the queue, just jump to it
+				PlaybackService.get(this).jumpToQueuePosition(songPosInQueue);
+				Toast.makeText(this, R.string.jumping_to_song, Toast.LENGTH_SHORT).show();
+				return;
+			}
+		}
 
 		boolean all = false;
 		if (action == ACTION_PLAY_ALL || action == ACTION_ENQUEUE_ALL) {
-			int type = mCurrentAdapter.getMediaType();
 			boolean notPlayAllAdapter = type > MediaUtils.TYPE_SONG || id == LibraryAdapter.HEADER_ID;
 			if (effectiveAction == ACTION_ENQUEUE_ALL && notPlayAllAdapter) {
 				effectiveAction = ACTION_ENQUEUE;

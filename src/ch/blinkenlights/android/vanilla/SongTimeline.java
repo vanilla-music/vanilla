@@ -658,6 +658,20 @@ public final class SongTimeline {
 	}
 
 	/**
+	 * Returns song position for given {@link Song}
+	 */
+	public int getQueuePositionForSong(long id) {
+		synchronized (this) {
+			for (int pos = 0; pos < mSongs.size(); pos++) {
+				Song current = mSongs.get(pos);
+				if (current.id == id)
+					return pos;
+			}
+		}
+		return -1;
+	}
+
+	/**
 	 * Move to the next or previous song or album.
 	 *
 	 * @param delta One of SongTimeline.SHIFT_*.
