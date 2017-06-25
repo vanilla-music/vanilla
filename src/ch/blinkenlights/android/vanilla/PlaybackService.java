@@ -2140,7 +2140,7 @@ public final class PlaybackService extends Service
 			synchronized (mStateLock) {
 				if((mState & FLAG_PLAYING) != 0) {
 					mTransientAudioLoss = true;
-					
+
 					if(type == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
 						setFlag(FLAG_DUCKING);
 					} else {
@@ -2318,10 +2318,10 @@ public final class PlaybackService extends Service
 	}
 
 	/**
-	 * Returns 'Song' with given id from timeline
+	 * Returns {@link Song} with given position from timeline or null if nothing found
 	*/
-	public Song getSongByQueuePosition(int id) {
-		return mTimeline.getSongByQueuePosition(id);
+	public Song getSongByQueuePosition(int pos) {
+		return mTimeline.getSongByQueuePosition(pos);
 	}
 
 	/**
