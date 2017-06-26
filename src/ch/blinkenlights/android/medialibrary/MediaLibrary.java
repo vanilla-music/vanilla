@@ -154,14 +154,22 @@ public class MediaLibrary  {
 	private static ArrayList<String> discoverDefaultMediaPaths(Context context) {
 		ArrayList<String> defaultPaths = new ArrayList<>();
 
+		// Try to discover media paths using getExternalMediaDirs() on 5.x and newer
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 			for (File file : context.getExternalMediaDirs()) {
+				// Seems to happen on some Samsung 5.x devices. :-(
+				if (file == null)
+					continue;
+
 				String path = file.getAbsolutePath();
 				int match = path.indexOf("/Android/media/"); // From Environment.DIR_ANDROID + Environment.DIR_MEDIA (both hidden)
 				if (match >= 0)
 					defaultPaths.add(path.substring(0, match));
 			}
-		} else {
+		}
+
+		// Fall back to old API and some guessing if nothing was found (yet).
+		if (defaultPaths.size() == 0) {
 			// this should always exist
 			defaultPaths.add(Environment.getExternalStorageDirectory().getAbsolutePath());
 			// this *may* exist
