@@ -31,7 +31,7 @@ You can donate to Vanilla Musics development via gratipay or Bitcoin
 
 [![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.3.0/dist/gratipay.png)](https://gratipay.com/vanilla-music/)
 
-Bitcoin: [1JdA6ugjVXfQQcsgYZPRuAX1Tkii9Sfc3p](https://blockchain.info/address/1JdA6ugjVXfQQcsgYZPRuAX1Tkii9Sfc3p)
+Bitcoin: [1adrianERDJusC4c8whyT81zAuiENEqub](https://blockchain.info/address/1adrianERDJusC4c8whyT81zAuiENEqub)
 
 
 Community
