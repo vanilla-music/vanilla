@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2016 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2015-2017 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@ package ch.blinkenlights.android.vanilla;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -42,13 +43,13 @@ import java.util.regex.Pattern;
 public class CoverCache {
 	/**
 	 * Returned size of small album covers
-	 * This is 44sp * 2 = xhdpi resolution. We should probably calculate this dynamically
+	 * 44sp is the width & height of a library row
 	 */
-	public final static int SIZE_SMALL = 88;
+	public final static int SIZE_SMALL = 44 * (int)Resources.getSystem().getDisplayMetrics().density;
 	/**
 	 * Returned size of large (cover view) album covers
 	 */
-	public final static int SIZE_LARGE = 600;
+	public final static int SIZE_LARGE = 200 * (int)Resources.getSystem().getDisplayMetrics().density;
 	/**
 	 * Use all cover providers to load cover art
 	 */
@@ -76,7 +77,7 @@ public class CoverCache {
 	/**
 	 * The public downloads directory of this device
 	 */
-	public static final File sDownloadsDir  = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+	private static final File sDownloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
 
 
 	/**
