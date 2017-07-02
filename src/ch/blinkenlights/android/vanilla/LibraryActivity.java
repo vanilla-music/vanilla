@@ -52,6 +52,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import java.io.File;
 
@@ -63,8 +64,8 @@ import junit.framework.Assert;
 public class LibraryActivity
 	extends SlidingPlaybackActivity
 	implements DialogInterface.OnClickListener
-	         , DialogInterface.OnDismissListener
-	         , SearchView.OnQueryTextListener
+			 , DialogInterface.OnDismissListener
+			 , SearchView.OnQueryTextListener
 {
 
 
@@ -360,25 +361,37 @@ public class LibraryActivity
 	}
 
 	/**
-	 * Adds songs matching the data from the given intent to the song timelime.
+	 * Adds songs matching the data from the given intent to the song timeline.
 	 *
 	 * @param intent An intent created with
 	 * {@link LibraryAdapter#createData(View)}.
 	 * @param action One of LibraryActivity.ACTION_*
 	 */
-	private void pickSongs(Intent intent, int action)
+	private void pickSongs(Intent intent, final int action)
 	{
+		int effectiveAction = action; // mutable copy
 		long id = intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
+		int type = mCurrentAdapter.getMediaType();
+
+		// special handling if we pick one song to be played that is already in queue
+		boolean songPicked = (id >= 0 && type == MediaUtils.TYPE_SONG); // not invalid, not play all
+		if (songPicked && effectiveAction == ACTION_PLAY) {
+			int songPosInQueue = PlaybackService.get(this).getQueuePositionForSong(id);
+			if (songPosInQueue > -1) {
+				// we picked for play one song that is already present in the queue, just jump to it
+				PlaybackService.get(this).jumpToQueuePosition(songPosInQueue);
+				Toast.makeText(this, R.string.jumping_to_song, Toast.LENGTH_SHORT).show();
+				return;
+			}
+		}
 
 		boolean all = false;
-		int mode = action;
 		if (action == ACTION_PLAY_ALL || action == ACTION_ENQUEUE_ALL) {
-			int type = mCurrentAdapter.getMediaType();
 			boolean notPlayAllAdapter = type > MediaUtils.TYPE_SONG || id == LibraryAdapter.HEADER_ID;
-			if (mode == ACTION_ENQUEUE_ALL && notPlayAllAdapter) {
-				mode = ACTION_ENQUEUE;
-			} else if (mode == ACTION_PLAY_ALL && notPlayAllAdapter) {
-				mode = ACTION_PLAY;
+			if (effectiveAction == ACTION_ENQUEUE_ALL && notPlayAllAdapter) {
+				effectiveAction = ACTION_ENQUEUE;
+			} else if (effectiveAction == ACTION_PLAY_ALL && notPlayAllAdapter) {
+				effectiveAction = ACTION_PLAY;
 			} else {
 				all = true;
 			}
@@ -388,7 +401,7 @@ public class LibraryActivity
 			all = true; // page header was clicked -> force all mode
 
 		QueryTask query = buildQueryFromIntent(intent, false, (all ? mCurrentAdapter : null));
-		query.mode = modeForAction[mode];
+		query.mode = modeForAction[effectiveAction];
 		PlaybackService.get(this).addSongs(query);
 
 		if (mDefaultAction == ACTION_LAST_USED && mLastAction != action) {

@@ -368,7 +368,7 @@ public final class SongTimeline {
 
 					cursor.close();
 
-					// The query may have returned zero results or we might 
+					// The query may have returned zero results or we might
 					// have failed to populate some songs: Get rid of all
 					// uninitialized items
 					Iterator<Song> it = songs.iterator();
@@ -631,7 +631,7 @@ public final class SongTimeline {
 
 		mCurrentPos = pos;
 	}
-	
+
 	/**
 	 * Hard-Jump to given queue position
 	*/
@@ -644,19 +644,33 @@ public final class SongTimeline {
 		changed();
 		return getSong(0);
 	}
-	
+
 	/**
 	 * Returns 'Song' at given position in queue
 	*/
-	public Song getSongByQueuePosition(int id) {
+	public Song getSongByQueuePosition(int pos) {
 		Song song = null;
 		synchronized (this) {
-			if (mSongs.size() > id)
-				song = mSongs.get(id);
+			if (mSongs.size() > pos)
+				song = mSongs.get(pos);
 		}
 		return song;
 	}
-	
+
+	/**
+	 * Returns song position for given {@link Song}
+	 */
+	public int getQueuePositionForSong(long id) {
+		synchronized (this) {
+			for (int pos = 0; pos < mSongs.size(); pos++) {
+				Song current = mSongs.get(pos);
+				if (current.id == id)
+					return pos;
+			}
+		}
+		return -1;
+	}
+
 	/**
 	 * Move to the next or previous song or album.
 	 *

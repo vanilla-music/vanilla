@@ -56,7 +56,6 @@ import android.os.PowerManager;
 import android.os.Process;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -1909,8 +1908,6 @@ public final class PlaybackService extends Service
 
 	/**
 	 * Add an Activity to the registered PlaybackActivities.
-	 *
-	 * @param activity The Activity to be added
 	 */
 	public static void addTimelineCallback(TimelineCallback consumer)
 	{
@@ -1919,8 +1916,6 @@ public final class PlaybackService extends Service
 
 	/**
 	 * Remove an Activity from the registered PlaybackActivities
-	 *
-	 * @param activity The Activity to be removed
 	 */
 	public static void removeTimelineCallback(TimelineCallback consumer)
 	{
@@ -2140,7 +2135,7 @@ public final class PlaybackService extends Service
 			synchronized (mStateLock) {
 				if((mState & FLAG_PLAYING) != 0) {
 					mTransientAudioLoss = true;
-					
+
 					if(type == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
 						setFlag(FLAG_DUCKING);
 					} else {
@@ -2318,17 +2313,26 @@ public final class PlaybackService extends Service
 	}
 
 	/**
-	 * Returns 'Song' with given id from timeline
+	 * Returns {@link Song} with given position from timeline or null if nothing found
 	*/
-	public Song getSongByQueuePosition(int id) {
-		return mTimeline.getSongByQueuePosition(id);
+	public Song getSongByQueuePosition(int pos) {
+		return mTimeline.getSongByQueuePosition(pos);
+	}
+
+	/**
+	 * Retrieve song position in timeline
+	 * @param id song id as defined in {@link Song#id}
+	 * @return absolute position in song timeline or -1 if song currently not in timeline
+	 */
+	public int getQueuePositionForSong(long id) {
+		return mTimeline.getQueuePositionForSong(id);
 	}
 
 	/**
 	 * Do a 'hard' jump to given queue position
 	*/
-	public void jumpToQueuePosition(int id) {
-		mTimeline.setCurrentQueuePosition(id);
+	public void jumpToQueuePosition(int pos) {
+		mTimeline.setCurrentQueuePosition(pos);
 		play();
 	}
 
