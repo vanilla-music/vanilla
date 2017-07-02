@@ -658,9 +658,9 @@ public final class SongTimeline {
 	}
 
 	/**
-	 * Returns song position for given {@link Song}
+	 * Returns song position for given {@link Song.id}
 	 */
-	public int getQueuePositionForSong(long id) {
+	public int getQueuePositionForSongId(long id) {
 		synchronized (this) {
 			for (int pos = 0; pos < mSongs.size(); pos++) {
 				Song current = mSongs.get(pos);

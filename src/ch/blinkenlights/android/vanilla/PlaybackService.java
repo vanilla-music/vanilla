@@ -2324,8 +2324,8 @@ public final class PlaybackService extends Service
 	 * @param id song id as defined in {@link Song#id}
 	 * @return absolute position in song timeline or -1 if song currently not in timeline
 	 */
-	public int getQueuePositionForSong(long id) {
-		return mTimeline.getQueuePositionForSong(id);
+	public int getQueuePositionForSongId(long id) {
+		return mTimeline.getQueuePositionForSongId(id);
 	}
 
 	/**

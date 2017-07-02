@@ -376,7 +376,7 @@ public class LibraryActivity
 		// special handling if we pick one song to be played that is already in queue
 		boolean songPicked = (id >= 0 && type == MediaUtils.TYPE_SONG); // not invalid, not play all
 		if (songPicked && effectiveAction == ACTION_PLAY) {
-			int songPosInQueue = PlaybackService.get(this).getQueuePositionForSong(id);
+			int songPosInQueue = PlaybackService.get(this).getQueuePositionForSongId(id);
 			if (songPosInQueue > -1) {
 				// we picked for play one song that is already present in the queue, just jump to it
 				PlaybackService.get(this).jumpToQueuePosition(songPosInQueue);
