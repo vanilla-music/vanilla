@@ -70,7 +70,7 @@ public class MediaAdapter
 	/**
 	 * The string to use for length==0 db fields
 	 */
-	private static final String DB_NULLSTRING_FALLBACK = "???";
+	private static final String DB_NULLSTRING_FALLBACK = "?";
 	/**
 	 * A context to use.
 	 */
@@ -686,11 +686,11 @@ public class MediaAdapter
 		Object lastKnown = null;
 		Object next;
 		do {
-			if(cursor.isNull(sortColumnIndex))
-				continue;
-
 			int type = cursor.getType(sortColumnIndex);
 			switch (type) {
+				case Cursor.FIELD_TYPE_NULL:
+					next = DB_NULLSTRING_FALLBACK;
+					break;
 				case Cursor.FIELD_TYPE_INTEGER:
 					int value = cursor.getInt(sortColumnIndex);
 					if (columnName.equals(MediaLibrary.SongColumns.MTIME)) {
