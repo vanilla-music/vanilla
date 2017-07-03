@@ -45,11 +45,11 @@ public class CoverCache {
 	 * Returned size of small album covers
 	 * 44sp is the width & height of a library row
 	 */
-	public final static int SIZE_SMALL = 44 * (int)Resources.getSystem().getDisplayMetrics().density;
+	public final static int SIZE_SMALL = (int)(44 * Resources.getSystem().getDisplayMetrics().density);
 	/**
 	 * Returned size of large (cover view) album covers
 	 */
-	public final static int SIZE_LARGE = 200 * (int)Resources.getSystem().getDisplayMetrics().density;
+	public final static int SIZE_LARGE = (int)(200 * Resources.getSystem().getDisplayMetrics().density);
 	/**
 	 * Use all cover providers to load cover art
 	 */
