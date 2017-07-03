@@ -2103,8 +2103,6 @@ public final class PlaybackService extends Service
 			notification.bigContentView = expanded;
 		}
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-			notification.visibility = Notification.VISIBILITY_PUBLIC;
-
 			RemoteViews viewsPublic = new RemoteViews(getPackageName(), R.layout.notification);
 			viewsPublic.setInt(R.id.title, "setText", R.string.app_name);
 
@@ -2118,7 +2116,6 @@ public final class PlaybackService extends Service
 			Notification notificationPublic = notification.clone();
 			notificationPublic.contentView = viewsPublic;
 
-			notification.visibility = Notification.VISIBILITY_PRIVATE;
 			notification.publicVersion = notificationPublic;
 		}
 
