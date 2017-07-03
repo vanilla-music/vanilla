@@ -208,8 +208,9 @@ public class Mp4File extends Common {
 									System.out.println(String.format("parsed tag '%s': '%s'\n", tagName, tagValue));
 								}
 								addTagEntry(tags, tagName.toUpperCase(), tagValue);
-								tagName = null;
 							}
+							// This is the end of this tree, make sure that we don't re-use tagName in any other tree
+							tagName = null;
 						}
 					}
 				}
