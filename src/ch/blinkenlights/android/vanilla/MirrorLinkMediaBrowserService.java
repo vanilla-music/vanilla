@@ -383,10 +383,14 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService
 				List<MediaBrowser.MediaItem> items = null;
 				if (result != null) {
 					items = mQueryResult;
-					if (current == ASYNCTASK_SUCCEEDED) {
-						result.sendResult(items);
-					} else {
-						result.sendResult(Collections.<MediaItem>emptyList());
+					try {
+						if (current == ASYNCTASK_SUCCEEDED) {
+							result.sendResult(items);
+						} else {
+							result.sendResult(Collections.<MediaItem>emptyList());
+						}
+					} catch (IndexOutOfBoundsException e) {
+						Log.v("VanillaMusic", "result.send failed: " + e);
 					}
 				}
 			}
