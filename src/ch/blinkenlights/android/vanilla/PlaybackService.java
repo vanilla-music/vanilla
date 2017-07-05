@@ -2101,7 +2101,20 @@ public final class PlaybackService extends Service
 			notification.priority = Notification.PRIORITY_HIGH;
 		}
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-			notification.visibility = Notification.VISIBILITY_PUBLIC;
+			RemoteViews viewsPublic = new RemoteViews(getPackageName(), R.layout.notification);
+			viewsPublic.setInt(R.id.title, "setText", R.string.app_name);
+
+			viewsPublic.setImageViewResource(R.id.cover, R.drawable.icon);
+			viewsPublic.setImageViewResource(R.id.play_pause, playButton);
+			viewsPublic.setOnClickPendingIntent(R.id.play_pause, PendingIntent.getService(this, 0, playPause, 0));
+			viewsPublic.setOnClickPendingIntent(R.id.next, PendingIntent.getService(this, 0, next, 0));
+			viewsPublic.setOnClickPendingIntent(R.id.close, PendingIntent.getService(this, 0, close, 0));
+			viewsPublic.setViewVisibility(R.id.close, closeButtonVisibility);
+
+			Notification notificationPublic = notification.clone();
+			notificationPublic.contentView = viewsPublic;
+
+			notification.publicVersion = notificationPublic;
 		}
 
 		if(mNotificationNag) {
