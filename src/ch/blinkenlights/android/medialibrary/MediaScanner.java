@@ -504,7 +504,18 @@ public class MediaScanner implements Handler.Callback {
 			v.put(MediaLibrary.AlbumColumns.ALBUM_SORT,        MediaLibrary.keyFor(album));
 			v.put(MediaLibrary.AlbumColumns.PRIMARY_ARTIST_ID, artistId);
 			v.put(MediaLibrary.AlbumColumns.PRIMARY_ALBUM_YEAR,tags.getFirst(MediaMetadataExtractor.YEAR));
-			mBackend.insert(MediaLibrary.TABLE_ALBUMS, null, v);
+			long albumInsert = mBackend.insert(MediaLibrary.TABLE_ALBUMS, null, v);
+			if (albumInsert == -1) {
+				// Insert failed, so the column probably already existed.
+				// We need to ensure that the album table is up-to-date as it contains
+				// some 'cached' (PRIMARY_*) values.
+				// Failure to do so would mean that we never update the year or may point to an
+				// orphaned artist id.
+				v.clear();
+				v.put(MediaLibrary.AlbumColumns.PRIMARY_ARTIST_ID, artistId);
+				v.put(MediaLibrary.AlbumColumns.PRIMARY_ALBUM_YEAR,tags.getFirst(MediaMetadataExtractor.YEAR));
+				mBackend.update(MediaLibrary.TABLE_ALBUMS, v, MediaLibrary.AlbumColumns._ID+"=?", new String[]{ Long.toString(albumId) });
+			}
 
 			v.clear();
 			v.put(MediaLibrary.ContributorColumns._ID,               artistId);
