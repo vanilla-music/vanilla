@@ -325,8 +325,8 @@ THE SOFTWARE.
 	<string name="media_library">Media library</string>
 	<string name="media_folders_header">Indexed directories</string>
 	<string name="media_scan_header">Media scanner</string>
-	<string name="media_scan_full">Scan full filesystem (Slow)</string>
-	<string name="media_scan_drop_db">Flush media database (Dangerzone!)</string>
+	<string name="media_scan_full">Scan full filesystem (slower)</string>
+	<string name="media_scan_drop_db">Flush media database</string>
 	<string name="media_scan_start">Start scan</string>
 	<string name="media_scan_force_bastp">Always use built-in tag reader</string>
 	<string name="media_scan_group_albums">Group albums by folder</string>
