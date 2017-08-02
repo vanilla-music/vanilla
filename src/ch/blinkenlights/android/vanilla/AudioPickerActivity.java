@@ -40,7 +40,7 @@ public class AudioPickerActivity extends PlaybackActivity {
 	/**
 	 * The cancel button
 	 */
-	private Button mCancelButton;
+	Button mCancelButton;
 	/**
 	 * The enqueue button
 	 */
@@ -175,7 +175,7 @@ public class AudioPickerActivity extends PlaybackActivity {
 		if ("".equals(song.title))
 			displayName = new File(song.path).getName();
 
-		mTextView.setText(song.title);
+		mTextView.setText(displayName);
 		mTextView.setVisibility(View.VISIBLE);
 		mProgressBar.setVisibility(View.GONE);
 	}
@@ -268,7 +268,7 @@ public class AudioPickerActivity extends PlaybackActivity {
 				outFile = File.createTempFile("cached-download-", ".bin", getCacheDir());
 				ous = new FileOutputStream(outFile);
 
-				int len = 0;
+				int len;
 				while ((len = ins.read(buffer)) != -1) {
 					ous.write(buffer, 0, len);
 					if (isCancelled()) {

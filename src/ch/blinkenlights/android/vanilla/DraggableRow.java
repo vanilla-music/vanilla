@@ -61,7 +61,7 @@ public class DraggableRow extends LinearLayout implements Checkable {
 	public void onFinishInflate() {
 		mCheckBox  = (CheckedTextView)this.findViewById(R.id.checkbox);
 		mTextView  = (TextView)this.findViewById(R.id.text);
-		mPmark     = (View)this.findViewById(R.id.pmark);
+		mPmark     = this.findViewById(R.id.pmark);
 		mDragger   = (ImageView)this.findViewById(R.id.dragger);
 		mCoverView = (LazyCoverView)this.findViewById(R.id.cover);
 		super.onFinishInflate();

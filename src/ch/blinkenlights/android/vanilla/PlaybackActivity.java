@@ -487,8 +487,7 @@ public abstract class PlaybackActivity extends Activity
 		case MSG_CREATE_PLAYLIST: {
 			PlaylistTask playlistTask = (PlaylistTask)message.obj;
 			int nextAction = message.arg1;
-			long playlistId = Playlist.createPlaylist(this, playlistTask.name);
-			playlistTask.playlistId = playlistId;
+			playlistTask.playlistId = Playlist.createPlaylist(this, playlistTask.name);
 			mHandler.sendMessage(mHandler.obtainMessage(nextAction, playlistTask));
 			break;
 		}
@@ -499,7 +498,7 @@ public abstract class PlaybackActivity extends Activity
 		}
 		case MSG_ADD_QUEUE_TO_PLAYLIST: {
 			PlaylistTask playlistTask = (PlaylistTask)message.obj;
-			playlistTask.audioIds = new ArrayList<Long>();
+			playlistTask.audioIds = new ArrayList<>();
 			Song song;
 			PlaybackService service = PlaybackService.get(this);
 			for (int i=0; ; i++) {

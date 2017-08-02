@@ -46,7 +46,7 @@ import java.util.regex.Pattern;
  * A list adapter that provides a view of the filesystem. The active directory
  * is set through a {@link Limiter} and rows are displayed using MediaViews.
  */
-public class FileSystemAdapter
+class FileSystemAdapter
 	extends SortableAdapter
 	implements LibraryAdapter
 {
@@ -91,7 +91,7 @@ public class FileSystemAdapter
 	/**
 	 * The owner LibraryActivity.
 	 */
-	final LibraryActivity mActivity;
+	private final LibraryActivity mActivity;
 	/**
 	 * A LayoutInflater to use.
 	 */
@@ -107,7 +107,7 @@ public class FileSystemAdapter
 	/**
 	 * The currently active filter, entered by the user from the search box.
 	 */
-	String[] mFilter;
+	private String[] mFilter;
 	/**
 	 * Excludes dot files and files not matching mFilter.
 	 */
@@ -141,11 +141,10 @@ public class FileSystemAdapter
 				int order;
 				switch (mode) {
 					case SORT_SIZE:
-						order = Long.valueOf(a.length()).compareTo(Long.valueOf(b.length()));
+						order = Long.valueOf(a.length()).compareTo(b.length());
 						break;
 					case SORT_TIME:
-						order = Long.valueOf(a.lastModified())
-								.compareTo(Long.valueOf(b.lastModified()));
+						order = Long.valueOf(a.lastModified()).compareTo(b.lastModified());
 						break;
 					case SORT_EXT:
 						order = FileUtils.getFileExtension(a.getName())
@@ -178,7 +177,7 @@ public class FileSystemAdapter
 	 * @param limiter An initial limiter to set. If none is given, will be set
 	 * to the external storage directory.
 	 */
-	public FileSystemAdapter(LibraryActivity activity, Limiter limiter)
+	FileSystemAdapter(LibraryActivity activity, Limiter limiter)
 	{
 		mActivity = activity;
 		mLimiter = limiter;
@@ -203,7 +202,7 @@ public class FileSystemAdapter
 		if (readdir == null)
 			readdir = new File[]{};
 
-		ArrayList<File> files = new ArrayList<File>(Arrays.asList(readdir));
+		ArrayList<File> files = new ArrayList<>(Arrays.asList(readdir));
 		Collections.sort(files, mFileComparator);
 		if (!mFsRoot.equals(file))
 			files.add(0, new File(file, NAME_PARENT_FOLDER));
@@ -345,7 +344,7 @@ public class FileSystemAdapter
 	 * @param file A File pointing to a folder.
 	 * @return A limiter describing the given folder.
 	 */
-	public static Limiter buildLimiter(File file)
+	static Limiter buildLimiter(File file)
 	{
 		if (pointsToParentFolder(file))
 			file = file.getParentFile().getParentFile();
@@ -359,7 +358,7 @@ public class FileSystemAdapter
 	 * @param context the context to use
 	 * @return A limiter which is configured as 'home' directory
 	 */
-	public static Limiter buildHomeLimiter(Context context) {
+	static Limiter buildHomeLimiter(Context context) {
 		return buildLimiter(FileUtils.getFilesystemBrowseStart(context));
 	}
 
@@ -379,7 +378,7 @@ public class FileSystemAdapter
 	 * FileObserver that reloads the files in this adapter.
 	 */
 	private class Observer extends FileObserver {
-		public Observer(String path)
+		Observer(String path)
 		{
 			super(path, FileObserver.CREATE | FileObserver.DELETE | FileObserver.MOVED_TO | FileObserver.MOVED_FROM);
 			startWatching();
@@ -436,7 +435,7 @@ public class FileSystemAdapter
 	 *
 	 * @param intent likely created by createData()
 	 */
-	public void onItemClicked(Intent intent) {
+	void onItemClicked(Intent intent) {
 		boolean isFolder = intent.getBooleanExtra(LibraryAdapter.DATA_EXPANDABLE, false);
 
 		if (FileUtils.canDispatchIntent(intent) && FileUtils.dispatchIntent(mActivity, intent))
@@ -455,7 +454,7 @@ public class FileSystemAdapter
 	 * @param menu the context menu to populate
 	 * @param intent likely created by createData()
 	 */
-	public void onCreateContextMenu(ContextMenu menu, Intent intent) {
+	void onCreateContextMenu(ContextMenu menu, Intent intent) {
 		String path = intent.getStringExtra(LibraryAdapter.DATA_FILE);
 		boolean isParentRow = (path != null && pointsToParentFolder(new File(path)));
 

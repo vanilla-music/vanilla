@@ -198,7 +198,7 @@ public class MediaUtils {
 	 * @param projection The columns to query.
 	 * @return The initialized query.
 	 */
-	public static QueryTask buildPlaylistQuery(long id, String[] projection) {
+	static QueryTask buildPlaylistQuery(long id, String[] projection) {
 		String sort = MediaLibrary.PlaylistSongColumns.POSITION;
 		String selection = MediaLibrary.PlaylistSongColumns.PLAYLIST_ID+"="+id;
 		QueryTask result = new QueryTask(MediaLibrary.VIEW_PLAYLIST_SONGS, projection, selection, null, sort);
@@ -216,7 +216,7 @@ public class MediaUtils {
 	 * @param selection An extra selection to be passed to the query. May be
 	 * null. Must not be used with type == TYPE_SONG or type == TYPE_PLAYLIST
 	 */
-	public static QueryTask buildQuery(int type, long id, String[] projection, String selection)
+	static QueryTask buildQuery(int type, long id, String[] projection, String selection)
 	{
 		switch (type) {
 		case TYPE_ARTIST:
@@ -240,7 +240,7 @@ public class MediaUtils {
 	 * @param context The context to use
 	 * @param id The id of the song to query the genre for.
 	 */
-	public static long queryGenreForSong(Context context, long id) {
+	static long queryGenreForSong(Context context, long id) {
 		String[] projection = { MediaLibrary.GenreSongColumns._GENRE_ID };
 		String query = MediaLibrary.GenreSongColumns.SONG_ID+"=?";
 		String[] queryArgs = new String[] { Long.toString(id) };
@@ -327,7 +327,7 @@ public class MediaUtils {
 	 * @return True if it's possible to retrieve any songs, false otherwise. For
 	 * example, false could be returned if there are no songs in the library.
 	 */
-	public static boolean isSongAvailable(Context context) {
+	static boolean isSongAvailable(Context context) {
 		if (sSongCount == -1) {
 			sSongCount = MediaLibrary.getLibrarySize(context);
 		}
@@ -368,7 +368,7 @@ public class MediaUtils {
 	 * Called if we detected a medium change
 	 * This flushes some cached data
 	 */
-	public static void onMediaChange()
+	static void onMediaChange()
 	{
 		sSongCount = -1;
 		sAllSongs = null;
@@ -381,7 +381,7 @@ public class MediaUtils {
 	 * @param type media type to look for e.g. {@link MediaUtils#TYPE_SONG}
 	 * @param id id of item to send
 	 */
-	public static void shareMedia(Context ctx, int type, long id) {
+	static void shareMedia(Context ctx, int type, long id) {
 		if (type == TYPE_INVALID || id <= 0) { // invalid
 			return;
 		}
@@ -414,7 +414,7 @@ public class MediaUtils {
 	 * @param type The MediaTye to query
 	 * @param id The id of given type to query
 	 */
-	public static Song getSongByTypeId(Context context, int type, long id) {
+	static Song getSongByTypeId(Context context, int type, long id) {
 		Song song = new Song(-1);
 		QueryTask query = buildQuery(type, id, Song.FILLED_PROJECTION, null);
 		Cursor cursor = query.runQuery(context);
@@ -434,7 +434,7 @@ public class MediaUtils {
 	 *
 	 * @param context The Context to use
 	 */
-	public static Song getRandomSong(Context context)
+	static Song getRandomSong(Context context)
 	{
 		long[] songs = sAllSongs;
 
@@ -460,7 +460,7 @@ public class MediaUtils {
 	 *
 	 * @return True if successful; false otherwise.
 	 */
-	public static boolean deleteFile(File file)
+	static boolean deleteFile(File file)
 	{
 		File[] children = file.listFiles();
 		if (children != null) {
@@ -521,7 +521,7 @@ public class MediaUtils {
 	 * @param projection The columns to query
 	 * @return The initialized query.
 	 */
-	public static QueryTask buildFileQuery(String path, String[] projection)
+	static QueryTask buildFileQuery(String path, String[] projection)
 	{
 		/* make sure that the path is:
 		   -> fixed-up to point to the real mountpoint if user browsed to the mediadir symlink
@@ -542,7 +542,7 @@ public class MediaUtils {
 	 * @param path The path to the file to be queried
 	 * @return A new Cursor object
 	 * */
-	public static Cursor getCursorForFileQuery(String path) {
+	static Cursor getCursorForFileQuery(String path) {
 		MatrixCursor matrixCursor = new MatrixCursor(Song.FILLED_PROJECTION);
 		MediaMetadataExtractor tags = new MediaMetadataExtractor(path);
 		String title = tags.getFirst(MediaMetadataExtractor.TITLE);
@@ -585,7 +585,7 @@ public class MediaUtils {
 	 * @param song the song to query
 	 * @return long { song_id, album_id, artist_id } - all set to -1 on error
 	 */
-	public static long[] getAndroidMediaIds(Context context, Song song) {
+	static long[] getAndroidMediaIds(Context context, Song song) {
 		long[] result = { -1, -1, -1 };
 		String[] projection = new String[]{ MediaStore.Audio.Media._ID, MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.ARTIST_ID };
 		try {
@@ -610,7 +610,7 @@ public class MediaUtils {
 	 * @param mType media type e.g. {@link #TYPE_ARTIST}
      * @return ID of media type, {@link #TYPE_INVALID} if unsupported
      */
-	public static long getCurrentIdForType(Song song, int mType)
+	static long getCurrentIdForType(Song song, int mType)
 	{
 		if(song == null)
 			return TYPE_INVALID;

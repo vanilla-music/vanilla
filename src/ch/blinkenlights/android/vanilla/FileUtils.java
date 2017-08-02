@@ -33,7 +33,7 @@ import android.util.Log;
 /**
  * Provides some static File-related utility functions.
  */
-public class FileUtils {
+class FileUtils {
 
 	/**
 	 * Checks if dispatching this intent to an external application makes sense
@@ -41,13 +41,13 @@ public class FileUtils {
 	 * @param intent The intent to examine
 	 * @return bool true if the intent could be dispatched
 	 */
-	public static boolean canDispatchIntent(Intent intent) {
+	static boolean canDispatchIntent(Intent intent) {
 		boolean canDispatch = false;
 
 		int type = intent.getIntExtra(LibraryAdapter.DATA_TYPE, MediaUtils.TYPE_INVALID);
 		boolean isFolder = intent.getBooleanExtra(LibraryAdapter.DATA_EXPANDABLE, false);
 		String path = intent.getStringExtra(LibraryAdapter.DATA_FILE);
-		if (type == MediaUtils.TYPE_FILE && isFolder == false) {
+		if (type == MediaUtils.TYPE_FILE && !isFolder) {
 			try {
 				URI uri = new URI("file", path, null);
 				String mimeGuess = URLConnection.guessContentTypeFromName(uri.toString());
@@ -68,7 +68,7 @@ public class FileUtils {
 	 * @param intent The intent to examine and launch
 	 * @return bool true if the intent was dispatched
 	 */
-	public static boolean dispatchIntent(LibraryActivity activity, Intent intent) {
+	static boolean dispatchIntent(LibraryActivity activity, Intent intent) {
 		boolean handled = true;
 
 		String path = intent.getStringExtra(LibraryAdapter.DATA_FILE);
@@ -90,7 +90,7 @@ public class FileUtils {
 	 * Called by FileSystem adapter to get the start folder
 	 * for browsing directories
 	 */
-	public static File getFilesystemBrowseStart(Context context) {
+	static File getFilesystemBrowseStart(Context context) {
 		SharedPreferences prefs = PlaybackService.getSettings(context);
 		String folder = prefs.getString(PrefKeys.FILESYSTEM_BROWSE_START, PrefDefaults.FILESYSTEM_BROWSE_START);
 		return new File( folder.equals("") ? Environment.getExternalStorageDirectory().getAbsolutePath() : folder );
@@ -100,7 +100,7 @@ public class FileUtils {
 	 * Return the file extension for a given filename (including dot).
 	 * Empty string is returned if there is no extension.
 	 */
-	public static String getFileExtension(String filename) {
+	static String getFileExtension(String filename) {
 		int index = filename.lastIndexOf(".");
 		return index > 0 ? filename.substring(index) : "";
 	}

@@ -40,7 +40,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
-public class MediaScanner implements Handler.Callback {
+class MediaScanner implements Handler.Callback {
 	/**
 	 * Our scan plan
 	 */
@@ -102,7 +102,7 @@ public class MediaScanner implements Handler.Callback {
 	 * Performs a 'fast' scan by checking the native and our own
 	 * library for new and changed files
 	 */
-	public void startNormalScan() {
+	void startNormalScan() {
 		mScanPlan.addNextStep(RPC_NATIVE_VRFY, null)
 			.addNextStep(RPC_LIBRARY_VRFY, null);
 		mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_RPC, RPC_KICKSTART, 0));
@@ -111,7 +111,7 @@ public class MediaScanner implements Handler.Callback {
 	/**
 	 * Performs a 'slow' scan by inspecting all files on the device
 	 */
-	public void startFullScan() {
+	void startFullScan() {
 		MediaLibrary.Preferences prefs = MediaLibrary.getPreferences(mContext);
 		for (String path : prefs.mediaFolders) {
 			mScanPlan.addNextStep(RPC_READ_DIR, new File(path));
@@ -127,7 +127,7 @@ public class MediaScanner implements Handler.Callback {
 	 *
 	 * @param delay how many ms we should wait (used to coalesce multiple calls)
 	 */
-	public void startQuickScan(int delay) {
+	void startQuickScan(int delay) {
 		if (!mHandler.hasMessages(MSG_GUESS_QUICKSCAN) && !mHandler.hasMessages(MSG_SCAN_RPC)) {
 			mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_GUESS_QUICKSCAN, 0, 0), delay);
 		}
@@ -136,16 +136,16 @@ public class MediaScanner implements Handler.Callback {
 	/**
 	 * Stops a running scan
 	 */
-	public void abortScan() {
+	void abortScan() {
 		mHandler.removeMessages(MSG_SCAN_RPC);
 		mScanPlan.clear();
 		mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_RPC, RPC_KICKSTART, 0));
 	}
 
 	/**
-	 * Prepares a flush of the databse.
+	 * Prepares a flush of the database.
 	 */
-	public void flushDatabase() {
+	void flushDatabase() {
 		mBackend.setPendingDeletion();
 		mPendingCleanup = true;
 
@@ -159,7 +159,7 @@ public class MediaScanner implements Handler.Callback {
 	 *
 	 * @return a MediaLibrary.ScanProgress object
 	 */
-	public MediaLibrary.ScanProgress describeScanProgress() {
+	MediaLibrary.ScanProgress describeScanProgress() {
 		MediaLibrary.ScanProgress progress = new MediaLibrary.ScanProgress();
 		MediaLibrary.Preferences prefs = MediaLibrary.getPreferences(mContext);
 		MediaScanPlan.Statistics stats = mScanPlan.getStatistics();

@@ -360,15 +360,14 @@ public class MediaAdapter
 			selection.append(limiter.data);
 		}
 
-		if (returnSongs == true) {
+		if (returnSongs) {
 			source = MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS_HUGE;
 		} else {
 			enrichedProjection = Arrays.copyOf(projection, projection.length + 1);
 			enrichedProjection[projection.length] = getFirstSortColumn();
 		}
 
-		QueryTask query = new QueryTask(source, enrichedProjection, selection.toString(), selectionArgs, sort);
-		return query;
+		return new QueryTask(source, enrichedProjection, selection.toString(), selectionArgs, sort);
 	}
 
 	@Override

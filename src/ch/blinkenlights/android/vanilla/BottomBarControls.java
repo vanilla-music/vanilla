@@ -154,7 +154,7 @@ public class BottomBarControls extends LinearLayout
 		mParentMenuConsumer = owner;
 
 		ImageButton menuButton = getImageButton(getResources().getDrawable(R.drawable.ic_menu_moreoverflow));
-		mPopupMenu = (menuMargin() ? new PopupMenu(mContext, menuButton, Gravity.RIGHT) : new PopupMenu(mContext, menuButton));
+		mPopupMenu = (menuMargin() ? new PopupMenu(mContext, menuButton, Gravity.END) : new PopupMenu(mContext, menuButton));
 		mPopupMenu.setOnMenuItemClickListener(this);
 
 		// Let parent populate the menu
@@ -165,7 +165,7 @@ public class BottomBarControls extends LinearLayout
 		Menu menu = mPopupMenu.getMenu();
 		for (int i=0; i < menu.size(); i++) {
 			MenuItem menuItem = menu.getItem(i);
-			if (menuItem.isVisible() == false && menuItem.getIcon() != null) {
+			if (!menuItem.isVisible() && menuItem.getIcon() != null) {
 				ImageButton button = getImageButton(menuItem.getIcon());
 				button.setTag(menuItem);
 				button.setOnClickListener(this);
@@ -293,7 +293,7 @@ public class BottomBarControls extends LinearLayout
 	 * Because ...reasons.
 	 */
 	private boolean menuMargin() {
-		return ThemeHelper.usesHoloTheme() == false;
+		return !ThemeHelper.usesHoloTheme();
 	}
 
 	/**

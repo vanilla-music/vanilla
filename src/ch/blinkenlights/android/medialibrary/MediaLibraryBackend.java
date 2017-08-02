@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MediaLibraryBackend extends SQLiteOpenHelper {
+class MediaLibraryBackend extends SQLiteOpenHelper {
 	/**
 	 * Enables or disables debugging
 	 */

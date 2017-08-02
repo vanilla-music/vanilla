@@ -17,6 +17,7 @@
 
 package ch.blinkenlights.android.medialibrary;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -123,6 +124,7 @@ public class MediaLibrary  {
 	 * @param context the context to use
 	 * @return MediaLibrary.Preferences
 	 */
+	@TargetApi(Build.VERSION_CODES.KITKAT)
 	public static MediaLibrary.Preferences getPreferences(Context context) {
 		MediaLibrary.Preferences prefs = sPreferences;
 		if (prefs == null) {
@@ -191,8 +193,8 @@ public class MediaLibrary  {
 		ArrayList<String> defaultPaths = new ArrayList<>();
 
 		for (String path : discoverDefaultMediaPaths(context)) {
-			for (int i = 0; i < defaultBlacklistPostfix.length; i++) {
-				File guess = new File(path + "/" + defaultBlacklistPostfix[i]);
+			for (String aDefaultBlacklistPostfix : defaultBlacklistPostfix) {
+				File guess = new File(path + "/" + aDefaultBlacklistPostfix);
 				if (guess.isDirectory())
 					defaultPaths.add(guess.getAbsolutePath());
 			}
@@ -207,6 +209,7 @@ public class MediaLibrary  {
 	 * @param prefs the preferences to store - this will update ALL fields, so you are
 	 *              supposed to first call getPreferences() to obtain the current values
 	 */
+	@TargetApi(Build.VERSION_CODES.KITKAT)
 	public static void setPreferences(Context context, MediaLibrary.Preferences prefs) {
 		MediaLibraryBackend backend = getBackend(context);
 
@@ -667,13 +670,13 @@ public class MediaLibrary  {
 	}
 
 	// Songs <-> Contributor mapping
-	public interface ContributorSongColumns {
+	interface ContributorSongColumns {
 		/**
 		 * The role of this entry
 		 */
 		String ROLE = "role";
 		/**
-		 * the contirbutor id this maps to
+		 * the contributor id this maps to
 		 */
 		String _CONTRIBUTOR_ID = "_contributor_id";
 		/**
