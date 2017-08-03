@@ -323,7 +323,7 @@ public abstract class PlaybackActivity extends Activity
 	protected void onSongChange(Song song)
 	{
 		if (mCoverView != null)
-			mCoverView.querySongs(PlaybackService.get(this));
+			mCoverView.querySongs();
 	}
 
 	protected void setSong(final Song song)
@@ -375,7 +375,7 @@ public abstract class PlaybackActivity extends Activity
 	public void replaceSong(int delta, Song song)
 	{
 		if (mCoverView != null)
-			mCoverView.setSong(delta + 1, song);
+			mCoverView.replaceSong(delta, song);
 	}
 
 	/**
