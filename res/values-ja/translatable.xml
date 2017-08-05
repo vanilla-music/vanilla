@@ -56,6 +56,7 @@
   <string name="play_or_enqueue">再生中はキューに入れる、一時停止中は再生</string>
   <string name="open">開く</string>
   <string name="go_home">ホームディレクトリー</string>
+  <string name="jumping_to_song">曲はすでにキューに入っています。ジャンプします…</string>
   <plurals name="playing">
     <item quantity="other">%d トラックを再生中。</item>
   </plurals>
@@ -255,7 +256,7 @@
   <string name="media_folders_header">インデックス済ディレクトリー</string>
   <string name="media_scan_header">メディアスキャナー</string>
   <string name="media_scan_full">ファイルシステム全体をスキャン (遅い)</string>
-  <string name="media_scan_drop_db">メディアデータベースをフラッシュ (危険!)</string>
+  <string name="media_scan_drop_db">メディアデータベースを消去</string>
   <string name="media_scan_start">スキャンを開始</string>
   <string name="media_scan_force_bastp">常に内蔵のタグリーダーを使用する</string>
   <string name="media_scan_group_albums">フォルダごとにアルバムをグループ化する</string>

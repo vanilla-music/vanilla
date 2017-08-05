@@ -56,6 +56,7 @@
   <string name="play_or_enqueue">Colocar na fila ou reproduzir se em pausa</string>
   <string name="open">Abrir</string>
   <string name="go_home">Diretório inicial</string>
+  <string name="jumping_to_song">A faixa já está na fila de reprodução e será ignorada...</string>
   <plurals name="playing">
     <item quantity="one">1 faixa em reprodução.</item>
     <item quantity="other">%d faixas em reprodução.</item>
@@ -263,7 +264,7 @@
   <string name="media_folders_header">Diretórios indexados</string>
   <string name="media_scan_header">Analisador multimédia</string>
   <string name="media_scan_full">Análise total do sistema (lento)</string>
-  <string name="media_scan_drop_db">Limpar itens da base de dados (PERIGOSO)</string>
+  <string name="media_scan_drop_db">Limpar base de dados multimédia</string>
   <string name="media_scan_start">Iniciar análise</string>
   <string name="media_scan_force_bastp">Utilizar sempre o leitor nativo</string>
   <string name="media_scan_group_albums">Agrupar álbuns por pasta</string>

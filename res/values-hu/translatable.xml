@@ -56,6 +56,7 @@
   <string name="play_or_enqueue">Sorhoz adás lejátszás közben; Lejátszás ha szüneteltett</string>
   <string name="open">Megnyitás</string>
   <string name="go_home">Saját könyvtár</string>
+  <string name="jumping_to_song">A szám már a sorban van, ugrás…</string>
   <plurals name="playing">
     <item quantity="one">1 szám lejátszása.</item>
     <item quantity="other">%d szám lejátszása.</item>
@@ -262,8 +263,6 @@
   <string name="media_library">Médiagyűjtemény</string>
   <string name="media_folders_header">Indexelt könyvtárak</string>
   <string name="media_scan_header">Médiaátvizsgáló</string>
-  <string name="media_scan_full">Teljes fájlrendszer átvizsgálása (lassú)</string>
-  <string name="media_scan_drop_db">Média-adatbázis eldobása (veszélyzóna!)</string>
   <string name="media_scan_start">Átvizsgálás indítása</string>
   <string name="media_scan_force_bastp">Mindig a beépített címkeolvasót használja</string>
   <string name="media_scan_group_albums">Albumok csoportosítása mappánként</string>

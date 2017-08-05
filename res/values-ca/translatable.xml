@@ -186,8 +186,6 @@
   <string name="media_library">Llibreria multimèdia</string>
   <string name="media_folders_header">Carpetes indexades</string>
   <string name="media_scan_header">Anàlisi multimèdia</string>
-  <string name="media_scan_full">Analitza tot el sistema (lent)</string>
-  <string name="media_scan_drop_db">Suprimeix la base de dades multimèdia (molt perillós!)</string>
   <string name="media_scan_start">Inicia l\'anàlisi</string>
   <string name="media_scan_force_bastp">Utilitza sempre el lector d\'etiquetes integrat</string>
   <string name="media_scan_group_albums">Agrupa els àlbums per carpeta</string>

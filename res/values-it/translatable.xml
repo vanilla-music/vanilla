@@ -262,8 +262,6 @@
   <string name="media_library">Libreria multimediale</string>
   <string name="media_folders_header">Cartelle indicizzate</string>
   <string name="media_scan_header">Scansione file multimediali</string>
-  <string name="media_scan_full">Scansiona l\'intero sistema (lento)</string>
-  <string name="media_scan_drop_db">Svuota il database dei file multimediali (Attenzione!)</string>
   <string name="media_scan_start">Inizia scansione</string>
   <string name="media_scan_force_bastp">Usa sempre il lettore di tag incorporato</string>
   <string name="media_scan_group_albums">Raggruppa gli album per cartella</string>

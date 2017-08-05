@@ -23,7 +23,7 @@
   <string name="_track">parça</string>
   <string name="_composer">besteci</string>
   <string name="_path">yol</string>
-  <string name="_format">biçim</string>
+  <string name="_format">format</string>
   <string name="_title">başlık</string>
   <string name="_artist">sanatçı</string>
   <string name="_album">albüm</string>
@@ -40,8 +40,8 @@
   <string name="play">Oynat</string>
   <string name="edit">Düzenle</string>
   <string name="rename">Yeniden adlandır</string>
-  <string name="save_as_playlist">Oynatmalık olarak kaydet...</string>
-  <string name="add_to_playlist">Oynatmalığa ekle...</string>
+  <string name="save_as_playlist">Çalma listesi olarak kaydet...</string>
+  <string name="add_to_playlist">Çalma listesine ekle...</string>
   <string name="add_to_favorites">Gözdelere ekle</string>
   <string name="remove_from_favorites">Gözdelerden kaldır</string>
   <string name="playlist_favorites">Gözdeler</string>
@@ -244,8 +244,6 @@
   <string name="no_receiving_apps">Bu ortam türü için uygun uygulama bulunamadı.</string>
   <string name="media_library">Ortam arşivi</string>
   <string name="media_scan_header">Ortam tarayıcısı</string>
-  <string name="media_scan_full">Tüm dosya dizgesini tara (yavaş)</string>
-  <string name="media_scan_drop_db">Ortam veritabanını temizle</string>
   <string name="media_scan_start">Taramayı başlat</string>
   <string name="media_statistics">İstatistikler</string>
   <string name="media_stats_tracks">Parça sayısı</string>

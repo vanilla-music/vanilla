@@ -238,8 +238,6 @@
   <string name="no_receiving_apps">해당 미디어 타입을 수신하는 앱을 찾을 수 없습니다!</string>
   <string name="media_library">미디어 라이브러리</string>
   <string name="media_scan_header">미디어 검색</string>
-  <string name="media_scan_full">모든 파일 시스템 검색 (느림)</string>
-  <string name="media_scan_drop_db">미디어 데이터베이스 밀어내기 (위험지역!)</string>
   <string name="media_scan_start">검색 시작</string>
   <string name="media_scan_force_bastp">내장 태그 리더를 항상 사용함</string>
   <string name="media_scan_group_albums">폴더별로 앨범을 묶음</string>

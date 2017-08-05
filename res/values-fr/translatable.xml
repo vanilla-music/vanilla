@@ -36,7 +36,7 @@
   <string name="delete_playlist">Supprimer la liste de lecture %s?</string>
   <!--Library-->
   <string name="enqueue">Ajouter à la file d\'attente</string>
-  <string name="enqueue_as_next">Lire suivant</string>
+  <string name="enqueue_as_next">Lire à la suite</string>
   <string name="play">Lire</string>
   <string name="edit">Modifier</string>
   <string name="rename">Renommer</string>
@@ -92,7 +92,7 @@
   <string name="album">Album</string>
   <string name="genre">Genre</string>
   <string name="folder">Dossier</string>
-  <string name="filename">Titre</string>
+  <string name="filename">Nom</string>
   <string name="file_size">Taille</string>
   <string name="file_time">Date de modification</string>
   <string name="extension">Extension</string>
@@ -183,7 +183,7 @@
   <string name="disable_lockscreen_title">Désactiver le verrouillage de l\'écran</string>
   <string name="disable_lockscreen_summary">Empêche le verrouillage de l\'écran lorsque la bibliothèque ou l\'écran de lecture est affiché</string>
   <string name="keep_screen_on_title">Maintenir l\'écran allumé</string>
-  <string name="keep_screen_on_summary">Maintient l\'écran (et l\'appareil) en éveil orsque Vanilla est visible</string>
+  <string name="keep_screen_on_summary">Maintient l\'écran (et l\'appareil) en éveil lorsque Vanilla est visible</string>
   <string name="use_idle_timeout_title">Activer le délai d\'inactivité</string>
   <string name="use_idle_timeout_summary">Quand l\'option est activée, la lecture s\'arrêtera après la période d\'inactivité donnée</string>
   <string name="idle_timeout_title">Délai d\'inactivité</string>
@@ -258,11 +258,9 @@
   <string name="reverse_sort">Inverser le tri</string>
   <string name="share">Partager...</string>
   <string name="sendto">Envoyer à…</string>
-  <string name="media_library"> Bibliothèque multimédia</string>
+  <string name="media_library">Bibliothèque multimédia</string>
   <string name="media_folders_header">Dossiers indexés</string>
   <string name="media_scan_header">Scanner médias</string>
-  <string name="media_scan_full">Scanner tout le système de fichiers (Lent)</string>
-  <string name="media_scan_drop_db">Nettoyer la base de données (Dangereux)</string>
   <string name="media_scan_start">Lancer le scan</string>
   <string name="media_scan_force_bastp">Toujours utiliser le lecteur de tag interne</string>
   <string name="media_scan_group_albums">Grouper les albums par dossier</string>

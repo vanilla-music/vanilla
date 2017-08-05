@@ -270,8 +270,6 @@
   <string name="media_library">Библиотека</string>
   <string name="media_folders_header">Индексиране фасцикле</string>
   <string name="media_scan_header">Очитавач медија</string>
-  <string name="media_scan_full">Очитај читав фајлсистем (споро)</string>
-  <string name="media_scan_drop_db">Очисти базу података медија (опасност!)</string>
   <string name="media_scan_start">Почни очитавање</string>
   <string name="media_scan_force_bastp">Увек користи уграђени читач ознака</string>
   <string name="media_scan_group_albums">Групиши албуме по фасцикли</string>

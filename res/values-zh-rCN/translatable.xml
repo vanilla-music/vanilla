@@ -237,8 +237,6 @@
   <string name="no_receiving_apps">没有为此媒体类型找到接收的 app！</string>
   <string name="media_library">媒体库</string>
   <string name="media_scan_header">媒体扫描器</string>
-  <string name="media_scan_full">扫描整个文件系统 (较慢)</string>
-  <string name="media_scan_drop_db">清空媒体数据库 (危险！)</string>
   <string name="media_scan_start">开始扫描</string>
   <string name="media_scan_force_bastp">始终使用内置标签阅读器</string>
   <string name="media_scan_group_albums">按文件夹分组封面</string>

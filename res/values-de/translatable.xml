@@ -56,6 +56,7 @@
   <string name="play_or_enqueue">Einreihen während Wiedergabe oder wiedergeben, falls pausiert</string>
   <string name="open">Öffnen</string>
   <string name="go_home">Benutzerverzeichnis</string>
+  <string name="jumping_to_song">Titel bereits in Warteschlange, wird direkt angesprungen …</string>
   <plurals name="playing">
     <item quantity="one">1 Titel wird wiedergegeben.</item>
     <item quantity="other">%d Titel werden wiedergegeben.</item>
@@ -262,8 +263,8 @@
   <string name="media_library">Medienbibliothek</string>
   <string name="media_folders_header">Indizierte Verzeichnisse</string>
   <string name="media_scan_header">Mediensuche</string>
-  <string name="media_scan_full">Gesamtes Dateisystem durchsuchen (langsam)</string>
-  <string name="media_scan_drop_db">Mediendatenbank leeren (Gefahrenzone!)</string>
+  <string name="media_scan_full">Gesamtes Dateisystem durchsuchen (langsamer)</string>
+  <string name="media_scan_drop_db">Mediendatenbank leeren</string>
   <string name="media_scan_start">Suche starten</string>
   <string name="media_scan_force_bastp">Immer integrierten Tag-Leser verwenden</string>
   <string name="media_scan_group_albums">Alben nach Ordner gruppieren</string>

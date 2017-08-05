@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-  <string name="app_name">Vanilla MusicPlay</string>
+  <string name="app_name">Vanilla Music</string>
   <!--Playback Activity (main screen)-->
   <string name="no_songs">您的裝置上沒有發現任何曲目。</string>
   <string name="empty_queue">沒有選定的歌曲。由媒體庫或是輕點這個訊息進入隨機模式挑選。</string>
@@ -56,6 +56,7 @@
   <string name="play_or_enqueue">如果播放佇列；如果暫停播放</string>
   <string name="open">開啟</string>
   <string name="go_home">主目錄</string>
+  <string name="jumping_to_song">歌曲已經在佇列，轉移...</string>
   <plurals name="playing">
     <item quantity="other">播放歌曲 %d。</item>
   </plurals>
@@ -254,8 +255,8 @@
   <string name="media_library">媒體庫</string>
   <string name="media_folders_header">索引目錄</string>
   <string name="media_scan_header">媒體掃描</string>
-  <string name="media_scan_full">掃描所有的檔案系統 (很慢)</string>
-  <string name="media_scan_drop_db">更新媒體資料庫 (危險地帶！)</string>
+  <string name="media_scan_full">掃描完整的檔案系統 (較慢)</string>
+  <string name="media_scan_drop_db">更新媒體資料庫</string>
   <string name="media_scan_start">開始掃描</string>
   <string name="media_scan_force_bastp">始終使用內建的標簽閱讀器</string>
   <string name="media_scan_group_albums">按檔案夾群集封面</string>

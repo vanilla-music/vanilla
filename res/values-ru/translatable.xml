@@ -56,6 +56,7 @@
   <string name="play_or_enqueue">В очередь при воспроизведении; Воспроизвести при паузе</string>
   <string name="open">Открыть</string>
   <string name="go_home">Начальная папка</string>
+  <string name="jumping_to_song">Дорожка уже в очереди, следующий…</string>
   <plurals name="playing">
     <item quantity="one">Воспроизведение 1 дорожки.</item>
     <item quantity="few">Воспроизведение %d дорожек.</item>
@@ -279,7 +280,7 @@
   <string name="media_folders_header">Проиндексированные директории</string>
   <string name="media_scan_header">Сканер носителей</string>
   <string name="media_scan_full">Полное сканирование файловой системы (медленное)</string>
-  <string name="media_scan_drop_db">Очистить базу данных носителя (опасно!)</string>
+  <string name="media_scan_drop_db">Очистить базу данных носителя</string>
   <string name="media_scan_start">Начать сканирование</string>
   <string name="media_scan_force_bastp">Всегда использовать встроенный считыватель тегов</string>
   <string name="media_scan_group_albums">Группировать альбомы по папкам</string>

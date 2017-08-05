@@ -56,6 +56,7 @@
   <string name="play_or_enqueue">Lisää jonoon jos toistetaan; toista jos keskeytetty</string>
   <string name="open">Avaa</string>
   <string name="go_home">Kotihakemisto</string>
+  <string name="jumping_to_song">Kappale on jo jonossa, ohitetaan…</string>
   <plurals name="playing">
     <item quantity="one">Toistetaan 1 kappaletta.</item>
     <item quantity="other">Toistetaan %d kappaletta.</item>
@@ -258,8 +259,8 @@
   <string name="media_library">Mediakirjasto</string>
   <string name="media_folders_header">Indeksoidut kansiot</string>
   <string name="media_scan_header">Mediaskanneri</string>
-  <string name="media_scan_full">Skannaa koko tiedostojärjestelmä (hidas)</string>
-  <string name="media_scan_drop_db">Tyhjennä täysin mediatietokanta (vaara!)</string>
+  <string name="media_scan_full">Skannaa koko tiedostojärjestelmä (hitaampi)</string>
+  <string name="media_scan_drop_db">Tyhjennä mediatietokanta</string>
   <string name="media_scan_start">Aloita skannaus</string>
   <string name="media_scan_force_bastp">Käytä aina sisäänrakennettua tunnistelukijaa</string>
   <string name="media_scan_group_albums">Ryhmitä albumit kansioittain</string>

@@ -264,8 +264,6 @@
   <string name="media_library">Multivides bibliotēka</string>
   <string name="media_folders_header">Indeksētās mapes</string>
   <string name="media_scan_header">Multivides skenētājs</string>
-  <string name="media_scan_full">Veikt pilnu failu sistēmas skenēšanu (lēni)</string>
-  <string name="media_scan_drop_db">Izmest mēdiju datubāzi (bīstami!)</string>
   <string name="media_scan_start">Sākt skenēšanu</string>
   <string name="media_scan_force_bastp">Vienmēr izmantot iebūvēto tagu lasītāju</string>
   <string name="media_scan_group_albums">Grupēt albumus pēc mapēm</string>
