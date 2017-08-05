@@ -108,8 +108,8 @@ public class MediaLibrary  {
 			// -> unlikely
 			synchronized(sWait) {
 				if (sBackend == null) {
-					sBackend = new MediaLibraryBackend(context);
-					sScanner = new MediaScanner(context, sBackend);
+					sBackend = new MediaLibraryBackend(context.getApplicationContext());
+					sScanner = new MediaScanner(context.getApplicationContext(), sBackend);
 					sScanner.startQuickScan(50);
 				}
 			}
