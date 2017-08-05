@@ -254,6 +254,7 @@ THE SOFTWARE.
 	<string name="stock_broadcast_title">Emulate stock broadcasts</string>
 	<string name="stock_broadcast_summary">Send broadcasts emulating those sent by the stock music player to work with 3rd party lockscreen controls, widgets, etc.</string>
 
+	<string name="help">Help</string>
 	<string name="about">About</string>
 
 	<string name="tabs">Tab order</string>

@@ -239,6 +239,21 @@ public class PreferencesActivity extends PreferenceActivity
 		}
 	}
 
+	public static class HelpFragment extends PreferenceFragment {
+		@Override
+		public void onCreate(Bundle savedInstanceState)
+		{
+			super.onCreate(savedInstanceState);
+
+			Activity activity = getActivity();
+			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/vanilla-music/vanilla-music.github.io/wiki"));
+			if (intent != null) {
+				startActivity(intent);
+			}
+			activity.finish();
+		}
+	}
+
 	public static class AboutFragment extends WebViewFragment {
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

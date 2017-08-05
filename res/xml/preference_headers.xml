@@ -49,6 +49,9 @@ THE SOFTWARE.
 		android:fragment="ch.blinkenlights.android.vanilla.PreferencesTheme"
 		android:title="@string/theme" />
 	<header
+		android:fragment="ch.blinkenlights.android.vanilla.PreferencesActivity$HelpFragment"
+		android:title="@string/help" />
+	<header
 		android:fragment="ch.blinkenlights.android.vanilla.PreferencesActivity$AboutFragment"
 		android:title="@string/about" />
 </preference-headers>
