@@ -210,7 +210,7 @@ public final class CoverView extends View implements Handler.Callback {
 	private void setSongBitmap(int i, Song song) {
 		Bitmap bitmap = mBitmapBucket.grepBitmap(song);
 
-		if (bitmap == null)
+		if (bitmap == null && song != null)
 			bitmap = generateBitmap(song);
 
 		mBitmapBucket.setSongBitmap(i, song, bitmap);
