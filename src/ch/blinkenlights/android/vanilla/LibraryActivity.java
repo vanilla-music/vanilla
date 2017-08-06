@@ -173,7 +173,7 @@ public class LibraryActivity
 		mBottomBarControls.setOnQueryTextListener(this);
 		mBottomBarControls.enableOptionsMenu(this);
 
-		if(PermissionRequestActivity.havePermissions(this)) {
+		if(PermissionRequestActivity.havePermissions(this) == false) {
 			PermissionRequestActivity.showWarning(this, getIntent());
 		}
 
@@ -280,7 +280,7 @@ public class LibraryActivity
 		case KeyEvent.KEYCODE_BACK:
 			Limiter limiter = mPagerAdapter.getCurrentLimiter();
 
-			if (mSlidingView.isHidden()) {
+			if (mSlidingView.isHidden() == false) {
 				mSlidingView.hideSlide();
 				break;
 			}

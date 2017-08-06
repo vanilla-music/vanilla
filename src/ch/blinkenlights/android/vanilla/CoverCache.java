@@ -405,7 +405,7 @@ class CoverCache {
 					// Only start search if the base directory of this file is NOT the public
 					// downloads folder: Picking files from there would lead to a false positive
 					// in most cases
-					if (!baseFile.getParentFile().equals(sDownloadsDir)) {
+					if (baseFile.getParentFile().equals(sDownloadsDir) == false) {
 						for (final File entry : baseFile.getParentFile().listFiles()) {
 							for (int i=0; i < bestMatchIndex ; i++) {
 								// We are checking each file entry to see if it matches a known

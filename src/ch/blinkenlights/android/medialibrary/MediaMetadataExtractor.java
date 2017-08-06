@@ -293,7 +293,7 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 		}
 
 		// Check if this is an useable audio file
-		if (!nativelyReadable ||
+		if (nativelyReadable  == false ||
 		    mediaTags.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_AUDIO) == null ||
 		    mediaTags.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_VIDEO) != null ||
 		    mediaTags.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION) == null) {

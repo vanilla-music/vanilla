@@ -47,7 +47,7 @@ class FileUtils {
 		int type = intent.getIntExtra(LibraryAdapter.DATA_TYPE, MediaUtils.TYPE_INVALID);
 		boolean isFolder = intent.getBooleanExtra(LibraryAdapter.DATA_EXPANDABLE, false);
 		String path = intent.getStringExtra(LibraryAdapter.DATA_FILE);
-		if (type == MediaUtils.TYPE_FILE && !isFolder) {
+		if (type == MediaUtils.TYPE_FILE && isFolder == false) {
 			try {
 				URI uri = new URI("file", path, null);
 				String mimeGuess = URLConnection.guessContentTypeFromName(uri.toString());

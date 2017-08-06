@@ -193,8 +193,8 @@ public class MediaLibrary  {
 		ArrayList<String> defaultPaths = new ArrayList<>();
 
 		for (String path : discoverDefaultMediaPaths(context)) {
-			for (String aDefaultBlacklistPostfix : defaultBlacklistPostfix) {
-				File guess = new File(path + "/" + aDefaultBlacklistPostfix);
+			for (int i = 0; i < defaultBlacklistPostfix.length; i++) {
+				File guess = new File(path + "/" + defaultBlacklistPostfix[i]);
 				if (guess.isDirectory())
 					defaultPaths.add(guess.getAbsolutePath());
 			}

@@ -691,7 +691,7 @@ public final class PlaybackService extends Service
 			adjust += 2*(mReplayGainBump-75)/10f; /* 2* -> we want +-15, not +-7.5 */
 		}
 
-		if (!mReplayGainAlbumEnabled && !mReplayGainTrackEnabled) {
+		if ((mReplayGainAlbumEnabled && mReplayGainTrackEnabled) == false) {
 			/* Feature is disabled: Make sure that we are going to 100% volume */
 			adjust = 0f;
 		}
@@ -759,14 +759,14 @@ public final class PlaybackService extends Service
 
 		if(doGapless) {
 			try {
-				if(!nextSong.path.equals(mPreparedMediaPlayer.getDataSource())) {
+				if(nextSong.path.equals(mPreparedMediaPlayer.getDataSource()) == false) {
 					// Prepared MP has a different data source: We need to re-initalize
 					// it and set it as the next MP for the active media player
 					mPreparedMediaPlayer.reset();
 					prepareMediaPlayer(mPreparedMediaPlayer, nextSong.path);
 					mMediaPlayer.setNextMediaPlayer(mPreparedMediaPlayer);
 				}
-				if(!mMediaPlayer.hasNextMediaPlayer()) {
+				if(mMediaPlayer.hasNextMediaPlayer() == false) {
 					// We can reuse the prepared MediaPlayer but the current instance lacks
 					// a link to it
 					mMediaPlayer.setNextMediaPlayer(mPreparedMediaPlayer);
@@ -974,7 +974,7 @@ public final class PlaybackService extends Service
 			if ((state & FLAG_PLAYING) != 0) {
 
 				// We get noisy: Acquire a new AudioFX session if required
-				if (!mMediaPlayerAudioFxActive) {
+				if (mMediaPlayerAudioFxActive == false) {
 					mMediaPlayer.openAudioFx();
 					mMediaPlayerAudioFxActive = true;
 				}
@@ -992,7 +992,7 @@ public final class PlaybackService extends Service
 
 				mHandler.removeMessages(MSG_ENTER_SLEEP_STATE);
 				try {
-					if (mWakeLock != null && !mWakeLock.isHeld())
+					if (mWakeLock != null && mWakeLock.isHeld() == false)
 						mWakeLock.acquire();
 				} catch (SecurityException e) {
 					// Don't have WAKE_LOCK permission
@@ -1006,7 +1006,7 @@ public final class PlaybackService extends Service
 				// In both cases we will update the notification to reflect the
 				// actual playback state (or to hit cancel() as this is required to
 				// get rid of it if it was created via notify())
-				boolean removeNotification = (!mForceNotificationVisible && mNotificationMode != ALWAYS);
+				boolean removeNotification = (mForceNotificationVisible == false && mNotificationMode != ALWAYS);
 				stopForeground(removeNotification);
 				updateNotification();
 
@@ -1368,7 +1368,7 @@ public final class PlaybackService extends Service
 
 			/* Automatically advance to next song IF we are currently playing or already did skip something
 			 * This will stop after skipping 10 songs to avoid endless loops (queue full of broken stuff */
-			if(!mTimeline.isEndOfQueue() && getSong(1) != null && (playing || (mSkipBroken > 0 && mSkipBroken < 10))) {
+			if(mTimeline.isEndOfQueue() == false && getSong(1) != null && (playing || (mSkipBroken > 0 && mSkipBroken < 10))) {
 				mSkipBroken++;
 				mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_SKIP_BROKEN_SONG, getTimelinePosition(), 0), 1000);
 			}

@@ -175,7 +175,7 @@ public class AudioPickerActivity extends PlaybackActivity {
 		if ("".equals(song.title))
 			displayName = new File(song.path).getName();
 
-		mTextView.setText(displayName);
+		mTextView.setText(song.title);
 		mTextView.setVisibility(View.VISIBLE);
 		mProgressBar.setVisibility(View.GONE);
 	}

@@ -165,7 +165,7 @@ public class BottomBarControls extends LinearLayout
 		Menu menu = mPopupMenu.getMenu();
 		for (int i=0; i < menu.size(); i++) {
 			MenuItem menuItem = menu.getItem(i);
-			if (!menuItem.isVisible() && menuItem.getIcon() != null) {
+			if (menuItem.isVisible() == false && menuItem.getIcon() != null) {
 				ImageButton button = getImageButton(menuItem.getIcon());
 				button.setTag(menuItem);
 				button.setOnClickListener(this);
@@ -293,7 +293,7 @@ public class BottomBarControls extends LinearLayout
 	 * Because ...reasons.
 	 */
 	private boolean menuMargin() {
-		return !ThemeHelper.usesHoloTheme();
+		return ThemeHelper.usesHoloTheme() == false;
 	}
 
 	/**
