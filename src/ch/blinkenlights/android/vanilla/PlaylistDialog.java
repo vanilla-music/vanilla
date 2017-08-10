@@ -44,7 +44,7 @@ public class PlaylistDialog extends DialogFragment
 	 * Creates a new playlist dialog to assemble a playlist using an intent.
 	 * Uses a static constructor method to satisfy Gradle Release Lint.
 	 */
-	public static PlaylistDialog newInstance(Callback callback, Intent intent, MediaAdapter allSource) {
+	public static PlaylistDialog newInstance(Callback callback, Intent intent, LibraryAdapter allSource) {
 		PlaylistDialog pd = new PlaylistDialog();
 		pd.mCallback = callback;
 		pd.mData = pd.new Data();
@@ -86,7 +86,7 @@ public class PlaylistDialog extends DialogFragment
 		public String name;
 		public long id;
 		public Intent sourceIntent;
-		public MediaAdapter allSource;
+		public LibraryAdapter allSource;
 	}
 
 

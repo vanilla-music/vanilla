@@ -748,7 +748,7 @@ public class LibraryActivity
 			break;
 		case CTX_MENU_ADD_TO_PLAYLIST:
 			long id = intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
-			PlaylistDialog plDialog = PlaylistDialog.newInstance(this, intent, (id == LibraryAdapter.HEADER_ID ? (MediaAdapter)mCurrentAdapter : null));
+			PlaylistDialog plDialog = PlaylistDialog.newInstance(this, intent, (id == LibraryAdapter.HEADER_ID ? mCurrentAdapter : null));
 			plDialog.show(getFragmentManager(), "PlaylistDialog");
 			break;
 		default:
