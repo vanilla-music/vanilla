@@ -204,6 +204,7 @@
   <string name="scrobble_summary">Enviar faixas para a Last.fm através de Scrobble Droid ou Simple Last.fm Scrobbler</string>
   <string name="stock_broadcast_title">Emular comunicações</string>
   <string name="stock_broadcast_summary">Enviar emissões emulando as enviadas pelo reprodutor do Android para poder funcionar com controlos e widgets de terceiros</string>
+  <string name="help">Ajuda</string>
   <string name="about">Sobre</string>
   <string name="tabs">Ordem dos separadores</string>
   <string name="customize_tab_order">Ajustar ordem e visibilidade dos separadores</string>

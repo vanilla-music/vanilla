@@ -204,6 +204,7 @@
   <string name="scrobble_summary">Zu Last.fm scrobbeln mithilfe von »Scrobble Droid« oder »Simple Last.fm Scrobbler«</string>
   <string name="stock_broadcast_title">Standard-Broadcasts emulieren</string>
   <string name="stock_broadcast_summary">Broadcasts senden, die jene der Standard-App für Musikwiedergabe emulieren, um mit Bildschirmsperre-Steuerelementen, Widgets etc. von Drittanbietern kompatibel zu sein</string>
+  <string name="help">Hilfe</string>
   <string name="about">Über</string>
   <string name="tabs">Tab-Reihenfolge</string>
   <string name="customize_tab_order">Reihenfolge und Sichtbarkeit der Bibliotheks-Tabs anpassen</string>

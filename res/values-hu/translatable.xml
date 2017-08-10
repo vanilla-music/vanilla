@@ -204,6 +204,7 @@
   <string name="scrobble_summary">Megosztás a Last.fm-el a Scrobble Droidon vagy a Simple Last.fm Scrobbleren keresztül</string>
   <string name="stock_broadcast_title">Gyári események utánzása</string>
   <string name="stock_broadcast_summary">A gyári médialejátszó eseményeinek utánzása, a harmadik fél által készített zárképernyőkkel és vezérlőelemekkel való együttműködés miatt.</string>
+  <string name="help">Súgó</string>
   <string name="about">Névjegy</string>
   <string name="tabs">Lapfülek sorrendje</string>
   <string name="customize_tab_order">A gyűjtemény lapfüleinek sorrendjének és láthatóságának beállítása</string>
@@ -263,6 +264,8 @@
   <string name="media_library">Médiagyűjtemény</string>
   <string name="media_folders_header">Indexelt könyvtárak</string>
   <string name="media_scan_header">Médiaátvizsgáló</string>
+  <string name="media_scan_full">Teljes fájlrendszer átvizsgálása (lassabb)</string>
+  <string name="media_scan_drop_db">Média-adatbázis kiírása</string>
   <string name="media_scan_start">Átvizsgálás indítása</string>
   <string name="media_scan_force_bastp">Mindig a beépített címkeolvasót használja</string>
   <string name="media_scan_group_albums">Albumok csoportosítása mappánként</string>

@@ -200,6 +200,7 @@
   <string name="scrobble_title">Käytä Scrobble Droid API:a</string>
   <string name="scrobble_summary">Lähetä kuuntelutiedot Last.fm:ään Scrobble Droidia tai Simple Last.fm Scrobbleria käyttäen</string>
   <string name="stock_broadcast_summary">Lähetä vakiosoitinta emuloivia yleislähetyksiä. Auttaa kolmansien osapuolten lukitusnäyttöohjainten, widgettien yms. toimivuuden kanssa.</string>
+  <string name="help">Ohje</string>
   <string name="about">Tietoja</string>
   <string name="tabs">Välilehtien järjestys</string>
   <string name="customize_tab_order">Määritä kirjastovälilehtien järjestys- ja näkymisasetukset</string>

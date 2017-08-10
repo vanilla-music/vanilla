@@ -196,6 +196,7 @@
   <string name="scrobble_summary">Scrobble 透過 Scrobble Droid 到 Last.fm 或單純的 Last.fm Scrobbler</string>
   <string name="stock_broadcast_title">模擬股票廣播</string>
   <string name="stock_broadcast_summary">放送廣播，模擬那些放送股票音樂播放的工作與第三方螢幕鎖控制、小工具等。</string>
+  <string name="help">幫助</string>
   <string name="about">關於</string>
   <string name="tabs">分頁標簽順序</string>
   <string name="customize_tab_order">調整排列和要顯現的媒體庫分頁標簽</string>

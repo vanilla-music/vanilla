@@ -196,6 +196,7 @@
   <string name="scrobble_summary">Scrobble Droid または Simple Last.fm Scrobbler 経由で Last.fm にスクローブルします</string>
   <string name="stock_broadcast_title">既存のブロードキャストをエミュレートする</string>
   <string name="stock_broadcast_summary">サードパーティ製のロック画面コントロール、ウィジェットなどで動作するように、既存の音楽プレーヤーから送信されるブロードキャストをエミュレートして送信します</string>
+  <string name="help">ヘルプ</string>
   <string name="about">アプリについて</string>
   <string name="tabs">タブ順序</string>
   <string name="customize_tab_order">ライブラリータブの順序と表示を調整します</string>

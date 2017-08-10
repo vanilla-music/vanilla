@@ -56,6 +56,7 @@
   <string name="play_or_enqueue">Ajouter à la file d\'attente si en lecture ; Lire si en pause</string>
   <string name="open">Ouvrir</string>
   <string name="go_home">Dossier principal</string>
+  <string name="jumping_to_song">Piste déjà en file d\'attente, lecture...</string>
   <plurals name="playing">
     <item quantity="one">1 morceau en lecture.</item>
     <item quantity="other">%d morceaux en lecture.</item>
@@ -203,6 +204,7 @@
   <string name="scrobble_summary">Envoyer l\'information de scrobble à Last.fm grâce à Scrobble Droid ou SimpleLast.fm Scrobbler</string>
   <string name="stock_broadcast_title">Emuler les notifications natives</string>
   <string name="stock_broadcast_summary">Envoyer les messages de diffusion émulant ceux envoyés par le lecteur d\'origine pour fonctionner avec des contrôles d\'écran de verrouillage tiers, widgets, etc.</string>
+  <string name="help">Aide</string>
   <string name="about">À propos</string>
   <string name="tabs">Ordre des onglets</string>
   <string name="customize_tab_order">Modifier l\'ordre et la visibilité des onglets de la bibliothèque</string>
@@ -258,9 +260,12 @@
   <string name="reverse_sort">Inverser le tri</string>
   <string name="share">Partager...</string>
   <string name="sendto">Envoyer à…</string>
+  <string name="no_receiving_apps">Aucune application trouvée pour ce type de média!</string>
   <string name="media_library">Bibliothèque multimédia</string>
   <string name="media_folders_header">Dossiers indexés</string>
   <string name="media_scan_header">Scanner médias</string>
+  <string name="media_scan_full">Scanner tout le système de fichiers (plus long)</string>
+  <string name="media_scan_drop_db">Nettoyer la base de données multimédia</string>
   <string name="media_scan_start">Lancer le scan</string>
   <string name="media_scan_force_bastp">Toujours utiliser le lecteur de tag interne</string>
   <string name="media_scan_group_albums">Grouper les albums par dossier</string>

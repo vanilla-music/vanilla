@@ -38,7 +38,7 @@
   <string name="enqueue">В конец очереди</string>
   <string name="enqueue_as_next">Далее в очередь</string>
   <string name="play">Воспроизвести</string>
-  <string name="edit">Подправить</string>
+  <string name="edit">Изменить</string>
   <string name="rename">Переименовать</string>
   <string name="save_as_playlist">Создать плей-лист…</string>
   <string name="add_to_playlist">Создать плей-лист…</string>
@@ -220,6 +220,7 @@
   <string name="scrobble_summary">Отсылать статистику на Last.FM при помощи Scrobble Droid или Simple Last.FM Scrobbler</string>
   <string name="stock_broadcast_title">Имитировать стандартное поведение</string>
   <string name="stock_broadcast_summary">Отправлять широковещательные сообщения, имитирующие поведение стандартного музыкального проигрывателя, для совместимости со сторонними элементами управления экранов блокировки, виджетами и т.п.</string>
+  <string name="help">Помощь</string>
   <string name="about">О программе</string>
   <string name="tabs">Порядок вкладок</string>
   <string name="customize_tab_order">Выбрать порядок и видимость вкладок фонотеки</string>
@@ -229,11 +230,11 @@
   <string name="never_show">Никогда не показывать</string>
   <string name="show_when_playing">Показывать при воспроизведении (по умолчанию)</string>
   <string name="always_show">Показывать всегда</string>
-  <string name="open_main_activity">Открыть фонотеку (по умолчанию)</string>
-  <string name="open_mini_popup">Открыть мини окно</string>
+  <string name="open_main_activity">Показать фонотеку (по умолчанию)</string>
+  <string name="open_mini_popup">Показать окошко</string>
   <string name="skip_to_next_song">Перейти к следующей дорожке</string>
-  <string name="open_full_player">Открыть полный проигрыватель</string>
-  <string name="info_on_cover">Сведения поверх обложки</string>
+  <string name="open_full_player">Развернуть проигрыватель</string>
+  <string name="info_on_cover">Сведения посреди обложки</string>
   <string name="info_below_cover">Сведения под обложкой</string>
   <string name="fixed_info">Сведения вверху экрана</string>
   <string name="do_nothing">Ничего не делать</string>
@@ -274,10 +275,10 @@
   <string name="permission_request_summary">Vanilla Music необходимо разрешение на чтение, чтобы отобразить Вашу музыку в фонотеке</string>
   <string name="reverse_sort">в обратном порядке</string>
   <string name="share">Поделиться…</string>
-  <string name="sendto">Отправить…</string>
+  <string name="sendto">Отправить в…</string>
   <string name="no_receiving_apps">Нет приложений для обработки такого типа файла!</string>
   <string name="media_library">Библиотека носителей</string>
-  <string name="media_folders_header">Проиндексированные директории</string>
+  <string name="media_folders_header">Директории в индексе</string>
   <string name="media_scan_header">Сканер носителей</string>
   <string name="media_scan_full">Полное сканирование файловой системы (медленное)</string>
   <string name="media_scan_drop_db">Очистить базу данных носителя</string>
@@ -286,17 +287,17 @@
   <string name="media_scan_group_albums">Группировать альбомы по папкам</string>
   <string name="media_statistics">Статистика</string>
   <string name="media_stats_tracks">Количество дорожек</string>
-  <string name="media_stats_library_playtime">Общее время воспроизведения в часах</string>
+  <string name="media_stats_library_playtime">Общая продолжительность в часах</string>
   <string name="media_stats_listen_playtime">Воспроизведено музыки на текущий момент</string>
-  <string name="media_stats_progress">Выполняется сканирование</string>
+  <string name="media_stats_progress">Выполнение сканирования</string>
   <string name="media_library_scan_running">Сканируется библиотека носителей...</string>
-  <string name="media_scan_preferences">Настройки сканера</string>
-  <string name="media_scan_preferences_change_title">Настройки сканера изменены</string>
+  <string name="media_scan_preferences">Настройка сканера</string>
+  <string name="media_scan_preferences_change_title">Изменение настроек сканера</string>
   <string name="media_scan_preferences_change_message">Изменение этой настройки приведёт к полному сканированию библиотеки. Продолжить?</string>
   <!--Folder selector-->
-  <string name="hint_long_press_to_modify_folder">Изменение настроек папки долгим нажатием</string>
-  <string name="folder_include">Включить</string>
-  <string name="folder_exclude">Исключить</string>
+  <string name="hint_long_press_to_modify_folder">Длительное нажатие вызовет настройки папки</string>
+  <string name="folder_include">Учесть</string>
+  <string name="folder_exclude">Изъять</string>
   <string name="folder_neutral">Оставить</string>
   <!--Plugin system-->
   <string name="plugins">Модули</string>
