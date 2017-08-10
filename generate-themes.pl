@@ -13,7 +13,7 @@ my $THEMES = [
 	{
 		_name => 'greyish',
 		light => { colorAccent => '#ff000000', colorPrimary => '#ff212121', colorPrimaryDark => '#ff090909', controlsNormal=>'@color/material_grey_600', _bg => '#fff0f0f0' },
-		dark  => { colorAccent => '#ffffffff', colorPrimary => '#ff212121', colorPrimaryDark => '#ff090909', controlsNormal=>'@color/material_grey_600', _bg => '#ff2a2a2a' },
+		dark  => { colorAccent => '#ffd8d8d8', colorPrimary => '#ff212121', colorPrimaryDark => '#ff090909', controlsNormal=>'@color/material_grey_600', _bg => '#ff2a2a2a' },
 	},
 	{
 		_name => 'orange',

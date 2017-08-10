@@ -58,10 +58,10 @@
 		<item name="float_color">@color/material_grey_900</item>
 		<item name="background_circle_color">@color/material_grey_700</item>
 		<item name="tabs_background">#ff212121</item>
-		<item name="now_playing_marker">#ffffffff</item>
+		<item name="now_playing_marker">#ffd8d8d8</item>
 		<item name="controls_normal">@color/material_grey_600</item>
-		<item name="controls_active">#ffffffff</item>
-		<item name="android:colorAccent">#ffffffff</item>
+		<item name="controls_active">#ffd8d8d8</item>
+		<item name="android:colorAccent">#ffd8d8d8</item>
 		<item name="android:colorPrimary">#ff212121</item>
 		<item name="android:colorPrimaryDark">#ff090909</item>
 	</style>
@@ -82,7 +82,7 @@
 	<style name="Greyish.Dark.PopupDialog" parent="android:Theme.Material.Dialog.MinWidth">
 		<item name="background_circle_color">@color/material_grey_700</item>
 		<item name="controls_normal">@color/material_grey_600</item>
-		<item name="controls_active">#ffffffff</item>
+		<item name="controls_active">#ffd8d8d8</item>
 	</style>
 
 </resources>
