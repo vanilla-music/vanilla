@@ -226,89 +226,53 @@ public final class CoverBitmap {
 		if (SONG_ICON == null)
 			loadIcons(context);
 
-		boolean horizontal = width > height;
+		int textSize = TEXT_SIZE;
+		int padding = PADDING;
+
+		// Get desired text color from theme and draw textual information
+		int colors[] = ThemeHelper.getDefaultCoverColors(context);
+		int textColor = 0xFF000000 + (0xFFFFFF - (colors[0] & 0xFFFFFF));
+
+		PorterDuffColorFilter filter = new PorterDuffColorFilter(textColor, PorterDuff.Mode.SRC_ATOP);
 
 		Paint paint = new Paint();
 		paint.setAntiAlias(true);
+		paint.setColorFilter(filter);
+		paint.setTextSize(textSize);
 
 		String title = song.title == null ? "" : song.title;
 		String album = song.album == null ? "" : song.album;
 		String artist = song.artist == null ? "" : song.artist;
 
-		int textSize = TEXT_SIZE;
-		int padding = PADDING;
-
-		int coverWidth;
-		int coverHeight;
-
-		if (cover == null) {
-			coverWidth = 0;
-			coverHeight = 0;
-		} else {
-			coverWidth = cover.getWidth();
-			coverHeight = cover.getHeight();
-
-			int maxWidth = horizontal ? width - TEXT_SPACE : width;
-			int maxHeight = horizontal ? height : height - textSize * 3 - padding * 4;
-			float scale = Math.min((float)maxWidth / coverWidth, (float)maxHeight / coverHeight);
-
-			coverWidth *= scale;
-			coverHeight *= scale;
-		}
-
-		paint.setTextSize(textSize);
-		int titleWidth = (int)paint.measureText(title);
-		int albumWidth = (int)paint.measureText(album);
-		int artistWidth = (int)paint.measureText(artist);
-
-		int maxBoxWidth = horizontal ? width - coverWidth : width;
-		int maxBoxHeight = horizontal ? height : height - coverHeight;
-		int boxWidth = Math.min(maxBoxWidth, textSize + Math.max(titleWidth, Math.max(artistWidth, albumWidth)) + padding * 3);
-		int boxHeight = Math.min(maxBoxHeight, textSize * 3 + padding * 4);
-
-		int bitmapWidth = horizontal ? coverWidth + boxWidth : Math.max(coverWidth, boxWidth);
-		int bitmapHeight = horizontal ? Math.max(coverHeight, boxHeight) : coverHeight + boxHeight;
-
-		Bitmap bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
+		Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 		Canvas canvas = new Canvas(bitmap);
 
+		int left = padding;
+		int top = height - (textSize + padding) * 6; // 6 because we have 3 lines, and the controls are about the same height.
+
+		// top describes where the text will start, so we can draw the cover on 0 -> top
 		if (cover != null) {
-			int x = horizontal ? 0 : (bitmapWidth - coverWidth) / 2;
-			int y = horizontal ? (bitmapHeight - coverHeight) / 2 : 0;
-			Rect rect = new Rect(x, y, x + coverWidth, y + coverHeight);
-			canvas.drawBitmap(cover, null, rect, paint);
+			int rectStart = TEXT_SIZE_BIG + PADDING;
+			int rectEnd = top - padding;
+			Rect rect = new Rect(0, rectStart, width, rectEnd);
+
+			int coverWidth = width;
+			int coverHeight = rectEnd - rectStart;
+			Bitmap scaled = createZoomedBitmap(cover, coverWidth, coverHeight);
+			canvas.drawBitmap(scaled, null, rect, null);
 		}
 
-		int top;
-		int left;
-
-		if (horizontal) {
-			top = (bitmapHeight - boxHeight) / 2;
-			left = padding + coverWidth;
-		} else {
-			top = padding + coverHeight;
-			left = padding;
-		}
-
-		int maxWidth = boxWidth - padding * 3 - textSize;
-
-		// Calculate a solid version of the inverted background color
-		int colors[] = ThemeHelper.getDefaultCoverColors(context);
-		int textColor = 0xFF000000 + (0xFFFFFF - (colors[0] & 0xFFFFFF));
-
-		PorterDuffColorFilter filter = new PorterDuffColorFilter(textColor, PorterDuff.Mode.SRC_ATOP);
-		paint.setColorFilter(filter);
-
+		// Draw all texts
 		canvas.drawBitmap(SONG_ICON, left, top, paint);
-		drawText(canvas, title, left + padding + textSize, top, maxWidth, maxWidth, paint);
+		drawText(canvas, title, left + padding + textSize, top, width, width, paint);
 		top += textSize + padding;
 
 		canvas.drawBitmap(ALBUM_ICON, left, top, paint);
-		drawText(canvas, album, left + padding + textSize, top, maxWidth, maxWidth, paint);
+		drawText(canvas, album, left + padding + textSize, top, width, width, paint);
 		top += textSize + padding;
 
 		canvas.drawBitmap(ARTIST_ICON, left, top, paint);
-		drawText(canvas, artist, left + padding + textSize, top, maxWidth, maxWidth, paint);
+		drawText(canvas, artist, left + padding + textSize, top, width, width, paint);
 
 		return bitmap;
 	}
@@ -331,6 +295,32 @@ public final class CoverBitmap {
 		sourceWidth *= scale;
 		sourceHeight *= scale;
 		return Bitmap.createScaledBitmap(source, sourceWidth, sourceHeight, true);
+	}
+
+	/**
+	 * Scales a bitmap to fit in a rectangle of the given size. Aspect ratio is
+	 * preserved. Both dimensions of the result will match the provided
+	 * dimension exactly.
+	 *
+	 * @param source The bitmap to be scaled
+	 * @param width width of image
+	 * @param height height of image
+	 * @return The scaled bitmap.
+	 */
+	private static Bitmap createZoomedBitmap(Bitmap source, int width, int height) {
+		int sourceWidth = source.getWidth();
+		int sourceHeight = source.getHeight();
+
+		float scale = Math.max((float)width / sourceWidth, (float)height / sourceHeight);
+		// optimal size, if scaled as desired
+		float desiredWidth = sourceWidth * scale;
+		float desiredHeight = sourceHeight * scale;
+		// calculate how many px we need to chop off the source image at each edge
+		int chopWidth = (int)((desiredWidth - width) / scale / 2f);
+		int chopHeight = (int)((desiredHeight - height) / scale / 2f);
+
+		Bitmap chopped = Bitmap.createBitmap(source, chopWidth, chopHeight, sourceWidth-chopWidth*2, sourceHeight-chopHeight*2, null, true);
+		return Bitmap.createScaledBitmap(chopped, width, height, true);
 	}
 
 	/**
