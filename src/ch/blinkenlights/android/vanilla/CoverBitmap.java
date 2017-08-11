@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
+ * Copyright 2017 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -59,7 +60,7 @@ public final class CoverBitmap {
 	private static int TEXT_SIZE = -1;
 	private static int TEXT_SIZE_BIG;
 	private static int PADDING;
-	private static int TEXT_SPACE;
+	private static int BOTTOM_PADDING;
 	private static Bitmap SONG_ICON;
 	private static Bitmap ALBUM_ICON;
 	private static Bitmap ARTIST_ICON;
@@ -75,7 +76,7 @@ public final class CoverBitmap {
 		TEXT_SIZE = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, metrics);
 		TEXT_SIZE_BIG = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, metrics);
 		PADDING = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, metrics);
-		TEXT_SPACE = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 150, metrics);
+		BOTTOM_PADDING = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 136, metrics);
 	}
 
 	/**
@@ -227,6 +228,7 @@ public final class CoverBitmap {
 			loadIcons(context);
 
 		int textSize = TEXT_SIZE;
+		int textSizeBig = TEXT_SIZE_BIG;
 		int padding = PADDING;
 
 		// Get desired text color from theme and draw textual information
@@ -248,18 +250,30 @@ public final class CoverBitmap {
 		Canvas canvas = new Canvas(bitmap);
 
 		int left = padding;
-		int top = height - (textSize + padding) * 6; // 6 because we have 3 lines, and the controls are about the same height.
+		int top = height - BOTTOM_PADDING;
 
 		// top describes where the text will start, so we can draw the cover on 0 -> top
 		if (cover != null) {
-			int rectStart = TEXT_SIZE_BIG + PADDING;
-			int rectEnd = top - padding;
-			Rect rect = new Rect(0, rectStart, width, rectEnd);
+			int topShift = textSizeBig; // guaranteed space from top
+			int avHeight = top - topShift; // how much space we can use at most
 
 			int coverWidth = width;
-			int coverHeight = rectEnd - rectStart;
-			Bitmap scaled = createZoomedBitmap(cover, coverWidth, coverHeight);
-			canvas.drawBitmap(scaled, null, rect, null);
+			int coverHeight = avHeight - padding - padding;
+
+			if (coverHeight > coverWidth)
+				coverHeight = coverWidth;
+			if (coverHeight < 1)
+				coverHeight = 1;
+
+			int padHeight = (avHeight - coverHeight) / 2;
+
+			Rect rect = new Rect(0, padHeight, coverWidth, coverHeight+padHeight);
+			Bitmap zoomed = createZoomedBitmap(cover, coverWidth, coverHeight);
+
+			canvas.translate(0, topShift);
+			canvas.drawBitmap(zoomed, null, rect, null);
+			canvas.translate(0, -1*topShift);
+
 		}
 
 		// Draw all texts
