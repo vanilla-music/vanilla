@@ -162,6 +162,10 @@ public final class PlaybackService extends Service
 	 */
 	public static final String ACTION_PREVIOUS_SONG_AUTOPLAY = "ch.blinkenlights.android.vanilla.action.PREVIOUS_SONG_AUTOPLAY";
 	/**
+	 * Flushes the queue, switches to random mode and starts playing.
+	 */
+	public static final String ACTION_RANDOM_MIX_AUTOPLAY = "ch.blinkenlights.android.vanilla.action.RANDOM_MIX_AUTOPLAY";
+	/**
 	 * Change the shuffle mode.
 	 */
 	public static final String ACTION_CYCLE_SHUFFLE = "ch.blinkenlights.android.vanilla.CYCLE_SHUFFLE";
@@ -559,6 +563,14 @@ public final class PlaybackService extends Service
 				cycleFinishAction();
 			} else if (ACTION_CYCLE_SHUFFLE.equals(action)) {
 				cycleShuffle();
+			} else if (ACTION_RANDOM_MIX_AUTOPLAY.equals(action)) {
+				pause();
+				emptyQueue();
+				setFinishAction(SongTimeline.FINISH_RANDOM);
+				// We can't use play() here as setFinishAction() is handled in the background.
+				// We therefore send a GO message to the same queue, so it will get handled as
+				// soon as the queue is ready.
+				mHandler.sendEmptyMessage(MSG_CALL_GO);
 			} else if (ACTION_CLOSE_NOTIFICATION.equals(action)) {
 				mForceNotificationVisible = false;
 				pause();
