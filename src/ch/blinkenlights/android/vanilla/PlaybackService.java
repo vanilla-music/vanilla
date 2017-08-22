@@ -2074,6 +2074,7 @@ public final class PlaybackService extends Service
 
 		Intent previous = new Intent(PlaybackService.ACTION_PREVIOUS_SONG);
 		previous.setComponent(service);
+		views.setOnClickPendingIntent(R.id.previous, PendingIntent.getService(this, 0, previous, 0));
 		expanded.setOnClickPendingIntent(R.id.previous, PendingIntent.getService(this, 0, previous, 0));
 
 		Intent playPause = new Intent(PlaybackService.ACTION_TOGGLE_PLAYBACK_NOTIFICATION);
@@ -2118,6 +2119,7 @@ public final class PlaybackService extends Service
 
 			viewsPublic.setImageViewResource(R.id.cover, R.drawable.icon);
 			viewsPublic.setImageViewResource(R.id.play_pause, playButton);
+			viewsPublic.setOnClickPendingIntent(R.id.previous, PendingIntent.getService(this, 0, previous, 0));
 			viewsPublic.setOnClickPendingIntent(R.id.play_pause, PendingIntent.getService(this, 0, playPause, 0));
 			viewsPublic.setOnClickPendingIntent(R.id.next, PendingIntent.getService(this, 0, next, 0));
 			viewsPublic.setOnClickPendingIntent(R.id.close, PendingIntent.getService(this, 0, close, 0));

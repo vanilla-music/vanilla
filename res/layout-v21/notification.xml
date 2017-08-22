@@ -54,6 +54,17 @@ THE SOFTWARE.
 			android:ellipsize="marquee" />
 	</LinearLayout>
 	<ImageButton
+		android:id="@+id/previous"
+		android:paddingTop="5dp"
+		android:paddingBottom="5dp"
+		android:layout_height="42dp"
+		android:layout_width="wrap_content"
+		android:layout_gravity="center"
+		android:background="?android:attr/selectableItemBackground"
+		android:scaleType="fitCenter"
+		android:src="@drawable/widget_previous"
+		android:contentDescription="@string/previous_song" />
+	<ImageButton
 		android:id="@+id/play_pause"
 		android:paddingTop="5dp"
 		android:paddingBottom="5dp"
