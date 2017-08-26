@@ -23,12 +23,30 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.audiofx.AudioEffect;
+import android.media.audiofx.Equalizer;
+import android.net.Uri;
 import android.os.Build;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 
-public class VanillaMediaPlayer extends MediaPlayer {
+
+import com.google.android.exoplayer2.C;
+import com.google.android.exoplayer2.decoder.DecoderCounters;
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.Format;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.audio.AudioRendererEventListener;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+
+import android.util.Log;
+
+public class VanillaMediaPlayer extends SimpleExoPlayer implements AudioRendererEventListener {
 
 	private Context mContext;
 	private String mDataSource;
@@ -37,12 +55,20 @@ public class VanillaMediaPlayer extends MediaPlayer {
 	private float mDuckingFactor = Float.NaN;
 	private boolean mIsDucking = false;
 
+	private int mAudioSessionId = C.AUDIO_SESSION_ID_UNSET;
+
 	/**
 	 * Constructs a new VanillaMediaPlayer class
 	 */
-	public VanillaMediaPlayer(Context context) {
-		super();
+	public VanillaMediaPlayer(Context context, DefaultTrackSelector trackSelector, DefaultLoadControl loadControl) {
+		super(context, trackSelector, loadControl, null, 0, 0); // fixme: is 0 ok here ?
 		mContext = context;
+		setAudioStreamType(C.STREAM_TYPE_MUSIC);
+		setAudioDebugListener(this);
+	}
+
+	public boolean isPlaying() {
+		return getPlaybackState() == STATE_READY;
 	}
 
 	/**
@@ -51,7 +77,7 @@ public class VanillaMediaPlayer extends MediaPlayer {
 	public void reset() {
 		mDataSource = null;
 		mHasNextMediaPlayer = false;
-		super.reset();
+		stop();
 	}
 
 	/**
@@ -70,9 +96,12 @@ public class VanillaMediaPlayer extends MediaPlayer {
 		// The MediaPlayer function expects a file:// like string but also accepts *most* absolute unix paths (= paths with no colon)
 		// We could therefore encode the path into a full URI, but a much quicker way is to simply use
 		// setDataSource(FileDescriptor) as the framework code would end up calling this function anyways (MediaPlayer.java:1100 (6.0))
-		FileInputStream fis = new FileInputStream(path);
-		super.setDataSource(fis.getFD());
-		fis.close(); // this is OK according to the SDK documentation!
+
+		DefaultDataSourceFactory dataSourceFactory = new DefaultDataSourceFactory(mContext, "VanillaMusic");
+		DefaultExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
+		ExtractorMediaSource mediaSource = new ExtractorMediaSource(Uri.parse("file://"+path), dataSourceFactory, extractorsFactory, null, null);
+
+		prepare(mediaSource);
 		mDataSource = path;
 	}
 
@@ -88,8 +117,8 @@ public class VanillaMediaPlayer extends MediaPlayer {
 	 */
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	public void setNextMediaPlayer(VanillaMediaPlayer next) {
-		super.setNextMediaPlayer(next);
-		mHasNextMediaPlayer = (next != null);
+//		super.setNextMediaPlayer(next);
+//		mHasNextMediaPlayer = (next != null);
 	}
 
 	/**
@@ -103,9 +132,14 @@ public class VanillaMediaPlayer extends MediaPlayer {
 	/**
 	 * Creates a new AudioEffect for our AudioSession
 	 */
-	public void openAudioFx() {
+	private void openAudioFx() {
+	Log.v("VanillaMusic", "OPEN audioFX "+mAudioSessionId);
+		int id = mAudioSessionId;
+		if (id == C.AUDIO_SESSION_ID_UNSET)
+			return;
+
 		Intent i = new Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION);
-		i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, this.getAudioSessionId());
+		i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, id);
 		i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mContext.getPackageName());
 		mContext.sendBroadcast(i);
 	}
@@ -114,8 +148,13 @@ public class VanillaMediaPlayer extends MediaPlayer {
 	 * Releases a previously claimed audio session id
 	 */
 	public void closeAudioFx() {
+	Log.v("VanillaMusic", "CLOSE audioFX "+mAudioSessionId);
+		int id = mAudioSessionId;
+		if (id == C.AUDIO_SESSION_ID_UNSET)
+			return;
+
 		Intent i = new Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION);
-		i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, this.getAudioSessionId());
+		i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, id);
 		i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mContext.getPackageName());
 		mContext.sendBroadcast(i);
 	}
@@ -163,7 +202,39 @@ public class VanillaMediaPlayer extends MediaPlayer {
 			volume *= mDuckingFactor;
 		}
 
-		setVolume(volume, volume);
+		setVolume(volume);
 	}
 
+
+	////// AudioRendererEventListener
+	@Override
+	public void onAudioDisabled(DecoderCounters counters) {
+		Log.v("VanillaMusic", "onAudioDisabled");
+	}
+
+	@Override
+	public void onAudioEnabled(DecoderCounters counters) {
+	Log.v("VanillaMusic", "onAudioEnabled");
+	}
+
+	@Override
+	public void onAudioTrackUnderrun(int bufferSize, long bufferSizeMs, long elapsedSinceLastFeedMs) {
+	Log.v("VanillaMusic", "track underrun!");
+	}
+
+	@Override
+	public void onAudioInputFormatChanged(Format format) {
+	Log.v("VanillaMusic", "format change!");
+	}
+
+	@Override
+	public void onAudioDecoderInitialized(String decoderName, long initializedTimestampMs, long initializationDurationMs) {
+	Log.v("VanillaMusic", "onAudioDecoderInitialized!");
+	}
+
+	@Override
+	public void onAudioSessionId(int audioSessionId) {
+		//mAudioSessionId = audioSessionId;
+		Log.v("VanillaMusic", "Audio session id changed to: "+audioSessionId);
+	}
 }

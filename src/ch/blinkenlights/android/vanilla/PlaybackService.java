@@ -45,7 +45,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -68,18 +67,26 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.Timeline;
+import com.google.android.exoplayer2.source.TrackGroupArray;
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
+
+
 
 /**
  * Handles music playback and pretty much all the other work.
  */
 public final class PlaybackService extends Service
 	implements Handler.Callback
-			 , MediaPlayer.OnCompletionListener
-			 , MediaPlayer.OnErrorListener
 			 , SharedPreferences.OnSharedPreferenceChangeListener
 			 , SongTimeline.Callback
 			 , SensorEventListener
 			 , AudioManager.OnAudioFocusChangeListener
+			 , ExoPlayer.EventListener
 {
 	/**
 	 * Name of the state file.
@@ -347,7 +354,7 @@ public final class PlaybackService extends Service
 	 * initialization. The song that the saved position is for is stored in
 	 * {@link #mPendingSeekSong}.
 	 */
-	private int mPendingSeek;
+	private long mPendingSeek;
 	/**
 	 * The id of the song that the mPendingSeek position is for. -1 indicates
 	 * an invalid song. Value is undefined when mPendingSeek is 0.
@@ -438,7 +445,7 @@ public final class PlaybackService extends Service
 		mMediaPlayer = getNewMediaPlayer();
 		mPreparedMediaPlayer = getNewMediaPlayer();
 		// We only have a single audio session
-		mPreparedMediaPlayer.setAudioSessionId(mMediaPlayer.getAudioSessionId());
+//		mPreparedMediaPlayer.setAudioSessionId(mMediaPlayer.getAudioSessionId());
 
 		mBastpUtil = new BastpUtil();
 		mReadahead = new ReadaheadThread();
@@ -624,16 +631,19 @@ public final class PlaybackService extends Service
 	 * Returns a new MediaPlayer object
 	 */
 	private VanillaMediaPlayer getNewMediaPlayer() {
-		VanillaMediaPlayer mp = new VanillaMediaPlayer(this);
-		mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
-		mp.setOnCompletionListener(this);
-		mp.setOnErrorListener(this);
+		DefaultTrackSelector trackSelector = new DefaultTrackSelector();
+		DefaultLoadControl loadControl = new DefaultLoadControl();
+
+		VanillaMediaPlayer mp = new VanillaMediaPlayer(this, trackSelector, loadControl);
+		mp.addListener(this);
+//		mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		return mp;
 	}
 
 	public void prepareMediaPlayer(VanillaMediaPlayer mp, String path) throws IOException{
+Log.v("VanillaMusic", "PREPARE: "+path);
 		mp.setDataSource(path);
-		mp.prepare();
+//		mp.prepare();
 		applyReplayGain(mp);
 	}
 
@@ -737,7 +747,7 @@ public final class PlaybackService extends Service
 				mMediaPlayer.closeAudioFx();
 				mMediaPlayerAudioFxActive = false;
 			}
-			saveState(mMediaPlayer.getCurrentPosition());
+			saveState((int)mMediaPlayer.getCurrentPosition());
 		}
 
 		if (mWakeLock != null && mWakeLock.isHeld())
@@ -752,7 +762,7 @@ public final class PlaybackService extends Service
 		if(mMediaPlayerInitialized != true)
 			return;
 
-		if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
+		if(Build.VERSION.SDK_INT < 99999999) //Build.VERSION_CODES.JELLY_BEAN)
 			return; /* setNextMediaPlayer is supported since JB */
 
 		boolean doGapless = false;
@@ -992,7 +1002,7 @@ public final class PlaybackService extends Service
 				}
 
 				if (mMediaPlayerInitialized)
-					mMediaPlayer.start();
+					mMediaPlayer.setPlayWhenReady(true);
 
 				if (mNotificationMode != NEVER)
 					startForeground(NOTIFICATION_ID, createNotification(mCurrentSong, mState, mNotificationMode));
@@ -1011,7 +1021,7 @@ public final class PlaybackService extends Service
 				}
 			} else {
 				if (mMediaPlayerInitialized)
-					mMediaPlayer.pause();
+					mMediaPlayer.setPlayWhenReady(false);
 
 				// We are switching into background mode. The notification will be removed
 				// unless we forcefully show it (or the user selected to always show it)
@@ -1365,7 +1375,7 @@ public final class PlaybackService extends Service
 			}
 
 			if ((mState & FLAG_PLAYING) != 0)
-				mMediaPlayer.start();
+				mMediaPlayer.setPlayWhenReady(true);
 
 			if ((mState & FLAG_ERROR) != 0) {
 				mErrorMessage = null;
@@ -1392,8 +1402,16 @@ public final class PlaybackService extends Service
 	}
 
 	@Override
-	public void onCompletion(MediaPlayer player)
-	{
+	public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+
+		Log.v("VanillaMusic", "onPlayerStateChanged: "+playWhenReady+" -> "+playbackState);
+
+		if (playbackState != ExoPlayer.STATE_ENDED) {
+			Log.v("VanillaMusic", "<<<< ignored");
+			return;
+		}
+
+Log.v("VanillaMusic", ">>>> TAKEN");
 
 		// Count this song as played
 		mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_UPDATE_PLAYCOUNTS, 1, 0, mCurrentSong), 800);
@@ -1411,15 +1429,30 @@ public final class PlaybackService extends Service
 	}
 
 	@Override
-	public boolean onError(MediaPlayer player, int what, int extra)
-	{
-		Log.e("VanillaMusic", "MediaPlayer error: " + what + ' ' + extra);
+	public void onPlayerError(ExoPlaybackException error) {
+		Log.e("VanillaMusic", "MediaPlayer error: " + error.type);
 
 		MirrorLinkMediaBrowserService service = getMirrorLinkCallback();
 		if(service != null) {
 			service.onError("MediaPlayer Error");
 		}
-		return true;
+	}
+
+	@Override
+	public void onPositionDiscontinuity() {
+		Log.v("VanillaMusic", "onPositionDiscuntinuity!");
+	}
+	@Override
+	public void onLoadingChanged(boolean isLoading) {
+		Log.v("VanillaMusic", "onLoadingChanged!");
+	}
+	@Override
+	public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+		Log.v("VanillaMusic", "onTracksChanged");
+	}
+	@Override
+	public void onTimelineChanged(Timeline timeline, Object manifest) {
+		Log.v("VanillaMusic", "onTimelineChanged");
 	}
 
 	/**
@@ -1610,7 +1643,7 @@ public final class PlaybackService extends Service
 	/**
 	 * Returns the current position in current song in milliseconds.
 	 */
-	public int getPosition()
+	public long getPosition()
 	{
 		if (!mMediaPlayerInitialized)
 			return 0;
@@ -1620,7 +1653,7 @@ public final class PlaybackService extends Service
 	/**
 	 * Returns the song duration in milliseconds.
 	*/
-	public int getDuration()
+	public long getDuration()
 	{
 		if (!mMediaPlayerInitialized)
 			return 0;
@@ -1646,7 +1679,7 @@ public final class PlaybackService extends Service
 		if (!mMediaPlayerInitialized)
 			return;
 		long position = (long)mMediaPlayer.getDuration() * progress / 1000;
-		mMediaPlayer.seekTo((int)position);
+		mMediaPlayer.seekTo(position);
 	}
 
 	@Override
