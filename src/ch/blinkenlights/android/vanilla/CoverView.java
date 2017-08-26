@@ -214,7 +214,7 @@ public final class CoverView extends View implements Handler.Callback {
 			bitmap = generateBitmap(song);
 
 		mBitmapBucket.setSongBitmap(i, song, bitmap);
-		postInvalidateOnAnimation();
+		postInvalidate();
 	}
 
 	/**
@@ -466,7 +466,7 @@ public final class CoverView extends View implements Handler.Callback {
 		}
 
 		if (invalidate)
-			postInvalidateOnAnimation();
+			postInvalidate();
 
 		return true;
 	}
