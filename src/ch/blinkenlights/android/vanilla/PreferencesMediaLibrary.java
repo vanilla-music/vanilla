@@ -33,6 +33,7 @@ import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -64,7 +65,7 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 	private ProgressBar mProgressBar;
 	/**
 	 * The number of tracks on this device
-	 */;
+	 */
 	private TextView mStatsTracks;
 	/**
 	 * The number of hours of music we have
@@ -116,9 +117,9 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 
-		mStartButton = (View)view.findViewById(R.id.start_button);
-		mCancelButton = (View)view.findViewById(R.id.cancel_button);
-		mEditButton = (View)view.findViewById(R.id.edit_button);
+		mStartButton = view.findViewById(R.id.start_button);
+		mCancelButton = view.findViewById(R.id.cancel_button);
+		mEditButton = view.findViewById(R.id.edit_button);
 		mProgressText = (TextView)view.findViewById(R.id.media_stats_progress_text);
 		mProgressBar = (ProgressBar)view.findViewById(R.id.media_stats_progress_bar);
 		mStatsTracks = (TextView)view.findViewById(R.id.media_stats_tracks);
@@ -242,7 +243,6 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 	 * Initializes and updates the scanner preferences
 	 *
 	 * @param checkbox the item to update, may be null
-	 * @return void but sets the checkboxes to their correct state
 	 */
 	private void updatePreferences(CheckBox checkbox) {
 		MediaLibrary.Preferences prefs = MediaLibrary.getPreferences(getActivity());
@@ -300,13 +300,13 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 		mProgressBar.setVisibility(idle ? View.GONE : View.VISIBLE);
 
 		Integer songCount = MediaLibrary.getLibrarySize(context);
-		mStatsTracks.setText(songCount.toString());
+		mStatsTracks.setText(String.format(Locale.ENGLISH, "%d", songCount));
 
 		float libraryPlaytime = calculateSongSum(context, MediaLibrary.SongColumns.DURATION) / 3600000F;
-		mStatsLibraryPlaytime.setText(String.format("%.1f", libraryPlaytime));
+		mStatsLibraryPlaytime.setText(String.format(Locale.ENGLISH, "%.1f", libraryPlaytime));
 
 		float listenPlaytime = calculateSongSum(context, MediaLibrary.SongColumns.PLAYCOUNT+"*"+MediaLibrary.SongColumns.DURATION) / 3600000F;
-		mStatsListenPlaytime.setText(String.format("%.1f", listenPlaytime));
+		mStatsListenPlaytime.setText(String.format(Locale.ENGLISH, "%.1f", listenPlaytime));
 	}
 
 	/**

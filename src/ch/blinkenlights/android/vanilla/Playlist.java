@@ -41,7 +41,7 @@ public class Playlist {
 	 * @param context the context to use
 	 * @return The queried cursor.
 	 */
-	public static Cursor queryPlaylists(Context context) {
+	static Cursor queryPlaylists(Context context) {
 		final String[] projection = { MediaLibrary.PlaylistColumns._ID, MediaLibrary.PlaylistColumns.NAME };
 		final String sort = MediaLibrary.PlaylistColumns.NAME;
 		return MediaLibrary.queryLibrary(context, MediaLibrary.TABLE_PLAYLISTS, projection, null, null, sort);
@@ -55,7 +55,7 @@ public class Playlist {
 	 * @return The id of the playlist, or -1 if there is no playlist with the
 	 * given name.
 	 */
-	public static long getPlaylist(Context context, String name)
+	static long getPlaylist(Context context, String name)
 	{
 		long id = -1;
 		final String[] projection = { MediaLibrary.PlaylistColumns._ID };
@@ -80,7 +80,7 @@ public class Playlist {
 	 * @param name The name of the playlist.
 	 * @return The id of the new playlist.
 	 */
-	public static long createPlaylist(Context context, String name)
+	static long createPlaylist(Context context, String name)
 	{
 		long id = getPlaylist(context, name);
 		if (id != -1)
@@ -100,8 +100,8 @@ public class Playlist {
 	 * @param query The query to run. The audio id should be the first column.
 	 * @return The number of songs that were added to the playlist.
 	 */
-	public static int addToPlaylist(Context context, long playlistId, QueryTask query) {
-		ArrayList<Long> result = new ArrayList<Long>();
+	static int addToPlaylist(Context context, long playlistId, QueryTask query) {
+		ArrayList<Long> result = new ArrayList<>();
 		Cursor cursor = query.runQuery(context);
 		if (cursor != null) {
 			while (cursor.moveToNext()) {
@@ -121,7 +121,7 @@ public class Playlist {
 	 * @param audioIds An ArrayList with all IDs to add
 	 * @return The number of songs that were added to the playlist.
 	 */
-	public static int addToPlaylist(Context context, long playlistId, ArrayList<Long> audioIds) {
+	static int addToPlaylist(Context context, long playlistId, ArrayList<Long> audioIds) {
 		if (playlistId == -1)
 			return 0;
 		return MediaLibrary.addToPlaylist(context, playlistId, audioIds);
@@ -137,7 +137,7 @@ public class Playlist {
 	 * @param audioIds An ArrayList with all IDs to drop
 	 * @return The number of songs that were removed from the playlist
 	 */
-	public static int removeFromPlaylist(Context context, long playlistId, ArrayList<Long> audioIds) {
+	static int removeFromPlaylist(Context context, long playlistId, ArrayList<Long> audioIds) {
 		if (playlistId == -1)
 			return 0;
 
@@ -152,7 +152,7 @@ public class Playlist {
 	 * @param context the context to use
 	 * @param id the id of the playlist.
 	 */
-	public static void deletePlaylist(Context context, long id) {
+	static void deletePlaylist(Context context, long id) {
 		MediaLibrary.removePlaylist(context, id);
 	}
 
@@ -164,7 +164,7 @@ public class Playlist {
 	 * @param id The Media.Audio.Playlists id of the playlist.
 	 * @param newName The new name for the playlist.
 	 */
-	public static void renamePlaylist(Context context, long id, String newName) {
+	static void renamePlaylist(Context context, long id, String newName) {
 		MediaLibrary.renamePlaylist(context, id, newName);
 	}
 
@@ -175,11 +175,11 @@ public class Playlist {
 	 * @param create Create the playlist if it does not exist
 	 * @return the id of the playlist, -1 on error
 	 */
-	public static long getFavoritesId(Context context, boolean create) {
+	static long getFavoritesId(Context context, boolean create) {
 		String playlistName = context.getString(R.string.playlist_favorites);
 		long playlistId = getPlaylist(context, playlistName);
 
-		if (playlistId == -1 && create == true)
+		if (playlistId == -1 && create)
 			playlistId = createPlaylist(context, playlistName);
 
 		return playlistId;
@@ -193,7 +193,7 @@ public class Playlist {
 	 * @param song The Song to search in given playlistId
 	 * @return true if `song' was found in `playlistId'
 	 */
-	public static boolean isInPlaylist(Context context, long playlistId, Song song) {
+	static boolean isInPlaylist(Context context, long playlistId, Song song) {
 		if (playlistId == -1 || song == null)
 			return false;
 

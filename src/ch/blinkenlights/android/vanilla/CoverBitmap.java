@@ -126,7 +126,7 @@ public final class CoverBitmap {
 	 * @return The image, or null if the song was null, or width or height
 	 * were less than 1
 	 */
-	public static Bitmap createBitmap(Context context, int style, Bitmap coverArt, Song song, int width, int height)
+	static Bitmap createBitmap(Context context, int style, Bitmap coverArt, Song song, int width, int height)
 	{
 		switch (style) {
 		case STYLE_OVERLAPPING_BOX:
@@ -345,7 +345,7 @@ public final class CoverBitmap {
 	 * @param height The max height
 	 * @return The default cover.
 	 */
-	public static Bitmap generateDefaultCover(Context context, int width, int height)
+	static Bitmap generateDefaultCover(Context context, int width, int height)
 	{
 		int size = Math.min(width, height);
 
@@ -390,7 +390,7 @@ public final class CoverBitmap {
 	 * @param title A text string to use in the cover
 	 * @return bitmap The drawn bitmap
 	 */
-	public static Bitmap generatePlaceholderCover(Context context, int width, int height, String title)
+	static Bitmap generatePlaceholderCover(Context context, int width, int height, String title)
 	{
 		if (title == null || width < 1 || height < 1)
 			return null;

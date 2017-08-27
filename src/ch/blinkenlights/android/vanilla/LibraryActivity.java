@@ -332,19 +332,15 @@ public class LibraryActivity
 	}
 
 	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event)
-	{
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_DEL || keyCode == KeyEvent.KEYCODE_FORWARD_DEL)
 			// On ICS, EditText reports backspace events as unhandled despite
 			// actually handling them. To workaround, just assume the event was
 			// handled if we get here.
 			return true;
+        return super.onKeyDown(keyCode, event);
 
-		if (super.onKeyDown(keyCode, event))
-			return true;
-
-		return false;
-	}
+    }
 
 	/**
 	 * Update the first row of the lists with the appropriate action (play all

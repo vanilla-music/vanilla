@@ -82,7 +82,7 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 	 *
 	 * @param id The id of a playlist.
 	 */
-	public void setPlaylistId(long id)
+	void setPlaylistId(long id)
 	{
 		mPlaylistId = id;
 		mWorkerHandler.sendEmptyMessage(MSG_RUN_QUERY);
@@ -94,7 +94,7 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 	 *
 	 * @param editable True to enable edit mode.
 	 */
-	public void setEditable(boolean editable)
+	void setEditable(boolean editable)
 	{
 		mEditable = editable;
 		notifyDataSetInvalidated();
@@ -130,11 +130,11 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 	/**
 	 * Re-run the query. Should be run on worker thread.
 	 */
-	public static final int MSG_RUN_QUERY = 1;
+	private static final int MSG_RUN_QUERY = 1;
 	/**
 	 * Update the cursor. Must be run on UI thread.
 	 */
-	public static final int MSG_UPDATE_CURSOR = 2;
+	private static final int MSG_UPDATE_CURSOR = 2;
 
 	@Override
 	public boolean handleMessage(Message message)
@@ -171,7 +171,7 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 	 * @param from original position of item
 	 * @param to destination of item
 	 **/
-	public void moveItem(int from, int to)
+	void moveItem(int from, int to)
 	{
 		if (from == to)
 			// easy mode
@@ -186,7 +186,7 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 		changeCursor(runQuery());
 	}
 
-	public void removeItem(int position) {
+	void removeItem(int position) {
 		MediaLibrary.removeFromPlaylist(mContext, MediaLibrary.PlaylistSongColumns._ID+"="+getItemId(position), null);
 		mUiHandler.sendEmptyMessage(MSG_RUN_QUERY);
 	}

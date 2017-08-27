@@ -237,7 +237,7 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 	 * @param path the path to scan
 	 * @param forceBastp always prefer bastp if possible
 	 */
-	public MediaMetadataExtractor(String path, boolean forceBastp) {
+	MediaMetadataExtractor(String path, boolean forceBastp) {
 		mForceBastp = forceBastp;
 		extractMetadata(path);
 	}
@@ -259,7 +259,7 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 	 * Returns true if this file contains any (interesting) data
 	 * @return true if file is considered to be media data
 	 */
-	public boolean isMediaFile() {
+	boolean isMediaFile() {
 		return mIsMediaFile;
 	}
 
@@ -293,7 +293,7 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 		}
 
 		// Check if this is an useable audio file
-		if (nativelyReadable == false ||
+		if (nativelyReadable  == false ||
 		    mediaTags.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_AUDIO) == null ||
 		    mediaTags.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_VIDEO) != null ||
 		    mediaTags.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION) == null) {
@@ -396,7 +396,7 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 				filter = sFilterLeftInt;
 
 			if (data != null) {
-				ArrayList<String> md = new ArrayList<String>(1);
+				ArrayList<String> md = new ArrayList<>(1);
 				md.add(data);
 				addFiltered(filter, selfMap[i], md);
 			}
@@ -438,7 +438,7 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 		} catch (NumberFormatException exception) { /* genre not set or not a number */ }
 
 		if (genreIdx >= 0 && genreIdx < ID3_GENRES.length) {
-			ArrayList<String> data = new ArrayList<String>(1);
+			ArrayList<String> data = new ArrayList<>(1);
 			data.add(ID3_GENRES[genreIdx]);
 
 			remove(GENRE);

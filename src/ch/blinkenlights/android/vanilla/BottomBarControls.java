@@ -154,7 +154,7 @@ public class BottomBarControls extends LinearLayout
 		mParentMenuConsumer = owner;
 
 		ImageButton menuButton = getImageButton(getResources().getDrawable(R.drawable.ic_menu_moreoverflow));
-		mPopupMenu = (menuMargin() ? new PopupMenu(mContext, menuButton, Gravity.RIGHT) : new PopupMenu(mContext, menuButton));
+		mPopupMenu = (menuMargin() ? new PopupMenu(mContext, menuButton, Gravity.END) : new PopupMenu(mContext, menuButton));
 		mPopupMenu.setOnMenuItemClickListener(this);
 
 		// Let parent populate the menu

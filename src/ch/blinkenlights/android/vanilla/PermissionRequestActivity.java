@@ -114,7 +114,7 @@ public class PermissionRequestActivity extends Activity {
 	public static boolean requestPermissions(Activity activity, Intent callbackIntent) {
 		boolean havePermissions = havePermissions(activity);
 
-		if (havePermissions == false) {
+		if (!/* we don't */ havePermissions) {
 			Intent intent = new Intent(activity, PermissionRequestActivity.class);
 			intent.putExtra("callbackIntent", callbackIntent);
 			activity.startActivity(intent);

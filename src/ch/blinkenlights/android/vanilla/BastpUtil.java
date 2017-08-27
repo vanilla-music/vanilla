@@ -22,7 +22,7 @@ import ch.blinkenlights.bastp.Bastp;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class BastpUtil {
+class BastpUtil {
 	/**
 	 * Our global instance cache
 	 */
@@ -30,7 +30,7 @@ public class BastpUtil {
 	/**
 	 * What we return & cache
 	 */
-	public class GainValues {
+	class GainValues {
 		public float base;
 		public float album;
 		public float track;
@@ -39,20 +39,20 @@ public class BastpUtil {
 	 * LRU cache for ReplayGain values
 	 */
 	private class RGLruCache extends LruCache<String, GainValues> {
-		public RGLruCache(int size) {
+		RGLruCache(int size) {
 			super(size);
 		}
 	}
 
 
-	public BastpUtil() {
+	BastpUtil() {
 		rgCache = new RGLruCache(64); /* Cache up to 64 entries */
 	}
 
 	/**
 	 * Returns a GainValues object for `path'
 	 */
-	public GainValues getReplayGainValues(String path) {
+	GainValues getReplayGainValues(String path) {
 		if(path == null) {
 			// path must not be null
 			path = "//null\\";

@@ -40,32 +40,32 @@ import java.util.Random;
 import java.util.regex.Pattern;
 
 
-public class CoverCache {
+class CoverCache {
 	/**
 	 * Returned size of small album covers
 	 * 44sp is the width & height of a library row
 	 */
-	public final static int SIZE_SMALL = (int)(44 * Resources.getSystem().getDisplayMetrics().density);
+	final static int SIZE_SMALL = (int)(44 * Resources.getSystem().getDisplayMetrics().density);
 	/**
 	 * Returned size of large (cover view) album covers
 	 */
-	public final static int SIZE_LARGE = (int)(200 * Resources.getSystem().getDisplayMetrics().density);
+	final static int SIZE_LARGE = (int)(200 * Resources.getSystem().getDisplayMetrics().density);
 	/**
 	 * Use all cover providers to load cover art
 	 */
-	public static final int COVER_MODE_ALL = 0xF;
+	static final int COVER_MODE_ALL = 0xF;
 	/**
 	 * Use androids builtin cover mechanism to load covers
 	 */
-	public static final int COVER_MODE_ANDROID = 0x1;
+	static final int COVER_MODE_ANDROID = 0x1;
 	/**
 	 * Use vanilla musics cover load mechanism
 	 */
-	public static final int COVER_MODE_VANILLA = 0x2;
+	static final int COVER_MODE_VANILLA = 0x2;
 	/**
 	 * Use vanilla musics SHADOW cover load mechanism
 	 */
-	public static final int COVER_MODE_SHADOW = 0x4;
+	static final int COVER_MODE_SHADOW = 0x4;
 	/**
 	 * Shared on-disk cache class
 	 */
@@ -73,7 +73,7 @@ public class CoverCache {
 	/**
 	 * Bitmask on how we are going to load coverart
 	 */
-	public static int mCoverLoadMode = 0;
+	static int mCoverLoadMode = 0;
 	/**
 	 * The public downloads directory of this device
 	 */
@@ -86,20 +86,20 @@ public class CoverCache {
 	 *
 	 * @param context A context to use
 	 */
-	public CoverCache(Context context) {
+	CoverCache(Context context) {
 		if (sBitmapDiskCache == null) {
 			sBitmapDiskCache = new BitmapDiskCache(context.getApplicationContext(), 25*1024*1024);
 		}
 	}
 
-	/**
-	 * Returns a (possibly uncached) cover for the song - will return null if the song has no cover
-	 *
-	 * @param key The cache key to use for storing a generated cover
-	 * @param song The song used to identify the artwork to load
-	 * @return a bitmap or null if no artwork was found
-	 */
-	public Bitmap getCoverFromSong(Song song, int size) {
+    /**
+     * Returns a (possibly uncached) cover for the song - will return null if the song has no cover
+     *
+     * @param size The cache size to use for storing a generated cover
+     * @param song The song used to identify the artwork to load
+     * @return a bitmap or null if no artwork was found
+     */
+	Bitmap getCoverFromSong(Song song, int size) {
 		CoverKey key = new CoverCache.CoverKey(MediaUtils.TYPE_ALBUM, song.albumId, size);
 		Bitmap cover = getStoredCover(key);
 		if (cover == null) {
@@ -137,7 +137,7 @@ public class CoverCache {
 	/**
 	 * Deletes all items hold in the cover caches
 	 */
-	public static void evictAll() {
+    static void evictAll() {
 		if (sBitmapDiskCache != null) {
 			sBitmapDiskCache.evictAll();
 		}
@@ -148,10 +148,10 @@ public class CoverCache {
 	 * Object used as cache key. Objects with the same
 	 * media type, id and size are considered to be equal
 	 */
-	public static class CoverKey {
-		public final int coverSize;
-		public final int mediaType;
-		public final long mediaId;
+	static class CoverKey {
+		final int coverSize;
+		final int mediaType;
+		final long mediaId;
 
 		CoverKey(int mediaType, long mediaId, int coverSize) {
 			this.mediaType = mediaType;
@@ -161,13 +161,10 @@ public class CoverCache {
 
 		@Override
 		public boolean equals(Object obj) {
-			if (obj instanceof CoverKey
+			return (obj instanceof CoverKey
 			    && this.mediaId   == ((CoverKey)obj).mediaId
 			    && this.mediaType == ((CoverKey)obj).mediaType
-			    && this.coverSize == ((CoverKey)obj).coverSize) {
-				return true;
-			}
-			return false;
+			    && this.coverSize == ((CoverKey)obj).coverSize);
 		}
 
 		@Override
@@ -219,7 +216,7 @@ public class CoverCache {
 		 * @param context The context to use
 		 * @param cacheSize The maximal amount of disk space to use in bytes
 		 */
-		public BitmapDiskCache(Context context, long cacheSize) {
+		BitmapDiskCache(Context context, long cacheSize) {
 			super(context, "covercache.db", null, 1 /* version */);
 			mCacheSize = cacheSize;
 			mContext = context;
@@ -279,7 +276,7 @@ public class CoverCache {
 		/**
 		 * Deletes all cached elements from the on-disk cache
 		 */
-		public void evictAll() {
+		void evictAll() {
 			// purge all cached entries
 			trim(0);
 			// and release the dbh
@@ -326,7 +323,7 @@ public class CoverCache {
 		 * Stores a bitmap in the disk cache, does not update existing objects
 		 *
 		 * @param key The cover key to use
-		 * @param Bitmap The bitmap to store
+		 * @param cover The bitmap to store
 		 */
 		public void put(CoverKey key, Bitmap cover) {
 			SQLiteDatabase dbh = getWritableDatabase();
@@ -389,7 +386,7 @@ public class CoverCache {
 		 * @param song the function will search for artwork of this object
 		 * @param maxPxCount the maximum amount of pixels to return (30*30 = 900)
 		 */
-		public Bitmap createBitmap(Song song, long maxPxCount) {
+		Bitmap createBitmap(Song song, long maxPxCount) {
 			if (song.id < 0) {
 				// Unindexed song: return early
 				return null;
@@ -435,7 +432,7 @@ public class CoverCache {
 				}
 
 				if (inputStream == null && (CoverCache.mCoverLoadMode & CoverCache.COVER_MODE_SHADOW) != 0) {
-					String shadowPath = "/sdcard/Music/.vanilla/"+(song.artist.replaceAll("/", "_"))+"/"+(song.album.replaceAll("/", "_"))+".jpg";
+					String shadowPath = Environment.getExternalStorageDirectory()+"Music/.vanilla/"+(song.artist.replaceAll("/", "_"))+"/"+(song.album.replaceAll("/", "_"))+".jpg";
 
 					File guessedFile = new File(shadowPath);
 					if (guessedFile.exists() && !guessedFile.isDirectory()) {
