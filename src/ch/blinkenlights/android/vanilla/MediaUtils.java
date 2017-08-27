@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2017 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -44,6 +45,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.database.MatrixCursor;
 import android.util.Log;
@@ -245,7 +247,7 @@ public class MediaUtils {
 		String query = MediaLibrary.GenreSongColumns.SONG_ID+"=?";
 		String[] queryArgs = new String[] { Long.toString(id) };
 
-		Cursor cursor = MediaLibrary.queryLibrary(context, MediaLibrary.TABLE_GENRES_SONGS, projection, query, queryArgs, null); 
+		Cursor cursor = MediaLibrary.queryLibrary(context, MediaLibrary.TABLE_GENRES_SONGS, projection, query, queryArgs, null);
 		if (cursor != null) {
 			if (cursor.moveToNext())
 				return cursor.getLong(0);
@@ -375,35 +377,31 @@ public class MediaUtils {
 	}
 
 	/**
-	 * Creates and sends share intent across the system. Includes all eligible songs found
-	 * within this type and id (e.g. all songs in album, all songs for this artist etc.)
-	 * @param ctx context to execute resolving on
-	 * @param type media type to look for e.g. {@link MediaUtils#TYPE_SONG}
-	 * @param id id of item to send
+	 * Creates and sends a share intent across the system.
+	 * @param ctx context to execute resolving on.
+	 * @param song the song to share.
 	 */
-	public static void shareMedia(Context ctx, int type, long id) {
-		if (type == TYPE_INVALID || id <= 0) { // invalid
+	public static void shareMedia(Context ctx, Song song) {
+		if (song == null || song.path == null)
 			return;
-		}
 
-		String[] projection = new String [] { MediaLibrary.SongColumns._ID, MediaLibrary.SongColumns.PATH };
-		Cursor cursor = buildQuery(type, id, projection, null).runQuery(ctx);
-		if(cursor == null) {
-			return;
-		}
-
+		Uri uri = null;
 		try {
-			while (cursor.moveToNext()) { // for all songs resolved...
-				File songFile = new File(cursor.getString(1));
-				Intent share = new Intent(Intent.ACTION_SEND);
-				share.setType("audio/*");
-				share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(songFile));
-				ctx.startActivity(Intent.createChooser(share, ctx.getResources().getString(R.string.sendto)));
-			}
-		} catch (ActivityNotFoundException ex) {
+			uri = FileProvider.getUriForFile(ctx, ctx.getApplicationContext().getPackageName() + ".fileprovider", new File(song.path));
+		} catch (IllegalArgumentException e) {
+			Toast.makeText(ctx, R.string.share_failed, Toast.LENGTH_SHORT).show();
+		}
+
+		if (uri == null)
+			return; // Fileprovider failed, we can not continue.
+
+		Intent intent = new Intent(Intent.ACTION_SEND);
+		intent.setType("audio/*");
+		intent.putExtra(Intent.EXTRA_STREAM, uri);
+		try {
+			ctx.startActivity(Intent.createChooser(intent, ctx.getString(R.string.sendto)));
+		} catch (ActivityNotFoundException e) {
 			Toast.makeText(ctx, R.string.no_receiving_apps, Toast.LENGTH_SHORT).show();
-		} finally {
-			cursor.close();
 		}
 	}
 

@@ -320,6 +320,7 @@ THE SOFTWARE.
 	<string name="reverse_sort">Reverse sort</string>
 
 	<string name="share">Share…</string>
+	<string name="share_failed">Failed to share file</string>
 	<string name="sendto">Send to…</string>
 	<string name="no_receiving_apps">No receiving apps found for this media type!</string>
 

@@ -41,6 +41,16 @@ THE SOFTWARE.
 			android:name="com.mirrorlink.android.rockscout.allow-offline-access"
 			android:value="true" />
 
+		<provider
+			android:name="android.support.v4.content.FileProvider"
+			android:authorities="ch.blinkenlights.android.vanilla.fileprovider"
+			android:exported="false"
+			android:grantUriPermissions="true">
+			<meta-data
+				android:name="android.support.FILE_PROVIDER_PATHS"
+				android:resource="@xml/provider_paths"/>
+		</provider>
+
 		<activity
 			android:name="FullPlaybackActivity"
 			android:launchMode="singleTask" />
