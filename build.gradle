@@ -22,13 +22,13 @@ android {
         disable 'ExtraTranslation'
     }
 
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion 26
+    buildToolsVersion "26.0.1"
 
     defaultConfig {
         applicationId "ch.blinkenlights.android.vanilla"
         minSdkVersion 15
-        targetSdkVersion 25
+        targetSdkVersion 26
     }
 
     sourceSets {
