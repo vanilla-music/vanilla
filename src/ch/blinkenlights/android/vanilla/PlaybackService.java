@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2015 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2012-2017 Adrian Ulrich <adrian@blinkenlights.ch>
  * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,7 +26,6 @@ package ch.blinkenlights.android.vanilla;
 import ch.blinkenlights.android.medialibrary.MediaLibrary;
 
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.app.backup.BackupManager;
@@ -96,6 +95,7 @@ public final class PlaybackService extends Service
 	private static final int STATE_VERSION = 6;
 
 	private static final int NOTIFICATION_ID = 2;
+	private static final String NOTIFICATION_CHANNEL = "Playback";
 
 	/**
 	 * Rewind song if we already played more than 2.5 sec
@@ -319,6 +319,10 @@ public final class PlaybackService extends Service
 	 * {@link PlaybackService#createNotificationAction(SharedPreferences)}.
 	 */
 	private PendingIntent mNotificationAction;
+	/**
+	 * Notification helper instance.
+	 */
+	private NotificationHelper mNotificationHelper;
 
 	private Looper mLooper;
 	private Handler mHandler;
@@ -327,7 +331,6 @@ public final class PlaybackService extends Service
 	private boolean mMediaPlayerInitialized;
 	private boolean mMediaPlayerAudioFxActive;
 	private PowerManager.WakeLock mWakeLock;
-	private NotificationManager mNotificationManager;
 	private AudioManager mAudioManager;
 	/**
 	 * The SensorManager service.
@@ -443,7 +446,7 @@ public final class PlaybackService extends Service
 		mBastpUtil = new BastpUtil();
 		mReadahead = new ReadaheadThread();
 
-		mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+		mNotificationHelper = new NotificationHelper(this, NOTIFICATION_CHANNEL, getString(R.string.app_name));
 		mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
 
 		SharedPreferences settings = getSettings(this);
@@ -1142,9 +1145,9 @@ public final class PlaybackService extends Service
 	private void updateNotification()
 	{
 		if ((mForceNotificationVisible || mNotificationMode == ALWAYS || mNotificationMode == WHEN_PLAYING && (mState & FLAG_PLAYING) != 0) && mCurrentSong != null)
-			mNotificationManager.notify(NOTIFICATION_ID, createNotification(mCurrentSong, mState, mNotificationMode));
+			mNotificationHelper.notify(NOTIFICATION_ID, createNotification(mCurrentSong, mState, mNotificationMode));
 		else
-			mNotificationManager.cancel(NOTIFICATION_ID);
+			mNotificationHelper.cancel(NOTIFICATION_ID);
 	}
 
 	/**
@@ -2043,7 +2046,7 @@ public final class PlaybackService extends Service
 	}
 
 	/**
-	 * Create a song notification. Call through the NotificationManager to
+	 * Create a song notification. Call through the NotificationHelper to
 	 * display it.
 	 *
 	 * @param song The Song to display information about.
@@ -2101,7 +2104,7 @@ public final class PlaybackService extends Service
 		expanded.setTextViewText(R.id.album, song.album);
 		expanded.setTextViewText(R.id.artist, song.artist);
 
-		Notification notification = new Notification();
+		Notification notification = mNotificationHelper.getNewNotification(getApplicationContext());
 		notification.contentView = views;
 		notification.icon = R.drawable.status_icon;
 		notification.flags |= Notification.FLAG_ONGOING_EVENT;

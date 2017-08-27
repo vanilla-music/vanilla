@@ -12,16 +12,15 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>. 
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package ch.blinkenlights.android.medialibrary;
 
 import ch.blinkenlights.android.vanilla.R;
+import ch.blinkenlights.android.vanilla.NotificationHelper;
 
 import android.app.Notification;
-import android.app.NotificationManager;
-
 import android.content.Context;
 import android.content.ContentValues;
 import android.content.SharedPreferences;
@@ -71,6 +70,10 @@ public class MediaScanner implements Handler.Callback {
 	 */
 	private boolean mPendingCleanup;
 	/**
+	 * Our NotificationHelper instance.
+	 */
+	private NotificationHelper mNotificationHelper;
+	/**
 	 * Timestamp in half-seconds since last notification
 	 */
 	private int mLastNotification;
@@ -78,6 +81,8 @@ public class MediaScanner implements Handler.Callback {
 	 * The id we are using for the scan notification
 	 */
 	private static final int NOTIFICATION_ID = 56162;
+	private static final String NOTIFICATION_CHANNEL = "Scanner";
+
 
 	MediaScanner(Context context, MediaLibraryBackend backend) {
 		mContext = context;
@@ -87,6 +92,7 @@ public class MediaScanner implements Handler.Callback {
 		handlerThread.start();
 		mHandler = new Handler(handlerThread.getLooper(), this);
 		mWakeLock = ((PowerManager)context.getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicIndexerLock");
+		mNotificationHelper = new NotificationHelper(context, NOTIFICATION_CHANNEL, context.getString(R.string.media_stats_progress));
 
 		// the content observer to use
 		ContentObserver mObserver = new ContentObserver(null) {
@@ -265,7 +271,6 @@ public class MediaScanner implements Handler.Callback {
 	 */
 	private void updateNotification(boolean visible) {
 		MediaLibrary.ScanProgress progress = describeScanProgress();
-		NotificationManager manager = (NotificationManager) mContext.getSystemService(mContext.NOTIFICATION_SERVICE);
 
 		if (visible) {
 			int nowTime = (int)(SystemClock.uptimeMillis() / 500);
@@ -275,20 +280,20 @@ public class MediaScanner implements Handler.Callback {
 				String title = mContext.getResources().getString(R.string.media_library_scan_running);
 				String content = progress.lastFile;
 
-				Notification notification = new Notification.Builder(mContext)
+				Notification notification = mNotificationHelper.getNewBuilder(mContext)
 					.setProgress(progress.total, progress.seen, false)
 					.setContentTitle(title)
 					.setContentText(content)
 					.setSmallIcon(icon)
 					.setOngoing(true)
 					.getNotification(); // build() is API 16 :-/
-				manager.notify(NOTIFICATION_ID, notification);
+				mNotificationHelper.notify(NOTIFICATION_ID, notification);
 			}
 
 			if (!mWakeLock.isHeld())
 				mWakeLock.acquire();
 		} else {
-			manager.cancel(NOTIFICATION_ID);
+			mNotificationHelper.cancel(NOTIFICATION_ID);
 
 			if (mWakeLock.isHeld())
 				mWakeLock.release();
