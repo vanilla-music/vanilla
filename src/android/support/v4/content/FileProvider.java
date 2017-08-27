@@ -13,9 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package android.support.v4.content;
+
 import static org.xmlpull.v1.XmlPullParser.END_DOCUMENT;
 import static org.xmlpull.v1.XmlPullParser.START_TAG;
+
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
@@ -31,12 +34,15 @@ import android.os.ParcelFileDescriptor;
 import android.provider.OpenableColumns;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
+
 import org.xmlpull.v1.XmlPullParserException;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
 /**
  * FileProvider is a special subclass of {@link ContentProvider} that facilitates secure sharing
  * of files associated with an app by creating a <code>content://</code> {@link Uri} for a file
@@ -133,9 +139,10 @@ import java.util.Map;
  *</pre>
  *     </dt>
  *     <dd>
- *     Represents files in the root of your app's external storage area. The path
- *     {@link Context#getExternalFilesDir(String) Context.getExternalFilesDir()} returns the
- *     <code>files/</code> subdirectory of this this root.
+ *     Represents the root of the external storage. The root path of this subdirectory
+ *     is the same that {@link
+ *     Environment#getExternalStorageDirectory() Environment.getExternalStorageDirectory()}
+ *     returns.
  *     </dd>
  *     <dt>
  * <pre>
@@ -290,24 +297,31 @@ import java.util.Map;
  * <h3 id="">More Information</h3>
  * <p>
  *    To learn more about FileProvider, see the Android training class
- *    <a href="{@docRoot}training/secure-uri/index.html">Sharing Files Securely with URIs</a>.
+ *    <a href="{@docRoot}training/secure-file-sharing/index.html">Sharing Files Securely with URIs</a>.
  * </p>
  */
 public class FileProvider extends ContentProvider {
     private static final String[] COLUMNS = {
             OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE };
+
     private static final String
             META_DATA_FILE_PROVIDER_PATHS = "android.support.FILE_PROVIDER_PATHS";
+
     private static final String TAG_ROOT_PATH = "root-path";
     private static final String TAG_FILES_PATH = "files-path";
     private static final String TAG_CACHE_PATH = "cache-path";
     private static final String TAG_EXTERNAL = "external-path";
+
     private static final String ATTR_NAME = "name";
     private static final String ATTR_PATH = "path";
+
     private static final File DEVICE_ROOT = new File("/");
+
     // @GuardedBy("sCache")
     private static HashMap<String, PathStrategy> sCache = new HashMap<String, PathStrategy>();
+
     private PathStrategy mStrategy;
+
     /**
      * The default FileProvider implementation does not need to be initialized. If you want to
      * override this method, you must provide your own subclass of FileProvider.
@@ -316,6 +330,7 @@ public class FileProvider extends ContentProvider {
     public boolean onCreate() {
         return true;
     }
+
     /**
      * After the FileProvider is instantiated, this method is called to provide the system with
      * information about the provider.
@@ -326,6 +341,7 @@ public class FileProvider extends ContentProvider {
     @Override
     public void attachInfo(Context context, ProviderInfo info) {
         super.attachInfo(context, info);
+
         // Sanity check our security
         if (info.exported) {
             throw new SecurityException("Provider must not be exported");
@@ -333,8 +349,10 @@ public class FileProvider extends ContentProvider {
         if (!info.grantUriPermissions) {
             throw new SecurityException("Provider must grant uri permissions");
         }
+
         mStrategy = getPathStrategy(context, info.authority);
     }
+
     /**
      * Return a content URI for a given {@link File}. Specific temporary
      * permissions for the content URI can be set with
@@ -348,7 +366,7 @@ public class FileProvider extends ContentProvider {
      *
      * @param context A {@link Context} for the current component.
      * @param authority The authority of a {@link FileProvider} defined in a
-     *            {@code &lt;provider&gt;} element in your app's manifest.
+     *            {@code <provider>} element in your app's manifest.
      * @param file A {@link File} pointing to the filename for which you want a
      * <code>content</code> {@link Uri}.
      * @return A content URI for the file.
@@ -359,6 +377,7 @@ public class FileProvider extends ContentProvider {
         final PathStrategy strategy = getPathStrategy(context, authority);
         return strategy.getUriForFile(file);
     }
+
     /**
      * Use a content URI returned by
      * {@link #getUriForFile(Context, String, File) getUriForFile()} to get information about a file
@@ -392,9 +411,11 @@ public class FileProvider extends ContentProvider {
             String sortOrder) {
         // ContentProvider has already checked granted permissions
         final File file = mStrategy.getFileForUri(uri);
+
         if (projection == null) {
             projection = COLUMNS;
         }
+
         String[] cols = new String[projection.length];
         Object[] values = new Object[projection.length];
         int i = 0;
@@ -407,12 +428,15 @@ public class FileProvider extends ContentProvider {
                 values[i++] = file.length();
             }
         }
+
         cols = copyOf(cols, i);
         values = copyOf(values, i);
+
         final MatrixCursor cursor = new MatrixCursor(cols, 1);
         cursor.addRow(values);
         return cursor;
     }
+
     /**
      * Returns the MIME type of a content URI returned by
      * {@link #getUriForFile(Context, String, File) getUriForFile()}.
@@ -426,6 +450,7 @@ public class FileProvider extends ContentProvider {
     public String getType(Uri uri) {
         // ContentProvider has already checked granted permissions
         final File file = mStrategy.getFileForUri(uri);
+
         final int lastDot = file.getName().lastIndexOf('.');
         if (lastDot >= 0) {
             final String extension = file.getName().substring(lastDot + 1);
@@ -434,8 +459,10 @@ public class FileProvider extends ContentProvider {
                 return mime;
             }
         }
+
         return "application/octet-stream";
     }
+
     /**
      * By default, this method throws an {@link java.lang.UnsupportedOperationException}. You must
      * subclass FileProvider if you want to provide different functionality.
@@ -444,6 +471,7 @@ public class FileProvider extends ContentProvider {
     public Uri insert(Uri uri, ContentValues values) {
         throw new UnsupportedOperationException("No external inserts");
     }
+
     /**
      * By default, this method throws an {@link java.lang.UnsupportedOperationException}. You must
      * subclass FileProvider if you want to provide different functionality.
@@ -452,6 +480,7 @@ public class FileProvider extends ContentProvider {
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         throw new UnsupportedOperationException("No external updates");
     }
+
     /**
      * Deletes the file associated with the specified content URI, as
      * returned by {@link #getUriForFile(Context, String, File) getUriForFile()}. Notice that this
@@ -469,6 +498,7 @@ public class FileProvider extends ContentProvider {
         final File file = mStrategy.getFileForUri(uri);
         return file.delete() ? 1 : 0;
     }
+
     /**
      * By default, FileProvider automatically returns the
      * {@link ParcelFileDescriptor} for a file associated with a <code>content://</code>
@@ -491,6 +521,7 @@ public class FileProvider extends ContentProvider {
         final int fileMode = modeToMode(mode);
         return ParcelFileDescriptor.open(file, fileMode);
     }
+
     /**
      * Return {@link PathStrategy} for given authority, either by parsing or
      * returning from cache.
@@ -514,15 +545,17 @@ public class FileProvider extends ContentProvider {
         }
         return strat;
     }
+
     /**
      * Parse and return {@link PathStrategy} for given authority as defined in
-     * {@link #META_DATA_FILE_PROVIDER_PATHS} {@code &lt;meta-data>}.
+     * {@link #META_DATA_FILE_PROVIDER_PATHS} {@code <meta-data>}.
      *
      * @see #getPathStrategy(Context, String)
      */
     private static PathStrategy parsePathStrategy(Context context, String authority)
             throws IOException, XmlPullParserException {
         final SimplePathStrategy strat = new SimplePathStrategy(authority);
+
         final ProviderInfo info = context.getPackageManager()
                 .resolveContentProvider(authority, PackageManager.GET_META_DATA);
         final XmlResourceParser in = info.loadXmlMetaData(
@@ -531,12 +564,15 @@ public class FileProvider extends ContentProvider {
             throw new IllegalArgumentException(
                     "Missing " + META_DATA_FILE_PROVIDER_PATHS + " meta-data");
         }
+
         int type;
         while ((type = in.next()) != END_DOCUMENT) {
             if (type == START_TAG) {
                 final String tag = in.getName();
+
                 final String name = in.getAttributeValue(null, ATTR_NAME);
                 String path = in.getAttributeValue(null, ATTR_PATH);
+
                 File target = null;
                 if (TAG_ROOT_PATH.equals(tag)) {
                     target = buildPath(DEVICE_ROOT, path);
@@ -547,13 +583,16 @@ public class FileProvider extends ContentProvider {
                 } else if (TAG_EXTERNAL.equals(tag)) {
                     target = buildPath(Environment.getExternalStorageDirectory(), path);
                 }
+
                 if (target != null) {
                     strat.addRoot(name, target);
                 }
             }
         }
+
         return strat;
     }
+
     /**
      * Strategy for mapping between {@link File} and {@link Uri}.
      * <p>
@@ -572,11 +611,13 @@ public class FileProvider extends ContentProvider {
          * Return a {@link Uri} that represents the given {@link File}.
          */
         public Uri getUriForFile(File file);
+
         /**
          * Return a {@link File} that represents the given {@link Uri}.
          */
         public File getFileForUri(Uri uri);
     }
+
     /**
      * Strategy that provides access to files living under a narrow whitelist of
      * filesystem roots. It will throw {@link SecurityException} if callers try
@@ -590,9 +631,11 @@ public class FileProvider extends ContentProvider {
     static class SimplePathStrategy implements PathStrategy {
         private final String mAuthority;
         private final HashMap<String, File> mRoots = new HashMap<String, File>();
+
         public SimplePathStrategy(String authority) {
             mAuthority = authority;
         }
+
         /**
          * Add a mapping from a name to a filesystem root. The provider only offers
          * access to files that live under configured roots.
@@ -601,6 +644,7 @@ public class FileProvider extends ContentProvider {
             if (TextUtils.isEmpty(name)) {
                 throw new IllegalArgumentException("Name must not be empty");
             }
+
             try {
                 // Resolve to canonical path to keep path checking fast
                 root = root.getCanonicalFile();
@@ -608,8 +652,10 @@ public class FileProvider extends ContentProvider {
                 throw new IllegalArgumentException(
                         "Failed to resolve canonical path for " + root, e);
             }
+
             mRoots.put(name, root);
         }
+
         @Override
         public Uri getUriForFile(File file) {
             String path;
@@ -618,6 +664,7 @@ public class FileProvider extends ContentProvider {
             } catch (IOException e) {
                 throw new IllegalArgumentException("Failed to resolve canonical path for " + file);
             }
+
             // Find the most-specific root path
             Map.Entry<String, File> mostSpecific = null;
             for (Map.Entry<String, File> root : mRoots.entrySet()) {
@@ -627,10 +674,12 @@ public class FileProvider extends ContentProvider {
                     mostSpecific = root;
                 }
             }
+
             if (mostSpecific == null) {
                 throw new IllegalArgumentException(
                         "Failed to find configured root that contains " + path);
             }
+
             // Start at first char of path under root
             final String rootPath = mostSpecific.getValue().getPath();
             if (rootPath.endsWith("/")) {
@@ -638,33 +687,41 @@ public class FileProvider extends ContentProvider {
             } else {
                 path = path.substring(rootPath.length() + 1);
             }
+
             // Encode the tag and path separately
             path = Uri.encode(mostSpecific.getKey()) + '/' + Uri.encode(path, "/");
             return new Uri.Builder().scheme("content")
                     .authority(mAuthority).encodedPath(path).build();
         }
+
         @Override
         public File getFileForUri(Uri uri) {
             String path = uri.getEncodedPath();
+
             final int splitIndex = path.indexOf('/', 1);
             final String tag = Uri.decode(path.substring(1, splitIndex));
             path = Uri.decode(path.substring(splitIndex + 1));
+
             final File root = mRoots.get(tag);
             if (root == null) {
                 throw new IllegalArgumentException("Unable to find configured root for " + uri);
             }
+
             File file = new File(root, path);
             try {
                 file = file.getCanonicalFile();
             } catch (IOException e) {
                 throw new IllegalArgumentException("Failed to resolve canonical path for " + file);
             }
+
             if (!file.getPath().startsWith(root.getPath())) {
                 throw new SecurityException("Resolved path jumped beyond configured root");
             }
+
             return file;
         }
     }
+
     /**
      * Copied from ContentResolver.java
      */
@@ -692,6 +749,7 @@ public class FileProvider extends ContentProvider {
         }
         return modeBits;
     }
+
     private static File buildPath(File base, String... segments) {
         File cur = base;
         for (String segment : segments) {
@@ -701,11 +759,13 @@ public class FileProvider extends ContentProvider {
         }
         return cur;
     }
+
     private static String[] copyOf(String[] original, int newLength) {
         final String[] result = new String[newLength];
         System.arraycopy(original, 0, result, 0, newLength);
         return result;
     }
+
     private static Object[] copyOf(Object[] original, int newLength) {
         final Object[] result = new Object[newLength];
         System.arraycopy(original, 0, result, 0, newLength);
