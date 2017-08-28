@@ -97,15 +97,19 @@ public class OneCellWidget extends AppWidgetProvider {
 		boolean playing = (state & PlaybackService.FLAG_PLAYING) != 0;
 		views.setImageViewResource(R.id.play_pause, playing ? R.drawable.hidden_pause : R.drawable.hidden_play);
 
-		ComponentName service = new ComponentName(context, PlaybackService.class);
 
-		Intent playPause = new Intent(doubleTap ? PlaybackService.ACTION_TOGGLE_PLAYBACK_DELAYED : PlaybackService.ACTION_TOGGLE_PLAYBACK);
-		playPause.setComponent(service);
-		views.setOnClickPendingIntent(R.id.play_pause, PendingIntent.getService(context, 0, playPause, 0));
+		Intent intent;
+		PendingIntent pendingIntent;
+		int flags = Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME;
 
-		Intent next = new Intent(doubleTap ? PlaybackService.ACTION_NEXT_SONG_DELAYED : PlaybackService.ACTION_NEXT_SONG);
-		next.setComponent(service);
-		views.setOnClickPendingIntent(R.id.next, PendingIntent.getService(context, 0, next, 0));
+		intent = new Intent(context, ShortcutPseudoActivity.class).setFlags(flags).setAction(doubleTap ? PlaybackService.ACTION_TOGGLE_PLAYBACK_DELAYED : PlaybackService.ACTION_TOGGLE_PLAYBACK);
+		pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+		views.setOnClickPendingIntent(R.id.play_pause, pendingIntent);
+
+		intent = new Intent(context, ShortcutPseudoActivity.class).setFlags(flags).setAction(doubleTap ? PlaybackService.ACTION_NEXT_SONG_DELAYED : PlaybackService.ACTION_NEXT_SONG);
+		pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+		views.setOnClickPendingIntent(R.id.next, pendingIntent);
+
 
 		Bitmap cover = null;
 		if ((state & PlaybackService.FLAG_NO_MEDIA) != 0) {

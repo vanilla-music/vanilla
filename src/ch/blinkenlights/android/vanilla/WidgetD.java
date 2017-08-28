@@ -121,32 +121,30 @@ public class WidgetD extends AppWidgetProvider {
 
 		Intent intent;
 		PendingIntent pendingIntent;
+		int flags = Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME;
 
-		ComponentName service = new ComponentName(context, PlaybackService.class);
-
-		intent = new Intent(context, LibraryActivity.class);
-		intent.setAction(Intent.ACTION_MAIN);
+		intent = new Intent(context, LibraryActivity.class).setAction(Intent.ACTION_MAIN);
 		pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 		views.setOnClickPendingIntent(R.id.cover, pendingIntent);
 
-		intent = new Intent(PlaybackService.ACTION_TOGGLE_PLAYBACK).setComponent(service);
-		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+		intent = new Intent(context, ShortcutPseudoActivity.class).setFlags(flags).setAction(PlaybackService.ACTION_TOGGLE_PLAYBACK);
+		pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 		views.setOnClickPendingIntent(R.id.play_pause, pendingIntent);
 
-		intent = new Intent(PlaybackService.ACTION_NEXT_SONG).setComponent(service);
-		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+		intent = new Intent(context, ShortcutPseudoActivity.class).setFlags(flags).setAction(PlaybackService.ACTION_NEXT_SONG);
+		pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 		views.setOnClickPendingIntent(R.id.next, pendingIntent);
 
-		intent = new Intent(PlaybackService.ACTION_PREVIOUS_SONG).setComponent(service);
-		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+		intent = new Intent(context, ShortcutPseudoActivity.class).setFlags(flags).setAction(PlaybackService.ACTION_PREVIOUS_SONG);
+		pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 		views.setOnClickPendingIntent(R.id.previous, pendingIntent);
 
-		intent = new Intent(PlaybackService.ACTION_CYCLE_SHUFFLE).setComponent(service);
-		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+		intent = new Intent(context, ShortcutPseudoActivity.class).setFlags(flags).setAction(PlaybackService.ACTION_CYCLE_SHUFFLE);
+		pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 		views.setOnClickPendingIntent(R.id.shuffle, pendingIntent);
 
-		intent = new Intent(PlaybackService.ACTION_CYCLE_REPEAT).setComponent(service);
-		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+		intent = new Intent(context, ShortcutPseudoActivity.class).setFlags(flags).setAction(PlaybackService.ACTION_CYCLE_REPEAT);
+		pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 		views.setOnClickPendingIntent(R.id.end_action, pendingIntent);
 
 		manager.updateAppWidget(new ComponentName(context, WidgetD.class), views);

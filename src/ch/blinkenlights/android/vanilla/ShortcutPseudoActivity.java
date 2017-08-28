@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>. 
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package ch.blinkenlights.android.vanilla;
@@ -32,7 +32,13 @@ public class ShortcutPseudoActivity extends Activity {
 		final String action = getIntent().getAction();
 		switch (action) {
 			case PlaybackService.ACTION_TOGGLE_PLAYBACK:
+			case PlaybackService.ACTION_TOGGLE_PLAYBACK_DELAYED:
 			case PlaybackService.ACTION_RANDOM_MIX_AUTOPLAY:
+			case PlaybackService.ACTION_NEXT_SONG:
+			case PlaybackService.ACTION_NEXT_SONG_DELAYED:
+			case PlaybackService.ACTION_PREVIOUS_SONG:
+			case PlaybackService.ACTION_CYCLE_SHUFFLE:
+			case PlaybackService.ACTION_CYCLE_REPEAT:
 				Intent intent = new Intent(this, PlaybackService.class);
 				intent.setAction(action);
 				startService(intent);
