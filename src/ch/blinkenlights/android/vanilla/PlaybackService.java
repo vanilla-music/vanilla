@@ -598,6 +598,8 @@ public final class PlaybackService extends Service
 		// defer wakelock and close audioFX
 		enterSleepState();
 
+		MediaLibrary.unregisterContentObserver(mObserver);
+
 		if (mMediaPlayer != null) {
 			mMediaPlayer.release();
 			mMediaPlayer = null;

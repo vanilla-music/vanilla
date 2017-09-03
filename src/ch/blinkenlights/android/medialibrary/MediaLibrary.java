@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>. 
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package ch.blinkenlights.android.medialibrary;
@@ -272,6 +272,23 @@ public class MediaLibrary  {
 		} else {
 			throw new IllegalStateException("ContentObserver was already registered");
 		}
+	}
+
+	/**
+	 * Unregisters a content observer which was previously registered
+	 * by calling registerContentObserver().
+	 *
+	 * @param observer the content observer to unregister.
+	 */
+	public static void unregisterContentObserver(ContentObserver observer) {
+		if (sContentObserver == null)
+			throw new IllegalStateException("No ContentObserver was registered!");
+
+		if (!sContentObserver.equals(observer))
+			throw new IllegalArgumentException("Passed content observer was not the one you registered!");
+
+		// Sanity check passed: unregister observer.
+		sContentObserver = null;
 	}
 
 	/**
