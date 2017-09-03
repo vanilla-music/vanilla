@@ -259,6 +259,7 @@
   <string name="permission_request_summary">O Vanilla Music necessita da permissão de leitura para mostrar a sua coleção</string>
   <string name="reverse_sort">Inverter organização</string>
   <string name="share">Partilhar...</string>
+  <string name="share_failed">Falha ao partilhar ficheiro</string>
   <string name="sendto">Enviar para...</string>
   <string name="no_receiving_apps">Não foram encontradas aplicações para este tipo multimédia!</string>
   <string name="media_library">Coleção multimédia</string>

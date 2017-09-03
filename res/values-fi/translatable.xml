@@ -255,6 +255,7 @@
   <string name="permission_request_summary">Vanilla Music tarvitsee lukuoikeuden näyttääkseen musiikkikirjastosi</string>
   <string name="reverse_sort">Käänteinen järjestys</string>
   <string name="share">Jaa…</string>
+  <string name="share_failed">Tiedoston jakaminen epäonnistui</string>
   <string name="sendto">Lähetä…</string>
   <string name="no_receiving_apps">Tälle mediatyypille ei löytynyt vastaanottavia sovelluksia!</string>
   <string name="media_library">Mediakirjasto</string>

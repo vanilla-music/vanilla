@@ -259,6 +259,7 @@
   <string name="permission_request_summary">A Vanilla zenelejátszónak olvasási engedélyre van szükségre, hogy megjelenítse a gyűjteményét</string>
   <string name="reverse_sort">Fordított rendezés</string>
   <string name="share">Megosztás…</string>
+  <string name="share_failed">A fájl megosztása meghiúsult</string>
   <string name="sendto">Küldés…</string>
   <string name="no_receiving_apps">Nem található fogadóalkalmazás ehhez a médiatípushoz!</string>
   <string name="media_library">Médiagyűjtemény</string>

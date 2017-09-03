@@ -55,6 +55,8 @@
   <string name="remove">제거</string>
   <string name="play_or_enqueue">재생중이면 대기열에 추가; 일시 정지중이면 재생</string>
   <string name="open">열기</string>
+  <string name="go_home">홈 디렉토리</string>
+  <string name="jumping_to_song">노래가 이미 추가되었슴, 이동</string>
   <plurals name="playing">
     <item quantity="other">%d 트랙 재생중.</item>
   </plurals>
@@ -76,10 +78,20 @@
   <string name="delete_file">\'%s\'를 삭제하시겠습니까?</string>
   <string name="artists">음악가</string>
   <string name="albums">앨범</string>
+  <string name="albumartists">앨범 아티스트</string>
+  <string name="composers">작곡자</string>
   <string name="songs">트랙</string>
   <string name="playlists">재생목록</string>
   <string name="genres">장르</string>
   <string name="files">파일</string>
+  <string name="artist">아티스트</string>
+  <string name="album">앨범</string>
+  <string name="genre">장르</string>
+  <string name="folder">폴더</string>
+  <string name="filename">파일이름</string>
+  <string name="file_size">파일크기</string>
+  <string name="file_time">수정시간</string>
+  <string name="extension">확장자</string>
   <string name="unknown">알수없슴</string>
   <string name="play_all">모두 재생</string>
   <string name="enqueue_all">모두 대기열에 추가</string>
@@ -163,6 +175,8 @@
   <string name="theme">테마</string>
   <string name="disable_lockscreen_title">잠금화면 사용 안함</string>
   <string name="disable_lockscreen_summary">재생 중 화면, 라이브러리 일때 잠금화면 방지 </string>
+  <string name="keep_screen_on_title">화면에 유지함</string>
+  <string name="keep_screen_on_summary">Vanilla Music 보이는 동안 켜지면 화면(기기)에 유지함</string>
   <string name="use_idle_timeout_title">유휴 대기 시간 활성화</string>
   <string name="use_idle_timeout_summary">비활성 시간 후 활성화 시 재생 중지 </string>
   <string name="idle_timeout_title">유휴 시간</string>
@@ -182,6 +196,7 @@
   <string name="scrobble_summary">ScrobbleDroid 이나 간단한 Last.fm ​Scrobbler를 통하여 Last.fm을 Scrobble 함</string>
   <string name="stock_broadcast_title">Stock Broadcasts를 에뮬레이트 함</string>
   <string name="stock_broadcast_summary">서드파티 잠금화면 컨트롤, 위젯등과 내장 음악 플레이어로 전송된 broadcasts 에뮬레이팅을 전송함</string>
+  <string name="help">도움말</string>
   <string name="about">정보</string>
   <string name="tabs">탭 순서</string>
   <string name="customize_tab_order">순서 조정과 라이브러리 탭 보이기</string>
@@ -210,6 +225,8 @@
   <string name="enqueue_current_album">앨범을 대기열에 추가</string>
   <string name="enqueue_current_artist">음악가 대기열로 추가</string>
   <string name="enqueue_current_genre">장르 대기열로 추가</string>
+  <string name="enqueue_current">대기열에 추가..</string>
+  <string name="more_from_current">이것들을 추가함...</string>
   <string name="empty_the_queue">대기열 비우기</string>
   <string name="show_queue">대기열 보이기</string>
   <string name="hide_queue">대기열 감추기</string>
@@ -225,6 +242,7 @@
   <string name="filebrowser_start">파일 검색기 홈</string>
   <string name="customize_filebrowser_start">파일 탐색기가 이 디렉토리에서 시작합니다</string>
   <string name="select">선택</string>
+  <string name="save">저장</string>
   <string name="autoplaylist_playcounts_title">자동으로 재생목록 생성</string>
   <string name="autoplaylist_playcounts_summary">자동으로 생성</string>
   <string name="autoplaylist_playcounts_fmt" formatted="false"> 재생목록 %s \'상위 %.0f\'</string>
@@ -237,18 +255,27 @@
   <string name="sendto">전송함...</string>
   <string name="no_receiving_apps">해당 미디어 타입을 수신하는 앱을 찾을 수 없습니다!</string>
   <string name="media_library">미디어 라이브러리</string>
+  <string name="media_folders_header">색인화된 디렉토리</string>
   <string name="media_scan_header">미디어 검색</string>
+  <string name="media_scan_full">파일 시스템 전체 검색(느림)</string>
+  <string name="media_scan_drop_db">미디어 데이터베이스 정리</string>
   <string name="media_scan_start">검색 시작</string>
   <string name="media_scan_force_bastp">내장 태그 리더를 항상 사용함</string>
   <string name="media_scan_group_albums">폴더별로 앨범을 묶음</string>
   <string name="media_statistics">통계</string>
   <string name="media_stats_tracks">트랙 갯수</string>
+  <string name="media_stats_library_playtime">총 재생 시간(시)</string>
+  <string name="media_stats_listen_playtime">지금까지 음악 재생 시간</string>
   <string name="media_stats_progress">검색 진행중</string>
   <string name="media_library_scan_running">미디어 라이브러리 검색중...</string>
   <string name="media_scan_preferences">검색 옵션</string>
   <string name="media_scan_preferences_change_title">검색 옵션이 변경되었습니다</string>
   <string name="media_scan_preferences_change_message">이 옵션을 변경하면 라이브러리를 모두 재 검색합니다. 계속 하시겠습니까?</string>
   <!--Folder selector-->
+  <string name="hint_long_press_to_modify_folder">길게 눌러 폴더 옵션을 수정</string>
+  <string name="folder_include">포함</string>
+  <string name="folder_exclude">제외</string>
+  <string name="folder_neutral">중립</string>
   <!--Plugin system-->
   <string name="plugins">플러그인</string>
 </resources>

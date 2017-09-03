@@ -251,6 +251,7 @@
   <string name="permission_request_summary">Vanilla Music  が音楽ライブラリを表示するために、読み取りのアクセス許可が必要です</string>
   <string name="reverse_sort">逆順に並び替え</string>
   <string name="share">共有…</string>
+  <string name="share_failed">ファイルの共有に失敗しました</string>
   <string name="sendto">送信…</string>
   <string name="no_receiving_apps">このメディアタイプの受信アプリが見つかりません!</string>
   <string name="media_library">メディアライブラリー</string>

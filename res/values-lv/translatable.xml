@@ -56,6 +56,7 @@
   <string name="play_or_enqueue">Ierindot, ja atskaņo; atskaņot, ja nopauzēts</string>
   <string name="open">Atvērt</string>
   <string name="go_home">Mājas mape</string>
+  <string name="jumping_to_song">Dziesma jau ir rindā, pārlec...</string>
   <plurals name="playing">
     <item quantity="zero">Atskaņo %d celiņu.</item>
     <item quantity="one">Atskaņo 1 celiņu.</item>
@@ -65,6 +66,11 @@
     <item quantity="zero">Ierindots %d dziesmu.</item>
     <item quantity="one">Ierindota 1 dziesma.</item>
     <item quantity="other">Ierindotas %d dziesmas.</item>
+  </plurals>
+  <plurals name="added_to_playlist">
+    <item quantity="zero">Repertuāram %2$s pievienots %1$d dziesmu.</item>
+    <item quantity="one">Repertuāram %2$s  pievienota 1  dziesma.</item>
+    <item quantity="other">Repertuāram %2$s pievienotas %1$d dziesmas.</item>
   </plurals>
   <plurals name="removed_from_playlist">
     <item quantity="zero">No repertuāra %2$s izņemts %1$d celiņu.</item>
@@ -186,6 +192,8 @@
   <string name="theme">Tēma</string>
   <string name="disable_lockscreen_title">Atslēgt slēgekrānu</string>
   <string name="disable_lockscreen_summary">Novērst slēgekrāna aktivizēšanos bibliotēkas vai atskaņošanas ekrānā</string>
+  <string name="keep_screen_on_title">Paturēt ekrānu ieslēgtu</string>
+  <string name="keep_screen_on_summary">Ja Vanilla Music ir redzams, paturēt ekrānu (un ierīci) nomodā</string>
   <string name="use_idle_timeout_title">Ieslēgt dīkstāves noildzi</string>
   <string name="use_idle_timeout_summary">Kad aktīva, atskaņošana tiks apturēta pēc norādītā neaktivitātes perioda</string>
   <string name="idle_timeout_title">Dīkstāves noildze</string>
@@ -205,6 +213,7 @@
   <string name="scrobble_summary">Nosūtīt atskaņojumus uz Last.fm, izmantojot Scrobble Droid vai Simple Last.fm Scrobbler</string>
   <string name="stock_broadcast_title">Emulēt pamata raidījumus</string>
   <string name="stock_broadcast_summary">Sūtīt raidījumus, tādējādi emulējot noklusētā mūzikas atskaņotāja sūtītos, lai būtu iespējama trešo pušu slēgekrānu vadīklu, sīkrīku, u.t.t., kontrole.</string>
+  <string name="help">Palīdzība</string>
   <string name="about">Par</string>
   <string name="tabs">Ciļņu kārtība</string>
   <string name="customize_tab_order">Regulēt bibliotēkas ciļņu kārtību un redzamību</string>
@@ -259,16 +268,21 @@
   <string name="permission_request_summary">Vanilla Music lasīšanas atļauja vajadzīga, lai parādītu jūsu mūzikas bibliotēku</string>
   <string name="reverse_sort">Apgrieztā kārtošana</string>
   <string name="share">Dalīties..</string>
+  <string name="share_failed">Neizdevās kopīgot failu</string>
   <string name="sendto">Sūtīt uz...</string>
   <string name="no_receiving_apps">Šim mēdija tipam netika atrastas saņemošās lietotnes!</string>
   <string name="media_library">Multivides bibliotēka</string>
   <string name="media_folders_header">Indeksētās mapes</string>
   <string name="media_scan_header">Multivides skenētājs</string>
+  <string name="media_scan_full">Pilna failu sistēmas skenēšana (lēnāk)</string>
+  <string name="media_scan_drop_db">Izmest mēdiju datubāzi</string>
   <string name="media_scan_start">Sākt skenēšanu</string>
   <string name="media_scan_force_bastp">Vienmēr izmantot iebūvēto tagu lasītāju</string>
   <string name="media_scan_group_albums">Grupēt albumus pēc mapēm</string>
   <string name="media_statistics">Statistika</string>
   <string name="media_stats_tracks">Celiņu skaits</string>
+  <string name="media_stats_library_playtime">Kopējais atskaņošanas laiks (stundas)</string>
+  <string name="media_stats_listen_playtime">Līdz šim atskaņotās mūzikas ilgums stundās</string>
   <string name="media_stats_progress">Skenēšanas progress</string>
   <string name="media_library_scan_running">Skenē multivides bibliotēku</string>
   <string name="media_scan_preferences">Skenētāja opcijas</string>

@@ -56,6 +56,7 @@
   <string name="play_or_enqueue">У ред ако је пуштено; пусти ако је паузирано</string>
   <string name="open">Отвори</string>
   <string name="go_home">Почетна фасцикла</string>
+  <string name="jumping_to_song">Песма је већ у реду пуштња, скачем…</string>
   <plurals name="playing">
     <item quantity="one">1 нумера пуштена.</item>
     <item quantity="few">%d нумере пуштене.</item>
@@ -211,6 +212,7 @@
   <string name="scrobble_summary">Скроблуј на Ласт.фм преко Scrobble Droid АПИ-ја или једноставног Ласт.фм скроблера</string>
   <string name="stock_broadcast_title">Емулирај уграђена емитовања</string>
   <string name="stock_broadcast_summary">Слање емитовања која опонашају емитовања уграђеног музичког плејера, да би функционисале контроле закључаног екрана и виџети осталих апликација, итд.</string>
+  <string name="help">Помоћ</string>
   <string name="about">О програму</string>
   <string name="tabs">Редослед језичака</string>
   <string name="customize_tab_order">Прилагођавање редоследа и видљивости језичака библиотеке</string>
@@ -265,16 +267,21 @@
   <string name="permission_request_summary">Ванила музика захтева дозволу читања да би приказала вашу музичку библиотеку</string>
   <string name="reverse_sort">Обрнуто ређање</string>
   <string name="share">Дели…</string>
+  <string name="share_failed">Дељење фајла није успело</string>
   <string name="sendto">Пошаљи за…</string>
   <string name="no_receiving_apps">Нема апликација за овај тип фајла!</string>
   <string name="media_library">Библиотека</string>
   <string name="media_folders_header">Индексиране фасцикле</string>
   <string name="media_scan_header">Очитавач медија</string>
+  <string name="media_scan_full">Очитај читав фајлсистем (спорије)</string>
+  <string name="media_scan_drop_db">Очисти базу података медија</string>
   <string name="media_scan_start">Почни очитавање</string>
   <string name="media_scan_force_bastp">Увек користи уграђени читач ознака</string>
   <string name="media_scan_group_albums">Групиши албуме по фасцикли</string>
   <string name="media_statistics">Статистике</string>
   <string name="media_stats_tracks">Број нумера</string>
+  <string name="media_stats_library_playtime">Укупно време пуштања (сати)</string>
+  <string name="media_stats_listen_playtime">Досадашње време пуштања музике</string>
   <string name="media_stats_progress">Напредак очитавања</string>
   <string name="media_library_scan_running">Очитавам библиотеку медија…</string>
   <string name="media_scan_preferences">Опције скенера</string>

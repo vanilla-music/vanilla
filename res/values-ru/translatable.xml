@@ -275,6 +275,7 @@
   <string name="permission_request_summary">Vanilla Music необходимо разрешение на чтение, чтобы отобразить Вашу музыку в фонотеке</string>
   <string name="reverse_sort">в обратном порядке</string>
   <string name="share">Поделиться…</string>
+  <string name="share_failed">Не удалось отправить файл</string>
   <string name="sendto">Отправить в…</string>
   <string name="no_receiving_apps">Нет приложений для обработки такого типа файла!</string>
   <string name="media_library">Библиотека носителей</string>
