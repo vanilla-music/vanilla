@@ -45,7 +45,7 @@ public class NotificationHelper {
 		mChannelId = channelId;
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			NotificationChannel channel = new NotificationChannel(channelId, name, NotificationManager.IMPORTANCE_DEFAULT);
+			NotificationChannel channel = new NotificationChannel(channelId, name, NotificationManager.IMPORTANCE_LOW);
 			mNotificationManager.createNotificationChannel(channel);
 		}
 	}
