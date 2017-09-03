@@ -31,6 +31,15 @@ android {
         targetSdkVersion 26
     }
 
+    signingConfigs {
+        release {
+            storeFile file("/home/adrian/.android.keystore")
+            storePassword ANDROID_STORE_PASSWORD
+            keyAlias "android"
+            keyPassword ANDROID_KEY_PASSWORD
+        }
+    }
+
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -45,6 +54,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            signingConfig signingConfigs.release
         }
     }
 
