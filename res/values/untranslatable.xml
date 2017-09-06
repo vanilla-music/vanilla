@@ -125,8 +125,7 @@ THE SOFTWARE.
 	</string-array>
 	<!-- END default action entries definition -->
 
-	<string-array name="notification_mode_entries">
-		<item>@string/never_show</item>
+	<string-array name="notification_visibility_entries">
 		<item>@string/show_when_playing</item>
 		<item>@string/always_show</item>
 	</string-array>

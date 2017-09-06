@@ -178,9 +178,11 @@ public final class PlaybackService extends Service
 	 */
 	public static final String ACTION_CLOSE_NOTIFICATION = "ch.blinkenlights.android.vanilla.CLOSE_NOTIFICATION";
 
-	public static final int NEVER = 0;
-	public static final int WHEN_PLAYING = 1;
-	public static final int ALWAYS = 2;
+	/**
+	 * Visibility modes of the notification.
+	 */
+	public static final int VISIBILITY_WHEN_PLAYING = 0;
+	public static final int VISIBILITY_ALWAYS = 1;
 
 	/**
 	 * Notification click action: open LaunchActivity.
@@ -301,7 +303,7 @@ public final class PlaybackService extends Service
 	/**
 	 * Behaviour of the notification
 	 */
-	private int mNotificationMode;
+	private int mNotificationVisibility;
 	/**
 	 * If true, create a notification with ticker text or heads up display
 	 */
@@ -451,7 +453,7 @@ public final class PlaybackService extends Service
 
 		SharedPreferences settings = getSettings(this);
 		settings.registerOnSharedPreferenceChangeListener(this);
-		mNotificationMode = Integer.parseInt(settings.getString(PrefKeys.NOTIFICATION_MODE, PrefDefaults.NOTIFICATION_MODE));
+		mNotificationVisibility = Integer.parseInt(settings.getString(PrefKeys.NOTIFICATION_VISIBILITY, PrefDefaults.NOTIFICATION_VISIBILITY));
 		mNotificationNag = settings.getBoolean(PrefKeys.NOTIFICATION_NAG, PrefDefaults.NOTIFICATION_NAG);
 		mScrobble = settings.getBoolean(PrefKeys.SCROBBLE, PrefDefaults.SCROBBLE);
 		mIdleTimeout = settings.getBoolean(PrefKeys.USE_IDLE_TIMEOUT, PrefDefaults.USE_IDLE_TIMEOUT) ? settings.getInt(PrefKeys.IDLE_TIMEOUT, PrefDefaults.IDLE_TIMEOUT) : 0;
@@ -847,8 +849,8 @@ public final class PlaybackService extends Service
 		} else if (PrefKeys.NOTIFICATION_ACTION.equals(key)) {
 			mNotificationAction = createNotificationAction(settings);
 			updateNotification();
-		} else if (PrefKeys.NOTIFICATION_MODE.equals(key)){
-			mNotificationMode = Integer.parseInt(settings.getString(PrefKeys.NOTIFICATION_MODE, PrefDefaults.NOTIFICATION_MODE));
+		} else if (PrefKeys.NOTIFICATION_VISIBILITY.equals(key)){
+			mNotificationVisibility = Integer.parseInt(settings.getString(PrefKeys.NOTIFICATION_VISIBILITY, PrefDefaults.NOTIFICATION_VISIBILITY));
 			// This is the only way to remove a notification created by
 			// startForeground(), even if we are not currently in foreground
 			// mode.
@@ -999,8 +1001,8 @@ public final class PlaybackService extends Service
 				if (mMediaPlayerInitialized)
 					mMediaPlayer.start();
 
-				if (mNotificationMode != NEVER)
-					startForeground(NOTIFICATION_ID, createNotification(mCurrentSong, mState, mNotificationMode));
+				// Update the notification with the current song information.
+				startForeground(NOTIFICATION_ID, createNotification(mCurrentSong, mState, mNotificationVisibility));
 
 				final int result = mAudioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 				if (result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
@@ -1023,7 +1025,7 @@ public final class PlaybackService extends Service
 				// In both cases we will update the notification to reflect the
 				// actual playback state (or to hit cancel() as this is required to
 				// get rid of it if it was created via notify())
-				boolean removeNotification = (mForceNotificationVisible == false && mNotificationMode != ALWAYS);
+				boolean removeNotification = (mForceNotificationVisible == false && mNotificationVisibility != VISIBILITY_ALWAYS);
 				stopForeground(removeNotification);
 				updateNotification();
 
@@ -1146,10 +1148,12 @@ public final class PlaybackService extends Service
 
 	private void updateNotification()
 	{
-		if ((mForceNotificationVisible || mNotificationMode == ALWAYS || mNotificationMode == WHEN_PLAYING && (mState & FLAG_PLAYING) != 0) && mCurrentSong != null)
-			mNotificationHelper.notify(NOTIFICATION_ID, createNotification(mCurrentSong, mState, mNotificationMode));
-		else
+		if ((mForceNotificationVisible || mNotificationVisibility == VISIBILITY_ALWAYS
+			  || mNotificationVisibility == VISIBILITY_WHEN_PLAYING && (mState & FLAG_PLAYING) != 0) && mCurrentSong != null) {
+			mNotificationHelper.notify(NOTIFICATION_ID, createNotification(mCurrentSong, mState, mNotificationVisibility));
+		} else {
 			mNotificationHelper.cancel(NOTIFICATION_ID);
+		}
 	}
 
 	/**
@@ -2092,7 +2096,7 @@ public final class PlaybackService extends Service
 		views.setOnClickPendingIntent(R.id.next, PendingIntent.getService(this, 0, next, 0));
 		expanded.setOnClickPendingIntent(R.id.next, PendingIntent.getService(this, 0, next, 0));
 
-		int closeButtonVisibility = (mode == WHEN_PLAYING) ? View.VISIBLE : View.INVISIBLE;
+		int closeButtonVisibility = (mode == VISIBILITY_WHEN_PLAYING) ? View.VISIBLE : View.INVISIBLE;
 		Intent close = new Intent(PlaybackService.ACTION_CLOSE_NOTIFICATION);
 		close.setComponent(service);
 		views.setOnClickPendingIntent(R.id.close, PendingIntent.getService(this, 0, close, 0));

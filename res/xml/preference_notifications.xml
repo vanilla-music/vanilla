@@ -24,11 +24,11 @@ THE SOFTWARE.
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:persistent="true">
 	<ch.blinkenlights.android.vanilla.ListPreferenceSummary
-		android:key="notification_mode"
-		android:title="@string/notification_mode_title"
-		android:entries="@array/notification_mode_entries"
+		android:key="notification_visibility"
+		android:title="@string/notification_visibility_title"
+		android:entries="@array/notification_visibility_entries"
 		android:entryValues="@array/entry_values"
-		android:defaultValue="1" />
+		android:defaultValue="0" />
 	<ch.blinkenlights.android.vanilla.ListPreferenceSummary
 		android:key="notification_action"
 		android:title="@string/notification_action_title"

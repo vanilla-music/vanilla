@@ -197,7 +197,7 @@ THE SOFTWARE.
 	<string name="cycle_continuous_shuffling_summary">\'Shuffle mode\' will play tracks in completely random order</string>
 
 	<string name="notifications">Notifications</string>
-	<string name="notification_mode_title">Notification mode</string>
+	<string name="notification_visibility_title">Notification visibility</string>
 	<string name="notification_action_title">Notification action</string>
 
 	<string name="notification_nag">Very verbose notification</string>
