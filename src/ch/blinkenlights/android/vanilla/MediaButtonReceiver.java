@@ -185,9 +185,8 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 		if (act == null)
 			return;
 
-		Intent intent = new Intent(context, PlaybackService.class);
-		intent.setAction(act);
-		context.startService(intent);
+		Intent intent = ShortcutPseudoActivity.getIntent(context, act);
+		context.startActivity(intent);
 	}
 
 

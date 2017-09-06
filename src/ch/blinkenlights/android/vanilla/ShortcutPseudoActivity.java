@@ -25,18 +25,37 @@ import android.os.Bundle;
 
 
 public class ShortcutPseudoActivity extends Activity {
+	final static int INTENT_FLAGS = Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME;
+
+	/**
+	 * Returns an intent pointing to this activity.
+	 *
+	 * @param context the context to use.
+	 * @param action the action to set.
+	 * @return an intent for this activity.
+	 */
+	public static Intent getIntent(Context context, String action) {
+		Intent intent = new Intent(context, ShortcutPseudoActivity.class)
+			.setFlags(INTENT_FLAGS)
+			.setAction(action);
+		return intent;
+	}
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		final String action = getIntent().getAction();
 		switch (action) {
+			case PlaybackService.ACTION_PLAY:
+			case PlaybackService.ACTION_PAUSE:
 			case PlaybackService.ACTION_TOGGLE_PLAYBACK:
 			case PlaybackService.ACTION_TOGGLE_PLAYBACK_DELAYED:
 			case PlaybackService.ACTION_RANDOM_MIX_AUTOPLAY:
 			case PlaybackService.ACTION_NEXT_SONG:
 			case PlaybackService.ACTION_NEXT_SONG_DELAYED:
+			case PlaybackService.ACTION_NEXT_SONG_AUTOPLAY:
 			case PlaybackService.ACTION_PREVIOUS_SONG:
+			case PlaybackService.ACTION_PREVIOUS_SONG_AUTOPLAY:
 			case PlaybackService.ACTION_CYCLE_SHUFFLE:
 			case PlaybackService.ACTION_CYCLE_REPEAT:
 				Intent intent = new Intent(this, PlaybackService.class);
