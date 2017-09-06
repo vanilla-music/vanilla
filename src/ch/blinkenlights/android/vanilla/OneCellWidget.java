@@ -102,11 +102,11 @@ public class OneCellWidget extends AppWidgetProvider {
 		PendingIntent pendingIntent;
 		int flags = Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME;
 
-		intent = new Intent(context, ShortcutPseudoActivity.class).setFlags(flags).setAction(doubleTap ? PlaybackService.ACTION_TOGGLE_PLAYBACK_DELAYED : PlaybackService.ACTION_TOGGLE_PLAYBACK);
+		intent = ShortcutPseudoActivity.getIntent(context, doubleTap ? PlaybackService.ACTION_TOGGLE_PLAYBACK_DELAYED : PlaybackService.ACTION_TOGGLE_PLAYBACK);
 		pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 		views.setOnClickPendingIntent(R.id.play_pause, pendingIntent);
 
-		intent = new Intent(context, ShortcutPseudoActivity.class).setFlags(flags).setAction(doubleTap ? PlaybackService.ACTION_NEXT_SONG_DELAYED : PlaybackService.ACTION_NEXT_SONG);
+		intent = ShortcutPseudoActivity.getIntent(context, doubleTap ? PlaybackService.ACTION_NEXT_SONG_DELAYED : PlaybackService.ACTION_NEXT_SONG);
 		pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 		views.setOnClickPendingIntent(R.id.next, pendingIntent);
 
