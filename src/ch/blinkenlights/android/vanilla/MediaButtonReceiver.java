@@ -31,6 +31,7 @@ import android.content.SharedPreferences;
 import android.media.AsyncPlayer;
 import android.media.AudioManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.SystemClock;
 import android.os.Handler;
 import android.view.KeyEvent;
@@ -185,8 +186,19 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 		if (act == null)
 			return;
 
-		Intent intent = ShortcutPseudoActivity.getIntent(context, act);
-		context.startActivity(intent);
+		Intent intent = new Intent(context, PlaybackService.class).setAction(act);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			// Since API 26, we can not use startService anymore if the service
+			// was not launched. startForegroundService() expects the service
+			// to call startForeground() within 5 sec, which is PROBABLY okay as
+			// any key event will start playing a song - probably.
+			// If this fails, we could still try the chromium hack and have
+			// PlaybackService:onCreate() start a fake notification.
+			// https://chromium.googlesource.com/chromium/src/+/81033db0364139db8ee059623d8892f2b00a39ba
+			context.startForegroundService(intent);
+		} else {
+			context.startService(intent);
+		}
 	}
 
 
