@@ -1368,8 +1368,12 @@ public final class PlaybackService extends Service
 			mHandler.removeMessages(MSG_GAPLESS_UPDATE);
 			mHandler.sendEmptyMessage(MSG_GAPLESS_UPDATE);
 
-			if (mPendingSeek != 0 && mPendingSeekSong == song.id) {
-				mMediaPlayer.seekTo(mPendingSeek);
+			if (mPendingSeek != 0) {
+				if (mPendingSeekSong == song.id)
+					mMediaPlayer.seekTo(mPendingSeek);
+				// Clear this even if we did not seek:
+				// We somehow managed to play a different song, so
+				// whatever we were supposed to seek to, is invalid now.
 				mPendingSeek = 0;
 			}
 
