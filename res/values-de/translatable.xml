@@ -159,7 +159,7 @@
   <string name="cycle_continuous_shuffling">Dauerzufallswiedergabe</string>
   <string name="cycle_continuous_shuffling_summary">Titel werden fortlaufend neu durchgemischt</string>
   <string name="notifications">Benachrichtigungen</string>
-  <string name="notification_mode_title">Benachrichtigungsmodus</string>
+  <string name="notification_visibility_title">Benachrichtigungssichtbarkeit</string>
   <string name="notification_action_title">Benachrichtigungsaktion</string>
   <string name="notification_nag">Auffällige Benachrichtigung</string>
   <string name="notification_nag_summary">Titelwechsel als »Heads-Up«-Benachrichtigung anzeigen</string>

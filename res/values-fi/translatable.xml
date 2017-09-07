@@ -157,7 +157,7 @@
   <string name="cycle_continuous_shuffling">Jatkuva sekoitus</string>
   <string name="cycle_continuous_shuffling_summary">\"Sekoitustila\" toistaa kappaleet satunnaisessa järjestyksessä</string>
   <string name="notifications">Ilmoitukset</string>
-  <string name="notification_mode_title">Ilmoitustila</string>
+  <string name="notification_visibility_title">Ilmoituksen näkyvyys</string>
   <string name="notification_action_title">Ilmoitustoiminto</string>
   <string name="notification_nag">Erittäin runsas ilmoitus</string>
   <string name="playback_screen">Toistonäkymä</string>

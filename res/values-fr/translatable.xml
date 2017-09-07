@@ -159,7 +159,6 @@
   <string name="cycle_continuous_shuffling">Mode aléatoire en continu</string>
   <string name="cycle_continuous_shuffling_summary">Le \"mode aléatoire\" lira les morceaux dans un ordre totalement aléatoire</string>
   <string name="notifications">Notifications</string>
-  <string name="notification_mode_title">Mode de notification</string>
   <string name="notification_action_title">Action de notification</string>
   <string name="notification_nag">Notification très verbeuse</string>
   <string name="notification_nag_summary">Annonce les changements de morceau avec une notification flottante</string>

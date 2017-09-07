@@ -151,7 +151,7 @@
   <string name="cycle_continuous_shuffling">連續隨機播放</string>
   <string name="cycle_continuous_shuffling_summary">\'隨機模式\'將會在完整地隨機順序播放歌曲</string>
   <string name="notifications">通知</string>
-  <string name="notification_mode_title">通知模式</string>
+  <string name="notification_visibility_title">通知明顯度</string>
   <string name="notification_action_title">通知啟動</string>
   <string name="notification_nag">非常詳細的通知</string>
   <string name="notification_nag_summary">通報歌曲的更換使用 \'抬頭顯示通知\'</string>

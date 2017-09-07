@@ -151,7 +151,6 @@
   <string name="cycle_continuous_shuffling">연속으로 섞기</string>
   <string name="cycle_continuous_shuffling_summary">섞기모드는 랜덤한 순서로 곡을 재생합니다.</string>
   <string name="notifications">알림</string>
-  <string name="notification_mode_title">알림 모드</string>
   <string name="notification_action_title">알림을 눌렀을때</string>
   <string name="notification_nag">매우 잦은 알림</string>
   <string name="notification_nag_summary">\'Heads-Up-Notification\' 사용중일때 곡 변경 알리기</string>

@@ -146,7 +146,6 @@
   <string name="cycle_continuous_shuffling">ערבב ברצף</string>
   <string name="cycle_continuous_shuffling_summary">\'מצב ערבוב\' ינגן רצועות בסדר אקראי לחלוטין</string>
   <string name="notifications">התראות</string>
-  <string name="notification_mode_title">מצב התראה</string>
   <string name="notification_action_title">פעולת התראה</string>
   <string name="notification_nag">התראה מילולית מאוד</string>
   <string name="notification_nag_summary">הכרז על שינויי רצועה באמצעות \'התראה קופצת\'</string>

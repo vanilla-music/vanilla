@@ -175,7 +175,7 @@
   <string name="cycle_continuous_shuffling">Непрерывное перемешивание</string>
   <string name="cycle_continuous_shuffling_summary">При перемешивании очередь проигрывается в случайном порядке</string>
   <string name="notifications">Уведомления</string>
-  <string name="notification_mode_title">Способ уведомления</string>
+  <string name="notification_visibility_title">Отображение уведемления</string>
   <string name="notification_action_title">Реакция уведомления</string>
   <string name="notification_nag">Навязчивые уведомления</string>
   <string name="notification_nag_summary">Объявлять смену дорожек, используя \"Heads-Up-Notification\"</string>

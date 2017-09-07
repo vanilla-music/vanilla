@@ -146,7 +146,6 @@
   <string name="cycle_continuous_shuffling">Secara acak</string>
   <string name="cycle_continuous_shuffling_summary">Modus Acak akan memainkan lagu dengan urutan acak</string>
   <string name="notifications">Pemberitahuan</string>
-  <string name="notification_mode_title">Mode pemberitahuan</string>
   <string name="notification_action_title">Aksi pemberitahuan</string>
   <string name="notification_nag_summary">Umumkan perubahan lagu menggunakan Pemberitahuan Mendongak</string>
   <string name="playback_on_startup_title">Buka waktu startup</string>

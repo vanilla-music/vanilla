@@ -127,7 +127,6 @@
   <string name="readahead_summary">Carrega a la memòria la pista actual. Aquesta opció evita el so entretallat durant la reproducció (causat per una targeta SD lenta)</string>
   <string name="equalizer">Equalitzador</string>
   <string name="notifications">Notificacions</string>
-  <string name="notification_mode_title">Mode de notificació</string>
   <string name="notification_action_title">Acció de la notificació</string>
   <string name="notification_nag">Notificació molt detallada</string>
   <string name="playback_on_startup_title">Obre en iniciar</string>

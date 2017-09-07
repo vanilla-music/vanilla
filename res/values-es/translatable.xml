@@ -101,7 +101,6 @@
   <string name="equalizer">Ecualizador</string>
   <string name="cycle_continuous_shuffling">Mezcla continua</string>
   <string name="notifications">Notificaciones</string>
-  <string name="notification_mode_title">Modo de notificación</string>
   <string name="notification_action_title">Acción de la notificación</string>
   <string name="notification_nag">Notificación muy detallada</string>
   <string name="playback_screen">Pantalla de reproducción</string>

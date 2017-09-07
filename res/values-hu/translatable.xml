@@ -159,7 +159,6 @@
   <string name="cycle_continuous_shuffling">Folyamatos keverés</string>
   <string name="cycle_continuous_shuffling_summary">A „véletlenszerű lejátszási mód” teljesen véletlen sorrendben játsza le a számokat.</string>
   <string name="notifications">Értesítések</string>
-  <string name="notification_mode_title">Értesítési mód</string>
   <string name="notification_action_title">Értesítési művelet</string>
   <string name="notification_nag">Nagyon bőbeszédű értesítések</string>
   <string name="notification_nag_summary">Értesítés a számok közötti váltásokról</string>

@@ -139,7 +139,6 @@
   <string name="cycle_continuous_shuffling">继续随机播放</string>
   <string name="cycle_continuous_shuffling_summary">“随机模式”会以完全随机顺序播放曲目</string>
   <string name="notifications">通知</string>
-  <string name="notification_mode_title">通知模式</string>
   <string name="notification_action_title">通知动作</string>
   <string name="notification_nag">非常详尽的通知</string>
   <string name="notification_nag_summary">以“抬头通知”的方式通知曲目改变</string>

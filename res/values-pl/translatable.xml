@@ -94,7 +94,6 @@
   <string name="equalizer">Equalizer</string>
   <string name="cycle_continuous_shuffling">Ciągłe losowanie</string>
   <string name="notifications">Powiadomienia</string>
-  <string name="notification_mode_title">Tryb powiadamiania</string>
   <string name="notification_action_title">Akcja powiadomienia</string>
   <string name="notification_nag">Pojawiające się powiadomienia na pasku powiadomień</string>
   <string name="playback_screen">Ekran odtwarzania</string>

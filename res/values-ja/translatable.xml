@@ -151,7 +151,6 @@
   <string name="cycle_continuous_shuffling">連続シャッフル</string>
   <string name="cycle_continuous_shuffling_summary">\'シャッフルモード\' は、完全にランダムな順序でトラックを再生します</string>
   <string name="notifications">通知</string>
-  <string name="notification_mode_title">通知モード</string>
   <string name="notification_action_title">通知操作</string>
   <string name="notification_nag">非常に詳細な通知</string>
   <string name="notification_nag_summary">\'Heads-Up-通知\' を使用してトラックの変更をお知らせします</string>

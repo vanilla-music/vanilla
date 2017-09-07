@@ -158,7 +158,6 @@
   <string name="cycle_continuous_shuffling">Riproduzione casuale continua</string>
   <string name="cycle_continuous_shuffling_summary">\"Modalità casuale\" riprodurrà i brani in ordine completamente casuale</string>
   <string name="notifications">Notifiche</string>
-  <string name="notification_mode_title">Modalità di notifica</string>
   <string name="notification_action_title">Azione notifica</string>
   <string name="notification_nag">Notifica molto dettagliata</string>
   <string name="notification_nag_summary">Annuncia cambi di brano con una notifica \"heads-up\"</string>

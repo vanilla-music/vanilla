@@ -146,7 +146,6 @@
   <string name="cycle_continuous_shuffling">Sürekli karıştır</string>
   <string name="cycle_continuous_shuffling_summary">\'Karıştır kipi\' parçaları tümüyle rastgele sırada çalar</string>
   <string name="notifications">Bildirimler</string>
-  <string name="notification_mode_title">Bildirim kipi</string>
   <string name="notification_action_title">Bildirim eylemi</string>
   <string name="notification_nag">Tam sözlü bildirim</string>
   <string name="notification_nag_summary">Parça değişikliklerini \'Ekran Üstü Bildirimi\' ile duyur</string>

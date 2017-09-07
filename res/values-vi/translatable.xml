@@ -99,7 +99,6 @@
   <string name="equalizer">Bộ chỉnh âm</string>
   <string name="cycle_continuous_shuffling">Trộn bài liên tiếp</string>
   <string name="notifications">Thông báo</string>
-  <string name="notification_mode_title">Chế độ thông báo</string>
   <string name="notification_action_title">Hành động thông báo</string>
   <string name="notification_nag">Thông báo rất chi tiết</string>
   <string name="playback_screen">Màn hình phát nhạc</string>
