@@ -159,6 +159,7 @@
   <string name="cycle_continuous_shuffling">Mode aléatoire en continu</string>
   <string name="cycle_continuous_shuffling_summary">Le \"mode aléatoire\" lira les morceaux dans un ordre totalement aléatoire</string>
   <string name="notifications">Notifications</string>
+  <string name="notification_visibility_title">Affichage de la notification</string>
   <string name="notification_action_title">Action de notification</string>
   <string name="notification_nag">Notification très verbeuse</string>
   <string name="notification_nag_summary">Annonce les changements de morceau avec une notification flottante</string>
@@ -258,6 +259,7 @@
   <string name="permission_request_summary">Vanilla Music a besoin d\'une permission de lecture pour afficher votre bibliothèque musicale</string>
   <string name="reverse_sort">Inverser le tri</string>
   <string name="share">Partager...</string>
+  <string name="share_failed">Échec de partage du fichier</string>
   <string name="sendto">Envoyer à…</string>
   <string name="no_receiving_apps">Aucune application trouvée pour ce type de média!</string>
   <string name="media_library">Bibliothèque multimédia</string>
