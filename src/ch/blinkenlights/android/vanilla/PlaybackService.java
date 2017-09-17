@@ -177,6 +177,10 @@ public final class PlaybackService extends Service
 	 * Pause music and hide the notifcation.
 	 */
 	public static final String ACTION_CLOSE_NOTIFICATION = "ch.blinkenlights.android.vanilla.CLOSE_NOTIFICATION";
+	/**
+	 * Whether we should create a foreground notification as early as possible.
+	 */
+	public static final String EXTRA_EARLY_NOTIFICATION = "extra_early_notification";
 
 	/**
 	 * Visibility modes of the notification.
@@ -515,10 +519,15 @@ public final class PlaybackService extends Service
 	}
 
 	@Override
-	public int onStartCommand(Intent intent, int flags, int startId)
-	{
+	public int onStartCommand(Intent intent, int flags, int startId) {
 		if (intent != null) {
-			String action = intent.getAction();
+			final String action = intent.getAction();
+			final boolean earlyNotification = intent.hasExtra(EXTRA_EARLY_NOTIFICATION);
+
+			if (earlyNotification) {
+				Song song = mCurrentSong != null ? mCurrentSong : new Song(-1);
+				startForeground(NOTIFICATION_ID, createNotification(song, mState, VISIBILITY_WHEN_PLAYING));
+			}
 
 			if (ACTION_TOGGLE_PLAYBACK.equals(action)) {
 				playPause();
