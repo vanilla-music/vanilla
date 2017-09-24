@@ -28,6 +28,7 @@ import ch.blinkenlights.android.medialibrary.MediaLibrary;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.provider.MediaStore;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -35,6 +36,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.concurrent.locks.StampedLock;
 import java.util.Iterator;
 import java.util.ListIterator;
 import junit.framework.Assert;
@@ -214,6 +216,10 @@ public final class SongTimeline {
 
 	private final Context mContext;
 	/**
+	 * The lock used to coordinates access to the queue.
+	 */
+	private final StampedLock mLock;
+	/**
 	 * All the songs currently contained in the timeline. Each Song object
 	 * should be unique, even if it refers to the same media.
 	 */
@@ -284,6 +290,7 @@ public final class SongTimeline {
 	public SongTimeline(Context context)
 	{
 		mContext = context;
+		mLock = new StampedLock();
 	}
 
 	/**
@@ -320,7 +327,8 @@ public final class SongTimeline {
 	 */
 	public void readState(DataInputStream in) throws IOException
 	{
-		synchronized (this) {
+		long stamp = mLock.writeLock();
+		try {
 			int n = in.readInt();
 			if (n > 0) {
 				ArrayList<Song> songs = new ArrayList<Song>(n);
@@ -395,6 +403,8 @@ public final class SongTimeline {
 				mFinishAction = 0;
 			if (mShuffleMode < 0 || mShuffleMode >= SHUFFLE_ICONS.length)
 				mShuffleMode = 0;
+		} finally {
+			mLock.unlockWrite(stamp);
 		}
 	}
 
@@ -407,7 +417,8 @@ public final class SongTimeline {
 	{
 		// Must update PlaybackService.STATE_VERSION when changing behavior
 		// here.
-		synchronized (this) {
+		long stamp = mLock.readLock();
+		try {
 			ArrayList<Song> songs = mSongs;
 
 			int size = songs.size();
@@ -426,6 +437,8 @@ public final class SongTimeline {
 			out.writeInt(mCurrentPos);
 			out.writeInt(mFinishAction);
 			out.writeInt(mShuffleMode);
+		} finally {
+			mLock.unlockRead(stamp);
 		}
 	}
 
@@ -468,17 +481,21 @@ public final class SongTimeline {
 		if (mode == mShuffleMode)
 			return;
 
-		synchronized (this) {
-			saveActiveSongs();
+		saveActiveSongs();
+
+		long stamp = mLock.writeLock();
+		try {
 			mShuffleMode = mode;
 			if (mode != SHUFFLE_NONE && mFinishAction != FINISH_RANDOM && !mSongs.isEmpty()) {
 				ArrayList<Song> songs = getShuffledTimeline(false);
 				mCurrentPos = songs.indexOf(mSavedCurrent);
 				mSongs = songs;
 			}
-			broadcastChangedSongs();
+		} finally {
+			mLock.unlockWrite(stamp);
 		}
 
+		broadcastChangedSongs();
 		changed();
 	}
 
@@ -488,9 +505,10 @@ public final class SongTimeline {
 	 */
 	public void setFinishAction(int action)
 	{
-		synchronized (this) {
-			saveActiveSongs();
+		saveActiveSongs();
 
+		long stamp = mLock.writeLock();
+		try {
 			if (mFinishAction == FINISH_RANDOM) {
 				// Remove the last song if we are going out of RANDOM mode and we
 				// are currently playing the 2nd last one.
@@ -507,9 +525,12 @@ public final class SongTimeline {
 			}
 
 			mFinishAction = action;
-			broadcastChangedSongs();
-			changed();
+		} finally {
+			mLock.unlockWrite(stamp);
 		}
+
+		broadcastChangedSongs();
+		changed();
 	}
 
 	/**
@@ -534,23 +555,6 @@ public final class SongTimeline {
 	}
 
 	/**
-	 * Shuffles the current timeline but keeps the current
-	 * queue position
-	 */
-	private void reshuffleTimeline()
-	{
-		synchronized (this) {
-			saveActiveSongs();
-			ArrayList<Song> songs = getShuffledTimeline(false);
-			int newPosition = songs.indexOf(mSavedCurrent);
-			Collections.swap(songs, newPosition, mCurrentPos);
-			mSongs = songs;
-			broadcastChangedSongs();
-		}
-		changed();
-	}
-
-	/**
 	 * Returns the song <code>delta</code> places away from the current
 	 * position. Returns null if there is a problem retrieving the song.
 	 *
@@ -559,11 +563,14 @@ public final class SongTimeline {
 	public Song getSong(int delta)
 	{
 		Assert.assertTrue(delta >= -1 && delta <= 1);
+		Assert.assertFalse(mLock.isReadLocked()); // must either be unlocked or write locked.
 
 		ArrayList<Song> timeline = mSongs;
 		Song song;
 
-		synchronized (this) {
+		long stamp = mLock.tryWriteLock();
+		Assert.assertTrue(mLock.isWriteLocked());
+		try {
 			int pos = mCurrentPos + delta;
 			int size = timeline.size();
 
@@ -596,6 +603,9 @@ public final class SongTimeline {
 			} else {
 				song = timeline.get(pos);
 			}
+		} finally {
+			if (stamp != 0)
+				mLock.unlockWrite(stamp);
 		}
 
 		if (song == null)
@@ -614,6 +624,8 @@ public final class SongTimeline {
 	 */
 	private void shiftCurrentSongInternal(int delta)
 	{
+		Assert.assertTrue(mLock.isWriteLocked());
+
 		int pos = mCurrentPos + delta;
 
 		if (mFinishAction != FINISH_RANDOM && pos == mSongs.size()) {
@@ -636,12 +648,18 @@ public final class SongTimeline {
 	 * Hard-Jump to given queue position
 	*/
 	public Song setCurrentQueuePosition(int pos) {
-		synchronized (this) {
-			saveActiveSongs();
+		saveActiveSongs();
+
+		long stamp = mLock.writeLock();
+		try {
 			mCurrentPos = pos;
-			broadcastChangedSongs();
+		} finally {
+			mLock.unlockWrite(stamp);
 		}
+
+		broadcastChangedSongs();
 		changed();
+
 		return getSong(0);
 	}
 
@@ -650,10 +668,15 @@ public final class SongTimeline {
 	*/
 	public Song getSongByQueuePosition(int pos) {
 		Song song = null;
-		synchronized (this) {
+
+		long stamp = mLock.readLock();
+		try {
 			if (mSongs.size() > pos)
 				song = mSongs.get(pos);
+		} finally {
+			mLock.unlockRead(stamp);
 		}
+
 		return song;
 	}
 
@@ -661,14 +684,22 @@ public final class SongTimeline {
 	 * Returns song position for given {@link Song.id}
 	 */
 	public int getQueuePositionForSongId(long id) {
-		synchronized (this) {
+		int result = -1;
+
+		long stamp = mLock.readLock();
+		try {
 			for (int pos = 0; pos < mSongs.size(); pos++) {
 				Song current = mSongs.get(pos);
-				if (current.id == id)
-					return pos;
+				if (current.id == id) {
+					result = pos;
+					break;
+				}
 			}
+		} finally {
+			mLock.unlockRead(stamp);
 		}
-		return -1;
+
+		return result;
 	}
 
 	/**
@@ -679,7 +710,8 @@ public final class SongTimeline {
 	 */
 	public Song shiftCurrentSong(int delta)
 	{
-		synchronized (this) {
+		long stamp = mLock.writeLock();
+		try {
 			if (delta == SHIFT_KEEP_SONG) {
 				// void
 			}
@@ -695,6 +727,8 @@ public final class SongTimeline {
 					song = getSong(0);
 				} while (currentAlbum == song.albumId && currentSong != song.id);
 			}
+		} finally {
+			mLock.unlockWrite(stamp);
 		}
 
 		if (delta != SHIFT_KEEP_SONG)
@@ -738,9 +772,11 @@ public final class SongTimeline {
 			return 0;
 		}
 
-		ArrayList<Song> timeline = mSongs;
-		synchronized (this) {
-			saveActiveSongs();
+		saveActiveSongs();
+
+		long stamp = mLock.writeLock();
+		try {
+			ArrayList<Song> timeline = mSongs;
 
 			switch (mode) {
 			case MODE_ENQUEUE:
@@ -829,10 +865,11 @@ public final class SongTimeline {
 					timeline.subList(start, jumpPos).clear();
 				}
 			}
-
-			broadcastChangedSongs();
+		} finally {
+			mLock.unlockWrite(stamp);
 		}
 
+		broadcastChangedSongs();
 		changed();
 
 		return added;
@@ -842,11 +879,10 @@ public final class SongTimeline {
 	 * Removes any songs greater than `len' songs before the current song.
 	 */
 	private void shrinkQueue(int len) {
-		synchronized (this) {
-			while (mCurrentPos > len) {
-				mSongs.remove(0);
-				mCurrentPos--;
-			}
+		Assert.assertTrue(mLock.isWriteLocked());
+		while (mCurrentPos > len) {
+			mSongs.remove(0);
+			mCurrentPos--;
 		}
 		changed();
 	}
@@ -856,13 +892,17 @@ public final class SongTimeline {
 	 */
 	public void clearQueue()
 	{
-		synchronized (this) {
-			saveActiveSongs();
+		saveActiveSongs();
+
+		long stamp = mLock.writeLock();
+		try {
 			if (mCurrentPos + 1 < mSongs.size())
 				mSongs.subList(mCurrentPos + 1, mSongs.size()).clear();
-			broadcastChangedSongs();
+		} finally {
+			mLock.unlockWrite(stamp);
 		}
 
+		broadcastChangedSongs();
 		changed();
 	}
 
@@ -871,13 +911,17 @@ public final class SongTimeline {
 	 */
 	public void emptyQueue()
 	{
-		synchronized (this) {
-			saveActiveSongs();
+		saveActiveSongs();
+
+		long stamp = mLock.writeLock();
+		try {
 			mSongs.clear();
 			mCurrentPos = 0;
-			broadcastChangedSongs();
+		} finally {
+			mLock.unlockWrite(stamp);
 		}
 
+		broadcastChangedSongs();
 		changed();
 	}
 
@@ -888,11 +932,16 @@ public final class SongTimeline {
 	 */
 	private void saveActiveSongs()
 	{
-		mSavedPrevious = getSong(-1);
-		mSavedCurrent = getSong(0);
-		mSavedNext = getSong(+1);
-		mSavedPos = mCurrentPos;
-		mSavedSize = mSongs.size();
+		long stamp = mLock.writeLock();
+		try {
+			mSavedPrevious = getSong(-1);
+			mSavedCurrent = getSong(0);
+			mSavedNext = getSong(+1);
+			mSavedPos = mCurrentPos;
+			mSavedSize = mSongs.size();
+		} finally {
+			mLock.unlockWrite(stamp);
+		}
 	}
 
 	/**
@@ -905,9 +954,18 @@ public final class SongTimeline {
 	{
 		if (mCallback == null) return;
 
-		Song previous = getSong(-1);
-		Song current = getSong(0);
-		Song next = getSong(+1);
+		Song previous;
+		Song current;
+		Song next;
+
+		long stamp = mLock.writeLock();
+		try {
+			previous = getSong(-1);
+			current = getSong(0);
+			next = getSong(+1);
+		} finally {
+			mLock.unlockWrite(stamp);
+		}
 
 		if (Song.getId(mSavedPrevious) != Song.getId(previous))
 			mCallback.activeSongReplaced(-1, previous);
@@ -927,9 +985,10 @@ public final class SongTimeline {
 	 */
 	public void removeSong(long id)
 	{
-		synchronized (this) {
-			saveActiveSongs();
+		saveActiveSongs();
 
+		long stamp = mLock.writeLock();
+		try {
 			ArrayList<Song> songs = mSongs;
 			ListIterator<Song> it = songs.listIterator();
 			while (it.hasNext()) {
@@ -944,9 +1003,11 @@ public final class SongTimeline {
 			if (getSong(1) == null)
 				mCurrentPos = 0;
 
-			broadcastChangedSongs();
+		} finally {
+			mLock.unlockWrite(stamp);
 		}
 
+		broadcastChangedSongs();
 		changed();
 	}
 
@@ -955,22 +1016,25 @@ public final class SongTimeline {
 	 * @param pos index to use
 	 */
 	public void removeSongPosition(int pos) {
-		synchronized (this) {
+		saveActiveSongs();
+
+		long stamp = mLock.writeLock();
+		try {
 			ArrayList<Song> songs = mSongs;
 
 			if (songs.size() <= pos) // may happen if we race with purge()
 				return;
-
-			saveActiveSongs();
 
 			songs.remove(pos);
 			if (pos < mCurrentPos)
 				mCurrentPos--;
 			if (getSong(1) == null) // wrap around if this was the last song
 				mCurrentPos = 0;
-
-			broadcastChangedSongs();
+		} finally {
+			mLock.unlockWrite(stamp);
 		}
+
+		broadcastChangedSongs();
 		changed();
 	}
 
@@ -980,13 +1044,14 @@ public final class SongTimeline {
 	 * @param to index to move to
 	 */
 	public void moveSongPosition(int from, int to) {
-		synchronized (this) {
+		saveActiveSongs();
+
+		long stamp = mLock.writeLock();
+		try {
 			ArrayList<Song> songs = mSongs;
 
 			if (songs.size() <= from || songs.size() <= to) // may happen if we race with purge()
 				return;
-
-			saveActiveSongs();
 
 			Song tmp = songs.remove(from);
 			songs.add(to, tmp);
@@ -998,9 +1063,11 @@ public final class SongTimeline {
 			} else if (from < mCurrentPos && to >= mCurrentPos) {
 				mCurrentPos--;
 			}
-
-			broadcastChangedSongs();
+		} finally {
+			mLock.unlockWrite(stamp);
 		}
+
+		broadcastChangedSongs();
 		changed();
 	}
 
@@ -1013,8 +1080,17 @@ public final class SongTimeline {
 		if (mShuffleCache != null && mShuffleTicket != mSongs.hashCode())
 			mShuffleCache = null;
 
-		if (mCallback != null)
-			mCallback.timelineChanged();
+		if (mCallback != null) {
+			// Run the callback in a background task, as we may still
+			// have a write lock. We might deadlock otherwise if the
+			// callee needs to perform more work.
+			AsyncTask.execute(new Runnable() {
+				@Override
+				public void run() {
+					mCallback.timelineChanged();
+				}
+			});
+		}
 	}
 
 	/**
@@ -1023,8 +1099,11 @@ public final class SongTimeline {
 	 */
 	public boolean isEndOfQueue()
 	{
-		synchronized (this) {
+		long stamp = mLock.readLock();
+		try {
 			return mFinishAction == FINISH_STOP && mCurrentPos == mSongs.size() - 1;
+		} finally {
+			mLock.unlockRead(stamp);
 		}
 	}
 
