@@ -407,26 +407,31 @@ public final class SongTimeline {
 	{
 		// Must update PlaybackService.STATE_VERSION when changing behavior
 		// here.
+
+		ArrayList<Song> songs;
 		synchronized (this) {
-			ArrayList<Song> songs = mSongs;
-
-			int size = songs.size();
-			out.writeInt(size);
-
-			for (int i = 0; i != size; ++i) {
-				Song song = songs.get(i);
-				if (song == null) {
-					out.writeLong(-1);
-				} else {
-					out.writeLong(song.id);
-					out.writeInt(song.flags);
-				}
-			}
-
-			out.writeInt(mCurrentPos);
-			out.writeInt(mFinishAction);
-			out.writeInt(mShuffleMode);
+			// Just grab a copy and release the lock soon:
+			// Performing the actual IO is pretty expensive and
+			// could stall UI elements accessing the timeline.
+			songs = new ArrayList(mSongs);
 		}
+
+		int size = songs.size();
+		out.writeInt(size);
+
+		for (int i = 0; i != size; ++i) {
+			Song song = songs.get(i);
+			if (song == null) {
+				out.writeLong(-1);
+			} else {
+				out.writeLong(song.id);
+				out.writeInt(song.flags);
+			}
+		}
+
+		out.writeInt(mCurrentPos);
+		out.writeInt(mFinishAction);
+		out.writeInt(mShuffleMode);
 	}
 
 	/**
