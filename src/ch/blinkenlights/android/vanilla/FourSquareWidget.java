@@ -118,7 +118,7 @@ public class FourSquareWidget extends AppWidgetProvider {
 		views.setImageViewResource(R.id.next, nextResource);
 
 		if (cover == null) {
-			views.setImageViewResource(R.id.cover, R.drawable.fallback_cover);
+			views.setImageViewResource(R.id.cover, R.drawable.fallback_cover_large);
 		} else {
 			views.setImageViewBitmap(R.id.cover, cover);
 		}

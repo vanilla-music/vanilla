@@ -2081,7 +2081,7 @@ public final class PlaybackService extends Service
 		Bitmap cover = song.getCover(this);
 		if (cover == null) {
 			views.setImageViewResource(R.id.cover, R.drawable.fallback_cover);
-			expanded.setImageViewResource(R.id.cover, R.drawable.fallback_cover);
+			expanded.setImageViewResource(R.id.cover, R.drawable.fallback_cover_large);
 		} else {
 			views.setImageViewBitmap(R.id.cover, cover);
 			expanded.setImageViewBitmap(R.id.cover, cover);

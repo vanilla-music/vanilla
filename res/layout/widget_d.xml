@@ -26,6 +26,7 @@ THE SOFTWARE.
 	android:layout_height="fill_parent">
 	<ImageView
 		android:id="@+id/cover"
+		android:src="@drawable/fallback_cover_large"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
 		android:adjustViewBounds="true"
