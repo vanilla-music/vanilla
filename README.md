@@ -43,8 +43,8 @@ Contributing
 
 Translating
 -----------
-[You can help translate here][1]. If your language isn't on the list, open an
-issue and I can add it.
+[You can help translate here][1]. If your language isn't on the list, sign in to transifex and request the language to be added to the list of translations.
+(Feel free to open a bug if your request was not approved within a few days - i don't look into transifex that often.)
 
 Contributing code
 ---------------
