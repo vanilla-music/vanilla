@@ -151,6 +151,7 @@
   <string name="cycle_continuous_shuffling">연속으로 섞기</string>
   <string name="cycle_continuous_shuffling_summary">섞기모드는 랜덤한 순서로 곡을 재생합니다.</string>
   <string name="notifications">알림</string>
+  <string name="notification_visibility_title">알림 표시</string>
   <string name="notification_action_title">알림을 눌렀을때</string>
   <string name="notification_nag">매우 잦은 알림</string>
   <string name="notification_nag_summary">\'Heads-Up-Notification\' 사용중일때 곡 변경 알리기</string>
@@ -251,6 +252,7 @@
 </string>
   <string name="reverse_sort">반대로 정렬</string>
   <string name="share">공유...</string>
+  <string name="share_failed">파일 공유 실패</string>
   <string name="sendto">전송함...</string>
   <string name="no_receiving_apps">해당 미디어 타입을 수신하는 앱을 찾을 수 없습니다!</string>
   <string name="media_library">미디어 라이브러리</string>
