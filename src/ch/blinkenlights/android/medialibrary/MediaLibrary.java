@@ -97,7 +97,7 @@ public class MediaLibrary  {
 	/**
 	 * The observer to call-back during database changes
 	 */
-	private static ContentObserver sContentObserver;
+	private static final ArrayList<ContentObserver> sContentObservers = new ArrayList<ContentObserver>(2);
 	/**
 	 * The lock we are using during object creation
 	 */
@@ -264,14 +264,20 @@ public class MediaLibrary  {
 	/**
 	 * Registers a new content observer for the media library
 	 *
+	 * The MediaLibrary will call `onChange(boolean ongoing)` if
+	 * the media library changed.
+	 *
+	 * `ongoing` will be set to `true` if you are expected to receive
+	 * more updates soon. A value of `false` indicates that no
+	 * scan is going on.
+	 *
 	 * @param observer the content observer we are going to call on changes
 	 */
 	public static void registerContentObserver(ContentObserver observer) {
-		if (sContentObserver == null) {
-			sContentObserver = observer;
-		} else {
+		if (sContentObservers.contains(observer))
 			throw new IllegalStateException("ContentObserver was already registered");
-		}
+
+		sContentObservers.add(observer);
 	}
 
 	/**
@@ -281,23 +287,19 @@ public class MediaLibrary  {
 	 * @param observer the content observer to unregister.
 	 */
 	public static void unregisterContentObserver(ContentObserver observer) {
-		if (sContentObserver == null)
-			throw new IllegalStateException("No ContentObserver was registered!");
+		boolean removed = sContentObservers.remove(observer);
 
-		if (!sContentObserver.equals(observer))
-			throw new IllegalArgumentException("Passed content observer was not the one you registered!");
-
-		// Sanity check passed: unregister observer.
-		sContentObserver = null;
+		if (!removed)
+			throw new IllegalArgumentException("This content observer was never registered!");
 	}
 
 	/**
-	 * Broadcasts a change to the observer, which will queue and dispatch
-	 * the event to any registered observer
+	 * Broadcasts a change to all registered observers
 	 */
-	static void notifyObserver() {
-		if (sContentObserver != null)
-			sContentObserver.onChange(true);
+	static void notifyObserver(boolean ongoing) {
+		ArrayList<ContentObserver> list = sContentObservers;
+		for (int i = list.size(); --i != -1; )
+			list.get(i).onChange(ongoing);
 	}
 
 	/**
@@ -326,7 +328,7 @@ public class MediaLibrary  {
 
 		if (rows > 0) {
 			getBackend(context).cleanOrphanedEntries(true);
-			notifyObserver();
+			notifyObserver(false);
 		}
 		return rows;
 	}
@@ -357,7 +359,7 @@ public class MediaLibrary  {
 		long id = getBackend(context).insert(MediaLibrary.TABLE_PLAYLISTS, null, v);
 
 		if (id != -1)
-			notifyObserver();
+			notifyObserver(false);
 		return id;
 	}
 
@@ -375,7 +377,7 @@ public class MediaLibrary  {
 		boolean removed = (rows > 0);
 
 		if (removed)
-			notifyObserver();
+			notifyObserver(false);
 		return removed;
 	}
 
@@ -413,7 +415,7 @@ public class MediaLibrary  {
 		int rows = getBackend(context).bulkInsert(MediaLibrary.TABLE_PLAYLISTS_SONGS, null, bulk);
 
 		if (rows > 0)
-			notifyObserver();
+			notifyObserver(false);
 		return rows;
 	}
 
@@ -429,7 +431,7 @@ public class MediaLibrary  {
 		int rows = getBackend(context).delete(MediaLibrary.TABLE_PLAYLISTS_SONGS, selection, selectionArgs);
 
 		if (rows > 0)
-			notifyObserver();
+			notifyObserver(false);
 		return rows;
 	}
 
@@ -452,7 +454,7 @@ public class MediaLibrary  {
 		}
 
 		if (newId != -1)
-			notifyObserver();
+			notifyObserver(false);
 		return newId;
 	}
 
@@ -497,7 +499,7 @@ public class MediaLibrary  {
 		selection = MediaLibrary.PlaylistSongColumns._ID+"="+from;
 		getBackend(context).update(MediaLibrary.TABLE_PLAYLISTS_SONGS, v, selection, null);
 
-		notifyObserver();
+		notifyObserver(false);
 	}
 
 	/**

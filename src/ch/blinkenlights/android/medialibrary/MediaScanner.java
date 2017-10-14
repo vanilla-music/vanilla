@@ -195,7 +195,7 @@ public class MediaScanner implements Handler.Callback {
 
 		switch (rpc) {
 			case MSG_NOTIFY_CHANGE: {
-				MediaLibrary.notifyObserver();
+				MediaLibrary.notifyObserver(true);
 				break;
 			}
 			case MSG_SCAN_FINISHED: {
@@ -207,9 +207,15 @@ public class MediaScanner implements Handler.Callback {
 					mPendingCleanup = false;
 					mBackend.cleanOrphanedEntries(true);
 				}
-				// make sure to notify about changes which cleanOrphanedEntries
-				// might have caused
-				mHandler.sendEmptyMessage(MSG_NOTIFY_CHANGE);
+
+				// Send a last change notification to all observers.
+				// This lets all consumers know about (possible)
+				// cleanups of orphaned files. The `false' value
+				// also signals that this will be our last update
+				// for this scan.
+				mHandler.removeMessages(MSG_NOTIFY_CHANGE);
+				MediaLibrary.notifyObserver(false);
+
 				updateNotification(false);
 				break;
 			}
