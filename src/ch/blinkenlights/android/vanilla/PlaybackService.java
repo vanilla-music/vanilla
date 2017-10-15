@@ -516,6 +516,8 @@ public final class PlaybackService extends Service
 		mAccelFiltered = 0.0f;
 		mAccelLast = SensorManager.GRAVITY_EARTH;
 		setupSensor();
+
+		ScheduledLibraryUpdate.scheduleUpdate(this);
 	}
 
 	@Override
