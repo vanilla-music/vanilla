@@ -67,7 +67,7 @@ public class ScheduledLibraryUpdate extends JobService {
 		JobInfo job = new JobInfo.Builder(JOB_ID_UPDATE, componentName)
 			.setRequiresCharging(true)
 			.setRequiresDeviceIdle(true)
-			.setPeriodic(3600000 * 8) // run at most every ~8 hours
+			.setPeriodic(3600000 * 32) // run at most every ~32 hours
 			.build();
 
 		scheduler.schedule(job);
