@@ -29,11 +29,6 @@ import android.content.ComponentName;
 import android.database.ContentObserver;
 import android.os.Build;
 
-import android.util.Log;
-import java.io.FileWriter;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 
 @TargetApi(21)
 public class ScheduledLibraryUpdate extends JobService {
@@ -72,7 +67,6 @@ public class ScheduledLibraryUpdate extends JobService {
 
 		scheduler.schedule(job);
 
-		xlog("Job with id "+JOB_ID_UPDATE+" scheduled for execution");
 		return true;
 	}
 
@@ -85,8 +79,6 @@ public class ScheduledLibraryUpdate extends JobService {
 	 */
 	@Override
 	public boolean onStartJob(JobParameters params) {
-		xlog("++ onStartJob called on "+params.getJobId());
-
 		if (params.getJobId() != JOB_ID_UPDATE)
 			return false; // orphaned job, do not start
 
@@ -96,7 +88,6 @@ public class ScheduledLibraryUpdate extends JobService {
 		MediaLibrary.registerContentObserver(mObserver);
 		MediaLibrary.startLibraryScan(this, fullScan, false);
 
-		xlog("++ onStartJob called on "+params.getJobId()+", running full scan? -> "+fullScan);
 		return true;
 	}
 
@@ -108,7 +99,6 @@ public class ScheduledLibraryUpdate extends JobService {
 	 */
 	@Override
 	public boolean onStopJob(JobParameters params) {
-		xlog("++ onStopJob called on "+params.getJobId());
 		finalizeScan();
 		return false;
 	}
@@ -117,7 +107,6 @@ public class ScheduledLibraryUpdate extends JobService {
 	 * Aborts a running scan job
 	 */
 	private void finalizeScan() {
-		xlog("++ finalize called");
 		MediaLibrary.unregisterContentObserver(mObserver);
 		MediaLibrary.abortLibraryScan(this);
 		mJobParams = null;
@@ -132,23 +121,10 @@ public class ScheduledLibraryUpdate extends JobService {
 	private final ContentObserver mObserver = new ContentObserver(null) {
 		@Override
 		public void onChange(boolean ongoing) {
-			xlog("CHANGE: "+ongoing);
 			if (!ongoing) {
 				jobFinished(mJobParams, false);
 				finalizeScan();
 			}
 		}
 	};
-
-	private static void xlog(String str) {
-		try {
-		String sdf = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")).format(new Date());
-		FileWriter fw = new FileWriter("/sdcard/vanilla-log.txt", true);
-		Log.v("VanillaMusic", str);
-		fw.write(String.format("%s: %s\n", sdf, str));
-		fw.close();
-		} catch(Exception e) {
-			Log.v("VanillaMusic", "LOGFAIL: "+e);
-		}
-	}
 }
