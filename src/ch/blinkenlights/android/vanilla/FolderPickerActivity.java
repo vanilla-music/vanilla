@@ -23,16 +23,19 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.MenuItem;
 import android.view.Menu;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.mobeta.android.dslv.DragSortListView;
+
 
 public abstract class FolderPickerActivity extends Activity
 	implements AdapterView.OnItemClickListener,
@@ -46,7 +49,7 @@ public abstract class FolderPickerActivity extends Activity
 	/**
 	 * View displaying the current path
 	 */
-	private TextView mPathDisplay;
+	private EditText mPathDisplay;
 	/**
 	 * Save button
 	 */
@@ -70,21 +73,48 @@ public abstract class FolderPickerActivity extends Activity
 
 		mListAdapter = new FolderPickerAdapter(this, 0);
 		mListView    = (DragSortListView)findViewById(R.id.list);
-		mPathDisplay = (TextView) findViewById(R.id.path_display);
+		mPathDisplay = (EditText) findViewById(R.id.path_display);
 		mSaveButton  = (Button) findViewById(R.id.save_button);
 
 		mListView.setAdapter(mListAdapter);
 		mListView.setOnItemClickListener(this);
 
-		mSaveButton.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				onFolderPicked(mListAdapter.getCurrentDir(),
-				               mListAdapter.getIncludedDirs(),
-				               mListAdapter.getExcludedDirs());
-			}});
+		mPathDisplay.addTextChangedListener(mTextWatcher);
+		mSaveButton.setOnClickListener(mSaveButtonClickListener);
+
 		// init defaults
 		enableTritasticSelect(false, null, null);
 	}
+
+	/**
+	 * Callback for Save button click events
+	 */
+	private final View.OnClickListener mSaveButtonClickListener = new View.OnClickListener() {
+		public void onClick(View v) {
+			onFolderPicked(mListAdapter.getCurrentDir(),
+			               mListAdapter.getIncludedDirs(),
+				       mListAdapter.getExcludedDirs());
+		}
+	};
+
+	/**
+	 * Callback for EditText change events
+	 */
+	private final TextWatcher mTextWatcher = new TextWatcher() {
+		@Override
+		public void afterTextChanged(Editable s) {
+			final File dir = new File(s.toString());
+			setCurrentDir(dir);
+		}
+
+		@Override
+		public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+		}
+
+		@Override
+		public void onTextChanged(CharSequence s, int start, int before, int count) {
+		}
+	};
 
 	/**
 	 * Called after a folder was selected
@@ -120,9 +150,20 @@ public abstract class FolderPickerActivity extends Activity
 	 * @param dir the directory to jump to
 	 */
 	void setCurrentDir(File dir) {
-		mPathDisplay.setText(dir.getAbsolutePath());
+		mSaveButton.setEnabled(dir.isDirectory());
 		mListAdapter.setCurrentDir(dir);
 		mListView.setSelectionFromTop(0, 0);
+
+		final File labelDir = new File(mPathDisplay.getText().toString());
+		if (!dir.equals(labelDir)) {
+			// Only update the text field if the actual dir doesn't equal
+			// the currently displayed path, even if the text isn't exactly
+			// the same. We do this to avoid 'jumps' where we would replace
+			// '/storage/x/' with '/storage/x'.
+			final String label = dir.getAbsolutePath();
+			mPathDisplay.setText(label);
+			mPathDisplay.setSelection(label.length());
+		}
 	}
 
 	/**
