@@ -60,9 +60,6 @@ public class ScheduledLibraryUpdate extends JobService {
 
 		JobScheduler scheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
 
-		if (scheduler.getPendingJob(JOB_ID_UPDATE) != null)
-			return false; // no need to re-schedule the job
-
 		ComponentName componentName = new ComponentName(context, ScheduledLibraryUpdate.class);
 		JobInfo job = new JobInfo.Builder(JOB_ID_UPDATE, componentName)
 			.setRequiresCharging(true)
@@ -70,12 +67,34 @@ public class ScheduledLibraryUpdate extends JobService {
 			.setPeriodic(3600000 * 32) // run at most every ~32 hours
 			.build();
 
+		for (JobInfo pj : scheduler.getAllPendingJobs()) {
+			if (jobsEqual(pj, job)) {
+				xlog("scheduleUpdate: Job "+JOB_ID_UPDATE+" already scheduled, returning. Job="+pj.toString());
+				return false;
+			}
+		}
+
 		scheduler.schedule(job);
 
 		xlog("Job with id "+JOB_ID_UPDATE+" scheduled for execution");
 		return true;
 	}
 
+	/**
+	 * Compare two jobs, returns `true' if the values we care about
+	 * are equal
+	 *
+	 * @param a the first job to compare
+	 * @param b the second job to compare
+	 * @return true if `a' and `b' are equal jobs
+	 */
+	private static boolean jobsEqual(JobInfo a, JobInfo b) {
+		return (a.getId() == b.getId() &&
+		        a.getIntervalMillis() == b.getIntervalMillis() &&
+		        a.isRequireCharging() == b.isRequireCharging() &&
+		        a.isRequireDeviceIdle() == b.isRequireDeviceIdle() &&
+		        a.isPeriodic() == b.isPeriodic());
+	}
 
 	/**
 	 * Called by the scheduler to launch the job
@@ -141,10 +160,10 @@ public class ScheduledLibraryUpdate extends JobService {
 	};
 
 	private static void xlog(String str) {
+		Log.v("VanillaMusic", str);
 		try {
 		String sdf = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")).format(new Date());
 		FileWriter fw = new FileWriter("/sdcard/vanilla-log.txt", true);
-		Log.v("VanillaMusic", str);
 		fw.write(String.format("%s: %s\n", sdf, str));
 		fw.close();
 		} catch(Exception e) {
