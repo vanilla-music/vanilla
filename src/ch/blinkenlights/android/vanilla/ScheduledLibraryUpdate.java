@@ -29,10 +29,6 @@ import android.content.ComponentName;
 import android.database.ContentObserver;
 import android.os.Build;
 
-import android.util.Log;
-import java.util.Date;
-import java.text.SimpleDateFormat;
-import java.io.FileWriter;
 
 @TargetApi(21)
 public class ScheduledLibraryUpdate extends JobService {
@@ -68,14 +64,11 @@ public class ScheduledLibraryUpdate extends JobService {
 
 		for (JobInfo pj : scheduler.getAllPendingJobs()) {
 			if (jobsEqual(pj, job)) {
-				xlog("scheduleUpdate: Job "+JOB_ID_UPDATE+" already scheduled, returning. Job="+pj.toString());
 				return false;
 			}
 		}
 
-		xlog("scheduling new job "+JOB_ID_UPDATE);
 		scheduler.schedule(job);
-
 		return true;
 	}
 
@@ -112,7 +105,6 @@ public class ScheduledLibraryUpdate extends JobService {
 		MediaLibrary.registerContentObserver(mObserver);
 		MediaLibrary.startLibraryScan(this, fullScan, false);
 
-		xlog("starting library scann. full? = "+fullScan);
 		return true;
 	}
 
@@ -124,7 +116,6 @@ public class ScheduledLibraryUpdate extends JobService {
 	 */
 	@Override
 	public boolean onStopJob(JobParameters params) {
-		xlog("onStopJob was called");
 		finalizeScan();
 		return false;
 	}
@@ -136,7 +127,6 @@ public class ScheduledLibraryUpdate extends JobService {
 		MediaLibrary.unregisterContentObserver(mObserver);
 		MediaLibrary.abortLibraryScan(this);
 		mJobParams = null;
-		xlog("finalized scan");
 	}
 
 	/**
@@ -148,23 +138,10 @@ public class ScheduledLibraryUpdate extends JobService {
 	private final ContentObserver mObserver = new ContentObserver(null) {
 		@Override
 		public void onChange(boolean ongoing) {
-			xlog("onChange! ongoing="+ongoing);
 			if (!ongoing) {
 				jobFinished(mJobParams, false);
 				finalizeScan();
 			}
 		}
 	};
-
-	private static void xlog(String str) {
-		Log.v("VanillaMusic", str);
-		try {
-		String sdf = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")).format(new Date());
-		FileWriter fw = new FileWriter("/sdcard/vanilla-log.txt", true);
-		fw.write(String.format("%s: %s\n", sdf, str));
-		fw.close();
-		} catch(Exception e) {
-			Log.v("VanillaMusic", "LOGFAIL: "+e);
-		}
-	}
 }
