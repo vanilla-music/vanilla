@@ -27,7 +27,6 @@ import android.app.job.JobService;
 import android.content.Context;
 import android.content.ComponentName;
 import android.database.ContentObserver;
-import android.os.Build;
 
 
 @TargetApi(21)
@@ -50,9 +49,6 @@ public class ScheduledLibraryUpdate extends JobService {
 	 * @return true if job was scheduled, false otherwise
 	 */
 	public static boolean scheduleUpdate(Context context) {
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
-			return false; // JobScheduler requires API 21
-
 		JobScheduler scheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
 
 		ComponentName componentName = new ComponentName(context, ScheduledLibraryUpdate.class);
