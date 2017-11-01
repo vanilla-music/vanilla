@@ -161,7 +161,7 @@
   <string name="notifications">Benachrichtigungen</string>
   <string name="notification_visibility_title">Benachrichtigungssichtbarkeit</string>
   <string name="notification_action_title">Benachrichtigungsaktion</string>
-  <string name="notification_nag">Auffällige Benachrichtigung</string>
+  <string name="notification_nag">Ausführliche Benachrichtigung</string>
   <string name="notification_nag_summary">Titelwechsel als »Heads-Up«-Benachrichtigung anzeigen</string>
   <string name="playback_screen">Wiedergabeansicht</string>
   <string name="playback_on_startup_title">Beim Start öffnen</string>
@@ -272,7 +272,7 @@
   <string name="media_scan_group_albums">Alben nach Ordner gruppieren</string>
   <string name="media_statistics">Statistiken</string>
   <string name="media_stats_tracks">Titelanzahl</string>
-  <string name="media_stats_library_playtime">Wiedergabedauer (Stunden)</string>
+  <string name="media_stats_library_playtime">Gesamtwiedergabedauer (Stunden)</string>
   <string name="media_stats_listen_playtime">Bisher wiedergegebene Musik in Stunden</string>
   <string name="media_stats_progress">Suchfortschritt</string>
   <string name="media_library_scan_running">Medienbibliothek wird durchsucht …</string>

@@ -93,7 +93,7 @@
   <string name="album">Album</string>
   <string name="genre">Genre</string>
   <string name="folder">Dossier</string>
-  <string name="filename">Nom</string>
+  <string name="filename">Nom de fichier</string>
   <string name="file_size">Taille</string>
   <string name="file_time">Date de modification</string>
   <string name="extension">Extension</string>

@@ -56,6 +56,7 @@
   <string name="play_or_enqueue">Metti in coda se in riproduzione; Riproduci se in pausa.</string>
   <string name="open">Apri</string>
   <string name="go_home">Cartella home</string>
+  <string name="jumping_to_song">Il brano è già nella coda, verrà saltato...</string>
   <plurals name="playing">
     <item quantity="one">1 brano in riproduzione.</item>
     <item quantity="other">%d brani in riproduzione.</item>
@@ -158,6 +159,7 @@
   <string name="cycle_continuous_shuffling">Riproduzione casuale continua</string>
   <string name="cycle_continuous_shuffling_summary">\"Modalità casuale\" riprodurrà i brani in ordine completamente casuale</string>
   <string name="notifications">Notifiche</string>
+  <string name="notification_visibility_title">Visibilità delle notifiche</string>
   <string name="notification_action_title">Azione notifica</string>
   <string name="notification_nag">Notifica molto dettagliata</string>
   <string name="notification_nag_summary">Annuncia cambi di brano con una notifica \"heads-up\"</string>
@@ -202,6 +204,7 @@
   <string name="scrobble_summary">Effettua lo scrobbling a Last.fm tramite Scrobble Droid o Simple Last.fm Scrobbler</string>
   <string name="stock_broadcast_title">Emula broadcast preinstallato</string>
   <string name="stock_broadcast_summary">Invia brodcast simulando quelli inviati dal riproduttore musicale nativo con i controlli di 3rd parti, widgets,ecc.</string>
+  <string name="help">Aiuto</string>
   <string name="about">Info</string>
   <string name="tabs">Ordine delle schede</string>
   <string name="customize_tab_order">Modifica l\'ordine e la visibilità delle tab della libreria</string>
@@ -256,16 +259,21 @@
   <string name="permission_request_summary">Vanilla Music richiede i permessi di lettura per visualizzare la libreria musicale</string>
   <string name="reverse_sort">Ordinamento inverso</string>
   <string name="share">Condividi…</string>
+  <string name="share_failed">Fallita condivisione del file</string>
   <string name="sendto">Invia a…</string>
   <string name="no_receiving_apps">Nessuna app di ricezione trovata per questo tipo di file multimediale!</string>
   <string name="media_library">Libreria multimediale</string>
   <string name="media_folders_header">Cartelle indicizzate</string>
   <string name="media_scan_header">Scansione file multimediali</string>
+  <string name="media_scan_full">Analizza l\'intero filesystem (più lento)</string>
+  <string name="media_scan_drop_db">Svuota il database dei brani</string>
   <string name="media_scan_start">Inizia scansione</string>
   <string name="media_scan_force_bastp">Usa sempre il lettore di tag incorporato</string>
   <string name="media_scan_group_albums">Raggruppa gli album per cartella</string>
   <string name="media_statistics">Statistiche</string>
   <string name="media_stats_tracks">Numero di tracce</string>
+  <string name="media_stats_library_playtime">Tempo di riproduzione totale (Ore)</string>
+  <string name="media_stats_listen_playtime">Ore di musica riprodotte fino ad adesso</string>
   <string name="media_stats_progress">Progresso della scansione</string>
   <string name="media_library_scan_running">Scansione libreria multimediale...</string>
   <string name="media_scan_preferences">Opzioni per la scansione</string>
