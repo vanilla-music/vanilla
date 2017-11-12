@@ -199,7 +199,11 @@ public class CoverCache {
 		/**
 		 * Priority-ordered list of possible cover names
 		 */
-		private final static Pattern[] COVER_MATCHES = { Pattern.compile("(?i).+/(COVER|ALBUM)\\.(JPE?G|PNG)$"), Pattern.compile("(?i).+/(CD|FRONT|ARTWORK)\\.(JPE?G|PNG)$"), Pattern.compile("(?i).+\\.(JPE?G|PNG)$") };
+		private final static Pattern[] COVER_MATCHES = {
+			    Pattern.compile("(?i).+/(COVER|ALBUM)\\.(JPE?G|PNG)$"),
+			    Pattern.compile("(?i).+/ALBUMART(_\\{[-0-9A-F]+\\}_LARGE)?\\.(JPE?G|PNG)$"),
+			    Pattern.compile("(?i).+/(CD|FRONT|ARTWORK|FOLDER)\\.(JPE?G|PNG)$"),
+			    Pattern.compile("(?i).+\\.(JPE?G|PNG)$") };
 		/**
 		 * Projection of all columns in the database
 		 */
