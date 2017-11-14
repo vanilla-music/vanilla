@@ -684,8 +684,12 @@ public final class PlaybackService extends Service
 	 * the (maybe just changed) user settings
 	*/
 	private void refreshReplayGainValues() {
-		applyReplayGain(mMediaPlayer);
-		applyReplayGain(mPreparedMediaPlayer);
+		if (mMediaPlayer != null) {
+			applyReplayGain(mMediaPlayer);
+		}
+		if (mPreparedMediaPlayer != null) {
+			applyReplayGain(mPreparedMediaPlayer);
+		}
 	}
 
 	private void refreshDuckingValues() {
