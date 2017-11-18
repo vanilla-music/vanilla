@@ -132,8 +132,10 @@ public class MediaLibrary  {
 				Log.w("VanillaMusic", "Returning default media-library preferences due to error: "+ e);
 			}
 
-			if (prefs == null)
+			if (prefs == null) {
 				prefs = new MediaLibrary.Preferences();
+				prefs.forceBastp = true; // Auto enable for new installations
+			}
 
 			if (prefs.mediaFolders == null || prefs.mediaFolders.size() == 0)
 				prefs.mediaFolders = discoverDefaultMediaPaths(context);
