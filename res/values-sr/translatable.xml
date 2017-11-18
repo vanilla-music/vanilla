@@ -167,6 +167,7 @@
   <string name="cycle_continuous_shuffling">Непрестано тумбање</string>
   <string name="cycle_continuous_shuffling_summary">У режиму „тумбања“ нумере се пуштају насумично</string>
   <string name="notifications">Обавештења</string>
+  <string name="notification_visibility_title">Видљивост обавештења</string>
   <string name="notification_action_title">Радња обавештења</string>
   <string name="notification_nag">Веома исцрпно обавештење</string>
   <string name="notification_nag_summary">Објави промене нумера користећи „Heads-Up“ обавештење</string>

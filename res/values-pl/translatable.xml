@@ -8,7 +8,7 @@
   <string name="no_repeat">Bez powtarzania</string>
   <string name="repeat">Powtarzanie</string>
   <string name="random">Przypadkowa kolejność odtwarzania utworów</string>
-  <string name="random_enabling">Włączona przypadkową kolejność odtwarzania utworów</string>
+  <string name="random_enabling">Włączono przypadkową kolejność odtwarzania utworów</string>
   <string name="queue_cleared">Kolejka wyczyszczona.</string>
   <string name="cover_art">Okładka</string>
   <string name="close_notification">Zamknij powiadomienia</string>
@@ -64,17 +64,17 @@
   <string name="year">Rok</string>
   <string name="date_added">Data dodania</string>
   <string name="artist_album">Artysta, album</string>
-  <string name="artist_album_track">Artysta, albym, numer utworu</string>
+  <string name="artist_album_track">Artysta, album, numer utworu</string>
   <string name="artist_album_title">Artysta, album, tytuł</string>
   <string name="artist_year">Artysta, rok</string>
   <string name="album_track">Artysta, numer utworu</string>
   <string name="song_playcount">Ilość odtworzeń</string>
   <!--Preferences-->
   <string name="audio">Audio</string>
-  <string name="volume_during_ducking_title">Głośność poczas powiadomień</string>
+  <string name="volume_during_ducking_title">Głośność podczas powiadomień</string>
   <string name="volume_during_ducking_summary">Głośność odtwarzania:</string>
   <string name="ignore_audiofocus_loss_summary">Podtrzymuj odtwarzanie przy całkowitej utracie ostrości dźwięku</string>
-  <string name="media_button_title">Sterowanie przyciskami zestawu słuchawkowego/bluetooth</string>
+  <string name="media_button_title">Sterowanie przyciskami zestawu słuchawkowego/Bluetooth</string>
   <string name="media_button_summary">Wymagane także dla blokady ekranu Androida 4.0+.</string>
   <string name="media_button_beep_title">Dzwięk przy sterowaniu zestawem słuchawkowym.</string>
   <string name="media_button_beep_summary">Odtwórz dźwięk po przeskoczeniu do następnego utworu za pomocą podwójnego kliknięcia przyciskiem sterowania zestawu słuchawkowego.</string>
@@ -84,7 +84,7 @@
   <string name="headset_pause_summary">Pauzuje odtwarzanie dźwięku w momencie odłączenia słuchawek.</string>
   <string name="headset_launch_title">Odtwarzaj po podłączeniu</string>
   <string name="headset_launch_summary">Automatycznie zacznij odtwarzać dźwięk po podłączeniu słuchawek. (Wymaga zainstalowania aplikacji \'Headphone detector\').</string>
-  <string name="headset_launch_app_missing">Ta opcja wymaga zainstalowania aplikacji \'Headphone detector\'\nChcesz otworzyć Sklep Play w celu zainstalowania aplikacji?</string>
+  <string name="headset_launch_app_missing">Ta opcja wymaga zainstalowania aplikacji \'Headphone detector\'\nCzy chcesz otworzyć Sklep Play, aby zainstalować aplikację?</string>
   <string name="replaygain_track_summary">Odtwarzanie wszystkich utworów z jednakową głośnością</string>
   <string name="replaygain_album_summary">Zachowanie dynamiki albumu</string>
   <string name="replaygain_untagged_debump_summary">Ściszenie dzwięku o</string>
@@ -109,7 +109,7 @@
   <string name="default_playlist_action_title">Domyślna akcja listy odtwarzania</string>
   <string name="accelerometer_shake">Potrząśnięcie telefonem - akcelerometr</string>
   <string name="enable_shake_title">Włączenie potrząśnięcia telefonem - akcelerometrem</string>
-  <string name="enable_shake_summary">Aktywne jedynie, gdy muzyka jest odtwarzana. Na niektóych urządzeniach nie działa, gdy ekran jest wygaszony.</string>
+  <string name="enable_shake_summary">Aktywne jedynie, gdy muzyka jest odtwarzana. Na niektórych urządzeniach nie działa, gdy ekran jest wygaszony.</string>
   <string name="shake_action_title">Akcja potrząśnięcia</string>
   <string name="shake_threshold_title">Próg wyzwolenia siły potrząśnięcia</string>
   <string name="misc_features">Pozostałe funkcje</string>
@@ -123,13 +123,13 @@
   <string name="coverloader_vanilla_title">Ładowanie okładki albumu z folderu</string>
   <string name="coverloader_vanilla_summary">Szukaj obrazów o nazwie \'cover.jpg\', \'album.jpg\' lub \'artwork.jpg\' i wyświetlaj je jako okładki albumu</string>
   <string name="coverloader_shadow_title">Ładowanie okladek albumów z ukrytych folderów</string>
-  <string name="coverloader_shadow_summary">Spróbuj załadować okładkęalbumu z \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\'</string>
+  <string name="coverloader_shadow_summary">Spróbuj załadować okładkę albumu z \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\'</string>
   <string name="cover_on_lockscreen_title">Pokazuj okładkę albumu na ekranie blokady</string>
   <string name="double_tap_title">Dwukrotne kliknięcie widgetu</string>
   <string name="double_tap_summary">Podwójne kliknięcie widgetu 1x1 otworzy odtwarzacz. Wprowadza zwłokę 400ms zanim widget odpowie na akcję.</string>
   <string name="stock_broadcast_title">Emulowanie systemowych komunikatów</string>
   <string name="stock_broadcast_summary">Wysyła komunikaty udające komunikaty wysyłane przez systemowy odtwarzacz muzyki, aby współpracowały z trzecimi aplikacjami blokad ekranów, widgetów itp.</string>
-  <string name="about">Na temat</string>
+  <string name="about">O Vanilla Music...</string>
   <string name="tabs">Kolejność zakładek</string>
   <string name="customize_tab_order">Dostosowanie kolejności oraz widoczności zakładek biblioteki</string>
   <string name="restore_default">Przywróć domyślne</string>
@@ -144,7 +144,7 @@
   <string name="info_on_cover">Info na okładce albumu</string>
   <string name="info_below_cover">Info pod okładką albumu</string>
   <string name="fixed_info">Info na stałe na górze</string>
-  <string name="do_nothing">Nie rób nic</string>
+  <string name="do_nothing">Nic nie rób</string>
   <string name="open_library">Otwórz bibliotekę</string>
   <string name="play_pause">Odtwóz/zapauzuj</string>
   <string name="next_album">Następny album</string>
