@@ -259,7 +259,9 @@ public final class CoverView extends View implements Handler.Callback {
 				if (!Looper.getMainLooper().equals(Looper.myLooper())) {
 					throw new IllegalStateException("MSG_UI_LONG_CLICK must be run from the UI thread");
 				}
-				performLongClick();
+				if (scrollIsNotSignificant()) {
+					performLongClick();
+				}
 				break;
 			default:
 				throw new IllegalArgumentException("Unknown message received: "+message.what);
