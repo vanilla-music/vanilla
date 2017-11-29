@@ -539,9 +539,10 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 			mYear = data.getFirst(MediaMetadataExtractor.YEAR);
 			mPath = song.path;
 
-			String disc = data.getFirst(MediaMetadataExtractor.DISC_NUMBER);
-			if (disc != null && disc.length() > 0)
-				mTrack += String.format(" (%s💿)", disc);
+			mTrack = String.format("%d", song.trackNumber);
+			if (song.discNumber > 0) {
+				mTrack += String.format(" (%d💿)", song.discNumber);
+			}
 
 			StringBuilder sb = new StringBuilder(12);
 			sb.append(decodeMimeType(data.getFirst(MediaMetadataExtractor.MIME_TYPE)));

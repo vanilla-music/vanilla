@@ -62,6 +62,7 @@ public class Song implements Comparable<Song> {
 		MediaLibrary.ContributorColumns.ARTIST_ID,
 		MediaLibrary.SongColumns.DURATION,
 		MediaLibrary.SongColumns.SONG_NUMBER,
+		MediaLibrary.SongColumns.DISC_NUMBER,
 	};
 
 	public static final String[] EMPTY_PLAYLIST_PROJECTION = {
@@ -78,6 +79,7 @@ public class Song implements Comparable<Song> {
 		MediaLibrary.ContributorColumns.ARTIST_ID,
 		MediaLibrary.SongColumns.DURATION,
 		MediaLibrary.SongColumns.SONG_NUMBER,
+		MediaLibrary.SongColumns.DISC_NUMBER,
 	};
 
 	/**
@@ -124,6 +126,10 @@ public class Song implements Comparable<Song> {
 	 * The position of the song in its album.
 	 */
 	public int trackNumber;
+	/**
+	 * The disc number where this song is present.
+	*/
+	public int discNumber;
 
 	/**
 	 * Song flags. Currently {@link #FLAG_RANDOM} or {@link #FLAG_NO_COVER}.
@@ -181,6 +187,7 @@ public class Song implements Comparable<Song> {
 		artistId = cursor.getLong(6);
 		duration = cursor.getLong(7);
 		trackNumber = cursor.getInt(8);
+		discNumber = cursor.getInt(9);
 	}
 
 	/**
