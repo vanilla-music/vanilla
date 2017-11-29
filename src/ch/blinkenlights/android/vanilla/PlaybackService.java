@@ -1184,13 +1184,13 @@ public final class PlaybackService extends Service
 	 */
 	private void showMirrorLinkSafeToast(int resId, int duration) {
 		if(getMirrorLinkCallback() == null) {
-			Toast.makeText(this, resId, duration).show();
+			Toast.makeText(getApplicationContext(), resId, duration).show();
 		}
 	}
 
 	private void showMirrorLinkSafeToast(CharSequence text, int duration) {
 		if(getMirrorLinkCallback() == null) {
-			Toast.makeText(this, text, duration).show();
+			Toast.makeText(getApplicationContext(), text, duration).show();
 		}
 	}
 
