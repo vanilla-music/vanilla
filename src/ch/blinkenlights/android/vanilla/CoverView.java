@@ -111,6 +111,10 @@ public final class CoverView extends View implements Handler.Callback {
 	 */
 	private Handler mHandler;
 	/**
+	 * Handler thread only used for UI updates
+	 */
+	private Handler mUiHandler;
+	/**
 	 * Our current scroll position.
 	 * Setting this to '0' means that we will display bitmap[0].
 	 */
@@ -147,6 +151,7 @@ public final class CoverView extends View implements Handler.Callback {
 	 * Configures and sets up this view
 	 */
 	public void setup(Looper looper, Callback callback, int style) {
+		mUiHandler = new Handler(this);
 		mHandler = new Handler(looper, this);
 		mCallback = callback;
 		mCoverStyle = style;
@@ -233,9 +238,9 @@ public final class CoverView extends View implements Handler.Callback {
 
 
 	private final static int MSG_QUERY_SONGS = 1;
-	private final static int MSG_LONG_CLICK = 2;
-	private final static int MSG_SHIFT_SONG = 3;
-	private final static int MSG_SET_BITMAP = 4;
+	private final static int MSG_SHIFT_SONG = 2;
+	private final static int MSG_SET_BITMAP = 3;
+	private final static int MSG_UI_LONG_CLICK = 4; // should only be used with mUiHandler
 
 	@Override
 	public boolean handleMessage(Message message) {
@@ -243,17 +248,18 @@ public final class CoverView extends View implements Handler.Callback {
 			case MSG_QUERY_SONGS:
 				querySongsInternal();
 				break;
-			case MSG_LONG_CLICK:
-				if (scrollIsNotSignificant()) {
-					performLongClick();
-				}
-				break;
 			case MSG_SHIFT_SONG:
 				DEBUG("Shifting to song: "+message.arg1);
 				mCallback.shiftCurrentSong(message.arg1);
 				break;
 			case MSG_SET_BITMAP:
 				setSongBitmap(message.arg1, (Song)message.obj);
+				break;
+			case MSG_UI_LONG_CLICK:
+				if (!Looper.getMainLooper().equals(Looper.myLooper())) {
+					throw new IllegalStateException("MSG_UI_LONG_CLICK must be run from the UI thread");
+				}
+				performLongClick();
 				break;
 			default:
 				throw new IllegalArgumentException("Unknown message received: "+message.what);
@@ -290,7 +296,7 @@ public final class CoverView extends View implements Handler.Callback {
 		} else {
 			// MiniPlaybackActivity: be square
 			int size = Math.min(width, height);
-			setMeasuredDimension(size, size); 
+			setMeasuredDimension(size, size);
 		}
 	}
 
@@ -360,7 +366,7 @@ public final class CoverView extends View implements Handler.Callback {
 			case MotionEvent.ACTION_DOWN: {
 
 				if (mScroller.isFinished()) {
-					mHandler.sendEmptyMessageDelayed(MSG_LONG_CLICK, ViewConfiguration.getLongPressTimeout());
+					mUiHandler.sendEmptyMessageDelayed(MSG_UI_LONG_CLICK, ViewConfiguration.getLongPressTimeout());
 				} else {
 					// Animation was still running while we got a new down event
 					// Abort the current animation!
@@ -430,7 +436,7 @@ public final class CoverView extends View implements Handler.Callback {
 				int whichCover = 0;
 
 				if (scrollIsNotSignificant()) {
-					if (mHandler.hasMessages(MSG_LONG_CLICK)) {
+					if (mUiHandler.hasMessages(MSG_UI_LONG_CLICK)) {
 						// long click didn't fire yet -> consider this to be a normal click
 						performClick();
 					}
@@ -458,7 +464,7 @@ public final class CoverView extends View implements Handler.Callback {
 				mScroller.handleFling(velocityX, mScrollX, scrollTargetX, whichCover);
 				if (ASYNC_SWITCH >= 0)
 					mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_SHIFT_SONG, whichCover, 0), ASYNC_SWITCH);
-				mHandler.removeMessages(MSG_LONG_CLICK);
+				mUiHandler.removeMessages(MSG_UI_LONG_CLICK);
 
 				invalidate = true;
 				break;
