@@ -779,6 +779,10 @@ public abstract class PlaybackActivity extends Activity
 				.setItems(pNamesArr, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
+						if (mLastRequestedCtx == null) {
+							return;
+						}
+
 						long id = mLastRequestedCtx.getLongExtra("id", LibraryAdapter.INVALID_ID);
 						Song resolved = MediaUtils.getSongByTypeId(PlaybackActivity.this, MediaUtils.TYPE_SONG, id);
 						if (resolved != null) {
