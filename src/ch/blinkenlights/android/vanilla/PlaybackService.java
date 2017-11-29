@@ -694,8 +694,12 @@ public final class PlaybackService extends Service
 
 	private void refreshDuckingValues() {
 		float duckingFactor = ((float) mVolumeDuringDucking)/100f;
-		mMediaPlayer.setDuckingFactor(duckingFactor);
-		mPreparedMediaPlayer.setDuckingFactor(duckingFactor);
+		if (mMediaPlayer != null) {
+			mMediaPlayer.setDuckingFactor(duckingFactor);
+		}
+		if (mPreparedMediaPlayer != null) {
+			mPreparedMediaPlayer.setDuckingFactor(duckingFactor);
+		}
 	}
 
 	/***
