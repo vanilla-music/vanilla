@@ -251,15 +251,20 @@ public class Song implements Comparable<Song> {
 	}
 
 	/**
-	 * Compares the album ids of the two songs; if equal, compares track order.
+	 * Compares the virtual order of two song objects.
 	 */
 	@Override
-	public int compareTo(Song other)
-	{
-		if (albumId == other.albumId)
+	public int compareTo(Song other) {
+		if (albumId != other.albumId)
+			return (albumId > other.albumId ? 1 : -1); // albumId is long, avoid overflow fun.
+
+		if (discNumber != other.discNumber)
+			return discNumber - other.discNumber;
+
+		if (trackNumber != other.trackNumber)
 			return trackNumber - other.trackNumber;
-		if (albumId > other.albumId)
-			return 1;
-		return -1;
+
+		// else: is equal
+		return 0;
 	}
 }
