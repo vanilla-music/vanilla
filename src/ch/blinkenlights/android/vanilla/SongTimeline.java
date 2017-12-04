@@ -691,14 +691,22 @@ public final class SongTimeline {
 			else if (delta == SHIFT_PREVIOUS_SONG || delta == SHIFT_NEXT_SONG) {
 				shiftCurrentSongInternal(delta);
 			} else {
-				Song song = getSong(0);
-				long currentAlbum = song.albumId;
-				long currentSong = song.id;
+				Song currentSong = getSong(0);
+				Song song = currentSong;
 				delta = delta > 0 ? 1 : -1;
-				do {
+				for (;;) {
 					shiftCurrentSongInternal(delta);
 					song = getSong(0);
-				} while (currentAlbum == song.albumId && currentSong != song.id);
+
+					if (currentSong == null || song == null)
+						break;
+					if (currentSong.albumId != song.albumId) // found a new album
+						break;
+					if (currentSong.id == song.id) // probably looping? (= only one album in queue)
+						break;
+					if (getPosition() == 0 && getFinishAction() == FINISH_RANDOM) // dead end: FINISH_RANDOM won't wrap around.
+						break;
+				}
 			}
 		}
 
