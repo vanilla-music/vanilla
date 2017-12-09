@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Black.Dark.VanillaBase" parent="Greyish.Dark.VanillaBase">
+        <item name="android:colorBackground">@android:color/black</item>
+        <item name="overlay_background_color">@android:color/black</item>
+        <item name="float_color">@android:color/black</item>
+        <item name="background_circle_color">@android:color/black</item>
+        <item name="tabs_background">@android:color/black</item>
+        <item name="controls_normal">@color/overlay_foreground_dark</item>
+        <item name="android:colorPrimary">@android:color/black</item>
+        <item name="android:colorPrimaryDark">@android:color/black</item>
+        <item name="android:popupMenuStyle">@style/Black.Dark.PopupMenu</item>
+    </style>
+
+    <style name="Black.Dark.Playback" parent="Black.Dark.VanillaBase">
+    </style>
+
+    <style name="Black.Dark.BackActionBar" parent="Black.Dark.VanillaBase">
+    </style>
+
+    <style name="Black.Dark.Library" parent="Black.Dark.VanillaBase">
+        <item name="android:colorBackground">@android:color/black</item>
+    </style>
+
+    <style name="Black.Dark.PopupDialog" parent="Greyish.Dark.PopupDialog">
+    </style>
+
+    <style name="Black.Dark.PopupMenu" parent="@android:style/Widget.PopupMenu">
+        <item name="android:popupBackground">@color/material_grey_700</item>
+    </style>
+</resources>
