@@ -120,10 +120,13 @@ public class MediaUtils {
 	private static Random sRandom;
 
 	/**
-	 * Shuffled list of all ids in the library.
+	 * Shuffled list of all songs in the library.
 	 */
-	private static long[] sAllSongs;
-	private static int sAllSongsIdx;
+	private static ArrayList<Song> sAllSongs = new ArrayList<Song>();
+	/**
+	 * True if sAllSongs was shuffled by album.
+	 */
+	private static boolean sAllSongsAS;
 
 	/**
 	 * Total number of songs in the music library, or -1 for uninitialized.
@@ -257,22 +260,6 @@ public class MediaUtils {
 	}
 
 	/**
-	 * Shuffle an array using Fisher-Yates algorithm.
-	 *
-	 * @param list The array. It will be shuffled in place.
-	 */
-	public static void shuffle(long[] list)
-	{
-		Random random = getRandom();
-		for (int i = list.length; --i != -1; ) {
-			int j = random.nextInt(i + 1);
-			long tmp = list[j];
-			list[j] = list[i];
-			list[i] = tmp;
-		}
-	}
-
-	/**
 	 * Shuffle a Song list using Collections.shuffle().
 	 *
 	 * @param albumShuffle If true, preserve the order of songs inside albums.
@@ -338,32 +325,26 @@ public class MediaUtils {
 	}
 
 	/**
-	 * Returns a shuffled array contaning the ids of all the songs on the
+	 * Returns a list containing all the songs found on the
 	 * device's library.
 	 *
 	 * @param context The Context to use
 	 */
-	private static long[] queryAllSongs(Context context) {
-		QueryTask query = new QueryTask(MediaLibrary.TABLE_SONGS, Song.EMPTY_PROJECTION, null, null, null);
+	private static ArrayList<Song> getAllSongs(Context context) {
+		QueryTask query = new QueryTask(MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS, Song.FILLED_PROJECTION, null, null, null);
 		Cursor cursor = query.runQuery(context);
-		if (cursor == null || cursor.getCount() == 0) {
-			sSongCount = 0;
-			return null;
-		}
+		ArrayList<Song> list = new ArrayList<Song>();
 
-		int count = cursor.getCount();
-		long[] ids = new long[count];
-		for (int i = 0; i != count; ++i) {
-			if (!cursor.moveToNext())
-				return null;
-			ids[i] = cursor.getLong(0);
+		if (cursor == null)
+			return list;
+
+		while (cursor.moveToNext()) {
+			Song song = new Song(-1);
+			song.populate(cursor);
+			list.add(song);
 		}
-		sSongCount = count;
 		cursor.close();
-
-		shuffle(ids);
-
-		return ids;
+		return list;
 	}
 
 	/**
@@ -373,7 +354,7 @@ public class MediaUtils {
 	public static void onMediaChange()
 	{
 		sSongCount = -1;
-		sAllSongs = null;
+		sAllSongs.clear();
 	}
 
 	/**
@@ -431,25 +412,25 @@ public class MediaUtils {
 	 * MediaStore.
 	 *
 	 * @param context The Context to use
+	 * @param albumShuffle Whether or not we should shuffle by album
 	 */
-	public static Song getRandomSong(Context context)
-	{
-		long[] songs = sAllSongs;
+	public static Song getRandomSong(Context context, boolean albumShuffle) {
+		ArrayList<Song> songs = sAllSongs;
 
-		if (songs == null) {
-			songs = queryAllSongs(context);
-			if (songs == null)
-				return null;
-			sAllSongs = songs;
-			sAllSongsIdx = 0;
-		} else if (sAllSongsIdx == sAllSongs.length) {
-			sAllSongsIdx = 0;
-			shuffle(sAllSongs);
+		if (songs.size() == 0 || sAllSongsAS != albumShuffle) {
+			sAllSongs = getAllSongs(context);
+			sAllSongsAS = albumShuffle;
+			shuffle(sAllSongs, albumShuffle);
+			songs = sAllSongs;
+			// We don't need it but know the value, we can fill the cache for free.
+			sSongCount = songs.size();
 		}
 
-		Song result = getSongByTypeId(context, MediaUtils.TYPE_SONG, sAllSongs[sAllSongsIdx]);
-		result.flags |= Song.FLAG_RANDOM;
-		sAllSongsIdx++;
+		Song result = null;
+		if (songs.size() > 0) {
+			result = songs.remove(0);
+			result.flags |= Song.FLAG_RANDOM;
+		}
 		return result;
 	}
 

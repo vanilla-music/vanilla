@@ -580,7 +580,7 @@ public final class SongTimeline {
 				return null;
 			} else if (pos == size) {
 				if (mFinishAction == FINISH_RANDOM) {
-					song = MediaUtils.getRandomSong(mContext);
+					song = MediaUtils.getRandomSong(mContext, mShuffleMode == SHUFFLE_ALBUMS);
 					if (song == null)
 						return null;
 					timeline.add(song);
