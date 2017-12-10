@@ -36,7 +36,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ListIterator;
+
 import junit.framework.Assert;
 
 /**
@@ -571,6 +573,7 @@ public final class SongTimeline {
 		synchronized (this) {
 			int pos = mCurrentPos + delta;
 			int size = timeline.size();
+			int queueShrinkSize = 20;
 
 			if (pos < 0) {
 				if (size == 0 || mFinishAction == FINISH_RANDOM)
@@ -580,15 +583,34 @@ public final class SongTimeline {
 				return null;
 			} else if (pos == size) {
 				if (mFinishAction == FINISH_RANDOM) {
-					song = MediaUtils.getRandomSong(mContext);
-					if (song == null)
-						return null;
-					timeline.add(song);
+
+					if (mShuffleMode != SHUFFLE_ALBUMS) {
+						song = MediaUtils.getRandomSong(mContext, false);
+						if (song == null)
+							return null;
+						timeline.add(song);
+					} else {
+						final List<Song> songs = MediaUtils.getRandomSongs(mContext, true);
+						if (songs.size() == 0) {
+							return null;
+						}
+
+						for (Song albumSong : songs) {
+							timeline.add(albumSong);
+						}
+
+						// in case we have just added an album with more our initial queue shrink size,
+						// we don't want to truncate it.
+						queueShrinkSize = Math.max(queueShrinkSize, songs.size());
+
+						song = songs.get(songs.size() - 1);
+					}
+
 					mLastRandomSong = song;
-					// Keep the queue at 20 items to avoid growing forever
+					// Keep the queue at a certain size (default 20) to avoid growing forever
 					// Note that we do not broadcast the addition of this song, as it
 					// was virtually 'always there'
-					shrinkQueue(20);
+					shrinkQueue(queueShrinkSize);
 				} else {
 					if (size == 0)
 						// empty queue
