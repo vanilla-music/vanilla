@@ -595,7 +595,7 @@ public final class SongTimeline {
 					song = songs.get(songs.size() - 1);
 
 					mLastRandomSong = song;
-					// Keep the queue at a certain size to avoid growing forever
+					// Keep the queue at 20 items to avoid growing forever
 					// Note that we do not broadcast the addition of this song, as it
 					// was virtually 'always there'
 					shrinkQueue(20);
