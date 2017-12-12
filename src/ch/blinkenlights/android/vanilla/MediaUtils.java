@@ -431,30 +431,25 @@ public class MediaUtils {
 		final List<Song> results = new ArrayList<>();
 
 		if (songs.size() > 0) {
-			final Song song = songs.remove(0);
 
-			if (!albumShuffle) {
-				song.flags |= Song.FLAG_RANDOM;
-			}
+			long firstAlbumId = songs.get(0).albumId;
 
-			results.add(song);
-
-			// since we're in album shuffle mode, we'll want to add in the entire album in one go,
+			// if we're in album shuffle mode, we'll want to add in the entire album in one go,
 			// so loop through the upcoming songs and add all those that have the same album id
 			// as the song we initially got
-			if (songs.size() > 0 && albumShuffle) {
-				long expectedAlbumId = song.albumId;
-				boolean hasMore = true;
+			boolean addMore;
+			do {
+				final Song song = songs.remove(0);
 
-				while (hasMore) {
-					hasMore = false;
-					if (songs.size() > 0 && songs.get(0).albumId == expectedAlbumId) {
-						final Song nextSong = songs.remove(0);
-						results.add(nextSong);
-						hasMore = true;
-					}
+				// when in album shuffle mode, we don't want to flag any of the added songs
+				// as random, since manually enqueuing or changing random mode will remove every album track.
+				if (!albumShuffle) {
+					song.flags |= Song.FLAG_RANDOM;
 				}
-			}
+
+				results.add(song);
+				addMore = albumShuffle && songs.size() > 0 && songs.get(0).albumId == firstAlbumId;
+			} while (addMore);
 		}
 
 		return results;
