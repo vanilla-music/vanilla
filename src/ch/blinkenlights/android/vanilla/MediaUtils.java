@@ -408,13 +408,15 @@ public class MediaUtils {
 	}
 
 	/**
-	 * Returns a song randomly selected from all the songs in the Android
-	 * MediaStore.
+	 * Returns a list of songs randomly selected from all the songs in the Android
+	 * MediaStore. When albumShuffle is specified, the returned list may contain all the songs
+	 * for that album, in order. Otherwise, only one song will be returned. If no songs are
+	 * available, the list will be empty.
 	 *
 	 * @param context The Context to use
 	 * @param albumShuffle Whether or not we should shuffle by album
 	 */
-	public static Song getRandomSong(Context context, boolean albumShuffle) {
+	public static List<Song> getRandomSongs(Context context, boolean albumShuffle) {
 		ArrayList<Song> songs = sAllSongs;
 
 		if (songs.size() == 0 || sAllSongsAS != albumShuffle) {
@@ -426,12 +428,31 @@ public class MediaUtils {
 			sSongCount = songs.size();
 		}
 
-		Song result = null;
+		final List<Song> results = new ArrayList<>();
+
 		if (songs.size() > 0) {
-			result = songs.remove(0);
-			result.flags |= Song.FLAG_RANDOM;
+
+			long firstAlbumId = songs.get(0).albumId;
+
+			// if we're in album shuffle mode, we'll want to add in the entire album in one go,
+			// so loop through the upcoming songs and add all those that have the same album id
+			// as the song we initially got
+			boolean addMore;
+			do {
+				final Song song = songs.remove(0);
+
+				// when in album shuffle mode, we don't want to flag any of the added songs
+				// as random, since manually enqueuing or changing random mode will remove every album track.
+				if (!albumShuffle) {
+					song.flags |= Song.FLAG_RANDOM;
+				}
+
+				results.add(song);
+				addMore = albumShuffle && songs.size() > 0 && songs.get(0).albumId == firstAlbumId;
+			} while (addMore);
 		}
-		return result;
+
+		return results;
 	}
 
 	/**
@@ -605,5 +626,4 @@ public class MediaUtils {
 				return TYPE_INVALID;
 		}
 	}
-
 }

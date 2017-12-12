@@ -36,7 +36,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ListIterator;
+
 import junit.framework.Assert;
 
 /**
@@ -580,10 +582,18 @@ public final class SongTimeline {
 				return null;
 			} else if (pos == size) {
 				if (mFinishAction == FINISH_RANDOM) {
-					song = MediaUtils.getRandomSong(mContext, mShuffleMode == SHUFFLE_ALBUMS);
-					if (song == null)
+
+					final List<Song> songs = MediaUtils.getRandomSongs(mContext, mShuffleMode == SHUFFLE_ALBUMS);
+					if (songs.size() == 0) {
 						return null;
-					timeline.add(song);
+					}
+
+					for (Song newSong : songs) {
+						timeline.add(newSong);
+					}
+
+					song = songs.get(0);
+
 					mLastRandomSong = song;
 					// Keep the queue at 20 items to avoid growing forever
 					// Note that we do not broadcast the addition of this song, as it
