@@ -2,6 +2,7 @@
 use strict;
 
 use constant THEMES_OUTDIR => './res/values-v21/';
+use constant ENUM_OUTDIR   => './src/ch/blinkenlights/android/vanilla/';
 use constant THEMES_LIST   => './res/values-v21/themes-list.xml';
 
 my $THEMES = [
@@ -14,6 +15,10 @@ my $THEMES = [
 		_name => 'greyish',
 		light => { colorAccent => '#ff000000', colorPrimary => '#ff212121', colorPrimaryDark => '#ff090909', controlsNormal=>'@color/material_grey_600', _bg => '#fff0f0f0' },
 		dark  => { colorAccent => '#ffd8d8d8', colorPrimary => '#ff212121', colorPrimaryDark => '#ff090909', controlsNormal=>'@color/material_grey_600', _bg => '#ff2a2a2a' },
+	},
+	{
+		_name => 'black',
+		dark  => { colorAccent => '#ffd8d8d8', colorPrimary => '#ff000000', colorPrimaryDark => '#ff000000', controlsNormal=>'@color/material_grey_600', _bg => '#ff000000' },
 	},
 	{
 		_name => 'orange',
@@ -35,6 +40,13 @@ my $THEMES = [
 
 my $XML_ARRAYS    = {};
 my $THEME_ID = 0;
+my $ENUMFILE = ENUM_OUTDIR."ThemeEnum.java";
+my $ENUMBUFF = get_theme_enum(@$THEMES);
+
+open(OUT, ">", $ENUMFILE) or die "Can not write to $ENUMFILE: $!\n";
+print OUT $ENUMBUFF;
+close(OUT);
+
 foreach my $theme_ref (@$THEMES) {
 	my $theme_name = $theme_ref->{_name};
 	my $theme_id = ($theme_name eq 'standard' ? '' : ucfirst($theme_name)."."); # standard has no prefix
@@ -53,16 +65,19 @@ foreach my $theme_ref (@$THEMES) {
 	}
 
 	# use this loop to also populate the theme list output
-	# assumes that get_theme_xml created two themes per definition (light and dark)
 	foreach my $variant ('', 'Dark.') {
 		my $tvvar = ($variant eq '' ? 'light' : 'dark');
-		my $tvarr = join(",", map { $theme_ref->{$tvvar}->{$_} } qw(colorPrimaryDark _bg colorPrimary));
+		if (exists $theme_ref->{$tvvar}) {
+			my $tvarr = join(",",
+				map {$theme_ref->{$tvvar}->{$_}} qw(colorPrimaryDark _bg colorPrimary));
 
-		# user visible names of themes
-		push(@{$XML_ARRAYS->{'string-array'}->{theme_entries}}, $variant.ucfirst($theme_name));
-		# csv list of theme info, such as its id and the primary colors to show in preview
-		push(@{$XML_ARRAYS->{'string-array'}->{theme_values}},  ($THEME_ID).",".$tvarr);
-		$THEME_ID++;
+			# user visible names of themes
+			push(@{$XML_ARRAYS->{'string-array'}->{theme_entries}},
+				$variant . ucfirst($theme_name));
+			# csv list of theme info, such as its id and the primary colors to show in preview
+			push(@{$XML_ARRAYS->{'string-array'}->{theme_values}}, ($THEME_ID) . "," . $tvarr);
+			$THEME_ID++;
+		}
 	}
 }
 
@@ -92,9 +107,8 @@ close(OUT);
 
 
 sub get_theme_xml {
-	my($this, $tid) = @_;
-
-my $DATA = << "EOF";
+	my ($this, $tid) = @_;
+	my $DATA = << "EOF";
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 
@@ -111,10 +125,13 @@ my $DATA = << "EOF";
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with this program. If not, see <http://www.gnu.org/licenses/>. 
+ along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
 
 <resources>
+EOF
+	if (exists $this->{'light'}) {
+		$DATA = $DATA . << "EOF";
 	<style name="${tid}VanillaBase" parent="android:Theme.Material.Light.DarkActionBar">
 		<item name="overlay_background_color">\@color/overlay_background_light</item>
 		<item name="overlay_foreground_color">\@color/overlay_foreground_light</item>
@@ -147,6 +164,10 @@ my $DATA = << "EOF";
 		<item name="controls_normal">$this->{light}->{controlsNormal}</item>
 		<item name="controls_active">$this->{light}->{colorAccent}</item>
 	</style>
+EOF
+	}
+	if (exists $this->{'dark'}) {
+		$DATA =  $DATA . << "EOF";
 
 	<!-- dark theme -->
 	<style name="${tid}Dark.VanillaBase" parent="android:Theme.Material">
@@ -182,7 +203,58 @@ my $DATA = << "EOF";
 		<item name="controls_active">$this->{dark}->{colorAccent}</item>
 	</style>
 
+EOF
+	}
+	$DATA = $DATA . << "EOF";
 </resources>
 EOF
+
 	return $DATA
+}
+
+# Creates the ThemeEnum.java file
+sub get_theme_enum {
+	my $enumValues;
+	my $enumKey = 0;
+	foreach my $value (@_) {
+		foreach my $variant ('', 'Dark.') {
+			my $tvvar = ($variant eq '' ? 'light' : 'dark');
+			if (exists $value->{$tvvar}) {
+				# appends the next value each iteration
+				$enumValues = uc $enumValues . $tvvar . '_' . $value->{_name} . '(' . $enumKey . '),';
+				$enumKey++;
+			}
+		}
+	}
+	# strips the last comma from the string
+	$enumValues = substr $enumValues, 0, -1;
+	return << "EOF";
+package ch.blinkenlights.android.vanilla;
+
+import android.util.SparseArray;
+
+public enum ThemeEnum {
+    $enumValues;
+
+    private static SparseArray<ThemeEnum> map = new SparseArray<>();
+
+    static {
+        for (ThemeEnum themeEnum : ThemeEnum.values()) {
+            map.put(themeEnum._index, themeEnum);
+        }
+    }
+
+    private int _index;
+
+    ThemeEnum(final int index) {
+        _index = index;
+    }
+
+    public static ThemeEnum valueOf(int index) {
+        return map.get(index);
+    }
+}
+
+EOF
+
 }
