@@ -1793,7 +1793,7 @@ public final class PlaybackService extends Service
 	 *
 	 * @param query The query to run.
 	 */
-	public void runQuery(QueryTask query)
+	private void runQuery(QueryTask query)
 	{
 		int count = mTimeline.addSongs(this, query);
 

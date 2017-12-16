@@ -147,7 +147,7 @@ public class MediaAdapter
 	 *
 	 * @param context The Context used to access the content model.
 	 * @param type The type of media to represent. Must be one of the
-	 * Song.TYPE_* constants. This determines which content provider to query
+	 * MediaUtils.TYPE_* constants. This determines which content provider to query
 	 * and what fields to display in the views.
 	 * @param limiter An initial limiter to use
 	 * @param activity The LibraryActivity that will contain this adapter - may be null

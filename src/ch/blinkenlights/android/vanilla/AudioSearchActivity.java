@@ -19,15 +19,19 @@ package ch.blinkenlights.android.vanilla;
 
 import android.app.Activity;
 import android.app.SearchManager;
-import android.os.Bundle;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.os.AsyncTask;
+import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.View;
 import android.view.Window;
 
-import android.util.Log;
-
 public class AudioSearchActivity extends PlaybackActivity {
+	/**
+	 * The AsyncTask used to perform the query.
+	 */
+	private AudioSearchWorker mWorker;
 
 	@Override
 	public void onCreate(Bundle icicle) {
@@ -45,18 +49,47 @@ public class AudioSearchActivity extends PlaybackActivity {
 			return;
 		}
 
-		// Looks like a search query: grab search string.
-		String query = intent.getExtras().getString(SearchManager.QUERY);
-
-		Log.v("VanillaMusic", "QQ: "+query);
-		Log.v("VanillaMusic", "YY: "+intent.getExtras().getString(SearchManager.USER_QUERY));
-		Log.v("VanillaMusic", "YY: "+intent.getExtras().getString(SearchManager.SUGGEST_COLUMN_AUDIO_CHANNEL_CONFIG));
-		Log.v("VanillaMusic", "YY: "+intent.getExtras().getString(SearchManager.APP_DATA));
-		Log.v("VanillaMusic", "YY: "+intent.getExtras().getString(SearchManager.ACTION_MSG));
-		Log.v("VanillaMusic", "YY: "+intent.getExtras().getString(SearchManager.ACTION_MSG));
-		Log.v("VanillaMusic", "YY: "+intent.getExtras().getString(SearchManager.SUGGEST_COLUMN_TEXT_1));
-		// Basic sanity test done: Setup window
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.audiopicker);
+		// Fixme: add a progress dialog.
+
+		String query = intent.getExtras().getString(SearchManager.QUERY);
+		mWorker = new AudioSearchWorker();
+		mWorker.execute(query);
 	}
+
+	/**
+	 * Called by AudioSearchWorker after the search completed.
+	 */
+	private void onSearchCompleted() {
+		finish();
+	}
+
+	/**
+	 * Async worker class used to perform the search
+	 */
+	private class AudioSearchWorker extends AsyncTask<String, Void, Void> {
+		@Override
+		protected Void doInBackground(String... search) {
+			Context ctx = getApplicationContext();
+			MediaAdapter adapter = new MediaAdapter(ctx, MediaUtils.TYPE_SONG, null, null);
+			adapter.setFilter(search[0]);
+
+			QueryTask query = adapter.buildSongQuery(Song.FILLED_PROJECTION);
+			query.mode = SongTimeline.MODE_PLAY;
+
+			PlaybackService service = PlaybackService.get(ctx);
+			service.pause();
+			service.emptyQueue();
+			service.addSongs(query);
+			if (service.getTimelineLength() > 0) {
+				service.play();
+			}
+			return null;
+		}
+		@Override
+		protected void onPostExecute(Void nil) {
+			onSearchCompleted();
+		}
+	}
+
 }
