@@ -70,6 +70,7 @@ public class RemoteControlImplLp implements RemoteControl.Client {
 			public void onPause() {
 				MediaButtonReceiver.processKey(mContext, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_HEADSETHOOK));
 			}
+			@Override
 			public void onPlay() {
 				MediaButtonReceiver.processKey(mContext, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_HEADSETHOOK));
 			}
@@ -77,6 +78,7 @@ public class RemoteControlImplLp implements RemoteControl.Client {
 			public void onSkipToNext() {
 				MediaButtonReceiver.processKey(mContext, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT));
 			}
+			@Override
 			public void onSkipToPrevious() {
 				MediaButtonReceiver.processKey(mContext, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS));
 			}
@@ -146,11 +148,12 @@ public class RemoteControlImplLp implements RemoteControl.Client {
 		}
 
 		int playbackState = (isPlaying ? PlaybackState.STATE_PLAYING : PlaybackState.STATE_PAUSED);
+		long actions = (PlaybackState.ACTION_PLAY_PAUSE | PlaybackState.ACTION_SKIP_TO_NEXT | PlaybackState.ACTION_SKIP_TO_PREVIOUS);
+		actions |= (isPlaying ? PlaybackState.ACTION_PAUSE : PlaybackState.ACTION_PLAY);
 
 		session.setPlaybackState(new PlaybackState.Builder()
 			.setState(playbackState, PlaybackState.PLAYBACK_POSITION_UNKNOWN , 1.0f)
-			.setActions(PlaybackState.ACTION_PLAY | PlaybackState.ACTION_PAUSE | PlaybackState.ACTION_PLAY_PAUSE |
-			            PlaybackState.ACTION_SKIP_TO_NEXT | PlaybackState.ACTION_SKIP_TO_PREVIOUS)
+			.setActions(actions)
 			.build());
 		mMediaSession.setActive(true);
 	}

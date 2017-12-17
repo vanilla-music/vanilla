@@ -206,6 +206,16 @@ THE SOFTWARE.
 			</intent-filter>
 		</activity>
 
+		<activity android:name="AudioSearchActivity" android:theme="@style/PopupDialog"
+			android:excludeFromRecents="true">
+			<intent-filter>
+				<action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+		</activity>
+
+
+
 		<meta-data
 			android:name="com.google.android.backup.api_key"
 			android:value="AEdPqrEAAAAIEViwBxSHCdBCOOat4Go_5gSxFU7PhRFjLTeRAw" />
