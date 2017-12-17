@@ -45,7 +45,6 @@ import android.os.Process;
 import android.os.SystemClock;
 import android.util.Log;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -744,6 +743,7 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService
 	}
 
 	public void onMediaChange() {
+		setSong(0, null);
 	}
 
 	public void recreate() {
@@ -785,10 +785,4 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService
 		// updatePlaybackState(error);
 	}
 
-	public void onMediaChanged() {
-		if(PlaybackService.hasInstance()) {
-			setSong(0,PlaybackService.get(this).getSong(0));
-		}
-
-	}
 }
