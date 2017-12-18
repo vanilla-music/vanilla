@@ -1190,13 +1190,13 @@ public final class PlaybackService extends Service
 	 */
 	private void showMirrorLinkSafeToast(int resId, int duration) {
 		if(getMirrorLinkCallback() == null) {
-			Toast.makeText(getApplicationContext(), resId, duration).show();
+			mHandler.sendMessage(mHandler.obtainMessage(MSG_SHOW_TOAST, duration, resId));
 		}
 	}
 
 	private void showMirrorLinkSafeToast(CharSequence text, int duration) {
 		if(getMirrorLinkCallback() == null) {
-			Toast.makeText(getApplicationContext(), text, duration).show();
+			mHandler.sendMessage(mHandler.obtainMessage(MSG_SHOW_TOAST, duration, 0, text));
 		}
 	}
 
@@ -1549,6 +1549,7 @@ public final class PlaybackService extends Service
 	private static final int MSG_SKIP_BROKEN_SONG = 15;
 	private static final int MSG_GAPLESS_UPDATE = 16;
 	private static final int MSG_UPDATE_PLAYCOUNTS = 17;
+	private static final int MSG_SHOW_TOAST = 18;
 
 	@Override
 	public boolean handleMessage(Message message)
@@ -1626,8 +1627,16 @@ public final class PlaybackService extends Service
 				ArrayList<Long> items = PlayCountsHelper.getTopSongs(context, mAutoPlPlaycounts);
 				Playlist.addToPlaylist(context, id, items);
 			}
-
-
+			break;
+		case MSG_SHOW_TOAST:
+			CharSequence text = (CharSequence)message.obj;
+			int duration = message.arg1;
+			int resId = message.arg2;
+			if (text != null) {
+				Toast.makeText(this, text, duration).show();
+			} else {
+				Toast.makeText(this, resId, duration).show();
+			}
 			break;
 		default:
 			return false;
