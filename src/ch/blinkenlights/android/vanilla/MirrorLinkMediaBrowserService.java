@@ -645,6 +645,11 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService
 				mHandler.sendEmptyMessage(MSG_SHUFFLE);
 			}
 		}
+
+		@Override
+		public void onPlayFromSearch(final String query, final Bundle extras) {
+			mHandler.sendEmptyMessage(MSG_PLAY);
+		}
 	}
 
 	/**
@@ -715,8 +720,11 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService
 	}
 
 	private long getAvailableActions() {
-		long actions =   PlaybackState.ACTION_PLAY | PlaybackState.ACTION_PLAY_FROM_MEDIA_ID
-					   | PlaybackState.ACTION_SKIP_TO_PREVIOUS | PlaybackState.ACTION_SKIP_TO_NEXT;
+		long actions =   PlaybackState.ACTION_PLAY |
+		                 PlaybackState.ACTION_PLAY_FROM_MEDIA_ID |
+		                 PlaybackState.ACTION_PLAY_FROM_SEARCH |
+		                 PlaybackState.ACTION_SKIP_TO_PREVIOUS |
+		                 PlaybackState.ACTION_SKIP_TO_NEXT;
 
 		if(PlaybackService.hasInstance()) {
 			if (PlaybackService.get(this).isPlaying()) {
