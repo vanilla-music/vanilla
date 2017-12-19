@@ -82,7 +82,7 @@ public class ThemeHelper {
 	{
 		boolean useDark = false;
 		if(usesHoloTheme() == false) {
-			useDark = (getSelectedTheme(context) % 2 != 0); // odd values are always dark
+			useDark = ThemeEnum.valueOf(getSelectedTheme(context)).name().contains("DARK_");
 		}
 		return useDark;
 	}
