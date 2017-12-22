@@ -45,7 +45,6 @@ import android.os.Process;
 import android.os.SystemClock;
 import android.util.Log;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -646,6 +645,11 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService
 				mHandler.sendEmptyMessage(MSG_SHUFFLE);
 			}
 		}
+
+		@Override
+		public void onPlayFromSearch(final String query, final Bundle extras) {
+			mHandler.sendEmptyMessage(MSG_PLAY);
+		}
 	}
 
 	/**
@@ -716,8 +720,11 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService
 	}
 
 	private long getAvailableActions() {
-		long actions =   PlaybackState.ACTION_PLAY | PlaybackState.ACTION_PLAY_FROM_MEDIA_ID
-					   | PlaybackState.ACTION_SKIP_TO_PREVIOUS | PlaybackState.ACTION_SKIP_TO_NEXT;
+		long actions =   PlaybackState.ACTION_PLAY |
+		                 PlaybackState.ACTION_PLAY_FROM_MEDIA_ID |
+		                 PlaybackState.ACTION_PLAY_FROM_SEARCH |
+		                 PlaybackState.ACTION_SKIP_TO_PREVIOUS |
+		                 PlaybackState.ACTION_SKIP_TO_NEXT;
 
 		if(PlaybackService.hasInstance()) {
 			if (PlaybackService.get(this).isPlaying()) {
@@ -744,6 +751,7 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService
 	}
 
 	public void onMediaChange() {
+		setSong(0, null);
 	}
 
 	public void recreate() {
@@ -785,10 +793,4 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService
 		// updatePlaybackState(error);
 	}
 
-	public void onMediaChanged() {
-		if(PlaybackService.hasInstance()) {
-			setSong(0,PlaybackService.get(this).getSong(0));
-		}
-
-	}
 }

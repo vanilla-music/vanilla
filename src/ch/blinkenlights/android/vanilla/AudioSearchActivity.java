@@ -79,6 +79,7 @@ public class AudioSearchActivity extends PlaybackActivity {
 
 			PlaybackService service = PlaybackService.get(ctx);
 			service.pause();
+			service.setShuffleMode(SongTimeline.SHUFFLE_ALBUMS);
 			service.emptyQueue();
 			service.addSongs(query);
 			if (service.getTimelineLength() > 0) {
