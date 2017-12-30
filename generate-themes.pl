@@ -42,7 +42,7 @@ foreach my $theme_ref (@$THEMES) {
 	# csv list of theme info, such as its id and the primary colors to show in preview
 	push(@{$XML_ARRAYS->{'string-array'}->{theme_values}},  $tvarr);
 	# user visible names of themes
-	push(@{$XML_ARRAYS->{'string-array'}->{theme_entries}}, $theme_ref->{name});
+	push(@{$XML_ARRAYS->{'string-array'}->{theme_entries}}, '@string/theme_name_'.$theme_ref->{name});
 	# id <-> sort mapping
 	push(@{$XML_ARRAYS->{'string-array'}->{theme_ids}}, $theme_ref->{id});
 	# set flag whether theme is dark or not

@@ -347,6 +347,19 @@ THE SOFTWARE.
 	<string name="folder_include">Include</string>
 	<string name="folder_exclude">Exclude</string>
 	<string name="folder_neutral">Neutral</string>
-    <!-- Plugin system -->
-    <string name="plugins">Plugins</string>
+	<!-- Plugin system -->
+	<string name="plugins">Plugins</string>
+
+	<!-- Theme names -->
+	<string name="theme_name_standard_light">Standard</string>
+	<string name="theme_name_standard_dark">Standard (Dark)</string>
+	<string name="theme_name_grey_light">Grey</string>
+	<string name="theme_name_grey_dark">Grey (Dark)</string>
+	<string name="theme_name_orange_light">Orange</string>
+	<string name="theme_name_orange_dark">Orange (Dark)</string>
+	<string name="theme_name_blue_light">Blue</string>
+	<string name="theme_name_blue_dark">Blue (Dark)</string>
+	<string name="theme_name_red_light">Red</string>
+	<string name="theme_name_red_dark">Red (Dark)</string>
+	<string name="theme_name_amoled_dark">Pitch Black (AMOLED)</string>
 </resources>
