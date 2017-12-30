@@ -116,22 +116,25 @@ public class ThemeHelper {
 	}
 
 	/**
-	 * Hacky function to get the colors needed to draw the default cover
-	 * These colors should actually be attributes, but getting them programatically
-	 * is a big mess
+	 * Fetches a color resource from the current theme
+	 */
+	final public static int fetchThemeColor(Context context, int resId) {
+		TypedArray a = context.obtainStyledAttributes(new int[] { resId });
+		int color = a.getColor(0, 0);
+		a.recycle();
+		return color;
+	}
+
+	/**
+	 * Returns the color to be used to draw the placeholder cover.
 	 */
 	final public static int[] getDefaultCoverColors(Context context) {
-		int[] colors_holo_yolo         = { 0xff000000, 0xff404040 };
-		int[] colors_material_light    = { 0xffeeeeee, 0xffd6d7d7 };
-		int[] colors_material_dark     = { 0xff303030, 0xff404040 };
-		int[] colors_marshmallow_light = { 0xfffafafa, 0xffd6d7d7 };
-		int[] colors_marshmallow_dark  = colors_material_dark;
 		if (usesHoloTheme()) // pre material device
-			return colors_holo_yolo;
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-			return usesDarkTheme(context) ? colors_marshmallow_dark : colors_marshmallow_light;
-		// else
-		return usesDarkTheme(context) ? colors_material_dark : colors_material_light;
+			return new int[] { 0xff000000, 0xff404040 };
+
+		int bg = fetchThemeColor(context, android.R.attr.windowBackground);
+		int diff = 0x00171717 * (bg > 0xFF888888 ? -1 : 1);
+		return new int[]{ bg, bg+diff };
 	}
 
 }
