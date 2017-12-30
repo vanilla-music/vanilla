@@ -107,7 +107,7 @@ public class SlidingView extends FrameLayout
 
 	public SlidingView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-		setBackgroundColor(ThemeHelper.fetchThemeColor(context, android.R.attr.windowBackground));
+		setBackgroundColor(ThemeHelper.fetchThemeColor(context, android.R.attr.colorBackground));
 
 		mDetector = new GestureDetector(new GestureListener());
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SlidingViewPreferences);

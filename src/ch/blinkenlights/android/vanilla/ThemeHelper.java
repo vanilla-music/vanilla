@@ -132,7 +132,7 @@ public class ThemeHelper {
 		if (usesHoloTheme()) // pre material device
 			return new int[] { 0xff000000, 0xff404040 };
 
-		int bg = fetchThemeColor(context, android.R.attr.windowBackground);
+		int bg = fetchThemeColor(context, android.R.attr.colorBackground);
 		int diff = 0x00171717 * (bg > 0xFF888888 ? -1 : 1);
 		return new int[]{ bg, bg+diff };
 	}
