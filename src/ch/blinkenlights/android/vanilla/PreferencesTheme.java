@@ -47,6 +47,8 @@ public class PreferencesTheme extends PreferenceFragment
 		PreferenceScreen screen = getPreferenceManager().createPreferenceScreen(mContext);
 		final String[] entries = getResources().getStringArray(R.array.theme_entries);
 		final String[] values = getResources().getStringArray(R.array.theme_values);
+		final String[] ids = getResources().getStringArray(R.array.theme_ids);
+
 		for (int i = 0; i < entries.length; i++) {
 
 			int[] attrs = decodeValue(values[i]);
@@ -55,7 +57,7 @@ public class PreferencesTheme extends PreferenceFragment
 			pref.setPersistent(false);
 			pref.setOnPreferenceClickListener(this);
 			pref.setTitle(entries[i]);
-			pref.setKey(Long.toString(attrs[0])); // that's actually our value
+			pref.setKey(ids[i]); // preference value of this theme
 			pref.setIcon(generateThemePreview(attrs));
 			screen.addPreference(pref);
 		}
@@ -83,16 +85,16 @@ public class PreferencesTheme extends PreferenceFragment
 
 	private Drawable generateThemePreview(int[] colors) {
 		final int size = (int) getResources().getDimension(R.dimen.cover_size);
-		final int step = size / (colors.length - 1);
+		final int step = size / colors.length;
 
 		Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.RGB_565);
 		Canvas canvas = new Canvas(bitmap);
 		Paint paint = new Paint();
 
 		paint.setStyle(Paint.Style.FILL);
-		for (int i=1; i < colors.length; i++) {
+		for (int i=0; i < colors.length; i++) {
 			paint.setColor(colors[i]);
-			canvas.drawRect(0, step*(i-1), size, size, paint);
+			canvas.drawRect(0, step*i, size, size, paint);
 		}
 
 		Drawable d = new BitmapDrawable(mContext.getResources(), bitmap);

@@ -5,39 +5,23 @@ use constant THEMES_OUTDIR => './res/values-v21/';
 use constant THEMES_LIST   => './res/values-v21/themes-list.xml';
 
 my $THEMES = [
-	{
-		_name => 'standard',
-		light => { colorAccent => '#ff3e677a', colorPrimary => '#ff37474f', colorPrimaryDark => '#ff263238', controlsNormal=>'@color/material_grey_900', _bg => '#fff0f0f0' },
-		dark  => { colorAccent => '#ff3e677a', colorPrimary => '#ff37474f', colorPrimaryDark => '#ff263238', controlsNormal=>'@color/material_grey_300', _bg => '#ff2a2a2a' },
-	},
-	{
-		_name => 'greyish',
-		light => { colorAccent => '#ff000000', colorPrimary => '#ff212121', colorPrimaryDark => '#ff090909', controlsNormal=>'@color/material_grey_600', _bg => '#fff0f0f0' },
-		dark  => { colorAccent => '#ffd8d8d8', colorPrimary => '#ff212121', colorPrimaryDark => '#ff090909', controlsNormal=>'@color/material_grey_600', _bg => '#ff2a2a2a' },
-	},
-	{
-		_name => 'orange',
-		light => { colorAccent => '#FFF57F17', colorPrimary => '#FFE65100', colorPrimaryDark => '#FFBF360C', controlsNormal=>'@color/material_grey_900', _bg => '#fff0f0f0' },
-		dark  => { colorAccent => '#FFF57F17', colorPrimary => '#FFE65100', colorPrimaryDark => '#FFBF360C', controlsNormal=>'@color/material_grey_300', _bg => '#ff2a2a2a' },
-	},
-	{
-		_name => 'blue',
-		light => { colorAccent => '#FF03A9F4', colorPrimary => '#FF0277BD', colorPrimaryDark => '#FF01579B', controlsNormal=>'@color/material_grey_900', _bg => '#fff0f0f0' },
-		dark  => { colorAccent => '#FF03A9F4', colorPrimary => '#FF0277BD', colorPrimaryDark => '#FF01579B', controlsNormal=>'@color/material_grey_300', _bg => '#ff2a2a2a' },
-	},
-	{
-		_name => 'red',
-		light => { colorAccent => '#ffd50000', colorPrimary => '#ffc62828', colorPrimaryDark => '#ffb71c1c', controlsNormal=>'@color/material_grey_900', _bg => '#fff0f0f0' },
-		dark  => { colorAccent => '#ffd50000', colorPrimary => '#ffc62828', colorPrimaryDark => '#ffb71c1c', controlsNormal=>'@color/material_grey_300', _bg => '#ff2a2a2a' },
-	},
+	{ name=>"standard_light", id=>0, dark=>0, colorAccent => '#ff3e677a', colorPrimary => '#ff37474f', colorPrimaryDark => '#ff263238', controlsNormal=>'@color/material_grey_900', _bg => '#fff0f0f0' },
+	{ name=>"standard_dark", id=>1, dark=>1, colorAccent => '#ff3e677a', colorPrimary => '#ff37474f', colorPrimaryDark => '#ff263238', controlsNormal=>'@color/material_grey_300', _bg => '#ff2a2a2a' },
+	{ name=>"grey_light", id=>2, dark=>0, colorAccent => '#ff000000', colorPrimary => '#ff212121', colorPrimaryDark => '#ff090909', controlsNormal=>'@color/material_grey_600', _bg => '#fff0f0f0' },
+	{ name=>"grey_dark", id=>3, dark=>1, colorAccent => '#ffd8d8d8', colorPrimary => '#ff212121', colorPrimaryDark => '#ff090909', controlsNormal=>'@color/material_grey_600', _bg => '#ff2a2a2a' },
+	{ name=>"orange_light", id=>4, dark=>0, colorAccent => '#FFF57F17', colorPrimary => '#FFE65100', colorPrimaryDark => '#FFBF360C', controlsNormal=>'@color/material_grey_900', _bg => '#fff0f0f0' },
+	{ name=>"orange_dark", id=>5, dark=>1, colorAccent => '#FFF57F17', colorPrimary => '#FFE65100', colorPrimaryDark => '#FFBF360C', controlsNormal=>'@color/material_grey_300', _bg => '#ff2a2a2a' },
+	{ name=>"blue_light", id=>6, dark=>0, colorAccent => '#FF03A9F4', colorPrimary => '#FF0277BD', colorPrimaryDark => '#FF01579B', controlsNormal=>'@color/material_grey_900', _bg => '#fff0f0f0' },
+	{ name=>"blue_dark", id=>7, dark=>1, colorAccent => '#FF03A9F4', colorPrimary => '#FF0277BD', colorPrimaryDark => '#FF01579B', controlsNormal=>'@color/material_grey_300', _bg => '#ff2a2a2a' },
+	{ name=>"red_light", id=>8, dark=>0, colorAccent => '#ffd50000', colorPrimary => '#ffc62828', colorPrimaryDark => '#ffb71c1c', controlsNormal=>'@color/material_grey_900', _bg => '#fff0f0f0' },
+	{ name=>"red_dark", id=>9, dark=>1, colorAccent => '#ffd50000', colorPrimary => '#ffc62828', colorPrimaryDark => '#ffb71c1c', controlsNormal=>'@color/material_grey_300', _bg => '#ff2a2a2a' },
 ];
 
 
 my $XML_ARRAYS    = {};
-my $THEME_ID = 0;
 foreach my $theme_ref (@$THEMES) {
-	my $theme_name = $theme_ref->{_name};
-	my $theme_id = ($theme_name eq 'standard' ? '' : ucfirst($theme_name)."."); # standard has no prefix
+	my $theme_name = $theme_ref->{name};
+	my $theme_id = $theme_ref->{id} == 0 ? '' : ucfirst($theme_name)."."; # standard_light has no prefix
 	my $outfile  = THEMES_OUTDIR."/theme-$theme_name.xml";
 	my $outbuff  = get_theme_xml($theme_ref, $theme_id);
 
@@ -45,6 +29,7 @@ foreach my $theme_ref (@$THEMES) {
 	print OUT $outbuff;
 	close(OUT);
 
+	# Get all styles found in get_theme_xml output.
 	foreach my $line (split(/\n/, $outbuff)) {
 		if (my ($style) = $line =~ /style name=\"([^"]+)\"/) {
 			my $category = "theme_category_".lc((split(/\./, $style))[-1]);
@@ -52,18 +37,15 @@ foreach my $theme_ref (@$THEMES) {
 		}
 	}
 
-	# use this loop to also populate the theme list output
-	# assumes that get_theme_xml created two themes per definition (light and dark)
-	foreach my $variant ('', 'Dark.') {
-		my $tvvar = ($variant eq '' ? 'light' : 'dark');
-		my $tvarr = join(",", map { $theme_ref->{$tvvar}->{$_} } qw(colorPrimaryDark _bg colorPrimary));
-
-		# user visible names of themes
-		push(@{$XML_ARRAYS->{'string-array'}->{theme_entries}}, $variant.ucfirst($theme_name));
-		# csv list of theme info, such as its id and the primary colors to show in preview
-		push(@{$XML_ARRAYS->{'string-array'}->{theme_values}},  ($THEME_ID).",".$tvarr);
-		$THEME_ID++;
-	}
+	my $tvarr = join(",", map { $theme_ref->{$_} } qw(colorPrimaryDark _bg colorPrimary));
+	# csv list of theme info, such as its id and the primary colors to show in preview
+	push(@{$XML_ARRAYS->{'string-array'}->{theme_values}},  $tvarr);
+	# user visible names of themes
+	push(@{$XML_ARRAYS->{'string-array'}->{theme_entries}}, $theme_ref->{name});
+	# id <-> sort mapping
+	push(@{$XML_ARRAYS->{'string-array'}->{theme_ids}}, $theme_ref->{id});
+	# set flag whether theme is dark or not
+	push(@{$XML_ARRAYS->{'string-array'}->{theme_variant}}, $theme_ref->{dark} ? 'dark' : 'light');
 }
 
 
@@ -115,18 +97,22 @@ my $DATA = << "EOF";
 -->
 
 <resources>
+EOF
+
+	if($this->{dark} == 0) {
+	$DATA .= << "EOF"
 	<style name="${tid}VanillaBase" parent="android:Theme.Material.Light.DarkActionBar">
 		<item name="overlay_background_color">\@color/overlay_background_light</item>
 		<item name="overlay_foreground_color">\@color/overlay_foreground_light</item>
 		<item name="float_color">\@color/material_grey_400</item>
 		<item name="background_circle_color">\@color/material_grey_300</item>
-		<item name="tabs_background">$this->{light}->{colorPrimary}</item>
-		<item name="now_playing_marker">$this->{light}->{colorAccent}</item>
-		<item name="controls_normal">$this->{light}->{controlsNormal}</item>
-		<item name="controls_active">$this->{light}->{colorAccent}</item>
-		<item name="android:colorAccent">$this->{light}->{colorAccent}</item>
-		<item name="android:colorPrimary">$this->{light}->{colorPrimary}</item>
-		<item name="android:colorPrimaryDark">$this->{light}->{colorPrimaryDark}</item>
+		<item name="tabs_background">$this->{colorPrimary}</item>
+		<item name="now_playing_marker">$this->{colorAccent}</item>
+		<item name="controls_normal">$this->{controlsNormal}</item>
+		<item name="controls_active">$this->{colorAccent}</item>
+		<item name="android:colorAccent">$this->{colorAccent}</item>
+		<item name="android:colorPrimary">$this->{colorPrimary}</item>
+		<item name="android:colorPrimaryDark">$this->{colorPrimaryDark}</item>
 	</style>
 
 	<style name="${tid}Playback" parent="${tid}VanillaBase">
@@ -144,45 +130,47 @@ my $DATA = << "EOF";
 
 	<style name="${tid}PopupDialog" parent="android:Theme.Material.Light.Dialog.MinWidth">
 		<item name="background_circle_color">\@color/material_grey_300</item>
-		<item name="controls_normal">$this->{light}->{controlsNormal}</item>
-		<item name="controls_active">$this->{light}->{colorAccent}</item>
+		<item name="controls_normal">$this->{controlsNormal}</item>
+		<item name="controls_active">$this->{colorAccent}</item>
 	</style>
-
+EOF
+	} else {
+	$DATA .= << "EOF"
 	<!-- dark theme -->
-	<style name="${tid}Dark.VanillaBase" parent="android:Theme.Material">
+	<style name="${tid}VanillaBase" parent="android:Theme.Material">
 		<item name="overlay_background_color">\@color/overlay_background_dark</item>
 		<item name="overlay_foreground_color">\@color/overlay_foreground_dark</item>
 		<item name="float_color">\@color/material_grey_900</item>
 		<item name="background_circle_color">\@color/material_grey_700</item>
-		<item name="tabs_background">$this->{dark}->{colorPrimary}</item>
-		<item name="now_playing_marker">$this->{dark}->{colorAccent}</item>
-		<item name="controls_normal">$this->{dark}->{controlsNormal}</item>
-		<item name="controls_active">$this->{dark}->{colorAccent}</item>
-		<item name="android:colorAccent">$this->{dark}->{colorAccent}</item>
-		<item name="android:colorPrimary">$this->{dark}->{colorPrimary}</item>
-		<item name="android:colorPrimaryDark">$this->{dark}->{colorPrimaryDark}</item>
+		<item name="tabs_background">$this->{colorPrimary}</item>
+		<item name="now_playing_marker">$this->{colorAccent}</item>
+		<item name="controls_normal">$this->{controlsNormal}</item>
+		<item name="controls_active">$this->{colorAccent}</item>
+		<item name="android:colorAccent">$this->{colorAccent}</item>
+		<item name="android:colorPrimary">$this->{colorPrimary}</item>
+		<item name="android:colorPrimaryDark">$this->{colorPrimaryDark}</item>
 	</style>
 
-	<style name="${tid}Dark.Playback" parent="${tid}Dark.VanillaBase">
+	<style name="${tid}Playback" parent="${tid}VanillaBase">
 		<item name="android:actionBarStyle">\@style/Universal.PlaybackActionBar</item>
 	</style>
 
-	<style name="${tid}Dark.BackActionBar" parent="${tid}Dark.VanillaBase">
+	<style name="${tid}BackActionBar" parent="${tid}VanillaBase">
 		<item name="android:actionBarStyle">\@style/Universal.PlaybackActionBar</item>
 	</style>
 
-	<style name="${tid}Dark.Library" parent="${tid}Dark.VanillaBase">
+	<style name="${tid}Library" parent="${tid}VanillaBase">
 		<item name="android:windowActionBar">false</item>
 		<item name="android:windowNoTitle">true</item>
 	</style>
 
-	<style name="${tid}Dark.PopupDialog" parent="android:Theme.Material.Dialog.MinWidth">
+	<style name="${tid}PopupDialog" parent="android:Theme.Material.Dialog.MinWidth">
 		<item name="background_circle_color">\@color/material_grey_700</item>
-		<item name="controls_normal">$this->{dark}->{controlsNormal}</item>
-		<item name="controls_active">$this->{dark}->{colorAccent}</item>
+		<item name="controls_normal">$this->{controlsNormal}</item>
+		<item name="controls_active">$this->{colorAccent}</item>
 	</style>
-
-</resources>
 EOF
+	}
+$DATA .= "\n</resources>\n";
 	return $DATA
 }

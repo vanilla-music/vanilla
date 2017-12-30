@@ -50,7 +50,7 @@ public class ThemeHelper {
 				default:
 					throw new IllegalArgumentException("setTheme() called with unknown theme!");
 			}
-			theme = ar.getResourceId(getSelectedTheme(context), -1);
+			theme = ar.getResourceId(getSelectedThemeIndex(context), -1);
 			ar.recycle();
 		}
 
@@ -82,20 +82,30 @@ public class ThemeHelper {
 	{
 		boolean useDark = false;
 		if(usesHoloTheme() == false) {
-			useDark = (getSelectedTheme(context) % 2 != 0); // odd values are always dark
+			final int idx = getSelectedThemeIndex(context);
+			final String[] variants = context.getResources().getStringArray(R.array.theme_variant);
+			useDark = variants[idx].equals("dark");
 		}
 		return useDark;
 	}
 
 	/**
-	 * Returns the user-selected theme id from the shared peferences provider
+	 * Returns the user-selected theme index from the shared peferences provider
 	 *
 	 * @param context the context to use
 	 * @return integer of the selected theme
 	 */
-	final private static int getSelectedTheme(Context context) {
+	final private static int getSelectedThemeIndex(Context context) {
 		SharedPreferences settings = PlaybackService.getSettings(context);
-		return Integer.parseInt(settings.getString(PrefKeys.SELECTED_THEME, PrefDefaults.SELECTED_THEME));
+		String prefValue = settings.getString(PrefKeys.SELECTED_THEME, PrefDefaults.SELECTED_THEME);
+
+		final String[] ids = context.getResources().getStringArray(R.array.theme_ids);
+		for (int i = 0; i < ids.length; i++) {
+			if (ids[i].equals(prefValue))
+				return i;
+		}
+		// no theme found? return default theme.
+		return 0;
 	}
 
 	/**

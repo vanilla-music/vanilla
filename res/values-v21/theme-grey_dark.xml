@@ -18,41 +18,8 @@
 -->
 
 <resources>
-	<style name="Greyish.VanillaBase" parent="android:Theme.Material.Light.DarkActionBar">
-		<item name="overlay_background_color">@color/overlay_background_light</item>
-		<item name="overlay_foreground_color">@color/overlay_foreground_light</item>
-		<item name="float_color">@color/material_grey_400</item>
-		<item name="background_circle_color">@color/material_grey_300</item>
-		<item name="tabs_background">#ff212121</item>
-		<item name="now_playing_marker">#ff000000</item>
-		<item name="controls_normal">@color/material_grey_600</item>
-		<item name="controls_active">#ff000000</item>
-		<item name="android:colorAccent">#ff000000</item>
-		<item name="android:colorPrimary">#ff212121</item>
-		<item name="android:colorPrimaryDark">#ff090909</item>
-	</style>
-
-	<style name="Greyish.Playback" parent="Greyish.VanillaBase">
-		<item name="android:actionBarStyle">@style/Universal.PlaybackActionBar</item>
-	</style>
-
-	<style name="Greyish.BackActionBar" parent="Greyish.VanillaBase">
-		<item name="android:actionBarStyle">@style/Universal.PlaybackActionBar</item>
-	</style>
-
-	<style name="Greyish.Library" parent="Greyish.VanillaBase">
-		<item name="android:windowActionBar">false</item>
-		<item name="android:windowNoTitle">true</item>
-	</style>
-
-	<style name="Greyish.PopupDialog" parent="android:Theme.Material.Light.Dialog.MinWidth">
-		<item name="background_circle_color">@color/material_grey_300</item>
-		<item name="controls_normal">@color/material_grey_600</item>
-		<item name="controls_active">#ff000000</item>
-	</style>
-
 	<!-- dark theme -->
-	<style name="Greyish.Dark.VanillaBase" parent="android:Theme.Material">
+	<style name="Grey_dark.VanillaBase" parent="android:Theme.Material">
 		<item name="overlay_background_color">@color/overlay_background_dark</item>
 		<item name="overlay_foreground_color">@color/overlay_foreground_dark</item>
 		<item name="float_color">@color/material_grey_900</item>
@@ -66,20 +33,20 @@
 		<item name="android:colorPrimaryDark">#ff090909</item>
 	</style>
 
-	<style name="Greyish.Dark.Playback" parent="Greyish.Dark.VanillaBase">
+	<style name="Grey_dark.Playback" parent="Grey_dark.VanillaBase">
 		<item name="android:actionBarStyle">@style/Universal.PlaybackActionBar</item>
 	</style>
 
-	<style name="Greyish.Dark.BackActionBar" parent="Greyish.Dark.VanillaBase">
+	<style name="Grey_dark.BackActionBar" parent="Grey_dark.VanillaBase">
 		<item name="android:actionBarStyle">@style/Universal.PlaybackActionBar</item>
 	</style>
 
-	<style name="Greyish.Dark.Library" parent="Greyish.Dark.VanillaBase">
+	<style name="Grey_dark.Library" parent="Grey_dark.VanillaBase">
 		<item name="android:windowActionBar">false</item>
 		<item name="android:windowNoTitle">true</item>
 	</style>
 
-	<style name="Greyish.Dark.PopupDialog" parent="android:Theme.Material.Dialog.MinWidth">
+	<style name="Grey_dark.PopupDialog" parent="android:Theme.Material.Dialog.MinWidth">
 		<item name="background_circle_color">@color/material_grey_700</item>
 		<item name="controls_normal">@color/material_grey_600</item>
 		<item name="controls_active">#ffd8d8d8</item>

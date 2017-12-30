@@ -3,93 +3,119 @@
 <resources>
 	<integer-array name="theme_category_library">
 		<item>@style/Library</item>
-		<item>@style/Dark.Library</item>
-		<item>@style/Greyish.Library</item>
-		<item>@style/Greyish.Dark.Library</item>
-		<item>@style/Orange.Library</item>
-		<item>@style/Orange.Dark.Library</item>
-		<item>@style/Blue.Library</item>
-		<item>@style/Blue.Dark.Library</item>
-		<item>@style/Red.Library</item>
-		<item>@style/Red.Dark.Library</item>
-	</integer-array>
-
-	<integer-array name="theme_category_backactionbar">
-		<item>@style/BackActionBar</item>
-		<item>@style/Dark.BackActionBar</item>
-		<item>@style/Greyish.BackActionBar</item>
-		<item>@style/Greyish.Dark.BackActionBar</item>
-		<item>@style/Orange.BackActionBar</item>
-		<item>@style/Orange.Dark.BackActionBar</item>
-		<item>@style/Blue.BackActionBar</item>
-		<item>@style/Blue.Dark.BackActionBar</item>
-		<item>@style/Red.BackActionBar</item>
-		<item>@style/Red.Dark.BackActionBar</item>
-	</integer-array>
-
-	<integer-array name="theme_category_playback">
-		<item>@style/Playback</item>
-		<item>@style/Dark.Playback</item>
-		<item>@style/Greyish.Playback</item>
-		<item>@style/Greyish.Dark.Playback</item>
-		<item>@style/Orange.Playback</item>
-		<item>@style/Orange.Dark.Playback</item>
-		<item>@style/Blue.Playback</item>
-		<item>@style/Blue.Dark.Playback</item>
-		<item>@style/Red.Playback</item>
-		<item>@style/Red.Dark.Playback</item>
-	</integer-array>
-
-	<integer-array name="theme_category_vanillabase">
-		<item>@style/VanillaBase</item>
-		<item>@style/Dark.VanillaBase</item>
-		<item>@style/Greyish.VanillaBase</item>
-		<item>@style/Greyish.Dark.VanillaBase</item>
-		<item>@style/Orange.VanillaBase</item>
-		<item>@style/Orange.Dark.VanillaBase</item>
-		<item>@style/Blue.VanillaBase</item>
-		<item>@style/Blue.Dark.VanillaBase</item>
-		<item>@style/Red.VanillaBase</item>
-		<item>@style/Red.Dark.VanillaBase</item>
+		<item>@style/Standard_dark.Library</item>
+		<item>@style/Grey_light.Library</item>
+		<item>@style/Grey_dark.Library</item>
+		<item>@style/Orange_light.Library</item>
+		<item>@style/Orange_dark.Library</item>
+		<item>@style/Blue_light.Library</item>
+		<item>@style/Blue_dark.Library</item>
+		<item>@style/Red_light.Library</item>
+		<item>@style/Red_dark.Library</item>
 	</integer-array>
 
 	<integer-array name="theme_category_popupdialog">
 		<item>@style/PopupDialog</item>
-		<item>@style/Dark.PopupDialog</item>
-		<item>@style/Greyish.PopupDialog</item>
-		<item>@style/Greyish.Dark.PopupDialog</item>
-		<item>@style/Orange.PopupDialog</item>
-		<item>@style/Orange.Dark.PopupDialog</item>
-		<item>@style/Blue.PopupDialog</item>
-		<item>@style/Blue.Dark.PopupDialog</item>
-		<item>@style/Red.PopupDialog</item>
-		<item>@style/Red.Dark.PopupDialog</item>
+		<item>@style/Standard_dark.PopupDialog</item>
+		<item>@style/Grey_light.PopupDialog</item>
+		<item>@style/Grey_dark.PopupDialog</item>
+		<item>@style/Orange_light.PopupDialog</item>
+		<item>@style/Orange_dark.PopupDialog</item>
+		<item>@style/Blue_light.PopupDialog</item>
+		<item>@style/Blue_dark.PopupDialog</item>
+		<item>@style/Red_light.PopupDialog</item>
+		<item>@style/Red_dark.PopupDialog</item>
 	</integer-array>
 
+	<integer-array name="theme_category_backactionbar">
+		<item>@style/BackActionBar</item>
+		<item>@style/Standard_dark.BackActionBar</item>
+		<item>@style/Grey_light.BackActionBar</item>
+		<item>@style/Grey_dark.BackActionBar</item>
+		<item>@style/Orange_light.BackActionBar</item>
+		<item>@style/Orange_dark.BackActionBar</item>
+		<item>@style/Blue_light.BackActionBar</item>
+		<item>@style/Blue_dark.BackActionBar</item>
+		<item>@style/Red_light.BackActionBar</item>
+		<item>@style/Red_dark.BackActionBar</item>
+	</integer-array>
+
+	<integer-array name="theme_category_vanillabase">
+		<item>@style/VanillaBase</item>
+		<item>@style/Standard_dark.VanillaBase</item>
+		<item>@style/Grey_light.VanillaBase</item>
+		<item>@style/Grey_dark.VanillaBase</item>
+		<item>@style/Orange_light.VanillaBase</item>
+		<item>@style/Orange_dark.VanillaBase</item>
+		<item>@style/Blue_light.VanillaBase</item>
+		<item>@style/Blue_dark.VanillaBase</item>
+		<item>@style/Red_light.VanillaBase</item>
+		<item>@style/Red_dark.VanillaBase</item>
+	</integer-array>
+
+	<integer-array name="theme_category_playback">
+		<item>@style/Playback</item>
+		<item>@style/Standard_dark.Playback</item>
+		<item>@style/Grey_light.Playback</item>
+		<item>@style/Grey_dark.Playback</item>
+		<item>@style/Orange_light.Playback</item>
+		<item>@style/Orange_dark.Playback</item>
+		<item>@style/Blue_light.Playback</item>
+		<item>@style/Blue_dark.Playback</item>
+		<item>@style/Red_light.Playback</item>
+		<item>@style/Red_dark.Playback</item>
+	</integer-array>
+
+	<string-array name="theme_variant">
+		<item>light</item>
+		<item>dark</item>
+		<item>light</item>
+		<item>dark</item>
+		<item>light</item>
+		<item>dark</item>
+		<item>light</item>
+		<item>dark</item>
+		<item>light</item>
+		<item>dark</item>
+	</string-array>
+
 	<string-array name="theme_values">
-		<item>0,#ff263238,#fff0f0f0,#ff37474f</item>
-		<item>1,#ff263238,#ff2a2a2a,#ff37474f</item>
-		<item>2,#ff090909,#fff0f0f0,#ff212121</item>
-		<item>3,#ff090909,#ff2a2a2a,#ff212121</item>
-		<item>4,#FFBF360C,#fff0f0f0,#FFE65100</item>
-		<item>5,#FFBF360C,#ff2a2a2a,#FFE65100</item>
-		<item>6,#FF01579B,#fff0f0f0,#FF0277BD</item>
-		<item>7,#FF01579B,#ff2a2a2a,#FF0277BD</item>
-		<item>8,#ffb71c1c,#fff0f0f0,#ffc62828</item>
-		<item>9,#ffb71c1c,#ff2a2a2a,#ffc62828</item>
+		<item>#ff263238,#fff0f0f0,#ff37474f</item>
+		<item>#ff263238,#ff2a2a2a,#ff37474f</item>
+		<item>#ff090909,#fff0f0f0,#ff212121</item>
+		<item>#ff090909,#ff2a2a2a,#ff212121</item>
+		<item>#FFBF360C,#fff0f0f0,#FFE65100</item>
+		<item>#FFBF360C,#ff2a2a2a,#FFE65100</item>
+		<item>#FF01579B,#fff0f0f0,#FF0277BD</item>
+		<item>#FF01579B,#ff2a2a2a,#FF0277BD</item>
+		<item>#ffb71c1c,#fff0f0f0,#ffc62828</item>
+		<item>#ffb71c1c,#ff2a2a2a,#ffc62828</item>
 	</string-array>
 
 	<string-array name="theme_entries">
-		<item>Standard</item>
-		<item>Dark.Standard</item>
-		<item>Greyish</item>
-		<item>Dark.Greyish</item>
-		<item>Orange</item>
-		<item>Dark.Orange</item>
-		<item>Blue</item>
-		<item>Dark.Blue</item>
-		<item>Red</item>
-		<item>Dark.Red</item>
+		<item>standard_light</item>
+		<item>standard_dark</item>
+		<item>grey_light</item>
+		<item>grey_dark</item>
+		<item>orange_light</item>
+		<item>orange_dark</item>
+		<item>blue_light</item>
+		<item>blue_dark</item>
+		<item>red_light</item>
+		<item>red_dark</item>
+	</string-array>
+
+	<string-array name="theme_ids">
+		<item>0</item>
+		<item>1</item>
+		<item>2</item>
+		<item>3</item>
+		<item>4</item>
+		<item>5</item>
+		<item>6</item>
+		<item>7</item>
+		<item>8</item>
+		<item>9</item>
 	</string-array>
 
 </resources>
