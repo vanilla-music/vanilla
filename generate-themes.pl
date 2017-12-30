@@ -15,6 +15,7 @@ my $THEMES = [
 	{ name=>"blue_dark", id=>7, dark=>1, colorAccent => '#FF03A9F4', colorPrimary => '#FF0277BD', colorPrimaryDark => '#FF01579B', controlsNormal=>'@color/material_grey_300', _bg => '#ff2a2a2a' },
 	{ name=>"red_light", id=>8, dark=>0, colorAccent => '#ffd50000', colorPrimary => '#ffc62828', colorPrimaryDark => '#ffb71c1c', controlsNormal=>'@color/material_grey_900', _bg => '#fff0f0f0' },
 	{ name=>"red_dark", id=>9, dark=>1, colorAccent => '#ffd50000', colorPrimary => '#ffc62828', colorPrimaryDark => '#ffb71c1c', controlsNormal=>'@color/material_grey_300', _bg => '#ff2a2a2a' },
+	{ name=>"amoled_dark", id=>10, dark=>1, colorAccent => '#ffd8d8d8', colorPrimary => '#ff000000', colorPrimaryDark => '#ff000000', controlsNormal=>'@color/material_grey_600', colorBackground=>'@android:color/black', _bg => '#ff000000' },
 ];
 
 
@@ -172,5 +173,16 @@ EOF
 EOF
 	}
 $DATA .= "\n</resources>\n";
+
+	# Add custom colorBackground if set, inherit from theme otherwise.
+	# If we force this, we also set overlay_background_color to the same value
+	# as it is expected to match the background.
+	if (defined($this->{colorBackground})) {
+		$DATA =~ s/<item name="(overlay_background_color)">.+<\/item>/
+		<item name="android:colorBackground">$this->{colorBackground}<\/item>
+		<item name="\1">$this->{colorBackground}<\/item>
+		/;
+	}
+
 	return $DATA
 }
