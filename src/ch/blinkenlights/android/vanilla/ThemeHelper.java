@@ -50,7 +50,7 @@ public class ThemeHelper {
 				default:
 					throw new IllegalArgumentException("setTheme() called with unknown theme!");
 			}
-			theme = ar.getResourceId(getSelectedTheme(context), -1);
+			theme = ar.getResourceId(getSelectedThemeIndex(context), -1);
 			ar.recycle();
 		}
 
@@ -82,20 +82,30 @@ public class ThemeHelper {
 	{
 		boolean useDark = false;
 		if(usesHoloTheme() == false) {
-			useDark = (getSelectedTheme(context) % 2 != 0); // odd values are always dark
+			final int idx = getSelectedThemeIndex(context);
+			final String[] variants = context.getResources().getStringArray(R.array.theme_variant);
+			useDark = variants[idx].equals("dark");
 		}
 		return useDark;
 	}
 
 	/**
-	 * Returns the user-selected theme id from the shared peferences provider
+	 * Returns the user-selected theme index from the shared peferences provider
 	 *
 	 * @param context the context to use
 	 * @return integer of the selected theme
 	 */
-	final private static int getSelectedTheme(Context context) {
+	final private static int getSelectedThemeIndex(Context context) {
 		SharedPreferences settings = PlaybackService.getSettings(context);
-		return Integer.parseInt(settings.getString(PrefKeys.SELECTED_THEME, PrefDefaults.SELECTED_THEME));
+		String prefValue = settings.getString(PrefKeys.SELECTED_THEME, PrefDefaults.SELECTED_THEME);
+
+		final String[] ids = context.getResources().getStringArray(R.array.theme_ids);
+		for (int i = 0; i < ids.length; i++) {
+			if (ids[i].equals(prefValue))
+				return i;
+		}
+		// no theme found? return default theme.
+		return 0;
 	}
 
 	/**
@@ -106,22 +116,25 @@ public class ThemeHelper {
 	}
 
 	/**
-	 * Hacky function to get the colors needed to draw the default cover
-	 * These colors should actually be attributes, but getting them programatically
-	 * is a big mess
+	 * Fetches a color resource from the current theme
+	 */
+	final public static int fetchThemeColor(Context context, int resId) {
+		TypedArray a = context.obtainStyledAttributes(new int[] { resId });
+		int color = a.getColor(0, 0);
+		a.recycle();
+		return color;
+	}
+
+	/**
+	 * Returns the color to be used to draw the placeholder cover.
 	 */
 	final public static int[] getDefaultCoverColors(Context context) {
-		int[] colors_holo_yolo         = { 0xff000000, 0xff404040 };
-		int[] colors_material_light    = { 0xffeeeeee, 0xffd6d7d7 };
-		int[] colors_material_dark     = { 0xff303030, 0xff404040 };
-		int[] colors_marshmallow_light = { 0xfffafafa, 0xffd6d7d7 };
-		int[] colors_marshmallow_dark  = colors_material_dark;
 		if (usesHoloTheme()) // pre material device
-			return colors_holo_yolo;
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-			return usesDarkTheme(context) ? colors_marshmallow_dark : colors_marshmallow_light;
-		// else
-		return usesDarkTheme(context) ? colors_material_dark : colors_material_light;
+			return new int[] { 0xff000000, 0xff404040 };
+
+		int bg = fetchThemeColor(context, android.R.attr.colorBackground);
+		int diff = 0x00171717 * (bg > 0xFF888888 ? -1 : 1);
+		return new int[]{ bg, bg+diff };
 	}
 
 }

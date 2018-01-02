@@ -206,8 +206,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 			TextView view = new TextView(this);
 			// This will be drawn on top of all other controls, so we flood this view
 			// with a non-alpha color
-			int[] colors = ThemeHelper.getDefaultCoverColors(this);
-			view.setBackgroundColor(colors[0]); // background of default cover
+			view.setBackgroundColor(ThemeHelper.fetchThemeColor(this, android.R.attr.colorBackground));
 			view.setGravity(Gravity.CENTER);
 			view.setPadding(25, 25, 25, 25);
 			// Make the view clickable so it eats touch events
