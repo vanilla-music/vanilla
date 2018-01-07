@@ -249,4 +249,5 @@
   <!--Folder selector-->
   <!--Plugin system-->
   <string name="plugins">插件</string>
+  <!--Theme names-->
 </resources>

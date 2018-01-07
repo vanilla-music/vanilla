@@ -286,4 +286,16 @@
   <string name="folder_neutral">Neutra</string>
   <!--Plugin system-->
   <string name="plugins">Suplementos</string>
+  <!--Theme names-->
+  <string name="theme_name_standard_light">Padrão</string>
+  <string name="theme_name_standard_dark">Padrão (escuro)</string>
+  <string name="theme_name_grey_light">Cinzento</string>
+  <string name="theme_name_grey_dark">Cinzento (escuro)</string>
+  <string name="theme_name_orange_light">Laranja</string>
+  <string name="theme_name_orange_dark">Laranja (escuro)</string>
+  <string name="theme_name_blue_light">Azul</string>
+  <string name="theme_name_blue_dark">Azul (escuro)</string>
+  <string name="theme_name_red_light">Vermelho</string>
+  <string name="theme_name_red_dark">Vermelho (escuro)</string>
+  <string name="theme_name_amoled_dark">Preto (AMOLED)</string>
 </resources>

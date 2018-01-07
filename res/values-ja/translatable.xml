@@ -278,4 +278,16 @@
   <string name="folder_neutral">中立</string>
   <!--Plugin system-->
   <string name="plugins">プラグイン</string>
+  <!--Theme names-->
+  <string name="theme_name_standard_light">標準</string>
+  <string name="theme_name_standard_dark">標準 (ダーク)</string>
+  <string name="theme_name_grey_light">グレー</string>
+  <string name="theme_name_grey_dark">グレー (ダーク)</string>
+  <string name="theme_name_orange_light">オレンジ</string>
+  <string name="theme_name_orange_dark">オレンジ (ダーク)</string>
+  <string name="theme_name_blue_light">ブルー</string>
+  <string name="theme_name_blue_dark">ブルー (ダーク)</string>
+  <string name="theme_name_red_light">レッド</string>
+  <string name="theme_name_red_dark">レッド (ダーク)</string>
+  <string name="theme_name_amoled_dark">ビッチブラック (AMOLED)</string>
 </resources>

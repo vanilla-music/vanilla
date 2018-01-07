@@ -287,4 +287,16 @@ Altijd de ingebouwde labellezer gebruiken</string>
   <string name="folder_neutral">Neutraal</string>
   <!--Plugin system-->
   <string name="plugins">Plugins</string>
+  <!--Theme names-->
+  <string name="theme_name_standard_light">Standaard</string>
+  <string name="theme_name_standard_dark">Standaard (Donker)</string>
+  <string name="theme_name_grey_light">Grijs</string>
+  <string name="theme_name_grey_dark">Grijs (Donker)</string>
+  <string name="theme_name_orange_light">Oranje</string>
+  <string name="theme_name_orange_dark">Oranje (Donker)</string>
+  <string name="theme_name_blue_light">Blauw</string>
+  <string name="theme_name_blue_dark">Blauw (Donker)</string>
+  <string name="theme_name_red_light">Rood</string>
+  <string name="theme_name_red_dark">Rood (Donker)</string>
+  <string name="theme_name_amoled_dark">Pikzwart (AMOLED)</string>
 </resources>

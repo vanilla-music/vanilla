@@ -286,4 +286,16 @@
   <string name="folder_neutral">Neutrale</string>
   <!--Plugin system-->
   <string name="plugins">Plugin</string>
+  <!--Theme names-->
+  <string name="theme_name_standard_light">Standard</string>
+  <string name="theme_name_standard_dark">Standard (Scuro)</string>
+  <string name="theme_name_grey_light">Grigio</string>
+  <string name="theme_name_grey_dark">Grigio (Scuro)</string>
+  <string name="theme_name_orange_light">Arancione</string>
+  <string name="theme_name_orange_dark">Arancione (Scuro)</string>
+  <string name="theme_name_blue_light">Blu</string>
+  <string name="theme_name_blue_dark">Blu (Scuro)</string>
+  <string name="theme_name_red_light">Rosso</string>
+  <string name="theme_name_red_dark">Rosso (Scuro)</string>
+  <string name="theme_name_amoled_dark">Nero Pece (AMOLED)</string>
 </resources>

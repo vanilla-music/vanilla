@@ -286,4 +286,16 @@
   <string name="folder_neutral">Neutre</string>
   <!--Plugin system-->
   <string name="plugins">Plugins</string>
+  <!--Theme names-->
+  <string name="theme_name_standard_light">Standard</string>
+  <string name="theme_name_standard_dark">Standard (foncé)</string>
+  <string name="theme_name_grey_light">Gris</string>
+  <string name="theme_name_grey_dark">Gris (foncé)</string>
+  <string name="theme_name_orange_light">Orange</string>
+  <string name="theme_name_orange_dark">Orange (foncé)</string>
+  <string name="theme_name_blue_light">Bleu</string>
+  <string name="theme_name_blue_dark">Bleu (foncé)</string>
+  <string name="theme_name_red_light">Rouge</string>
+  <string name="theme_name_red_dark">Rouge (foncé)</string>
+  <string name="theme_name_amoled_dark">Noir profond (écran AMOLED)</string>
 </resources>

@@ -251,4 +251,5 @@
   <!--Folder selector-->
   <!--Plugin system-->
   <string name="plugins">Eklentiler</string>
+  <!--Theme names-->
 </resources>
