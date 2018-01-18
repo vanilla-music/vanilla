@@ -2,19 +2,27 @@
 <resources>
   <string name="app_name">Vanilla Music</string>
   <!--Playback Activity (main screen)-->
+  <string name="no_songs">Nenhuma faixa encontrada no seu dispositivo.</string>
+  <string name="empty_queue">Nenhuma música selecionada. Escolha algumas da biblioteca ou entre no modo aleatório tocando nesta mensagem.</string>
   <string name="settings">Configurações</string>
   <string name="no_shuffle">Não misturar</string>
+  <string name="shuffle_songs">Misturar faixas</string>
+  <string name="shuffle_songs_continuously">Misturar faixas continuamente</string>
   <string name="shuffle_albums">Misturar álbuns</string>
   <string name="no_repeat">Não repetir</string>
   <string name="repeat">Repetir</string>
+  <string name="repeat_current_song">Repetir faixa atual</string>
+  <string name="stop_current_song">Parar após faixa atual.</string>
   <string name="random">Aleatório </string>
   <string name="random_enabling">Modo aleatório ativado</string>
+  <string name="song_load_failed">Falha ao carregar faixa %s. Arquivo danificado ou ausente.</string>
   <string name="queue_cleared">Fila de reprodução limpa</string>
   <string name="cover_art">Capa de álbum</string>
   <string name="close_notification">Fechar notificação</string>
   <string name="_genre">Gênero</string>
   <string name="_track">faixa</string>
   <string name="_composer">compositor</string>
+  <string name="_path">local</string>
   <string name="_format">formato</string>
   <string name="_title">título</string>
   <string name="_artist">artista</string>
@@ -47,24 +55,39 @@
   <string name="remove">Remover</string>
   <string name="play_or_enqueue">Colocar na fila; Reproduzir se estiver em pausa</string>
   <string name="open">Abrir</string>
+  <string name="go_home">Diretório principal</string>
+  <string name="jumping_to_song">Faixa já está na fila, saltando...</string>
   <string name="delete_file_failed">Falha ao deletar %s.</string>
   <string name="deleted_item">\'%s\' deletada.</string>
   <string name="delete_item">Deletar \'%s\'?</string>
   <string name="delete_file">Deletar o arquivo \'%s\'?</string>
   <string name="artists">Artistas</string>
   <string name="albums">Álbuns </string>
+  <string name="composers">Compositores</string>
+  <string name="songs">Faixas</string>
   <string name="playlists">Playlists</string>
   <string name="genres">Gêneros</string>
   <string name="files">Arquivos</string>
+  <string name="artist">Artista</string>
+  <string name="album">Álbum</string>
+  <string name="genre">Gênero</string>
+  <string name="folder">Pasta</string>
+  <string name="filename">Nome do arquivo</string>
+  <string name="file_size">Tamanho do arquivo</string>
+  <string name="file_time">Data modificação</string>
+  <string name="extension">Extensão</string>
   <string name="unknown">Desconhecido</string>
   <string name="play_all">Tocar tudo</string>
   <string name="enqueue_all">Colocar tudo na fila</string>
+  <string name="all_songs">Todas as faixas</string>
   <string name="more_from_artist">Mais do artista</string>
   <string name="more_from_album">Mais do álbum</string>
+  <string name="title">Título</string>
   <string name="number_of_tracks">Número de faixas </string>
   <string name="year">Ano</string>
   <string name="date_added">Data de adição</string>
   <string name="artist_album">Artista, álbum</string>
+  <string name="artist_year_album">Artista, ano, álbum</string>
   <string name="artist_album_track">Artista, álbum, número da faixa</string>
   <string name="artist_album_title">Artista, álbum, título</string>
   <string name="artist_year">Artista, ano</string>
@@ -185,4 +208,5 @@
   <string name="reverse_sort">Inverter organização</string>
   <!--Folder selector-->
   <!--Plugin system-->
+  <!--Theme names-->
 </resources>

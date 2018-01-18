@@ -282,4 +282,16 @@
   <string name="folder_neutral">Neutraali</string>
   <!--Plugin system-->
   <string name="plugins">Liitännäiset</string>
+  <!--Theme names-->
+  <string name="theme_name_standard_light">Standardi</string>
+  <string name="theme_name_standard_dark">Standardi (tumma)</string>
+  <string name="theme_name_grey_light">Harmaa</string>
+  <string name="theme_name_grey_dark">Harmaa (tumma)</string>
+  <string name="theme_name_orange_light">Oranssi</string>
+  <string name="theme_name_orange_dark">Oranssi (tumma)</string>
+  <string name="theme_name_blue_light">Sininen</string>
+  <string name="theme_name_blue_dark">Sininen (tumma)</string>
+  <string name="theme_name_red_light">Punainen</string>
+  <string name="theme_name_red_dark">Punainen (tumma)</string>
+  <string name="theme_name_amoled_dark">Yönmusta (AMOLED)</string>
 </resources>
