@@ -176,7 +176,7 @@ public final class PlaybackService extends Service
 	 */
 	public static final String ACTION_CYCLE_REPEAT = "ch.blinkenlights.android.vanilla.CYCLE_REPEAT";
 	/**
-	 * Pause music and hide the notifcation.
+	 * Pause music and hide the notification.
 	 */
 	public static final String ACTION_CLOSE_NOTIFICATION = "ch.blinkenlights.android.vanilla.CLOSE_NOTIFICATION";
 	/**
@@ -1420,7 +1420,7 @@ public final class PlaybackService extends Service
 
 			/* Automatically advance to next song IF we are currently playing or already did skip something
 			 * This will stop after skipping 10 songs to avoid endless loops (queue full of broken stuff */
-			if(mTimeline.isEndOfQueue() == false && getSong(1) != null && (playing || (mSkipBroken > 0 && mSkipBroken < 10))) {
+			if(!mTimeline.isEndOfQueue() && getSong(1) != null && (playing || (mSkipBroken > 0 && mSkipBroken < 10))) {
 				mSkipBroken++;
 				mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_SKIP_BROKEN_SONG, getTimelinePosition(), 0), 1000);
 			}
@@ -1443,9 +1443,10 @@ public final class PlaybackService extends Service
 		} else if (finishAction(mState) == SongTimeline.FINISH_STOP_CURRENT) {
 			unsetFlag(FLAG_PLAYING);
 			setCurrentSong(+1);
-		} else if (mTimeline.isEndOfQueue()) {
-			unsetFlag(FLAG_PLAYING);
 		} else {
+			if (mTimeline.isEndOfQueue()) {
+				unsetFlag(FLAG_PLAYING);
+			}
 			setCurrentSong(+1);
 		}
 	}
