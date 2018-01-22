@@ -292,8 +292,8 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 			Log.v("VanillaMusic", "Error creating fis for "+path+": "+e);
 		}
 
-		// Check if this is an useable audio file
-		if (nativelyReadable == false ||
+		// Check if this is a usable audio file
+		if (!nativelyReadable ||
 		    mediaTags.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_AUDIO) == null ||
 		    mediaTags.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_VIDEO) != null ||
 		    mediaTags.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION) == null) {
@@ -339,7 +339,7 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 		convertNumericGenre();
 
 		// We consider this a media file if it has some common tags OR
-		// if bastp was able to parse it (which is stricter than Androids own parser)
+		// if bastp was able to parse it (which is stricter than Android's own parser)
 		mIsMediaFile = (containsKey(TITLE) || containsKey(ALBUM) || containsKey(ARTIST) || !bastpType.equals(""));
 
 		mediaTags.release();
@@ -367,6 +367,14 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 			if (bastp.containsKey(map[i])) {
 				addFiltered(filter, map[i+1], (ArrayList<String>)bastp.get(map[i]));
 			}
+		}
+
+		// If only one of (ARTIST, ALBUMARTIST) is present, populate the other
+		if (!containsKey(ARTIST) && containsKey(ALBUMARTIST)) {
+			put(ARTIST, get(ALBUMARTIST));
+		}
+		if (containsKey(ARTIST) && !containsKey(ALBUMARTIST)) {
+			put(ALBUMARTIST, get(ARTIST));
 		}
 
 		// Try to guess YEAR from date field if only DATE was specified
