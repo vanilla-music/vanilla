@@ -82,24 +82,35 @@ THE SOFTWARE.
 	<string name="go_home">Home directory</string>
 	<string name="jumping_to_song">Song is already in queue, jumping…</string>
 
+	<!--
+		As a developer, you should always supply "one" and "other"
+		strings. Your translators will know which strings are actually
+		needed for their language. Always include %d in "one" because
+		translators will need to use %d for languages where "one"
+		doesn't mean 1 (as explained above).
+
+		Translators should use http://unicode.org/reports/tr35/tr35-numbers.html#Language_Plural_Rules and
+		http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html, Type cardinal,
+		to see which categories apply to integer numbers in their languages
+	-->
 	<plurals name="playing">
-		<item quantity="one">1 track playing.</item>
+		<item quantity="one">%d track playing.</item>
 		<item quantity="other">%d tracks playing.</item>
 	</plurals>
 	<plurals name="enqueued">
-		<item quantity="one">1 track enqueued.</item>
+		<item quantity="one">%d track enqueued.</item>
 		<item quantity="other">%d tracks enqueued.</item>
 	</plurals>
 	<plurals name="added_to_playlist">
-		<item quantity="one">1 track added to playlist %2$s.</item>
+		<item quantity="one">%1$d track added to playlist %2$s.</item>
 		<item quantity="other">%1$d tracks added to playlist %2$s.</item>
 	</plurals>
 	<plurals name="removed_from_playlist">
-		<item quantity="one">1 track removed from playlist %2$s.</item>
+		<item quantity="one">%1$d track removed from playlist %2$s.</item>
 		<item quantity="other">%1$d tracks removed from playlist %2$s.</item>
 	</plurals>
 	<plurals name="deleted">
-		<item quantity="one">1 track deleted.</item>
+		<item quantity="one">%d track deleted.</item>
 		<item quantity="other">%d tracks deleted.</item>
 	</plurals>
 	<string name="delete_file_failed">Failed to delete %s.</string>
