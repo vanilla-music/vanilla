@@ -196,7 +196,8 @@ public class MediaAdapter
 			mSortEntries = new int[] { R.string.title, R.string.artist_album, R.string.year, R.string.date_added, R.string.duration };
 			mAdapterSortValues = new String[] { MediaLibrary.AlbumColumns.ALBUM_SORT+" %1$s",
 												MediaLibrary.ContributorColumns.ARTIST_SORT+" %1$s,"+MediaLibrary.AlbumColumns.ALBUM_SORT+" %1$s",
-			                                    MediaLibrary.AlbumColumns.PRIMARY_ALBUM_YEAR+" %1$s", MediaLibrary.AlbumColumns.MTIME+" %1$s",
+												MediaLibrary.AlbumColumns.PRIMARY_ALBUM_YEAR+" %1$s",
+												MediaLibrary.AlbumColumns.MTIME+" %1$s",
 												MediaLibrary.SongColumns.DURATION+" %1$s" };
 			break;
 		case MediaUtils.TYPE_SONG:
