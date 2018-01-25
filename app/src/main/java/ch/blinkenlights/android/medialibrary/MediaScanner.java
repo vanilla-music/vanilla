@@ -507,21 +507,29 @@ public class MediaScanner implements Handler.Callback {
 			if (album == null)
 				album = "<No Album>";
 
+			final String noArtist = "<No Artist>";
 			String artist = tags.getFirst(MediaMetadataExtractor.ARTIST);
 			if (artist == null)
-				artist = "<No Artist>";
+				artist = noArtist;
 
 			String discNumber = tags.getFirst(MediaMetadataExtractor.DISC_NUMBER);
 			if (discNumber == null)
 				discNumber = "1"; // untagged, but most likely '1' - this prevents annoying sorting issues with partially tagged files
 
-			long artistId = MediaLibrary.hash63(artist);
-			long albumId = MediaLibrary.hash63(album);
+			// albumartist is now always present
+			String albumartist = tags.getFirst(MediaMetadataExtractor.ALBUMARTIST);
+			if (albumartist == null)
+				albumartist = noArtist;
 
-			// Overwrite albumId with a hash that included the parent dir if set in preferences
+			long albumartistId = MediaLibrary.hash63(albumartist);
+
+			// I have several albums all called "Greatest Hits" with different album artists
+			String albumIdString = album + "\n" + albumartist;
+			// Include the parent dir in the hash if set in preferences
 			if (prefs.groupAlbumsByFolder) {
-				albumId = MediaLibrary.hash63(album + "\n" + file.getParent());
+				albumIdString += "\n" + file.getParent();
 			}
+			long albumId = MediaLibrary.hash63(albumIdString);
 
 			ContentValues v = new ContentValues();
 			v.put(MediaLibrary.SongColumns._ID,         songId);
@@ -535,38 +543,52 @@ public class MediaScanner implements Handler.Callback {
 			v.put(MediaLibrary.SongColumns.PLAYCOUNT,   playCount);
 			v.put(MediaLibrary.SongColumns.SKIPCOUNT,   skipCount);
 			v.put(MediaLibrary.SongColumns.PATH,        path);
-			v.put(MediaLibrary.SongColumns.FLAGS,       (songFlags &~MediaLibrary.SONG_FLAG_OUTDATED));
+			v.put(MediaLibrary.SongColumns.FLAGS,       (songFlags & ~MediaLibrary.SONG_FLAG_OUTDATED));
 			mBackend.insert(MediaLibrary.TABLE_SONGS, null, v);
 
 			v.clear();
 			v.put(MediaLibrary.AlbumColumns._ID,               albumId);
 			v.put(MediaLibrary.AlbumColumns.ALBUM,             album);
 			v.put(MediaLibrary.AlbumColumns.ALBUM_SORT,        MediaLibrary.keyFor(album));
-			v.put(MediaLibrary.AlbumColumns.PRIMARY_ARTIST_ID, artistId);
+			v.put(MediaLibrary.AlbumColumns.PRIMARY_ARTIST_ID, albumartistId);
 			v.put(MediaLibrary.AlbumColumns.PRIMARY_ALBUM_YEAR,tags.getFirst(MediaMetadataExtractor.YEAR));
 			long albumInsert = mBackend.insert(MediaLibrary.TABLE_ALBUMS, null, v);
 			if (albumInsert == -1) {
-				// Insert failed, so the column probably already existed.
+				// Insert failed, so the entry probably already existed.
+				// This means the album with the same ID which, assuming no hash clashes, means with the same title,
+				// album artist (same as primary_artist) and, optionally, folder path, is already present in the table.
 				// We need to ensure that the album table is up-to-date as it contains
-				// some 'cached' (PRIMARY_*) values.
-				// Failure to do so would mean that we never update the year or may point to an
-				// orphaned artist id.
+				// some 'cached' (PRIMARY_ALBUM_YEAR) value.
+				// Failure to do so would mean that we never update the year.
 				v.clear();
-				v.put(MediaLibrary.AlbumColumns.PRIMARY_ARTIST_ID, artistId);
-				v.put(MediaLibrary.AlbumColumns.PRIMARY_ALBUM_YEAR,tags.getFirst(MediaMetadataExtractor.YEAR));
+				v.put(MediaLibrary.AlbumColumns.PRIMARY_ALBUM_YEAR, tags.getFirst(MediaMetadataExtractor.YEAR));
 				mBackend.update(MediaLibrary.TABLE_ALBUMS, v, MediaLibrary.AlbumColumns._ID+"=?", new String[]{ Long.toString(albumId) });
 			}
 
+			long artistId = MediaLibrary.hash63(artist);
+
 			v.clear();
-			v.put(MediaLibrary.ContributorColumns._ID,               artistId);
-			v.put(MediaLibrary.ContributorColumns._CONTRIBUTOR,      artist);
+			v.put(MediaLibrary.ContributorColumns._ID, artistId);
+			v.put(MediaLibrary.ContributorColumns._CONTRIBUTOR, artist);
 			v.put(MediaLibrary.ContributorColumns._CONTRIBUTOR_SORT, MediaLibrary.keyFor(artist));
 			mBackend.insert(MediaLibrary.TABLE_CONTRIBUTORS, null, v);
 
 			v.clear();
 			v.put(MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID, artistId);
+			v.put(MediaLibrary.ContributorSongColumns.SONG_ID, songId);
+			v.put(MediaLibrary.ContributorSongColumns.ROLE, MediaLibrary.ROLE_ARTIST);
+			mBackend.insert(MediaLibrary.TABLE_CONTRIBUTORS_SONGS, null, v);
+
+			v.clear();
+			v.put(MediaLibrary.ContributorColumns._ID,               albumartistId);
+			v.put(MediaLibrary.ContributorColumns._CONTRIBUTOR,      albumartist);
+			v.put(MediaLibrary.ContributorColumns._CONTRIBUTOR_SORT, MediaLibrary.keyFor(albumartist));
+			mBackend.insert(MediaLibrary.TABLE_CONTRIBUTORS, null, v);
+
+			v.clear();
+			v.put(MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID, albumartistId);
 			v.put(MediaLibrary.ContributorSongColumns.SONG_ID,         songId);
-			v.put(MediaLibrary.ContributorSongColumns.ROLE,            MediaLibrary.ROLE_ARTIST);
+			v.put(MediaLibrary.ContributorSongColumns.ROLE,            MediaLibrary.ROLE_ALBUMARTIST);
 			mBackend.insert(MediaLibrary.TABLE_CONTRIBUTORS_SONGS, null, v);
 
 			// Composers are optional: only add if we found it
@@ -583,23 +605,6 @@ public class MediaScanner implements Handler.Callback {
 				v.put(MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID, composerId);
 				v.put(MediaLibrary.ContributorSongColumns.SONG_ID,         songId);
 				v.put(MediaLibrary.ContributorSongColumns.ROLE,            MediaLibrary.ROLE_COMPOSER);
-				mBackend.insert(MediaLibrary.TABLE_CONTRIBUTORS_SONGS, null, v);
-			}
-
-			// Same as with composer: albumartist is an optional tag
-			String albumartist = tags.getFirst(MediaMetadataExtractor.ALBUMARTIST);
-			if (albumartist != null) {
-				long albumartistId = MediaLibrary.hash63(albumartist);
-				v.clear();
-				v.put(MediaLibrary.ContributorColumns._ID,               albumartistId);
-				v.put(MediaLibrary.ContributorColumns._CONTRIBUTOR,      albumartist);
-				v.put(MediaLibrary.ContributorColumns._CONTRIBUTOR_SORT, MediaLibrary.keyFor(albumartist));
-				mBackend.insert(MediaLibrary.TABLE_CONTRIBUTORS, null, v);
-
-				v.clear();
-				v.put(MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID, albumartistId);
-				v.put(MediaLibrary.ContributorSongColumns.SONG_ID,         songId);
-				v.put(MediaLibrary.ContributorSongColumns.ROLE,            MediaLibrary.ROLE_ALBUMARTIST);
 				mBackend.insert(MediaLibrary.TABLE_CONTRIBUTORS_SONGS, null, v);
 			}
 
