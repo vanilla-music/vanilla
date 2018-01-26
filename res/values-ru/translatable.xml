@@ -304,14 +304,14 @@
   <string name="plugins">Модули</string>
   <!--Theme names-->
   <string name="theme_name_standard_light">Стандартная</string>
-  <string name="theme_name_standard_dark">Стандартная тёмная</string>
+  <string name="theme_name_standard_dark">Стандартная (тёмная)</string>
   <string name="theme_name_grey_light">Серая</string>
-  <string name="theme_name_grey_dark">Тёмно-серая</string>
+  <string name="theme_name_grey_dark">Серая (тёмная)</string>
   <string name="theme_name_orange_light">Оранжевая</string>
-  <string name="theme_name_orange_dark">Тёмно-оранжевая</string>
+  <string name="theme_name_orange_dark">Оранжевая (тёмная)</string>
   <string name="theme_name_blue_light">Синяя</string>
-  <string name="theme_name_blue_dark">Тёмно-синяя</string>
+  <string name="theme_name_blue_dark">Синяя (тёмная)</string>
   <string name="theme_name_red_light">Красная</string>
-  <string name="theme_name_red_dark">Тёмно-красная</string>
+  <string name="theme_name_red_dark">Красная (тёмная)</string>
   <string name="theme_name_amoled_dark">Совершенно чёрная (OLED)</string>
 </resources>

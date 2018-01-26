@@ -280,4 +280,15 @@
   <!--Plugin system-->
   <string name="plugins">플러그인</string>
   <!--Theme names-->
+  <string name="theme_name_standard_light">기본</string>
+  <string name="theme_name_standard_dark">기본(어두움)</string>
+  <string name="theme_name_grey_light">회색</string>
+  <string name="theme_name_grey_dark">회색(어두움)</string>
+  <string name="theme_name_orange_light">오랜지</string>
+  <string name="theme_name_orange_dark">오랜지(어두움)</string>
+  <string name="theme_name_blue_light">파란색</string>
+  <string name="theme_name_blue_dark">파란색(어두움)</string>
+  <string name="theme_name_red_light">빨간색</string>
+  <string name="theme_name_red_dark">빨간색(어두움)</string>
+  <string name="theme_name_amoled_dark">진한 검정색(AMOLED)</string>
 </resources>
