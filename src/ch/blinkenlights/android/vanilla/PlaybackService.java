@@ -1104,7 +1104,7 @@ public final class PlaybackService extends Service
 		if (mReadaheadEnabled)
 			triggerReadAhead();
 
-		mRemoteControlClient.updateRemote(mCurrentSong, mState, mForceNotificationVisible);
+		mRemoteControlClient.updateRemote(mCurrentSong, mState, mForceNotificationVisible, uptime);
 
 		scrobbleBroadcast();
 	}
@@ -1697,6 +1697,18 @@ public final class PlaybackService extends Service
 			return;
 		long position = (long)mMediaPlayer.getDuration() * progress / 1000;
 		mMediaPlayer.seekTo((int)position);
+		mHandler.sendMessage(mHandler.obtainMessage(MSG_BROADCAST_CHANGE, -1, 0, new TimestampedObject(null)));
+	}
+
+	/**
+	 * Broadcast an update with a delay.
+	 * This is only needed to implement a hack to force correct progress display when playing for the first time after process start.
+	 *
+	 * @param delayMillis Delay of the broadcast in milliseconds
+	 */
+	public void broadcastUpdateDelayed(long delayMillis)
+	{
+		mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_BROADCAST_CHANGE, -1, 0, new TimestampedObject(null)), delayMillis);
 	}
 
 	@Override
