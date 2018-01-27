@@ -120,7 +120,7 @@ public class RemoteControlImplICS implements RemoteControl.Client {
 	 * @param state PlaybackService state, used to determine playback state.
 	 * @param keepPaused whether or not to keep the remote updated in paused mode
 	 */
-	public void updateRemote(Song song, int state, boolean keepPaused)
+	public void updateRemote(Song song, int state, boolean keepPaused, long updateTime)
 	{
 		RemoteControlClient remote = mRemote;
 		if (remote == null)

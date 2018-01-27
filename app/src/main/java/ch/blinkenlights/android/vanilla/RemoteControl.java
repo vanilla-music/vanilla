@@ -40,6 +40,6 @@ public class RemoteControl {
 		public void initializeRemote();
 		public void unregisterRemote();
 		public void reloadPreference();
-		public void updateRemote(Song song, int state, boolean keepPaused);
+		public void updateRemote(Song song, int state, boolean keepPaused, long updateTime);
 	}
 }
