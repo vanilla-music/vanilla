@@ -612,6 +612,16 @@ public class LibraryPagerAdapter
 	}
 
 	/**
+	 * Restores the saved scrolling position
+	 */
+	private void restorePosition(int index) {
+		// Restore scrolling position if present and valid
+		Integer curPos = sLruAdapterPos.popPosition(mAdapters[index]);
+		if (curPos != null && curPos < mLists[index].getCount())
+			mLists[index].setSelection(curPos);
+	}
+
+	/**
 	 * Returns the limiter set on the current adapter or null if there is none.
 	 */
 	public Limiter getCurrentLimiter()
@@ -677,12 +687,7 @@ public class LibraryPagerAdapter
 		case MSG_COMMIT_QUERY: {
 			int index = message.arg1;
 			mAdapters[index].commitQuery(message.obj);
-
-			// Restore scrolling position if present and valid
-			Integer curPos = sLruAdapterPos.popPosition(mAdapters[index]);
-			if (curPos != null && curPos < mLists[index].getCount())
-				mLists[index].setSelection(curPos);
-
+			restorePosition(index);
 			break;
 		}
 		case MSG_SAVE_SORT: {
