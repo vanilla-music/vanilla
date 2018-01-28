@@ -166,7 +166,7 @@ public class MediaSchema {
 	  +" ;";
 
 	/**
-	 * View wich includes SONGS_ALBUMS_ARTISTS and any other contributors
+	 * View which includes SONGS_ALBUMS_ARTISTS and any other contributors
 	 * This view should only be used if needed as the SQL query is pretty expensive
 	 */
 	private static final String VIEW_CREATE_SONGS_ALBUMS_ARTISTS_HUGE = "CREATE VIEW "+ MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS_HUGE+" AS "

@@ -67,11 +67,11 @@ public class RemoteControlImplLp implements RemoteControl.Client {
 
 		mMediaSession.setCallback(new MediaSession.Callback() {
 			@Override
-			public void onPause() {
+			public void onPlay() {
 				MediaButtonReceiver.processKey(mContext, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_HEADSETHOOK));
 			}
 			@Override
-			public void onPlay() {
+			public void onPause() {
 				MediaButtonReceiver.processKey(mContext, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_HEADSETHOOK));
 			}
 			@Override
@@ -81,6 +81,11 @@ public class RemoteControlImplLp implements RemoteControl.Client {
 			@Override
 			public void onSkipToPrevious() {
 				MediaButtonReceiver.processKey(mContext, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS));
+			}
+			@Override
+			public void onStop() {
+				// We will behave the same as Google Play Music: for "Stop" we unconditionally Pause instead
+				MediaButtonReceiver.processKey(mContext, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PAUSE));
 			}
 		});
 
@@ -111,6 +116,17 @@ public class RemoteControlImplLp implements RemoteControl.Client {
 		mShowCover = -1;
 	}
 
+	// HACK: This static is only needed as I found no other way to force correct progress display in the following scenarios:
+	// I.  1. Vanilla is started after a "Force stop"
+	//     2. BlueSoleil 10.0.497.0 is connected
+	//     3. I scroll playback to the middle of a song and press Play
+	// II. 1. BlueSoleil 10.0.497.0 is connected
+	//     2. Another player (Google Play Music) played something
+	//     3. I scroll playback to the middle of a song and press Play in Vanilla
+	// without this second, artificially delayed, "setPlaybackState" call, the progress of the song
+	// may start from a wrong position (either the start or the previous song's position in the other player).
+	private static boolean playingUpdateCalled = false;
+
 	/**
 	 * Update the remote with new metadata.
 	 * {@link #registerRemote()} must have been called
@@ -120,7 +136,7 @@ public class RemoteControlImplLp implements RemoteControl.Client {
 	 * @param state PlaybackService state, used to determine playback state.
 	 * @param keepPaused whether or not to keep the remote updated in paused mode
 	 */
-	public void updateRemote(Song song, int state, boolean keepPaused) {
+	public void updateRemote(Song song, int state, boolean keepPaused, long updateTime) {
 		MediaSession session = mMediaSession;
 		if (session == null)
 			return;
@@ -132,6 +148,18 @@ public class RemoteControlImplLp implements RemoteControl.Client {
 			mShowCover = settings.getBoolean(PrefKeys.COVER_ON_LOCKSCREEN, PrefDefaults.COVER_ON_LOCKSCREEN) ? 1 : 0;
 		}
 
+		int playbackState = (isPlaying ? PlaybackState.STATE_PLAYING : PlaybackState.STATE_PAUSED);
+		long actions = (PlaybackState.ACTION_STOP | PlaybackState.ACTION_PLAY_PAUSE | PlaybackState.ACTION_SKIP_TO_NEXT | PlaybackState.ACTION_SKIP_TO_PREVIOUS);
+		actions |= (isPlaying ? PlaybackState.ACTION_PAUSE : PlaybackState.ACTION_PLAY);
+
+		long position = PlaybackService.hasInstance() ? PlaybackService.get(null).getPosition() : 0;
+
+		session.setPlaybackState(new PlaybackState.Builder()
+				.setState(playbackState, position, 1.0f, updateTime)
+				.setActions(actions)
+				.build());
+		session.setActive(true);
+
 		if (song != null) {
 			Bitmap bitmap = null;
 			if (mShowCover == 1 && (isPlaying || keepPaused)) {
@@ -139,22 +167,25 @@ public class RemoteControlImplLp implements RemoteControl.Client {
 			}
 
 			session.setMetadata(new MediaMetadata.Builder()
-				.putString(MediaMetadata.METADATA_KEY_ARTIST, song.artist)
-				.putString(MediaMetadata.METADATA_KEY_ALBUM, song.album)
-				.putString(MediaMetadata.METADATA_KEY_TITLE, song.title)
-				.putLong(MediaMetadata.METADATA_KEY_DURATION, song.duration)
-				.putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, bitmap)
-			.build());
+					.putString(MediaMetadata.METADATA_KEY_ARTIST, song.artist)
+					.putString(MediaMetadata.METADATA_KEY_ALBUM, song.album)
+					.putString(MediaMetadata.METADATA_KEY_TITLE, song.title)
+					.putLong(MediaMetadata.METADATA_KEY_DURATION, song.duration)
+					.putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, bitmap)
+					.build());
 		}
 
-		int playbackState = (isPlaying ? PlaybackState.STATE_PLAYING : PlaybackState.STATE_PAUSED);
-		long actions = (PlaybackState.ACTION_PLAY_PAUSE | PlaybackState.ACTION_SKIP_TO_NEXT | PlaybackState.ACTION_SKIP_TO_PREVIOUS);
-		actions |= (isPlaying ? PlaybackState.ACTION_PAUSE : PlaybackState.ACTION_PLAY);
-
-		session.setPlaybackState(new PlaybackState.Builder()
-			.setState(playbackState, PlaybackState.PLAYBACK_POSITION_UNKNOWN , 1.0f)
-			.setActions(actions)
-			.build());
-		mMediaSession.setActive(true);
+		// HACK: the following repetition of the update broadcast is the only way I found to force correct progress display.
+		// It is only needed the first time the update is issued in the "playing" state after having been in the "non-playing" state.
+		if (!isPlaying) {
+			playingUpdateCalled = false;
+		}
+		else if (!playingUpdateCalled) {
+			playingUpdateCalled = true;
+			if (PlaybackService.hasInstance()) {
+				// Experimentally found that a delay of 100 milliseconds would not be reliably sufficient, but 500 seems to work reliably
+				PlaybackService.get(null).broadcastUpdateDelayed(500);
+			}
+		}
 	}
 }
