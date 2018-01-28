@@ -320,10 +320,10 @@ public class MediaSchema {
 			dbh.execSQL(VIEW_CREATE_PLAYLIST_SONGS);
 		}
 
-		if (oldVersion >= 20170211 && oldVersion < 20180128) {
+		if (oldVersion >= 20170211 && oldVersion < 20180129) {
 			// Minor indexer changes - invalidate (but do not drop) all
 			// existing entries.
-			dbh.execSQL("UPDATE songs SET mtime=mtime-1 WHERE mtime > 0");
+			dbh.execSQL("UPDATE songs SET mtime=1");
 		}
 
 	}
