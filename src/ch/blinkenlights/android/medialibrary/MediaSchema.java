@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2017 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2016-2018 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -318,6 +318,12 @@ public class MediaSchema {
 			dbh.execSQL(VIEW_CREATE_SONGS_ALBUMS_ARTISTS);
 			dbh.execSQL(VIEW_CREATE_SONGS_ALBUMS_ARTISTS_HUGE);
 			dbh.execSQL(VIEW_CREATE_PLAYLIST_SONGS);
+		}
+
+		if (oldVersion >= 20170211 && oldVersion < 20180129) {
+			// Minor indexer changes - invalidate (but do not drop) all
+			// existing entries.
+			dbh.execSQL("UPDATE songs SET mtime=1");
 		}
 
 	}

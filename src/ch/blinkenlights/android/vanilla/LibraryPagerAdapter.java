@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
- * Copyright (C) 2015 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2015-2018 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -459,46 +459,48 @@ public class LibraryPagerAdapter
 	 */
 	public void clearLimiter(int type)
 	{
+		ArrayList<LibraryAdapter> targets = new ArrayList<LibraryAdapter>();
+
 		maintainPosition();
 
 		if (type == MediaUtils.TYPE_FILE) {
 			if (mFilesAdapter == null) {
 				mPendingFileLimiter = null;
 			} else {
-				mFilesAdapter.setLimiter(null);
-				requestRequery(mFilesAdapter);
+				targets.add(mFilesAdapter);
 			}
 		} else {
 			if (mArtistAdapter == null) {
 				mPendingArtistLimiter = null;
 			} else {
-				mArtistAdapter.setLimiter(null);
-				requestRequery(mArtistAdapter);
+				targets.add(mArtistAdapter);
 			}
 			if (mAlbArtAdapter == null) {
 				mPendingAlbArtLimiter = null;
 			} else {
-				mAlbArtAdapter.setLimiter(null);
-				requestRequery(mAlbArtAdapter);
+				targets.add(mAlbArtAdapter);
 			}
 			if (mComposerAdapter == null) {
 				mPendingComposerLimiter = null;
 			} else {
-				mComposerAdapter.setLimiter(null);
-				requestRequery(mComposerAdapter);
+				targets.add(mComposerAdapter);
 			}
 			if (mAlbumAdapter == null) {
 				mPendingAlbumLimiter = null;
 			} else {
-				mAlbumAdapter.setLimiter(null);
-				requestRequery(mAlbumAdapter);
+				targets.add(mAlbumAdapter);
 			}
 			if (mSongAdapter == null) {
 				mPendingSongLimiter = null;
 			} else {
-				mSongAdapter.setLimiter(null);
-				requestRequery(mSongAdapter);
+				targets.add(mSongAdapter);
 			}
+		}
+
+		for (LibraryAdapter adapter : targets) {
+			adapter.setLimiter(null);
+			loadSortOrder((SortableAdapter)adapter);
+			requestRequery(adapter);
 		}
 	}
 
@@ -511,6 +513,7 @@ public class LibraryPagerAdapter
 	public int setLimiter(Limiter limiter)
 	{
 		int tab;
+		ArrayList<LibraryAdapter> targets = new ArrayList<LibraryAdapter>();
 
 		maintainPosition();
 
@@ -519,8 +522,7 @@ public class LibraryPagerAdapter
 			if (mSongAdapter == null) {
 				mPendingSongLimiter = limiter;
 			} else {
-				mSongAdapter.setLimiter(limiter);
-				requestRequery(mSongAdapter);
+				targets.add(mSongAdapter);
 			}
 			tab = getMediaTypePosition(MediaUtils.TYPE_SONG);
 			break;
@@ -530,14 +532,12 @@ public class LibraryPagerAdapter
 			if (mAlbumAdapter == null) {
 				mPendingAlbumLimiter = limiter;
 			} else {
-				mAlbumAdapter.setLimiter(limiter);
-				requestRequery(mAlbumAdapter);
+				targets.add(mAlbumAdapter);
 			}
 			if (mSongAdapter == null) {
 				mPendingSongLimiter = limiter;
 			} else {
-				mSongAdapter.setLimiter(limiter);
-				requestRequery(mSongAdapter);
+				targets.add(mSongAdapter);
 			}
 			tab = getMediaTypePosition(MediaUtils.TYPE_ALBUM);
 			if (tab == -1)
@@ -547,32 +547,27 @@ public class LibraryPagerAdapter
 			if (mArtistAdapter == null) {
 				mPendingArtistLimiter = limiter;
 			} else {
-				mArtistAdapter.setLimiter(limiter);
-				requestRequery(mArtistAdapter);
+				targets.add(mArtistAdapter);
 			}
 			if (mAlbArtAdapter == null) {
 				mPendingAlbArtLimiter = limiter;
 			} else {
-				mAlbArtAdapter.setLimiter(limiter);
-				requestRequery(mAlbArtAdapter);
+				targets.add(mAlbArtAdapter);
 			}
 			if (mComposerAdapter == null) {
 				mPendingComposerLimiter = limiter;
 			} else {
-				mComposerAdapter.setLimiter(limiter);
-				requestRequery(mComposerAdapter);
+				targets.add(mComposerAdapter);
 			}
 			if (mAlbumAdapter == null) {
 				mPendingAlbumLimiter = limiter;
 			} else {
-				mAlbumAdapter.setLimiter(limiter);
-				requestRequery(mAlbumAdapter);
+				targets.add(mAlbumAdapter);
 			}
 			if (mSongAdapter == null) {
 				mPendingSongLimiter = limiter;
 			} else {
-				mSongAdapter.setLimiter(limiter);
-				requestRequery(mSongAdapter);
+				targets.add(mSongAdapter);
 			}
 			tab = getMediaTypePosition(MediaUtils.TYPE_ARTIST);
 			if (tab == -1)
@@ -584,17 +579,22 @@ public class LibraryPagerAdapter
 			if (mFilesAdapter == null) {
 				mPendingFileLimiter = limiter;
 			} else {
-				mFilesAdapter.setLimiter(limiter);
+				targets.add(mFilesAdapter);
 				// forcefully jump to beginning - commit query might restore a saved position
 				// but if it doesn't we would end up at the same scrolling position in a new
 				// folder which is uncool.
 				mLists[MediaUtils.TYPE_FILE].setSelection(0);
-				requestRequery(mFilesAdapter);
 			}
 			tab = getMediaTypePosition(MediaUtils.TYPE_FILE);
 			break;
 		default:
 			throw new IllegalArgumentException("Unsupported limiter type: " + limiter.type);
+		}
+
+		for (LibraryAdapter adapter : targets) {
+			adapter.setLimiter(limiter);
+			loadSortOrder((SortableAdapter)adapter);
+			requestRequery(adapter);
 		}
 
 		return tab;
@@ -609,6 +609,16 @@ public class LibraryPagerAdapter
 				sLruAdapterPos.storePosition(mAdapters[i], mLists[i].getFirstVisiblePosition());
 			}
 		}
+	}
+
+	/**
+	 * Restores the saved scrolling position
+	 */
+	private void restorePosition(int index) {
+		// Restore scrolling position if present and valid
+		Integer curPos = sLruAdapterPos.popPosition(mAdapters[index]);
+		if (curPos != null && curPos < mLists[index].getCount())
+			mLists[index].setSelection(curPos);
 	}
 
 	/**
@@ -677,12 +687,7 @@ public class LibraryPagerAdapter
 		case MSG_COMMIT_QUERY: {
 			int index = message.arg1;
 			mAdapters[index].commitQuery(message.obj);
-
-			// Restore scrolling position if present and valid
-			Integer curPos = sLruAdapterPos.popPosition(mAdapters[index]);
-			if (curPos != null && curPos < mLists[index].getCount())
-				mLists[index].setSelection(curPos);
-
+			restorePosition(index);
 			break;
 		}
 		case MSG_SAVE_SORT: {

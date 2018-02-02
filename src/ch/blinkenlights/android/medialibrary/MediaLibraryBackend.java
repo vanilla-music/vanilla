@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2017 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2016-2018 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	/**
 	 * The database version we are using
 	 */
-	private static final int DATABASE_VERSION = 20170619;
+	private static final int DATABASE_VERSION = 20180129;
 	/**
 	 * on-disk file to store the database
 	 */

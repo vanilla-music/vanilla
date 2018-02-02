@@ -56,36 +56,45 @@
   <string name="play_or_enqueue">В очередь при воспроизведении; Воспроизвести при паузе</string>
   <string name="open">Открыть</string>
   <string name="go_home">Начальная папка</string>
-  <string name="jumping_to_song">Дорожка уже в очереди, следующий…</string>
+  <string name="jumping_to_song">Дорожка уже в очереди, перемотка…</string>
+  <!--As a developer, you should always supply "one" and "other"
+		strings. Your translators will know which strings are actually
+		needed for their language. Always include %d in "one" because
+		translators will need to use %d for languages where "one"
+		doesn't mean 1 (as explained above).
+
+		Translators should use http://unicode.org/reports/tr35/tr35-numbers.html#Language_Plural_Rules and
+		http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html, Type cardinal,
+		to see which categories apply to integer numbers in their languages-->
   <plurals name="playing">
-    <item quantity="one">Воспроизведение 1 дорожки.</item>
-    <item quantity="few">Воспроизведение %d дорожек.</item>
-    <item quantity="many">Воспроизведение %d дорожек.</item>
-    <item quantity="other">Воспроизведение %d дорожек.</item>
+    <item quantity="one">Воспроизводится %d дорожка.</item>
+    <item quantity="few">Воспроизводится %d дорожки.</item>
+    <item quantity="many">Воспроизводится %d дорожек.</item>
+    <item quantity="other">Воспроизводится %d дорожек.</item>
   </plurals>
   <plurals name="enqueued">
-    <item quantity="one">Добавлено дорожек: 1.</item>
-    <item quantity="few">Добавлено дорожек: %d.</item>
-    <item quantity="many">Добавлено дорожек: %d.</item>
-    <item quantity="other">Добавлено дорожек: %d.</item>
+    <item quantity="one">Добавлена %d дорожка.</item>
+    <item quantity="few">Добавлено %d дорожки.</item>
+    <item quantity="many">Добавлено %d дорожек.</item>
+    <item quantity="other">Добавлено %d дорожек.</item>
   </plurals>
   <plurals name="added_to_playlist">
-    <item quantity="one">В плей-лист %2$s добавлено дорожек: 1.</item>
-    <item quantity="few">В плей-лист %2$s добавлено дорожек: %1$d.</item>
-    <item quantity="many">В плей-лист %2$s добавлено дорожек: %1$d.</item>
-    <item quantity="other">В плей-лист %2$s добавлено дорожек: %1$d.</item>
+    <item quantity="one">В плей-лист %2$s добавлена %1$d дорожка.</item>
+    <item quantity="few">В плей-лист %2$s добавлено %1$d дорожки.</item>
+    <item quantity="many">В плей-лист %2$s добавлено %1$d дорожек.</item>
+    <item quantity="other">В плей-лист %2$s добавлено %1$d дорожек.</item>
   </plurals>
   <plurals name="removed_from_playlist">
-    <item quantity="one">Из плей-листа %2$s убрано дорожек: 1.</item>
-    <item quantity="few">Из плей-листа %2$s убрано дорожек: %1$d.</item>
-    <item quantity="many">Из плей-листа %2$s убрано дорожек: %1$d.</item>
-    <item quantity="other">Из плей-листа %2$s убрано дорожек: %1$d.</item>
+    <item quantity="one">Из плей-листа %2$s убрана %1$d дорожка.</item>
+    <item quantity="few">Из плей-листа %2$s убрано %1$d дорожки.</item>
+    <item quantity="many">Из плей-листа %2$s убрано %1$d дорожек.</item>
+    <item quantity="other">Из плей-листа %2$s убрано %1$d дорожек.</item>
   </plurals>
   <plurals name="deleted">
-    <item quantity="one">Удалено дорожек: 1.</item>
-    <item quantity="few">Удалено дорожек: %d.</item>
-    <item quantity="many">Удалено дорожек: %d.</item>
-    <item quantity="other">Удалено дорожек: %d.</item>
+    <item quantity="one">Удалена %d дорожка.</item>
+    <item quantity="few">Удалено %d дорожки.</item>
+    <item quantity="many">Удалено %d дорожек.</item>
+    <item quantity="other">Удалено %d дорожек.</item>
   </plurals>
   <string name="delete_file_failed">Сбой при удалении %s.</string>
   <string name="deleted_item">\"%s\" удалена.</string>
@@ -117,12 +126,12 @@
   <string name="number_of_tracks">по числу дорожек</string>
   <string name="year">по году</string>
   <string name="date_added">по дате добавления</string>
-  <string name="artist_album">по исполнителю и альбомам</string>
-  <string name="artist_year_album">по исполнителю, году и альбомам</string>
-  <string name="artist_album_track">по исполнителю, альбомам и номеру дорожки</string>
-  <string name="artist_album_title">по исполнителю, альбомам и названию</string>
+  <string name="artist_album">по исполнителю и альбому</string>
+  <string name="artist_year_album">по исполнителю, году и альбому</string>
+  <string name="artist_album_track">по исполнителю, альбому и номеру дорожки</string>
+  <string name="artist_album_title">по исполнителю, альбому и названию</string>
   <string name="artist_year">по исполнителю и году</string>
-  <string name="album_track">по альбомам и номеру дорожки</string>
+  <string name="album_track">по альбому и номеру дорожки</string>
   <string name="song_playcount">по популярности</string>
   <!--Preferences-->
   <plurals name="seconds">
@@ -161,9 +170,9 @@
   <string name="replaygain">Выравнивание громкости (ReplayGain)</string>
   <string name="replaygain_summary">Настройка обработки тегов ReplayGain</string>
   <string name="replaygain_track_title">Применять ReplayGain дорожки</string>
-  <string name="replaygain_track_summary">Выравнивает громкость всех дорожек.</string>
+  <string name="replaygain_track_summary">Выравнивает громкость всех дорожек</string>
   <string name="replaygain_album_title">Применять ReplayGain альбома</string>
-  <string name="replaygain_album_summary">Сохраняет динамичность альбома.</string>
+  <string name="replaygain_album_summary">Сохраняет динамичность альбома</string>
   <string name="replaygain_bump_title">Предусиление дорожек с тегами ReplayGain</string>
   <string name="replaygain_untagged_debump_title">Ослабление дорожек без тегов ReplayGain</string>
   <string name="replaygain_untagged_debump_summary">Понизить громкость на</string>
@@ -175,7 +184,7 @@
   <string name="cycle_continuous_shuffling">Непрерывное перемешивание</string>
   <string name="cycle_continuous_shuffling_summary">При перемешивании очередь проигрывается в случайном порядке</string>
   <string name="notifications">Уведомления</string>
-  <string name="notification_visibility_title">Отображение уведемления</string>
+  <string name="notification_visibility_title">Отображение уведомления</string>
   <string name="notification_action_title">Реакция уведомления</string>
   <string name="notification_nag">Навязчивые уведомления</string>
   <string name="notification_nag_summary">Объявлять смену дорожек, используя \"Heads-Up-Notification\"</string>
@@ -291,7 +300,7 @@
   <string name="media_stats_library_playtime">Общая продолжительность в часах</string>
   <string name="media_stats_listen_playtime">Воспроизведено музыки на текущий момент</string>
   <string name="media_stats_progress">Выполнение сканирования</string>
-  <string name="media_library_scan_running">Сканируется библиотека носителей...</string>
+  <string name="media_library_scan_running">Сканируется библиотека носителей…</string>
   <string name="media_scan_preferences">Настройка сканера</string>
   <string name="media_scan_preferences_change_title">Изменение настроек сканера</string>
   <string name="media_scan_preferences_change_message">Изменение этой настройки приведёт к полному сканированию библиотеки. Продолжить?</string>
@@ -304,14 +313,14 @@
   <string name="plugins">Модули</string>
   <!--Theme names-->
   <string name="theme_name_standard_light">Стандартная</string>
-  <string name="theme_name_standard_dark">Стандартная тёмная</string>
+  <string name="theme_name_standard_dark">Стандартная (тёмная)</string>
   <string name="theme_name_grey_light">Серая</string>
-  <string name="theme_name_grey_dark">Тёмно-серая</string>
+  <string name="theme_name_grey_dark">Серая (тёмная)</string>
   <string name="theme_name_orange_light">Оранжевая</string>
-  <string name="theme_name_orange_dark">Тёмно-оранжевая</string>
+  <string name="theme_name_orange_dark">Оранжевая (тёмная)</string>
   <string name="theme_name_blue_light">Синяя</string>
-  <string name="theme_name_blue_dark">Тёмно-синяя</string>
+  <string name="theme_name_blue_dark">Синяя (тёмная)</string>
   <string name="theme_name_red_light">Красная</string>
-  <string name="theme_name_red_dark">Тёмно-красная</string>
+  <string name="theme_name_red_dark">Красная (тёмная)</string>
   <string name="theme_name_amoled_dark">Совершенно чёрная (OLED)</string>
 </resources>
