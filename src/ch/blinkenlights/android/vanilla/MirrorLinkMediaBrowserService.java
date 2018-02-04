@@ -184,6 +184,7 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService
 		mHandler = new Handler(mLooper, this);
 
 		updatePlaybackState(null);
+		setSong(0, null);
 	}
 
 	@Override
