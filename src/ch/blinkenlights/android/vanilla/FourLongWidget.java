@@ -96,26 +96,30 @@ public class FourLongWidget extends AppWidgetProvider {
 			views.setViewVisibility(R.id.next, View.GONE);
 			views.setViewVisibility(R.id.title, View.GONE);
 			views.setInt(R.id.artist, "setText", R.string.no_songs);
+			views.setViewVisibility(R.id.album, View.GONE);
 			views.setViewVisibility(R.id.cover, View.GONE);
 		} else if (song == null) {
 			views.setViewVisibility(R.id.play_pause, View.VISIBLE);
 			views.setViewVisibility(R.id.next, View.VISIBLE);
 			views.setViewVisibility(R.id.title, View.GONE);
 			views.setInt(R.id.artist, "setText", R.string.app_name);
+			views.setViewVisibility(R.id.album, View.GONE);
 			views.setViewVisibility(R.id.cover, View.GONE);
 		} else {
 			views.setViewVisibility(R.id.play_pause, View.VISIBLE);
 			views.setViewVisibility(R.id.next, View.VISIBLE);
 			views.setViewVisibility(R.id.title, View.VISIBLE);
+			views.setViewVisibility(R.id.album, View.VISIBLE);
 			views.setTextViewText(R.id.title, song.title);
 			views.setTextViewText(R.id.artist, song.artist);
+			views.setTextViewText(R.id.album, song.album);
 			Bitmap cover = song.getCover(context);
 			if (cover == null) {
-				views.setViewVisibility(R.id.cover, View.GONE);
+				views.setImageViewResource(R.id.cover, R.drawable.fallback_cover_large);
 			} else {
-				views.setViewVisibility(R.id.cover, View.VISIBLE);
 				views.setImageViewBitmap(R.id.cover, cover);
 			}
+			views.setViewVisibility(R.id.cover, View.VISIBLE);
 		}
 
 		boolean playing = (state & PlaybackService.FLAG_PLAYING) != 0;
