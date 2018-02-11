@@ -13,3 +13,6 @@ release: clean
 
 clean:
 	rm -rf ./app/build/outputs
+
+uninstall:
+	adb uninstall ch.blinkenlights.android.vanilla
