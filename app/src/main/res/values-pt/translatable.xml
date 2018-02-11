@@ -57,24 +57,33 @@
   <string name="open">Abrir</string>
   <string name="go_home">Diretório inicial</string>
   <string name="jumping_to_song">A faixa já está na fila de reprodução e será ignorada...</string>
+  <!--As a developer, you should always supply "one" and "other"
+		strings. Your translators will know which strings are actually
+		needed for their language. Always include %d in "one" because
+		translators will need to use %d for languages where "one"
+		doesn't mean 1 (as explained above).
+
+		Translators should use http://unicode.org/reports/tr35/tr35-numbers.html#Language_Plural_Rules and
+		http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html, Type cardinal,
+		to see which categories apply to integer numbers in their languages-->
   <plurals name="playing">
-    <item quantity="one">1 faixa em reprodução.</item>
-    <item quantity="other">%d faixas em reprodução.</item>
+    <item quantity="one">A reproduzir %d faixa.</item>
+    <item quantity="other">A reproduzir %d faixas.</item>
   </plurals>
   <plurals name="enqueued">
-    <item quantity="one">1 faixa colocada na fila.</item>
-    <item quantity="other">%d faixas colocadas na fila.</item>
+    <item quantity="one">%d faixa na fila.</item>
+    <item quantity="other">%d faixas na fila.</item>
   </plurals>
   <plurals name="added_to_playlist">
-    <item quantity="one">1 faixa adicionada à lista de reprodução %2$s.</item>
+    <item quantity="one">%1$d faixa adicionada à lista de reprodução %2$s.</item>
     <item quantity="other">%1$d faixas adicionadas à lista de reprodução %2$s.</item>
   </plurals>
   <plurals name="removed_from_playlist">
-    <item quantity="one">1 faixa removida da lista de reprodução %2$s.</item>
+    <item quantity="one">%1$d faixa removida da lista de reprodução %2$s.</item>
     <item quantity="other">%1$d faixas removidas da lista de reprodução %2$s.</item>
   </plurals>
   <plurals name="deleted">
-    <item quantity="one">1 faixa apagada.</item>
+    <item quantity="one">%d faixa apagada.</item>
     <item quantity="other">%d faixas apagadas.</item>
   </plurals>
   <string name="delete_file_failed">Falha ao apagar %s</string>

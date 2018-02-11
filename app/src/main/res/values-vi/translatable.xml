@@ -2,19 +2,27 @@
 <resources>
   <string name="app_name">Vanilla Music</string>
   <!--Playback Activity (main screen)-->
+  <string name="no_songs">Không tìm thấy bài hát nào trên máy.</string>
+  <string name="empty_queue">Chưa chọn bài hát nào. Hãy chọn bài hát từ thư viện nhạc hoặc chạm vào dòng chữ này để phát ngẫu nhiên các bài hát.</string>
   <string name="settings">Cài đặt</string>
   <string name="no_shuffle">Không trộn bài</string>
+  <string name="shuffle_songs">Trộn bài</string>
+  <string name="shuffle_songs_continuously">Trộn bài liên tục</string>
   <string name="shuffle_albums">Trộn album</string>
   <string name="no_repeat">Không lặp lại</string>
   <string name="repeat">Lặp lại</string>
+  <string name="repeat_current_song">Lặp bài đang phát</string>
+  <string name="stop_current_song">Dừng sau khi hết bài hát đang phát</string>
   <string name="random">Phát ngẫu nhiên</string>
   <string name="random_enabling">Bật ngẫu nhiên</string>
+  <string name="song_load_failed">Không tải được bài hát %s. Có thể tập tin đã mất hoặc bị hỏng.</string>
   <string name="queue_cleared">Đã xoá danh sách phát</string>
   <string name="cover_art">Ảnh album</string>
   <string name="close_notification">Đóng thông báo</string>
   <string name="_genre">Thể loại</string>
   <string name="_track">Bài số</string>
   <string name="_composer">Nhạc sĩ</string>
+  <string name="_path">đường dẫn</string>
   <string name="_format">Định dạng</string>
   <string name="_title">Tiêu đề</string>
   <string name="_artist">Ca sĩ</string>
@@ -47,33 +55,83 @@
   <string name="remove">Xoá</string>
   <string name="play_or_enqueue">Thêm vào danh sách nếu đang phát nhạc; Phát nếu đang dừng</string>
   <string name="open">Mở</string>
+  <string name="go_home">Thư mục gốc</string>
+  <string name="jumping_to_song">Bài hát đã có trong danh sách phát, đang chuyển đến bài hát…</string>
+  <!--As a developer, you should always supply "one" and "other"
+		strings. Your translators will know which strings are actually
+		needed for their language. Always include %d in "one" because
+		translators will need to use %d for languages where "one"
+		doesn't mean 1 (as explained above).
+
+		Translators should use http://unicode.org/reports/tr35/tr35-numbers.html#Language_Plural_Rules and
+		http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html, Type cardinal,
+		to see which categories apply to integer numbers in their languages-->
+  <plurals name="playing">
+    <item quantity="other">Đang phát %d bài hát.</item>
+  </plurals>
+  <plurals name="enqueued">
+    <item quantity="other">Đã thêm %d bài hát vào danh sách phát.</item>
+  </plurals>
+  <plurals name="added_to_playlist">
+    <item quantity="other">Đã thêm %1$d bài hát vào danh sách %2$s.</item>
+  </plurals>
+  <plurals name="removed_from_playlist">
+    <item quantity="other">Đã xoá %1$d bài hát khỏi danh sách %2$s.</item>
+  </plurals>
+  <plurals name="deleted">
+    <item quantity="other">Đã xoá %d bài hát.</item>
+  </plurals>
   <string name="delete_file_failed">Không xoá được %s.</string>
   <string name="deleted_item">Đã xoá \"%s\".</string>
   <string name="delete_item">Xoá \"%s\"?</string>
   <string name="delete_file">Xoá tập tin \"%s\"?</string>
   <string name="artists">Ca sĩ</string>
   <string name="albums">Album</string>
+  <string name="albumartists">Ca sĩ của album</string>
+  <string name="composers">Nhạc sĩ</string>
+  <string name="songs">Bài hát</string>
   <string name="playlists">Danh sách</string>
   <string name="genres">Thể loại</string>
   <string name="files">Tập tin</string>
+  <string name="artist">Ca sĩ</string>
+  <string name="album">Album</string>
+  <string name="genre">Thể loại</string>
+  <string name="folder">Thư mục</string>
+  <string name="filename">Tên tập tin</string>
+  <string name="file_size">Kích thước tập tin</string>
+  <string name="file_time">Thời gian sửa đổi</string>
+  <string name="extension">Đuôi mở rộng</string>
   <string name="unknown">Không rõ</string>
   <string name="play_all">Phát tất cả</string>
   <string name="enqueue_all">Thêm tất cả vào danh sách phát</string>
+  <string name="all_songs">Tất cả bài hát</string>
   <string name="more_from_artist">Các bài hát khác của ca sĩ</string>
   <string name="more_from_album">Các bài hát khác trong album</string>
+  <string name="title">Tiêu đề</string>
   <string name="number_of_tracks">Số bài hát</string>
   <string name="year">Năm</string>
   <string name="date_added">Được thêm vào ngày</string>
   <string name="artist_album">Ca sĩ, album</string>
+  <string name="artist_year_album">Ca sĩ, năm, album</string>
   <string name="artist_album_track">Ca sĩ, album, số thứ tự bài hát</string>
   <string name="artist_album_title">Ca sĩ, album, tiêu đề</string>
   <string name="artist_year">Ca sĩ, năm</string>
   <string name="album_track">Album, số thứ tự bài hát</string>
   <string name="song_playcount">Lượt nghe</string>
   <!--Preferences-->
+  <plurals name="seconds">
+    <item quantity="other">%d giây</item>
+  </plurals>
+  <plurals name="minutes">
+    <item quantity="other">%d phút</item>
+  </plurals>
+  <plurals name="hours">
+    <item quantity="other">%d giờ</item>
+  </plurals>
   <string name="audio">Âm thanh</string>
   <string name="volume_during_ducking_title">Âm lượng khi có thông báo</string>
   <string name="volume_during_ducking_summary">Âm lượng phát nhạc: </string>
+  <string name="ignore_audiofocus_loss_summary">Vẫn phát nhạc khi bị mất quyền kiểm soát âm thanh vĩnh viễn</string>
   <string name="media_button_title">Điều khiển bằng tai nghe / Bluetooth</string>
   <string name="media_button_summary">Cần phải bật để kích hoạt điều khiển màn hình khoá trên Android ICS</string>
   <string name="media_button_beep_title">Tiếng bíp khi điều khiển bằng tai nghe</string>
@@ -92,15 +150,20 @@
   <string name="replaygain_album_title">Bật ReplayGain cho cả album</string>
   <string name="replaygain_album_summary">Bảo toàn mối quan hệ về âm lượng giữa các bài trong album</string>
   <string name="replaygain_bump_title">Tiền khuếch đại ReplayGain</string>
+  <string name="replaygain_untagged_debump_title">Với các bài không có thông tin ReplayGain</string>
   <string name="replaygain_untagged_debump_summary">Giảm âm lượng đi</string>
   <string name="replaygain_preamp_note_title">Chú ý</string>
   <string name="replaygain_preamp_note_content">Android không cho phép Vanilla Music tăng âm lượng lên quá 100%. Đặt mức tiền khuếch đại quá cao có thể gây ra vấn đề với các bài hát vốn có âm lượng nhỏ. \n\nNên dùng các giá trị:\n-&gt; -3dB đối với nhạc nhỏ / nhạc cổ điển\n-&gt; +3dB đối với nhạc sau năm 2000</string>
   <string name="readahead">Bật đọc trước</string>
+  <string name="readahead_summary">Đọc trước nội dung bài đang phát. Lựa chọn này có thể giải quyết vấn đề nhạc bị dừng (do thẻ nhớ quá chậm).</string>
   <string name="equalizer">Bộ chỉnh âm</string>
   <string name="cycle_continuous_shuffling">Trộn bài liên tiếp</string>
+  <string name="cycle_continuous_shuffling_summary">Chế độ trộn bài sẽ phát nhạc hoàn toàn ngẫu nhiên</string>
   <string name="notifications">Thông báo</string>
+  <string name="notification_visibility_title">Cách hiển thị thông báo</string>
   <string name="notification_action_title">Hành động thông báo</string>
   <string name="notification_nag">Thông báo rất chi tiết</string>
+  <string name="notification_nag_summary">Thông báo chuyển bài bằng \"heads-up notification\"</string>
   <string name="playback_screen">Màn hình phát nhạc</string>
   <string name="playback_on_startup_title">Mở khi khởi động</string>
   <string name="playback_on_startup_summary">Vào giao diện nghe nhạc khi mở ứng dụng</string>
@@ -121,9 +184,13 @@
   <string name="theme">Giao diện</string>
   <string name="disable_lockscreen_title">Tắt màn hình khoá</string>
   <string name="disable_lockscreen_summary">Không cho màn hình khoá hoạt động khi đang trong giao diện thư viện hoặc phát nhạc</string>
+  <string name="keep_screen_on_title">Giữ màn hình sáng</string>
+  <string name="keep_screen_on_summary">Giữ màn hình luôn sáng (và máy luôn bật) khi đang trong ứng dụng Vanilla Music</string>
   <string name="use_idle_timeout_title">Bật hẹn giờ</string>
   <string name="use_idle_timeout_summary">Khi bật tính năng này, nhạc sẽ tự dừng sau một khoảng thời gian không có hành động nào xảy ra</string>
   <string name="idle_timeout_title">Hẹn giờ</string>
+  <string name="enable_scroll_to_song_title">Chuyển đến tên bài</string>
+  <string name="enable_scroll_to_song_summary">Chuyển đến tên bài hát / album / ca sĩ đang nghe trong các danh sách của thư viện nhạc</string>
   <string name="coverloader_android_title">Nạp ảnh từ Android</string>
   <string name="coverloader_android_summary">Dùng ảnh trong cơ sở dữ liệu media của Android</string>
   <string name="coverloader_vanilla_title">Nạp ảnh từ thư mục</string>
@@ -131,10 +198,14 @@
   <string name="coverloader_shadow_title">Nạp ảnh từ thư mục ẩn</string>
   <string name="coverloader_shadow_summary">Nạp ảnh từ \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\'</string>
   <string name="cover_on_lockscreen_title">Hiện ảnh album ở màn hình khoá</string>
+  <string name="cover_on_lockscreen_summary">Hiện ảnh của bài hát đang phát trên màn hình khoá</string>
   <string name="double_tap_title">Nhấn đúp widget</string>
   <string name="double_tap_summary">Nhấn đúp tiện ích (widget) 1x1 sẽ mở trình chơi nhạc. Có độ trễ 400ms.</string>
+  <string name="scrobble_title">Dùng API ScrobbleDroid</string>
+  <string name="scrobble_summary">Gửi thông tin nhạc đến Last.fm thông qua ScrobbleDroid hoặc Simple Last.fm Scrobbler</string>
   <string name="stock_broadcast_title">Giả lập thông báo mặc định</string>
   <string name="stock_broadcast_summary">Giả lập tín hiệu của ứng dụng nghe nhạc gốc trên máy để làm việc với các ứng dụng khoá màn hình, điều khiển nhạc, v.v.</string>
+  <string name="help">Trợ giúp</string>
   <string name="about">Giới thiệu</string>
   <string name="tabs">Thứ tự thẻ</string>
   <string name="customize_tab_order">Sửa thứ tự tab và ẩn tab</string>
@@ -146,6 +217,7 @@
   <string name="always_show">Luôn hiện</string>
   <string name="open_main_activity">Mở thư viện nhạc (mặc định)</string>
   <string name="open_mini_popup">Mở cửa sổ con</string>
+  <string name="skip_to_next_song">Chuyển bài</string>
   <string name="open_full_player">Mở giao diện nghe nhạc đầy đủ</string>
   <string name="info_on_cover">Thông tin trên ảnh album</string>
   <string name="info_below_cover">Thông tin phía dưới ảnh album</string>
@@ -153,6 +225,8 @@
   <string name="do_nothing">Không làm gì</string>
   <string name="open_library">Mở thư viện nhạc</string>
   <string name="play_pause">Phát/Dừng</string>
+  <string name="next_song">Bài tiếp theo</string>
+  <string name="previous_song">Bài trước</string>
   <string name="next_album">Album tiếp theo</string>
   <string name="previous_album">Album trước</string>
   <string name="cycle_repeat_mode">Chuyển chế độ lặp lại</string>
@@ -160,6 +234,8 @@
   <string name="enqueue_current_album">Thêm album vào danh sách phát</string>
   <string name="enqueue_current_artist">Thêm ca sĩ vào danh sách phát</string>
   <string name="enqueue_current_genre">Thêm thể loại vào danh sách phát</string>
+  <string name="enqueue_current">Thêm vào danh sách đang phát…</string>
+  <string name="more_from_current">Các bài hát khác của…</string>
   <string name="empty_the_queue">Xoá danh sách phát</string>
   <string name="show_queue">Hiện danh sách phát</string>
   <string name="hide_queue">Ẩn danh sách phát</string>
@@ -175,6 +251,7 @@
   <string name="filebrowser_start">Thư mục gốc</string>
   <string name="customize_filebrowser_start">Trình duyệt tập tin bắt đầu tại đây</string>
   <string name="select">Chọn</string>
+  <string name="save">Lưu</string>
   <string name="autoplaylist_playcounts_title">Tự tạo danh sách</string>
   <string name="autoplaylist_playcounts_summary">Tự động tạo</string>
   <string name="autoplaylist_playcounts_fmt" formatted="false">danh sách %s \"Top %.0f\"</string>
@@ -182,7 +259,44 @@
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
   <string name="permission_request_summary">Vanilla Music cần quyền đọc dữ liệu để hiển thị thư viện nhạc của bạn</string>
   <string name="reverse_sort">Sắp xếp ngược lại</string>
+  <string name="share">Chia sẻ…</string>
+  <string name="share_failed">Không chia sẻ được tập tin</string>
+  <string name="sendto">Gửi đến…</string>
+  <string name="no_receiving_apps">Không có ứng dụng nào nhận được loại tập tin này!</string>
+  <string name="media_library">Thư viện nhạc</string>
+  <string name="media_folders_header">Thư mục được theo dõi</string>
+  <string name="media_scan_header">Trình quét nhạc</string>
+  <string name="media_scan_full">Quét toàn bộ hệ thống (chậm hơn)</string>
+  <string name="media_scan_drop_db">Xoá cơ sở dữ liệu nhạc</string>
+  <string name="media_scan_start">Bắt đầu quét</string>
+  <string name="media_scan_force_bastp">Luôn sử dụng trình đọc thông tin có sẵn</string>
+  <string name="media_scan_group_albums">Gộp album theo thư mục</string>
+  <string name="media_statistics">Thống kê</string>
+  <string name="media_stats_tracks">Số bài hát</string>
+  <string name="media_stats_library_playtime">Tổng thời gian nghe nhạc (giờ)</string>
+  <string name="media_stats_listen_playtime">Số giờ đã nghe nhạc</string>
+  <string name="media_stats_progress">Tiến độ quét</string>
+  <string name="media_library_scan_running">Đang quét thư viện nhạc…</string>
+  <string name="media_scan_preferences">Tuỳ chọn quét</string>
+  <string name="media_scan_preferences_change_title">Đã thay đổi tuỳ chọn quét</string>
+  <string name="media_scan_preferences_change_message">Thay đổi tuỳ chọn này sẽ quét lại toàn bộ thư viện. Bạn có muốn tiếp tục không?</string>
   <!--Folder selector-->
+  <string name="hint_long_press_to_modify_folder">Nhấn giữ để thay đổi tuỳ chọn thư mục</string>
+  <string name="folder_include">Bao gồm</string>
+  <string name="folder_exclude">Bỏ qua</string>
+  <string name="folder_neutral">Trung lập</string>
   <!--Plugin system-->
+  <string name="plugins">Môđun</string>
   <!--Theme names-->
+  <string name="theme_name_standard_light">Chuẩn</string>
+  <string name="theme_name_standard_dark">Chuẩn (tối)</string>
+  <string name="theme_name_grey_light">Xám</string>
+  <string name="theme_name_grey_dark">Xám (tối)</string>
+  <string name="theme_name_orange_light">Da cam</string>
+  <string name="theme_name_orange_dark">Da cam (tối)</string>
+  <string name="theme_name_blue_light">Xanh da trời</string>
+  <string name="theme_name_blue_dark">Xanh da trời (tối)</string>
+  <string name="theme_name_red_light">Đỏ</string>
+  <string name="theme_name_red_dark">Đỏ (tối)</string>
+  <string name="theme_name_amoled_dark">Đen tuyền (AMOLED)</string>
 </resources>

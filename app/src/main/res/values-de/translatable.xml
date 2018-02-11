@@ -57,24 +57,33 @@
   <string name="open">Öffnen</string>
   <string name="go_home">Benutzerverzeichnis</string>
   <string name="jumping_to_song">Titel bereits in Warteschlange, wird direkt angesprungen …</string>
+  <!--As a developer, you should always supply "one" and "other"
+		strings. Your translators will know which strings are actually
+		needed for their language. Always include %d in "one" because
+		translators will need to use %d for languages where "one"
+		doesn't mean 1 (as explained above).
+
+		Translators should use http://unicode.org/reports/tr35/tr35-numbers.html#Language_Plural_Rules and
+		http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html, Type cardinal,
+		to see which categories apply to integer numbers in their languages-->
   <plurals name="playing">
-    <item quantity="one">1 Titel wird wiedergegeben.</item>
+    <item quantity="one">%d Titel wird wiedergegeben.</item>
     <item quantity="other">%d Titel werden wiedergegeben.</item>
   </plurals>
   <plurals name="enqueued">
-    <item quantity="one">1 Titel eingereiht.</item>
+    <item quantity="one">%d Titel eingereiht.</item>
     <item quantity="other">%d Titel eingereiht.</item>
   </plurals>
   <plurals name="added_to_playlist">
-    <item quantity="one">1 Titel zur Wiedergabeliste %2$s hinzugefügt.</item>
+    <item quantity="one">%1$d Titel zur Wiedergabeliste %2$s hinzugefügt.</item>
     <item quantity="other">%1$d Titel zur Wiedergabeliste %2$s hinzugefügt.</item>
   </plurals>
   <plurals name="removed_from_playlist">
-    <item quantity="one">1 Titel aus Wiedergabeliste %2$s entfernt.</item>
+    <item quantity="one">%1$d Titel aus Wiedergabeliste %2$s entfernt.</item>
     <item quantity="other">%1$d Titel aus Wiedergabeliste %2$s entfernt.</item>
   </plurals>
   <plurals name="deleted">
-    <item quantity="one">1 Titel gelöscht.</item>
+    <item quantity="one">%d Titel gelöscht.</item>
     <item quantity="other">%d Titel gelöscht.</item>
   </plurals>
   <string name="delete_file_failed">Löschen von %s fehlgeschlagen.</string>

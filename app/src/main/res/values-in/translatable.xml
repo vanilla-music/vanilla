@@ -56,21 +56,15 @@
   <string name="play_or_enqueue">Diurutkan bila diputar; Putar bila di pause</string>
   <string name="open">Open</string>
   <string name="go_home">Beranda</string>
-  <plurals name="playing">
-    <item quantity="other">Memainkan %d lagu.</item>
-  </plurals>
-  <plurals name="enqueued">
-    <item quantity="other">%d lagu diantrekan.</item>
-  </plurals>
-  <plurals name="added_to_playlist">
-    <item quantity="other">%1$d lagu ditambahkan ke daftar putar %2$s.</item>
-  </plurals>
-  <plurals name="removed_from_playlist">
-    <item quantity="other">%1$d lagu dihapus dari daftar putar %2$s.</item>
-  </plurals>
-  <plurals name="deleted">
-    <item quantity="other">%d lagu dihapus.</item>
-  </plurals>
+  <!--As a developer, you should always supply "one" and "other"
+		strings. Your translators will know which strings are actually
+		needed for their language. Always include %d in "one" because
+		translators will need to use %d for languages where "one"
+		doesn't mean 1 (as explained above).
+
+		Translators should use http://unicode.org/reports/tr35/tr35-numbers.html#Language_Plural_Rules and
+		http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html, Type cardinal,
+		to see which categories apply to integer numbers in their languages-->
   <string name="delete_file_failed">Gagal menghapus %s.</string>
   <string name="deleted_item">\'%s\' terhapus.</string>
   <string name="delete_item">Hapus \'%s\'?</string>

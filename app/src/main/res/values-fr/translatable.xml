@@ -57,26 +57,15 @@
   <string name="open">Ouvrir</string>
   <string name="go_home">Dossier principal</string>
   <string name="jumping_to_song">Piste déjà en file d\'attente, lecture...</string>
-  <plurals name="playing">
-    <item quantity="one">1 morceau en lecture.</item>
-    <item quantity="other">%d morceaux en lecture.</item>
-  </plurals>
-  <plurals name="enqueued">
-    <item quantity="one">1 morceau dans la file d\'attente.</item>
-    <item quantity="other">%d morceaux dans la file d\'attente.</item>
-  </plurals>
-  <plurals name="added_to_playlist">
-    <item quantity="one">1 morceau ajouté à la playlist %2$s.</item>
-    <item quantity="other">%1$d morceaux ajoutés à la playlist %2$s.</item>
-  </plurals>
-  <plurals name="removed_from_playlist">
-    <item quantity="one">1 morceau enlevé de la playlist %2$s.</item>
-    <item quantity="other">%1$d morceaux enlevés de la playlist %2$s.</item>
-  </plurals>
-  <plurals name="deleted">
-    <item quantity="one">1 morceau supprimé.</item>
-    <item quantity="other">%d morceaux supprimés.</item>
-  </plurals>
+  <!--As a developer, you should always supply "one" and "other"
+		strings. Your translators will know which strings are actually
+		needed for their language. Always include %d in "one" because
+		translators will need to use %d for languages where "one"
+		doesn't mean 1 (as explained above).
+
+		Translators should use http://unicode.org/reports/tr35/tr35-numbers.html#Language_Plural_Rules and
+		http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html, Type cardinal,
+		to see which categories apply to integer numbers in their languages-->
   <string name="delete_file_failed">Échec lors de la suppression %s.</string>
   <string name="deleted_item">\'%s\' supprimé.</string>
   <string name="delete_item">Supprimer \'%s\'?</string>

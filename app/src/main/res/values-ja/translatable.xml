@@ -57,6 +57,15 @@
   <string name="open">開く</string>
   <string name="go_home">ホームディレクトリー</string>
   <string name="jumping_to_song">曲はすでにキューに入っています。ジャンプします…</string>
+  <!--As a developer, you should always supply "one" and "other"
+		strings. Your translators will know which strings are actually
+		needed for their language. Always include %d in "one" because
+		translators will need to use %d for languages where "one"
+		doesn't mean 1 (as explained above).
+
+		Translators should use http://unicode.org/reports/tr35/tr35-numbers.html#Language_Plural_Rules and
+		http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html, Type cardinal,
+		to see which categories apply to integer numbers in their languages-->
   <plurals name="playing">
     <item quantity="other">%d トラックを再生中。</item>
   </plurals>

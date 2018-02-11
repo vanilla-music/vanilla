@@ -57,6 +57,15 @@
   <string name="open">Abrir</string>
   <string name="go_home">Diretório principal</string>
   <string name="jumping_to_song">Faixa já está na fila, saltando...</string>
+  <!--As a developer, you should always supply "one" and "other"
+		strings. Your translators will know which strings are actually
+		needed for their language. Always include %d in "one" because
+		translators will need to use %d for languages where "one"
+		doesn't mean 1 (as explained above).
+
+		Translators should use http://unicode.org/reports/tr35/tr35-numbers.html#Language_Plural_Rules and
+		http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html, Type cardinal,
+		to see which categories apply to integer numbers in their languages-->
   <string name="delete_file_failed">Falha ao deletar %s.</string>
   <string name="deleted_item">\'%s\' deletada.</string>
   <string name="delete_item">Deletar \'%s\'?</string>

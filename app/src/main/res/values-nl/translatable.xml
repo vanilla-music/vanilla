@@ -57,26 +57,15 @@
   <string name="open">Openen</string>
   <string name="go_home">Thuismap</string>
   <string name="jumping_to_song">Lied is al in de wachtrij, overslaan...</string>
-  <plurals name="playing">
-    <item quantity="one">1 nummer wordt afgespeeld</item>
-    <item quantity="other">%d nummers worden afgespeeld</item>
-  </plurals>
-  <plurals name="enqueued">
-    <item quantity="one">1 nummer in de wachtrij</item>
-    <item quantity="other">%d nummers in de wachtrij</item>
-  </plurals>
-  <plurals name="added_to_playlist">
-    <item quantity="one">1 nummer toegevoegd aan afspeellijst %2$s.</item>
-    <item quantity="other">%1$d nummers toegevoegd aan afspeellijst %2$s.</item>
-  </plurals>
-  <plurals name="removed_from_playlist">
-    <item quantity="one">1 nummer toegevoegd aan afspeellijst %2$s.</item>
-    <item quantity="other">%1$d nummers toegevoegd aan afspeellijst %2$s.</item>
-  </plurals>
-  <plurals name="deleted">
-    <item quantity="one">1 nummer verwijderd.</item>
-    <item quantity="other">%d numers verwijderd.</item>
-  </plurals>
+  <!--As a developer, you should always supply "one" and "other"
+		strings. Your translators will know which strings are actually
+		needed for their language. Always include %d in "one" because
+		translators will need to use %d for languages where "one"
+		doesn't mean 1 (as explained above).
+
+		Translators should use http://unicode.org/reports/tr35/tr35-numbers.html#Language_Plural_Rules and
+		http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html, Type cardinal,
+		to see which categories apply to integer numbers in their languages-->
   <string name="delete_file_failed">Verwijderen van %s is mislukt.</string>
   <string name="deleted_item">\'%s\' verwijderd.</string>
   <string name="delete_item">\'%s\' verwijderen?</string>

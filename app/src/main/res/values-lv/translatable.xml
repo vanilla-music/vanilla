@@ -57,29 +57,38 @@
   <string name="open">Atvērt</string>
   <string name="go_home">Mājas mape</string>
   <string name="jumping_to_song">Dziesma jau ir rindā, pārlec...</string>
+  <!--As a developer, you should always supply "one" and "other"
+		strings. Your translators will know which strings are actually
+		needed for their language. Always include %d in "one" because
+		translators will need to use %d for languages where "one"
+		doesn't mean 1 (as explained above).
+
+		Translators should use http://unicode.org/reports/tr35/tr35-numbers.html#Language_Plural_Rules and
+		http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html, Type cardinal,
+		to see which categories apply to integer numbers in their languages-->
   <plurals name="playing">
-    <item quantity="zero">Atskaņo %d celiņu.</item>
-    <item quantity="one">Atskaņo 1 celiņu.</item>
+    <item quantity="zero">Atskaņo %d celiņus.</item>
+    <item quantity="one">Atskaņo %dceliņu.</item>
     <item quantity="other">Atskaņo %d celiņus.</item>
   </plurals>
   <plurals name="enqueued">
-    <item quantity="zero">Ierindots %d dziesmu.</item>
-    <item quantity="one">Ierindota 1 dziesma.</item>
-    <item quantity="other">Ierindotas %d dziesmas.</item>
+    <item quantity="zero">Ierindoti %d celiņi.</item>
+    <item quantity="one">Ierindots %d celiņš.</item>
+    <item quantity="other">Ierindoti %d celiņi.</item>
   </plurals>
   <plurals name="added_to_playlist">
-    <item quantity="zero">Repertuāram %2$s pievienots %1$d dziesmu.</item>
-    <item quantity="one">Repertuāram %2$s  pievienota 1  dziesma.</item>
-    <item quantity="other">Repertuāram %2$s pievienotas %1$d dziesmas.</item>
+    <item quantity="zero">Repertuāram %2$s pievienoti %1$dceliņi.</item>
+    <item quantity="one">Repertuāram %2$s pievienots %1$d celiņš.</item>
+    <item quantity="other">Repertuāram %2$s pievienoti %1$d celiņi.</item>
   </plurals>
   <plurals name="removed_from_playlist">
-    <item quantity="zero">No repertuāra %2$s izņemts %1$d celiņu.</item>
-    <item quantity="one">No repertuāra %2$s izņemts 1 celiņš.</item>
+    <item quantity="zero">No repertuāra %2$s izņemti %1$d celiņi.</item>
+    <item quantity="one">No repertuāra %2$s izņemts %1$d celiņš.</item>
     <item quantity="other">No repertuāra %2$s izņemti %1$d celiņi.</item>
   </plurals>
   <plurals name="deleted">
-    <item quantity="zero">Izdzēsts %d celiņu.</item>
-    <item quantity="one">Izdzēsts 1 celiņš.</item>
+    <item quantity="zero">Izdzēsti %d celiņi.</item>
+    <item quantity="one">Izdzēsts %d celiņš.</item>
     <item quantity="other">Izdzēsti %d celiņi.</item>
   </plurals>
   <string name="delete_file_failed">Neizdevās izdzēst %s.</string>
@@ -168,6 +177,7 @@
   <string name="cycle_continuous_shuffling">Nepārtrauktā sajaukšana</string>
   <string name="cycle_continuous_shuffling_summary">\"Sajaukšanas režīms\" dziesmas atskaņos pilnīgi nejaušā kārtībā</string>
   <string name="notifications">Paziņojumi</string>
+  <string name="notification_visibility_title">Paziņojuma redzamība</string>
   <string name="notification_action_title">Paziņojuma darbība</string>
   <string name="notification_nag">Ļoti runīgs paziņojums</string>
   <string name="notification_nag_summary">Paziņot par dziesmas maiņu ar uzekrāna paziņojumu</string>
@@ -295,4 +305,15 @@
   <!--Plugin system-->
   <string name="plugins">Spraudņi</string>
   <!--Theme names-->
+  <string name="theme_name_standard_light">Standarta</string>
+  <string name="theme_name_standard_dark">Standarta (tumšs)</string>
+  <string name="theme_name_grey_light">Pelēks</string>
+  <string name="theme_name_grey_dark">Pelēks (tumšs)</string>
+  <string name="theme_name_orange_light">Oranžs</string>
+  <string name="theme_name_orange_dark">Oranžs (tumšs)</string>
+  <string name="theme_name_blue_light">Zils</string>
+  <string name="theme_name_blue_dark">Zils (tumšs)</string>
+  <string name="theme_name_red_light">Sarkans</string>
+  <string name="theme_name_red_dark">Sarkans (tumšs)</string>
+  <string name="theme_name_amoled_dark">Ellīgi melns (AMOLED)</string>
 </resources>

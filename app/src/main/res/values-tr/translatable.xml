@@ -55,42 +55,44 @@
   <string name="remove">Kaldır</string>
   <string name="play_or_enqueue">Oynatma varsa kuyruğa ekle; duraklatıldıysa oynat</string>
   <string name="open">Aç</string>
-  <plurals name="playing">
-    <item quantity="one">1 parça oynatılıyor.</item>
-    <item quantity="other">%d parça oynatılıyor.</item>
-  </plurals>
-  <plurals name="enqueued">
-    <item quantity="one">1 parça sıraya kondu.</item>
-    <item quantity="other">%d parça sıraya kondu.</item>
-  </plurals>
-  <plurals name="added_to_playlist">
-    <item quantity="one">1 parça %2$s oynatmalığına eklendi.</item>
-    <item quantity="other">%1$d parça %2$s oynatmalığına eklendi.</item>
-  </plurals>
-  <plurals name="removed_from_playlist">
-    <item quantity="one">1 parça %2$s oynatmalığından çıkarıldı.</item>
-    <item quantity="other">%1$d parça %2$s oynatmalığından çıkarıldı.</item>
-  </plurals>
-  <plurals name="deleted">
-    <item quantity="one">1 parça silindi.</item>
-    <item quantity="other">%d parça silindi.</item>
-  </plurals>
+  <string name="go_home">Ev dizini</string>
+  <string name="jumping_to_song">Şarkı zaten kuyrukta, atlanıyor...</string>
+  <!--As a developer, you should always supply "one" and "other"
+		strings. Your translators will know which strings are actually
+		needed for their language. Always include %d in "one" because
+		translators will need to use %d for languages where "one"
+		doesn't mean 1 (as explained above).
+
+		Translators should use http://unicode.org/reports/tr35/tr35-numbers.html#Language_Plural_Rules and
+		http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html, Type cardinal,
+		to see which categories apply to integer numbers in their languages-->
   <string name="delete_file_failed">%s silinemedi.</string>
   <string name="deleted_item">\'%s\' silindi.</string>
   <string name="delete_item">\'%s\' silinsin mi?</string>
   <string name="delete_file">\'%s\' silinsin mi?</string>
   <string name="artists">Sanatçılar</string>
   <string name="albums">Albümler</string>
+  <string name="albumartists">Albüm Sanatçıları</string>
+  <string name="composers">Besteciler</string>
   <string name="songs">Parçalar</string>
   <string name="playlists">Oynatmalıklar</string>
   <string name="genres">Türler</string>
   <string name="files">Dosyalar</string>
+  <string name="artist">Sanatçı</string>
+  <string name="album">Albüm</string>
+  <string name="genre">Tür</string>
+  <string name="folder">Klasör</string>
+  <string name="filename">Dosya adı</string>
+  <string name="file_size">Dosya boyutu</string>
+  <string name="file_time">Değiştirilme zamanı</string>
+  <string name="extension">Uzantı</string>
   <string name="unknown">Bilinmeyen</string>
   <string name="play_all">Hepsini oynat</string>
   <string name="enqueue_all">Hepsini kuyruğa ekle</string>
   <string name="all_songs">Tüm parçalar</string>
   <string name="more_from_artist">Bu sanatçıdan daha fazla</string>
   <string name="more_from_album">Bu albümden daha fazla</string>
+  <string name="title">Başlık</string>
   <string name="number_of_tracks">Parça sayısı</string>
   <string name="year">Yıl</string>
   <string name="date_added">Eklenme günayı</string>
@@ -146,6 +148,7 @@
   <string name="cycle_continuous_shuffling">Sürekli karıştır</string>
   <string name="cycle_continuous_shuffling_summary">\'Karıştır kipi\' parçaları tümüyle rastgele sırada çalar</string>
   <string name="notifications">Bildirimler</string>
+  <string name="notification_visibility_title">Bildirim görünürlüğü</string>
   <string name="notification_action_title">Bildirim eylemi</string>
   <string name="notification_nag">Tam sözlü bildirim</string>
   <string name="notification_nag_summary">Parça değişikliklerini \'Ekran Üstü Bildirimi\' ile duyur</string>
@@ -169,6 +172,8 @@
   <string name="theme">Tema</string>
   <string name="disable_lockscreen_title">Kilit ekranını devre dışı bırak</string>
   <string name="disable_lockscreen_summary">Arşiv ekranında veya oynatma ekranındayken kilit ekranını devre dışı bırak</string>
+  <string name="keep_screen_on_title">Ekranı açık tut</string>
+  <string name="keep_screen_on_summary">Vanilya Müzik görünür olduğu zaman ekranı (ve aygıtı) uyanık tut</string>
   <string name="use_idle_timeout_title">Boşta kalma süresini etkinleştir</string>
   <string name="use_idle_timeout_summary">Oynatma belli bir sürelik etkisizliğin ardından durdurulur</string>
   <string name="idle_timeout_title">Boşta kalma süresi</string>
@@ -188,6 +193,7 @@
   <string name="scrobble_summary">Last.fm\'e Scrobble Droid veya Simple Last.fm Scrobbler kullanarak işleyin</string>
   <string name="stock_broadcast_title">Varsayılan yayınları öykün</string>
   <string name="stock_broadcast_summary">Varsayılan müzik oynatıcısı tarafından üçüncü parti kilit ekranı denetimleri ve widgetlar ile çalışması için gönderilen yayınları öykün.</string>
+  <string name="help">Yardım</string>
   <string name="about">Hakkında</string>
   <string name="tabs">Sekme sırası</string>
   <string name="customize_tab_order">Arşiv sekmelerinin sırası ve görünürlüğünü değiştirir</string>
@@ -216,10 +222,12 @@
   <string name="enqueue_current_album">Bu albümü kuyruğa ekle</string>
   <string name="enqueue_current_artist">Bu sanatçıyı kuyruğa ekle</string>
   <string name="enqueue_current_genre">Bu türü kuyruğa ekle</string>
-  <string name="empty_the_queue">Sırayı boşalt</string>
+  <string name="enqueue_current">Kuyruğa ekle...</string>
+  <string name="more_from_current">Daha fazlası...</string>
+  <string name="empty_the_queue">Kuyruğu boşalt</string>
   <string name="show_queue">Kuyruğu göster</string>
   <string name="hide_queue">Kuyruğu gizle</string>
-  <string name="dequeue_rest">Gerisini sıradan çıkar</string>
+  <string name="dequeue_rest">Gerisini kuyruktan çıkar</string>
   <string name="toggle_controls">Denetimleri göster</string>
   <string name="seek_10s_backward">10 saniye geri sar</string>
   <string name="seek_10s_forward">10 saniye ileri sar</string>
@@ -231,6 +239,7 @@
   <string name="filebrowser_start">Dosya yöneticisi ana ekranı</string>
   <string name="customize_filebrowser_start">Dosya yöneticisi bu dizinde başlar</string>
   <string name="select">Seç</string>
+  <string name="save">Kaydet</string>
   <string name="autoplaylist_playcounts_title">Kendiliğinden oynatmalık oluşturma</string>
   <string name="autoplaylist_playcounts_summary">Kendiliğinden oluştur:</string>
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s \'En iyi %.0f parça\'</string>
@@ -239,17 +248,43 @@
   <string name="permission_request_summary">Vanilya Müzik, müzik arşivinizi görüntüleyebilmek için izninize gereksinim duyar</string>
   <string name="reverse_sort">Sıralamayı tersine çevir</string>
   <string name="share">Paylaş…</string>
+  <string name="share_failed">Dosya paylaşımı başarısız</string>
   <string name="sendto">Gönder…</string>
   <string name="no_receiving_apps">Bu ortam türü için uygun uygulama bulunamadı.</string>
   <string name="media_library">Ortam arşivi</string>
+  <string name="media_folders_header">İndekslenmiş dizinler</string>
   <string name="media_scan_header">Ortam tarayıcısı</string>
+  <string name="media_scan_full">Tüm dosya dizgesini tara (daha yavaş)</string>
+  <string name="media_scan_drop_db">Ortam veritabanını temizle</string>
   <string name="media_scan_start">Taramayı başlat</string>
+  <string name="media_scan_force_bastp">Her zaman dahili etiket okuyucuyu kullan</string>
+  <string name="media_scan_group_albums">Albümleri klasöre göre öbekle</string>
   <string name="media_statistics">İstatistikler</string>
   <string name="media_stats_tracks">Parça sayısı</string>
+  <string name="media_stats_library_playtime">Toplam oynatılma süresi (Saat)</string>
+  <string name="media_stats_listen_playtime">Saat cinsinden oynatılan müzik süresi</string>
   <string name="media_stats_progress">Tarama durumu</string>
   <string name="media_library_scan_running">Ortam arşivi taranıyor...</string>
+  <string name="media_scan_preferences">Tarayıcı seçenekleri</string>
+  <string name="media_scan_preferences_change_title">Tarayıcı seçenekleri değiştirildi</string>
+  <string name="media_scan_preferences_change_message">Bu seçeneği değiştirmek arşivinizi yeniden taratacaktır. Sürdürmek istiyor musunuz?</string>
   <!--Folder selector-->
+  <string name="hint_long_press_to_modify_folder">Klasör seçeneklerini değiştirmek için uzun basın</string>
+  <string name="folder_include">İçer</string>
+  <string name="folder_exclude">Dışarıda tut</string>
+  <string name="folder_neutral">Nötral</string>
   <!--Plugin system-->
   <string name="plugins">Eklentiler</string>
   <!--Theme names-->
+  <string name="theme_name_standard_light">Standart</string>
+  <string name="theme_name_standard_dark">Standart (Koyu)</string>
+  <string name="theme_name_grey_light">Gri</string>
+  <string name="theme_name_grey_dark">Gri (Koyu)</string>
+  <string name="theme_name_orange_light">Turuncu</string>
+  <string name="theme_name_orange_dark">Turuncu (Koyu)</string>
+  <string name="theme_name_blue_light">Mavi</string>
+  <string name="theme_name_blue_dark">Mavi (Koyu)</string>
+  <string name="theme_name_red_light">Kırmızı</string>
+  <string name="theme_name_red_dark">Kırmızı (Koyu)</string>
+  <string name="theme_name_amoled_dark">Kapkara (AMOLED)</string>
 </resources>

@@ -57,31 +57,15 @@
   <string name="open">Отвори</string>
   <string name="go_home">Почетна фасцикла</string>
   <string name="jumping_to_song">Песма је већ у реду пуштња, скачем…</string>
-  <plurals name="playing">
-    <item quantity="one">1 нумера пуштена.</item>
-    <item quantity="few">%d нумере пуштене.</item>
-    <item quantity="other">%d нумера пуштено.</item>
-  </plurals>
-  <plurals name="enqueued">
-    <item quantity="one">1 нумера стављена у ред.</item>
-    <item quantity="few">%d нумере стављене у ред.</item>
-    <item quantity="other">%d нумера стављено у ред.</item>
-  </plurals>
-  <plurals name="added_to_playlist">
-    <item quantity="one">1 песма додата на листу нумера %2$s.</item>
-    <item quantity="few">%1$d песме додате на листу нумера %2$s.</item>
-    <item quantity="other">%1$d песама додато на листу нумера %2$s.</item>
-  </plurals>
-  <plurals name="removed_from_playlist">
-    <item quantity="one">1 песма уклоњена са листе нумера %2$s.</item>
-    <item quantity="few">%1$d песме уклоњене са листе нумера %2$s.</item>
-    <item quantity="other">%1$d песама уклоњено са листе нумера %2$s.</item>
-  </plurals>
-  <plurals name="deleted">
-    <item quantity="one">1 нумера обрисана.</item>
-    <item quantity="few">%d нумере обрисане.</item>
-    <item quantity="other">%d нумера обрисано.</item>
-  </plurals>
+  <!--As a developer, you should always supply "one" and "other"
+		strings. Your translators will know which strings are actually
+		needed for their language. Always include %d in "one" because
+		translators will need to use %d for languages where "one"
+		doesn't mean 1 (as explained above).
+
+		Translators should use http://unicode.org/reports/tr35/tr35-numbers.html#Language_Plural_Rules and
+		http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html, Type cardinal,
+		to see which categories apply to integer numbers in their languages-->
   <string name="delete_file_failed">Брисање %s није успело.</string>
   <string name="deleted_item">„%s“ обрисана.</string>
   <string name="delete_item">Да обришем „%s“?</string>

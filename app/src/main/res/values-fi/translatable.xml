@@ -57,24 +57,33 @@
   <string name="open">Avaa</string>
   <string name="go_home">Kotihakemisto</string>
   <string name="jumping_to_song">Kappale on jo jonossa, ohitetaan…</string>
+  <!--As a developer, you should always supply "one" and "other"
+		strings. Your translators will know which strings are actually
+		needed for their language. Always include %d in "one" because
+		translators will need to use %d for languages where "one"
+		doesn't mean 1 (as explained above).
+
+		Translators should use http://unicode.org/reports/tr35/tr35-numbers.html#Language_Plural_Rules and
+		http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html, Type cardinal,
+		to see which categories apply to integer numbers in their languages-->
   <plurals name="playing">
-    <item quantity="one">Toistetaan 1 kappaletta.</item>
-    <item quantity="other">Toistetaan %d kappaletta.</item>
+    <item quantity="one">%d kappale toistossa.</item>
+    <item quantity="other">%d kappaletta toistossa.</item>
   </plurals>
   <plurals name="enqueued">
-    <item quantity="one">1 kappale asetettu jonoon.</item>
-    <item quantity="other">%d kappaletta asetettu jonoon.</item>
+    <item quantity="one">%d kappale jonossa.</item>
+    <item quantity="other">%d kappaletta jonossa.</item>
   </plurals>
   <plurals name="added_to_playlist">
-    <item quantity="one">1 kappale lisätty soittolistaan %2$s.</item>
+    <item quantity="one">%1$d kappale lisätty soittolistaan %2$s.</item>
     <item quantity="other">%1$d kappaletta lisätty soittolistaan %2$s.</item>
   </plurals>
   <plurals name="removed_from_playlist">
-    <item quantity="one">1 kappale poistettu soittolistasta %2$s.</item>
-    <item quantity="other">%1$d kappaletta poistettu soittolistasta %2$s.</item>
+    <item quantity="one">%1$d kappale poistettu soittolistalta %2$s.</item>
+    <item quantity="other">%1$d kappaletta poistettu soittolistalta %2$s.</item>
   </plurals>
   <plurals name="deleted">
-    <item quantity="one">1 kappale poistettu.</item>
+    <item quantity="one">%d kappale poistettu.</item>
     <item quantity="other">%d kappaletta poistettu.</item>
   </plurals>
   <string name="delete_file_failed">Kohteen %s poistaminen epäonnistui.</string>

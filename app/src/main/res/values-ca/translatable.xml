@@ -48,26 +48,15 @@
   <string name="play_or_enqueue">Afegeix a la cua si s\'està reproduint; Reprodueix si està pausat</string>
   <string name="open">Obre</string>
   <string name="go_home">Carpeta principal</string>
-  <plurals name="playing">
-    <item quantity="one">1 pista en reproducció</item>
-    <item quantity="other">%d pistes en reproducció.</item>
-  </plurals>
-  <plurals name="enqueued">
-    <item quantity="one">1 pista a la cua</item>
-    <item quantity="other">%d pistes a la cua.</item>
-  </plurals>
-  <plurals name="added_to_playlist">
-    <item quantity="one">S\'ha afegit 1 pista a la llista de reproducció %2$s.</item>
-    <item quantity="other">S\'han afegit %1$d pistes a la llista de reproducció %2$s.</item>
-  </plurals>
-  <plurals name="removed_from_playlist">
-    <item quantity="one">S\'ha suprimit 1 pista de la llista de reproducció %2$s.</item>
-    <item quantity="other">S\'han suprimit %1$d pistes de la llista de reproducció %2$s.</item>
-  </plurals>
-  <plurals name="deleted">
-    <item quantity="one">1 pista suprimida.</item>
-    <item quantity="other">%d pistes suprimides.</item>
-  </plurals>
+  <!--As a developer, you should always supply "one" and "other"
+		strings. Your translators will know which strings are actually
+		needed for their language. Always include %d in "one" because
+		translators will need to use %d for languages where "one"
+		doesn't mean 1 (as explained above).
+
+		Translators should use http://unicode.org/reports/tr35/tr35-numbers.html#Language_Plural_Rules and
+		http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html, Type cardinal,
+		to see which categories apply to integer numbers in their languages-->
   <string name="delete_file_failed">Ha fallat en suprimir %s.</string>
   <string name="deleted_item">S\'ha suprimit «%s».</string>
   <string name="delete_item">Voleu suprimir «%s»?</string>
