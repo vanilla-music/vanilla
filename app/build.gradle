@@ -1,0 +1,28 @@
+apply plugin: 'com.android.application'
+
+android {
+    lintOptions {
+        disable 'MissingTranslation'
+        disable 'ExtraTranslation'
+    }
+
+    compileSdkVersion 26
+    buildToolsVersion "26.0.1"
+
+    defaultConfig {
+        applicationId "ch.blinkenlights.android.vanilla"
+        minSdkVersion 15
+        targetSdkVersion 26
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}

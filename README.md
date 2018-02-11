@@ -54,19 +54,13 @@ Building
 ========
 To build you will need:
 
- * A Java compiler compatible with Java 1.7
- * The Android SDK with platform 24 (Nougat) installed
+ * A Java compiler compatible with Java 1.8
+ * The Android SDK with platform 26 installed
 
 Building from command-line #1
 --------------------------
  * `gradle build` to build the APK
  * Optional: `gradle installDebug` to install the APK to a connected device
- 
-Building from command-line #2
---------------------------
- * `android update project --path .` to generate local.properties
- * `ant debug` to build the APK at bin/VanillaMusic-debug.apk
- * Optional: `ant installd` to install the APK to a connected device
 
 Building with Android Studio
 ---------------------
