@@ -23,7 +23,7 @@ foreach my $src_file (glob("translations/vanilla-music-1.en-strings/*.xml")) {
 	if ($src_file =~ /\/([a-zA-Z_]+)\.xml/) {
 		my $locale = $1;
 		$locale = $LMAP->{$locale} if exists $LMAP->{$locale};
-		my $dst_file = "res/values-$locale/translatable.xml";
+		my $dst_file = "app/src/main/res/values-$locale/translatable.xml";
 
 		warn "+ $src_file -> $dst_file\n";
 		die "Unknown locale: '$locale', target=$dst_file\n" unless -f $dst_file;
