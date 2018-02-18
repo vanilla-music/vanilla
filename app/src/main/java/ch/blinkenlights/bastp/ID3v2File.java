@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2013-2016 Adrian Ulrich <adrian@blinkenlights.ch>
- * Copyright (C) 2017 Google Inc.
+ * Copyright (C) 2017-2018 Google Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,13 +13,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>. 
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package ch.blinkenlights.bastp;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Enumeration;
 
@@ -30,20 +31,53 @@ public class ID3v2File extends Common {
 	private static final int ID3_ENC_UTF16   = 0x01;
 	private static final int ID3_ENC_UTF16BE = 0x02;
 	private static final int ID3_ENC_UTF8    = 0x03;
-	
+	private static final HashMap<String, String> sOggNames;
+	static {
+		// ID3v2.3 -> ogg mapping
+		sOggNames = new HashMap<String, String>();
+		sOggNames.put("TIT2", "TITLE");
+		sOggNames.put("TALB", "ALBUM");
+		sOggNames.put("TPE1", "ARTIST");
+		sOggNames.put("TPE2", "ALBUMARTIST");
+		sOggNames.put("TYER", "YEAR");
+		sOggNames.put("TPOS", "DISCNUMBER");
+		sOggNames.put("TRCK", "TRACKNUMBER");
+		sOggNames.put("TCON", "GENRE");
+		sOggNames.put("TCOM", "COMPOSER");
+		// ID3v2.2 3-character names
+		sOggNames.put("TT2", "TITLE");
+		sOggNames.put("TAL", "ALBUM");
+		sOggNames.put("TP1", "ARTIST");
+		sOggNames.put("TP2", "ALBUMARTIST");
+		sOggNames.put("TYE", "YEAR");
+		sOggNames.put("TRK", "TRACKNUMBER");
+		sOggNames.put("TCO", "GENRE");
+		sOggNames.put("TCM", "COMPOSER");
+	}
+
+	// Holds a key-value pair
+	private class TagItem {
+		String key;
+		String value;
+		public TagItem(String key, String value) {
+			this.key = key;
+			this.value = value;
+		}
+	}
+
 	public ID3v2File() {
 	}
-	
+
 	public HashMap getTags(RandomAccessFile s) throws IOException {
 		HashMap tags = new HashMap();
-		
+
 		final int v2hdr_len = 10;
 		byte[] v2hdr = new byte[v2hdr_len];
-		
+
 		// read the whole 10 byte header into memory
 		s.seek(0);
 		s.read(v2hdr);
-		
+
 		int v3minor = ((b2be32(v2hdr,0))) & 0xFF;   // swapped ID3\04 -> ver. ist the first byte
 		int v3len   = ((b2be32(v2hdr,6)));          // total size EXCLUDING the this 10 byte header
 		v3len       = unsyncsafe(v3len);
@@ -101,73 +135,70 @@ public class ID3v2File extends Common {
 			bread += s.read(frame);
 			String framename = new String(frame, 0, namelen);
 			int slen = calculateFrameLength(frame, namelen, v3minor);
-			
+
 			/* Abort on silly sizes */
 			long bytesRemaining = payload_len - bread;
 			if(slen < 1 || slen > (bytesRemaining))
 				break;
-			
+
 			byte[] xpl = new byte[slen];
 			bread += s.read(xpl);
-			
+
 			if(framename.substring(0,1).equals("T")) {
-				String[] nmzInfo = normalizeTaginfo(framename, xpl);
-				String oggKey = nmzInfo[0];
-				String decPld = nmzInfo[1];
-				
-				if(oggKey.length() > 0 && !tags.containsKey(oggKey)) {
-					addTagEntry(tags, oggKey, decPld);
+				TagItem nti = normalizeTaginfo(framename, xpl);
+				if (nti.key.length() > 0) {
+					for (TagItem ti : splitTagPayload(nti)) {
+						addTagEntry(tags, ti.key, ti.value);
+					}
 				}
 			}
 			else if(framename.equals("RVA2")) {
 				//
 			}
-			
+
 		}
 		return tags;
 	}
-	
+
+	/* Split null-separated tags into individual elements */
+	private ArrayList<TagItem> splitTagPayload(TagItem in) {
+		ArrayList res = new ArrayList<TagItem>();
+		int i = 0;
+
+		if (sOggNames.containsValue(in.key)) {
+			for (String item : in.value.split("\0")) {
+				if (i == 0 || item.length() > 0) { // first item is allowed to be empty, others not (to avoid thrashing if there are many null-bytes)
+					res.add(new TagItem(in.key, item));
+				}
+				i++;
+			}
+		} else {
+			res.add(in);
+		}
+		return res;
+	}
+
 	/* Converts ID3v2 sillyframes to OggNames */
-	private String[] normalizeTaginfo(String k, byte[] v) {
-		String[] rv = new String[] {"",""};
-		HashMap lu = new HashMap<String, String>();
-		lu.put("TIT2", "TITLE");
-		lu.put("TALB", "ALBUM");
-		lu.put("TPE1", "ARTIST");
-		lu.put("TPE2", "ALBUMARTIST");
-		lu.put("TYER", "YEAR");
-		lu.put("TPOS", "DISCNUMBER");
-		lu.put("TRCK", "TRACKNUMBER");
-		lu.put("TCON", "GENRE");
-		lu.put("TCOM", "COMPOSER");
-		// ID3v2.2 3-character names
-		lu.put("TT2", "TITLE");
-		lu.put("TAL", "ALBUM");
-		lu.put("TP1", "ARTIST");
-		lu.put("TP2", "ALBUMARTIST");
-		lu.put("TYE", "YEAR");
-		lu.put("TRK", "TRACKNUMBER");
-		lu.put("TCO", "GENRE");
-		lu.put("TCM", "COMPOSER");
-		
-		if(lu.containsKey(k)) {
+	private TagItem normalizeTaginfo(String k, byte[] v) {
+		TagItem ti = new TagItem("", "");
+		if(sOggNames.containsKey(k)) {
 			/* A normal, known key: translate into Ogg-Frame name */
-			rv[0] = (String)lu.get(k);
-			rv[1] = getDecodedString(v);
+			ti.key = (String)sOggNames.get(k);
+			ti.value = getDecodedString(v);
 		}
 		else if(k.equals("TXXX")) {
 			/* A freestyle field, ieks! */
 			String txData[] = getDecodedString(v).split(Character.toString('\0'), 2);
 			/* Check if we got replaygain info in key\0value style */
 			if(txData.length == 2 && txData[0].matches("^(?i)REPLAYGAIN_(ALBUM|TRACK)_GAIN$")) {
-				rv[0] = txData[0].toUpperCase(); /* some tagwriters use lowercase for this */
-				rv[1] = txData[1];
+				ti.key = txData[0].toUpperCase(); /* some tagwriters use lowercase for this */
+				ti.value = txData[1];
 			}
 		}
-		
-		return rv;
+
+		return ti;
 	}
-	
+
 	/* Converts a raw byte-stream text into a java String */
 	private String getDecodedString(byte[] raw) {
 		int encid = raw[0] & 0xFF;
@@ -212,5 +243,5 @@ public class ID3v2File extends Common {
 		} catch(Exception e) {}
 		return rv;
 	}
-	
+
 }
