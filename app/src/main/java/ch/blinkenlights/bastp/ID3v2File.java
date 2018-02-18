@@ -47,10 +47,10 @@ public class ID3v2File extends Common {
 		int v3minor = ((b2be32(v2hdr,0))) & 0xFF;   // swapped ID3\04 -> ver. ist the first byte
 		int v3len   = ((b2be32(v2hdr,6)));          // total size EXCLUDING the this 10 byte header
 		v3len       = unsyncsafe(v3len);
-		
+
 		// debug(">> tag version ID3v2."+v3minor);
 		// debug(">> LEN= "+v3len+" // "+v3len);
-		
+
 		// we should already be at the first frame
 		// so we can start the parsing right now
 		tags = parse_v3_frames(s, v3len, v3minor);
@@ -68,21 +68,39 @@ public class ID3v2File extends Common {
 				((x & 0x0000007f) >> 0) ;
 		return x;
 	}
-	
+
+	/**
+	 * Calculates the frame length baased on the frame size and the
+	 */
+	private int calculateFrameLength(byte[] frame, int offset, int v3minor) {
+		// ID3v2 (aka ID3v2.2) had a 3-byte unencoded length field.
+		if (v3minor < 3) {
+			return (frame[offset] << 16) + (frame[offset+1] << 8) + frame[offset+2];
+		}
+		int rawlen = b2be32(frame, offset);
+		// Encoders prior ID3v2.4 did not encode the frame length
+		if (v3minor < 4) {
+			return rawlen;
+		}
+		return unsyncsafe(rawlen);
+	}
+
 	/* Parses all ID3v2 frames at the current position up until payload_len
 	** bytes were read
 	*/
 	public HashMap parse_v3_frames(RandomAccessFile s, long payload_len, int v3minor) throws IOException {
 		HashMap tags = new HashMap();
-		byte[] frame   = new byte[10]; // a frame header is always 10 bytes
-		long bread     = 0;            // total amount of read bytes
+		// ID3v2 (aka ID3v2.2) had a 6-byte header of a 3-byte name and a 3-byte length.
+		// ID3v2.3 increased the header size to 10 bytes, with a 4-byte name and a 4-byte length
+		int namelen = (v3minor >= 3 ? 4 : 3);
+		int headerlen = (v3minor >= 3 ? 10 : 6);
+		byte[] frame   = new byte[headerlen];
+		long bread     = 0;                      // total amount of read bytes
 
 		while(bread < payload_len) {
 			bread += s.read(frame);
-			String framename = new String(frame, 0, 4);
-			int rawlen = b2be32(frame, 4);
-			// Encoders prior ID3v2.4 did not encode the frame length
-			int slen = (v3minor >= 4 ? unsyncsafe(rawlen) : rawlen);
+			String framename = new String(frame, 0, namelen);
+			int slen = calculateFrameLength(frame, namelen, v3minor);
 			
 			/* Abort on silly sizes */
 			long bytesRemaining = payload_len - bread;
@@ -122,6 +140,15 @@ public class ID3v2File extends Common {
 		lu.put("TRCK", "TRACKNUMBER");
 		lu.put("TCON", "GENRE");
 		lu.put("TCOM", "COMPOSER");
+		// ID3v2.2 3-character names
+		lu.put("TT2", "TITLE");
+		lu.put("TAL", "ALBUM");
+		lu.put("TP1", "ARTIST");
+		lu.put("TP2", "ALBUMARTIST");
+		lu.put("TYE", "YEAR");
+		lu.put("TRK", "TRACKNUMBER");
+		lu.put("TCO", "GENRE");
+		lu.put("TCM", "COMPOSER");
 		
 		if(lu.containsKey(k)) {
 			/* A normal, known key: translate into Ogg-Frame name */
