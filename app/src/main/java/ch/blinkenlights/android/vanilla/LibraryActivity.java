@@ -493,17 +493,18 @@ public class LibraryActivity
 			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 			params.leftMargin = 5;
 			for (int i = 0; i != limiter.length; ++i) {
-				PaintDrawable background = new PaintDrawable(Color.GRAY);
-				background.setCornerRadius(5);
+				int color = (i+1 == limiter.length ? 0xFFA0A0A0 : 0xFFC0C0C0);
+				PaintDrawable background = new PaintDrawable(color);
+				background.setCornerRadius(0);
 
 				TextView view = new TextView(this);
 				view.setSingleLine();
 				view.setEllipsize(TextUtils.TruncateAt.MARQUEE);
-				view.setText(limiter[i] + " | X");
+				view.setText(limiter[i]);
 				view.setTextColor(Color.WHITE);
 				view.setBackgroundDrawable(background);
 				view.setLayoutParams(params);
-				view.setPadding(5, 2, 5, 2);
+				view.setPadding(14, 6, 14, 6);
 				view.setTag(i);
 				view.setOnClickListener(this);
 				mLimiterViews.addView(view);
