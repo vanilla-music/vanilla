@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>. 
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package ch.blinkenlights.android.medialibrary;
@@ -57,6 +57,10 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 	 * Regexp matching anything
 	 */
 	private static final Pattern sFilterAny = Pattern.compile("^([\\s\\S]*)$");
+	/**
+	 * Regexp matching possible genres
+	 */
+	private static final Pattern sFilterGenre = Pattern.compile("^\\s*\\(?(\\d+)\\)?\\s*$");
 	/**
 	 * Genres as defined by androids own MediaScanner.java
 	 */
@@ -441,18 +445,19 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 		if (rawGenre == null)
 			return; // no genre, nothing to do
 
-		try {
-			genreIdx = Integer.parseInt(rawGenre);
-		} catch (NumberFormatException exception) { /* genre not set or not a number */ }
+		Matcher matcher = sFilterGenre.matcher(rawGenre);
+		if (matcher.matches()) {
+			try {
+				genreIdx = Integer.parseInt(matcher.group(1));
+			} catch (NumberFormatException e) {} // ignored
+		}
 
 		if (genreIdx >= 0 && genreIdx < ID3_GENRES.length) {
 			ArrayList<String> data = new ArrayList<String>(1);
 			data.add(ID3_GENRES[genreIdx]);
-
 			remove(GENRE);
 			addFiltered(sFilterAny, GENRE, data);
 		}
-
 	}
 
 }
