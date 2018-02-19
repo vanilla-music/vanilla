@@ -166,13 +166,18 @@ public class ID3v2File extends Common {
 		int i = 0;
 
 		if (sOggNames.containsValue(in.key)) {
-			for (String item : in.value.split("\0")) {
-				if (i == 0 || item.length() > 0) { // first item is allowed to be empty, others not (to avoid thrashing if there are many null-bytes)
-					res.add(new TagItem(in.key, item));
+			// Only try to split if there are more than two chars and the string does NOT look UTF16 encoded.
+			if (in.value.length() >= 2 && in.value.charAt(0) != 0 && in.value.charAt(1) != 0) {
+				for (String item : in.value.split("\0")) {
+					if (item.length() > 0) { // do not add empty items, avoids thrashing if the string is zero padded.
+						res.add(new TagItem(in.key, item));
+					}
+					i++;
 				}
-				i++;
 			}
-		} else {
+		}
+
+		if (i == 0) {
 			res.add(in);
 		}
 		return res;
