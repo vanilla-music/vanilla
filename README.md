@@ -48,7 +48,7 @@ Contributing code
 ---------------
 * A list of open issues can be found at the [issue tracker][2]
 * Features we would like to see (but nobody started working on them yet) have the [patches-welcome][3] label attached to them. Please let us know if you start working on such an open issue (to avoid duplicate work)
-* We accept raw patches and github pull request - and we use tabs.
+* We accept raw patches and github pull request - and we use tabs (if your editor understands .editorconfig, it will help you enforce this).
 
 Building
 ========
