@@ -613,14 +613,14 @@ public class MediaScanner implements Handler.Callback {
 
 		for (String path : MediaLibrary.getPreferences(mContext).mediaFolders) {
 			if (path.length() > wlPoints &&
-			    file.getPath().startsWith(path)) {
+			    file.getPath().toLowerCase().startsWith(path.toLowerCase())) {
 				wlPoints = path.length();
 			}
 		}
 
 		for (String path : MediaLibrary.getPreferences(mContext).blacklistedFolders) {
 			if (path.length() > blPoints &&
-			    file.getPath().startsWith(path)) {
+			    file.getPath().toLowerCase().startsWith(path.toLowerCase())) {
 				blPoints = path.length();
 			}
 		}
