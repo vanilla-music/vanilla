@@ -189,7 +189,7 @@ public class MediaLibrary  {
 	 * @return array with guessed blacklist
 	 */
 	private static ArrayList<String> discoverDefaultBlacklistedPaths(Context context) {
-		final String[] defaultBlacklistPostfix = { "Android/data", "Alarms", "Notifications", "Ringtones" };
+		final String[] defaultBlacklistPostfix = { "Android/data", "Alarms", "Notifications", "Ringtones", "media/audio" };
 		ArrayList<String> defaultPaths = new ArrayList<>();
 
 		for (String path : discoverDefaultMediaPaths(context)) {
