@@ -439,13 +439,14 @@ public class MediaScanner implements Handler.Callback {
 			return false;
 
 		long dbEntryMtime = mBackend.getColumnFromSongId(MediaLibrary.SongColumns.MTIME, songId) * 1000; // this is in unixtime -> convert to 'ms'
+		long songFlags = mBackend.getColumnFromSongId(MediaLibrary.SongColumns.FLAGS, songId);
 		long fileMtime = file.lastModified();
 		long playCount = 0;
 		long skipCount = 0;
 		boolean hasChanged = false;
 		boolean mustInsert = false;
 
-		if (fileMtime > 0 && dbEntryMtime >= fileMtime) {
+		if (fileMtime > 0 && dbEntryMtime >= fileMtime && (songFlags & MediaLibrary.SONG_FLAG_OUTDATED) == 0) {
 			return false; // on-disk mtime is older than db mtime and it still exists -> nothing to do
 		}
 
@@ -507,6 +508,7 @@ public class MediaScanner implements Handler.Callback {
 			v.put(MediaLibrary.SongColumns.PLAYCOUNT,   playCount);
 			v.put(MediaLibrary.SongColumns.SKIPCOUNT,   skipCount);
 			v.put(MediaLibrary.SongColumns.PATH,        path);
+			v.put(MediaLibrary.SongColumns.FLAGS,       (songFlags &~MediaLibrary.SONG_FLAG_OUTDATED));
 			mBackend.insert(MediaLibrary.TABLE_SONGS, null, v);
 
 			v.clear();

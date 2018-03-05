@@ -56,6 +56,8 @@ public class MediaLibrary  {
 	public static final int ROLE_COMPOSER                 = 1;
 	public static final int ROLE_ALBUMARTIST              = 2;
 
+	public static final int SONG_FLAG_OUTDATED            = (1 << 0); // entry in library should get rescanned.
+
 	public static final String PREFERENCES_FILE = "_prefs-v1.obj";
 
 	/**
@@ -597,6 +599,10 @@ public class MediaLibrary  {
 		 * The mtime of this item
 		 */
 		String MTIME = "mtime";
+		/**
+		 * Various flags of this entry, see SONG_FLAG...
+		 */
+		String FLAGS = "_flags";
 	}
 
 	// Columns of Album entries

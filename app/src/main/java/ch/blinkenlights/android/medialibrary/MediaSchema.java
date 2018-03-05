@@ -35,7 +35,8 @@ public class MediaSchema {
 	  + MediaLibrary.SongColumns.SKIPCOUNT    +" INTEGER NOT NULL DEFAULT 0, "
 	  + MediaLibrary.SongColumns.MTIME        +" TIMESTAMP DEFAULT (strftime('%s', CURRENT_TIMESTAMP)), "
 	  + MediaLibrary.SongColumns.DURATION     +" INTEGER NOT NULL, "
-	  + MediaLibrary.SongColumns.PATH         +" VARCHAR(4096) NOT NULL "
+	  + MediaLibrary.SongColumns.PATH         +" VARCHAR(4096) NOT NULL, "
+	  + MediaLibrary.SongColumns.FLAGS        +" INTEGER NOT NULL DEFAULT 0 "
 	  + ");";
 
 	/**
@@ -324,6 +325,10 @@ public class MediaSchema {
 			// Minor indexer changes - invalidate (but do not drop) all
 			// existing entries.
 			dbh.execSQL("UPDATE songs SET mtime=1");
+		}
+
+		if (oldVersion < 20180305) {
+			dbh.execSQL("ALTER TABLE "+MediaLibrary.TABLE_SONGS+" ADD COLUMN "+MediaLibrary.SongColumns.FLAGS+" INTEGER NOT NULL DEFAULT 0 ");
 		}
 
 	}
