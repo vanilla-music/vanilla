@@ -3,7 +3,7 @@
 default:
 
 debug: build
-	adb install -r ./app/build/outputs/apk/app-debug.apk
+	adb install -r ./app/build/outputs/apk/debug/app-debug.apk
 
 build:
 	ssh qemu '. .bash_aliases && cd /hostfs/vanilla && ./gradlew build -x lintVitalRelease -x lint'
