@@ -81,8 +81,18 @@ public class MediaScanner implements Handler.Callback {
 	 * The id we are using for the scan notification
 	 */
 	private static final int NOTIFICATION_ID = 56162;
+	/**
+	 * The notification channel to use
+	 */
 	private static final String NOTIFICATION_CHANNEL = "Scanner";
-
+	/**
+	 * Relax mtime check while searching for native modifications by this many seconds
+	 */
+	private static final int NATIVE_VRFY_MTIME_SLACK = 100;
+	/**
+	 * Delay native scans by this many ms to coalesce multiple modifications
+	 */
+	private static final int NATIVE_VRFY_COALESCE_DELAY = 3500;
 
 	MediaScanner(Context context, MediaLibraryBackend backend) {
 		mContext = context;
@@ -98,7 +108,7 @@ public class MediaScanner implements Handler.Callback {
 		ContentObserver mObserver = new ContentObserver(null) {
 			@Override
 			public void onChange(boolean self) {
-				startQuickScan(1500);
+				startQuickScan(NATIVE_VRFY_COALESCE_DELAY);
 			}
 		};
 		context.getContentResolver().registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, false, mObserver);
@@ -353,7 +363,7 @@ public class MediaScanner implements Handler.Callback {
 	private void rpcNativeVerify(Cursor cursor, int mtime) {
 		if (cursor == null) {
 			mtime = MediaLibrary.getPreferences(mContext)._nativeLastMtime; // starting a new scan -> read stored mtime from preferences
-			String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0 AND "+ MediaStore.MediaColumns.DATE_MODIFIED +" > " + mtime;
+			String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0 AND "+ MediaStore.MediaColumns.DATE_MODIFIED +" > " + (mtime - NATIVE_VRFY_MTIME_SLACK);
 			String sort = MediaStore.MediaColumns.DATE_MODIFIED;
 			String[] projection = { MediaStore.MediaColumns.DATA, MediaStore.MediaColumns.DATE_MODIFIED };
 			try {
