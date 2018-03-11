@@ -199,7 +199,7 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 
 
 	/**
-	 * Runable to run a delayed action
+	 * Runnable to run a delayed action
 	 * Inspects sLastClickTime and sDelayedClicks to guess what to do
 	 *
 	 * @param context the context to use
