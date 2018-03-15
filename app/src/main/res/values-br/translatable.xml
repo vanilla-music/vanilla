@@ -1,0 +1,310 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="app_name">Vanilla Music</string>
+  <!--Playback Activity (main screen)-->
+  <string name="no_songs">N\'eo bet kavet ton ebet war ho trevnad.</string>
+  <string name="empty_queue">Ton ebet diuzet. Dibabit unan er sonaoueg pe kit er mod dargouezhek en ur stokañ ar gemennadenn-mañ.</string>
+  <string name="settings">Arventennoù</string>
+  <string name="no_shuffle">En urzh</string>
+  <string name="shuffle_songs">Dargouezhek</string>
+  <string name="shuffle_songs_continuously">Dargouezhek kendalc\'hus</string>
+  <string name="shuffle_albums">Albomoù dargouezhek</string>
+  <string name="no_repeat">Na adlenn</string>
+  <string name="repeat">Adlenn</string>
+  <string name="repeat_current_song">Adseniñ an ton bremanel</string>
+  <string name="stop_current_song">Paouez goude an ton bremanel</string>
+  <string name="random">Dargouezhek</string>
+  <string name="random_enabling">Dargouezhek gweredekaet</string>
+  <string name="song_load_failed">C\'hwitadenn en ur gargañ an ton %s. Marteze eo kontronet pe n\'eus ket anezhi.</string>
+  <string name="queue_cleared">Lost skarzhet.</string>
+  <string name="cover_art">Golo</string>
+  <string name="close_notification">Serriñ ar rebuzadur</string>
+  <string name="_genre">doare</string>
+  <string name="_track">ton</string>
+  <string name="_composer">sonaozer</string>
+  <string name="_path">treug</string>
+  <string name="_format">mentrezh</string>
+  <string name="_title">titl</string>
+  <string name="_artist">arzour</string>
+  <string name="_album">albom</string>
+  <string name="_year">bloavezh</string>
+  <string name="_replaygain">rgain</string>
+  <!--New Playlist Dialog-->
+  <string name="choose_playlist_name">Dibab anv ar roll seniñ</string>
+  <string name="create">Krouiñ</string>
+  <string name="overwrite">Flastrañ</string>
+  <string name="delete_playlist">Dilemel ar roll-seniñ %s?</string>
+  <!--Library-->
+  <string name="enqueue">Lakaat el lost</string>
+  <string name="enqueue_as_next">War-lec\'h</string>
+  <string name="play">Seniñ</string>
+  <string name="edit">Embann</string>
+  <string name="rename">Adenvel</string>
+  <string name="save_as_playlist">Enrollañ evel ur roll-seniñ...</string>
+  <string name="add_to_playlist">Ouzhpennañ er roll-seniñ...</string>
+  <string name="add_to_favorites">Ouzhpennañ en tonioù gwellañ</string>
+  <string name="remove_from_favorites">Dilemel eus an tonioù gwellañ</string>
+  <string name="playlist_favorites">Gwellañ</string>
+  <string name="new_playlist">Roll-seniñ nevez...</string>
+  <string name="expand">Astenn</string>
+  <string name="delete">Dilemel</string>
+  <string name="playback_view">O seniñ</string>
+  <string name="sort_by">Urzhiañ dre</string>
+  <string name="search">Klask</string>
+  <string name="done">Graet</string>
+  <string name="remove">Dilemel</string>
+  <string name="play_or_enqueue">Lakaat el lost m\'emañ o seniñ. Seniñ m\'eo ehanet</string>
+  <string name="open">Digeriñ</string>
+  <string name="go_home">Teuliad pennañ</string>
+  <string name="jumping_to_song">El lost emañ ar roudenn endeo, o seniñ...</string>
+  <!--As a developer, you should always supply "one" and "other"
+		strings. Your translators will know which strings are actually
+		needed for their language. Always include %d in "one" because
+		translators will need to use %d for languages where "one"
+		doesn't mean 1 (as explained above).
+
+		Translators should use http://unicode.org/reports/tr35/tr35-numbers.html#Language_Plural_Rules and
+		http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html, Type cardinal,
+		to see which categories apply to integer numbers in their languages-->
+  <plurals name="playing">
+    <item quantity="one">%d ton o seniñ.</item>
+    <item quantity="other">%d a donioù o seniñ.</item>
+  </plurals>
+  <plurals name="enqueued">
+    <item quantity="one"> %dton el lost.</item>
+    <item quantity="other">%d a donioù el lost.</item>
+  </plurals>
+  <plurals name="added_to_playlist">
+    <item quantity="one">%1$d ton ouzhpennet er roll-seniñ %2$s. </item>
+    <item quantity="other">%1$d a donioù ouzhpennet er roll-seniñ %2$s. </item>
+  </plurals>
+  <plurals name="removed_from_playlist">
+    <item quantity="one">%1$d ton lamet kuit eus ar roll-seniñ %2$s.</item>
+    <item quantity="other">%1$d a donioù lamet kuit eus ar roll-seniñ %2$s.</item>
+  </plurals>
+  <plurals name="deleted">
+    <item quantity="one">%d ton diuzet.</item>
+    <item quantity="other">%d a donioù diuzet.</item>
+  </plurals>
+  <string name="delete_file_failed">Fazi en ul lemel kuit %s.</string>
+  <string name="deleted_item">\'%s\' dilamet.</string>
+  <string name="delete_item">Dilemel \'%s\'?</string>
+  <string name="delete_file">Dilemel ar restr \'%s\'?</string>
+  <string name="artists">Arzourien</string>
+  <string name="albums">Albomoù</string>
+  <string name="albumartists">Arzourien an albom</string>
+  <string name="composers">Sonaozerien</string>
+  <string name="songs">Tonioù</string>
+  <string name="playlists">Rolloù-seniñ</string>
+  <string name="genres">Doareoù</string>
+  <string name="files">Restroù</string>
+  <string name="artist">Arzour</string>
+  <string name="album">Albom</string>
+  <string name="genre">Doare</string>
+  <string name="folder">Teuliad</string>
+  <string name="filename">Anv ar restr</string>
+  <string name="file_size">Ment ar restr</string>
+  <string name="file_time">Deiziad kemmadur</string>
+  <string name="extension">Askouezh</string>
+  <string name="unknown">Dianav</string>
+  <string name="play_all">Seniñ pep tra</string>
+  <string name="enqueue_all">Ouzhpennañ an holl el lost</string>
+  <string name="all_songs">An holl donioù</string>
+  <string name="more_from_artist">Muioc\'h gant an arzour-mañ</string>
+  <string name="more_from_album">Muioc\'h diwar an albom-mañ</string>
+  <string name="title">TItl</string>
+  <string name="number_of_tracks">Niver a donioù</string>
+  <string name="year">Bloavezh</string>
+  <string name="date_added">Deiziad ouzhpennet</string>
+  <string name="artist_album">Arzour, albom</string>
+  <string name="artist_year_album">Arzour, bloavezh, albom</string>
+  <string name="artist_album_track">Arzour, albom, niverenn an ton</string>
+  <string name="artist_album_title">Arzour, albom, titl</string>
+  <string name="artist_year">Arzour, bloavezh</string>
+  <string name="album_track">Albom, niverenn an ton</string>
+  <string name="song_playcount">Konter sonet</string>
+  <!--Preferences-->
+  <plurals name="seconds">
+    <item quantity="one">%d eilenn</item>
+    <item quantity="other">%d eilenn</item>
+  </plurals>
+  <plurals name="minutes">
+    <item quantity="one">%d vunutenn</item>
+    <item quantity="other">%d a vuntennoù</item>
+  </plurals>
+  <plurals name="hours">
+    <item quantity="one">%d eur</item>
+    <item quantity="other">%d eur</item>
+  </plurals>
+  <string name="audio">Aodio</string>
+  <string name="volume_during_ducking_title">Ampled e-pad ar rebuzadurioù</string>
+  <string name="volume_during_ducking_summary">Ampled seniñ</string>
+  <string name="ignore_audiofocus_loss_summary">Kenderc\'hel gant ar seniñ goude bezañ bet kollet ar stiañ aodio penn-da-benn</string>
+  <string name="media_button_title">Reoliadus gant selaouelloù/bluetooth</string>
+  <string name="media_button_summary">Dleet ivez gant reolerezhioù ICS ar skramm-prenañ.</string>
+  <string name="media_button_beep_title">Bip reolerezhioù ar selaouelloù</string>
+  <string name="media_button_beep_summary">Bip pa vez kemmet an ton gant reolerezhioù ar selaouelloù dre daouglik.</string>
+  <string name="headset_only_title">Ezkerzh diavaez hepken</string>
+  <string name="headset_only_summary">Mirout ar sonerezh da vezañ sonet dre an uhelgomzerioù diabarzh.</string>
+  <string name="headset_pause_title">Ehanañ ma vez diluget</string>
+  <string name="headset_pause_summary">Ehanañ an ton ma vez diluget ar selaouelloù.</string>
+  <string name="headset_launch_title">Lenn pa vez luget</string>
+  <string name="headset_launch_summary">Lenn pa vez luget ar selaouelloù. (Azgoulenn a ra vefe staliet an arload \'dinoer selaouelloù\')</string>
+  <string name="headset_launch_app_missing">Ar c\'heweriuster-se a azgoulenn vefe luget an arload \'dinoer selaouelloù\'.\nFellout a ra deoc\'h digeriñ ar Play Store evit staliañ an arload? </string>
+  <string name="replaygain">ReplayGain</string>
+  <string name="replaygain_summary">Kefluniañ an doare da verañ an titouroù gant ReplayGain</string>
+  <string name="replaygain_track_title">Gweredekaat ReplayGain dre don</string>
+  <string name="replaygain_track_summary">Seniñ an holl donioù d\'an hevelep ampled</string>
+  <string name="replaygain_album_title">Gweredekaat ReplayGain evit an albom</string>
+  <string name="replaygain_album_summary">Mirout a ra dialuskoù an albom</string>
+  <string name="replaygain_bump_title">Ragampled Replaygain</string>
+  <string name="replaygain_untagged_debump_title">Tonioù hep an tikedenn ReplayGain</string>
+  <string name="replaygain_untagged_debump_summary">Izelaat an ampled eus</string>
+  <string name="replaygain_preamp_note_title">Evezhiadenn</string>
+  <string name="replaygain_preamp_note_content">Android na aotre ket Vanilla Music da greskiñ an ampled eus 100%. Lakaat ar ragampled d\'un talvoud uhel a c\'hall degas kudennoù ma selaouit ouzh sonerezh \'sioul\'. \n\¬AN talvoudoù aliet a zo:\n-&gt; -3dB evit sonerezh sioul/klasel\n-&gt; +3dB evit an enrolladennoù graet goude 2000</string>
+  <string name="readahead">Gweredekaat ar ragseniñ</string>
+  <string name="readahead_summary">Ragseniñ an ton bremanel. An dibarzh-se a c\'hall diskoulmañ kudennoù koll aodio (abalamour d\'ur gartenn SD gorrek)</string>
+  <string name="equalizer">Ingalaer</string>
+  <string name="cycle_continuous_shuffling">Dargouezhek kendalc\'hus</string>
+  <string name="cycle_continuous_shuffling_summary">Ar mod \'dargouezhek\' a son an tonioù en un urzh dargouezhek penn-da-benn</string>
+  <string name="notifications">Rebuzadurioù</string>
+  <string name="notification_visibility_title">Skrammañ ar rebuzadurioù</string>
+  <string name="notification_action_title">Gwered ar rebuzadur</string>
+  <string name="notification_nag">Rebuzadur trabellek</string>
+  <string name="notification_nag_summary">Kelaou eus ar cheñchamantoù tonioù dre ur rebuzadur plavus</string>
+  <string name="playback_screen">Skramm seniñ</string>
+  <string name="playback_on_startup_title">Digeriñ d\'al loc\'hadur</string>
+  <string name="playback_on_startup_summary">Digeriñ ar skramm lenn pa loc\'h</string>
+  <string name="display_mode_title">Doare skrammañ</string>
+  <string name="swipe_up_action_title">Riklañ war-zu ar c\'hrec\'h</string>
+  <string name="swipe_down_action_title">Riklañ war-zu an draoñ</string>
+  <string name="cover_press_action_title">Stokañ ar golo</string>
+  <string name="cover_longpress_action_title">Stokañ ar golo pad pel</string>
+  <string name="library_screen">Skramm ar sonaoueg</string>
+  <string name="default_action_title">Gwered dre ziouer</string>
+  <string name="default_playlist_action_title">Gwered dre ziouer ar roll-seniñ</string>
+  <string name="accelerometer_shake">Hejañ ar benveg</string>
+  <string name="enable_shake_title">Gweredekaat hejañ ar benveg</string>
+  <string name="enable_shake_summary">Gweredekaat pa vez sonet sonerezh hepken. N\'a ket en-dro p\'eo lazhet ar skramm war trevnadoù \'zo.</string>
+  <string name="shake_action_title">Gwered hejañ</string>
+  <string name="shake_threshold_title">Gwehin an nerzh hejañ</string>
+  <string name="misc_features">Keweriusterioù all</string>
+  <string name="theme">Neuz</string>
+  <string name="disable_lockscreen_title">Diweredekaat prennañ ar skramm</string>
+  <string name="disable_lockscreen_summary">Mirout a ra vefe prennet ar skramm p\'emañ war skramm ar sonaoueg pe ar roudenn o seniñ.</string>
+  <string name="keep_screen_on_title">Derc\'hel ar skramm war elum.</string>
+  <string name="keep_screen_on_summary">Derc\'hel ar skramm (hag an trevnad) dihun p\'eo gwelus Vanilla Music</string>
+  <string name="use_idle_timeout_title">Gweredekaat ar prantad dioberiantiz</string>
+  <string name="use_idle_timeout_summary">P\'eo gweredekaet an dibarzh e paouezo da seniñ goude ar prantad dioberiantiz roet</string>
+  <string name="idle_timeout_title">Prantad dioberiantiz</string>
+  <string name="enable_scroll_to_song_title">Lakaat da zibunañ betek titl an ton</string>
+  <string name="enable_scroll_to_song_summary">Dibunañ betek an ton/albom/arzour e rolloù ar sonaoueg</string>
+  <string name="coverloader_android_title">Kargañ ar skeudennoù adalek Android</string>
+  <string name="coverloader_android_summary">Goulenn digant stlennvon media diabarzh Android evit skeudennoù an albom</string>
+  <string name="coverloader_vanilla_title">Kargañ ar skeudennoù adalek an teuliad</string>
+  <string name="coverloader_vanilla_summary">Klask war-lec\'h restroù skeudenn anvet cover.jpg, albom.jpg pe artwork.jpg ha dibab anezho evel golo an albom</string>
+  <string name="coverloader_shadow_title">Kargañ ar skeudennoù adalek an teuliad kuzhet</string>
+  <string name="coverloader_shadow_summary">Klask a raio kargañ ar skeudennoù adalek  \'/sdcard/Music/.vanilla/ARZOUR/ALBOM.jpg\'</string>
+  <string name="cover_on_lockscreen_title">Diskouez ar skeudenn war ar skramm prennañ</string>
+  <string name="cover_on_lockscreen_summary">Diskouez golo albom an ton o vezañ sonet war ar skramm prennañ</string>
+  <string name="double_tap_title">Stokañ ar widjet div wech</string>
+  <string name="double_tap_summary">Stokañ ar widjet 1x1 div wech evit digeriñ al lenner sonerezh. Ur prantadig a 400me a vo a-raok ma respontfe ar widjed.</string>
+  <string name="scrobble_title">Arverañ an API Scrobble Droid</string>
+  <string name="scrobble_summary">Kas an titouroù Scrobble da Last.fm dre Scrobble Droid pe Simple Last.fm Scrobbler</string>
+  <string name="stock_broadcast_title">Kendarvanañ ar rebuzadurioù genidik</string>
+  <string name="stock_broadcast_summary">Kas kemennadennoù lenn o c\'hendarvanañ ar re kaset gant al lenner orin evit ma \'z afe en-dro gant reolerezhioù ar skramm prennañ savet gant tredeoù.</string>
+  <string name="help">Skoazell</string>
+  <string name="about">A-zivout</string>
+  <string name="tabs">Urzh an ivinelloù</string>
+  <string name="customize_tab_order">Kemmañ urzh ha gwelusted ivinelloù ar sonaoueg</string>
+  <string name="restore_default">Kadaviñ an arventennoù dre ziouer</string>
+  <!--The following are for the list preferences-->
+  <string name="last_used_action">Gwered diwezhañ</string>
+  <string name="never_show">Na skrammañ morse</string>
+  <string name="show_when_playing">Diskouez p\'emañ o seniñ (dre ziouer)</string>
+  <string name="always_show">Skrammañ atav</string>
+  <string name="open_main_activity">Digeriñ ar sonaoueg (dre ziouer)</string>
+  <string name="open_mini_popup">Digeriñ ar prenestrig</string>
+  <string name="skip_to_next_song">Tremen d\'an ton da-heul</string>
+  <string name="open_full_player">Digeriñ al lenner a-bezh</string>
+  <string name="info_on_cover">Titouroù war ar golo</string>
+  <string name="info_below_cover">Titouroù dindan ar golo</string>
+  <string name="fixed_info">Titouroù er c\'hrec\'h</string>
+  <string name="do_nothing">Na ober netra</string>
+  <string name="open_library">Digeriñ ar sonaoueg</string>
+  <string name="play_pause">Lenn/Ehan</string>
+  <string name="next_song">Ton da-heul</string>
+  <string name="previous_song">Ton kent</string>
+  <string name="next_album">Albom da-heul</string>
+  <string name="previous_album">Albom kent</string>
+  <string name="cycle_repeat_mode">Mod adseniñ kelc\'hiek</string>
+  <string name="cycle_shuffle_mode">Mod dargouezhek kelc\'hiek</string>
+  <string name="enqueue_current_album">Ouzhpennañ an albom d\'al lost</string>
+  <string name="enqueue_current_artist">Ouzhpennañ an arzour d\'al lost</string>
+  <string name="enqueue_current_genre">Ouzhpennañ an doare d\'al lost</string>
+  <string name="enqueue_current">Ouzhpennañ el lost</string>
+  <string name="more_from_current">Silañ dre...</string>
+  <string name="empty_the_queue">Goullonderiñ al lost</string>
+  <string name="show_queue">Skrammañ al lost</string>
+  <string name="hide_queue">Kuzhat al lost</string>
+  <string name="dequeue_rest">Lemel ar peurrest eus al lost</string>
+  <string name="toggle_controls">Diskouez/kuzhat ar reolerezhioù</string>
+  <string name="seek_10s_backward">Mont 10 eilenn war-gil</string>
+  <string name="seek_10s_forward">Mont 10 eilenn war-raok</string>
+  <string name="preferences_action_show_queue">Diskouez al lost</string>
+  <string name="preferences_action_clear_queue">Skarzhañ al lost</string>
+  <string name="preferences_action_enqueue_current_album">Ouzhpennañ an albom el lost</string>
+  <string name="preferences_action_enqueue_current_artist">Ouzhpennañ an arzour el lost</string>
+  <string name="preferences_action_enqueue_current_genre">Ouzhpennañ an doare el lost</string>
+  <string name="filebrowser_start">Degemer merdeer ar restroù</string>
+  <string name="customize_filebrowser_start">Merdeer ar restroù a grogo en teuliad-mañ</string>
+  <string name="select">Diuzañ</string>
+  <string name="save">Enrollañ</string>
+  <string name="autoplaylist_playcounts_title">Krouidigezh ar roll-seniñ emgefreek</string>
+  <string name="autoplaylist_playcounts_summary">Krouiñ ent emgefreek:</string>
+  <string name="autoplaylist_playcounts_fmt" formatted="false">%s roll-seniñ \'Top %.0f\'</string>
+  <string name="autoplaylist_playcounts_disabled">Na grouiñ a roll seniñ emgefreek</string>
+  <string name="autoplaylist_playcounts_name" formatted="false">Top %d </string>
+  <string name="permission_request_summary">Ezhomm en deus Vanilla Music da gaout an aotre da lenn ar restroù evit diskouez ho sonaoueg.</string>
+  <string name="reverse_sort">Tuginañ an urzh</string>
+  <string name="share">Rannañ...</string>
+  <string name="share_failed">Fazi en ur rannañ ar restr</string>
+  <string name="sendto">Kas da...</string>
+  <string name="no_receiving_apps">Arload ebet kavet evit ar rizh media-se!</string>
+  <string name="media_library">Mediaoueg</string>
+  <string name="media_folders_header">Teuliadoù ibilet</string>
+  <string name="media_scan_header">C\'hwilerver media</string>
+  <string name="media_scan_full">C\'hwilerviñ ar reizhiad a-bezh (gorrekoc\'h)</string>
+  <string name="media_scan_drop_db">Naetaat ar stlennvon media</string>
+  <string name="media_scan_start">Lañsañ ar c\'hwilervadenn</string>
+  <string name="media_scan_force_bastp">Arverañ al lenner tikedennoù diabarzh</string>
+  <string name="media_scan_group_albums">Strollañ an albomoù dre deuliad</string>
+  <string name="media_statistics">Stadegoù</string>
+  <string name="media_stats_tracks">Niver a roudennoù</string>
+  <string name="media_stats_library_playtime">Padelezh hollek (eurioù)</string>
+  <string name="media_stats_listen_playtime">Padelezh hollek selaouet</string>
+  <string name="media_stats_progress">Araokadenn ar c\'hwilerviñ</string>
+  <string name="media_library_scan_running">O c\'hwilerviñ</string>
+  <string name="media_scan_preferences">Dibarzhioù ar c\'hwilerver</string>
+  <string name="media_scan_preferences_change_title">Dibarzhioù ar c\'hwilerver kemmet</string>
+  <string name="media_scan_preferences_change_message">Ma kemmit an dibarzh-mañ e vo ret adkregiñ gant ur c\'hwilervadenn glok eus ar sonaoueg. Fellout a ra deoc\'h kenderc\'hel?</string>
+  <!--Folder selector-->
+  <string name="hint_long_press_to_modify_folder">Stokit e-pad pell evit kemmañ dibarzhioù an teuliad</string>
+  <string name="folder_include">Ebarzhiñ</string>
+  <string name="folder_exclude">Diskarzhañ</string>
+  <string name="folder_neutral">Neptu</string>
+  <!--Plugin system-->
+  <string name="plugins">Enlugelladoù</string>
+  <!--Theme names-->
+  <string name="theme_name_standard_light">Skoueriek</string>
+  <string name="theme_name_standard_dark">Skoueriek (teñval)</string>
+  <string name="theme_name_grey_light">Griz</string>
+  <string name="theme_name_grey_dark">Griz (teñval)</string>
+  <string name="theme_name_orange_light">Orañjez</string>
+  <string name="theme_name_orange_dark">Orañjez (teñval)</string>
+  <string name="theme_name_blue_light">Glas</string>
+  <string name="theme_name_blue_dark">Glas (teñval)</string>
+  <string name="theme_name_red_light">Ruz</string>
+  <string name="theme_name_red_dark">Ruz (teñval)</string>
+  <string name="theme_name_amoled_dark">Du (skramm AMOLED)</string>
+</resources>
