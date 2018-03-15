@@ -148,12 +148,11 @@ public class RemoteControlImplLp implements RemoteControl.Client {
 		}
 
 		int playbackState = (isPlaying ? PlaybackState.STATE_PLAYING : PlaybackState.STATE_PAUSED);
-		long actions = (PlaybackState.ACTION_PLAY_PAUSE | PlaybackState.ACTION_SKIP_TO_NEXT | PlaybackState.ACTION_SKIP_TO_PREVIOUS);
-		actions |= (isPlaying ? PlaybackState.ACTION_PAUSE : PlaybackState.ACTION_PLAY);
 
 		session.setPlaybackState(new PlaybackState.Builder()
 			.setState(playbackState, PlaybackState.PLAYBACK_POSITION_UNKNOWN , 1.0f)
-			.setActions(actions)
+			.setActions(PlaybackState.ACTION_PLAY | PlaybackState.ACTION_PAUSE | PlaybackState.ACTION_PLAY_PAUSE |
+			            PlaybackState.ACTION_SKIP_TO_NEXT | PlaybackState.ACTION_SKIP_TO_PREVIOUS)
 			.build());
 		mMediaSession.setActive(true);
 	}
