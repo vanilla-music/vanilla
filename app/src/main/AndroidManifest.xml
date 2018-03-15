@@ -23,10 +23,10 @@ THE SOFTWARE.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="ch.blinkenlights.android.vanilla"
-	android:versionName="1.0.59"
-	android:versionCode="10591"
+	android:versionName="1.0.60"
+	android:versionCode="10600"
 	android:installLocation="auto">
-	<uses-sdk android:minSdkVersion="15" android:targetSdkVersion="26" />
+	<uses-sdk android:minSdkVersion="15" android:targetSdkVersion="27" />
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
