@@ -19,17 +19,18 @@ package ch.blinkenlights.android.vanilla;
 
 import android.content.Context;
 import android.app.Activity;
+import android.text.Layout;
+import android.text.Spanned;
+import android.text.format.DateUtils;
+import android.text.style.AlignmentSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.view.LayoutInflater;
-import android.widget.TextView;
 
 import android.graphics.Color;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
 
 public class ShowQueueAdapter extends BaseAdapter {
 	/**
@@ -133,15 +134,23 @@ public class ShowQueueAdapter extends BaseAdapter {
 			LayoutInflater inflater = ((Activity)mContext).getLayoutInflater();
 			row = (DraggableRow)inflater.inflate(mResource, parent, false);
 			row.setupLayout(DraggableRow.LAYOUT_DRAGGABLE);
+			// Need an extra line for the duration aligned to the right that will overlap
+			row.getTextView().setMaxLines(3);
 		}
 
 		Song song = getItem(position);
 
 		if (song.isFilled()) {
 			SpannableStringBuilder sb = new SpannableStringBuilder(song.title);
-			sb.append('\n');
+			sb.append('\n').append(DateUtils.formatElapsedTime(song.duration / 1000)).append('\n');
+			int titleLength = song.title.length();
+			sb.setSpan(new LineOverlapSpan(), titleLength, titleLength + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+			int firstRowLength = sb.length();
+			AlignmentSpan oppositeSpan = new AlignmentSpan.Standard(Layout.Alignment.ALIGN_OPPOSITE);
+			sb.setSpan(oppositeSpan, titleLength + 1, firstRowLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
 			sb.append(song.album+", "+song.artist);
-			sb.setSpan(new ForegroundColorSpan(Color.GRAY), song.title.length() + 1, sb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+			sb.setSpan(new ForegroundColorSpan(Color.GRAY), firstRowLength, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 			row.getTextView().setText(sb);
 			row.getCoverView().setCover(MediaUtils.TYPE_ALBUM, song.albumId, null);
 		}
