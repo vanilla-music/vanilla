@@ -45,6 +45,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 		android:layout_height="@dimen/row_normal_height"
 		android:layout_marginLeft="@dimen/text_padding"
 		android:layout_weight="1" />
+	<TextView
+		android:id="@+id/duration"
+		android:layout_width="wrap_content"
+		android:layout_height="match_parent"
+		android:textColor="?android:textColorPrimary"
+		android:gravity="center_vertical" />
 	<CheckedTextView
 		android:id="@+id/checkbox"
 		android:visibility="gone"
