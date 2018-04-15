@@ -84,6 +84,7 @@ public class DraggableRow extends LinearLayout implements Checkable {
 				case LAYOUT_DRAGGABLE:
 					highlightRow(false); // make this visible
 					mCoverView.setVisibility(View.VISIBLE);
+					mDurationView.setVisibility(View.VISIBLE);
 					showDragger(true);
 					break;
 				case LAYOUT_LISTVIEW:

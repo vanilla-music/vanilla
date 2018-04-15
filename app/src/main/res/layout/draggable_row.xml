@@ -49,6 +49,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 		android:id="@+id/duration"
 		android:layout_width="wrap_content"
 		android:layout_height="match_parent"
+		android:layout_marginLeft="@dimen/text_padding"
+		android:visibility="gone"
 		android:textColor="?android:textColorPrimary"
 		android:gravity="center_vertical" />
 	<CheckedTextView
