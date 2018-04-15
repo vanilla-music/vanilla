@@ -25,13 +25,12 @@ package ch.blinkenlights.android.vanilla;
 
 import ch.blinkenlights.android.medialibrary.MediaLibrary;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +49,7 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 		MediaLibrary.PlaylistSongColumns.SONG_ID,
 		MediaLibrary.SongColumns.ALBUM_ID,
 		MediaLibrary.PlaylistSongColumns.POSITION,
+		MediaLibrary.SongColumns.DURATION,
 	};
 
 	private final Context mContext;
@@ -113,6 +113,9 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 		TextView textView = dview.getTextView();
 		textView.setText(cursor.getString(1));
 		textView.setTag(cursor.getLong(3));
+
+		String duration = DateUtils.formatElapsedTime(cursor.getLong(6) / 1000);
+		dview.getDurationView().setText(duration);
 
 		LazyCoverView cover = dview.getCoverView();
 		cover.setCover(MediaUtils.TYPE_ALBUM, cursor.getLong(4), null);
