@@ -225,7 +225,7 @@ public class MediaAdapter
 			mFields = new String[] { MediaLibrary.PlaylistColumns.NAME };
 			mFieldKeys = new String[] { MediaLibrary.PlaylistColumns.NAME_SORT };
 			mSortEntries = new int[] { R.string.title, R.string.date_added };
-			mAdapterSortValues = new String[] { MediaLibrary.PlaylistColumns.NAME+" %1$s", MediaLibrary.PlaylistColumns._ID+" %1$s" };
+			mAdapterSortValues = new String[] { MediaLibrary.PlaylistColumns.NAME_SORT+" %1$s", MediaLibrary.PlaylistColumns._ID+" %1$s" };
 			mExpandable = true;
 			break;
 		case MediaUtils.TYPE_GENRE:
