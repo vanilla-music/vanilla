@@ -23,13 +23,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.view.LayoutInflater;
-import android.widget.TextView;
 
 import android.graphics.Color;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.text.Spannable;
-import android.text.SpannableStringBuilder;
 
 public class ShowQueueAdapter extends BaseAdapter {
 	/**
@@ -144,6 +142,7 @@ public class ShowQueueAdapter extends BaseAdapter {
 			sb.setSpan(new ForegroundColorSpan(Color.GRAY), song.title.length() + 1, sb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 			row.getTextView().setText(sb);
 			row.getCoverView().setCover(MediaUtils.TYPE_ALBUM, song.albumId, null);
+			row.getDurationView().setText(song.getFormattedDuration());
 		}
 
 		row.highlightRow(position == mHighlightRow);

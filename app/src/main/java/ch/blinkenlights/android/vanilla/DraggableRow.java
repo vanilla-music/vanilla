@@ -38,6 +38,7 @@ public class DraggableRow extends LinearLayout implements Checkable {
 	private boolean mLayoutSet;
 
 	private TextView mTextView;
+	private TextView mDurationView;
 	private CheckedTextView mCheckBox;
 	private View mPmark;
 	private ImageView mDragger;
@@ -61,6 +62,7 @@ public class DraggableRow extends LinearLayout implements Checkable {
 	public void onFinishInflate() {
 		mCheckBox  = (CheckedTextView)this.findViewById(R.id.checkbox);
 		mTextView  = (TextView)this.findViewById(R.id.text);
+		mDurationView = findViewById(R.id.duration);
 		mPmark     = (View)this.findViewById(R.id.pmark);
 		mDragger   = (ImageView)this.findViewById(R.id.dragger);
 		mCoverView = (LazyCoverView)this.findViewById(R.id.cover);
@@ -82,6 +84,7 @@ public class DraggableRow extends LinearLayout implements Checkable {
 				case LAYOUT_DRAGGABLE:
 					highlightRow(false); // make this visible
 					mCoverView.setVisibility(View.VISIBLE);
+					mDurationView.setVisibility(View.VISIBLE);
 					showDragger(true);
 					break;
 				case LAYOUT_LISTVIEW:
@@ -157,6 +160,13 @@ public class DraggableRow extends LinearLayout implements Checkable {
 	 */
 	public TextView getTextView() {
 		return mTextView;
+	}
+
+	/**
+	 * @return a TextView intended to display duration
+	 */
+	public TextView getDurationView() {
+		return mDurationView;
 	}
 
 	/**

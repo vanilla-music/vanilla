@@ -27,7 +27,8 @@ import ch.blinkenlights.android.medialibrary.MediaLibrary;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.provider.MediaStore;
+import android.text.format.DateUtils;
+
 /**
  * Represents a Song backed by the MediaStore. Includes basic metadata and
  * utilities to retrieve songs from the MediaStore.
@@ -201,6 +202,13 @@ public class Song implements Comparable<Song> {
 		if (song == null)
 			return 0;
 		return song.id;
+	}
+
+	/**
+	 * @return duration of this song in the form "MM:SS" or "H:MM:SS"
+	 */
+	public String getFormattedDuration() {
+		return DateUtils.formatElapsedTime(duration / 1000);
 	}
 
 	/**
