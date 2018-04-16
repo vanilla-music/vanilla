@@ -35,6 +35,7 @@ import android.provider.MediaStore;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -222,7 +223,7 @@ public class MediaAdapter
 		case MediaUtils.TYPE_PLAYLIST:
 			mSource = MediaLibrary.TABLE_PLAYLISTS;
 			mFields = new String[] { MediaLibrary.PlaylistColumns.NAME };
-			mFieldKeys = null;
+			mFieldKeys = new String[] { MediaLibrary.PlaylistColumns.NAME_SORT };
 			mSortEntries = new int[] { R.string.title, R.string.date_added };
 			mAdapterSortValues = new String[] { MediaLibrary.PlaylistColumns.NAME+" %1$s", MediaLibrary.PlaylistColumns._ID+" %1$s" };
 			mExpandable = true;
@@ -318,19 +319,10 @@ public class MediaAdapter
 
 		// include the constraint (aka: search string) if any
 		if (constraint != null && constraint.length() != 0) {
-			String[] needles;
-			String[] keySource;
-
-			if (mFieldKeys != null) {
-				String colKey = MediaLibrary.keyFor(constraint);
-				String spaceColKey = DatabaseUtils.getCollationKey(" ");
-				needles = colKey.split(spaceColKey);
-				keySource = mFieldKeys;
-			} else {
-				// only used for playlists, maybe we should just update the schema ?
-				needles = SPACE_SPLIT.split(constraint);
-				keySource = mFields;
-			}
+			String colKey = MediaLibrary.keyFor(constraint);
+			String spaceColKey = DatabaseUtils.getCollationKey(" ");
+			String[] needles = colKey.split(spaceColKey);
+			String[] keySource = mFieldKeys;
 
 			int size = needles.length;
 			selectionArgs = new String[size];

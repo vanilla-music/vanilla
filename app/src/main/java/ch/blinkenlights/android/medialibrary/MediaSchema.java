@@ -104,8 +104,9 @@ public class MediaSchema {
 	 * SQL Schema for the playlists table
 	 */
 	private static final String DATABASE_CREATE_PLAYLISTS = "CREATE TABLE "+ MediaLibrary.TABLE_PLAYLISTS +" ("
-	  + MediaLibrary.PlaylistColumns._ID   +" INTEGER PRIMARY KEY, "
-	  + MediaLibrary.PlaylistColumns.NAME  +" TEXT NOT NULL "
+	  + MediaLibrary.PlaylistColumns._ID       +" INTEGER PRIMARY KEY, "
+	  + MediaLibrary.PlaylistColumns.NAME      +" TEXT NOT NULL, "
+	  + MediaLibrary.PlaylistColumns.NAME_SORT +" TEXT NOT NULL "
 	  + ");";
 
 	/**
@@ -329,6 +330,14 @@ public class MediaSchema {
 
 		if (oldVersion < 20180305) {
 			dbh.execSQL("ALTER TABLE "+MediaLibrary.TABLE_SONGS+" ADD COLUMN "+MediaLibrary.SongColumns.FLAGS+" INTEGER NOT NULL DEFAULT 0 ");
+		}
+
+		if (oldVersion < 20180416) {
+			// This adds NAME_SORT, so we need to pre-populate all keys.
+			dbh.execSQL("ALTER TABLE "+MediaLibrary.TABLE_PLAYLISTS+" RENAME TO _migrate");
+			dbh.execSQL(MediaSchema.DATABASE_CREATE_PLAYLISTS);
+			MediaMigrations.migrate_to_20180416(dbh, "_migrate", MediaLibrary.TABLE_PLAYLISTS);
+			dbh.execSQL("DROP TABLE _migrate");
 		}
 
 	}

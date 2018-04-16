@@ -360,6 +360,7 @@ public class MediaLibrary  {
 		ContentValues v = new ContentValues();
 		v.put(MediaLibrary.PlaylistColumns._ID, hash63(name));
 		v.put(MediaLibrary.PlaylistColumns.NAME, name);
+		v.put(MediaLibrary.PlaylistColumns.NAME_SORT, keyFor(name));
 		long id = getBackend(context).insert(MediaLibrary.TABLE_PLAYLISTS, null, v);
 
 		if (id != -1)
@@ -747,6 +748,10 @@ public class MediaLibrary  {
 		 * The name of this playlist
 		 */
 		 String NAME = "name";
+		/**
+		 * Sortable column for name
+		 */
+		String NAME_SORT = "name_sort";
 	}
 
 	// Song <-> Playlist mapping
