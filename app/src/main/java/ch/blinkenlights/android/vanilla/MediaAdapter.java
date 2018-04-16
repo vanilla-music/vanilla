@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2017 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2015-2018 Adrian Ulrich <adrian@blinkenlights.ch>
  * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -202,8 +202,8 @@ public class MediaAdapter
 			break;
 		case MediaUtils.TYPE_SONG:
 			mSource = MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS;
-			mFields = new String[] { MediaLibrary.SongColumns.TITLE, MediaLibrary.AlbumColumns.ALBUM, MediaLibrary.ContributorColumns.ARTIST };
-			mFieldKeys = new String[] { MediaLibrary.SongColumns.TITLE_SORT, MediaLibrary.AlbumColumns.ALBUM_SORT, MediaLibrary.ContributorColumns.ARTIST_SORT };
+			mFields = new String[] { MediaLibrary.SongColumns.TITLE, MediaLibrary.AlbumColumns.ALBUM, MediaLibrary.ContributorColumns.ARTIST, MediaLibrary.SongColumns.DURATION };
+			mFieldKeys = new String[] { MediaLibrary.SongColumns.TITLE_SORT, MediaLibrary.AlbumColumns.ALBUM_SORT, MediaLibrary.ContributorColumns.ARTIST_SORT, null };
 			mSortEntries = new int[] { R.string.title, R.string.artist_album_track, R.string.artist_album_title, R.string.album_track, R.string.year, R.string.date_added,
 			                           R.string.song_playcount, R.string.filename };
 			mAdapterSortValues = new String[] { MediaLibrary.SongColumns.TITLE_SORT+" %1$s",
@@ -338,8 +338,11 @@ public class MediaAdapter
 			StringBuilder keys = new StringBuilder(20);
 			keys.append(keySource[0]);
 			for (int j = 1; j != keySource.length; ++j) {
-				keys.append("||");
-				keys.append(keySource[j]);
+				String src = keySource[j];
+				if (src != null) {
+					keys.append("||");
+					keys.append(src);
+				}
 			}
 
 			for (int j = 0; j != needles.length; ++j) {
@@ -503,6 +506,7 @@ public class MediaAdapter
 
 			row.setDraggerOnClickListener(this);
 			row.showDragger(mExpandable);
+			row.showDuration(!mExpandable);
 		} else {
 			row = (DraggableRow)convertView;
 			holder = (ViewHolder)row.getTag();
@@ -511,6 +515,7 @@ public class MediaAdapter
 		Cursor cursor = mCursor;
 		cursor.moveToPosition(position);
 		holder.id = cursor.getLong(0);
+		String duration = "--:--";
 		long cacheId = cursor.getLong(1);
 		if (mProjection.length >= 4) {
 			String line1 = cursor.getString(2);
@@ -520,6 +525,9 @@ public class MediaAdapter
 
 			if (mProjection.length >= 5)
 				line2 += ", " + cursor.getString(4);
+
+			if (mProjection.length >= 6)
+				duration = MediaUtils.getFormattedDuration(cursor.getLong(5));
 
 			SpannableStringBuilder sb = new SpannableStringBuilder(line1);
 			sb.append('\n');
@@ -534,6 +542,7 @@ public class MediaAdapter
 			holder.title = title;
 		}
 
+		row.getDurationView().setText(duration);
 		row.getCoverView().setCover(mCoverCacheType, cacheId, holder.title);
 
 		return row;

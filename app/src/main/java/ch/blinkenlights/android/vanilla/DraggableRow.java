@@ -42,6 +42,7 @@ public class DraggableRow extends LinearLayout implements Checkable {
 	private CheckedTextView mCheckBox;
 	private View mPmark;
 	private ImageView mDragger;
+	private View mDraggerPadder;
 	private LazyCoverView mCoverView;
 
 	/**
@@ -60,12 +61,13 @@ public class DraggableRow extends LinearLayout implements Checkable {
 
 	@Override 
 	public void onFinishInflate() {
-		mCheckBox  = (CheckedTextView)this.findViewById(R.id.checkbox);
-		mTextView  = (TextView)this.findViewById(R.id.text);
-		mDurationView = findViewById(R.id.duration);
-		mPmark     = (View)this.findViewById(R.id.pmark);
-		mDragger   = (ImageView)this.findViewById(R.id.dragger);
-		mCoverView = (LazyCoverView)this.findViewById(R.id.cover);
+		mCheckBox      = (CheckedTextView)this.findViewById(R.id.checkbox);
+		mTextView      = (TextView)this.findViewById(R.id.text);
+		mDurationView  = findViewById(R.id.duration);
+		mPmark         = (View)this.findViewById(R.id.pmark);
+		mDragger       = (ImageView)this.findViewById(R.id.dragger);
+		mDraggerPadder = (View)this.findViewById(R.id.dragger_padder);
+		mCoverView     = (LazyCoverView)this.findViewById(R.id.cover);
 		super.onFinishInflate();
 	}
 
@@ -144,7 +146,18 @@ public class DraggableRow extends LinearLayout implements Checkable {
 	 * @param state shows or hides the dragger
 	 */
 	public void showDragger(boolean state) {
-		mDragger.setVisibility( state ? View.VISIBLE : View.INVISIBLE );
+		mDragger.setVisibility( state ? View.VISIBLE : View.GONE );
+		adjustPadding();
+	}
+
+	/**
+	 * Change visibility of duration textview
+	 *
+	 * @param state shows or hides the textview
+	 */
+	public void showDuration(boolean state) {
+		mDurationView.setVisibility( state ? View.VISIBLE : View.GONE );
+		adjustPadding();
 	}
 
 	public void setDraggerOnClickListener(View.OnClickListener listener) {
@@ -176,4 +189,11 @@ public class DraggableRow extends LinearLayout implements Checkable {
 		return mCoverView;
 	}
 
+	/**
+	 * Check whether we need to add padding due to the lack of mDragger's visibility
+	 */
+	private void adjustPadding() {
+		boolean pad = (mDurationView.getVisibility() == View.VISIBLE && mDragger.getVisibility() == View.GONE);
+		mDraggerPadder.setVisibility( pad ? View.VISIBLE : View.GONE );
+	}
 }
