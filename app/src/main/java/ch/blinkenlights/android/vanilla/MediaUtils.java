@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
- * Copyright (C) 2017 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2017-2018 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -46,6 +46,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
+import android.text.format.DateUtils;
 import android.text.TextUtils;
 import android.database.MatrixCursor;
 import android.util.Log;
@@ -625,5 +626,12 @@ public class MediaUtils {
 			default:
 				return TYPE_INVALID;
 		}
+	}
+
+	/**
+	 * @return duration of this song.duration in the form "MM:SS" or "H:MM:SS"
+	 */
+	public static String getFormattedDuration(long duration) {
+		return DateUtils.formatElapsedTime(duration / 1000);
 	}
 }

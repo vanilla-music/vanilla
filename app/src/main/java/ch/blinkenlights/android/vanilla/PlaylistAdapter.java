@@ -30,7 +30,6 @@ import android.database.Cursor;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -114,7 +113,7 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 		textView.setText(cursor.getString(1));
 		textView.setTag(cursor.getLong(3));
 
-		String duration = DateUtils.formatElapsedTime(cursor.getLong(6) / 1000);
+		String duration = MediaUtils.getFormattedDuration(cursor.getLong(6));
 		dview.getDurationView().setText(duration);
 
 		LazyCoverView cover = dview.getCoverView();

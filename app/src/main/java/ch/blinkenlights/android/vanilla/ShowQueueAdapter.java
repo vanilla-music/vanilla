@@ -142,7 +142,7 @@ public class ShowQueueAdapter extends BaseAdapter {
 			sb.setSpan(new ForegroundColorSpan(Color.GRAY), song.title.length() + 1, sb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 			row.getTextView().setText(sb);
 			row.getCoverView().setCover(MediaUtils.TYPE_ALBUM, song.albumId, null);
-			row.getDurationView().setText(song.getFormattedDuration());
+			row.getDurationView().setText(MediaUtils.getFormattedDuration(song.duration));
 		}
 
 		row.highlightRow(position == mHighlightRow);
