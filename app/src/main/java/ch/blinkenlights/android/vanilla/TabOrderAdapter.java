@@ -94,7 +94,7 @@ public class TabOrderAdapter extends BaseAdapter {
 		} else {
 			view = (DraggableRow)convert;
 		}
-		view.getTextView().setText(LibraryPagerAdapter.TITLES[mTabIds[position]]);
+		view.setText(mActivity.getResources().getText(LibraryPagerAdapter.TITLES[mTabIds[position]]));
 		return view;
 	}
 

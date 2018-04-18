@@ -18,6 +18,10 @@
 package ch.blinkenlights.android.vanilla;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
@@ -169,10 +173,26 @@ public class DraggableRow extends LinearLayout implements Checkable {
 	}
 
 	/**
-	 * Returns an instance of our textview
+	 * Sets the text to given string.
+	 *
+	 * @param line the text to display
 	 */
-	public TextView getTextView() {
-		return mTextView;
+	public void setText(CharSequence line) {
+		mTextView.setText(line);
+	}
+
+	/**
+	 * Display two lines
+	 *
+	 * @param line1 the first line to show
+	 * @param line2 the second line to show
+	 */
+	public void setText(CharSequence line1, CharSequence line2) {
+		SpannableStringBuilder sb = new SpannableStringBuilder(line1);
+		sb.append("\n");
+		sb.append(line2);
+		sb.setSpan(new ForegroundColorSpan(Color.GRAY), line1.length() + 1, sb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		mTextView.setText(sb);
 	}
 
 	/**

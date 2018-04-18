@@ -341,7 +341,7 @@ public class LibraryPagerAdapter
 
 			view.setTag(type);
 			if (header != null) {
-				header.getTextView().setText(mHeaderText);
+				header.setText(mHeaderText);
 				header.setTag(new ViewHolder()); // behave like a normal library row
 				view.addHeaderView(header);
 				mHeaderViews.add(header);
@@ -447,7 +447,7 @@ public class LibraryPagerAdapter
 	public void setHeaderText(String text)
 	{
 		for(DraggableRow row : mHeaderViews) {
-			row.getTextView().setText(text);
+			row.setText(text);
 		}
 		mHeaderText = text;
 	}

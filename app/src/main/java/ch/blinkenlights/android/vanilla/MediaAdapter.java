@@ -29,12 +29,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
-import android.graphics.Color;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.style.ForegroundColorSpan;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -521,16 +517,12 @@ public class MediaAdapter
 			if (mProjection.length >= 6)
 				duration = MediaUtils.getFormattedDuration(cursor.getLong(5));
 
-			SpannableStringBuilder sb = new SpannableStringBuilder(line1);
-			sb.append('\n');
-			sb.append(line2);
-			sb.setSpan(new ForegroundColorSpan(Color.GRAY), line1.length() + 1, sb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-			row.getTextView().setText(sb);
+			row.setText(line1, line2);
 			holder.title = line1;
 		} else {
 			String title = cursor.getString(2);
 			if(title == null) { title = DB_NULLSTRING_FALLBACK; }
-			row.getTextView().setText(title);
+			row.setText(title);
 			holder.title = title;
 		}
 

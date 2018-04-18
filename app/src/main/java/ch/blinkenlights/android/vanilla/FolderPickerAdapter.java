@@ -96,7 +96,7 @@ public class FolderPickerAdapter
 
 		Item item = (Item)getItem(pos);
 		int res = (item.file == null ? R.drawable.arrow_up : R.drawable.folder);
-		row.getTextView().setText(item.name);
+		row.setText(item.name);
 		row.getCoverView().setImageResource(res);
 		row.getCoverView().setColorFilter(item.color);
 		return row;

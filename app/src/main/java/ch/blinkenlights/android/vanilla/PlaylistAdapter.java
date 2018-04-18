@@ -108,10 +108,8 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 		DraggableRow dview = (DraggableRow)view;
 		dview.setupLayout(DraggableRow.LAYOUT_DRAGGABLE);
 		dview.showDragger(mEditable);
-
-		TextView textView = dview.getTextView();
-		textView.setText(cursor.getString(1));
-		textView.setTag(cursor.getLong(3));
+		dview.setText(cursor.getString(1));
+		dview.setTag(cursor.getLong(3));
 
 		String duration = MediaUtils.getFormattedDuration(cursor.getLong(6));
 		dview.getDurationView().setText(duration);

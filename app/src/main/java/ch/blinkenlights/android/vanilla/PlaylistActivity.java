@@ -34,6 +34,7 @@ import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -265,9 +266,9 @@ public class PlaylistActivity extends Activity
 	public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
 	{
 		if (!mEditing && mDefaultAction != LibraryActivity.ACTION_DO_NOTHING) {
-			// fixme: this is butt ugly: the adapter should probably already set this on view (its parent)
-			// setting this on the textarea is hacky
-			performAction(mDefaultAction, position, (Long)view.findViewById(R.id.text).getTag());
+			// A DSLV row was clicked, but we need to get the DraggableRow class.
+			final View target = ((ViewGroup)view).getChildAt(0);
+			performAction(mDefaultAction, position, (Long)target.getTag());
 		}
 	}
 

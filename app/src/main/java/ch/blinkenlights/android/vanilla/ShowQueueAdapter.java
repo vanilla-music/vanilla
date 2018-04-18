@@ -24,11 +24,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.view.LayoutInflater;
 
-import android.graphics.Color;
-import android.text.SpannableStringBuilder;
-import android.text.style.ForegroundColorSpan;
-import android.text.Spannable;
-
 public class ShowQueueAdapter extends BaseAdapter {
 	/**
 	 * The resource to pass to the inflater
@@ -136,11 +131,7 @@ public class ShowQueueAdapter extends BaseAdapter {
 		Song song = getItem(position);
 
 		if (song.isFilled()) {
-			SpannableStringBuilder sb = new SpannableStringBuilder(song.title);
-			sb.append('\n');
-			sb.append(song.album+", "+song.artist);
-			sb.setSpan(new ForegroundColorSpan(Color.GRAY), song.title.length() + 1, sb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-			row.getTextView().setText(sb);
+			row.setText(song.title, song.album+", "+song.artist);
 			row.getCoverView().setCover(MediaUtils.TYPE_ALBUM, song.albumId, null);
 			row.getDurationView().setText(MediaUtils.getFormattedDuration(song.duration));
 		}

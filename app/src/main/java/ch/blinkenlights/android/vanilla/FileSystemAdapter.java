@@ -262,10 +262,12 @@ public class FileSystemAdapter
 			holder = (ViewHolder)row.getTag();
 		}
 
-		holder.id = pos;
-
 		final File file = mFiles[pos];
-		row.getTextView().setText(file.getName());
+		final String title = file.getName();
+
+		holder.id = pos;
+		holder.title = title;
+		row.setText(file.getName());
 		row.getCoverView().setImageResource(getImageResourceForFile(file));
 		return row;
 	}
@@ -402,7 +404,7 @@ public class FileSystemAdapter
 		Intent intent = new Intent();
 		intent.putExtra(LibraryAdapter.DATA_TYPE, MediaUtils.TYPE_FILE);
 		intent.putExtra(LibraryAdapter.DATA_ID, holder.id);
-		intent.putExtra(LibraryAdapter.DATA_TITLE, ((DraggableRow)view).getTextView().getText().toString());
+		intent.putExtra(LibraryAdapter.DATA_TITLE, holder.title);
 		intent.putExtra(LibraryAdapter.DATA_EXPANDABLE, file.isDirectory());
 		intent.putExtra(LibraryAdapter.DATA_FILE, file.getAbsolutePath());
 		return intent;
