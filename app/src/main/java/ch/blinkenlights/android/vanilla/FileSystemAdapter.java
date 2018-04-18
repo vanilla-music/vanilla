@@ -267,7 +267,7 @@ public class FileSystemAdapter
 
 		holder.id = pos;
 		holder.title = title;
-		row.setText(file.getName());
+		row.setText(title);
 		row.getCoverView().setImageResource(getImageResourceForFile(file));
 		return row;
 	}
