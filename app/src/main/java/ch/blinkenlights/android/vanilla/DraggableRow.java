@@ -19,6 +19,7 @@ package ch.blinkenlights.android.vanilla;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.text.format.DateUtils;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
@@ -196,10 +197,20 @@ public class DraggableRow extends LinearLayout implements Checkable {
 	}
 
 	/**
-	 * @return a TextView intended to display duration
+	 * Display given duration, negative values
+	 * result in '--:--'
+	 *
+	 * @param duration the duration in ms to display
 	 */
-	public TextView getDurationView() {
-		return mDurationView;
+	public void setDuration(long duration) {
+		String txt = "--:--";
+		if (duration >= 0) {
+			txt = DateUtils.formatElapsedTime(duration / 1000);
+		}
+
+		SpannableStringBuilder sb = new SpannableStringBuilder("\n"+txt);
+		sb.setSpan(new ForegroundColorSpan(Color.GRAY), 1, sb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		mDurationView.setText(sb);
 	}
 
 	/**

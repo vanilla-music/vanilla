@@ -46,7 +46,6 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
-import android.text.format.DateUtils;
 import android.text.TextUtils;
 import android.database.MatrixCursor;
 import android.util.Log;
@@ -626,12 +625,5 @@ public class MediaUtils {
 			default:
 				return TYPE_INVALID;
 		}
-	}
-
-	/**
-	 * @return duration of this song.duration in the form "MM:SS" or "H:MM:SS"
-	 */
-	public static String getFormattedDuration(long duration) {
-		return DateUtils.formatElapsedTime(duration / 1000);
 	}
 }

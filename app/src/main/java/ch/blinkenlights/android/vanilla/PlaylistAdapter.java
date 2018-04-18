@@ -110,9 +110,7 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 		dview.showDragger(mEditable);
 		dview.setText(cursor.getString(1));
 		dview.setTag(cursor.getLong(3));
-
-		String duration = MediaUtils.getFormattedDuration(cursor.getLong(6));
-		dview.getDurationView().setText(duration);
+		dview.setDuration(cursor.getLong(6));
 
 		LazyCoverView cover = dview.getCoverView();
 		cover.setCover(MediaUtils.TYPE_ALBUM, cursor.getLong(4), null);

@@ -503,7 +503,7 @@ public class MediaAdapter
 		Cursor cursor = mCursor;
 		cursor.moveToPosition(position);
 		holder.id = cursor.getLong(0);
-		String duration = "--:--";
+		long duration = -1;
 		long cacheId = cursor.getLong(1);
 		if (mProjection.length >= 4) {
 			String line1 = cursor.getString(2);
@@ -515,7 +515,7 @@ public class MediaAdapter
 				line2 += ", " + cursor.getString(4);
 
 			if (mProjection.length >= 6)
-				duration = MediaUtils.getFormattedDuration(cursor.getLong(5));
+				duration = cursor.getLong(5);
 
 			row.setText(line1, line2);
 			holder.title = line1;
@@ -526,7 +526,7 @@ public class MediaAdapter
 			holder.title = title;
 		}
 
-		row.getDurationView().setText(duration);
+		row.setDuration(duration);
 		row.getCoverView().setCover(mCoverCacheType, cacheId, holder.title);
 
 		return row;

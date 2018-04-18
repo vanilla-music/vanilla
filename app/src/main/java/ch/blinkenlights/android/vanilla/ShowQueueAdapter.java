@@ -132,8 +132,8 @@ public class ShowQueueAdapter extends BaseAdapter {
 
 		if (song.isFilled()) {
 			row.setText(song.title, song.album+", "+song.artist);
+			row.setDuration(song.duration);
 			row.getCoverView().setCover(MediaUtils.TYPE_ALBUM, song.albumId, null);
-			row.getDurationView().setText(MediaUtils.getFormattedDuration(song.duration));
 		}
 
 		row.highlightRow(position == mHighlightRow);
