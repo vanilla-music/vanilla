@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2011 Christopher Eby <kreed@kreed.org>
- * Copyright (C) 2015-2016 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2015-2018 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -43,11 +43,11 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 
 	private static final String[] PROJECTION = new String[] {
 		MediaLibrary.PlaylistSongColumns._ID,
-		MediaLibrary.SongColumns.TITLE,
-		MediaLibrary.ContributorColumns.ARTIST,
 		MediaLibrary.PlaylistSongColumns.SONG_ID,
+		MediaLibrary.SongColumns.TITLE,
+		MediaLibrary.AlbumColumns.ALBUM,
+		MediaLibrary.ContributorColumns.ARTIST,
 		MediaLibrary.SongColumns.ALBUM_ID,
-		MediaLibrary.PlaylistSongColumns.POSITION,
 		MediaLibrary.SongColumns.DURATION,
 	};
 
@@ -106,14 +106,18 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 	public void bindView(View view, Context context, Cursor cursor)
 	{
 		DraggableRow dview = (DraggableRow)view;
+		final String title = cursor.getString(2);
+		final String album = cursor.getString(3);
+		final String artist = cursor.getString(4);
+
 		dview.setupLayout(DraggableRow.LAYOUT_DRAGGABLE);
 		dview.showDragger(mEditable);
-		dview.setText(cursor.getString(1));
-		dview.setTag(cursor.getLong(3));
+		dview.setText(title, album+", "+artist);
+		dview.setTag(cursor.getLong(1));
 		dview.setDuration(cursor.getLong(6));
 
 		LazyCoverView cover = dview.getCoverView();
-		cover.setCover(MediaUtils.TYPE_ALBUM, cursor.getLong(4), null);
+		cover.setCover(MediaUtils.TYPE_ALBUM, cursor.getLong(5), null);
 	}
 
 	/**
