@@ -334,6 +334,7 @@ THE SOFTWARE.
 	<string name="share_failed">Failed to share file</string>
 	<string name="sendto">Send to…</string>
 	<string name="no_receiving_apps">No receiving apps found for this media type!</string>
+	<string name="duration">Duration</string>
 
 	<string name="media_library">Media library</string>
 	<string name="media_folders_header">Indexed directories</string>
