@@ -795,13 +795,13 @@ public class LibraryActivity
 			break;
 		case MENU_SORT: {
 			SortableAdapter adapter = (SortableAdapter)mCurrentAdapter;
-			LinearLayout header = (LinearLayout)getLayoutInflater().inflate(R.layout.sort_dialog, null);
-			CheckBox reverseSort = (CheckBox)header.findViewById(R.id.reverse_sort);
+			LinearLayout list = (LinearLayout)getLayoutInflater().inflate(R.layout.sort_dialog, null);
+			CheckBox reverseSort = (CheckBox)list.findViewById(R.id.reverse_sort);
 
 			int[] itemIds = adapter.getSortEntries();
 			String[] items = new String[itemIds.length];
 			Resources res = getResources();
-			for (int i = itemIds.length; --i != -1; ) {
+			for (int i = 0; i < itemIds.length; i++) {
 				items[i] = res.getString(itemIds[i]);
 			}
 
@@ -810,11 +810,11 @@ public class LibraryActivity
 
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle(R.string.sort_by);
-			builder.setSingleChoiceItems(items, mode + 1, this); // add 1 for header
-			builder.setNeutralButton(R.string.done, null);
+			builder.setSingleChoiceItems(items, mode, this);
+			builder.setPositiveButton(R.string.done, null);
 
 			AlertDialog dialog = builder.create();
-			dialog.getListView().addHeaderView(header);
+			dialog.getListView().addFooterView(list);
 			dialog.setOnDismissListener(this);
 			dialog.show();
 			break;
@@ -918,8 +918,7 @@ public class LibraryActivity
 	public void onDismiss(DialogInterface dialog)
 	{
 		ListView list = ((AlertDialog)dialog).getListView();
-		// subtract 1 for header
-		int which = list.getCheckedItemPosition() - 1;
+		int which = list.getCheckedItemPosition();
 
 		CheckBox reverseSort = (CheckBox)list.findViewById(R.id.reverse_sort);
 		if (reverseSort.isChecked()) {
