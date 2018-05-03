@@ -144,7 +144,9 @@
   <string name="notification_nag_summary">Umumkan perubahan lagu menggunakan Pemberitahuan Mendongak</string>
   <string name="playback_on_startup_title">Buka waktu startup</string>
   <string name="display_mode_title">Mode tampilan</string>
+  <string name="swipe_up_action_title">Aksi gesek keatas</string>
   <string name="enable_shake_summary">Hanya saat musik dimainkan. Tidak dapat bekerja saat layar mati dalam beberapa perangkat.</string>
+  <string name="keep_screen_on_title">Layar selalu hidup</string>
   <string name="enable_scroll_to_song_title">Tukik judul lagu</string>
   <string name="enable_scroll_to_song_summary">Tukik lagu/album/artis saat ini dalam daftar pustaka</string>
   <string name="cover_on_lockscreen_summary">Tampilkan sampul dari lagu yang dimainkan saat ini dalam pengunci layar</string>

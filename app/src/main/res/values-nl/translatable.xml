@@ -66,6 +66,26 @@
 		Translators should use http://unicode.org/reports/tr35/tr35-numbers.html#Language_Plural_Rules and
 		http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html, Type cardinal,
 		to see which categories apply to integer numbers in their languages-->
+  <plurals name="playing">
+    <item quantity="one">%d nummer wordt afgespeeld.</item>
+    <item quantity="other">%d nummers worden afgespeeld.</item>
+  </plurals>
+  <plurals name="enqueued">
+    <item quantity="one">%d nummer in de wachtrij.</item>
+    <item quantity="other">%d nummers in de wachtrij.</item>
+  </plurals>
+  <plurals name="added_to_playlist">
+    <item quantity="one">%1$d nummer toegevoegd aan afspeellijst %2$s.</item>
+    <item quantity="other">%1$d nummers toegevoegd aan afspeellijst %2$s.</item>
+  </plurals>
+  <plurals name="removed_from_playlist">
+    <item quantity="one">%1$d nummer verwijderd uit afspeellijst %2$s.</item>
+    <item quantity="other">%1$d nummers verwijderd uit afspeellijst %2$s.</item>
+  </plurals>
+  <plurals name="deleted">
+    <item quantity="one">%d nummer verwijderd.</item>
+    <item quantity="other">%d nummers verwijderd.</item>
+  </plurals>
   <string name="delete_file_failed">Verwijderen van %s is mislukt.</string>
   <string name="deleted_item">\'%s\' verwijderd.</string>
   <string name="delete_item">\'%s\' verwijderen?</string>

@@ -271,6 +271,7 @@
   <string name="share_failed">Teilen von Datei gescheitert</string>
   <string name="sendto">Senden an …</string>
   <string name="no_receiving_apps">Keine kompatiblen Apps für diesen Medientyp gefunden!</string>
+  <string name="duration">Dauer</string>
   <string name="media_library">Medienbibliothek</string>
   <string name="media_folders_header">Indizierte Verzeichnisse</string>
   <string name="media_scan_header">Mediensuche</string>

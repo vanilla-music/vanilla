@@ -1,0 +1,311 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="app_name">Vanila Muziko</string>
+  <!--Playback Activity (main screen)-->
+  <string name="no_songs">Neniuj muzikaĵoj trovitaj en via aparato.</string>
+  <string name="empty_queue">Neniuj elektitaj muzikaĵoj. Elektu iujn de la biblioteko aŭ enŝaltu hazardan reĝimon per frapeti tiun ĉi averton.</string>
+  <string name="settings">Agordoj</string>
+  <string name="no_shuffle">Ne miksi</string>
+  <string name="shuffle_songs">Miksi muzikaĵojn</string>
+  <string name="shuffle_songs_continuously">Hazarde miksi muzikaĵojn</string>
+  <string name="shuffle_albums">Miksi albumojn</string>
+  <string name="no_repeat">Ne ripeti</string>
+  <string name="repeat">Ripeti</string>
+  <string name="repeat_current_song">Ripeti nunan muzikaĵon</string>
+  <string name="stop_current_song">Ĉesi post nuna muzikaĵo</string>
+  <string name="random">Hazarde</string>
+  <string name="random_enabling">Ekigis hazardan ludadon</string>
+  <string name="song_load_failed">Malsukcesis ŝargi muzikaĵon %s. Ĝi probable mankas aŭ estas difektita.</string>
+  <string name="queue_cleared">Forviŝis ludvicon.</string>
+  <string name="cover_art">Album-kovrilo</string>
+  <string name="close_notification">Fermi atentigon</string>
+  <string name="_genre">ĝenro</string>
+  <string name="_track">muzikaĵo</string>
+  <string name="_composer">komponisto</string>
+  <string name="_path">dosierindiko</string>
+  <string name="_format">formato</string>
+  <string name="_title">titolo</string>
+  <string name="_artist">artisto</string>
+  <string name="_album">albumo</string>
+  <string name="_year">jaro</string>
+  <string name="_replaygain">amplifo</string>
+  <!--New Playlist Dialog-->
+  <string name="choose_playlist_name">Entajpu nomon por ludlisto</string>
+  <string name="create">Krei</string>
+  <string name="overwrite">Superskribi</string>
+  <string name="delete_playlist">Ĉu forigi ludliston %s?</string>
+  <!--Library-->
+  <string name="enqueue">Envicigi</string>
+  <string name="enqueue_as_next">Ludi sekvan</string>
+  <string name="play">Ludi</string>
+  <string name="edit">Redakti</string>
+  <string name="rename">Alinomi</string>
+  <string name="save_as_playlist">Konservi kiel ludliston…</string>
+  <string name="add_to_playlist">Aldoni al ludlisto…</string>
+  <string name="add_to_favorites">Aldoni al ŝatataj</string>
+  <string name="remove_from_favorites">Forigi el ŝatataj</string>
+  <string name="playlist_favorites">Ŝatataj</string>
+  <string name="new_playlist">Nova ludlisto…</string>
+  <string name="expand">Etendi</string>
+  <string name="delete">Forigi</string>
+  <string name="playback_view">Ludata nun</string>
+  <string name="sort_by">Ordigi laŭ</string>
+  <string name="search">Serĉi</string>
+  <string name="done">Farite</string>
+  <string name="remove">Forigi</string>
+  <string name="play_or_enqueue">Envicigi se ludas; ludi se ne ludas</string>
+  <string name="open">Malfermi</string>
+  <string name="go_home">Ĉefdosierujo</string>
+  <string name="jumping_to_song">Muzikaĵo jam envicigita, transsaltante…</string>
+  <!--As a developer, you should always supply "one" and "other"
+		strings. Your translators will know which strings are actually
+		needed for their language. Always include %d in "one" because
+		translators will need to use %d for languages where "one"
+		doesn't mean 1 (as explained above).
+
+		Translators should use http://unicode.org/reports/tr35/tr35-numbers.html#Language_Plural_Rules and
+		http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html, Type cardinal,
+		to see which categories apply to integer numbers in their languages-->
+  <plurals name="playing">
+    <item quantity="one">Enludlistigis %d muzikaĵon.</item>
+    <item quantity="other">Enludlistigis %d muzikaĵojn.</item>
+  </plurals>
+  <plurals name="enqueued">
+    <item quantity="one">Enludlistigis (por poste) %d muzikaĵon.</item>
+    <item quantity="other">Enludlistigis (por poste) %d muzikaĵojn.</item>
+  </plurals>
+  <plurals name="added_to_playlist">
+    <item quantity="one">Aldonis %1$d muzikaĵon al ludlisto %2$s.</item>
+    <item quantity="other">Aldonis %1$d muzikaĵojn al ludlisto %2$s.</item>
+  </plurals>
+  <plurals name="removed_from_playlist">
+    <item quantity="one">Forigis %1$d muzikaĵon el ludlisto %2$s.</item>
+    <item quantity="other">Forigis %1$d muzikaĵojn el ludlisto %2$s.</item>
+  </plurals>
+  <plurals name="deleted">
+    <item quantity="one">Forigis %d muzikaĵon.</item>
+    <item quantity="other">Forigis %d muzikaĵojn.</item>
+  </plurals>
+  <string name="delete_file_failed">Fiaskis forigi %s.</string>
+  <string name="deleted_item">Forigis “%s”.</string>
+  <string name="delete_item">Ĉu forigi “%s”?</string>
+  <string name="delete_file">Ĉu forigi dosieron “%s”?</string>
+  <string name="artists">Artistoj</string>
+  <string name="albums">Albumoj</string>
+  <string name="albumartists">Artistoj de albumoj</string>
+  <string name="composers">Komponistoj</string>
+  <string name="songs">Muzikaĵoj</string>
+  <string name="playlists">Ludlistoj</string>
+  <string name="genres">Ĝenroj</string>
+  <string name="files">Dosieroj</string>
+  <string name="artist">Artisto</string>
+  <string name="album">Albumo</string>
+  <string name="genre">Ĝenro</string>
+  <string name="folder">Dosierujo</string>
+  <string name="filename">Dosiernomo</string>
+  <string name="file_size">Dosier-grando</string>
+  <string name="file_time">Modifita je</string>
+  <string name="extension">Dosier-sufikso</string>
+  <string name="unknown">Nekonata</string>
+  <string name="play_all">Ludi ĉiujn</string>
+  <string name="enqueue_all">Envicigi ĉiujn</string>
+  <string name="all_songs">Ĉiuj muzikaĵoj</string>
+  <string name="more_from_artist">Pli de artisto</string>
+  <string name="more_from_album">Pli el albumo</string>
+  <string name="title">titolo</string>
+  <string name="number_of_tracks">nombro da muzikaĵoj</string>
+  <string name="year">jaro</string>
+  <string name="date_added">dato de aldono</string>
+  <string name="artist_album">artisto, albumo</string>
+  <string name="artist_year_album">artisto, jaro, albumo</string>
+  <string name="artist_album_track">artisto, albumo, numero</string>
+  <string name="artist_album_title">artisto, albumo, titilo</string>
+  <string name="artist_year">artisto, jaro</string>
+  <string name="album_track">albumo, numero</string>
+  <string name="song_playcount">nombro da ludoj</string>
+  <!--Preferences-->
+  <plurals name="seconds">
+    <item quantity="one">%d sekundo</item>
+    <item quantity="other">%d sekundoj</item>
+  </plurals>
+  <plurals name="minutes">
+    <item quantity="one">%d minuto</item>
+    <item quantity="other">%d minutoj</item>
+  </plurals>
+  <plurals name="hours">
+    <item quantity="one">%d horo</item>
+    <item quantity="other">%d horoj</item>
+  </plurals>
+  <string name="audio">Sono</string>
+  <string name="volume_during_ducking_title">Sonforteco dum avertoj</string>
+  <string name="volume_during_ducking_summary">Sonforteco:</string>
+  <string name="ignore_audiofocus_loss_summary">Pluigi ludadon eĉ dum permanenta perdo de sona fokuso</string>
+  <string name="media_button_title">Stiri per butonoj de aŭskultiloj/Bludento</string>
+  <string name="media_button_summary">Ankaŭ postulata por ŝlosekranaj stiriloj ĉe Androido 4.0.3.</string>
+  <string name="media_button_beep_title">Pepo de aŭskultila stir-butono</string>
+  <string name="media_button_beep_summary">Pepi dum transsalti muzikaĵon per duobla premo de aŭskultila stir-butono.</string>
+  <string name="headset_only_title">Nur ekstera eligo</string>
+  <string name="headset_only_summary">Neniam ludi muzikon per internaj laŭtparoliloj.</string>
+  <string name="headset_pause_title">Paŭzi je malkonekto</string>
+  <string name="headset_pause_summary">Paŭzigi muzikon, kiam malkonektas aŭskultilojn.</string>
+  <string name="headset_launch_title">Ludi je konekto</string>
+  <string name="headset_launch_summary">Ludi muzikon, kiam konektas aŭskultilojn. (Postulas instalitan aplikaĵon “Headphone detector”.)</string>
+  <string name="headset_launch_app_missing">Tiu ĉi eblo postulas instalitan aplikaĵon “Headphone detector”.\nĈu vi volas malfermi la Vendejon Play por instali la aplikaĵon?</string>
+  <string name="replaygain">ReplayGain</string>
+  <string name="replaygain_summary">Agordi kiel trakti la informon “ReplayGain” (pliforteco de sono).</string>
+  <string name="replaygain_track_title">Aktivi ReplayGain por muzikaĵo</string>
+  <string name="replaygain_track_summary">Ludi ĉiujn muzikaĵojn kun egala sonforteco</string>
+  <string name="replaygain_album_title">Aktivigi ReplayGain por albumo</string>
+  <string name="replaygain_album_summary">Konservi son-dinamikon de albumo</string>
+  <string name="replaygain_bump_title">Antaŭamplifo de ReplayGain</string>
+  <string name="replaygain_untagged_debump_title">Por muzikaĵoj sen etikedo ReplayGain</string>
+  <string name="replaygain_untagged_debump_summary">Malpliigi sonfortecon je</string>
+  <string name="replaygain_preamp_note_title">Rimarko</string>
+  <string name="replaygain_preamp_note_content">Androido ne permesas al Vanila Muziko pliigi sonfortecon al &gt;100%. Tro alta valoro de antaŭamplifo povas rezultigi maloportunaĵojn dum aŭskultado de mallaŭta muziko.\n\nKonsilindaj valoroj estas:\n -3dB por mallaŭta k klasika muziko\n+3dB por sonregistraĵoj post jaro 2000</string>
+  <string name="readahead">Aktivigi antaŭlegon</string>
+  <string name="readahead_summary">Antaŭlegi nune ludatan muzikaĵon. Tiu ĉi agordo povas ripari “sonajn pendiĝojn”. (kaŭzitajn de malrapida SD-karto)</string>
+  <string name="equalizer">Ekvalizilo</string>
+  <string name="cycle_continuous_shuffling">Hazarda miksado</string>
+  <string name="cycle_continuous_shuffling_summary">La reĝimo “miksi muzikaĵojn” tute hazarde elektos muzikaĵojn por ludi</string>
+  <string name="notifications">Atentigo</string>
+  <string name="notification_visibility_title">Videblo de la atentigo</string>
+  <string name="notification_action_title">Ago de la atentigo</string>
+  <string name="notification_nag">Tre montrema atentigo</string>
+  <string name="notification_nag_summary">Anonci ŝanĝojn de muzikaĵoj per ĉiam-videbla-atentigo</string>
+  <string name="playback_screen">Ekrano de ludado</string>
+  <string name="playback_on_startup_title">Malfermi dum starto</string>
+  <string name="playback_on_startup_summary">Montri ekranon de ludado dum starto</string>
+  <string name="display_mode_title">Montrada reĝimo</string>
+  <string name="swipe_up_action_title">Ago je fingrumi supren</string>
+  <string name="swipe_down_action_title">Ago je fingrumi suben</string>
+  <string name="cover_press_action_title">Ago je frapeti kovrilon</string>
+  <string name="cover_longpress_action_title">Ago je frapetadi kovrilon</string>
+  <string name="library_screen">Ekrano de biblioteko</string>
+  <string name="default_action_title">Implicita ago</string>
+  <string name="default_playlist_action_title">Implicita ago de ludlisto</string>
+  <string name="accelerometer_shake">Akcel-mezurila skuo</string>
+  <string name="enable_shake_title">Enŝalti agon je skuo de akcel-mezurilo</string>
+  <string name="enable_shake_summary">Nur aktiva kiam muziko estas ludata. Povas ne funkcii dum malŝaltita ekrano ĉe iuj aparatoj.</string>
+  <string name="shake_action_title">Ago je aparata skuo</string>
+  <string name="shake_threshold_title">Sojlo de skuo</string>
+  <string name="misc_features">Aliaj agordoj</string>
+  <string name="theme">Etoso</string>
+  <string name="disable_lockscreen_title">Malaktivigi ŝlos-ekranon</string>
+  <string name="disable_lockscreen_summary">Ne permesi al la ŝlos-ekrano aktiviĝi ĉe ekrano de biblioteko aŭ ludado.</string>
+  <string name="keep_screen_on_title">Teni ekranon enŝaltita</string>
+  <string name="keep_screen_on_summary">Ne malŝalti la ekranon kiam Vanila Muziko estas montrata</string>
+  <string name="use_idle_timeout_title">Malŝalti dum neaktiveco</string>
+  <string name="use_idle_timeout_summary">Kiam enŝaltita, ludado estos haltigita post agordita tempo de neaktiveco</string>
+  <string name="idle_timeout_title">Templimo de neaktiveco</string>
+  <string name="enable_scroll_to_song_title">Rulumi al ludata muzikaĵo</string>
+  <string name="enable_scroll_to_song_summary">Rulumi al nune ludata muzikaĵo/albumo/artisto en biblioteko</string>
+  <string name="coverloader_android_title">Ŝargi kovrilon de Androido</string>
+  <string name="coverloader_android_summary">Peti internan datumbazon de Androido pri album-kovrilo</string>
+  <string name="coverloader_vanilla_title">Ŝargi kovrilon de dosierujo</string>
+  <string name="coverloader_vanilla_summary">Serĉi pri bildaj dosieroj: cover.jpg, album.jpg aŭ artwork.jpg kaj vidigi ilin kiel album-kovrilon</string>
+  <string name="coverloader_shadow_title">Ŝargi kovrilon de kaŝita dosierujo</string>
+  <string name="coverloader_shadow_summary">Provi ŝargi album-kovrilon de “/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg”</string>
+  <string name="cover_on_lockscreen_title">Montri kovrilon sur ŝlos-ekranon</string>
+  <string name="cover_on_lockscreen_summary">Vidigi la album-kovrilon de nune ludata muzikaĵo sur la ŝlos-ekrano</string>
+  <string name="double_tap_title">Du-frapeta fenestraĵo</string>
+  <string name="double_tap_summary">Duobla frapetu la fenestraĵon 1x1 por malfermi ludilon. Okazas 400ms malprokrasto antaŭ la fenestraĵo respondas al agoj.</string>
+  <string name="scrobble_title">Uzi API Scrobble Droid</string>
+  <string name="scrobble_summary">Raporti al Last.fm per Scrobble Droid aŭ Simple Last.fm Scrobbler</string>
+  <string name="stock_broadcast_title">Simuli elsendojn de Androida ludilo</string>
+  <string name="stock_broadcast_summary">Sendi avertojn simulatajn tiujn sendatajn de antaŭ-instalita Androida muzik-ludilo por agadi kun ekster-partaj iloj, kiel ŝlos-ekranaj stiriloj, fenestraĵoj, ktp.</string>
+  <string name="help">Helpo</string>
+  <string name="about">Pri</string>
+  <string name="tabs">Ordo de langetoj</string>
+  <string name="customize_tab_order">Agordi ordon kaj videblon de bibliotekaj langetoj</string>
+  <string name="restore_default">Restarigi normojn</string>
+  <!--The following are for the list preferences-->
+  <string name="last_used_action">Laste uzita ago</string>
+  <string name="never_show">Neniam montri</string>
+  <string name="show_when_playing">Montri dum ludado (implicite)</string>
+  <string name="always_show">Ĉiam montri</string>
+  <string name="open_main_activity">Malfermi bibliotekon (implicite)</string>
+  <string name="open_mini_popup">Malfermi ŝprucfenestran ludilon</string>
+  <string name="skip_to_next_song">Transsalti al sekva muzikaĵo</string>
+  <string name="open_full_player">Malfermi plenan ludilon</string>
+  <string name="info_on_cover">Informoj sur album-kovrilo</string>
+  <string name="info_below_cover">Informoj sube de album-kovrilo</string>
+  <string name="fixed_info">Informoj fiksitaj ĉe supre</string>
+  <string name="do_nothing">Fari nenion</string>
+  <string name="open_library">Malfermi bibliotekon</string>
+  <string name="play_pause">Ludi/paŭzigi</string>
+  <string name="next_song">Sekva muzikaĵo</string>
+  <string name="previous_song">Antaŭa muzikaĵo</string>
+  <string name="next_album">Sekva albumo</string>
+  <string name="previous_album">Antaŭa albumo</string>
+  <string name="cycle_repeat_mode">Baskuli ripetan reĝimon</string>
+  <string name="cycle_shuffle_mode">Baskuli miksan reĝimon</string>
+  <string name="enqueue_current_album">Envicigi albumon</string>
+  <string name="enqueue_current_artist">Envicigi artiston</string>
+  <string name="enqueue_current_genre">Envicigi ĝenron</string>
+  <string name="enqueue_current">Envicigi…</string>
+  <string name="more_from_current">Pli de…</string>
+  <string name="empty_the_queue">Forviŝi ludvicon</string>
+  <string name="show_queue">Montri ludvicon</string>
+  <string name="hide_queue">Kaŝi ludvicon</string>
+  <string name="dequeue_rest">Malvicigi aliajn</string>
+  <string name="toggle_controls">Baskuli stir-butonojn</string>
+  <string name="seek_10s_backward">10 sekundoj malantaŭen</string>
+  <string name="seek_10s_forward">10 sekundoj antaŭen</string>
+  <string name="preferences_action_show_queue">Montri ludvicon</string>
+  <string name="preferences_action_clear_queue">Forviŝi ludvicon</string>
+  <string name="preferences_action_enqueue_current_album">Envicigi albumon</string>
+  <string name="preferences_action_enqueue_current_artist">Envicigi artiston</string>
+  <string name="preferences_action_enqueue_current_genre">Envicigi ĝenron</string>
+  <string name="filebrowser_start">Ĉefdosierujo</string>
+  <string name="customize_filebrowser_start">Dosier-foliumilo ekas en tiu ĉi dosierujo</string>
+  <string name="select">Elekti</string>
+  <string name="save">Konservi</string>
+  <string name="autoplaylist_playcounts_title">Aŭtomate krei ludliston</string>
+  <string name="autoplaylist_playcounts_summary">Aŭtomate krei</string>
+  <string name="autoplaylist_playcounts_fmt" formatted="false">%s ludliston “%.0f popularaj”</string>
+  <string name="autoplaylist_playcounts_disabled">Ne aŭtomate krei ludliston</string>
+  <string name="autoplaylist_playcounts_name" formatted="false">%d popularaj</string>
+  <string name="permission_request_summary">Vanila Muziko postulas permeson por legi SD-karton por vidigi vian muzikan bibliotekon</string>
+  <string name="reverse_sort">Ordigi inverse</string>
+  <string name="share">Kunhavigi…</string>
+  <string name="share_failed">Fiaskis kunhavigi dosieron</string>
+  <string name="sendto">Sendi al…</string>
+  <string name="no_receiving_apps">Neniu aplikaĵo trovita por ricevi tiun ĉi tipon de aŭdvidaĵo!</string>
+  <string name="duration">Daŭro</string>
+  <string name="media_library">Muzik-biblioteko</string>
+  <string name="media_folders_header">Indeksataj dosierujoj</string>
+  <string name="media_scan_header">Muzik-skanilo</string>
+  <string name="media_scan_full">Skani tutan dosiersistemon (pli malrapide)</string>
+  <string name="media_scan_drop_db">Forviŝi datumbazon</string>
+  <string name="media_scan_start">Ekigi skani</string>
+  <string name="media_scan_force_bastp">Ĉiam uzi enkonstruitan etiked-legilon</string>
+  <string name="media_scan_group_albums">Grupigi albumojn laŭ dosierujoj</string>
+  <string name="media_statistics">Statistiko</string>
+  <string name="media_stats_tracks">Nombro da muzikaĵoj</string>
+  <string name="media_stats_library_playtime">Tuta tempo de ludado (en horoj)</string>
+  <string name="media_stats_listen_playtime">Ĝis nun ludis muzikon por (en horoj)</string>
+  <string name="media_stats_progress">Progreso de skanado</string>
+  <string name="media_library_scan_running">Skanado de muzik-biblioteko…</string>
+  <string name="media_scan_preferences">Agordoj de skanilo</string>
+  <string name="media_scan_preferences_change_title">Ŝanĝis agordojn de skanilo</string>
+  <string name="media_scan_preferences_change_message">Ŝanĝo de tiu ĉi agordo ekigos plenan reskanon de via muzik-biblioteko. Ĉu vi volas pluigi?</string>
+  <!--Folder selector-->
+  <string name="hint_long_press_to_modify_folder">Frapetadu por modifi dosierujajn agordojn</string>
+  <string name="folder_include">Inkluzivi</string>
+  <string name="folder_exclude">Escepti</string>
+  <string name="folder_neutral">Neŭtra</string>
+  <!--Plugin system-->
+  <string name="plugins">Kromprogramoj</string>
+  <!--Theme names-->
+  <string name="theme_name_standard_light">Norma</string>
+  <string name="theme_name_standard_dark">Norma (malhela)</string>
+  <string name="theme_name_grey_light">Griza</string>
+  <string name="theme_name_grey_dark">Griza (malhela)</string>
+  <string name="theme_name_orange_light">Oranĝkolora</string>
+  <string name="theme_name_orange_dark">Oranĝkolora (malhela)</string>
+  <string name="theme_name_blue_light">Blua</string>
+  <string name="theme_name_blue_dark">Blua (malhela)</string>
+  <string name="theme_name_red_light">Ruĝa</string>
+  <string name="theme_name_red_dark">Ruĝa (malhela)</string>
+  <string name="theme_name_amoled_dark">Nigrega (AMOLED)</string>
+</resources>

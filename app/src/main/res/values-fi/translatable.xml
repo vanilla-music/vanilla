@@ -162,6 +162,7 @@
   <string name="replaygain_untagged_debump_summary">Vähennä äänenvoimakkuutta</string>
   <string name="replaygain_preamp_note_title">Huomio</string>
   <string name="readahead">Käytä etukäteen lukemista</string>
+  <string name="readahead_summary">Lue eteenpäin toistettavaa kappaletta. Tämä valinta voi auttaa sellaisiin äänen katkeamisongelmiin, mitkä johtuvat hitaasta SD-kortista.</string>
   <string name="equalizer">Taajuuskorjain</string>
   <string name="cycle_continuous_shuffling">Jatkuva sekoitus</string>
   <string name="cycle_continuous_shuffling_summary">\"Sekoitustila\" toistaa kappaleet satunnaisessa järjestyksessä</string>
@@ -169,6 +170,7 @@
   <string name="notification_visibility_title">Ilmoituksen näkyvyys</string>
   <string name="notification_action_title">Ilmoitustoiminto</string>
   <string name="notification_nag">Erittäin runsas ilmoitus</string>
+  <string name="notification_nag_summary">Ilmoita kappaleen vaihtumisesta \'Heads-Up\'-ilmoituksella</string>
   <string name="playback_screen">Toistonäkymä</string>
   <string name="playback_on_startup_title">Avaa käynnistäessä</string>
   <string name="playback_on_startup_summary">Avaa toistonäkymä käynnistäessä</string>
@@ -267,6 +269,7 @@
   <string name="share_failed">Tiedoston jakaminen epäonnistui</string>
   <string name="sendto">Lähetä…</string>
   <string name="no_receiving_apps">Tälle mediatyypille ei löytynyt vastaanottavia sovelluksia!</string>
+  <string name="duration">Kesto</string>
   <string name="media_library">Mediakirjasto</string>
   <string name="media_folders_header">Indeksoidut kansiot</string>
   <string name="media_scan_header">Mediaskanneri</string>

@@ -287,6 +287,7 @@
   <string name="share_failed">Не удалось отправить файл</string>
   <string name="sendto">Отправить в…</string>
   <string name="no_receiving_apps">Нет приложений для обработки такого типа файла!</string>
+  <string name="duration">Общая длительность</string>
   <string name="media_library">Библиотека носителей</string>
   <string name="media_folders_header">Директории в индексе</string>
   <string name="media_scan_header">Сканер носителей</string>
