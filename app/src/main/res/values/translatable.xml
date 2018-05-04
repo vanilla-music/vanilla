@@ -22,6 +22,8 @@ THE SOFTWARE.
 -->
 <resources>
 	<string name="app_name">Vanilla Music</string>
+	<string name="ok">OK</string>
+	<string name="cancel">Cancel</string>
 
 	<!-- Playback Activity (main screen) -->
 	<string name="no_songs">No tracks found on your device.</string>
