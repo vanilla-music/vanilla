@@ -68,7 +68,7 @@ THE SOFTWARE.
 			android:layout_width="0px"
 			android:layout_height="wrap_content"
 			android:layout_weight="1"
-			android:text="@android:string/cancel"
+			android:text="@string/cancel"
 			android:enabled="false"
 			android:singleLine="true" />
 		<Button
