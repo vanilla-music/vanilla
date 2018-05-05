@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2016-2018 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -179,7 +179,7 @@ public class ShowQueueFragment extends Fragment
 	 * Triggers a refresh of the queueview
 	 * @param scroll enable or disable jumping to the currently playing item
 	 */
-	public void refreshSongQueueList(final boolean scroll) {
+	private void refreshSongQueueList(final boolean scroll) {
 		getActivity().runOnUiThread(new Runnable(){
 			public void run() {
 				int pos = mService.getTimelinePosition();
