@@ -41,7 +41,7 @@ public class ShowQueueFragment extends Fragment
 
 	private DragSortListView mListView;
 	private ShowQueueAdapter mListAdapter;
-	private PlaybackService mService;
+	private boolean mIsPopulated;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -72,14 +72,13 @@ public class ShowQueueFragment extends Fragment
 	public void onResume() {
 		super.onResume();
 
-		// Get playback service if we can and must
-		// This happens eg. during a rotate where the view
-		// was destroyed
-		if (mService == null && PlaybackService.hasInstance())
-			mService = PlaybackService.get(getActivity());
-
-		if (mService != null)
+		// Update the song list if we are not populated and
+		// have an usable PlaybackService instance.
+		// This is the case if the Application already fully
+		// started up, but just lost this view (due to rotation).
+		if (!mIsPopulated && PlaybackService.hasInstance()) {
 			refreshSongQueueList(true);
+		}
 	}
 
 
@@ -95,7 +94,7 @@ public class ShowQueueFragment extends Fragment
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View listView, ContextMenu.ContextMenuInfo absInfo) {
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)absInfo;
-		Song song = mService.getSongByQueuePosition(info.position);
+		Song song = playbackService().getSongByQueuePosition(info.position);
 
 		Intent intent = new Intent();
 		intent.putExtra("id", song.id);
@@ -121,19 +120,20 @@ public class ShowQueueFragment extends Fragment
 		int itemId = item.getItemId();
 		int pos = intent.getIntExtra("position", -1);
 
-		Song song = mService.getSongByQueuePosition(pos);
+		PlaybackService service = playbackService();
+		Song song = service.getSongByQueuePosition(pos);
 		switch (item.getItemId()) {
 			case CTX_MENU_PLAY:
 				onItemClick(null, null, pos, -1);
 				break;
 			case CTX_MENU_ENQUEUE_ALBUM:
-				mService.enqueueFromSong(song, MediaUtils.TYPE_ALBUM);
+				service.enqueueFromSong(song, MediaUtils.TYPE_ALBUM);
 				break;
 			case CTX_MENU_ENQUEUE_ARTIST:
-				mService.enqueueFromSong(song, MediaUtils.TYPE_ARTIST);
+				service.enqueueFromSong(song, MediaUtils.TYPE_ARTIST);
 				break;
 			case CTX_MENU_ENQUEUE_GENRE:
-				mService.enqueueFromSong(song, MediaUtils.TYPE_GENRE);
+				service.enqueueFromSong(song, MediaUtils.TYPE_GENRE);
 				break;
 			case CTX_MENU_REMOVE:
 				remove(pos);
@@ -154,7 +154,7 @@ public class ShowQueueFragment extends Fragment
 	@Override
 	public void drop(int from, int to) {
 		if (from != to) {
-			mService.moveSongPosition(from, to);
+			playbackService().moveSongPosition(from, to);
 		}
 	}
 
@@ -164,7 +164,7 @@ public class ShowQueueFragment extends Fragment
 	 */
 	@Override
 	public void remove(int which) {
-		mService.removeSongPosition(which);
+		playbackService().removeSongPosition(which);
 	}
 
 	/**
@@ -172,7 +172,7 @@ public class ShowQueueFragment extends Fragment
 	 */
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			mService.jumpToQueuePosition(position);
+		playbackService().jumpToQueuePosition(position);
 	}
 
 	/**
@@ -180,15 +180,17 @@ public class ShowQueueFragment extends Fragment
 	 * @param scroll enable or disable jumping to the currently playing item
 	 */
 	private void refreshSongQueueList(final boolean scroll) {
+		final PlaybackService service = playbackService();
+		final int pos = service.getTimelinePosition();
 		getActivity().runOnUiThread(new Runnable(){
 			public void run() {
-				int pos = mService.getTimelinePosition();
-				mListAdapter.setData(mService, pos);
+				mListAdapter.setData(service, pos);
 
 				if(scroll)
 					scrollToCurrentSong(pos);
 			}
 		});
+		mIsPopulated = true;
 	}
 
 	/**
@@ -207,14 +209,25 @@ public class ShowQueueFragment extends Fragment
 	}
 
 	/**
+	 * Shortcut function to get the current playback service
+	 * using our parent activity as context
+	 */
+	private PlaybackService playbackService() {
+		return PlaybackService.get(getActivity());
+	}
+
+	/**
 	 * Called after a song has been set.
-	 * We are only interested in this call if mService is null
-	 * as this signals that the playback service just became ready
-	 * (and wasn't during onResume())
+	 *
+	 * We are generally not interested in such events as we do not display
+	 * any playback state - only the queue (which has its changes announced
+	 * using `onTimelineChanged()'.
+	 * However: We are still interested in `setSong()' if we are unpopulated:
+	 * Such an event will then indicate that the PlaybackService just finished
+	 * its startup and is ready to be queried.
 	 */
 	public void setSong(long uptime, Song song) {
-		if (mService == null) {
-			mService = PlaybackService.get(getActivity());
+		if (!mIsPopulated) {
 			onTimelineChanged();
 		}
 	}
@@ -223,8 +236,9 @@ public class ShowQueueFragment extends Fragment
 	 * Called after the timeline changed
 	 */
 	public void onTimelineChanged() {
-		if (mService != null)
+		if (PlaybackService.hasInstance()) {
 			refreshSongQueueList(false);
+		}
 	}
 
 	// Unused Callbacks of TimelineCallback
