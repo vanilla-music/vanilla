@@ -31,6 +31,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
+import android.text.format.DateUtils;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -691,6 +692,8 @@ public class MediaAdapter
 					int value = cursor.getInt(sortColumnIndex);
 					if (columnName.equals(MediaLibrary.SongColumns.MTIME)) {
 						next = dfmt.format(new Date(value * 1000L));
+					} else if (columnName.equals(MediaLibrary.SongColumns.DURATION)) {
+						next = DateUtils.formatElapsedTime(value / 1000);
 					} else {
 						next = value;
 					}
