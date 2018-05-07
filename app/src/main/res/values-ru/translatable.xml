@@ -1,6 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="app_name">Vanilla Music</string>
+  <string name="ok">Ладно</string>
+  <string name="cancel">Отмена</string>
   <!--Playback Activity (main screen)-->
   <string name="no_songs">Нет музыки на устройстве.</string>
   <string name="empty_queue">Дорожки не выбраны. Создайте подборку из фонотеки или коснитесь здесь для включения случайного режима.</string>

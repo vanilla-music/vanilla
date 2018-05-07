@@ -1,6 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="app_name">Vanilla Music</string>
+  <string name="ok">OK</string>
+  <string name="cancel">Peru</string>
   <!--Playback Activity (main screen)-->
   <string name="no_songs">Laitteeltasi ei löytynyt kappaleita.</string>
   <string name="empty_queue">Kappaleita ei ole valittu. Valitse kappaleita kirjastosta tai toista satunnaisia napauttamalla tätä viestiä.</string>

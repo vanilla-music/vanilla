@@ -1,6 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="app_name">Vanilla Music</string>
+  <string name="ok">確定</string>
+  <string name="cancel">取消</string>
   <!--Playback Activity (main screen)-->
   <string name="no_songs">您的裝置上沒有發現任何曲目。</string>
   <string name="empty_queue">沒有選定的歌曲。由媒體庫或是輕點這個訊息進入隨機模式挑選。</string>
@@ -263,6 +265,7 @@
   <string name="share_failed">無法分享檔案</string>
   <string name="sendto">傳送到…</string>
   <string name="no_receiving_apps">該媒體類型未找到相應接受的應用程式！</string>
+  <string name="duration">持續時間</string>
   <string name="media_library">媒體庫</string>
   <string name="media_folders_header">索引目錄</string>
   <string name="media_scan_header">媒體掃描</string>

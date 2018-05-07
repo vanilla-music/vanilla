@@ -1,6 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="app_name">Vanilla zenelejátszó</string>
+  <string name="ok">OK</string>
+  <string name="cancel">Mégse</string>
   <!--Playback Activity (main screen)-->
   <string name="no_songs">Nem találhatóak számok az eszközén.</string>
   <string name="empty_queue">Nincs szám kiválasztva. Válasszon a gyűjteményből vagy kapcsolja be a véletlenszerű módot ezt az üzenetet megérintve.</string>

@@ -1,6 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="app_name">Vanila Muziko</string>
+  <string name="ok">Bone</string>
+  <string name="cancel">Nuligi</string>
   <!--Playback Activity (main screen)-->
   <string name="no_songs">Neniuj muzikaĵoj trovitaj en via aparato.</string>
   <string name="empty_queue">Neniuj elektitaj muzikaĵoj. Elektu iujn de la biblioteko aŭ enŝaltu hazardan reĝimon per frapeti tiun ĉi averton.</string>
@@ -15,7 +17,7 @@
   <string name="stop_current_song">Ĉesi post nuna muzikaĵo</string>
   <string name="random">Hazarde</string>
   <string name="random_enabling">Ekigis hazardan ludadon</string>
-  <string name="song_load_failed">Malsukcesis ŝargi muzikaĵon %s. Ĝi probable mankas aŭ estas difektita.</string>
+  <string name="song_load_failed">Malsukcesis enlegi muzikaĵon %s. Ĝi probable mankas aŭ estas difektita.</string>
   <string name="queue_cleared">Forviŝis ludvicon.</string>
   <string name="cover_art">Album-kovrilo</string>
   <string name="close_notification">Fermi atentigon</string>
@@ -23,16 +25,16 @@
   <string name="_track">muzikaĵo</string>
   <string name="_composer">komponisto</string>
   <string name="_path">dosierindiko</string>
-  <string name="_format">formato</string>
+  <string name="_format">tipo</string>
   <string name="_title">titolo</string>
   <string name="_artist">artisto</string>
   <string name="_album">albumo</string>
   <string name="_year">jaro</string>
-  <string name="_replaygain">amplifo</string>
+  <string name="_replaygain">plilaŭtigo</string>
   <!--New Playlist Dialog-->
   <string name="choose_playlist_name">Entajpu nomon por ludlisto</string>
   <string name="create">Krei</string>
-  <string name="overwrite">Superskribi</string>
+  <string name="overwrite">Anstataŭigi</string>
   <string name="delete_playlist">Ĉu forigi ludliston %s?</string>
   <!--Library-->
   <string name="enqueue">Envicigi</string>
@@ -157,11 +159,11 @@
   <string name="replaygain_track_summary">Ludi ĉiujn muzikaĵojn kun egala sonforteco</string>
   <string name="replaygain_album_title">Aktivigi ReplayGain por albumo</string>
   <string name="replaygain_album_summary">Konservi son-dinamikon de albumo</string>
-  <string name="replaygain_bump_title">Antaŭamplifo de ReplayGain</string>
+  <string name="replaygain_bump_title">Antaŭ-plilaŭtigo de ReplayGain</string>
   <string name="replaygain_untagged_debump_title">Por muzikaĵoj sen etikedo ReplayGain</string>
   <string name="replaygain_untagged_debump_summary">Malpliigi sonfortecon je</string>
   <string name="replaygain_preamp_note_title">Rimarko</string>
-  <string name="replaygain_preamp_note_content">Androido ne permesas al Vanila Muziko pliigi sonfortecon al &gt;100%. Tro alta valoro de antaŭamplifo povas rezultigi maloportunaĵojn dum aŭskultado de mallaŭta muziko.\n\nKonsilindaj valoroj estas:\n -3dB por mallaŭta k klasika muziko\n+3dB por sonregistraĵoj post jaro 2000</string>
+  <string name="replaygain_preamp_note_content">Androido ne permesas al Vanila Muziko pliigi sonfortecon al &gt;100%. Tro alta valoro de antaŭ-plilaŭtigo povas rezultigi maloportunaĵojn dum aŭskultado de mallaŭta muziko.\n\nKonsilindaj valoroj estas:\n -3dB por mallaŭta kaj klasika muziko\n+3dB por sonregistraĵoj post jaro 2000</string>
   <string name="readahead">Aktivigi antaŭlegon</string>
   <string name="readahead_summary">Antaŭlegi nune ludatan muzikaĵon. Tiu ĉi agordo povas ripari “sonajn pendiĝojn”. (kaŭzitajn de malrapida SD-karto)</string>
   <string name="equalizer">Ekvalizilo</string>
@@ -171,7 +173,7 @@
   <string name="notification_visibility_title">Videblo de la atentigo</string>
   <string name="notification_action_title">Ago de la atentigo</string>
   <string name="notification_nag">Tre montrema atentigo</string>
-  <string name="notification_nag_summary">Anonci ŝanĝojn de muzikaĵoj per ĉiam-videbla-atentigo</string>
+  <string name="notification_nag_summary">Anonci ŝanĝojn de muzikaĵoj per la ĉiam videbla atentigo</string>
   <string name="playback_screen">Ekrano de ludado</string>
   <string name="playback_on_startup_title">Malfermi dum starto</string>
   <string name="playback_on_startup_summary">Montri ekranon de ludado dum starto</string>
@@ -199,16 +201,16 @@
   <string name="idle_timeout_title">Templimo de neaktiveco</string>
   <string name="enable_scroll_to_song_title">Rulumi al ludata muzikaĵo</string>
   <string name="enable_scroll_to_song_summary">Rulumi al nune ludata muzikaĵo/albumo/artisto en biblioteko</string>
-  <string name="coverloader_android_title">Ŝargi kovrilon de Androido</string>
+  <string name="coverloader_android_title">Enlegi kovrilon de Androido</string>
   <string name="coverloader_android_summary">Peti internan datumbazon de Androido pri album-kovrilo</string>
-  <string name="coverloader_vanilla_title">Ŝargi kovrilon de dosierujo</string>
+  <string name="coverloader_vanilla_title">Enlegi kovrilon de dosierujo</string>
   <string name="coverloader_vanilla_summary">Serĉi pri bildaj dosieroj: cover.jpg, album.jpg aŭ artwork.jpg kaj vidigi ilin kiel album-kovrilon</string>
-  <string name="coverloader_shadow_title">Ŝargi kovrilon de kaŝita dosierujo</string>
-  <string name="coverloader_shadow_summary">Provi ŝargi album-kovrilon de “/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg”</string>
+  <string name="coverloader_shadow_title">Enlegi kovrilon de kaŝita dosierujo</string>
+  <string name="coverloader_shadow_summary">Provi enlegi album-kovrilon de “/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg”</string>
   <string name="cover_on_lockscreen_title">Montri kovrilon sur ŝlos-ekranon</string>
   <string name="cover_on_lockscreen_summary">Vidigi la album-kovrilon de nune ludata muzikaĵo sur la ŝlos-ekrano</string>
   <string name="double_tap_title">Du-frapeta fenestraĵo</string>
-  <string name="double_tap_summary">Duobla frapetu la fenestraĵon 1x1 por malfermi ludilon. Okazas 400ms malprokrasto antaŭ la fenestraĵo respondas al agoj.</string>
+  <string name="double_tap_summary">Duoble frapetu la fenestraĵon 1x1 por malfermi ludilon. Okazas 400ms de prokrasto antaŭ la fenestraĵo respondas al agoj.</string>
   <string name="scrobble_title">Uzi API Scrobble Droid</string>
   <string name="scrobble_summary">Raporti al Last.fm per Scrobble Droid aŭ Simple Last.fm Scrobbler</string>
   <string name="stock_broadcast_title">Simuli elsendojn de Androida ludilo</string>
