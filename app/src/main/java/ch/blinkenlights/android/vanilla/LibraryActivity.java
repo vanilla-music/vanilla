@@ -775,7 +775,9 @@ public class LibraryActivity
 	{
 		LibraryAdapter adapter = mCurrentAdapter;
 		menu.findItem(MENU_GO_HOME).setVisible(
-				adapter != null && adapter.getMediaType() == MediaUtils.TYPE_FILE);
+				adapter != null &&
+				adapter.getMediaType() == MediaUtils.TYPE_FILE &&
+				!mSlidingView.isExpanded());
 		return super.onPrepareOptionsMenu(menu);
 	}
 
