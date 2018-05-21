@@ -39,7 +39,7 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	/**
 	 * on-disk file to store the database
 	 */
-	private static final String DATABASE_NAME = "media-library.db";
+	static final String DATABASE_NAME = "media-library.db";
 	/**
 	 * The magic mtime to use for songs which are in PENDING_DELETION state.
 	 * This is NOT 0 as the mtime is always expected to be > 0 for existing rows

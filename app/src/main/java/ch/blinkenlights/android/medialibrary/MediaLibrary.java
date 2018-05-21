@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2017 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2016-2018 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,10 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class MediaLibrary  {
 
@@ -264,6 +268,28 @@ public class MediaLibrary  {
 		return sScanner.describeScanProgress();
 	}
 
+	/**
+	 * Dumps a copy of the media database to a specified path.
+	 *
+	 * @param context the context to use.
+	 * @param dst the destination path of the db dump.
+	 */
+	public static void createDebugDump(Context context, String dst) {
+		final String src = context.getDatabasePath(MediaLibraryBackend.DATABASE_NAME).getPath();
+		try {
+			try (InputStream in = new FileInputStream(src)) {
+				try (OutputStream out = new FileOutputStream(dst)) {
+					byte[] buffer = new byte[4096];
+					int len = 0;
+					while ((len = in.read(buffer)) > 0) {
+						out.write(buffer, 0, len);
+					}
+				}
+			}
+		} catch (Exception e) {
+			Log.v("VanillaMusic", "Debug dump failed: "+e);
+		}
+	}
 
 	/**
 	 * Registers a new content observer for the media library

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2017-2018 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,12 +26,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -136,6 +141,8 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 		mEditButton.setOnClickListener(this);
 		mGroupAlbumsCheck.setOnClickListener(this);
 		mForceBastpCheck.setOnClickListener(this);
+		// Enable options menu.
+		setHasOptionsMenu(true);
 	}
 
 	@Override
@@ -206,6 +213,29 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 		}
 	}
 
+	private static final int MENU_DUMP_DB = 1;
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		super.onCreateOptionsMenu(menu, inflater);
+		menu.add(0, MENU_DUMP_DB, 30, R.string.dump_database);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case MENU_DUMP_DB:
+			final Context context = getActivity();
+			final String path = Environment.getExternalStorageDirectory().getPath() + "/dbdump-" + context.getPackageName() + ".sqlite";
+			final String msg = getString(R.string.dump_database_result, path);
+
+			MediaLibrary.createDebugDump(context, path);
+			Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+			break;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+		return true;
+	}
 	/**
 	 * Wrapper for updatePreferences() which warns the user about
 	 * possible consequences.
