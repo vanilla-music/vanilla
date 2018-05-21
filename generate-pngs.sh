@@ -37,5 +37,8 @@ for i in orig/mipmap/*.svgz; do
 	gen mipmap "$i" xhdpi 192
 	gen mipmap "$i" xxhdpi 288
 done
+
 # GOOG tells us to use xxx-hdpi only for launcher icons
-gen mipmap "orig/mipmap/icon.svgz" xxxhdpi 384
+for i in orig/mipmap/ic*.svgz ; do
+	gen mipmap "$i" xxxhdpi 384
+done
