@@ -110,18 +110,20 @@ THE SOFTWARE.
 		<item>@string/enqueue_all</item>
 		<item>@string/play_or_enqueue</item>
 		<item>@string/enqueue_as_next</item>
+		<item>@string/expand_or_play_all</item>
 		<item>@string/do_nothing</item>
 	</string-array>
 	<string-array name="default_action_entry_values">
-		<item>6</item> <!-- expand           -->
-		<item>0</item> <!-- play             -->
-		<item>1</item> <!-- enqueue          -->
-		<item>2</item> <!-- last_action_used -->
-		<item>3</item> <!-- play_all         -->
-		<item>4</item> <!-- enqueue_all      -->
-		<item>7</item> <!-- play_or_enqueue  -->
-		<item>8</item> <!-- enqueue_as_next  -->
-		<item>5</item> <!-- do_nothing       -->
+		<item>6</item> <!-- expand             -->
+		<item>0</item> <!-- play               -->
+		<item>1</item> <!-- enqueue            -->
+		<item>2</item> <!-- last_action_used   -->
+		<item>3</item> <!-- play_all           -->
+		<item>4</item> <!-- enqueue_all        -->
+		<item>7</item> <!-- play_or_enqueue    -->
+		<item>8</item> <!-- enqueue_as_next    -->
+		<item>9</item> <!-- expand_or_play_all -->
+		<item>5</item> <!-- do_nothing         -->
 	</string-array>
 	<!-- END default action entries definition -->
 

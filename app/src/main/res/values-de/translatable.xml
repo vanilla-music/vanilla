@@ -49,6 +49,7 @@
   <string name="playlist_favorites">Favoriten</string>
   <string name="new_playlist">Neue Wiedergabeliste …</string>
   <string name="expand">Aufklappen</string>
+  <string name="expand_or_play_all">Aufklappen oder alle wiedergeben</string>
   <string name="delete">Löschen</string>
   <string name="playback_view">Aktueller Titel</string>
   <string name="sort_by">Sortieren nach</string>

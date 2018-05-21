@@ -108,9 +108,13 @@ public class LibraryActivity
 	 */
 	public static final int ACTION_PLAY_OR_ENQUEUE = 7;
 	/**
-	 * Action for row click: queue selection as next item
+	 * Action for row click: queue selection as next item.
 	 */
 	public static final int ACTION_ENQUEUE_AS_NEXT = 8;
+	/**
+	 * Action for row click: expand or play all.
+	 */
+	public static final int ACTION_EXPAND_OR_PLAY_ALL = 9;
 	/**
 	 * The SongTimeline add song modes corresponding to each relevant action.
 	 */
@@ -451,13 +455,16 @@ public class LibraryActivity
 		if (action == ACTION_LAST_USED)
 			action = mLastAction;
 
-		if (action == ACTION_EXPAND && rowData.getBooleanExtra(LibraryAdapter.DATA_EXPANDABLE, false)) {
+		boolean tryExpand = action == ACTION_EXPAND || action == ACTION_EXPAND_OR_PLAY_ALL;
+		if (tryExpand && rowData.getBooleanExtra(LibraryAdapter.DATA_EXPANDABLE, false)) {
 			onItemExpanded(rowData);
 		} else if (action != ACTION_DO_NOTHING) {
 			if (action == ACTION_EXPAND) {
 				// default to playing when trying to expand something that can't
 				// be expanded
 				action = ACTION_PLAY;
+			} else if (action == ACTION_EXPAND_OR_PLAY_ALL) {
+				action = ACTION_PLAY_ALL;
 			} else if (action == ACTION_PLAY_OR_ENQUEUE) {
 				action = (mState & PlaybackService.FLAG_PLAYING) == 0 ? ACTION_PLAY : ACTION_ENQUEUE;
 			}

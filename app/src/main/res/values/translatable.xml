@@ -73,6 +73,7 @@ THE SOFTWARE.
 	<string name="playlist_favorites">Favorites</string>
 	<string name="new_playlist">New playlist…</string>
 	<string name="expand">Expand</string>
+	<string name="expand_or_play_all">Expand or play all</string>
 	<string name="delete">Delete</string>
 	<string name="playback_view">Now playing</string>
 	<string name="sort_by">Sort by</string>
