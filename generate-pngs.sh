@@ -11,20 +11,31 @@
 # - optipng
 
 gen() {
-	name=`basename "$1" .svgz`
-	png="app/src/main/res/drawable-$2/$name.png"
-	if [ "$1" -nt "$png" -o ! -e "$png" ]; then
-		inkscape --without-gui --export-area-page --export-dpi=$3 --export-png="$png" $1
+	type=$1
+	path=$2
+	res=$3
+	dpi=$4
+
+	name=`basename "$path" .svgz`
+	png="app/src/main/res/$type-$res/$name.png"
+	if [ "$path" -nt "$png" -o ! -e "$png" ]; then
+		inkscape --without-gui --export-area-page --export-dpi=$dpi --export-png="$png" $path
 		echo
 	fi
 }
 
-for i in orig/*.svgz; do
-	gen "$i" mdpi 96
-	gen "$i" hdpi 144
-	gen "$i" xhdpi 192
-	gen "$i" xxhdpi 288
+for i in orig/drawable/*.svgz; do
+	gen drawable "$i" mdpi 96
+	gen drawable "$i" hdpi 144
+	gen drawable "$i" xhdpi 192
+	gen drawable "$i" xxhdpi 288
 done
 
+for i in orig/mipmap/*.svgz; do
+	gen mipmap "$i" mdpi 96
+	gen mipmap "$i" hdpi 144
+	gen mipmap "$i" xhdpi 192
+	gen mipmap "$i" xxhdpi 288
+done
 # GOOG tells us to use xxx-hdpi only for launcher icons
-gen "orig/icon.svgz" xxxhdpi 384
+gen mipmap "orig/mipmap/icon.svgz" xxxhdpi 384
