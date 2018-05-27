@@ -16,3 +16,6 @@ clean:
 
 uninstall:
 	adb uninstall ch.blinkenlights.android.vanilla
+
+gce-nightly:
+	./gradlew assembleRelease && cd ./app/build/outputs/apk/release && zipalign -v -p 4 app-release-unsigned.apk aligned.apk && echo aaaaaa | apksigner sign -ks ~/.android.keystore --out nightly-signed.apk aligned.apk
