@@ -49,6 +49,7 @@
   <string name="playlist_favorites">Suosikit</string>
   <string name="new_playlist">Uusi soittolista…</string>
   <string name="expand">Laajenna</string>
+  <string name="expand_or_play_all">Laajenna tai toista kaikki</string>
   <string name="delete">Poista</string>
   <string name="playback_view">Nyt soi</string>
   <string name="sort_by">Järjestä</string>
@@ -272,6 +273,8 @@
   <string name="sendto">Lähetä…</string>
   <string name="no_receiving_apps">Tälle mediatyypille ei löytynyt vastaanottavia sovelluksia!</string>
   <string name="duration">Kesto</string>
+  <string name="dump_database">Vie tietokanta</string>
+  <string name="dump_database_result">Tietokanta viety tiedostoon \'%s\'</string>
   <string name="media_library">Mediakirjasto</string>
   <string name="media_folders_header">Indeksoidut kansiot</string>
   <string name="media_scan_header">Mediaskanneri</string>

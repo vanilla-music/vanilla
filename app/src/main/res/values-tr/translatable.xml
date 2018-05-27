@@ -1,6 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="app_name">Vanilya Müzik</string>
+  <string name="ok">Tamam</string>
+  <string name="cancel">İptal</string>
   <!--Playback Activity (main screen)-->
   <string name="no_songs">Aygıtınızda hiçbir parça bulunamadı.</string>
   <string name="empty_queue">Hiçbir parça seçilmedi. Arşivinizden birkaç tane seçin veya bu iletiye dokunarak rastgele kipine geçin.</string>
@@ -47,6 +49,7 @@
   <string name="playlist_favorites">Gözdeler</string>
   <string name="new_playlist">Yeni oynatmalık...</string>
   <string name="expand">Genişlet</string>
+  <string name="expand_or_play_all">Genişlet veya hepsini oynat</string>
   <string name="delete">Sil</string>
   <string name="playback_view">Şimdi oynatılıyor</string>
   <string name="sort_by">Sırala</string>
@@ -66,6 +69,26 @@
 		Translators should use http://unicode.org/reports/tr35/tr35-numbers.html#Language_Plural_Rules and
 		http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html, Type cardinal,
 		to see which categories apply to integer numbers in their languages-->
+  <plurals name="playing">
+    <item quantity="one">%d parça oynatılıyor.</item>
+    <item quantity="other">%d parça oynatılıyor.</item>
+  </plurals>
+  <plurals name="enqueued">
+    <item quantity="one">%d parça kuyruğa alındı.</item>
+    <item quantity="other">%d parça kuyruğa alındı.</item>
+  </plurals>
+  <plurals name="added_to_playlist">
+    <item quantity="one"> %1$d parça %2$s oynatmalığına eklendi.</item>
+    <item quantity="other">%1$d parça %2$s oynatmalığına eklendi.</item>
+  </plurals>
+  <plurals name="removed_from_playlist">
+    <item quantity="one">%1$d parça %2$s oynatmalığından kaldırıldı.</item>
+    <item quantity="other">%1$d parça %2$s oynatmalığından kaldıldı.</item>
+  </plurals>
+  <plurals name="deleted">
+    <item quantity="one">%d parça silindi.</item>
+    <item quantity="other">%d parça silindi.</item>
+  </plurals>
   <string name="delete_file_failed">%s silinemedi.</string>
   <string name="deleted_item">\'%s\' silindi.</string>
   <string name="delete_item">\'%s\' silinsin mi?</string>
@@ -251,6 +274,9 @@
   <string name="share_failed">Dosya paylaşımı başarısız</string>
   <string name="sendto">Gönder…</string>
   <string name="no_receiving_apps">Bu ortam türü için uygun uygulama bulunamadı.</string>
+  <string name="duration">Süre</string>
+  <string name="dump_database">Veritabanını yığ</string>
+  <string name="dump_database_result">Veritabanı \'%s\' yerine yığıldı.</string>
   <string name="media_library">Ortam arşivi</string>
   <string name="media_folders_header">İndekslenmiş dizinler</string>
   <string name="media_scan_header">Ortam tarayıcısı</string>

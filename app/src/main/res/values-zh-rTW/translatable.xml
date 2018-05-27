@@ -49,6 +49,7 @@
   <string name="playlist_favorites">我的最愛</string>
   <string name="new_playlist">新的播放清單…</string>
   <string name="expand">展開</string>
+  <string name="expand_or_play_all">展開或全部播放</string>
   <string name="delete">刪除</string>
   <string name="playback_view">現在播放</string>
   <string name="sort_by">排序依據</string>
@@ -266,6 +267,8 @@
   <string name="sendto">傳送到…</string>
   <string name="no_receiving_apps">該媒體類型未找到相應接受的應用程式！</string>
   <string name="duration">持續時間</string>
+  <string name="dump_database">轉儲資料庫</string>
+  <string name="dump_database_result">資料庫轉儲到 \'%s\'</string>
   <string name="media_library">媒體庫</string>
   <string name="media_folders_header">索引目錄</string>
   <string name="media_scan_header">媒體掃描</string>

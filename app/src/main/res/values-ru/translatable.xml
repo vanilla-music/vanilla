@@ -49,6 +49,7 @@
   <string name="playlist_favorites">Избранные</string>
   <string name="new_playlist">Новый плей-лист…</string>
   <string name="expand">Показать</string>
+  <string name="expand_or_play_all">Показать либо воспроизвести всё</string>
   <string name="delete">Удалить</string>
   <string name="playback_view">Сейчас играет</string>
   <string name="sort_by">Сортировка</string>
@@ -290,6 +291,8 @@
   <string name="sendto">Отправить в…</string>
   <string name="no_receiving_apps">Нет приложений для обработки такого типа файла!</string>
   <string name="duration">Общая длительность</string>
+  <string name="dump_database">Выгрузить базу данных</string>
+  <string name="dump_database_result">База данных выгружена в \"%s\"</string>
   <string name="media_library">Библиотека носителей</string>
   <string name="media_folders_header">Директории в индексе</string>
   <string name="media_scan_header">Сканер носителей</string>

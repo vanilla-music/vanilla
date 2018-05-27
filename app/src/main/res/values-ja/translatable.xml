@@ -1,6 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="app_name">Vanilla Music</string>
+  <string name="ok">OK</string>
+  <string name="cancel">キャンセル</string>
   <!--Playback Activity (main screen)-->
   <string name="no_songs">お使いのデバイス上でトラックが見つかりませんでした。</string>
   <string name="empty_queue">トラックが選択されていません。ライブラリーから選択するか、このメッセージをタップしてランダムモードに入ります。</string>
@@ -47,6 +49,7 @@
   <string name="playlist_favorites">お気に入り</string>
   <string name="new_playlist">新しいプレイリスト…</string>
   <string name="expand">展開</string>
+  <string name="expand_or_play_all">展開またはすべて再生</string>
   <string name="delete">削除</string>
   <string name="playback_view">再生中</string>
   <string name="sort_by">並び替え</string>
@@ -263,6 +266,9 @@
   <string name="share_failed">ファイルの共有に失敗しました</string>
   <string name="sendto">送信…</string>
   <string name="no_receiving_apps">このメディアタイプの受信アプリが見つかりません!</string>
+  <string name="duration">時間</string>
+  <string name="dump_database">データベースをダンプ</string>
+  <string name="dump_database_result">データベースをダンプしました \'%s\'</string>
   <string name="media_library">メディアライブラリー</string>
   <string name="media_folders_header">インデックス済ディレクトリー</string>
   <string name="media_scan_header">メディアスキャナー</string>

@@ -1,6 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="app_name">Vanilla Music</string>
+  <string name="ok">OK</string>
+  <string name="cancel">Annuleren</string>
   <!--Playback Activity (main screen)-->
   <string name="no_songs">Geen nummers gevonden op het toestel.</string>
   <string name="empty_queue">Geen nummers geselecteerd. Kies er een aantal uit de bibliotheek of activeer willekeurige modus door op dit bericht te tikken.</string>
@@ -47,6 +49,7 @@
   <string name="playlist_favorites">Favorieten</string>
   <string name="new_playlist">Nieuwe afspeellijst...</string>
   <string name="expand">Uitbreiden</string>
+  <string name="expand_or_play_all">Alles uitbreiden of afspelen</string>
   <string name="delete">Verwijderen</string>
   <string name="playback_view">Speelt nu af</string>
   <string name="sort_by">Sorteren volgens</string>
@@ -271,6 +274,9 @@
   <string name="share_failed">Delen van bestand is mislukt</string>
   <string name="sendto">Zenden naar…</string>
   <string name="no_receiving_apps">Geen ontvangende apps gevonden voor dit bestandstype!</string>
+  <string name="duration">Lengte</string>
+  <string name="dump_database">Database dumpen</string>
+  <string name="dump_database_result">Database is gedumpt naar \'%s\'</string>
   <string name="media_library">Media bibliotheek</string>
   <string name="media_folders_header">Geïndexeerde mappen</string>
   <string name="media_scan_header">Media scanner</string>

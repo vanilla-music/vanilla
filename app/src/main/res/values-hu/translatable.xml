@@ -49,6 +49,7 @@
   <string name="playlist_favorites">Kedvencek</string>
   <string name="new_playlist">Új lejátszólista…</string>
   <string name="expand">Részletek</string>
+  <string name="expand_or_play_all">Részletek vagy az összes lejátszása</string>
   <string name="delete">Törlés</string>
   <string name="playback_view">Most játszott</string>
   <string name="sort_by">Rendezés</string>
@@ -274,6 +275,8 @@
   <string name="sendto">Küldés…</string>
   <string name="no_receiving_apps">Nem található fogadó alkalmazás ehhez a médiatípushoz!</string>
   <string name="duration">Hossz</string>
+  <string name="dump_database">Adatbázis kiírása</string>
+  <string name="dump_database_result">Adatbázis kiírva ide: „%s”</string>
   <string name="media_library">Médiagyűjtemény</string>
   <string name="media_folders_header">Indexelt könyvtárak</string>
   <string name="media_scan_header">Médiaátvizsgáló</string>

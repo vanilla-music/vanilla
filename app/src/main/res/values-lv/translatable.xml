@@ -1,6 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="app_name">Vanilla Music</string>
+  <string name="ok">Labi</string>
+  <string name="cancel">Atcelt</string>
   <!--Playback Activity (main screen)-->
   <string name="no_songs">Jūsu ierīcē netika atrasts neviens celiņš.</string>
   <string name="empty_queue">Nav izvēlēts neviens celiņš. Izvēlieties dažus no bibliotēkas vai ievadiet nejaušās izvēles režīmu, nospiežot uz šī ziņojuma.</string>
@@ -47,6 +49,7 @@
   <string name="playlist_favorites">Iecienītie</string>
   <string name="new_playlist">Jauns repertuārs...</string>
   <string name="expand">Izplest</string>
+  <string name="expand_or_play_all">Izplest vai atskaņot visu</string>
   <string name="delete">Dzēst</string>
   <string name="playback_view">Tagad atskaņo</string>
   <string name="sort_by">Kārtot pēc</string>
@@ -280,6 +283,9 @@
   <string name="share_failed">Neizdevās kopīgot failu</string>
   <string name="sendto">Sūtīt uz...</string>
   <string name="no_receiving_apps">Šim mēdija tipam netika atrastas saņemošās lietotnes!</string>
+  <string name="duration">Ilgums</string>
+  <string name="dump_database">Izmest datubāzi</string>
+  <string name="dump_database_result">Datubāze izmesta vietā \'1 %s\'</string>
   <string name="media_library">Multivides bibliotēka</string>
   <string name="media_folders_header">Indeksētās mapes</string>
   <string name="media_scan_header">Multivides skenētājs</string>

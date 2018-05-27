@@ -1,6 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="app_name">Vanilla Music</string>
+  <string name="ok">OK</string>
+  <string name="cancel">Cancelar</string>
   <!--Playback Activity (main screen)-->
   <string name="no_songs">Não foram encontradas faixas.</string>
   <string name="empty_queue">Não selecionou as faixas. Escolha algumas da sua coleção ou ative o modo aleatório tocando nesta mensagem.</string>
@@ -47,6 +49,7 @@
   <string name="playlist_favorites">Favoritos</string>
   <string name="new_playlist">Nova lista de reprodução...</string>
   <string name="expand">Expandir</string>
+  <string name="expand_or_play_all">Expandir ou reproduzir tudo</string>
   <string name="delete">Apagar</string>
   <string name="playback_view">Em reprodução</string>
   <string name="sort_by">Ordenar por</string>
@@ -272,6 +275,8 @@
   <string name="sendto">Enviar para...</string>
   <string name="no_receiving_apps">Não foram encontradas aplicações para este tipo multimédia!</string>
   <string name="duration">Duração</string>
+  <string name="dump_database">Guardar base de dados</string>
+  <string name="dump_database_result">Base de dados guardada em \'%s\'</string>
   <string name="media_library">Coleção multimédia</string>
   <string name="media_folders_header">Diretórios indexados</string>
   <string name="media_scan_header">Analisador multimédia</string>

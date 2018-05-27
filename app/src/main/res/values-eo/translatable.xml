@@ -49,6 +49,7 @@
   <string name="playlist_favorites">Ŝatataj</string>
   <string name="new_playlist">Nova ludlisto…</string>
   <string name="expand">Etendi</string>
+  <string name="expand_or_play_all">Etendi aŭ ludi ĉiujn</string>
   <string name="delete">Forigi</string>
   <string name="playback_view">Ludata nun</string>
   <string name="sort_by">Ordigi laŭ</string>
@@ -274,6 +275,8 @@
   <string name="sendto">Sendi al…</string>
   <string name="no_receiving_apps">Neniu aplikaĵo trovita por ricevi tiun ĉi tipon de aŭdvidaĵo!</string>
   <string name="duration">Daŭro</string>
+  <string name="dump_database">Kopii datumbazon</string>
+  <string name="dump_database_result">Kopiis datumbazon al “%s”</string>
   <string name="media_library">Muzik-biblioteko</string>
   <string name="media_folders_header">Indeksataj dosierujoj</string>
   <string name="media_scan_header">Muzik-skanilo</string>
