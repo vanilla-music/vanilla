@@ -699,7 +699,6 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService
 	private static final int[] SHUFFLE_ICONS =
 		{ 	R.drawable.shuffle_inactive_service
 		  , R.drawable.shuffle_active
-		  , R.drawable.shuffle_active
 		  , R.drawable.shuffle_album_active };
 
 	private void setCustomAction(PlaybackState.Builder stateBuilder) {
