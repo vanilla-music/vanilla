@@ -81,6 +81,10 @@ public class SlidingView extends FrameLayout
 	 */
 	private int mSliderHandleId = 0;
 	/**
+	 * Whether or not to have the slider always in expanded mode
+	 */
+	private boolean mSliderAlwaysExpanded = false;
+	/**
 	 * The current expansion stage
 	 */
 	int mCurrentStage = 0;
@@ -112,6 +116,7 @@ public class SlidingView extends FrameLayout
 		mDetector = new GestureDetector(new GestureListener());
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SlidingViewPreferences);
 		mSliderHandleId = a.getResourceId(R.styleable.SlidingViewPreferences_slider_handle_id, 0);
+		mSliderAlwaysExpanded = a.getInt(R.styleable.SlidingViewPreferences_slider_always_expanded, 0) != 0;
 		int slaveId = a.getResourceId(R.styleable.SlidingViewPreferences_slider_slave_id, 0);
 		a.recycle();
 
@@ -175,14 +180,18 @@ public class SlidingView extends FrameLayout
 		if (mStages.size() < 1)
 			return;
 
+		if (mSliderAlwaysExpanded)
+			stage = mStages.size() - 1;
+
 		mCurrentStage = stage;
 		mDelayedHide = false;
 
-		int pxOff = mStages.get(stage);
+		final int pxOff = mStages.get(stage);
+		final int duration = mSliderAlwaysExpanded ? 0 : ANIMATION_DURATION;
 		this
 			.animate()
 			.translationY(pxOff)
-			.setDuration(ANIMATION_DURATION)
+			.setDuration(duration)
 			.setListener(new AnimationListener())
 			.setInterpolator(new DecelerateInterpolator());
 	}
@@ -300,6 +309,9 @@ public class SlidingView extends FrameLayout
 		float y = event.getRawY();
 		float dy = y - mPreviousY;    // diff Y
 		float vy = getTranslationY(); // view Y
+
+		if (mSliderAlwaysExpanded)
+			dy = 0;
 
 		switch(event.getActionMasked()) {
 			case MotionEvent.ACTION_UP : {
