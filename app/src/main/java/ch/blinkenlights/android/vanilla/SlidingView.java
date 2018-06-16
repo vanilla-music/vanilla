@@ -164,17 +164,25 @@ public class SlidingView extends FrameLayout
 	}
 
 	/**
-	 * Returns true if the slide is fully hidden
+	 * Returns true if the slide is in its smallest stage
 	 */
-	public boolean isHidden() {
+	public boolean isMinimized() {
 		return mCurrentStage == 0;
 	}
 
 	/**
 	 * Returns true if the slide is fully expanded
 	 */
-	public boolean isExpanded() {
+	public boolean isFullyExpanded() {
 		return mCurrentStage == (mStages.size()-1);
+	}
+
+	/**
+	 * Returns true if the slide can be minimized, that is:
+	 * It is not always visible and NOT in stage 0.
+	 */
+	public boolean isShrinkable() {
+		return !mSliderAlwaysExpanded && !isMinimized();
 	}
 
 	/**

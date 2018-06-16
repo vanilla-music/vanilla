@@ -284,7 +284,7 @@ public class LibraryActivity
 		case KeyEvent.KEYCODE_BACK:
 			Limiter limiter = mPagerAdapter.getCurrentLimiter();
 
-			if (mSlidingView.isHidden() == false) {
+			if (mSlidingView.isShrinkable()) {
 				mSlidingView.hideSlide();
 				break;
 			}
@@ -439,7 +439,7 @@ public class LibraryActivity
 	 */
 	public void openPlaybackActivity()
 	{
-		if (mSlidingView.isExpanded())
+		if (mSlidingView.isShrinkable())
 			mSlidingView.hideSlideDelayed();
 		startActivity(new Intent(this, FullPlaybackActivity.class));
 	}
@@ -784,7 +784,7 @@ public class LibraryActivity
 		menu.findItem(MENU_GO_HOME).setVisible(
 				adapter != null &&
 				adapter.getMediaType() == MediaUtils.TYPE_FILE &&
-				!mSlidingView.isExpanded());
+				(!mSlidingView.isShrinkable() || !mSlidingView.isFullyExpanded()));
 		return super.onPrepareOptionsMenu(menu);
 	}
 

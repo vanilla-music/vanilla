@@ -458,7 +458,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 				mHandler.sendEmptyMessage(MSG_SAVE_CONTROLS);
 				return true;
 			case KeyEvent.KEYCODE_BACK:
-				if (mSlidingView.isHidden() == false) {
+				if (mSlidingView.isShrinkable()) {
 					mSlidingView.hideSlide();
 					return true;
 				}
