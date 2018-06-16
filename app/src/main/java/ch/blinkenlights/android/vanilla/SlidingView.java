@@ -93,11 +93,17 @@ public class SlidingView extends FrameLayout
 	 */
 	ArrayList<Integer> mStages = new ArrayList<Integer>();
 	/**
+	 * Slide expansion states used by onSlideExpansionChanged
+	 */
+	public final static int EXPANSION_PARTIAL = 0;
+	public final static int EXPANSION_ALWAYS_EXPANDED = 1;
+	public final static int EXPANSION_OVERLAY_EXPANDED = 2;
+	/**
 	 * Our callback interface
 	 */
 	private Callback mCallback;
 	public interface Callback {
-		public abstract void onSlideFullyExpanded(boolean expanded);
+		public abstract void onSlideExpansionChanged(int expansion);
 	}
 
 
@@ -379,7 +385,11 @@ public class SlidingView extends FrameLayout
 		public void onAnimationEnd(Animator animation) {
 			setSlaveViewStage(mCurrentStage);
 			if (mCallback != null) {
-				mCallback.onSlideFullyExpanded( mCurrentStage == mStages.size()-1 );
+				int expansion = EXPANSION_PARTIAL;
+				if (mCurrentStage == mStages.size() -1) {
+					expansion = (mSliderAlwaysExpanded ? EXPANSION_ALWAYS_EXPANDED : EXPANSION_OVERLAY_EXPANDED);
+				}
+				mCallback.onSlideExpansionChanged(expansion);
 			}
 		}
 		@Override

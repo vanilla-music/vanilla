@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2016-2018 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -127,7 +127,8 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 		menu.add(0, MENU_CLEAR_QUEUE, 20, R.string.dequeue_rest);
 		menu.add(0, MENU_EMPTY_QUEUE, 20, R.string.empty_the_queue);
 		menu.add(0, MENU_SAVE_QUEUE, 20, R.string.save_as_playlist);
-		onSlideFullyExpanded(false);
+		// This should only be required on ICS.
+		onSlideExpansionChanged(SlidingView.EXPANSION_PARTIAL);
 		return true;
 	}
 
@@ -323,27 +324,35 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 	 * Called by SlidingView to signal a visibility change.
 	 * Toggles the visibility of menu items
 	 *
-	 * @param expanded true if slide fully expanded
+	 * @param expansion one of SlidingView.EXPANSION_*
 	 */
 	@Override
-	public void onSlideFullyExpanded(boolean expanded) {
+	public void onSlideExpansionChanged(int expansion) {
 		if (mMenu == null)
 			return; // not initialized yet
 
-		final int[] slide_visible = {MENU_HIDE_QUEUE, MENU_CLEAR_QUEUE, MENU_EMPTY_QUEUE, MENU_SAVE_QUEUE};
-		final int[] slide_hidden = {MENU_SHOW_QUEUE, MENU_SORT, MENU_DELETE, MENU_ENQUEUE, MENU_MORE,
+		final int[] slide_visible = {MENU_CLEAR_QUEUE, MENU_EMPTY_QUEUE, MENU_SAVE_QUEUE};
+		final int[] slide_hidden = {MENU_SORT, MENU_DELETE, MENU_ENQUEUE, MENU_MORE,
 		                            MENU_ADD_TO_PLAYLIST, MENU_SHARE};
+
+		final MenuItem hideQueue = mMenu.findItem(MENU_HIDE_QUEUE);
+		if (hideQueue != null)
+			hideQueue.setVisible(expansion == SlidingView.EXPANSION_OVERLAY_EXPANDED);
+
+		final MenuItem showQueue = mMenu.findItem(MENU_SHOW_QUEUE);
+		if (showQueue != null)
+			showQueue.setVisible(expansion == SlidingView.EXPANSION_PARTIAL);
 
 		for (int id : slide_visible) {
 			MenuItem item = mMenu.findItem(id);
 			if (item != null)
-				item.setVisible(expanded);
+				item.setVisible(expansion != SlidingView.EXPANSION_PARTIAL);
 		}
 
 		for (int id : slide_hidden) {
 			MenuItem item = mMenu.findItem(id);
 			if (item != null)
-				item.setVisible(!expanded);
+				item.setVisible(expansion != SlidingView.EXPANSION_OVERLAY_EXPANDED);
 		}
 	}
 
