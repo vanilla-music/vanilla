@@ -40,6 +40,12 @@ THE SOFTWARE.
 			android:name="com.mirrorlink.android.rockscout.allow-offline-access"
 			android:value="true" />
 
+    	<meta-data android:name="com.google.android.gms.car.application"
+			android:resource="@xml/automotive_app_desc"/>
+		
+        <meta-data android:name="com.google.android.gms.car.notification.SmallIcon"
+            android:resource="@mipmap/icon" />
+
 		<provider
 			android:name="android.support.v4.content.FileProvider"
 			android:authorities="ch.blinkenlights.android.vanilla.fileprovider"
