@@ -50,15 +50,15 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Handles Music Playback through MirrorLink(tm) by implementing a MediaBrowserService.
+ * Handles Music Playback through MirrorLink(tm) and Android(tm) Auto by implementing a MediaBrowserService.
  */
 
 @TargetApi(21)
-public class MirrorLinkMediaBrowserService extends MediaBrowserService
+public class CarMediaBrowserService extends MediaBrowserService
 	implements Handler.Callback,
 	           TimelineCallback {
 
-	private static final String TAG = "MirrorLinkMediaBrowserService";
+	private static final String TAG = "CarMediaBrowserService";
 	// Action to change the repeat mode
 	private static final String CUSTOM_ACTION_REPEAT = "ch.blinkenlights.android.vanilla.REPEAT";
 	// Action to change the repeat mode
@@ -174,7 +174,7 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService
 			Thread t = new Thread(new Runnable() {
 				@Override
 				public void run() {
-					PlaybackService.get(MirrorLinkMediaBrowserService.this);
+					PlaybackService.get(CarMediaBrowserService.this);
 				}
 			});
 			t.start();
@@ -478,10 +478,10 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService
 
 	private void setSessionActive() {
 		if (!mServiceStarted) {
-			// The MirrorLinkMediaBrowserService needs to keep running even after the calling MediaBrowser
+			// The CarMediaBrowserService needs to keep running even after the calling MediaBrowser
 			// is disconnected. Call startService(Intent) and then stopSelf(..) when we no longer
 			// need to play media.
-			startService(new Intent(getApplicationContext(), MirrorLinkMediaBrowserService.class));
+			startService(new Intent(getApplicationContext(), CarMediaBrowserService.class));
 			mServiceStarted = true;
 		}
 
@@ -493,7 +493,7 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService
 	private void setSessionInactive() {
 		if(mServiceStarted) {
 			// service is no longer necessary. Will be started again if needed.
-			MirrorLinkMediaBrowserService.this.stopSelf();
+			CarMediaBrowserService.this.stopSelf();
 			mServiceStarted = false;
 		}
 
@@ -523,60 +523,60 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService
 			setSessionActive();
 
 			if(PlaybackService.hasInstance()) {
-				PlaybackService.get(MirrorLinkMediaBrowserService.this).play();
+				PlaybackService.get(CarMediaBrowserService.this).play();
 			}
 		break;
 		case MSG_PLAY_QUERY:
 			setSessionActive();
 			if(PlaybackService.hasInstance()) {
 				QueryTask query = buildQueryFromMediaID(new MediaID((String)message.obj), false, true);
-				PlaybackService.get(MirrorLinkMediaBrowserService.this).addSongs(query);
+				PlaybackService.get(CarMediaBrowserService.this).addSongs(query);
 			}
 		break;
 		case MSG_PAUSE:
 			if(PlaybackService.hasInstance()) {
-				PlaybackService.get(MirrorLinkMediaBrowserService.this).pause();
+				PlaybackService.get(CarMediaBrowserService.this).pause();
 			}
 		break;
 		case MSG_STOP:
 			if(PlaybackService.hasInstance()) {
-				PlaybackService.get(MirrorLinkMediaBrowserService.this).pause();
+				PlaybackService.get(CarMediaBrowserService.this).pause();
 			}
 			setSessionInactive();
 		break;
 		case MSG_SEEKTO:
 			if(PlaybackService.hasInstance()) {
-				PlaybackService.get(MirrorLinkMediaBrowserService.this).seekToProgress(message.arg1);
+				PlaybackService.get(CarMediaBrowserService.this).seekToProgress(message.arg1);
 			}
 		break;
 		case MSG_NEXTSONG:
 			if(PlaybackService.hasInstance()) {
-				PlaybackService.get(MirrorLinkMediaBrowserService.this).performAction(Action.NextSong, null);
+				PlaybackService.get(CarMediaBrowserService.this).performAction(Action.NextSong, null);
 			}
 		break;
 		case MSG_PREVSONG:
 			if(PlaybackService.hasInstance()) {
-				PlaybackService.get(MirrorLinkMediaBrowserService.this).performAction(Action.PreviousSong, null);
+				PlaybackService.get(CarMediaBrowserService.this).performAction(Action.PreviousSong, null);
 			}
 		break;
 		case MSG_SEEKFW:
 			if(PlaybackService.hasInstance()) {
-				PlaybackService.get(MirrorLinkMediaBrowserService.this).performAction(Action.SeekForward, null);
+				PlaybackService.get(CarMediaBrowserService.this).performAction(Action.SeekForward, null);
 			}
 		break;
 		case MSG_SEEKBW:
 			if(PlaybackService.hasInstance()) {
-				PlaybackService.get(MirrorLinkMediaBrowserService.this).performAction(Action.SeekBackward, null);
+				PlaybackService.get(CarMediaBrowserService.this).performAction(Action.SeekBackward, null);
 			}
 		break;
 		case MSG_REPEAT:
 			if(PlaybackService.hasInstance()) {
-				PlaybackService.get(MirrorLinkMediaBrowserService.this).performAction(Action.Repeat, null);
+				PlaybackService.get(CarMediaBrowserService.this).performAction(Action.Repeat, null);
 			}
 		break;
 		case MSG_SHUFFLE:
 			if(PlaybackService.hasInstance()) {
-				PlaybackService.get(MirrorLinkMediaBrowserService.this).performAction(Action.Shuffle, null);
+				PlaybackService.get(CarMediaBrowserService.this).performAction(Action.Shuffle, null);
 			}
 		break;
 		case MSG_UPDATE_STATE:

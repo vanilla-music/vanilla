@@ -159,7 +159,7 @@ THE SOFTWARE.
 		</service>
 
 		<service
-			android:name=".MirrorLinkMediaBrowserService"
+			android:name=".CarMediaBrowserService"
 			android:exported="true">
 			<intent-filter>
 				<action android:name="android.media.browse.MediaBrowserService" />
