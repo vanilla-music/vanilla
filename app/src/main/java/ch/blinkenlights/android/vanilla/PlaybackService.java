@@ -1184,32 +1184,32 @@ public final class PlaybackService extends Service
 	}
 
 	/**
-	 * When playing through MirrorLink(tm) don't interact
+	 * When playing through MirrorLink(tm) and Android(tm) Auto don't interact
 	 * with the User directly as this is considered distracting
 	 * while driving
 	 */
-	private void showMirrorLinkSafeToast(int resId, int duration) {
-		if(getMirrorLinkCallback() == null) {
+	private void showCarSafeToast(int resId, int duration) {
+		if(getCarCallback() == null) {
 			mHandler.sendMessage(mHandler.obtainMessage(MSG_SHOW_TOAST, duration, resId));
 		}
 	}
 
-	private void showMirrorLinkSafeToast(CharSequence text, int duration) {
-		if(getMirrorLinkCallback() == null) {
+	private void showCarSafeToast(CharSequence text, int duration) {
+		if(getCarCallback() == null) {
 			mHandler.sendMessage(mHandler.obtainMessage(MSG_SHOW_TOAST, duration, 0, text));
 		}
 	}
 
 	/**
-	 * Returns TRUE if the mirror link service has been registered
+	 * Returns TRUE if the car service has been registered
 	 */
-	private MirrorLinkMediaBrowserService getMirrorLinkCallback() {
+	private CarMediaBrowserService getCarCallback() {
 		if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
 			return null; // does not support mirrorlink
 
 		for (Object o : sCallbacks) {
-			if (o instanceof MirrorLinkMediaBrowserService) {
-				return (MirrorLinkMediaBrowserService)o;
+			if (o instanceof CarMediaBrowserService) {
+				return (CarMediaBrowserService)o;
 			}
 		}
 		return null;
@@ -1225,7 +1225,7 @@ public final class PlaybackService extends Service
 		synchronized (mStateLock) {
 			if ((mState & FLAG_EMPTY_QUEUE) != 0) {
 				setFinishAction(SongTimeline.FINISH_RANDOM);
-				showMirrorLinkSafeToast(R.string.random_enabling, Toast.LENGTH_SHORT);
+				showCarSafeToast(R.string.random_enabling, Toast.LENGTH_SHORT);
 			}
 
 			int state = updateState(mState | FLAG_PLAYING);
@@ -1415,7 +1415,7 @@ public final class PlaybackService extends Service
 		} catch (IOException e) {
 			mErrorMessage = getResources().getString(R.string.song_load_failed, song.path);
 			updateState(mState | FLAG_ERROR);
-			showMirrorLinkSafeToast(mErrorMessage, Toast.LENGTH_LONG);
+			showCarSafeToast(mErrorMessage, Toast.LENGTH_LONG);
 			Log.e("VanillaMusic", "IOException", e);
 
 			/* Automatically advance to next song IF we are currently playing or already did skip something
@@ -1456,7 +1456,7 @@ public final class PlaybackService extends Service
 	{
 		Log.e("VanillaMusic", "MediaPlayer error: " + what + ' ' + extra);
 
-		MirrorLinkMediaBrowserService service = getMirrorLinkCallback();
+		CarMediaBrowserService service = getCarCallback();
 		if(service != null) {
 			service.onError("MediaPlayer Error");
 		}
@@ -1827,7 +1827,7 @@ public final class PlaybackService extends Service
 		default:
 			throw new IllegalArgumentException("Invalid add mode: " + query.mode);
 		}
-		showMirrorLinkSafeToast(getResources().getQuantityString(text, count, count), Toast.LENGTH_SHORT);
+		showCarSafeToast(getResources().getQuantityString(text, count, count), Toast.LENGTH_SHORT);
 	}
 
 	/**
@@ -2323,7 +2323,7 @@ public final class PlaybackService extends Service
 			break;
 		case ClearQueue:
 			clearQueue();
-			showMirrorLinkSafeToast(R.string.queue_cleared, Toast.LENGTH_SHORT);
+			showCarSafeToast(R.string.queue_cleared, Toast.LENGTH_SHORT);
 			break;
 		case ToggleControls:
 		case ShowQueue:
