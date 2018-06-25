@@ -18,6 +18,7 @@
 package ch.blinkenlights.android.vanilla;
 
 import ch.blinkenlights.android.medialibrary.MediaLibrary;
+import ch.blinkenlights.android.medialibrary.LibraryObserver;
 
 import android.annotation.TargetApi;
 import android.app.job.JobInfo;
@@ -26,7 +27,6 @@ import android.app.job.JobScheduler;
 import android.app.job.JobService;
 import android.content.Context;
 import android.content.ComponentName;
-import android.database.ContentObserver;
 
 
 @TargetApi(21)
@@ -98,7 +98,7 @@ public class ScheduledLibraryUpdate extends JobService {
 		final boolean fullScan = (Math.random() > 0.7);
 
 		mJobParams = params;
-		MediaLibrary.registerContentObserver(mObserver);
+		MediaLibrary.registerLibraryObserver(mObserver);
 		MediaLibrary.startLibraryScan(this, fullScan, false);
 
 		return true;
@@ -120,7 +120,7 @@ public class ScheduledLibraryUpdate extends JobService {
 	 * Aborts a running scan job
 	 */
 	private void finalizeScan() {
-		MediaLibrary.unregisterContentObserver(mObserver);
+		MediaLibrary.unregisterLibraryObserver(mObserver);
 		MediaLibrary.abortLibraryScan(this);
 		mJobParams = null;
 	}
@@ -131,9 +131,9 @@ public class ScheduledLibraryUpdate extends JobService {
 	 * the last callback will have `ongoing` set to `false`,
 	 * which indicates that our job completed.
 	 */
-	private final ContentObserver mObserver = new ContentObserver(null) {
+	private final LibraryObserver mObserver = new LibraryObserver() {
 		@Override
-		public void onChange(boolean ongoing) {
+		public void onChange(LibraryObserver.Type type, boolean ongoing) {
 			if (!ongoing) {
 				jobFinished(mJobParams, false);
 				finalizeScan();

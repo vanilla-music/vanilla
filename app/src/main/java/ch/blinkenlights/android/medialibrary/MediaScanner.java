@@ -205,7 +205,7 @@ public class MediaScanner implements Handler.Callback {
 
 		switch (rpc) {
 			case MSG_NOTIFY_CHANGE: {
-				MediaLibrary.notifyObserver(true);
+				MediaLibrary.notifyObserver(LibraryObserver.Type.SONG, true);
 				break;
 			}
 			case MSG_SCAN_FINISHED: {
@@ -224,7 +224,7 @@ public class MediaScanner implements Handler.Callback {
 				// also signals that this will be our last update
 				// for this scan.
 				mHandler.removeMessages(MSG_NOTIFY_CHANGE);
-				MediaLibrary.notifyObserver(false);
+				MediaLibrary.notifyObserver(LibraryObserver.Type.ANY, false);
 
 				updateNotification(false);
 				break;

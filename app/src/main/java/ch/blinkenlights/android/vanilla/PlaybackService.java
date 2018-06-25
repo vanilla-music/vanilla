@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2017 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2012-2018 Adrian Ulrich <adrian@blinkenlights.ch>
  * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,6 +24,7 @@
 package ch.blinkenlights.android.vanilla;
 
 import ch.blinkenlights.android.medialibrary.MediaLibrary;
+import ch.blinkenlights.android.medialibrary.LibraryObserver;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -36,7 +37,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.database.ContentObserver;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.hardware.Sensor;
@@ -497,7 +497,7 @@ public final class PlaybackService extends Service
 		filter.addAction(Intent.ACTION_SCREEN_ON);
 		registerReceiver(mReceiver, filter);
 
-		MediaLibrary.registerContentObserver(mObserver);
+		MediaLibrary.registerLibraryObserver(mObserver);
 
 		mRemoteControlClient = new RemoteControl().getClient(this);
 		mRemoteControlClient.initializeRemote();
@@ -615,7 +615,7 @@ public final class PlaybackService extends Service
 		// defer wakelock and close audioFX
 		enterSleepState();
 
-		MediaLibrary.unregisterContentObserver(mObserver);
+		MediaLibrary.unregisterLibraryObserver(mObserver);
 
 		if (mMediaPlayer != null) {
 			mMediaPlayer.release();
@@ -1930,9 +1930,9 @@ public final class PlaybackService extends Service
 			list.get(i).onPositionInfoChanged();
 	}
 
-	private final ContentObserver mObserver = new ContentObserver(null) {
+	private final LibraryObserver mObserver = new LibraryObserver() {
 		@Override
-		public void onChange(boolean selfChange)
+		public void onChange(LibraryObserver.Type type, boolean ongoing)
 		{
 			MediaUtils.onMediaChange();
 			onMediaChange();

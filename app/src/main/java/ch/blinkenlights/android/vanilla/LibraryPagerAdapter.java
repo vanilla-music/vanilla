@@ -25,7 +25,6 @@ package ch.blinkenlights.android.vanilla;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.ContentObserver;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -191,17 +190,6 @@ public class LibraryPagerAdapter
 	 * The current filter text, or null if none.
 	 */
 	private String mFilter;
-
-
-	private final ContentObserver mPlaylistObserver = new ContentObserver(null) {
-		@Override
-		public void onChange(boolean selfChange)
-		{
-			if (mPlaylistAdapter != null) {
-				postRequestRequery(mPlaylistAdapter);
-			}
-		}
-	};
 
 	/**
 	 * Create the LibraryPager.

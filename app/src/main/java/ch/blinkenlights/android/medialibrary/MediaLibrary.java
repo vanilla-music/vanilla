@@ -20,7 +20,6 @@ package ch.blinkenlights.android.medialibrary;
 import android.content.Context;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.ContentObserver;
 import android.provider.MediaStore;
 import android.os.Build;
 import android.os.Environment;
@@ -103,7 +102,7 @@ public class MediaLibrary  {
 	/**
 	 * The observer to call-back during database changes
 	 */
-	private static final ArrayList<ContentObserver> sContentObservers = new ArrayList<ContentObserver>(2);
+	private static final ArrayList<LibraryObserver> sLibraryObservers = new ArrayList<LibraryObserver>(2);
 	/**
 	 * The lock we are using during object creation
 	 */
@@ -292,9 +291,9 @@ public class MediaLibrary  {
 	}
 
 	/**
-	 * Registers a new content observer for the media library
+	 * Registers a new library observer for the media library
 	 *
-	 * The MediaLibrary will call `onChange(boolean ongoing)` if
+	 * The MediaLibrary will call `onLibraryChanged()` if
 	 * the media library changed.
 	 *
 	 * `ongoing` will be set to `true` if you are expected to receive
@@ -303,33 +302,33 @@ public class MediaLibrary  {
 	 *
 	 * @param observer the content observer we are going to call on changes
 	 */
-	public static void registerContentObserver(ContentObserver observer) {
-		if (sContentObservers.contains(observer))
-			throw new IllegalStateException("ContentObserver was already registered");
+	public static void registerLibraryObserver(LibraryObserver observer) {
+		if (sLibraryObservers.contains(observer))
+			throw new IllegalStateException("LibraryObserver was already registered");
 
-		sContentObservers.add(observer);
+		sLibraryObservers.add(observer);
 	}
 
 	/**
-	 * Unregisters a content observer which was previously registered
-	 * by calling registerContentObserver().
+	 * Unregisters a library observer which was previously registered
+	 * by calling registerLibraryObserver().
 	 *
 	 * @param observer the content observer to unregister.
 	 */
-	public static void unregisterContentObserver(ContentObserver observer) {
-		boolean removed = sContentObservers.remove(observer);
+	public static void unregisterLibraryObserver(LibraryObserver observer) {
+		boolean removed = sLibraryObservers.remove(observer);
 
 		if (!removed)
-			throw new IllegalArgumentException("This content observer was never registered!");
+			throw new IllegalArgumentException("This library observer was never registered!");
 	}
 
 	/**
 	 * Broadcasts a change to all registered observers
 	 */
-	static void notifyObserver(boolean ongoing) {
-		ArrayList<ContentObserver> list = sContentObservers;
+	static void notifyObserver(LibraryObserver.Type type, boolean ongoing) {
+		ArrayList<LibraryObserver> list = sLibraryObservers;
 		for (int i = list.size(); --i != -1; )
-			list.get(i).onChange(ongoing);
+			list.get(i).onChange(type, ongoing);
 	}
 
 	/**
@@ -358,7 +357,7 @@ public class MediaLibrary  {
 
 		if (rows > 0) {
 			getBackend(context).cleanOrphanedEntries(true);
-			notifyObserver(false);
+			notifyObserver(LibraryObserver.Type.ANY, false);
 		}
 		return rows;
 	}
@@ -390,7 +389,7 @@ public class MediaLibrary  {
 		long id = getBackend(context).insert(MediaLibrary.TABLE_PLAYLISTS, null, v);
 
 		if (id != -1)
-			notifyObserver(false);
+			notifyObserver(LibraryObserver.Type.PLAYLIST, false);
 		return id;
 	}
 
@@ -408,7 +407,7 @@ public class MediaLibrary  {
 		boolean removed = (rows > 0);
 
 		if (removed)
-			notifyObserver(false);
+			notifyObserver(LibraryObserver.Type.PLAYLIST, false);
 		return removed;
 	}
 
@@ -446,7 +445,7 @@ public class MediaLibrary  {
 		int rows = getBackend(context).bulkInsert(MediaLibrary.TABLE_PLAYLISTS_SONGS, null, bulk);
 
 		if (rows > 0)
-			notifyObserver(false);
+			notifyObserver(LibraryObserver.Type.PLAYLIST, false);
 		return rows;
 	}
 
@@ -462,7 +461,7 @@ public class MediaLibrary  {
 		int rows = getBackend(context).delete(MediaLibrary.TABLE_PLAYLISTS_SONGS, selection, selectionArgs);
 
 		if (rows > 0)
-			notifyObserver(false);
+			notifyObserver(LibraryObserver.Type.PLAYLIST, false);
 		return rows;
 	}
 
@@ -485,7 +484,7 @@ public class MediaLibrary  {
 		}
 
 		if (newId != -1)
-			notifyObserver(false);
+			notifyObserver(LibraryObserver.Type.PLAYLIST, false);
 		return newId;
 	}
 
@@ -530,7 +529,7 @@ public class MediaLibrary  {
 		selection = MediaLibrary.PlaylistSongColumns._ID+"="+from;
 		getBackend(context).update(MediaLibrary.TABLE_PLAYLISTS_SONGS, v, selection, null);
 
-		notifyObserver(false);
+		notifyObserver(LibraryObserver.Type.PLAYLIST, false);
 	}
 
 	/**
