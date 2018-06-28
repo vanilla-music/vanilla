@@ -439,7 +439,8 @@ public class CoverCache {
 				}
 
 				if (inputStream == null && (CoverCache.mCoverLoadMode & CoverCache.COVER_MODE_SHADOW) != 0) {
-					String shadowPath = "/sdcard/Music/.vanilla/"+(song.artist.replaceAll("/", "_"))+"/"+(song.album.replaceAll("/", "_"))+".jpg";
+					final String shadowBase = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath() + "/.vanilla";
+					final String shadowPath = shadowBase + "/" + (song.artist.replaceAll("/", "_"))+"/"+(song.album.replaceAll("/", "_"))+".jpg";
 
 					File guessedFile = new File(shadowPath);
 					if (guessedFile.exists() && !guessedFile.isDirectory()) {
