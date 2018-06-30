@@ -432,6 +432,10 @@ public final class PlaybackService extends Service
 	 */
 	private ReadaheadThread mReadahead;
 	/**
+	 * Referente to our playlist observer
+	 */
+	private PlaylistObserver mPlaylistObserver;
+	/**
 	 * Reference to precreated BASTP Object
 	 */
 	private BastpUtil mBastpUtil;
@@ -501,6 +505,8 @@ public final class PlaybackService extends Service
 
 		mRemoteControlClient = new RemoteControl().getClient(this);
 		mRemoteControlClient.initializeRemote();
+
+		mPlaylistObserver = new PlaylistObserver();
 
 		mLooper = thread.getLooper();
 		mHandler = new Handler(mLooper, this);
@@ -616,6 +622,7 @@ public final class PlaybackService extends Service
 		enterSleepState();
 
 		MediaLibrary.unregisterLibraryObserver(mObserver);
+		mPlaylistObserver.unregister();
 
 		if (mMediaPlayer != null) {
 			mMediaPlayer.release();
@@ -1932,7 +1939,7 @@ public final class PlaybackService extends Service
 
 	private final LibraryObserver mObserver = new LibraryObserver() {
 		@Override
-		public void onChange(LibraryObserver.Type type, boolean ongoing)
+		public void onChange(LibraryObserver.Type type, long id, boolean ongoing)
 		{
 			MediaUtils.onMediaChange();
 			onMediaChange();

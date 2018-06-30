@@ -26,9 +26,8 @@ public class LibraryObserver {
 	 * by the receiver
 	 */
 	public enum Type {
-		ANY,         // Any type may have changed
-		SONG,        // Change only affected song entries
-		PLAYLIST,    // Change only affected playlists
+		SONG,        // Change affected song entries
+		PLAYLIST,    // Change affected playlists
 	}
 
 	/**
@@ -42,9 +41,10 @@ public class LibraryObserver {
 	 * to be overriden by the registered observer.
 	 *
 	 * @param type one of LibraryObserver.Type
+	 * @param id hint of which id changed for type, -1 if unspecified.
 	 * @param ongoing whether or not to expect more events soon.
 	 */
-	public void onChange(Type type, boolean ongoing) {
+	public void onChange(Type type, long id, boolean ongoing) {
 		// NOOP, should be overriden.
 	}
 }

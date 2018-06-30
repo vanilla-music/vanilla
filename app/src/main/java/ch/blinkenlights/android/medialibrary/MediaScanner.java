@@ -205,7 +205,7 @@ public class MediaScanner implements Handler.Callback {
 
 		switch (rpc) {
 			case MSG_NOTIFY_CHANGE: {
-				MediaLibrary.notifyObserver(LibraryObserver.Type.SONG, true);
+				MediaLibrary.notifyObserver(LibraryObserver.Type.SONG, -1, true);
 				break;
 			}
 			case MSG_SCAN_FINISHED: {
@@ -216,6 +216,8 @@ public class MediaScanner implements Handler.Callback {
 				if (mPendingCleanup) {
 					mPendingCleanup = false;
 					mBackend.cleanOrphanedEntries(true);
+					// scan run possibly deleted file which may affect playlists:
+					MediaLibrary.notifyObserver(LibraryObserver.Type.PLAYLIST, -1, false);
 				}
 
 				// Send a last change notification to all observers.
@@ -224,7 +226,7 @@ public class MediaScanner implements Handler.Callback {
 				// also signals that this will be our last update
 				// for this scan.
 				mHandler.removeMessages(MSG_NOTIFY_CHANGE);
-				MediaLibrary.notifyObserver(LibraryObserver.Type.ANY, false);
+				MediaLibrary.notifyObserver(LibraryObserver.Type.SONG, -1, false);
 
 				updateNotification(false);
 				break;

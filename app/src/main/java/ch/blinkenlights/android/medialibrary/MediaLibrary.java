@@ -324,11 +324,15 @@ public class MediaLibrary  {
 
 	/**
 	 * Broadcasts a change to all registered observers
+	 *
+	 * @param type the type of this event.
+	 * @param id the id of type which changed, -1 if unknown
+	 * @param ongoing whether or not to expect more of these updates soon
 	 */
-	static void notifyObserver(LibraryObserver.Type type, boolean ongoing) {
+	static void notifyObserver(LibraryObserver.Type type, long id, boolean ongoing) {
 		ArrayList<LibraryObserver> list = sLibraryObservers;
 		for (int i = list.size(); --i != -1; )
-			list.get(i).onChange(type, ongoing);
+			list.get(i).onChange(type, id, ongoing);
 	}
 
 	/**
@@ -357,7 +361,8 @@ public class MediaLibrary  {
 
 		if (rows > 0) {
 			getBackend(context).cleanOrphanedEntries(true);
-			notifyObserver(LibraryObserver.Type.ANY, false);
+			notifyObserver(LibraryObserver.Type.SONG, id, false);
+			notifyObserver(LibraryObserver.Type.PLAYLIST, -1, false);
 		}
 		return rows;
 	}
@@ -389,7 +394,7 @@ public class MediaLibrary  {
 		long id = getBackend(context).insert(MediaLibrary.TABLE_PLAYLISTS, null, v);
 
 		if (id != -1)
-			notifyObserver(LibraryObserver.Type.PLAYLIST, false);
+			notifyObserver(LibraryObserver.Type.PLAYLIST, id, false);
 		return id;
 	}
 
@@ -407,7 +412,7 @@ public class MediaLibrary  {
 		boolean removed = (rows > 0);
 
 		if (removed)
-			notifyObserver(LibraryObserver.Type.PLAYLIST, false);
+			notifyObserver(LibraryObserver.Type.PLAYLIST, id, false);
 		return removed;
 	}
 
@@ -445,7 +450,7 @@ public class MediaLibrary  {
 		int rows = getBackend(context).bulkInsert(MediaLibrary.TABLE_PLAYLISTS_SONGS, null, bulk);
 
 		if (rows > 0)
-			notifyObserver(LibraryObserver.Type.PLAYLIST, false);
+			notifyObserver(LibraryObserver.Type.PLAYLIST, playlistId, false);
 		return rows;
 	}
 
@@ -461,7 +466,7 @@ public class MediaLibrary  {
 		int rows = getBackend(context).delete(MediaLibrary.TABLE_PLAYLISTS_SONGS, selection, selectionArgs);
 
 		if (rows > 0)
-			notifyObserver(LibraryObserver.Type.PLAYLIST, false);
+			notifyObserver(LibraryObserver.Type.PLAYLIST, -1, false);
 		return rows;
 	}
 
@@ -483,8 +488,10 @@ public class MediaLibrary  {
 			removePlaylist(context, playlistId);
 		}
 
-		if (newId != -1)
-			notifyObserver(LibraryObserver.Type.PLAYLIST, false);
+		if (newId != -1) {
+			notifyObserver(LibraryObserver.Type.PLAYLIST, playlistId, false);
+			notifyObserver(LibraryObserver.Type.PLAYLIST, newId, false);
+		}
 		return newId;
 	}
 
@@ -529,7 +536,7 @@ public class MediaLibrary  {
 		selection = MediaLibrary.PlaylistSongColumns._ID+"="+from;
 		getBackend(context).update(MediaLibrary.TABLE_PLAYLISTS_SONGS, v, selection, null);
 
-		notifyObserver(LibraryObserver.Type.PLAYLIST, false);
+		notifyObserver(LibraryObserver.Type.PLAYLIST, playlistId, false);
 	}
 
 	/**
