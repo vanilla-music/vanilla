@@ -15,7 +15,7 @@ android:
     - tools
 
     # The BuildTools version used
-    - build-tools-26.0.2
+    - build-tools-27.0.3
 
     # The SDK version used
     - android-27
