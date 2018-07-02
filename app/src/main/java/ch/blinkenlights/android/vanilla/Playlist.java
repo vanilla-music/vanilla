@@ -28,6 +28,7 @@ import ch.blinkenlights.android.medialibrary.MediaLibrary;
 import android.content.Context;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import java.util.ArrayList;
 
@@ -70,6 +71,30 @@ public class Playlist {
 		}
 
 		return id;
+	}
+
+	/**
+	 * Returns the name of given playlist id.
+	 *
+	 * @param context the context to use
+	 * @param id the playlist id to look up
+	 * @return name of the playlist, may be null
+	 */
+	public static @Nullable String getPlaylist(Context context, long id)
+	{
+		String name = null;
+		final String[] projection = { MediaLibrary.PlaylistColumns.NAME };
+		final String selection = MediaLibrary.PlaylistColumns._ID+"=?";
+		final String[] selectionArgs = { new Long(id).toString() };
+		Cursor cursor = MediaLibrary.queryLibrary(context, MediaLibrary.TABLE_PLAYLISTS, projection, selection, selectionArgs, null);
+
+		if (cursor != null) {
+			if (cursor.moveToNext())
+				name = cursor.getString(0);
+			cursor.close();
+		}
+
+		return name;
 	}
 
 	/**

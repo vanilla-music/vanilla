@@ -506,7 +506,7 @@ public final class PlaybackService extends Service
 		mRemoteControlClient = new RemoteControl().getClient(this);
 		mRemoteControlClient.initializeRemote();
 
-		mPlaylistObserver = new PlaylistObserver();
+		mPlaylistObserver = new PlaylistObserver(this);
 
 		mLooper = thread.getLooper();
 		mHandler = new Handler(mLooper, this);
