@@ -2,6 +2,9 @@
 
 default:
 
+lint:
+	ssh qemu '. .bash_aliases && cd /hostfs/vanilla && ./gradlew lintDebug'
+
 debug: build
 	adb install -r ./app/build/outputs/apk/debug/app-debug.apk
 
