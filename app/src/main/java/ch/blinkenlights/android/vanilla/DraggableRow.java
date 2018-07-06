@@ -189,6 +189,9 @@ public class DraggableRow extends LinearLayout implements Checkable {
 	 * @param line2 the second line to show
 	 */
 	public void setText(CharSequence line1, CharSequence line2) {
+		if (line1 == null)
+			line1 = "???";
+
 		SpannableStringBuilder sb = new SpannableStringBuilder(line1);
 		sb.append("\n");
 		sb.append(line2);
