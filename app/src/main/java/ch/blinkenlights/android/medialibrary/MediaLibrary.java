@@ -463,11 +463,25 @@ public class MediaLibrary  {
 	 * @return the number of deleted rows, -1 on error
 	 */
 	public static int removeFromPlaylist(Context context, String selection, String[] selectionArgs) {
-		int rows = getBackend(context).delete(MediaLibrary.TABLE_PLAYLISTS_SONGS, selection, selectionArgs);
+		// Grab the list of affected playlist id's before performing a delete.
+		// These are needed for the observer notification.
+		ArrayList<Long> playlists = new ArrayList<>();
+		String[] projection = { "DISTINCT("+MediaLibrary.PlaylistSongColumns.PLAYLIST_ID+")" };
+		Cursor cursor = queryLibrary(context, MediaLibrary.TABLE_PLAYLISTS_SONGS, projection, selection, selectionArgs, null);
+		while(cursor.moveToNext()) {
+			playlists.add(cursor.getLong(0));
+		}
+		cursor.close();
 
-		if (rows > 0)
-			notifyObserver(LibraryObserver.Type.PLAYLIST, -1, false);
-		return rows;
+		int affected = 0;
+		if (playlists.size() > 0) {
+			affected = getBackend(context).delete(MediaLibrary.TABLE_PLAYLISTS_SONGS, selection, selectionArgs);
+			for (long id : playlists) {
+				notifyObserver(LibraryObserver.Type.PLAYLIST, id, false);
+			}
+		}
+
+		return affected;
 	}
 
 	/**
