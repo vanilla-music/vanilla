@@ -26,8 +26,15 @@ public class LibraryObserver {
 	 * by the receiver
 	 */
 	public enum Type {
-		SONG,        // Change affected song entries
-		PLAYLIST,    // Change affected playlists
+		SONG,     // Change affected song items.
+		PLAYLIST, // Change affected playlists.
+	}
+	/**
+	 * Special hint values
+	 */
+	public class Value {
+		public static final int UNKNOWN = -1;  // The exact id of the changed object is not know, may have affected all items.
+		public static final int OUTDATED = -2; // Everything you know is wrong: Cached data must not be used nor trusted.
 	}
 
 	/**

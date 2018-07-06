@@ -362,7 +362,7 @@ public class MediaLibrary  {
 		if (rows > 0) {
 			getBackend(context).cleanOrphanedEntries(true);
 			notifyObserver(LibraryObserver.Type.SONG, id, false);
-			notifyObserver(LibraryObserver.Type.PLAYLIST, -1, false);
+			notifyObserver(LibraryObserver.Type.PLAYLIST, LibraryObserver.Value.UNKNOWN, false);
 		}
 		return rows;
 	}
