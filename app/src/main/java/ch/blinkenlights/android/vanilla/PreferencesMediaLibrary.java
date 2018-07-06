@@ -18,6 +18,7 @@
 package ch.blinkenlights.android.vanilla;
 
 import ch.blinkenlights.android.medialibrary.MediaLibrary;
+import ch.blinkenlights.android.medialibrary.LibraryObserver;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -214,10 +215,12 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 	}
 
 	private static final int MENU_DUMP_DB = 1;
+	private static final int MENU_FORCE_M3U_IMPORT = 2;
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		super.onCreateOptionsMenu(menu, inflater);
 		menu.add(0, MENU_DUMP_DB, 30, R.string.dump_database);
+		menu.add(0, MENU_FORCE_M3U_IMPORT, 30, R.string.force_m3u_import);
 	}
 
 	@Override
@@ -230,6 +233,11 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 
 			MediaLibrary.createDebugDump(context, path);
 			Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+			break;
+		case MENU_FORCE_M3U_IMPORT:
+			// Sending an 'OUTDATED' event signals that our playlist information is wrong.
+			// This should trigger a full re-import.
+			MediaLibrary.notifyObserver(LibraryObserver.Type.PLAYLIST, LibraryObserver.Value.OUTDATED, false);
 			break;
 		default:
 			return super.onOptionsItemSelected(item);

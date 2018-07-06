@@ -329,7 +329,7 @@ public class MediaLibrary  {
 	 * @param id the id of type which changed, -1 if unknown
 	 * @param ongoing whether or not to expect more of these updates soon
 	 */
-	static void notifyObserver(LibraryObserver.Type type, long id, boolean ongoing) {
+	public static void notifyObserver(LibraryObserver.Type type, long id, boolean ongoing) {
 		ArrayList<LibraryObserver> list = sLibraryObservers;
 		for (int i = list.size(); --i != -1; )
 			list.get(i).onChange(type, id, ongoing);

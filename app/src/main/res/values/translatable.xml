@@ -340,6 +340,7 @@ THE SOFTWARE.
 	<string name="duration">Duration</string>
 	<string name="dump_database">Dump database</string>
 	<string name="dump_database_result">Database dumped to \'%s\'</string>
+	<string name="force_m3u_import">Force M3U reimport</string>
 
 	<string name="media_library">Media library</string>
 	<string name="media_folders_header">Indexed directories</string>
