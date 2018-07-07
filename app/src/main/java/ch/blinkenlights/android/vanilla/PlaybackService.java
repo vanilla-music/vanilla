@@ -1165,10 +1165,10 @@ public final class PlaybackService extends Service
 		if (mStockBroadcast) {
 			Intent intent = new Intent("com.android.music.playstatechanged");
 			intent.putExtra("playing", (mState & FLAG_PLAYING) != 0);
+			intent.putExtra("track", song.title);
+			intent.putExtra("album", song.album);
+			intent.putExtra("artist", song.artist);
 			if (androidIds[0] != -1) {
-				intent.putExtra("track", song.title);
-				intent.putExtra("album", song.album);
-				intent.putExtra("artist", song.artist);
 				intent.putExtra("songid", androidIds[0]);
 				intent.putExtra("albumid", androidIds[1]);
 			}
