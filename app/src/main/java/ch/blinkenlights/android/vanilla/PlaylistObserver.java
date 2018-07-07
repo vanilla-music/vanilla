@@ -26,23 +26,36 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
+import android.os.FileObserver;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.os.Process;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.PrintWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.zip.CRC32;
 
 import android.util.Log;
 
 
 public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callback {
 	/**
-	 * Timeout to coalesce duplicate messages.
+	 * Bits for mSyncMode
 	 */
-	private final static int COALESCE_EVENTS_DELAY_MS = 280;
+	public final static int SYNC_MODE_IMPORT = (1 << 0);
+	public final static int SYNC_MODE_EXPORT = (1 << 1);
+	public final static int SYNC_MODE_PURGE  = (1 << 2);
+	/**
+	 * Timeout to coalesce duplicate messages, ~2.3 sec because no real reason.
+	 */
+	private final static int COALESCE_EVENTS_DELAY_MS = 2345;
 	/**
 	 * Extension to use for M3U files
 	 */
@@ -63,30 +76,42 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 	 * Directory which holds observed playlists.
 	 */
 	private File mPlaylists = new File(Environment.getExternalStorageDirectory(), "Playlists");
-
-	static class Database {
+	/**
+	 * What kind of synching to perform, bitmask of PlaylistObserver.SYNC_MODE_*
+	 */
+	private int mSyncMode;
+	/**
+	 * Database fields
+	 */
+	private static class Database {
 		final static String TABLE_NAME = "playlist_metadata";
 		final static String _ID = "_id";
 		final static String NAME = "name";
-		final static String MTIME = "mtime";
+		final static String HASH = "hash";
 		final static String[] FILLED_PROJECTION = {
 			_ID,
 			NAME,
-			MTIME,
+			HASH,
 		};
 	}
 
-	public PlaylistObserver(Context context) {
-		super(context, "playlistobserver.db", null, 1 /* version */);
 
+	public PlaylistObserver(Context context, int mode) {
+		super(context, "playlist_observer.db", null, 1 /* version */);
 		mContext = context;
+		setSyncMode(mode);
+
 		// Launch new thread for background execution
-		mHandlerThread= new HandlerThread("PlaylistWriter", Process.THREAD_PRIORITY_LOWEST);
+		mHandlerThread= new HandlerThread("PlaylisObserverHandler", Process.THREAD_PRIORITY_LOWEST);
 		mHandlerThread.start();
 		mHandler = new Handler(mHandlerThread.getLooper(), this);
 
 		// Register to receive media library events.
-		MediaLibrary.registerLibraryObserver(mObserver);
+		MediaLibrary.registerLibraryObserver(mLibraryObserver);
+		mFileObserver.startWatching();
+
+		XT("Object created, trigger FULL_SYNC_SCAN");
+		sendUniqueMessage(MSG_FULL_SYNC_SCAN, 0);
 	}
 
 	/**
@@ -94,28 +119,81 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 	 * after this function was called.
 	 */
 	public void unregister() {
-		MediaLibrary.unregisterLibraryObserver(mObserver);
+		MediaLibrary.unregisterLibraryObserver(mLibraryObserver);
+		mFileObserver.stopWatching();
 
 		mHandlerThread.quitSafely();
 		mHandlerThread = null;
 		mHandler = null;
 	}
 
+	/**
+	 * Change the sync mode of a created instance
+	 *
+	 * @param mode the new mode
+	 */
+	public void setSyncMode(int mode) {
+		mSyncMode = mode;
+		XT("Sync mode is now "+mSyncMode);
+	}
+
+	/**
+	 * SQLiteHelper onCreate
+	 */
+	@Override
+	public void onCreate(SQLiteDatabase dbh) {
+		dbh.execSQL("CREATE TABLE "+Database.TABLE_NAME+" ( "
+					+ Database._ID  + " INTEGER PRIMARY KEY, "
+					+ Database.HASH + " INTEGER NOT NULL, "
+					+ Database.NAME + " TEXT NOT NULL )"
+					);
+	}
+
+	/**
+	 * SQLiteHelper onUpgrade
+	 */
+	@Override
+	public void onUpgrade(SQLiteDatabase dbh, int oldVersion, int newVersion) {
+		// No updates so far.
+	}
+
+	/**
+	 * Message handler, used to dedupe messages and perform
+	 * background work.
+	 */
 	private final static int MSG_DUMP_M3U = 1;
 	private final static int MSG_DUMP_ALL_M3U = 2;
+	private final static int MSG_IMPORT_M3U = 3;
+	private final static int MSG_FORCE_M3U_IMPORT = 4;
+	private final static int MSG_FULL_SYNC_SCAN = 5;
+	ArrayList<Integer> msgDedupe = new ArrayList<>();
 	@Override
 	public boolean handleMessage(Message message) {
+		msgDedupe.remove(0);
+
 		switch (message.what) {
 		case MSG_DUMP_M3U:
 			Long id = (Long)message.obj;
-			if (!dumpM3uPlaylist(id)) {
-				// Dump of 'id' failed, so this playlist was likely deleted.
-				cleanupOrphanedM3u();
+			if (Playlist.getPlaylist(mContext, id) != null) {
+				XT("DUMP_M3U: source of id "+id+" exists, dumping");
+				dumpAsM3uPlaylist(id);
+			} else {
+				XT("DUMP_M3U: source of id "+id+" vanished, scanning all");
+				sendUniqueMessage(MSG_FULL_SYNC_SCAN, 0);
 			}
 			break;
 		case MSG_DUMP_ALL_M3U:
-			dumpM3uPlaylists();
-			cleanupOrphanedM3u();
+			dumpAllAsM3uPlaylist();
+			break;
+		case MSG_IMPORT_M3U:
+			File f = (File)(message.obj);
+			importM3uPlaylist(f);
+			break;
+		case MSG_FORCE_M3U_IMPORT:
+			forceM3uImport();
+			break;
+		case MSG_FULL_SYNC_SCAN:
+			fullSyncScan();
 			break;
 		default:
 			throw new IllegalArgumentException("Invalid message type received");
@@ -124,31 +202,140 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 	}
 
 	/**
+	 * Forcefully re-imports all M3U files, even if we think that
+	 * our information is up-to-date.
+	 */
+	private void forceM3uImport() {
+		Cursor cursor = queryDatabase(null);
+		if (cursor != null) {
+			while (cursor.moveToNext()) {
+				deletePlaylistMetadata(cursor.getLong(0));
+			}
+			cursor.close();
+		}
+		// run this ASAP to ensure that no other message re-populates
+		// metadata.
+		XT("forceM3uImport: metadata cleared, calling fullSyncScan");
+		fullSyncScan();
+	}
+
+	/**
+	 * Dumps all playlist to stable storage.
+	 */
+	private void dumpAllAsM3uPlaylist() {
+		XT("dumpAllAsM3uPlaylist: called");
+		Cursor cursor = Playlist.queryPlaylists(mContext);
+		if (cursor != null) {
+			while(cursor.moveToNext()) {
+				final long id = cursor.getLong(0);
+				XT("dumpAllAsM3uPlaylist: Dumping ID "+id);
+				sendUniqueMessage(MSG_DUMP_M3U, id);
+			}
+			cursor.close();
+		}
+	}
+
+	/**
+	 * Adds a new message to the queue. Ignores call if a duplicate
+	 * message is already pending.
+	 *
+	 * @param type the type of the message
+	 * @param obj object payload of this message.
+	 */
+	private void sendUniqueMessage(int type, Object obj) {
+		int fprint = type << 10 + obj.hashCode();
+		if (!msgDedupe.contains(fprint)) {
+			msgDedupe.add(fprint);
+			mHandler.sendMessageDelayed(mHandler.obtainMessage(type, obj), COALESCE_EVENTS_DELAY_MS);
+		}
+	}
+
+
+	/**
+	 * Imports an M3U formatted file into our native media library.
+	 *
+	 * @param m3u the file to import
+	 */
+	private void importM3uPlaylist(File m3u) {;
+		XT("importM3uPlaylist("+m3u+")");
+
+		if ((mSyncMode & SYNC_MODE_IMPORT) == 0)
+			return;
+
+		if (!m3u.exists())
+			return;
+
+		final long hash = getHash(m3u);
+		if (hash == -1)
+			return;
+
+		boolean must_import = true;
+		String import_as = fromM3u(m3u.getName());
+		Cursor cursor = queryDatabase(null);
+		if (cursor != null) {
+			// Try to find an existing playlist where the constructed path
+			// would match given input file.
+			while(cursor.moveToNext()) {
+				File tmp = getFileForName(mPlaylists, asM3u(cursor.getString(1)));
+				if (m3u.equals(tmp)) {
+					// Found a matching playlist: this will be our import target
+					// if the hash indicates that our version is outdated.
+					import_as = cursor.getString(1);
+					must_import = (hash != cursor.getLong(2));
+					XT("importM3uPlaylist(): hash="+hash+", import="+must_import+", import_as="+import_as);
+					break;
+				}
+			}
+			cursor.close();
+		}
+
+		if (must_import) {
+			MediaLibrary.unregisterLibraryObserver(mLibraryObserver);
+			long import_id = Playlist.createPlaylist(mContext, import_as);
+			try (BufferedReader br = new BufferedReader(new FileReader(m3u))) {
+				String line;
+				while ((line = br.readLine()) != null) {
+					if (line.matches("^/.+")) {
+						Playlist.addToPlaylist(mContext, import_id, MediaUtils.buildFileQuery(line, Song.FILLED_PROJECTION));
+					}
+				}
+				updatePlaylistMetadata(import_id, import_as, hash);
+			} catch(IOException e) {
+				Log.e("VanillaMusic", "Error while parsing m3u: "+e);
+			}
+			MediaLibrary.registerLibraryObserver(mLibraryObserver);
+		}
+	}
+
+	/**
 	 * Exports a single playlist ad M3U(8).
 	 *
 	 * @param id the playlist id to export.
-	 * @return true if the playlist was dumped.
+	 * @return the newly written playlist, null if nothing was done.
 	 */
-	private boolean dumpM3uPlaylist(long id) {
-		final String name = Playlist.getPlaylist(mContext, id);
-
+	private File dumpAsM3uPlaylist(long id) {
+		XT("dumpM3uPlaylist("+id+")");
 		if (id < 0)
 			throw new IllegalArgumentException("Called with negative id!");
 
+		if ((mSyncMode & SYNC_MODE_EXPORT) == 0)
+			return null;
+
+		final String name = Playlist.getPlaylist(mContext, id);
 		if (name == null)
-			return false;
+			return null;
+
+		final File m3u = getFileForName(mPlaylists, asM3u(name));
 
 		if (!mPlaylists.isDirectory())
 			mPlaylists.mkdir();
-
-		Log.v("VanillaMusic", "Dumping "+getFileForName(mPlaylists, name));
 
 		PrintWriter pw = null;
 		QueryTask query = MediaUtils.buildPlaylistQuery(id, Song.FILLED_PLAYLIST_PROJECTION);
 		Cursor cursor = query.runQuery(mContext);
 		try {
 			if (cursor != null) {
-				pw = new PrintWriter(getFileForName(mPlaylists, name + M3U_EXT));
+				pw = new PrintWriter(m3u);
 				pw.println("#EXTM3U");
 				while (cursor.moveToNext()) {
 					final String path = cursor.getString(1);
@@ -159,7 +346,9 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 					pw.printf("#EXTINF:%d,%s - %s%n", (duration/1000), artist, title);
 					pw.println(path);
 				}
-				updatePlaylistMetadata(id, name);
+				pw.flush();
+				long hash_new = getHash(m3u);
+				updatePlaylistMetadata(id, name, hash_new);
 			}
 		} catch (IOException e) {
 			Log.v("VanillaMusic", "IOException while writing:", e);
@@ -167,49 +356,63 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 			if (cursor != null) cursor.close();
 			if (pw != null) pw.close();
 		}
-		return true;
+		return m3u;
 	}
 
 	/**
-	 * Dumps all playlist to stable storage.
+	 * Identify (and remove) playlist items which do not exist anymore
+	 * and pick up any new M3U files.
 	 */
-	private void dumpM3uPlaylists() {
-		Cursor cursor = Playlist.queryPlaylists(mContext);
-		if (cursor != null) {
-			while(cursor.moveToNext()) {
-				final long id = cursor.getLong(0);
-				sendUniqueMessage(MSG_DUMP_M3U, id);
-			}
-			cursor.close();
-		}
-	}
+	private void fullSyncScan() {
+		XT("fullSyncScan() running...");
+		ArrayList<File> knownM3u = new ArrayList<>();
 
-	/**
-	 * Checks our playlists directory for files which reference
-	 * non-existing playlists and removes them.
-	 */
-	private void cleanupOrphanedM3u() {
-		SQLiteDatabase dbh = getReadableDatabase();
-		Cursor cursor = dbh.query(Database.TABLE_NAME, Database.FILLED_PROJECTION, null, null, null, null, null);
+		// First step is to check all known playlist metadata entries
+		// and check whether their native or M3U copy was purged.
+		final boolean do_purge = (mSyncMode & SYNC_MODE_PURGE) != 0;
+		Cursor cursor = queryDatabase(null);
 		if (cursor != null) {
 			while (cursor.moveToNext()) {
 				final long id = cursor.getLong(0);
 				final String name = cursor.getString(1);
-				final File src_m3u = getFileForName(mPlaylists, name + M3U_EXT);
+				// generates possible names of this playlist as M3U.
+				final File src_m3u = getFileForName(mPlaylists, asM3u(name));
+				final File bak_m3u = getFileForName(mPlaylists, name + ".backup");
 
 				if (Playlist.getPlaylist(mContext, id) == null) {
 					// Native version of this playlist is gone, rename M3U variant:
-					File dst_m3u = getFileForName(mPlaylists, name + ".bak");
-					src_m3u.renameTo(dst_m3u);
+					if (do_purge) {
+						src_m3u.renameTo(bak_m3u);
+					}
 					deletePlaylistMetadata(id);
-					Log.v("VanillaMusic", name+": Renamed old m3u");
-				} else if (!src_m3u.exists()) {
-					Playlist.deletePlaylist(mContext, id); // Fixme: do we really want this?
+					XT("fullSyncScan(): renamed old M3U -> "+bak_m3u);
+				} else if (do_purge && !src_m3u.exists()) {
+					// Source vanished, write one last dump and remove it.
+					File dump = dumpAsM3uPlaylist(id);
+					if (dump != null) {
+						dump.renameTo(bak_m3u);
+					}
+					Playlist.deletePlaylist(mContext, id);
 					deletePlaylistMetadata(id);
-					Log.v("VanillaMusic", name+": Killed native playlist");
+					XT("fullSyncScan(): killed native playlist with id "+id);
+				}
+				// If this M3U exists, record it so that we don't try to re-import.
+				if (src_m3u.exists()) {
+					knownM3u.add(src_m3u);
 				}
 			}
 			cursor.close();
+		}
+
+		// Now list all M3U files in the playlists dir and import newly seen files.
+		File[] files = mPlaylists.listFiles();
+		if (files != null) {
+			for (File f : files) {
+				if (isM3uFilename(f.getName()) && !knownM3u.contains(f)) {
+					XT("fullSyncScan(): new M3U discovered, must import "+f);
+					sendUniqueMessage(MSG_IMPORT_M3U, f);
+				}
+			}
 		}
 	}
 
@@ -220,7 +423,6 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 	 * @return file object for given name
 	 */
 	private File getFileForName(File parent, String name) {
-		//Fixme: check for m3u8 and remove invalid chars.
 		name = name.replaceAll("/", "_");
 		File f = new File(parent, name);
 		return f;
@@ -232,12 +434,16 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 	 * @param id the id to update.
 	 * @param name the name to register for this id.
 	 */
-	private void updatePlaylistMetadata(long id, String name) {
+	private void updatePlaylistMetadata(long id, String name, long hash) {
+		if (hash < 0)
+			throw new IllegalArgumentException("hash can not be negative");
+
+		XT("updatePlaylistMetadata of "+name+" to hash "+hash);
 		SQLiteDatabase dbh = getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(Database._ID, id);
 		values.put(Database.NAME, name);
-		values.put(Database.MTIME, System.currentTimeMillis());
+		values.put(Database.HASH, hash);
 
 		deletePlaylistMetadata(id);
 		dbh.insert(Database.TABLE_NAME, null, values);
@@ -250,7 +456,7 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 	 */
 	private void deletePlaylistMetadata(long id) {
 		SQLiteDatabase dbh = getWritableDatabase();
-		dbh.delete(Database.TABLE_NAME, Database._ID+"=?", new String[] { new Long(id).toString() });
+		dbh.delete(Database.TABLE_NAME, Database._ID+"=?", new String[] { Long.valueOf(id).toString() });
 	}
 
 	/**
@@ -259,7 +465,7 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 	 * @param name the name to check
 	 * @return true if file appears to be an M3U
 	 */
-	private boolean FIXME_isM3uFilename(String name) {
+	private boolean isM3uFilename(String name) {
 		if (name.length() < M3U_EXT.length())
 			return false;
 		final int offset = name.length() - M3U_EXT.length();
@@ -267,48 +473,120 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 	}
 
 	/**
-	 * Adds a new message to the queue. Pending duplicate messages
-	 * will be pruged.
+	 * Returns the m3u-filename of name
 	 *
-	 * @param type the type of the message
-	 * @param obj object payload of this message.
+	 * @param name the name to use
+	 * @return the m3u name
 	 */
-	private void sendUniqueMessage(int type, Long obj) {
-		mHandler.removeMessages(type, obj);
-		mHandler.sendMessageDelayed(mHandler.obtainMessage(type, obj), COALESCE_EVENTS_DELAY_MS);
+	private String asM3u(String name) {
+		return name + M3U_EXT;
+	}
+
+	/**
+	 * Returns the name of an m3u file
+	 *
+	 * @param name the m3u filename
+	 * @return the non-m3u name
+	 */
+	private String fromM3u(String name) {
+		if (!isM3uFilename(name))
+			throw new IllegalArgumentException("Not an M3U filename: "+name);
+		return name.substring(0, name.length() - M3U_EXT.length());
+	}
+
+	/**
+	 * Hashes the contents of given file
+	 *
+	 * @param f the file to hash
+	 * @return the calculated hash, -1 on error.
+	 */
+	private long getHash(File f) {
+		long hash = -1;
+		byte[] buff = new byte[4096];
+		try(FileInputStream fis = new FileInputStream(f)) {
+			CRC32 crc = new CRC32();
+			while(fis.read(buff) != -1) {
+				crc.update(buff);
+			}
+			hash = crc.getValue();
+			if (hash < 0)
+				hash = hash * -1;
+		} catch(IOException e) {
+			// hash will be -1 which signals failure.
+		}
+		return hash;
+	}
+
+	/**
+	 * Obtain a cursor to our metadaata database.
+	 *
+	 * @param selection selection for query
+	 * @return cursor with results.
+	 */
+	private Cursor queryDatabase(String selection) {
+		return getReadableDatabase().query(Database.TABLE_NAME, Database.FILLED_PROJECTION, selection, null, null, null, null);
 	}
 
 	/**
 	 * Library observer callback which notifies us about media library
 	 * events.
+	 *
+	 * @param type the event type
+	 * @param id the id of given type which had a change
+	 * @param ongoing whether or not to expect more of these events
 	 */
-	private final LibraryObserver mObserver = new LibraryObserver() {
+	private final LibraryObserver mLibraryObserver = new LibraryObserver() {
 		@Override
 		public void onChange(LibraryObserver.Type type, long id, boolean ongoing) {
 			if (type != LibraryObserver.Type.PLAYLIST || ongoing)
 				return;
 
-			// Dispatch this event but use different type if id was -1 as
-			// this indicates that multiple (unknown) playlists may have changed.
-			final int msg = (id < 0 ? MSG_DUMP_ALL_M3U : MSG_DUMP_M3U);
+			int msg = MSG_DUMP_M3U; // Default: export this playlist ID.
+			if (id == LibraryObserver.Value.UNKNOWN) {
+				// An unknown (all?) playlist was modified: dump all to M3U
+				msg = MSG_DUMP_ALL_M3U;
+			}
+			if (id == LibraryObserver.Value.OUTDATED) {
+				// Our data is wrong, reimport all M3Us
+				msg = MSG_FORCE_M3U_IMPORT;
+			}
+
+			XT("LibraryObserver::onChange id="+id+", msg="+msg);
 			sendUniqueMessage(msg, id);
 		}
 	};
 
-	@Override
-	public void onCreate(SQLiteDatabase dbh) {
-		dbh.execSQL("CREATE TABLE "+Database.TABLE_NAME+" ( "
-					+ Database._ID   + " INTEGER PRIMARY KEY, "
-					+ Database.MTIME + " INTEGER NOT NULL, "
-					+ Database.NAME  + " TEXT NOT NULL )"
-					);
-	}
+	/**
+	 * Observer which monitors the playlists directory.
+	 *
+	 * @param event the event type
+	 * @param dirent the filename which triggered the event.
+	 */
+	private final static int mask = FileObserver.CLOSE_WRITE | FileObserver.MOVED_FROM | FileObserver.MOVED_TO | FileObserver.DELETE;
+	private final FileObserver mFileObserver = new FileObserver(mPlaylists.getAbsolutePath(), mask) {
+		@Override
+		public void onEvent(int event, String dirent) {
+			if (!isM3uFilename(dirent))
+				return;
 
-	@Override
-	public void onUpgrade(SQLiteDatabase dbh, int oldVersion, int newVersion) {
-		// No updates so far.
+			if ((event & (FileObserver.MOVED_FROM | FileObserver.DELETE)) != 0) {
+				// A M3U vanished, do a full scan.
+				XT("FileObserver::onEvent DELETE of "+dirent+" triggers FULL_SYNC_SCAN");
+				sendUniqueMessage(MSG_FULL_SYNC_SCAN, 0);
+			}
+			if ((event & (FileObserver.MOVED_TO | FileObserver.CLOSE_WRITE)) != 0) {
+				// Single file was created, import it.
+				XT("FileObserver::onEvent WRITE of "+dirent+" triggers IMPORT_M3U");
+				sendUniqueMessage(MSG_IMPORT_M3U, new File(mPlaylists, dirent));
+			}
+		}
+	};
+
+	private void XT(String s) {
+		try(PrintWriter pw = new PrintWriter(new FileOutputStream(new File("/sdcard/playlist-observer.txt"), true))) {
+			pw.println(System.currentTimeMillis()/1000+": "+s);
+			Log.v("VanillaMusic", "XTRACE: "+s);
+		} catch(Exception e) {
+		}
 	}
-	// TODO:
-	// Use FileObserver to track playlist changes?
-	// how do we check modifications? write a shadow-dir in private app storage with same mtimes?
 }

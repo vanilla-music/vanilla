@@ -330,6 +330,12 @@ THE SOFTWARE.
 	<string name="autoplaylist_playcounts_disabled">Do not create an automatic playlist</string>
 	<string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
 
+	<string name="playlist_sync_mode_title">Playlist synchronization</string>
+	<string name="playlist_sync_all">Synchronize \'Playlists\' folder</string>
+	<string name="playlist_sync_only_import">Import M3U, never export</string>
+	<string name="playlist_sync_only_export">Write M3U, never import</string>
+	<string name="playlist_sync_disabled">Disabled</string>
+
 	<string name="permission_request_summary">Vanilla Music needs read permission to display your music library</string>
 	<string name="reverse_sort">Reverse sort</string>
 

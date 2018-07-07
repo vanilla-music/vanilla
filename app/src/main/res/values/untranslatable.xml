@@ -127,6 +127,21 @@ THE SOFTWARE.
 	</string-array>
 	<!-- END default action entries definition -->
 
+	<!-- START playlist sync mode entries definition -->
+	<string-array name="playlist_sync_mode_entries">
+		<item>@string/playlist_sync_all</item>
+		<item>@string/playlist_sync_only_export</item>
+		<item>@string/playlist_sync_only_import</item>
+		<item>@string/playlist_sync_disabled</item>
+	</string-array>
+	<string-array name="playlist_sync_mode_values">
+		<item>255</item> <!-- default, sync all   -->
+		<item>2</item>   <!-- SYNC_MODE_EXPORT    -->
+		<item>1</item>   <!-- SYNC_MODE_IMPORT    -->
+		<item>0</item>   <!-- DISABLE             -->
+	</string-array>
+	<!-- END playlist sync mode entries definition -->
+
 	<string-array name="notification_visibility_entries">
 		<item>@string/show_when_playing</item>
 		<item>@string/always_show</item>

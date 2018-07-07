@@ -70,5 +70,5 @@ public class PrefDefaults {
 	public static final boolean IGNORE_AUDIOFOCUS_LOSS = false;
 	public static final boolean ENABLE_SCROLL_TO_SONG = false;
 	public static final boolean KEEP_SCREEN_ON = false;
-	public static final int     PLAYLIST_SYNC_MODE = 0xFF;
+	public static final String  PLAYLIST_SYNC_MODE = "255";
 }
