@@ -430,7 +430,7 @@ public class FileSystemAdapter
 	@Override
 	public QueryTask buildSongQuery(String[] projection) {
 		File path = getLimiterPath();
-		return MediaUtils.buildFileQuery(path.getPath(), projection);
+		return MediaUtils.buildFileQuery(path.getPath(), projection, true);
 	}
 
 	/**

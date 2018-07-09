@@ -135,7 +135,7 @@ public class AudioPickerActivity extends PlaybackActivity {
 
 		// This code is not reached unless mSong is filled and non-empty
 		if (mSong.id < 0) {
-			query = MediaUtils.buildFileQuery(mSong.path, Song.FILLED_PROJECTION);
+			query = MediaUtils.buildFileQuery(mSong.path, Song.FILLED_PROJECTION, false /* recursive */);
 		} else {
 			query = MediaUtils.buildQuery(MediaUtils.TYPE_SONG, mSong.id, Song.FILLED_PROJECTION, null);
 		}
@@ -238,7 +238,7 @@ public class AudioPickerActivity extends PlaybackActivity {
 				if (pathCursor.moveToNext()) {
 					String mediaPath = pathCursor.getString(0);
 					if (mediaPath != null) { // this happens on android 4.x sometimes?!
-						QueryTask query = MediaUtils.buildFileQuery(mediaPath, Song.FILLED_PROJECTION);
+						QueryTask query = MediaUtils.buildFileQuery(mediaPath, Song.FILLED_PROJECTION, false /* recursive */);
 						cursor = query.runQuery(getApplicationContext());
 					}
 				}

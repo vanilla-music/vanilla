@@ -519,20 +519,23 @@ public class MediaUtils {
 	 *
 	 * @param path The path, e.g. /mnt/sdcard/music/
 	 * @param projection The columns to query
+	 * @param recursive whether or not to do a LIKE search, picking up child items.
 	 * @return The initialized query.
 	 */
-	public static QueryTask buildFileQuery(String path, String[] projection)
+	public static QueryTask buildFileQuery(String path, String[] projection, boolean recursive)
 	{
-		/* make sure that the path is:
-		   -> fixed-up to point to the real mountpoint if user browsed to the mediadir symlink
-		   -> terminated with a / if it is a directory
-		   -> ended with a % for the LIKE query
-		*/
-		path = addDirEndSlash(sanitizeMediaPath(path)) + "%";
-		final String query = MediaLibrary.SongColumns.PATH+" LIKE ?";
-		String[] qargs = { path };
+		// Try to detect more popular mount point:
+		path = sanitizeMediaPath(path);
+		String query = MediaLibrary.SongColumns.PATH+" = ?";
 
-		QueryTask result = new QueryTask(MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS, projection, query, qargs, FILE_SORT);
+		if (!recursive) {
+			// This is a LIKE query: add a slash to the directory if the current path
+			// points to an existing one.
+			path = addDirEndSlash(path) + "%";
+			query = MediaLibrary.SongColumns.PATH+" LIKE ?";
+		}
+
+		QueryTask result = new QueryTask(MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS, projection, query, new String[]{ path }, FILE_SORT);
 		result.type = TYPE_FILE;
 		return result;
 	}

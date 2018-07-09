@@ -296,7 +296,7 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 				String line;
 				while ((line = br.readLine()) != null) {
 					if (line.matches("^/.+")) {
-						Playlist.addToPlaylist(mContext, import_id, MediaUtils.buildFileQuery(line, Song.FILLED_PROJECTION));
+						Playlist.addToPlaylist(mContext, import_id, MediaUtils.buildFileQuery(line, Song.FILLED_PROJECTION,  false /* recursive */));
 					}
 				}
 				updatePlaylistMetadata(import_id, import_as, hash);
