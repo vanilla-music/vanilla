@@ -336,14 +336,8 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 		try {
 			if (cursor != null) {
 				pw = new PrintWriter(m3u);
-				pw.println("#EXTM3U");
 				while (cursor.moveToNext()) {
 					final String path = cursor.getString(1);
-					final String title = cursor.getString(2);
-					final String artist = cursor.getString(3);
-					final long duration = cursor.getLong(7);
-
-					pw.printf("#EXTINF:%d,%s - %s%n", (duration/1000), artist, title);
 					pw.println(path);
 				}
 				pw.flush();
