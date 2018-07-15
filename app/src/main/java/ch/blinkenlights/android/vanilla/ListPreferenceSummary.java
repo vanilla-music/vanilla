@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2018 Adrian Ulrich <adrian@blinkenlights.ch>
  * Copyright (C) 2011 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -45,9 +46,16 @@ public class ListPreferenceSummary extends ListPreference {
 	}
 
 	@Override
+	public boolean shouldDisableDependents()
+	{
+		return getValue().equals("0");
+	}
+
+	@Override
 	protected void onDialogClosed(boolean positiveResult)
 	{
 		super.onDialogClosed(positiveResult);
+		notifyDependencyChange(shouldDisableDependents());
 		notifyChanged();
 	}
 }
