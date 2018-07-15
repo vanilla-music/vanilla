@@ -402,9 +402,14 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 		File[] files = mPlaylists.listFiles();
 		if (files != null) {
 			for (File f : files) {
-				if (isM3uFilename(f.getName()) && !knownM3u.contains(f)) {
-					XT("fullSyncScan(): new M3U discovered, must import "+f);
-					sendUniqueMessage(MSG_IMPORT_M3U, f);
+				final String fname = f.getName();
+				if (isM3uFilename(fname) && !knownM3u.contains(f)) {
+					if (Playlist.getPlaylist(mContext, fromM3u(fname)) == -1) {
+						XT("fullSyncScan(): new M3U discovered, must import "+f);
+						sendUniqueMessage(MSG_IMPORT_M3U, f);
+					} else {
+						XT("fullSyncScan(): native version for "+f+" exists without metadata. Won't touch.");
+					}
 				}
 			}
 		}
