@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+Copyright (C) 2018 Adrian Ulrich <adrian@blinkenlights.ch>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+-->
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:vanilla="http://schemas.android.com/apk/res-auto"
+	android:persistent="true">
+	<ch.blinkenlights.android.vanilla.SeekBarPreference
+		android:key="playcounts_autoplaylist"
+		android:negativeButtonText="@null"
+		android:dialogLayout="@layout/seekbar_pref"
+		android:title="@string/autoplaylist_playcounts_title"
+		android:defaultValue="0"
+		vanilla:sbpMaxValue="100"
+		vanilla:sbpSteps="25"
+		vanilla:sbpSummaryText="@string/autoplaylist_playcounts_summary"
+		vanilla:sbpSummaryFormat="@string/autoplaylist_playcounts_fmt"
+		vanilla:sbpSummaryZeroText="@string/autoplaylist_playcounts_disabled"/>
+	<ch.blinkenlights.android.vanilla.ListPreferenceSummary
+		android:key="playlist_sync_mode"
+		android:title="@string/playlist_sync_mode_title"
+		android:entries="@array/playlist_sync_mode_entries"
+		android:entryValues="@array/playlist_sync_mode_values"
+		android:defaultValue="255" />
+	<PreferenceScreen
+		android:dependency="playlist_sync_mode"
+		android:title="@string/playlist_sync_folder_title"
+		android:summary="@string/playlist_sync_folder_summary">
+		<intent
+			android:targetPackage="ch.blinkenlights.android.vanilla"
+			android:targetClass="ch.blinkenlights.android.vanilla.PlaylistObserverDirActivity" />
+	</PreferenceScreen>
+</PreferenceScreen>

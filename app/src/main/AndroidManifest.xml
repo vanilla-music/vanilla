@@ -173,6 +173,8 @@ THE SOFTWARE.
 		<activity
 			android:name="FilebrowserStartActivity" />
 		<activity
+			android:name="PlaylistObserverDirActivity" />
+		<activity
 			android:name="MediaFoldersSelectionActivity" />
 		<activity
 			android:name="PermissionRequestActivity"

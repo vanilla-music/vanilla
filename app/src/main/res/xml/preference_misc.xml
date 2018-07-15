@@ -49,23 +49,6 @@ THE SOFTWARE.
 		android:title="@string/double_tap_title"
 		android:summary="@string/double_tap_summary"
 		android:defaultValue="false" />
-	<ch.blinkenlights.android.vanilla.SeekBarPreference
-		android:key="playcounts_autoplaylist"
-		android:negativeButtonText="@null"
-		android:dialogLayout="@layout/seekbar_pref"
-		android:title="@string/autoplaylist_playcounts_title"
-		android:defaultValue="0"
-		vanilla:sbpMaxValue="100"
-		vanilla:sbpSteps="25"
-		vanilla:sbpSummaryText="@string/autoplaylist_playcounts_summary"
-		vanilla:sbpSummaryFormat="@string/autoplaylist_playcounts_fmt"
-		vanilla:sbpSummaryZeroText="@string/autoplaylist_playcounts_disabled"/>
-	<ch.blinkenlights.android.vanilla.ListPreferenceSummary
-		android:key="playlist_sync_mode"
-		android:title="@string/playlist_sync_mode_title"
-		android:entries="@array/playlist_sync_mode_entries"
-		android:entryValues="@array/playlist_sync_mode_values"
-		android:defaultValue="255" />
 	<CheckBoxPreference
 		android:key="scrobble"
 		android:title="@string/scrobble_title"

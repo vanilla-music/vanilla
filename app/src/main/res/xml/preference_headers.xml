@@ -46,6 +46,9 @@ THE SOFTWARE.
 		android:fragment="ch.blinkenlights.android.vanilla.PreferencesMediaLibrary"
 		android:title="@string/media_library" />
 	<header
+		android:fragment="ch.blinkenlights.android.vanilla.PreferencesActivity$PlaylistFragment"
+		android:title="@string/playlists" />
+	<header
 		android:fragment="ch.blinkenlights.android.vanilla.PreferencesTheme"
 		android:title="@string/theme" />
 	<header

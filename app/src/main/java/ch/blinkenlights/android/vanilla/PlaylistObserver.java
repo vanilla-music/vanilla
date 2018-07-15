@@ -73,9 +73,13 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 	 */
 	private Handler mHandler;
 	/**
+	 * Observer which watches the playlist directory.
+	 */
+	private FileObserver mFileObserver;
+	/**
 	 * Directory which holds observed playlists.
 	 */
-	private File mPlaylists = new File(Environment.getExternalStorageDirectory(), "Playlists");
+	private File mPlaylists;
 	/**
 	 * What kind of synching to perform, bitmask of PlaylistObserver.SYNC_MODE_*
 	 */
@@ -96,10 +100,11 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 	}
 
 
-	public PlaylistObserver(Context context, int mode) {
+	public PlaylistObserver(Context context, String folder, int mode) {
 		super(context, "playlist_observer.db", null, 1 /* version */);
 		mContext = context;
-		setSyncMode(mode);
+		mSyncMode = mode;
+		mPlaylists = new File(folder);
 
 		// Launch new thread for background execution
 		mHandlerThread= new HandlerThread("PlaylisObserverHandler", Process.THREAD_PRIORITY_LOWEST);
@@ -108,6 +113,8 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 
 		// Register to receive media library events.
 		MediaLibrary.registerLibraryObserver(mLibraryObserver);
+		// Create and start directory observer.
+		mFileObserver = getFileObserver(mPlaylists);
 		mFileObserver.startWatching();
 
 		XT("Object created, trigger FULL_SYNC_SCAN");
@@ -125,16 +132,6 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 		mHandlerThread.quitSafely();
 		mHandlerThread = null;
 		mHandler = null;
-	}
-
-	/**
-	 * Change the sync mode of a created instance
-	 *
-	 * @param mode the new mode
-	 */
-	public void setSyncMode(int mode) {
-		mSyncMode = mode;
-		XT("Sync mode is now "+mSyncMode);
 	}
 
 	/**
@@ -561,25 +558,29 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 	 * @param event the event type
 	 * @param dirent the filename which triggered the event.
 	 */
-	private final static int mask = FileObserver.CLOSE_WRITE | FileObserver.MOVED_FROM | FileObserver.MOVED_TO | FileObserver.DELETE;
-	private final FileObserver mFileObserver = new FileObserver(mPlaylists.getAbsolutePath(), mask) {
-		@Override
-		public void onEvent(int event, String dirent) {
-			if (!isM3uFilename(dirent))
-				return;
+	private FileObserver getFileObserver(File target) {
+		final int mask = FileObserver.CLOSE_WRITE | FileObserver.MOVED_FROM | FileObserver.MOVED_TO | FileObserver.DELETE;
+		XT("new file observer at "+target+" with mask "+mask);
 
-			if ((event & (FileObserver.MOVED_FROM | FileObserver.DELETE)) != 0) {
-				// A M3U vanished, do a full scan.
-				XT("FileObserver::onEvent DELETE of "+dirent+" triggers FULL_SYNC_SCAN");
-				sendUniqueMessage(MSG_FULL_SYNC_SCAN, 0);
+		return new FileObserver(target.getAbsolutePath(), mask) {
+			@Override
+			public void onEvent(int event, String dirent) {
+				if (!isM3uFilename(dirent))
+					return;
+
+				if ((event & (FileObserver.MOVED_FROM | FileObserver.DELETE)) != 0) {
+					// A M3U vanished, do a full scan.
+					XT("FileObserver::onEvent DELETE of "+dirent+" triggers FULL_SYNC_SCAN");
+					sendUniqueMessage(MSG_FULL_SYNC_SCAN, 0);
+				}
+				if ((event & (FileObserver.MOVED_TO | FileObserver.CLOSE_WRITE)) != 0) {
+					// Single file was created, import it.
+					XT("FileObserver::onEvent WRITE of "+dirent+" triggers IMPORT_M3U");
+					sendUniqueMessage(MSG_IMPORT_M3U, new File(mPlaylists, dirent));
+				}
 			}
-			if ((event & (FileObserver.MOVED_TO | FileObserver.CLOSE_WRITE)) != 0) {
-				// Single file was created, import it.
-				XT("FileObserver::onEvent WRITE of "+dirent+" triggers IMPORT_M3U");
-				sendUniqueMessage(MSG_IMPORT_M3U, new File(mPlaylists, dirent));
-			}
-		}
-	};
+		};
+	}
 
 	private void XT(String s) {
 		try(PrintWriter pw = new PrintWriter(new FileOutputStream(new File("/sdcard/playlist-observer.txt"), true))) {

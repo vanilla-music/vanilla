@@ -71,4 +71,5 @@ public class PrefDefaults {
 	public static final boolean ENABLE_SCROLL_TO_SONG = false;
 	public static final boolean KEEP_SCREEN_ON = false;
 	public static final String  PLAYLIST_SYNC_MODE = "255";
+	public static final String  PLAYLIST_SYNC_FOLDER = "/sdcard/Playlists";
 }

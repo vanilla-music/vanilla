@@ -507,7 +507,8 @@ public final class PlaybackService extends Service
 		mRemoteControlClient.initializeRemote();
 
 		int syncMode = Integer.parseInt(settings.getString(PrefKeys.PLAYLIST_SYNC_MODE, PrefDefaults.PLAYLIST_SYNC_MODE));
-		mPlaylistObserver = new PlaylistObserver(this, syncMode);
+		String syncFolder = settings.getString(PrefKeys.PLAYLIST_SYNC_FOLDER, PrefDefaults.PLAYLIST_SYNC_FOLDER);
+		mPlaylistObserver = new PlaylistObserver(this, syncFolder, syncMode);
 
 		mLooper = thread.getLooper();
 		mHandler = new Handler(mLooper, this);
@@ -941,9 +942,12 @@ public final class PlaybackService extends Service
 			mReadaheadEnabled = settings.getBoolean(PrefKeys.ENABLE_READAHEAD, PrefDefaults.ENABLE_READAHEAD);
 		} else if (PrefKeys.AUTOPLAYLIST_PLAYCOUNTS.equals(key)) {
 			mAutoPlPlaycounts = settings.getInt(PrefKeys.AUTOPLAYLIST_PLAYCOUNTS, PrefDefaults.AUTOPLAYLIST_PLAYCOUNTS);
-		} else if (PrefKeys.PLAYLIST_SYNC_MODE.equals(key)) {
+		} else if (PrefKeys.PLAYLIST_SYNC_MODE.equals(key) || PrefKeys.PLAYLIST_SYNC_FOLDER.equals(key)) {
 			int syncMode = Integer.parseInt(settings.getString(PrefKeys.PLAYLIST_SYNC_MODE, PrefDefaults.PLAYLIST_SYNC_MODE));
-			mPlaylistObserver.setSyncMode(syncMode);
+			String syncFolder = settings.getString(PrefKeys.PLAYLIST_SYNC_FOLDER, PrefDefaults.PLAYLIST_SYNC_FOLDER);
+
+			mPlaylistObserver.unregister();
+			mPlaylistObserver = new PlaylistObserver(this, syncFolder, syncMode);
 		} else if (PrefKeys.SELECTED_THEME.equals(key) || PrefKeys.DISPLAY_MODE.equals(key)) {
 			// Theme changed: trigger a restart of all registered activites
 			ArrayList<TimelineCallback> list = sCallbacks;

@@ -239,6 +239,15 @@ public class PreferencesActivity extends PreferenceActivity
 		}
 	}
 
+	public static class PlaylistFragment extends PreferenceFragment {
+		@Override
+		public void onCreate(Bundle savedInstanceState)
+		{
+			super.onCreate(savedInstanceState);
+			addPreferencesFromResource(R.xml.preference_playlist);
+		}
+	}
+
 	public static class HelpFragment extends PreferenceFragment {
 		@Override
 		public void onCreate(Bundle savedInstanceState)
