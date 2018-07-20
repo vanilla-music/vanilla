@@ -258,8 +258,8 @@ THE SOFTWARE.
 	<string name="coverloader_shadow_title">Load artwork from hidden folder</string>
 	<string name="coverloader_shadow_summary">Try to load artwork from \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\'</string>
 
-	<string name="coverloader_inline_title">Load artwork from ID3 tag</string>
-	<string name="coverloader_inline_summary">Try to load a cover stored in files ID3 tag</string>
+	<string name="coverloader_inline_title">Load artwork from file tag</string>
+	<string name="coverloader_inline_summary">Try to load a cover stored in files tag via media library</string>
 
 	<string name="cover_on_lockscreen_title">Show artwork on lockscreen</string>
 	<string name="cover_on_lockscreen_summary">Display the artwork of the currently playing track on the lockscreen</string>

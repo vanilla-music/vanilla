@@ -470,13 +470,13 @@ public class CoverCache {
 
 				if (inputStream == null && (CoverCache.mCoverLoadMode & CoverCache.COVER_MODE_INLINE) != 0)
 				{
-					android.media.MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+					MediaMetadataRetriever mmr = new MediaMetadataRetriever();
 					mmr.setDataSource(song.path);
 
 					byte[] data = mmr.getEmbeddedPicture();
 					if (data != null) {
-						Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-						return bitmap;
+						sampleInputStream = new ByteArrayInputStream(data);
+						inputStream = new ByteArrayInputStream(data);
 					}
 					mmr.release();
 				}

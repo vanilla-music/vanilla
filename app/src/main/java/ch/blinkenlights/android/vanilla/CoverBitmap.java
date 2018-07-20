@@ -257,8 +257,8 @@ public final class CoverBitmap {
 			int topShift = textSizeBig; // guaranteed space from top
 			int avHeight = top - topShift; // how much space we can use at most
 
-			int coverHeight = avHeight - padding - padding;
 			int coverWidth = width;
+			int coverHeight = avHeight - padding - padding;
 
 			if (coverHeight > coverWidth)
 				coverHeight = coverWidth;
