@@ -33,6 +33,7 @@ public class PrefDefaults {
 	public static final boolean COVERLOADER_ANDROID = true;
 	public static final boolean COVERLOADER_VANILLA = true;
 	public static final boolean COVERLOADER_SHADOW = true;
+	public static final boolean COVERLOADER_INLINE = true;
 	public static final boolean COVER_ON_LOCKSCREEN = true;
 	public static final boolean DISABLE_LOCKSCREEN = false;
 	public static final String DISPLAY_MODE = "2";

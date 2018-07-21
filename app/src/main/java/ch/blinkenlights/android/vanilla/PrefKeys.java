@@ -34,6 +34,7 @@ public class PrefKeys {
 	public static final String COVERLOADER_ANDROID = "coverloader_android";
 	public static final String COVERLOADER_VANILLA = "coverloader_vanilla";
 	public static final String COVERLOADER_SHADOW = "coverloader_shadow";
+	public static final String COVERLOADER_INLINE = "coverloader_inline";
 	public static final String COVER_ON_LOCKSCREEN = "cover_on_lockscreen";
 	public static final String DISABLE_LOCKSCREEN = "disable_lockscreen";
 	public static final String DISPLAY_MODE = "display_mode";

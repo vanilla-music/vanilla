@@ -27,6 +27,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
@@ -66,6 +67,10 @@ public class CoverCache {
 	 * Use vanilla musics SHADOW cover load mechanism
 	 */
 	public static final int COVER_MODE_SHADOW = 0x4;
+	/**
+	 * Use vanilla musics INLINE cover load mechanism
+	 */
+	public static final int COVER_MODE_INLINE = 0x8;
 	/**
 	 * Shared on-disk cache class
 	 */
@@ -461,6 +466,18 @@ public class CoverCache {
 						if (sampleInputStream != null) // cache misses are VERY expensive here, so we check if the first open worked
 							inputStream = res.openInputStream(uri);
 					}
+				}
+
+				if (inputStream == null && (CoverCache.mCoverLoadMode & CoverCache.COVER_MODE_INLINE) != 0) {
+					MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+					mmr.setDataSource(song.path);
+
+					byte[] data = mmr.getEmbeddedPicture();
+					if (data != null) {
+						sampleInputStream = new ByteArrayInputStream(data);
+						inputStream = new ByteArrayInputStream(data);
+					}
+					mmr.release();
 				}
 
 				if (inputStream != null) {
