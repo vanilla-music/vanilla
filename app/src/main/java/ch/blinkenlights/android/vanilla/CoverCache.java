@@ -68,7 +68,7 @@ public class CoverCache {
 	 */
 	public static final int COVER_MODE_SHADOW = 0x4;
 	/**
-	 * Use vanilla musics SHADOW cover load mechanism
+	 * Use vanilla musics INLINE cover load mechanism
 	 */
 	public static final int COVER_MODE_INLINE = 0x8;
 	/**
@@ -468,8 +468,7 @@ public class CoverCache {
 					}
 				}
 
-				if (inputStream == null && (CoverCache.mCoverLoadMode & CoverCache.COVER_MODE_INLINE) != 0)
-				{
+				if (inputStream == null && (CoverCache.mCoverLoadMode & CoverCache.COVER_MODE_INLINE) != 0) {
 					MediaMetadataRetriever mmr = new MediaMetadataRetriever();
 					mmr.setDataSource(song.path);
 
