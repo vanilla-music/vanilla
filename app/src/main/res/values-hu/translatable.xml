@@ -208,6 +208,8 @@
   <string name="coverloader_vanilla_summary">Cover.jpg, album.jpg vagy artwork.jpg nevű fájlok keresése és megjelenítése mint albumborító</string>
   <string name="coverloader_shadow_title">Borítók betöltése rejtett mappából</string>
   <string name="coverloader_shadow_summary">Borító betöltésének kísérlete innen: „/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg”</string>
+  <string name="coverloader_inline_title">Borítók betöltése a fájlcímkékből</string>
+  <string name="coverloader_inline_summary">Próbálja meg a fájlcímkékbe ágyazott borítókat betölteni</string>
   <string name="cover_on_lockscreen_title">Borító megjelenítése a zárképernyőn</string>
   <string name="cover_on_lockscreen_summary">A most játszott szám albumborítójának megjelenítése a zárképernyőn</string>
   <string name="double_tap_title">Dupla érintés a vezérlőelemen</string>
@@ -268,6 +270,13 @@
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s „Legjobb %.0f” lejátszólistát</string>
   <string name="autoplaylist_playcounts_disabled">Ne hozzon létre automatikusan lejátszólistát</string>
   <string name="autoplaylist_playcounts_name" formatted="false">Legjobb %d</string>
+  <string name="playlist_sync_mode_title">Lejátszólista szinkronizáció</string>
+  <string name="playlist_sync_all">Teljes szinkronizáció</string>
+  <string name="playlist_sync_only_import">M3U importálása, sose exportálja</string>
+  <string name="playlist_sync_only_export">M3U írása, sose importálja</string>
+  <string name="playlist_sync_disabled">Letiltva</string>
+  <string name="playlist_sync_folder_title">Szinkronizációs mappa</string>
+  <string name="playlist_sync_folder_summary">A lejátszólista szinkronizációhoz használandó mappa</string>
   <string name="permission_request_summary">A Vanilla zenelejátszónak olvasási engedélyre van szükségre, hogy megjelenítse a gyűjteményét</string>
   <string name="reverse_sort">Fordított rendezés</string>
   <string name="share">Megosztás…</string>
@@ -277,6 +286,7 @@
   <string name="duration">Hossz</string>
   <string name="dump_database">Adatbázis kiírása</string>
   <string name="dump_database_result">Adatbázis kiírva ide: „%s”</string>
+  <string name="force_m3u_import">M3U kényszerített újraimportálása</string>
   <string name="media_library">Médiagyűjtemény</string>
   <string name="media_folders_header">Indexelt könyvtárak</string>
   <string name="media_scan_header">Médiaátvizsgáló</string>

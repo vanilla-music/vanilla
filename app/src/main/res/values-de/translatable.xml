@@ -268,6 +268,13 @@
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s »Top %.0f«-Wiedergabeliste</string>
   <string name="autoplaylist_playcounts_disabled">Keine automatische Wiedergabeliste erstellen</string>
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
+  <string name="playlist_sync_mode_title">Wiedergabelistensynchronisation</string>
+  <string name="playlist_sync_all">Vollständige Synchronisation</string>
+  <string name="playlist_sync_only_import">M3U importieren, nie exportieren</string>
+  <string name="playlist_sync_only_export">M3U schreiben, nie importieren</string>
+  <string name="playlist_sync_disabled">Deaktiviert</string>
+  <string name="playlist_sync_folder_title">Synchronisationsordner</string>
+  <string name="playlist_sync_folder_summary">Zu verwendender Ordner für Wiedergabelistensynchronisation</string>
   <string name="permission_request_summary">Vanilla Music benötigt Leserechte, um Ihre Musikbibliothek anzuzeigen</string>
   <string name="reverse_sort">Sortierung umkehren</string>
   <string name="share">Teilen …</string>
@@ -277,6 +284,7 @@
   <string name="duration">Dauer</string>
   <string name="dump_database">Datenbank exportieren</string>
   <string name="dump_database_result">Datenbank nach \'%s\' exportiert</string>
+  <string name="force_m3u_import">M3U-Reimport erzwingen</string>
   <string name="media_library">Medienbibliothek</string>
   <string name="media_folders_header">Indizierte Verzeichnisse</string>
   <string name="media_scan_header">Mediensuche</string>

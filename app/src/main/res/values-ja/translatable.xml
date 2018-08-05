@@ -200,6 +200,8 @@
   <string name="coverloader_vanilla_summary">cover.jpg、album.jpg または artwork.jpg という名前で画像ファイルを検索し、アルバム カバーとして表示します</string>
   <string name="coverloader_shadow_title">隠しフォルダからアートワークを読み込む</string>
   <string name="coverloader_shadow_summary">\'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\' からアートワークの読み込みを試行します</string>
+  <string name="coverloader_inline_title">ファイルタグからアートワークを読み込む</string>
+  <string name="coverloader_inline_summary">ファイルタグから埋め込まれたアートワークを読み込むようにします</string>
   <string name="cover_on_lockscreen_title">ロック画面にアートワークを表示</string>
   <string name="cover_on_lockscreen_summary">ロック画面に現在再生しているトラックのアートワークを表示します</string>
   <string name="double_tap_title">ダブルタップ ウィジェット</string>
@@ -260,6 +262,13 @@
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s \'トップ %.0f\' プレイリスト</string>
   <string name="autoplaylist_playcounts_disabled">自動的にプレイリストを作成しない</string>
   <string name="autoplaylist_playcounts_name" formatted="false">トップ %d</string>
+  <string name="playlist_sync_mode_title">プレイリストの同期</string>
+  <string name="playlist_sync_all">完全に同期</string>
+  <string name="playlist_sync_only_import">M3U インポート、エクスポートしない</string>
+  <string name="playlist_sync_only_export">M3U 書き出し、インポートしない</string>
+  <string name="playlist_sync_disabled">無効</string>
+  <string name="playlist_sync_folder_title">フォルダーの同期</string>
+  <string name="playlist_sync_folder_summary">プレイリストの同期に使用するフォルダー</string>
   <string name="permission_request_summary">Vanilla Music  が音楽ライブラリを表示するために、読み取りのアクセス許可が必要です</string>
   <string name="reverse_sort">逆順に並び替え</string>
   <string name="share">共有…</string>
@@ -269,6 +278,7 @@
   <string name="duration">時間</string>
   <string name="dump_database">データベースをダンプ</string>
   <string name="dump_database_result">データベースをダンプしました \'%s\'</string>
+  <string name="force_m3u_import">強制的に M3U 再インポート</string>
   <string name="media_library">メディアライブラリー</string>
   <string name="media_folders_header">インデックス済ディレクトリー</string>
   <string name="media_scan_header">メディアスキャナー</string>

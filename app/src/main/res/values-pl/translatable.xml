@@ -224,6 +224,8 @@
   <string name="coverloader_vanilla_summary">Szukaj obrazów o nazwie \'cover.jpg\', \'album.jpg\' lub \'artwork.jpg\' i wyświetlaj je jako okładki albumu</string>
   <string name="coverloader_shadow_title">Ładowanie okladek albumów z ukrytych folderów</string>
   <string name="coverloader_shadow_summary">Spróbuj załadować okładkę albumu z \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\'</string>
+  <string name="coverloader_inline_title">Wczytaj okładkę ze znaczników</string>
+  <string name="coverloader_inline_summary">Spróbuj załadować okładkę z zagnieżdżonych znaczników pliku</string>
   <string name="cover_on_lockscreen_title">Pokazuj okładkę albumu na ekranie blokady</string>
   <string name="cover_on_lockscreen_summary">Wyświetlanie okładki albumu aktualnie odtwarzanego utworu na ekranie blokady</string>
   <string name="double_tap_title">Dwukrotne kliknięcie widżetu</string>
@@ -284,6 +286,13 @@
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s listę odtwarzania „Najlepsza %.0f”</string>
   <string name="autoplaylist_playcounts_disabled">Nie twórz automatycznie listy odtwarzania</string>
   <string name="autoplaylist_playcounts_name" formatted="false">Najczęściej odtwarzane %d</string>
+  <string name="playlist_sync_mode_title">Synchronizacja list odtwarzania</string>
+  <string name="playlist_sync_all">Pełna synchronizacja</string>
+  <string name="playlist_sync_only_import">Importuj M3U, nigdy eksportuj</string>
+  <string name="playlist_sync_only_export">Zapisz M3U, nigdy importuj</string>
+  <string name="playlist_sync_disabled">Wyłączono</string>
+  <string name="playlist_sync_folder_title">Katalog synchronizacji</string>
+  <string name="playlist_sync_folder_summary">Katalog do synchronizacji list odtwarzania</string>
   <string name="permission_request_summary">Vanilla Music potrzebuje uprawnień do wyświetlenia Twojej biblioteki muzycznej</string>
   <string name="reverse_sort">Odwróć sortowanie</string>
   <string name="share">Udostępnij…</string>
@@ -293,6 +302,7 @@
   <string name="duration">Czas trwania</string>
   <string name="dump_database">Zrzuć bazę danych</string>
   <string name="dump_database_result">Zrzucono bazę danych do „%s”</string>
+  <string name="force_m3u_import">Wymuś reimport M3U</string>
   <string name="media_library">Biblioteka muzyczna</string>
   <string name="media_folders_header">Indeksowane katalogi</string>
   <string name="media_scan_header">Skaner multimediów</string>

@@ -1,6 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="app_name">Vanilla Music</string>
+  <string name="ok">확인</string>
+  <string name="cancel">취소</string>
   <!--Playback Activity (main screen)-->
   <string name="no_songs">당신의 기기에서 다음 트랙을 찾을 수 없습니다.</string>
   <string name="empty_queue">트랙이 선택되지 않았습니다. 이 메시지를 탭하여 라이브러리 또는 랜덤 모드를 선택하세요.</string>
@@ -47,6 +49,7 @@
   <string name="playlist_favorites">즐겨찾기</string>
   <string name="new_playlist">새로운 재생목록...</string>
   <string name="expand">확장</string>
+  <string name="expand_or_play_all">확장/모두 재생</string>
   <string name="delete">삭제</string>
   <string name="playback_view">현재 재생 중</string>
   <string name="sort_by">정렬</string>
@@ -66,6 +69,21 @@
 		Translators should use http://unicode.org/reports/tr35/tr35-numbers.html#Language_Plural_Rules and
 		http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html, Type cardinal,
 		to see which categories apply to integer numbers in their languages-->
+  <plurals name="playing">
+    <item quantity="other">%d 트랙 재생중.</item>
+  </plurals>
+  <plurals name="enqueued">
+    <item quantity="other">%d곡이 대기열에 추가됨</item>
+  </plurals>
+  <plurals name="added_to_playlist">
+    <item quantity="other">%1$d 개의 곡이 플레이리스트 %2$s 에 추가되었습니다..</item>
+  </plurals>
+  <plurals name="removed_from_playlist">
+    <item quantity="other">%1$d 개의 곡이 재생목록%2$s 에서 제거되었습니다.</item>
+  </plurals>
+  <plurals name="deleted">
+    <item quantity="other">%d 트랙 제거됨.</item>
+  </plurals>
   <string name="delete_file_failed">%s 삭제 실패.</string>
   <string name="deleted_item">\'%s\' 삭제됨.</string>
   <string name="delete_item">\'%s\'를 삭제하시겠습니까?</string>
@@ -242,6 +260,10 @@
   <string name="autoplaylist_playcounts_fmt" formatted="false"> 재생목록 %s \'상위 %.0f\'</string>
   <string name="autoplaylist_playcounts_disabled">재생 목록을 자동으로 생성하지 않습니다</string>
   <string name="autoplaylist_playcounts_name" formatted="false">상위 %d</string>
+  <string name="playlist_sync_mode_title">재생목록 동기화</string>
+  <string name="playlist_sync_only_import">M3U 읽기, 내보내지 않음</string>
+  <string name="playlist_sync_only_export">M3U 쓰기, 읽지 않음</string>
+  <string name="playlist_sync_disabled">비활성</string>
   <string name="permission_request_summary">Vanilla Music은 음악 라이브러리를 표시하기 위하여 읽기 권한이 필요합니다
 </string>
   <string name="reverse_sort">반대로 정렬</string>
@@ -249,6 +271,10 @@
   <string name="share_failed">파일 공유 실패</string>
   <string name="sendto">전송함...</string>
   <string name="no_receiving_apps">해당 미디어 타입을 수신하는 앱을 찾을 수 없습니다!</string>
+  <string name="duration">주기</string>
+  <string name="dump_database">데이터베이스 덤프</string>
+  <string name="dump_database_result">\'%s\'로 데이터베이스 덤프</string>
+  <string name="force_m3u_import">M3U 강제 읽기</string>
   <string name="media_library">미디어 라이브러리</string>
   <string name="media_folders_header">색인화된 디렉토리</string>
   <string name="media_scan_header">미디어 검색</string>

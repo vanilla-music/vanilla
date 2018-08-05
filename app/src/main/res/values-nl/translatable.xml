@@ -208,6 +208,8 @@
   <string name="coverloader_vanilla_summary">Afbeeldingen zoeken met de naam cover.jpg, album.jpg of artwork.jpg and gebruiken als albumhoes</string>
   <string name="coverloader_shadow_title">Afbeeldingen laden uit verborgen map</string>
   <string name="coverloader_shadow_summary">Afbeeldingen proberen te laden van \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\'</string>
+  <string name="coverloader_inline_title">Afbeeldingen van bestandstag laden</string>
+  <string name="coverloader_inline_summary">Proberen ingebedde afbeelding van bestandstag te laten</string>
   <string name="cover_on_lockscreen_title">Albumhoes tonen op vergrendelscherm</string>
   <string name="cover_on_lockscreen_summary">De albumhoes van het nummer dat op dat moment afgespeeld wordt tonen op het vergrendelscherm</string>
   <string name="double_tap_title">Dubbeltik widget</string>
@@ -268,6 +270,13 @@
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s \'Top %.0f\' afspeellijst</string>
   <string name="autoplaylist_playcounts_disabled">Geen automatische afspeellijst aanmaken</string>
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
+  <string name="playlist_sync_mode_title">Synchronisatie afspeellijst</string>
+  <string name="playlist_sync_all">Volledige synchronisatie</string>
+  <string name="playlist_sync_only_import">M3U importeren, nooit exporteren</string>
+  <string name="playlist_sync_only_export">M3U schrijven, nooit importeren</string>
+  <string name="playlist_sync_disabled">Uitgeschakeld</string>
+  <string name="playlist_sync_folder_title">Synchronisatie map</string>
+  <string name="playlist_sync_folder_summary">Map voor synchronisatie afspeellijst</string>
   <string name="permission_request_summary">Vanilla Music heeft toestemming nodig de muziekbibliotheek weer te geven</string>
   <string name="reverse_sort">Sortering omkeren</string>
   <string name="share">Delen…</string>
@@ -277,6 +286,7 @@
   <string name="duration">Lengte</string>
   <string name="dump_database">Database dumpen</string>
   <string name="dump_database_result">Database is gedumpt naar \'%s\'</string>
+  <string name="force_m3u_import">Opnieuw importeren M3U afdwingen</string>
   <string name="media_library">Media bibliotheek</string>
   <string name="media_folders_header">Geïndexeerde mappen</string>
   <string name="media_scan_header">Media scanner</string>

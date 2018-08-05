@@ -1,6 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="app_name">Vanilla Music</string>
+  <string name="ok">OK</string>
+  <string name="cancel">Annuler</string>
   <!--Playback Activity (main screen)-->
   <string name="no_songs">Aucun morceau trouvé sur votre appareil.</string>
   <string name="empty_queue">Aucun morceau sélectionné. Choisissez-en un depuis la bibliothèque ou activez le mode aléatoire en cliquant sur ce message.</string>
@@ -30,28 +32,29 @@
   <string name="_year">année</string>
   <string name="_replaygain">gain ReplayGain</string>
   <!--New Playlist Dialog-->
-  <string name="choose_playlist_name">Choisir un nom de liste de lecture</string>
+  <string name="choose_playlist_name">Nom de la playlist</string>
   <string name="create">Créer</string>
   <string name="overwrite">Remplacer</string>
-  <string name="delete_playlist">Supprimer la liste de lecture %s?</string>
+  <string name="delete_playlist">Supprimer la playlist %s?</string>
   <!--Library-->
   <string name="enqueue">Ajouter à la file d\'attente</string>
-  <string name="enqueue_as_next">Lire à la suite</string>
+  <string name="enqueue_as_next">Lire après le morceau en cours</string>
   <string name="play">Lire</string>
   <string name="edit">Modifier</string>
   <string name="rename">Renommer</string>
-  <string name="save_as_playlist">Enregistrer en tant que liste de lecture...</string>
-  <string name="add_to_playlist">Ajouter à la liste de lecture...</string>
+  <string name="save_as_playlist">Enregistrer en playlist...</string>
+  <string name="add_to_playlist">Ajouter à la playlist...</string>
   <string name="add_to_favorites">Ajouter aux favoris</string>
   <string name="remove_from_favorites">Retirer des favoris</string>
   <string name="playlist_favorites">Favoris</string>
-  <string name="new_playlist">Nouvelle liste de lecture...</string>
+  <string name="new_playlist">Nouvelle playlist...</string>
   <string name="expand">Explorer</string>
+  <string name="expand_or_play_all">Explorer ou lire tout</string>
   <string name="delete">Supprimer</string>
   <string name="playback_view">En lecture</string>
   <string name="sort_by">Trier par</string>
   <string name="search">Rechercher</string>
-  <string name="done">Fait</string>
+  <string name="done">Terminé</string>
   <string name="remove">Supprimer</string>
   <string name="play_or_enqueue">Ajouter à la file d\'attente si en lecture ; Lire si en pause</string>
   <string name="open">Ouvrir</string>
@@ -66,10 +69,30 @@
 		Translators should use http://unicode.org/reports/tr35/tr35-numbers.html#Language_Plural_Rules and
 		http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html, Type cardinal,
 		to see which categories apply to integer numbers in their languages-->
+  <plurals name="playing">
+    <item quantity="one">%dmorceau en lecture.</item>
+    <item quantity="other">%dmorceaux en lecture.</item>
+  </plurals>
+  <plurals name="enqueued">
+    <item quantity="one">%dmorceau ajouté à la file d\'attente.</item>
+    <item quantity="other">%dmorceaux ajoutés à la file d\'attente.</item>
+  </plurals>
+  <plurals name="added_to_playlist">
+    <item quantity="one">%1$d morceau ajouté à la playlist %2$s.</item>
+    <item quantity="other">%1$d morceaux ajoutés à la playlist %2$s.</item>
+  </plurals>
+  <plurals name="removed_from_playlist">
+    <item quantity="one">%1$d morceau supprimé de la playlist %2$s.</item>
+    <item quantity="other">%1$d morceaux supprimés de la playlist %2$s.</item>
+  </plurals>
+  <plurals name="deleted">
+    <item quantity="one">%d morceau supprimé.</item>
+    <item quantity="other">%d morceaux supprimés.</item>
+  </plurals>
   <string name="delete_file_failed">Échec lors de la suppression %s.</string>
   <string name="deleted_item">\'%s\' supprimé.</string>
   <string name="delete_item">Supprimer \'%s\'?</string>
-  <string name="delete_file">Effacer le fichier \'%s\'?</string>
+  <string name="delete_file">Supprimer le fichier \'%s\'?</string>
   <string name="artists">Artistes</string>
   <string name="albums">Albums</string>
   <string name="albumartists">Artiste de l\'album</string>
@@ -90,8 +113,8 @@
   <string name="play_all">Lire tout</string>
   <string name="enqueue_all">Ajouter tout à la file d\'attente</string>
   <string name="all_songs">Tous les morceaux</string>
-  <string name="more_from_artist">Plus de cet artiste</string>
-  <string name="more_from_album">Plus de cet album</string>
+  <string name="more_from_artist">Filtrer par dossier</string>
+  <string name="more_from_album">Filtrer par album</string>
   <string name="title">Titre</string>
   <string name="number_of_tracks">Nombre de pistes</string>
   <string name="year">Année</string>
@@ -162,11 +185,11 @@
   <string name="cover_longpress_action_title">Action toucher longuement la jaquette</string>
   <string name="library_screen">Écran de la bibliothèque</string>
   <string name="default_action_title">Action par défaut</string>
-  <string name="default_playlist_action_title">Action par défaut de la liste de lecture</string>
-  <string name="accelerometer_shake">Secouer l\'appareil</string>
-  <string name="enable_shake_title">Activer secouer l\'appareil</string>
+  <string name="default_playlist_action_title">Action par défaut de la playlist</string>
+  <string name="accelerometer_shake">Accéléromètre </string>
+  <string name="enable_shake_title">Activer l\'accéléromètre </string>
   <string name="enable_shake_summary">Actif uniquement lorsque la musique est en cours de lecture. Ne fonctionne pas lorsque l\'écran est éteint sur certains appareils.</string>
-  <string name="shake_action_title">Action secouer</string>
+  <string name="shake_action_title">Action de l\'accéléromètre</string>
   <string name="shake_threshold_title">Seuil de force de la secousse</string>
   <string name="misc_features">Fonctionnalités diverses</string>
   <string name="theme">Thème</string>
@@ -185,6 +208,8 @@
   <string name="coverloader_vanilla_summary">Chercher les fichiers de type image nommés cover.jpg, album.jpg ou artwork.jpg et les afficher en tant que jaquette</string>
   <string name="coverloader_shadow_title">Charger l\'illustration depuis le répertoire caché</string>
   <string name="coverloader_shadow_summary">Essaie de charger l\'illustration depuis \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\'</string>
+  <string name="coverloader_inline_title">Charger l\'illustration depuis les tags</string>
+  <string name="coverloader_inline_summary">Tente de charger l\'illustration embarquée dans les tags des fichiers.</string>
   <string name="cover_on_lockscreen_title">Afficher la jaquette sur l\'écran de verrouillage</string>
   <string name="cover_on_lockscreen_summary">Afficher la jaquette du morceau en lecture sur l\'écran de verrouillage</string>
   <string name="double_tap_title">Toucher deux fois le widget</string>
@@ -223,7 +248,7 @@
   <string name="enqueue_current_artist">Ajouter l\'artiste à la file d\'attente</string>
   <string name="enqueue_current_genre">Ajouter le genre à la file d\'attente</string>
   <string name="enqueue_current">Ajouter à la file d\'attente...</string>
-  <string name="more_from_current">Filtrer par...</string>
+  <string name="more_from_current">Accéder à...</string>
   <string name="empty_the_queue">Vider la file d\'attente</string>
   <string name="show_queue">Afficher la file d\'attente</string>
   <string name="hide_queue">Masquer la file d\'attente</string>
@@ -240,17 +265,25 @@
   <string name="customize_filebrowser_start">L\'explorateur de fichier démarre à ce répertoire</string>
   <string name="select">Sélectionner</string>
   <string name="save">Sauvegarder</string>
-  <string name="autoplaylist_playcounts_title">Création de liste de lecture automatique</string>
+  <string name="autoplaylist_playcounts_title">Création automatique de playlists </string>
   <string name="autoplaylist_playcounts_summary">Créer automatiquement une</string>
-  <string name="autoplaylist_playcounts_fmt" formatted="false">%s liste de lecture \'Top %.0f\'</string>
-  <string name="autoplaylist_playcounts_disabled">Ne pas créer de liste de lecture automatique</string>
+  <string name="autoplaylist_playcounts_fmt" formatted="false">%s playlist \'Top %.0f\'</string>
+  <string name="autoplaylist_playcounts_disabled">Ne pas créer de playlist automatique</string>
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
+  <string name="playlist_sync_mode_title">Synchronisation des playlists</string>
+  <string name="playlist_sync_all">Synchronisation complète</string>
+  <string name="playlist_sync_only_import">Importer les .m3u uniquement</string>
+  <string name="playlist_sync_only_export">Exporter les .m3u uniquement</string>
+  <string name="playlist_sync_disabled">Désactiver</string>
+  <string name="playlist_sync_folder_title">Dossier de synchronisation</string>
+  <string name="playlist_sync_folder_summary">Dossier à utiliser pour la synchronisation des playlists</string>
   <string name="permission_request_summary">Vanilla Music a besoin d\'une permission de lecture pour afficher votre bibliothèque musicale</string>
   <string name="reverse_sort">Inverser le tri</string>
-  <string name="share">Partager...</string>
-  <string name="share_failed">Échec de partage du fichier</string>
+  <string name="share">Partager</string>
+  <string name="share_failed">Échec du partage</string>
   <string name="sendto">Envoyer à…</string>
   <string name="no_receiving_apps">Aucune application trouvée pour ce type de média!</string>
+  <string name="duration">Durée</string>
   <string name="media_library">Bibliothèque multimédia</string>
   <string name="media_folders_header">Dossiers indexés</string>
   <string name="media_scan_header">Scanner médias</string>

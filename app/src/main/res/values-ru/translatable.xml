@@ -4,7 +4,7 @@
   <string name="ok">Ладно</string>
   <string name="cancel">Отмена</string>
   <!--Playback Activity (main screen)-->
-  <string name="no_songs">Нет музыки на устройстве.</string>
+  <string name="no_songs">На устройстве нет музыки.</string>
   <string name="empty_queue">Дорожки не выбраны. Создайте подборку из фонотеки или коснитесь здесь для включения случайного режима.</string>
   <string name="settings">Настройки</string>
   <string name="no_shuffle">По порядку</string>
@@ -224,6 +224,8 @@
   <string name="coverloader_vanilla_summary">Искать файлы изображений с именами cover.jpg, album.jpg или artwork.jpg и показывать их в качестве обложек</string>
   <string name="coverloader_shadow_title">Загружать обложки из скрытой папки</string>
   <string name="coverloader_shadow_summary">Искать и загружать обложки по маске \"/sdcard/Музыка/.vanilla/ИСПОЛНИТЕЛЬ/АЛЬБОМ.jpg\"</string>
+  <string name="coverloader_inline_title">Загружать обложки из тегов</string>
+  <string name="coverloader_inline_summary">Загружать встроенные в теги обложки</string>
   <string name="cover_on_lockscreen_title">Показывать обложки на экране блокировки</string>
   <string name="cover_on_lockscreen_summary">Показывать обложку текущей дорожки на экране блокировки</string>
   <string name="double_tap_title">Двойное касание виджета</string>
@@ -284,6 +286,13 @@
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s плей-лист \"%.0f лучших\"</string>
   <string name="autoplaylist_playcounts_disabled">Не создавать плей-лист автоматически</string>
   <string name="autoplaylist_playcounts_name" formatted="false">%d лучших </string>
+  <string name="playlist_sync_mode_title">Синхронизация плей-листов</string>
+  <string name="playlist_sync_all">Полная синхронизация</string>
+  <string name="playlist_sync_only_import">Импортировать M3U, без экспорта</string>
+  <string name="playlist_sync_only_export">Записывать M3U, без импорта</string>
+  <string name="playlist_sync_disabled">Отключена</string>
+  <string name="playlist_sync_folder_title">Папка для синхронизации</string>
+  <string name="playlist_sync_folder_summary">Папка с плей-листами для синхронизации</string>
   <string name="permission_request_summary">Vanilla Music необходимо разрешение на чтение, чтобы отобразить Вашу музыку в фонотеке</string>
   <string name="reverse_sort">в обратном порядке</string>
   <string name="share">Поделиться…</string>
@@ -293,6 +302,7 @@
   <string name="duration">Общая длительность</string>
   <string name="dump_database">Выгрузить базу данных</string>
   <string name="dump_database_result">База данных выгружена в \"%s\"</string>
+  <string name="force_m3u_import">Заново импортировать плей-листы M3U</string>
   <string name="media_library">Библиотека носителей</string>
   <string name="media_folders_header">Директории в индексе</string>
   <string name="media_scan_header">Сканер носителей</string>

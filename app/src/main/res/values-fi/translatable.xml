@@ -207,6 +207,8 @@
   <string name="coverloader_vanilla_summary">Etsi kuvatiedostoja nimeltä cover.jpg, album.jpg tai artwork.jpg ja näytä löytynyt tiedosto kansikuvituksena</string>
   <string name="coverloader_shadow_title">Lataa kuvitus piilotetusta kansiosta</string>
   <string name="coverloader_shadow_summary">Yritä ladata kuvitus polusta \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\'</string>
+  <string name="coverloader_inline_title">Lataa kuvitus tiedostotunnisteista</string>
+  <string name="coverloader_inline_summary">Yritä ladata upotettu kuvitus tiedostotunnisteista</string>
   <string name="cover_on_lockscreen_title">Näytä kuvitus lukitusnäytöllä</string>
   <string name="cover_on_lockscreen_summary">Näytä toistettavan kappaleen kansikuvitus lukitusnäytöllä</string>
   <string name="double_tap_title">Kaksoisnapautus-widget</string>
@@ -266,6 +268,13 @@
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s \'Top %.0f\' -soittolista</string>
   <string name="autoplaylist_playcounts_disabled">Älä luo automaattista soittolistaa</string>
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
+  <string name="playlist_sync_mode_title">Soittolistan synkronointi</string>
+  <string name="playlist_sync_all">Täysi synkronointi</string>
+  <string name="playlist_sync_only_import">Tuo M3U, älä vie koskaan</string>
+  <string name="playlist_sync_only_export">Kirjoita M3U, älä tuo koskaan</string>
+  <string name="playlist_sync_disabled">Pois käytöstä</string>
+  <string name="playlist_sync_folder_title">Synkronointikansio</string>
+  <string name="playlist_sync_folder_summary">Soittolistan synkronointiin käytettävä kansio</string>
   <string name="permission_request_summary">Vanilla Music tarvitsee lukuoikeuden näyttääkseen musiikkikirjastosi</string>
   <string name="reverse_sort">Käänteinen järjestys</string>
   <string name="share">Jaa…</string>
@@ -275,6 +284,7 @@
   <string name="duration">Kesto</string>
   <string name="dump_database">Vie tietokanta</string>
   <string name="dump_database_result">Tietokanta viety tiedostoon \'%s\'</string>
+  <string name="force_m3u_import">Pakota M3U-uudelleentuonti</string>
   <string name="media_library">Mediakirjasto</string>
   <string name="media_folders_header">Indeksoidut kansiot</string>
   <string name="media_scan_header">Mediaskanneri</string>
