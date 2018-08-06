@@ -228,8 +228,15 @@ public class ShowQueueFragment extends Fragment
 	 * its startup and is ready to be queried.
 	 */
 	public void setSong(long uptime, Song song) {
-		if (!mIsPopulated) {
-			onTimelineChanged();
+		if (PlaybackService.hasInstance()) {
+			boolean scroll = PlaybackService
+				.getSettings(getActivity().getApplicationContext())
+				.getBoolean(PrefKeys.QUEUE_ENABLE_SCROLL_TO_SONG,
+							PrefDefaults.QUEUE_ENABLE_SCROLL_TO_SONG);
+
+			if (!mIsPopulated || scroll) {
+				refreshSongQueueList(scroll);
+			}
 		}
 	}
 
@@ -238,11 +245,7 @@ public class ShowQueueFragment extends Fragment
 	 */
 	public void onTimelineChanged() {
 		if (PlaybackService.hasInstance()) {
-			boolean shouldScroll = PlaybackService
-				.getSettings(getActivity().getApplicationContext())
-				.getBoolean(PrefKeys.QUEUE_ENABLE_SCROLL_TO_SONG,
-					PrefDefaults.QUEUE_ENABLE_SCROLL_TO_SONG);
-			refreshSongQueueList(shouldScroll);
+			refreshSongQueueList(false);
 		}
 	}
 
