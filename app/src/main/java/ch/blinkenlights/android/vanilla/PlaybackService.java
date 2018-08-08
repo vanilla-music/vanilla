@@ -1559,6 +1559,9 @@ public final class PlaybackService extends Service
 	 * Otherwise, calls {@link PlaybackService#setCurrentSong(int)} with arg1.
 	 */
 	private static final int MSG_CALL_GO = 8;
+	/**
+	 * The combination of (current song, current playback state) changed.
+	 */
 	private static final int MSG_BROADCAST_CHANGE = 10;
 	private static final int MSG_SAVE_STATE = 12;
 	private static final int MSG_PROCESS_SONG = 13;
@@ -1567,6 +1570,10 @@ public final class PlaybackService extends Service
 	private static final int MSG_GAPLESS_UPDATE = 16;
 	private static final int MSG_UPDATE_PLAYCOUNTS = 17;
 	private static final int MSG_SHOW_TOAST = 18;
+	/**
+	 * The current song's playback position changed.
+	 */
+	private static final int MSG_BROADCAST_SEEK = 19;
 
 	@Override
 	public boolean handleMessage(Message message)
@@ -1655,6 +1662,9 @@ public final class PlaybackService extends Service
 				Toast.makeText(this, resId, duration).show();
 			}
 			break;
+		case MSG_BROADCAST_SEEK:
+			mRemoteControlClient.updateRemote(mCurrentSong, mState, mForceNotificationVisible);
+			break;
 		default:
 			return false;
 		}
@@ -1713,6 +1723,7 @@ public final class PlaybackService extends Service
 			return;
 		long position = (long)mMediaPlayer.getDuration() * progress / 1000;
 		mMediaPlayer.seekTo((int)position);
+		mHandler.sendEmptyMessage(MSG_BROADCAST_SEEK);
 	}
 
 	@Override
@@ -1944,6 +1955,7 @@ public final class PlaybackService extends Service
 		ArrayList<TimelineCallback> list = sCallbacks;
 		for (int i = list.size(); --i != -1; )
 			list.get(i).onPositionInfoChanged();
+		mRemoteControlClient.updateRemote(mCurrentSong, mState, mForceNotificationVisible);
 	}
 
 	private final LibraryObserver mObserver = new LibraryObserver() {

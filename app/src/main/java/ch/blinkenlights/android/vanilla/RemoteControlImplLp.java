@@ -34,7 +34,7 @@ public class RemoteControlImplLp implements RemoteControl.Client {
 	/**
 	 * Context of this instance
 	 */
-	private Context mContext;
+	private final Context mContext;
 	/**
 	 * Objects MediaSession handle
 	 */
@@ -82,6 +82,11 @@ public class RemoteControlImplLp implements RemoteControl.Client {
 			public void onSkipToPrevious() {
 				MediaButtonReceiver.processKey(mContext, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS));
 			}
+			@Override
+			public void onStop() {
+				// We will behave the same as Google Play Music: for "Stop" we unconditionally Pause instead
+				MediaButtonReceiver.processKey(mContext, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PAUSE));
+			}
 		});
 
 		Intent intent = new Intent();
@@ -113,7 +118,7 @@ public class RemoteControlImplLp implements RemoteControl.Client {
 
 	/**
 	 * Update the remote with new metadata.
-	 * {@link #registerRemote()} must have been called
+	 * {@link #initializeRemote()} must have been called
 	 * first.
 	 *
 	 * @param song The song containing the new metadata.
@@ -132,25 +137,34 @@ public class RemoteControlImplLp implements RemoteControl.Client {
 			mShowCover = settings.getBoolean(PrefKeys.COVER_ON_LOCKSCREEN, PrefDefaults.COVER_ON_LOCKSCREEN) ? 1 : 0;
 		}
 
+		PlaybackService service = PlaybackService.get(mContext);
+
 		if (song != null) {
 			Bitmap bitmap = null;
 			if (mShowCover == 1 && (isPlaying || keepPaused)) {
 				bitmap = song.getCover(mContext);
 			}
 
-			session.setMetadata(new MediaMetadata.Builder()
+			MediaMetadata.Builder metadataBuilder = new MediaMetadata.Builder()
 				.putString(MediaMetadata.METADATA_KEY_ARTIST, song.artist)
 				.putString(MediaMetadata.METADATA_KEY_ALBUM, song.album)
 				.putString(MediaMetadata.METADATA_KEY_TITLE, song.title)
 				.putLong(MediaMetadata.METADATA_KEY_DURATION, song.duration)
-				.putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, bitmap)
-			.build());
+				.putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, bitmap);
+
+			// logic copied from FullPlaybackActivity.updateQueuePosition()
+			if (PlaybackService.finishAction(service.getState()) != SongTimeline.FINISH_RANDOM) {
+				metadataBuilder.putLong(MediaMetadata.METADATA_KEY_TRACK_NUMBER, service.getTimelinePosition() + 1);
+				metadataBuilder.putLong(MediaMetadata.METADATA_KEY_NUM_TRACKS, service.getTimelineLength());
+			}
+
+			session.setMetadata(metadataBuilder.build());
 		}
 
 		int playbackState = (isPlaying ? PlaybackState.STATE_PLAYING : PlaybackState.STATE_PAUSED);
 
 		session.setPlaybackState(new PlaybackState.Builder()
-			.setState(playbackState, PlaybackState.PLAYBACK_POSITION_UNKNOWN , 1.0f)
+			.setState(playbackState, service.getPosition(), 1.0f)
 			.setActions(PlaybackState.ACTION_PLAY | PlaybackState.ACTION_PAUSE | PlaybackState.ACTION_PLAY_PAUSE |
 			            PlaybackState.ACTION_SKIP_TO_NEXT | PlaybackState.ACTION_SKIP_TO_PREVIOUS)
 			.build());
