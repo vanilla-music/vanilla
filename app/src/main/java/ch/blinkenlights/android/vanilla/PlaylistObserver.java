@@ -25,6 +25,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Build;
 import android.os.Environment;
 import android.os.FileObserver;
 import android.os.Handler;
@@ -46,6 +47,10 @@ import android.util.Log;
 
 
 public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callback {
+	/**
+	 * Whether or not to write debug logs.
+	 */
+	private final static boolean DEBUG = false;
 	/**
 	 * Bits for mSyncMode
 	 */
@@ -111,6 +116,16 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 		mHandlerThread.start();
 		mHandler = new Handler(mHandlerThread.getLooper(), this);
 
+		// Create playlists directory if not existing.
+		if ((mSyncMode & SYNC_MODE_EXPORT) != 0) {
+			try {
+				mPlaylists.mkdir();
+			} catch (Exception e) {
+				// don't care: code will ignore events
+				// if mPlaylists is not a (writable) dir.
+			}
+		}
+
 		// Register to receive media library events.
 		MediaLibrary.registerLibraryObserver(mLibraryObserver);
 		// Create and start directory observer.
@@ -129,9 +144,34 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 		MediaLibrary.unregisterLibraryObserver(mLibraryObserver);
 		mFileObserver.stopWatching();
 
-		mHandlerThread.quitSafely();
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+			mHandlerThread.quitSafely();
+		} else {
+			mHandlerThread.quit();
+		}
 		mHandlerThread = null;
 		mHandler = null;
+	}
+
+	/**
+	 * Whether or not to handle (or drop) any events received.
+	 * This has the same effect as unregistering, without actually
+	 * unregistering. The function prevents false events from
+	 * being handled if our playlists folder becomes 'suspect'.
+	 */
+	private boolean shouldDispatch() {
+		// This is so sad, but java.nio.file is only available since API 26,
+		// so we are stuck with java being java.
+		boolean deny = false;
+		try {
+			File f = File.createTempFile("vanilla-write-check", null, mPlaylists);
+			f.delete();
+		} catch (Exception e) {
+			// don't care about the exact error: as long as the write failed,
+			// we should not assume that we could write anything else.
+			deny = true;
+		}
+		return !deny;
 	}
 
 	/**
@@ -323,9 +363,6 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 			return null;
 
 		final File m3u = getFileForName(mPlaylists, asM3u(name));
-
-		if (!mPlaylists.isDirectory())
-			mPlaylists.mkdir();
 
 		PrintWriter pw = null;
 		QueryTask query = MediaUtils.buildPlaylistQuery(id, Song.FILLED_PLAYLIST_PROJECTION);
@@ -537,6 +574,9 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 			if (type != LibraryObserver.Type.PLAYLIST || ongoing)
 				return;
 
+			if (!shouldDispatch())
+				return;
+
 			int msg = MSG_DUMP_M3U; // Default: export this playlist ID.
 			if (id == LibraryObserver.Value.UNKNOWN) {
 				// An unknown (all?) playlist was modified: dump all to M3U
@@ -568,6 +608,9 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 				if (!isM3uFilename(dirent))
 					return;
 
+				if (!shouldDispatch())
+					return;
+
 				if ((event & (FileObserver.MOVED_FROM | FileObserver.DELETE)) != 0) {
 					// A M3U vanished, do a full scan.
 					XT("FileObserver::onEvent DELETE of "+dirent+" triggers FULL_SYNC_SCAN");
@@ -583,10 +626,11 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 	}
 
 	private void XT(String s) {
-		try(PrintWriter pw = new PrintWriter(new FileOutputStream(new File("/sdcard/playlist-observer.txt"), true))) {
-			pw.println(System.currentTimeMillis()/1000+": "+s);
-			Log.v("VanillaMusic", "XTRACE: "+s);
-		} catch(Exception e) {
+		if (DEBUG) {
+			try(PrintWriter pw = new PrintWriter(new FileOutputStream(new File("/sdcard/playlist-observer.txt"), true))) {
+				pw.println(System.currentTimeMillis()/1000+": "+s);
+				Log.v("VanillaMusic", "XTRACE: "+s);
+			} catch(Exception e) {}
 		}
 	}
 }
