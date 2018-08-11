@@ -201,6 +201,8 @@
   <string name="idle_timeout_title">Joutenolon aikakatkaisu</string>
   <string name="enable_scroll_to_song_title">Vieritä kappaleen nimeen</string>
   <string name="enable_scroll_to_song_summary">Vieritä parhaillaan toistettavaan kappaleeseen/albumiin/esittäjään kirjastonäkymässä</string>
+  <string name="queue_enable_scroll_to_song_title">Vieritä kappaleen nimeen jonossa</string>
+  <string name="queue_enable_scroll_to_song_summary">Vieritä parhaillaan toistettavan kappaleeseen jonossa kappaleen vaihtuessa</string>
   <string name="coverloader_android_title">Lataa kuvitus Androidista</string>
   <string name="coverloader_android_summary">Etsi kuvitusta Androidin sisäisestä mediatietokannasta</string>
   <string name="coverloader_vanilla_title">Lataa kuvitus kansiosta</string>

@@ -218,6 +218,8 @@
   <string name="idle_timeout_title">Czas bezczynności</string>
   <string name="enable_scroll_to_song_title">Przewiń do odtwarzanego utworu</string>
   <string name="enable_scroll_to_song_summary">Przewiń do aktualnie odtwarzanego utworu/albumu/artysty w widoku biblioteki</string>
+  <string name="queue_enable_scroll_to_song_title">Przewiń do odtwarzanego utworu</string>
+  <string name="queue_enable_scroll_to_song_summary">Przewiń do obecnie odtwarzanego utworu na liście odtwarzania przy zmianie piosenki</string>
   <string name="coverloader_android_title">Załaduj okładkę albumu z systemu Android</string>
   <string name="coverloader_android_summary">Sprawdzanie w wewnętrznej bazie systemu Android w poszukiwaniu okładki albumu</string>
   <string name="coverloader_vanilla_title">Ładowanie okładki albumu z folderu</string>

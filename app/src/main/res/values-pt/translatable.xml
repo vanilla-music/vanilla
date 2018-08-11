@@ -202,6 +202,8 @@
   <string name="idle_timeout_title">Período de inatividade</string>
   <string name="enable_scroll_to_song_title">Deslocar para o título</string>
   <string name="enable_scroll_to_song_summary">Ir para o título da faixa/álbum/artista nas listas da coleção</string>
+  <string name="queue_enable_scroll_to_song_title">Deslocar para a faixa na fila</string>
+  <string name="queue_enable_scroll_to_song_summary">Ao alterar de faixa, ir para a faixa em reprodição</string>
   <string name="coverloader_android_title">Carregar  imagem do Android</string>
   <string name="coverloader_android_summary">Consulta a capa do álbum na base de dados interna do Android</string>
   <string name="coverloader_vanilla_title">Carregar imagem da pasta</string>
@@ -209,7 +211,7 @@
   <string name="coverloader_shadow_title">Carregar imagem de pasta oculta</string>
   <string name="coverloader_shadow_summary">Tenta carregar a imagem em \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\'</string>
   <string name="coverloader_inline_title">Carregar imagem das etiquetas</string>
-  <string name="coverloader_inline_summary">Tentar carregar a imagem das etiquetas do ficheiro.</string>
+  <string name="coverloader_inline_summary">Tentar carregar a imagem das etiquetas do ficheiro</string>
   <string name="cover_on_lockscreen_title">Mostrar imagem no ecrã de bloqueio</string>
   <string name="cover_on_lockscreen_summary">Mostra a imagem do faixa em reprodução no ecrã de bloqueio</string>
   <string name="double_tap_title">Duplo toque no widget</string>

@@ -70,8 +70,8 @@
 		http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html, Type cardinal,
 		to see which categories apply to integer numbers in their languages-->
   <plurals name="playing">
-    <item quantity="one">%dmorceau en lecture.</item>
-    <item quantity="other">%dmorceaux en lecture.</item>
+    <item quantity="one">%d morceau en lecture.</item>
+    <item quantity="other">%d morceaux en lecture.</item>
   </plurals>
   <plurals name="enqueued">
     <item quantity="one">%dmorceau ajouté à la file d\'attente.</item>
@@ -113,7 +113,7 @@
   <string name="play_all">Lire tout</string>
   <string name="enqueue_all">Ajouter tout à la file d\'attente</string>
   <string name="all_songs">Tous les morceaux</string>
-  <string name="more_from_artist">Filtrer par dossier</string>
+  <string name="more_from_artist">Filtrer par artiste</string>
   <string name="more_from_album">Filtrer par album</string>
   <string name="title">Titre</string>
   <string name="number_of_tracks">Nombre de pistes</string>
@@ -200,8 +200,10 @@
   <string name="use_idle_timeout_title">Activer le délai d\'inactivité</string>
   <string name="use_idle_timeout_summary">Quand l\'option est activée, la lecture s\'arrêtera après la période d\'inactivité donnée</string>
   <string name="idle_timeout_title">Délai d\'inactivité</string>
-  <string name="enable_scroll_to_song_title">Faire défiler jusqu\'au titre du morceau</string>
-  <string name="enable_scroll_to_song_summary">Afficher le morceau/album/artiste en cours de lecture dans les listes de la bibliothèque</string>
+  <string name="enable_scroll_to_song_title">Défiler jusqu\'au titre du morceau</string>
+  <string name="enable_scroll_to_song_summary">Défile jusqu\'au morceau/album/artiste en cours de lecture dans l\'écran de la bibliothèque</string>
+  <string name="queue_enable_scroll_to_song_title">Défiler jusqu\'au titre du morceau dans la file d\'attente</string>
+  <string name="queue_enable_scroll_to_song_summary">Défile jusqu\'au morceau en cours de lecture dans la file d\'attente à chaque changement de piste. </string>
   <string name="coverloader_android_title">Charger les illustrations depuis Android</string>
   <string name="coverloader_android_summary">Interroge la base de données \'media\' interne d\'Android pour les illustrations</string>
   <string name="coverloader_vanilla_title">Charger l\'illustration depuis le répertoire</string>
@@ -284,6 +286,7 @@
   <string name="sendto">Envoyer à…</string>
   <string name="no_receiving_apps">Aucune application trouvée pour ce type de média!</string>
   <string name="duration">Durée</string>
+  <string name="force_m3u_import">Forcer la réimportation des .m3u</string>
   <string name="media_library">Bibliothèque multimédia</string>
   <string name="media_folders_header">Dossiers indexés</string>
   <string name="media_scan_header">Scanner médias</string>

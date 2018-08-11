@@ -202,6 +202,8 @@
   <string name="idle_timeout_title">Templimo de neaktiveco</string>
   <string name="enable_scroll_to_song_title">Rulumi al ludata muzikaĵo</string>
   <string name="enable_scroll_to_song_summary">Rulumi al nune ludata muzikaĵo/albumo/artisto en biblioteko</string>
+  <string name="queue_enable_scroll_to_song_title">Rulumi al ludata muzikaĵo en ludvico</string>
+  <string name="queue_enable_scroll_to_song_summary">Rulumi al nune ludato muzikaĵo en la ludvico je ŝanĝo de muzikaĵo</string>
   <string name="coverloader_android_title">Enlegi kovrilon de Androido</string>
   <string name="coverloader_android_summary">Peti internan datumbazon de Androido pri album-kovrilo</string>
   <string name="coverloader_vanilla_title">Enlegi kovrilon de dosierujo</string>

@@ -194,6 +194,8 @@
   <string name="idle_timeout_title">閒置超時</string>
   <string name="enable_scroll_to_song_title">捲動到歌曲標題</string>
   <string name="enable_scroll_to_song_summary">在媒體庫清單，捲動到目前播放的歌曲/專輯/演出者</string>
+  <string name="queue_enable_scroll_to_song_title">在佇列中捲動來追蹤標題</string>
+  <string name="queue_enable_scroll_to_song_summary">當佇列中的歌曲更改時，捲動到目前正在播放的曲目</string>
   <string name="coverloader_android_title">從 Android 載入封面</string>
   <string name="coverloader_android_summary">查詢 Androids 內部的媒體資料庫，以用於專輯封面</string>
   <string name="coverloader_vanilla_title">從資料夾載入封面</string>

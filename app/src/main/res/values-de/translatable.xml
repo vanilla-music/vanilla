@@ -202,12 +202,16 @@
   <string name="idle_timeout_title">Inaktivitätsdauer</string>
   <string name="enable_scroll_to_song_title">Zum Titelnamen scrollen</string>
   <string name="enable_scroll_to_song_summary">In Bibliothekslisten zum aktuell wiedergegeben Titel/Album/Interpreten scrollen</string>
+  <string name="queue_enable_scroll_to_song_title">Zu Titelname in Warteschlange scrollen</string>
+  <string name="queue_enable_scroll_to_song_summary">Bei Titelwechsel zum derzeit wiedergegebenen Titel in der Warteschlange scrollen</string>
   <string name="coverloader_android_title">Albumcover von Android verwenden</string>
   <string name="coverloader_android_summary">Androids interne Mediendatenbank für Albumcover verwenden</string>
   <string name="coverloader_vanilla_title">Cover aus Ordner laden</string>
   <string name="coverloader_vanilla_summary">Nach Dateien mit den Namen »cover.jpg«, »album.jpg« oder »artwork.jpg« suchen und diese als Albumcover anzeigen</string>
   <string name="coverloader_shadow_title">Cover aus verstecktem Ordner laden</string>
   <string name="coverloader_shadow_summary">Albumcover von »/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg« laden, falls möglich</string>
+  <string name="coverloader_inline_title">Bilder aus Datei-Tags laden</string>
+  <string name="coverloader_inline_summary">Eingebettete Bilder falls möglich aus Datei-Tags laden</string>
   <string name="cover_on_lockscreen_title">Cover auf Sperrbildschirm anzeigen</string>
   <string name="cover_on_lockscreen_summary">Albumcover des aktuell wiedergegebenen Titels auf dem Sperrbildschirm anzeigen</string>
   <string name="double_tap_title">Widget-Doppelantippen</string>
