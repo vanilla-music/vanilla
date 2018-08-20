@@ -187,8 +187,13 @@ public class ShowQueueFragment extends Fragment
 			public void run() {
 				mListAdapter.setData(service, pos);
 
-				if(scroll)
-					scrollToCurrentSong(pos);
+				if(scroll) {
+					// check that we really need to jump to this song, i.e. it is not visible in list right now
+					int min = mListView.getFirstVisiblePosition();
+					int max = mListView.getLastVisiblePosition();
+					if (pos < min || pos > max) // it's out of visible range, scroll
+						scrollToCurrentSong(pos);
+				}
 			}
 		});
 		mIsPopulated = true;
