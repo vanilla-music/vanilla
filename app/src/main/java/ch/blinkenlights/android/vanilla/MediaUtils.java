@@ -528,7 +528,7 @@ public class MediaUtils {
 		path = sanitizeMediaPath(path);
 		String query = MediaLibrary.SongColumns.PATH+" = ?";
 
-		if (!recursive) {
+		if (recursive) {
 			// This is a LIKE query: add a slash to the directory if the current path
 			// points to an existing one.
 			path = addDirEndSlash(path) + "%";
