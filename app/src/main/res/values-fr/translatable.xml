@@ -74,8 +74,8 @@
     <item quantity="other">%d morceaux en lecture.</item>
   </plurals>
   <plurals name="enqueued">
-    <item quantity="one">%dmorceau ajouté à la file d\'attente.</item>
-    <item quantity="other">%dmorceaux ajoutés à la file d\'attente.</item>
+    <item quantity="one">%d morceau ajouté à la file d\'attente.</item>
+    <item quantity="other">%d morceaux ajoutés à la file d\'attente.</item>
   </plurals>
   <plurals name="added_to_playlist">
     <item quantity="one">%1$d morceau ajouté à la playlist %2$s.</item>
