@@ -37,7 +37,7 @@ public class RemoteControlImplICS implements RemoteControl.Client {
 	/**
 	 * Context of this instance
 	 */
-	private Context mContext;
+	private final Context mContext;
 	/**
 	 * Used with updateRemote method.
 	 */
@@ -59,8 +59,6 @@ public class RemoteControlImplICS implements RemoteControl.Client {
 
 	/**
 	 * Perform initialization required for RemoteControlClient.
-	 *
-	 * @param am The AudioManager service.
 	 */
 	public void initializeRemote() {
 		// make sure there is only one registered remote
@@ -113,7 +111,7 @@ public class RemoteControlImplICS implements RemoteControl.Client {
 
 	/**
 	 * Update the remote with new metadata.
-	 * {@link #registerRemote(Context, AudioManager)} must have been called
+	 * {@link #initializeRemote()} must have been called
 	 * first.
 	 *
 	 * @param song The song containing the new metadata.
