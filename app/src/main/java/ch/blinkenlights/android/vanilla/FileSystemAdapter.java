@@ -440,8 +440,10 @@ public class FileSystemAdapter
 	 */
 	public void onItemClicked(Intent intent) {
 		boolean isFolder = intent.getBooleanExtra(LibraryAdapter.DATA_EXPANDABLE, false);
+		boolean isHeader = intent.getLongExtra(LibraryAdapter.DATA_ID, LibraryAdapter.INVALID_ID)
+			== LibraryAdapter.HEADER_ID;
 
-		if (FileUtils.canDispatchIntent(intent) && FileUtils.dispatchIntent(mActivity, intent))
+		if (!isHeader && FileUtils.canDispatchIntent(intent) && FileUtils.dispatchIntent(mActivity, intent))
 			return;
 
 		if (isFolder) {

@@ -749,7 +749,11 @@ public final class SongTimeline {
 		int added = 0;                 // Items actually added to the queue
 
 		if (count == 0 && type == MediaUtils.TYPE_FILE && query.selectionArgs.length == 1) {
+			// This seems to be a simple file query which lead to no results.
+			// Assume that this was a LIKE query for an unindexed file, so drop the '%' char
+			// at the end and return a fileCursor for it.
 			String pathQuery = query.selectionArgs[0];
+			pathQuery = pathQuery.substring(0,pathQuery.length()-1);
 			cursor.close(); // close old version
 			cursor = MediaUtils.getCursorForFileQuery(pathQuery);
 			count = cursor.getCount();
