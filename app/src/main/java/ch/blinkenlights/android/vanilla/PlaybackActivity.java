@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -733,12 +734,13 @@ public abstract class PlaybackActivity extends Activity
 	 *
 	 * @param songIntent intent containing song id as {@link Long} in its "id" extra.
 	 */
+	@SuppressLint("WrongConstant") // flag is ignored on Android < 7.0
 	protected void queryPluginsForIntent(Intent songIntent) {
 		// obtain list of plugins anew - some plugins may be installed/deleted
 		mPlugins.clear();
 		mLastRequestedCtx = songIntent;
 		Intent requestPlugins = new Intent(PluginUtils.ACTION_REQUEST_PLUGIN_PARAMS);
-		requestPlugins.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+		requestPlugins.addFlags(0x01000000); // Intent.FLAG_RECEIVER_INCLUDE_BACKGROUND
 		sendBroadcast(requestPlugins);
 	}
 
