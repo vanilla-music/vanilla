@@ -19,6 +19,7 @@ package ch.blinkenlights.android.vanilla;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
+import android.os.Build;
 
 import java.util.List;
 
@@ -54,12 +55,16 @@ public class PluginUtils {
     public static boolean checkPlugins(Context ctx) {
         List<ResolveInfo> resolved = ctx.getPackageManager().queryBroadcastReceivers(new Intent(ACTION_REQUEST_PLUGIN_PARAMS), 0);
         if(!resolved.isEmpty()) {
-            // If plugin is just installed, Android will not deliver intents to its receiver
-            // until it's started at least one time
-            for (ResolveInfo ri : resolved) {
-                Intent awaker = new Intent(ACTION_WAKE_PLUGIN);
-                awaker.setPackage(ri.activityInfo.packageName);
-                ctx.startService(awaker);
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                // If plugin is just installed, Android will not deliver intents
+                // to its receiver until it's started at least one time
+                // Note: this doesn't work for Android Oreo but it already
+                // has Intent.FLAG_RECEIVER_INCLUDE_BACKGROUND for this purpose
+                for (ResolveInfo ri : resolved) {
+                    Intent awaker = new Intent(ACTION_WAKE_PLUGIN);
+                    awaker.setPackage(ri.activityInfo.packageName);
+                    ctx.startService(awaker);
+                }
             }
             return true;
         }
