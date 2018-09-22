@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Oleg Chernovskiy <adonai@xaker.ru>
+ * Copyright (C) 2016-2018 Oleg Chernovskiy <adonai@xaker.ru>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,9 @@ package ch.blinkenlights.android.vanilla;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -52,16 +54,28 @@ public class PluginUtils {
     static final String EXTRA_PLUGIN_MAP = "ch.blinkenlights.android.vanilla.internal.extra.PLUGIN_MAP";
 
     public static boolean checkPlugins(Context ctx) {
-        List<ResolveInfo> resolved = ctx.getPackageManager().queryBroadcastReceivers(new Intent(ACTION_REQUEST_PLUGIN_PARAMS), 0);
-        if(!resolved.isEmpty()) {
-            // If plugin is just installed, Android will not deliver intents to its receiver
-            // until it's started at least one time
+        PackageManager pm = ctx.getPackageManager();
+        List<ResolveInfo> resolved = pm.queryBroadcastReceivers(new Intent(ACTION_REQUEST_PLUGIN_PARAMS), 0);
+        if (!resolved.isEmpty()) {
+            // If plugin is just installed, Android will not deliver intents
+            // to its receiver until it's started at least one time
+            boolean hasPlugins = false;
             for (ResolveInfo ri : resolved) {
                 Intent awaker = new Intent(ACTION_WAKE_PLUGIN);
                 awaker.setPackage(ri.activityInfo.packageName);
-                ctx.startService(awaker);
+
+                // all plugins must have respective activity that can handle ACTION_WAKE_PLUGIN
+                if (awaker.resolveActivity(pm) != null) {
+                    hasPlugins = true;
+                    ctx.startActivity(awaker);
+                } else {
+                    // need to upgrade the plugin from service-based plugin system to activity-based
+                    CharSequence pluginName = ri.loadLabel(pm);
+                    String error = String.format(ctx.getString(R.string.plugin_needs_upgrade), pluginName);
+                    Toast.makeText(ctx, error, Toast.LENGTH_SHORT).show();
+                }
             }
-            return true;
+            return hasPlugins;
         }
 
         return false;

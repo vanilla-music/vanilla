@@ -381,6 +381,7 @@ THE SOFTWARE.
 	<string name="folder_neutral">Neutral</string>
 	<!-- Plugin system -->
 	<string name="plugins">Plugins</string>
+	<string name="plugin_needs_upgrade">Please upgrade plugin %s to the latest version</string>
 
 	<!-- Theme names -->
 	<string name="theme_name_standard_light">Standard</string>
