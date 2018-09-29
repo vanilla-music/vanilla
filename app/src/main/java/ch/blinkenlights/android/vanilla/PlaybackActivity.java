@@ -72,6 +72,12 @@ public abstract class PlaybackActivity extends Activity
 	           View.OnClickListener,
 	           CoverView.Callback
 {
+	/**
+	 * This constant is unavailable on Android < N.
+	 * For newer versions the constant is {@link Intent.FLAG_RECEIVER_INCLUDE_BACKGROUND}
+	 */
+	private static final int FLAG_RECEIVER_INCLUDE_BACKGROUND = 0x01000000;
+
 	private Action mUpAction;
 	private Action mDownAction;
 
@@ -742,7 +748,7 @@ public abstract class PlaybackActivity extends Activity
 		mLastRequestedCtx = songIntent;
 		Intent requestPlugins = new Intent(PluginUtils.ACTION_REQUEST_PLUGIN_PARAMS);
 		requestPlugins.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-		requestPlugins.addFlags(0x01000000); // Intent.FLAG_RECEIVER_INCLUDE_BACKGROUND
+		requestPlugins.addFlags(FLAG_RECEIVER_INCLUDE_BACKGROUND);
 		sendBroadcast(requestPlugins);
 	}
 
