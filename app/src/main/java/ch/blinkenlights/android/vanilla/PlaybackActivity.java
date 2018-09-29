@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -49,6 +50,7 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -70,6 +72,12 @@ public abstract class PlaybackActivity extends Activity
 	           View.OnClickListener,
 	           CoverView.Callback
 {
+	/**
+	 * This constant is unavailable on Android < N.
+	 * For newer versions the constant is {@link Intent.FLAG_RECEIVER_INCLUDE_BACKGROUND}
+	 */
+	private static final int FLAG_RECEIVER_INCLUDE_BACKGROUND = 0x01000000;
+
 	private Action mUpAction;
 	private Action mDownAction;
 
@@ -733,12 +741,14 @@ public abstract class PlaybackActivity extends Activity
 	 *
 	 * @param songIntent intent containing song id as {@link Long} in its "id" extra.
 	 */
+	@SuppressLint("WrongConstant") // flag is ignored on Android < 7.0
 	protected void queryPluginsForIntent(Intent songIntent) {
 		// obtain list of plugins anew - some plugins may be installed/deleted
 		mPlugins.clear();
 		mLastRequestedCtx = songIntent;
 		Intent requestPlugins = new Intent(PluginUtils.ACTION_REQUEST_PLUGIN_PARAMS);
 		requestPlugins.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+		requestPlugins.addFlags(FLAG_RECEIVER_INCLUDE_BACKGROUND);
 		sendBroadcast(requestPlugins);
 	}
 
@@ -793,7 +803,11 @@ public abstract class PlaybackActivity extends Activity
 							request.putExtra(PluginUtils.EXTRA_PARAM_SONG_TITLE, resolved.title);
 							request.putExtra(PluginUtils.EXTRA_PARAM_SONG_ARTIST, resolved.artist);
 							request.putExtra(PluginUtils.EXTRA_PARAM_SONG_ALBUM, resolved.album);
-							startService(request);
+							if (request.resolveActivity(getPackageManager()) != null) {
+								startActivity(request);
+							} else {
+								Log.e("PluginSystem", "Couldn't start plugin activity for " + request);
+							}
 						}
 
 						mLastRequestedCtx = null;
