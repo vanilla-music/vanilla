@@ -770,7 +770,7 @@ public final class PlaybackService extends Service
 	 * Closes any open AudioFX session and releases
 	 * our wakelock if held
 	 */
-	private void enterSleepState()
+	private synchronized void enterSleepState()
 	{
 		if (mMediaPlayer != null) {
 			if (mMediaPlayerAudioFxActive) {
