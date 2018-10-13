@@ -900,10 +900,12 @@ public class LibraryPagerAdapter
 		SharedPreferences sharedPrefs = PlaybackService.getSettings(mActivity);
 		boolean shouldScroll = sharedPrefs.getBoolean(PrefKeys.ENABLE_SCROLL_TO_SONG, PrefDefaults.ENABLE_SCROLL_TO_SONG);
 		if(shouldScroll) {
-			int middlePos = (view.getFirstVisiblePosition() + view.getLastVisiblePosition()) / 2;
 			for (int pos = 0; pos < view.getCount(); pos++) {
 				if (view.getItemIdAtPosition(pos) == id) {
-					if (Math.abs(middlePos - pos) < 30) {
+					// for Android < 6.x visible positions are valid only if view is shown
+					boolean interactive = view.isShown();
+					int middlePos = (view.getFirstVisiblePosition() + view.getLastVisiblePosition()) / 2;
+					if (interactive && Math.abs(middlePos - pos) < 30) {
 						view.smoothScrollToPosition(pos);
 					} else {
 						view.setSelection(pos);
