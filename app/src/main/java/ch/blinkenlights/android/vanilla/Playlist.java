@@ -85,7 +85,7 @@ public class Playlist {
 		String name = null;
 		final String[] projection = { MediaLibrary.PlaylistColumns.NAME };
 		final String selection = MediaLibrary.PlaylistColumns._ID+"=?";
-		final String[] selectionArgs = { new Long(id).toString() };
+		final String[] selectionArgs = { Long.valueOf(id).toString() };
 		Cursor cursor = MediaLibrary.queryLibrary(context, MediaLibrary.TABLE_PLAYLISTS, projection, selection, selectionArgs, null);
 
 		if (cursor != null) {
