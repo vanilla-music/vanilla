@@ -25,29 +25,23 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class PlaylistObserverDirActivity extends FolderPickerActivity {
-	/**
-	 * Shared preferences
-	 */
-	private SharedPreferences mPrefs;
 
 	@Override  
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setTitle(R.string.filebrowser_start);
 
-		mPrefs = PlaybackService.getSettings(this);
-
 		// Start at currently configured directory.
-		String current = mPrefs.getString(PrefKeys.PLAYLIST_SYNC_FOLDER, PrefDefaults.PLAYLIST_SYNC_FOLDER);
+		String current = PlaybackService.getSettings(this).getString(PrefKeys.PLAYLIST_SYNC_FOLDER, PrefDefaults.PLAYLIST_SYNC_FOLDER);
 		setCurrentDir(new File(current));
 	}
 
 
 	@Override
 	public void onFolderPicked(File directory, ArrayList<String> a, ArrayList<String> b) {
-		SharedPreferences.Editor editor = mPrefs.edit();
+		SharedPreferences.Editor editor = PlaybackService.getSettings(this).edit();
 		editor.putString(PrefKeys.PLAYLIST_SYNC_FOLDER, directory.getAbsolutePath());
-		editor.commit();
+		editor.apply();
 		finish();
 	}
 
