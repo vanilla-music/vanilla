@@ -624,6 +624,10 @@ public final class PlaybackService extends Service
 		// defer wakelock and close audioFX
 		enterSleepState();
 
+		// stop getting preference changes.
+		getSettings(this).unregisterOnSharedPreferenceChangeListener(this);
+
+		// shutdown all observers.
 		MediaLibrary.unregisterLibraryObserver(mObserver);
 		mPlaylistObserver.unregister();
 
