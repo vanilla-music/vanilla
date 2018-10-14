@@ -104,11 +104,11 @@ public class CoverCache {
 	 * @param song The song used to identify the artwork to load
 	 * @return a bitmap or null if no artwork was found
 	 */
-	public Bitmap getCoverFromSong(Song song, int size) {
+	public Bitmap getCoverFromSong(Context ctx, Song song, int size) {
 		CoverKey key = new CoverCache.CoverKey(MediaUtils.TYPE_ALBUM, song.albumId, size);
 		Bitmap cover = getStoredCover(key);
 		if (cover == null) {
-			cover = sBitmapDiskCache.createBitmap(song, size*size);
+			cover = sBitmapDiskCache.createBitmap(ctx, song, size*size);
 			if (cover != null) {
 				storeCover(key, cover);
 				cover = getStoredCover(key); // return lossy version to avoid random quality changes
@@ -190,10 +190,6 @@ public class CoverCache {
 
 	private static class BitmapDiskCache extends SQLiteOpenHelper {
 		/**
-		 * The Context to use
-		 */
-		private final Context mContext;
-		/**
 		 * Maximal cache size to use in bytes
 		 */
 		private final long mCacheSize;
@@ -231,7 +227,6 @@ public class CoverCache {
 		public BitmapDiskCache(Context context, long cacheSize) {
 			super(context, "covercache.db", null, 1 /* version */);
 			mCacheSize = cacheSize;
-			mContext = context;
 		}
 
 		/**
@@ -398,7 +393,7 @@ public class CoverCache {
 		 * @param song the function will search for artwork of this object
 		 * @param maxPxCount the maximum amount of pixels to return (30*30 = 900)
 		 */
-		public Bitmap createBitmap(Song song, long maxPxCount) {
+		public Bitmap createBitmap(Context ctx, Song song, long maxPxCount) {
 			if (song.id < 0) {
 				// Unindexed song: return early
 				return null;
@@ -455,8 +450,8 @@ public class CoverCache {
 				}
 
 				if (inputStream == null && (CoverCache.mCoverLoadMode & CoverCache.COVER_MODE_ANDROID) != 0) {
-					ContentResolver res = mContext.getContentResolver();
-					long[] androidIds = MediaUtils.getAndroidMediaIds(mContext, song);
+					ContentResolver res = ctx.getContentResolver();
+					long[] androidIds = MediaUtils.getAndroidMediaIds(ctx, song);
 					long albumId = androidIds[1];
 
 					if (albumId != -1) {

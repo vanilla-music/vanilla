@@ -237,7 +237,7 @@ public class Song implements Comparable<Song> {
 		if (sCoverCache == null)
 			sCoverCache = new CoverCache(context.getApplicationContext());
 
-		Bitmap cover = sCoverCache.getCoverFromSong(this, size);
+		Bitmap cover = sCoverCache.getCoverFromSong(context, this, size);
 
 		if (cover == null)
 			flags |= FLAG_NO_COVER;
