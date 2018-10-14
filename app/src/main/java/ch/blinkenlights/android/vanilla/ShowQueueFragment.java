@@ -88,6 +88,7 @@ public class ShowQueueFragment extends Fragment
 	private final static int CTX_MENU_ENQUEUE_ARTIST = 102;
 	private final static int CTX_MENU_ENQUEUE_GENRE  = 103;
 	private final static int CTX_MENU_REMOVE         = 104;
+	private final static int CTX_MENU_SHOW_DETAILS   = 105;
 
 	/**
 	 * Called by Android on long press. Builds the long press context menu.
@@ -107,6 +108,7 @@ public class ShowQueueFragment extends Fragment
 		menu.add(0, CTX_MENU_ENQUEUE_ARTIST, 0, R.string.enqueue_current_artist).setIntent(intent).setOnMenuItemClickListener(this);
 		menu.add(0, CTX_MENU_ENQUEUE_GENRE, 0, R.string.enqueue_current_genre).setIntent(intent).setOnMenuItemClickListener(this);
 		menu.addSubMenu(0, SlidingPlaybackActivity.CTX_MENU_ADD_TO_PLAYLIST, 0, R.string.add_to_playlist).getItem().setIntent(intent); // handled by fragment parent
+		menu.add(0, CTX_MENU_SHOW_DETAILS, 0, R.string.details).setIntent(intent).setOnMenuItemClickListener(this);
 		menu.add(0, CTX_MENU_REMOVE, 0, R.string.remove).setIntent(intent).setOnMenuItemClickListener(this);
 	}
 
@@ -118,7 +120,6 @@ public class ShowQueueFragment extends Fragment
 	@Override
 	public boolean onMenuItemClick(MenuItem item) {
 		Intent intent = item.getIntent();
-		int itemId = item.getItemId();
 		int pos = intent.getIntExtra("position", -1);
 
 		PlaybackService service = playbackService();
@@ -135,6 +136,9 @@ public class ShowQueueFragment extends Fragment
 				break;
 			case CTX_MENU_ENQUEUE_GENRE:
 				service.enqueueFromSong(song, MediaUtils.TYPE_GENRE);
+				break;
+			case CTX_MENU_SHOW_DETAILS:
+				TrackDetailsDialog.show(getFragmentManager(), song.id);
 				break;
 			case CTX_MENU_REMOVE:
 				remove(pos);

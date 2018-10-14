@@ -8,4 +8,5 @@
 	<dimen name="text_padding">14sp</dimen>
 	<dimen name="row_normal_height">56sp</dimen>
 	<dimen name="controls_padding">4dip</dimen>
+	<dimen name="track_details_dialog_padding">8dp</dimen>
 </resources>

@@ -543,40 +543,13 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 				mTrack += String.format(" (%d💿)", song.discNumber);
 			}
 
-			StringBuilder sb = new StringBuilder(12);
-			sb.append(decodeMimeType(data.getFirst(MediaMetadataExtractor.MIME_TYPE)));
-			String bitrate = data.getFirst(MediaMetadataExtractor.BITRATE);
-			if (bitrate != null && bitrate.length() > 3) {
-				sb.append(' ');
-				sb.append(bitrate.substring(0, bitrate.length() - 3));
-				sb.append("kbps");
-			}
-			mFormat = sb.toString();
+			mFormat = data.getFormat();
 
 			BastpUtil.GainValues rg = PlaybackService.get(this).getReplayGainValues(song.path);
 			mReplayGain = String.format("base=%.2f, track=%.2f, album=%.2f", rg.base, rg.track, rg.album);
 		}
 
 		mUiHandler.sendEmptyMessage(MSG_COMMIT_INFO);
-	}
-
-	/**
-	 * Decode the given mime type into a more human-friendly description.
-	 */
-	private static String decodeMimeType(String mime)
-	{
-		if ("audio/mpeg".equals(mime)) {
-			return "MP3";
-		} else if ("audio/mp4".equals(mime)) {
-			return "AAC";
-		} else if ("audio/vorbis".equals(mime)) {
-			return "Ogg Vorbis";
-		} else if ("application/ogg".equals(mime)) {
-			return "Ogg Vorbis";
-		} else if ("audio/flac".equals(mime)) {
-			return "FLAC";
-		}
-		return mime;
 	}
 
 	/**

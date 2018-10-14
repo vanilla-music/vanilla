@@ -260,6 +260,21 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 	}
 
 	/**
+	 * @return a human-friendly description of the mime type and bit rate
+	 */
+	public String getFormat() {
+		StringBuilder sb = new StringBuilder(18);
+		sb.append(decodeMimeType(getFirst(MIME_TYPE)));
+		String bitrate = getFirst(BITRATE);
+		if (bitrate != null && bitrate.length() > 3) {
+			sb.append(' ')
+				.append(bitrate.substring(0, bitrate.length() - 3))
+				.append("kbps");
+		}
+		return sb.toString();
+	}
+
+	/**
 	 * Returns true if this file contains any (interesting) data
 	 * @return true if file is considered to be media data
 	 */
@@ -460,4 +475,24 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 		}
 	}
 
+	/**
+	 * Decode the given MIME type into a more human-friendly description.
+	 *
+	 * @return a human-friendly description of the MIME type
+	 */
+	private static String decodeMimeType(String mime)
+	{
+		if ("audio/mpeg".equals(mime)) {
+			return "MP3";
+		} else if ("audio/mp4".equals(mime)) {
+			return "AAC";
+		} else if ("audio/vorbis".equals(mime)) {
+			return "Ogg Vorbis";
+		} else if ("application/ogg".equals(mime)) {
+			return "Ogg Vorbis";
+		} else if ("audio/flac".equals(mime)) {
+			return "FLAC";
+		}
+		return mime;
+	}
 }
