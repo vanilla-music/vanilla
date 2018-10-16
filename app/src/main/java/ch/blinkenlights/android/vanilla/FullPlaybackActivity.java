@@ -533,15 +533,10 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 			MediaMetadataExtractor data = new MediaMetadataExtractor(song.path);
 
 			mGenre = data.getFirst(MediaMetadataExtractor.GENRE);
-			mTrack = data.getFirst(MediaMetadataExtractor.TRACK_NUMBER);
+			mTrack = song.getTrackAndDiscNumber();
 			mComposer = data.getFirst(MediaMetadataExtractor.COMPOSER);
 			mYear = data.getFirst(MediaMetadataExtractor.YEAR);
 			mPath = song.path;
-
-			mTrack = String.format("%d", song.trackNumber);
-			if (song.discNumber > 0) {
-				mTrack += String.format(" (%d💿)", song.discNumber);
-			}
 
 			mFormat = data.getFormat();
 

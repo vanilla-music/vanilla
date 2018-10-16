@@ -102,7 +102,7 @@ public class TrackDetailsDialog extends DialogFragment {
 						artistView.setText(song.artist);
 						albumView.setText(song.album);
 						genreView.setText(metadata.getFirst(MediaMetadataExtractor.GENRE));
-						trackView.setText(Integer.toString(song.trackNumber));
+						trackView.setText(song.getTrackAndDiscNumber());
 						yearView.setText(metadata.getFirst(MediaMetadataExtractor.YEAR));
 						composerView.setText(metadata.getFirst(MediaMetadataExtractor.COMPOSER));
 						pathView.setText(song.path);
