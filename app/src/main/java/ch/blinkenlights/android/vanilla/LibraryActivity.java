@@ -615,6 +615,7 @@ public class LibraryActivity
 	private static final int CTX_MENU_MORE_FROM_ARTIST = 9;
 	private static final int CTX_MENU_OPEN_EXTERNAL = 10;
 	private static final int CTX_MENU_PLUGINS = 11;
+	private static final int CTX_MENU_SHOW_DETAILS = 12;
 
 	/**
 	 * Creates a context menu for an adapter row.
@@ -646,6 +647,9 @@ public class LibraryActivity
 				menu.add(0, CTX_MENU_RENAME_PLAYLIST, 0, R.string.rename).setIntent(rowData);
 			} else if (rowData.getBooleanExtra(LibraryAdapter.DATA_EXPANDABLE, false)) {
 				menu.add(0, CTX_MENU_EXPAND, 0, R.string.expand).setIntent(rowData);
+			}
+			if (type == MediaUtils.TYPE_SONG) {
+				menu.add(0, CTX_MENU_SHOW_DETAILS, 0, R.string.details).setIntent(rowData);
 			}
 			if (type == MediaUtils.TYPE_ALBUM || type == MediaUtils.TYPE_SONG)
 				menu.add(0, CTX_MENU_MORE_FROM_ARTIST, 0, R.string.more_from_artist).setIntent(rowData);
@@ -734,6 +738,10 @@ public class LibraryActivity
 			FileUtils.dispatchIntent(this, intent);
 			break;
 		}
+		case CTX_MENU_SHOW_DETAILS:
+			long songId = intent.getLongExtra(LibraryAdapter.DATA_ID, -1);
+			TrackDetailsDialog.show(getFragmentManager(), songId);
+			break;
 		case CTX_MENU_PLUGINS: {
 			queryPluginsForIntent(intent);
 			break;

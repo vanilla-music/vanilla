@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright (C) 2018 Toby Hsieh
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+-->
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+	<TableRow>
+		<TextView
+			android:text="@string/_title"
+			android:textColor="?overlay_foreground_color"
+			android:paddingRight="5dip"
+			android:gravity="right" />
+		<TextView
+			android:id="@+id/title"
+			android:textColor="?overlay_foreground_color"
+			android:textStyle="bold" />
+		<TextView
+			android:id="@+id/queue_pos"
+			android:singleLine="true"
+			android:gravity="right"
+			android:layout_gravity="top" />
+	</TableRow>
+
+	<TableRow>
+		<TextView
+			android:text="@string/_artist"
+			android:textColor="?overlay_foreground_color"
+			android:paddingRight="5dip"
+			android:gravity="right" />
+		<TextView android:id="@+id/artist" android:textColor="?overlay_foreground_color" />
+	</TableRow>
+
+	<TableRow>
+		<TextView
+			android:text="@string/_album"
+			android:textColor="?overlay_foreground_color"
+			android:paddingRight="5dip"
+			android:gravity="right" />
+		<TextView android:id="@+id/album" android:textColor="?overlay_foreground_color" />
+	</TableRow>
+
+	<TableRow>
+		<TextView
+			android:text="@string/_genre"
+			android:textColor="?overlay_foreground_color"
+			android:paddingRight="5dip"
+			android:gravity="right" />
+		<TextView android:id="@+id/genre" android:textColor="?overlay_foreground_color" />
+	</TableRow>
+
+	<TableRow>
+		<TextView
+			android:text="@string/_track"
+			android:textColor="?overlay_foreground_color"
+			android:paddingRight="5dip"
+			android:gravity="right" />
+		<TextView android:id="@+id/track" android:textColor="?overlay_foreground_color" />
+	</TableRow>
+
+	<TableRow>
+		<TextView
+			android:text="@string/_year"
+			android:textColor="?overlay_foreground_color"
+			android:paddingRight="5dip"
+			android:gravity="right" />
+		<TextView android:id="@+id/year" android:textColor="?overlay_foreground_color" />
+	</TableRow>
+
+	<TableRow>
+		<TextView
+			android:text="@string/_composer"
+			android:textColor="?overlay_foreground_color"
+			android:paddingRight="5dip"
+			android:gravity="right" />
+		<TextView android:id="@+id/composer" android:textColor="?overlay_foreground_color" />
+	</TableRow>
+
+	<TableRow>
+		<TextView
+			android:text="@string/_path"
+			android:textColor="?overlay_foreground_color"
+			android:paddingRight="5dip"
+			android:gravity="right" />
+		<TextView android:id="@+id/path" android:textColor="?overlay_foreground_color" />
+	</TableRow>
+
+	<TableRow>
+		<TextView
+			android:text="@string/_format"
+			android:textColor="?overlay_foreground_color"
+			android:paddingRight="5dip"
+			android:gravity="right" />
+		<TextView android:id="@+id/format" android:textColor="?overlay_foreground_color" />
+	</TableRow>
+</merge>

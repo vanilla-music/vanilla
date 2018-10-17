@@ -37,86 +37,9 @@ THE SOFTWARE.
 		android:background="?overlay_background_color"
 		android:paddingLeft="5dip"
 		android:paddingRight="5dip">
-		<TableRow>
-			<TextView
-				android:text="@string/_title"
-				android:textColor="?overlay_foreground_color"
-				android:paddingRight="5dip"
-				android:gravity="right" />
-			<TextView
-				android:id="@+id/title"
-				android:textColor="?overlay_foreground_color"
-				android:textStyle="bold" />
-			<TextView
-				android:id="@+id/queue_pos"
-				android:singleLine="true"
-				android:gravity="right"
-				android:layout_gravity="top" />
-		</TableRow>
-		<TableRow>
-			<TextView
-				android:text="@string/_artist"
-				android:textColor="?overlay_foreground_color"
-				android:paddingRight="5dip"
-				android:gravity="right" />
-			<TextView android:id="@+id/artist" android:textColor="?overlay_foreground_color"/>
-		</TableRow>
-		<TableRow>
-			<TextView
-				android:text="@string/_album"
-				android:textColor="?overlay_foreground_color"
-				android:paddingRight="5dip"
-				android:gravity="right" />
-			<TextView android:id="@+id/album" android:textColor="?overlay_foreground_color"/>
-		</TableRow>
-		<TableRow>
-			<TextView
-				android:text="@string/_genre"
-				android:textColor="?overlay_foreground_color"
-				android:paddingRight="5dip"
-				android:gravity="right" />
-			<TextView android:id="@+id/genre" android:textColor="?overlay_foreground_color"/>
-		</TableRow>
-		<TableRow>
-			<TextView
-				android:text="@string/_track"
-				android:textColor="?overlay_foreground_color"
-				android:paddingRight="5dip"
-				android:gravity="right" />
-			<TextView android:id="@+id/track" android:textColor="?overlay_foreground_color"/>
-		</TableRow>
-		<TableRow>
-			<TextView
-				android:text="@string/_year"
-				android:textColor="?overlay_foreground_color"
-				android:paddingRight="5dip"
-				android:gravity="right" />
-			<TextView android:id="@+id/year" android:textColor="?overlay_foreground_color"/>
-		</TableRow>
-		<TableRow>
-			<TextView
-				android:text="@string/_composer"
-				android:textColor="?overlay_foreground_color"
-				android:paddingRight="5dip"
-				android:gravity="right" />
-			<TextView android:id="@+id/composer" android:textColor="?overlay_foreground_color"/>
-		</TableRow>
-		<TableRow>
-			<TextView
-				android:text="@string/_path"
-				android:textColor="?overlay_foreground_color"
-				android:paddingRight="5dip"
-				android:gravity="right" />
-			<TextView android:id="@+id/path" android:textColor="?overlay_foreground_color"/>
-		</TableRow>
-		<TableRow>
-			<TextView
-				android:text="@string/_format"
-				android:textColor="?overlay_foreground_color"
-				android:paddingRight="5dip"
-				android:gravity="right" />
-			<TextView android:id="@+id/format" android:textColor="?overlay_foreground_color"/>
-		</TableRow>
+
+		<include layout="@layout/track_details" />
+
 		<TableRow>
 			<TextView
 				android:text="@string/_replaygain"
@@ -125,6 +48,7 @@ THE SOFTWARE.
 				android:gravity="right" />
 			<TextView android:id="@+id/replaygain" android:textColor="?overlay_foreground_color"/>
 		</TableRow>
+
 		<LinearLayout android:id="@+id/controls_top">
 			<TextView
 				android:id="@+id/elapsed"

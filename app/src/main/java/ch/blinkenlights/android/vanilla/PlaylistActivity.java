@@ -190,6 +190,7 @@ public class PlaylistActivity extends Activity
 	private static final int MENU_ENQUEUE_ALL = LibraryActivity.ACTION_ENQUEUE_ALL;
 	private static final int MENU_ENQUEUE_AS_NEXT = LibraryActivity.ACTION_ENQUEUE_AS_NEXT;
 	private static final int MENU_REMOVE = -1;
+	private static final int MENU_SHOW_DETAILS = -2;
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View listView, ContextMenu.ContextMenuInfo absInfo)
@@ -205,6 +206,7 @@ public class PlaylistActivity extends Activity
 		menu.add(0, MENU_ENQUEUE_AS_NEXT, 0, R.string.enqueue_as_next).setIntent(intent);
 		menu.add(0, MENU_ENQUEUE, 0, R.string.enqueue).setIntent(intent);
 		menu.add(0, MENU_ENQUEUE_ALL, 0, R.string.enqueue_all).setIntent(intent);
+		menu.add(0, MENU_SHOW_DETAILS, 0, R.string.details).setIntent(intent);
 		menu.add(0, MENU_REMOVE, 0, R.string.remove).setIntent(intent);
 	}
 
@@ -217,6 +219,9 @@ public class PlaylistActivity extends Activity
 
 		if (itemId == MENU_REMOVE) {
 			mAdapter.removeItem(pos - mListView.getHeaderViewsCount());
+		} else if (itemId == MENU_SHOW_DETAILS) {
+			long songId = intent.getLongExtra("audioId", -1);
+			TrackDetailsDialog.show(getFragmentManager(), songId);
 		} else {
 			performAction(itemId, pos, intent.getLongExtra("audioId", -1));
 		}

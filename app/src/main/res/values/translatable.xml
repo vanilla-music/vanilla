@@ -145,6 +145,7 @@ THE SOFTWARE.
 	<string name="play_all">Play all</string>
 	<string name="enqueue_all">Enqueue all</string>
 	<string name="all_songs">All tracks</string>
+	<string name="details">Details</string>
 	<string name="more_from_artist">More from artist</string>
 	<string name="more_from_album">More from album</string>
 
