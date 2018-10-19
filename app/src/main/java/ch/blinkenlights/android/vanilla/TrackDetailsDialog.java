@@ -69,6 +69,7 @@ public class TrackDetailsDialog extends DialogFragment {
 		super.onCreate(savedInstanceState);
 		mHandlerThread = new HandlerThread(getClass().getName());
 		mHandlerThread.start();
+		setStyle(DialogFragment.STYLE_NO_TITLE, 0);
 	}
 
 	@Override
