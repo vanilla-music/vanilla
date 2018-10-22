@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2016-2018 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -119,6 +119,7 @@ public class MediaScanner implements Handler.Callback {
 	 * library for new and changed files
 	 */
 	public void startNormalScan() {
+		setNativeLastMtime(MTIME_DIRTY);
 		mScanPlan.addNextStep(RPC_NATIVE_VRFY, null)
 			.addNextStep(RPC_LIBRARY_VRFY, null);
 		mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_RPC, RPC_KICKSTART, 0));
@@ -164,10 +165,7 @@ public class MediaScanner implements Handler.Callback {
 	public void flushDatabase() {
 		mBackend.setPendingDeletion();
 		mPendingCleanup = true;
-
-		MediaLibrary.Preferences prefs = MediaLibrary.getPreferences(mContext);
-		prefs._nativeLastMtime = 0;
-		MediaLibrary.setPreferences(mContext, prefs);
+		setNativeLastMtime(MTIME_PRISTINE);
 	}
 
 	/**
@@ -282,6 +280,19 @@ public class MediaScanner implements Handler.Callback {
 		return true;
 	}
 
+	private static final int MTIME_PRISTINE = 0;
+	private static final int MTIME_DIRTY = 1;
+	/**
+	 * Updates the _nativeLastMtime value in the media scanner storage
+	 *
+	 * @param mtime or one of MTIME_*
+	 */
+	private void setNativeLastMtime(int mtime) {
+		MediaLibrary.Preferences prefs = MediaLibrary.getPreferences(mContext);
+		prefs._nativeLastMtime = mtime;
+		MediaLibrary.setPreferences(mContext, prefs);
+	}
+
 	/**
 	 * Triggers an update to the scan progress notification
 	 *
@@ -388,9 +399,7 @@ public class MediaScanner implements Handler.Callback {
 			}
 		} else {
 			cursor.close();
-			MediaLibrary.Preferences prefs = MediaLibrary.getPreferences(mContext);
-			prefs._nativeLastMtime = mtime;
-			MediaLibrary.setPreferences(mContext, prefs);
+			setNativeLastMtime(mtime);
 			Log.v("VanillaMusic", "NativeLibraryScanner finished, mtime mark is now at "+mtime);
 		}
 	}
