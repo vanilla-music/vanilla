@@ -426,6 +426,9 @@ public class MediaScanner implements Handler.Callback {
 		if (new File(dir, ".nomedia").exists())
 			return;
 
+		if (isDotfile(dir))
+			return;
+
 		File[] dirents = dir.listFiles();
 		if (dirents == null)
 			return;
@@ -448,6 +451,9 @@ public class MediaScanner implements Handler.Callback {
 		long songId  = MediaLibrary.hash63(path);
 
 		if (isBlacklisted(file))
+			return false;
+
+		if (isDotfile(file))
 			return false;
 
 		long dbEntryMtime = mBackend.getColumnFromSongId(MediaLibrary.SongColumns.MTIME, songId) * 1000; // this is in unixtime -> convert to 'ms'
@@ -645,6 +651,17 @@ public class MediaScanner implements Handler.Callback {
 		return (wlPoints < 0 || blPoints > wlPoints);
 	}
 
+
+	private static final Pattern sDotfilePattern = Pattern.compile("^\\..*$", Pattern.CASE_INSENSITIVE);
+	/**
+	 * Returns true if the file is a hidden dotfile.
+	 *
+	 * @param file to inspect
+	 * @return boolean
+	 */
+	private boolean isDotfile(File file) {
+		return sDotfilePattern.matcher(file.getName()).matches();
+	}
 
 	// MediaScanPlan describes how we are going to perform the media scan
 	class MediaScanPlan {
