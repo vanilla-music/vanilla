@@ -191,9 +191,13 @@ public class MediaSchema {
 	 * View which includes album and artist information
 	 */
 	private static final String VIEW_CREATE_ALBUMS_ARTISTS = "CREATE VIEW "+ MediaLibrary.VIEW_ALBUMS_ARTISTS+ " AS "
-	  + "SELECT *, " + VIEW_ARTIST_SELECT + " FROM " + MediaLibrary.TABLE_ALBUMS
+	  + "SELECT " + MediaLibrary.TABLE_ALBUMS + ".*, " + VIEW_ARTIST_SELECT + ", SUM(" + MediaLibrary.SongColumns.DURATION + ")" + " AS " + MediaLibrary.SongColumns.DURATION
+	  +" FROM " + MediaLibrary.TABLE_ALBUMS
 	  +" LEFT JOIN "+MediaLibrary.TABLE_CONTRIBUTORS+" AS _artist"
 	  +" ON _artist."+MediaLibrary.ContributorColumns._ID+" = "+MediaLibrary.TABLE_ALBUMS+"."+MediaLibrary.AlbumColumns.PRIMARY_ARTIST_ID
+	  +" LEFT JOIN " + MediaLibrary.TABLE_SONGS
+	  +" ON " + MediaLibrary.TABLE_SONGS + "." + MediaLibrary.SongColumns.ALBUM_ID + " = " + MediaLibrary.TABLE_ALBUMS + "." + MediaLibrary.AlbumColumns._ID
+	  +" GROUP BY " + MediaLibrary.TABLE_ALBUMS + "." + MediaLibrary.AlbumColumns._ID
 	  +" ;";
 
 	/**
@@ -340,6 +344,11 @@ public class MediaSchema {
 			dbh.execSQL("DROP TABLE _migrate");
 		}
 
+		if (oldVersion < 20181021) {
+			// Recreate view to include album duration
+			dbh.execSQL("DROP VIEW " + MediaLibrary.VIEW_ALBUMS_ARTISTS);
+			dbh.execSQL(VIEW_CREATE_ALBUMS_ARTISTS);
+		}
 	}
 
 }

@@ -32,7 +32,6 @@ import android.database.DatabaseUtils;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.text.format.DateUtils;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -192,7 +191,7 @@ public class MediaAdapter
 			break;
 		case MediaUtils.TYPE_ALBUM:
 			mSource = MediaLibrary.VIEW_ALBUMS_ARTISTS;
-			mFields = new String[] { MediaLibrary.AlbumColumns.ALBUM, MediaLibrary.ContributorColumns.ARTIST };
+			mFields = new String[] { MediaLibrary.AlbumColumns.ALBUM, MediaLibrary.ContributorColumns.ARTIST, MediaLibrary.SongColumns.DURATION };
 			mFieldKeys = new String[] { MediaLibrary.AlbumColumns.ALBUM_SORT, MediaLibrary.ContributorColumns.ARTIST_SORT };
 			mSortEntries = new int[] { R.string.title, R.string.artist_album, R.string.year, R.string.date_added };
 			mAdapterSortValues = new String[] { MediaLibrary.AlbumColumns.ALBUM_SORT+" %1$s", MediaLibrary.ContributorColumns.ARTIST_SORT+" %1$s,"+MediaLibrary.AlbumColumns.ALBUM_SORT+" %1$s",
@@ -496,7 +495,7 @@ public class MediaAdapter
 
 			row.setDraggerOnClickListener(this);
 			row.showDragger(mExpandable);
-			row.showDuration(!mExpandable);
+			row.showDuration(!mExpandable || mType == MediaUtils.TYPE_ALBUM);
 		} else {
 			row = (DraggableRow)convertView;
 			holder = (ViewHolder)row.getTag();
@@ -513,8 +512,13 @@ public class MediaAdapter
 			line1 = (line1 == null ? DB_NULLSTRING_FALLBACK : line1);
 			line2 = (line2 == null ? DB_NULLSTRING_FALLBACK : line2);
 
-			if (mProjection.length >= 5)
-				line2 += ", " + cursor.getString(4);
+			if (mProjection.length >= 5) {
+				if (mType == MediaUtils.TYPE_ALBUM) {
+					duration = cursor.getLong(4);
+				} else {
+					line2 += ", " + cursor.getString(4);
+				}
+			}
 
 			if (mProjection.length >= 6)
 				duration = cursor.getLong(5);
