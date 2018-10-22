@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
- * Copyright (C) 2015-2017 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2015-2018 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -750,13 +750,19 @@ public final class SongTimeline {
 
 		if (count == 0 && type == MediaUtils.TYPE_FILE && query.selectionArgs.length == 1) {
 			// This seems to be a simple file query which lead to no results.
-			// Assume that this was a LIKE query for an unindexed file, so drop the '%' char
-			// at the end and return a fileCursor for it.
+			// The file might just be unindexed, so try to return a file cursor:
 			String pathQuery = query.selectionArgs[0];
-			pathQuery = pathQuery.substring(0,pathQuery.length()-1);
-			cursor.close(); // close old version
-			cursor = MediaUtils.getCursorForFileQuery(pathQuery);
-			count = cursor.getCount();
+			int len = pathQuery.length();
+			if (len > 0) {
+				String lastchar = pathQuery.substring(len-1);
+				if (lastchar.equals("%")) {
+					pathQuery = pathQuery.substring(0, len-1);
+				}
+
+				cursor.close(); // close old version
+				cursor = MediaUtils.getCursorForFileQuery(pathQuery);
+				count = cursor.getCount();
+			}
 		}
 
 		if (count == 0) {
