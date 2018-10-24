@@ -193,9 +193,11 @@ public class MediaAdapter
 			mSource = MediaLibrary.VIEW_ALBUMS_ARTISTS;
 			mFields = new String[] { MediaLibrary.AlbumColumns.ALBUM, MediaLibrary.ContributorColumns.ARTIST, MediaLibrary.SongColumns.DURATION };
 			mFieldKeys = new String[] { MediaLibrary.AlbumColumns.ALBUM_SORT, MediaLibrary.ContributorColumns.ARTIST_SORT };
-			mSortEntries = new int[] { R.string.title, R.string.artist_album, R.string.year, R.string.date_added };
-			mAdapterSortValues = new String[] { MediaLibrary.AlbumColumns.ALBUM_SORT+" %1$s", MediaLibrary.ContributorColumns.ARTIST_SORT+" %1$s,"+MediaLibrary.AlbumColumns.ALBUM_SORT+" %1$s",
-			                                    MediaLibrary.AlbumColumns.PRIMARY_ALBUM_YEAR+" %1$s", MediaLibrary.AlbumColumns.MTIME+" %1$s" };
+			mSortEntries = new int[] { R.string.title, R.string.artist_album, R.string.year, R.string.date_added, R.string.duration };
+			mAdapterSortValues = new String[] { MediaLibrary.AlbumColumns.ALBUM_SORT+" %1$s",
+												MediaLibrary.ContributorColumns.ARTIST_SORT+" %1$s,"+MediaLibrary.AlbumColumns.ALBUM_SORT+" %1$s",
+			                                    MediaLibrary.AlbumColumns.PRIMARY_ALBUM_YEAR+" %1$s", MediaLibrary.AlbumColumns.MTIME+" %1$s",
+												MediaLibrary.SongColumns.DURATION+" %1$s" };
 			break;
 		case MediaUtils.TYPE_SONG:
 			mSource = MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS;
