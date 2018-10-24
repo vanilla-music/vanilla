@@ -123,6 +123,7 @@
   <string name="play_all">Odtwórz wszystkie</string>
   <string name="enqueue_all">Kolejkuj wszystkie</string>
   <string name="all_songs">Wszystkie utwory</string>
+  <string name="details">Szczegóły</string>
   <string name="more_from_artist">Więcej od tego artysty</string>
   <string name="more_from_album">Więcej z tego albumu</string>
   <string name="title">Tytuł</string>
@@ -329,6 +330,7 @@
   <string name="folder_neutral">Normalnie</string>
   <!--Plugin system-->
   <string name="plugins">Wtyczki</string>
+  <string name="plugin_needs_upgrade">Proszę zaktualizować wtyczkę „%s” do najnowszej wersji</string>
   <!--Theme names-->
   <string name="theme_name_standard_light">Zwykła</string>
   <string name="theme_name_standard_dark">Zwykła (ciemna)</string>

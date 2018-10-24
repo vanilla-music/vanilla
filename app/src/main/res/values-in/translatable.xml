@@ -1,6 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="app_name">Vanilla Music</string>
+  <string name="ok">OK</string>
+  <string name="cancel">Batal</string>
   <!--Playback Activity (main screen)-->
   <string name="no_songs">Tidak ada lagu ditemukan dalam perangkat Anda.</string>
   <string name="empty_queue">Tidak ada lagu dipilih. Silakan pilih dari pustaka atau masukkan modus acak dengan mengetuk pesan ini.</string>
@@ -56,6 +58,7 @@
   <string name="play_or_enqueue">Diurutkan bila diputar; Putar bila di pause</string>
   <string name="open">Open</string>
   <string name="go_home">Beranda</string>
+  <string name="jumping_to_song">Lagu sudah ada di antrian, pindah ...</string>
   <!--As a developer, you should always supply "one" and "other"
 		strings. Your translators will know which strings are actually
 		needed for their language. Always include %d in "one" because
@@ -72,6 +75,7 @@
   <string name="artists">Artis</string>
   <string name="albums">Album</string>
   <string name="albumartists">Album Artis</string>
+  <string name="composers">Komponis</string>
   <string name="songs">Lagu</string>
   <string name="playlists">Daftar Putar</string>
   <string name="genres">Genre</string>

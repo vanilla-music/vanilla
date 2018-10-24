@@ -108,6 +108,7 @@
   <string name="play_all">全部播放</string>
   <string name="enqueue_all">佇列全部</string>
   <string name="all_songs">所有曲目</string>
+  <string name="details"> 詳細敘述</string>
   <string name="more_from_artist">更多來的自演出者</string>
   <string name="more_from_album">更多來自專輯</string>
   <string name="title">標題</string>
@@ -305,6 +306,7 @@
   <string name="folder_neutral">中立</string>
   <!--Plugin system-->
   <string name="plugins">外掛</string>
+  <string name="plugin_needs_upgrade">請將外掛 %s 升級到最新版本</string>
   <!--Theme names-->
   <string name="theme_name_standard_light">標準</string>
   <string name="theme_name_standard_dark">標準(深色)</string>

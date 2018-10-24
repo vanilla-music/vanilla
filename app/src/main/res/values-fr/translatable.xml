@@ -38,7 +38,7 @@
   <string name="delete_playlist">Supprimer la playlist %s?</string>
   <!--Library-->
   <string name="enqueue">Ajouter à la file d\'attente</string>
-  <string name="enqueue_as_next">Lire après le morceau en cours</string>
+  <string name="enqueue_as_next">Lire juste après</string>
   <string name="play">Lire</string>
   <string name="edit">Modifier</string>
   <string name="rename">Renommer</string>

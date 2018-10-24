@@ -113,6 +113,7 @@
   <string name="play_all">Toista kaikki</string>
   <string name="enqueue_all">Jonota kaikki</string>
   <string name="all_songs">Kaikki kappaleet</string>
+  <string name="details">Yksityiskohdat</string>
   <string name="more_from_artist">Lisää esittäjältä</string>
   <string name="more_from_album">Lisää albumilta</string>
   <string name="title">Nimi</string>
@@ -164,6 +165,7 @@
   <string name="replaygain_untagged_debump_title">Kappaleet ilman ReplayGain-tunnistetta</string>
   <string name="replaygain_untagged_debump_summary">Vähennä äänenvoimakkuutta</string>
   <string name="replaygain_preamp_note_title">Huomio</string>
+  <string name="replaygain_preamp_note_content">Android ei salli Vanilla Musicin nostaa äänenvoimakkuutta &gt;100%. Esivahvistuksen asettaminen suurelle arvolle saattaa aiheuttaa ongelmia, jos kuuntelet \"hiljaista\" musiikkia. \n\nSuositellut arvot ovat:\n-&gt; -3dB hiljaiselle/klassiselle musiikille\n-&gt; +3dB 2000-luvun ja uudemmalle musiikille</string>
   <string name="readahead">Käytä etukäteen lukemista</string>
   <string name="readahead_summary">Lue eteenpäin toistettavaa kappaletta. Tämä valinta voi auttaa sellaisiin äänen katkeamisongelmiin, mitkä johtuvat hitaasta SD-kortista.</string>
   <string name="equalizer">Taajuuskorjain</string>
@@ -217,6 +219,7 @@
   <string name="double_tap_summary">1x1-widgetin kaksoisnapautus avaa soittimen. Asettaa 400 ms viiveen, ennen kuin widget vastaa toimintoon.</string>
   <string name="scrobble_title">Käytä Scrobble Droid API:a</string>
   <string name="scrobble_summary">Lähetä kuuntelutiedot Last.fm:ään Scrobble Droidia tai Simple Last.fm Scrobbleria käyttäen</string>
+  <string name="stock_broadcast_title">Emuloi vakiomuotoisia yleislähetyksiä</string>
   <string name="stock_broadcast_summary">Lähetä vakiosoitinta emuloivia yleislähetyksiä. Auttaa kolmansien osapuolten lukitusnäyttöohjainten, widgettien yms. toimivuuden kanssa.</string>
   <string name="help">Ohje</string>
   <string name="about">Tietoja</string>
@@ -311,6 +314,7 @@
   <string name="folder_neutral">Neutraali</string>
   <!--Plugin system-->
   <string name="plugins">Liitännäiset</string>
+  <string name="plugin_needs_upgrade">Päivitä liitännäinen %s uusimpaan versioon</string>
   <!--Theme names-->
   <string name="theme_name_standard_light">Standardi</string>
   <string name="theme_name_standard_dark">Standardi (tumma)</string>

@@ -113,6 +113,7 @@
   <string name="play_all">Riproduci tutto</string>
   <string name="enqueue_all">Metti tutto in coda</string>
   <string name="all_songs">Tutti i brani</string>
+  <string name="details">Dettagli</string>
   <string name="more_from_artist">Di più dall\'artista</string>
   <string name="more_from_album">Di più da quest\'album</string>
   <string name="title">Titolo</string>
@@ -202,12 +203,16 @@
   <string name="idle_timeout_title">Timeout inattività</string>
   <string name="enable_scroll_to_song_title">Scorri al titolo del brano</string>
   <string name="enable_scroll_to_song_summary">Scorri nelle liste della libreria al brano/album/artista attualmente in riproduzione</string>
+  <string name="queue_enable_scroll_to_song_title">Scorri al titolo della traccia in coda</string>
+  <string name="queue_enable_scroll_to_song_summary">Scorri alla traccia attualmente in riproduzione nella coda al cambio di brano</string>
   <string name="coverloader_android_title">Carica copertine da Android</string>
   <string name="coverloader_android_summary">Interroga il database dei media interno di Android per le copertine album</string>
   <string name="coverloader_vanilla_title">Carica copertine da cartella</string>
   <string name="coverloader_vanilla_summary">Cerca file immagine nominati cover.jpg, album.jpg o artwork.jpg e mostrali come copertine album</string>
   <string name="coverloader_shadow_title">Carica copertine da cartella nascosta</string>
   <string name="coverloader_shadow_summary">Prova a caricare copertine da \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\'</string>
+  <string name="coverloader_inline_title">Carica copertine dai tag dei file</string>
+  <string name="coverloader_inline_summary">Prova a caricare le copertine inserite nei tag dei file</string>
   <string name="cover_on_lockscreen_title">Mostra copertina sulla schermata di blocco</string>
   <string name="cover_on_lockscreen_summary">Mostra la copertina del brano in riproduzione nella schermata di blocco schermo</string>
   <string name="double_tap_title">Widget di doppio tocco</string>
@@ -309,6 +314,7 @@
   <string name="folder_neutral">Neutrale</string>
   <!--Plugin system-->
   <string name="plugins">Plugin</string>
+  <string name="plugin_needs_upgrade">Si prega di aggiornare il plugin %s all\'ultima versione</string>
   <!--Theme names-->
   <string name="theme_name_standard_light">Standard</string>
   <string name="theme_name_standard_dark">Standard (Scuro)</string>

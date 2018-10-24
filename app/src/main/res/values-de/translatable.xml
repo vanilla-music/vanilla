@@ -113,6 +113,7 @@
   <string name="play_all">Alle wiedergeben</string>
   <string name="enqueue_all">Alle einreihen</string>
   <string name="all_songs">Alle Titel</string>
+  <string name="details">Details</string>
   <string name="more_from_artist">Mehr vom Interpreten</string>
   <string name="more_from_album">Mehr aus dem Album</string>
   <string name="title">Titel</string>
@@ -313,6 +314,7 @@
   <string name="folder_neutral">Neutral</string>
   <!--Plugin system-->
   <string name="plugins">Erweiterungen</string>
+  <string name="plugin_needs_upgrade">Bitte aktualisiere die Erweiterung %s auf die neueste Version</string>
   <!--Theme names-->
   <string name="theme_name_standard_light">Standard</string>
   <string name="theme_name_standard_dark">Standard (dunkel)</string>

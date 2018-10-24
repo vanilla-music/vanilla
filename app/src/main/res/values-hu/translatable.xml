@@ -313,6 +313,7 @@
   <string name="folder_neutral">Semleges</string>
   <!--Plugin system-->
   <string name="plugins">Bővítmények</string>
+  <string name="plugin_needs_upgrade">Frissítse a(z) %s bővítményt a legfrissebb verzióra</string>
   <!--Theme names-->
   <string name="theme_name_standard_light">Szokásos</string>
   <string name="theme_name_standard_dark">Szokásos (Sötét)</string>

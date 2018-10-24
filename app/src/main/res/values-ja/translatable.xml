@@ -194,6 +194,8 @@
   <string name="idle_timeout_title">アイドル タイムアウト</string>
   <string name="enable_scroll_to_song_title">トラックのタイトルにスクロール</string>
   <string name="enable_scroll_to_song_summary">ライブラリーリストの現在再生中のトラック/アルバム/アーティストにスクロールします</string>
+  <string name="queue_enable_scroll_to_song_title">キューのトラックのタイトルにスクロール</string>
+  <string name="queue_enable_scroll_to_song_summary">曲が変わったとき、キューの現在再生しているトラックにスクロールします</string>
   <string name="coverloader_android_title">Android からアートワークを読み込む</string>
   <string name="coverloader_android_summary">アルバムのアートワークを Android 内部メディアデータベースから読み込みます</string>
   <string name="coverloader_vanilla_title">フォルダからアートワークを読み込む</string>
@@ -303,6 +305,7 @@
   <string name="folder_neutral">中立</string>
   <!--Plugin system-->
   <string name="plugins">プラグイン</string>
+  <string name="plugin_needs_upgrade">プラグイン %s を最新バージョンにアップグレードしてください</string>
   <!--Theme names-->
   <string name="theme_name_standard_light">標準</string>
   <string name="theme_name_standard_dark">標準 (ダーク)</string>

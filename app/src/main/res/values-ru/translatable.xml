@@ -329,6 +329,7 @@
   <string name="folder_neutral">Оставить</string>
   <!--Plugin system-->
   <string name="plugins">Модули</string>
+  <string name="plugin_needs_upgrade">Пожалуйста, обновите модуль %s до последней версии.</string>
   <!--Theme names-->
   <string name="theme_name_standard_light">Стандартная</string>
   <string name="theme_name_standard_dark">Стандартная (тёмная)</string>

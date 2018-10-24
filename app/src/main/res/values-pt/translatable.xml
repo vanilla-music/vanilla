@@ -113,6 +113,7 @@
   <string name="play_all">Reproduzir tudo</string>
   <string name="enqueue_all">Colocar tudo na fila</string>
   <string name="all_songs">Todas as faixas</string>
+  <string name="details">Detalhes</string>
   <string name="more_from_artist">Mais deste artista</string>
   <string name="more_from_album">Mais deste álbum</string>
   <string name="title">Título</string>
@@ -313,6 +314,7 @@
   <string name="folder_neutral">Neutra</string>
   <!--Plugin system-->
   <string name="plugins">Suplementos</string>
+  <string name="plugin_needs_upgrade">Por favor atualize %s para a versão mais recente</string>
   <!--Theme names-->
   <string name="theme_name_standard_light">Padrão</string>
   <string name="theme_name_standard_dark">Padrão (escuro)</string>

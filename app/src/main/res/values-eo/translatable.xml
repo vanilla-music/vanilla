@@ -113,6 +113,7 @@
   <string name="play_all">Ludi ĉiujn</string>
   <string name="enqueue_all">Envicigi ĉiujn</string>
   <string name="all_songs">Ĉiuj muzikaĵoj</string>
+  <string name="details">Detaloj</string>
   <string name="more_from_artist">Pli de artisto</string>
   <string name="more_from_album">Pli el albumo</string>
   <string name="title">titolo</string>
@@ -313,6 +314,7 @@
   <string name="folder_neutral">Neŭtra</string>
   <!--Plugin system-->
   <string name="plugins">Kromprogramoj</string>
+  <string name="plugin_needs_upgrade">Bonvolu ĝisdatigi la kromprogramon “%s” al la plej aktuala versio</string>
   <!--Theme names-->
   <string name="theme_name_standard_light">Norma</string>
   <string name="theme_name_standard_dark">Norma (malhela)</string>

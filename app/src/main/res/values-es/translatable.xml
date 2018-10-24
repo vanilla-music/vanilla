@@ -1,6 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="app_name">Vanilla Music</string>
+  <string name="ok">OK</string>
+  <string name="cancel">Cancelar</string>
   <!--Playback Activity (main screen)-->
   <string name="no_songs">No se han encontrado pistas en tu dispositivo.</string>
   <string name="empty_queue">No hay ninguna pista seleccionada. Elige alguna desde la biblioteca o accede al modo aleatorio pulsando este mensaje</string>
@@ -47,6 +49,7 @@
   <string name="playlist_favorites">Favoritos</string>
   <string name="new_playlist">Nueva lista de reproducción...</string>
   <string name="expand">Expandir</string>
+  <string name="expand_or_play_all">Expandir o reproducir todas</string>
   <string name="delete">Eliminar</string>
   <string name="playback_view">Reproduciendo ahora</string>
   <string name="sort_by">Ordenar por</string>
@@ -66,6 +69,26 @@
 		Translators should use http://unicode.org/reports/tr35/tr35-numbers.html#Language_Plural_Rules and
 		http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html, Type cardinal,
 		to see which categories apply to integer numbers in their languages-->
+  <plurals name="playing">
+    <item quantity="one">%d pista reproduciéndose.</item>
+    <item quantity="other">%d pistas reproduciendose.</item>
+  </plurals>
+  <plurals name="enqueued">
+    <item quantity="one">%d  pista añadida a la cola.</item>
+    <item quantity="other">%d pistas añadidas a la cola.</item>
+  </plurals>
+  <plurals name="added_to_playlist">
+    <item quantity="one">%1$d pista añadida a la lista de reproducción %2$s.</item>
+    <item quantity="other">%1$d pistas añadidas a la lista de reproducción %2$s.</item>
+  </plurals>
+  <plurals name="removed_from_playlist">
+    <item quantity="one">%1$d pista eliminada de la lista de reproducción %2$s.</item>
+    <item quantity="other">%1$d pistas eliminadas de la lista de reproducción %2$s.</item>
+  </plurals>
+  <plurals name="deleted">
+    <item quantity="one">%d pista borrada.</item>
+    <item quantity="other">%d pistas borradas.</item>
+  </plurals>
   <string name="delete_file_failed">Error al eliminar %s.</string>
   <string name="deleted_item">\'%s\' eliminado.</string>
   <string name="delete_item">¿Eliminar \'%s\'?</string>
@@ -90,6 +113,7 @@
   <string name="play_all">Reproducir todo</string>
   <string name="enqueue_all">Añadir todo a cola</string>
   <string name="all_songs">Todas las pistas</string>
+  <string name="details">Detalles</string>
   <string name="more_from_artist">Más del artista</string>
   <string name="more_from_album">Más del álbum</string>
   <string name="title">Título</string>
@@ -104,6 +128,18 @@
   <string name="album_track">Álbum, número de pista</string>
   <string name="song_playcount">Número de reproducciones</string>
   <!--Preferences-->
+  <plurals name="seconds">
+    <item quantity="one">%d segundo</item>
+    <item quantity="other">%d segundos</item>
+  </plurals>
+  <plurals name="minutes">
+    <item quantity="one">%d minuto</item>
+    <item quantity="other">%d minutos</item>
+  </plurals>
+  <plurals name="hours">
+    <item quantity="one">%d hora</item>
+    <item quantity="other">%d horas</item>
+  </plurals>
   <string name="audio">Audio</string>
   <string name="volume_during_ducking_title">Volumen durante notificaciones</string>
   <string name="volume_during_ducking_summary">Volumen de reproducción:</string>
@@ -167,13 +203,17 @@
   <string name="idle_timeout_title">Tiempo de inactividad</string>
   <string name="enable_scroll_to_song_title">Desplazarse al título de la pista</string>
   <string name="enable_scroll_to_song_summary">Desplazarse a la pista/álbum/artista reproduciéndose actualmente en las listas de la biblioteca</string>
+  <string name="queue_enable_scroll_to_song_title">Desplazarse al titulo de la pista en la cola</string>
+  <string name="queue_enable_scroll_to_song_summary">Desplazarse a la pista reproduciéndose actualmente al cambiar de canción</string>
   <string name="coverloader_android_title">Cargar carátula desde Android</string>
   <string name="coverloader_android_summary">Consultar la base de datos multimedia interna de Android para encontrar carátulas</string>
   <string name="coverloader_vanilla_title">Cargar carátula desde carpeta</string>
   <string name="coverloader_vanilla_summary">Buscar imágenes llamadas cover.jpg, album.jpg o artwork.jpg y mostrarlas como carátula del álbum</string>
   <string name="coverloader_shadow_title">Cargar carátula desde carpeta oculta</string>
   <string name="coverloader_shadow_summary">Intentar cargar carátulas desde \'/sdcard/Music/.vanilla/ARTISTA/ÁLBUM.jpg\'</string>
-  <string name="cover_on_lockscreen_title">Mostrar caratula en pantalla de bloqueo</string>
+  <string name="coverloader_inline_title">Cargar carátula desde las etiquetas del archivo</string>
+  <string name="coverloader_inline_summary">Intentar cargar la carátula embebida desde las etiquetas del archivo</string>
+  <string name="cover_on_lockscreen_title">Mostrar carátula en pantalla de bloqueo</string>
   <string name="cover_on_lockscreen_summary">Mostrar la carátula de pista en reproducción en la pantalla de bloqueo</string>
   <string name="double_tap_title">Doble toque en widget</string>
   <string name="double_tap_summary">Tocar dos veces el widget 1x1 abrirá el reproductor. Causa un retraso de 400ms antes de que el widget responda a acciones.</string>
@@ -233,12 +273,23 @@
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s lista de reproducción con el \'Top %.0f\'</string>
   <string name="autoplaylist_playcounts_disabled">No crear una lista de reproducción automatica</string>
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
+  <string name="playlist_sync_mode_title">Sincronización de la lista de reproducción</string>
+  <string name="playlist_sync_all">Sincronización completa</string>
+  <string name="playlist_sync_only_import">Importar M3U, nunca exportar</string>
+  <string name="playlist_sync_only_export">Escribir M3U, nunca importar</string>
+  <string name="playlist_sync_disabled">Deshabilitado</string>
+  <string name="playlist_sync_folder_title">Carpeta para sincronización</string>
+  <string name="playlist_sync_folder_summary">Carpeta a usar para la sincronización de listas de reproducción</string>
   <string name="permission_request_summary">Vanilla Music necesita permisos de lectura para mostrar tu biblioteca musical</string>
   <string name="reverse_sort">Invertir el orden</string>
   <string name="share">Compartir...</string>
   <string name="share_failed">Fallo al compartir el archivo</string>
   <string name="sendto">Enviar a...</string>
   <string name="no_receiving_apps">¡No se encontró ninguna app receptora de este tipo de medios!</string>
+  <string name="duration">Duración</string>
+  <string name="dump_database">Volcar la base de datos</string>
+  <string name="dump_database_result">Base de datos volcada a \'%s\'</string>
+  <string name="force_m3u_import">Forzar la reimportación de M3U</string>
   <string name="media_library">Biblioteca de medios</string>
   <string name="media_folders_header">Directorios indexados</string>
   <string name="media_scan_header">Escáner de medios</string>
@@ -263,6 +314,7 @@
   <string name="folder_neutral">Neutral</string>
   <!--Plugin system-->
   <string name="plugins">Plugins</string>
+  <string name="plugin_needs_upgrade">Por favor actualiza el plugin %s a la última version</string>
   <!--Theme names-->
   <string name="theme_name_standard_light">Estándar</string>
   <string name="theme_name_standard_dark">Estándar (Oscuro)</string>
