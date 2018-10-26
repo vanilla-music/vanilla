@@ -616,6 +616,7 @@ public class LibraryActivity
 	private static final int CTX_MENU_OPEN_EXTERNAL = 10;
 	private static final int CTX_MENU_PLUGINS = 11;
 	private static final int CTX_MENU_SHOW_DETAILS = 12;
+	private static final int CTX_MENU_ADD_TO_HOMESCREEN = 13;
 
 	/**
 	 * Creates a context menu for an adapter row.
@@ -651,6 +652,8 @@ public class LibraryActivity
 			if (type == MediaUtils.TYPE_SONG) {
 				menu.add(0, CTX_MENU_SHOW_DETAILS, 0, R.string.details).setIntent(rowData);
 			}
+			if (type >= MediaUtils.TYPE_ARTIST && type <= MediaUtils.TYPE_COMPOSER && type != MediaUtils.TYPE_SONG)
+				menu.add(0, CTX_MENU_ADD_TO_HOMESCREEN, 0, R.string.add_to_homescreen).setIntent(rowData);
 			if (type == MediaUtils.TYPE_ALBUM || type == MediaUtils.TYPE_SONG)
 				menu.add(0, CTX_MENU_MORE_FROM_ARTIST, 0, R.string.more_from_artist).setIntent(rowData);
 			if (type == MediaUtils.TYPE_SONG) {
@@ -762,11 +765,19 @@ public class LibraryActivity
 			setLimiter(MediaUtils.TYPE_ALBUM, "_id=" + intent.getLongExtra(LibraryAdapter.DATA_ID, LibraryAdapter.INVALID_ID));
 			updateLimiterViews();
 			break;
-		case CTX_MENU_ADD_TO_PLAYLIST:
+		case CTX_MENU_ADD_TO_PLAYLIST: {
 			long id = intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
 			PlaylistDialog plDialog = PlaylistDialog.newInstance(this, intent, (id == LibraryAdapter.HEADER_ID ? mCurrentAdapter : null));
 			plDialog.show(getFragmentManager(), "PlaylistDialog");
 			break;
+		}
+		case CTX_MENU_ADD_TO_HOMESCREEN: {
+			int type = intent.getIntExtra(LibraryAdapter.DATA_TYPE, MediaUtils.TYPE_INVALID);
+			long id = intent.getLongExtra(LibraryAdapter.DATA_ID, LibraryAdapter.INVALID_ID);
+			String label = intent.getStringExtra(LibraryAdapter.DATA_TITLE);
+			SystemUtils.installLauncherShortcut(this, label, type, id);
+			break;
+		}
 		default:
 			return super.onContextItemSelected(item);
 		}
