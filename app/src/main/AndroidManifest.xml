@@ -184,7 +184,11 @@ THE SOFTWARE.
 
 		<activity
 			android:name="ShortcutPseudoActivity"
-			android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+			android:theme="@android:style/Theme.Translucent.NoTitleBar">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN"/>
+			</intent-filter>
+		</activity>
 
 		<activity android:name="AudioPickerActivity" android:theme="@style/PopupDialog"
 			android:excludeFromRecents="true" android:exported="true" >

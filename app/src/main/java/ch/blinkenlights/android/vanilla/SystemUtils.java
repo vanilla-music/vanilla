@@ -24,7 +24,7 @@ import android.content.pm.ShortcutInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Icon;
-
+import android.os.Build;
 
 /**
  * Provides some static System-related utility functions.
@@ -55,12 +55,15 @@ public class SystemUtils {
 			cover = BitmapFactory.decodeResource(context.getResources(), R.drawable.fallback_cover);
 		}
 
-		// TODO: Support pre api 26.
-		installShortcut(context, label, cover, shortcut);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+			installShortcut(context, label, cover, shortcut);
+		} else {
+			installShortcutLegacy(context, label, cover, shortcut);
+		}
 	}
 
 	/**
-	 * Prompts the user to install a shortcut. This is only available on API >= 26.
+	 * Prompts the user to install a shortcut. This is only available on API >= 25.
 	 *
 	 * @param context the context to use.
 	 * @param label the label to use for this shortcut.
@@ -85,13 +88,22 @@ public class SystemUtils {
 		return true;
 	}
 
-	// TODO: Test this on kitkat.
-	private static boolean installShortcutLegacy(Context context, String label, Intent intent) {
+	/**
+	 * Adds a new icon to the launcher for legacy devices.
+	 *
+	 * @param context the context to use.
+	 * @param label the label to use for this shortcut.
+	 * @param cover the cover to use for the shortcut.
+	 * @param intent the launcher intent.
+	 *
+	 * @return true if the shortcut request was dispatched
+	 */
+	private static boolean installShortcutLegacy(Context context, String label, Bitmap cover, Intent intent) {
 		Intent add = new Intent();
 		add.putExtra(Intent.EXTRA_SHORTCUT_INTENT, intent);
 		add.putExtra(Intent.EXTRA_SHORTCUT_NAME, label);
-		add.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
-					 Intent.ShortcutIconResource.fromContext(context, R.drawable.repeat_active));
+		add.putExtra(Intent.EXTRA_SHORTCUT_ICON, cover);
+
 		add.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
 		context.sendBroadcast(add);
 		return true;
