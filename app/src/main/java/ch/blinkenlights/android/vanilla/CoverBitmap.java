@@ -61,9 +61,6 @@ public final class CoverBitmap {
 	private static int TEXT_SIZE_BIG;
 	private static int PADDING;
 	private static int BOTTOM_PADDING;
-	private static Bitmap SONG_ICON;
-	private static Bitmap ALBUM_ICON;
-	private static Bitmap ARTIST_ICON;
 
 	/**
 	 * Initialize the regular text size members.
@@ -76,20 +73,7 @@ public final class CoverBitmap {
 		TEXT_SIZE = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, metrics);
 		TEXT_SIZE_BIG = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, metrics);
 		PADDING = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, metrics);
-		BOTTOM_PADDING = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 136, metrics);
-	}
-
-	/**
-	 * Initialize the icon bitmaps.
-	 *
-	 * @param context A context to use.
-	 */
-	private static void loadIcons(Context context)
-	{
-		Resources res = context.getResources();
-		SONG_ICON = BitmapFactory.decodeResource(res, R.drawable.ic_musicnote);
-		ALBUM_ICON = BitmapFactory.decodeResource(res, R.drawable.ic_disk);
-		ARTIST_ICON = BitmapFactory.decodeResource(res, R.drawable.ic_microphone);
+		BOTTOM_PADDING = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 160, metrics);
 	}
 
 	/**
@@ -224,8 +208,6 @@ public final class CoverBitmap {
 	{
 		if (TEXT_SIZE == -1)
 			loadTextSizes(context);
-		if (SONG_ICON == null)
-			loadIcons(context);
 
 		int textSize = TEXT_SIZE;
 		int textSizeBig = TEXT_SIZE_BIG;
@@ -233,14 +215,8 @@ public final class CoverBitmap {
 
 		// Get desired text color from theme and draw textual information
 		int colors[] = ThemeHelper.getDefaultCoverColors(context);
+		// inverted cover background color.
 		int textColor = 0xFF000000 + (0xFFFFFF - (colors[0] & 0xFFFFFF));
-
-		PorterDuffColorFilter filter = new PorterDuffColorFilter(textColor, PorterDuff.Mode.SRC_ATOP);
-
-		Paint paint = new Paint();
-		paint.setAntiAlias(true);
-		paint.setColorFilter(filter);
-		paint.setTextSize(textSize);
 
 		String title = song.title == null ? "" : song.title;
 		String album = song.album == null ? "" : song.album;
@@ -249,7 +225,6 @@ public final class CoverBitmap {
 		Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 		Canvas canvas = new Canvas(bitmap);
 
-		int left = padding;
 		int top = height - BOTTOM_PADDING;
 
 		// top describes where the text will start, so we can draw the cover on 0 -> top
@@ -276,17 +251,27 @@ public final class CoverBitmap {
 
 		}
 
-		// Draw all texts
-		canvas.drawBitmap(SONG_ICON, left, top, paint);
-		drawText(canvas, title, left + padding + textSize, top, width, width, paint);
-		top += textSize + padding;
+		PorterDuffColorFilter filter = new PorterDuffColorFilter(textColor, PorterDuff.Mode.SRC_ATOP);
+		Paint paint = new Paint();
+		paint.setAntiAlias(true);
 
-		canvas.drawBitmap(ALBUM_ICON, left, top, paint);
-		drawText(canvas, album, left + padding + textSize, top, width, width, paint);
-		top += textSize + padding;
+		// Title text
+		paint.setColorFilter(filter);
+		paint.setTextSize(textSizeBig);
 
-		canvas.drawBitmap(ARTIST_ICON, left, top, paint);
-		drawText(canvas, artist, left + padding + textSize, top, width, width, paint);
+		int twidth = (int)paint.measureText(title);
+		int tstart = (width - twidth)/2;
+		drawText(canvas, title, tstart, top, width, twidth, paint);
+		top += textSizeBig + padding;
+
+		// Bottom text
+		paint.setAlpha(0xAA);
+		paint.setTextSize(textSize);
+
+		String artistAlbum = artist + " — " + album;
+		twidth = (int)paint.measureText(artistAlbum);
+		tstart = (width - twidth)/2;
+		drawText(canvas, artistAlbum, tstart, top, width, twidth, paint);
 
 		return bitmap;
 	}
