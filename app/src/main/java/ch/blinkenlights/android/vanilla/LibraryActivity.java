@@ -639,7 +639,9 @@ public class LibraryActivity
 			int type = rowData.getIntExtra(LibraryAdapter.DATA_TYPE, MediaUtils.TYPE_INVALID);
 
 			menu.setHeaderTitle(rowData.getStringExtra(LibraryAdapter.DATA_TITLE));
-			subAddTo.add(0, CTX_MENU_ADD_TO_HOMESCREEN, 0, R.string.homescreen).setIntent(rowData);
+
+			if (type != MediaUtils.TYPE_FILE)
+				subAddTo.add(0, CTX_MENU_ADD_TO_HOMESCREEN, 0, R.string.homescreen).setIntent(rowData);
 
 			if (FileUtils.canDispatchIntent(rowData))
 				menu.add(0, CTX_MENU_OPEN_EXTERNAL, 0, R.string.open).setIntent(rowData);
