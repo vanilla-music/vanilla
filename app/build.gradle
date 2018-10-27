@@ -6,12 +6,12 @@ android {
         disable 'ExtraTranslation'
     }
 
-    compileSdkVersion 27
+    compileSdkVersion 28
 
     defaultConfig {
         applicationId "ch.blinkenlights.android.vanilla"
         minSdkVersion 15
-        targetSdkVersion 27
+        targetSdkVersion 28
     }
 
     buildTypes {
@@ -28,6 +28,7 @@ android {
 }
 
 dependencies {
-    implementation 'com.android.support:support-core-ui:27.1.1'
-    compileOnly 'com.android.support:support-annotations:27.1.1'
+    implementation 'com.android.support:support-core-ui:28.0.0'
+    compileOnly 'com.android.support:support-annotations:28.0.0'
+    compileOnly 'junit:junit:4.12'
 }
