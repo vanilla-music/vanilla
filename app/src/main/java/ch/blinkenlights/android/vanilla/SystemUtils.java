@@ -46,6 +46,11 @@ public class SystemUtils {
 		shortcut.putExtra(LibraryAdapter.DATA_TYPE, type);
 		shortcut.putExtra(LibraryAdapter.DATA_ID, id);
 
+		if (label.length() == 0) {
+			// Android does not allow empty labels.
+			label = "?";
+		}
+
 		Bitmap cover = null;
 		Song song = MediaUtils.getSongByTypeId(context, type, id);
 		if (song != null) {
