@@ -454,17 +454,17 @@ public class FileSystemAdapter
 	}
 
 	/**
-	 * Context menu of a row: this was dispatched by LibraryPAgerAdapter
+	 * Context menu of a row: this was dispatched by LibraryPagerAdapter
 	 *
-	 * @param menu the context menu to populate
 	 * @param intent likely created by createData()
 	 */
-	public void onCreateContextMenu(ContextMenu menu, Intent intent) {
+	public boolean onCreateFancyMenu(Intent intent) {
 		String path = intent.getStringExtra(LibraryAdapter.DATA_FILE);
 		boolean isParentRow = (path != null && pointsToParentFolder(new File(path)));
 
 		if (!isParentRow)
-			mActivity.onCreateContextMenu(menu, intent);
-		// else: no context menu
+			return mActivity.onCreateFancyMenu(intent);
+		// else: no context menu, but consume event.
+		return true;
 	}
 }

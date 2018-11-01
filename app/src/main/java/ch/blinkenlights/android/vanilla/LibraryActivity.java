@@ -24,6 +24,8 @@
 package ch.blinkenlights.android.vanilla;
 
 import ch.blinkenlights.android.medialibrary.MediaLibrary;
+import ch.blinkenlights.android.vanilla.ui.FancyMenu;
+import ch.blinkenlights.android.vanilla.ui.FancyMenuItem;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -67,6 +69,7 @@ public class LibraryActivity
 	implements DialogInterface.OnClickListener
 			 , DialogInterface.OnDismissListener
 			 , SearchView.OnQueryTextListener
+	                 , FancyMenu.Callback
 {
 
 
@@ -626,56 +629,59 @@ public class LibraryActivity
 	 * @param menu The menu to create.
 	 * @param rowData Data for the adapter row.
 	 */
-	public void onCreateContextMenu(ContextMenu menu, Intent rowData) {
-		// Add to -> Playlist is always available.
-		SubMenu subAddTo = menu.addSubMenu(0, CTX_MENU_NOOP, 10, R.string.add_to);
-		subAddTo.add(0, CTX_MENU_ADD_TO_PLAYLIST, 0, R.string.playlist).setIntent(rowData);
+	public boolean onCreateFancyMenu(Intent rowData) {
+		FancyMenu fm = new FancyMenu(this, this);
+		fm.show(getFragmentManager(), "LibraryActivityContext");
+
+		// Add to playlist is always available.
+		fm.addSpacer(20);
+		fm.add(CTX_MENU_ADD_TO_PLAYLIST, 20, R.drawable.folder, R.string.add_to_playlist).setIntent(rowData);
 
 		if (rowData.getLongExtra(LibraryAdapter.DATA_ID, LibraryAdapter.INVALID_ID) == LibraryAdapter.HEADER_ID) {
-			menu.setHeaderTitle(getString(R.string.all_songs));
-			menu.add(0, CTX_MENU_PLAY_ALL, 0, R.string.play_all).setIntent(rowData);
-			menu.add(0, CTX_MENU_ENQUEUE_ALL, 0, R.string.enqueue_all).setIntent(rowData);
+			fm.setHeaderTitle(getString(R.string.all_songs));
+			fm.add(CTX_MENU_PLAY_ALL, 10, R.drawable.folder, R.string.play_all).setIntent(rowData);
+			fm.add(CTX_MENU_ENQUEUE_ALL, 10, R.drawable.folder, R.string.enqueue_all).setIntent(rowData);
 		} else {
 			int type = rowData.getIntExtra(LibraryAdapter.DATA_TYPE, MediaUtils.TYPE_INVALID);
 
-			menu.setHeaderTitle(rowData.getStringExtra(LibraryAdapter.DATA_TITLE));
+			fm.setHeaderTitle(rowData.getStringExtra(LibraryAdapter.DATA_TITLE));
 
 			if (type != MediaUtils.TYPE_FILE)
-				subAddTo.add(0, CTX_MENU_ADD_TO_HOMESCREEN, 0, R.string.homescreen).setIntent(rowData);
+				fm.add(CTX_MENU_ADD_TO_HOMESCREEN, 20, R.drawable.folder, R.string.add_to_homescreen).setIntent(rowData);
 
 			if (FileUtils.canDispatchIntent(rowData))
-				menu.add(0, CTX_MENU_OPEN_EXTERNAL, 0, R.string.open).setIntent(rowData);
+				fm.add(CTX_MENU_OPEN_EXTERNAL, 10, R.drawable.folder, R.string.open).setIntent(rowData);
 
-			menu.add(0, CTX_MENU_PLAY, 0, R.string.play).setIntent(rowData);
-			if (type <= MediaUtils.TYPE_SONG) {
-				menu.add(0, CTX_MENU_PLAY_ALL, 0, R.string.play_all).setIntent(rowData);
-			}
-			menu.add(0, CTX_MENU_ENQUEUE_AS_NEXT, 0, R.string.enqueue_as_next).setIntent(rowData);
-			menu.add(0, CTX_MENU_ENQUEUE, 0, R.string.enqueue).setIntent(rowData);
+			fm.add(CTX_MENU_PLAY, 0, R.drawable.folder, R.string.play).setIntent(rowData);
+			if (type <= MediaUtils.TYPE_SONG)
+				fm.add(CTX_MENU_PLAY_ALL, 1, R.drawable.folder, R.string.play_all).setIntent(rowData);
+
+			fm.add(CTX_MENU_ENQUEUE_AS_NEXT, 1, R.drawable.folder, R.string.enqueue_as_next).setIntent(rowData);
+			fm.add(CTX_MENU_ENQUEUE, 1, R.drawable.folder, R.string.enqueue).setIntent(rowData);
 
 			if (type == MediaUtils.TYPE_PLAYLIST) {
-				menu.add(0, CTX_MENU_RENAME_PLAYLIST, 0, R.string.rename).setIntent(rowData);
+				fm.add(CTX_MENU_RENAME_PLAYLIST, 0, R.drawable.folder, R.string.rename).setIntent(rowData);
 			} else if (rowData.getBooleanExtra(LibraryAdapter.DATA_EXPANDABLE, false)) {
-				menu.add(0, CTX_MENU_EXPAND, 0, R.string.expand).setIntent(rowData);
+				fm.add(CTX_MENU_EXPAND, 2, R.drawable.folder, R.string.expand).setIntent(rowData);
 			}
 
 			if (type == MediaUtils.TYPE_SONG || type == MediaUtils.TYPE_ALBUM) {
-				SubMenu subMoreFrom = menu.addSubMenu(0, CTX_MENU_NOOP, 0, R.string.more_from_current);
-				subMoreFrom.add(0, CTX_MENU_MORE_FROM_ARTIST, 0, R.string.artist).setIntent(rowData);
+				fm.addSpacer(30);
+				fm.add(CTX_MENU_MORE_FROM_ARTIST, 30, R.drawable.folder, R.string.more_from_artist).setIntent(rowData);
 
 				if (type == MediaUtils.TYPE_SONG) {
-					subMoreFrom.add(0, CTX_MENU_MORE_FROM_ALBUM, 0, R.string.album).setIntent(rowData);
-					subMoreFrom.add(0, CTX_MENU_SHOW_DETAILS, 0, R.string.details).setIntent(rowData);
-
+					fm.add(CTX_MENU_MORE_FROM_ALBUM, 30, R.drawable.folder, R.string.more_from_album).setIntent(rowData);
+					fm.add(CTX_MENU_SHOW_DETAILS, 99, R.drawable.folder, R.string.details).setIntent(rowData);
 					if (PluginUtils.checkPlugins(this)) {
 						// not part of submenu: just last item in normal menu.
-						menu.add(0, CTX_MENU_PLUGINS, 99, R.string.plugins).setIntent(rowData);
+						fm.add(CTX_MENU_PLUGINS, 99, R.drawable.folder, R.string.plugins).setIntent(rowData);
 					}
 				}
 			}
-
-			menu.add(0, CTX_MENU_DELETE, 90, R.string.delete).setIntent(rowData);
+			fm.addSpacer(90);
+			fm.add(CTX_MENU_DELETE, 90, R.drawable.folder, R.string.delete).setIntent(rowData);
 		}
+		return true;
 	}
 
 	/**
@@ -690,11 +696,7 @@ public class LibraryActivity
 	}
 
 	@Override
-	public boolean onContextItemSelected(MenuItem item)
-	{
-		if (item.getGroupId() != 0)
-			return super.onContextItemSelected(item);
-
+	public boolean onFancyItemSelected(FancyMenuItem item) {
 		final Intent intent = item.getIntent();
 		switch (item.getItemId()) {
 		case CTX_MENU_NOOP:
@@ -795,7 +797,6 @@ public class LibraryActivity
 		default:
 			return super.onContextItemSelected(item);
 		}
-
 		return true;
 	}
 

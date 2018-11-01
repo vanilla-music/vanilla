@@ -50,7 +50,7 @@ public class LibraryPagerAdapter
 	extends PagerAdapter
 	implements Handler.Callback
 	         , ViewPager.OnPageChangeListener
-	         , View.OnCreateContextMenuListener
+	         , AdapterView.OnItemLongClickListener
 	         , AdapterView.OnItemClickListener
 {
 	/**
@@ -324,7 +324,7 @@ public class LibraryPagerAdapter
 			}
 
 			view = (ListView)inflater.inflate(R.layout.listview, null);
-			view.setOnCreateContextMenuListener(this);
+			view.setOnItemLongClickListener(this);
 			view.setOnItemClickListener(this);
 
 			view.setTag(type);
@@ -852,18 +852,24 @@ public class LibraryPagerAdapter
 	}
 
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View view, ContextMenuInfo menuInfo)
-	{
-		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
-		View targetView = info.targetView;
-		Intent intent = info.id == LibraryAdapter.HEADER_ID ? createHeaderIntent(targetView) : mCurrentAdapter.createData(targetView);
-		int type = (Integer)((View)targetView.getParent()).getTag();
+	/**
+	 * Dispatch long click event of a row.
+	 *
+	 * @param parent the parent adapter view
+	 * @param view the long clicked view
+	 * @param position row position
+	 * @param id id of the long clicked row
+	 *
+	 * @return true if the event was consumed
+	 */
+	public boolean onItemLongClick (AdapterView<?> parent, View view, int position, long id) {
+		Intent intent = id == LibraryAdapter.HEADER_ID ? createHeaderIntent(view) : mCurrentAdapter.createData(view);
+		int type = (Integer)((View)view.getParent()).getTag();
 
 		if (type == MediaUtils.TYPE_FILE) {
-			mFilesAdapter.onCreateContextMenu(menu, intent);
-		} else {
-			mActivity.onCreateContextMenu(menu, intent);
+			return mFilesAdapter.onCreateFancyMenu(intent);
 		}
+		return mActivity.onCreateFancyMenu(intent);
 	}
 
 	@Override

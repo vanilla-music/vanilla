@@ -68,6 +68,7 @@ THE SOFTWARE.
 	<string name="rename">Rename</string>
 	<string name="save_as_playlist">Save as playlist…</string>
 	<string name="add_to_playlist">Add to playlist…</string>
+	<string name="add_to_homescreen">Add to homescreen…</string>
 	<string name="add_to">Add to…</string>
 	<string name="playlist">Playlist</string>
 	<string name="homescreen">Homescreen</string>
