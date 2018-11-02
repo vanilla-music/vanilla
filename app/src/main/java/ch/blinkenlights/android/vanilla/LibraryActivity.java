@@ -635,51 +635,51 @@ public class LibraryActivity
 
 		// Add to playlist is always available.
 		fm.addSpacer(20);
-		fm.add(CTX_MENU_ADD_TO_PLAYLIST, 20, R.drawable.folder, R.string.add_to_playlist).setIntent(rowData);
+		fm.add(CTX_MENU_ADD_TO_PLAYLIST, 20, R.drawable.menu_add_to_playlist, R.string.add_to_playlist).setIntent(rowData);
 
 		if (rowData.getLongExtra(LibraryAdapter.DATA_ID, LibraryAdapter.INVALID_ID) == LibraryAdapter.HEADER_ID) {
 			fm.setHeaderTitle(getString(R.string.all_songs));
-			fm.add(CTX_MENU_PLAY_ALL, 10, R.drawable.folder, R.string.play_all).setIntent(rowData);
-			fm.add(CTX_MENU_ENQUEUE_ALL, 10, R.drawable.folder, R.string.enqueue_all).setIntent(rowData);
+			fm.add(CTX_MENU_PLAY_ALL, 10, R.drawable.menu_play_all, R.string.play_all).setIntent(rowData);
+			fm.add(CTX_MENU_ENQUEUE_ALL, 10, R.drawable.menu_enqueue, R.string.enqueue_all).setIntent(rowData);
 		} else {
 			int type = rowData.getIntExtra(LibraryAdapter.DATA_TYPE, MediaUtils.TYPE_INVALID);
 
 			fm.setHeaderTitle(rowData.getStringExtra(LibraryAdapter.DATA_TITLE));
 
 			if (type != MediaUtils.TYPE_FILE)
-				fm.add(CTX_MENU_ADD_TO_HOMESCREEN, 20, R.drawable.folder, R.string.add_to_homescreen).setIntent(rowData);
+				fm.add(CTX_MENU_ADD_TO_HOMESCREEN, 20, R.drawable.menu_add_to_homescreen, R.string.add_to_homescreen).setIntent(rowData);
 
 			if (FileUtils.canDispatchIntent(rowData))
-				fm.add(CTX_MENU_OPEN_EXTERNAL, 10, R.drawable.folder, R.string.open).setIntent(rowData);
+				fm.add(CTX_MENU_OPEN_EXTERNAL, 10, R.drawable.menu_launch, R.string.open).setIntent(rowData);
 
-			fm.add(CTX_MENU_PLAY, 0, R.drawable.folder, R.string.play).setIntent(rowData);
+			fm.add(CTX_MENU_PLAY, 0, R.drawable.menu_play, R.string.play).setIntent(rowData);
 			if (type <= MediaUtils.TYPE_SONG)
-				fm.add(CTX_MENU_PLAY_ALL, 1, R.drawable.folder, R.string.play_all).setIntent(rowData);
+				fm.add(CTX_MENU_PLAY_ALL, 1, R.drawable.menu_play_all, R.string.play_all).setIntent(rowData);
 
-			fm.add(CTX_MENU_ENQUEUE_AS_NEXT, 1, R.drawable.folder, R.string.enqueue_as_next).setIntent(rowData);
-			fm.add(CTX_MENU_ENQUEUE, 1, R.drawable.folder, R.string.enqueue).setIntent(rowData);
+			fm.add(CTX_MENU_ENQUEUE_AS_NEXT, 1, R.drawable.menu_enqueue_as_next, R.string.enqueue_as_next).setIntent(rowData);
+			fm.add(CTX_MENU_ENQUEUE, 1, R.drawable.menu_enqueue, R.string.enqueue).setIntent(rowData);
 
 			if (type == MediaUtils.TYPE_PLAYLIST) {
 				fm.add(CTX_MENU_RENAME_PLAYLIST, 0, R.drawable.folder, R.string.rename).setIntent(rowData);
 			} else if (rowData.getBooleanExtra(LibraryAdapter.DATA_EXPANDABLE, false)) {
-				fm.add(CTX_MENU_EXPAND, 2, R.drawable.folder, R.string.expand).setIntent(rowData);
+				fm.add(CTX_MENU_EXPAND, 2, R.drawable.menu_expand, R.string.expand).setIntent(rowData);
 			}
 
 			if (type == MediaUtils.TYPE_SONG || type == MediaUtils.TYPE_ALBUM) {
 				fm.addSpacer(30);
-				fm.add(CTX_MENU_MORE_FROM_ARTIST, 30, R.drawable.folder, R.string.more_from_artist).setIntent(rowData);
+				fm.add(CTX_MENU_MORE_FROM_ARTIST, 30, R.drawable.menu_artist, R.string.more_from_artist).setIntent(rowData);
 
 				if (type == MediaUtils.TYPE_SONG) {
-					fm.add(CTX_MENU_MORE_FROM_ALBUM, 30, R.drawable.folder, R.string.more_from_album).setIntent(rowData);
-					fm.add(CTX_MENU_SHOW_DETAILS, 99, R.drawable.folder, R.string.details).setIntent(rowData);
+					fm.add(CTX_MENU_MORE_FROM_ALBUM, 30, R.drawable.menu_album, R.string.more_from_album).setIntent(rowData);
+					fm.add(CTX_MENU_SHOW_DETAILS, 99, R.drawable.menu_details, R.string.details).setIntent(rowData);
 					if (PluginUtils.checkPlugins(this)) {
 						// not part of submenu: just last item in normal menu.
-						fm.add(CTX_MENU_PLUGINS, 99, R.drawable.folder, R.string.plugins).setIntent(rowData);
+						fm.add(CTX_MENU_PLUGINS, 99, R.drawable.menu_plugins, R.string.plugins).setIntent(rowData);
 					}
 				}
 			}
 			fm.addSpacer(90);
-			fm.add(CTX_MENU_DELETE, 90, R.drawable.folder, R.string.delete).setIntent(rowData);
+			fm.add(CTX_MENU_DELETE, 90, R.drawable.menu_delete, R.string.delete).setIntent(rowData);
 		}
 		return true;
 	}
