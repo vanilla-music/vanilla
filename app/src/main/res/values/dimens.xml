@@ -7,7 +7,7 @@
 	<dimen name="cover_padding_with_pmark">10sp</dimen>
 	<dimen name="text_padding">14sp</dimen>
 	<dimen name="row_normal_height">56sp</dimen>
-	<dimen name="row_narrow_height">38sp</dimen>
 	<dimen name="controls_padding">4dip</dimen>
 	<dimen name="track_details_dialog_padding">8dp</dimen>
+	<dimen name="material_text_subhead">16sp</dimen>
 </resources>
