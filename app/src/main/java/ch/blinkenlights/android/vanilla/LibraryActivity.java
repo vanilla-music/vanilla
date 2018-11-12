@@ -660,7 +660,7 @@ public class LibraryActivity
 			fm.add(CTX_MENU_ENQUEUE, 1, R.drawable.menu_enqueue, R.string.enqueue).setIntent(rowData);
 
 			if (type == MediaUtils.TYPE_PLAYLIST) {
-				fm.add(CTX_MENU_RENAME_PLAYLIST, 0, R.drawable.folder, R.string.rename).setIntent(rowData);
+				fm.add(CTX_MENU_RENAME_PLAYLIST, 0, R.drawable.menu_edit, R.string.rename).setIntent(rowData);
 			} else if (rowData.getBooleanExtra(LibraryAdapter.DATA_EXPANDABLE, false)) {
 				fm.add(CTX_MENU_EXPAND, 2, R.drawable.menu_expand, R.string.expand).setIntent(rowData);
 			}
