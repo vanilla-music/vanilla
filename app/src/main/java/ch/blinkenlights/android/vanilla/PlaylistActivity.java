@@ -287,7 +287,8 @@ public class PlaylistActivity extends Activity
 		if (!mEditing && mDefaultAction != LibraryActivity.ACTION_DO_NOTHING) {
 			// A DSLV row was clicked, but we need to get the DraggableRow class.
 			final View target = ((ViewGroup)view).getChildAt(0);
-			performAction(mDefaultAction, position, (Long)target.getTag());
+			final ViewHolder holder = (ViewHolder)target.getTag();
+			performAction(mDefaultAction, position, holder.id);
 		}
 	}
 
