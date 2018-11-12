@@ -200,13 +200,15 @@ public class PlaylistActivity extends Activity
 
 	@Override
 	public boolean onItemLongClick(AdapterView<?> parent, View view, int pos, long id) {
+		ViewHolder holder = (ViewHolder)view.findViewById(R.id.text).getTag();
 		Intent intent = new Intent();
 		intent.putExtra("id", id);
 		intent.putExtra("position", pos);
-		intent.putExtra("audioId", (Long)view.findViewById(R.id.text).getTag());
+		intent.putExtra("audioId", holder.id);
 
 		FancyMenu fm = new FancyMenu(this, this);
 		fm.show(getFragmentManager(), "PlaylistActivityContext");
+		fm.setHeaderTitle(holder.title);
 
 		fm.add(MENU_PLAY, 0, R.drawable.menu_play, R.string.play).setIntent(intent);
 		fm.add(MENU_PLAY_ALL, 0, R.drawable.menu_play_all, R.string.play_all).setIntent(intent);

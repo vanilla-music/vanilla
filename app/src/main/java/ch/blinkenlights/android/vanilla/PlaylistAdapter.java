@@ -110,10 +110,14 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 		final String album = cursor.getString(3);
 		final String artist = cursor.getString(4);
 
+		ViewHolder holder = new ViewHolder();
+		holder.title = title;
+		holder.id = cursor.getLong(1);
+
 		dview.setupLayout(DraggableRow.LAYOUT_DRAGGABLE);
 		dview.showDragger(mEditable);
 		dview.setText(title, album+", "+artist);
-		dview.setTag(cursor.getLong(1));
+		dview.setTag(holder);
 		dview.setDuration(cursor.getLong(6));
 
 		LazyCoverView cover = dview.getCoverView();
