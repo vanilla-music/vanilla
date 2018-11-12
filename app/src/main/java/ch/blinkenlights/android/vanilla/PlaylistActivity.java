@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2018 Adrian Ulrich <adrian@blinkenlights.ch>
  * Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,6 +23,9 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import ch.blinkenlights.android.vanilla.ui.FancyMenu;
+import ch.blinkenlights.android.vanilla.ui.FancyMenuItem;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -30,7 +34,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.HandlerThread;
 import android.os.Looper;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,15 +43,18 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import com.mobeta.android.dslv.DragSortListView;
 
+
 /**
  * The playlist activity where playlist songs can be viewed and reordered.
  */
 public class PlaylistActivity extends Activity
 	implements View.OnClickListener
-	         , AbsListView.OnItemClickListener
-	         , DialogInterface.OnClickListener
-	         , DragSortListView.DropListener
-	         , DragSortListView.RemoveListener
+			   , AbsListView.OnItemClickListener
+			   , AbsListView.OnItemLongClickListener
+			   , DialogInterface.OnClickListener
+			   , DragSortListView.DropListener
+			   , DragSortListView.RemoveListener
+			   , FancyMenu.Callback
 {
 	/**
 	 * The SongTimeline play mode corresponding to each
@@ -105,7 +111,7 @@ public class PlaylistActivity extends Activity
 
 		DragSortListView view = (DragSortListView)findViewById(R.id.list);
 		view.setOnItemClickListener(this);
-		view.setOnCreateContextMenuListener(this);
+		view.setOnItemLongClickListener(this);
 		view.setDropListener(this);
 		view.setRemoveListener(this);
 		mListView = view;
@@ -193,25 +199,31 @@ public class PlaylistActivity extends Activity
 	private static final int MENU_SHOW_DETAILS = -2;
 
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View listView, ContextMenu.ContextMenuInfo absInfo)
-	{
-		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)absInfo;
+	public boolean onItemLongClick(AdapterView<?> parent, View view, int pos, long id) {
 		Intent intent = new Intent();
-		intent.putExtra("id", info.id);
-		intent.putExtra("position", info.position);
-		intent.putExtra("audioId", (Long)info.targetView.findViewById(R.id.text).getTag());
+		intent.putExtra("id", id);
+		intent.putExtra("position", pos);
+		intent.putExtra("audioId", (Long)view.findViewById(R.id.text).getTag());
 
-		menu.add(0, MENU_PLAY, 0, R.string.play).setIntent(intent);
-		menu.add(0, MENU_PLAY_ALL, 0, R.string.play_all).setIntent(intent);
-		menu.add(0, MENU_ENQUEUE_AS_NEXT, 0, R.string.enqueue_as_next).setIntent(intent);
-		menu.add(0, MENU_ENQUEUE, 0, R.string.enqueue).setIntent(intent);
-		menu.add(0, MENU_ENQUEUE_ALL, 0, R.string.enqueue_all).setIntent(intent);
-		menu.add(0, MENU_SHOW_DETAILS, 0, R.string.details).setIntent(intent);
-		menu.add(0, MENU_REMOVE, 0, R.string.remove).setIntent(intent);
+		FancyMenu fm = new FancyMenu(this, this);
+		fm.show(getFragmentManager(), "PlaylistActivityContext");
+
+		fm.add(MENU_PLAY, 0, R.drawable.menu_play, R.string.play).setIntent(intent);
+		fm.add(MENU_PLAY_ALL, 0, R.drawable.menu_play_all, R.string.play_all).setIntent(intent);
+
+		fm.addSpacer(0);
+		fm.add(MENU_ENQUEUE_AS_NEXT, 0, R.drawable.menu_enqueue_as_next, R.string.enqueue_as_next).setIntent(intent);
+		fm.add(MENU_ENQUEUE, 0, R.drawable.menu_enqueue, R.string.enqueue).setIntent(intent);
+		fm.add(MENU_ENQUEUE_ALL, 0, R.drawable.menu_enqueue, R.string.enqueue_all).setIntent(intent);
+
+		fm.addSpacer(0);
+		fm.add(MENU_SHOW_DETAILS, 0, R.drawable.menu_details, R.string.details).setIntent(intent);
+		fm.add(MENU_REMOVE, 0, R.drawable.menu_remove, R.string.remove).setIntent(intent);
+		return true;
 	}
 
 	@Override
-	public boolean onContextItemSelected(MenuItem item)
+	public boolean onFancyItemSelected(FancyMenuItem item)
 	{
 		int itemId = item.getItemId();
 		Intent intent = item.getIntent();
