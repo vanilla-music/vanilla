@@ -1,0 +1,95 @@
+/*
+ * Copyright (C) 2018 Toby Hsieh
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package ch.blinkenlights.android.vanilla;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.FragmentManager;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
+
+/**
+ * A dialog for the user to input a specific time to jump to for the current song
+ */
+public class JumpToTimeDialog extends DialogFragment implements DialogInterface.OnClickListener {
+	private EditText hoursView;
+	private EditText minutesView;
+	private EditText secondsView;
+
+	/**
+	 * Creates and shows the dialog
+	 *
+	 * @param manager the FragmentManager to add the newly created dialog to
+	 */
+	public static void show(FragmentManager manager) {
+		new JumpToTimeDialog().show(manager, "JumpToTimeDialog");
+	}
+
+	@Override
+	public Dialog onCreateDialog(Bundle savedInstanceState) {
+		View view = LayoutInflater.from(getActivity()).inflate(R.layout.duration_input, null);
+		hoursView = view.findViewById(R.id.hours);
+		minutesView = view.findViewById(R.id.minutes);
+		secondsView = view.findViewById(R.id.seconds);
+
+		return new AlertDialog.Builder(getActivity())
+			.setTitle(R.string.jump_to_time)
+			.setView(view)
+			.setPositiveButton(android.R.string.ok, this)
+			.setNegativeButton(android.R.string.cancel, null)
+			.create();
+	}
+
+	@Override
+	public void onClick(DialogInterface dialog, int which) {
+		if (which == DialogInterface.BUTTON_POSITIVE) {
+			Activity activity = getActivity();
+			try {
+				int hours = parseInteger(hoursView.getText().toString());
+				int minutes = parseInteger(minutesView.getText().toString());
+				int seconds = parseInteger(secondsView.getText().toString());
+				int position = (hours * 3600 + minutes * 60 + seconds) * 1000;
+				PlaybackService.get(activity).seekToPosition(position);
+				if (activity instanceof SlidingPlaybackActivity) {
+					((SlidingPlaybackActivity) activity).updateElapsedTime();
+				}
+			} catch (NumberFormatException e) {
+				Toast.makeText(activity, R.string.error_invalid_position, Toast.LENGTH_SHORT).show();
+			}
+		}
+	}
+
+	/**
+	 * Parses the given string as an integer. This returns 0 if the given string is empty.
+	 *
+	 * @param s the string to parse
+	 * @return the integer result
+	 */
+	static int parseInteger(String s) {
+		if (s.length() == 0) {
+			return 0;
+		}
+		return Integer.parseInt(s);
+	}
+}

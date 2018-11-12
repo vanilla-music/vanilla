@@ -1737,7 +1737,19 @@ public final class PlaybackService extends Service
 		if (!mMediaPlayerInitialized)
 			return;
 		long position = (long)mMediaPlayer.getDuration() * progress / 1000;
-		mMediaPlayer.seekTo((int)position);
+		seekToPosition((int) position);
+	}
+
+	/**
+	 * Seeks to the given position in the current song.
+	 *
+	 * @param msec the offset in milliseconds from the start to seek to
+	 */
+	public void seekToPosition(int msec) {
+		if (!mMediaPlayerInitialized) {
+			return;
+		}
+		mMediaPlayer.seekTo(msec);
 		mHandler.sendEmptyMessage(MSG_BROADCAST_SEEK);
 	}
 
