@@ -44,6 +44,10 @@
   <string name="rename">Renommer</string>
   <string name="save_as_playlist">Enregistrer en playlist...</string>
   <string name="add_to_playlist">Ajouter à la playlist...</string>
+  <string name="add_to_homescreen">Ajouter à l\'accueil...</string>
+  <string name="add_to">Ajouter à...</string>
+  <string name="playlist">Playlist</string>
+  <string name="homescreen">Ecran d\'accueil</string>
   <string name="add_to_favorites">Ajouter aux favoris</string>
   <string name="remove_from_favorites">Retirer des favoris</string>
   <string name="playlist_favorites">Favoris</string>
@@ -113,6 +117,7 @@
   <string name="play_all">Lire tout</string>
   <string name="enqueue_all">Ajouter tout à la file d\'attente</string>
   <string name="all_songs">Tous les morceaux</string>
+  <string name="details">Détails</string>
   <string name="more_from_artist">Filtrer par artiste</string>
   <string name="more_from_album">Filtrer par album</string>
   <string name="title">Titre</string>

@@ -44,6 +44,10 @@
   <string name="rename">Alinomi</string>
   <string name="save_as_playlist">Konservi kiel ludliston…</string>
   <string name="add_to_playlist">Aldoni al ludlisto…</string>
+  <string name="add_to_homescreen">Aldoni al hejmekrano…</string>
+  <string name="add_to">Aldoni al…</string>
+  <string name="playlist">Ludlisto</string>
+  <string name="homescreen">Hejmekrano</string>
   <string name="add_to_favorites">Aldoni al ŝatataj</string>
   <string name="remove_from_favorites">Forigi el ŝatataj</string>
   <string name="playlist_favorites">Ŝatataj</string>

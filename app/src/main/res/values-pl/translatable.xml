@@ -44,6 +44,10 @@
   <string name="rename">Zmień nazwę</string>
   <string name="save_as_playlist">Zapisz listę odtwarzania jako…</string>
   <string name="add_to_playlist">Dodaj do listy odtwarzania…</string>
+  <string name="add_to_homescreen">Dodaj do ekranu głównego…</string>
+  <string name="add_to">Dodaj do…</string>
+  <string name="playlist">listy odtwarzania</string>
+  <string name="homescreen">ekranu głównego</string>
   <string name="add_to_favorites">Dodaj do ulubionych</string>
   <string name="remove_from_favorites">Usuń z ulubionych</string>
   <string name="playlist_favorites">Ulubione</string>

@@ -44,6 +44,10 @@
   <string name="rename">Nimeä uudelleen</string>
   <string name="save_as_playlist">Tallenna soittolistana…</string>
   <string name="add_to_playlist">Lisää soittolistaan…</string>
+  <string name="add_to_homescreen">Lisää kotinäyttöön…</string>
+  <string name="add_to">Lisää…</string>
+  <string name="playlist">Soittolista</string>
+  <string name="homescreen">Kotinäyttö</string>
   <string name="add_to_favorites">Lisää suosikkeihin</string>
   <string name="remove_from_favorites">Poista suosikeista</string>
   <string name="playlist_favorites">Suosikit</string>

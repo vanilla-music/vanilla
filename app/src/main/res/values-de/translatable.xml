@@ -42,12 +42,16 @@
   <string name="play">Wiedergeben</string>
   <string name="edit">Bearbeiten</string>
   <string name="rename">Umbenennen</string>
-  <string name="save_as_playlist">Als Wiedergabeliste speichern …</string>
-  <string name="add_to_playlist">Zur Wiedergabeliste hinzufügen …</string>
-  <string name="add_to_favorites">Zu Favoriten hinzufügen …</string>
+  <string name="save_as_playlist">Als Wiedergabeliste speichern …</string>
+  <string name="add_to_playlist">Zur Wiedergabeliste hinzufügen …</string>
+  <string name="add_to_homescreen">Zu Startbildschirm hinzufügen …</string>
+  <string name="add_to">Hinzufügen zu …</string>
+  <string name="playlist">Wiedergabeliste</string>
+  <string name="homescreen">Startbildschirm</string>
+  <string name="add_to_favorites">Zu Favoriten hinzufügen …</string>
   <string name="remove_from_favorites">Aus Favoriten entfernen</string>
   <string name="playlist_favorites">Favoriten</string>
-  <string name="new_playlist">Neue Wiedergabeliste …</string>
+  <string name="new_playlist">Neue Wiedergabeliste …</string>
   <string name="expand">Aufklappen</string>
   <string name="expand_or_play_all">Aufklappen oder alle wiedergeben</string>
   <string name="delete">Löschen</string>
@@ -59,7 +63,7 @@
   <string name="play_or_enqueue">Einreihen während Wiedergabe oder wiedergeben, falls pausiert</string>
   <string name="open">Öffnen</string>
   <string name="go_home">Benutzerverzeichnis</string>
-  <string name="jumping_to_song">Titel bereits in Warteschlange, wird direkt angesprungen …</string>
+  <string name="jumping_to_song">Titel bereits in Warteschlange, wird direkt angesprungen …</string>
   <!--As a developer, you should always supply "one" and "other"
 		strings. Your translators will know which strings are actually
 		needed for their language. Always include %d in "one" because
@@ -250,8 +254,8 @@
   <string name="enqueue_current_album">Album einreihen</string>
   <string name="enqueue_current_artist">Interpret einreihen</string>
   <string name="enqueue_current_genre">Genre einreihen</string>
-  <string name="enqueue_current">Einreihen …</string>
-  <string name="more_from_current">Mehr von …</string>
+  <string name="enqueue_current">Einreihen …</string>
+  <string name="more_from_current">Mehr von …</string>
   <string name="empty_the_queue">Warteschlange verwerfen</string>
   <string name="show_queue">Warteschlange anzeigen</string>
   <string name="hide_queue">Warteschlange ausblenden</string>
@@ -282,9 +286,9 @@
   <string name="playlist_sync_folder_summary">Zu verwendender Ordner für Wiedergabelistensynchronisation</string>
   <string name="permission_request_summary">Vanilla Music benötigt Leserechte, um Ihre Musikbibliothek anzuzeigen</string>
   <string name="reverse_sort">Sortierung umkehren</string>
-  <string name="share">Teilen …</string>
+  <string name="share">Teilen …</string>
   <string name="share_failed">Teilen von Datei gescheitert</string>
-  <string name="sendto">Senden an …</string>
+  <string name="sendto">Senden an …</string>
   <string name="no_receiving_apps">Keine kompatiblen Apps für diesen Medientyp gefunden!</string>
   <string name="duration">Dauer</string>
   <string name="dump_database">Datenbank exportieren</string>
@@ -303,7 +307,7 @@
   <string name="media_stats_library_playtime">Gesamtwiedergabedauer (Stunden)</string>
   <string name="media_stats_listen_playtime">Bisher wiedergegebene Musik in Stunden</string>
   <string name="media_stats_progress">Suchfortschritt</string>
-  <string name="media_library_scan_running">Medienbibliothek wird durchsucht …</string>
+  <string name="media_library_scan_running">Medienbibliothek wird durchsucht …</string>
   <string name="media_scan_preferences">Suchoptionen</string>
   <string name="media_scan_preferences_change_title">Suchoptionen geändert</string>
   <string name="media_scan_preferences_change_message">Durch Ändern dieser Option wird ein erneutes, vollständiges Durchsuchen Ihrer Bibliothek veranlasst. Möchten Sie fortfahren?</string>

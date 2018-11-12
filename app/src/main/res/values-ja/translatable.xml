@@ -44,6 +44,10 @@
   <string name="rename">名前を変更</string>
   <string name="save_as_playlist">プレイリストとして保存…</string>
   <string name="add_to_playlist">プレイリストに追加…</string>
+  <string name="add_to_homescreen">ホーム画面に追加…</string>
+  <string name="add_to">追加…</string>
+  <string name="playlist">プレイリスト</string>
+  <string name="homescreen">ホーム画面</string>
   <string name="add_to_favorites">お気に入りに追加</string>
   <string name="remove_from_favorites">お気に入りから削除</string>
   <string name="playlist_favorites">お気に入り</string>
@@ -108,6 +112,7 @@
   <string name="play_all">すべて再生</string>
   <string name="enqueue_all">すべてキューに入れる</string>
   <string name="all_songs">すべてのトラック</string>
+  <string name="details">詳細</string>
   <string name="more_from_artist">アーティストからさらに</string>
   <string name="more_from_album">アルバムからさらに</string>
   <string name="title">タイトル</string>

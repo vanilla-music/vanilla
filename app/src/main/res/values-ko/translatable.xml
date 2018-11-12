@@ -44,6 +44,10 @@
   <string name="rename">이름 변경</string>
   <string name="save_as_playlist">재생목록으로 저장...</string>
   <string name="add_to_playlist">재생 목록에 추가...</string>
+  <string name="add_to_homescreen">홈 스크린에 추가...</string>
+  <string name="add_to">추가...</string>
+  <string name="playlist">재생목록</string>
+  <string name="homescreen">홈스크린</string>
   <string name="add_to_favorites">즐겨찾기에 추가</string>
   <string name="remove_from_favorites">즐겨찾기에서 제거</string>
   <string name="playlist_favorites">즐겨찾기</string>
@@ -108,6 +112,7 @@
   <string name="play_all">모두 재생</string>
   <string name="enqueue_all">모두 대기열에 추가</string>
   <string name="all_songs">모든 트랙</string>
+  <string name="details">자세히</string>
   <string name="more_from_artist">음악가로부터 얻음</string>
   <string name="more_from_album">앨범으로부터 얻음</string>
   <string name="title">타이틀</string>
@@ -193,13 +198,17 @@
   <string name="use_idle_timeout_summary">비활성 시간 후 활성화 시 재생 중지 </string>
   <string name="idle_timeout_title">유휴 시간</string>
   <string name="enable_scroll_to_song_title">트랙 타이틀로 이동</string>
-  <string name="enable_scroll_to_song_summary">현재 재생중인 라이브러리 목록안의 트랙/앨범/아티스트로 스크롤합니다</string>
+  <string name="enable_scroll_to_song_summary">현재 재생중인 라이브러리 목록안의 트랙/앨범/아티스트로 이동합니다</string>
+  <string name="queue_enable_scroll_to_song_title">대기열 안의 트랙타이틀로 이동</string>
+  <string name="queue_enable_scroll_to_song_summary">곡 변경 시 대기목록에서 현재 트랙을 재생하려면 이동합니다</string>
   <string name="coverloader_android_title">안드로이드로 부터 아트웍 로드</string>
   <string name="coverloader_android_summary">앨범 아트웍을 안드로이드 내장 미디어 데이터베이스에서 얻음</string>
   <string name="coverloader_vanilla_title">폴더에서 아트웍을 읽음</string>
   <string name="coverloader_vanilla_summary">cover.jpg , album.jpg, artwork.jpg 이름인 이미지를 검색하고 이것을 앨범 커버로 표시</string>
   <string name="coverloader_shadow_title">숨겨진 폴더에서 아트웍을 읽음</string>
   <string name="coverloader_shadow_summary">\'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\' 에서 아트웍을 읽기 시도</string>
+  <string name="coverloader_inline_title">태그에서 아트웍을 읽음</string>
+  <string name="coverloader_inline_summary">파일 태그에서 내장 아트웍을 읽기 시도</string>
   <string name="cover_on_lockscreen_title">잠금화면에 아트웍 표시</string>
   <string name="cover_on_lockscreen_summary">잠금화면에 현재 재생중인 곡의 아트웍을 표시</string>
   <string name="double_tap_title">위젯을 두번 탭</string>
@@ -261,9 +270,12 @@
   <string name="autoplaylist_playcounts_disabled">재생 목록을 자동으로 생성하지 않습니다</string>
   <string name="autoplaylist_playcounts_name" formatted="false">상위 %d</string>
   <string name="playlist_sync_mode_title">재생목록 동기화</string>
+  <string name="playlist_sync_all">전체 동기화</string>
   <string name="playlist_sync_only_import">M3U 읽기, 내보내지 않음</string>
   <string name="playlist_sync_only_export">M3U 쓰기, 읽지 않음</string>
   <string name="playlist_sync_disabled">비활성</string>
+  <string name="playlist_sync_folder_title">동기화 폴더</string>
+  <string name="playlist_sync_folder_summary">폴더를 재생목록 동기화에 사용함</string>
   <string name="permission_request_summary">Vanilla Music은 음악 라이브러리를 표시하기 위하여 읽기 권한이 필요합니다
 </string>
   <string name="reverse_sort">반대로 정렬</string>
@@ -299,6 +311,7 @@
   <string name="folder_neutral">중립</string>
   <!--Plugin system-->
   <string name="plugins">플러그인</string>
+  <string name="plugin_needs_upgrade">%s 플러그인을 최신 버전으로 업그레이드 하세요</string>
   <!--Theme names-->
   <string name="theme_name_standard_light">기본</string>
   <string name="theme_name_standard_dark">기본(어두움)</string>

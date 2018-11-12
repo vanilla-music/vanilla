@@ -44,6 +44,10 @@
   <string name="rename">重新命名</string>
   <string name="save_as_playlist">儲存為播放清單…</string>
   <string name="add_to_playlist">加到播放清單…</string>
+  <string name="add_to_homescreen">加入到主畫面…</string>
+  <string name="add_to">增加到…</string>
+  <string name="playlist">播放清單</string>
+  <string name="homescreen">主畫面</string>
   <string name="add_to_favorites">加到我的最愛</string>
   <string name="remove_from_favorites">從我的最愛移除</string>
   <string name="playlist_favorites">我的最愛</string>

@@ -43,7 +43,11 @@
   <string name="edit">Изменить</string>
   <string name="rename">Переименовать</string>
   <string name="save_as_playlist">Создать плей-лист…</string>
-  <string name="add_to_playlist">Создать плей-лист…</string>
+  <string name="add_to_playlist">Добавить в плей-лист…</string>
+  <string name="add_to_homescreen">На главный экран…</string>
+  <string name="add_to">Дабавить…</string>
+  <string name="playlist">в плей-лист</string>
+  <string name="homescreen">на главный экран</string>
   <string name="add_to_favorites">Добавить в избранные</string>
   <string name="remove_from_favorites">Удалить из избранных</string>
   <string name="playlist_favorites">Избранные</string>
@@ -123,6 +127,7 @@
   <string name="play_all">Воспроизвести всё</string>
   <string name="enqueue_all">Всё в очередь</string>
   <string name="all_songs">Все дорожки</string>
+  <string name="details">Подробности</string>
   <string name="more_from_artist">Ещё от того же исполнителя</string>
   <string name="more_from_album">Ещё из того же альбома</string>
   <string name="title">по названию</string>

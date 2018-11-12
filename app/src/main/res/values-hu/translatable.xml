@@ -44,6 +44,10 @@
   <string name="rename">Átnevezés</string>
   <string name="save_as_playlist">Mentés lejátszólistaként…</string>
   <string name="add_to_playlist">Hozzáadás a lejátszólistához…</string>
+  <string name="add_to_homescreen">Hozzáadás a kezdőképernyőhöz…</string>
+  <string name="add_to">Hozzáadás…</string>
+  <string name="playlist">Lejátszólista</string>
+  <string name="homescreen">Kezdőképernyő</string>
   <string name="add_to_favorites">Hozzáadás a kedvencekhez</string>
   <string name="remove_from_favorites">Eltávolítás a kedvencekből</string>
   <string name="playlist_favorites">Kedvencek</string>
@@ -113,6 +117,7 @@
   <string name="play_all">Összes lejátszása</string>
   <string name="enqueue_all">Összes sorbaállítása</string>
   <string name="all_songs">Minden szám</string>
+  <string name="details">Részletek</string>
   <string name="more_from_artist">Több ettől az előadótól</string>
   <string name="more_from_album">Több erről az albumról</string>
   <string name="title">Cím</string>
