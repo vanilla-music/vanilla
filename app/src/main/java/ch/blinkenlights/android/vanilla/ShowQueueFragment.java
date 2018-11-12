@@ -107,7 +107,7 @@ public class ShowQueueFragment extends Fragment
 		intent.putExtra("type", MediaUtils.TYPE_SONG);
 		intent.putExtra("position", pos);
 
-		FancyMenu fm = new FancyMenu(getContext(), this);
+		FancyMenu fm = new FancyMenu(getActivity(), this);
 		fm.show(getFragmentManager(), "ShowQueueFragmentContext");
 		fm.setHeaderTitle(song.title);
 
