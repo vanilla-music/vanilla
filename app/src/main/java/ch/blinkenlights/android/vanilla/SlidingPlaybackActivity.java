@@ -154,26 +154,6 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 	}
 
 
-	static final int CTX_MENU_ADD_TO_PLAYLIST = 300;
-
-	@Override
-	public boolean onContextItemSelected(MenuItem item) {
-		if (item.getGroupId() != 0)
-			return super.onContextItemSelected(item);
-
-		final Intent intent = item.getIntent();
-		switch (item.getItemId()) {
-			case CTX_MENU_ADD_TO_PLAYLIST: {
-				PlaylistDialog dialog = PlaylistDialog.newInstance(this, intent, null);
-				dialog.show(getFragmentManager(), "PlaylistDialog");
-				break;
-			}
-			default:
-				throw new IllegalArgumentException("Unhandled item id");
-		}
-		return true;
-	}
-
 	/**
 	 * Called by PlaylistDialog.Callback to append data to
 	 * a playlist

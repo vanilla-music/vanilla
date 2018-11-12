@@ -622,6 +622,7 @@ public class LibraryActivity
 	private static final int CTX_MENU_PLUGINS = 11;
 	private static final int CTX_MENU_SHOW_DETAILS = 12;
 	private static final int CTX_MENU_ADD_TO_HOMESCREEN = 13;
+	private static final int CTX_MENU_ADD_TO_PLAYLIST = 14;
 
 	/**
 	 * Creates a context menu for an adapter row.
