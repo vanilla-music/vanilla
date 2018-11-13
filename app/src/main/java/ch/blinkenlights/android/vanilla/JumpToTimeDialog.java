@@ -24,6 +24,8 @@ import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -61,11 +63,35 @@ public class JumpToTimeDialog extends DialogFragment implements DialogInterface.
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
+		// Watcher that moves to the next EditText when 2 digits are inserted
+		TextWatcher textWatcher = new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				EditText editText = (EditText) getDialog().getCurrentFocus();
+				if (editText.length() == 2) {
+					View view = editText.focusSearch(View.FOCUS_RIGHT);
+					if (view != null) {
+						view.requestFocus();
+					}
+				}
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+			}
+		};
+
 		View view = LayoutInflater.from(getActivity()).inflate(R.layout.duration_input, null);
 		hoursView = view.findViewById(R.id.hours);
+		hoursView.addTextChangedListener(textWatcher);
 		minutesView = view.findViewById(R.id.minutes);
+		minutesView.addTextChangedListener(textWatcher);
 		secondsView = view.findViewById(R.id.seconds);
-		hoursView.requestFocus();
+		secondsView.addTextChangedListener(textWatcher);
 
 		Dialog dialog = new AlertDialog.Builder(getActivity())
 			.setTitle(R.string.jump_to_time)
@@ -73,6 +99,7 @@ public class JumpToTimeDialog extends DialogFragment implements DialogInterface.
 			.setPositiveButton(android.R.string.ok, this)
 			.setNegativeButton(android.R.string.cancel, null)
 			.create();
+		hoursView.requestFocus();
 		dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 		return dialog;
 	}
