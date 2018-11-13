@@ -26,6 +26,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -64,13 +65,16 @@ public class JumpToTimeDialog extends DialogFragment implements DialogInterface.
 		hoursView = view.findViewById(R.id.hours);
 		minutesView = view.findViewById(R.id.minutes);
 		secondsView = view.findViewById(R.id.seconds);
+		hoursView.requestFocus();
 
-		return new AlertDialog.Builder(getActivity())
+		Dialog dialog = new AlertDialog.Builder(getActivity())
 			.setTitle(R.string.jump_to_time)
 			.setView(view)
 			.setPositiveButton(android.R.string.ok, this)
 			.setNegativeButton(android.R.string.cancel, null)
 			.create();
+		dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+		return dialog;
 	}
 
 	@Override
