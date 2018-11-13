@@ -34,7 +34,8 @@ import java.net.InetAddress;
 public class SlidingPlaybackActivity extends PlaybackActivity
 	implements SlidingView.Callback,
 	           SeekBar.OnSeekBarChangeListener,
-	           PlaylistDialog.Callback
+	           PlaylistDialog.Callback,
+	           JumpToTimeDialog.OnPositionSubmitListener
 {
 	/**
 	 * Reference to the inflated menu
@@ -273,7 +274,7 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 	/**
 	 * Update seek bar progress and schedule another update in one second
 	 */
-	public void updateElapsedTime() {
+	private void updateElapsedTime() {
 		long position = PlaybackService.hasInstance() ? PlaybackService.get(this).getPosition() : 0;
 
 		if (!mSeekBarTracking) {
@@ -360,4 +361,9 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 		}
 	}
 
+	@Override
+	public void onPositionSubmit(int position) {
+		PlaybackService.get(this).seekToPosition(position);
+		updateElapsedTime();
+	}
 }
