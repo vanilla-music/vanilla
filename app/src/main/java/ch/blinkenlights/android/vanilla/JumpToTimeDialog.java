@@ -113,9 +113,7 @@ public class JumpToTimeDialog extends DialogFragment implements DialogInterface.
 				int minutes = parseInteger(minutesView.getText().toString());
 				int seconds = parseInteger(secondsView.getText().toString());
 				int position = (hours * 3600 + minutes * 60 + seconds) * 1000;
-				if (activity instanceof OnPositionSubmitListener) {
-					((OnPositionSubmitListener) activity).onPositionSubmit(position);
-				}
+				((OnPositionSubmitListener) activity).onPositionSubmit(position);
 			} catch (NumberFormatException e) {
 				Toast.makeText(activity, R.string.error_invalid_position, Toast.LENGTH_SHORT).show();
 			}
