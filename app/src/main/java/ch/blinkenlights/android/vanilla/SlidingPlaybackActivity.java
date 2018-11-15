@@ -34,7 +34,8 @@ import java.net.InetAddress;
 public class SlidingPlaybackActivity extends PlaybackActivity
 	implements SlidingView.Callback,
 	           SeekBar.OnSeekBarChangeListener,
-	           PlaylistDialog.Callback
+	           PlaylistDialog.Callback,
+	           JumpToTimeDialog.OnPositionSubmitListener
 {
 	/**
 	 * Reference to the inflated menu
@@ -127,6 +128,7 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 		menu.add(0, MENU_CLEAR_QUEUE, 20, R.string.dequeue_rest);
 		menu.add(0, MENU_EMPTY_QUEUE, 20, R.string.empty_the_queue);
 		menu.add(0, MENU_SAVE_QUEUE, 20, R.string.save_as_playlist);
+		menu.add(0, MENU_JUMP_TO_TIME, 20, R.string.jump_to_time);
 		// This should only be required on ICS.
 		onSlideExpansionChanged(SlidingView.EXPANSION_PARTIAL);
 		return true;
@@ -146,6 +148,9 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 		case MENU_SAVE_QUEUE:
 			PlaylistDialog dialog = PlaylistDialog.newInstance(this, null, null);
 			dialog.show(getFragmentManager(), "PlaylistDialog");
+			break;
+		case MENU_JUMP_TO_TIME:
+			JumpToTimeDialog.show(getFragmentManager());
 			break;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -336,4 +341,9 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 		}
 	}
 
+	@Override
+	public void onPositionSubmit(int position) {
+		PlaybackService.get(this).seekToPosition(position);
+		updateElapsedTime();
+	}
 }

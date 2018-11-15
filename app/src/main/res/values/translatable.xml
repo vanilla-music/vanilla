@@ -329,6 +329,13 @@ THE SOFTWARE.
 	<string name="preferences_action_enqueue_current_artist">Enqueue artist</string>
 	<string name="preferences_action_enqueue_current_genre">Enqueue genre</string>
 
+	<string name="jump_to_time">Jump to Time</string>
+	<string name="time_separator">:</string>
+	<string name="hour_hint">HH</string>
+	<string name="minute_hint">MM</string>
+	<string name="second_hint">SS</string>
+	<string name="error_invalid_position">Invalid position</string>
+
 	<string name="filebrowser_start">Filebrowser home</string>
 	<string name="customize_filebrowser_start">Filebrowser starts at this directory</string>
 	<string name="select">Select</string>

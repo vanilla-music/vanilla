@@ -430,6 +430,7 @@ public abstract class PlaybackActivity extends Activity
 	static final int MENU_MORE_ARTIST = 23;
 	static final int MENU_MORE_GENRE = 24;
 	static final int MENU_MORE_FOLDER = 25;
+	static final int MENU_JUMP_TO_TIME = 26;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
