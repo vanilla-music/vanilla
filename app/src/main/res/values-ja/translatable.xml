@@ -260,6 +260,12 @@
   <string name="preferences_action_enqueue_current_album">アルバムをキューに入れる</string>
   <string name="preferences_action_enqueue_current_artist">アーティストをキューに入れる</string>
   <string name="preferences_action_enqueue_current_genre">ジャンルをキューに入れる</string>
+  <string name="jump_to_time">時刻に移動</string>
+  <string name="time_separator">:</string>
+  <string name="hour_hint">HH</string>
+  <string name="minute_hint">MM</string>
+  <string name="second_hint">SS</string>
+  <string name="error_invalid_position">無効な位置</string>
   <string name="filebrowser_start">ファイルブラウザー ホーム</string>
   <string name="customize_filebrowser_start">ファイルブラウザーはこのディレクトリーから開始します</string>
   <string name="select">選択</string>

@@ -268,6 +268,8 @@
   <string name="preferences_action_enqueue_current_album">Ajouter l\'album à la file d\'attente</string>
   <string name="preferences_action_enqueue_current_artist">Ajouter l\'artiste à la file d\'attente</string>
   <string name="preferences_action_enqueue_current_genre">Ajouter le genre à la file d\'attente</string>
+  <string name="jump_to_time">Aller au Temps...</string>
+  <string name="error_invalid_position">Position invalide</string>
   <string name="filebrowser_start">Accueil explorateur de fichier</string>
   <string name="customize_filebrowser_start">L\'explorateur de fichier démarre à ce répertoire</string>
   <string name="select">Sélectionner</string>

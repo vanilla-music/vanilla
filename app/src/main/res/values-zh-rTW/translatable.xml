@@ -260,6 +260,12 @@
   <string name="preferences_action_enqueue_current_album">以專輯儲入佇列</string>
   <string name="preferences_action_enqueue_current_artist">以演出者存入佇列</string>
   <string name="preferences_action_enqueue_current_genre">以流派存入佇列</string>
+  <string name="jump_to_time">跳到時間</string>
+  <string name="time_separator">：</string>
+  <string name="hour_hint">HH</string>
+  <string name="minute_hint">MM</string>
+  <string name="second_hint">SS</string>
+  <string name="error_invalid_position">無效的位置</string>
   <string name="filebrowser_start">啟始目錄</string>
   <string name="customize_filebrowser_start">在此目錄開始瀏覽檔案</string>
   <string name="select">選擇</string>

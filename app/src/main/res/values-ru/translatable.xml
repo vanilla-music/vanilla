@@ -284,6 +284,12 @@
   <string name="preferences_action_enqueue_current_album">Заполнить очередь альбомом</string>
   <string name="preferences_action_enqueue_current_artist">Заполнить очередь исполнителем</string>
   <string name="preferences_action_enqueue_current_genre">Заполнить очередь жанром</string>
+  <string name="jump_to_time">Переход по времени</string>
+  <string name="time_separator">:</string>
+  <string name="hour_hint">Час</string>
+  <string name="minute_hint">мин</string>
+  <string name="second_hint">сек</string>
+  <string name="error_invalid_position">Неправильное время</string>
   <string name="filebrowser_start">Домашняя папка браузера файлов</string>
   <string name="customize_filebrowser_start">Браузер файлов открывает эту папку</string>
   <string name="select">Выбрать</string>

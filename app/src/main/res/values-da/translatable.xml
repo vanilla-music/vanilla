@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="app_name">Vanilla Music</string>
+  <string name="ok">O.k.</string>
+  <string name="cancel">Annullere</string>
+  <!--Playback Activity (main screen)-->
+  <string name="settings">Opsætning</string>
+  <string name="no_shuffle">Ingen blanding</string>
+  <string name="shuffle_songs">Blande numre</string>
+  <string name="shuffle_albums">Blande album</string>
+  <string name="no_repeat">Ingen gentagelse</string>
+  <string name="repeat">Gentage</string>
+  <string name="repeat_current_song">Gentage nuværende nummer</string>
+  <string name="stop_current_song">Stop efter nuværende nummer</string>
+  <string name="random">Tilfældig</string>
+  <string name="random_enabling">Tilfældig aktiveret</string>
+  <string name="queue_cleared">Kø ryddet</string>
+  <string name="cover_art">Omslag kunst</string>
+  <string name="close_notification">Lukke påmindelse</string>
+  <string name="_genre">genre</string>
+  <string name="_track">nummer</string>
+  <string name="_composer">Komponist</string>
+  <string name="_path">sti</string>
+  <string name="_format">format</string>
+  <string name="_title">titel</string>
+  <string name="_artist">kunstner</string>
+  <string name="_album">album</string>
+  <string name="_year">år</string>
+  <!--New Playlist Dialog-->
+  <string name="create">Oprette</string>
+  <string name="overwrite">Overskrive</string>
+  <!--Library-->
+  <string name="enqueue">Kø</string>
+  <string name="enqueue_as_next">Afspil næste</string>
+  <string name="play">Afspil</string>
+  <string name="edit">Redigere</string>
+  <string name="rename">Omdøbe</string>
+  <string name="save_as_playlist">Gemme som spille liste...</string>
+  <string name="add_to_playlist">Tilføje til spille liste...</string>
+  <string name="add_to">Tilføje til...</string>
+  <string name="playlist">Spille liste</string>
+  <string name="homescreen">Startskærm</string>
+  <string name="add_to_favorites">Tilføje til favoritter</string>
+  <string name="playlist_favorites">Favoritter</string>
+  <string name="new_playlist">Ny spille liste</string>
+  <string name="expand">Udvide</string>
+  <string name="delete">Slette</string>
+  <string name="playback_view">Afspiller nu</string>
+  <string name="sort_by">Sortere efter</string>
+  <string name="search">Søge</string>
+  <string name="remove">Fjerne</string>
+  <string name="open">Åbne</string>
+  <string name="go_home">Hjemme bibliotek</string>
+  <!--As a developer, you should always supply "one" and "other"
+		strings. Your translators will know which strings are actually
+		needed for their language. Always include %d in "one" because
+		translators will need to use %d for languages where "one"
+		doesn't mean 1 (as explained above).
+
+		Translators should use http://unicode.org/reports/tr35/tr35-numbers.html#Language_Plural_Rules and
+		http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html, Type cardinal,
+		to see which categories apply to integer numbers in their languages-->
+  <string name="artists">Kunstner</string>
+  <string name="albums">Album</string>
+  <string name="albumartists">Album Kunstner</string>
+  <string name="composers">Komponister</string>
+  <string name="songs">Numre</string>
+  <string name="playlists">Spille lister</string>
+  <string name="genres">Genre</string>
+  <string name="files">Filer</string>
+  <string name="artist">Kunstner</string>
+  <string name="album">Album</string>
+  <string name="genre">Genre</string>
+  <string name="folder">Mappe</string>
+  <string name="filename">Filnavn</string>
+  <string name="file_size">Fil størrelse</string>
+  <string name="extension">Fil endelse</string>
+  <string name="unknown">Ukendt</string>
+  <string name="play_all">Afspille alle</string>
+  <string name="enqueue_all">Alle i kø</string>
+  <string name="all_songs">Alle numre</string>
+  <string name="details">Detaljer</string>
+  <string name="more_from_artist">Mere fra kunstner</string>
+  <string name="more_from_album">Mere fra album</string>
+  <string name="title">Titel</string>
+  <string name="number_of_tracks">Antal numre</string>
+  <string name="year">År</string>
+  <!--Preferences-->
+  <string name="audio">Lyd</string>
+  <string name="replaygain_preamp_note_title">Bemærk</string>
+  <string name="readahead">Aktivere indlæse forud</string>
+  <string name="notifications">Påmindelser</string>
+  <string name="playback_on_startup_title">Åbne ved opstart</string>
+  <string name="display_mode_title">Vise tilstand</string>
+  <string name="library_screen">Bibliotek skærm</string>
+  <string name="default_action_title">Standard handling</string>
+  <string name="shake_action_title">Ryste handling</string>
+  <string name="theme">Tema</string>
+  <string name="disable_lockscreen_title">Deaktivere låseskærm</string>
+  <string name="idle_timeout_title">Tomgangs tidsudløb</string>
+  <string name="help">Hjælp</string>
+  <string name="about">Om</string>
+  <string name="tabs">Faneblad sortering</string>
+  <string name="restore_default">Gendanne standard</string>
+  <!--The following are for the list preferences-->
+  <string name="never_show">Vis aldrig</string>
+  <string name="do_nothing">Gør ingenting</string>
+  <string name="open_library">Åbne bibliotek</string>
+  <string name="play_pause">Afspille/Pause</string>
+  <string name="next_song">Næste nummer</string>
+  <string name="previous_song">Forrige nummer</string>
+  <string name="next_album">Næste album</string>
+  <string name="previous_album">Forrige album</string>
+  <string name="enqueue_current">Kø...</string>
+  <string name="more_from_current">Mere fra...</string>
+  <string name="empty_the_queue">Tømme kø</string>
+  <string name="show_queue">Vise kø</string>
+  <!--Folder selector-->
+  <string name="folder_include">Inkludere</string>
+  <string name="folder_exclude">Ekskludere</string>
+  <string name="folder_neutral">Neutral</string>
+  <!--Plugin system-->
+  <string name="plugins">Udvidelses moduler</string>
+  <!--Theme names-->
+  <string name="theme_name_standard_light">Standard</string>
+  <string name="theme_name_standard_dark">Standard (Mørk)</string>
+  <string name="theme_name_grey_light">Grå</string>
+  <string name="theme_name_blue_dark">Blå (Mørk)</string>
+  <string name="theme_name_red_light">Rød</string>
+</resources>

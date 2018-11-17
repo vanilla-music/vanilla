@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="app_name">Vanilla Music</string>
-  <string name="ok">OK</string>
+  <string name="ok">Aceptar</string>
   <string name="cancel">Cancelar</string>
   <!--Playback Activity (main screen)-->
   <string name="no_songs">No se han encontrado pistas en tu dispositivo.</string>
@@ -44,6 +44,10 @@
   <string name="rename">Renombrar</string>
   <string name="save_as_playlist">Guardar como lista de reproducción...</string>
   <string name="add_to_playlist">Añadir a lista de reproducción...</string>
+  <string name="add_to_homescreen">Agregar a pantalla de inicio</string>
+  <string name="add_to">Agregar a...</string>
+  <string name="playlist">Lista de reproducción</string>
+  <string name="homescreen">Pantalla de inicio</string>
   <string name="add_to_favorites">Añadir a favoritos</string>
   <string name="remove_from_favorites">Eliminar de favoritos</string>
   <string name="playlist_favorites">Favoritos</string>
@@ -264,6 +268,8 @@
   <string name="preferences_action_enqueue_current_album">Añadir álbum a la cola</string>
   <string name="preferences_action_enqueue_current_artist">Añadir artista a la cola</string>
   <string name="preferences_action_enqueue_current_genre">Añadir género a la cola</string>
+  <string name="jump_to_time">Saltar a posición temporal</string>
+  <string name="error_invalid_position">Posición inválida</string>
   <string name="filebrowser_start">Carpeta de inicio del administrador de archivos</string>
   <string name="customize_filebrowser_start">Mostrar este directorio al abrir el administrador de archivos</string>
   <string name="select">Seleccionar</string>

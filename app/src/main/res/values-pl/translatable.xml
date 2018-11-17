@@ -284,6 +284,12 @@
   <string name="preferences_action_enqueue_current_album">Kolejkuj album</string>
   <string name="preferences_action_enqueue_current_artist">Kolejkuj artystę</string>
   <string name="preferences_action_enqueue_current_genre">Kolejkuj gatunek muzyczny</string>
+  <string name="jump_to_time">Przeskocz do czasu</string>
+  <string name="time_separator">:</string>
+  <string name="hour_hint">HH</string>
+  <string name="minute_hint">MM</string>
+  <string name="second_hint">SS</string>
+  <string name="error_invalid_position">Błędny czas</string>
   <string name="filebrowser_start">Domyślny katalog przeglądarki plików</string>
   <string name="customize_filebrowser_start">Przeglądarka plików zacznie nawigację od tego miejsca</string>
   <string name="select">Wybierz</string>

@@ -268,6 +268,12 @@
   <string name="preferences_action_enqueue_current_album">Album einreihen</string>
   <string name="preferences_action_enqueue_current_artist">Interpret einreihen</string>
   <string name="preferences_action_enqueue_current_genre">Genre einreihen</string>
+  <string name="jump_to_time">In Zeit springen</string>
+  <string name="time_separator">:</string>
+  <string name="hour_hint">HH</string>
+  <string name="minute_hint">MM</string>
+  <string name="second_hint">SS</string>
+  <string name="error_invalid_position">Ungültige Position</string>
   <string name="filebrowser_start">Startordner</string>
   <string name="customize_filebrowser_start">Dateimanager startet in diesem Ordner</string>
   <string name="select">Auswählen</string>

@@ -268,6 +268,12 @@
   <string name="preferences_action_enqueue_current_album">Aseta albumi jonoon</string>
   <string name="preferences_action_enqueue_current_artist">Aseta esittäjä jonoon</string>
   <string name="preferences_action_enqueue_current_genre">Aseta tyylilaji jonoon</string>
+  <string name="jump_to_time">Siirry aikaan</string>
+  <string name="time_separator">:</string>
+  <string name="hour_hint">HH</string>
+  <string name="minute_hint">MM</string>
+  <string name="second_hint">SS</string>
+  <string name="error_invalid_position">Virheellinen arvo</string>
   <string name="filebrowser_start">Tiedostohallinnan aloitus</string>
   <string name="customize_filebrowser_start">Tiedostohallinta käynnistyy tästä kansiosta</string>
   <string name="select">Valitse</string>

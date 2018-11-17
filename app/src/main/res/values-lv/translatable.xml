@@ -44,6 +44,10 @@
   <string name="rename">Pārdēvēt</string>
   <string name="save_as_playlist">Saglabāt kā repertuāru...</string>
   <string name="add_to_playlist">Pievienot repertuāru...</string>
+  <string name="add_to_homescreen">Pievienot mājas ekrānam...</string>
+  <string name="add_to">Pievienot...</string>
+  <string name="playlist">Repertuārs</string>
+  <string name="homescreen">Mājas ekrāns</string>
   <string name="add_to_favorites">Pievienot iecienītajiem</string>
   <string name="remove_from_favorites">Izņemt no iecienītajiem</string>
   <string name="playlist_favorites">Iecienītie</string>
@@ -118,6 +122,7 @@
   <string name="play_all">Atskaņot visu</string>
   <string name="enqueue_all">Ierindot visu</string>
   <string name="all_songs">Visi celiņi</string>
+  <string name="details">Detaļas</string>
   <string name="more_from_artist">Vairāk no izpildītāja</string>
   <string name="more_from_album">Vairāk no albuma</string>
   <string name="title">Nosaukums</string>
@@ -211,12 +216,16 @@
   <string name="idle_timeout_title">Dīkstāves noildze</string>
   <string name="enable_scroll_to_song_title">Tīt uz dziesmas nosaukumu</string>
   <string name="enable_scroll_to_song_summary">Biliotēkas sarakstos tīt uz pašreiz atskaņoto dziesmu/albumu/izpildītāju</string>
+  <string name="queue_enable_scroll_to_song_title">Tīt uz dziesmas nosaukumu rindā</string>
+  <string name="queue_enable_scroll_to_song_summary">Mainoties dziesmai, tīt uz pašreiz atskaņoto dziesmu rindā</string>
   <string name="coverloader_android_title">Ielādēt vāku attēlus no Android</string>
   <string name="coverloader_android_summary">Vaicāt pēc vāciņa attēla Android iekšējai mēdiju datubāzei</string>
   <string name="coverloader_vanilla_title">Ielādēt vāciņa attēlu no mapes</string>
   <string name="coverloader_vanilla_summary">Meklēt attēla failus ar nosaukumiem cover.jpg, album.jpg vai artwork.jpg un attēlot tos kā albuma vāku</string>
   <string name="coverloader_shadow_title">Ielādēt vāku attēlus no slēptas mapes</string>
   <string name="coverloader_shadow_summary">Mēģināt ielādēt vāka attēlu no </string>
+  <string name="coverloader_inline_title">Ielādēt vāciņa attēlu no faila tagiem</string>
+  <string name="coverloader_inline_summary">Mēģināt ielādēt iekļauto vāciņa attēlu no faila tagiem</string>
   <string name="cover_on_lockscreen_title">Rādīt albuma vāciņu slēgekrānā</string>
   <string name="cover_on_lockscreen_summary">Rādīt pašreiz atskaņotās dziesmas albuma vāciņu slēgekrānā</string>
   <string name="double_tap_title">Dubultpiesitiena sīkrīks</string>
@@ -268,6 +277,11 @@
   <string name="preferences_action_enqueue_current_album">Ierindot albumu</string>
   <string name="preferences_action_enqueue_current_artist">Ierindot izpildītāju</string>
   <string name="preferences_action_enqueue_current_genre">Ierindot žanru</string>
+  <string name="jump_to_time">Pārlekt uz laiku</string>
+  <string name="hour_hint">HH</string>
+  <string name="minute_hint">MM</string>
+  <string name="second_hint">SS</string>
+  <string name="error_invalid_position">Neatļauta pozīcija</string>
   <string name="filebrowser_start">Failu pārlūka mājas</string>
   <string name="customize_filebrowser_start">Failu pārlūks atvērsies šajā mapē</string>
   <string name="select">Izvēlēties</string>
@@ -277,6 +291,13 @@
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s \'Top %.0f\' repertuāru</string>
   <string name="autoplaylist_playcounts_disabled">Neizveidot automātisko repertuāru</string>
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
+  <string name="playlist_sync_mode_title">Repertuāra sinhronizācija</string>
+  <string name="playlist_sync_all">Pilna sinhronizācija</string>
+  <string name="playlist_sync_only_import">Importēt M3U, nekad eksportēt</string>
+  <string name="playlist_sync_only_export">Rakstīt M3U, nekad importēt</string>
+  <string name="playlist_sync_disabled">Atslēgts</string>
+  <string name="playlist_sync_folder_title">Sinhronizācijas mape</string>
+  <string name="playlist_sync_folder_summary">Mape, kuru izmantot repertuāra sinhronizācijai</string>
   <string name="permission_request_summary">Vanilla Music lasīšanas atļauja vajadzīga, lai parādītu jūsu mūzikas bibliotēku</string>
   <string name="reverse_sort">Apgrieztā kārtošana</string>
   <string name="share">Dalīties..</string>
@@ -286,6 +307,7 @@
   <string name="duration">Ilgums</string>
   <string name="dump_database">Izmest datubāzi</string>
   <string name="dump_database_result">Datubāze izmesta vietā \'1 %s\'</string>
+  <string name="force_m3u_import">Piespiedu M3U atkārtota importēšana</string>
   <string name="media_library">Multivides bibliotēka</string>
   <string name="media_folders_header">Indeksētās mapes</string>
   <string name="media_scan_header">Multivides skenētājs</string>
