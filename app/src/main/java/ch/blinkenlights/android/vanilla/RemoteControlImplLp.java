@@ -165,8 +165,8 @@ public class RemoteControlImplLp implements RemoteControl.Client {
 
 		session.setPlaybackState(new PlaybackState.Builder()
 			.setState(playbackState, service.getPosition(), 1.0f)
-			.setActions(PlaybackState.ACTION_PLAY | PlaybackState.ACTION_PAUSE | PlaybackState.ACTION_PLAY_PAUSE |
-			            PlaybackState.ACTION_SKIP_TO_NEXT | PlaybackState.ACTION_SKIP_TO_PREVIOUS)
+			.setActions(PlaybackState.ACTION_PLAY | PlaybackState.ACTION_STOP | PlaybackState.ACTION_PAUSE | PlaybackState.ACTION_PLAY_PAUSE |
+				PlaybackState.ACTION_SKIP_TO_NEXT | PlaybackState.ACTION_SKIP_TO_PREVIOUS)
 			.build());
 		mMediaSession.setActive(true);
 	}
