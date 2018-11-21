@@ -164,6 +164,8 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 				act = PlaybackService.ACTION_PLAY;
 			break;
 		case KeyEvent.KEYCODE_MEDIA_PAUSE:
+		case KeyEvent.KEYCODE_MEDIA_STOP:
+			// We will behave the same as Google Play Music: for "Stop" we unconditionally Pause instead
 			if (action == KeyEvent.ACTION_DOWN)
 				act = PlaybackService.ACTION_PAUSE;
 			break;
