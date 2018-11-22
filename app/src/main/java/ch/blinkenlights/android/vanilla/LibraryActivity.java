@@ -627,13 +627,13 @@ public class LibraryActivity
 	/**
 	 * Creates a context menu for an adapter row.
 	 *
-	 * @param menu The menu to create.
 	 * @param rowData Data for the adapter row.
+	 * @param view the view which was clicked.
+	 * @param x x-coords of event
+	 * @param y y-coords of event
 	 */
-	public boolean onCreateFancyMenu(Intent rowData) {
+	public boolean onCreateFancyMenu(Intent rowData, View view, float x, float y) {
 		FancyMenu fm = new FancyMenu(this, this);
-		fm.show(getFragmentManager(), "LibraryActivityContext");
-
 		// Add to playlist is always available.
 		fm.addSpacer(20);
 		fm.add(CTX_MENU_ADD_TO_PLAYLIST, 20, R.drawable.menu_add_to_playlist, R.string.add_to_playlist).setIntent(rowData);
@@ -682,6 +682,7 @@ public class LibraryActivity
 			fm.addSpacer(90);
 			fm.add(CTX_MENU_DELETE, 90, R.drawable.menu_delete, R.string.delete).setIntent(rowData);
 		}
+		fm.show(view, x, y);
 		return true;
 	}
 

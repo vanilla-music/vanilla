@@ -19,6 +19,7 @@ package ch.blinkenlights.android.vanilla;
 
 import ch.blinkenlights.android.vanilla.ui.FancyMenu;
 import ch.blinkenlights.android.vanilla.ui.FancyMenuItem;
+import ch.blinkenlights.android.vanilla.ext.CoordClickListener;
 
 import android.annotation.SuppressLint;
 import android.app.Fragment;
@@ -38,7 +39,7 @@ import com.mobeta.android.dslv.DragSortListView;
 public class ShowQueueFragment extends Fragment
 	implements TimelineCallback,
 			   AdapterView.OnItemClickListener,
-			   AdapterView.OnItemLongClickListener,
+			   CoordClickListener.Callback,
 			   DragSortListView.DropListener,
 			   DragSortListView.RemoveListener,
 			   FancyMenu.Callback
@@ -55,13 +56,15 @@ public class ShowQueueFragment extends Fragment
 		View view = inflater.inflate(R.layout.showqueue_listview, container, false);
 		Context context = getActivity();
 
-		mListView    = (DragSortListView) view.findViewById(R.id.list);
 		mListAdapter = new ShowQueueAdapter(context, R.layout.draggable_row);
+		mListView = (DragSortListView) view.findViewById(R.id.list);
 		mListView.setAdapter(mListAdapter);
 		mListView.setDropListener(this);
 		mListView.setRemoveListener(this);
 		mListView.setOnItemClickListener(this);
-		mListView.setOnItemLongClickListener(this);
+
+		CoordClickListener ccl = new CoordClickListener(this);
+		ccl.registerForOnItemLongClickListener(mListView);
 
 		PlaybackService.addTimelineCallback(this);
 		return view;
@@ -99,7 +102,7 @@ public class ShowQueueFragment extends Fragment
 	 * Called on long-click on a adapeter row
 	 */
 	@Override
-	public boolean onItemLongClick(AdapterView<?> parent, View view, int pos, long id) {
+	public boolean onItemLongClickWithCoords(AdapterView<?> parent, View view, int pos, long id, float x, float y) {
 		Song song = playbackService().getSongByQueuePosition(pos);
 
 		Intent intent = new Intent();
@@ -108,7 +111,6 @@ public class ShowQueueFragment extends Fragment
 		intent.putExtra("position", pos);
 
 		FancyMenu fm = new FancyMenu(getActivity(), this);
-		fm.show(getFragmentManager(), "ShowQueueFragmentContext");
 		fm.setHeaderTitle(song.title);
 
 		fm.add(CTX_MENU_PLAY, 0, R.drawable.menu_play, R.string.play).setIntent(intent);
@@ -122,6 +124,7 @@ public class ShowQueueFragment extends Fragment
 		fm.addSpacer(0);
 		fm.add(CTX_MENU_SHOW_DETAILS, 0, R.drawable.menu_details, R.string.details).setIntent(intent);
 		fm.add(CTX_MENU_REMOVE, 90, R.drawable.menu_remove, R.string.remove).setIntent(intent);
+		fm.show(view, x, y);
 		return true;
 	}
 

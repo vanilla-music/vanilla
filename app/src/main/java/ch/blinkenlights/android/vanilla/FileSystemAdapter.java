@@ -457,13 +457,16 @@ public class FileSystemAdapter
 	 * Context menu of a row: this was dispatched by LibraryPagerAdapter
 	 *
 	 * @param intent likely created by createData()
+	 * @param view the parent view
+	 * @param x x-coords of event
+	 * @param y y-coords of event
 	 */
-	public boolean onCreateFancyMenu(Intent intent) {
+	public boolean onCreateFancyMenu(Intent intent, View view, float x, float y) {
 		String path = intent.getStringExtra(LibraryAdapter.DATA_FILE);
 		boolean isParentRow = (path != null && pointsToParentFolder(new File(path)));
 
 		if (!isParentRow)
-			return mActivity.onCreateFancyMenu(intent);
+			return mActivity.onCreateFancyMenu(intent, view, x, y);
 		// else: no context menu, but consume event.
 		return true;
 	}

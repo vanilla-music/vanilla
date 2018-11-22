@@ -268,6 +268,12 @@
   <string name="preferences_action_enqueue_current_album">Voeg album toe aan wachtrij</string>
   <string name="preferences_action_enqueue_current_artist">Voeg artiest toe aan wachtrij</string>
   <string name="preferences_action_enqueue_current_genre">Voeg genre toe aan wachtrij</string>
+  <string name="jump_to_time">Naar tijd springen</string>
+  <string name="time_separator">:</string>
+  <string name="hour_hint">UU</string>
+  <string name="minute_hint">MM</string>
+  <string name="second_hint">SS</string>
+  <string name="error_invalid_position">Ongeldige positie</string>
   <string name="filebrowser_start">Persoonlijke map bestandsbeheerder</string>
   <string name="customize_filebrowser_start">Bestandsbeheerder begint in deze map</string>
   <string name="select">Selecteer</string>

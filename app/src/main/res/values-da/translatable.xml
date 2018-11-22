@@ -4,9 +4,11 @@
   <string name="ok">O.k.</string>
   <string name="cancel">Annullere</string>
   <!--Playback Activity (main screen)-->
+  <string name="no_songs">Ingen numre fundet på enhed.</string>
   <string name="settings">Opsætning</string>
   <string name="no_shuffle">Ingen blanding</string>
   <string name="shuffle_songs">Blande numre</string>
+  <string name="shuffle_songs_continuously">Blande numre løbende</string>
   <string name="shuffle_albums">Blande album</string>
   <string name="no_repeat">Ingen gentagelse</string>
   <string name="repeat">Gentage</string>
@@ -27,6 +29,7 @@
   <string name="_album">album</string>
   <string name="_year">år</string>
   <!--New Playlist Dialog-->
+  <string name="choose_playlist_name">Vælge spille liste navn</string>
   <string name="create">Oprette</string>
   <string name="overwrite">Overskrive</string>
   <!--Library-->
@@ -37,17 +40,21 @@
   <string name="rename">Omdøbe</string>
   <string name="save_as_playlist">Gemme som spille liste...</string>
   <string name="add_to_playlist">Tilføje til spille liste...</string>
+  <string name="add_to_homescreen">Tilføje til startskærm...</string>
   <string name="add_to">Tilføje til...</string>
   <string name="playlist">Spille liste</string>
   <string name="homescreen">Startskærm</string>
   <string name="add_to_favorites">Tilføje til favoritter</string>
+  <string name="remove_from_favorites">Fjerne fra favoritter</string>
   <string name="playlist_favorites">Favoritter</string>
   <string name="new_playlist">Ny spille liste</string>
   <string name="expand">Udvide</string>
+  <string name="expand_or_play_all">Udvide eller afspil alle</string>
   <string name="delete">Slette</string>
   <string name="playback_view">Afspiller nu</string>
   <string name="sort_by">Sortere efter</string>
   <string name="search">Søge</string>
+  <string name="done">Færdig</string>
   <string name="remove">Fjerne</string>
   <string name="open">Åbne</string>
   <string name="go_home">Hjemme bibliotek</string>
@@ -74,6 +81,7 @@
   <string name="folder">Mappe</string>
   <string name="filename">Filnavn</string>
   <string name="file_size">Fil størrelse</string>
+  <string name="file_time">Ændret tid</string>
   <string name="extension">Fil endelse</string>
   <string name="unknown">Ukendt</string>
   <string name="play_all">Afspille alle</string>
@@ -85,11 +93,35 @@
   <string name="title">Titel</string>
   <string name="number_of_tracks">Antal numre</string>
   <string name="year">År</string>
+  <string name="date_added">Dato tilføjet</string>
+  <string name="artist_album">Kunstner, album</string>
+  <string name="artist_year_album">Kunstner, år, album</string>
+  <string name="artist_album_track">Kunstner, album, nummer</string>
+  <string name="artist_album_title">Kunstner, album, titel</string>
+  <string name="artist_year">Kunstner, år</string>
+  <string name="album_track">Album, nummer</string>
+  <string name="song_playcount">Afspilningsantal</string>
   <!--Preferences-->
+  <plurals name="seconds">
+    <item quantity="one">%d sekund</item>
+    <item quantity="other">%d sekunder</item>
+  </plurals>
+  <plurals name="minutes">
+    <item quantity="one">%d minut</item>
+    <item quantity="other">%d minutter</item>
+  </plurals>
+  <plurals name="hours">
+    <item quantity="one">%d time</item>
+    <item quantity="other">%d timer</item>
+  </plurals>
   <string name="audio">Lyd</string>
+  <string name="volume_during_ducking_title">Lydstyrke under påmindelse</string>
+  <string name="volume_during_ducking_summary">Afspil lydstyrke</string>
   <string name="replaygain_preamp_note_title">Bemærk</string>
   <string name="readahead">Aktivere indlæse forud</string>
+  <string name="cycle_continuous_shuffling">Blande løbende</string>
   <string name="notifications">Påmindelser</string>
+  <string name="playback_screen">Afspille skærm</string>
   <string name="playback_on_startup_title">Åbne ved opstart</string>
   <string name="display_mode_title">Vise tilstand</string>
   <string name="library_screen">Bibliotek skærm</string>
@@ -97,13 +129,16 @@
   <string name="shake_action_title">Ryste handling</string>
   <string name="theme">Tema</string>
   <string name="disable_lockscreen_title">Deaktivere låseskærm</string>
+  <string name="keep_screen_on_title">Hold skærm tændt</string>
   <string name="idle_timeout_title">Tomgangs tidsudløb</string>
   <string name="help">Hjælp</string>
   <string name="about">Om</string>
   <string name="tabs">Faneblad sortering</string>
   <string name="restore_default">Gendanne standard</string>
   <!--The following are for the list preferences-->
+  <string name="last_used_action">Seneste udførte handling</string>
   <string name="never_show">Vis aldrig</string>
+  <string name="always_show">Vis altid</string>
   <string name="do_nothing">Gør ingenting</string>
   <string name="open_library">Åbne bibliotek</string>
   <string name="play_pause">Afspille/Pause</string>
@@ -115,16 +150,49 @@
   <string name="more_from_current">Mere fra...</string>
   <string name="empty_the_queue">Tømme kø</string>
   <string name="show_queue">Vise kø</string>
+  <string name="hide_queue">Gemme kø</string>
+  <string name="preferences_action_show_queue">Vise kø</string>
+  <string name="preferences_action_clear_queue">Rydde kø</string>
+  <string name="preferences_action_enqueue_current_album">Sæt album i kø</string>
+  <string name="preferences_action_enqueue_current_artist">Sæt kunstner i kø</string>
+  <string name="preferences_action_enqueue_current_genre">Sæt genre i kø</string>
+  <string name="jump_to_time">Hop til tid</string>
+  <string name="time_separator">:</string>
+  <string name="hour_hint">TT</string>
+  <string name="minute_hint">MM</string>
+  <string name="second_hint">SS</string>
+  <string name="error_invalid_position">Ugyldig position</string>
+  <string name="select">Vælge</string>
+  <string name="save">Gemme</string>
+  <string name="autoplaylist_playcounts_name" formatted="false">Øverst %d</string>
+  <string name="playlist_sync_disabled">Deaktiveret</string>
+  <string name="reverse_sort">Omvendt sortering</string>
+  <string name="share">Dele...</string>
+  <string name="share_failed">Fildeling mislykket</string>
+  <string name="sendto">Sende til...</string>
+  <string name="duration">Længde</string>
+  <string name="media_library">Medie bibliotek</string>
+  <string name="media_scan_header">Medie skanner</string>
+  <string name="media_scan_start">Starte skanning</string>
+  <string name="media_statistics">Statistikker</string>
+  <string name="media_stats_tracks">Antal numre</string>
   <!--Folder selector-->
   <string name="folder_include">Inkludere</string>
   <string name="folder_exclude">Ekskludere</string>
   <string name="folder_neutral">Neutral</string>
   <!--Plugin system-->
   <string name="plugins">Udvidelses moduler</string>
+  <string name="plugin_needs_upgrade">Opgradere udvidelses modul %s til seneste version</string>
   <!--Theme names-->
   <string name="theme_name_standard_light">Standard</string>
-  <string name="theme_name_standard_dark">Standard (Mørk)</string>
+  <string name="theme_name_standard_dark">Standard (mørk)</string>
   <string name="theme_name_grey_light">Grå</string>
-  <string name="theme_name_blue_dark">Blå (Mørk)</string>
+  <string name="theme_name_grey_dark">Grå (mørk)</string>
+  <string name="theme_name_orange_light">Orange</string>
+  <string name="theme_name_orange_dark">Orange (mørk)</string>
+  <string name="theme_name_blue_light">Blå</string>
+  <string name="theme_name_blue_dark">Blå (mørk)</string>
   <string name="theme_name_red_light">Rød</string>
+  <string name="theme_name_red_dark">Rød (mørk)</string>
+  <string name="theme_name_amoled_dark">Kulsort (AMOLED)</string>
 </resources>
