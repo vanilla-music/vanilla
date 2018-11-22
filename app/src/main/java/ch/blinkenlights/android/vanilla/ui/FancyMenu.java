@@ -25,26 +25,23 @@ package ch.blinkenlights.android.vanilla.ui;
 import ch.blinkenlights.android.vanilla.R;
 import ch.blinkenlights.android.vanilla.ThemeHelper;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.ListPopupWindow;
 import android.widget.TextView;
 import android.widget.ImageView;
+import android.util.DisplayMetrics;
 
 import java.util.ArrayList;
-import android.util.Log;
 
 
-public class FancyMenu extends DialogFragment
-	implements DialogInterface.OnClickListener {
+public class FancyMenu {
 	/**
 	 * Title to use for this FancyMenu
 	 */
@@ -61,10 +58,6 @@ public class FancyMenu extends DialogFragment
 	 * List of all items and possible children
 	 */
 	private ArrayList<ArrayList<FancyMenuItem>> mItems;
-	/**
-	 * The built adapter used by the visible dialog
-	 */
-	private FancyMenu.Adapter mAdapter;
 	/**
 	 * The callback interface to implement
 	 */
@@ -108,10 +101,11 @@ public class FancyMenu extends DialogFragment
 	/**
 	 * Adds a new item to the menu
 	 *
-	 * @param id the id which identifies this object.
+	 * @param id the id which identifies this object
 	 * @param order how to sort this item
 	 * @param drawable icon drawable to use
 	 * @param text string label
+	 * @return a new FancyMenuItem
 	 */
 	public FancyMenuItem add(int id, int order, int drawable, CharSequence text) {
 		return addInternal(id, order, drawable, text, false);
@@ -121,11 +115,22 @@ public class FancyMenu extends DialogFragment
 	 * Adds a new spacer item
 	 *
 	 * @param order how to sort this item
+	 * @return a new FancyMenuItem
 	 */
 	public FancyMenuItem addSpacer(int order) {
 		return addInternal(0, order, 0, null, true);
 	}
 
+	/**
+	 * Internal add implementation
+	 *
+	 * @param id the id which identifies the object
+	 * @param order how to sort this item
+	 * @param icon the icon resource to use
+	 * @param text the text label to display
+	 * @param spacer whether or not this is a spacer
+	 * @return a new FancyMenuItem
+	 */
 	private FancyMenuItem addInternal(int id, int order, int icon, CharSequence text, boolean spacer) {
 		FancyMenuItem item = new FancyMenuItem(mContext, id)
 			.setIcon(icon)
@@ -140,45 +145,99 @@ public class FancyMenu extends DialogFragment
 	}
 
 	/**
-	 * Called when this dialog is about to be shown.
+	 * Creates an Adapter from a nested ArrayList
+	 *
+	 * @param items the nested list containing the items
+	 * @return the new adapter
 	 */
-	@Override
-	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-
+	private Adapter assembleAdapter(ArrayList<ArrayList<FancyMenuItem>> items) {
+	    final Adapter adapter = new Adapter(mContext, 0);
 		// spacers look awful on holo themes
 		final boolean usesSpacers = !ThemeHelper.usesHoloTheme();
-
-		// The adaper will back this list
-		mAdapter = new FancyMenu.Adapter(mContext, 0);
-		for (ArrayList<FancyMenuItem> sub : mItems) {
+		for (ArrayList<FancyMenuItem> sub : items) {
 			for (FancyMenuItem item : sub ) {
 				if (usesSpacers || !item.isSpacer()) {
-					mAdapter.add(item);
+					adapter.add(item);
 				}
 			}
 		}
-
-		AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-		builder.setTitle(mTitle)
-			.setAdapter(mAdapter, this);
-
-		return builder.create();
+		return adapter;
 	}
 
 	/**
-	 * Callback for click events on the displayed dialog
+	 * Measures the predicted total height and max width of given adapter.
+	 *
+	 * @param adapter the adapter to measure
+	 * @param result int array with two elements. 0 is the max height, 1 the longest width.
 	 */
-	@Override
-	public void onClick(DialogInterface dialog, int which) {
-		dialog.dismiss();
-
-		FancyMenuItem item = mAdapter.getItem(which);
-		if (!item.isSpacer()) {
-			mCallback.onFancyItemSelected(item);
+	private void measureAdapter(Adapter adapter, int[] result) {
+		result[0] = 0;
+		result[1] = 0;
+		for (int i = 0; i < adapter.getCount(); i++) {
+			View view = adapter.getView(i, null, null);
+			view.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+						 View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+			result[0] += view.getMeasuredHeight();
+			if (result[1] < view.getMeasuredWidth()) {
+				result[1] = view.getMeasuredWidth();
+			}
 		}
 	}
 
+	/**
+	 * Calculate the height that should be used for the menu
+	 *
+	 * @param the estimated height
+	 * @return the height to use instead of the input
+	 */
+	private int getMenuHeight(int suggested) {
+		DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
+		int maxHeight = (int)((float)metrics.heightPixels * 0.35);
+		return (suggested > maxHeight ? maxHeight : ListPopupWindow.WRAP_CONTENT);
+	}
+
+	public void show(View parent) {
+		show(parent, Float.NaN, Float.NaN);
+	}
+
+	/**
+	 * Show the assembled fancy menu
+	 *
+	 * @param the parent view to use as anchor
+	 * @param x x-coord position hint
+	 * @param y y-coord position hint
+	 */
+	public void show(View parent, float x, float y) {
+		final ListPopupWindow pw = new ListPopupWindow(mContext);
+		final Adapter adapter = assembleAdapter(mItems);
+		AdapterView.OnItemClickListener listener = new AdapterView.OnItemClickListener() {
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
+					FancyMenuItem item = adapter.getItem(pos);
+					if (!item.isSpacer()) {
+						mCallback.onFancyItemSelected(item);
+					}
+					pw.dismiss();
+				}
+			};
+
+		int result[] = new int[2];
+		measureAdapter(adapter, result);
+		pw.setHeight(getMenuHeight(result[0]));
+		pw.setWidth(result[1]);
+
+		pw.setAdapter(adapter);
+		pw.setOnItemClickListener(listener);
+		pw.setModal(true);
+		pw.setAnchorView(parent);
+
+		if (!Float.isNaN(x) && !Float.isNaN(y)) {
+			parent.getLocationInWindow(result);
+			pw.setHorizontalOffset((int)x - result[0]);
+		}
+
+		pw.show();
+	}
 
 	/**
 	 * Adapter class backing all menu entries

@@ -23,6 +23,8 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import ch.blinkenlights.android.vanilla.ext.CoordClickListener;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -50,7 +52,7 @@ public class LibraryPagerAdapter
 	extends PagerAdapter
 	implements Handler.Callback
 	         , ViewPager.OnPageChangeListener
-	         , AdapterView.OnItemLongClickListener
+	         , CoordClickListener.Callback
 	         , AdapterView.OnItemClickListener
 {
 	/**
@@ -323,11 +325,12 @@ public class LibraryPagerAdapter
 				throw new IllegalArgumentException("Invalid media type: " + type);
 			}
 
+			CoordClickListener ccl = new CoordClickListener(this);
 			view = (ListView)inflater.inflate(R.layout.listview, null);
-			view.setOnItemLongClickListener(this);
+			ccl.registerForOnItemLongClickListener(view);
 			view.setOnItemClickListener(this);
-
 			view.setTag(type);
+
 			if (header != null) {
 				header.setText(mHeaderText);
 				header.setTag(new ViewHolder()); // behave like a normal library row
@@ -859,17 +862,19 @@ public class LibraryPagerAdapter
 	 * @param view the long clicked view
 	 * @param position row position
 	 * @param id id of the long clicked row
+	 * @param x x-coords of event
+	 * @param y y-coords of event
 	 *
 	 * @return true if the event was consumed
 	 */
-	public boolean onItemLongClick (AdapterView<?> parent, View view, int position, long id) {
+	public boolean onItemLongClickWithCoords (AdapterView<?> parent, View view, int position, long id, float x, float y) {
 		Intent intent = id == LibraryAdapter.HEADER_ID ? createHeaderIntent(view) : mCurrentAdapter.createData(view);
 		int type = (Integer)((View)view.getParent()).getTag();
 
 		if (type == MediaUtils.TYPE_FILE) {
-			return mFilesAdapter.onCreateFancyMenu(intent);
+			return mFilesAdapter.onCreateFancyMenu(intent, view, x, y);
 		}
-		return mActivity.onCreateFancyMenu(intent);
+		return mActivity.onCreateFancyMenu(intent, view, x, y);
 	}
 
 	@Override

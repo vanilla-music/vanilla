@@ -207,7 +207,6 @@ public class PlaylistActivity extends Activity
 		intent.putExtra("audioId", holder.id);
 
 		FancyMenu fm = new FancyMenu(this, this);
-		fm.show(getFragmentManager(), "PlaylistActivityContext");
 		fm.setHeaderTitle(holder.title);
 
 		fm.add(MENU_PLAY, 0, R.drawable.menu_play, R.string.play).setIntent(intent);
@@ -221,6 +220,7 @@ public class PlaylistActivity extends Activity
 		fm.addSpacer(0);
 		fm.add(MENU_SHOW_DETAILS, 0, R.drawable.menu_details, R.string.details).setIntent(intent);
 		fm.add(MENU_REMOVE, 0, R.drawable.menu_remove, R.string.remove).setIntent(intent);
+		fm.show(view);
 		return true;
 	}
 

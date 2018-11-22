@@ -108,7 +108,6 @@ public class ShowQueueFragment extends Fragment
 		intent.putExtra("position", pos);
 
 		FancyMenu fm = new FancyMenu(getActivity(), this);
-		fm.show(getFragmentManager(), "ShowQueueFragmentContext");
 		fm.setHeaderTitle(song.title);
 
 		fm.add(CTX_MENU_PLAY, 0, R.drawable.menu_play, R.string.play).setIntent(intent);
@@ -122,6 +121,7 @@ public class ShowQueueFragment extends Fragment
 		fm.addSpacer(0);
 		fm.add(CTX_MENU_SHOW_DETAILS, 0, R.drawable.menu_details, R.string.details).setIntent(intent);
 		fm.add(CTX_MENU_REMOVE, 90, R.drawable.menu_remove, R.string.remove).setIntent(intent);
+		fm.show(view);
 		return true;
 	}
 
