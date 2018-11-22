@@ -397,13 +397,14 @@ public final class CoverBitmap {
 		Canvas canvas = new Canvas(bitmap);
 		Paint paint = new Paint();
 
-		/* cubetronic's note: Do not pick a semi-random color. Use gray.
+		/* cubetronic's note: Do not pick a semi-random color.
 		// Picks a semi-random color from tiles_colors.xml
 		TypedArray colors = context.getResources().obtainTypedArray(R.array.letter_tile_colors);
 		int color = colors.getColor(Math.abs(title.hashCode()) % colors.length(), 0);
 		colors.recycle();
+		paint.setColor(color);
 		*/
-		paint.setColor(GRAY); // cubetronic's note: This was "paint.setColor(color);"
+		paint.setColor(GRAY); // cubetronic's note: Always use gray.
 
 		paint.setStyle(Paint.Style.FILL);
 		canvas.drawPaint(paint);
