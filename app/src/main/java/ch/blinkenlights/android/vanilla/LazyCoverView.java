@@ -152,8 +152,13 @@ public class LazyCoverView extends ImageView
 						}
 					}
 					if (bitmap == null) {
+						/* cubetronic's note: Do not return a failback.
 						// item has no cover: return a failback
 						bitmap = sFallbackBitmap;
+						*/
+
+						// cubetronic's note: If no original artwork, then do not draw anything.
+						return false;
 					}
 				}
 				// bitmap is non null: store in LRU cache and draw it
