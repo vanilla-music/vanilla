@@ -196,10 +196,6 @@ public class FancyMenu {
 		return (suggested > maxHeight ? maxHeight : ListPopupWindow.WRAP_CONTENT);
 	}
 
-	public void show(View parent) {
-		show(parent, Float.NaN, Float.NaN);
-	}
-
 	/**
 	 * Show the assembled fancy menu
 	 *

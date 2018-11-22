@@ -25,6 +25,7 @@ package ch.blinkenlights.android.vanilla;
 
 import ch.blinkenlights.android.vanilla.ui.FancyMenu;
 import ch.blinkenlights.android.vanilla.ui.FancyMenuItem;
+import ch.blinkenlights.android.vanilla.ext.CoordClickListener;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -50,7 +51,7 @@ import com.mobeta.android.dslv.DragSortListView;
 public class PlaylistActivity extends Activity
 	implements View.OnClickListener
 			   , AbsListView.OnItemClickListener
-			   , AbsListView.OnItemLongClickListener
+			   , CoordClickListener.Callback
 			   , DialogInterface.OnClickListener
 			   , DragSortListView.DropListener
 			   , DragSortListView.RemoveListener
@@ -109,9 +110,10 @@ public class PlaylistActivity extends Activity
 
 		setContentView(R.layout.playlist_activity);
 
+		CoordClickListener ccl = new CoordClickListener(this);
 		DragSortListView view = (DragSortListView)findViewById(R.id.list);
+		ccl.registerForOnItemLongClickListener(view);
 		view.setOnItemClickListener(this);
-		view.setOnItemLongClickListener(this);
 		view.setDropListener(this);
 		view.setRemoveListener(this);
 		mListView = view;
@@ -199,7 +201,7 @@ public class PlaylistActivity extends Activity
 	private static final int MENU_SHOW_DETAILS = -2;
 
 	@Override
-	public boolean onItemLongClick(AdapterView<?> parent, View view, int pos, long id) {
+	public boolean onItemLongClickWithCoords(AdapterView<?> parent, View view, int pos, long id, float x, float y) {
 		ViewHolder holder = (ViewHolder)view.findViewById(R.id.text).getTag();
 		Intent intent = new Intent();
 		intent.putExtra("id", id);
@@ -220,7 +222,7 @@ public class PlaylistActivity extends Activity
 		fm.addSpacer(0);
 		fm.add(MENU_SHOW_DETAILS, 0, R.drawable.menu_details, R.string.details).setIntent(intent);
 		fm.add(MENU_REMOVE, 0, R.drawable.menu_remove, R.string.remove).setIntent(intent);
-		fm.show(view);
+		fm.show(view, x, y);
 		return true;
 	}
 
