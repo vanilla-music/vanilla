@@ -142,7 +142,14 @@ public class LazyCoverView extends ImageView
 							bitmap = song.getSmallCover(mContext);
 						}
 					} else {
+						/* cubetronic's note: Do not generate a placeholder for Artists.
 						bitmap = CoverBitmap.generatePlaceholderCover(mContext, CoverCache.SIZE_SMALL, CoverCache.SIZE_SMALL, payload.title);
+						*/
+
+						// cubetronic's note: Instead, just don't draw anything for Artists.
+						if (payload.key.mediaType == MediaUtils.TYPE_ARTIST) {
+							return false;
+						}
 					}
 					if (bitmap == null) {
 						// item has no cover: return a failback
