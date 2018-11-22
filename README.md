@@ -1,3 +1,8 @@
+Cubetronic's Vanilla Music
+==========================
+This version aims to provide a cleaner, quieter user interface.
+* Artist Tiles are now gray instead of semi-random colors
+
 Vanilla Music
 =====================
 
