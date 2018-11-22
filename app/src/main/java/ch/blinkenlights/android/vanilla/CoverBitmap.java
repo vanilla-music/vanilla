@@ -38,6 +38,8 @@ import android.graphics.Shader;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 
+import static android.graphics.Color.GRAY; // cubetronic's note: Needed for "paint.setColor(GRAY)"
+
 /**
  * Class containing utility functions to create Bitmaps display song info and
  * album art.
@@ -395,11 +397,13 @@ public final class CoverBitmap {
 		Canvas canvas = new Canvas(bitmap);
 		Paint paint = new Paint();
 
+		/* cubetronic's note: Do not pick a semi-random color. Use gray.
 		// Picks a semi-random color from tiles_colors.xml
 		TypedArray colors = context.getResources().obtainTypedArray(R.array.letter_tile_colors);
 		int color = colors.getColor(Math.abs(title.hashCode()) % colors.length(), 0);
 		colors.recycle();
-		paint.setColor(color);
+		*/
+		paint.setColor(GRAY); // cubetronic's note: This was "paint.setColor(color);"
 
 		paint.setStyle(Paint.Style.FILL);
 		canvas.drawPaint(paint);
