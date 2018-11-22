@@ -206,7 +206,7 @@
   <string name="use_idle_timeout_summary">Falls aktiviert, wird die Wiedergabe nach der angegebenen Inaktivitätsdauer angehalten</string>
   <string name="idle_timeout_title">Inaktivitätsdauer</string>
   <string name="enable_scroll_to_song_title">Zum Titelnamen scrollen</string>
-  <string name="enable_scroll_to_song_summary">In Bibliothekslisten zum aktuell wiedergegeben Titel/Album/Interpreten scrollen</string>
+  <string name="enable_scroll_to_song_summary">In Bibliothekslisten zum gerade wiedergegebenen Titel/Album/Interpreten scrollen</string>
   <string name="queue_enable_scroll_to_song_title">Zu Titelname in Warteschlange scrollen</string>
   <string name="queue_enable_scroll_to_song_summary">Bei Titelwechsel zum derzeit wiedergegebenen Titel in der Warteschlange scrollen</string>
   <string name="coverloader_android_title">Albumcover von Android verwenden</string>
