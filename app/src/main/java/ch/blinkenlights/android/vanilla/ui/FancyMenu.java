@@ -238,8 +238,7 @@ public class FancyMenu {
 		pw.setAnchorView(parent);
 
 		if (!Float.isNaN(x) && !Float.isNaN(y)) {
-			parent.getLocationInWindow(result);
-			pw.setHorizontalOffset((int)x - result[0]);
+			pw.setHorizontalOffset((int)x);
 		}
 
 		pw.show();
