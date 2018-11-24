@@ -188,6 +188,31 @@ public class FancyMenu {
 	}
 
 	/**
+	 * Return whether the given ListPopupWindow will show above or below
+	 * the anchor view.
+	 *
+	 * @param pw the list popup window
+	 * @return -1 if the ListPopupWindow shows below, 1 if is shows above
+	 */
+	private int getPopupOrientation(ListPopupWindow pw) {
+		return (pw.getHeight() > getAvailableBottomSpace(pw.getAnchorView()) ? 1 : -1);
+	}
+
+	/**
+	 * Calculates the available space from the top corner of the give view
+	 * to the bottom of the display
+	 *
+	 * @param view the view to measure
+	 * @return amount of available pixels
+	 */
+	private int getAvailableBottomSpace(View view) {
+		DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
+		int pos[] = new int[2];
+		view.getLocationInWindow(pos);
+		return (metrics.heightPixels - pos[1] - view.getHeight());
+	}
+
+	/**
 	 * Calculate the height that should be used for the menu
 	 *
 	 * @param the estimated height
@@ -195,14 +220,9 @@ public class FancyMenu {
 	 */
 	private int getMenuHeight(View parent, int suggested) {
 		DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
-		int pos[] = new int[2];
-		// Don't calculate a size which is less than 20% of the screen space
-		// (unless the menu is smaller than that)
-		int min = metrics.heightPixels / 5;
-
-		parent.getLocationInWindow(pos);
-		int available = metrics.heightPixels - pos[1] - parent.getHeight();
-		available = Math.max(available, min);
+		// Never return a menu height smaller than 25% (unless the menu is smaller)
+		int min = metrics.heightPixels / 4;
+		int available = Math.max(getAvailableBottomSpace(parent), min);
 		return Math.min(available, suggested);
 	}
 
@@ -240,6 +260,9 @@ public class FancyMenu {
 		if (!Float.isNaN(x) && !Float.isNaN(y)) {
 			pw.setHorizontalOffset((int)x);
 		}
+
+		int voff = parent.getHeight() / 5 * getPopupOrientation(pw);
+		pw.setVerticalOffset(voff);
 
 		pw.show();
 	}
