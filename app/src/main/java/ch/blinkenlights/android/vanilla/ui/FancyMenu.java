@@ -193,10 +193,17 @@ public class FancyMenu {
 	 * @param the estimated height
 	 * @return the height to use instead of the input
 	 */
-	private int getMenuHeight(int suggested) {
+	private int getMenuHeight(View parent, int suggested) {
 		DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
-		int maxHeight = (int)((float)metrics.heightPixels * 0.35);
-		return (suggested > maxHeight ? maxHeight : ListPopupWindow.WRAP_CONTENT);
+		int pos[] = new int[2];
+		// Don't calculate a size which is less than 20% of the screen space
+		// (unless the menu is smaller than that)
+		int min = metrics.heightPixels / 5;
+
+		parent.getLocationInWindow(pos);
+		int available = metrics.heightPixels - pos[1] - parent.getHeight();
+		available = Math.max(available, min);
+		return Math.min(available, suggested);
 	}
 
 	/**
@@ -222,7 +229,7 @@ public class FancyMenu {
 
 		int result[] = new int[2];
 		measureAdapter(adapter, result);
-		pw.setHeight(getMenuHeight(result[0]));
+		pw.setHeight(getMenuHeight(parent, result[0]));
 		pw.setWidth(result[1]);
 
 		pw.setAdapter(adapter);
