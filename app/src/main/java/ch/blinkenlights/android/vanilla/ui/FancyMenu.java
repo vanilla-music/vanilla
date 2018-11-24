@@ -38,6 +38,7 @@ import android.widget.TextView;
 import android.widget.ImageView;
 import android.util.DisplayMetrics;
 
+import java.lang.Math;
 import java.util.ArrayList;
 
 
@@ -173,14 +174,16 @@ public class FancyMenu {
 	private void measureAdapter(Adapter adapter, int[] result) {
 		result[0] = 0;
 		result[1] = 0;
+		ListView parent = new ListView(mContext);
 		for (int i = 0; i < adapter.getCount(); i++) {
-			View view = adapter.getView(i, null, null);
-			view.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-						 View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-			result[0] += view.getMeasuredHeight();
-			if (result[1] < view.getMeasuredWidth()) {
-				result[1] = view.getMeasuredWidth();
-			}
+			View view = adapter.getView(i, null, parent);
+			view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+			ViewGroup.LayoutParams lp = view.getLayoutParams();
+			// MATCH_PARENT, FILL_PARENT are negative, so prefer real values if available:
+			int height = Math.max(view.getMeasuredHeight(), lp.height);
+			int width = Math.max(view.getMeasuredWidth(), lp.width);
+			result[0] += height;
+			result[1] = Math.max(result[1], width);
 		}
 	}
 
