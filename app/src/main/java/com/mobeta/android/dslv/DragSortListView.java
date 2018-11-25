@@ -530,7 +530,8 @@ public class DragSortListView extends ListView {
                 controller.setBackgroundColor(bgColor);
 
                 mFloatViewManager = controller;
-                setOnTouchListener(controller);
+                // must register this on ListView (super), not 'this'.
+                super.setOnTouchListener(controller);
             }
 
             a.recycle();
@@ -568,6 +569,18 @@ public class DragSortListView extends ListView {
                 cancel();
             }
         };
+    }
+
+    /**
+     * DragSortListView registers the the controler as an onTouch listener.
+     * We implement this method to ensure that users of this listview can also
+     * register their own onTouch listener without disabling our own registration.
+     */
+    @Override
+    public void setOnTouchListener(View.OnTouchListener l) {
+        if (mFloatViewManager != null) {
+            mFloatViewManager.setSecondaryOnTouchListener(l);
+        }
     }
 
     /**
@@ -2468,6 +2481,11 @@ public class DragSortListView extends ListView {
          * {@link #onCreateFloatView(int)}.
          */
         public void onDestroyFloatView(View floatView);
+
+        /**
+         * Register a class which will get onTouch events.
+         */
+        public void setSecondaryOnTouchListener(View.OnTouchListener l);
     }
 
     public void setFloatViewManager(FloatViewManager manager) {
