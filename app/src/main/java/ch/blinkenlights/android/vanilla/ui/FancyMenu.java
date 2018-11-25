@@ -219,6 +219,11 @@ public class FancyMenu {
 	 * @return the height to use instead of the input
 	 */
 	private int getMenuHeight(View parent, int suggested) {
+		if (ThemeHelper.usesHoloTheme()) {
+			// No height enforced on Holo as it does stupid stuff.
+			return ListPopupWindow.WRAP_CONTENT;
+		}
+
 		DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
 		// Never return a menu height smaller than 25% (unless the menu is smaller)
 		int min = metrics.heightPixels / 4;
@@ -261,8 +266,12 @@ public class FancyMenu {
 			pw.setHorizontalOffset((int)x);
 		}
 
-		int voff = parent.getHeight() / 5 * getPopupOrientation(pw);
-		pw.setVerticalOffset(voff);
+		if (pw.getHeight() > 0) {
+			// Add an offset (to slightly overlap the parent) if we have a
+			// fixed height (and therefore can predict the popup orientation)
+			int voff = parent.getHeight() / 5 * getPopupOrientation(pw);
+			pw.setVerticalOffset(voff);
+		}
 
 		pw.show();
 	}
