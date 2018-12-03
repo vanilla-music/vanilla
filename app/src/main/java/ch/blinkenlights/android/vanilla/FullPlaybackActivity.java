@@ -23,6 +23,8 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import ch.blinkenlights.android.medialibrary.LibraryObserver;
+import ch.blinkenlights.android.medialibrary.MediaLibrary;
 import ch.blinkenlights.android.medialibrary.MediaMetadataExtractor;
 
 import java.util.ArrayList;
@@ -86,6 +88,29 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 	 * The currently playing song.
 	 */
 	private Song mCurrentSong;
+
+	/**
+	 * Observer for tracking library changes. In case currently playing song (or sibling) changes on device,
+	 * we need to update its image and metadata.
+	 */
+	private LibraryObserver mObserver = new LibraryObserver() {
+		@Override
+		public void onChange(Type type, long id, boolean ongoing) {
+			// not interested in ongoing scans
+			if (ongoing || type != Type.SONG)
+				return;
+
+			// scan is finished, refresh current song
+			runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					Song current = PlaybackService.get(FullPlaybackActivity.this).getSong(0);
+					onSongChange(current, true);
+				}
+			});
+
+		}
+	};
 
 	private String mGenre;
 	private TextView mGenreView;
@@ -165,8 +190,16 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 
 		bindControlButtons();
 
+		MediaLibrary.registerLibraryObserver(mObserver);
+
 		setControlsVisible(settings.getBoolean(PrefKeys.VISIBLE_CONTROLS, PrefDefaults.VISIBLE_CONTROLS));
 		setExtraInfoVisible(settings.getBoolean(PrefKeys.VISIBLE_EXTRA_INFO, PrefDefaults.VISIBLE_EXTRA_INFO));
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		MediaLibrary.unregisterLibraryObserver(mObserver);
 	}
 
 	@Override
@@ -241,7 +274,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 	}
 
 	@Override
-	protected void onSongChange(Song song) {
+	protected void onSongChange(Song song, boolean force) {
 		if (mTitle != null) {
 			if (song == null) {
 				mTitle.setText(null);
@@ -264,7 +297,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 		if (mExtraInfoVisible) {
 			mHandler.sendEmptyMessage(MSG_LOAD_EXTRA_INFO);
 		}
-		super.onSongChange(song);
+		super.onSongChange(song, force);
 	}
 
 	/**

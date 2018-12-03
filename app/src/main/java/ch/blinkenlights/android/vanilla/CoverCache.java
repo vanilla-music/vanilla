@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>. 
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package ch.blinkenlights.android.vanilla;
@@ -137,6 +137,20 @@ public class CoverCache {
 	 */
 	private void storeCover(CoverKey key, Bitmap cover) {
 		sBitmapDiskCache.put(key, cover);
+	}
+
+	/**
+	 * Evicts cached entries for specified song from the on-disk cache.
+	 * Next call to {@link #getCoverFromSong(Context, Song, int)} will re-extract it.
+	 * @param song song to clear cache for
+	 */
+	public static void evictForSong(Song song) {
+		int evictCounter = 0;
+		CoverKey small = new CoverCache.CoverKey(MediaUtils.TYPE_ALBUM, song.albumId, SIZE_SMALL);
+		evictCounter += sBitmapDiskCache.evict(small);
+		CoverKey large = new CoverCache.CoverKey(MediaUtils.TYPE_ALBUM, song.albumId, SIZE_LARGE);
+		evictCounter += sBitmapDiskCache.evict(large);
+		Log.d("VanillaMusic", "Evicted " + evictCounter + " entries from cover cache for song " + song);
 	}
 
 	/**
@@ -384,6 +398,19 @@ public class CoverCache {
 			}
 
 			return cover;
+		}
+
+		/**
+		 * Evict specified cover key from database, effectively invalidating cover cache.
+		 * @param key cover cache key to evict
+		 * @return number of deleted records
+		 */
+		public int evict(CoverKey key) {
+			SQLiteDatabase dbh = getWritableDatabase();
+
+			String selection = "id=?";
+			String[] selectionArgs = { Long.toString(key.hashCode()) };
+			return dbh.delete(TABLE_NAME, selection, selectionArgs);
 		}
 
 		/**

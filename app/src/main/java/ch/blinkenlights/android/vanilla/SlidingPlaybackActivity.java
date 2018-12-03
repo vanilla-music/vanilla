@@ -102,10 +102,10 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 	}
 
 	@Override
-	protected void onSongChange(Song song) {
+	protected void onSongChange(Song song, boolean force) {
 		setDuration(song == null ? 0 : song.duration);
 		updateElapsedTime();
-		super.onSongChange(song);
+		super.onSongChange(song, force);
 	}
 
 	@Override

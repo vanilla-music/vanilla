@@ -23,6 +23,7 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import android.support.annotation.Nullable;
 import ch.blinkenlights.android.medialibrary.MediaLibrary;
 import ch.blinkenlights.android.medialibrary.LibraryObserver;
 
@@ -1991,8 +1992,44 @@ public final class PlaybackService extends Service
 		{
 			MediaUtils.onMediaChange();
 			onMediaChange();
+
+			if (type == LibraryObserver.Type.SONG) {
+				refreshTimeline(id);
+			}
 		}
 	};
+
+	/**
+	 * Call this if song needs to be refreshed in timeline
+	 * @param songId id of song to refresh
+	 */
+	private void refreshTimeline(long songId) {
+		if (songId == LibraryObserver.Value.UNKNOWN || songId == LibraryObserver.Value.OUTDATED) {
+			// don't react to unknown events for now, invalidating full timeline is too costly
+			return;
+		}
+
+		Cursor cursor = MediaUtils.buildQuery(MediaUtils.TYPE_SONG, songId, Song.FILLED_PROJECTION, null).runQuery(this);
+		if (cursor == null) {
+			// couldn't build query?
+			return;
+		}
+
+		if (!cursor.moveToNext()) {
+			// empty cursor, no such song? shouldn't happen
+			cursor.close();
+			return;
+		}
+
+		// get this song from timeline, if applicable
+		Song twin = getSongById(songId);
+		if (twin != null) {
+			// this song was in timeline, refresh it from database
+			CoverCache.evictForSong(twin); // refresh cover in playback activities
+			twin.populate(cursor); // apply title/album changes
+		}
+		cursor.close();
+	}
 
 	/**
 	 * Return the PlaybackService instance, creating one if needed.
@@ -2431,9 +2468,17 @@ public final class PlaybackService extends Service
 
 	/**
 	 * Returns {@link Song} with given position from timeline or null if nothing found
-	*/
+	 */
 	public Song getSongByQueuePosition(int pos) {
 		return mTimeline.getSongByQueuePosition(pos);
+	}
+
+	/**
+	 * Returns {@link Song} with given id from timeline or null if nothing found
+	 */
+	@Nullable
+	public Song getSongById(long songId) {
+		return mTimeline.getSongById(songId);
 	}
 
 	/**

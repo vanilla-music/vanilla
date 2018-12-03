@@ -327,11 +327,12 @@ public abstract class PlaybackActivity extends Activity
 	 * Called when the current song changes.
 	 *
 	 * @param song The new song
+	 * @param force force invalidation of dependent views
 	 */
-	protected void onSongChange(Song song)
+	protected void onSongChange(Song song, boolean force)
 	{
 		if (mCoverView != null)
-			mCoverView.querySongs();
+			mCoverView.querySongs(force);
 	}
 
 	protected void setSong(final Song song)
@@ -341,7 +342,7 @@ public abstract class PlaybackActivity extends Activity
 			@Override
 			public void run()
 			{
-				onSongChange(song);
+				onSongChange(song, false);
 			}
 		});
 	}

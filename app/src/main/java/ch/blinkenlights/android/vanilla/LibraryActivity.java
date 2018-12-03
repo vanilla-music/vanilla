@@ -942,9 +942,9 @@ public class LibraryActivity
 	}
 
 	@Override
-	protected void onSongChange(Song song)
+	protected void onSongChange(Song song, boolean force)
 	{
-		super.onSongChange(song);
+		super.onSongChange(song, force);
 
 		mBottomBarControls.setSong(song);
 		if (song != null) {

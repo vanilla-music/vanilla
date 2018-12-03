@@ -330,7 +330,7 @@ public class MediaScanner implements Handler.Callback {
 	}
 
 	/**
-	 * Checks the state of the native media db to deceide if we are going to
+	 * Checks the state of the native media db to decide if we are going to
 	 * check for deleted or new/modified items
 	 */
 	private void guessQuickScanPlan() {
@@ -620,6 +620,9 @@ public class MediaScanner implements Handler.Callback {
 					mBackend.insert(MediaLibrary.TABLE_GENRES_SONGS, null, v);
 				}
 			}
+
+			// song was changed in database, send notification to listeners
+			MediaLibrary.notifyObserver(LibraryObserver.Type.SONG, songId, true);
 		} // end if (mustInsert)
 
 		Log.v("VanillaMusic", "MediaScanner: inserted "+path);

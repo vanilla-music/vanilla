@@ -38,9 +38,7 @@ import android.widget.Scroller;
 
 import java.lang.IllegalStateException;
 import java.lang.IllegalArgumentException;
-
-import android.util.Log;
-
+import java.util.Arrays;
 
 
 /**
@@ -162,10 +160,11 @@ public final class CoverView extends View implements Handler.Callback {
 	 * mCacheBitmap is stale.
 	 * Just calls querySongsInternal() via handler to ensure
 	 * that we do this in a background thread.
+	 * @param force force bitmap re-query
 	 */
-	public void querySongs() {
+	public void querySongs(boolean force) {
 		mHandler.removeMessages(MSG_QUERY_SONGS);
-		mHandler.sendEmptyMessage(MSG_QUERY_SONGS);
+		mHandler.sendMessage(mHandler.obtainMessage(MSG_QUERY_SONGS, force));
 	}
 
 	/**
@@ -174,13 +173,14 @@ public final class CoverView extends View implements Handler.Callback {
 	 * account as querySongsInternal() already tries to be efficient.
 	 */
 	public void replaceSong(int delta, Song song) {
-		querySongs();
+		querySongs(false);
 	}
 
 	/**
 	 * Called by querySongs() - this runs in a background thread.
+	 * @param force force bitmap re-query
 	 */
-	private void querySongsInternal() {
+	private void querySongsInternal(boolean force) {
 		DEBUG("querySongsInternal");
 
 		if (getWidth() < 1 || getHeight() < 1) {
@@ -201,6 +201,11 @@ public final class CoverView extends View implements Handler.Callback {
 		for (int i = 0; i < len; i++) {
 			Song song = songs[i];
 			if (mBitmapBucket.getSong(i) != song) {
+				mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_BITMAP, i, 0, song));
+			} else if (force) {
+				// force bitmap invalidation. CoverCache must be already invalidated
+				mBitmapBucket.mCacheBitmaps[i] = null;
+				mBitmapBucket.mCacheSongs[i] = null;
 				mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_BITMAP, i, 0, song));
 			}
 		}
@@ -246,7 +251,7 @@ public final class CoverView extends View implements Handler.Callback {
 	public boolean handleMessage(Message message) {
 		switch (message.what) {
 			case MSG_QUERY_SONGS:
-				querySongsInternal();
+				querySongsInternal((Boolean) message.obj);
 				break;
 			case MSG_SHIFT_SONG:
 				DEBUG("Shifting to song: "+message.arg1);
@@ -277,7 +282,7 @@ public final class CoverView extends View implements Handler.Callback {
 	protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
 		if (mPendingQuery && width != 0 && height != 0) {
 			mPendingQuery = false;
-			querySongs();
+			querySongs(false);
 		}
 	}
 

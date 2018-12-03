@@ -23,12 +23,12 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import android.support.annotation.Nullable;
 import ch.blinkenlights.android.medialibrary.MediaLibrary;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
-import android.provider.MediaStore;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -662,7 +662,7 @@ public final class SongTimeline {
 
 	/**
 	 * Returns 'Song' at given position in queue
-	*/
+	 */
 	public Song getSongByQueuePosition(int pos) {
 		Song song = null;
 		synchronized (this) {
@@ -673,7 +673,7 @@ public final class SongTimeline {
 	}
 
 	/**
-	 * Returns song position for given {@link Song.id}
+	 * Returns song position for given {@link Song#id}
 	 */
 	public int getQueuePositionForSongId(long id) {
 		synchronized (this) {
@@ -684,6 +684,20 @@ public final class SongTimeline {
 			}
 		}
 		return -1;
+	}
+
+	/**
+	 * Returns song object for given {@link Song#id}
+	 */
+	@Nullable
+	public Song getSongById(long id) {
+		synchronized (this) {
+			for (Song current: mSongs) {
+				if (current.id == id)
+					return current;
+			}
+		}
+		return null;
 	}
 
 	/**
