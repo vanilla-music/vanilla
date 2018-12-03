@@ -48,31 +48,7 @@ THE SOFTWARE.
 				android:gravity="right" />
 			<TextView android:id="@+id/replaygain" android:textColor="?overlay_foreground_color"/>
 		</TableRow>
-
-		<LinearLayout android:id="@+id/controls_top">
-			<TextView
-				android:id="@+id/elapsed"
-				android:layout_height="wrap_content"
-				android:layout_width="wrap_content"
-				android:textSize="10sp"
-				android:layout_gravity="center" />
-			<SeekBar
-				android:id="@+id/seek_bar"
-				android:layout_height="wrap_content"
-				android:layout_width="0px"
-				android:layout_gravity="center"
-				android:layout_weight="1"
-				android:minHeight="32dip"
-				android:maxHeight="32dip"
-				android:paddingLeft="18dip"
-				android:paddingRight="18dip" />
-			<TextView
-				android:id="@+id/duration"
-				android:layout_height="wrap_content"
-				android:layout_width="wrap_content"
-				android:textSize="10sp"
-				android:layout_gravity="center" />
-		</LinearLayout>
+		<include layout="@layout/seek_bar"  android:id="@+id/controls_top" />
 	</TableLayout>
 
 

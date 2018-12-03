@@ -26,38 +26,7 @@ THE SOFTWARE.
 		android:id="@+id/cover_view"
 		android:layout_height="fill_parent"
 		android:layout_width="fill_parent" />
-	<LinearLayout
-		android:id="@+id/controls_top"
-		android:layout_height="wrap_content"
-		android:layout_width="fill_parent"
-		android:layout_gravity="top"
-		android:background="?overlay_background_color"
-		android:orientation="horizontal">
-		<TextView
-			android:id="@+id/elapsed"
-			android:layout_height="wrap_content"
-			android:layout_width="wrap_content"
-			android:layout_gravity="center"
-			android:paddingLeft="5dip" />
-		<SeekBar
-			android:id="@+id/seek_bar"
-			android:layout_height="wrap_content"
-			android:layout_width="0px"
-			android:layout_gravity="center"
-			android:minHeight="32dip"
-			android:maxHeight="32dip"
-			android:paddingTop="5dip"
-			android:paddingBottom="5dip"
-			android:paddingLeft="18dip"
-			android:paddingRight="18dip"
-			android:layout_weight="1" />
-		<TextView
-			android:id="@+id/duration"
-			android:layout_height="wrap_content"
-			android:layout_width="wrap_content"
-			android:layout_gravity="center"
-			android:paddingRight="5dip" />
-	</LinearLayout>
+		<include layout="@layout/seek_bar"  android:id="@+id/controls_top" />
 
 	<ch.blinkenlights.android.vanilla.SlidingView
 		android:id="@+id/sliding_view"
