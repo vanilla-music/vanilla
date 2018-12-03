@@ -329,9 +329,7 @@ public class SlidingView extends FrameLayout
 
 		switch(event.getActionMasked()) {
 			case MotionEvent.ACTION_UP : {
-				if (mDidScroll == false) { // Dispatch event if we never scrolled
-					v.onTouchEvent(event);
-				} else {
+				if (mDidScroll) {
 					int nstages = mStages.size();
 					int tstage = 0;
 					// add the amounts of pixels we would progress in HALF of the time of the animation as a virtual progress
@@ -346,8 +344,6 @@ public class SlidingView extends FrameLayout
 				break;
 			}
 			case MotionEvent.ACTION_DOWN : {
-				v.onTouchEvent(event);
-
 				mProgressPx = 0;
 				mFlingVelocity = 0;
 				mDidScroll = false;
@@ -365,11 +361,13 @@ public class SlidingView extends FrameLayout
 				if (mProgressPx < MAX_PROGRESS) {
 					// we did not reach a minimum of progress: do not scroll yet
 					usedY = vy;
-				} else if (mDidScroll == false) {
+				} else if (!mDidScroll) {
 					mDidScroll = true;
+					// cancel this event and let the view know:
 					event.setAction(MotionEvent.ACTION_CANCEL);
 					v.onTouchEvent(event);
-					setSlaveViewStage(0); // parent can use full view, will be reset on ACTION_UP handlers
+					// parent can use full view, will be reset on ACTION_UP handlers.
+					setSlaveViewStage(0);
 				}
 
 				setTranslationY(usedY);
@@ -377,7 +375,7 @@ public class SlidingView extends FrameLayout
 			}
 		}
 		mPreviousY = y;
-		return true;
+		return mDidScroll;
 	}
 
 	class GestureListener extends GestureDetector.SimpleOnGestureListener {
