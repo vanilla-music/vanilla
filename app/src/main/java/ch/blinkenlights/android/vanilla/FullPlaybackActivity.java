@@ -57,7 +57,6 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 	public static final int DISPLAY_INFO_WIDGETS = 2;
 
 	private TextView mOverlayText;
-	private View mControlsTop;
 
 	private TableLayout mInfoTable;
 	private TextView mQueuePosView;
@@ -154,7 +153,6 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 		mAlbum = (TextView)findViewById(R.id.album);
 		mArtist = (TextView)findViewById(R.id.artist);
 
-		mControlsTop = findViewById(R.id.controls_top);
 		mQueuePosView = (TextView)findViewById(R.id.queue_pos);
 
 		mGenreView = (TextView)findViewById(R.id.genre);
@@ -475,7 +473,6 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 	private void setControlsVisible(boolean visible)
 	{
 		int mode = visible ? View.VISIBLE : View.GONE;
-		mControlsTop.setVisibility(mode);
 		mSlidingView.setVisibility(mode);
 		mControlsVisible = visible;
 
@@ -503,9 +500,9 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 			((TextView)row.getChildAt(1)).setSingleLine(singleLine);
 		}
 		// toggle visibility of all but the first three rows (the title/artist/
-		// album rows) and the last row (the seek bar)
+		// album rows)
 		int visibility = visible ? View.VISIBLE : View.GONE;
-		for (int i = table.getChildCount() - 1; --i != 2; ) {
+		for (int i = table.getChildCount() - 1; i > 2 ; i--) {
 			table.getChildAt(i).setVisibility(visibility);
 		}
 		mExtraInfoVisible = visible;

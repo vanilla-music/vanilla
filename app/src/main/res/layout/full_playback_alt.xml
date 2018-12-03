@@ -48,7 +48,6 @@ THE SOFTWARE.
 				android:gravity="right" />
 			<TextView android:id="@+id/replaygain" android:textColor="?overlay_foreground_color"/>
 		</TableRow>
-		<include layout="@layout/seek_bar"  android:id="@+id/controls_top" />
 	</TableLayout>
 
 
@@ -61,7 +60,13 @@ THE SOFTWARE.
 		android:orientation="horizontal"
 		vanilla:slider_handle_id="@+id/queue_slider">
 
-			<include layout="@layout/controls" android:id="@+id/queue_slider"/>
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical">
+					<include layout="@layout/seek_bar" />
+					<include layout="@layout/controls" android:id="@+id/queue_slider" />
+			</LinearLayout>
 
 			<fragment class="ch.blinkenlights.android.vanilla.ShowQueueFragment"
 				android:id="@+id/queue"
