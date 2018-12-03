@@ -111,7 +111,7 @@ public class MediaScanner implements Handler.Callback {
 				startQuickScan(NATIVE_VRFY_COALESCE_DELAY);
 			}
 		};
-		context.getContentResolver().registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, false, mObserver);
+		context.getContentResolver().registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, mObserver);
 	}
 
 	/**
