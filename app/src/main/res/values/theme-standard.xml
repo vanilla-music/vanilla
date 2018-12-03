@@ -47,6 +47,7 @@ THE SOFTWARE.
 	</style>
 
 	<style name="PopupDialog" parent="android:Theme.Holo.Dialog.MinWidth">
+		<item name="overlay_background_color">#a000</item>
 		<item name="background_circle_color">#4A4A4A</item>
 		<item name="controls_normal">#fff5f5f5</item>
 		<item name="controls_active">@android:color/holo_blue_dark</item>

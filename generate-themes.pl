@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 use strict;
 
-use constant THEMES_OUTDIR => './res/values-v21/';
-use constant THEMES_LIST   => './res/values-v21/themes-list.xml';
+use constant THEMES_OUTDIR => './app/src/main/res/values-v21/';
+use constant THEMES_LIST   => './app/src/main/res/values-v21/themes-list.xml';
 
 my $THEMES = [
 	{ name=>"standard_light", id=>0, dark=>0, colorAccent => '#ff3e677a', colorPrimary => '#ff37474f', colorPrimaryDark => '#ff263238', controlsNormal=>'@color/material_grey_900', _bg => '#fff0f0f0' },
@@ -130,6 +130,7 @@ EOF
 	</style>
 
 	<style name="${tid}PopupDialog" parent="android:Theme.Material.Light.Dialog.MinWidth">
+		<item name="overlay_background_color">\@color/overlay_background_light</item>
 		<item name="background_circle_color">\@color/material_grey_300</item>
 		<item name="controls_normal">$this->{controlsNormal}</item>
 		<item name="controls_active">$this->{colorAccent}</item>
@@ -166,6 +167,7 @@ EOF
 	</style>
 
 	<style name="${tid}PopupDialog" parent="android:Theme.Material.Dialog.MinWidth">
+		<item name="overlay_background_color">\@color/overlay_background_dark</item>
 		<item name="background_circle_color">\@color/material_grey_700</item>
 		<item name="controls_normal">$this->{controlsNormal}</item>
 		<item name="controls_active">$this->{colorAccent}</item>
