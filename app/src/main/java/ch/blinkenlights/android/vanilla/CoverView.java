@@ -543,7 +543,7 @@ public final class CoverView extends View implements Handler.Callback {
 		public Bitmap grepBitmap(Song song) {
 			final int len = mCacheSongs.length;
 			for (int i = 0; i < len ; i++) {
-				if (mCacheSongs[i] == song) {
+				if (song != null && song.equals(mCacheSongs[i])) {
 					return mCacheBitmaps[i];
 				}
 			}
