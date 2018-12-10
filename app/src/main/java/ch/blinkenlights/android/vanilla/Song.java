@@ -278,4 +278,31 @@ public class Song implements Comparable<Song> {
 		// else: is equal
 		return 0;
 	}
+
+	/**
+	 * Overrides 'equals' for the Song object.
+	 */
+    @Override
+    public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+
+		if (!(obj instanceof Song))
+			return false;
+
+		// Java requires that equals will only return
+		// true if the hash codes match. So we must always
+		// check this - for now, this is actually the only
+		// check we do.
+		return obj.hashCode() == hashCode();
+	}
+
+	/**
+	 * Return hash code of this object, just takes the hash code
+	 * of the id long (which is bound to the path).
+	 */
+	@Override
+	public int hashCode() {
+		return Long.hashCode(id);
+	}
 }
