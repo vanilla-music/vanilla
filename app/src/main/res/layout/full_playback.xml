@@ -32,7 +32,7 @@ THE SOFTWARE.
 		android:layout_height="fill_parent"
 		android:layout_width="fill_parent"
 		android:layout_gravity="bottom|left"
-		android:layout_marginTop="40dip"
+		android:layout_marginTop="0dip"
 		android:orientation="horizontal"
 		vanilla:slider_handle_id="@+id/queue_slider">
 
