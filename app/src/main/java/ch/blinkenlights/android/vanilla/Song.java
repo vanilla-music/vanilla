@@ -303,6 +303,6 @@ public class Song implements Comparable<Song> {
 	 */
 	@Override
 	public int hashCode() {
-		return Long.hashCode(id);
+		return Long.valueOf(id).hashCode();
 	}
 }
