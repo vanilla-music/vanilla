@@ -500,19 +500,19 @@ public class MediaScanner implements Handler.Callback {
 
 			// Get tags which always must be set
 			String title = tags.getFirst(MediaMetadataExtractor.TITLE);
-			if (title == null)
+			if (title == null || title.trim().isEmpty())
 				title = file.getName();
 
 			String album = tags.getFirst(MediaMetadataExtractor.ALBUM);
-			if (album == null)
+			if (album == null || album.trim().isEmpty())
 				album = "<No Album>";
 
 			String artist = tags.getFirst(MediaMetadataExtractor.ARTIST);
-			if (artist == null)
+			if (artist == null || artist.trim().isEmpty())
 				artist = "<No Artist>";
 
 			String discNumber = tags.getFirst(MediaMetadataExtractor.DISC_NUMBER);
-			if (discNumber == null)
+			if (discNumber == null || discNumber.trim().isEmpty())
 				discNumber = "1"; // untagged, but most likely '1' - this prevents annoying sorting issues with partially tagged files
 
 			long artistId = MediaLibrary.hash63(artist);
