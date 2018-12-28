@@ -449,6 +449,17 @@ public class MediaScanner implements Handler.Callback {
 	}
 
 	/**
+	 * Checks if a string is null, empty or whitespace.
+	 *
+	 * @param s the string to check
+	 * @return true if null, empty or whitespace
+	 */
+	private static boolean isUnset(String s) {
+		return s == null || s.trim().isEmpty();
+	}
+
+
+	/**
 	 * Inspects a single file and adds it to the database or removes it. maybe.
 	 *
 	 * @param file the file to add
@@ -500,19 +511,19 @@ public class MediaScanner implements Handler.Callback {
 
 			// Get tags which always must be set
 			String title = tags.getFirst(MediaMetadataExtractor.TITLE);
-			if (title == null || title.trim().isEmpty())
+			if (isUnset(title))
 				title = file.getName();
 
 			String album = tags.getFirst(MediaMetadataExtractor.ALBUM);
-			if (album == null || album.trim().isEmpty())
+			if (isUnset(album))
 				album = "<No Album>";
 
 			String artist = tags.getFirst(MediaMetadataExtractor.ARTIST);
-			if (artist == null || artist.trim().isEmpty())
+			if (isUnset(artist))
 				artist = "<No Artist>";
 
 			String discNumber = tags.getFirst(MediaMetadataExtractor.DISC_NUMBER);
-			if (discNumber == null || discNumber.trim().isEmpty())
+			if (isUnset(discNumber))
 				discNumber = "1"; // untagged, but most likely '1' - this prevents annoying sorting issues with partially tagged files
 
 			long artistId = MediaLibrary.hash63(artist);
