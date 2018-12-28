@@ -37,7 +37,6 @@ public class PluginUtils {
     // these actions are for passing between main player and plugins
     public static final String ACTION_REQUEST_PLUGIN_PARAMS = "ch.blinkenlights.android.vanilla.action.REQUEST_PLUGIN_PARAMS"; // broadcast
     public static final String ACTION_HANDLE_PLUGIN_PARAMS = "ch.blinkenlights.android.vanilla.action.HANDLE_PLUGIN_PARAMS"; // answer
-    public static final String ACTION_WAKE_PLUGIN = "ch.blinkenlights.android.vanilla.action.WAKE_PLUGIN"; // targeted at each found
     public static final String ACTION_LAUNCH_PLUGIN = "ch.blinkenlights.android.vanilla.action.LAUNCH_PLUGIN"; // targeted at selected by user
 
     // these are used by plugins to describe themselves
@@ -56,28 +55,6 @@ public class PluginUtils {
     public static boolean checkPlugins(Context ctx) {
         PackageManager pm = ctx.getPackageManager();
         List<ResolveInfo> resolved = pm.queryBroadcastReceivers(new Intent(ACTION_REQUEST_PLUGIN_PARAMS), 0);
-        if (!resolved.isEmpty()) {
-            // If plugin is just installed, Android will not deliver intents
-            // to its receiver until it's started at least one time
-            boolean hasPlugins = false;
-            for (ResolveInfo ri : resolved) {
-                Intent awaker = new Intent(ACTION_WAKE_PLUGIN);
-                awaker.setPackage(ri.activityInfo.packageName);
-
-                // all plugins must have respective activity that can handle ACTION_WAKE_PLUGIN
-                if (awaker.resolveActivity(pm) != null) {
-                    hasPlugins = true;
-                    ctx.startActivity(awaker);
-                } else {
-                    // need to upgrade the plugin from service-based plugin system to activity-based
-                    CharSequence pluginName = ri.loadLabel(pm);
-                    String error = String.format(ctx.getString(R.string.plugin_needs_upgrade), pluginName);
-                    Toast.makeText(ctx, error, Toast.LENGTH_SHORT).show();
-                }
-            }
-            return hasPlugins;
-        }
-
-        return false;
+        return !resolved.isEmpty();
     }
 }

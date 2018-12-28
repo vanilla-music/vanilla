@@ -302,10 +302,14 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 		menu.add(0, MENU_SHARE, 30, R.string.share);
 
 		if (PluginUtils.checkPlugins(this)) {
-			menu.add(0, MENU_PLUGINS, 30, R.string.plugins);
+			menu.add(0, MENU_PLUGINS, 30, R.string.plugins)
+				.setIcon(R.drawable.plugin)
+				.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		}
 
-		mFavorites = menu.add(0, MENU_SONG_FAVORITE, 0, R.string.add_to_favorites).setIcon(R.drawable.btn_rating_star_off_mtrl_alpha).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		mFavorites = menu.add(0, MENU_SONG_FAVORITE, 0, R.string.add_to_favorites)
+			.setIcon(R.drawable.btn_rating_star_off_mtrl_alpha)
+			.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
 		// Subitems of 'enqueue...'
 		enqueueMenu.add(0, MENU_ENQUEUE_ALBUM, 30, R.string.album);
