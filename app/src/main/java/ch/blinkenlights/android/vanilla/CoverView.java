@@ -311,7 +311,7 @@ public final class CoverView extends View implements Handler.Callback {
 		int height = getHeight();
 		int x = 0;
 		int scrollX = mScrollX;
-		double padding = -4 * sDensity;
+		double padding = -14 * sDensity;
 		boolean snapshot = !mScroller.isFinished();
 		Bitmap bitmap;
 
