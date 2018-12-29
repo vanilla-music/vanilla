@@ -73,7 +73,7 @@ public final class CoverBitmap {
 		TEXT_SIZE = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, metrics);
 		TEXT_SIZE_BIG = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, metrics);
 		PADDING = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, metrics);
-		BOTTOM_PADDING = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 160, metrics);
+		BOTTOM_PADDING = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 175, metrics);
 	}
 
 	/**
@@ -230,7 +230,7 @@ public final class CoverBitmap {
 		// top describes where the text will start, so we can draw the cover on 0 -> top
 		if (cover != null) {
 			int topShift = textSizeBig; // guaranteed space from top
-			int avHeight = top - topShift; // how much space we can use at most
+			int avHeight = top; // how much space we can use at most
 
 			int coverWidth = width;
 			int coverHeight = avHeight - padding - padding;
@@ -268,10 +268,16 @@ public final class CoverBitmap {
 		paint.setAlpha(0xAA);
 		paint.setTextSize(textSize);
 
-		String artistAlbum = artist + " — " + album;
-		twidth = (int)paint.measureText(artistAlbum);
+		// Album
+		twidth = (int)paint.measureText(album);
 		tstart = (width - twidth)/2;
-		drawText(canvas, artistAlbum, tstart, top, width, twidth, paint);
+		drawText(canvas, album, tstart, top, width, twidth, paint);
+
+		// Artist
+		top += textSize + padding;
+		twidth = (int)paint.measureText(artist);
+		tstart = (width - twidth)/2;
+		drawText(canvas, artist, tstart, top, width, twidth, paint);
 
 		return bitmap;
 	}
