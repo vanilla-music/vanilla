@@ -74,4 +74,5 @@ public class PrefDefaults {
 	public static final boolean KEEP_SCREEN_ON = false;
 	public static final String  PLAYLIST_SYNC_MODE = "0";
 	public static final String  PLAYLIST_SYNC_FOLDER = "/sdcard/Playlists";
+	public static final boolean JUMP_TO_ENQUEUED_ON_PLAY = true;
 }

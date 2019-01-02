@@ -257,6 +257,9 @@ THE SOFTWARE.
 	<string name="queue_enable_scroll_to_song_title">Scroll to track title in queue</string>
 	<string name="queue_enable_scroll_to_song_summary">Scroll to currently playing track in the queue on song change</string>
 
+	<string name="jump_to_enqueued_on_play_title">Jump to enqueued song on \'Play\'</string>
+	<string name="jump_to_enqueued_on_play_summary">If the requested song is already in the queue, jump to it instead of flushing the queue</string>
+
 	<string name="coverloader_android_title">Load artwork from Android</string>
 	<string name="coverloader_android_summary">Query Androids internal media database for album artwork</string>
 

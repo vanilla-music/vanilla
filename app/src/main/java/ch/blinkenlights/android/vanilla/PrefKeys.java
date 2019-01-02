@@ -75,4 +75,5 @@ public class PrefKeys {
 	public static final String KEEP_SCREEN_ON = "keep_screen_on";
 	public static final String PLAYLIST_SYNC_MODE = "playlist_sync_mode";
 	public static final String PLAYLIST_SYNC_FOLDER = "playlist_sync_folder";
+	public static final String JUMP_TO_ENQUEUED_ON_PLAY = "jump_to_enqueued_on_play";
 }

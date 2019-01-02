@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
- * Copyright (C) 2015-2017 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2015-2019 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -139,6 +139,10 @@ public class LibraryActivity
 	 */
 	private int mDefaultAction;
 	/**
+	 * Whether or not to jump to songs if the are in the queue
+	 */
+	private boolean mJumpToEnqueuedOnPlay;
+	/**
 	 * The last used action from the menu. Used with ACTION_LAST_USED.
 	 */
 	private int mLastAction = ACTION_PLAY;
@@ -203,20 +207,22 @@ public class LibraryActivity
 	}
 
 	@Override
-	public void onRestart()
-	{
-		super.onRestart();
-		loadTabOrder();
-	}
-
-	@Override
 	public void onStart()
 	{
 		super.onStart();
 
+		loadPreferences();
+		loadTabOrder();
+		updateHeaders();
+	}
+
+	/**
+	 * Load settings and cache them.
+	 */
+	private void loadPreferences() {
 		SharedPreferences settings = PlaybackService.getSettings(this);
 		mDefaultAction = Integer.parseInt(settings.getString(PrefKeys.DEFAULT_ACTION_INT, PrefDefaults.DEFAULT_ACTION_INT));
-		updateHeaders();
+		mJumpToEnqueuedOnPlay = settings.getBoolean(PrefKeys.JUMP_TO_ENQUEUED_ON_PLAY, PrefDefaults.JUMP_TO_ENQUEUED_ON_PLAY);
 	}
 
 	/**
@@ -383,7 +389,7 @@ public class LibraryActivity
 
 		// special handling if we pick one song to be played that is already in queue
 		boolean songPicked = (id >= 0 && type == MediaUtils.TYPE_SONG); // not invalid, not play all
-		if (songPicked && effectiveAction == ACTION_PLAY) {
+		if (songPicked && effectiveAction == ACTION_PLAY && mJumpToEnqueuedOnPlay) {
 			int songPosInQueue = PlaybackService.get(this).getQueuePositionForSongId(id);
 			if (songPosInQueue > -1) {
 				// we picked for play one song that is already present in the queue, just jump to it
