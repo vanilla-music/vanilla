@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
- * Copyright 2017 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright 2017-2019 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -60,6 +60,7 @@ public final class CoverBitmap {
 	private static int TEXT_SIZE = -1;
 	private static int TEXT_SIZE_BIG;
 	private static int PADDING;
+	private static int TOP_PADDING;
 	private static int BOTTOM_PADDING;
 
 	/**
@@ -73,7 +74,10 @@ public final class CoverBitmap {
 		TEXT_SIZE = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, metrics);
 		TEXT_SIZE_BIG = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, metrics);
 		PADDING = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, metrics);
-		BOTTOM_PADDING = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 175, metrics);
+		// padding to take actionbar into account.
+		TOP_PADDING = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, metrics);
+		// space used by the controls bar.
+		BOTTOM_PADDING = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 80, metrics);
 	}
 
 	/**
@@ -212,63 +216,68 @@ public final class CoverBitmap {
 		int textSize = TEXT_SIZE;
 		int textSizeBig = TEXT_SIZE_BIG;
 		int padding = PADDING;
+		int topPadding = TOP_PADDING;
+		int bottomPadding = BOTTOM_PADDING;
 
 		// Get desired text color from theme and draw textual information
 		int colors[] = ThemeHelper.getDefaultCoverColors(context);
 		// inverted cover background color.
 		int textColor = 0xFF000000 + (0xFFFFFF - (colors[0] & 0xFFFFFF));
 
+		// Prepare text and calculate minimum height, so we can ensure
+		// that the cover doesn't 'eat' into it.
 		String title = song.title == null ? "" : song.title;
 		String album = song.album == null ? "" : song.album;
 		String artist = song.artist == null ? "" : song.artist;
+		// Space required to draw the bottom text.
+		int textTotalHeight = padding + textSizeBig + (padding+textSize) * 2 + padding;
+		// Y coord where text must start to fit it on screen.
+		int textStart = height - bottomPadding - textTotalHeight;
 
 		Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 		Canvas canvas = new Canvas(bitmap);
 
-		int top = height - BOTTOM_PADDING;
-
-		// top describes where the text will start, so we can draw the cover on 0 -> top
 		if (cover != null) {
-			int topShift = textSizeBig; // guaranteed space from top
-			int avHeight = top; // how much space we can use at most
+			int coverHeight = Math.min(width, textStart-topPadding);
+			Bitmap zoomed = createZoomedBitmap(cover, width, coverHeight);
+			// amount of free Y pixels we have:
+			int free = textStart - coverHeight - topPadding;
+			// top padding to use
+			int pad = topPadding + free / 2;
+			canvas.drawBitmap(zoomed, 0, pad, null);
 
-			int coverWidth = width;
-			int coverHeight = avHeight - padding - padding;
+			// Y position where the cover ends.
+			int coverEnd = pad + coverHeight;
+			// amount of blank space we have after the cover and text.
+			int bottomFree = height - coverEnd - textTotalHeight - bottomPadding;
+			// alternative starting point of text, considering the free space:
+			int altStart = coverEnd + (bottomFree / 2);
 
-			if (coverHeight > coverWidth)
-				coverHeight = coverWidth;
-			if (coverHeight < 1)
-				coverHeight = 1;
-
-			int padHeight = (avHeight - coverHeight) / 2;
-
-			Rect rect = new Rect(0, padHeight, coverWidth, coverHeight+padHeight);
-			Bitmap zoomed = createZoomedBitmap(cover, coverWidth, coverHeight);
-
-			canvas.translate(0, topShift);
-			canvas.drawBitmap(zoomed, null, rect, null);
-			canvas.translate(0, -1*topShift);
-
+			if (altStart < textStart)
+				textStart = altStart;
 		}
 
+		// Where to start drawing the text.
+		int top = textStart + padding;
+
+		// Now draw the text:
 		PorterDuffColorFilter filter = new PorterDuffColorFilter(textColor, PorterDuff.Mode.SRC_ATOP);
 		Paint paint = new Paint();
 		paint.setAntiAlias(true);
 
-		// Title text
+		// Title
 		paint.setColorFilter(filter);
 		paint.setTextSize(textSizeBig);
-
 		int twidth = (int)paint.measureText(title);
 		int tstart = (width - twidth)/2;
 		drawText(canvas, title, tstart, top, width, twidth, paint);
-		top += textSizeBig + padding;
 
 		// Bottom text
 		paint.setAlpha(0xAA);
 		paint.setTextSize(textSize);
 
 		// Album
+		top += textSizeBig + padding;
 		twidth = (int)paint.measureText(album);
 		tstart = (width - twidth)/2;
 		drawText(canvas, album, tstart, top, width, twidth, paint);
