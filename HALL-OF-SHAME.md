@@ -13,7 +13,10 @@ of Vanilla Music to the play store.
 This list is a collection of such GPL violating versions published on the Google Play Store.
 
 
-## Blunt violations
+## 8D Audio Converter
+* https://play.google.com/store/apps/details?id=com.vibes8d.audio8d
+* 1:1 copy of vanilla music 1.80 - requires internet access, so probably has ads
+* Keeps original copyright, does not provide access to the modified source
 
 ## Boom Music
 * https://play.google.com/store/apps/details?id=com.oapps.boom
@@ -44,8 +47,6 @@ This list is a collection of such GPL violating versions published on the Google
 ### Player+ Pro
 * https://play.google.com/store/apps/details?id=ch.ibroapps.android.player.pro
 * Same as 'Player+', but sold for 3$
-
-## Grey area
 
 ### Mp3 Player Download
 * https://play.google.com/store/apps/details?id=com.mp3.volume.booster.equalizer
