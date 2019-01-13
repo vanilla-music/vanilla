@@ -239,9 +239,9 @@
   <string name="open_mini_popup">Ouvrir mini popup</string>
   <string name="skip_to_next_song">Passer au morceau suivant</string>
   <string name="open_full_player">Ouvrir le lecteur complet</string>
-  <string name="info_on_cover">Info sur la couverture</string>
-  <string name="info_below_cover">Info sous la couverture</string>
-  <string name="fixed_info">Info fixé en haut</string>
+  <string name="info_on_cover">Détails au centre</string>
+  <string name="info_below_cover">Détails en bas</string>
+  <string name="fixed_info">Détails en haut</string>
   <string name="do_nothing">Ne rien faire</string>
   <string name="open_library">Ouvrir la bibliothèque</string>
   <string name="play_pause">Lecture/Pause</string>
@@ -268,7 +268,11 @@
   <string name="preferences_action_enqueue_current_album">Ajouter l\'album à la file d\'attente</string>
   <string name="preferences_action_enqueue_current_artist">Ajouter l\'artiste à la file d\'attente</string>
   <string name="preferences_action_enqueue_current_genre">Ajouter le genre à la file d\'attente</string>
-  <string name="jump_to_time">Aller au Temps...</string>
+  <string name="jump_to_time">Aller au temps...</string>
+  <string name="time_separator">:</string>
+  <string name="hour_hint">HH</string>
+  <string name="minute_hint">MM</string>
+  <string name="second_hint">SS</string>
   <string name="error_invalid_position">Position invalide</string>
   <string name="filebrowser_start">Accueil explorateur de fichier</string>
   <string name="customize_filebrowser_start">L\'explorateur de fichier démarre à ce répertoire</string>
@@ -293,6 +297,8 @@
   <string name="sendto">Envoyer à…</string>
   <string name="no_receiving_apps">Aucune application trouvée pour ce type de média!</string>
   <string name="duration">Durée</string>
+  <string name="dump_database">Faire une copie de la base de données</string>
+  <string name="dump_database_result">Base de données enregistrée vers \'%s\'</string>
   <string name="force_m3u_import">Forcer la réimportation des .m3u</string>
   <string name="media_library">Bibliothèque multimédia</string>
   <string name="media_folders_header">Dossiers indexés</string>
@@ -318,6 +324,7 @@
   <string name="folder_neutral">Neutre</string>
   <!--Plugin system-->
   <string name="plugins">Plugins</string>
+  <string name="plugin_needs_upgrade">Veuillez mettre le plugin %s à jour</string>
   <!--Theme names-->
   <string name="theme_name_standard_light">Standard</string>
   <string name="theme_name_standard_dark">Standard (foncé)</string>

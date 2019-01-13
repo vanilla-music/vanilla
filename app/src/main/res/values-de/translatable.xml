@@ -209,6 +209,8 @@
   <string name="enable_scroll_to_song_summary">In Bibliothekslisten zum gerade wiedergegebenen Titel/Album/Interpreten scrollen</string>
   <string name="queue_enable_scroll_to_song_title">Zu Titelname in Warteschlange scrollen</string>
   <string name="queue_enable_scroll_to_song_summary">Bei Titelwechsel zum derzeit wiedergegebenen Titel in der Warteschlange scrollen</string>
+  <string name="jump_to_enqueued_on_play_title">Bei »Wiedergeben« zu eingereihtem Titel springen</string>
+  <string name="jump_to_enqueued_on_play_summary">Falls sich der angefragte Titel bereits in der Warteschlange befindet, diesen anspringen anstatt die Warteschlange zu löschen</string>
   <string name="coverloader_android_title">Albumcover von Android verwenden</string>
   <string name="coverloader_android_summary">Androids interne Mediendatenbank für Albumcover verwenden</string>
   <string name="coverloader_vanilla_title">Cover aus Ordner laden</string>

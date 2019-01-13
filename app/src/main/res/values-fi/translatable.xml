@@ -209,6 +209,8 @@
   <string name="enable_scroll_to_song_summary">Vieritä parhaillaan toistettavaan kappaleeseen/albumiin/esittäjään kirjastonäkymässä</string>
   <string name="queue_enable_scroll_to_song_title">Vieritä kappaleen nimeen jonossa</string>
   <string name="queue_enable_scroll_to_song_summary">Vieritä parhaillaan toistettavan kappaleeseen jonossa kappaleen vaihtuessa</string>
+  <string name="jump_to_enqueued_on_play_title">Siirry jonossa olevaan kappaleeseen \"Toista\"-toiminnosta</string>
+  <string name="jump_to_enqueued_on_play_summary">Jos pyydetty kappale on jo jonossa, siirry siihen sen sijaan että jono pyyhkiytyy</string>
   <string name="coverloader_android_title">Lataa kuvitus Androidista</string>
   <string name="coverloader_android_summary">Etsi kuvitusta Androidin sisäisestä mediatietokannasta</string>
   <string name="coverloader_vanilla_title">Lataa kuvitus kansiosta</string>

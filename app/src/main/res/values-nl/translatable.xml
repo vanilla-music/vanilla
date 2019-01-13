@@ -209,6 +209,8 @@
   <string name="enable_scroll_to_song_summary">Scrol naar nummer/album/artiest in de verzameling dat/die op dat moment wordt afgespeeld</string>
   <string name="queue_enable_scroll_to_song_title">Scrol naar titel van nummer in wachtrij</string>
   <string name="queue_enable_scroll_to_song_summary">Scrol naar nummer dat momenteel in de wachtrij speelt als volgend nummer start</string>
+  <string name="jump_to_enqueued_on_play_title">Spring naar nummer in wachtrij bij \'Play\'</string>
+  <string name="jump_to_enqueued_on_play_summary">Als het aangevraagde nummer al in de wachtrij zit, spring er dan naartoe in plaats van de wachtrij op te schonen</string>
   <string name="coverloader_android_title">Laad albumafbeeldingen van Android</string>
   <string name="coverloader_android_summary">Doorzoek Androids interne mediadatabank op albumafbeeldigen</string>
   <string name="coverloader_vanilla_title">Laad Albumafbeeldingen uit map</string>

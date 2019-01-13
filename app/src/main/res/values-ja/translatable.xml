@@ -201,6 +201,8 @@
   <string name="enable_scroll_to_song_summary">ライブラリーリストの現在再生中のトラック/アルバム/アーティストにスクロールします</string>
   <string name="queue_enable_scroll_to_song_title">キューのトラックのタイトルにスクロール</string>
   <string name="queue_enable_scroll_to_song_summary">曲が変わったとき、キューの現在再生しているトラックにスクロールします</string>
+  <string name="jump_to_enqueued_on_play_title">\'再生\' のキューに入っている曲に移動</string>
+  <string name="jump_to_enqueued_on_play_summary">要求された曲がすでにキューに入っている場合は、キューを消さずにそこに移動します</string>
   <string name="coverloader_android_title">Android からアートワークを読み込む</string>
   <string name="coverloader_android_summary">アルバムのアートワークを Android 内部メディアデータベースから読み込みます</string>
   <string name="coverloader_vanilla_title">フォルダからアートワークを読み込む</string>

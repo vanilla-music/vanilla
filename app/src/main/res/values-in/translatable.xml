@@ -44,6 +44,9 @@
   <string name="rename">Ganti nama</string>
   <string name="save_as_playlist">Simpan daftar putar </string>
   <string name="add_to_playlist">Tambahkan ke daftar putar</string>
+  <string name="add_to">Tambahkan ke...</string>
+  <string name="playlist">Daftar putar</string>
+  <string name="homescreen">Tampilan layar</string>
   <string name="add_to_favorites">Tambahkan ke favorit</string>
   <string name="remove_from_favorites">Hapus dari favorit</string>
   <string name="playlist_favorites">Kesukaan</string>
@@ -68,6 +71,15 @@
 		Translators should use http://unicode.org/reports/tr35/tr35-numbers.html#Language_Plural_Rules and
 		http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html, Type cardinal,
 		to see which categories apply to integer numbers in their languages-->
+  <plurals name="playing">
+    <item quantity="other">%d trek diputar</item>
+  </plurals>
+  <plurals name="enqueued">
+    <item quantity="other">%d trek di antrian</item>
+  </plurals>
+  <plurals name="added_to_playlist">
+    <item quantity="other">%1$d lagu ditambahkan ke daftar putar %2$s.</item>
+  </plurals>
   <string name="delete_file_failed">Gagal menghapus %s.</string>
   <string name="deleted_item">\'%s\' terhapus.</string>
   <string name="delete_item">Hapus \'%s\'?</string>
@@ -150,18 +162,62 @@
   <string name="display_mode_title">Mode tampilan</string>
   <string name="swipe_up_action_title">Aksi gesek keatas</string>
   <string name="enable_shake_summary">Hanya saat musik dimainkan. Tidak dapat bekerja saat layar mati dalam beberapa perangkat.</string>
+  <string name="misc_features">Fitur tambahan</string>
+  <string name="theme">Tema</string>
+  <string name="disable_lockscreen_title">Nonaktifkan pengunci layar</string>
   <string name="keep_screen_on_title">Layar selalu hidup</string>
   <string name="enable_scroll_to_song_title">Tukik judul lagu</string>
   <string name="enable_scroll_to_song_summary">Tukik lagu/album/artis saat ini dalam daftar pustaka</string>
   <string name="cover_on_lockscreen_summary">Tampilkan sampul dari lagu yang dimainkan saat ini dalam pengunci layar</string>
+  <string name="help">Bantuan</string>
   <string name="about">Tentang</string>
+  <string name="tabs">Urutan tab</string>
+  <string name="restore_default">Pulihkan ke awal</string>
   <!--The following are for the list preferences-->
+  <string name="never_show">Jangan pernah tampilkan</string>
+  <string name="show_when_playing">Tampilkan ketika diputar (bawaan)</string>
+  <string name="always_show">Selalu tampilkan</string>
+  <string name="open_main_activity">Buka daftar media(bawaan)</string>
+  <string name="open_mini_popup">Tampilkan popup kecil</string>
   <string name="skip_to_next_song">Lompat ke lagu selanjutnya</string>
+  <string name="open_full_player">Buka dilayar penuh</string>
+  <string name="info_on_cover">Info di kover album</string>
+  <string name="info_below_cover">Info dibawah kover album</string>
+  <string name="fixed_info">Info tetap berada diatas</string>
+  <string name="do_nothing">Tidak melakukan apapun</string>
+  <string name="open_library">Buka daftar media</string>
+  <string name="play_pause">Putar/Berhenti</string>
   <string name="next_song">Lagu selanjutnya</string>
   <string name="previous_song">Lagu sebelumnya</string>
   <string name="next_album">Album selanjutnya</string>
   <string name="previous_album">Album sebelumnya</string>
+  <string name="cycle_repeat_mode">Diputar ulang</string>
+  <string name="cycle_shuffle_mode">Diputar acak</string>
+  <string name="enqueue_current_album">Antrian Album</string>
+  <string name="enqueue_current_artist">Antrian Artis</string>
+  <string name="enqueue_current_genre">Antrian jenis musk</string>
+  <string name="enqueue_current">Daftar antrian</string>
+  <string name="more_from_current">Lebih banyak ...</string>
+  <string name="empty_the_queue">Antrian kosong</string>
+  <string name="show_queue">Tampilkan antrian</string>
+  <string name="hide_queue">Sembunyikan antrian</string>
+  <string name="dequeue_rest">Selebihnya hilangkan dari antrian</string>
+  <string name="toggle_controls">Tampilkan kontrol</string>
+  <string name="seek_10s_backward">Mundur kebelakang 10 detik</string>
+  <string name="seek_10s_forward">Maju kedepan 10 detik</string>
+  <string name="preferences_action_show_queue">Tampilkan antrian</string>
+  <string name="preferences_action_clear_queue">Bersihkan antrian</string>
+  <string name="preferences_action_enqueue_current_album">Antrian Album</string>
+  <string name="preferences_action_enqueue_current_artist">Antrian Artis</string>
+  <string name="preferences_action_enqueue_current_genre">Antrian jenis musk</string>
+  <string name="jump_to_time">Lompat ke waktu</string>
+  <string name="time_separator">:</string>
+  <string name="hour_hint">Jam</string>
+  <string name="minute_hint">Menit</string>
+  <string name="second_hint">Detik</string>
+  <string name="error_invalid_position">Posisi salah</string>
   <string name="select">Pilih</string>
+  <string name="save">Simpan</string>
   <string name="autoplaylist_playcounts_disabled">Jangan membuat daftar putar otomatis</string>
   <!--Folder selector-->
   <!--Plugin system-->

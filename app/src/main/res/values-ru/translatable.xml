@@ -225,6 +225,8 @@
   <string name="enable_scroll_to_song_summary">Пролистывание списков фонотеки к текущей дорожке/альбому/исполнителю.</string>
   <string name="queue_enable_scroll_to_song_title">Пролистывать до названия в очереди</string>
   <string name="queue_enable_scroll_to_song_summary">Пролистывать к воспроизводящейся дорожке в очереди при смене песни</string>
+  <string name="jump_to_enqueued_on_play_title">Переход к дорожке из очереди при нажатии \"Воспроизвести\"</string>
+  <string name="jump_to_enqueued_on_play_summary">Переходить к выбранной дорожке вместо затирания списка очереди, если она уже стоит в очереди.</string>
   <string name="coverloader_android_title">Загружать обложки из баз Android</string>
   <string name="coverloader_android_summary">Запрашивать обложки из встроенной базы медиа данных ОС Android</string>
   <string name="coverloader_vanilla_title">Загружать обложки из папки</string>

@@ -209,6 +209,8 @@
   <string name="enable_scroll_to_song_summary">Ir para o título da faixa/álbum/artista nas listas da coleção</string>
   <string name="queue_enable_scroll_to_song_title">Deslocar para a faixa na fila</string>
   <string name="queue_enable_scroll_to_song_summary">Ao alterar de faixa, ir para a faixa em reprodição</string>
+  <string name="jump_to_enqueued_on_play_title">Ao tocar \'Reproduzir\', ir para a faixa na fila</string>
+  <string name="jump_to_enqueued_on_play_summary">Se a faixa escolhida já estiver na fila, ir para a faixa em vez de a colocar mais uma vez na fila</string>
   <string name="coverloader_android_title">Carregar  imagem do Android</string>
   <string name="coverloader_android_summary">Consulta a capa do álbum na base de dados interna do Android</string>
   <string name="coverloader_vanilla_title">Carregar imagem da pasta</string>

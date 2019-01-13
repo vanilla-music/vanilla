@@ -1,6 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="app_name">Vanilla Music</string>
+  <string name="ok">是</string>
+  <string name="cancel">取消</string>
   <!--Playback Activity (main screen)-->
   <string name="no_songs">在你的设备上找不到任何曲目。</string>
   <string name="empty_queue">未选择曲目。请从库中选择一些曲目或点此消息进入随机模式。</string>
@@ -42,6 +44,10 @@
   <string name="rename">重命名</string>
   <string name="save_as_playlist">保存为播放列表</string>
   <string name="add_to_playlist">添加到播放列表</string>
+  <string name="add_to_homescreen">添加至主屏幕...</string>
+  <string name="add_to">添加至...</string>
+  <string name="playlist">播放列表</string>
+  <string name="homescreen">主屏幕</string>
   <string name="add_to_favorites">添加到最爱</string>
   <string name="remove_from_favorites">从最爱移除</string>
   <string name="playlist_favorites">最爱</string>
@@ -55,6 +61,7 @@
   <string name="remove">移除</string>
   <string name="play_or_enqueue">如果播放序列；如果暫停播放</string>
   <string name="open">打开</string>
+  <string name="go_home">家目录</string>
   <!--As a developer, you should always supply "one" and "other"
 		strings. Your translators will know which strings are actually
 		needed for their language. Always include %d in "one" because
@@ -64,20 +71,36 @@
 		Translators should use http://unicode.org/reports/tr35/tr35-numbers.html#Language_Plural_Rules and
 		http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html, Type cardinal,
 		to see which categories apply to integer numbers in their languages-->
+  <plurals name="removed_from_playlist">
+    <item quantity="other">%1$d 曲目从 %2$s 播放列表中移除</item>
+  </plurals>
+  <plurals name="deleted">
+    <item quantity="other">%d 曲目已删除</item>
+  </plurals>
   <string name="delete_file_failed">删除 %s 失败。</string>
   <string name="deleted_item">“%s”已删除。</string>
   <string name="delete_item">删除“%s”？</string>
   <string name="delete_file">删除文件“%s”？</string>
   <string name="artists">演出者</string>
   <string name="albums">专辑</string>
+  <string name="albumartists">专辑艺术家</string>
   <string name="songs">曲目</string>
   <string name="playlists">播放清单</string>
   <string name="genres">风格</string>
   <string name="files">文件</string>
+  <string name="artist">演出者</string>
+  <string name="album">专辑</string>
+  <string name="genre">风格</string>
+  <string name="folder">文件夹</string>
+  <string name="filename">文件名</string>
+  <string name="file_size">文件大小</string>
+  <string name="file_time">修改日期</string>
+  <string name="extension">拓展名</string>
   <string name="unknown">未知</string>
   <string name="play_all">全部播放</string>
   <string name="enqueue_all">全部加入序列</string>
   <string name="all_songs">全部曲目</string>
+  <string name="details">详细信息</string>
   <string name="more_from_artist">更多来自演出者</string>
   <string name="more_from_album">更多来自专辑</string>
   <string name="title">标题</string>

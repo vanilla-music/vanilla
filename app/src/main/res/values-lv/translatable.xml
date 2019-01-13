@@ -278,6 +278,7 @@
   <string name="preferences_action_enqueue_current_artist">Ierindot izpildītāju</string>
   <string name="preferences_action_enqueue_current_genre">Ierindot žanru</string>
   <string name="jump_to_time">Pārlekt uz laiku</string>
+  <string name="time_separator">:</string>
   <string name="hour_hint">HH</string>
   <string name="minute_hint">MM</string>
   <string name="second_hint">SS</string>
@@ -332,6 +333,7 @@
   <string name="folder_neutral">Neitrāls</string>
   <!--Plugin system-->
   <string name="plugins">Spraudņi</string>
+  <string name="plugin_needs_upgrade">Lūdzu, atjauniniet spraudni 1%s uz jaunāko versiju</string>
   <!--Theme names-->
   <string name="theme_name_standard_light">Standarta</string>
   <string name="theme_name_standard_dark">Standarta (tumšs)</string>
