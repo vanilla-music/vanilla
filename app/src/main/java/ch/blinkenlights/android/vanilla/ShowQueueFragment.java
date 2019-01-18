@@ -25,11 +25,8 @@ import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -259,7 +256,7 @@ public class ShowQueueFragment extends Fragment
 	 */
 	public void setSong(long uptime, Song song) {
 		if (PlaybackService.hasInstance()) {
-			boolean scroll = PlaybackService
+			boolean scroll = SharedPrefHelper
 				.getSettings(getActivity().getApplicationContext())
 				.getBoolean(PrefKeys.QUEUE_ENABLE_SCROLL_TO_SONG,
 							PrefDefaults.QUEUE_ENABLE_SCROLL_TO_SONG);

@@ -17,7 +17,6 @@
 
 package ch.blinkenlights.android.vanilla;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.content.SharedPreferences;
 
@@ -39,7 +38,7 @@ public class FilebrowserStartActivity extends FolderPickerActivity {
 
 	@Override
 	public void onFolderPicked(File directory, ArrayList<String> a, ArrayList<String> b) {
-		SharedPreferences.Editor editor = PlaybackService.getSettings(this).edit();
+		SharedPreferences.Editor editor = SharedPrefHelper.getSettings(this).edit();
 		editor.putString(PrefKeys.FILESYSTEM_BROWSE_START, directory.getAbsolutePath());
 		editor.apply();
 		finish();

@@ -154,7 +154,7 @@ public abstract class PlaybackActivity extends Activity
 		else
 			startService(new Intent(this, PlaybackService.class));
 
-		SharedPreferences prefs = PlaybackService.getSettings(this);
+		SharedPreferences prefs = SharedPrefHelper.getSettings(this);
 		mUpAction = Action.getAction(prefs, PrefKeys.SWIPE_UP_ACTION, PrefDefaults.SWIPE_UP_ACTION);
 		mDownAction = Action.getAction(prefs, PrefKeys.SWIPE_DOWN_ACTION, PrefDefaults.SWIPE_DOWN_ACTION);
 

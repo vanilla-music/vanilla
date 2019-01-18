@@ -229,13 +229,13 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 	}
 
 	private void saveCheckBoxPreference(boolean enabled) {
-		SharedPreferences.Editor editor = PlaybackService.getSettings(mContext).edit();
+		SharedPreferences.Editor editor = SharedPrefHelper.getSettings(mContext).edit();
 		editor.putBoolean(mCheckBoxKey, enabled);
 		editor.apply();
 	}
 
 	private boolean getCheckBoxPreference() {
-		SharedPreferences settings = PlaybackService.getSettings(mContext);
+		SharedPreferences settings = SharedPrefHelper.getSettings(mContext);
 		return settings.getBoolean(mCheckBoxKey, false);
 	}
 

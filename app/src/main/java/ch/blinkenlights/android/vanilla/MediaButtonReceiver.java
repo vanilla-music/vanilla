@@ -24,7 +24,6 @@
 package ch.blinkenlights.android.vanilla;
 
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -76,7 +75,7 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 	private static void beep(Context context)
 	{
 		if (sBeep == -1) {
-			SharedPreferences settings = PlaybackService.getSettings(context);
+			SharedPreferences settings = SharedPrefHelper.getSettings(context);
 			sBeep = settings.getBoolean(PrefKeys.MEDIA_BUTTON_BEEP, PrefDefaults.MEDIA_BUTTON_BEEP) ? 1 : 0;
 		}
 
@@ -109,7 +108,7 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 	public static boolean useHeadsetControls(Context context)
 	{
 		if (sUseControls == -1) {
-			SharedPreferences settings = PlaybackService.getSettings(context);
+			SharedPreferences settings = SharedPrefHelper.getSettings(context);
 			sUseControls = settings.getBoolean(PrefKeys.MEDIA_BUTTON, PrefDefaults.MEDIA_BUTTON) ? 1 : 0;
 		}
 

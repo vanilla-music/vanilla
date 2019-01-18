@@ -34,8 +34,6 @@ import android.os.Message;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -217,7 +215,7 @@ public class LibraryPagerAdapter
 	 */
 	public boolean loadTabOrder()
 	{
-		String in = PlaybackService.getSettings(mActivity).getString(PrefKeys.TAB_ORDER, PrefDefaults.TAB_ORDER);
+		String in = SharedPrefHelper.getSettings(mActivity).getString(PrefKeys.TAB_ORDER, PrefDefaults.TAB_ORDER);
 		int[] order = new int[MAX_ADAPTER_COUNT];
 		int count = 0;
 		if (in != null && in.length() == MAX_ADAPTER_COUNT) {
@@ -683,7 +681,7 @@ public class LibraryPagerAdapter
 		}
 		case MSG_SAVE_SORT: {
 			SortableAdapter adapter = (SortableAdapter)message.obj;
-			SharedPreferences.Editor editor = PlaybackService.getSettings(mActivity).edit();
+			SharedPreferences.Editor editor = SharedPrefHelper.getSettings(mActivity).edit();
 			editor.putInt(adapter.getSortSettingsKey(), adapter.getSortMode());
 			editor.apply();
 			break;
@@ -777,7 +775,7 @@ public class LibraryPagerAdapter
 	{
 		String key = adapter.getSortSettingsKey();
 		int def = adapter.getDefaultSortMode();
-		int sort = PlaybackService.getSettings(mActivity).getInt(key, def);
+		int sort = SharedPrefHelper.getSettings(mActivity).getInt(key, def);
 		adapter.setSortMode(sort);
 	}
 
@@ -908,7 +906,7 @@ public class LibraryPagerAdapter
 			return;
 
 		// scroll to song on song change if opted-in
-		SharedPreferences sharedPrefs = PlaybackService.getSettings(mActivity);
+		SharedPreferences sharedPrefs = SharedPrefHelper.getSettings(mActivity);
 		boolean shouldScroll = sharedPrefs.getBoolean(PrefKeys.ENABLE_SCROLL_TO_SONG, PrefDefaults.ENABLE_SCROLL_TO_SONG);
 		if(shouldScroll) {
 			for (int pos = 0; pos < view.getCount(); pos++) {

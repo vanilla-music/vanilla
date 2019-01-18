@@ -55,7 +55,6 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.os.Process;
 import android.os.SystemClock;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -298,10 +297,6 @@ public final class PlaybackService extends Service
 	 * Static referenced-array to PlaybackActivities, used for callbacks
 	 */
 	private static final ArrayList<TimelineCallback> sCallbacks = new ArrayList<TimelineCallback>(5);
-	/**
-	 * Cached app-wide SharedPreferences instance.
-	 */
-	private static SharedPreferences sSettings;
 
 	boolean mHeadsetPause;
 	private boolean mScrobble;
@@ -465,7 +460,7 @@ public final class PlaybackService extends Service
 		mNotificationHelper = new NotificationHelper(this, NOTIFICATION_CHANNEL, getString(R.string.app_name));
 		mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
 
-		SharedPreferences settings = getSettings(this);
+		SharedPreferences settings = SharedPrefHelper.getSettings(this);
 		settings.registerOnSharedPreferenceChangeListener(this);
 		mNotificationVisibility = Integer.parseInt(settings.getString(PrefKeys.NOTIFICATION_VISIBILITY, PrefDefaults.NOTIFICATION_VISIBILITY));
 		mNotificationNag = settings.getBoolean(PrefKeys.NOTIFICATION_NAG, PrefDefaults.NOTIFICATION_NAG);
@@ -480,7 +475,7 @@ public final class PlaybackService extends Service
 		mHeadsetOnly = settings.getBoolean(PrefKeys.HEADSET_ONLY, PrefDefaults.HEADSET_ONLY);
 		mStockBroadcast = settings.getBoolean(PrefKeys.STOCK_BROADCAST, PrefDefaults.STOCK_BROADCAST);
 		mNotificationAction = createNotificationAction(settings);
-		mHeadsetPause = getSettings(this).getBoolean(PrefKeys.HEADSET_PAUSE, PrefDefaults.HEADSET_PAUSE);
+		mHeadsetPause = SharedPrefHelper.getSettings(this).getBoolean(PrefKeys.HEADSET_PAUSE, PrefDefaults.HEADSET_PAUSE);
 		mShakeAction = settings.getBoolean(PrefKeys.ENABLE_SHAKE, PrefDefaults.ENABLE_SHAKE) ? Action.getAction(settings, PrefKeys.SHAKE_ACTION, PrefDefaults.SHAKE_ACTION) : Action.Nothing;
 		mShakeThreshold = settings.getInt(PrefKeys.SHAKE_THRESHOLD, PrefDefaults.SHAKE_THRESHOLD) / 10.0f;
 
@@ -636,7 +631,7 @@ public final class PlaybackService extends Service
 		enterSleepState();
 
 		// stop getting preference changes.
-		getSettings(this).unregisterOnSharedPreferenceChangeListener(this);
+		SharedPrefHelper.getSettings(this).unregisterOnSharedPreferenceChangeListener(this);
 
 		// shutdown all observers.
 		MediaLibrary.unregisterLibraryObserver(mObserver);
@@ -863,17 +858,6 @@ public final class PlaybackService extends Service
 	}
 
 	/**
-	 * Return the SharedPreferences instance containing the PlaybackService
-	 * settings, creating it if necessary.
-	 */
-	public static SharedPreferences getSettings(Context context)
-	{
-		if (sSettings == null)
-			sSettings = PreferenceManager.getDefaultSharedPreferences(context);
-		return sSettings;
-	}
-
-	/**
 	 * Setup the accelerometer.
 	 */
 	private void setupSensor()
@@ -891,7 +875,7 @@ public final class PlaybackService extends Service
 
 	private void loadPreference(String key)
 	{
-		SharedPreferences settings = getSettings(this);
+		SharedPreferences settings = SharedPrefHelper.getSettings(this);
 		if (PrefKeys.HEADSET_PAUSE.equals(key)) {
 			mHeadsetPause = settings.getBoolean(PrefKeys.HEADSET_PAUSE, PrefDefaults.HEADSET_PAUSE);
 		} else if (PrefKeys.NOTIFICATION_ACTION.equals(key)) {

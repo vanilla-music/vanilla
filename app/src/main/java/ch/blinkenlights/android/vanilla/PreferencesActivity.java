@@ -24,18 +24,14 @@
 package ch.blinkenlights.android.vanilla;
 
 import android.app.Activity;
-import android.app.AlertDialog.Builder;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceGroup;
-import android.preference.PreferenceScreen;
 import android.preference.CheckBoxPreference;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -72,13 +68,13 @@ public class PreferencesActivity extends PreferenceActivity
 	{
 		ThemeHelper.setTheme(this, R.style.BackActionBar);
 		super.onCreate(savedInstanceState);
-		PlaybackService.getSettings(this).registerOnSharedPreferenceChangeListener(this);
+		SharedPrefHelper.getSettings(this).registerOnSharedPreferenceChangeListener(this);
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		PlaybackService.getSettings(this).unregisterOnSharedPreferenceChangeListener(this);
+		SharedPrefHelper.getSettings(this).unregisterOnSharedPreferenceChangeListener(this);
 	}
 
 	@Override

@@ -135,7 +135,7 @@ public class PlaylistActivity extends Activity
 	public void onStart()
 	{
 		super.onStart();
-		SharedPreferences settings = PlaybackService.getSettings(this);
+		SharedPreferences settings = SharedPrefHelper.getSettings(this);
 		mDefaultAction = Integer.parseInt(settings.getString(PrefKeys.DEFAULT_PLAYLIST_ACTION, PrefDefaults.DEFAULT_PLAYLIST_ACTION));
 	}
 
