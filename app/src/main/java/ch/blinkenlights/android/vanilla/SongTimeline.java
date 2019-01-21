@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
- * Copyright (C) 2015-2018 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2015-2019 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -854,8 +854,8 @@ public final class SongTimeline {
 				MediaUtils.shuffle(timeline.subList(start, start+added), mShuffleMode == SHUFFLE_ALBUMS);
 
 			if (jumpSong != null) {
-				int jumpPos = timeline.indexOf(jumpSong);
-				if (jumpPos != start) {
+				int jumpPos = timeline.lastIndexOf(jumpSong);
+				if (jumpPos > start) {
 					// Get the sublist twice to avoid a ConcurrentModificationException.
 					timeline.addAll(timeline.subList(start, jumpPos));
 					timeline.subList(start, jumpPos).clear();
