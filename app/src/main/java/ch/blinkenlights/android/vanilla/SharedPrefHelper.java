@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2019 Michael Samuel <michaelsam00@yahoo.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
