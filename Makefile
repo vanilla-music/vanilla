@@ -11,7 +11,7 @@ debug: build
 build: libs
 	ssh qemu '. .bash_aliases && cd /hostfs/vanilla && ./gradlew build -x lintVitalRelease -x lint'
 
-release: clean
+release: clean libs
 	ssh qemu '. .bash_aliases && cd /hostfs/vanilla && ./gradlew assembleRelease && cd ./app/build/outputs/apk/release && zipalign -v -p 4 app-release-unsigned.apk aligned.apk && /home/adrian/Android/build-tools/27.0.3/apksigner sign -ks /hostfs/.android.keystore --out final.apk aligned.apk'
 
 clean:
@@ -21,7 +21,7 @@ clean:
 uninstall:
 	adb uninstall ch.blinkenlights.android.vanilla
 
-gce-nightly:
+gce-nightly: libs
 	./gradlew assembleRelease && cd ./app/build/outputs/apk/release && zipalign -v -p 4 app-release-unsigned.apk aligned.apk && echo aaaaaa | apksigner sign -ks ~/.android.keystore --out nightly-signed.apk aligned.apk
 
 libs:
