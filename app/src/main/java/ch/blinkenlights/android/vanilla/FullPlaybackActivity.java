@@ -111,7 +111,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 
 		setTitle(R.string.playback_view);
 
-		SharedPreferences settings = PlaybackService.getSettings(this);
+		SharedPreferences settings = SharedPrefHelper.getSettings(this);
 		int displayMode = Integer.parseInt(settings.getString(PrefKeys.DISPLAY_MODE, PrefDefaults.DISPLAY_MODE));
 		mDisplayMode = displayMode;
 
@@ -174,7 +174,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 	{
 		super.onStart();
 
-		SharedPreferences settings = PlaybackService.getSettings(this);
+		SharedPreferences settings = SharedPrefHelper.getSettings(this);
 		if (mDisplayMode != Integer.parseInt(settings.getString(PrefKeys.DISPLAY_MODE, PrefDefaults.DISPLAY_MODE))) {
 			finish();
 			startActivity(new Intent(this, FullPlaybackActivity.class));
@@ -578,7 +578,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 	{
 		switch (message.what) {
 		case MSG_SAVE_CONTROLS: {
-			SharedPreferences.Editor editor = PlaybackService.getSettings(this).edit();
+			SharedPreferences.Editor editor = SharedPrefHelper.getSettings(this).edit();
 			editor.putBoolean(PrefKeys.VISIBLE_CONTROLS, mControlsVisible);
 			editor.putBoolean(PrefKeys.VISIBLE_EXTRA_INFO, mExtraInfoVisible);
 			editor.apply();
@@ -676,7 +676,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 		if (expansion != SlidingView.EXPANSION_PARTIAL) {
 			setExtraInfoVisible(false);
 		} else {
-			SharedPreferences settings = PlaybackService.getSettings(this);
+			SharedPreferences settings = SharedPrefHelper.getSettings(this);
 			setExtraInfoVisible(settings.getBoolean(PrefKeys.VISIBLE_EXTRA_INFO, PrefDefaults.VISIBLE_EXTRA_INFO));
 		}
 	}

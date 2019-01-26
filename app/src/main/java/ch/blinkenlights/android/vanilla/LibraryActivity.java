@@ -42,11 +42,9 @@ import android.os.Message;
 import android.support.iosched.tabs.VanillaTabLayout;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
-import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -178,7 +176,7 @@ public class LibraryActivity
 		pager.setAdapter(pagerAdapter);
 		mViewPager = pager;
 
-		SharedPreferences settings = PlaybackService.getSettings(this);
+		SharedPreferences settings = SharedPrefHelper.getSettings(this);
 
 		mBottomBarControls = (BottomBarControls)findViewById(R.id.bottombar_controls);
 		mBottomBarControls.setOnClickListener(this);
@@ -220,7 +218,7 @@ public class LibraryActivity
 	 * Load settings and cache them.
 	 */
 	private void loadPreferences() {
-		SharedPreferences settings = PlaybackService.getSettings(this);
+		SharedPreferences settings = SharedPrefHelper.getSettings(this);
 		mDefaultAction = Integer.parseInt(settings.getString(PrefKeys.DEFAULT_ACTION_INT, PrefDefaults.DEFAULT_ACTION_INT));
 		mJumpToEnqueuedOnPlay = settings.getBoolean(PrefKeys.JUMP_TO_ENQUEUED_ON_PLAY, PrefDefaults.JUMP_TO_ENQUEUED_ON_PLAY);
 	}
@@ -242,7 +240,7 @@ public class LibraryActivity
 	 */
 	private void checkForLaunch(Intent intent)
 	{
-		SharedPreferences settings = PlaybackService.getSettings(this);
+		SharedPreferences settings = SharedPrefHelper.getSettings(this);
 		if (settings.getBoolean(PrefKeys.PLAYBACK_ON_STARTUP, PrefDefaults.PLAYBACK_ON_STARTUP) && Intent.ACTION_MAIN.equals(intent.getAction())) {
 			startActivity(new Intent(this, FullPlaybackActivity.class));
 		}
@@ -908,7 +906,7 @@ public class LibraryActivity
 	{
 		switch (message.what) {
 		case MSG_SAVE_PAGE: {
-			SharedPreferences.Editor editor = PlaybackService.getSettings(this).edit();
+			SharedPreferences.Editor editor = SharedPrefHelper.getSettings(this).edit();
 			editor.putInt("library_page", message.arg1);
 			editor.apply();
 			super.adjustSpines();

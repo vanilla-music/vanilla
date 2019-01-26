@@ -91,7 +91,7 @@ public class FileUtils {
 	 * for browsing directories
 	 */
 	public static File getFilesystemBrowseStart(Context context) {
-		SharedPreferences prefs = PlaybackService.getSettings(context);
+		SharedPreferences prefs = SharedPrefHelper.getSettings(context);
 		String folder = prefs.getString(PrefKeys.FILESYSTEM_BROWSE_START, PrefDefaults.FILESYSTEM_BROWSE_START);
 		return new File( folder.equals("") ? Environment.getExternalStorageDirectory().getAbsolutePath() : folder );
 	}

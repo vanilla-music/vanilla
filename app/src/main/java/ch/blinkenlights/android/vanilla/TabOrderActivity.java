@@ -115,7 +115,7 @@ public class TabOrderActivity extends Activity
 			out[i] = (char)(list.isItemChecked(i) ? 128 + ids[i] : 127 - ids[i]);
 		}
 
-		SharedPreferences.Editor editor = PlaybackService.getSettings(this).edit();
+		SharedPreferences.Editor editor = SharedPrefHelper.getSettings(this).edit();
 		editor.putString(PrefKeys.TAB_ORDER, new String(out));
 		editor.apply();
 	}
@@ -126,7 +126,7 @@ public class TabOrderActivity extends Activity
 	 */
 	public void load()
 	{
-		String in = PlaybackService.getSettings(this).getString(PrefKeys.TAB_ORDER, PrefDefaults.TAB_ORDER);
+		String in = SharedPrefHelper.getSettings(this).getString(PrefKeys.TAB_ORDER, PrefDefaults.TAB_ORDER);
 		if (in != null && in.length() == LibraryPagerAdapter.MAX_ADAPTER_COUNT) {
 			char[] chars = in.toCharArray();
 			int[] ids = new int[LibraryPagerAdapter.MAX_ADAPTER_COUNT];

@@ -28,7 +28,6 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
-import android.util.Log;
 
 
 public class PreferencesTheme extends PreferenceFragment
@@ -66,7 +65,7 @@ public class PreferencesTheme extends PreferenceFragment
 
 	@Override
 	public boolean onPreferenceClick(Preference pref) {
-		SharedPreferences.Editor editor = PlaybackService.getSettings(mContext).edit();
+		SharedPreferences.Editor editor = SharedPrefHelper.getSettings(mContext).edit();
 		editor.putString(PrefKeys.SELECTED_THEME, pref.getKey());
 		editor.apply();
 		return true;

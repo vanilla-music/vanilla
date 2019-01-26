@@ -17,7 +17,6 @@
 
 package ch.blinkenlights.android.vanilla;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.content.SharedPreferences;
 
@@ -32,14 +31,14 @@ public class PlaylistObserverDirActivity extends FolderPickerActivity {
 		setTitle(R.string.filebrowser_start);
 
 		// Start at currently configured directory.
-		String current = PlaybackService.getSettings(this).getString(PrefKeys.PLAYLIST_SYNC_FOLDER, PrefDefaults.PLAYLIST_SYNC_FOLDER);
+		String current = SharedPrefHelper.getSettings(this).getString(PrefKeys.PLAYLIST_SYNC_FOLDER, PrefDefaults.PLAYLIST_SYNC_FOLDER);
 		setCurrentDir(new File(current));
 	}
 
 
 	@Override
 	public void onFolderPicked(File directory, ArrayList<String> a, ArrayList<String> b) {
-		SharedPreferences.Editor editor = PlaybackService.getSettings(this).edit();
+		SharedPreferences.Editor editor = SharedPrefHelper.getSettings(this).edit();
 		editor.putString(PrefKeys.PLAYLIST_SYNC_FOLDER, directory.getAbsolutePath());
 		editor.apply();
 		finish();

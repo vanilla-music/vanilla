@@ -96,7 +96,7 @@ public class ThemeHelper {
 	 * @return integer of the selected theme
 	 */
 	final private static int getSelectedThemeIndex(Context context) {
-		SharedPreferences settings = PlaybackService.getSettings(context);
+		SharedPreferences settings = SharedPrefHelper.getSettings(context);
 		String prefValue = settings.getString(PrefKeys.SELECTED_THEME, PrefDefaults.SELECTED_THEME);
 
 		final String[] ids = context.getResources().getStringArray(R.array.theme_ids);

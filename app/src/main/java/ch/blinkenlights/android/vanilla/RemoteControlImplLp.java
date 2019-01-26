@@ -133,7 +133,7 @@ public class RemoteControlImplLp implements RemoteControl.Client {
 		boolean isPlaying = ((state & PlaybackService.FLAG_PLAYING) != 0);
 
 		if (mShowCover == -1) {
-			SharedPreferences settings = PlaybackService.getSettings(mContext);
+			SharedPreferences settings = SharedPrefHelper.getSettings(mContext);
 			mShowCover = settings.getBoolean(PrefKeys.COVER_ON_LOCKSCREEN, PrefDefaults.COVER_ON_LOCKSCREEN) ? 1 : 0;
 		}
 
