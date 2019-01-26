@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2018-2019 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,25 +22,23 @@
 
 package ch.blinkenlights.android.vanilla.ui;
 
+import com.orhanobut.dialogplus.DialogPlus;
+import com.orhanobut.dialogplus.OnItemClickListener;
+
 import ch.blinkenlights.android.vanilla.R;
 import ch.blinkenlights.android.vanilla.ThemeHelper;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.ListPopupWindow;
 import android.widget.TextView;
 import android.widget.ImageView;
-import android.util.DisplayMetrics;
 
-import java.lang.Math;
 import java.util.ArrayList;
-
 
 public class FancyMenu {
 	/**
@@ -166,72 +164,6 @@ public class FancyMenu {
 	}
 
 	/**
-	 * Measures the predicted total height and max width of given adapter.
-	 *
-	 * @param adapter the adapter to measure
-	 * @param result int array with two elements. 0 is the max height, 1 the longest width.
-	 */
-	private void measureAdapter(Adapter adapter, int[] result) {
-		result[0] = 0;
-		result[1] = 0;
-		ListView parent = new ListView(mContext);
-		for (int i = 0; i < adapter.getCount(); i++) {
-			View view = adapter.getView(i, null, parent);
-			view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-			ViewGroup.LayoutParams lp = view.getLayoutParams();
-			// MATCH_PARENT, FILL_PARENT are negative, so prefer real values if available:
-			int height = Math.max(view.getMeasuredHeight(), lp.height);
-			int width = Math.max(view.getMeasuredWidth(), lp.width);
-			result[0] += height;
-			result[1] = Math.max(result[1], width);
-		}
-	}
-
-	/**
-	 * Return whether the given ListPopupWindow will show above or below
-	 * the anchor view.
-	 *
-	 * @param pw the list popup window
-	 * @return -1 if the ListPopupWindow shows below, 1 if is shows above
-	 */
-	private int getPopupOrientation(ListPopupWindow pw) {
-		return (pw.getHeight() > getAvailableBottomSpace(pw.getAnchorView()) ? 1 : -1);
-	}
-
-	/**
-	 * Calculates the available space from the top corner of the give view
-	 * to the bottom of the display
-	 *
-	 * @param view the view to measure
-	 * @return amount of available pixels
-	 */
-	private int getAvailableBottomSpace(View view) {
-		DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
-		int pos[] = new int[2];
-		view.getLocationInWindow(pos);
-		return (metrics.heightPixels - pos[1] - view.getHeight());
-	}
-
-	/**
-	 * Calculate the height that should be used for the menu
-	 *
-	 * @param the estimated height
-	 * @return the height to use instead of the input
-	 */
-	private int getMenuHeight(View parent, int suggested) {
-		if (ThemeHelper.usesHoloTheme()) {
-			// No height enforced on Holo as it does stupid stuff.
-			return ListPopupWindow.WRAP_CONTENT;
-		}
-
-		DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
-		// Never return a menu height smaller than 25% (unless the menu is smaller)
-		int min = metrics.heightPixels / 4;
-		int available = Math.max(getAvailableBottomSpace(parent), min);
-		return Math.min(available, suggested);
-	}
-
-	/**
 	 * Show the assembled fancy menu
 	 *
 	 * @param the parent view to use as anchor
@@ -239,41 +171,28 @@ public class FancyMenu {
 	 * @param y y-coord position hint
 	 */
 	public void show(View parent, float x, float y) {
-		final ListPopupWindow pw = new ListPopupWindow(mContext);
 		final Adapter adapter = assembleAdapter(mItems);
-		AdapterView.OnItemClickListener listener = new AdapterView.OnItemClickListener() {
+		final OnItemClickListener listener = new OnItemClickListener() {
 				@Override
-				public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
-					FancyMenuItem item = adapter.getItem(pos);
+				public void onItemClick(DialogPlus dialog, Object object, View view, int position) {
+					FancyMenuItem item = (FancyMenuItem)object;
 					if (!item.isSpacer()) {
 						mCallback.onFancyItemSelected(item);
 					}
-					pw.dismiss();
+					dialog.dismiss();
 				}
 			};
 
-		int result[] = new int[2];
-		measureAdapter(adapter, result);
-		pw.setHeight(getMenuHeight(parent, result[0]));
-		pw.setWidth(result[1]);
-
-		pw.setAdapter(adapter);
-		pw.setOnItemClickListener(listener);
-		pw.setModal(true);
-		pw.setAnchorView(parent);
-
-		if (!Float.isNaN(x) && !Float.isNaN(y)) {
-			pw.setHorizontalOffset((int)x);
-		}
-
-		if (pw.getHeight() > 0) {
-			// Add an offset (to slightly overlap the parent) if we have a
-			// fixed height (and therefore can predict the popup orientation)
-			int voff = parent.getHeight() / 5 * getPopupOrientation(pw);
-			pw.setVerticalOffset(voff);
-		}
-
-		pw.show();
+		// TODO: setHeader ?
+		int bgColor = ThemeHelper.fetchThemeColor(mContext, android.R.attr.colorBackground);
+		DialogPlus dialog = DialogPlus.newDialog(mContext)
+			.setAdapter(adapter)
+			.setOnItemClickListener(listener)
+			.setExpanded(true)
+			.setCancelable(true)
+			.setContentBackgroundColor(bgColor)
+			.create();
+		dialog.show();
 	}
 
 	/**
