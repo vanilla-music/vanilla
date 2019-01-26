@@ -1,4 +1,4 @@
-.PHONY: debug build release clean
+.PHONY: debug build release clean libs
 
 default:
 
@@ -8,7 +8,7 @@ lint:
 debug: build
 	adb install -r ./app/build/outputs/apk/debug/app-debug.apk
 
-build:
+build: libs
 	ssh qemu '. .bash_aliases && cd /hostfs/vanilla && ./gradlew build -x lintVitalRelease -x lint'
 
 release: clean
@@ -22,3 +22,6 @@ uninstall:
 
 gce-nightly:
 	./gradlew assembleRelease && cd ./app/build/outputs/apk/release && zipalign -v -p 4 app-release-unsigned.apk aligned.apk && echo aaaaaa | apksigner sign -ks ~/.android.keystore --out nightly-signed.apk aligned.apk
+
+libs:
+	$(MAKE) -C libs
