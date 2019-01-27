@@ -55,6 +55,6 @@ THE SOFTWARE.
 		<item name="controls_active">@android:color/holo_blue_dark</item>
 	</style>
 
-	<style name="BottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+	<style name="BottomSheetDialog" parent="Theme.Design.BottomSheetDialog">
 	</style>
 </resources>
