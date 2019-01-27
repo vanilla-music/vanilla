@@ -170,7 +170,8 @@ public class FancyMenu {
 	 * @param y y-coord position hint
 	 */
 	public void show(View parent, float x, float y) {
-		final Sheet sheet = new Sheet(mContext);
+		int style = ThemeHelper.getThemeResource(mContext, R.style.BottomSheetDialog);
+		final Sheet sheet = new Sheet(mContext, style);
 		final Adapter adapter = assembleAdapter(mItems);
 		final AdapterView.OnItemClickListener listener = new AdapterView.OnItemClickListener() {
 				@Override
@@ -193,8 +194,8 @@ public class FancyMenu {
 	}
 
     private class Sheet extends BottomSheetDialog {
-		Sheet(Context context) {
-			super(context);
+		Sheet(Context context, int style) {
+			super(context, style);
 		}
 	}
 

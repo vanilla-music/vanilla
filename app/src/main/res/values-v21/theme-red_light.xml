@@ -52,4 +52,9 @@
 		<item name="controls_active">#ffd50000</item>
 	</style>
 
+	<style name="Red_light.BottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+		<item name="android:colorBackground">@color/overlay_background_light</item>
+	</style>
+
+
 </resources>

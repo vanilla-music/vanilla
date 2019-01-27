@@ -38,9 +38,11 @@ THE SOFTWARE.
 		<item name="android:actionBarStyle">@style/Universal.PlaybackActionBar</item>
 		<item name="android:windowBackground">@android:color/black</item>
 	</style>
+
 	<style name="BackActionBar" parent="VanillaBase">
 		<item name="android:actionBarStyle">@style/Universal.PlaybackActionBar</item>
 	</style>
+
 	<style name="Library" parent="VanillaBase">
 		<item name="android:windowActionBar">false</item>
 		<item name="android:windowNoTitle">true</item>
@@ -53,4 +55,6 @@ THE SOFTWARE.
 		<item name="controls_active">@android:color/holo_blue_dark</item>
 	</style>
 
+	<style name="BottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+	</style>
 </resources>

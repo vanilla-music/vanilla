@@ -52,4 +52,9 @@
 		<item name="controls_active">#ff3e677a</item>
 	</style>
 
+	<style name="BottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+		<item name="android:colorBackground">@color/overlay_background_light</item>
+	</style>
+
+
 </resources>

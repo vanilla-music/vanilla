@@ -138,6 +138,11 @@ EOF
 		<item name="controls_normal">$this->{controlsNormal}</item>
 		<item name="controls_active">$this->{colorAccent}</item>
 	</style>
+
+	<style name="${tid}BottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+		<item name="android:colorBackground">\@color/overlay_background_light</item>
+	</style>
+
 EOF
 	} else {
 	$DATA .= << "EOF"
@@ -174,6 +179,10 @@ EOF
 		<item name="background_circle_color">\@color/material_grey_700</item>
 		<item name="controls_normal">$this->{controlsNormal}</item>
 		<item name="controls_active">$this->{colorAccent}</item>
+	</style>
+
+	<style name="${tid}BottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+		<item name="android:colorBackground">\@color/overlay_background_dark</item>
 	</style>
 EOF
 	}
