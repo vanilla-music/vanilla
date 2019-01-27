@@ -22,13 +22,11 @@
 
 package ch.blinkenlights.android.vanilla.ui;
 
-import com.orhanobut.dialogplus.DialogPlus;
-import com.orhanobut.dialogplus.OnItemClickListener;
-
 import ch.blinkenlights.android.vanilla.R;
 import ch.blinkenlights.android.vanilla.ThemeHelper;
 
 import android.content.Context;
+import android.support.design.widget.BottomSheetDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +37,7 @@ import android.widget.TextView;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
+
 
 public class FancyMenu {
 	/**
@@ -171,28 +170,32 @@ public class FancyMenu {
 	 * @param y y-coord position hint
 	 */
 	public void show(View parent, float x, float y) {
+		final Sheet sheet = new Sheet(mContext);
 		final Adapter adapter = assembleAdapter(mItems);
-		final OnItemClickListener listener = new OnItemClickListener() {
+		final AdapterView.OnItemClickListener listener = new AdapterView.OnItemClickListener() {
 				@Override
-				public void onItemClick(DialogPlus dialog, Object object, View view, int position) {
-					FancyMenuItem item = (FancyMenuItem)object;
+				public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
+					FancyMenuItem item = adapter.getItem(pos);
 					if (!item.isSpacer()) {
 						mCallback.onFancyItemSelected(item);
 					}
-					dialog.dismiss();
+					sheet.dismiss();
 				}
 			};
+		ListView list = new ListView(mContext);
+		list.setAdapter(adapter);
+		list.setOnItemClickListener(listener);
+		list.setDivider(null);
 
-		// TODO: setHeader ?
-		int bgColor = ThemeHelper.fetchThemeColor(mContext, android.R.attr.colorBackground);
-		DialogPlus dialog = DialogPlus.newDialog(mContext)
-			.setAdapter(adapter)
-			.setOnItemClickListener(listener)
-			.setExpanded(true)
-			.setCancelable(true)
-			.setContentBackgroundColor(bgColor)
-			.create();
-		dialog.show();
+		sheet.setTitle(mTitle);
+		sheet.setContentView(list);
+		sheet.show();
+	}
+
+    private class Sheet extends BottomSheetDialog {
+		Sheet(Context context) {
+			super(context);
+		}
 	}
 
 	/**

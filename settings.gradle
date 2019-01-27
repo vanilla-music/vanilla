@@ -1,4 +1,1 @@
 include "app"
-include "dialogplus"
-
-project(':dialogplus').projectDir = new File('./libs/dialogplus/dialogplus')
