@@ -49,4 +49,10 @@ THE SOFTWARE.
 			android:targetPackage="ch.blinkenlights.android.vanilla"
 			android:targetClass="ch.blinkenlights.android.vanilla.PlaylistObserverDirActivity" />
 	</PreferenceScreen>
+	<CheckBoxPreference
+		android:defaultValue="false"
+		android:dependency="playlist_sync_mode"
+		android:key="playlist_sync_relative_paths"
+		android:summary="@string/playlist_sync_relative_paths_summary"
+		android:title="@string/playlist_sync_relative_paths_title" />
 </PreferenceScreen>

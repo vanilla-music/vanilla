@@ -27,6 +27,10 @@ package ch.blinkenlights.android.vanilla;
  * SharedPreference keys. Must be kept in sync with {@link PrefDefaults}.
  */
 public class PrefKeys {
+	private PrefKeys() {
+		// Private constructor to hide implicit one.
+	}
+
 	public static final String COVER_LONGPRESS_ACTION = "cover_longpress_action";
 	public static final String COVER_PRESS_ACTION = "cover_press_action";
 	public static final String DEFAULT_ACTION_INT = "default_action_int";
@@ -74,6 +78,7 @@ public class PrefKeys {
 	public static final String QUEUE_ENABLE_SCROLL_TO_SONG = "queue_enable_scroll_to_song";
 	public static final String KEEP_SCREEN_ON = "keep_screen_on";
 	public static final String PLAYLIST_SYNC_MODE = "playlist_sync_mode";
+	public static final String PLAYLIST_SYNC_RELATIVE_PATHS = "playlist_sync_relative_paths";
 	public static final String PLAYLIST_SYNC_FOLDER = "playlist_sync_folder";
 	public static final String JUMP_TO_ENQUEUED_ON_PLAY = "jump_to_enqueued_on_play";
 }

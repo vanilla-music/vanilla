@@ -34,6 +34,124 @@ import android.util.Log;
  * Provides some static File-related utility functions.
  */
 public class FileUtils {
+	/**
+	 * The string (but also valid path!) to use to indicate the current directory
+	 */
+	public static final String NAME_CURRENT_FOLDER = ".";
+	/**
+	 * The string (but also valid path!) to use to indicate the parent directory
+	 */
+	public static final String NAME_PARENT_FOLDER = "..";
+
+	private FileUtils() {
+		// Private constructor to hide implicit one.
+	}
+
+	/**
+	 * Converts common path separator characters ('/' or '\\') to the value of File.separatorChar.
+	 *
+	 * @param path The path to convert directory separators within.
+	 * @return A path with all valid separators normalized to the system's.
+	 */
+	public static String normalizeDirectorySeparators(String path) {
+		final StringBuilder sb = new StringBuilder(path);
+
+		for (int i = 0; i < sb.length(); i++) {
+			final char originalChar = sb.charAt(i);
+			if (originalChar == '/' || originalChar == '\\') {
+				sb.setCharAt(i, File.separatorChar);
+			}
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * Utility function to prepend n-parent directory traversals to a path.
+	 *
+	 * @param path A relative path to traverse upwards from within.
+	 * @param traversalCount The number of directories to navigate upwards.
+	 * @return The result of creating the relative path.
+	 */
+	private static String traversePathUpwards(String path, int traversalCount) {
+		if (traversalCount < 0)
+			throw new IllegalArgumentException("Cannot descend into the directory structure.");
+
+		if (traversalCount == 0)
+			return path;
+
+		StringBuilder sb = new StringBuilder((FileUtils.NAME_PARENT_FOLDER.length() + 1) * traversalCount +
+			path.length());
+
+		for (int i = 0; i < traversalCount; i++) {
+			sb.append(FileUtils.NAME_PARENT_FOLDER);
+			sb.append(File.separatorChar);
+		}
+		sb.append(path);
+		return sb.toString();
+	}
+
+	/**
+	 * Attempts to generate a relative path from a source File to a destination.
+	 * Will attempt to perform directory traversal to find a common path.
+	 * Upon failure to relativize, returns the original destination.
+	 *
+	 * @param source The File the path is relative to e.g. /a/b/c/
+	 * @param destination The File the path is pointing to e.g. /a/b/c/d.mp3
+	 * @return A relative or absolute path pointing to the destination.
+	 */
+	public static String relativize(File source, File destination) {
+		if (destination.isAbsolute() != source.isAbsolute())
+			return destination.getPath();
+
+		File commonParentFile = source;
+		final String destinationPath = destination.getPath();
+		int traversalCount = 0;
+
+		if (commonParentFile.equals(destination)) {
+			return FileUtils.NAME_CURRENT_FOLDER;
+		}
+
+		do {
+			String parentPath = commonParentFile.getPath();
+			if (!parentPath.endsWith(File.separator)) {
+				parentPath += File.separatorChar;
+			}
+
+			if (destinationPath.startsWith(parentPath)) {
+				return traversePathUpwards(
+					destinationPath.substring(parentPath.length()),
+					traversalCount);
+			}
+			++traversalCount;
+		} while ((commonParentFile = commonParentFile.getParentFile()) != null);
+		return destination.getPath();
+	}
+
+	/**
+	 * Attempts to resolve a path from a base, if the destination is relative.
+	 * Upon failure to resolve, returns the original destination.
+	 *
+	 * @param source The File the path may be relative to e.g. /a/b/c/
+	 * @param destination The File the path is pointing to e.g. /a/b/c/d.mp3
+	 * @return A relative or absolute path pointing to the destination.
+	 */
+	public static String resolve(File source, File destination) {
+		String path;
+
+		try {
+			if (destination.isAbsolute()) {
+				path = destination.getPath();
+			} else {
+				path = new File(source,
+						destination.getPath())
+					.getAbsolutePath();
+			}
+		} catch (SecurityException ex) {
+			path = destination.getPath();
+		}
+		return path;
+	}
+
 
 	/**
 	 * Checks if dispatching this intent to an external application makes sense
@@ -101,7 +219,7 @@ public class FileUtils {
 	 * Empty string is returned if there is no extension.
 	 */
 	public static String getFileExtension(String filename) {
-		int index = filename.lastIndexOf(".");
+		int index = filename.lastIndexOf('.');
 		return index > 0 ? filename.substring(index) : "";
 	}
 }
