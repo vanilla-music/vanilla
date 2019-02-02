@@ -95,7 +95,7 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 	/**
 	 * Whether to export playlists using relative file paths.
 	 */
-	private boolean mSyncRelativePaths;
+	private boolean mExportRelativePaths;
 	/**
 	 * Database fields
 	 */
@@ -112,12 +112,12 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 	}
 
 
-	public PlaylistObserver(Context context, String folder, int mode, boolean syncRelativePaths) {
+	public PlaylistObserver(Context context, String folder, int mode, boolean exportRelativePaths) {
 		super(context, "playlist_observer.db", null, 1 /* version */);
 		mContext = context;
 		mSyncMode = mode;
 		mPlaylists = new File(folder);
-		mSyncRelativePaths = syncRelativePaths;
+		mExportRelativePaths = exportRelativePaths;
 
 		// Launch new thread for background execution
 		mHandlerThread= new HandlerThread("PlaylisObserverHandler", Process.THREAD_PRIORITY_LOWEST);
@@ -385,12 +385,9 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 				pw = new PrintWriter(m3u);
 				while (cursor.moveToNext()) {
 					// Write paths relative to the playlist export directory, if enabled.
-					final String path;
-					if (mSyncRelativePaths) {
-						path = FileUtils.relativize(mPlaylists,
-							new File(cursor.getString(1)));
-					} else {
-						path = cursor.getString(1);
+					String path = cursor.getString(1);
+					if (mExportRelativePaths) {
+						path = FileUtils.relativize(mPlaylists, new File(path));
 					}
 					pw.println(path);
 				}
@@ -613,23 +610,27 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 	};
 
 	/**
-	 * Observer which monitors the playlists directory.
+	 * Returns a new observer which monitors the playlists directory.
 	 *
-	 * @param event the event type
-	 * @param dirent the filename which triggered the event.
+	 * @param target The target playlists directory.
+	 * @return A new observer for the playlists directory.
 	 */
 	private FileObserver getFileObserver(File target) {
 		final int mask = FileObserver.CLOSE_WRITE | FileObserver.MOVED_FROM | FileObserver.MOVED_TO | FileObserver.DELETE;
 		XT("new file observer at "+target+" with mask "+mask);
 
 		return new FileObserver(target.getAbsolutePath(), mask) {
+			/**
+			 * Observer which monitors the playlists directory.
+			 *
+			 * @param event the event type
+			 * @param dirent the filename which triggered the event.
+			 */
 			@Override
 			public void onEvent(int event, String dirent) {
 				// Events such as IN_IGNORED pass dirent = null.
-				if (dirent == null) {
-					XT("FileObserver::onEvent dirent=null with event " + event);
+				if (dirent == null)
 					return;
-				}
 
 				if (!isM3uFilename(dirent))
 					return;

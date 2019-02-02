@@ -78,7 +78,7 @@ public class PrefKeys {
 	public static final String QUEUE_ENABLE_SCROLL_TO_SONG = "queue_enable_scroll_to_song";
 	public static final String KEEP_SCREEN_ON = "keep_screen_on";
 	public static final String PLAYLIST_SYNC_MODE = "playlist_sync_mode";
-	public static final String PLAYLIST_SYNC_RELATIVE_PATHS = "playlist_sync_relative_paths";
 	public static final String PLAYLIST_SYNC_FOLDER = "playlist_sync_folder";
+	public static final String PLAYLIST_EXPORT_RELATIVE_PATHS = "playlist_export_relative_paths";
 	public static final String JUMP_TO_ENQUEUED_ON_PLAY = "jump_to_enqueued_on_play";
 }

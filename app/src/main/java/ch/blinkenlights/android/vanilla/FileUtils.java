@@ -91,19 +91,19 @@ public class FileUtils {
 	}
 
 	/**
-	 * Attempts to generate a relative path from a source File to a destination.
+	 * Attempts to generate a relative path from a base, to a destination.
 	 * Will attempt to perform directory traversal to find a common path.
 	 * Upon failure to relativize, returns the original destination.
 	 *
-	 * @param source The File the path is relative to e.g. /a/b/c/
-	 * @param destination The File the path is pointing to e.g. /a/b/c/d.mp3
+	 * @param base The File the path is relative to e.g. /a/b/c/
+	 * @param destination The File the resultant path should point to e.g. /a/b/c/d.mp3
 	 * @return A relative or absolute path pointing to the destination.
 	 */
-	public static String relativize(File source, File destination) {
-		if (destination.isAbsolute() != source.isAbsolute())
+	public static String relativize(File base, File destination) {
+		if (destination.isAbsolute() != base.isAbsolute())
 			return destination.getPath();
 
-		File commonParentFile = source;
+		File commonParentFile = base;
 		final String destinationPath = destination.getPath();
 		int traversalCount = 0;
 
@@ -131,23 +131,19 @@ public class FileUtils {
 	 * Attempts to resolve a path from a base, if the destination is relative.
 	 * Upon failure to resolve, returns the original destination.
 	 *
-	 * @param source The File the path may be relative to e.g. /a/b/c/
-	 * @param destination The File the path is pointing to e.g. /a/b/c/d.mp3
+	 * @param base The File the path may be relative to e.g. /a/b/c/
+	 * @param destination The File the resultant path should point to e.g. d.mp3
 	 * @return A relative or absolute path pointing to the destination.
 	 */
-	public static String resolve(File source, File destination) {
-		String path;
+	public static String resolve(File base, File destination) {
+		String path = destination.getPath();
 
 		try {
-			if (destination.isAbsolute()) {
-				path = destination.getPath();
-			} else {
-				path = new File(source,
-						destination.getPath())
-					.getAbsolutePath();
+			if (!destination.isAbsolute()) {
+				path = new File(base, path).getAbsolutePath();
 			}
 		} catch (SecurityException ex) {
-			path = destination.getPath();
+			// Ignore.
 		}
 		return path;
 	}
@@ -165,7 +161,7 @@ public class FileUtils {
 		int type = intent.getIntExtra(LibraryAdapter.DATA_TYPE, MediaUtils.TYPE_INVALID);
 		boolean isFolder = intent.getBooleanExtra(LibraryAdapter.DATA_EXPANDABLE, false);
 		String path = intent.getStringExtra(LibraryAdapter.DATA_FILE);
-		if (type == MediaUtils.TYPE_FILE && isFolder == false) {
+		if (type == MediaUtils.TYPE_FILE && !isFolder) {
 			try {
 				URI uri = new URI("file", path, null);
 				String mimeGuess = URLConnection.guessContentTypeFromName(uri.toString());
