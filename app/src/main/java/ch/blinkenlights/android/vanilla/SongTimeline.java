@@ -839,6 +839,9 @@ public final class SongTimeline {
 						case MediaUtils.TYPE_SONG:
 							id = song.id;
 							break;
+						case MediaUtils.TYPE_FILE:
+							id = song.id;
+							break;
 						default:
 							throw new IllegalArgumentException("Unsupported id type: " + type);
 						}

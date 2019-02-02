@@ -17,6 +17,8 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import ch.blinkenlights.android.medialibrary.MediaLibrary;
+
 import java.io.File;
 import java.net.URI;
 import java.net.URLConnection;
@@ -103,5 +105,15 @@ public class FileUtils {
 	public static String getFileExtension(String filename) {
 		int index = filename.lastIndexOf(".");
 		return index > 0 ? filename.substring(index) : "";
+	}
+
+	/**
+	 * Returns the ID which the media library uses for a file.
+	 *
+	 * @param the file to get the id for.
+	 * @return the id this file would have in the library.
+	 */
+	public static long songIdFromFile(File file) {
+		return MediaLibrary.hash63(file.getAbsolutePath());
 	}
 }

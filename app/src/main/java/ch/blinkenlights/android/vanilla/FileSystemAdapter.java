@@ -242,7 +242,7 @@ public class FileSystemAdapter
 	@Override
 	public long getItemId(int pos)
 	{
-		return pos;
+		return FileUtils.songIdFromFile(mFiles[pos]);
 	}
 
 	@Override
@@ -366,9 +366,13 @@ public class FileSystemAdapter
 	}
 
 	@Override
-	public Limiter buildLimiter(long id)
-	{
-		return buildLimiter(mFiles[(int)id]);
+	public Limiter buildLimiter(long id) {
+		for (int i = 0; i < mFiles.length; i++) {
+			if (id == getItemId(i)) {
+				return buildLimiter(mFiles[i]);
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -403,7 +407,7 @@ public class FileSystemAdapter
 
 		Intent intent = new Intent();
 		intent.putExtra(LibraryAdapter.DATA_TYPE, MediaUtils.TYPE_FILE);
-		intent.putExtra(LibraryAdapter.DATA_ID, holder.id);
+		intent.putExtra(LibraryAdapter.DATA_ID, getItemId((int)holder.id));
 		intent.putExtra(LibraryAdapter.DATA_TITLE, holder.title);
 		intent.putExtra(LibraryAdapter.DATA_EXPANDABLE, file.isDirectory());
 		intent.putExtra(LibraryAdapter.DATA_FILE, file.getAbsolutePath());

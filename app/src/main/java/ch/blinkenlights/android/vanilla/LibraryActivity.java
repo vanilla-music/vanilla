@@ -399,7 +399,9 @@ public class LibraryActivity
 
 		boolean all = false;
 		if (action == ACTION_PLAY_ALL || action == ACTION_ENQUEUE_ALL) {
-			boolean notPlayAllAdapter = type > MediaUtils.TYPE_SONG || id == LibraryAdapter.HEADER_ID;
+			boolean notPlayAllAdapter =
+				(id == LibraryAdapter.HEADER_ID)
+				|| !(type <= MediaUtils.TYPE_SONG || type == MediaUtils.TYPE_FILE);
 			if (effectiveAction == ACTION_ENQUEUE_ALL && notPlayAllAdapter) {
 				effectiveAction = ACTION_ENQUEUE;
 			} else if (effectiveAction == ACTION_PLAY_ALL && notPlayAllAdapter) {
@@ -658,7 +660,7 @@ public class LibraryActivity
 				fm.add(CTX_MENU_OPEN_EXTERNAL, 10, R.drawable.menu_launch, R.string.open).setIntent(rowData);
 
 			fm.add(CTX_MENU_PLAY, 0, R.drawable.menu_play, R.string.play).setIntent(rowData);
-			if (type <= MediaUtils.TYPE_SONG)
+			if (type <= MediaUtils.TYPE_SONG || type == MediaUtils.TYPE_FILE)
 				fm.add(CTX_MENU_PLAY_ALL, 1, R.drawable.menu_play_all, R.string.play_all).setIntent(rowData);
 
 			fm.add(CTX_MENU_ENQUEUE_AS_NEXT, 1, R.drawable.menu_enqueue_as_next, R.string.enqueue_as_next).setIntent(rowData);
