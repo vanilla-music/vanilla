@@ -36,8 +36,6 @@ import java.util.Random;
 
 import android.util.Log;
 
-import junit.framework.Assert;
-
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -46,9 +44,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
-import android.text.TextUtils;
 import android.database.MatrixCursor;
-import android.util.Log;
 import android.widget.Toast;
 
 

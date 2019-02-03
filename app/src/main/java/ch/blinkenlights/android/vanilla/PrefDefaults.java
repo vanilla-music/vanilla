@@ -26,6 +26,10 @@ package ch.blinkenlights.android.vanilla;
  * SharedPreference default values. Must be kept in sync with keys in res/xml/prefs_*.xml.
  */
 public class PrefDefaults {
+	private PrefDefaults() {
+		// Private constructor to hide implicit one.
+	}
+
 	public static final Action  COVER_LONGPRESS_ACTION = Action.PlayPause;
 	public static final Action  COVER_PRESS_ACTION = Action.ToggleControls;
 	public static final String  DEFAULT_ACTION_INT = "9";
@@ -74,5 +78,6 @@ public class PrefDefaults {
 	public static final boolean KEEP_SCREEN_ON = false;
 	public static final String  PLAYLIST_SYNC_MODE = "0";
 	public static final String  PLAYLIST_SYNC_FOLDER = "/sdcard/Playlists";
+	public static final boolean PLAYLIST_EXPORT_RELATIVE_PATHS = false;
 	public static final boolean JUMP_TO_ENQUEUED_ON_PLAY = true;
 }

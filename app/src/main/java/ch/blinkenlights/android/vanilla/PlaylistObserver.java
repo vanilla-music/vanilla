@@ -26,7 +26,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Build;
-import android.os.Environment;
 import android.os.FileObserver;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -50,21 +49,25 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 	/**
 	 * Whether or not to write debug logs.
 	 */
-	private final static boolean DEBUG = false;
+	private static final boolean DEBUG = false;
 	/**
 	 * Bits for mSyncMode
 	 */
-	public final static int SYNC_MODE_IMPORT = (1 << 0);
-	public final static int SYNC_MODE_EXPORT = (1 << 1);
-	public final static int SYNC_MODE_PURGE  = (1 << 2);
+	public static final int SYNC_MODE_IMPORT = (1 << 0);
+	public static final int SYNC_MODE_EXPORT = (1 << 1);
+	public static final int SYNC_MODE_PURGE  = (1 << 2);
 	/**
 	 * Timeout to coalesce duplicate messages, ~2.3 sec because no real reason.
 	 */
-	private final static int COALESCE_EVENTS_DELAY_MS = 2345;
+	private static final int COALESCE_EVENTS_DELAY_MS = 2345;
 	/**
 	 * Extension to use for M3U files
 	 */
-	private final static String M3U_EXT = ".m3u";
+	private static final String M3U_EXT = ".m3u";
+	/**
+	 * Line comment prefix for M3U files
+	 */
+	private static final String M3U_LINE_COMMENT_PREFIX = "#";
 	/**
 	 * Context to use.
 	 */
@@ -90,14 +93,18 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 	 */
 	private int mSyncMode;
 	/**
+	 * Whether to export playlists using relative file paths.
+	 */
+	private boolean mExportRelativePaths;
+	/**
 	 * Database fields
 	 */
 	private static class Database {
-		final static String TABLE_NAME = "playlist_metadata";
-		final static String _ID = "_id";
-		final static String NAME = "name";
-		final static String HASH = "hash";
-		final static String[] FILLED_PROJECTION = {
+		static final String TABLE_NAME = "playlist_metadata";
+		static final String _ID = "_id";
+		static final String NAME = "name";
+		static final String HASH = "hash";
+		static final String[] FILLED_PROJECTION = {
 			_ID,
 			NAME,
 			HASH,
@@ -105,11 +112,12 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 	}
 
 
-	public PlaylistObserver(Context context, String folder, int mode) {
+	public PlaylistObserver(Context context, String folder, int mode, boolean exportRelativePaths) {
 		super(context, "playlist_observer.db", null, 1 /* version */);
 		mContext = context;
 		mSyncMode = mode;
 		mPlaylists = new File(folder);
+		mExportRelativePaths = exportRelativePaths;
 
 		// Launch new thread for background execution
 		mHandlerThread= new HandlerThread("PlaylisObserverHandler", Process.THREAD_PRIORITY_LOWEST);
@@ -198,11 +206,11 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 	 * Message handler, used to dedupe messages and perform
 	 * background work.
 	 */
-	private final static int MSG_DUMP_M3U = 1;
-	private final static int MSG_DUMP_ALL_M3U = 2;
-	private final static int MSG_IMPORT_M3U = 3;
-	private final static int MSG_FORCE_M3U_IMPORT = 4;
-	private final static int MSG_FULL_SYNC_SCAN = 5;
+	private static final int MSG_DUMP_M3U = 1;
+	private static final int MSG_DUMP_ALL_M3U = 2;
+	private static final int MSG_IMPORT_M3U = 3;
+	private static final int MSG_FORCE_M3U_IMPORT = 4;
+	private static final int MSG_FULL_SYNC_SCAN = 5;
 	ArrayList<Integer> msgDedupe = new ArrayList<>();
 	@Override
 	public boolean handleMessage(Message message) {
@@ -332,8 +340,13 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 			try (BufferedReader br = new BufferedReader(new FileReader(m3u))) {
 				String line;
 				while ((line = br.readLine()) != null) {
-					if (line.matches("^/.+")) {
-						Playlist.addToPlaylist(mContext, import_id, MediaUtils.buildFileQuery(line, Song.FILLED_PROJECTION,  false /* recursive */));
+					if (!(line.isEmpty() || line.startsWith(M3U_LINE_COMMENT_PREFIX))) {
+						// Handle relative paths and Windows directory separators.
+						final String mediaPath = FileUtils.resolve(mPlaylists,
+							new File(FileUtils.normalizeDirectorySeparators(line)));
+						Playlist.addToPlaylist(mContext,
+							import_id,
+							MediaUtils.buildFileQuery(mediaPath, Song.FILLED_PROJECTION,  false /* recursive */));
 					}
 				}
 				updatePlaylistMetadata(import_id, import_as, hash);
@@ -371,7 +384,11 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 			if (cursor != null) {
 				pw = new PrintWriter(m3u);
 				while (cursor.moveToNext()) {
-					final String path = cursor.getString(1);
+					// Write paths relative to the playlist export directory, if enabled.
+					String path = cursor.getString(1);
+					if (mExportRelativePaths) {
+						path = FileUtils.relativize(mPlaylists, new File(path));
+					}
 					pw.println(path);
 				}
 				pw.flush();
@@ -593,18 +610,28 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 	};
 
 	/**
-	 * Observer which monitors the playlists directory.
+	 * Returns a new observer which monitors the playlists directory.
 	 *
-	 * @param event the event type
-	 * @param dirent the filename which triggered the event.
+	 * @param target The target playlists directory.
+	 * @return A new observer for the playlists directory.
 	 */
 	private FileObserver getFileObserver(File target) {
 		final int mask = FileObserver.CLOSE_WRITE | FileObserver.MOVED_FROM | FileObserver.MOVED_TO | FileObserver.DELETE;
 		XT("new file observer at "+target+" with mask "+mask);
 
 		return new FileObserver(target.getAbsolutePath(), mask) {
+			/**
+			 * Observer which monitors the playlists directory.
+			 *
+			 * @param event the event type
+			 * @param dirent the filename which triggered the event.
+			 */
 			@Override
 			public void onEvent(int event, String dirent) {
+				// Events such as IN_IGNORED pass dirent = null.
+				if (dirent == null)
+					return;
+
 				if (!isM3uFilename(dirent))
 					return;
 

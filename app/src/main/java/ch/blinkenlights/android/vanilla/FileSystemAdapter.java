@@ -25,21 +25,17 @@ package ch.blinkenlights.android.vanilla;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.FileObserver;
-import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.regex.Pattern;
 
 /**
@@ -54,10 +50,6 @@ public class FileSystemAdapter
 	private static final Pattern FILE_SEPARATOR = Pattern.compile(File.separator);
 	private static final Pattern GUESS_MUSIC = Pattern.compile("^(.+\\.(mp3|ogg|mka|opus|flac|aac|m4a|wav))$", Pattern.CASE_INSENSITIVE);
 	private static final Pattern GUESS_IMAGE = Pattern.compile("^(.+\\.(gif|jpe?g|png|bmp|tiff?))$", Pattern.CASE_INSENSITIVE);
-	/**
-	 * The string (but also valid path!) to use to indicate the parent directory
-	 */
-	private static final String NAME_PARENT_FOLDER = "..";
 	/**
 	 * The root directory of the device
 	 */
@@ -206,7 +198,7 @@ public class FileSystemAdapter
 		ArrayList<File> files = new ArrayList<File>(Arrays.asList(readdir));
 		Collections.sort(files, mFileComparator);
 		if (!mFsRoot.equals(file))
-			files.add(0, new File(file, NAME_PARENT_FOLDER));
+			files.add(0, new File(file, FileUtils.NAME_PARENT_FOLDER));
 
 		return files.toArray(new File[files.size()]);
 	}
@@ -337,7 +329,7 @@ public class FileSystemAdapter
 	 * @return true if given file points to the parent folder
 	 */
 	private static boolean pointsToParentFolder(File file) {
-		return NAME_PARENT_FOLDER.equals(file.getName());
+		return FileUtils.NAME_PARENT_FOLDER.equals(file.getName());
 	}
 
 	/**
