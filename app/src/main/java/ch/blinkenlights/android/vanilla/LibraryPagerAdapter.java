@@ -32,8 +32,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Parcelable;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +40,10 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import java.util.Arrays;
 import java.util.ArrayList;
+
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 
 /**
  * PagerAdapter that manages the library media ListViews.

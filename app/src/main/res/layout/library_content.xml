@@ -34,7 +34,7 @@ THE SOFTWARE.
 			android:layout_height="wrap_content"
 			android:elevation="4dp"
 			android:background="?tabs_background" />
-		<android.support.v4.view.ViewPager
+		<androidx.viewpager.widget.ViewPager
 			android:id="@+id/pager"
 			android:layout_width="fill_parent"
 			android:layout_height="0px"

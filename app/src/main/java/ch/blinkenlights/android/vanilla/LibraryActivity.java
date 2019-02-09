@@ -40,7 +40,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.iosched.tabs.VanillaTabLayout;
-import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -54,6 +53,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.SearchView;
 import android.widget.Toast;
+
+import androidx.viewpager.widget.ViewPager;
 
 import java.io.File;
 

@@ -43,9 +43,10 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.content.FileProvider;
 import android.database.MatrixCursor;
 import android.widget.Toast;
+
+import androidx.core.content.FileProvider;
 
 
 /**

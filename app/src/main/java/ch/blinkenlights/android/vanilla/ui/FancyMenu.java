@@ -26,7 +26,6 @@ import ch.blinkenlights.android.vanilla.R;
 import ch.blinkenlights.android.vanilla.ThemeHelper;
 
 import android.content.Context;
-import android.support.design.widget.BottomSheetDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +34,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ImageView;
+
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
 
