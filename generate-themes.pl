@@ -105,7 +105,7 @@ EOF
 
 	if($this->{dark} == 0) {
 	$DATA .= << "EOF"
-	<style name="${tid}VanillaBase" parent="android:Theme.Material.Light.DarkActionBar">
+	<style name="${tid}VanillaBase" parent="\@style/Theme.AppCompat.Light.DarkActionBar">
 		<item name="overlay_background_color">\@color/overlay_background_light</item>
 		<item name="overlay_foreground_color">\@color/overlay_foreground_light</item>
 		<item name="float_color">\@color/material_grey_400</item>
@@ -114,9 +114,9 @@ EOF
 		<item name="now_playing_marker">$this->{colorAccent}</item>
 		<item name="controls_normal">$this->{controlsNormal}</item>
 		<item name="controls_active">$this->{colorAccent}</item>
-		<item name="android:colorAccent">$this->{colorAccent}</item>
-		<item name="android:colorPrimary">$this->{colorPrimary}</item>
-		<item name="android:colorPrimaryDark">$this->{colorPrimaryDark}</item>
+		<item name="colorAccent">$this->{colorAccent}</item>
+		<item name="colorPrimary">$this->{colorPrimary}</item>
+		<item name="colorPrimaryDark">$this->{colorPrimaryDark}</item>
 	</style>
 
 	<style name="${tid}Playback" parent="${tid}VanillaBase">
@@ -128,11 +128,11 @@ EOF
 	</style>
 
 	<style name="${tid}Library" parent="${tid}VanillaBase">
-		<item name="android:windowActionBar">false</item>
-		<item name="android:windowNoTitle">true</item>
+		<item name="windowActionBar">false</item>
+		<item name="windowNoTitle">true</item>
 	</style>
 
-	<style name="${tid}PopupDialog" parent="android:Theme.Material.Light.Dialog.MinWidth">
+	<style name="${tid}PopupDialog" parent="\@style/Theme.AppCompat.Light.Dialog.MinWidth">
 		<item name="overlay_background_color">\@color/overlay_background_light</item>
 		<item name="background_circle_color">\@color/material_grey_300</item>
 		<item name="controls_normal">$this->{controlsNormal}</item>
@@ -147,7 +147,7 @@ EOF
 	} else {
 	$DATA .= << "EOF"
 	<!-- dark theme -->
-	<style name="${tid}VanillaBase" parent="android:Theme.Material">
+	<style name="${tid}VanillaBase" parent="\@style/Theme.AppCompat">
 		<item name="overlay_background_color">\@color/overlay_background_dark</item>
 		<item name="overlay_foreground_color">\@color/overlay_foreground_dark</item>
 		<item name="float_color">\@color/material_grey_900</item>
@@ -156,9 +156,9 @@ EOF
 		<item name="now_playing_marker">$this->{colorAccent}</item>
 		<item name="controls_normal">$this->{controlsNormal}</item>
 		<item name="controls_active">$this->{colorAccent}</item>
-		<item name="android:colorAccent">$this->{colorAccent}</item>
-		<item name="android:colorPrimary">$this->{colorPrimary}</item>
-		<item name="android:colorPrimaryDark">$this->{colorPrimaryDark}</item>
+		<item name="colorAccent">$this->{colorAccent}</item>
+		<item name="colorPrimary">$this->{colorPrimary}</item>
+		<item name="colorPrimaryDark">$this->{colorPrimaryDark}</item>
 	</style>
 
 	<style name="${tid}Playback" parent="${tid}VanillaBase">
@@ -170,11 +170,11 @@ EOF
 	</style>
 
 	<style name="${tid}Library" parent="${tid}VanillaBase">
-		<item name="android:windowActionBar">false</item>
-		<item name="android:windowNoTitle">true</item>
+		<item name="windowActionBar">false</item>
+		<item name="windowNoTitle">true</item>
 	</style>
 
-	<style name="${tid}PopupDialog" parent="android:Theme.Material.Dialog.MinWidth">
+	<style name="${tid}PopupDialog" parent="\@style/Theme.AppCompat.Dialog.MinWidth">
 		<item name="overlay_background_color">\@color/overlay_background_dark</item>
 		<item name="background_circle_color">\@color/material_grey_700</item>
 		<item name="controls_normal">$this->{controlsNormal}</item>

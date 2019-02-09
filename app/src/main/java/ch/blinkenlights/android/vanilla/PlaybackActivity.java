@@ -31,7 +31,6 @@ import java.util.Map;
 import java.util.Set;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -61,12 +60,14 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 /**
  * Base activity for activities that contain playback controls. Handles
  * communication with the PlaybackService and response to state and song
  * changes.
  */
-public abstract class PlaybackActivity extends Activity
+public abstract class PlaybackActivity extends AppCompatActivity
 	implements TimelineCallback,
 	           Handler.Callback,
 	           View.OnClickListener,

@@ -18,7 +18,7 @@
 -->
 
 <resources>
-	<style name="Orange_light.VanillaBase" parent="android:Theme.Material.Light.DarkActionBar">
+	<style name="Orange_light.VanillaBase" parent="@style/Theme.AppCompat.Light.DarkActionBar">
 		<item name="overlay_background_color">@color/overlay_background_light</item>
 		<item name="overlay_foreground_color">@color/overlay_foreground_light</item>
 		<item name="float_color">@color/material_grey_400</item>
@@ -27,9 +27,9 @@
 		<item name="now_playing_marker">#FFF57F17</item>
 		<item name="controls_normal">@color/material_grey_900</item>
 		<item name="controls_active">#FFF57F17</item>
-		<item name="android:colorAccent">#FFF57F17</item>
-		<item name="android:colorPrimary">#FFE65100</item>
-		<item name="android:colorPrimaryDark">#FFBF360C</item>
+		<item name="colorAccent">#FFF57F17</item>
+		<item name="colorPrimary">#FFE65100</item>
+		<item name="colorPrimaryDark">#FFBF360C</item>
 	</style>
 
 	<style name="Orange_light.Playback" parent="Orange_light.VanillaBase">
@@ -41,11 +41,11 @@
 	</style>
 
 	<style name="Orange_light.Library" parent="Orange_light.VanillaBase">
-		<item name="android:windowActionBar">false</item>
-		<item name="android:windowNoTitle">true</item>
+		<item name="windowActionBar">false</item>
+		<item name="windowNoTitle">true</item>
 	</style>
 
-	<style name="Orange_light.PopupDialog" parent="android:Theme.Material.Light.Dialog.MinWidth">
+	<style name="Orange_light.PopupDialog" parent="@style/Theme.AppCompat.Light.Dialog.MinWidth">
 		<item name="overlay_background_color">@color/overlay_background_light</item>
 		<item name="background_circle_color">@color/material_grey_300</item>
 		<item name="controls_normal">@color/material_grey_900</item>

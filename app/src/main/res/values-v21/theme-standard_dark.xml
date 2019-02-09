@@ -19,7 +19,7 @@
 
 <resources>
 	<!-- dark theme -->
-	<style name="Standard_dark.VanillaBase" parent="android:Theme.Material">
+	<style name="Standard_dark.VanillaBase" parent="@style/Theme.AppCompat">
 		<item name="overlay_background_color">@color/overlay_background_dark</item>
 		<item name="overlay_foreground_color">@color/overlay_foreground_dark</item>
 		<item name="float_color">@color/material_grey_900</item>
@@ -28,9 +28,9 @@
 		<item name="now_playing_marker">#ff3e677a</item>
 		<item name="controls_normal">@color/material_grey_300</item>
 		<item name="controls_active">#ff3e677a</item>
-		<item name="android:colorAccent">#ff3e677a</item>
-		<item name="android:colorPrimary">#ff37474f</item>
-		<item name="android:colorPrimaryDark">#ff263238</item>
+		<item name="colorAccent">#ff3e677a</item>
+		<item name="colorPrimary">#ff37474f</item>
+		<item name="colorPrimaryDark">#ff263238</item>
 	</style>
 
 	<style name="Standard_dark.Playback" parent="Standard_dark.VanillaBase">
@@ -42,11 +42,11 @@
 	</style>
 
 	<style name="Standard_dark.Library" parent="Standard_dark.VanillaBase">
-		<item name="android:windowActionBar">false</item>
-		<item name="android:windowNoTitle">true</item>
+		<item name="windowActionBar">false</item>
+		<item name="windowNoTitle">true</item>
 	</style>
 
-	<style name="Standard_dark.PopupDialog" parent="android:Theme.Material.Dialog.MinWidth">
+	<style name="Standard_dark.PopupDialog" parent="@style/Theme.AppCompat.Dialog.MinWidth">
 		<item name="overlay_background_color">@color/overlay_background_dark</item>
 		<item name="background_circle_color">@color/material_grey_700</item>
 		<item name="controls_normal">@color/material_grey_300</item>

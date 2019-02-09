@@ -22,5 +22,4 @@ Copyright (C) 2015 Adrian Ulrich <adrian@blinkenlights.ch>
 		<item name="android:displayOptions">showTitle|homeAsUp</item>
 		<item name="android:background">?tabs_background</item>
 	</style>
-
 </resources>
