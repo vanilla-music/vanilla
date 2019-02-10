@@ -53,7 +53,8 @@ public class MediaLibrary  {
 	public static final String VIEW_ALBUMS_ARTISTS            = "_albums_artists";
 	public static final String VIEW_SONGS_ALBUMS_ARTISTS      = "_songs_albums_artists";
 	public static final String VIEW_SONGS_ALBUMS_ARTISTS_HUGE = "_songs_albums_artists_huge";
-	public static final String VIEW_PLAYLIST_SONGS            = "_playlists_songs";
+	public static final String VIEW_PLAYLISTS                 = "_playlists";
+	public static final String VIEW_PLAYLISTS_SONGS           = "_playlists_songs";
 
 	public static final int ROLE_ARTIST                   = 0;
 	public static final int ROLE_COMPOSER                 = 1;

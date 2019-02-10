@@ -220,11 +220,12 @@ public class MediaAdapter
 			coverCacheKey = MediaStore.Audio.Albums.ALBUM_ID;
 			break;
 		case MediaUtils.TYPE_PLAYLIST:
-			mSource = MediaLibrary.TABLE_PLAYLISTS;
-			mFields = new String[] { MediaLibrary.PlaylistColumns.NAME };
+			mSource = MediaLibrary.VIEW_PLAYLISTS;
+			mFields = new String[] { MediaLibrary.PlaylistColumns.NAME, MediaLibrary.SongColumns.DURATION };
 			mFieldKeys = new String[] { MediaLibrary.PlaylistColumns.NAME_SORT };
-			mSortEntries = new int[] { R.string.title, R.string.date_added };
-			mAdapterSortValues = new String[] { MediaLibrary.PlaylistColumns.NAME_SORT+" %1$s", MediaLibrary.PlaylistColumns._ID+" %1$s" };
+			mSortEntries = new int[] { R.string.title, R.string.date_added, R.string.duration };
+			mAdapterSortValues = new String[] { MediaLibrary.PlaylistColumns.NAME_SORT+" %1$s", MediaLibrary.PlaylistColumns._ID+" %1$s",
+			                                    MediaLibrary.SongColumns.DURATION+" %1$s" };
 			mExpandable = true;
 			break;
 		case MediaUtils.TYPE_GENRE:
@@ -497,7 +498,6 @@ public class MediaAdapter
 
 			row.setDraggerOnClickListener(this);
 			row.showDragger(mExpandable);
-			row.showDuration(!mExpandable || mType == MediaUtils.TYPE_ALBUM);
 		} else {
 			row = (DraggableRow)convertView;
 			holder = (ViewHolder)row.getTag();
@@ -505,38 +505,53 @@ public class MediaAdapter
 
 		Cursor cursor = mCursor;
 		cursor.moveToPosition(position);
-		holder.id = cursor.getLong(0);
-		long duration = -1;
+
+		long id = cursor.getLong(0);
 		long cacheId = cursor.getLong(1);
-		if (mProjection.length >= 4) {
-			String line1 = cursor.getString(2);
-			String line2 = cursor.getString(3);
-			line1 = (line1 == null ? DB_NULLSTRING_FALLBACK : line1);
-			line2 = (line2 == null ? DB_NULLSTRING_FALLBACK : line2);
+		String title = cursor.getString(2);
+		String subtitle = null;
+		long duration = -1;
 
-			if (mProjection.length >= 5) {
-				if (mType == MediaUtils.TYPE_ALBUM) {
-					duration = cursor.getLong(4);
-				} else {
-					line2 += ", " + cursor.getString(4);
-				}
-			}
+		// Title is never null, subtitle may be depending on the type.
+		title = (title == null ? DB_NULLSTRING_FALLBACK : title);
 
-			if (mProjection.length >= 6)
-				duration = cursor.getLong(5);
+		// Add subtitle if media type has one.
+		switch (mType) {
+		case MediaUtils.TYPE_ALBUM:
+		case MediaUtils.TYPE_SONG:
+			subtitle = cursor.getString(3);
+			subtitle = (subtitle == null ? DB_NULLSTRING_FALLBACK : subtitle);
 
-			row.setText(line1, line2);
-			holder.title = line1;
-		} else {
-			String title = cursor.getString(2);
-			if(title == null) { title = DB_NULLSTRING_FALLBACK; }
-			row.setText(title);
-			holder.title = title;
+			// Add album information for songs.
+			String subsub = (mType == MediaUtils.TYPE_SONG ? cursor.getString(4) : null);
+			subtitle += (subsub != null ? " – " + subsub : "");
+			break;
 		}
 
+		// Pick up duration
+		switch (mType) {
+		case MediaUtils.TYPE_ALBUM:
+			duration = cursor.getLong(4);
+			break;
+		case MediaUtils.TYPE_SONG:
+			duration = cursor.getLong(5);
+			break;
+		case MediaUtils.TYPE_PLAYLIST:
+			duration = cursor.getLong(3);
+			break;
+		}
+
+		holder.id = id;
+		holder.title = title;
+
+		if (subtitle == null) {
+			row.setText(title);
+		} else {
+			row.setText(title, subtitle);
+		}
+		row.showDuration(duration != -1);
 		row.setDuration(duration);
 		row.getCoverView().setCover(mCoverCacheType, cacheId, holder.title);
-
 		return row;
 	}
 

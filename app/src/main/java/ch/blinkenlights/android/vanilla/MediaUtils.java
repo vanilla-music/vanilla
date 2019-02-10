@@ -203,7 +203,7 @@ public class MediaUtils {
 	public static QueryTask buildPlaylistQuery(long id, String[] projection) {
 		String sort = MediaLibrary.PlaylistSongColumns.POSITION;
 		String selection = MediaLibrary.PlaylistSongColumns.PLAYLIST_ID+"="+id;
-		QueryTask result = new QueryTask(MediaLibrary.VIEW_PLAYLIST_SONGS, projection, selection, null, sort);
+		QueryTask result = new QueryTask(MediaLibrary.VIEW_PLAYLISTS_SONGS, projection, selection, null, sort);
 		result.type = TYPE_PLAYLIST;
 		return result;
 	}
