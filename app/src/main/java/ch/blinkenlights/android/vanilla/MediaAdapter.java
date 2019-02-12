@@ -524,7 +524,7 @@ public class MediaAdapter
 
 			// Add album information for songs.
 			String subsub = (mType == MediaUtils.TYPE_SONG ? cursor.getString(4) : null);
-			subtitle += (subsub != null ? " ⸱ " + subsub : "");
+			subtitle += (subsub != null ? " · " + subsub : "");
 			break;
 		}
 
