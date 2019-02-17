@@ -542,7 +542,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 			mFormat = data.getFormat();
 
 			BastpUtil.GainValues rg = PlaybackService.get(this).getReplayGainValues(song.path);
-			mReplayGain = String.format("base=%.2f, track=%.2f, album=%.2f", rg.base, rg.track, rg.album);
+			mReplayGain = String.format("track=%.2f, album=%.2f", rg.track, rg.album);
 		}
 
 		mUiHandler.sendEmptyMessage(MSG_COMMIT_INFO);

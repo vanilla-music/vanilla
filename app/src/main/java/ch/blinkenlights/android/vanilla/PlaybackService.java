@@ -731,7 +731,7 @@ public final class PlaybackService extends Service
 	 */
 	private void applyReplayGain(VanillaMediaPlayer mp) {
 
-		BastpUtil.GainValues rg = getReplayGainValues(mp.getDataSource()); /* base, track, album */
+		BastpUtil.GainValues rg = getReplayGainValues(mp.getDataSource());
 		float adjust = 0f;
 
 		if(mReplayGainAlbumEnabled) {
@@ -744,7 +744,7 @@ public final class PlaybackService extends Service
 			adjust = (rg.track != 0 ? rg.track : adjust); /* ..or, even better, track adj? */
 		}
 
-		if(adjust == 0 && rg.base == 0) {
+		if(adjust == 0) {
 			/* No RG value found: decrease volume for untagged song if requested by user */
 			adjust = (mReplayGainUntaggedDeBump-150)/10f;
 		} else {

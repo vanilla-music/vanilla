@@ -31,7 +31,6 @@ public class BastpUtil {
 	 * What we return & cache
 	 */
 	public class GainValues {
-		public float base;
 		public float album;
 		public float track;
 	}
@@ -73,19 +72,27 @@ public class BastpUtil {
 		HashMap tags  = (new Bastp()).getTags(path);
 		GainValues gv = new GainValues();
 
-		// normal replay gain, add 5dB difference
-		if(tags.containsKey("REPLAYGAIN_TRACK_GAIN"))
+		// normal replay gain
+		if(tags.containsKey("REPLAYGAIN_TRACK_GAIN")) {
 			gv.track = getFloatFromString((String)((ArrayList)tags.get("REPLAYGAIN_TRACK_GAIN")).get(0));
-		if(tags.containsKey("REPLAYGAIN_ALBUM_GAIN"))
+		}
+		if(tags.containsKey("REPLAYGAIN_ALBUM_GAIN")) {
 			gv.album = getFloatFromString((String)((ArrayList)tags.get("REPLAYGAIN_ALBUM_GAIN")).get(0));
+		}
 
-		// likely OPUS
-		if(tags.containsKey("R128_BASTP_BASE_GAIN"))
-			gv.base = 0.0f + getFloatFromString((String)((ArrayList)tags.get("R128_BASTP_BASE_GAIN")).get(0)) / 256.0f;
-		if(tags.containsKey("R128_TRACK_GAIN"))
-			gv.track = 5.0f + getFloatFromString((String)((ArrayList)tags.get("R128_TRACK_GAIN")).get(0)) / 256.0f;
-		if(tags.containsKey("R128_ALBUM_GAIN"))
-			gv.album = 5.0f + getFloatFromString((String)((ArrayList)tags.get("R128_ALBUM_GAIN")).get(0)) / 256.0f;
+		// R128 replay gain
+		float base = 5.0f;
+		if(tags.containsKey("R128_BASTP_BASE_GAIN")) {
+			base += getFloatFromString((String)((ArrayList)tags.get("R128_BASTP_BASE_GAIN")).get(0)) / 256.0f;
+			gv.track = base;
+			gv.album = base;
+		}
+		if(tags.containsKey("R128_TRACK_GAIN")) {
+			gv.track = base + getFloatFromString((String)((ArrayList)tags.get("R128_TRACK_GAIN")).get(0)) / 256.0f;
+		}
+		if(tags.containsKey("R128_ALBUM_GAIN")) {
+			gv.album = base + getFloatFromString((String)((ArrayList)tags.get("R128_ALBUM_GAIN")).get(0)) / 256.0f;
+		}
 
 		return gv;
 	}
