@@ -61,6 +61,8 @@ public class MediaLibrary  {
 	public static final int ROLE_ALBUMARTIST              = 2;
 
 	public static final int SONG_FLAG_OUTDATED            = (1 << 0); // entry in library should get rescanned.
+	public static final int SONG_FLAG_NO_ALBUM            = (1 << 1); // file had no real album tag.
+	public static final int SONG_FLAG_NO_ARTIST           = (1 << 2); // file had no real artist tag.
 
 	public static final String PREFERENCES_FILE = "_prefs-v1.obj";
 

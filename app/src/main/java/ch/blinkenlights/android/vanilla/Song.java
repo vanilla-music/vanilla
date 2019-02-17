@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2019 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -63,6 +64,7 @@ public class Song implements Comparable<Song> {
 		MediaLibrary.SongColumns.DURATION,
 		MediaLibrary.SongColumns.SONG_NUMBER,
 		MediaLibrary.SongColumns.DISC_NUMBER,
+		MediaLibrary.SongColumns.FLAGS,
 	};
 
 	public static final String[] EMPTY_PLAYLIST_PROJECTION = {
@@ -188,6 +190,15 @@ public class Song implements Comparable<Song> {
 		duration = cursor.getLong(7);
 		trackNumber = cursor.getInt(8);
 		discNumber = cursor.getInt(9);
+
+		// Read and interpret the media library flags of this entry.
+		// There is no 1:1 mapping, so we must check each flag on its own.
+		int libraryFlags = cursor.getInt(10);
+		if ((libraryFlags & MediaLibrary.SONG_FLAG_NO_ALBUM) != 0) {
+			// Note that we only set, never unset: the song may already
+			// have the flag set for other reasons.
+			flags |= FLAG_NO_COVER;
+		}
 	}
 
 	/**

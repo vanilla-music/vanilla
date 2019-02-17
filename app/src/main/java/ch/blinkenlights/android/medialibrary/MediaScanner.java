@@ -509,18 +509,27 @@ public class MediaScanner implements Handler.Callback {
 		if (mustInsert) {
 			hasChanged = true;
 
+			// Clear old flags of this song:
+			songFlags &= ~MediaLibrary.SONG_FLAG_OUTDATED;   // This file is not outdated anymore
+			songFlags &= ~MediaLibrary.SONG_FLAG_NO_ARTIST;  // May find an artist now.
+			songFlags &= ~MediaLibrary.SONG_FLAG_NO_ALBUM;   // May find an album now.
+
 			// Get tags which always must be set
 			String title = tags.getFirst(MediaMetadataExtractor.TITLE);
 			if (isUnset(title))
 				title = file.getName();
 
 			String album = tags.getFirst(MediaMetadataExtractor.ALBUM);
-			if (isUnset(album))
+			if (isUnset(album)) {
 				album = "<No Album>";
+				songFlags |= MediaLibrary.SONG_FLAG_NO_ALBUM;
+			}
 
 			String artist = tags.getFirst(MediaMetadataExtractor.ARTIST);
-			if (isUnset(artist))
+			if (isUnset(artist)) {
 				artist = "<No Artist>";
+				songFlags |= MediaLibrary.SONG_FLAG_NO_ARTIST;
+			}
 
 			String discNumber = tags.getFirst(MediaMetadataExtractor.DISC_NUMBER);
 			if (isUnset(discNumber))
@@ -546,7 +555,7 @@ public class MediaScanner implements Handler.Callback {
 			v.put(MediaLibrary.SongColumns.PLAYCOUNT,   playCount);
 			v.put(MediaLibrary.SongColumns.SKIPCOUNT,   skipCount);
 			v.put(MediaLibrary.SongColumns.PATH,        path);
-			v.put(MediaLibrary.SongColumns.FLAGS,       (songFlags &~MediaLibrary.SONG_FLAG_OUTDATED));
+			v.put(MediaLibrary.SongColumns.FLAGS,       songFlags);
 			mBackend.insert(MediaLibrary.TABLE_SONGS, null, v);
 
 			v.clear();
