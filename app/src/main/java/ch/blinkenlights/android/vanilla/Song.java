@@ -82,6 +82,7 @@ public class Song implements Comparable<Song> {
 		MediaLibrary.SongColumns.DURATION,
 		MediaLibrary.SongColumns.SONG_NUMBER,
 		MediaLibrary.SongColumns.DISC_NUMBER,
+		MediaLibrary.SongColumns.FLAGS,
 	};
 
 	/**
