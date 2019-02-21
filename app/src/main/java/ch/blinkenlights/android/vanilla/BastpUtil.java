@@ -81,19 +81,26 @@ public class BastpUtil {
 		}
 
 		// R128 replay gain
-		float base = 5.0f;
+		boolean r128 = false;
 		if(tags.containsKey("R128_BASTP_BASE_GAIN")) {
-			base += getFloatFromString((String)((ArrayList)tags.get("R128_BASTP_BASE_GAIN")).get(0)) / 256.0f;
+			float base = getFloatFromString((String)((ArrayList)tags.get("R128_BASTP_BASE_GAIN")).get(0)) / 256.0f;
 			gv.track = base;
 			gv.album = base;
+			r128 = true;
 		}
 		if(tags.containsKey("R128_TRACK_GAIN")) {
-			gv.track = base + getFloatFromString((String)((ArrayList)tags.get("R128_TRACK_GAIN")).get(0)) / 256.0f;
+			gv.track += getFloatFromString((String)((ArrayList)tags.get("R128_TRACK_GAIN")).get(0)) / 256.0f;
+			r128 = true;
 		}
 		if(tags.containsKey("R128_ALBUM_GAIN")) {
-			gv.album = base + getFloatFromString((String)((ArrayList)tags.get("R128_ALBUM_GAIN")).get(0)) / 256.0f;
+			gv.album += getFloatFromString((String)((ArrayList)tags.get("R128_ALBUM_GAIN")).get(0)) / 256.0f;
+			r128 = true;
 		}
 
+		if (r128) {
+			gv.track += 5.0f;
+			gv.album += 5.0f;
+		}
 		return gv;
 	}
 
