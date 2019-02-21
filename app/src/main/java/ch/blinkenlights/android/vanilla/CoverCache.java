@@ -394,10 +394,8 @@ public class CoverCache {
 		 * @param maxPxCount the maximum amount of pixels to return (30*30 = 900)
 		 */
 		public Bitmap createBitmap(Context ctx, Song song, long maxPxCount) {
-			if (song.id < 0) {
-				// Unindexed song: return early
-				return null;
-			}
+			if (song.id < 0)
+				throw new IllegalArgumentException("song id is < 0: " + song.id);
 
 			try {
 				InputStream inputStream = null;
