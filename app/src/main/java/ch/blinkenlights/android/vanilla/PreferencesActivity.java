@@ -66,7 +66,7 @@ public class PreferencesActivity extends PreferenceActivity
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
-		ThemeHelper.setTheme(this, R.style.BackActionBar);
+		ThemeHelper.setTheme(this, R.style.BackActionBar, this);
 		super.onCreate(savedInstanceState);
 		SharedPrefHelper.getSettings(this).registerOnSharedPreferenceChangeListener(this);
 	}
@@ -116,6 +116,8 @@ public class PreferencesActivity extends PreferenceActivity
 		{
 			super.onCreate(savedInstanceState);
 			addPreferencesFromResource(R.xml.preference_audio);
+
+			ThemeHelper.setAccentColor(this.getActivity());
 		}
 	}
 
@@ -129,6 +131,8 @@ public class PreferencesActivity extends PreferenceActivity
 		public void onCreate(Bundle savedInstanceState)
 		{
 			super.onCreate(savedInstanceState);
+
+			ThemeHelper.setAccentColor(this.getActivity());
 
 			addPreferencesFromResource(R.xml.preference_replaygain);
 			cbTrackReplayGain = (CheckBoxPreference)findPreference(PrefKeys.ENABLE_TRACK_REPLAYGAIN);
@@ -177,6 +181,8 @@ public class PreferencesActivity extends PreferenceActivity
 				// ignored. Whee!
 			}
 
+
+			ThemeHelper.setAccentColor(this.getActivity());
 			getActivity().finish();
 		}
 	}
@@ -187,6 +193,8 @@ public class PreferencesActivity extends PreferenceActivity
 		{
 			super.onCreate(savedInstanceState);
 			addPreferencesFromResource(R.xml.preference_playback);
+
+			ThemeHelper.setAccentColor(this.getActivity());
 		}
 	}
 
@@ -196,6 +204,8 @@ public class PreferencesActivity extends PreferenceActivity
 		{
 			super.onCreate(savedInstanceState);
 			addPreferencesFromResource(R.xml.preference_library);
+
+			ThemeHelper.setAccentColor(this.getActivity());
 		}
 	}
 
@@ -205,6 +215,8 @@ public class PreferencesActivity extends PreferenceActivity
 		{
 			super.onCreate(savedInstanceState);
 			addPreferencesFromResource(R.xml.preference_notifications);
+
+			ThemeHelper.setAccentColor(this.getActivity());
 		}
 	}
 
@@ -214,6 +226,8 @@ public class PreferencesActivity extends PreferenceActivity
 		{
 			super.onCreate(savedInstanceState);
 			addPreferencesFromResource(R.xml.preference_shake);
+
+			ThemeHelper.setAccentColor(this.getActivity());
 		}
 	}
 
@@ -223,6 +237,8 @@ public class PreferencesActivity extends PreferenceActivity
 		{
 			super.onCreate(savedInstanceState);
 			addPreferencesFromResource(R.xml.preference_coverart);
+
+			ThemeHelper.setAccentColor(this.getActivity());
 		}
 	}
 
@@ -232,6 +248,8 @@ public class PreferencesActivity extends PreferenceActivity
 		{
 			super.onCreate(savedInstanceState);
 			addPreferencesFromResource(R.xml.preference_misc);
+
+			ThemeHelper.setAccentColor(this.getActivity());
 		}
 	}
 
@@ -241,6 +259,8 @@ public class PreferencesActivity extends PreferenceActivity
 		{
 			super.onCreate(savedInstanceState);
 			addPreferencesFromResource(R.xml.preference_playlist);
+
+			ThemeHelper.setAccentColor(this.getActivity());
 		}
 	}
 
@@ -249,6 +269,8 @@ public class PreferencesActivity extends PreferenceActivity
 		public void onCreate(Bundle savedInstanceState)
 		{
 			super.onCreate(savedInstanceState);
+
+			ThemeHelper.setAccentColor(this.getActivity());
 
 			Activity activity = getActivity();
 			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/vanilla-music/vanilla-music.github.io/wiki"));
@@ -280,6 +302,8 @@ public class PreferencesActivity extends PreferenceActivity
 		public void onCreate(Bundle savedInstanceState)
 		{
 			super.onCreate(savedInstanceState);
+
+			ThemeHelper.setAccentColor(this.getActivity());
 
 			Activity activity = getActivity();
 			Intent intent = activity.getPackageManager().getLaunchIntentForPackage(VPLUG_PACKAGE_NAME);

@@ -29,6 +29,8 @@ import java.util.ArrayList;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
@@ -106,7 +108,9 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 	@Override
 	public void onCreate(Bundle icicle)
 	{
-		ThemeHelper.setTheme(this, R.style.Playback);
+		ThemeHelper.setTheme(this, R.style.Playback, this);
+
+
 		super.onCreate(icicle);
 
 		setTitle(R.string.playback_view);

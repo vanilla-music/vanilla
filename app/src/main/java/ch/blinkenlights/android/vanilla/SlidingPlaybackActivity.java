@@ -85,6 +85,7 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 		mSeekBar = (SeekBar)findViewById(R.id.seek_bar);
 		mSeekBar.setMax(1000);
 		mSeekBar.setOnSeekBarChangeListener(this);
+		ThemeHelper.setAccentColor(this);
 		setDuration(0);
 	}
 

@@ -21,64 +21,66 @@
   THE SOFTWARE.
 -->
 
-<ch.blinkenlights.android.vanilla.BottomBarControls
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:background="?tabs_background"
-	android:orientation="vertical"
+<ch.blinkenlights.android.vanilla.BottomBarControls xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/bottombar_controls"
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
-	>
+	android:background="?tabs_background"
+	android:orientation="vertical">
 
 	<LinearLayout
-		android:layout_height="@dimen/row_normal_height"
+		android:id="@+id/content_controls"
 		android:layout_width="fill_parent"
+		android:layout_height="@dimen/row_normal_height"
 		android:background="@drawable/unbound_ripple_light"
-		android:gravity="center_vertical"
-		android:id="@+id/content_controls">
+		android:gravity="center_vertical">
 
 		<ImageView
 			android:id="@+id/cover"
-			android:scaleType="centerCrop"
 			android:layout_width="@dimen/cover_size"
 			android:layout_height="@dimen/cover_size"
-			android:layout_marginLeft="@dimen/cover_padding"
 			android:layout_gravity="center_vertical"
-			android:contentDescription="@string/cover_art" />
+			android:layout_marginLeft="@dimen/cover_padding"
+			android:contentDescription="@string/cover_art"
+			android:scaleType="centerCrop" />
+
 		<LinearLayout
-			android:layout_height="wrap_content"
 			android:layout_width="0px"
-			android:layout_weight="1"
-			android:layout_marginLeft="@dimen/text_padding"
+			android:layout_height="wrap_content"
 			android:layout_gravity="center"
+			android:layout_marginLeft="@dimen/text_padding"
+			android:layout_weight="1"
 			android:orientation="vertical">
+
 			<TextView
 				android:id="@+id/title"
-				android:textSize="14sp"
-				android:singleLine="true"
-				android:gravity="center_vertical"
-				android:ellipsize="marquee"
 				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:ellipsize="marquee"
+				android:gravity="center_vertical"
+				android:singleLine="true"
 				android:textColor="@android:color/background_light"
-				android:layout_height="wrap_content" />
+				android:textSize="14sp" />
+
 			<TextView
 				android:id="@+id/artist"
-				android:textSize="12sp"
-				android:singleLine="true"
-				android:gravity="center_vertical"
-				android:ellipsize="marquee"
 				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:ellipsize="marquee"
+				android:gravity="center_vertical"
+				android:singleLine="true"
 				android:textColor="@android:color/secondary_text_dark"
-				android:layout_height="wrap_content" />
+				android:textSize="12sp" />
 		</LinearLayout>
 	</LinearLayout>
 
 	<SearchView
-		android:visibility="gone"
-		android:layout_height="@dimen/row_normal_height"
+		android:id="@+id/search_view"
 		android:layout_width="fill_parent"
+		android:layout_height="@dimen/row_normal_height"
 		android:iconifiedByDefault="false"
 		android:imeOptions="actionSearch|flagNoFullscreen"
-		android:id="@+id/search_view" />
+		android:visibility="gone" />
 
 
 </ch.blinkenlights.android.vanilla.BottomBarControls>

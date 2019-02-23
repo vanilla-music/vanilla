@@ -17,10 +17,23 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.SeekBar;
+
+import java.util.ArrayList;
+
+import androidx.fragment.app.Fragment;
 
 public class ThemeHelper {
 
@@ -31,6 +44,64 @@ public class ThemeHelper {
 	 */
 	final public static void setTheme(Context context, int theme) {
 		context.setTheme(getThemeResource(context, theme));
+	}
+
+	/**
+	 * Sets the accentcolor to the value stored in the preferences.
+	 */
+	final public static void setAccentColor(Activity a) {
+
+		String c = "#b13fb5";
+
+		int myColor = Color.parseColor(c);
+
+		ActionBar actionBar = a.getActionBar();
+		if(actionBar!=null){
+			ColorDrawable colorDrawable = new ColorDrawable(myColor);
+			actionBar.setBackgroundDrawable(colorDrawable);
+		}
+
+		SeekBar mSeekBar = (SeekBar)a.findViewById(R.id.seek_bar);
+		if(mSeekBar != null){
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+				mSeekBar.getThumb().setColorFilter(myColor, PorterDuff.Mode.SRC_ATOP);
+				mSeekBar.getProgressDrawable().setColorFilter(myColor, PorterDuff.Mode.SRC_ATOP);
+			}
+		}
+
+		BottomBarControls mBottomBarControls = (BottomBarControls) a.findViewById(R.id.bottombar_controls);
+		if(mBottomBarControls != null){
+			mBottomBarControls.setBackgroundColor(myColor);
+		}
+
+
+		ArrayList<CheckBox> checkboxes = new ArrayList<CheckBox>();
+		ArrayList<View> availableViews = a.getWindow().getDecorView().getFocusables(View.FOCUS_FORWARD);
+		for (int i = 0; i < availableViews.size(); i++) {
+			View actualView = availableViews.get(i);
+			if(actualView instanceof CheckBox) {
+				checkboxes.add((CheckBox) actualView);
+			}
+
+		}
+		for(CheckBox mCheckbox: checkboxes){
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+				mCheckbox.setButtonTintList(ColorStateList.valueOf(myColor));
+			}
+		}
+
+	}
+
+	/**
+	 * Calls context.setTheme() with given theme.
+	 * Will automatically swap the theme with an alternative
+	 * version if the user requested us to use it
+	 *
+	 * Also sets the accentcolor to the value stored in the preferences.
+	 */
+	final public static void setTheme(Context context, int theme, Activity a) {
+		setTheme(context, theme);
+		setAccentColor(a);
 	}
 
 	/**
