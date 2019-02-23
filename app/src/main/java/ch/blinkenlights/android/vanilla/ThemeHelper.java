@@ -27,12 +27,14 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
+import android.support.iosched.tabs.VanillaTabLayout;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.SeekBar;
 
 import java.util.ArrayList;
 
+import androidx.core.graphics.ColorUtils;
 import androidx.fragment.app.Fragment;
 
 public class ThemeHelper {
@@ -54,6 +56,11 @@ public class ThemeHelper {
 		String c = "#b13fb5";
 
 		int myColor = Color.parseColor(c);
+		int myColorDark =  ColorUtils.blendARGB(Color.parseColor(c), Color.BLACK, 0.15f);
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			a.getWindow().setStatusBarColor(myColorDark);
+		}
 
 		ActionBar actionBar = a.getActionBar();
 		if(actionBar!=null){
@@ -74,6 +81,11 @@ public class ThemeHelper {
 			mBottomBarControls.setBackgroundColor(myColor);
 		}
 
+		VanillaTabLayout mVanillaTabLayout = (VanillaTabLayout) a.findViewById(R.id.sliding_tabs);
+		if(mVanillaTabLayout != null){
+			mVanillaTabLayout.setBackgroundColor(myColor);
+		}
+
 
 		ArrayList<CheckBox> checkboxes = new ArrayList<CheckBox>();
 		ArrayList<View> availableViews = a.getWindow().getDecorView().getFocusables(View.FOCUS_FORWARD);
@@ -82,7 +94,6 @@ public class ThemeHelper {
 			if(actualView instanceof CheckBox) {
 				checkboxes.add((CheckBox) actualView);
 			}
-
 		}
 		for(CheckBox mCheckbox: checkboxes){
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
