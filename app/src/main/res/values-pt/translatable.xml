@@ -292,6 +292,7 @@
   <string name="playlist_sync_disabled">Desligada</string>
   <string name="playlist_sync_folder_title">Pasta de sincronização</string>
   <string name="playlist_sync_folder_summary">Pasta a utilizar para sincronizar a lista de reprodução</string>
+  <string name="playlist_export_relative_paths_title">Exportar utilizando caminhos relativos</string>
   <string name="permission_request_summary">O Vanilla Music necessita da permissão de leitura para mostrar a sua coleção</string>
   <string name="reverse_sort">Inverter organização</string>
   <string name="share">Partilhar...</string>

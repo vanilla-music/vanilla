@@ -292,6 +292,8 @@
   <string name="playlist_sync_disabled">Pois käytöstä</string>
   <string name="playlist_sync_folder_title">Synkronointikansio</string>
   <string name="playlist_sync_folder_summary">Soittolistan synkronointiin käytettävä kansio</string>
+  <string name="playlist_export_relative_paths_title">Vie käyttäen suhteellisia polkuja</string>
+  <string name="playlist_export_relative_paths_summary">Viittaa tiedostopolkuihin suhteellisena soittolistaan</string>
   <string name="permission_request_summary">Vanilla Music tarvitsee lukuoikeuden näyttääkseen musiikkikirjastosi</string>
   <string name="reverse_sort">Käänteinen järjestys</string>
   <string name="share">Jaa…</string>

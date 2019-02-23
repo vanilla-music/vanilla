@@ -292,6 +292,8 @@
   <string name="playlist_sync_disabled">Malaktiva</string>
   <string name="playlist_sync_folder_title">Dosierujo de samptempigo</string>
   <string name="playlist_sync_folder_summary">Dosierujo por uzi por samtempigi ludlistojn</string>
+  <string name="playlist_export_relative_paths_title">Elporti uzante relativajn dosierindikojn</string>
+  <string name="playlist_export_relative_paths_summary">Dosier-indikoj interrilatigas al la dosierujo de ludlisto</string>
   <string name="permission_request_summary">Vanila Muziko postulas permeson por legi SD-karton por vidigi vian muzikan bibliotekon</string>
   <string name="reverse_sort">Ordigi inverse</string>
   <string name="share">Kunhavigi…</string>

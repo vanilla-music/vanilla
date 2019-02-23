@@ -292,6 +292,8 @@
   <string name="playlist_sync_disabled">Letiltva</string>
   <string name="playlist_sync_folder_title">Szinkronizációs mappa</string>
   <string name="playlist_sync_folder_summary">A lejátszólista szinkronizációhoz használandó mappa</string>
+  <string name="playlist_export_relative_paths_title">Exportálás relatív útvonalak használatáva</string>
+  <string name="playlist_export_relative_paths_summary">A fájlok relatív hivatkozása a lejátszólistához képest</string>
   <string name="permission_request_summary">A Vanilla zenelejátszónak olvasási engedélyre van szükségre, hogy megjelenítse a gyűjteményét</string>
   <string name="reverse_sort">Fordított rendezés</string>
   <string name="share">Megosztás…</string>

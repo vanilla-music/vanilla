@@ -308,6 +308,8 @@
   <string name="playlist_sync_disabled">Отключена</string>
   <string name="playlist_sync_folder_title">Папка для синхронизации</string>
   <string name="playlist_sync_folder_summary">Папка с плей-листами для синхронизации</string>
+  <string name="playlist_export_relative_paths_title">Применять при экспорте относительные пути</string>
+  <string name="playlist_export_relative_paths_summary">Ссылки в путях относительно файла плей-листа</string>
   <string name="permission_request_summary">Vanilla Music необходимо разрешение на чтение, чтобы отобразить Вашу музыку в фонотеке</string>
   <string name="reverse_sort">в обратном порядке</string>
   <string name="share">Поделиться…</string>

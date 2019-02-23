@@ -44,6 +44,10 @@
   <string name="rename">Rinomina</string>
   <string name="save_as_playlist">Salva come playlist…</string>
   <string name="add_to_playlist">Aggiungi a playlist…</string>
+  <string name="add_to_homescreen">Aggiungi alla schermata principale...</string>
+  <string name="add_to">Aggiungi a...</string>
+  <string name="playlist">Playlist</string>
+  <string name="homescreen">Schermata principale</string>
   <string name="add_to_favorites">Aggiungi ai preferiti</string>
   <string name="remove_from_favorites">Rimuovi dai preferiti</string>
   <string name="playlist_favorites">Preferiti</string>
@@ -205,6 +209,8 @@
   <string name="enable_scroll_to_song_summary">Scorri nelle liste della libreria al brano/album/artista attualmente in riproduzione</string>
   <string name="queue_enable_scroll_to_song_title">Scorri al titolo della traccia in coda</string>
   <string name="queue_enable_scroll_to_song_summary">Scorri alla traccia attualmente in riproduzione nella coda al cambio di brano</string>
+  <string name="jump_to_enqueued_on_play_title">Salta al brano in coda con \'Play\'</string>
+  <string name="jump_to_enqueued_on_play_summary">Se il brano richiesto è già nella coda, salta a quello invece di svuotare la coda</string>
   <string name="coverloader_android_title">Carica copertine da Android</string>
   <string name="coverloader_android_summary">Interroga il database dei media interno di Android per le copertine album</string>
   <string name="coverloader_vanilla_title">Carica copertine da cartella</string>
@@ -264,6 +270,12 @@
   <string name="preferences_action_enqueue_current_album">Metti album in coda</string>
   <string name="preferences_action_enqueue_current_artist">Metti artista in coda</string>
   <string name="preferences_action_enqueue_current_genre">Metti genere in coda</string>
+  <string name="jump_to_time">Salta al Tempo</string>
+  <string name="time_separator">:</string>
+  <string name="hour_hint">HH</string>
+  <string name="minute_hint">MM</string>
+  <string name="second_hint">SS</string>
+  <string name="error_invalid_position">Posizione non valida</string>
   <string name="filebrowser_start">Home ricerca file</string>
   <string name="customize_filebrowser_start">La ricerca file inizia da questa cartella</string>
   <string name="select">Seleziona</string>
@@ -280,6 +292,8 @@
   <string name="playlist_sync_disabled">Disattivato</string>
   <string name="playlist_sync_folder_title">Cartella di sincronizzazione</string>
   <string name="playlist_sync_folder_summary">Cartella da usare per la sincronizzazione delle playlist</string>
+  <string name="playlist_export_relative_paths_title">Esporta usando percorso relativo</string>
+  <string name="playlist_export_relative_paths_summary">Percorsi di riferimento relativi alla playlist</string>
   <string name="permission_request_summary">Vanilla Music richiede i permessi di lettura per visualizzare la libreria musicale</string>
   <string name="reverse_sort">Ordinamento inverso</string>
   <string name="share">Condividi…</string>

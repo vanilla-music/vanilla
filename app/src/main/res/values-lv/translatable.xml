@@ -218,6 +218,8 @@
   <string name="enable_scroll_to_song_summary">Biliotēkas sarakstos tīt uz pašreiz atskaņoto dziesmu/albumu/izpildītāju</string>
   <string name="queue_enable_scroll_to_song_title">Tīt uz dziesmas nosaukumu rindā</string>
   <string name="queue_enable_scroll_to_song_summary">Mainoties dziesmai, tīt uz pašreiz atskaņoto dziesmu rindā</string>
+  <string name="jump_to_enqueued_on_play_title">Nospiežot \'Atskaņot\', pāriet uz ierindoto dziesmu</string>
+  <string name="jump_to_enqueued_on_play_summary">Ja pieprasītā dziesma jau ir rindā, pārlēkt uz tā vietā, lai rindu nodzēstu</string>
   <string name="coverloader_android_title">Ielādēt vāku attēlus no Android</string>
   <string name="coverloader_android_summary">Vaicāt pēc vāciņa attēla Android iekšējai mēdiju datubāzei</string>
   <string name="coverloader_vanilla_title">Ielādēt vāciņa attēlu no mapes</string>
@@ -299,6 +301,8 @@
   <string name="playlist_sync_disabled">Atslēgts</string>
   <string name="playlist_sync_folder_title">Sinhronizācijas mape</string>
   <string name="playlist_sync_folder_summary">Mape, kuru izmantot repertuāra sinhronizācijai</string>
+  <string name="playlist_export_relative_paths_title">Eksportēt, izmantojot relatīvos ceļus</string>
+  <string name="playlist_export_relative_paths_summary">Failu ceļus norādīt relatīvi repertuāram</string>
   <string name="permission_request_summary">Vanilla Music lasīšanas atļauja vajadzīga, lai parādītu jūsu mūzikas bibliotēku</string>
   <string name="reverse_sort">Apgrieztā kārtošana</string>
   <string name="share">Dalīties..</string>

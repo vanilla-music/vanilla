@@ -284,6 +284,8 @@
   <string name="playlist_sync_disabled">無効</string>
   <string name="playlist_sync_folder_title">フォルダーの同期</string>
   <string name="playlist_sync_folder_summary">プレイリストの同期に使用するフォルダー</string>
+  <string name="playlist_export_relative_paths_title">相対パスを使用してエクスポート</string>
+  <string name="playlist_export_relative_paths_summary">再生リストに対する相対ファイルパスを参照します</string>
   <string name="permission_request_summary">Vanilla Music  が音楽ライブラリを表示するために、読み取りのアクセス許可が必要です</string>
   <string name="reverse_sort">逆順に並び替え</string>
   <string name="share">共有…</string>

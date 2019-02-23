@@ -284,6 +284,8 @@
   <string name="playlist_sync_disabled">停用</string>
   <string name="playlist_sync_folder_title">同步資料夾</string>
   <string name="playlist_sync_folder_summary">同步播放清單使用的資料夾</string>
+  <string name="playlist_export_relative_paths_title">使用相對路徑匯出</string>
+  <string name="playlist_export_relative_paths_summary">相對於播放清單的參照檔案路徑</string>
   <string name="permission_request_summary">Vanilla 音樂需要讀取的權限，以顯示您的媒體庫</string>
   <string name="reverse_sort">反向排序</string>
   <string name="share">分享…</string>

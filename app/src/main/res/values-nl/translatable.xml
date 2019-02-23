@@ -292,6 +292,8 @@
   <string name="playlist_sync_disabled">Uitgezet</string>
   <string name="playlist_sync_folder_title">Synchronisatiemap</string>
   <string name="playlist_sync_folder_summary">Te gebruiken map voor synchroniseren van afspeellijst</string>
+  <string name="playlist_export_relative_paths_title">Exporteer naar relatieve paden</string>
+  <string name="playlist_export_relative_paths_summary">Refereer bestandspaden relatief t.o.v. de playlist</string>
   <string name="permission_request_summary">Vanilla Music moet worden gemachtigd om je muziekverzameling te tonen</string>
   <string name="reverse_sort">Draai sorteervolgorde om</string>
   <string name="share">Deel...</string>
