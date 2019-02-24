@@ -29,9 +29,12 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.support.iosched.tabs.VanillaTabLayout;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.SeekBar;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 import androidx.core.graphics.ColorUtils;
@@ -49,14 +52,35 @@ public class ThemeHelper {
 	}
 
 	/**
+	 *
+	 */
+	final private static String getColor(){
+		return "#b13fb5";
+	}
+
+	/**
+	 *
+	 */
+	final private static int getParsedColor(){
+		return Color.parseColor(getColor());
+	}
+
+	/**
+	 *
+	 */
+	final private static int getParedDarkColor(){
+		return ColorUtils.blendARGB(getParsedColor(), Color.BLACK, 0.15f);
+	}
+
+
+	/**
 	 * Sets the accentcolor to the value stored in the preferences.
 	 */
 	final public static void setAccentColor(Activity a) {
 
-		String c = "#b13fb5";
 
-		int myColor = Color.parseColor(c);
-		int myColorDark =  ColorUtils.blendARGB(Color.parseColor(c), Color.BLACK, 0.15f);
+		int myColor = getParsedColor();
+		int myColorDark = getParedDarkColor();
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 			a.getWindow().setStatusBarColor(myColorDark);
@@ -101,6 +125,36 @@ public class ThemeHelper {
 			}
 		}
 
+	}
+
+	/**
+	 * Sets the accentcolor to the value stored in the preferences.
+	 */
+	final public static void setAccentColor(Button...b) {
+
+		int myColor = getParsedColor();
+
+		for (Button button : b) {
+			if(button != null) {
+				button.setTextColor(myColor);
+			}
+		}
+	}
+
+	/**
+	 * Sets the accentcolor to the value stored in the preferences.
+	 */
+	final public static void setAccentColor(EditText...e) {
+
+		int myColor = getParsedColor();
+
+		for (EditText editText : e) {
+			if(editText != null) {
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+					editText.setBackgroundTintList(ColorStateList.valueOf(myColor));
+				}
+			}
+		}
 	}
 
 	/**

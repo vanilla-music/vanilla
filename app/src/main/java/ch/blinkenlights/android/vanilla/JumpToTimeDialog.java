@@ -23,12 +23,14 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -101,6 +103,20 @@ public class JumpToTimeDialog extends DialogFragment implements DialogInterface.
 			.create();
 		hoursView.requestFocus();
 		dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
+		dialog.setOnShowListener(new DialogInterface.OnShowListener(){
+			@Override
+			public void onShow(DialogInterface dialog) {
+				AlertDialog d = (AlertDialog) dialog;
+				Button bN = d.getButton(DialogInterface.BUTTON_NEGATIVE);
+				Button bP = d.getButton(DialogInterface.BUTTON_POSITIVE);
+
+				ThemeHelper.setAccentColor(bN,bP);
+				ThemeHelper.setAccentColor(hoursView,minutesView,secondsView);
+			}
+
+		});
+
 		return dialog;
 	}
 
