@@ -17,20 +17,20 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 	<TableRow>
-		<ch.blinkenlights.android.vanilla.ui.CustomElements.CustomTextView
+		<ch.blinkenlights.android.vanilla.ui.customelements.CustomTextView
 			android:text="@string/_title"
 			android:textColor="?overlay_foreground_color"
 			android:singleLine="true"
 			android:ellipsize="marquee"
 			android:paddingRight="5dip"
 			android:gravity="right" />
-		<ch.blinkenlights.android.vanilla.ui.CustomElements.CustomTextView
+		<ch.blinkenlights.android.vanilla.ui.customelements.CustomTextView
 			android:id="@+id/title"
 			android:textColor="?overlay_foreground_color"
 			android:singleLine="true"
 			android:ellipsize="marquee"
 			android:textStyle="bold" />
-		<ch.blinkenlights.android.vanilla.ui.CustomElements.CustomTextView
+		<ch.blinkenlights.android.vanilla.ui.customelements.CustomTextView
 			android:id="@+id/queue_pos"
 			android:singleLine="true"
 			android:ellipsize="marquee"
@@ -39,7 +39,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 	</TableRow>
 
 	<TableRow>
-		<ch.blinkenlights.android.vanilla.ui.CustomElements.CustomTextView
+		<ch.blinkenlights.android.vanilla.ui.customelements.CustomTextView
 			android:text="@string/_artist"
 			android:textColor="?overlay_foreground_color"
 			android:singleLine="true"
@@ -50,7 +50,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 	</TableRow>
 
 	<TableRow>
-		<ch.blinkenlights.android.vanilla.ui.CustomElements.CustomTextView
+		<ch.blinkenlights.android.vanilla.ui.customelements.CustomTextView
 			android:text="@string/_album"
 			android:singleLine="true"
 			android:ellipsize="marquee"
@@ -61,7 +61,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 	</TableRow>
 
 	<TableRow>
-		<ch.blinkenlights.android.vanilla.ui.CustomElements.CustomTextView
+		<ch.blinkenlights.android.vanilla.ui.customelements.CustomTextView
 			android:text="@string/_genre"
 			android:textColor="?overlay_foreground_color"
 			android:paddingRight="5dip"
@@ -70,7 +70,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 	</TableRow>
 
 	<TableRow>
-		<ch.blinkenlights.android.vanilla.ui.CustomElements.CustomTextView
+		<ch.blinkenlights.android.vanilla.ui.customelements.CustomTextView
 			android:text="@string/_track"
 			android:textColor="?overlay_foreground_color"
 			android:paddingRight="5dip"
@@ -79,7 +79,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 	</TableRow>
 
 	<TableRow>
-		<ch.blinkenlights.android.vanilla.ui.CustomElements.CustomTextView
+		<ch.blinkenlights.android.vanilla.ui.customelements.CustomTextView
 			android:text="@string/_year"
 			android:textColor="?overlay_foreground_color"
 			android:paddingRight="5dip"
@@ -88,7 +88,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 	</TableRow>
 
 	<TableRow>
-		<ch.blinkenlights.android.vanilla.ui.CustomElements.CustomTextView
+		<ch.blinkenlights.android.vanilla.ui.customelements.CustomTextView
 			android:text="@string/_composer"
 			android:textColor="?overlay_foreground_color"
 			android:paddingRight="5dip"
@@ -97,7 +97,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 	</TableRow>
 
 	<TableRow>
-		<ch.blinkenlights.android.vanilla.ui.CustomElements.CustomTextView
+		<ch.blinkenlights.android.vanilla.ui.customelements.CustomTextView
 			android:text="@string/_path"
 			android:textColor="?overlay_foreground_color"
 			android:paddingRight="5dip"
@@ -106,7 +106,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 	</TableRow>
 
 	<TableRow>
-		<ch.blinkenlights.android.vanilla.ui.CustomElements.CustomTextView
+		<ch.blinkenlights.android.vanilla.ui.customelements.CustomTextView
 			android:text="@string/_format"
 			android:textColor="?overlay_foreground_color"
 			android:paddingRight="5dip"

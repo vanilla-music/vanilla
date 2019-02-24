@@ -51,7 +51,7 @@
 			android:layout_marginLeft="@dimen/text_padding"
 			android:layout_gravity="center"
 			android:orientation="vertical">
-			<ch.blinkenlights.android.vanilla.ui.CustomElements.CustomTextView
+			<ch.blinkenlights.android.vanilla.ui.customelements.CustomTextView
 				android:id="@+id/title"
 				android:textSize="14sp"
 				android:singleLine="true"
@@ -60,7 +60,7 @@
 				android:layout_width="fill_parent"
 				android:textColor="@android:color/background_light"
 				android:layout_height="wrap_content" />
-			<ch.blinkenlights.android.vanilla.ui.CustomElements.CustomTextView
+			<ch.blinkenlights.android.vanilla.ui.customelements.CustomTextView
 				android:id="@+id/artist"
 				android:textSize="12sp"
 				android:singleLine="true"

@@ -1,16 +1,16 @@
-package ch.blinkenlights.android.vanilla.ui.CustomElements;
+package ch.blinkenlights.android.vanilla.ui.customelements;
 
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 
-import androidx.appcompat.widget.AppCompatTextView;
+import android.widget.TextView ;
 
 
 /**
  * The Marquee effect needs an active focus. This custom Textview is always focussed, or at least it says so. This allows the marquee to permanently play.
  */
-public class CustomTextView extends AppCompatTextView {
+public class CustomTextView extends TextView {
 
 	public CustomTextView(Context context) {
 		super(context);
