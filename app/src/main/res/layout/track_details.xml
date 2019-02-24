@@ -22,6 +22,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 			android:textColor="?overlay_foreground_color"
 			android:singleLine="true"
 			android:ellipsize="marquee"
+			android:marqueeRepeatLimit="marquee_forever"
 			android:paddingRight="5dip"
 			android:gravity="right" />
 		<ch.blinkenlights.android.vanilla.ui.customelements.CustomTextView
@@ -29,11 +30,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 			android:textColor="?overlay_foreground_color"
 			android:singleLine="true"
 			android:ellipsize="marquee"
+			android:marqueeRepeatLimit="marquee_forever"
 			android:textStyle="bold" />
 		<ch.blinkenlights.android.vanilla.ui.customelements.CustomTextView
 			android:id="@+id/queue_pos"
 			android:singleLine="true"
 			android:ellipsize="marquee"
+			android:marqueeRepeatLimit="marquee_forever"
 			android:gravity="right"
 			android:layout_gravity="top" />
 	</TableRow>
@@ -44,6 +47,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 			android:textColor="?overlay_foreground_color"
 			android:singleLine="true"
 			android:ellipsize="marquee"
+			android:marqueeRepeatLimit="marquee_forever"
 			android:paddingRight="5dip"
 			android:gravity="right" />
 		<TextView android:id="@+id/artist" android:textColor="?overlay_foreground_color" />
@@ -54,6 +58,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 			android:text="@string/_album"
 			android:singleLine="true"
 			android:ellipsize="marquee"
+			android:marqueeRepeatLimit="marquee_forever"
 			android:textColor="?overlay_foreground_color"
 			android:paddingRight="5dip"
 			android:gravity="right" />
