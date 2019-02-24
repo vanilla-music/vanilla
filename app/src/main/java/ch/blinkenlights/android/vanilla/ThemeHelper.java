@@ -43,15 +43,6 @@ import androidx.fragment.app.Fragment;
 public class ThemeHelper {
 
 	/**
-	 * Calls context.setTheme() with given theme.
-	 * Will automatically swap the theme with an alternative
-	 * version if the user requested us to use it
-	 */
-	final public static void setTheme(Context context, int theme) {
-		context.setTheme(getThemeResource(context, theme));
-	}
-
-	/**
 	 *
 	 */
 	final private static String getColor(){
@@ -92,37 +83,22 @@ public class ThemeHelper {
 			actionBar.setBackgroundDrawable(colorDrawable);
 		}
 
-		SeekBar mSeekBar = (SeekBar)a.findViewById(R.id.seek_bar);
-		if(mSeekBar != null){
+		SeekBar seekBar = (SeekBar)a.findViewById(R.id.seek_bar);
+		if(seekBar != null){
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-				mSeekBar.getThumb().setColorFilter(myColor, PorterDuff.Mode.SRC_ATOP);
-				mSeekBar.getProgressDrawable().setColorFilter(myColor, PorterDuff.Mode.SRC_ATOP);
+				seekBar.getThumb().setColorFilter(myColor, PorterDuff.Mode.SRC_ATOP);
+				seekBar.getProgressDrawable().setColorFilter(myColor, PorterDuff.Mode.SRC_ATOP);
 			}
 		}
 
-		BottomBarControls mBottomBarControls = (BottomBarControls) a.findViewById(R.id.bottombar_controls);
-		if(mBottomBarControls != null){
-			mBottomBarControls.setBackgroundColor(myColor);
+		BottomBarControls bottomBarControls = (BottomBarControls) a.findViewById(R.id.bottombar_controls);
+		if(bottomBarControls != null){
+			bottomBarControls.setBackgroundColor(myColor);
 		}
 
-		VanillaTabLayout mVanillaTabLayout = (VanillaTabLayout) a.findViewById(R.id.sliding_tabs);
-		if(mVanillaTabLayout != null){
-			mVanillaTabLayout.setBackgroundColor(myColor);
-		}
-
-
-		ArrayList<CheckBox> checkboxes = new ArrayList<CheckBox>();
-		ArrayList<View> availableViews = a.getWindow().getDecorView().getFocusables(View.FOCUS_FORWARD);
-		for (int i = 0; i < availableViews.size(); i++) {
-			View actualView = availableViews.get(i);
-			if(actualView instanceof CheckBox) {
-				checkboxes.add((CheckBox) actualView);
-			}
-		}
-		for(CheckBox mCheckbox: checkboxes){
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-				mCheckbox.setButtonTintList(ColorStateList.valueOf(myColor));
-			}
+		VanillaTabLayout vanillaTabLayout = (VanillaTabLayout) a.findViewById(R.id.sliding_tabs);
+		if(vanillaTabLayout != null){
+			vanillaTabLayout.setBackgroundColor(myColor);
 		}
 
 	}
@@ -164,8 +140,8 @@ public class ThemeHelper {
 	 *
 	 * Also sets the accentcolor to the value stored in the preferences.
 	 */
-	final public static void setTheme(Context context, int theme, Activity a) {
-		setTheme(context, theme);
+	final public static void setTheme(Activity a, int theme) {
+		a.setTheme(getThemeResource(a, theme));
 		setAccentColor(a);
 	}
 

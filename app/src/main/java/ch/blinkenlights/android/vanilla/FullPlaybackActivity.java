@@ -108,7 +108,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 	@Override
 	public void onCreate(Bundle icicle)
 	{
-		ThemeHelper.setTheme(this, R.style.Playback, this);
+		ThemeHelper.setTheme(this, R.style.Playback);
 
 
 		super.onCreate(icicle);

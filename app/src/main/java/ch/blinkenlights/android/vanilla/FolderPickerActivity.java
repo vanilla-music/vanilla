@@ -66,7 +66,7 @@ public abstract class FolderPickerActivity extends Activity
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		ThemeHelper.setTheme(this, R.style.BackActionBar, this);
+		ThemeHelper.setTheme(this, R.style.BackActionBar);
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.folderpicker_content);

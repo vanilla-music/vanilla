@@ -48,7 +48,7 @@ public class TabOrderActivity extends Activity
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
-		ThemeHelper.setTheme(this, R.style.BackActionBar, this);
+		ThemeHelper.setTheme(this, R.style.BackActionBar);
 		super.onCreate(savedInstanceState);
 
 		setTitle(R.string.tabs);
