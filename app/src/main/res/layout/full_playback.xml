@@ -43,7 +43,7 @@ THE SOFTWARE.
 				android:elevation="2dp"
 				android:orientation="vertical">
 					<include layout="@layout/seek_bar" />
-					<include layout="@layout/controls" android:id="@+id/queue_slider" />
+					<include layout="@layout/controls_handlebar" android:id="@+id/queue_slider" />
 			</LinearLayout>
 
 

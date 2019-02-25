@@ -28,14 +28,8 @@ THE SOFTWARE.
 	android:layout_height="wrap_content"
 	android:layout_width="fill_parent"
 	android:background="?overlay_background_color"
-	android:orientation="vertical"
-	android:elevation="2dp">
+	android:orientation="horizontal">
 
-	<LinearLayout
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:background="?overlay_background_color"
-		android:orientation="horizontal">
 
 		<ch.blinkenlights.android.vanilla.VanillaImageButton
 			android:id="@+id/shuffle"
@@ -97,17 +91,4 @@ THE SOFTWARE.
 			android:paddingBottom="@dimen/controls_padding"
 			android:scaleType="fitCenter"
 			android:src="@drawable/repeat_inactive" />
-
-	</LinearLayout>
-
-	<!-- Only buttons are grabable, so we need an Imagebutton which is apropiately styled -->
-	<ImageButton
-		android:id="@+id/handlebar"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:background="@null"
-		android:enabled="false"
-		android:paddingBottom="5dp"
-		android:src="@drawable/grabberflat" />
-
 </LinearLayout>
