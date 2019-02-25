@@ -242,7 +242,13 @@ public class SlidingView extends FrameLayout
 			if (handle instanceof ViewGroup) {
 				ViewGroup group = (ViewGroup)handle;
 				for (int i = 0; i < group.getChildCount(); i++) {
-					group.getChildAt(i).setOnTouchListener(this);
+					if( group.getChildAt(i) instanceof ViewGroup){
+						for (int j = 0; j < ((ViewGroup)group.getChildAt(i)).getChildCount(); j++) {
+							((ViewGroup)group.getChildAt(i)).getChildAt(j).setOnTouchListener(this);
+						}
+					}else{
+						group.getChildAt(i).setOnTouchListener(this);
+					}
 				}
 			} else {
 				handle.setOnTouchListener(this);
