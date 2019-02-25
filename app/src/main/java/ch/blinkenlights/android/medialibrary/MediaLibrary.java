@@ -383,6 +383,45 @@ public class MediaLibrary  {
 	}
 
 	/**
+	 * Updates the timestamp of a played song
+	 *
+	 * @param context the context to use
+	 * @param id the song id to update
+	 * @param timestamp the timestamp
+	 */
+	public static void updateSongTimestamp(Context context, long id, int timestamp) {
+		String selection = MediaLibrary.SongColumns._ID+"="+id;
+		getBackend(context).execSQL("UPDATE "+MediaLibrary.TABLE_SONGS+" SET "+SongColumns.TIMESTAMP_LAST_PLAY+"="+timestamp+" WHERE "+selection);
+	}
+
+	/**
+	 * Updates the timestamp of a played song
+	 *
+	 * @param context the context to use
+	 * @param id the song id to update
+	 * @return the timestamp
+	 */
+	public static int getSongTimestamp(Context context, long id) {
+
+		String[] projection = {SongColumns._ID, SongColumns.TIMESTAMP_LAST_PLAY};
+		String selection = SongColumns._ID + " = ?";
+		String[] selectionArgs = { String.valueOf(id) };
+
+		Cursor cursor = MediaLibrary.queryLibrary(context, MediaLibrary.TABLE_SONGS, projection, selection, selectionArgs, null);
+
+		int timestamp=-1;
+		if (cursor != null) {
+			if (cursor.moveToFirst()) {
+				timestamp = cursor.getInt(1);
+			}
+			cursor.close();
+		}
+		return timestamp;
+	}
+
+
+
+	/**
 	 * Creates a new empty playlist
 	 *
 	 * @param context the context to use
@@ -653,6 +692,11 @@ public class MediaLibrary  {
 		 * Various flags of this entry, see SONG_FLAG...
 		 */
 		String FLAGS = "_flags";
+		/**
+		 * Contains the last known timestamp of the song.
+		 * This is important for audiobooks/podcasts
+		 */
+		String TIMESTAMP_LAST_PLAY = "timestamp_last_play";
 	}
 
 	// Columns of Album entries
@@ -681,6 +725,10 @@ public class MediaLibrary  {
 		 * The mtime of this item
 		 */
 		String MTIME = "mtime";
+		/**
+		 * The id of the last played song from this album
+		 */
+		String LAST_TRACK_PLAYED = "last_track_played";
 	}
 
 	// Columns of Contributors entries

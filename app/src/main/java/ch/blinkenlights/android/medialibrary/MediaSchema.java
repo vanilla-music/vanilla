@@ -24,19 +24,20 @@ public class MediaSchema {
 	 * SQL Schema of `songs' table
 	 */
 	private static final String DATABASE_CREATE_SONGS = "CREATE TABLE "+ MediaLibrary.TABLE_SONGS + " ("
-	  + MediaLibrary.SongColumns._ID          +" INTEGER PRIMARY KEY, "
-	  + MediaLibrary.SongColumns.TITLE        +" TEXT NOT NULL, "
-	  + MediaLibrary.SongColumns.TITLE_SORT   +" VARCHAR(64) NOT NULL, "
-	  + MediaLibrary.SongColumns.SONG_NUMBER  +" INTEGER, "
-	  + MediaLibrary.SongColumns.DISC_NUMBER  +" INTEGER, "
-	  + MediaLibrary.SongColumns.YEAR         +" INTEGER, "
-	  + MediaLibrary.SongColumns.ALBUM_ID     +" INTEGER NOT NULL, "
-	  + MediaLibrary.SongColumns.PLAYCOUNT    +" INTEGER NOT NULL DEFAULT 0, "
-	  + MediaLibrary.SongColumns.SKIPCOUNT    +" INTEGER NOT NULL DEFAULT 0, "
-	  + MediaLibrary.SongColumns.MTIME        +" TIMESTAMP DEFAULT (strftime('%s', CURRENT_TIMESTAMP)), "
-	  + MediaLibrary.SongColumns.DURATION     +" INTEGER NOT NULL, "
-	  + MediaLibrary.SongColumns.PATH         +" VARCHAR(4096) NOT NULL, "
-	  + MediaLibrary.SongColumns.FLAGS        +" INTEGER NOT NULL DEFAULT 0 "
+	  + MediaLibrary.SongColumns._ID                +" INTEGER PRIMARY KEY, "
+	  + MediaLibrary.SongColumns.TITLE              +" TEXT NOT NULL, "
+	  + MediaLibrary.SongColumns.TITLE_SORT         +" VARCHAR(64) NOT NULL, "
+	  + MediaLibrary.SongColumns.SONG_NUMBER        +" INTEGER, "
+	  + MediaLibrary.SongColumns.DISC_NUMBER        +" INTEGER, "
+	  + MediaLibrary.SongColumns.YEAR               +" INTEGER, "
+	  + MediaLibrary.SongColumns.ALBUM_ID           +" INTEGER NOT NULL, "
+	  + MediaLibrary.SongColumns.PLAYCOUNT          +" INTEGER NOT NULL DEFAULT 0, "
+	  + MediaLibrary.SongColumns.SKIPCOUNT          +" INTEGER NOT NULL DEFAULT 0, "
+	  + MediaLibrary.SongColumns.MTIME              +" TIMESTAMP DEFAULT (strftime('%s', CURRENT_TIMESTAMP)), "
+	  + MediaLibrary.SongColumns.DURATION           +" INTEGER NOT NULL, "
+	  + MediaLibrary.SongColumns.TIMESTAMP_LAST_PLAY+" INTEGER, "
+	  + MediaLibrary.SongColumns.PATH               +" VARCHAR(4096) NOT NULL, "
+	  + MediaLibrary.SongColumns.FLAGS              +" INTEGER NOT NULL DEFAULT 0 "
 	  + ");";
 
 	/**
@@ -48,6 +49,7 @@ public class MediaSchema {
 	  + MediaLibrary.AlbumColumns.ALBUM_SORT        +" VARCHAR(64) NOT NULL, "
 	  + MediaLibrary.AlbumColumns.PRIMARY_ALBUM_YEAR+" INTEGER, "
 	  + MediaLibrary.AlbumColumns.PRIMARY_ARTIST_ID +" INTEGER NOT NULL DEFAULT 0, "
+	  + MediaLibrary.AlbumColumns.LAST_TRACK_PLAYED +" INTEGER, "
 	  + MediaLibrary.AlbumColumns.MTIME             +" TIMESTAMP DEFAULT CURRENT_TIMESTAMP "
 	  + ");";
 

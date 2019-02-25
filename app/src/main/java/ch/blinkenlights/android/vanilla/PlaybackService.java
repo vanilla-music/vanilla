@@ -25,6 +25,7 @@ package ch.blinkenlights.android.vanilla;
 
 import ch.blinkenlights.android.medialibrary.MediaLibrary;
 import ch.blinkenlights.android.medialibrary.LibraryObserver;
+import ch.blinkenlights.android.vanilla.playback.PlaybackTimestampHandler;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -439,9 +440,14 @@ public final class PlaybackService extends Service
 	 */
 	private BastpUtil mBastpUtil;
 
+
+	private PlaybackTimestampHandler mPlaybackTimestampHandler;
+
+
 	@Override
 	public void onCreate()
 	{
+		mPlaybackTimestampHandler = new PlaybackTimestampHandler(this);
 		HandlerThread thread = new HandlerThread("PlaybackService", Process.THREAD_PRIORITY_DEFAULT);
 		thread.start();
 
@@ -1393,6 +1399,8 @@ public final class PlaybackService extends Service
 		try {
 			mMediaPlayerInitialized = false;
 			mMediaPlayer.reset();
+			mPlaybackTimestampHandler.start(mMediaPlayer);
+			mPlaybackTimestampHandler.setSong(song);
 
 			if(mPreparedMediaPlayer.isPlaying()) {
 				// The prepared media player is playing as the previous song
@@ -1421,8 +1429,10 @@ public final class PlaybackService extends Service
 				mPendingSeek = 0;
 			}
 
-			if ((mState & FLAG_PLAYING) != 0)
+			if ((mState & FLAG_PLAYING) != 0){
 				mMediaPlayer.start();
+			}
+
 
 			if ((mState & FLAG_ERROR) != 0) {
 				mErrorMessage = null;
@@ -1444,6 +1454,10 @@ public final class PlaybackService extends Service
 
 		}
 
+		int time = mPlaybackTimestampHandler.getInitialTimestamp();
+		if(time > 0){
+			seekToPosition(time);
+		}
 		updateNotification();
 
 	}
@@ -1454,6 +1468,8 @@ public final class PlaybackService extends Service
 
 		// Count this song as played
 		mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_UPDATE_PLAYCOUNTS, 1, 0, mCurrentSong), 800);
+
+		mPlaybackTimestampHandler.stopUpdates();
 
 		if (finishAction(mState) == SongTimeline.FINISH_REPEAT_CURRENT) {
 			setCurrentSong(0);
