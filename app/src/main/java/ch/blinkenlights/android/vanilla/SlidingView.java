@@ -252,7 +252,7 @@ public class SlidingView extends FrameLayout
 
 
 	/**
-	 * Attempts to stack all views orizontally in the available space
+	 * Attempts to stack all views horizontally in the available space
 	 */
 	@Override
 	protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
