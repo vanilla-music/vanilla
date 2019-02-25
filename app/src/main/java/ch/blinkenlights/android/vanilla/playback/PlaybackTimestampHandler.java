@@ -100,6 +100,9 @@ public class PlaybackTimestampHandler {
 
 	private void storeTimestampdataForSong() {
 		MediaLibrary.updateSongTimestamp(c, mSong.id, mTimestamp);
+		MediaLibrary.updateAlbumLastSong(c, mSong.id, mSong.albumId);
+
+
 	}
 
 

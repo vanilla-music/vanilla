@@ -395,7 +395,7 @@ public class MediaLibrary  {
 	}
 
 	/**
-	 * Updates the timestamp of a played song
+	 * Get the timestamp of a played song
 	 *
 	 * @param context the context to use
 	 * @param id the song id to update
@@ -419,7 +419,42 @@ public class MediaLibrary  {
 		return timestamp;
 	}
 
+	/**
+	 * Updates the timestamp of a played song
+	 *
+	 * @param context the context to use
+	 * @param songId the song id
+	 * @param albumId the album id to update
+	 */
+	public static void updateAlbumLastSong(Context context, long songId, long albumId) {
+		String selection = MediaLibrary.AlbumColumns._ID+"="+albumId;
+		getBackend(context).execSQL("UPDATE "+MediaLibrary.TABLE_ALBUMS+" SET "+AlbumColumns.LAST_TRACK_PLAYED+"="+songId+" WHERE "+selection);
+	}
 
+	/**
+	 * Get the last played song of an album
+	 *
+	 * @param context the context to use
+	 * @param id the song id to update
+	 * @return the songid
+	 */
+	public static long getAlbumLastSong(Context context, long id) {
+
+		String[] projection = {AlbumColumns._ID, AlbumColumns.LAST_TRACK_PLAYED};
+		String selection = AlbumColumns._ID + " = ?";
+		String[] selectionArgs = { String.valueOf(id) };
+
+		Cursor cursor = MediaLibrary.queryLibrary(context, MediaLibrary.TABLE_ALBUMS, projection, selection, selectionArgs, null);
+
+		long timestamp=-1;
+		if (cursor != null) {
+			if (cursor.moveToFirst()) {
+				timestamp = cursor.getLong(1);
+			}
+			cursor.close();
+		}
+		return timestamp;
+	}
 
 	/**
 	 * Creates a new empty playlist
