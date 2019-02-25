@@ -41,6 +41,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.iosched.tabs.VanillaTabLayout;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -630,6 +631,7 @@ public class LibraryActivity
 	private static final int CTX_MENU_SHOW_DETAILS = 12;
 	private static final int CTX_MENU_ADD_TO_HOMESCREEN = 13;
 	private static final int CTX_MENU_ADD_TO_PLAYLIST = 14;
+	private static final int CTX_MENU_PLAY_ALL_START_WITH_LAST_PLAYED = 15;
 
 	/**
 	 * Creates a context menu for an adapter row.
@@ -664,8 +666,14 @@ public class LibraryActivity
 			if (type <= MediaUtils.TYPE_SONG || type == MediaUtils.TYPE_FILE)
 				fm.add(CTX_MENU_PLAY_ALL, 1, R.drawable.menu_play_all, R.string.play_all).setIntent(rowData);
 
+
+			if(type == MediaUtils.TYPE_ALBUM){
+				fm.add(CTX_MENU_PLAY_ALL_START_WITH_LAST_PLAYED, 1, R.drawable.menu_play_all, R.string.play_all_start_with_last_played).setIntent(rowData);
+			}
+
 			fm.add(CTX_MENU_ENQUEUE_AS_NEXT, 1, R.drawable.menu_enqueue_as_next, R.string.enqueue_as_next).setIntent(rowData);
 			fm.add(CTX_MENU_ENQUEUE, 1, R.drawable.menu_enqueue, R.string.enqueue).setIntent(rowData);
+
 
 			if (type == MediaUtils.TYPE_PLAYLIST) {
 				fm.add(CTX_MENU_RENAME_PLAYLIST, 0, R.drawable.menu_edit, R.string.rename).setIntent(rowData);
@@ -686,6 +694,7 @@ public class LibraryActivity
 					}
 				}
 			}
+
 			fm.addSpacer(90);
 			fm.add(CTX_MENU_DELETE, 90, R.drawable.menu_delete, R.string.delete).setIntent(rowData);
 		}
@@ -725,6 +734,10 @@ public class LibraryActivity
 			break;
 		case CTX_MENU_PLAY_ALL:
 			pickSongs(intent, ACTION_PLAY_ALL);
+			break;
+		case CTX_MENU_PLAY_ALL_START_WITH_LAST_PLAYED:
+			pickSongs(intent, ACTION_ENQUEUE_ALL);
+			Log.e("testlastsong", MediaLibrary.getAlbumLastSong(this, String.valueOf(intent.getLongExtra("id", LibraryAdapter.INVALID_ID))));
 			break;
 		case CTX_MENU_ENQUEUE_ALL:
 			pickSongs(intent, ACTION_ENQUEUE_ALL);
