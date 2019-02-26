@@ -238,24 +238,38 @@ public class SlidingView extends FrameLayout
 
 		View handle = findViewById(mSliderHandleId);
 
+		//this is still needed because the libraryview handle is broken with the recursive one.
 		if (handle != null) {
 			if (handle instanceof ViewGroup) {
 				ViewGroup group = (ViewGroup)handle;
 				for (int i = 0; i < group.getChildCount(); i++) {
-					if( group.getChildAt(i) instanceof ViewGroup){
-						for (int j = 0; j < ((ViewGroup)group.getChildAt(i)).getChildCount(); j++) {
-							((ViewGroup)group.getChildAt(i)).getChildAt(j).setOnTouchListener(this);
-						}
-					}else{
-						group.getChildAt(i).setOnTouchListener(this);
-					}
+					group.getChildAt(i).setOnTouchListener(this);
 				}
 			} else {
 				handle.setOnTouchListener(this);
 			}
 		}
+
+		if (handle != null) {
+			attachListener(handle);
+		}
 	}
 
+
+	/**
+	 * Attaches the listener to any non-viewgroup element in a given view recursively
+	 * @param view view to attach the listener to
+	 */
+	private void attachListener(View view){
+		if (view instanceof ViewGroup) {
+			ViewGroup group = (ViewGroup)view;
+			for (int i = 0; i < group.getChildCount(); i++) {
+				attachListener(((ViewGroup) view).getChildAt(i));
+			}
+		} else {
+			view.setOnTouchListener(this);
+		}
+	}
 
 	/**
 	 * Attempts to stack all views horizontally in the available space
