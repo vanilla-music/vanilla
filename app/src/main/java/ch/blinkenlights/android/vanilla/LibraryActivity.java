@@ -771,7 +771,7 @@ public class LibraryActivity
 			TrackDetailsDialog.show(getFragmentManager(), songId);
 			break;
 		case CTX_MENU_PLUGINS: {
-			queryPluginsForIntent(intent);
+			showPluginMenu(intent);
 			break;
 		}
 		case CTX_MENU_MORE_FROM_ARTIST: {
