@@ -20,6 +20,7 @@ package ch.blinkenlights.android.vanilla;
 import ch.blinkenlights.android.medialibrary.MediaLibrary;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URLConnection;
 import java.net.URISyntaxException;
@@ -142,10 +143,12 @@ public class FileUtils {
 
 		try {
 			if (!destination.isAbsolute()) {
-				path = new File(base, path).getAbsolutePath();
+				path = new File(base, path).getCanonicalPath();
 			}
 		} catch (SecurityException ex) {
 			// Ignore.
+		}catch (IOException ex){
+			// Ignore
 		}
 		return path;
 	}
