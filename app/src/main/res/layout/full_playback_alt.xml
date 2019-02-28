@@ -35,7 +35,6 @@ THE SOFTWARE.
 		android:stretchColumns="1"
 		android:shrinkColumns="1"
 		android:background="?overlay_background_color"
-		android:layout_margin="5dp"
 		android:paddingLeft="5dip"
 		android:paddingRight="5dip">
 
