@@ -91,17 +91,6 @@ public class PreferencesActivity extends PreferenceActivity
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item)
-	{
-		if (item.getItemId() == android.R.id.home) {
-			finish();
-			return true;
-		} else {
-			return super.onOptionsItemSelected(item);
-		}
-	}
-
-	@Override
 	public void onSharedPreferenceChanged (SharedPreferences sharedPreferences, String key) {
 		if (PrefKeys.SELECTED_THEME.equals(key)) {
 			// this gets called by all preference instances: we force them to redraw
