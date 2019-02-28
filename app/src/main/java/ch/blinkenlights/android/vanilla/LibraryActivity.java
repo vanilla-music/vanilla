@@ -760,23 +760,10 @@ public class LibraryActivity
 			//Log.e("testlastsong", MediaLibrary.getAlbumLastSong(this, String.valueOf(intent.getLongExtra("id", LibraryAdapter.INVALID_ID))));
 			break;
 		case CTX_MENU_STORE_TIMESTAMP_FOR_ALBUM:
-			//pickSongs(intent, ACTION_ENQUEUE_ALL);
-			long albumid1=intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
-			Log.e("store", "store");
-			Log.e("store", ""+albumid1);
-			Log.e("store", ""+MediaLibrary.getAlbumUseSongTimestamp(this, albumid1));
-			MediaLibrary.updateAlbumUseSongTimestamp(this, albumid1,true);
-			Log.e("store", ""+MediaLibrary.getAlbumUseSongTimestamp(this, albumid1));
+			MediaLibrary.updateAlbumUseSongTimestamp(this, intent.getLongExtra("id", LibraryAdapter.INVALID_ID),true);
 			break;
 		case CTX_MENU_DONT_STORE_TIMESTAMP_FOR_ALBUM:
-			//pickSongs(intent, ACTION_ENQUEUE_ALL);
-			long albumid=intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
-			Log.e("store", "dontstore");
-			Log.e("store", ""+albumid);
-			Log.e("store", ""+MediaLibrary.getAlbumUseSongTimestamp(this, albumid));
-			MediaLibrary.updateAlbumUseSongTimestamp(this, albumid,false);
-			Log.e("store", ""+MediaLibrary.getAlbumUseSongTimestamp(this, albumid));
-
+			MediaLibrary.updateAlbumUseSongTimestamp(this, intent.getLongExtra("id", LibraryAdapter.INVALID_ID),false);
 			break;
 		case CTX_MENU_ENQUEUE_ALL:
 			pickSongs(intent, ACTION_ENQUEUE_ALL);
