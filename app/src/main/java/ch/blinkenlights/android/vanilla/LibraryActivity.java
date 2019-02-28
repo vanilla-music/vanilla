@@ -493,6 +493,25 @@ public class LibraryActivity
 		if (action == ACTION_LAST_USED)
 			action = mLastAction;
 
+
+		int type = rowData.getIntExtra(LibraryAdapter.DATA_TYPE, MediaUtils.TYPE_INVALID);
+		int timestampAlbumState = MediaLibrary.getAlbumUseSongTimestamp(this, rowData.getLongExtra("id", LibraryAdapter.INVALID_ID));
+
+		boolean state = false;
+		if(timestampAlbumState == 1){
+			state = true;
+		}
+
+		SharedPreferences settings = SharedPrefHelper.getSettings(this);
+		if(settings.getBoolean(PrefKeys.JUMP_TO_LAST_POSITION_OF_TRACK_STATE, PrefDefaults.JUMP_TO_LAST_POSITION_OF_TRACK_STATE) && timestampAlbumState == -1){
+			state = true;
+		}
+
+		if (type == MediaUtils.TYPE_ALBUM && state){
+			pickSongs(rowData, ACTION_CONTINUE);
+			return;
+		}
+
 		boolean tryExpand = action == ACTION_EXPAND || action == ACTION_EXPAND_OR_PLAY_ALL;
 		if (tryExpand && rowData.getBooleanExtra(LibraryAdapter.DATA_EXPANDABLE, false)) {
 			onItemExpanded(rowData);
