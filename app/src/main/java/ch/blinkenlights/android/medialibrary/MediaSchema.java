@@ -367,6 +367,10 @@ public class MediaSchema {
 		if (oldVersion < 20190210) {
 			dbh.execSQL(VIEW_CREATE_PLAYLISTS);
 		}
+
+		if(oldVersion < 20190228){
+			MediaMigrations.migrate_to_20190228(dbh);
+		}
 	}
 
 }

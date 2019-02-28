@@ -49,4 +49,19 @@ public class MediaMigrations {
 		cursor.close();
 	}
 
+	/**
+	 * Migrate to 20190228
+	 * Add fields for track-timestamp and albumposition
+	 *
+	 * @param dbh the database to work on
+	 **/
+	static void migrate_to_20190228(SQLiteDatabase dbh) {
+		Log.v("VanillaMusic", "migrate_to_20190228");
+		dbh.execSQL("ALTER TABLE "+MediaLibrary.TABLE_ALBUMS+" ADD COLUMN "+MediaLibrary.AlbumColumns.LAST_TRACK_PLAYED+" INTEGER;");
+		dbh.execSQL("ALTER TABLE "+MediaLibrary.TABLE_ALBUMS+" ADD COLUMN "+MediaLibrary.AlbumColumns.START_AT_TRACKTIMESTAMP+" INTEGER DEFAULT -1;");
+		dbh.execSQL("ALTER TABLE "+MediaLibrary.TABLE_SONGS+" ADD COLUMN "+MediaLibrary.SongColumns.TIMESTAMP_LAST_PLAY+" INTEGER;");
+
+
+	}
+
 }
