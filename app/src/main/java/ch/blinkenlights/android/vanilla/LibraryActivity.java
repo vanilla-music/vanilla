@@ -687,16 +687,16 @@ public class LibraryActivity
 			if(type == MediaUtils.TYPE_ALBUM){
 				fm.addSpacer(10);
 				if (timestampstate == 0) {
-					fm.add(CTX_MENU_STORE_TIMESTAMP_FOR_ALBUM, 11, R.drawable.ic_add_black_24dp, R.string.storeAlbumTimestamp).setIntent(rowData);
+					fm.add(CTX_MENU_STORE_TIMESTAMP_FOR_ALBUM, 11, R.drawable.ic_add_black_24dp, R.string.store_album_timestamp).setIntent(rowData);
 				}else if (timestampstate == 1){
-					fm.add(CTX_MENU_DONT_STORE_TIMESTAMP_FOR_ALBUM, 11, R.drawable.ic_clear_black_24dp, R.string.dontStoreAlbumTimestamp).setIntent(rowData);
+					fm.add(CTX_MENU_DONT_STORE_TIMESTAMP_FOR_ALBUM, 11, R.drawable.ic_clear_black_24dp, R.string.dont_store_album_timestamp).setIntent(rowData);
 				}else{
 
 					SharedPreferences settings = SharedPrefHelper.getSettings(this);
 					if(!settings.getBoolean(PrefKeys.JUMP_TO_LAST_POSITION_OF_TRACK_STATE, PrefDefaults.JUMP_TO_LAST_POSITION_OF_TRACK_STATE)){
-						fm.add(CTX_MENU_STORE_TIMESTAMP_FOR_ALBUM, 11, R.drawable.ic_add_black_24dp, R.string.storeAlbumTimestamp).setIntent(rowData);
+						fm.add(CTX_MENU_STORE_TIMESTAMP_FOR_ALBUM, 11, R.drawable.ic_add_black_24dp, R.string.store_album_timestamp).setIntent(rowData);
 					}else {
-						fm.add(CTX_MENU_DONT_STORE_TIMESTAMP_FOR_ALBUM, 11, R.drawable.ic_clear_black_24dp, R.string.dontStoreAlbumTimestamp).setIntent(rowData);
+						fm.add(CTX_MENU_DONT_STORE_TIMESTAMP_FOR_ALBUM, 11, R.drawable.ic_clear_black_24dp, R.string.dont_store_album_timestamp).setIntent(rowData);
 					}
 				}
 			}

@@ -416,9 +416,9 @@ THE SOFTWARE.
 
 
 	<!-- Timestamp storing -->
-	<string name="play_all_start_with_last_played">Play all / Start with last played</string>
-	<string name="storeAlbumTimestamp">Remember timestamp for songs</string>
-	<string name="dontStoreAlbumTimestamp">Dont remember timestamp for songs</string>
+	<string name="play_all_start_with_last_played">Continue album</string>
+	<string name="store_album_timestamp">Remember timestamp for songs</string>
+	<string name="dont_store_album_timestamp">Dont remember timestamp for songs</string>
 	<string name="remember_track_position_title">Remember Trackposition</string>
 	<string name="remember_track_position_summary">Continue the track at the last listened time for non selected albums</string>
 
