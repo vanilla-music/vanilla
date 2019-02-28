@@ -28,6 +28,7 @@ import ch.blinkenlights.android.vanilla.ui.FancyMenu;
 import ch.blinkenlights.android.vanilla.ui.FancyMenuItem;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -120,6 +121,10 @@ public class LibraryActivity
 	 */
 	public static final int ACTION_EXPAND_OR_PLAY_ALL = 9;
 	/**
+	 * Action for row click: Queue all and continue at last known timestamp
+	 */
+	public static final int ACTION_CONTINUE = 10;
+		/**
 	 * The SongTimeline add song modes corresponding to each relevant action.
 	 */
 	private static final int[] modeForAction =
@@ -385,6 +390,7 @@ public class LibraryActivity
 	{
 		int effectiveAction = action; // mutable copy
 		long id = intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
+
 		int type = mCurrentAdapter.getMediaType();
 
 		// special handling if we pick one song to be played that is already in queue
@@ -399,14 +405,20 @@ public class LibraryActivity
 			}
 		}
 
+		if (action == ACTION_CONTINUE) {
+			effectiveAction = ACTION_PLAY;
+		}
+
 		boolean all = false;
-		if (action == ACTION_PLAY_ALL || action == ACTION_ENQUEUE_ALL) {
+		if (action == ACTION_PLAY_ALL || action == ACTION_ENQUEUE_ALL || action == ACTION_CONTINUE) {
 			boolean notPlayAllAdapter =
 				(id == LibraryAdapter.HEADER_ID)
 				|| !(type <= MediaUtils.TYPE_SONG || type == MediaUtils.TYPE_FILE);
 			if (effectiveAction == ACTION_ENQUEUE_ALL && notPlayAllAdapter) {
 				effectiveAction = ACTION_ENQUEUE;
 			} else if (effectiveAction == ACTION_PLAY_ALL && notPlayAllAdapter) {
+				effectiveAction = ACTION_PLAY;
+			} else if (action == ACTION_CONTINUE && notPlayAllAdapter) {
 				effectiveAction = ACTION_PLAY;
 			} else {
 				all = true;
@@ -419,6 +431,20 @@ public class LibraryActivity
 		QueryTask query = buildQueryFromIntent(intent, false, (all ? mCurrentAdapter : null));
 		query.mode = modeForAction[effectiveAction];
 		PlaybackService.get(this).addSongs(query);
+
+		//Delay this a short time, because sometimes the playlist is not ready and the queue is empty so it cannot set the track properly
+		final long fid= id;
+		final Context c = this;
+		Handler handler = new Handler();
+		handler.postDelayed(new Runnable() {
+			public void run() {
+				long ls = MediaLibrary.getAlbumLastSong(c,fid);
+				int newpos = PlaybackService.get(c).getQueuePositionForSongId(ls);
+				if(action == ACTION_CONTINUE){
+					PlaybackService.get(c).jumpToQueuePosition(newpos);
+				}
+			}
+		}, 50);   //50 milliseconds
 
 		if (mDefaultAction == ACTION_LAST_USED && mLastAction != action) {
 			mLastAction = action;
@@ -756,8 +782,7 @@ public class LibraryActivity
 			pickSongs(intent, ACTION_PLAY_ALL);
 			break;
 		case CTX_MENU_PLAY_ALL_START_WITH_LAST_PLAYED:
-			pickSongs(intent, ACTION_ENQUEUE_ALL);
-			//Log.e("testlastsong", MediaLibrary.getAlbumLastSong(this, String.valueOf(intent.getLongExtra("id", LibraryAdapter.INVALID_ID))));
+			pickSongs(intent, ACTION_CONTINUE);
 			break;
 		case CTX_MENU_STORE_TIMESTAMP_FOR_ALBUM:
 			MediaLibrary.updateAlbumUseSongTimestamp(this, intent.getLongExtra("id", LibraryAdapter.INVALID_ID),true);
