@@ -410,7 +410,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 				if (song != null) {
 					Intent songIntent = new Intent();
 					songIntent.putExtra("id", song.id);
-					queryPluginsForIntent(songIntent);
+					showPluginMenu(songIntent);
 				}
 				break;
 		default:
