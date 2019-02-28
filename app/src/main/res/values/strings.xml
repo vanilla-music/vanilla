@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="play_all_start_with_last_played">Play all / Start with last played</string>
+	<string name="storeAlbumTimestamp">storeAlbumTimestamp</string>
+	<string name="dontStoreAlbumTimestamp">dontStoreAlbumTimestamp</string>
 </resources>

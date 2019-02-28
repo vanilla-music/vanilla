@@ -44,13 +44,14 @@ public class MediaSchema {
 	 * SQL Schema of `albums' table
 	 */
 	private static final String DATABASE_CREATE_ALBUMS = "CREATE TABLE "+ MediaLibrary.TABLE_ALBUMS + " ("
-	  + MediaLibrary.AlbumColumns._ID               +" INTEGER PRIMARY KEY, "
-	  + MediaLibrary.AlbumColumns.ALBUM             +" TEXT NOT NULL, "
-	  + MediaLibrary.AlbumColumns.ALBUM_SORT        +" VARCHAR(64) NOT NULL, "
-	  + MediaLibrary.AlbumColumns.PRIMARY_ALBUM_YEAR+" INTEGER, "
-	  + MediaLibrary.AlbumColumns.PRIMARY_ARTIST_ID +" INTEGER NOT NULL DEFAULT 0, "
-	  + MediaLibrary.AlbumColumns.LAST_TRACK_PLAYED +" INTEGER, "
-	  + MediaLibrary.AlbumColumns.MTIME             +" TIMESTAMP DEFAULT CURRENT_TIMESTAMP "
+	  + MediaLibrary.AlbumColumns._ID               	  +" INTEGER PRIMARY KEY, "
+	  + MediaLibrary.AlbumColumns.ALBUM             	  +" TEXT NOT NULL, "
+	  + MediaLibrary.AlbumColumns.ALBUM_SORT        	  +" VARCHAR(64) NOT NULL, "
+	  + MediaLibrary.AlbumColumns.PRIMARY_ALBUM_YEAR	  +" INTEGER, "
+	  + MediaLibrary.AlbumColumns.PRIMARY_ARTIST_ID 	  +" INTEGER NOT NULL DEFAULT 0, "
+	  + MediaLibrary.AlbumColumns.LAST_TRACK_PLAYED 	  +" INTEGER, "
+	  + MediaLibrary.AlbumColumns.START_AT_TRACKTIMESTAMP +" INTEGER, "
+	  + MediaLibrary.AlbumColumns.MTIME             	  +" TIMESTAMP DEFAULT CURRENT_TIMESTAMP "
 	  + ");";
 
 	/**
