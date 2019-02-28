@@ -81,4 +81,5 @@ public class PrefKeys {
 	public static final String PLAYLIST_SYNC_FOLDER = "playlist_sync_folder";
 	public static final String PLAYLIST_EXPORT_RELATIVE_PATHS = "playlist_export_relative_paths";
 	public static final String JUMP_TO_ENQUEUED_ON_PLAY = "jump_to_enqueued_on_play";
+	public static final String JUMP_TO_LAST_POSITION_OF_TRACK_STATE = "jump_to_last_position_of_track_state";
 }

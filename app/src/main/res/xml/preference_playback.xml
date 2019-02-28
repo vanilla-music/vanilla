@@ -28,6 +28,11 @@ THE SOFTWARE.
 		android:title="@string/playback_on_startup_title"
 		android:summary="@string/playback_on_startup_summary"
 		android:defaultValue="false" />
+	<CheckBoxPreference
+		android:key="jump_to_last_position_of_track_state"
+		android:title="@string/remember_track_position_title"
+		android:summary="@string/remember_track_position_summary"
+		android:defaultValue="false" />
 	<ch.blinkenlights.android.vanilla.ListPreferenceSummary
 		android:key="display_mode"
 		android:title="@string/display_mode_title"

@@ -80,4 +80,5 @@ public class PrefDefaults {
 	public static final String  PLAYLIST_SYNC_FOLDER = "/sdcard/Playlists";
 	public static final boolean PLAYLIST_EXPORT_RELATIVE_PATHS = false;
 	public static final boolean JUMP_TO_ENQUEUED_ON_PLAY = true;
+	public static final boolean JUMP_TO_LAST_POSITION_OF_TRACK_STATE = false;
 }

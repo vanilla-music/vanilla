@@ -683,6 +683,24 @@ public class LibraryActivity
 				fm.add(CTX_MENU_EXPAND, 2, R.drawable.menu_expand, R.string.expand).setIntent(rowData);
 			}
 
+			int timestampstate = MediaLibrary.getAlbumUseSongTimestamp(this, rowData.getLongExtra("id", LibraryAdapter.INVALID_ID));
+			if(type == MediaUtils.TYPE_ALBUM){
+				fm.addSpacer(10);
+				if (timestampstate == 0) {
+					fm.add(CTX_MENU_STORE_TIMESTAMP_FOR_ALBUM, 11, R.drawable.ic_add_black_24dp, R.string.storeAlbumTimestamp).setIntent(rowData);
+				}else if (timestampstate == 1){
+					fm.add(CTX_MENU_DONT_STORE_TIMESTAMP_FOR_ALBUM, 11, R.drawable.ic_clear_black_24dp, R.string.dontStoreAlbumTimestamp).setIntent(rowData);
+				}else{
+
+					SharedPreferences settings = SharedPrefHelper.getSettings(this);
+					if(!settings.getBoolean(PrefKeys.JUMP_TO_LAST_POSITION_OF_TRACK_STATE, PrefDefaults.JUMP_TO_LAST_POSITION_OF_TRACK_STATE)){
+						fm.add(CTX_MENU_STORE_TIMESTAMP_FOR_ALBUM, 11, R.drawable.ic_add_black_24dp, R.string.storeAlbumTimestamp).setIntent(rowData);
+					}else {
+						fm.add(CTX_MENU_DONT_STORE_TIMESTAMP_FOR_ALBUM, 11, R.drawable.ic_clear_black_24dp, R.string.dontStoreAlbumTimestamp).setIntent(rowData);
+					}
+				}
+			}
+
 			if (type == MediaUtils.TYPE_SONG || type == MediaUtils.TYPE_ALBUM) {
 				fm.addSpacer(30);
 				fm.add(CTX_MENU_MORE_FROM_ARTIST, 30, R.drawable.menu_artist, R.string.more_from_artist).setIntent(rowData);
@@ -699,15 +717,6 @@ public class LibraryActivity
 
 			fm.addSpacer(90);
 			fm.add(CTX_MENU_DELETE, 90, R.drawable.menu_delete, R.string.delete).setIntent(rowData);
-
-			int timestampstate = MediaLibrary.getAlbumUseSongTimestamp(this, rowData.getLongExtra("id", LibraryAdapter.INVALID_ID));
-			if(type == MediaUtils.TYPE_ALBUM){
-				if (timestampstate == 0) {
-					fm.add(CTX_MENU_STORE_TIMESTAMP_FOR_ALBUM, 90, R.drawable.menu_delete, R.string.storeAlbumTimestamp).setIntent(rowData);
-				}else if (timestampstate == 1){
-					fm.add(CTX_MENU_DONT_STORE_TIMESTAMP_FOR_ALBUM, 90, R.drawable.menu_delete, R.string.dontStoreAlbumTimestamp).setIntent(rowData);
-				}
-			}
 		}
 		fm.show(view, x, y);
 		return true;

@@ -50,7 +50,7 @@ public class MediaSchema {
 	  + MediaLibrary.AlbumColumns.PRIMARY_ALBUM_YEAR	  +" INTEGER, "
 	  + MediaLibrary.AlbumColumns.PRIMARY_ARTIST_ID 	  +" INTEGER NOT NULL DEFAULT 0, "
 	  + MediaLibrary.AlbumColumns.LAST_TRACK_PLAYED 	  +" INTEGER, "
-	  + MediaLibrary.AlbumColumns.START_AT_TRACKTIMESTAMP +" INTEGER, "
+	  + MediaLibrary.AlbumColumns.START_AT_TRACKTIMESTAMP +" INTEGER DEFAULT -1, "
 	  + MediaLibrary.AlbumColumns.MTIME             	  +" TIMESTAMP DEFAULT CURRENT_TIMESTAMP "
 	  + ");";
 
