@@ -248,4 +248,20 @@ public abstract class FolderPickerActivity extends Activity
 		builder.create().show();
 		return true;
 	}
+
+	/**
+	 * Override onBackPressed, so that the fileexplorer moves to the parent directory, until there is no parent. If there is no parent, close fileexplorer
+	 */
+	@Override
+	public void onBackPressed(){
+		File curPath = mListAdapter.getCurrentDir();
+		File newPath = curPath.getParentFile();
+
+		if (newPath != null){
+			setCurrentDir(newPath);
+		}else{
+			super.onBackPressed();
+			finish();
+		}
+	}
 }
