@@ -28,14 +28,16 @@ import ch.blinkenlights.android.vanilla.VanillaMediaPlayer;
 
 public class PlaybackTimestampHandler {
 
-	final Handler mHandler = new Handler();
-
-	private MediaLibraryBackend mlb;
+	private final Handler mHandler = new Handler();
 	private Context c;
 
 	private boolean alreadyUpdating=false;
 	private Song mSong;
 	private int mTimestamp;
+
+
+
+	private static final int mDelayUpdate = 2000;
 
 	private static String TAG = "PlaybackUpdateHandler";
 
@@ -50,12 +52,6 @@ public class PlaybackTimestampHandler {
 	}
 
 	public void start(VanillaMediaPlayer mediaPlayer) {
-
-		if(!mediaPlayer.isPlaying()){
-			//Log.d(TAG, "Mediaplayer not playing!");
-			//return;
-		}
-
 		if(alreadyUpdating){
 			//Log.d(TAG, "Mediaplayer already updating!");
 			return;
@@ -74,12 +70,13 @@ public class PlaybackTimestampHandler {
 					storeTimestampdataForSong();
 				} finally {
 					//if mediaplayer is not playing, wait longer.
-					int delay=500;
-					if(!vmp.isPlaying()){
-						delay=5000;
-						//Log.d(TAG, "Long Delay: "+delay);
+					if(vmp.isPlaying()){
+						mHandler.postDelayed(this, mDelayUpdate);
+					}else{
+						//Stop Handler if no music is playing.
+						Log.e(TAG, "Mediaplayer not playing, stop updating!");
+						alreadyUpdating=false;
 					}
-					mHandler.postDelayed(this, delay);
 				}
 			}
 		};
