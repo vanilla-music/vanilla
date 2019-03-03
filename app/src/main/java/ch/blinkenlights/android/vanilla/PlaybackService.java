@@ -1246,6 +1246,9 @@ public final class PlaybackService extends Service
 	 */
 	public int play()
 	{
+
+		//restart Playbackhandler if it stopped
+		mPlaybackTimestampHandler.start(mMediaPlayer);
 		synchronized (mStateLock) {
 			if ((mState & FLAG_EMPTY_QUEUE) != 0) {
 				setFinishAction(SongTimeline.FINISH_RANDOM);
