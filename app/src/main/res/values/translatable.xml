@@ -412,4 +412,6 @@ THE SOFTWARE.
 	<string name="theme_name_red_light">Red</string>
 	<string name="theme_name_red_dark">Red (Dark)</string>
 	<string name="theme_name_amoled_dark">Pitch Black (AMOLED)</string>
+
+	<string name="dyslexiaPref">Use Dyslexia Font</string>
 </resources>

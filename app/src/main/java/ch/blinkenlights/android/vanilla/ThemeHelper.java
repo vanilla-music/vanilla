@@ -17,10 +17,13 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.content.SharedPreferences;
 import android.os.Build;
+
+import ch.blinkenlights.android.vanilla.theming.FontTheming;
 
 public class ThemeHelper {
 
@@ -29,8 +32,9 @@ public class ThemeHelper {
 	 * Will automatically swap the theme with an alternative
 	 * version if the user requested us to use it
 	 */
-	final public static void setTheme(Context context, int theme) {
-		context.setTheme(getThemeResource(context, theme));
+	final public static void setTheme(Activity activity, int theme) {
+		FontTheming.setFont(activity);
+		activity.setTheme(getThemeResource(activity, theme));
 	}
 
 	/**

@@ -25,14 +25,14 @@ import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 
 
 public class PreferencesTheme extends PreferenceFragment
- implements Preference.OnPreferenceClickListener
-{
+ implements Preference.OnPreferenceClickListener, Preference.OnPreferenceChangeListener {
 	private Context mContext;
 
 	@Override
@@ -47,6 +47,9 @@ public class PreferencesTheme extends PreferenceFragment
 		final String[] entries = getResources().getStringArray(R.array.theme_entries);
 		final String[] values = getResources().getStringArray(R.array.theme_values);
 		final String[] ids = getResources().getStringArray(R.array.theme_ids);
+
+
+		screen.addPreference(getDyslexiaPreference());
 
 		for (int i = 0; i < entries.length; i++) {
 
@@ -100,8 +103,29 @@ public class PreferencesTheme extends PreferenceFragment
 		return d;
 	}
 
+	private CheckBoxPreference getDyslexiaPreference(){
+
+		SharedPreferences settings = SharedPrefHelper.getSettings(mContext);
+		boolean useFont = settings.getBoolean(PrefKeys.DYSLEXIA_FONT,PrefDefaults.DYSLEXIA_FONT);
 
 
+		CheckBoxPreference dyslexiaPref = new CheckBoxPreference (mContext);
+		dyslexiaPref.setChecked(useFont);
+		dyslexiaPref.setPersistent(false);
+		dyslexiaPref.setOnPreferenceChangeListener(this);
+		dyslexiaPref.setTitle(R.string.dyslexiaPref);
+		dyslexiaPref.setKey("dyslexiaPref"); // preference value of this theme
+		return dyslexiaPref;
+	}
 
+	@Override
+	public boolean onPreferenceChange(Preference preference, Object newValue) {
 
+		if(preference.getKey().equals("dyslexiaPref")){
+			SharedPreferences.Editor editor = SharedPrefHelper.getSettings(mContext).edit();
+			editor.putBoolean(PrefKeys.DYSLEXIA_FONT, (boolean)newValue);
+			editor.apply();
+		}
+		return true;
+	}
 }

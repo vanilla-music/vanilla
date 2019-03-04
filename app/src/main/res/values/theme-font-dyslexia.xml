@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<style name="VanillaBase.FontDyslexia" parent="VanillaBase">
+		<item name="fontFamily">@font/opendyslexia</item>
+		<item name="android:fontFamily">@font/opendyslexia</item>
+	</style>
+
+</resources>

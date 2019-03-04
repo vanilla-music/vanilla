@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<style name="VanillaBase.FontDefault" parent="VanillaBase">
+		<item name="fontFamily">@font/google_sans</item>
+		<item name="android:fontFamily">@font/google_sans</item>
+	</style>
+
+</resources>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<font-family xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<!-- Apache License, Version 2.0 https://fonts.google.com/specimen/Open+Sans -->
+	<font
+		android:fontStyle="normal"
+		android:fontWeight="400"
+		android:font="@font/google_sans_def" />
+	<font
+		android:fontStyle="italic"
+		android:fontWeight="400"
+		android:font="@font/google_sans_italic" />
+</font-family>

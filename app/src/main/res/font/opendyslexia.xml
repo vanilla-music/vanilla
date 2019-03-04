@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<font-family xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<!--
+	License: Copying is an act of love. Please copy.
+	(Quote from Github, 05.03.2019)
+	(https://github.com/antijingoist/open-dyslexic#license)
+
+	Source:
+	https://github.com/antijingoist/open-dyslexic
+	-->
+	<font
+		android:fontStyle="normal"
+		android:fontWeight="400"
+		android:font="@font/opendyslexia_regular" />
+	<font
+		android:fontStyle="italic"
+		android:fontWeight="400"
+		android:font="@font/opendyslexia_italic" />
+</font-family>
