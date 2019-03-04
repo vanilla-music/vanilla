@@ -32,4 +32,5 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0'
     compileOnly 'androidx.annotation:annotation:1.0.0'
     compileOnly 'junit:junit:4.12'
+	implementation 'com.larswerkman:HoloColorPicker:1.5'
 }

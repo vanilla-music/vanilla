@@ -412,4 +412,11 @@ THE SOFTWARE.
 	<string name="theme_name_red_light">Red</string>
 	<string name="theme_name_red_dark">Red (Dark)</string>
 	<string name="theme_name_amoled_dark">Pitch Black (AMOLED)</string>
+
+	<string name="save_color_preference">Save</string>
+	<string name="switch_to_default_color_definitions">Switch to defaults</string>
+	<string name="color_picker_title">Theme Color</string>
+	<string name="color_picker_preference_title">ColorPicker</string>
+
+
 </resources>

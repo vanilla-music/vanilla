@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -28,6 +29,8 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
+
+import ch.blinkenlights.android.vanilla.theming.ColorPickerDialog;
 
 
 public class PreferencesTheme extends PreferenceFragment
@@ -48,6 +51,20 @@ public class PreferencesTheme extends PreferenceFragment
 		final String[] values = getResources().getStringArray(R.array.theme_values);
 		final String[] ids = getResources().getStringArray(R.array.theme_ids);
 
+		SharedPreferences settings = SharedPrefHelper.getSettings(mContext);
+		int color= Color.parseColor(settings.getString(PrefKeys.COLOR_APP_ACCENT, PrefDefaults.COLOR_APP_ACCENT));
+
+		int[] colors = {color,color,color};
+
+		final Preference colorPref = new Preference(mContext);
+		colorPref.setPersistent(false);
+		colorPref.setOnPreferenceClickListener(this);
+		colorPref.setTitle(getString(R.string.color_picker_preference_title));
+		colorPref.setKey("ColorPicker"); // preference value of this theme
+		colorPref.setIcon(generateThemePreview(colors));
+		screen.addPreference(colorPref);
+
+
 		for (int i = 0; i < entries.length; i++) {
 
 			int[] attrs = decodeValue(values[i]);
@@ -65,6 +82,12 @@ public class PreferencesTheme extends PreferenceFragment
 
 	@Override
 	public boolean onPreferenceClick(Preference pref) {
+
+		if(pref.getKey().equals("ColorPicker")){
+			ColorPickerDialog cpd=new ColorPickerDialog(this.getActivity());
+			cpd.show();
+			return true;
+		}
 		SharedPreferences.Editor editor = SharedPrefHelper.getSettings(mContext).edit();
 		editor.putString(PrefKeys.SELECTED_THEME, pref.getKey());
 		editor.apply();
