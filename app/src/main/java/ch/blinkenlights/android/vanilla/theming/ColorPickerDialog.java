@@ -47,6 +47,7 @@ public class ColorPickerDialog extends Dialog {
 		SharedPreferences settings = SharedPrefHelper.getSettings(activity);
 		int color = Color.parseColor(settings.getString(PrefKeys.COLOR_APP_ACCENT, PrefDefaults.COLOR_APP_ACCENT));
 		picker.setOldCenterColor(color);
+		picker.setColor(color);
 
 		save.setOnClickListener(new View.OnClickListener() {
 			@Override

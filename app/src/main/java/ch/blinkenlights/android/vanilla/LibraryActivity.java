@@ -206,6 +206,12 @@ public class LibraryActivity
 	}
 
 	@Override
+	public void onResume() {
+		super.onResume();
+		ThemeHelper.setAccentColor(this);
+	}
+
+	@Override
 	public void onStart()
 	{
 		super.onStart();

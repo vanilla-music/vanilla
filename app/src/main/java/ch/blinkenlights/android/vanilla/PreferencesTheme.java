@@ -18,6 +18,7 @@
 package ch.blinkenlights.android.vanilla;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -37,6 +38,7 @@ public class PreferencesTheme extends PreferenceFragment
  implements Preference.OnPreferenceClickListener
 {
 	private Context mContext;
+	Preference colorPref;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -56,12 +58,12 @@ public class PreferencesTheme extends PreferenceFragment
 
 		int[] colors = {color,color,color};
 
-		final Preference colorPref = new Preference(mContext);
+		colorPref = new Preference(mContext);
 		colorPref.setPersistent(false);
 		colorPref.setOnPreferenceClickListener(this);
 		colorPref.setTitle(getString(R.string.color_picker_preference_title));
 		colorPref.setKey("ColorPicker"); // preference value of this theme
-		colorPref.setIcon(generateThemePreview(colors));
+		colorPref.setIcon(generateCustomColorPreview());
 		screen.addPreference(colorPref);
 
 
@@ -85,6 +87,15 @@ public class PreferencesTheme extends PreferenceFragment
 
 		if(pref.getKey().equals("ColorPicker")){
 			ColorPickerDialog cpd=new ColorPickerDialog(this.getActivity());
+			cpd.setOnDismissListener(new DialogInterface.OnDismissListener() {
+
+				@Override
+				public void onDismiss(DialogInterface dialog) {
+					ThemeHelper.setAccentColor(getActivity());
+					colorPref.setIcon(generateCustomColorPreview());
+				}
+			});
+
 			cpd.show();
 			return true;
 		}
@@ -123,6 +134,12 @@ public class PreferencesTheme extends PreferenceFragment
 		return d;
 	}
 
+	private Drawable generateCustomColorPreview(){
+		SharedPreferences settings = SharedPrefHelper.getSettings(mContext);
+		int color= Color.parseColor(settings.getString(PrefKeys.COLOR_APP_ACCENT, PrefDefaults.COLOR_APP_ACCENT));
+		int[] colors = {color,color,color};
+		return generateThemePreview(colors);
+	}
 
 
 
