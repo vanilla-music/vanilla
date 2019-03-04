@@ -18,41 +18,41 @@
 -->
 
 <resources>
-	<style name="Orange_light.VanillaBase" parent="android:Theme.Material.Light.DarkActionBar">
+	<style name="VanillaBase" parent="android:Theme.Material.Light.DarkActionBar">
 		<item name="overlay_background_color">@color/overlay_background_light</item>
 		<item name="overlay_foreground_color">@color/overlay_foreground_light</item>
 		<item name="float_color">@color/material_grey_400</item>
 		<item name="background_circle_color">@color/material_grey_300</item>
-		<item name="tabs_background">#FFE65100</item>
-		<item name="now_playing_marker">#FFF57F17</item>
+		<item name="tabs_background">#ff37474f</item>
+		<item name="now_playing_marker">#566879</item>
 		<item name="controls_normal">@color/material_grey_900</item>
-		<item name="controls_active">#FFF57F17</item>
-		<item name="android:colorAccent">#FFF57F17</item>
-		<item name="android:colorPrimary">#FFE65100</item>
-		<item name="android:colorPrimaryDark">#FFBF360C</item>
+		<item name="controls_active">#566879</item>
+		<item name="android:colorAccent">#566879</item>
+		<item name="android:colorPrimary">#ff37474f</item>
+		<item name="android:colorPrimaryDark">#ff263238</item>
 	</style>
 
-	<style name="Orange_light.Playback" parent="Orange_light.VanillaBase">
+	<style name="Playback" parent="VanillaBase">
 		<item name="android:actionBarStyle">@style/Universal.PlaybackActionBar</item>
 	</style>
 
-	<style name="Orange_light.BackActionBar" parent="Orange_light.VanillaBase">
+	<style name="BackActionBar" parent="VanillaBase">
 		<item name="android:actionBarStyle">@style/Universal.PlaybackActionBar</item>
 	</style>
 
-	<style name="Orange_light.Library" parent="Orange_light.VanillaBase">
+	<style name="Library" parent="VanillaBase">
 		<item name="android:windowActionBar">false</item>
 		<item name="android:windowNoTitle">true</item>
 	</style>
 
-	<style name="Orange_light.PopupDialog" parent="android:Theme.Material.Light.Dialog.MinWidth">
+	<style name="PopupDialog" parent="android:Theme.Material.Light.Dialog.MinWidth">
 		<item name="overlay_background_color">@color/overlay_background_light</item>
 		<item name="background_circle_color">@color/material_grey_300</item>
 		<item name="controls_normal">@color/material_grey_900</item>
-		<item name="controls_active">#FFF57F17</item>
+		<item name="controls_active">#566879</item>
 	</style>
 
-	<style name="Orange_light.BottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+	<style name="BottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
 		<item name="android:colorBackground">@color/overlay_background_light</item>
 	</style>
 

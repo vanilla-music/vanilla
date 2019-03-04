@@ -401,17 +401,9 @@ THE SOFTWARE.
 	<string name="plugin_needs_upgrade">Please upgrade plugin %s to the latest version</string>
 
 	<!-- Theme names -->
-	<string name="theme_name_standard_light">Standard</string>
-	<string name="theme_name_standard_dark">Standard (Dark)</string>
-	<string name="theme_name_grey_light">Grey</string>
-	<string name="theme_name_grey_dark">Grey (Dark)</string>
-	<string name="theme_name_orange_light">Orange</string>
-	<string name="theme_name_orange_dark">Orange (Dark)</string>
-	<string name="theme_name_blue_light">Blue</string>
-	<string name="theme_name_blue_dark">Blue (Dark)</string>
-	<string name="theme_name_red_light">Red</string>
-	<string name="theme_name_red_dark">Red (Dark)</string>
-	<string name="theme_name_amoled_dark">Pitch Black (AMOLED)</string>
+	<string name="theme_name_light">Standard</string>
+	<string name="theme_name_dark">Grey (Dark)</string>
+	<string name="theme_name_amoled">Pitch Black (AMOLED)</string>
 
 	<string name="save_color_preference">Save</string>
 	<string name="switch_to_default_color_definitions">Switch to defaults</string>

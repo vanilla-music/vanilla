@@ -5,17 +5,9 @@ use constant THEMES_OUTDIR => './app/src/main/res/values-v21/';
 use constant THEMES_LIST   => './app/src/main/res/values-v21/themes-list.xml';
 
 my $THEMES = [
-	{ name=>"standard_light", id=>0, dark=>0, colorAccent => '#ff3e677a', colorPrimary => '#ff37474f', colorPrimaryDark => '#ff263238', controlsNormal=>'@color/material_grey_900', _bg => '#fff0f0f0' },
-	{ name=>"standard_dark", id=>1, dark=>1, colorAccent => '#ff3e677a', colorPrimary => '#ff37474f', colorPrimaryDark => '#ff263238', controlsNormal=>'@color/material_grey_300', _bg => '#ff2a2a2a' },
-	{ name=>"grey_light", id=>2, dark=>0, colorAccent => '#ff000000', colorPrimary => '#ff212121', colorPrimaryDark => '#ff090909', controlsNormal=>'@color/material_grey_600', _bg => '#fff0f0f0' },
-	{ name=>"grey_dark", id=>3, dark=>1, colorAccent => '#ffd8d8d8', colorPrimary => '#ff212121', colorPrimaryDark => '#ff090909', controlsNormal=>'@color/material_grey_600', _bg => '#ff2a2a2a' },
-	{ name=>"orange_light", id=>4, dark=>0, colorAccent => '#FFF57F17', colorPrimary => '#FFE65100', colorPrimaryDark => '#FFBF360C', controlsNormal=>'@color/material_grey_900', _bg => '#fff0f0f0' },
-	{ name=>"orange_dark", id=>5, dark=>1, colorAccent => '#FFF57F17', colorPrimary => '#FFE65100', colorPrimaryDark => '#FFBF360C', controlsNormal=>'@color/material_grey_300', _bg => '#ff2a2a2a' },
-	{ name=>"blue_light", id=>6, dark=>0, colorAccent => '#FF03A9F4', colorPrimary => '#FF0277BD', colorPrimaryDark => '#FF01579B', controlsNormal=>'@color/material_grey_900', _bg => '#fff0f0f0' },
-	{ name=>"blue_dark", id=>7, dark=>1, colorAccent => '#FF03A9F4', colorPrimary => '#FF0277BD', colorPrimaryDark => '#FF01579B', controlsNormal=>'@color/material_grey_300', _bg => '#ff2a2a2a' },
-	{ name=>"red_light", id=>8, dark=>0, colorAccent => '#ffd50000', colorPrimary => '#ffc62828', colorPrimaryDark => '#ffb71c1c', controlsNormal=>'@color/material_grey_900', _bg => '#fff0f0f0' },
-	{ name=>"red_dark", id=>9, dark=>1, colorAccent => '#ffd50000', colorPrimary => '#ffc62828', colorPrimaryDark => '#ffb71c1c', controlsNormal=>'@color/material_grey_300', _bg => '#ff2a2a2a' },
-	{ name=>"amoled_dark", id=>10, dark=>1, colorAccent => '#ffd8d8d8', colorPrimary => '#ff000000', colorPrimaryDark => '#ff000000', controlsNormal=>'@color/material_grey_600', colorBackground=>'@android:color/black', _bg => '#ff000000' },
+	{ name=>"light", id=>0, dark=>0, colorAccent => '#566879', colorPrimary => '#ff37474f', colorPrimaryDark => '#ff263238', controlsNormal=>'@color/material_grey_900', _bg => '#fff0f0f0' },
+	{ name=>"dark", id=>1, dark=>1, colorAccent => '#ffd8d8d8', colorPrimary => '#ff212121', colorPrimaryDark => '#ff090909', controlsNormal=>'@color/material_grey_600', _bg => '#ff2a2a2a' },
+	{ name=>"amoled", id=>2, dark=>1, colorAccent => '#ffd8d8d8', colorPrimary => '#ff000000', colorPrimaryDark => '#ff000000', controlsNormal=>'@color/material_grey_600', colorBackground=>'@android:color/black', _bg => '#ff000000' },
 ];
 
 

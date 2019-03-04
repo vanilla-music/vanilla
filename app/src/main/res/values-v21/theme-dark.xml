@@ -19,44 +19,41 @@
 
 <resources>
 	<!-- dark theme -->
-	<style name="Amoled_dark.VanillaBase" parent="android:Theme.Material">
-		
-		<item name="android:colorBackground">@android:color/black</item>
-		<item name="overlay_background_color">@android:color/black</item>
-		
+	<style name="Dark.VanillaBase" parent="android:Theme.Material">
+		<item name="overlay_background_color">@color/overlay_background_dark</item>
 		<item name="overlay_foreground_color">@color/overlay_foreground_dark</item>
 		<item name="float_color">@color/material_grey_900</item>
 		<item name="background_circle_color">@color/material_grey_700</item>
-		<item name="tabs_background">#ff000000</item>
+		<item name="tabs_background">#ff212121</item>
 		<item name="now_playing_marker">#ffd8d8d8</item>
 		<item name="controls_normal">@color/material_grey_600</item>
 		<item name="controls_active">#ffd8d8d8</item>
 		<item name="android:colorAccent">#ffd8d8d8</item>
-		<item name="android:colorPrimary">#ff000000</item>
-		<item name="android:colorPrimaryDark">#ff000000</item>
+		<item name="android:colorPrimary">#ff212121</item>
+		<item name="android:colorPrimaryDark">#ff090909</item>
 	</style>
 
-	<style name="Amoled_dark.Playback" parent="Amoled_dark.VanillaBase">
+	<style name="Dark.Playback" parent="Dark.VanillaBase">
 		<item name="android:actionBarStyle">@style/Universal.PlaybackActionBar</item>
 	</style>
 
-	<style name="Amoled_dark.BackActionBar" parent="Amoled_dark.VanillaBase">
+	<style name="Dark.BackActionBar" parent="Dark.VanillaBase">
 		<item name="android:actionBarStyle">@style/Universal.PlaybackActionBar</item>
 	</style>
 
-	<style name="Amoled_dark.Library" parent="Amoled_dark.VanillaBase">
+	<style name="Dark.Library" parent="Dark.VanillaBase">
 		<item name="android:windowActionBar">false</item>
 		<item name="android:windowNoTitle">true</item>
 	</style>
 
-	<style name="Amoled_dark.PopupDialog" parent="android:Theme.Material.Dialog.MinWidth">
+	<style name="Dark.PopupDialog" parent="android:Theme.Material.Dialog.MinWidth">
 		<item name="overlay_background_color">@color/overlay_background_dark</item>
 		<item name="background_circle_color">@color/material_grey_700</item>
 		<item name="controls_normal">@color/material_grey_600</item>
 		<item name="controls_active">#ffd8d8d8</item>
 	</style>
 
-	<style name="Amoled_dark.BottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+	<style name="Dark.BottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
 		<item name="android:colorBackground">@color/overlay_background_dark</item>
 	</style>
 
