@@ -137,8 +137,25 @@ public class PreferencesTheme extends PreferenceFragment
 	private Drawable generateCustomColorPreview(){
 		SharedPreferences settings = SharedPrefHelper.getSettings(mContext);
 		int color= Color.parseColor(settings.getString(PrefKeys.COLOR_APP_ACCENT, PrefDefaults.COLOR_APP_ACCENT));
-		int[] colors = {color,color,color};
-		return generateThemePreview(colors);
+
+		final int size = (int) getResources().getDimension(R.dimen.cover_size);
+		final int half = size / 2;
+		final int radius = (int) ((size / 2)*0.9);
+
+
+
+		Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_4444);
+		bitmap.setHasAlpha(true);
+
+		Canvas canvas = new Canvas(bitmap);
+
+		Paint paint = new Paint();
+
+		paint.setStyle(Paint.Style.FILL);
+		paint.setColor(color);
+		canvas.drawCircle(half, half, radius, paint);
+
+		return new BitmapDrawable(mContext.getResources(), bitmap);
 	}
 
 
