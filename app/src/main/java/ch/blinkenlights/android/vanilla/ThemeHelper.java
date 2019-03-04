@@ -28,6 +28,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.support.iosched.tabs.VanillaTabLayout;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
@@ -126,6 +127,20 @@ public class ThemeHelper {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Sets the accentcolor to the value stored in the preferences. (Draggable Row)
+	 */
+	public static void setAccentColor(Context c, View v) {
+		int myColor = getParsedColor(c);
+		if(v != null) {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+				v.setBackgroundTintList(ColorStateList.valueOf(myColor));
+				v.setBackgroundColor(myColor);
+			}
+		}
+
 	}
 
 	/**
@@ -252,5 +267,4 @@ public class ThemeHelper {
 		int diff = 0x00171717 * (bg > 0xFF888888 ? -1 : 1);
 		return new int[]{ bg, bg+diff };
 	}
-
 }

@@ -74,6 +74,7 @@ public class DraggableRow extends LinearLayout implements Checkable {
 		mDraggerPadder = (View)this.findViewById(R.id.dragger_padder);
 		mCoverView     = (LazyCoverView)this.findViewById(R.id.cover);
 		super.onFinishInflate();
+		ThemeHelper.setAccentColor(this.getContext(), mPmark);
 	}
 
 	/**
