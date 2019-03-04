@@ -21,4 +21,18 @@
 
 	<color name="overlay_background_dark">#ff303030</color>
 	<color name="overlay_foreground_dark">#ffffffff</color>
+
+
+
+
+	<color name="color_pref_1">#D81B60</color>
+	<color name="color_pref_2">#F4511E</color>
+	<color name="color_pref_3">#FDD835</color>
+	<color name="color_pref_4">#8E24AA</color>
+	<color name="color_pref_5">#3949AB</color>
+	<color name="color_pref_6">#00ACC1</color>
+	<color name="color_pref_7">#2A552A</color>
+	<color name="color_pref_8">#2CB332</color>
+	<color name="color_pref_9">#04F30E</color>
+
 </resources>

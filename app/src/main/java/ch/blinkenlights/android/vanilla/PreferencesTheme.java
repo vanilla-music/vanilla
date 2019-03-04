@@ -38,7 +38,7 @@ public class PreferencesTheme extends PreferenceFragment
  implements Preference.OnPreferenceClickListener
 {
 	private Context mContext;
-	Preference colorPref;
+	public Preference colorPref;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -86,17 +86,18 @@ public class PreferencesTheme extends PreferenceFragment
 	public boolean onPreferenceClick(Preference pref) {
 
 		if(pref.getKey().equals("ColorPicker")){
-			ColorPickerDialog cpd=new ColorPickerDialog(this.getActivity());
-			cpd.setOnDismissListener(new DialogInterface.OnDismissListener() {
 
+			int[] colors = getResources().getIntArray(R.array.colorpicker_defaults);
+			ColorPickerDialog cpd = new ColorPickerDialog(this.getActivity(), colors);
+			cpd.setOnDismissListener(new DialogInterface.OnDismissListener() {
 				@Override
 				public void onDismiss(DialogInterface dialog) {
 					ThemeHelper.setAccentColor(getActivity());
 					colorPref.setIcon(generateCustomColorPreview());
 				}
 			});
-
 			cpd.show();
+			cpd.setColorChangedCallback(this);
 			return true;
 		}
 		SharedPreferences.Editor editor = SharedPrefHelper.getSettings(mContext).edit();
@@ -134,7 +135,7 @@ public class PreferencesTheme extends PreferenceFragment
 		return d;
 	}
 
-	private Drawable generateCustomColorPreview(){
+	public Drawable generateCustomColorPreview(){
 		SharedPreferences settings = SharedPrefHelper.getSettings(mContext);
 		int color= Color.parseColor(settings.getString(PrefKeys.COLOR_APP_ACCENT, PrefDefaults.COLOR_APP_ACCENT));
 

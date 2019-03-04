@@ -407,6 +407,7 @@ THE SOFTWARE.
 
 	<string name="save_color_preference">Save</string>
 	<string name="switch_to_default_color_definitions">Switch to defaults</string>
+	<string name="switch_to_color_picker">Switch to Picker</string>
 	<string name="color_picker_title">Theme Color</string>
 	<string name="color_picker_preference_title">ColorPicker</string>
 

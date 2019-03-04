@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<integer-array name="colorpicker_defaults">
+		<item>@color/color_pref_1</item>
+		<item>@color/color_pref_2</item>
+		<item>@color/color_pref_3</item>
+		<item>@color/color_pref_4</item>
+		<item>@color/color_pref_5</item>
+		<item>@color/color_pref_6</item>
+		<item>@color/color_pref_7</item>
+		<item>@color/color_pref_8</item>
+		<item>@color/color_pref_9</item>
+	</integer-array>
+</resources>
