@@ -28,39 +28,35 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.support.iosched.tabs.VanillaTabLayout;
-import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.SeekBar;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-
 import androidx.core.graphics.ColorUtils;
-import androidx.fragment.app.Fragment;
 
 public class ThemeHelper {
 
 	/**
 	 *
 	 */
-	final private static String getColor(){
-		return "#b13fb5";
+	final private static String getColor(Context c){
+		SharedPreferences settings = SharedPrefHelper.getSettings(c);
+		String co=settings.getString(PrefKeys.COLOR_APP_ACCENT, PrefDefaults.COLOR_APP_ACCENT);
+		return co;
 	}
 
 	/**
 	 *
 	 */
-	final private static int getParsedColor(){
-		return Color.parseColor(getColor());
+	final private static int getParsedColor(Context c){
+		return Color.parseColor(getColor(c));
 	}
 
 	/**
 	 *
 	 */
-	final private static int getParedDarkColor(){
-		return ColorUtils.blendARGB(getParsedColor(), Color.BLACK, 0.15f);
+	final private static int getParedDarkColor(Context c){
+		return ColorUtils.blendARGB(getParsedColor(c), Color.BLACK, 0.15f);
 	}
 
 
@@ -70,8 +66,8 @@ public class ThemeHelper {
 	final public static void setAccentColor(Activity a) {
 
 
-		int myColor = getParsedColor();
-		int myColorDark = getParedDarkColor();
+		int myColor = getParsedColor(a);
+		int myColorDark = getParedDarkColor(a);
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 			a.getWindow().setStatusBarColor(myColorDark);
@@ -106,9 +102,8 @@ public class ThemeHelper {
 	/**
 	 * Sets the accentcolor to the value stored in the preferences.
 	 */
-	final public static void setAccentColor(Button...b) {
-
-		int myColor = getParsedColor();
+	final public static void setAccentColor(Context c, Button...b) {
+		int myColor = getParsedColor(c);
 
 		for (Button button : b) {
 			if(button != null) {
@@ -120,9 +115,9 @@ public class ThemeHelper {
 	/**
 	 * Sets the accentcolor to the value stored in the preferences.
 	 */
-	final public static void setAccentColor(EditText...e) {
+	final public static void setAccentColor(Context c, EditText...e) {
 
-		int myColor = getParsedColor();
+		int myColor = getParsedColor(c);
 
 		for (EditText editText : e) {
 			if(editText != null) {

@@ -80,4 +80,5 @@ public class PrefDefaults {
 	public static final String  PLAYLIST_SYNC_FOLDER = "/sdcard/Playlists";
 	public static final boolean PLAYLIST_EXPORT_RELATIVE_PATHS = false;
 	public static final boolean JUMP_TO_ENQUEUED_ON_PLAY = true;
+	public static final String COLOR_APP_ACCENT = "#FF0277BD";
 }

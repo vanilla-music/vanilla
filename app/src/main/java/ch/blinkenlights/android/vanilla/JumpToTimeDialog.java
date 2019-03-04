@@ -111,8 +111,8 @@ public class JumpToTimeDialog extends DialogFragment implements DialogInterface.
 				Button bN = d.getButton(DialogInterface.BUTTON_NEGATIVE);
 				Button bP = d.getButton(DialogInterface.BUTTON_POSITIVE);
 
-				ThemeHelper.setAccentColor(bN,bP);
-				ThemeHelper.setAccentColor(hoursView,minutesView,secondsView);
+				ThemeHelper.setAccentColor(getActivity(),bN,bP);
+				ThemeHelper.setAccentColor(getActivity(),hoursView,minutesView,secondsView);
 			}
 
 		});
