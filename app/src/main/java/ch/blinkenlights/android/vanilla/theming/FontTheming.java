@@ -18,8 +18,11 @@
 package ch.blinkenlights.android.vanilla.theming;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 
+import androidx.core.content.res.ResourcesCompat;
 import ch.blinkenlights.android.vanilla.PrefDefaults;
 import ch.blinkenlights.android.vanilla.PrefKeys;
 import ch.blinkenlights.android.vanilla.R;
@@ -35,6 +38,17 @@ public class FontTheming {
 		}else{
 			activity.setTheme(R.style.VanillaBase_FontDefault);
 		}
+	}
+
+	public static Typeface getFontPath(Context c){
+		SharedPreferences settings = SharedPrefHelper.getSettings(c);
+		boolean useDyslexia = settings.getBoolean(PrefKeys.DYSLEXIA_FONT, PrefDefaults.DYSLEXIA_FONT);
+		if(useDyslexia){
+			return ResourcesCompat.getFont(c, R.font.opendyslexia);
+		}else{
+			return ResourcesCompat.getFont(c, R.font.google_sans);
+		}
+
 	}
 
 }

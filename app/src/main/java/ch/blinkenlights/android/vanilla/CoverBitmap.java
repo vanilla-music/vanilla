@@ -35,8 +35,11 @@ import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
+import android.graphics.Typeface;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
+
+import ch.blinkenlights.android.vanilla.theming.FontTheming;
 
 /**
  * Class containing utility functions to create Bitmaps display song info and
@@ -135,6 +138,9 @@ public final class CoverBitmap {
 
 		Paint paint = new Paint();
 		paint.setAntiAlias(true);
+
+		Typeface font = FontTheming.getFontPath(context);
+		paint.setTypeface(font);
 
 		String title = song.title == null ? "" : song.title;
 		String album = song.album == null ? "" : song.album;
