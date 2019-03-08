@@ -26,6 +26,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
@@ -53,17 +54,17 @@ public class PreferencesTheme extends PreferenceFragment
 		final String[] values = getResources().getStringArray(R.array.theme_values);
 		final String[] ids = getResources().getStringArray(R.array.theme_ids);
 
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
-		screen.addPreference(getDynamicThemingPreference());
-
-		colorPref = new Preference(mContext);
-		colorPref.setPersistent(false);
-		colorPref.setOnPreferenceClickListener(this);
-		colorPref.setTitle(getString(R.string.color_picker_preference_title));
-		colorPref.setKey("ColorPicker"); // preference value of this theme
-		colorPref.setIcon(generateCustomColorPreview());
-		screen.addPreference(colorPref);
-
+			screen.addPreference(getDynamicThemingPreference());
+			colorPref = new Preference(mContext);
+			colorPref.setPersistent(false);
+			colorPref.setOnPreferenceClickListener(this);
+			colorPref.setTitle(getString(R.string.color_picker_preference_title));
+			colorPref.setKey("ColorPicker"); // preference value of this theme
+			colorPref.setIcon(generateCustomColorPreview());
+			screen.addPreference(colorPref);
+		}
 
 		for (int i = 0; i < entries.length; i++) {
 

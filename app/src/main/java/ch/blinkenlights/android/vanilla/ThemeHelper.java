@@ -125,9 +125,11 @@ public class ThemeHelper {
 	 */
 	final public static void setAccentColor(Activity a, int color, int colorDark) {
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-			a.getWindow().setStatusBarColor(colorDark);
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+			return;
 		}
+
+		a.getWindow().setStatusBarColor(colorDark);
 
 		ActionBar actionBar = a.getActionBar();
 		if(actionBar!=null){
@@ -137,10 +139,9 @@ public class ThemeHelper {
 
 		SeekBar seekBar = (SeekBar)a.findViewById(R.id.seek_bar);
 		if(seekBar != null){
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-				seekBar.getThumb().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-				seekBar.getProgressDrawable().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-			}
+			seekBar.getThumb().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+			seekBar.getProgressDrawable().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+
 		}
 
 		BottomBarControls bottomBarControls = (BottomBarControls) a.findViewById(R.id.bottombar_controls);
@@ -172,14 +173,14 @@ public class ThemeHelper {
 	 * Sets the accentcolor to the value stored in the preferences.
 	 */
 	final public static void setAccentColor(Context c, EditText...e) {
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+			return;
+		}
 
 		int myColor = getParsedColor(c);
-
 		for (EditText editText : e) {
 			if(editText != null) {
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-					editText.setBackgroundTintList(ColorStateList.valueOf(myColor));
-				}
+				editText.setBackgroundTintList(ColorStateList.valueOf(myColor));
 			}
 		}
 	}
@@ -188,14 +189,15 @@ public class ThemeHelper {
 	 * Sets the accentcolor to the value stored in the preferences. (Draggable Row)
 	 */
 	public static void setAccentColor(Context c, View v) {
-		int myColor = getParsedColor(c);
-		if(v != null) {
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-				v.setBackgroundTintList(ColorStateList.valueOf(myColor));
-				v.setBackgroundColor(myColor);
-			}
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+			return;
 		}
 
+		int myColor = getParsedColor(c);
+		if(v != null) {
+			v.setBackgroundTintList(ColorStateList.valueOf(myColor));
+			v.setBackgroundColor(myColor);
+		}
 	}
 
 	/**
