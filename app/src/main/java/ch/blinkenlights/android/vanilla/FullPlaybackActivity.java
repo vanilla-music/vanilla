@@ -167,6 +167,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 		mFormatView = (TextView)findViewById(R.id.format);
 		mReplayGainView = (TextView)findViewById(R.id.replaygain);
 
+		ThemeHelper.themeBasedOnSong(mCurrentSong, this);
 		bindControlButtons();
 
 		setControlsVisible(settings.getBoolean(PrefKeys.VISIBLE_CONTROLS, PrefDefaults.VISIBLE_CONTROLS));
@@ -177,6 +178,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 	public void onResume() {
 		super.onResume();
 		ThemeHelper.setAccentColor(this);
+		ThemeHelper.themeBasedOnSong(mCurrentSong, this);
 	}
 
 	@Override
@@ -192,6 +194,8 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 
 		mCoverPressAction = Action.getAction(settings, PrefKeys.COVER_PRESS_ACTION, PrefDefaults.COVER_PRESS_ACTION);
 		mCoverLongPressAction = Action.getAction(settings, PrefKeys.COVER_LONGPRESS_ACTION, PrefDefaults.COVER_LONGPRESS_ACTION);
+
+		ThemeHelper.themeBasedOnSong(mCurrentSong, this);
 	}
 
 	/**
@@ -264,6 +268,8 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 			}
 			updateQueuePosition();
 		}
+
+		ThemeHelper.themeBasedOnSong(mCurrentSong, this);
 
 		mCurrentSong = song;
 
@@ -690,5 +696,4 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 			setExtraInfoVisible(settings.getBoolean(PrefKeys.VISIBLE_EXTRA_INFO, PrefDefaults.VISIBLE_EXTRA_INFO));
 		}
 	}
-
 }

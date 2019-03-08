@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
@@ -61,41 +62,81 @@ public class ThemeHelper {
 	}
 
 
+	public static int getDominantColor(Bitmap bitmap) {
+		Bitmap newBitmap = Bitmap.createScaledBitmap(bitmap, 1, 1, true);
+		final int color = newBitmap.getPixel(0, 0);
+		newBitmap.recycle();
+		return color;
+	}
+
+	public static int getDominantColorDarkened(Bitmap bitmap) {
+		Bitmap newBitmap = Bitmap.createScaledBitmap(bitmap, 1, 1, true);
+		final int color = newBitmap.getPixel(0, 0);
+		newBitmap.recycle();
+		return ColorUtils.blendARGB(color, Color.BLACK, 0.15f);
+	}
+
+	/**
+	 * This is used to style the app based on the current song cover.
+	 * @param song
+	 */
+	public static void themeBasedOnSong(Song song, Activity a){
+
+		boolean dontDoIt=true;
+
+		if(dontDoIt || song == null|| song.flags == Song.FLAG_NO_COVER){
+			return;
+		}
+
+		if (song.getCover(a) != null) {
+			SharedPreferences.Editor editor = SharedPrefHelper.getSettings(a).edit();
+			editor.putString(PrefKeys.COLOR_APP_ACCENT, String.format("#%06X", 0xFFFFFF & getDominantColor(song.getCover(a))));
+			editor.apply();
+
+			ThemeHelper.setAccentColor(a, ThemeHelper.getDominantColor(song.getCover(a)), ThemeHelper.getDominantColorDarkened(song.getCover(a)));
+		}else{
+			ThemeHelper.setAccentColor(a);
+		}
+	}
+
 	/**
 	 * Sets the accentcolor to the value stored in the preferences.
 	 */
 	final public static void setAccentColor(Activity a) {
+		setAccentColor(a, getParsedColor(a), getParedDarkColor(a));
+	}
 
-
-		int myColor = getParsedColor(a);
-		int myColorDark = getParedDarkColor(a);
+	/**
+	 * Sets the accentcolor to the value stored in the preferences. Pass the colors.
+	 */
+	final public static void setAccentColor(Activity a, int color, int colorDark) {
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-			a.getWindow().setStatusBarColor(myColorDark);
+			a.getWindow().setStatusBarColor(colorDark);
 		}
 
 		ActionBar actionBar = a.getActionBar();
 		if(actionBar!=null){
-			ColorDrawable colorDrawable = new ColorDrawable(myColor);
+			ColorDrawable colorDrawable = new ColorDrawable(color);
 			actionBar.setBackgroundDrawable(colorDrawable);
 		}
 
 		SeekBar seekBar = (SeekBar)a.findViewById(R.id.seek_bar);
 		if(seekBar != null){
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-				seekBar.getThumb().setColorFilter(myColor, PorterDuff.Mode.SRC_ATOP);
-				seekBar.getProgressDrawable().setColorFilter(myColor, PorterDuff.Mode.SRC_ATOP);
+				seekBar.getThumb().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+				seekBar.getProgressDrawable().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
 			}
 		}
 
 		BottomBarControls bottomBarControls = (BottomBarControls) a.findViewById(R.id.bottombar_controls);
 		if(bottomBarControls != null){
-			bottomBarControls.setBackgroundColor(myColor);
+			bottomBarControls.setBackgroundColor(color);
 		}
 
 		VanillaTabLayout vanillaTabLayout = (VanillaTabLayout) a.findViewById(R.id.sliding_tabs);
 		if(vanillaTabLayout != null){
-			vanillaTabLayout.setBackgroundColor(myColor);
+			vanillaTabLayout.setBackgroundColor(color);
 		}
 
 	}

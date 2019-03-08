@@ -963,6 +963,7 @@ public class LibraryActivity
 		if (song != null) {
 			mHandler.sendMessage(mHandler.obtainMessage(MSG_UPDATE_COVER, song));
 			mPagerAdapter.onSongChange(song);
+			ThemeHelper.themeBasedOnSong(song, this);
 		}
 	}
 
