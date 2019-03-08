@@ -67,14 +67,16 @@ public class PreferencesTheme extends PreferenceFragment
 
 		for (int i = 0; i < entries.length; i++) {
 
+			//Only take the background color, because that is the main theme color
 			int[] attrs = decodeValue(values[i]);
+			int[] finalColorValue={attrs[1]};
 
 			final Preference pref = new Preference(mContext);
 			pref.setPersistent(false);
 			pref.setOnPreferenceClickListener(this);
 			pref.setTitle(entries[i]);
 			pref.setKey(ids[i]); // preference value of this theme
-			pref.setIcon(generateThemePreview(attrs));
+			pref.setIcon(generateThemePreview(finalColorValue));
 			screen.addPreference(pref);
 		}
 		setPreferenceScreen(screen);
@@ -118,6 +120,7 @@ public class PreferencesTheme extends PreferenceFragment
 	private Drawable generateThemePreview(int[] colors) {
 		final int size = (int) getResources().getDimension(R.dimen.cover_size);
 		final int step = size / colors.length;
+		final int border = 2;
 
 		Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.RGB_565);
 		Canvas canvas = new Canvas(bitmap);
@@ -126,7 +129,7 @@ public class PreferencesTheme extends PreferenceFragment
 		paint.setStyle(Paint.Style.FILL);
 		for (int i=0; i < colors.length; i++) {
 			paint.setColor(colors[i]);
-			canvas.drawRect(0, step*i, size, size, paint);
+			canvas.drawRect(border, (step*i) + border, size - border, size - border, paint);
 		}
 
 		Drawable d = new BitmapDrawable(mContext.getResources(), bitmap);
