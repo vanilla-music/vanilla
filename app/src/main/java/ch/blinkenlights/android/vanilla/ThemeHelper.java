@@ -94,7 +94,7 @@ public class ThemeHelper {
 		SharedPreferences settings = SharedPrefHelper.getSettings(a);
 		int color = Color.parseColor(settings.getString(PrefKeys.COLOR_APP_ACCENT, PrefDefaults.COLOR_APP_ACCENT));
 
-		if (song.getCover(a) != null) {
+		if (song.getCover(a) != null && settings.getBoolean(PrefKeys.USE_DYNAMIC_THEME_COLOR, PrefDefaults.USE_DYNAMIC_THEME_COLOR)) {
 			color = getDominantColor(song.getCover(a));
 			SharedPreferences.Editor editor = settings.edit();
 			editor.putString(PrefKeys.COLOR_APP_ACCENT_DYNAMIC_THEME, String.format("#%06X", 0xFFFFFF & color));
