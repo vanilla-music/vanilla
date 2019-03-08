@@ -27,6 +27,7 @@ package ch.blinkenlights.android.vanilla;
  * SharedPreference keys. Must be kept in sync with {@link PrefDefaults}.
  */
 public class PrefKeys {
+
 	private PrefKeys() {
 		// Private constructor to hide implicit one.
 	}
@@ -82,4 +83,6 @@ public class PrefKeys {
 	public static final String PLAYLIST_EXPORT_RELATIVE_PATHS = "playlist_export_relative_paths";
 	public static final String JUMP_TO_ENQUEUED_ON_PLAY = "jump_to_enqueued_on_play";
 	public static final String COLOR_APP_ACCENT = "color_app_accent";
+	public static final String COLOR_APP_ACCENT_DYNAMIC_THEME = "color_app_accent_dynamic_theme";
+	public static final String USE_DYNAMIC_THEME_COLOR = "use_dynamic_theme_color";
 }

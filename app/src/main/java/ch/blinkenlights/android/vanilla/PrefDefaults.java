@@ -26,6 +26,7 @@ package ch.blinkenlights.android.vanilla;
  * SharedPreference default values. Must be kept in sync with keys in res/xml/prefs_*.xml.
  */
 public class PrefDefaults {
+
 	private PrefDefaults() {
 		// Private constructor to hide implicit one.
 	}
@@ -81,4 +82,5 @@ public class PrefDefaults {
 	public static final boolean PLAYLIST_EXPORT_RELATIVE_PATHS = false;
 	public static final boolean JUMP_TO_ENQUEUED_ON_PLAY = true;
 	public static final String COLOR_APP_ACCENT = "#FF0277BD";
+	public static final boolean USE_DYNAMIC_THEME_COLOR = false;
 }

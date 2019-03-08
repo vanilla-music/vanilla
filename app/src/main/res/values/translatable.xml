@@ -412,4 +412,7 @@ THE SOFTWARE.
 	<string name="color_picker_preference_title">ColorPicker</string>
 
 
+	<string name="dynamic_theming_pref">Use Dynamic Theme from Song</string>
+
+
 </resources>

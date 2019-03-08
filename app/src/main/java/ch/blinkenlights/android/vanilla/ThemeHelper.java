@@ -39,29 +39,41 @@ import androidx.core.graphics.ColorUtils;
 public class ThemeHelper {
 
 	/**
-	 *
+	 * Returns the color from the shared preference. Returns the last calculated color from the cover if dynamic theming is enabled.
 	 */
 	final private static String getColor(Context c){
 		SharedPreferences settings = SharedPrefHelper.getSettings(c);
-		String co=settings.getString(PrefKeys.COLOR_APP_ACCENT, PrefDefaults.COLOR_APP_ACCENT);
+		boolean useDynamicTheming = settings.getBoolean(PrefKeys.USE_DYNAMIC_THEME_COLOR,PrefDefaults.USE_DYNAMIC_THEME_COLOR);
+
+		String co;
+		if(useDynamicTheming){
+			co=settings.getString(PrefKeys.COLOR_APP_ACCENT_DYNAMIC_THEME, PrefDefaults.COLOR_APP_ACCENT);
+		}else{
+			co=settings.getString(PrefKeys.COLOR_APP_ACCENT, PrefDefaults.COLOR_APP_ACCENT);
+		}
+
 		return co;
 	}
 
 	/**
-	 *
+	 * returns the color as an int.
 	 */
 	final private static int getParsedColor(Context c){
 		return Color.parseColor(getColor(c));
 	}
 
 	/**
-	 *
+	 * returns the color as an int. Darkened by 15%
 	 */
-	final private static int getParedDarkColor(Context c){
+	final private static int getParsedDarkColor(Context c){
 		return ColorUtils.blendARGB(getParsedColor(c), Color.BLACK, 0.15f);
 	}
 
-
+	/**
+	 * Calculates a color from a given bitmap.
+	 * @param bitmap
+	 * @return
+	 */
 	public static int getDominantColor(Bitmap bitmap) {
 		Bitmap newBitmap = Bitmap.createScaledBitmap(bitmap, 1, 1, true);
 		final int color = newBitmap.getPixel(0, 0);
@@ -69,12 +81,6 @@ public class ThemeHelper {
 		return color;
 	}
 
-	public static int getDominantColorDarkened(Bitmap bitmap) {
-		Bitmap newBitmap = Bitmap.createScaledBitmap(bitmap, 1, 1, true);
-		final int color = newBitmap.getPixel(0, 0);
-		newBitmap.recycle();
-		return ColorUtils.blendARGB(color, Color.BLACK, 0.15f);
-	}
 
 	/**
 	 * This is used to style the app based on the current song cover.
@@ -82,28 +88,36 @@ public class ThemeHelper {
 	 */
 	public static void themeBasedOnSong(Song song, Activity a){
 
-		boolean dontDoIt=true;
-
-		if(dontDoIt || song == null|| song.flags == Song.FLAG_NO_COVER){
+		if(song == null|| song.flags == Song.FLAG_NO_COVER){
 			return;
 		}
+		SharedPreferences settings = SharedPrefHelper.getSettings(a);
+		int color = Color.parseColor(settings.getString(PrefKeys.COLOR_APP_ACCENT, PrefDefaults.COLOR_APP_ACCENT));
 
 		if (song.getCover(a) != null) {
-			SharedPreferences.Editor editor = SharedPrefHelper.getSettings(a).edit();
-			editor.putString(PrefKeys.COLOR_APP_ACCENT, String.format("#%06X", 0xFFFFFF & getDominantColor(song.getCover(a))));
+			color = getDominantColor(song.getCover(a));
+			SharedPreferences.Editor editor = settings.edit();
+			editor.putString(PrefKeys.COLOR_APP_ACCENT_DYNAMIC_THEME, String.format("#%06X", 0xFFFFFF & color));
+			//Directly write so that the new color is applied immediatly on new views
 			editor.apply();
 
-			ThemeHelper.setAccentColor(a, ThemeHelper.getDominantColor(song.getCover(a)), ThemeHelper.getDominantColorDarkened(song.getCover(a)));
-		}else{
-			ThemeHelper.setAccentColor(a);
 		}
+
+		ThemeHelper.setAccentColor(a, color);
 	}
 
 	/**
 	 * Sets the accentcolor to the value stored in the preferences.
 	 */
 	final public static void setAccentColor(Activity a) {
-		setAccentColor(a, getParsedColor(a), getParedDarkColor(a));
+		setAccentColor(a, getParsedColor(a), getParsedDarkColor(a));
+	}
+
+	/**
+	 * Sets the accentcolor to the value stored in the preferences.
+	 */
+	final public static void setAccentColor(Activity a, int color) {
+		setAccentColor(a, color,  ColorUtils.blendARGB(color, Color.BLACK, 0.15f));
 	}
 
 	/**

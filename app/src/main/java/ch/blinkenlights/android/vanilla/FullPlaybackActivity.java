@@ -269,9 +269,8 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 			updateQueuePosition();
 		}
 
-		ThemeHelper.themeBasedOnSong(mCurrentSong, this);
-
 		mCurrentSong = song;
+		ThemeHelper.themeBasedOnSong(mCurrentSong, this);
 
 		mHandler.sendEmptyMessage(MSG_LOAD_FAVOURITE_INFO);
 

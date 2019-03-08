@@ -27,6 +27,7 @@ import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
@@ -35,8 +36,7 @@ import ch.blinkenlights.android.vanilla.theming.ColorPickerDialog;
 
 
 public class PreferencesTheme extends PreferenceFragment
- implements Preference.OnPreferenceClickListener
-{
+ implements Preference.OnPreferenceClickListener, Preference.OnPreferenceChangeListener {
 	private Context mContext;
 	public Preference colorPref;
 
@@ -53,10 +53,8 @@ public class PreferencesTheme extends PreferenceFragment
 		final String[] values = getResources().getStringArray(R.array.theme_values);
 		final String[] ids = getResources().getStringArray(R.array.theme_ids);
 
-		SharedPreferences settings = SharedPrefHelper.getSettings(mContext);
-		int color= Color.parseColor(settings.getString(PrefKeys.COLOR_APP_ACCENT, PrefDefaults.COLOR_APP_ACCENT));
 
-		int[] colors = {color,color,color};
+		screen.addPreference(getDynamicThemingPreference());
 
 		colorPref = new Preference(mContext);
 		colorPref.setPersistent(false);
@@ -159,7 +157,32 @@ public class PreferencesTheme extends PreferenceFragment
 		return new BitmapDrawable(mContext.getResources(), bitmap);
 	}
 
+	private CheckBoxPreference getDynamicThemingPreference(){
 
+		SharedPreferences settings = SharedPrefHelper.getSettings(mContext);
+		boolean useDynamicTheming = settings.getBoolean(PrefKeys.USE_DYNAMIC_THEME_COLOR,PrefDefaults.USE_DYNAMIC_THEME_COLOR);
+
+
+		CheckBoxPreference dynamicThemePref = new CheckBoxPreference (mContext);
+		dynamicThemePref.setChecked(useDynamicTheming);
+		dynamicThemePref.setPersistent(false);
+		dynamicThemePref.setOnPreferenceChangeListener(this);
+		dynamicThemePref.setTitle(R.string.dynamic_theming_pref);
+		dynamicThemePref.setKey("dynamicTheme"); // preference value of this theme
+		return dynamicThemePref;
+	}
+
+	@Override
+	public boolean onPreferenceChange(Preference preference, Object newValue) {
+
+		if(preference.getKey().equals("dynamicTheme")){
+			SharedPreferences.Editor editor = SharedPrefHelper.getSettings(mContext).edit();
+			editor.putBoolean(PrefKeys.USE_DYNAMIC_THEME_COLOR, (boolean)newValue);
+			editor.apply();
+			ThemeHelper.setAccentColor(this.getActivity());
+		}
+		return true;
+	}
 
 
 }
