@@ -22,37 +22,34 @@ import android.os.Handler;
 import android.util.Log;
 
 import ch.blinkenlights.android.medialibrary.MediaLibrary;
-import ch.blinkenlights.android.medialibrary.MediaLibraryBackend;
 import ch.blinkenlights.android.vanilla.Song;
 import ch.blinkenlights.android.vanilla.VanillaMediaPlayer;
 
 public class PlaybackTimestampHandler {
 
-	private final Handler mHandler = new Handler();
-	private Context c;
+	private static final int mDelayUpdate = 2000;
+	private static String TAG = "PlaybackUpdateHandler";
 
-	private boolean alreadyUpdating=false;
+	private final Handler mHandler = new Handler();
+	private Context mContext;
 	private Song mSong;
+
+	private boolean mAlreadyUpdating =false;
 	private int mTimestamp;
 
 
-
-	private static final int mDelayUpdate = 2000;
-
-	private static String TAG = "PlaybackUpdateHandler";
-
 	public PlaybackTimestampHandler(Context c) {
-		this.c = c;
+		this.mContext = c;
 	}
 
 	public void stopUpdates(){
 		Log.d(TAG, "Called on main thread stopUpdates");
 		mHandler.removeCallbacksAndMessages(null);
-		alreadyUpdating=false;
+		mAlreadyUpdating =false;
 	}
 
 	public void start(VanillaMediaPlayer mediaPlayer) {
-		if(alreadyUpdating){
+		if(mAlreadyUpdating){
 			//Log.d(TAG, "Mediaplayer already updating!");
 			return;
 		}
@@ -65,7 +62,7 @@ public class PlaybackTimestampHandler {
 			@Override
 			public void run() {
 				try {
-					//Log.d(TAG, "Timestamp: "+vmp.getCurrentPosition()+" - "+mSong.title+" - "+mSong.id);
+					Log.d(TAG, "Timestamp: "+vmp.getCurrentPosition()/1000+" - "+mSong.title+" - "+mSong.id);
 					mTimestamp = vmp.getCurrentPosition();
 					storeTimestampdataForSong();
 				} finally {
@@ -75,13 +72,13 @@ public class PlaybackTimestampHandler {
 					}else{
 						//Stop Handler if no music is playing.
 						Log.e(TAG, "Mediaplayer not playing, stop updating!");
-						alreadyUpdating=false;
+						mAlreadyUpdating =false;
 					}
 				}
 			}
 		};
 		// Start the initial runnable task by posting through the handler
-		alreadyUpdating=true;
+		mAlreadyUpdating =true;
 		mHandler.post(runnableCode);
 		//Log.d(TAG, "Mediaplayer started updating");
 	}
@@ -91,16 +88,16 @@ public class PlaybackTimestampHandler {
 	}
 
 	public int getInitialTimestamp() {
-		return MediaLibrary.getSongTimestamp(c, mSong.id);
+		return MediaLibrary.getSongTimestamp(mContext, mSong.id);
 	}
 
 
 	private void storeTimestampdataForSong() {
-		if(mSong == null || mSong.id == 0 || mSong.albumId == 0 || c == null){
+		if(mSong == null || mSong.id == 0 || mSong.albumId == 0 || mContext == null){
 			return;
 		}
-		MediaLibrary.updateSongTimestamp(c, mSong.id, mTimestamp);
-		MediaLibrary.updateAlbumLastSong(c, mSong.id, mSong.albumId);
+		MediaLibrary.updateSongTimestamp(mContext, mSong.id, mTimestamp);
+		MediaLibrary.updateAlbumLastSong(mContext, mSong.id, mSong.albumId);
 	}
 
 

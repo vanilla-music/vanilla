@@ -1246,7 +1246,6 @@ public final class PlaybackService extends Service
 	 */
 	public int play()
 	{
-
 		//restart Playbackhandler if it stopped
 		mPlaybackTimestampHandler.start(mMediaPlayer);
 		synchronized (mStateLock) {
@@ -1462,8 +1461,6 @@ public final class PlaybackService extends Service
 		int state = MediaLibrary.getAlbumUseSongTimestamp(this, song.albumId);
 		boolean jump=false;
 
-
-
 		SharedPreferences settings = SharedPrefHelper.getSettings(this);
 		boolean settingForJump = settings.getBoolean(PrefKeys.JUMP_TO_LAST_POSITION_OF_TRACK_STATE, PrefDefaults.JUMP_TO_LAST_POSITION_OF_TRACK_STATE);
 
@@ -1477,8 +1474,9 @@ public final class PlaybackService extends Service
 		}
 
 		int time = mPlaybackTimestampHandler.getInitialTimestamp();
+
 		if(time > 0 && jump){
-			seekToPosition(time);
+			seekToPosition(time*1000);
 		}
 		updateNotification();
 
