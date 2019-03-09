@@ -1402,7 +1402,6 @@ public final class PlaybackService extends Service
 		try {
 			mMediaPlayerInitialized = false;
 			mMediaPlayer.reset();
-			mPlaybackTimestampHandler.start(mMediaPlayer);
 			mPlaybackTimestampHandler.setSong(song);
 
 			if(mPreparedMediaPlayer.isPlaying()) {
@@ -1476,8 +1475,9 @@ public final class PlaybackService extends Service
 		int time = mPlaybackTimestampHandler.getInitialTimestamp();
 
 		if(time > 0 && jump){
-			seekToPosition(time*1000);
+			seekToPosition(time);
 		}
+		mPlaybackTimestampHandler.start(mMediaPlayer);
 		updateNotification();
 
 	}

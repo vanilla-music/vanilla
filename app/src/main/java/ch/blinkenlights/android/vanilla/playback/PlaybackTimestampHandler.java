@@ -62,7 +62,7 @@ public class PlaybackTimestampHandler {
 			@Override
 			public void run() {
 				try {
-					Log.d(TAG, "Timestamp: "+vmp.getCurrentPosition()/1000+" - "+mSong.title+" - "+mSong.id);
+					//Log.d(TAG, "Timestamp: "+vmp.getCurrentPosition()/1000+" - "+mSong.title+" - "+mSong.id);
 					mTimestamp = vmp.getCurrentPosition();
 					storeTimestampdataForSong();
 				} finally {
@@ -71,7 +71,7 @@ public class PlaybackTimestampHandler {
 						mHandler.postDelayed(this, mDelayUpdate);
 					}else{
 						//Stop Handler if no music is playing.
-						Log.e(TAG, "Mediaplayer not playing, stop updating!");
+						//Log.e(TAG, "Mediaplayer not playing, stop updating!");
 						mAlreadyUpdating =false;
 					}
 				}
