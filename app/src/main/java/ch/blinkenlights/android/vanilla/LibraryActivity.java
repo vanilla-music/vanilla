@@ -405,12 +405,8 @@ public class LibraryActivity
 			}
 		}
 
-		if (action == ACTION_CONTINUE) {
-			effectiveAction = ACTION_PLAY;
-		}
-
 		boolean all = false;
-		if (action == ACTION_PLAY_ALL || action == ACTION_ENQUEUE_ALL || action == ACTION_CONTINUE) {
+		if (action == ACTION_PLAY_ALL || action == ACTION_ENQUEUE_ALL) {
 			boolean notPlayAllAdapter =
 				(id == LibraryAdapter.HEADER_ID)
 				|| !(type <= MediaUtils.TYPE_SONG || type == MediaUtils.TYPE_FILE);
@@ -418,11 +414,13 @@ public class LibraryActivity
 				effectiveAction = ACTION_ENQUEUE;
 			} else if (effectiveAction == ACTION_PLAY_ALL && notPlayAllAdapter) {
 				effectiveAction = ACTION_PLAY;
-			} else if (action == ACTION_CONTINUE && notPlayAllAdapter) {
-				effectiveAction = ACTION_PLAY;
 			} else {
 				all = true;
 			}
+		}
+
+		if (action == ACTION_CONTINUE) {
+			effectiveAction = ACTION_PLAY;
 		}
 
 		if (id == LibraryAdapter.HEADER_ID)
