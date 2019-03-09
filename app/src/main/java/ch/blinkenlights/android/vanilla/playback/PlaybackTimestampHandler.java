@@ -96,6 +96,9 @@ public class PlaybackTimestampHandler {
 
 
 	private void storeTimestampdataForSong() {
+		if(mSong == null || mSong.id == 0 || mSong.albumId == 0 || c == null){
+			return;
+		}
 		MediaLibrary.updateSongTimestamp(c, mSong.id, mTimestamp);
 		MediaLibrary.updateAlbumLastSong(c, mSong.id, mSong.albumId);
 	}
