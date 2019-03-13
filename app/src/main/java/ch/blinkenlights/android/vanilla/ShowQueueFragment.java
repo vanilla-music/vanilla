@@ -26,10 +26,15 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+
 import com.mobeta.android.dslv.DragSortListView;
 
 
@@ -37,6 +42,7 @@ public class ShowQueueFragment extends Fragment
 	implements TimelineCallback,
 			   AdapterView.OnItemClickListener,
 			   CoordClickListener.Callback,
+			   ActionMode.Callback,
 			   DragSortListView.DropListener,
 			   DragSortListView.RemoveListener,
 			   FancyMenu.Callback
@@ -45,6 +51,8 @@ public class ShowQueueFragment extends Fragment
 	private DragSortListView mListView;
 	private ShowQueueAdapter mListAdapter;
 	private boolean mIsPopulated;
+	private boolean mActionModeActive;
+	private ActionMode actionMode;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,10 +60,13 @@ public class ShowQueueFragment extends Fragment
 
 		View view = inflater.inflate(R.layout.showqueue_listview, container, false);
 		Context context = getActivity();
+		mActionModeActive = false;
 
 		mListAdapter = new ShowQueueAdapter(context, R.layout.draggable_row);
 		mListView = (DragSortListView) view.findViewById(R.id.list);
 		mListView.setAdapter(mListAdapter);
+//		mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+//		mListView.setMultiChoiceModeListener(this);
 		mListView.setDropListener(this);
 		mListView.setRemoveListener(this);
 		mListView.setOnItemClickListener(this);
@@ -94,6 +105,7 @@ public class ShowQueueFragment extends Fragment
 	private final static int CTX_MENU_REMOVE          = 104;
 	private final static int CTX_MENU_SHOW_DETAILS    = 105;
 	private final static int CTX_MENU_ADD_TO_PLAYLIST = 106;
+	private final static int CTX_MENU_SELECT = 107;
 
 	/**
 	 * Called on long-click on a adapeter row
@@ -117,6 +129,7 @@ public class ShowQueueFragment extends Fragment
 		fm.add(CTX_MENU_ENQUEUE_ARTIST, 0, R.drawable.menu_enqueue, R.string.enqueue_current_artist).setIntent(intent);
 		fm.add(CTX_MENU_ENQUEUE_GENRE, 0, R.drawable.menu_enqueue, R.string.enqueue_current_genre).setIntent(intent);
 		fm.add(CTX_MENU_ADD_TO_PLAYLIST, 0, R.drawable.menu_add_to_playlist, R.string.add_to_playlist).setIntent(intent);
+		fm.add(CTX_MENU_SELECT, 0, R.drawable.menu_enqueue, R.string.multiple_select).setIntent(intent);
 
 		fm.addSpacer(0);
 		fm.add(CTX_MENU_SHOW_DETAILS, 0, R.drawable.menu_details, R.string.details).setIntent(intent);
@@ -161,6 +174,13 @@ public class ShowQueueFragment extends Fragment
 				PlaylistDialog dialog = PlaylistDialog.newInstance(callback, intent, null);
 				dialog.show(getFragmentManager(), "PlaylistDialog");
 				break;
+			case CTX_MENU_SELECT:
+				if (!mActionModeActive) {
+					actionMode = getActivity().startActionMode(this);
+					mListAdapter.getItem(pos).setSelected(true);
+					mListAdapter.notifyDataSetChanged();
+				}
+				break;
 			default:
 				throw new IllegalArgumentException("Unhandled menu id received!");
 				// we could actually dispatch this to the hosting activity, but we do not need this for now.
@@ -195,7 +215,13 @@ public class ShowQueueFragment extends Fragment
 	 */
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		playbackService().jumpToQueuePosition(position);
+		if (!mActionModeActive) {
+			playbackService().jumpToQueuePosition(position);
+		} else {
+			boolean isSelected = mListAdapter.getItem(position).isSelected();
+			mListAdapter.getItem(position).setSelected(!isSelected);
+			mListAdapter.notifyDataSetChanged();
+		}
 	}
 
 	/**
@@ -286,5 +312,39 @@ public class ShowQueueFragment extends Fragment
 	public void replaceSong(int delta, Song song) {
 	}
 	public void setState(long uptime, int state) {
+	}
+
+	@Override
+	public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+		mActionModeActive = true;
+		MenuInflater inflater = mode.getMenuInflater();
+		inflater.inflate(R.menu.action_mode_menu, menu);
+
+		return true;
+	}
+
+	@Override
+	public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+		return true;
+	}
+
+	@Override
+	public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.test_button1:
+				mode.finish();
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	@Override
+	public void onDestroyActionMode(ActionMode mode) {
+		for (int i=0; i < mListAdapter.getCount(); ++i) {
+			mListAdapter.getItem(i).setSelected(false);
+		}
+		mListAdapter.notifyDataSetChanged();
+		mActionModeActive = false;
 	}
 }

@@ -138,6 +138,12 @@ public class ShowQueueAdapter extends BaseAdapter {
 
 		row.highlightRow(position == mHighlightRow);
 
+		if (song.selected) {
+			row.setBackgroundColor(convertView.getResources().getColor(R.color.material_grey_600));
+		} else {
+			row.setBackgroundColor(R.styleable.DragSortListView_float_background_color);
+		}
+
 		return row;
 	}
 

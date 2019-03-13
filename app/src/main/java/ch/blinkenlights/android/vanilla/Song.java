@@ -135,6 +135,10 @@ public class Song implements Comparable<Song> {
 	public int discNumber;
 
 	/**
+	 * Whether the song is selected in playlist
+	 */
+	public boolean selected;
+	/**
 	 * Song flags. Currently {@link #FLAG_RANDOM} or {@link #FLAG_NO_COVER}.
 	 */
 	public int flags;
@@ -156,6 +160,7 @@ public class Song implements Comparable<Song> {
 	{
 		this.id = id;
 		this.flags = flags;
+		this.selected = false;
 	}
 
 	/**
@@ -172,6 +177,20 @@ public class Song implements Comparable<Song> {
 	public boolean isFilled()
 	{
 		return (id != -1 && path != null);
+	}
+	/**
+	 * Returns true if the song is selected
+	 */
+	public boolean isSelected()
+	{
+		return selected;
+	}
+	/**
+	 * Change if the song is selected
+	 */
+	public void setSelected(boolean selected)
+	{
+		this.selected = selected;
 	}
 
 	/**
