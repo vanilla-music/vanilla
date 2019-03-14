@@ -52,7 +52,6 @@ public class ShowQueueFragment extends Fragment
 	private ShowQueueAdapter mListAdapter;
 	private boolean mIsPopulated;
 	private boolean mActionModeActive;
-	private ActionMode actionMode;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -176,9 +175,8 @@ public class ShowQueueFragment extends Fragment
 				break;
 			case CTX_MENU_SELECT:
 				if (!mActionModeActive) {
-					actionMode = getActivity().startActionMode(this);
-					mListAdapter.getItem(pos).setSelected(true);
-					mListAdapter.notifyDataSetChanged();
+					getActivity().startActionMode(this);
+					mListAdapter.toggleSelectedAt(pos);
 				}
 				break;
 			default:
@@ -218,9 +216,7 @@ public class ShowQueueFragment extends Fragment
 		if (!mActionModeActive) {
 			playbackService().jumpToQueuePosition(position);
 		} else {
-			boolean isSelected = mListAdapter.getItem(position).isSelected();
-			mListAdapter.getItem(position).setSelected(!isSelected);
-			mListAdapter.notifyDataSetChanged();
+			mListAdapter.toggleSelectedAt(position);
 		}
 	}
 
@@ -331,7 +327,14 @@ public class ShowQueueFragment extends Fragment
 	@Override
 	public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 		switch (item.getItemId()) {
-			case R.id.test_button1:
+			case R.id.enqueue:
+				Integer[] selected = mListAdapter.getSelections().toArray(new Integer[0]);
+				PlaybackService service = playbackService();
+				Song[] songList = new Song[selected.length];
+				for (int i = 0; i < selected.length; ++i)
+					// Reverse the array so songs will be added in correct order
+					songList[selected.length - 1 - i] = service.getSongByQueuePosition(selected[i]);
+				service.enqueueFromSongs(songList);
 				mode.finish();
 				return true;
 			default:
@@ -341,10 +344,7 @@ public class ShowQueueFragment extends Fragment
 
 	@Override
 	public void onDestroyActionMode(ActionMode mode) {
-		for (int i=0; i < mListAdapter.getCount(); ++i) {
-			mListAdapter.getItem(i).setSelected(false);
-		}
-		mListAdapter.notifyDataSetChanged();
+		mListAdapter.clearSelections();
 		mActionModeActive = false;
 	}
 }

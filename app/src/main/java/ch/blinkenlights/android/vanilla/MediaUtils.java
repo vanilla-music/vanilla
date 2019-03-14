@@ -236,6 +236,22 @@ public class MediaUtils {
 	}
 
 	/**
+	 * Builds a query with the given information under multiple selection modes (playlist/queue).
+	 *
+	 * @param selection An extra selection containing selected songs. Cannot be
+	 * null.
+	 */
+	public static QueryTask buildMultiQuery(String[] projection, String selection)
+	{
+		if (selection == null)
+			throw new IllegalArgumentException("Invalid selection string.");
+
+		QueryTask result = new QueryTask(MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS, projection, selection, null, null);
+//		result.type = type;
+		return result;
+	}
+
+	/**
 	 * Query the MediaStore to determine the id of the genre the song belongs
 	 * to.
 	 *

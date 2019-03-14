@@ -24,6 +24,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.view.LayoutInflater;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class ShowQueueAdapter extends BaseAdapter {
 	/**
 	 * The resource to pass to the inflater
@@ -45,12 +48,18 @@ public class ShowQueueAdapter extends BaseAdapter {
 	 * The playback service reference to query
 	 */
 	private PlaybackService mService;
+	/**
+	 * List of songs selected in multi-selection mode
+	 */
+	private Set<Integer> mSelected;
+
 
 	public ShowQueueAdapter(Context context, int resource) {
 		super();
 		mResource = resource;
 		mContext = context;
 		mHighlightRow = -1;
+		mSelected = new HashSet<>();
 	}
 
 	/**
@@ -111,6 +120,48 @@ public class ShowQueueAdapter extends BaseAdapter {
 	@Override
 	public boolean hasStableIds() {
 		return true;
+	}
+
+	/**
+	 * Change selection status of song at 'pos' and maintain a set of selected positions
+	 *
+	 * @param pos the position to toggle
+	 * @return the previous selection status
+	 */
+	public boolean toggleSelectedAt(int pos) {
+		Song song = getItem(pos);
+		boolean isSelected = song.isSelected();
+
+		if (isSelected) {
+			mSelected.remove(pos);
+		} else {
+			mSelected.add(pos);
+		}
+
+		song.setSelected(!isSelected);
+		notifyDataSetChanged();
+		return isSelected;
+	}
+	/**
+	 * Get the set of positions of selected songs
+	 *
+	 * @return a set of positions
+	 */
+	public Set<Integer> getSelections() {
+		return new HashSet<>(mSelected);
+	}
+
+	/**
+	 * Clear the selection status of all positions and empty selection set
+	 *
+	 */
+	public void clearSelections() {
+		for (int i: mSelected) {
+			getItem(i).setSelected(false);
+		}
+
+		mSelected.clear();
+		notifyDataSetChanged();
 	}
 
 	/**

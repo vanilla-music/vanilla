@@ -1918,6 +1918,25 @@ public final class PlaybackService extends Service
 		addSongs(query);
 	}
 
+	public void enqueueFromSongs(Song[] songList)
+	{
+		if (songList == null || songList.length == 0)
+			return;
+
+		StringBuilder selection = new StringBuilder(MediaLibrary.PlaylistColumns._ID + " IN (");
+		String prefix = "";
+		for (Song song: songList) {
+			selection.append(prefix);
+			prefix = ",";
+			selection.append(song.id);
+		}
+		selection.append(") ");
+
+		QueryTask query = MediaUtils.buildMultiQuery(Song.FILLED_PROJECTION, selection.toString());
+		query.mode = SongTimeline.MODE_ENQUEUE;
+		addSongs(query);
+	}
+
 	/**
 	 * Clear the song queue.
 	 */
