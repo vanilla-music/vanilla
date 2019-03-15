@@ -1918,21 +1918,19 @@ public final class PlaybackService extends Service
 		addSongs(query);
 	}
 
-	public void enqueueFromSongs(Song[] songList)
+	/**
+	 * Enqueues all songs selected, by passing the idList of selected songs
+	 *
+	 * This will append the selected songs after the current queue
+	 *
+	 * @param idList A list of idList of the songs to base the query on
+	 */
+	public void enqueueFromMultiSong(long[] idList)
 	{
-		if (songList == null || songList.length == 0)
+		if (idList == null || idList.length == 0)
 			return;
 
-		StringBuilder selection = new StringBuilder(MediaLibrary.PlaylistColumns._ID + " IN (");
-		String prefix = "";
-		for (Song song: songList) {
-			selection.append(prefix);
-			prefix = ",";
-			selection.append(song.id);
-		}
-		selection.append(") ");
-
-		QueryTask query = MediaUtils.buildMultiQuery(Song.FILLED_PROJECTION, selection.toString());
+		QueryTask query = MediaUtils.buildMultiQuery(idList, Song.FILLED_PROJECTION);
 		query.mode = SongTimeline.MODE_ENQUEUE;
 		addSongs(query);
 	}

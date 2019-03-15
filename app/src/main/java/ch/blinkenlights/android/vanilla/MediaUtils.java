@@ -236,17 +236,23 @@ public class MediaUtils {
 	}
 
 	/**
-	 * Builds a query with the given information under multiple selection modes (playlist/queue).
+	 * Builds a query with the given information under multiple selection modes
+	 * for playlist/queue.
 	 *
-	 * @param selection An extra selection containing selected songs. Cannot be
-	 * null.
+	 * @param idList A list of ids of the songs to base the query on
+	 * @param projection The columns to query.
 	 */
-	public static QueryTask buildMultiQuery(String[] projection, String selection)
+	public static QueryTask buildMultiQuery(long[] idList, String[] projection)
 	{
-		if (selection == null)
-			throw new IllegalArgumentException("Invalid selection string.");
-
-		QueryTask result = new QueryTask(MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS, projection, selection, null, null);
+		StringBuilder selection = new StringBuilder(MediaLibrary.PlaylistColumns._ID + " IN (");
+		String prefix = "";
+		for (long id: idList) {
+			selection.append(prefix);
+			prefix = ",";
+			selection.append(id);
+		}
+		selection.append(") ");
+		QueryTask result = new QueryTask(MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS, projection, selection.toString(), null, DEFAULT_SORT);
 //		result.type = type;
 		return result;
 	}
@@ -552,6 +558,33 @@ public class MediaUtils {
 		result.type = TYPE_FILE;
 		return result;
 	}
+
+	/**
+	 * Build a query that will contain all the media under multiple given path.
+	 *
+	 * @param paths A list of paths
+	 * @param projection The columns to query
+	 * @param recursive whether or not to do a LIKE search, picking up child items.
+	 * @return The initialized query.
+	 */
+	// TODO
+//	public static QueryTask buildMultiFileQuery(String[] paths, String[] projection, boolean recursive)
+//	{
+//		// Try to detect more popular mount point:
+//		path = sanitizeMediaPath(path);
+//		String query = MediaLibrary.SongColumns.PATH+" = ?";
+//
+//		if (recursive) {
+//			// This is a LIKE query: add a slash to the directory if the current path
+//			// points to an existing one.
+//			path = addDirEndSlash(path) + "%";
+//			query = MediaLibrary.SongColumns.PATH+" LIKE ?";
+//		}
+//
+//		QueryTask result = new QueryTask(MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS, projection, query, new String[]{ path }, FILE_SORT);
+//		result.type = TYPE_FILE;
+//		return result;
+//	}
 
 	/**
 	 * Returns a (possibly empty) Cursor for given file path

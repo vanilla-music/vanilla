@@ -37,6 +37,10 @@ import android.widget.AdapterView;
 
 import com.mobeta.android.dslv.DragSortListView;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.ListIterator;
+
 
 public class ShowQueueFragment extends Fragment
 	implements TimelineCallback,
@@ -104,7 +108,7 @@ public class ShowQueueFragment extends Fragment
 	private final static int CTX_MENU_REMOVE          = 104;
 	private final static int CTX_MENU_SHOW_DETAILS    = 105;
 	private final static int CTX_MENU_ADD_TO_PLAYLIST = 106;
-	private final static int CTX_MENU_SELECT = 107;
+	private final static int CTX_MENU_MULTI_SELECT = 107;
 
 	/**
 	 * Called on long-click on a adapeter row
@@ -128,7 +132,7 @@ public class ShowQueueFragment extends Fragment
 		fm.add(CTX_MENU_ENQUEUE_ARTIST, 0, R.drawable.menu_enqueue, R.string.enqueue_current_artist).setIntent(intent);
 		fm.add(CTX_MENU_ENQUEUE_GENRE, 0, R.drawable.menu_enqueue, R.string.enqueue_current_genre).setIntent(intent);
 		fm.add(CTX_MENU_ADD_TO_PLAYLIST, 0, R.drawable.menu_add_to_playlist, R.string.add_to_playlist).setIntent(intent);
-		fm.add(CTX_MENU_SELECT, 0, R.drawable.menu_enqueue, R.string.multiple_select).setIntent(intent);
+		fm.add(CTX_MENU_MULTI_SELECT, 0, R.drawable.menu_enqueue, R.string.multiple_select).setIntent(intent);
 
 		fm.addSpacer(0);
 		fm.add(CTX_MENU_SHOW_DETAILS, 0, R.drawable.menu_details, R.string.details).setIntent(intent);
@@ -173,7 +177,7 @@ public class ShowQueueFragment extends Fragment
 				PlaylistDialog dialog = PlaylistDialog.newInstance(callback, intent, null);
 				dialog.show(getFragmentManager(), "PlaylistDialog");
 				break;
-			case CTX_MENU_SELECT:
+			case CTX_MENU_MULTI_SELECT:
 				if (!mActionModeActive) {
 					getActivity().startActionMode(this);
 					mListAdapter.toggleSelectedAt(pos);
@@ -326,15 +330,33 @@ public class ShowQueueFragment extends Fragment
 
 	@Override
 	public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+		PlaybackService service = playbackService();
+		ArrayList<Integer> selected = new ArrayList<>(mListAdapter.getSelections());
+		final long[] idList = new long[selected.size()];
+		for (int i = 0; i < selected.size(); ++i)
+			idList[i] = service.getSongByQueuePosition(selected.get(i)).id;
+
 		switch (item.getItemId()) {
 			case R.id.enqueue:
-				Integer[] selected = mListAdapter.getSelections().toArray(new Integer[0]);
-				PlaybackService service = playbackService();
-				Song[] songList = new Song[selected.length];
-				for (int i = 0; i < selected.length; ++i)
-					// Reverse the array so songs will be added in correct order
-					songList[selected.length - 1 - i] = service.getSongByQueuePosition(selected[i]);
-				service.enqueueFromSongs(songList);
+				service.enqueueFromMultiSong(idList);
+				mode.finish();
+				return true;
+			case R.id.add_playlist:
+				Intent intent = new Intent();
+				intent.putExtra("type", MediaUtils.TYPE_SONG);
+				intent.putExtra("id", idList);
+				PlaylistDialog.Callback callback = ((PlaylistDialog.Callback)getActivity());
+				PlaylistDialog dialog = PlaylistDialog.newInstance(callback, intent, null);
+				dialog.show(getFragmentManager(), "PlaylistDialog");
+				mode.finish();
+				return true;
+			case R.id.remove:
+				// Not optimized. remove() has redundant code.
+				Collections.sort(selected);    // Prepare a reverse iterator
+				ListIterator<Integer> queueIterator = selected.listIterator(selected.size());
+				while (queueIterator.hasPrevious()) {
+					remove(queueIterator.previous());
+				}
 				mode.finish();
 				return true;
 			default:

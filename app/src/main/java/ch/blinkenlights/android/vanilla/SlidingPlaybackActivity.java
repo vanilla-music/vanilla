@@ -227,15 +227,28 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 		else
 			projection = empty ? Song.EMPTY_PROJECTION : Song.FILLED_PROJECTION;
 
-		long id = intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
 		QueryTask query;
-		if (allSource != null) {
-			query = allSource.buildSongQuery(projection);
-			query.data = id;
-		} else if (type == MediaUtils.TYPE_FILE) {
-			query = MediaUtils.buildFileQuery(intent.getStringExtra(LibraryAdapter.DATA_FILE), projection, true /* recursive */);
+		long id = intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
+		if (id != LibraryAdapter.INVALID_ID) {
+			if (allSource != null) {
+				query = allSource.buildSongQuery(projection);
+				query.data = id;
+			} else if (type == MediaUtils.TYPE_FILE) {
+				query = MediaUtils.buildFileQuery(intent.getStringExtra(LibraryAdapter.DATA_FILE), projection, true /* recursive */);
+			} else {
+				query = MediaUtils.buildQuery(type, id, projection, null);
+			}
 		} else {
-			query = MediaUtils.buildQuery(type, id, projection, null);
+			long[] idList = intent.getLongArrayExtra("id");
+			if (allSource != null) {
+				throw new IllegalArgumentException("allSource and id list should not be used at the same time.");
+			} else if (type == MediaUtils.TYPE_FILE) {
+				// TODO Multiple file query
+				throw new UnsupportedOperationException("Not implemented.");
+//				query = MediaUtils.buildFileQuery(intent.getStringExtra(LibraryAdapter.DATA_FILE), projection, true /* recursive */);
+			} else {
+				query = MediaUtils.buildMultiQuery(idList, projection);
+			}
 		}
 
 		return query;
