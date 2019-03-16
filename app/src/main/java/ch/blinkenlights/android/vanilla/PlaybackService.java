@@ -1489,7 +1489,9 @@ public final class PlaybackService extends Service
 		// Count this song as played
 		mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_UPDATE_PLAYCOUNTS, 1, 0, mCurrentSong), 800);
 
+
 		mPlaybackTimestampHandler.stopUpdates();
+		mPlaybackTimestampHandler.updateToZero();
 
 		if (finishAction(mState) == SongTimeline.FINISH_REPEAT_CURRENT) {
 			setCurrentSong(0);

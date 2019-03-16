@@ -100,5 +100,8 @@ public class PlaybackTimestampHandler {
 		MediaLibrary.updateAlbumLastSong(mContext, mSong.id, mSong.albumId);
 	}
 
-
+	public void updateToZero() {
+		MediaLibrary.updateSongTimestamp(mContext, mSong.id, 0);
+		MediaLibrary.updateAlbumLastSong(mContext, mSong.id, mSong.albumId);
+	}
 }
