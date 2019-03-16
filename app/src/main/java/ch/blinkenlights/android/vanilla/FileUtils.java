@@ -18,6 +18,8 @@
 package ch.blinkenlights.android.vanilla;
 
 import ch.blinkenlights.android.medialibrary.MediaLibrary;
+import ch.blinkenlights.android.vsa.Vsa;
+import ch.blinkenlights.android.vsa.VsaInstance;
 
 import java.io.File;
 import java.io.IOException;
@@ -209,10 +211,13 @@ public class FileUtils {
 	 * Called by FileSystem adapter to get the start folder
 	 * for browsing directories
 	 */
-	public static File getFilesystemBrowseStart(Context context) {
+	public static Vsa getFilesystemBrowseStart(Context context) {
 		SharedPreferences prefs = SharedPrefHelper.getSettings(context);
-		String folder = prefs.getString(PrefKeys.FILESYSTEM_BROWSE_START, PrefDefaults.FILESYSTEM_BROWSE_START);
-		return new File( folder.equals("") ? Environment.getExternalStorageDirectory().getAbsolutePath() : folder );
+		String path = prefs.getString(PrefKeys.FILESYSTEM_BROWSE_START, PrefDefaults.FILESYSTEM_BROWSE_START);
+		if (path.equals("")) {
+			path = Environment.getExternalStorageDirectory().getAbsolutePath();
+		}
+		return VsaInstance.fromPath(path);
 	}
 
 	/**
@@ -230,7 +235,7 @@ public class FileUtils {
 	 * @param the file to get the id for.
 	 * @return the id this file would have in the library.
 	 */
-	public static long songIdFromFile(File file) {
+	public static long songIdFromFile(Vsa file) {
 		return MediaLibrary.hash63(file.getAbsolutePath());
 	}
 }

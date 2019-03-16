@@ -18,12 +18,12 @@
 package ch.blinkenlights.android.vanilla;
 
 import ch.blinkenlights.android.medialibrary.MediaLibrary;
+import ch.blinkenlights.android.vsa.Vsa;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.content.SharedPreferences;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public class MediaFoldersSelectionActivity extends FolderPickerActivity {
@@ -36,7 +36,7 @@ public class MediaFoldersSelectionActivity extends FolderPickerActivity {
 		setTitle(R.string.media_folders_header);
 
 		MediaLibrary.Preferences prefs = MediaLibrary.getPreferences(this);
-		File startPath = FileUtils.getFilesystemBrowseStart(this);
+		Vsa startPath = FileUtils.getFilesystemBrowseStart(this);
 
 		// Make sure that we display the current selection
 		setCurrentDir(startPath);
@@ -45,7 +45,7 @@ public class MediaFoldersSelectionActivity extends FolderPickerActivity {
 
 
 	@Override
-	public void onFolderPicked(File directory, ArrayList<String> included, ArrayList<String> excluded) {
+	public void onFolderPicked(Vsa directory, ArrayList<String> included, ArrayList<String> excluded) {
 		MediaLibrary.Preferences prefs = MediaLibrary.getPreferences(this);
 		prefs.mediaFolders = included;
 		prefs.blacklistedFolders = excluded;

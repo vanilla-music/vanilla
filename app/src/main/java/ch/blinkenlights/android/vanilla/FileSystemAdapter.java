@@ -23,15 +23,17 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import ch.blinkenlights.android.vsa.Vsa;
+import ch.blinkenlights.android.vsa.VsaInstance;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.FileObserver;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.util.Log;
 
-import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -47,13 +49,9 @@ public class FileSystemAdapter
 	implements LibraryAdapter
 {
 	private static final Pattern SPACE_SPLIT = Pattern.compile("\\s+");
-	private static final Pattern FILE_SEPARATOR = Pattern.compile(File.separator);
+	private static final Pattern FILE_SEPARATOR = Pattern.compile(Vsa.separator);
 	private static final Pattern GUESS_MUSIC = Pattern.compile("^(.+\\.(mp3|ogg|mka|opus|flac|aac|m4a|wav))$", Pattern.CASE_INSENSITIVE);
 	private static final Pattern GUESS_IMAGE = Pattern.compile("^(.+\\.(gif|jpe?g|png|bmp|tiff?))$", Pattern.CASE_INSENSITIVE);
-	/**
-	 * The root directory of the device
-	 */
-	private final File mFsRoot = new File("/");
 	/**
 	 * Sort by filename.
 	 */
@@ -95,7 +93,7 @@ public class FileSystemAdapter
 	/**
 	 * The files and folders in the current directory.
 	 */
-	private File[] mFiles;
+	private Vsa[] mFiles;
 	/**
 	 * The currently active filter, entered by the user from the search box.
 	 */
@@ -103,28 +101,13 @@ public class FileSystemAdapter
 	/**
 	 * Excludes dot files and files not matching mFilter.
 	 */
-	private final FilenameFilter mFileFilter = new FilenameFilter() {
-		@Override
-		public boolean accept(File dir, String filename)
-		{
-			if (filename.charAt(0) == '.')
-				return false;
-			if (mFilter != null) {
-				filename = filename.toLowerCase();
-				for (String term : mFilter) {
-					if (!filename.contains(term))
-						return false;
-				}
-			}
-			return true;
-		}
-	};
+
 	/**
 	 * Sorts folders before files first, then sorts by current sort mode.
 	 */
-	private final Comparator<File> mFileComparator = new Comparator<File>() {
+	private final Comparator<Vsa> mFileComparator = new Comparator<Vsa>() {
 		@Override
-		public int compare(File a, File b)
+		public int compare(Vsa a, Vsa b)
 		{
 			boolean aIsFolder = a.isDirectory();
 			boolean bIsFolder = b.isDirectory();
@@ -156,6 +139,7 @@ public class FileSystemAdapter
 			return -1;
 		}
 	};
+
 	/**
 	 * The Observer instance for the current directory.
 	 */
@@ -183,30 +167,46 @@ public class FileSystemAdapter
 	}
 
 	@Override
-	public Object query()
-	{
-		File file = getLimiterPath();
+	public Object query() {
+		Vsa file = getLimiterPath();
 
 		if (mFileObserver == null) {
-			mFileObserver = new Observer(file.getPath());
+			mFileObserver = new Observer(file.getAbsolutePath());
 		}
 
-		File[] readdir = file.listFiles(mFileFilter);
+		Vsa[] readdir = file.listFiles();
 		if (readdir == null)
-			readdir = new File[]{};
+			readdir = new Vsa[]{};
 
-		ArrayList<File> files = new ArrayList<File>(Arrays.asList(readdir));
+		// Create a filtered list of what we got from readdir.
+		ArrayList<Vsa> files = new ArrayList();
+		for(Vsa entry : readdir) {
+			String name = entry.getName().toLowerCase();
+			boolean skip = false;
+
+			if (mFilter != null) {
+				for (String term : mFilter) {
+					if (!name.contains(term)) {
+					    skip = true;
+						break;
+					}
+				}
+			}
+			if (!skip)
+				files.add(entry);
+		}
+
 		Collections.sort(files, mFileComparator);
-		if (!mFsRoot.equals(file))
-			files.add(0, new File(file, FileUtils.NAME_PARENT_FOLDER));
-
-		return files.toArray(new File[files.size()]);
+		if (file.getParentFile() != null) {
+			files.add(0, file.getParentFile());
+		}
+		return files.toArray(new Vsa[files.size()]);
 	}
 
 	@Override
 	public void commitQuery(Object data)
 	{
-		mFiles = (File[])data;
+		mFiles = (Vsa[])data;
 		notifyDataSetChanged();
 	}
 
@@ -254,8 +254,8 @@ public class FileSystemAdapter
 			holder = (ViewHolder)row.getTag();
 		}
 
-		final File file = mFiles[pos];
-		final String title = file.getName();
+		final Vsa file = mFiles[pos];
+		final String title = (pointsToParentFolder(file) ? ".." : file.getName());
 
 		holder.id = pos;
 		holder.title = title;
@@ -280,8 +280,8 @@ public class FileSystemAdapter
 			mFileObserver.stopWatching();
 		mFileObserver = null;
 
-		if (limiter != null && mFsRoot.equals(limiter.data))
-			limiter = null; // Filtering by mFsRoot is like having no filter
+		if (limiter != null && ((Vsa)limiter.data).getParent() == null)
+			limiter = null; // Filtering the fs root is like having no filter
 
 		mLimiter = limiter;
 	}
@@ -299,7 +299,7 @@ public class FileSystemAdapter
 	 *
 	 * @return resource id to use.
 	 */
-	private int getImageResourceForFile(File file) {
+	private int getImageResourceForFile(Vsa file) {
 		int res = R.drawable.file_document;
 		if (pointsToParentFolder(file)) {
 			res = R.drawable.arrow_up;
@@ -314,22 +314,23 @@ public class FileSystemAdapter
 	}
 
 	/**
-	 * Returns the unixpath represented by this limiter
+	 * Returns the path represented by this limiter
 	 *
 	 * @return the file of this limiter represents
 	 */
-	private File getLimiterPath() {
-		return mLimiter == null ? new File("/") : (File)mLimiter.data;
+	private Vsa getLimiterPath() {
+		return mLimiter == null ? VsaInstance.fromPath("/") : (Vsa)mLimiter.data;
 	}
 
 	/**
 	 * Returns true if the filename of 'file' indicates that
-	 * it points to '..'
+	 * it points to the parent folder of the limiter.
 	 *
 	 * @return true if given file points to the parent folder
 	 */
-	private static boolean pointsToParentFolder(File file) {
-		return FileUtils.NAME_PARENT_FOLDER.equals(file.getName());
+	private boolean pointsToParentFolder(Vsa file) {
+		Vsa parent = getLimiterPath().getParentFile();
+		return file.equals(parent);
 	}
 
 	/**
@@ -339,11 +340,8 @@ public class FileSystemAdapter
 	 * @param file A File pointing to a folder.
 	 * @return A limiter describing the given folder.
 	 */
-	public static Limiter buildLimiter(File file)
-	{
-		if (pointsToParentFolder(file))
-			file = file.getParentFile().getParentFile();
-		String[] fields = FILE_SEPARATOR.split(file.getPath().substring(1));
+	public static Limiter buildLimiter(Vsa file) {
+		String[] fields = FILE_SEPARATOR.split(file.getAbsolutePath().substring(1));
 		return new Limiter(MediaUtils.TYPE_FILE, fields, file);
 	}
 
@@ -395,7 +393,7 @@ public class FileSystemAdapter
 	public Intent createData(View view)
 	{
 		ViewHolder holder = (ViewHolder)view.getTag();
-		File file = mFiles[(int)holder.id];
+		Vsa file = mFiles[(int)holder.id];
 
 		Intent intent = new Intent();
 		intent.putExtra(LibraryAdapter.DATA_TYPE, MediaUtils.TYPE_FILE);
@@ -425,8 +423,8 @@ public class FileSystemAdapter
 	 */
 	@Override
 	public QueryTask buildSongQuery(String[] projection) {
-		File path = getLimiterPath();
-		return MediaUtils.buildFileQuery(path.getPath(), projection, true);
+		Vsa path = getLimiterPath();
+		return MediaUtils.buildFileQuery(path.getAbsolutePath(), projection, true);
 	}
 
 	/**
@@ -459,7 +457,7 @@ public class FileSystemAdapter
 	 */
 	public boolean onCreateFancyMenu(Intent intent, View view, float x, float y) {
 		String path = intent.getStringExtra(LibraryAdapter.DATA_FILE);
-		boolean isParentRow = (path != null && pointsToParentFolder(new File(path)));
+		boolean isParentRow = (path != null && pointsToParentFolder(VsaInstance.fromPath(path)));
 
 		if (!isParentRow)
 			return mActivity.onCreateFancyMenu(intent, view, x, y);

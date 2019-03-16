@@ -1,69 +1,82 @@
 package ch.blinkenlights.android.vsa;
 
-import android.net.Uri;
-import android.text.TextUtils;
-
 import java.io.File;
 import java.util.ArrayList;
 
-
 public class PosixVsaImpl implements Vsa {
 	/**
-	 * Absolute path.
+	 * Backing file of this instance.
 	 */
-	private final ArrayList<String> mAbsoultePath;
+	private final File mFile;
 
 	PosixVsaImpl(Vsa vsa) {
 		this(vsa.getAbsolutePath());
 	}
 
 	PosixVsaImpl(String path) {
-		if (path.length() == 0) {
-			throw new IllegalArgumentException("supplied path must not be empty.");
-		}
-		if (!path.startsWith("/")) {
-			throw new IllegalArgumentException("must be an absolute path.");
-		}
-
-		ArrayList<String> parts = new ArrayList();
-		for (String part : path.split("/")) {
-			if (part.length() > 0) {
-				parts.add(part);
-			}
-		}
-		mAbsoultePath = parts;
+		mFile = new File(path);
 	}
 
 	@Override
 	public String[] list() {
-		final File file = new File(getAbsolutePath());
-		return file.list();
+		return mFile.list();
+	}
+
+	@Override
+	public Vsa[] listFiles() {
+		ArrayList<Vsa> list = new ArrayList();
+		String[] dirents = list();
+		if (dirents == null)
+			return null;
+
+		for (String entry : dirents) {
+			list.add(new PosixVsaImpl(getAbsolutePath() + Vsa.separator + entry));
+		}
+		return list.toArray(new Vsa[list.size()]);
 	}
 
 	@Override
 	public String getAbsolutePath() {
-		return TextUtils.join("/", mAbsoultePath.toArray());
+		return mFile.getAbsolutePath();
 	}
 
 	@Override
 	public String getName() {
-		return mAbsoultePath.get(mAbsoultePath.size() - 1);
+		return mFile.getName();
 	}
 
 	@Override
 	public String getParent() {
-		ArrayList<String> path = new ArrayList(mAbsoultePath);
-		if (path.size() < 2) {
-			return getAbsolutePath();
-		}
+		return mFile.getParent();
+	}
 
-		path.remove(path.size() - 1);
-		return TextUtils.join("/", path.toArray());
+	@Override
+	public Vsa getParentFile() {
+		String parent = getParent();
+		if (parent == null)
+			return null;
+		return new PosixVsaImpl(parent);
 	}
 
 	@Override
 	public boolean isDirectory() {
-		final File file = new File(getAbsolutePath());
-		return file.isDirectory();
+		return mFile.isDirectory();
 	}
+
+	@Override
+	public long length() {
+		return mFile.length();
+	}
+
+	@Override
+	public long lastModified() {
+		return mFile.lastModified();
+	}
+
+	@Override
+	public boolean equals(Object file) {
+		if (file == null || !(file instanceof PosixVsaImpl))
+			return false;
+		return getAbsolutePath().equals(((Vsa)file).getAbsolutePath());
+		}
 }

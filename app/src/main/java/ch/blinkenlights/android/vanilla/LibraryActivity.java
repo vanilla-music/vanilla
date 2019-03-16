@@ -24,6 +24,10 @@
 package ch.blinkenlights.android.vanilla;
 
 import ch.blinkenlights.android.medialibrary.MediaLibrary;
+
+import ch.blinkenlights.android.vsa.Vsa;
+import ch.blinkenlights.android.vsa.VsaInstance;
+
 import ch.blinkenlights.android.vanilla.ui.FancyMenu;
 import ch.blinkenlights.android.vanilla.ui.FancyMenuItem;
 
@@ -55,8 +59,6 @@ import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.viewpager.widget.ViewPager;
-
-import java.io.File;
 
 import junit.framework.Assert;
 
@@ -260,7 +262,7 @@ public class LibraryActivity
 		String folder = intent.getStringExtra("folder");
 
 		if (type == MediaUtils.TYPE_FILE && folder != null) {
-			limiter = FileSystemAdapter.buildLimiter(new File(folder));
+			limiter = FileSystemAdapter.buildLimiter(VsaInstance.fromPath(folder));
 		} else if (type != -1 && id != -1) {
 			MediaAdapter adapter = new MediaAdapter(this, type, null, null);
 			adapter.commitQuery(adapter.query());
@@ -317,7 +319,7 @@ public class LibraryActivity
 					pos = mPagerAdapter.getMediaTypePosition(limiter.type);
 					break;
 				case MediaUtils.TYPE_FILE:
-					File parentFile = ((File)limiter.data).getParentFile();
+					Vsa parentFile = ((Vsa)limiter.data).getParentFile();
 					mPagerAdapter.setLimiter(FileSystemAdapter.buildLimiter(parentFile));
 					break;
 				}
@@ -563,7 +565,7 @@ public class LibraryActivity
 				setLimiter(MediaUtils.TYPE_ARTIST, limiter.data.toString());
 			} else if (i > 0) {
 				Assert.assertEquals(MediaUtils.TYPE_FILE, limiter.type);
-				File file = (File)limiter.data;
+			    Vsa file = (Vsa)limiter.data;
 				int diff = limiter.names.length - i;
 				while (--diff != -1) {
 					file = file.getParentFile();

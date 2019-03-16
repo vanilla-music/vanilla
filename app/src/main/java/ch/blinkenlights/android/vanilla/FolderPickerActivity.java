@@ -17,8 +17,11 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import ch.blinkenlights.android.vsa.Vsa;
+import ch.blinkenlights.android.vsa.VsaInstance;
+
 import java.util.ArrayList;
-import java.io.File;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -103,7 +106,7 @@ public abstract class FolderPickerActivity extends Activity
 	private final TextWatcher mTextWatcher = new TextWatcher() {
 		@Override
 		public void afterTextChanged(Editable s) {
-			final File dir = new File(s.toString());
+			final Vsa dir = VsaInstance.fromPath(s.toString());
 			setCurrentDir(dir);
 		}
 
@@ -123,7 +126,7 @@ public abstract class FolderPickerActivity extends Activity
 	 * @param included unique list of included directories in tristastic mode
 	 * @param excluded unique list of excluded directories in triatastic mode
 	 */
-	public abstract void onFolderPicked(File directory, ArrayList<String> included, ArrayList<String> excluded);
+	public abstract void onFolderPicked(Vsa directory, ArrayList<String> included, ArrayList<String> excluded);
 
 	/**
 	 * Enables tritastic selection, that is: user can select each
@@ -149,12 +152,12 @@ public abstract class FolderPickerActivity extends Activity
 	 *
 	 * @param dir the directory to jump to
 	 */
-	void setCurrentDir(File dir) {
+	void setCurrentDir(Vsa dir) {
 		mSaveButton.setEnabled(dir.isDirectory());
 		mListAdapter.setCurrentDir(dir);
 		mListView.setSelectionFromTop(0, 0);
 
-		final File labelDir = new File(mPathDisplay.getText().toString());
+		final Vsa labelDir = VsaInstance.fromPath(mPathDisplay.getText().toString());
 		if (!dir.equals(labelDir)) {
 			// Only update the text field if the actual dir doesn't equal
 			// the currently displayed path, even if the text isn't exactly
@@ -191,15 +194,15 @@ public abstract class FolderPickerActivity extends Activity
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
 		FolderPickerAdapter.Item item = mListAdapter.getItem(pos);
-		File curPath = mListAdapter.getCurrentDir();
-		File newPath = null;
+		Vsa curPath = mListAdapter.getCurrentDir();
+		Vsa newPath = null;
 
 		if(item.file == null) {
 			// This is the '..' entry
 			newPath = curPath.getParentFile();
 		}
 		else {
-			newPath = new File(curPath, item.name);
+			newPath = VsaInstance.fromPath(curPath, item.name);
 		}
 
 		if (newPath != null)

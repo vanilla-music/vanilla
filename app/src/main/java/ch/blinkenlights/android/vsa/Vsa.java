@@ -18,12 +18,18 @@
 package ch.blinkenlights.android.vsa;
 
 public interface Vsa {
+	final static String separator = "/";
 
 	/**
 	 * Returns an array of strings naming directories and files contained
 	 * in this directory.
 	 */
 	String[] list();
+
+	/**
+	 * Similar to {@code list}, but returns Vsa objects instead of dirent names.
+	 */
+	Vsa[] listFiles();
 
 	/**
 	 * Returns the absolute pathname of this object.
@@ -41,7 +47,20 @@ public interface Vsa {
 	boolean isDirectory();
 
 	/**
-	 * Returns the absolute path of this objects parent.
+	 * Returns the absolute path of this objects parent or {@code null}
+	 * if there is no parent.
 	 */
 	String getParent();
+
+	/**
+	 * Returns the parent of this object, based on its path.
+	 * Returns {@code null} if there is no parent.
+	 */
+	Vsa getParentFile();
+
+	long lastModified();
+
+	long length();
+
+	boolean equals(Object file);
 }

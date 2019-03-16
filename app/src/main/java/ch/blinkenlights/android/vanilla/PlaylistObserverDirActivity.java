@@ -17,10 +17,12 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import ch.blinkenlights.android.vsa.Vsa;
+import ch.blinkenlights.android.vsa.VsaInstance;
+
 import android.os.Bundle;
 import android.content.SharedPreferences;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public class PlaylistObserverDirActivity extends FolderPickerActivity {
@@ -32,12 +34,12 @@ public class PlaylistObserverDirActivity extends FolderPickerActivity {
 
 		// Start at currently configured directory.
 		String current = SharedPrefHelper.getSettings(this).getString(PrefKeys.PLAYLIST_SYNC_FOLDER, PrefDefaults.PLAYLIST_SYNC_FOLDER);
-		setCurrentDir(new File(current));
+		setCurrentDir(VsaInstance.fromPath(current));
 	}
 
 
 	@Override
-	public void onFolderPicked(File directory, ArrayList<String> a, ArrayList<String> b) {
+	public void onFolderPicked(Vsa directory, ArrayList<String> a, ArrayList<String> b) {
 		SharedPreferences.Editor editor = SharedPrefHelper.getSettings(this).edit();
 		editor.putString(PrefKeys.PLAYLIST_SYNC_FOLDER, directory.getAbsolutePath());
 		editor.apply();

@@ -17,6 +17,9 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import ch.blinkenlights.android.vsa.Vsa;
+import ch.blinkenlights.android.vsa.VsaInstance;
+
 import android.content.Context;
 import android.app.Activity;
 import android.os.Environment;
@@ -29,7 +32,6 @@ import android.widget.TextView;
 import android.widget.ImageView;
 import android.graphics.drawable.Drawable;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.ArrayList;
 
@@ -39,9 +41,9 @@ public class FolderPickerAdapter
 
 	public static class Item {
 		String name;
-		File file;
+		Vsa file;
 		int color;
-		public Item(String name, File file, int color) {
+		public Item(String name, Vsa file, int color) {
 			this.name = name;
 			this.file = file;
 			this.color = color;
@@ -55,15 +57,15 @@ public class FolderPickerAdapter
 	/**
 	 * The external storage directory as reported by the OS
 	 */
-	final private File mStorageDir;
+	final private Vsa mStorageDir;
 	/**
 	 * The filesystem root
 	 */
-	final private File mFsRoot = new File("/");
+	final private Vsa mFsRoot = VsaInstance.fromPath("/");
 	/**
 	 * The currently set directory
 	 */
-	private File mCurrentDir;
+	private Vsa mCurrentDir;
 	/**
 	 * A list of paths marked as 'included'
 	 */
@@ -77,7 +79,7 @@ public class FolderPickerAdapter
 	public FolderPickerAdapter(Context context, int resource) {
 		super(context, resource);
 		mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		mStorageDir = Environment.getExternalStorageDirectory();
+		mStorageDir = VsaInstance.fromPath(Environment.getExternalStorageDirectory().getAbsolutePath());
 		mCurrentDir = mStorageDir;
 	}
 
@@ -105,14 +107,14 @@ public class FolderPickerAdapter
 	/**
 	 * Returns the currently set directory
 	 */
-	public File getCurrentDir() {
+	public Vsa getCurrentDir() {
 		return mCurrentDir;
 	}
 
 	/**
 	 * Changes the currently active directory
 	 */
-	public void setCurrentDir(File dir) {
+	public void setCurrentDir(Vsa dir) {
 		mCurrentDir = dir;
 		refresh();
 	}
@@ -167,7 +169,7 @@ public class FolderPickerAdapter
 
 		ArrayList<String> result = new ArrayList<String>();
 		for (String path : list) {
-			File file = new File(path);
+			Vsa file = VsaInstance.fromPath(path);
 			if (file.isDirectory())
 				result.add(path);
 		}
@@ -178,26 +180,17 @@ public class FolderPickerAdapter
 	 * Refreshes the current ArrayList
 	 */
 	private void refresh() {
-		File path = mCurrentDir;
-		File[]dirs = path.listFiles();
+		Vsa path = mCurrentDir;
+		Vsa[]dirs = path.listFiles();
 
 		clear();
 
 		if (!mFsRoot.equals(path))
 			add(new FolderPickerAdapter.Item("..", null, 0));
 
-		// Hack alert: Android >= 6.0's default storage root directory
-		// is usually not readable. That's not a big issue but
-		// can be very annoying for users who browse around.
-		// We are therefore detecting this and will 'simulate'
-		// the existence of the default storage root.
-		if (dirs == null && mStorageDir.getParentFile().equals(path)) {
-			dirs = new File[] { mStorageDir };
-		}
-
 		if (dirs != null) {
 			Arrays.sort(dirs);
-			for(File fentry: dirs) {
+			for(Vsa fentry: dirs) {
 				if(fentry.isDirectory()) {
 					int color = 0;
 					if (mIncludedDirs != null && mIncludedDirs.contains(fentry.getAbsolutePath()))
