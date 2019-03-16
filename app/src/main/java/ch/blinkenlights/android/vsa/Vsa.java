@@ -20,18 +20,28 @@ package ch.blinkenlights.android.vsa;
 public interface Vsa {
 
 	/**
-	 * Returns an array of all found files, similar to readdir().
+	 * Returns an array of strings naming directories and files contained
+	 * in this directory.
 	 */
-	Vsa[] listFiles();
+	String[] list();
 
-	String getPath();
-
+	/**
+	 * Returns the absolute pathname of this object.
+	 */
 	String getAbsolutePath();
 
+	/**
+	 * Returns the filename of this object.
+	 */
 	String getName();
 
+	/**
+	 * Returns whether or not this object is a directory.
+	 */
 	boolean isDirectory();
 
-	Vsa getParentFile();
-
+	/**
+	 * Returns the absolute path of this objects parent.
+	 */
+	String getParent();
 }
