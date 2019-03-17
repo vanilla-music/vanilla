@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2016 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2015-2019 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,11 @@ public class PermissionRequestActivity extends Activity {
 	/**
 	 * 'dangerous' permissions not granted by the manifest on versions >= M
 	 */
-	private static final String[] NEEDED_PERMISSIONS = { Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE };
+	private static final String[] PERMISSIONS_M = { Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE };
+	/**
+	 * Permissions required on android >= Q
+	 */
+	private static final String[] PERMISSIONS_Q = { Manifest.permission.READ_MEDIA_AUDIO, Manifest.permission.READ_MEDIA_IMAGES };
 	/**
 	 * The intent to start after acquiring the required permissions
 	 */
@@ -48,7 +52,7 @@ public class PermissionRequestActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		mCallbackIntent = getIntent().getExtras().getParcelable("callbackIntent");
-		requestPermissions(NEEDED_PERMISSIONS, 0);
+		requestPermissions(requiredPermissions(), 0);
 	}
 
 	/**
@@ -130,14 +134,27 @@ public class PermissionRequestActivity extends Activity {
 	 * @return boolean true if all permissions have been granded
 	 */
 	public static boolean havePermissions(Context context) {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-			for (String permission : NEEDED_PERMISSIONS) {
-				if (context.checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
-					return false;
-				}
+		String[] required = requiredPermissions();
+		for (String permission : required) {
+			if (context.checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+				return false;
 			}
-		} // else: granted during installation
+		}
 		return true;
 	}
 
+	/**
+	 * Returns the permission required for the currently running API level.
+	 *
+	 * @return string array with all required permissions.
+	 */
+	public static String[] requiredPermissions() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+			return PERMISSIONS_Q;
+		}
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			return PERMISSIONS_M;
+		}
+		return new String[] {};
+	}
 }

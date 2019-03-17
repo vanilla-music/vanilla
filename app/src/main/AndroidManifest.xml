@@ -28,6 +28,10 @@ THE SOFTWARE.
 	android:installLocation="auto">
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 	<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+	<!-- Android Q permissions -->
+	<uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+	<uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+	<!-- Legacy permissions -->
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 	<!-- This is needed for isWiredHeadsetOn() to work in some cases. (bug?) -->
