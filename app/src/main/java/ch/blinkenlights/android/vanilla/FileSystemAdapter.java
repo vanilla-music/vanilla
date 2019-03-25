@@ -279,7 +279,7 @@ public class FileSystemAdapter
 			mFileObserver.stopWatching();
 		mFileObserver = null;
 
-		if (limiter != null && ((Vsa)limiter.data).getParent() == null)
+		if (limiter != null && limiter.data == null)
 			limiter = null; // Filtering the fs root is like having no filter
 
 		mLimiter = limiter;
@@ -318,7 +318,10 @@ public class FileSystemAdapter
 	 * @return the file of this limiter represents
 	 */
 	private Vsa getLimiterPath() {
-		return mLimiter == null ? VsaInstance.fromPath("/") : (Vsa)mLimiter.data;
+		String path = (String)mLimiter.data;
+		if (path == null)
+			path = "/";
+		return VsaInstance.fromPath(path);
 	}
 
 	/**
@@ -341,7 +344,7 @@ public class FileSystemAdapter
 	 */
 	public static Limiter buildLimiter(Vsa file) {
 		String[] fields = FILE_SEPARATOR.split(file.getAbsolutePath().substring(1));
-		return new Limiter(MediaUtils.TYPE_FILE, fields, file);
+		return new Limiter(MediaUtils.TYPE_FILE, fields, file.getAbsolutePath());
 	}
 
 	/**

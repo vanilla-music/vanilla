@@ -29,7 +29,7 @@ import java.io.Serializable;
  * a row is "expanded".
  */
 public class Limiter implements Serializable {
-	private static final long serialVersionUID = -4729694243900202614L;
+	private static final long serialVersionUID = -7923773L;
 
 	/**
 	 * The type of the limiter. One of MediaUtils.TYPE_ARTIST, TYPE_ALBUM,
