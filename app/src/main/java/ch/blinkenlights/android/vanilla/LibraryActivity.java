@@ -319,8 +319,12 @@ public class LibraryActivity
 					pos = mPagerAdapter.getMediaTypePosition(limiter.type);
 					break;
 				case MediaUtils.TYPE_FILE:
-					Vsa parentFile = ((Vsa)limiter.data).getParentFile();
-					mPagerAdapter.setLimiter(FileSystemAdapter.buildLimiter(parentFile));
+					Limiter parent = FileSystemAdapter.buildParentLimiter(limiter);
+					if (parent == null) {
+						mPagerAdapter.clearLimiter(limiter.type);
+					} else {
+						mPagerAdapter.setLimiter(parent);
+					}
 					break;
 				}
 				if (pos == -1) {
@@ -565,12 +569,11 @@ public class LibraryActivity
 				setLimiter(MediaUtils.TYPE_ARTIST, limiter.data.toString());
 			} else if (i > 0) {
 				Assert.assertEquals(MediaUtils.TYPE_FILE, limiter.type);
-			    Vsa file = (Vsa)limiter.data;
 				int diff = limiter.names.length - i;
 				while (--diff != -1) {
-					file = file.getParentFile();
+					limiter = FileSystemAdapter.buildParentLimiter(limiter);
 				}
-				mPagerAdapter.setLimiter(FileSystemAdapter.buildLimiter(file));
+				mPagerAdapter.setLimiter(limiter);
 			} else {
 				mPagerAdapter.clearLimiter(type);
 			}
