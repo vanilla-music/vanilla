@@ -9,7 +9,7 @@ debug: build
 	adb install -t ./app/build/outputs/apk/debug/app-debug.apk
 
 build:
-	ssh qemu '. .bash_aliases && cd /hostfs/vanilla && ./gradlew build -x lintVitalRelease -x lint  -x :app:mockableAndroidJar'
+	ssh qemu '. .bash_aliases && cd /hostfs/vanilla && ./gradlew build -x lintVitalRelease -x lint  -x :app:transformClassesWithAndroidGradleClassShrinkerForRelease -x :app:mockableAndroidJar'
 
 release: clean
 	ssh qemu '. .bash_aliases && cd /hostfs/vanilla && ./gradlew assembleRelease && cd ./app/build/outputs/apk/release && zipalign -v -p 4 app-release-unsigned.apk aligned.apk && /home/adrian/Android/build-tools/27.0.3/apksigner sign -ks /hostfs/.android.keystore --out final.apk aligned.apk'
