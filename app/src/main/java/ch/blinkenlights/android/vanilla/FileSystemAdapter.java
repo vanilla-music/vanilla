@@ -317,7 +317,7 @@ public class FileSystemAdapter
 		String path = "/";
 		if (mLimiter != null)
 			path = (String)mLimiter.data;
-		return VsaInstance.fromPath(path);
+		return VsaInstance.fromPath(mActivity, path);
 	}
 
 	/**
@@ -346,15 +346,16 @@ public class FileSystemAdapter
 	/**
 	 * Builds a limiter pointing to the parent of the given limiter.
 	 *
+	 * @param context the context to use.
 	 * @param limiter the input limiter.
 	 * @return A limiter pointing to the parent of the input limiter.
 	 */
-	public static Limiter buildParentLimiter(Limiter limiter) {
+	public static Limiter buildParentLimiter(Context context, Limiter limiter) {
 		if (limiter == null)
 			return null;
 
 		String path = (String)limiter.data;
-		Vsa parent = VsaInstance.fromPath(path).getParentFile();
+		Vsa parent = VsaInstance.fromPath(context, path).getParentFile();
 		if (parent.getAbsolutePath().equals("/"))
 			return null;
 		return buildLimiter(parent);
@@ -472,7 +473,7 @@ public class FileSystemAdapter
 	 */
 	public boolean onCreateFancyMenu(Intent intent, View view, float x, float y) {
 		String path = intent.getStringExtra(LibraryAdapter.DATA_FILE);
-		boolean isParentRow = (path != null && pointsToParentFolder(VsaInstance.fromPath(path)));
+		boolean isParentRow = (path != null && pointsToParentFolder(VsaInstance.fromPath(mActivity, path)));
 
 		if (!isParentRow)
 			return mActivity.onCreateFancyMenu(intent, view, x, y);

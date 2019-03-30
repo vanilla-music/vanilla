@@ -217,7 +217,7 @@ public class FileUtils {
 		if (path.equals("")) {
 			path = Environment.getExternalStorageDirectory().getAbsolutePath();
 		}
-		return VsaInstance.fromPath(path);
+		return VsaInstance.fromPath(context, path);
 	}
 
 	/**

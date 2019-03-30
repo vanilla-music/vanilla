@@ -187,6 +187,9 @@ THE SOFTWARE.
 		<activity
 			android:name="PermissionRequestActivity"
 			android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+		<activity
+			android:name="SafRequestActivity"
+			android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
 		<activity
 			android:name="ShortcutPseudoActivity"

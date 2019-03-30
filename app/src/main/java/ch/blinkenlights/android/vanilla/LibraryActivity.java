@@ -190,6 +190,8 @@ public class LibraryActivity
 			PermissionRequestActivity.showWarning(this, getIntent());
 		}
 
+		SafRequestActivity.launch(this);
+
 		mVanillaTabLayout = (VanillaTabLayout)findViewById(R.id.sliding_tabs);
 		mVanillaTabLayout.setOnPageChangeListener(pagerAdapter);
 
@@ -262,7 +264,7 @@ public class LibraryActivity
 		String folder = intent.getStringExtra("folder");
 
 		if (type == MediaUtils.TYPE_FILE && folder != null) {
-			limiter = FileSystemAdapter.buildLimiter(VsaInstance.fromPath(folder));
+			limiter = FileSystemAdapter.buildLimiter(VsaInstance.fromPath(this, folder));
 		} else if (type != -1 && id != -1) {
 			MediaAdapter adapter = new MediaAdapter(this, type, null, null);
 			adapter.commitQuery(adapter.query());
@@ -319,7 +321,7 @@ public class LibraryActivity
 					pos = mPagerAdapter.getMediaTypePosition(limiter.type);
 					break;
 				case MediaUtils.TYPE_FILE:
-					Limiter parent = FileSystemAdapter.buildParentLimiter(limiter);
+					Limiter parent = FileSystemAdapter.buildParentLimiter(this, limiter);
 					if (parent == null) {
 						mPagerAdapter.clearLimiter(limiter.type);
 					} else {
@@ -571,7 +573,7 @@ public class LibraryActivity
 				Assert.assertEquals(MediaUtils.TYPE_FILE, limiter.type);
 				int diff = limiter.names.length - i;
 				while (--diff != -1) {
-					limiter = FileSystemAdapter.buildParentLimiter(limiter);
+					limiter = FileSystemAdapter.buildParentLimiter(this, limiter);
 				}
 				mPagerAdapter.setLimiter(limiter);
 			} else {

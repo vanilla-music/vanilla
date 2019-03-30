@@ -51,17 +51,21 @@ public class FolderPickerAdapter
 	}
 
 	/**
+	 * Context of this adapter
+	 */
+	private final Context mContext;
+	/**
 	 * Our layout inflater instance
 	 */
 	private final LayoutInflater mInflater;
 	/**
 	 * The external storage directory as reported by the OS
 	 */
-	final private Vsa mStorageDir;
+	private final Vsa mStorageDir;
 	/**
 	 * The filesystem root
 	 */
-	final private Vsa mFsRoot = VsaInstance.fromPath("/");
+	private final Vsa mFsRoot;
 	/**
 	 * The currently set directory
 	 */
@@ -78,9 +82,11 @@ public class FolderPickerAdapter
 
 	public FolderPickerAdapter(Context context, int resource) {
 		super(context, resource);
+		mContext = context;
 		mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		mStorageDir = VsaInstance.fromPath(Environment.getExternalStorageDirectory().getAbsolutePath());
+		mStorageDir = VsaInstance.fromPath(context, Environment.getExternalStorageDirectory().getAbsolutePath());
 		mCurrentDir = mStorageDir;
+		mFsRoot = VsaInstance.fromPath(context, "/");
 	}
 
 	@Override
@@ -169,7 +175,7 @@ public class FolderPickerAdapter
 
 		ArrayList<String> result = new ArrayList<String>();
 		for (String path : list) {
-			Vsa file = VsaInstance.fromPath(path);
+			Vsa file = VsaInstance.fromPath(mContext, path);
 			if (file.isDirectory())
 				result.add(path);
 		}

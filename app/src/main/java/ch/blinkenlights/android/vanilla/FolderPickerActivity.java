@@ -24,6 +24,7 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
@@ -82,7 +83,7 @@ public abstract class FolderPickerActivity extends Activity
 		mListView.setAdapter(mListAdapter);
 		mListView.setOnItemClickListener(this);
 
-		mPathDisplay.addTextChangedListener(mTextWatcher);
+		mPathDisplay.addTextChangedListener(obtainTextWatcher(this));
 		mSaveButton.setOnClickListener(mSaveButtonClickListener);
 
 		// init defaults
@@ -103,21 +104,23 @@ public abstract class FolderPickerActivity extends Activity
 	/**
 	 * Callback for EditText change events
 	 */
-	private final TextWatcher mTextWatcher = new TextWatcher() {
-		@Override
-		public void afterTextChanged(Editable s) {
-			final Vsa dir = VsaInstance.fromPath(s.toString());
-			setCurrentDir(dir);
-		}
+	private TextWatcher obtainTextWatcher(final Context context) {
+		return new TextWatcher() {
+			@Override
+			public void afterTextChanged(Editable s) {
+				final Vsa dir = VsaInstance.fromPath(context, s.toString());
+				setCurrentDir(dir);
+			}
 
-		@Override
-		public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-		}
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+			}
 
-		@Override
-		public void onTextChanged(CharSequence s, int start, int before, int count) {
-		}
-	};
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+			}
+		};
+	}
 
 	/**
 	 * Called after a folder was selected
@@ -157,7 +160,7 @@ public abstract class FolderPickerActivity extends Activity
 		mListAdapter.setCurrentDir(dir);
 		mListView.setSelectionFromTop(0, 0);
 
-		final Vsa labelDir = VsaInstance.fromPath(mPathDisplay.getText().toString());
+		final Vsa labelDir = VsaInstance.fromPath(this, mPathDisplay.getText().toString());
 		if (!dir.equals(labelDir)) {
 			// Only update the text field if the actual dir doesn't equal
 			// the currently displayed path, even if the text isn't exactly
@@ -202,7 +205,7 @@ public abstract class FolderPickerActivity extends Activity
 			newPath = curPath.getParentFile();
 		}
 		else {
-			newPath = VsaInstance.fromPath(curPath, item.name);
+			newPath = VsaInstance.fromPath(this, curPath, item.name);
 		}
 
 		if (newPath != null)

@@ -34,7 +34,7 @@ public class PlaylistObserverDirActivity extends FolderPickerActivity {
 
 		// Start at currently configured directory.
 		String current = SharedPrefHelper.getSettings(this).getString(PrefKeys.PLAYLIST_SYNC_FOLDER, PrefDefaults.PLAYLIST_SYNC_FOLDER);
-		setCurrentDir(VsaInstance.fromPath(current));
+		setCurrentDir(VsaInstance.fromPath(this, current));
 	}
 
 
