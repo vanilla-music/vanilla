@@ -53,7 +53,7 @@
   <string name="playlist_favorites">Favoris</string>
   <string name="new_playlist">Nouvelle playlist...</string>
   <string name="expand">Explorer</string>
-  <string name="expand_or_play_all">Explorer ou lire tout</string>
+  <string name="expand_or_play_all">Tout explorer ou tout lire</string>
   <string name="delete">Supprimer</string>
   <string name="playback_view">En lecture</string>
   <string name="sort_by">Trier par</string>
@@ -114,8 +114,8 @@
   <string name="file_time">Date de modification</string>
   <string name="extension">Extension</string>
   <string name="unknown">Inconnu</string>
-  <string name="play_all">Lire tout</string>
-  <string name="enqueue_all">Ajouter tout à la file d\'attente</string>
+  <string name="play_all">Tout lire</string>
+  <string name="enqueue_all">Tout ajouter à la file d\'attente</string>
   <string name="all_songs">Tous les morceaux</string>
   <string name="details">Détails</string>
   <string name="more_from_artist">Filtrer par artiste</string>
@@ -209,6 +209,8 @@
   <string name="enable_scroll_to_song_summary">Défile jusqu\'au morceau/album/artiste en cours de lecture dans l\'écran de la bibliothèque</string>
   <string name="queue_enable_scroll_to_song_title">Défiler jusqu\'au titre du morceau dans la file d\'attente</string>
   <string name="queue_enable_scroll_to_song_summary">Défile jusqu\'au morceau en cours de lecture dans la file d\'attente à chaque changement de piste. </string>
+  <string name="jump_to_enqueued_on_play_title">Passer à la chanson mise en file d\'attente en appuyant sur « Lire »</string>
+  <string name="jump_to_enqueued_on_play_summary">Si la chanson demandée est déjà dans la liste, passer directement à elle au lieu de vider la liste</string>
   <string name="coverloader_android_title">Charger les illustrations depuis Android</string>
   <string name="coverloader_android_summary">Interroge la base de données \'media\' interne d\'Android pour les illustrations</string>
   <string name="coverloader_vanilla_title">Charger l\'illustration depuis le répertoire</string>
@@ -290,6 +292,8 @@
   <string name="playlist_sync_disabled">Désactiver</string>
   <string name="playlist_sync_folder_title">Dossier de synchronisation</string>
   <string name="playlist_sync_folder_summary">Dossier à utiliser pour la synchronisation des playlists</string>
+  <string name="playlist_export_relative_paths_title">Exporter avec des chemins relatifs</string>
+  <string name="playlist_export_relative_paths_summary">Utiliser des chemins de fichiers relatifs à la playlist</string>
   <string name="permission_request_summary">Vanilla Music a besoin d\'une permission de lecture pour afficher votre bibliothèque musicale</string>
   <string name="reverse_sort">Inverser le tri</string>
   <string name="share">Partager</string>
