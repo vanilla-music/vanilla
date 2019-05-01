@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2018 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2012-2019 Adrian Ulrich <adrian@blinkenlights.ch>
  * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -734,34 +734,34 @@ public final class PlaybackService extends Service
 		BastpUtil.GainValues rg = getReplayGainValues(mp.getDataSource());
 		float adjust = 0f;
 
-		if(mReplayGainAlbumEnabled) {
-			adjust = (rg.track != 0 ? rg.track : adjust); /* do we have track adjustment ? */
-			adjust = (rg.album != 0 ? rg.album : adjust); /* ..or, even better, album adj? */
+		if (mReplayGainAlbumEnabled) {
+			adjust = (rg.track != 0 ? rg.track : adjust); // Album gain enabled, but we use the track gain as a backup.
+			adjust = (rg.album != 0 ? rg.album : adjust); // If album gain is present, we will prefer it.
 		}
 
-		if(mReplayGainTrackEnabled || (mReplayGainAlbumEnabled && adjust == 0)) {
-			adjust = (rg.album != 0 ? rg.album : adjust); /* do we have album adjustment ? */
-			adjust = (rg.track != 0 ? rg.track : adjust); /* ..or, even better, track adj? */
+		if (mReplayGainTrackEnabled || (mReplayGainAlbumEnabled && adjust == 0)) {
+			adjust = (rg.album != 0 ? rg.album : adjust); // Track gain enabled, but we use the album gain as a backup.
+			adjust = (rg.track != 0 ? rg.track : adjust); // If track gain is present, we will prefer it.
 		}
 
-		if(adjust == 0) {
-			/* No RG value found: decrease volume for untagged song if requested by user */
+		if (!rg.found) {
+			// No replay gain information found: adjust volume if requested by user.
 			adjust = (mReplayGainUntaggedDeBump-150)/10f;
 		} else {
-			/* This song has some replay gain info, we are now going to apply the 'bump' value
-			** The preferences stores the raw value of the seekbar, that's 0-150
-			** But we want -15 <-> +15, so 75 shall be zero */
-			adjust += 2*(mReplayGainBump-75)/10f; /* 2* -> we want +-15, not +-7.5 */
+			// This song has some replay gain info, we are now going to apply the 'bump' value
+			// The preferences stores the raw value of the seekbar, that's 0-150
+			// But we want -15 <-> +15, so 75 shall be zero.
+			adjust += 2*(mReplayGainBump-75)/10f; // 2* -> we want +-15, not +-7.5
 		}
 
 		if(mReplayGainAlbumEnabled == false && mReplayGainTrackEnabled == false) {
-			/* Feature is disabled: Make sure that we are going to 100% volume */
+			// Feature is disabled: Make sure that we are going to 100% volume.
 			adjust = 0f;
 		}
 
 		float rg_result = ((float)Math.pow(10, (adjust/20) ))*mFadeOut;
 		if(rg_result > 1.0f) {
-			rg_result = 1.0f; /* android would IGNORE the change if this is > 1 and we would end up with the wrong volume */
+			rg_result = 1.0f; // Android would IGNORE the change if this is > 1 and we would end up with the wrong volume.
 		} else if (rg_result < 0.0f) {
 			rg_result = 0.0f;
 		}
