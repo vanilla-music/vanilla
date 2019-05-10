@@ -549,7 +549,11 @@ public final class PlaybackService extends Service
 			if (earlyNotification) {
 				Song song = mCurrentSong != null ? mCurrentSong : new Song(-1);
 				startForeground(NOTIFICATION_ID, createNotification(song, mState, VISIBILITY_WHEN_PLAYING));
+				processSong(song);
 			}
+
+
+
 
 			if (ACTION_TOGGLE_PLAYBACK.equals(action)) {
 				playPause();
