@@ -64,7 +64,11 @@ public class PlaybackTimestampHandler {
 				try {
 					//Log.d(TAG, "Timestamp: "+vmp.getCurrentPosition()/1000+" - "+mSong.title+" - "+mSong.id);
 					mTimestamp = vmp.getCurrentPosition();
-					storeTimestampdataForSong();
+
+					//This fixes the timestamp beeing set to 0 if the player has not been initialized
+					if(vmp.isPlaying ()){
+						storeTimestampdataForSong();
+					}
 				} finally {
 					//if mediaplayer is not playing, wait longer.
 					if(vmp.isPlaying()){

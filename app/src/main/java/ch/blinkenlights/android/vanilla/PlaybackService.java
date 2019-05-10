@@ -524,7 +524,10 @@ public final class PlaybackService extends Service
 		initWidgets();
 
 		updateState(state);
-		setCurrentSong(0);
+		Song s = setCurrentSong(0);
+		if(s!=null){
+			prepareTimeForPlayback(s);
+		}
 
 		sInstance = this;
 		synchronized (sWait) {
@@ -549,7 +552,9 @@ public final class PlaybackService extends Service
 			if (earlyNotification) {
 				Song song = mCurrentSong != null ? mCurrentSong : new Song(-1);
 				startForeground(NOTIFICATION_ID, createNotification(song, mState, VISIBILITY_WHEN_PLAYING));
-				processSong(song);
+				if(song!=null){
+					prepareTimeForPlayback(song);
+				}
 			}
 
 
@@ -1460,6 +1465,13 @@ public final class PlaybackService extends Service
 
 		}
 
+		prepareTimeForPlayback(song);
+		mPlaybackTimestampHandler.start(mMediaPlayer);
+		updateNotification();
+
+	}
+
+	private void prepareTimeForPlayback(Song song){
 
 		int state = MediaLibrary.getAlbumUseSongTimestamp(this, song.albumId);
 		boolean jump=false;
@@ -1476,8 +1488,11 @@ public final class PlaybackService extends Service
 			jump=true;
 		}
 
-		int time = mPlaybackTimestampHandler.getInitialTimestamp();
+		int time = mPlaybackTimestampHandler.getInitialTimestamp() ;
 
+		if(time == -1){
+			jump=false;
+		}
 		if(time > 0 && jump){
 			seekToPosition(time);
 		}
