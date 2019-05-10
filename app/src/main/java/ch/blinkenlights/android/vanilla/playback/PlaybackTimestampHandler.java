@@ -92,6 +92,9 @@ public class PlaybackTimestampHandler {
 	}
 
 	public int getInitialTimestamp() {
+		if(mSong==null){
+			return 0;
+		}
 		return MediaLibrary.getSongTimestamp(mContext, mSong.id);
 	}
 
