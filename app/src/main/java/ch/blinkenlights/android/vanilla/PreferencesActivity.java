@@ -280,7 +280,10 @@ public class PreferencesActivity extends PreferenceActivity
 
 			if (intent != null) {
 				startActivity(intent);
-				activity.onBackPressed();
+				FragmentManager fragmentManager = getFragmentManager();
+				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || !fragmentManager.isStateSaved()) {
+					fragmentManager.popBackStack();
+				}
 			} else {
 				// package is not installed, ask user to install it
 				new AlertDialog.Builder(activity)
