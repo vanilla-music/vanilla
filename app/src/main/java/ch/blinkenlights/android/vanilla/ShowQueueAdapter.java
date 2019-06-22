@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.view.LayoutInflater;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -147,8 +148,34 @@ public class ShowQueueAdapter extends BaseAdapter {
 	 *
 	 * @return a set of positions
 	 */
-	public Set<Integer> getSelections() {
-		return new HashSet<>(mSelected);
+	public ArrayList<Integer> getSelectedPositions() {
+		return new ArrayList<>(new HashSet<>(mSelected));
+	}
+	/**
+	 * Get the set of selected songs
+	 *
+	 * @return a set of songs
+	 */
+	public Song[] getSelectedSongs() {
+		Integer[] selected = (new HashSet<>(mSelected)).toArray(new Integer[0]);
+		Song[] songList = new Song[selected.length];
+		for (int i = 0; i < selected.length; ++i) {
+			songList[i] = mService.getSongByQueuePosition(selected[i]);
+		}
+		return songList;
+	}
+	/**
+	 * Get the set of ids of selected songs
+	 *
+	 * @return a set of ids
+	 */
+	public Long[] getSelectedIds() {
+		Integer[] selected = (new HashSet<>(mSelected)).toArray(new Integer[0]);
+		Long[] idList = new Long[selected.length];
+		for (int i = 0; i < selected.length; ++i) {
+			idList[i] = mService.getSongByQueuePosition(selected[i]).id;
+		}
+		return idList;
 	}
 
 	/**
@@ -190,7 +217,7 @@ public class ShowQueueAdapter extends BaseAdapter {
 		row.highlightRow(position == mHighlightRow);
 
 		if (song.selected) {
-			row.setBackgroundColor(convertView.getResources().getColor(R.color.material_grey_600));
+			row.setBackgroundColor(row.getResources().getColor(R.color.material_grey_600));
 		} else {
 			row.setBackgroundColor(R.styleable.DragSortListView_float_background_color);
 		}
