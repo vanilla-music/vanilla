@@ -679,7 +679,7 @@ public class LibraryActivity
 
 				if (type == MediaUtils.TYPE_SONG) {
 					fm.add(CTX_MENU_MORE_FROM_ALBUM, 30, R.drawable.menu_album, R.string.more_from_album).setIntent(rowData);
-					fm.add(CTX_MENU_SHOW_DETAILS, 99, R.drawable.menu_details, R.string.details).setIntent(rowData);
+					fm.add(CTX_MENU_SHOW_DETAILS, 91, R.drawable.menu_details, R.string.details).setIntent(rowData);
 					if (PluginUtils.checkPlugins(this)) {
 						// not part of submenu: just last item in normal menu.
 						fm.add(CTX_MENU_PLUGINS, 99, R.drawable.menu_plugins, R.string.plugins).setIntent(rowData);
@@ -687,7 +687,7 @@ public class LibraryActivity
 				}
 			}
 			fm.addSpacer(90);
-			fm.add(CTX_MENU_DELETE, 90, R.drawable.menu_delete, R.string.delete).setIntent(rowData);
+			fm.add(CTX_MENU_DELETE, 91, R.drawable.menu_delete, R.string.delete).setIntent(rowData);
 		}
 		fm.show(view, x, y);
 		return true;
