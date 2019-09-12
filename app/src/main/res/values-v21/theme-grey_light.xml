@@ -30,6 +30,7 @@
 		<item name="android:colorAccent">#ff000000</item>
 		<item name="android:colorPrimary">#ff212121</item>
 		<item name="android:colorPrimaryDark">#ff090909</item>
+		<item name="themed_letter_tile_colors">@array/letter_tile_colors_light</item>
 	</style>
 
 	<style name="Grey_light.Playback" parent="Grey_light.VanillaBase">

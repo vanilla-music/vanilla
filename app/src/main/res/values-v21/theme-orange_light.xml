@@ -30,6 +30,7 @@
 		<item name="android:colorAccent">#FFF57F17</item>
 		<item name="android:colorPrimary">#FFE65100</item>
 		<item name="android:colorPrimaryDark">#FFBF360C</item>
+		<item name="themed_letter_tile_colors">@array/letter_tile_colors_light</item>
 	</style>
 
 	<style name="Orange_light.Playback" parent="Orange_light.VanillaBase">
