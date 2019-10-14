@@ -36,6 +36,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.PaintDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -815,7 +816,10 @@ public class LibraryActivity
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, MENU_PLAYBACK, 0, R.string.playback_view);
 		menu.add(0, MENU_SEARCH, 0, R.string.search).setIcon(R.drawable.ic_menu_search).setVisible(false);
-		menu.add(0, MENU_GO_HOME, 30, R.string.go_home);
+		if (Build.VERSION.SDK_INT >= 21) 
+			menu.add(0, MENU_GO_HOME, 30, R.string.go_home).setIcon(R.drawable.ic_menu_home).setVisible(false);
+		else
+			menu.add(0, MENU_GO_HOME, 30, R.string.go_home);
 		menu.add(0, MENU_SORT, 30, R.string.sort_by).setIcon(R.drawable.ic_menu_sort_alphabetically);
 		return true;
 	}
