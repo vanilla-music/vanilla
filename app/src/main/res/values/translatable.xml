@@ -260,6 +260,9 @@ THE SOFTWARE.
 	<string name="jump_to_enqueued_on_play_title">Jump to enqueued song on \'Play\'</string>
 	<string name="jump_to_enqueued_on_play_summary">If the requested song is already in the queue, jump to it instead of flushing the queue</string>
 
+	<string name="show_home_icon_title">Show \'Home\' icon</string>
+	<string name="show_home_icon_summary">Show icon that allows to go back to the filebrowser home directory</string>
+
 	<string name="coverloader_android_title">Load artwork from Android</string>
 	<string name="coverloader_android_summary">Query Androids internal media database for album artwork</string>
 
