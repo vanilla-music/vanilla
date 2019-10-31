@@ -65,6 +65,7 @@ public class Song implements Comparable<Song> {
 		MediaLibrary.SongColumns.SONG_NUMBER,
 		MediaLibrary.SongColumns.DISC_NUMBER,
 		MediaLibrary.SongColumns.FLAGS,
+		MediaLibrary.SongColumns.MBID,
 	};
 
 	public static final String[] EMPTY_PLAYLIST_PROJECTION = {
@@ -139,6 +140,8 @@ public class Song implements Comparable<Song> {
 	 */
 	public int flags;
 
+	public String mbid;
+
 	/**
 	 * Initialize the song with the specified id. Call populate to fill fields
 	 * in the song.
@@ -200,6 +203,8 @@ public class Song implements Comparable<Song> {
 			// have the flag set for other reasons.
 			flags |= FLAG_NO_COVER;
 		}
+
+		mbid = cursor.getString(11);
 	}
 
 	/**

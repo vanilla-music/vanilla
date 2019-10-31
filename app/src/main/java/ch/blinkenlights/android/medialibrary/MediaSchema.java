@@ -36,7 +36,8 @@ public class MediaSchema {
 	  + MediaLibrary.SongColumns.MTIME        +" TIMESTAMP DEFAULT (strftime('%s', CURRENT_TIMESTAMP)), "
 	  + MediaLibrary.SongColumns.DURATION     +" INTEGER NOT NULL, "
 	  + MediaLibrary.SongColumns.PATH         +" VARCHAR(4096) NOT NULL, "
-	  + MediaLibrary.SongColumns.FLAGS        +" INTEGER NOT NULL DEFAULT 0 "
+	  + MediaLibrary.SongColumns.FLAGS        +" INTEGER NOT NULL DEFAULT 0, "
+	  + MediaLibrary.SongColumns.MBID         +" TEXT"
 	  + ");";
 
 	/**

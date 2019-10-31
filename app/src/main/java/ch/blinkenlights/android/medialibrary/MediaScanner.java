@@ -543,6 +543,11 @@ public class MediaScanner implements Handler.Callback {
 				albumId = MediaLibrary.hash63(album + "\n" + file.getParent());
 			}
 
+			String mbid = tags.getFirst(MediaMetadataExtractor.MBID);
+			//if (!isUnset(mbid)) Log.v("VanillaMusic", "MediaScanner: found mbid "+mbid);
+			if (isUnset(mbid)) mbid = null;
+
+
 			ContentValues v = new ContentValues();
 			v.put(MediaLibrary.SongColumns._ID,         songId);
 			v.put(MediaLibrary.SongColumns.TITLE,       title);
@@ -556,6 +561,7 @@ public class MediaScanner implements Handler.Callback {
 			v.put(MediaLibrary.SongColumns.SKIPCOUNT,   skipCount);
 			v.put(MediaLibrary.SongColumns.PATH,        path);
 			v.put(MediaLibrary.SongColumns.FLAGS,       songFlags);
+			v.put(MediaLibrary.SongColumns.MBID,   		mbid);
 			mBackend.insert(MediaLibrary.TABLE_SONGS, null, v);
 
 			v.clear();

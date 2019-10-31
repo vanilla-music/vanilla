@@ -653,6 +653,7 @@ public class MediaLibrary  {
 		 * Various flags of this entry, see SONG_FLAG...
 		 */
 		String FLAGS = "_flags";
+		String MBID = "mbid";
 	}
 
 	// Columns of Album entries

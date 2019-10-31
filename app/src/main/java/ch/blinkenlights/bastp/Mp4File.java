@@ -57,7 +57,8 @@ public class Mp4File extends Common {
 		"genre",
 		"year",
 		"tracknumber",
-		"discnumber"
+		"discnumber",
+		"MusicBrainz Track Id"
 	);
 
 	// mapping between atom <-> vorbis tags
@@ -73,6 +74,7 @@ public class Mp4File extends Common {
 		ATOM_TAGS.put("�day", "year");
 		ATOM_TAGS.put("trkn", "tracknumber");
 		ATOM_TAGS.put("disk", "discnumber");
+		ATOM_TAGS.put("MusicBrainz Track Id", "MUSICBRAINZ_TRACKID");
 	}
 
 	// These tags are 32bit integers, not strings.
