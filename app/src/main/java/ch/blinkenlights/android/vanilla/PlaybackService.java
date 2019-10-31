@@ -1174,18 +1174,18 @@ public final class PlaybackService extends Service
 			intent.putExtra("track", song.title);
 			intent.putExtra("album", song.album);
 			intent.putExtra("artist", song.artist);
-			if (androidIds[0] != -1) {
-				intent.putExtra("songid", androidIds[0]);
-				intent.putExtra("albumid", androidIds[1]);
-			}
+			if (song.mbid != null) intent.putExtra("mbid", song.mbid);
 			sendBroadcast(intent);
 		}
 
 		if (mScrobble) {
 			Intent intent = new Intent("net.jjc1138.android.scrobbler.action.MUSIC_STATUS");
 			intent.putExtra("playing", (mState & FLAG_PLAYING) != 0);
-			if (androidIds[0] != -1)
-				intent.putExtra("id", androidIds[0]);
+			intent.putExtra("secs", (int)song.duration / 1000);
+			intent.putExtra("track", song.title);
+			intent.putExtra("album", song.album);
+			intent.putExtra("artist", song.artist);
+			if (song.mbid != null) intent.putExtra("mb-trackid", song.mbid);
 			sendBroadcast(intent);
 		}
 	}

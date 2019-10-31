@@ -170,6 +170,13 @@ public class ID3v2File extends Common {
 			else if(framename.equals("RVA2")) {
 				//
 			}
+			else if(framename.equals("UFID")) {
+				String ufid_value = new String(xpl);
+				if (ufid_value.matches("^.*http://musicbrainz.org.*")) {
+					addTagEntry(tags, "MUSICBRAINZ_TRACKID", ufid_value.substring(23));
+				}
+
+			}
 
 		}
 		return tags;
@@ -214,6 +221,12 @@ public class ID3v2File extends Common {
 				ti.key = txData[0].toUpperCase(); /* some tagwriters use lowercase for this */
 				ti.value = txData[1];
 			}
+
+			if(txData.length == 2 && txData[0].matches("^(?i)MUSICBRAINZ_TRACKID$")) {
+				ti.key = txData[0].toUpperCase(); /* some tagwriters use lowercase for this */
+				ti.value = txData[1];
+			}
+
 		}
 
 		return ti;

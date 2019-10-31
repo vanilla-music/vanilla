@@ -44,6 +44,7 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 	public final static String TRACK_NUMBER = "TRACK_NUM";
 	public final static String TITLE        = "TITLE";
 	public final static String YEAR         = "YEAR";
+	public final static String MBID = "MUSICBRAINZ_TRACKID";
 
 	/**
 	 * Regexp used to match a year in a date field
@@ -371,11 +372,11 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 	 */
 	private void populateSelf(HashMap bastp) {
 		// mapping between vorbiscomment -> constant
-		String[] map = new String[]{ "TITLE", TITLE, "ARTIST", ARTIST, "ALBUM", ALBUM, "ALBUMARTIST", ALBUMARTIST, "COMPOSER", COMPOSER, "GENRE", GENRE,
+		String[] map = new String[]{ "TITLE", TITLE, "ARTIST", ARTIST, "ALBUM", ALBUM, "ALBUMARTIST", ALBUMARTIST, "COMPOSER", COMPOSER, "GENRE", GENRE,"MUSICBRAINZ_TRACKID" , MBID,"MUSICBRAINZ TRACK ID" , MBID,
 		                             "TRACKNUMBER", TRACK_NUMBER, "TRACKTOTAL", TRACK_COUNT, "DISCNUMBER", DISC_NUMBER, "DISCTOTAL", DISC_COUNT,
 		                             "YEAR", YEAR };
 		// switch to integer filter if i >= x
-		int filterByIntAt = 12;
+		int filterByIntAt = 15;
 		// the filter we are normally using
 		Pattern filter = sFilterAny;
 

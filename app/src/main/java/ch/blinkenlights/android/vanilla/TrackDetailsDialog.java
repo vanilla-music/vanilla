@@ -84,6 +84,7 @@ public class TrackDetailsDialog extends DialogFragment {
 		final TextView composerView = view.findViewById(R.id.composer);
 		final TextView pathView = view.findViewById(R.id.path);
 		final TextView formatView = view.findViewById(R.id.format);
+		final TextView mbidView = view.findViewById(R.id.mbid);
 
 		final long songId = getArguments().getLong(SONG_ID);
 		Handler handler = new Handler(mHandlerThread.getLooper());
@@ -108,6 +109,7 @@ public class TrackDetailsDialog extends DialogFragment {
 						composerView.setText(metadata.getFirst(MediaMetadataExtractor.COMPOSER));
 						pathView.setText(song.path);
 						formatView.setText(metadata.getFormat());
+						mbidView.setText(song.mbid);
 					}
 				});
 			}

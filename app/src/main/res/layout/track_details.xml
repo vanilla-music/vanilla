@@ -104,4 +104,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 			android:gravity="right" />
 		<TextView android:id="@+id/format" android:textColor="?overlay_foreground_color" />
 	</TableRow>
+
+	<TableRow>
+		<TextView
+			android:text="mbid"
+			android:textColor="?overlay_foreground_color"
+			android:paddingRight="5dip"
+			android:gravity="right" />
+		<TextView android:id="@+id/mbid" android:textColor="?overlay_foreground_color" />
+	</TableRow>
 </merge>
