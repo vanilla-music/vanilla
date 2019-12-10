@@ -35,18 +35,18 @@
 
 	<array name="letter_tile_colors_dark">
 		<item>#A81104</item>
-		<item>#B60030</item>
-		<item>#69007D</item>
-		<item>#340784</item>
-		<item>#0C1E82</item>
+		<item>#AD1457</item>
+		<item>#6A1B9A</item>
+		<item>#4527A0</item>
+		<item>#283593</item>
 		<item>#0F52C1</item>
-		<item>#0068B2</item>
-		<item>#006474</item>
-		<item>#006355</item>
+		<item>#0277BD</item>
+		<item>#006064</item>
+		<item>#00695C</item>
 		<item>#006A25</item>
-		<item>#356C05</item>
-		<item>#BC3900</item>
-		<item>#CC2400</item>
+		<item>#558B2F</item>
+		<item>#E65100</item>
+		<item>#D84315</item>
 		<item>#424242</item>
 	</array>
 </resources>
