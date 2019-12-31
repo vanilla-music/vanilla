@@ -336,7 +336,7 @@ public class MediaScanner implements Handler.Callback {
 	private void guessQuickScanPlan() {
 		int lastSeenDbSize = MediaLibrary.getPreferences(mContext)._nativeLibraryCount;
 		String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0";
-		String[] projection = { "COUNT(*)" };
+		String[] projection = { "COUNT("+MediaStore.Audio.Media.IS_MUSIC+")" };
 		Cursor cursor = null;
 		try {
 			cursor = mContext.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection, null, null);
