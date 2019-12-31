@@ -15,10 +15,10 @@ android:
     - tools
 
     # The BuildTools version used
-    - build-tools-27.0.3
+    - build-tools-29.0.2
 
     # The SDK version used
-    - android-28
+    - android-29
 
 before_cache:
   - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
