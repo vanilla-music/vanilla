@@ -11,11 +11,11 @@
   <string name="shuffle_songs">Morceaux en mode aléatoire</string>
   <string name="shuffle_songs_continuously">Morceaux toujours en mode aléatoire</string>
   <string name="shuffle_albums">Albums en mode aléatoire</string>
-  <string name="no_repeat">Désactiver la répétition</string>
-  <string name="repeat">Répéter</string>
+  <string name="no_repeat">Ne pas répéter la queue</string>
+  <string name="repeat">Répéter la queue</string>
   <string name="repeat_current_song">Répéter le morceau en cours</string>
   <string name="stop_current_song">Arrêt après le morceau en cours</string>
-  <string name="random">Aléatoire</string>
+  <string name="random">Lire un morceau de l\'appareil au hasard</string>
   <string name="random_enabling">Aléatoire activé</string>
   <string name="song_load_failed">Échec lors du chargement du morceau %s. Le fichier est peut être corrompu ou manquant.</string>
   <string name="queue_cleared">File d\'attente effacée</string>
@@ -209,8 +209,8 @@
   <string name="enable_scroll_to_song_summary">Défile jusqu\'au morceau/album/artiste en cours de lecture dans l\'écran de la bibliothèque</string>
   <string name="queue_enable_scroll_to_song_title">Défiler jusqu\'au titre du morceau dans la file d\'attente</string>
   <string name="queue_enable_scroll_to_song_summary">Défile jusqu\'au morceau en cours de lecture dans la file d\'attente à chaque changement de piste. </string>
-  <string name="jump_to_enqueued_on_play_title">Passer à la chanson mise en file d\'attente en appuyant sur « Lire »</string>
-  <string name="jump_to_enqueued_on_play_summary">Si la chanson demandée est déjà dans la liste, passer directement à elle au lieu de vider la liste</string>
+  <string name="jump_to_enqueued_on_play_title">Passer au morceau en file d\'attente en appuyant sur \"Lire\"</string>
+  <string name="jump_to_enqueued_on_play_summary">Si le morceau demandé est déjà dans la liste, passer directement à celui-ci au lieu de vider la liste</string>
   <string name="coverloader_android_title">Charger les illustrations depuis Android</string>
   <string name="coverloader_android_summary">Interroge la base de données \'media\' interne d\'Android pour les illustrations</string>
   <string name="coverloader_vanilla_title">Charger l\'illustration depuis le répertoire</string>
@@ -261,7 +261,7 @@
   <string name="empty_the_queue">Vider la file d\'attente</string>
   <string name="show_queue">Afficher la file d\'attente</string>
   <string name="hide_queue">Masquer la file d\'attente</string>
-  <string name="dequeue_rest">Enlever le reste de la file d\'attente</string>
+  <string name="dequeue_rest">Vider la suite de la file d\'attente</string>
   <string name="toggle_controls">Afficher/cacher les contrôles</string>
   <string name="seek_10s_backward">Aller 10 secondes en arrière</string>
   <string name="seek_10s_forward">Aller 10 secondes en avant</string>

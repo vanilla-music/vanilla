@@ -7,11 +7,11 @@
   <string name="no_songs">Inga låtar hittade på enheten.</string>
   <string name="empty_queue">Inga låtar valda. Välj några från biblioteket eller ange slumpmässigt läge genom att trycka på det här meddelandet.</string>
   <string name="settings">Inställningar</string>
-  <string name="no_shuffle">Ingen blandning</string>
+  <string name="no_shuffle">Blanda inte</string>
   <string name="shuffle_songs">Blanda låtar</string>
   <string name="shuffle_songs_continuously">Blanda låtar kontinuerligt</string>
   <string name="shuffle_albums">Blanda album</string>
-  <string name="no_repeat">Ingen upprepning</string>
+  <string name="no_repeat">Upprepa inte</string>
   <string name="repeat">Upprepa</string>
   <string name="repeat_current_song">Upprepa aktuell låt</string>
   <string name="stop_current_song">Stoppa efter aktuell låt</string>
@@ -62,7 +62,7 @@
   <string name="remove">Ta bort</string>
   <string name="play_or_enqueue">Placera i kö om spelas; Spela om pausad</string>
   <string name="open">Öppna</string>
-  <string name="go_home">Hemkatalog</string>
+  <string name="go_home">Hemmapp</string>
   <string name="jumping_to_song">Låten är redan i kö, hoppar…</string>
   <!--As a developer, you should always supply "one" and "other"
 		strings. Your translators will know which strings are actually
@@ -74,8 +74,8 @@
 		http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html, Type cardinal,
 		to see which categories apply to integer numbers in their languages-->
   <plurals name="playing">
-    <item quantity="one">%d låt som spelas.</item>
-    <item quantity="other">%d låtar som spelas.</item>
+    <item quantity="one">%d låt spelas.</item>
+    <item quantity="other">%d låtar spelas.</item>
   </plurals>
   <plurals name="enqueued">
     <item quantity="one">%d låtar i kön.</item>
@@ -97,7 +97,7 @@
   <string name="deleted_item">\"%s\" borttagen.</string>
   <string name="delete_item">Ta bort \"%s\"?</string>
   <string name="delete_file">Ta bort filen \"%s\"?</string>
-  <string name="artists">Artists</string>
+  <string name="artists">Artister</string>
   <string name="albums">Album</string>
   <string name="albumartists">Albumartister</string>
   <string name="composers">Kompositörer</string>
@@ -191,8 +191,8 @@
   <string name="library_screen">Biblioteksskärm</string>
   <string name="default_action_title">Standardåtgärd</string>
   <string name="default_playlist_action_title">Standardåtgärd för spellista</string>
-  <string name="accelerometer_shake">Accelerometer skaka</string>
-  <string name="enable_shake_title">Aktivera accelerometer skaka</string>
+  <string name="accelerometer_shake">Skakaccelerometer</string>
+  <string name="enable_shake_title">Aktivera skakaccelerometer</string>
   <string name="enable_shake_summary">Endast aktiv när musik spelas. Fungerar inte när skärmen är avstängd på vissa enheter.</string>
   <string name="shake_action_title">Årgärd vid skakning</string>
   <string name="shake_threshold_title">Tröskelvärde för skakkraft</string>
@@ -212,7 +212,7 @@
   <string name="jump_to_enqueued_on_play_title">Hoppa till köad låt på \"Spela\"</string>
   <string name="jump_to_enqueued_on_play_summary">Om den önskade låten redan finns i kön, hoppa till den istället för att ta bort kön</string>
   <string name="coverloader_android_title">Läs in omslag från Android</string>
-  <string name="coverloader_android_summary">Fråga Androids interna mediedatabas för albumomslag</string>
+  <string name="coverloader_android_summary">Fråga Androids interna mediedatabas om albumomslag</string>
   <string name="coverloader_vanilla_title">Läs in omslag från mapp</string>
   <string name="coverloader_vanilla_summary">Sök efter bildfiler som heter cover.jpg, album.jpg eller artwork.jpg och visa dem som skivomslag</string>
   <string name="coverloader_shadow_title">Läs in omslag från dold mapp</string>
@@ -220,7 +220,7 @@
   <string name="coverloader_inline_title">Läs in omslag från filtaggar</string>
   <string name="coverloader_inline_summary">Försök att läsa in inbäddade konstverk från filtaggar</string>
   <string name="cover_on_lockscreen_title">Visa omslaget på låsskärmen</string>
-  <string name="cover_on_lockscreen_summary">Visa omslaget av den låt som spelas på låsskärmen</string>
+  <string name="cover_on_lockscreen_summary">Visa omslaget av låten som spelas på låsskärmen</string>
   <string name="double_tap_title">Dubbeltryck på gränssnittskomponenten</string>
   <string name="double_tap_summary">Dubbeltryck på 1x1-gränssnittskomponenten öppnar spelaren. Ådrar sig en 400ms fördröjning innan gränssnittskomponenten svarar på åtgärder.</string>
   <string name="scrobble_title">Använd Scrobble Droid API</string>
@@ -276,8 +276,8 @@
   <string name="minute_hint">MM</string>
   <string name="second_hint">SS</string>
   <string name="error_invalid_position">Ogiltig position</string>
-  <string name="filebrowser_start">Filhanterarens hemkatalog</string>
-  <string name="customize_filebrowser_start">Filhanteraren startar i den här katalogen</string>
+  <string name="filebrowser_start">Filhanterarens hemmapp</string>
+  <string name="customize_filebrowser_start">Filhanteraren startar i den här mappen</string>
   <string name="select">Välj</string>
   <string name="save">Spara</string>
   <string name="autoplaylist_playcounts_title">Automatiskt skapande av spellistor</string>

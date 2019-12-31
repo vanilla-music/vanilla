@@ -53,6 +53,7 @@
   <string name="playlist_favorites">最爱</string>
   <string name="new_playlist">新建播放列表</string>
   <string name="expand">展开</string>
+  <string name="expand_or_play_all">展开或全部播放</string>
   <string name="delete">删除</string>
   <string name="playback_view">正在播放</string>
   <string name="sort_by">排序方式</string>
@@ -62,6 +63,7 @@
   <string name="play_or_enqueue">如果播放序列；如果暫停播放</string>
   <string name="open">打开</string>
   <string name="go_home">家目录</string>
+  <string name="jumping_to_song">歌曲已经在队列内，正在跳转</string>
   <!--As a developer, you should always supply "one" and "other"
 		strings. Your translators will know which strings are actually
 		needed for their language. Always include %d in "one" because
@@ -71,6 +73,15 @@
 		Translators should use http://unicode.org/reports/tr35/tr35-numbers.html#Language_Plural_Rules and
 		http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html, Type cardinal,
 		to see which categories apply to integer numbers in their languages-->
+  <plurals name="playing">
+    <item quantity="other">正在播放 %d 首歌曲</item>
+  </plurals>
+  <plurals name="enqueued">
+    <item quantity="other">%d 首歌曲已加入队列</item>
+  </plurals>
+  <plurals name="added_to_playlist">
+    <item quantity="other">%1$d 首曲目已添加至播放列表 %2$s</item>
+  </plurals>
   <plurals name="removed_from_playlist">
     <item quantity="other">%1$d 曲目从 %2$s 播放列表中移除</item>
   </plurals>
@@ -84,6 +95,7 @@
   <string name="artists">演出者</string>
   <string name="albums">专辑</string>
   <string name="albumartists">专辑艺术家</string>
+  <string name="composers">作曲家</string>
   <string name="songs">曲目</string>
   <string name="playlists">播放清单</string>
   <string name="genres">风格</string>
@@ -156,6 +168,7 @@
   <string name="cycle_continuous_shuffling">继续随机播放</string>
   <string name="cycle_continuous_shuffling_summary">“随机模式”会以完全随机顺序播放曲目</string>
   <string name="notifications">通知</string>
+  <string name="notification_visibility_title">通知可见性</string>
   <string name="notification_action_title">通知动作</string>
   <string name="notification_nag">非常详尽的通知</string>
   <string name="notification_nag_summary">以“抬头通知”的方式通知曲目改变</string>
@@ -179,17 +192,22 @@
   <string name="theme">主题</string>
   <string name="disable_lockscreen_title">禁用锁屏</string>
   <string name="disable_lockscreen_summary">在媒体库界面或回放屏幕时禁用锁屏</string>
+  <string name="keep_screen_on_title">保持屏幕常亮</string>
+  <string name="keep_screen_on_summary">当Vanilla Music可见时保持屏幕（以及设备）唤醒</string>
   <string name="use_idle_timeout_title">启用闲置超时</string>
   <string name="use_idle_timeout_summary">启用时，闲置一段时间后会停止播放</string>
   <string name="idle_timeout_title">闲置超时</string>
   <string name="enable_scroll_to_song_title">滚动到曲目标题</string>
   <string name="enable_scroll_to_song_summary">在库列表中滚动到当前播放的曲目/专辑/艺术家</string>
+  <string name="jump_to_enqueued_on_play_summary">如果请求的曲目已经在队列中，直接跳到请求的曲目而不是清空队列</string>
   <string name="coverloader_android_title">从 Android 设备载入</string>
   <string name="coverloader_android_summary">查询 Android 内部的媒体数据库来做专辑封面</string>
   <string name="coverloader_vanilla_title">从文件夹中载入封面</string>
   <string name="coverloader_vanilla_summary">搜索文件名是 cover.jpg、album.jpg 或 artwork.jpg 的图片文件，以其作为专辑封面</string>
   <string name="coverloader_shadow_title">从隐藏文件载入封面</string>
   <string name="coverloader_shadow_summary">尝试从 \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\' 中载入封面图</string>
+  <string name="coverloader_inline_title">从文件标签中加载封面</string>
+  <string name="coverloader_inline_summary">尝试从文件标签中载入封面</string>
   <string name="cover_on_lockscreen_title">锁屏时显示专辑封面</string>
   <string name="cover_on_lockscreen_summary">在锁屏界面显示当前播放曲目的专辑封面</string>
   <string name="double_tap_title">双触小挂件</string>
@@ -198,6 +216,7 @@
   <string name="scrobble_summary">Last.fm 的歌曲记录通过 Scrobble Droid 或 Simple Last.fm Scrobbler</string>
   <string name="stock_broadcast_title">仿真原生应用的广播</string>
   <string name="stock_broadcast_summary">发送广播以模拟那些由本地原生播放器而产生的效果，例如第三方锁屏控制，小工具等等。</string>
+  <string name="help">帮助</string>
   <string name="about">关于</string>
   <string name="tabs">标签页顺序</string>
   <string name="customize_tab_order">调整媒体库标签页的顺序及可见性</string>
@@ -226,7 +245,9 @@
   <string name="enqueue_current_album">以专辑加入序列</string>
   <string name="enqueue_current_artist">以演出者加入序列</string>
   <string name="enqueue_current_genre">以风格加入序列</string>
-  <string name="empty_the_queue">空序列</string>
+  <string name="enqueue_current">加入序列</string>
+  <string name="more_from_current">更多来自</string>
+  <string name="empty_the_queue">清空序列</string>
   <string name="show_queue">显示序列</string>
   <string name="hide_queue">隐藏序列</string>
   <string name="dequeue_rest">剩余的移出序列</string>
@@ -238,33 +259,73 @@
   <string name="preferences_action_enqueue_current_album">以专辑加入序列</string>
   <string name="preferences_action_enqueue_current_artist">以演出者加入序列</string>
   <string name="preferences_action_enqueue_current_genre">以风格加入序列</string>
+  <string name="jump_to_time">跳转到</string>
+  <string name="hour_hint">时</string>
+  <string name="minute_hint">分钟</string>
+  <string name="second_hint">秒</string>
+  <string name="error_invalid_position">非法的位置</string>
   <string name="filebrowser_start">起始目录</string>
   <string name="customize_filebrowser_start">在此目录开始浏览文件</string>
   <string name="select">选择</string>
+  <string name="save">保存</string>
   <string name="autoplaylist_playcounts_title">自动创建播放列表</string>
   <string name="autoplaylist_playcounts_summary">自动创建</string>
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s \'Top %.0f\' 播放列表</string>
   <string name="autoplaylist_playcounts_disabled">不要创建自动播放列表</string>
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
+  <string name="playlist_sync_mode_title">播放列表同步</string>
+  <string name="playlist_sync_all">完整同步</string>
+  <string name="playlist_sync_only_import">导入 M3U，永不导出</string>
+  <string name="playlist_sync_only_export">写入 M3U，永不导入</string>
+  <string name="playlist_sync_disabled">已停用</string>
+  <string name="playlist_sync_folder_title">同步文件夹</string>
+  <string name="playlist_sync_folder_summary">同步播放列表使用的文件夹</string>
+  <string name="playlist_export_relative_paths_title">导出时使用相对路径</string>
+  <string name="playlist_export_relative_paths_summary">音乐文件相对于播放列表的路径</string>
   <string name="permission_request_summary">Vanilla Music 需要读取权限来显示你的音乐媒体库</string>
   <string name="reverse_sort">反序</string>
   <string name="share">共享…</string>
+  <string name="share_failed">无法分享文件</string>
   <string name="sendto">发送给…</string>
   <string name="no_receiving_apps">没有为此媒体类型找到接收的 app！</string>
+  <string name="duration">持续时间</string>
+  <string name="dump_database">导出数据库</string>
+  <string name="dump_database_result">数据库已导出至“%s”</string>
+  <string name="force_m3u_import">强制重新导入M3U</string>
   <string name="media_library">媒体库</string>
+  <string name="media_folders_header">索引文件夹</string>
   <string name="media_scan_header">媒体扫描器</string>
+  <string name="media_scan_full">扫描整个文件系统（更慢）</string>
+  <string name="media_scan_drop_db">清空媒体数据库</string>
   <string name="media_scan_start">开始扫描</string>
   <string name="media_scan_force_bastp">始终使用内置标签阅读器</string>
   <string name="media_scan_group_albums">按文件夹分组封面</string>
   <string name="media_statistics">统计</string>
   <string name="media_stats_tracks">曲目数</string>
+  <string name="media_stats_library_playtime">播放总时长（小时）</string>
+  <string name="media_stats_listen_playtime">到现在为止播放音乐的小时数</string>
   <string name="media_stats_progress">扫描进度</string>
   <string name="media_library_scan_running">正在媒体库…</string>
-  <string name="media_scan_preferences">扫面器选项</string>
-  <string name="media_scan_preferences_change_title">扫面器选项已更改</string>
+  <string name="media_scan_preferences">扫描选项</string>
+  <string name="media_scan_preferences_change_title">已更改扫描选项</string>
   <string name="media_scan_preferences_change_message">更改此选项将完全重新开始扫描您的媒体库。你想继续吗？</string>
   <!--Folder selector-->
+  <string name="hint_long_press_to_modify_folder">长按以编辑文件夹选项</string>
+  <string name="folder_include">包括</string>
+  <string name="folder_exclude">排除</string>
   <!--Plugin system-->
   <string name="plugins">插件</string>
+  <string name="plugin_needs_upgrade">请更新 %s 插件至最新版本</string>
   <!--Theme names-->
+  <string name="theme_name_standard_light">标准</string>
+  <string name="theme_name_standard_dark">标准(深色)</string>
+  <string name="theme_name_grey_light">灰色</string>
+  <string name="theme_name_grey_dark">灰色(深色)</string>
+  <string name="theme_name_orange_light">橙色</string>
+  <string name="theme_name_orange_dark">橙色(深色)</string>
+  <string name="theme_name_blue_light">蓝色</string>
+  <string name="theme_name_blue_dark">蓝色(深色)</string>
+  <string name="theme_name_red_light">红色</string>
+  <string name="theme_name_red_dark">红色(深色)</string>
+  <string name="theme_name_amoled_dark">纯黑色 (AMOLED)</string>
 </resources>

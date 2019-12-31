@@ -44,6 +44,10 @@
   <string name="rename">Yeniden adlandır</string>
   <string name="save_as_playlist">Çalma listesi olarak kaydet...</string>
   <string name="add_to_playlist">Çalma listesine ekle...</string>
+  <string name="add_to_homescreen">Ana ekrana ekle...</string>
+  <string name="add_to">Şuraya ekle...</string>
+  <string name="playlist">Oynatmalık</string>
+  <string name="homescreen">Ana ekran</string>
   <string name="add_to_favorites">Gözdelere ekle</string>
   <string name="remove_from_favorites">Gözdelerden kaldır</string>
   <string name="playlist_favorites">Gözdeler</string>
@@ -113,6 +117,7 @@
   <string name="play_all">Hepsini oynat</string>
   <string name="enqueue_all">Hepsini kuyruğa ekle</string>
   <string name="all_songs">Tüm parçalar</string>
+  <string name="details">Ayrıntılar</string>
   <string name="more_from_artist">Bu sanatçıdan daha fazla</string>
   <string name="more_from_album">Bu albümden daha fazla</string>
   <string name="title">Başlık</string>
@@ -202,12 +207,18 @@
   <string name="idle_timeout_title">Boşta kalma süresi</string>
   <string name="enable_scroll_to_song_title">Parça adına kaydır</string>
   <string name="enable_scroll_to_song_summary">Arşiv listelerinde şu anda oynatılan parça/albüm/sanatçı adına kaydır</string>
+  <string name="queue_enable_scroll_to_song_title">Kuyruktaki parça adına kaydır</string>
+  <string name="queue_enable_scroll_to_song_summary">Parça değişiminde kuyrukta şu anda oynatılan parçaya kaydır</string>
+  <string name="jump_to_enqueued_on_play_title">\'Oynat\'mada kuyruğa eklenmiş parçaya atla</string>
+  <string name="jump_to_enqueued_on_play_summary">Eğer istenen parça zaten kuyruktaysa kuyruğu temizlemek yerine parçaya atla</string>
   <string name="coverloader_android_title">Android\'ten albüm resmi yükle</string>
   <string name="coverloader_android_summary">Android iç veritabanını albüm resimleri için sorgula</string>
   <string name="coverloader_vanilla_title">Klasörden albüm resmi yükle</string>
   <string name="coverloader_vanilla_summary">cover.jpg, album.jpg veya artwork.jpg adlı dosyaları ara ve onları albüm kapağı olarak göster</string>
   <string name="coverloader_shadow_title">Albüm resmini gizli klasörden yükle</string>
   <string name="coverloader_shadow_summary">\'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\' konumundan albüm resmini yüklemeye çalış</string>
+  <string name="coverloader_inline_title">Dosya etiketlerinden kapak resimleri yükle</string>
+  <string name="coverloader_inline_summary">Dosya etiketlerinden gömülü albüm kapaklarını yüklemeye çalışır</string>
   <string name="cover_on_lockscreen_title">Kilit ekranında kapak resmini göster</string>
   <string name="cover_on_lockscreen_summary">Şu anda oynatılan parçanın albüm resmini kilit ekranında göster</string>
   <string name="double_tap_title">İkili dokunma pencereciği</string>
@@ -259,6 +270,12 @@
   <string name="preferences_action_enqueue_current_album">Albümü kuyruğa ekle</string>
   <string name="preferences_action_enqueue_current_artist">Sanatçıyı kuyruğa ekle</string>
   <string name="preferences_action_enqueue_current_genre">Türü kuyruğa ekle</string>
+  <string name="jump_to_time">Zamana atla</string>
+  <string name="time_separator">:</string>
+  <string name="hour_hint">SS</string>
+  <string name="minute_hint">DD</string>
+  <string name="second_hint">SS</string>
+  <string name="error_invalid_position">Geçersiz konum</string>
   <string name="filebrowser_start">Dosya yöneticisi ana ekranı</string>
   <string name="customize_filebrowser_start">Dosya yöneticisi bu dizinde başlar</string>
   <string name="select">Seç</string>
@@ -268,6 +285,15 @@
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s \'En iyi %.0f parça\'</string>
   <string name="autoplaylist_playcounts_disabled">Kendiliğinden oynatmalık oluşturma!</string>
   <string name="autoplaylist_playcounts_name" formatted="false">En iyi %d</string>
+  <string name="playlist_sync_mode_title">Oynatmalık eşitlemesi</string>
+  <string name="playlist_sync_all">Toptan eşitleme</string>
+  <string name="playlist_sync_only_import">M3U içe aktar ancak dışa aktarma</string>
+  <string name="playlist_sync_only_export">M3U\'ya yaz, ancak içe aktarma</string>
+  <string name="playlist_sync_disabled">Kapatılmış</string>
+  <string name="playlist_sync_folder_title">Eşitleme klasörü</string>
+  <string name="playlist_sync_folder_summary">Oynatmalık eşitlemesi için kullanılacak klasör</string>
+  <string name="playlist_export_relative_paths_title">Göreceli yol adları kullanarak dışa aktar</string>
+  <string name="playlist_export_relative_paths_summary">Oynatmalığa bağlı dosya yol adlarını bağla</string>
   <string name="permission_request_summary">Vanilya Müzik, müzik arşivinizi görüntüleyebilmek için izninize gereksinim duyar</string>
   <string name="reverse_sort">Sıralamayı tersine çevir</string>
   <string name="share">Paylaş…</string>
@@ -277,6 +303,7 @@
   <string name="duration">Süre</string>
   <string name="dump_database">Veritabanını yığ</string>
   <string name="dump_database_result">Veritabanı \'%s\' yerine yığıldı.</string>
+  <string name="force_m3u_import">M3U yeniden içe aktarmasını zorla</string>
   <string name="media_library">Ortam arşivi</string>
   <string name="media_folders_header">İndekslenmiş dizinler</string>
   <string name="media_scan_header">Ortam tarayıcısı</string>
@@ -301,6 +328,7 @@
   <string name="folder_neutral">Nötral</string>
   <!--Plugin system-->
   <string name="plugins">Eklentiler</string>
+  <string name="plugin_needs_upgrade">%s eklentisini en son sürüme güncelleyin</string>
   <!--Theme names-->
   <string name="theme_name_standard_light">Standart</string>
   <string name="theme_name_standard_dark">Standart (Koyu)</string>

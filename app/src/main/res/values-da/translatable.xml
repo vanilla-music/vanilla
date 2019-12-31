@@ -1,10 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-  <string name="app_name">Vanilla Music</string>
+  <string name="app_name">Vanilla Musik</string>
   <string name="ok">O.k.</string>
   <string name="cancel">Annullere</string>
   <!--Playback Activity (main screen)-->
   <string name="no_songs">Ingen numre fundet på enhed.</string>
+  <string name="empty_queue">Ingen numre valgt. Vælge nogle fra biblioteket eller gå i tilfældig tilstand ved at klikke på denne besked.</string>
   <string name="settings">Opsætning</string>
   <string name="no_shuffle">Ingen blanding</string>
   <string name="shuffle_songs">Blande numre</string>
@@ -156,6 +157,8 @@
   <string name="headset_pause_title">Pause når ikke tilsluttet</string>
   <string name="headset_pause_summary">Pause når hovedtelefoner ikke er tilsluttet.</string>
   <string name="headset_launch_title">Afspille når tilsluttet</string>
+  <string name="headset_launch_summary">Afspille når hovedtelefoner er tilsluttet.. (Kræver \'Opdage hovedtelefon\' program er installeret.)</string>
+  <string name="headset_launch_app_missing">Disse funktioner kræver, at programmet \'Opdage hovedtelon\' er installeret.\nÅbne butik for at at installere programmet?</string>
   <string name="replaygain">Genspilning forstærkning</string>
   <string name="replaygain_summary">Indstille håndtering af genspilning forstærkning information</string>
   <string name="replaygain_track_title">Aktivere pr. nummer genspilning forstærkning</string>
@@ -166,7 +169,9 @@
   <string name="replaygain_untagged_debump_title">Numre uden genspilning forstærkning mærke</string>
   <string name="replaygain_untagged_debump_summary">Formindske lydstyrke med</string>
   <string name="replaygain_preamp_note_title">Bemærk</string>
+  <string name="replaygain_preamp_note_content">Android tillader ikke Vanilla Music at hæve lydstyrken til &gt;100%. Indstille forforstærker for høj kan forårsage problemer hvis der lyttes til  \'stille\' musik. \n\nAnbefalede værdier er:\n-&gt; -3dB for stille/klassisk musik\n-&gt; +3dB for efter-2000 optagelser</string>
   <string name="readahead">Aktivere indlæse forud</string>
+  <string name="readahead_summary">Indlæs forud nuværende afpillede nummer. Denne indstilling kan løse \'lyd udfald\' problemer. (forårsaget af langsomt SD kort)</string>
   <string name="equalizer">Equalizer</string>
   <string name="cycle_continuous_shuffling">Blande løbende</string>
   <string name="cycle_continuous_shuffling_summary">\'Blande tilstand\' vil afspille numre i helt tilfældig rækkefølge </string>
@@ -174,6 +179,7 @@
   <string name="notification_visibility_title">Påmindelse synlighed</string>
   <string name="notification_action_title">Påmindelse handling</string>
   <string name="notification_nag">Meget uddybende påmindelse</string>
+  <string name="notification_nag_summary">Annoncer numre ændringer ved hjælp af en \'Heads-Up påmindelse\'</string>
   <string name="playback_screen">Afspille skærm</string>
   <string name="playback_on_startup_title">Åbne ved opstart</string>
   <string name="playback_on_startup_summary">Åbne afspilning visning ved opstart</string>
@@ -185,26 +191,42 @@
   <string name="library_screen">Bibliotek skærm</string>
   <string name="default_action_title">Standard handling</string>
   <string name="default_playlist_action_title">Standard spilliste handling</string>
+  <string name="accelerometer_shake">Accelerationsmåler rystelse</string>
+  <string name="enable_shake_title">Aktivere accelerationsmåler rystelse</string>
+  <string name="enable_shake_summary">Kun aktiv når musik afspilles. Virker ikke når skærmen er slukket på nogle enheder.</string>
   <string name="shake_action_title">Ryste handling</string>
   <string name="shake_threshold_title">Ryste kraft grænseværdi</string>
   <string name="misc_features">Diverse egenskaber</string>
   <string name="theme">Tema</string>
   <string name="disable_lockscreen_title">Deaktivere låseskærm</string>
+  <string name="disable_lockscreen_summary">Forhindre låseskærm i at aktivere når den er på biblioteket eller afspilning skærm</string>
   <string name="keep_screen_on_title">Hold skærm tændt</string>
+  <string name="keep_screen_on_summary">Hold skærm  (og enhed) vågen når Vanilla Music er synlig</string>
   <string name="use_idle_timeout_title">Aktivere tomgang tidsudløb</string>
+  <string name="use_idle_timeout_summary">Når aktiv, afspilning vil stoppe efter given periode af inaktivitet</string>
   <string name="idle_timeout_title">Tomgangs tidsudløb</string>
   <string name="enable_scroll_to_song_title">Rulle til nummer titel</string>
+  <string name="enable_scroll_to_song_summary">Rul til nuværende afpillet nummer/album/kunstner i bibliotek lister</string>
   <string name="queue_enable_scroll_to_song_title">Rulle til nummer titel i kø</string>
+  <string name="queue_enable_scroll_to_song_summary">Rulle til aktuelt afpillende nummer i køen når sang ændres</string>
   <string name="jump_to_enqueued_on_play_title">Hop til i kø sat sang ved \'Afspil\'</string>
+  <string name="jump_to_enqueued_on_play_summary">Hvis den ønskede sang er i køen, hop til den i stedet for at tømme køen</string>
   <string name="coverloader_android_title">Indlæse illustration fra Android</string>
+  <string name="coverloader_android_summary">Anmod Androids interne medie database for album illustration</string>
   <string name="coverloader_vanilla_title">Indlæse illustration fra mappe</string>
+  <string name="coverloader_vanilla_summary">Søge efter billede filer navngivet cover.jpg, album.jpg eller artwork.jpg og vis dem som album omslag</string>
   <string name="coverloader_shadow_title">Indlæe illustration fra skjult mappe</string>
+  <string name="coverloader_shadow_summary">Forsøge at indlæse illustrationer fra \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\'</string>
   <string name="coverloader_inline_title">Indlæse illustration fra fil mærker</string>
   <string name="coverloader_inline_summary">Prøv at indlæse indlejret illustration fra fil mærker</string>
   <string name="cover_on_lockscreen_title">Vise illustration på låseskærm</string>
+  <string name="cover_on_lockscreen_summary">Vis illustration for nuværende afpillede nummer på låseskærmen</string>
   <string name="double_tap_title">Dobbelt tryk dims</string>
+  <string name="double_tap_summary">Dobbelt-klik på 1x1 kontrol vil åbne afspilleren. Forvent 400ms forsinkelse før kontrollen reagerer på handlinger.</string>
   <string name="scrobble_title">Brug Scrobble Droid API</string>
+  <string name="scrobble_summary">Scrobble til Last.fm gennem Scrobble Droid eller Simple Last.fm Scrobbler</string>
   <string name="stock_broadcast_title">Efterligne lageret udsendelser </string>
+  <string name="stock_broadcast_summary">Send udsendelser efterlignende dem sendt af standard musik afspilleren  for at kunne samarbejde med 3. parts låseskærm, kontroller etc.</string>
   <string name="help">Hjælp</string>
   <string name="about">Om</string>
   <string name="tabs">Faneblad sortering</string>
@@ -271,10 +293,13 @@
   <string name="playlist_sync_folder_title">Synkronisere mappe</string>
   <string name="playlist_sync_folder_summary">Mappe for afspille liste synkronisering</string>
   <string name="playlist_export_relative_paths_title">Eksportere med relative stier</string>
+  <string name="playlist_export_relative_paths_summary">Refenrece fil stier i forhold til afspilningsliste</string>
+  <string name="permission_request_summary">Vanilla Music behøver læse tilladelse for at vise musik bibliotek</string>
   <string name="reverse_sort">Omvendt sortering</string>
   <string name="share">Dele...</string>
   <string name="share_failed">Fildeling mislykket</string>
   <string name="sendto">Sende til...</string>
+  <string name="no_receiving_apps">Ingen modtagende programmer fundet for denne medie type!</string>
   <string name="duration">Længde</string>
   <string name="dump_database">Dumpe database</string>
   <string name="dump_database_result">Database dumpet til \'%s\'</string>
@@ -295,6 +320,7 @@
   <string name="media_library_scan_running">Skanner medie bibliotek…</string>
   <string name="media_scan_preferences">Skanne indstillinger</string>
   <string name="media_scan_preferences_change_title">Skanne indstillinger ændret</string>
+  <string name="media_scan_preferences_change_message">Ændring af denne indstilling vil starte en fuld skanning af biblioteket. Fortsætte?</string>
   <!--Folder selector-->
   <string name="hint_long_press_to_modify_folder">Lang tryk for at redigere mappe indstillinger</string>
   <string name="folder_include">Inkludere</string>
