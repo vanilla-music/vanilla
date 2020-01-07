@@ -36,6 +36,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.PaintDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -142,6 +143,10 @@ public class LibraryActivity
 	 */
 	private boolean mJumpToEnqueuedOnPlay;
 	/**
+	 * Whether or not to show home icon
+	 */
+	private boolean mShowHomeIcon;
+	/**
 	 * The last used action from the menu. Used with ACTION_LAST_USED.
 	 */
 	private int mLastAction = ACTION_PLAY;
@@ -158,6 +163,8 @@ public class LibraryActivity
 	@Override
 	public void onCreate(Bundle state)
 	{
+		loadPreferences();
+		
 		ThemeHelper.setTheme(this, R.style.Library);
 		super.onCreate(state);
 
@@ -208,9 +215,10 @@ public class LibraryActivity
 	@Override
 	public void onStart()
 	{
+		loadPreferences();
+		
 		super.onStart();
 
-		loadPreferences();
 		loadTabOrder();
 		updateHeaders();
 	}
@@ -222,6 +230,7 @@ public class LibraryActivity
 		SharedPreferences settings = SharedPrefHelper.getSettings(this);
 		mDefaultAction = Integer.parseInt(settings.getString(PrefKeys.DEFAULT_ACTION_INT, PrefDefaults.DEFAULT_ACTION_INT));
 		mJumpToEnqueuedOnPlay = settings.getBoolean(PrefKeys.JUMP_TO_ENQUEUED_ON_PLAY, PrefDefaults.JUMP_TO_ENQUEUED_ON_PLAY);
+		mShowHomeIcon = settings.getBoolean(PrefKeys.SHOW_HOME_ICON, PrefDefaults.SHOW_HOME_ICON);
 	}
 
 	/**
@@ -815,7 +824,10 @@ public class LibraryActivity
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, MENU_PLAYBACK, 0, R.string.playback_view);
 		menu.add(0, MENU_SEARCH, 0, R.string.search).setIcon(R.drawable.ic_menu_search).setVisible(false);
-		menu.add(0, MENU_GO_HOME, 30, R.string.go_home);
+		if (mShowHomeIcon && Build.VERSION.SDK_INT >= 21) 
+			menu.add(0, MENU_GO_HOME, 30, R.string.go_home).setIcon(R.drawable.ic_menu_home).setVisible(false);
+		else
+			menu.add(0, MENU_GO_HOME, 30, R.string.go_home);
 		menu.add(0, MENU_SORT, 30, R.string.sort_by).setIcon(R.drawable.ic_menu_sort_alphabetically);
 		return true;
 	}

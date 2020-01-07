@@ -64,4 +64,9 @@ THE SOFTWARE.
 			android:targetPackage="ch.blinkenlights.android.vanilla"
 			android:targetClass="ch.blinkenlights.android.vanilla.FilebrowserStartActivity" />
 	</PreferenceScreen>
+	<CheckBoxPreference
+		android:key="show_home_icon"
+		android:title="@string/show_home_icon_title"
+		android:summary="@string/show_home_icon_summary"
+		android:defaultValue="false" />
 </PreferenceScreen>

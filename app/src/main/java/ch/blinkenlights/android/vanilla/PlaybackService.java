@@ -950,7 +950,7 @@ public final class PlaybackService extends Service
 
 			mPlaylistObserver.unregister();
 			mPlaylistObserver = new PlaylistObserver(this, syncFolder, syncMode, exportRelativePaths);
-		} else if (PrefKeys.SELECTED_THEME.equals(key) || PrefKeys.DISPLAY_MODE.equals(key)) {
+		} else if (PrefKeys.SELECTED_THEME.equals(key) || PrefKeys.DISPLAY_MODE.equals(key) || PrefKeys.SHOW_HOME_ICON.equals(key)) {
 			// Theme changed: trigger a restart of all registered activites
 			ArrayList<TimelineCallback> list = sCallbacks;
 			for (int i = list.size(); --i != -1; )
