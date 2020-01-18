@@ -72,12 +72,12 @@ public class PreferencesTheme extends PreferenceFragment
 	}
 
 
-	private int[] decodeValue(String v) {
+	private static int[] decodeValue(String v) {
 		String[] parts = v.split(",");
 		int[] values = new int[parts.length];
-		for (int i=0; i<parts.length; i++) {
-			long parsedLong = (long)Long.decode(parts[i]); // the colors overflow an int, so we first must parse it as Long to make java happy.
-			values[i] = (int)parsedLong;
+		for (int i = 0; i < parts.length; i++) {
+			long parsedLong = (long) Long.decode(parts[i]);
+			values[i] = (int) parsedLong;
 		}
 		return values;
 	}
