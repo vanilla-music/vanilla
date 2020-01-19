@@ -411,7 +411,9 @@ public final class CoverBitmap {
 		Paint paint = new Paint();
 
 		// Picks a semi-random color from tiles_colors.xml
-		TypedArray colors = context.getResources().obtainTypedArray(R.array.letter_tile_colors);
+		TypedValue tv = new TypedValue();
+		context.getTheme().resolveAttribute(R.attr.themed_letter_tile_colors, tv, false);
+		TypedArray colors = context.getResources().obtainTypedArray(tv.data);
 		int color = colors.getColor(Math.abs(title.hashCode()) % colors.length(), 0);
 		colors.recycle();
 		paint.setColor(color);

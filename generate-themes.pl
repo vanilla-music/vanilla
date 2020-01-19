@@ -117,6 +117,7 @@ EOF
 		<item name="android:colorAccent">$this->{colorAccent}</item>
 		<item name="android:colorPrimary">$this->{colorPrimary}</item>
 		<item name="android:colorPrimaryDark">$this->{colorPrimaryDark}</item>
+		<item name="themed_letter_tile_colors">\@array/letter_tile_colors_light</item>
 	</style>
 
 	<style name="${tid}Playback" parent="${tid}VanillaBase">
@@ -159,6 +160,7 @@ EOF
 		<item name="android:colorAccent">$this->{colorAccent}</item>
 		<item name="android:colorPrimary">$this->{colorPrimary}</item>
 		<item name="android:colorPrimaryDark">$this->{colorPrimaryDark}</item>
+		<item name="themed_letter_tile_colors">\@array/letter_tile_colors_dark</item>
 	</style>
 
 	<style name="${tid}Playback" parent="${tid}VanillaBase">
