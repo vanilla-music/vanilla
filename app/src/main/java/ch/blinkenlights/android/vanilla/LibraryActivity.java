@@ -523,16 +523,14 @@ public class LibraryActivity
 					colors[1] = tmp;
 				}
 
-				int rightPadding = 2;
 				if (last) {
 					colors[1] = 0xFF404040;
-					rightPadding = 0;
 					view.setOnClickListener(this);
 				}
 
 				int leftPadding = 14;
 				if (first) {
-					leftPadding = 4;
+					leftPadding = 6;
 					colors[0] = colors[1];
 				}
 
@@ -541,22 +539,23 @@ public class LibraryActivity
 				view.setText(txt);
 				view.setTextColor(Color.WHITE);
 				view.setLayoutParams(params);
-				view.setPadding(leftPadding, 6, rightPadding, 6);
-				view.setArrowWidth(arrowWidth);
+				view.setPaddingDIP(leftPadding, 2, 6, 2);
+				view.setArrowWidthDIP(arrowWidth);
 				view.setTag(i);
 				view.setColors(colors[0], colors[1]);
 				mLimiterViews.addView(view);
 
 				if (last) {
+					final int ap = 10;
 					ArrowedText end = new ArrowedText(this);
 					end.setOnClickListener(this);
 					end.setText("×");
 					end.setTextColor(0xFFB0B0B0);
 					end.setLayoutParams(params);
-					end.setPadding(6, 6, 0, 6);
-					end.setArrowPadding(14);
-					end.setArrowWidth(arrowWidth);
-					end.setMinWidth(arrowWidth+14);
+					end.setPaddingDIP(0, 2, 0, 2);
+					end.setArrowWidthDIP(arrowWidth);
+					end.setArrowPaddingDIP(ap);
+					end.setMinWidthDIP(arrowWidth+ap);
 					end.setTag(i);
 					end.setColors(colors[1], 0);
 					mLimiterViews.addView(end);

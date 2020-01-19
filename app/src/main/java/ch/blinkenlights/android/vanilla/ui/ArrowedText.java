@@ -35,35 +35,57 @@ public class ArrowedText extends TextView {
 	 */
 	Context mContext;
 	/**
+	 * Display density of the device.
+	 */
+	float mDensity;
+	/**
 	 * Color of the arrow on the left side.
 	 */
 	int mArrowColor;
 	/**
-	 * Controls the width of the drawn arrow.
+	 * Controls the width of the drawn arrow in DIP.
 	 */
 	float mArrowWidth;
 	/**
-	 * 'padding' space (used left side) for the arrow to consume.
+	 * 'padding' space (used left side) for the arrow to consume in DIP.
 	 */
-	int mArrowPadding;
+	float mArrowPadding;
 
 	public ArrowedText(Context context) {
 		super(context);
 		mContext = context;
+		mDensity = context.getResources().getDisplayMetrics().density;
 	}
 
 	/**
 	 * Configures the width of the arrow.
 	 */
-	public void setArrowWidth(int w) {
-		mArrowWidth = w;
+	public void setArrowWidthDIP(float w) {
+		mArrowWidth = w * mDensity;
 	}
 
 	/**
 	 * Configures how much space the arrow uses on the left side.
 	 */
-	public void setArrowPadding(int p) {
-		mArrowPadding = p;
+	public void setArrowPaddingDIP(float p) {
+		mArrowPadding = p * mDensity;
+	}
+
+	/**
+	 * Configures the padding of this view in DIP.
+	 */
+	public void setPaddingDIP(float left, float top, float right, float bottom) {
+		setPadding((int)(left*mDensity),
+				   (int)(top*mDensity),
+				   (int)(right*mDensity),
+				   (int)(bottom*mDensity));
+	}
+
+	/**
+	 * Configures the minimal width of this view in DIP.
+	 */
+	public void setMinWidthDIP(float w) {
+		setMinWidth((int)(w*mDensity));
 	}
 
 	/**
