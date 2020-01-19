@@ -164,8 +164,13 @@ public class MediaLibrary  {
 	private static ArrayList<String> discoverDefaultMediaPaths(Context context) {
 		ArrayList<String> defaultPaths = new ArrayList<>();
 
-		// Try to discover media paths using getExternalMediaDirs() on 5.x and newer
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+			// Running on a platform which enforces scoped access, so we blindly accept all dirs.
+			for (File file : context.getExternalMediaDirs()) {
+				defaultPaths.add(file.getAbsolutePath());
+			}
+		} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			// Try to discover media paths using getExternalMediaDirs() on 5.x and newer
 			for (File file : context.getExternalMediaDirs()) {
 				// Seems to happen on some Samsung 5.x devices. :-(
 				if (file == null)
