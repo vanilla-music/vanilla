@@ -38,7 +38,8 @@ THE SOFTWARE.
 	    android:allowBackup="true"
 	    android:resizeableActivity="true"
 	    android:icon="@mipmap/icon"
-	    android:label="@string/app_name">
+	    android:label="@string/app_name"
+	    android:requestLegacyExternalStorage="true">
 
 		<meta-data
 			android:name="com.mirrorlink.android.rockscout.allow-offline-access"
