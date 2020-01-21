@@ -16,7 +16,7 @@
   -->
 
 <resources>
-    <array name="letter_tile_colors">
+    <array name="letter_tile_colors_light">
         <item>#DB4437</item>
         <item>#E91E63</item>
         <item>#9C27B0</item>
@@ -32,4 +32,21 @@
         <item>#FF5722</item>
         <item>#757575</item>
     </array>
+
+	<array name="letter_tile_colors_dark">
+		<item>#A81104</item>
+		<item>#AD1457</item>
+		<item>#6A1B9A</item>
+		<item>#4527A0</item>
+		<item>#283593</item>
+		<item>#0F52C1</item>
+		<item>#0277BD</item>
+		<item>#006064</item>
+		<item>#00695C</item>
+		<item>#006A25</item>
+		<item>#558B2F</item>
+		<item>#E65100</item>
+		<item>#D84315</item>
+		<item>#424242</item>
+	</array>
 </resources>

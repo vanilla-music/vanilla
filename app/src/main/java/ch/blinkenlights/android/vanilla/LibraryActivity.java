@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
- * Copyright (C) 2015-2019 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2015-2020 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,7 @@ package ch.blinkenlights.android.vanilla;
 import ch.blinkenlights.android.medialibrary.MediaLibrary;
 import ch.blinkenlights.android.vanilla.ui.FancyMenu;
 import ch.blinkenlights.android.vanilla.ui.FancyMenuItem;
+import ch.blinkenlights.android.vanilla.ui.ArrowedText;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -35,7 +36,6 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.PaintDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -506,28 +506,61 @@ public class LibraryActivity
 
 		Limiter limiterData = mPagerAdapter.getCurrentLimiter();
 		if (limiterData != null) {
+			final int arrowWidth = 8;
 			String[] limiter = limiterData.names;
-
 			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-			params.leftMargin = 5;
 			for (int i = 0; i != limiter.length; ++i) {
-				int color = (i+1 == limiter.length ? 0xFFA0A0A0 : 0xFFC0C0C0);
-				PaintDrawable background = new PaintDrawable(color);
-				background.setCornerRadius(0);
+				final boolean last = i+1 == limiter.length;
+				final boolean first = i == 0;
 
-				TextView view = new TextView(this);
+				String txt = limiter[i];
+				ArrowedText view = new ArrowedText(this);
+				int[] colors = {0xFF606060, 0xFF707070};
+
+				if (i%2 == 0) {
+					int tmp = colors[0];
+					colors[0] = colors[1];
+					colors[1] = tmp;
+				}
+
+				if (last) {
+					colors[1] = 0xFF404040;
+					view.setOnClickListener(this);
+				}
+
+				int leftPadding = 14;
+				if (first) {
+					leftPadding = 6;
+					colors[0] = colors[1];
+				}
+
 				view.setSingleLine();
 				view.setEllipsize(TextUtils.TruncateAt.MARQUEE);
-				view.setText(limiter[i]);
+				view.setText(txt);
 				view.setTextColor(Color.WHITE);
-				view.setBackgroundDrawable(background);
 				view.setLayoutParams(params);
-				view.setPadding(14, 6, 14, 6);
+				view.setPaddingDIP(leftPadding, 2, 6, 2);
+				view.setArrowWidthDIP(arrowWidth);
 				view.setTag(i);
-				view.setOnClickListener(this);
+				view.setColors(colors[0], colors[1]);
 				mLimiterViews.addView(view);
-			}
 
+				if (last) {
+					final int ap = 10;
+					ArrowedText end = new ArrowedText(this);
+					end.setOnClickListener(this);
+					end.setText("×");
+					end.setTextColor(0xFFB0B0B0);
+					end.setLayoutParams(params);
+					end.setPaddingDIP(0, 2, 0, 2);
+					end.setArrowWidthDIP(arrowWidth);
+					end.setArrowPaddingDIP(ap);
+					end.setMinWidthDIP(arrowWidth+ap);
+					end.setTag(i);
+					end.setColors(colors[1], 0);
+					mLimiterViews.addView(end);
+				}
+			}
 			mLimiterScroller.setVisibility(View.VISIBLE);
 		} else {
 			mLimiterScroller.setVisibility(View.GONE);

@@ -32,6 +32,7 @@ THE SOFTWARE.
 		<item name="controls_normal">#fff5f5f5</item>
 		<item name="controls_active">@android:color/holo_blue_dark</item>
 		<item name="android:scrollbarStyle">outsideInset</item>
+		<item name="themed_letter_tile_colors">@array/letter_tile_colors_light</item>
 	</style>
 
 	<style name="Playback" parent="VanillaBase">

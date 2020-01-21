@@ -31,6 +31,7 @@
 		<item name="android:colorAccent">#FFF57F17</item>
 		<item name="android:colorPrimary">#FFE65100</item>
 		<item name="android:colorPrimaryDark">#FFBF360C</item>
+		<item name="themed_letter_tile_colors">@array/letter_tile_colors_dark</item>
 	</style>
 
 	<style name="Orange_dark.Playback" parent="Orange_dark.VanillaBase">

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2016 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2015-2020 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 
@@ -212,7 +213,20 @@ public class FileUtils {
 	public static File getFilesystemBrowseStart(Context context) {
 		SharedPreferences prefs = SharedPrefHelper.getSettings(context);
 		String folder = prefs.getString(PrefKeys.FILESYSTEM_BROWSE_START, PrefDefaults.FILESYSTEM_BROWSE_START);
-		return new File( folder.equals("") ? Environment.getExternalStorageDirectory().getAbsolutePath() : folder );
+
+		if (folder.equals("")) {
+			folder = Environment.getExternalStorageDirectory().getAbsolutePath();
+
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+				// If we are running on a platform which enforces scoped access, try to find
+				// the suggested media dir instead.
+				for (File p : context.getExternalMediaDirs()) {
+					folder = p.getAbsolutePath();
+					break;
+				}
+			}
+		}
+		return new File(folder);
 	}
 
 	/**
