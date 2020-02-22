@@ -834,7 +834,8 @@ public final class PlaybackService extends Service
 					// a link to it
 					mMediaPlayer.setNextMediaPlayer(mPreparedMediaPlayer);
 				}
-			} catch (IOException e) {
+			} catch (IOException | IllegalArgumentException e) {
+				Log.e("VanillaMusic", "Exception while preparing gapless media player: " + e);
 				mMediaPlayer.setNextMediaPlayer(null);
 				mPreparedMediaPlayer.reset();
 			}
