@@ -20,10 +20,11 @@ package ch.blinkenlights.android.vanilla;
 import ch.blinkenlights.android.medialibrary.MediaLibrary;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URLConnection;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 import android.content.Context;
 import android.content.Intent;
@@ -31,6 +32,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.text.TextUtils;
 import android.util.Log;
 
 
@@ -144,12 +146,28 @@ public class FileUtils {
 
 		try {
 			if (!destination.isAbsolute()) {
-				path = new File(base, path).getCanonicalPath();
+				path = new File(base, path).getAbsolutePath();
+				final ArrayList<String> pathComponents = new ArrayList<>();
+				final StringTokenizer pathTokenizer = new StringTokenizer(path, File.separator);
+
+				while (pathTokenizer.hasMoreTokens()) {
+					final String pathComponent = pathTokenizer.nextToken();
+
+					if (NAME_PARENT_FOLDER.equals(pathComponent)) {
+						final int lastComponentPosition = pathComponents.size() - 1;
+
+						if (lastComponentPosition >= 0
+							&& !NAME_PARENT_FOLDER.equals(pathComponents.get(lastComponentPosition))) {
+							pathComponents.remove(lastComponentPosition);
+						}
+					} else {
+						pathComponents.add(pathComponent);
+					}
+				}
+				path = File.separator + TextUtils.join(File.separator, pathComponents);
 			}
 		} catch (SecurityException ex) {
 			// Ignore.
-		}catch (IOException ex){
-			// Ignore
 		}
 		return path;
 	}
