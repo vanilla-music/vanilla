@@ -444,7 +444,7 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService
 						.setMediaId(MediaID.toString(mediaType, mediaId, label))
 						.setTitle(label)
 						.setSubtitle(subtitleForMediaType(mediaType))
-						.setIconBitmap(song.getSmallCover(context))
+						.setIconBitmap(song.getCover(context))
 						.build(),
 						flags);
 				populateMe.add(item);

@@ -51,6 +51,10 @@ public class CoverCache {
 	 * Returned size of large (cover view) album covers
 	 */
 	public final static int SIZE_LARGE = (int)(200 * Resources.getSystem().getDisplayMetrics().density);
+	// TODO
+	public final static boolean COVER_FRONT = true;
+
+	public final static boolean COVER_BACK = false;
 	/**
 	 * Use all cover providers to load cover art
 	 */
@@ -104,11 +108,11 @@ public class CoverCache {
 	 * @param song The song used to identify the artwork to load
 	 * @return a bitmap or null if no artwork was found
 	 */
-	public Bitmap getCoverFromSong(Context ctx, Song song, int size) {
-		CoverKey key = new CoverCache.CoverKey(MediaUtils.TYPE_ALBUM, song.albumId, size);
+	public Bitmap getCoverFromSong(Context ctx, Song song, int size, boolean front) {
+		CoverKey key = new CoverCache.CoverKey(MediaUtils.TYPE_ALBUM, song.albumId, size, front);
 		Bitmap cover = getStoredCover(key);
 		if (cover == null) {
-			cover = sBitmapDiskCache.createBitmap(ctx, song, size*size);
+			cover = sBitmapDiskCache.createBitmap(ctx, song, size*size, front);
 			if (cover != null) {
 				storeCover(key, cover);
 				cover = getStoredCover(key); // return lossy version to avoid random quality changes
@@ -157,11 +161,13 @@ public class CoverCache {
 		public final int coverSize;
 		public final int mediaType;
 		public final long mediaId;
+		public final boolean front;
 
-		CoverKey(int mediaType, long mediaId, int coverSize) {
+		 CoverKey(int mediaType, long mediaId, int coverSize, boolean front) {
 			this.mediaType = mediaType;
 			this.mediaId = mediaId;
 			this.coverSize = coverSize;
+			this.front = front;
 		}
 
 		@Override
@@ -169,7 +175,8 @@ public class CoverCache {
 			if (obj instanceof CoverKey
 			    && this.mediaId   == ((CoverKey)obj).mediaId
 			    && this.mediaType == ((CoverKey)obj).mediaType
-			    && this.coverSize == ((CoverKey)obj).coverSize) {
+			    && this.coverSize == ((CoverKey)obj).coverSize
+				&& this.front == ((CoverKey)obj).front) {
 				return true;
 			}
 			return false;
@@ -177,12 +184,14 @@ public class CoverCache {
 
 		@Override
 		public int hashCode() {
-			return (int)this.mediaId + this.mediaType*(int)1e4 + this.coverSize * (int)1e5;
+		 	int fronstr = this.front? 1 : 0;
+			return (int)this.mediaId + this.mediaType*(int)1e4 + this.coverSize * (int)1e5 + fronstr * (int)1e6;
 		}
 
 		@Override
 		public String toString() {
-			return "CoverKey_i"+this.mediaId+"_t"+this.mediaType+"_s"+this.coverSize;
+		 	String frontstr = this.front ? "front" : "back";
+			return "CoverKey_i"+this.mediaId+"_t"+this.mediaType+"_s"+this.coverSize+"_f"+frontstr;
 		}
 
 	}
@@ -205,6 +214,10 @@ public class CoverCache {
 			    Pattern.compile("(?i).+/ALBUMART(_\\{[-0-9A-F]+\\}_LARGE)?\\.(JPE?G|PNG)$"),
 			    Pattern.compile("(?i).+/(CD|FRONT|ARTWORK|FOLDER)\\.(JPE?G|PNG)$"),
 			    Pattern.compile("(?i).+\\.(JPE?G|PNG)$") };
+
+		private final static Pattern[] COVERBACK_MATCHES = {
+			Pattern.compile("(?i).+/(Back)\\.(JPE?G|PNG)$")
+		};
 		/**
 		 * Projection of all columns in the database
 		 */
@@ -330,7 +343,11 @@ public class CoverCache {
 		 * Stores a bitmap in the disk cache, does not update existing objects
 		 *
 		 * @param key The cover key to use
+<<<<<<< HEAD
 		 * @param cover The cover to store as bitmap
+=======
+		 * @param cover The bitmap to store
+>>>>>>> 1f132431... Lade und zeige Backcover.
 		 */
 		public void put(CoverKey key, Bitmap cover) {
 			SQLiteDatabase dbh = getWritableDatabase();
@@ -394,7 +411,7 @@ public class CoverCache {
 		 * @param song the function will search for artwork of this object
 		 * @param maxPxCount the maximum amount of pixels to return (30*30 = 900)
 		 */
-		public Bitmap createBitmap(Context ctx, Song song, long maxPxCount) {
+		public Bitmap createBitmap(Context ctx, Song song, long maxPxCount, boolean front) {
 			if (song.id < 0)
 				throw new IllegalArgumentException("song id is < 0: " + song.id);
 
@@ -406,6 +423,7 @@ public class CoverCache {
 					final File baseFile  = new File(song.path);  // File object of queried song
 					String bestMatchPath = null;                 // The best cover-path we found
 					int bestMatchIndex   = COVER_MATCHES.length; // The best cover-index/priority found
+					int bestMatchIndexBack   = COVERBACK_MATCHES.length; // The best cover-index/priority found
 					int loopCount        = 0;                    // Directory items loop counter
 
 					// Only start search if the base directory of this file is NOT the public
@@ -413,17 +431,30 @@ public class CoverCache {
 					// in most cases
 					if (baseFile.getParentFile().equals(sDownloadsDir) == false) {
 						for (final File entry : baseFile.getParentFile().listFiles()) {
-							for (int i=0; i < bestMatchIndex ; i++) {
-								// We are checking each file entry to see if it matches a known
-								// cover pattern. We abort on first hit as the Pattern array is sorted from good->meh
-								if (COVER_MATCHES[i].matcher(entry.toString()).matches()) {
-									bestMatchIndex = i;
-									bestMatchPath = entry.toString();
-									break;
+							if (front) {
+								for (int i = 0; i < bestMatchIndex; i++) {
+									// We are checking each file entry to see if it matches a known
+									// cover pattern. We abort on first hit as the Pattern array is sorted from good->meh
+									if (COVER_MATCHES[i].matcher(entry.toString()).matches()) {
+										bestMatchIndex = i;
+										bestMatchPath = entry.toString();
+										break;
+									}
+								}
+							}
+							else {
+								for (int i=0; i < bestMatchIndexBack ; i++) {
+									// We are checking each file entry to see if it matches a known
+									// cover pattern. We abort on first hit as the Pattern array is sorted from good->meh
+									if (COVERBACK_MATCHES[i].matcher(entry.toString()).matches()) {
+										bestMatchIndexBack = i;
+										bestMatchPath = entry.toString();
+										break;
+									}
 								}
 							}
 							// Stop loop if we found the best match or if we looped 150 times
-							if (loopCount++ > 150 || bestMatchIndex == 0)
+							if (loopCount++ > 150 || bestMatchIndex == 0 || bestMatchIndexBack == 0)
 								break;
 						}
 					}

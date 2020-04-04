@@ -35,6 +35,7 @@ import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.SectionIndexer;
 
 import java.text.SimpleDateFormat;
@@ -482,7 +483,7 @@ public class MediaAdapter
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent)
+	public View getView(final int position, View convertView, final ViewGroup parent)
 	{
 		DraggableRow row;
 		ViewHolder holder;
@@ -502,6 +503,13 @@ public class MediaAdapter
 			row = (DraggableRow)convertView;
 			holder = (ViewHolder)row.getTag();
 		}
+
+		row.findViewById(R.id.cover).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				((ListView) parent).performItemClick(v, position, 0);
+			}
+		});
 
 		Cursor cursor = mCursor;
 		cursor.moveToPosition(position);
