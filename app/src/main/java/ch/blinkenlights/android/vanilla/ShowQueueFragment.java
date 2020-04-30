@@ -158,7 +158,7 @@ public class ShowQueueFragment extends Fragment
 				break;
 		    case CTX_MENU_ADD_TO_PLAYLIST:
 				PlaylistDialog.Callback callback = ((PlaylistDialog.Callback)getActivity());
-				PlaylistDialog dialog = PlaylistDialog.newInstance(callback, intent, null);
+				PlaylistDialog dialog = PlaylistDialog.newInstance(callback, intent, null, song);
 				dialog.show(getFragmentManager(), "PlaylistDialog");
 				break;
 			default:
