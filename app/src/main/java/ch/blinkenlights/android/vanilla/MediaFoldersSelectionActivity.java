@@ -38,9 +38,11 @@ public class MediaFoldersSelectionActivity extends FolderPickerActivity {
 		MediaLibrary.Preferences prefs = MediaLibrary.getPreferences(this);
 		File startPath = FileUtils.getFilesystemBrowseStart(this);
 
-		// Make sure that we display the current selection
-		setCurrentDir(startPath);
+		// Setup UI and enable tritastic options.
 		enableTritasticSelect(true, prefs.mediaFolders, prefs.blacklistedFolders);
+		enableTritasticSpinner(true);
+		// ...and jump to the folder.
+		setCurrentDir(startPath);
 	}
 
 

@@ -390,6 +390,7 @@ THE SOFTWARE.
 	<string name="media_scan_preferences">Scanner options</string>
 	<string name="media_scan_preferences_change_title">Scanner options changed</string>
 	<string name="media_scan_preferences_change_message">Changing this option will start a full rescan of your library. Would you like to continue?</string>
+	<string name="folder_picker_spinner_desc">Status of Directory:</string>
 
 	<!-- Folder selector -->
 	<string name="hint_long_press_to_modify_folder">Long press to modify folder options</string>
