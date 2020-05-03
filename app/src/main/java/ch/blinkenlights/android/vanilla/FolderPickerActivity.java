@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2013-2020 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -228,24 +228,55 @@ public abstract class FolderPickerActivity extends Activity
 			.setItems(options,
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
-						ArrayList<String> includedDirs = mListAdapter.getIncludedDirs();
-						ArrayList<String> excludedDirs = mListAdapter.getExcludedDirs();
-						includedDirs.remove(path);
-						excludedDirs.remove(path);
 						switch (which) {
 							case 0:
-								includedDirs.add(path);
+								setFolderState(path, FolderState.INCLUDE);
 								break;
 							case 1:
-								excludedDirs.add(path);
+								setFolderState(path, FolderState.EXCLUDE);
 								break;
 							default:
+								setFolderState(path, FolderState.NEUTRAL);
 						}
-						mListAdapter.setIncludedDirs(includedDirs);
-						mListAdapter.setExcludedDirs(excludedDirs);
 					}
 				});
 		builder.create().show();
 		return true;
+	}
+
+	/**
+	 * Enums to pass to setFolderState()
+	 */
+	enum FolderState {
+		NEUTRAL,
+		INCLUDE,
+		EXCLUDE,
+	}
+
+	/**
+	 * update included/excluded folders on the adapter.
+	 *
+	 * @param folder the folder to act on.
+	 * @param state the state the passed in folder should have.
+	 */
+	private void setFolderState(String folder, FolderState state) {
+		ArrayList<String> includedDirs = mListAdapter.getIncludedDirs();
+		ArrayList<String> excludedDirs = mListAdapter.getExcludedDirs();
+		includedDirs.remove(folder);
+		excludedDirs.remove(folder);
+		switch (state) {
+		case INCLUDE:
+			includedDirs.add(folder);
+			break;
+		case EXCLUDE:
+			excludedDirs.add(folder);
+			break;
+		case NEUTRAL:
+			// noop.
+			break;
+		}
+
+		mListAdapter.setIncludedDirs(includedDirs);
+		mListAdapter.setExcludedDirs(excludedDirs);
 	}
 }
