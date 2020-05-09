@@ -504,12 +504,14 @@ public class MediaAdapter
 			holder = (ViewHolder)row.getTag();
 		}
 
-		row.findViewById(R.id.cover).setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				((ListView) parent).performItemClick(v, position, 0);
-			}
-		});
+		if (mType == MediaUtils.TYPE_ALBUM) {
+			row.findViewById(R.id.cover).setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					((ListView) parent).performItemClick(v, position, 0);
+				}
+			});
+		}
 
 		Cursor cursor = mCursor;
 		cursor.moveToPosition(position);
