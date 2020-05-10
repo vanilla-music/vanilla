@@ -54,7 +54,7 @@ public class SystemUtils {
 		Bitmap cover = null;
 		Song song = MediaUtils.getSongByTypeId(context, type, id);
 		if (song != null) {
-			cover = song.getCover(context);
+			cover = song.getSmallCover(context);
 		}
 		if (cover == null) {
 			cover = BitmapFactory.decodeResource(context.getResources(), R.drawable.fallback_cover);

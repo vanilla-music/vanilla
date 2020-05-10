@@ -75,8 +75,8 @@ public class LazyCoverView extends ImageView
 		public CoverCache.CoverKey key; // A cache key identifying this RPC
 		public LazyCoverView view;      // The view we are updating
 		public String title;            // The title of this view, used for Initial-Covers
-		public boolean front;
-		public int coverSize;
+		public boolean front;           // The front or back album art
+		public int coverSize;           // The size of the album art
 		CoverMsg(CoverCache.CoverKey key, LazyCoverView view, String title, boolean front, int coverSize) {
 			this.key = key;
 			this.view = view;
@@ -175,9 +175,10 @@ public class LazyCoverView extends ImageView
 	 * 
 	 * @param type The Media type
 	 * @param id The id of this media type to query
+	 * @param title The title of the media type
 	 */
 	public void setCover(int type, long id, String title) {
-		setCover(type, id, title, true, CoverCache.SIZE_SMALL);
+		setCover(type, id, title, CoverCache.COVER_FRONT, CoverCache.SIZE_SMALL);
 	}
 
 	/**
@@ -186,6 +187,9 @@ public class LazyCoverView extends ImageView
 	 *
 	 * @param type The Media type
 	 * @param id The id of this media type to query
+	 * @param title The title of the media type
+	 * @param front The front (CoverCache.COVER_FRONT) or back (CoverCache.COVER_BACK) album art
+	 * @param coverSize The size of the album art
 	 */
 	public void setCover(int type, long id, String title, boolean front, int coverSize) {
 		mExpectedKey = new CoverCache.CoverKey(type, id, coverSize, front);

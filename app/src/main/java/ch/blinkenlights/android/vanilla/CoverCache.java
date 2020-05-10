@@ -51,9 +51,13 @@ public class CoverCache {
 	 * Returned size of large (cover view) album covers
 	 */
 	public final static int SIZE_LARGE = (int)(200 * Resources.getSystem().getDisplayMetrics().density);
-	// TODO
+	/**
+	 * Front album art
+	 */
 	public final static boolean COVER_FRONT = true;
-
+	/**
+	 * Back album art
+	 */
 	public final static boolean COVER_BACK = false;
 	/**
 	 * Use all cover providers to load cover art
@@ -106,6 +110,8 @@ public class CoverCache {
 	 *
 	 * @param ctx The context to retrieve the bitmap from cache via external content uri
 	 * @param song The song used to identify the artwork to load
+	 * @param size The size of the album art
+	 * @param front The front or back album art
 	 * @return a bitmap or null if no artwork was found
 	 */
 	public Bitmap getCoverFromSong(Context ctx, Song song, int size, boolean front) {
@@ -163,7 +169,7 @@ public class CoverCache {
 		public final long mediaId;
 		public final boolean front;
 
-		 CoverKey(int mediaType, long mediaId, int coverSize, boolean front) {
+		CoverKey(int mediaType, long mediaId, int coverSize, boolean front) {
 			this.mediaType = mediaType;
 			this.mediaId = mediaId;
 			this.coverSize = coverSize;
@@ -410,6 +416,7 @@ public class CoverCache {
 		 * @param ctx The context to read the external content uri of the given song
 		 * @param song the function will search for artwork of this object
 		 * @param maxPxCount the maximum amount of pixels to return (30*30 = 900)
+		 * @param front request the front or back album art
 		 */
 		public Bitmap createBitmap(Context ctx, Song song, long maxPxCount, boolean front) {
 			if (song.id < 0)
@@ -420,11 +427,11 @@ public class CoverCache {
 				InputStream sampleInputStream = null; // same as inputStream but used for getSampleSize
 
 				if ((CoverCache.mCoverLoadMode & CoverCache.COVER_MODE_VANILLA) != 0) {
-					final File baseFile  = new File(song.path);  // File object of queried song
-					String bestMatchPath = null;                 // The best cover-path we found
-					int bestMatchIndex   = COVER_MATCHES.length; // The best cover-index/priority found
-					int bestMatchIndexBack   = COVERBACK_MATCHES.length; // The best cover-index/priority found
-					int loopCount        = 0;                    // Directory items loop counter
+					final File baseFile    = new File(song.path);      // File object of queried song
+					String bestMatchPath   = null;                     // The best cover-path we found
+					int bestMatchIndex     = COVER_MATCHES.length;     // The best cover-index/priority found
+					int bestMatchIndexBack = COVERBACK_MATCHES.length; // The best cover-index/priority found
+					int loopCount          = 0;                        // Directory items loop counter
 
 					// Only start search if the base directory of this file is NOT the public
 					// downloads folder: Picking files from there would lead to a false positive

@@ -882,15 +882,19 @@ public class LibraryPagerAdapter
 		return mActivity.onCreateFancyMenu(intent, view, x, y);
 	}
 
-
-
 	@Override
 	/**
 	 * If view is a cover view, create a popup window onClick which can be dismissed by touch
 	 * the popup window itself or taps outside of the popup window.
+	 * Coverviews only created for entries within the Albumadapter.
 	 *
 	 * If its not a cover view it simply forwards the click to the underlying filesAdapter
 	 * or activity.
+	 *
+	 * @param parent the parent adapter view
+	 * @param view the long clicked view
+	 * @param position row position
+	 * @param id id of the long clicked row
 	 */
 	public void onItemClick (AdapterView<?> parent, View view, int position, long id) {
 		if (view.getId() == R.id.cover) {
@@ -898,8 +902,8 @@ public class LibraryPagerAdapter
 			View popupView = inflater.inflate(R.layout.popup_backcover, null);
 			LazyCoverView backcoverView = popupView.findViewById(R.id.popup_backcover_LazyView);
 			backcoverView.setVisibility(View.VISIBLE);
-			long myCacheId = mCurrentAdapter.getItemId(position);
-			backcoverView.setCover(MediaUtils.TYPE_ALBUM, myCacheId, null, false, CoverCache.SIZE_LARGE);
+			long clickedCacheId = mCurrentAdapter.getItemId(position);
+			backcoverView.setCover(MediaUtils.TYPE_ALBUM, clickedCacheId, null, CoverCache.COVER_BACK, CoverCache.SIZE_LARGE);
 
 			int width = LinearLayout.LayoutParams.WRAP_CONTENT;
 			int height = LinearLayout.LayoutParams.WRAP_CONTENT;
@@ -916,13 +920,14 @@ public class LibraryPagerAdapter
 		}
 		else {
 			Intent intent = id == LibraryAdapter.HEADER_ID ? createHeaderIntent(view) : mCurrentAdapter.createData(view);
-			int type = (Integer)((View)view.getParent()).getTag();
+			int type = (Integer) ((View) view.getParent()).getTag();
 			if (type == MediaUtils.TYPE_FILE) {
 				mFilesAdapter.onItemClicked(intent);
 			} else {
 				mActivity.onItemClicked(intent);
 			}
 		}
+
 	}
 
 	/**
