@@ -349,11 +349,7 @@ public class CoverCache {
 		 * Stores a bitmap in the disk cache, does not update existing objects
 		 *
 		 * @param key The cover key to use
-<<<<<<< HEAD
 		 * @param cover The cover to store as bitmap
-=======
-		 * @param cover The bitmap to store
->>>>>>> 1f132431... Lade und zeige Backcover.
 		 */
 		public void put(CoverKey key, Bitmap cover) {
 			SQLiteDatabase dbh = getWritableDatabase();
