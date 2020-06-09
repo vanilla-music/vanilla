@@ -1,6 +1,6 @@
-Cubetronic's Vanilla Music
+Vanilla Bean Music
 ==========================
-This version of Vanilla Music Player aims to provide a cleaner, quieter user interface.
+Vanilla Music Player without artificial colors.
 #### Features:
 * Respecting the absence of visual art: If there is artwork, it will be displayed, but if *not*, then that is respected as well.
   - No semi-randomly generated colorful tiles for Artists
