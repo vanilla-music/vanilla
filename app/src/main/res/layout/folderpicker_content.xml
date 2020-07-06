@@ -66,4 +66,27 @@ THE SOFTWARE.
 		android:choiceMode="none"
 		dslv:drag_enabled="false" />
 
+	<LinearLayout
+		android:id="@+id/folder_picker_spinner_container"
+		android:visibility="gone"
+		android:layout_width="fill_parent"
+		android:layout_height="@dimen/cover_size"
+		android:gravity="center_vertical"
+		android:orientation="horizontal" >
+		<TextView
+			android:text="@string/folder_picker_spinner_desc"
+			android:textColor="?overlay_foreground_color"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:layout_marginLeft="@dimen/text_padding"
+		/>
+		<Spinner
+			android:id="@+id/folder_picker_spinner"
+			android:entries="@array/folder_picker_spinner_entries"
+			android:layout_weight="2"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content" />
+	</LinearLayout>
+
 </LinearLayout>
