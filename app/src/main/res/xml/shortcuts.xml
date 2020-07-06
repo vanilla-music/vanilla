@@ -3,7 +3,7 @@
 
 	<shortcut
 		android:enabled="true"
-		android:icon="@drawable/shortcut_play"
+		android:icon="@mipmap/shortcut_play"
 		android:shortcutId="play"
 		android:shortcutDisabledMessage="@string/play"
 		android:shortcutLongLabel="@string/play"
@@ -16,7 +16,7 @@
 
 	<shortcut
 		android:enabled="true"
-		android:icon="@drawable/shortcut_random"
+		android:icon="@mipmap/shortcut_random"
 		android:shortcutId="random"
 		android:shortcutDisabledMessage="@string/random"
 		android:shortcutLongLabel="@string/random"
