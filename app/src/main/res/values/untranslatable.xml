@@ -158,6 +158,15 @@ THE SOFTWARE.
 		<item>@string/fixed_info</item>
 	</string-array>
 
+
+	<!-- START folder_picker_spinner -->
+        <string-array name="folder_picker_spinner_entries">
+                <item>@string/folder_include</item>
+                <item>@string/folder_exclude</item>
+                <item>@string/folder_neutral</item>
+        </string-array>
+	<!-- END folder_picker_spinner -->
+
 	<string name="empty"></string>
 
 
