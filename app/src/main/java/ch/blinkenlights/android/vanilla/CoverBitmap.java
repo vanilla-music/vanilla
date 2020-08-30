@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
- * Copyright 2017-2019 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright 2017-2020 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
@@ -56,6 +57,14 @@ public final class CoverBitmap {
 	 * Draw no song info, only the cover.
 	 */
 	public static final int STYLE_NO_INFO = 2;
+	/**
+	 * Whether or not to debug painting operations.
+	 */
+	private static final boolean DEBUG_PAINT = false;
+	/**
+	 * Cover slack ratio
+	 */
+	private static final float SLACK_RATIO = 0.95f;
 
 	private static int TEXT_SIZE = -1;
 	private static int TEXT_SIZE_BIG;
@@ -153,33 +162,30 @@ public final class CoverBitmap {
 		int boxWidth = Math.min(width, Math.max(titleWidth, Math.max(artistWidth, albumWidth)) + padding * 2);
 		int boxHeight = Math.min(height, titleSize + subSize * 2 + padding * 4);
 
-		int coverWidth;
-		int coverHeight;
-
-		if (cover == null) {
-			coverWidth = 0;
-			coverHeight = 0;
-		} else {
+		int coverWidth = 0;
+		int coverHeight = 0;
+		if (cover != null) {
+			cover = createScaledBitmap(cover, width, height);
 			coverWidth = cover.getWidth();
 			coverHeight = cover.getHeight();
-
-			float scale = Math.min((float)width / coverWidth, (float)height / coverHeight);
-
-			coverWidth *= scale;
-			coverHeight *= scale;
 		}
 
 		int bitmapWidth = Math.max(coverWidth, boxWidth);
 		int bitmapHeight = Math.max(coverHeight, boxHeight);
 
+
 		Bitmap bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
 		Canvas canvas = new Canvas(bitmap);
 
-		if (cover != null) {
-			int x = (bitmapWidth - coverWidth) / 2;
-			int y = (bitmapHeight - coverHeight) / 2;
-			Rect rect = new Rect(x, y, x + coverWidth, y + coverHeight);
-			canvas.drawBitmap(cover, null, rect, paint);
+		if (DEBUG_PAINT) {
+			Paint dpaint = new Paint();
+			dpaint.setColor(0xff00ffff);
+			dpaint.setStyle(Paint.Style.FILL);
+			canvas.drawPaint(dpaint);
+		}
+
+		if (coverWidth != 0) {
+			canvas.drawBitmap(cover, (bitmapWidth-coverWidth)/2, (bitmapHeight-coverHeight)/2, new Paint());
 		}
 
 		int left = (bitmapWidth - boxWidth) / 2;
@@ -237,17 +243,23 @@ public final class CoverBitmap {
 		Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 		Canvas canvas = new Canvas(bitmap);
 
+		if (DEBUG_PAINT) {
+			Paint dpaint = new Paint();
+			dpaint.setColor(0xffff0033);
+			dpaint.setStyle(Paint.Style.FILL);
+			canvas.drawPaint(dpaint);
+		}
+
 		if (cover != null) {
-			int coverHeight = Math.min(width, textStart-topPadding);
-			Bitmap zoomed = createZoomedBitmap(cover, width, coverHeight);
+			Bitmap scaled = createScaledBitmap(cover, width, height);
 			// amount of free Y pixels we have:
-			int free = textStart - coverHeight - topPadding;
+			int free = textStart - scaled.getHeight() - topPadding;
 			// top padding to use
 			int pad = topPadding + free / 2;
-			canvas.drawBitmap(zoomed, 0, pad, null);
+			canvas.drawBitmap(scaled, 0, pad, null);
 
 			// Y position where the cover ends.
-			int coverEnd = pad + coverHeight;
+			int coverEnd = pad + scaled.getHeight();
 			// amount of blank space we have after the cover and text.
 			int bottomFree = height - coverEnd - textTotalHeight - bottomPadding;
 			// alternative starting point of text, considering the free space:
@@ -308,33 +320,40 @@ public final class CoverBitmap {
 		float scale = Math.min((float)width / sourceWidth, (float)height / sourceHeight);
 		sourceWidth *= scale;
 		sourceHeight *= scale;
-		return Bitmap.createScaledBitmap(source, sourceWidth, sourceHeight, true);
+		Bitmap scaled = Bitmap.createScaledBitmap(source, (int)(SLACK_RATIO*sourceWidth), (int)(SLACK_RATIO*sourceHeight), true);
+		return createBorderedBitmap(scaled, sourceWidth, sourceHeight);
 	}
 
 	/**
-	 * Scales a bitmap to fit in a rectangle of the given size. Aspect ratio is
-	 * preserved. Both dimensions of the result will match the provided
-	 * dimension exactly.
+	 * Creates a bitmap with a round border. The returned bitmap will fit exactly
+	 * into the passed in dimensions and the source image is not scaled.
 	 *
-	 * @param source The bitmap to be scaled
-	 * @param width width of image
-	 * @param height height of image
-	 * @return The scaled bitmap.
+	 * @param source the source bitmap to use
+	 * @param width the with of the returned bitmap
+	 * @param height the height of the returned bitmap
+	 * @return the painted bitmap
 	 */
-	private static Bitmap createZoomedBitmap(Bitmap source, int width, int height) {
-		int sourceWidth = source.getWidth();
-		int sourceHeight = source.getHeight();
+	private static Bitmap createBorderedBitmap(Bitmap source, int width, int height) {
+		Bitmap dst = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+		Canvas canvas = new Canvas(dst);
 
-		float scale = Math.max((float)width / sourceWidth, (float)height / sourceHeight);
-		// optimal size, if scaled as desired
-		float desiredWidth = sourceWidth * scale;
-		float desiredHeight = sourceHeight * scale;
-		// calculate how many px we need to chop off the source image at each edge
-		int chopWidth = (int)((desiredWidth - width) / scale / 2f);
-		int chopHeight = (int)((desiredHeight - height) / scale / 2f);
+		if (DEBUG_PAINT) {
+			Paint dpaint = new Paint();
+			dpaint.setColor(0xff0000ff);
+			dpaint.setStyle(Paint.Style.FILL);
+			canvas.drawPaint(dpaint);
+		}
 
-		Bitmap chopped = Bitmap.createBitmap(source, chopWidth, chopHeight, sourceWidth-chopWidth*2, sourceHeight-chopHeight*2, null, true);
-		return Bitmap.createScaledBitmap(chopped, width, height, true);
+		BitmapShader shader = new BitmapShader(source, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+		Paint paint = new Paint();
+		paint.setAntiAlias(true);
+		paint.setShader(shader);
+
+		RectF rect = new RectF(0.0f, 0.0f, source.getWidth(), source.getHeight());
+		float radius = 12;
+		canvas.translate((height-source.getHeight())/2, (width-source.getWidth())/2);
+		canvas.drawRoundRect(rect, radius, radius, paint);
+		return dst;
 	}
 
 	/**
