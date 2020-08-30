@@ -170,28 +170,24 @@ public final class CoverBitmap {
 			coverHeight = cover.getHeight();
 		}
 
-		int bitmapWidth = Math.max(coverWidth, boxWidth);
-		int bitmapHeight = Math.max(coverHeight, boxHeight);
-
-
-		Bitmap bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
+		Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 		Canvas canvas = new Canvas(bitmap);
 
 		if (DEBUG_PAINT) {
 			Paint dpaint = new Paint();
-			dpaint.setColor(0xff00ffff);
+			dpaint.setColor(0xffff0000);
 			dpaint.setStyle(Paint.Style.FILL);
 			canvas.drawPaint(dpaint);
 		}
 
 		if (coverWidth != 0) {
-			canvas.drawBitmap(cover, (bitmapWidth-coverWidth)/2, (bitmapHeight-coverHeight)/2, new Paint());
+			canvas.drawBitmap(cover, (width-coverWidth)/2, (height-coverHeight)/2, new Paint());
 		}
 
-		int left = (bitmapWidth - boxWidth) / 2;
-		int top = (bitmapHeight - boxHeight) / 2;
-		int right = (bitmapWidth + boxWidth) / 2;
-		int bottom = (bitmapHeight + boxHeight) / 2;
+		int left = (width - boxWidth) / 2;
+		int top = (height - boxHeight) / 2;
+		int right = (width + boxWidth) / 2;
+		int bottom = (height + boxHeight) / 2;
 
 		paint.setARGB(150, 0, 0, 0);
 		canvas.drawRect(left, top, right, bottom, paint);
