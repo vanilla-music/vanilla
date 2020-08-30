@@ -85,8 +85,8 @@ public final class CoverBitmap {
 		PADDING = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, metrics);
 		// padding to take actionbar into account.
 		TOP_PADDING = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, metrics);
-		// space used by the controls bar.
-		BOTTOM_PADDING = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 80, metrics);
+		// space we keep from the view bottom.
+		BOTTOM_PADDING = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 32, metrics);
 	}
 
 	/**
@@ -253,20 +253,10 @@ public final class CoverBitmap {
 			// top padding to use
 			int pad = topPadding + free / 2;
 			canvas.drawBitmap(scaled, 0, pad, null);
-
-			// Y position where the cover ends.
-			int coverEnd = pad + scaled.getHeight();
-			// amount of blank space we have after the cover and text.
-			int bottomFree = height - coverEnd - textTotalHeight - bottomPadding;
-			// alternative starting point of text, considering the free space:
-			int altStart = coverEnd + (bottomFree / 2);
-
-			if (altStart < textStart)
-				textStart = altStart;
 		}
 
 		// Where to start drawing the text.
-		int top = textStart + padding;
+		int top = textStart;
 
 		// Now draw the text:
 		PorterDuffColorFilter filter = new PorterDuffColorFilter(textColor, PorterDuff.Mode.SRC_ATOP);
