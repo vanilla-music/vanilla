@@ -22,10 +22,12 @@ THE SOFTWARE.
 -->
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
        xmlns:vanilla="http://schemas.android.com/apk/res-auto" >
-	<ch.blinkenlights.android.vanilla.CoverView
-		android:id="@+id/cover_view"
-		android:layout_height="fill_parent"
-		android:layout_width="fill_parent" />
+  <ch.blinkenlights.android.vanilla.CoverView
+      android:id="@+id/cover_view"
+      android:layout_marginTop="@dimen/full_playback_alt_text"
+      android:layout_marginBottom="@dimen/full_playback_controls_height"
+      android:layout_height="fill_parent"
+      android:layout_width="fill_parent" />
 	<TableLayout
 		android:id="@+id/info_table"
 		android:layout_width="fill_parent"
@@ -56,7 +58,7 @@ THE SOFTWARE.
 		android:layout_height="fill_parent"
 		android:layout_width="fill_parent"
 		android:layout_gravity="bottom|left"
-		android:layout_marginTop="56dip"
+		android:layout_marginTop="@dimen/full_playback_alt_text"
 		android:orientation="horizontal"
 		vanilla:slider_handle_id="@+id/queue_slider">
 
