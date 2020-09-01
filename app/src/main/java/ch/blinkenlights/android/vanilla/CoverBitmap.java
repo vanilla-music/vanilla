@@ -225,6 +225,8 @@ public final class CoverBitmap {
 		int colors[] = ThemeHelper.getDefaultCoverColors(context);
 		// inverted cover background color.
 		int textColor = 0xFF000000 + (0xFFFFFF - (colors[0] & 0xFFFFFF));
+		// Whether or not the image is rendered in portrait mode.
+		boolean portraitMode = width > height;
 
 		// Prepare text and calculate minimum height, so we can ensure
 		// that the cover doesn't 'eat' into it.
@@ -233,8 +235,8 @@ public final class CoverBitmap {
 		String artist = song.artist == null ? "" : song.artist;
 		// Space required to draw the bottom text.
 		int textTotalHeight = padding + textSizeBig + (padding+textSize) * 2 + padding;
-		// Y coord where text must start to fit it on screen.
-		int textStart = height - bottomPadding - textTotalHeight;
+		// Y coord where text shall be placed.
+		int textStart = (portraitMode ? (height-textTotalHeight)/2 : height - bottomPadding - textTotalHeight);
 
 		Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 		Canvas canvas = new Canvas(bitmap);
@@ -247,12 +249,16 @@ public final class CoverBitmap {
 		}
 
 		if (cover != null) {
-			Bitmap scaled = createScaledBitmap(cover, width, height);
-			// amount of free Y pixels we have:
-			int free = textStart - scaled.getHeight() - topPadding;
-			// top padding to use
-			int pad = topPadding + free / 2;
-			canvas.drawBitmap(scaled, 0, pad, null);
+			Bitmap scaled;
+			if (portraitMode) {
+				int hh = height/2;
+				int hw = width/2;
+				scaled = createScaledBitmap(cover, Math.min(hw, height), Math.min(hw, height));
+				canvas.drawBitmap(scaled, (hw-scaled.getWidth())/2, (height-scaled.getHeight())/2, null);
+			} else {
+				scaled = createScaledBitmap(cover, width, textStart);
+				canvas.drawBitmap(scaled, (width-scaled.getWidth())/2, 0, null);
+			}
 		}
 
 		// Where to start drawing the text.
@@ -263,11 +269,13 @@ public final class CoverBitmap {
 		Paint paint = new Paint();
 		paint.setAntiAlias(true);
 
+		// how much to shift text to the right forcefully.
+		int tshift = (portraitMode ? width/2 : 0);
 		// Title
 		paint.setColorFilter(filter);
 		paint.setTextSize(textSizeBig);
 		int twidth = (int)paint.measureText(title);
-		int tstart = (width - twidth)/2;
+		int tstart = tshift+(width - tshift - twidth)/2;
 		drawText(canvas, title, tstart, top, width, twidth, paint);
 
 		// Bottom text
@@ -277,13 +285,13 @@ public final class CoverBitmap {
 		// Album
 		top += textSizeBig + padding;
 		twidth = (int)paint.measureText(album);
-		tstart = (width - twidth)/2;
+		tstart = tshift+(width - tshift - twidth)/2;
 		drawText(canvas, album, tstart, top, width, twidth, paint);
 
 		// Artist
 		top += textSize + padding;
 		twidth = (int)paint.measureText(artist);
-		tstart = (width - twidth)/2;
+		tstart = tshift+(width - tshift - twidth)/2;
 		drawText(canvas, artist, tstart, top, width, twidth, paint);
 
 		return bitmap;
