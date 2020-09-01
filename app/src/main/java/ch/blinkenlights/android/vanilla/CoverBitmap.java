@@ -225,8 +225,8 @@ public final class CoverBitmap {
 		int colors[] = ThemeHelper.getDefaultCoverColors(context);
 		// inverted cover background color.
 		int textColor = 0xFF000000 + (0xFFFFFF - (colors[0] & 0xFFFFFF));
-		// Whether or not the image is rendered in portrait mode.
-		boolean portraitMode = width > height;
+		// Whether or not the image is rendered in vertical mode.
+		boolean verticalMode = width > height;
 
 		// Prepare text and calculate minimum height, so we can ensure
 		// that the cover doesn't 'eat' into it.
@@ -236,7 +236,7 @@ public final class CoverBitmap {
 		// Space required to draw the bottom text.
 		int textTotalHeight = padding + textSizeBig + (padding+textSize) * 2 + padding;
 		// Y coord where text shall be placed.
-		int textStart = (portraitMode ? (height-textTotalHeight)/2 : height - bottomPadding - textTotalHeight);
+		int textStart = (verticalMode ? (height-textTotalHeight)/2 : height - bottomPadding - textTotalHeight);
 
 		Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 		Canvas canvas = new Canvas(bitmap);
@@ -250,7 +250,7 @@ public final class CoverBitmap {
 
 		if (cover != null) {
 			Bitmap scaled;
-			if (portraitMode) {
+			if (verticalMode) {
 				int hh = height/2;
 				int hw = width/2;
 				scaled = createScaledBitmap(cover, Math.min(hw, height), Math.min(hw, height));
@@ -270,7 +270,7 @@ public final class CoverBitmap {
 		paint.setAntiAlias(true);
 
 		// how much to shift text to the right forcefully.
-		int tshift = (portraitMode ? width/2 : 0);
+		int tshift = (verticalMode ? width/2 : 0);
 		// Title
 		paint.setColorFilter(filter);
 		paint.setTextSize(textSizeBig);
