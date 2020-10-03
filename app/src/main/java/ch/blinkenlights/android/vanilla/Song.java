@@ -29,6 +29,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 
+import java.io.File;
+
 /**
  * Represents a Song backed by the MediaStore. Includes basic metadata and
  * utilities to retrieve songs from the MediaStore.
@@ -111,7 +113,7 @@ public class Song implements Comparable<Song> {
 	/**
 	 * Song title
 	 */
-	public String title;
+	private String title;
 	/**
 	 * Album name
 	 */
@@ -224,6 +226,17 @@ public class Song implements Comparable<Song> {
 			result += String.format(" (%d💿)", discNumber);
 		}
 		return result;
+	}
+
+	/**
+	 * @return title of this song, or the filename if the title is not available
+	 */
+	public String getTitle() {
+		if (title == null || title.equals("")) {
+			return new File(path).getName();
+		} else {
+			return title;
+		}
 	}
 
 	/**

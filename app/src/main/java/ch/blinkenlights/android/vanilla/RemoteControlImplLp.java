@@ -148,7 +148,7 @@ public class RemoteControlImplLp implements RemoteControl.Client {
 			MediaMetadata.Builder metadataBuilder = new MediaMetadata.Builder()
 				.putString(MediaMetadata.METADATA_KEY_ARTIST, song.artist)
 				.putString(MediaMetadata.METADATA_KEY_ALBUM, song.album)
-				.putString(MediaMetadata.METADATA_KEY_TITLE, song.title)
+				.putString(MediaMetadata.METADATA_KEY_TITLE, song.getTitle())
 				.putLong(MediaMetadata.METADATA_KEY_DURATION, song.duration)
 				.putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, bitmap);
 

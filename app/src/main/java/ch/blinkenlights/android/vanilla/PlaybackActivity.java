@@ -720,7 +720,7 @@ public abstract class PlaybackActivity extends Activity
 							Intent request = new Intent(PluginUtils.ACTION_LAUNCH_PLUGIN);
 							request.setPackage(selected.packageName);
 							request.putExtra(PluginUtils.EXTRA_PARAM_URI, Uri.fromFile(new File(song.path)));
-							request.putExtra(PluginUtils.EXTRA_PARAM_SONG_TITLE, song.title);
+							request.putExtra(PluginUtils.EXTRA_PARAM_SONG_TITLE, song.getTitle());
 							request.putExtra(PluginUtils.EXTRA_PARAM_SONG_ARTIST, song.artist);
 							request.putExtra(PluginUtils.EXTRA_PARAM_SONG_ALBUM, song.album);
 							if (request.resolveActivity(getPackageManager()) != null) {

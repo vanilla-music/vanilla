@@ -775,7 +775,7 @@ public class MirrorLinkMediaBrowserService extends MediaBrowserService
 					.putString(MediaMetadata.METADATA_KEY_ARTIST, song.artist)
 					.putLong(MediaMetadata.METADATA_KEY_DURATION, song.duration)
 					.putString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI, "content://media/external/audio/media/" + Long.toString(songId) + "/albumart")
-					.putString(MediaMetadata.METADATA_KEY_TITLE, song.title)
+					.putString(MediaMetadata.METADATA_KEY_TITLE, song.getTitle())
 					.putLong(MediaMetadata.METADATA_KEY_TRACK_NUMBER, song.trackNumber)
 					.build();
 				mSession.setMetadata(metadata);

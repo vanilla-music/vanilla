@@ -100,7 +100,7 @@ public class WidgetE extends AppWidgetProvider {
 		} else {
 			views.setViewVisibility(R.id.title, View.VISIBLE);
 			views.setViewVisibility(R.id.buttons, View.VISIBLE);
-			views.setTextViewText(R.id.title, song.title);
+			views.setTextViewText(R.id.title, song.getTitle());
 			views.setTextViewText(R.id.artist, song.artist);
 		}
 
