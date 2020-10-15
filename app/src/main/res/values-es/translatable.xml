@@ -209,6 +209,8 @@
   <string name="enable_scroll_to_song_summary">Desplazarse a la pista/álbum/artista reproduciéndose actualmente en las listas de la biblioteca</string>
   <string name="queue_enable_scroll_to_song_title">Desplazarse al titulo de la pista en la cola</string>
   <string name="queue_enable_scroll_to_song_summary">Desplazarse a la pista reproduciéndose actualmente al cambiar de canción</string>
+  <string name="jump_to_enqueued_on_play_title">Salta a canción encolado en \'Jugar\' </string>
+  <string name="jump_to_enqueued_on_play_summary">Si la canción requerido ya está en la cola, salta a eso en lugar de vaciando la cola</string>
   <string name="coverloader_android_title">Cargar carátula desde Android</string>
   <string name="coverloader_android_summary">Consultar la base de datos multimedia interna de Android para encontrar carátulas</string>
   <string name="coverloader_vanilla_title">Cargar carátula desde carpeta</string>
@@ -269,6 +271,10 @@
   <string name="preferences_action_enqueue_current_artist">Añadir artista a la cola</string>
   <string name="preferences_action_enqueue_current_genre">Añadir género a la cola</string>
   <string name="jump_to_time">Saltar a posición temporal</string>
+  <string name="time_separator">:</string>
+  <string name="hour_hint">HH</string>
+  <string name="minute_hint">MM</string>
+  <string name="second_hint">SS</string>
   <string name="error_invalid_position">Posición inválida</string>
   <string name="filebrowser_start">Carpeta de inicio del administrador de archivos</string>
   <string name="customize_filebrowser_start">Mostrar este directorio al abrir el administrador de archivos</string>
@@ -286,6 +292,8 @@
   <string name="playlist_sync_disabled">Deshabilitado</string>
   <string name="playlist_sync_folder_title">Carpeta para sincronización</string>
   <string name="playlist_sync_folder_summary">Carpeta a usar para la sincronización de listas de reproducción</string>
+  <string name="playlist_export_relative_paths_title">Exporta usando caminos relativos</string>
+  <string name="playlist_export_relative_paths_summary">Referencia rutas de archivos relativo a la lista de reproducción</string>
   <string name="permission_request_summary">Vanilla Music necesita permisos de lectura para mostrar tu biblioteca musical</string>
   <string name="reverse_sort">Invertir el orden</string>
   <string name="share">Compartir...</string>

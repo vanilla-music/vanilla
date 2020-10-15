@@ -23,8 +23,8 @@ THE SOFTWARE.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="ch.blinkenlights.android.vanilla"
-	android:versionName="1.0.82"
-	android:versionCode="10820"
+	android:versionName="1.0.85"
+	android:versionCode="10851"
 	android:installLocation="auto">
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 	<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
@@ -42,7 +42,8 @@ THE SOFTWARE.
 	    android:allowBackup="true"
 	    android:resizeableActivity="true"
 	    android:icon="@mipmap/icon"
-	    android:label="@string/app_name">
+	    android:label="@string/app_name"
+	    android:requestLegacyExternalStorage="true">
 
 		<meta-data
 			android:name="com.mirrorlink.android.rockscout.allow-offline-access"

@@ -73,11 +73,11 @@ public class FolderPickerAdapter
 	/**
 	 * A list of paths marked as 'included'
 	 */
-	private ArrayList<String> mIncludedDirs;
+	private ArrayList<String> mIncludedDirs = new ArrayList<String>();
 	/**
 	 * A list of paths marked as 'excluded'
 	 */
-	private ArrayList<String> mExcludedDirs;
+	private ArrayList<String> mExcludedDirs = new ArrayList<String>();
 
 
 	public FolderPickerAdapter(Context context, int resource) {
@@ -170,9 +170,6 @@ public class FolderPickerAdapter
 	 * @return list the checked list
 	 */
 	private ArrayList<String> verifyDirs(ArrayList<String> list) {
-		if (list == null)
-			return null;
-
 		ArrayList<String> result = new ArrayList<String>();
 		for (String path : list) {
 			Vsa file = VsaInstance.fromPath(mContext, path);
@@ -199,9 +196,9 @@ public class FolderPickerAdapter
 			for(Vsa fentry: dirs) {
 				if(fentry.isDirectory()) {
 					int color = 0;
-					if (mIncludedDirs != null && mIncludedDirs.contains(fentry.getAbsolutePath()))
+					if (mIncludedDirs.contains(fentry.getAbsolutePath()))
 						color = 0xff00c853;
-					if (mExcludedDirs != null && mExcludedDirs.contains(fentry.getAbsolutePath()))
+					if (mExcludedDirs.contains(fentry.getAbsolutePath()))
 						color = 0xffd50000;
 					Item item = new Item(fentry.getName(), fentry, color);
 					add(item);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2013-2019 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ public class BastpUtil {
 	public class GainValues {
 		public float album;
 		public float track;
+		public boolean found;
 	}
 	/**
 	 * LRU cache for ReplayGain values
@@ -45,7 +46,7 @@ public class BastpUtil {
 
 
 	public BastpUtil() {
-		rgCache = new RGLruCache(64); /* Cache up to 64 entries */
+		rgCache = new RGLruCache(64);
 	}
 
 	/**
@@ -75,25 +76,34 @@ public class BastpUtil {
 		// normal replay gain
 		if(tags.containsKey("REPLAYGAIN_TRACK_GAIN")) {
 			gv.track = getFloatFromString((String)((ArrayList)tags.get("REPLAYGAIN_TRACK_GAIN")).get(0));
+			gv.found = true;
 		}
 		if(tags.containsKey("REPLAYGAIN_ALBUM_GAIN")) {
 			gv.album = getFloatFromString((String)((ArrayList)tags.get("REPLAYGAIN_ALBUM_GAIN")).get(0));
+			gv.found = true;
 		}
 
 		// R128 replay gain
 		boolean r128 = false;
 		if(tags.containsKey("R128_BASTP_BASE_GAIN")) {
+			// This is the gain found in the opus header which automatically gets applied by the media framework.
+			// We therefore do not need to include it in our calculation, but we set the 'found' bit and reset
+			// both album and track gain information as an opus file should only ever contain r128 gain infos.
 			float base = getFloatFromString((String)((ArrayList)tags.get("R128_BASTP_BASE_GAIN")).get(0)) / 256.0f;
-			gv.track = base;
-			gv.album = base;
-			r128 = true;
+			if (base != 0.0f) {
+				gv.track = 0;
+				gv.album = 0;
+				gv.found = true;
+			}
 		}
 		if(tags.containsKey("R128_TRACK_GAIN")) {
 			gv.track += getFloatFromString((String)((ArrayList)tags.get("R128_TRACK_GAIN")).get(0)) / 256.0f;
+			gv.found = true;
 			r128 = true;
 		}
 		if(tags.containsKey("R128_ALBUM_GAIN")) {
 			gv.album += getFloatFromString((String)((ArrayList)tags.get("R128_ALBUM_GAIN")).get(0)) / 256.0f;
+			gv.found = true;
 			r128 = true;
 		}
 

@@ -14,7 +14,7 @@ allprojects {
     }
 }
 ext {
-    compileSdkVersion = 'android-Q'
-    targetSdkVersion = 'Q'
+    compileSdkVersion = 30
+    targetSdkVersion = 30
     minSdkVersion = 15
 }

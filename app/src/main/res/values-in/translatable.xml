@@ -44,6 +44,7 @@
   <string name="rename">Ganti nama</string>
   <string name="save_as_playlist">Simpan daftar putar </string>
   <string name="add_to_playlist">Tambahkan ke daftar putar</string>
+  <string name="add_to_homescreen">Tambahkan ke layar beranda…</string>
   <string name="add_to">Tambahkan ke...</string>
   <string name="playlist">Daftar putar</string>
   <string name="homescreen">Tampilan layar</string>
@@ -52,6 +53,7 @@
   <string name="playlist_favorites">Kesukaan</string>
   <string name="new_playlist">Daftar putar baru</string>
   <string name="expand">Tampilkan</string>
+  <string name="expand_or_play_all">Buka atau putar semua</string>
   <string name="delete">Hapus</string>
   <string name="playback_view">Sedang diputar</string>
   <string name="sort_by">Urut berdasarkan</string>
@@ -80,6 +82,12 @@
   <plurals name="added_to_playlist">
     <item quantity="other">%1$d lagu ditambahkan ke daftar putar %2$s.</item>
   </plurals>
+  <plurals name="removed_from_playlist">
+    <item quantity="other">%1$d lagu dibuang dari daftar putar %2$s.</item>
+  </plurals>
+  <plurals name="deleted">
+    <item quantity="other">%d lagu dihapus.</item>
+  </plurals>
   <string name="delete_file_failed">Gagal menghapus %s.</string>
   <string name="deleted_item">\'%s\' terhapus.</string>
   <string name="delete_item">Hapus \'%s\'?</string>
@@ -104,6 +112,7 @@
   <string name="play_all">Mainkan semua</string>
   <string name="enqueue_all">Antrekan semua</string>
   <string name="all_songs">Seluruh lagu</string>
+  <string name="details">Detail</string>
   <string name="more_from_artist">Selanjutnya dari artis</string>
   <string name="more_from_album">selanjutnya dari album</string>
   <string name="title">Judul</string>
@@ -147,6 +156,7 @@
   <string name="replaygain_track_title">Aktifkan Penyeimbang Suara tiap lagu</string>
   <string name="replaygain_track_summary">Putar semua lagu dengan keras suara sama</string>
   <string name="replaygain_album_title">Aktifkan Penyeimbang Suara album</string>
+  <string name="replaygain_album_summary">Pertahankan dinamik album</string>
   <string name="replaygain_bump_title">Prapenguatan Penyeimbang Suara</string>
   <string name="replaygain_untagged_debump_title">Lagu tanpa penanda Penyeimbang Suara</string>
   <string name="replaygain_untagged_debump_summary">Kurangi suara </string>
@@ -156,11 +166,20 @@
   <string name="cycle_continuous_shuffling">Secara acak</string>
   <string name="cycle_continuous_shuffling_summary">Modus Acak akan memainkan lagu dengan urutan acak</string>
   <string name="notifications">Pemberitahuan</string>
+  <string name="notification_visibility_title">Visibilitas notifikasi</string>
   <string name="notification_action_title">Aksi pemberitahuan</string>
   <string name="notification_nag_summary">Umumkan perubahan lagu menggunakan Pemberitahuan Mendongak</string>
+  <string name="playback_screen">Layar pemutaran</string>
   <string name="playback_on_startup_title">Buka waktu startup</string>
+  <string name="playback_on_startup_summary">Buka tampilan pemutaran saat memulai</string>
   <string name="display_mode_title">Mode tampilan</string>
   <string name="swipe_up_action_title">Aksi gesek keatas</string>
+  <string name="swipe_down_action_title">Tindakan geser ke bawah</string>
+  <string name="cover_press_action_title">Tindakan ketuk pada kover</string>
+  <string name="cover_longpress_action_title">Tindakan sentuh lama pada kover</string>
+  <string name="library_screen">Layar pustaka</string>
+  <string name="default_action_title">Tindakan default</string>
+  <string name="default_playlist_action_title">Tindakan daftar putar default</string>
   <string name="enable_shake_summary">Hanya saat musik dimainkan. Tidak dapat bekerja saat layar mati dalam beberapa perangkat.</string>
   <string name="misc_features">Fitur tambahan</string>
   <string name="theme">Tema</string>

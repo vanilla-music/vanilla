@@ -288,7 +288,7 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 	 * @param obj object payload of this message.
 	 */
 	private void sendUniqueMessage(int type, Object obj) {
-		int fprint = type << 10 + obj.hashCode();
+		int fprint = (type << 10) + obj.hashCode();
 		if (!msgDedupe.contains(fprint)) {
 			msgDedupe.add(fprint);
 			mHandler.sendMessageDelayed(mHandler.obtainMessage(type, obj), COALESCE_EVENTS_DELAY_MS);

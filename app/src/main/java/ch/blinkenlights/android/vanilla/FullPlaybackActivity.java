@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
- * Copyright (C) 2016 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2016-2019 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -542,7 +542,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 			mFormat = data.getFormat();
 
 			BastpUtil.GainValues rg = PlaybackService.get(this).getReplayGainValues(song.path);
-			mReplayGain = String.format("track=%.2f, album=%.2f", rg.track, rg.album);
+			mReplayGain = String.format("found=%s, track=%.2f, album=%.2f", rg.found, rg.track, rg.album);
 		}
 
 		mUiHandler.sendEmptyMessage(MSG_COMMIT_INFO);
