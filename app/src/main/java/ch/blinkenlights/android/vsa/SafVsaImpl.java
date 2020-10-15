@@ -30,20 +30,24 @@ public class SafVsaImpl implements Vsa {
 
 	SafVsaImpl(Context context, String path) {
 		mContext = context;
+		mAbsolutePath = path;
 
-		File file = new File(path);
-		String rootGrant = "content://com.android.externalstorage.documents/tree/primary%3A";
-
-		mAbsolutePath = file.getAbsolutePath();
-		if (mAbsolutePath.equals("/")) {
-			/*
-			 * Wir müssen beim rootGrant starten: URLs assembeln scheint nicht zu funktionieren.
-			 */
-			Uri uri = Uri.parse(rootGrant);
-			mDocumentFile = DocumentFile.fromTreeUri(context, uri).findFile("Download");
-		} else {
-			mDocumentFile = DocumentFile.fromFile(file);
+		Uri uri = Uri.parse("content://com.android.externalstorage.documents/tree/primary%3AMusic");
+		DocumentFile df = DocumentFile.fromTreeUri(context, uri);
+		if (!mAbsolutePath.equals("/")) {
+			for (String d : mAbsolutePath.split("/")) {
+				if ("".equals(d))
+					continue;
+				if (df == null)
+					break;
+				df = df.findFile(d);
+			}
 		}
+
+		if (df == null)
+			df = DocumentFile.fromFile(new File("/dev/null"));
+
+		mDocumentFile = df;
 	}
 
 	@Override
@@ -60,9 +64,9 @@ public class SafVsaImpl implements Vsa {
 	public Vsa[] listFiles() {
 		ArrayList<Vsa> list = new ArrayList();
 		for (DocumentFile d : mDocumentFile.listFiles()) {
-			String path = mAbsolutePath + "/" + d.getName();
-			list.add(new SafVsaImpl(mContext, path));
-			Log.v("VanillaMusic", "SAF::listFiles "+path+", uri = "+d.getUri());
+			File path = new File(new File(mAbsolutePath), d.getName());
+			list.add(new SafVsaImpl(mContext, path.getPath()));
+			Log.v("VanillaMusic", "SAF::listFiles "+path.getPath()+", uri = "+d.getUri());
 		}
 		return list.toArray(new Vsa[list.size()]);
 	}
