@@ -18,14 +18,9 @@ public class PosixVsaImpl implements Vsa {
 	}
 
 	@Override
-	public String[] list() {
-		return mFile.list();
-	}
-
-	@Override
 	public Vsa[] listFiles() {
 		ArrayList<Vsa> list = new ArrayList();
-		String[] dirents = list();
+		String[] dirents = mFile.list();
 		if (dirents == null)
 			return null;
 

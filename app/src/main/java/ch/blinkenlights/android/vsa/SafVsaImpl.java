@@ -42,22 +42,13 @@ public class SafVsaImpl implements Vsa {
 					break;
 				df = df.findFile(d);
 			}
+			System.out.println(">>> HAD" + mAbsolutePath);
 		}
 
 		if (df == null)
 			df = DocumentFile.fromFile(new File("/dev/null"));
 
 		mDocumentFile = df;
-	}
-
-	@Override
-	public String[] list() {
-		ArrayList<String> list = new ArrayList();
-		for (DocumentFile d : mDocumentFile.listFiles()) {
-			list.add(d.getName());
-			Log.v("VanillaMusic", "SAF::list() "+d.getName());
-		}
-		return list.toArray(new String[list.size()]);
 	}
 
 	@Override

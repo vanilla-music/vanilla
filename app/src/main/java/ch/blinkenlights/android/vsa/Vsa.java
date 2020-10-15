@@ -21,13 +21,7 @@ public interface Vsa {
 	final static String separator = "/";
 
 	/**
-	 * Returns an array of strings naming directories and files contained
-	 * in this directory.
-	 */
-	String[] list();
-
-	/**
-	 * Similar to {@code list}, but returns Vsa objects instead of dirent names.
+	 * Lists files in the directory.
 	 */
 	Vsa[] listFiles();
 
