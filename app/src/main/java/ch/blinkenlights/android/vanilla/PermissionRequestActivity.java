@@ -38,10 +38,6 @@ public class PermissionRequestActivity extends Activity {
 	 */
 	private static final String[] PERMISSIONS_M = { Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE };
 	/**
-	 * Permissions required on android >= Q
-	 */
-	private static final String[] PERMISSIONS_Q = { Manifest.permission.READ_MEDIA_AUDIO, Manifest.permission.READ_MEDIA_IMAGES };
-	/**
 	 * The intent to start after acquiring the required permissions
 	 */
 	private Intent mCallbackIntent;
@@ -149,9 +145,6 @@ public class PermissionRequestActivity extends Activity {
 	 * @return string array with all required permissions.
 	 */
 	public static String[] requiredPermissions() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-			return PERMISSIONS_Q;
-		}
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 			return PERMISSIONS_M;
 		}
