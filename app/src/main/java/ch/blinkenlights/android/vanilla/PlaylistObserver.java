@@ -301,7 +301,7 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 	 *
 	 * @param m3u the file to import
 	 */
-	private void importM3uPlaylist(File m3u) {;
+	private void importM3uPlaylist(File m3u) {
 		XT("importM3uPlaylist("+m3u+")");
 
 		if ((mSyncMode & SYNC_MODE_IMPORT) == 0)

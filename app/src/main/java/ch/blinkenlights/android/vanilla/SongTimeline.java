@@ -1010,6 +1010,36 @@ public final class SongTimeline {
 	}
 
 	/**
+	 * Removes song in timeline from multiple positions
+	 * Warning: it does not check whether a position has already been removed
+	 * @param pos indices to use
+	 */
+	public void removeSongPosition(ArrayList<Integer> pos) {
+		synchronized (this) {
+			ArrayList<Song> songs = mSongs;
+
+			for (int i : pos)
+				if (songs.size() <= i) // may happen if we race with purge()
+					return;
+
+			saveActiveSongs();
+
+			for (int i : pos) {
+				songs.remove(i);
+				if (i < mCurrentPos)
+					mCurrentPos--;
+				if (getSong(1) == null) {  // wrap around if this was the last song
+					mCurrentPos = 0;
+					break;
+				}
+			}
+
+			broadcastChangedSongs();
+		}
+		changed();
+	}
+
+	/**
 	 * Moves a song in the timeline to a new position
 	 * @param from index to move from
 	 * @param to index to move to

@@ -18,12 +18,10 @@
 package ch.blinkenlights.android.vanilla;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.text.format.DateUtils;
 import android.os.Message;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.util.Base64;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -163,7 +161,7 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 	 * Called by PlaylistDialog.Callback to append data to
 	 * a playlist
 	 *
-	 * @param intent The intent holding the selected data
+	 * @param data The intent holding the selected data
 	 */
 	public void updatePlaylistFromPlaylistDialog(PlaylistDialog.Data data) {
 		PlaylistTask playlistTask = new PlaylistTask(data.id, data.name);
@@ -227,16 +225,30 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 		else
 			projection = empty ? Song.EMPTY_PROJECTION : Song.FILLED_PROJECTION;
 
-		long id = intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
 		QueryTask query;
-		if (allSource != null) {
-			query = allSource.buildSongQuery(projection);
-			query.data = id;
-		} else if (type == MediaUtils.TYPE_FILE) {
-			query = MediaUtils.buildFileQuery(intent.getStringExtra(LibraryAdapter.DATA_FILE), projection, true /* recursive */);
-		} else {
-			query = MediaUtils.buildQuery(type, id, projection, null);
-		}
+		long id = intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
+		long[] idList = intent.getLongArrayExtra("id_list");
+		if (id > LibraryAdapter.INVALID_ID) {
+			if (allSource != null) {
+				query = allSource.buildSongQuery(projection);
+				query.data = id;
+			} else if (type == MediaUtils.TYPE_FILE) {
+				query = MediaUtils.buildFileQuery(intent.getStringExtra(LibraryAdapter.DATA_FILE), projection, true /* recursive */);
+			} else {
+				query = MediaUtils.buildQuery(type, id, projection, null);
+			}
+		} else if (idList != null) {
+			if (allSource != null) {
+				throw new IllegalArgumentException("allSource and ID list should not be used at the same time.");
+			} else if (type == MediaUtils.TYPE_FILE) {
+				// TODO Multiple file query. Will be implemented with multiple selection file viewer.
+				throw new UnsupportedOperationException("Not implemented.");
+//				query = MediaUtils.buildFileQuery(intent.getStringExtra(LibraryAdapter.DATA_FILE), projection, true /* recursive */);
+			} else {
+				query = MediaUtils.buildMultiQuery(type, idList, projection, null);
+			}
+		} else
+			throw new NullPointerException("Neither id nor id list exists");
 
 		return query;
 	}

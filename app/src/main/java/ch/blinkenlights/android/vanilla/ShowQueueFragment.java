@@ -26,17 +26,27 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+
 import com.mobeta.android.dslv.DragSortListView;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.ListIterator;
 
 
 public class ShowQueueFragment extends Fragment
 	implements TimelineCallback,
 			   AdapterView.OnItemClickListener,
 			   CoordClickListener.Callback,
+			   ActionMode.Callback,
 			   DragSortListView.DropListener,
 			   DragSortListView.RemoveListener,
 			   FancyMenu.Callback
@@ -45,6 +55,7 @@ public class ShowQueueFragment extends Fragment
 	private DragSortListView mListView;
 	private ShowQueueAdapter mListAdapter;
 	private boolean mIsPopulated;
+	private boolean mActionModeActive;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,10 +63,13 @@ public class ShowQueueFragment extends Fragment
 
 		View view = inflater.inflate(R.layout.showqueue_listview, container, false);
 		Context context = getActivity();
+		mActionModeActive = false;
 
 		mListAdapter = new ShowQueueAdapter(context, R.layout.draggable_row);
 		mListView = (DragSortListView) view.findViewById(R.id.list);
 		mListView.setAdapter(mListAdapter);
+//		mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+//		mListView.setMultiChoiceModeListener(this);
 		mListView.setDropListener(this);
 		mListView.setRemoveListener(this);
 		mListView.setOnItemClickListener(this);
@@ -94,6 +108,7 @@ public class ShowQueueFragment extends Fragment
 	private final static int CTX_MENU_REMOVE          = 104;
 	private final static int CTX_MENU_SHOW_DETAILS    = 105;
 	private final static int CTX_MENU_ADD_TO_PLAYLIST = 106;
+	private final static int CTX_MENU_MULTI_SELECT = 107;
 
 	/**
 	 * Called on long-click on a adapeter row
@@ -110,16 +125,20 @@ public class ShowQueueFragment extends Fragment
 		FancyMenu fm = new FancyMenu(getActivity(), this);
 		fm.setHeaderTitle(song.title);
 
-		fm.add(CTX_MENU_PLAY, 0, R.drawable.menu_play, R.string.play).setIntent(intent);
+		if (!mActionModeActive)
+			fm.add(CTX_MENU_PLAY, 0, R.drawable.menu_play, R.string.play).setIntent(intent);
 
 		fm.addSpacer(0);
 		fm.add(CTX_MENU_ENQUEUE_ALBUM, 0, R.drawable.menu_enqueue, R.string.enqueue_current_album).setIntent(intent);
 		fm.add(CTX_MENU_ENQUEUE_ARTIST, 0, R.drawable.menu_enqueue, R.string.enqueue_current_artist).setIntent(intent);
 		fm.add(CTX_MENU_ENQUEUE_GENRE, 0, R.drawable.menu_enqueue, R.string.enqueue_current_genre).setIntent(intent);
 		fm.add(CTX_MENU_ADD_TO_PLAYLIST, 0, R.drawable.menu_add_to_playlist, R.string.add_to_playlist).setIntent(intent);
+		if (!mActionModeActive)
+			fm.add(CTX_MENU_MULTI_SELECT, 0, R.drawable.menu_enqueue, R.string.multiple_select).setIntent(intent);
 
 		fm.addSpacer(0);
-		fm.add(CTX_MENU_SHOW_DETAILS, 0, R.drawable.menu_details, R.string.details).setIntent(intent);
+		if (!mActionModeActive)
+			fm.add(CTX_MENU_SHOW_DETAILS, 0, R.drawable.menu_details, R.string.details).setIntent(intent);
 		fm.add(CTX_MENU_REMOVE, 90, R.drawable.menu_remove, R.string.remove).setIntent(intent);
 		fm.show(view, x, y);
 		return true;
@@ -133,38 +152,74 @@ public class ShowQueueFragment extends Fragment
 	@Override
 	public boolean onFancyItemSelected(FancyMenuItem item) {
 		Intent intent = item.getIntent();
-		int pos = intent.getIntExtra("position", -1);
-
 		PlaybackService service = playbackService();
-		Song song = service.getSongByQueuePosition(pos);
-		switch (item.getItemId()) {
-			case CTX_MENU_PLAY:
-				onItemClick(null, null, pos, -1);
-				break;
-			case CTX_MENU_ENQUEUE_ALBUM:
-				service.enqueueFromSong(song, MediaUtils.TYPE_ALBUM);
-				break;
-			case CTX_MENU_ENQUEUE_ARTIST:
-				service.enqueueFromSong(song, MediaUtils.TYPE_ARTIST);
-				break;
-			case CTX_MENU_ENQUEUE_GENRE:
-				service.enqueueFromSong(song, MediaUtils.TYPE_GENRE);
-				break;
-			case CTX_MENU_SHOW_DETAILS:
-				TrackDetailsDialog.show(getFragmentManager(), song.id);
-				break;
-			case CTX_MENU_REMOVE:
-				remove(pos);
-				break;
-		    case CTX_MENU_ADD_TO_PLAYLIST:
-				PlaylistDialog.Callback callback = ((PlaylistDialog.Callback)getActivity());
-				PlaylistDialog dialog = PlaylistDialog.newInstance(callback, intent, null);
-				dialog.show(getFragmentManager(), "PlaylistDialog");
-				break;
-			default:
-				throw new IllegalArgumentException("Unhandled menu id received!");
-				// we could actually dispatch this to the hosting activity, but we do not need this for now.
+
+		if (!mActionModeActive) {
+			int pos = intent.getIntExtra("position", -1);
+			Song song = service.getSongByQueuePosition(pos);
+
+			switch (item.getItemId()) {
+				case CTX_MENU_PLAY:
+					service.jumpToQueuePosition(pos);
+					break;
+				case CTX_MENU_ENQUEUE_ALBUM:
+					service.enqueueFromSong(song, MediaUtils.TYPE_ALBUM);
+					break;
+				case CTX_MENU_ENQUEUE_ARTIST:
+					service.enqueueFromSong(song, MediaUtils.TYPE_ARTIST);
+					break;
+				case CTX_MENU_ENQUEUE_GENRE:
+					service.enqueueFromSong(song, MediaUtils.TYPE_GENRE);
+					break;
+				case CTX_MENU_SHOW_DETAILS:
+					TrackDetailsDialog.show(getFragmentManager(), song.id);
+					break;
+				case CTX_MENU_REMOVE:
+					remove(pos);
+					break;
+				case CTX_MENU_ADD_TO_PLAYLIST:
+					PlaylistDialog.Callback callback = ((PlaylistDialog.Callback)getActivity());
+					PlaylistDialog dialog = PlaylistDialog.newInstance(callback, intent, null);
+					dialog.show(getFragmentManager(), "PlaylistDialog");
+					break;
+				case CTX_MENU_MULTI_SELECT:
+					if (!mActionModeActive) {
+						getActivity().startActionMode(this);
+						mListAdapter.toggleSelectedAt(pos);
+					}
+					break;
+				default:
+					throw new IllegalArgumentException("Unhandled menu id received!");
+					// we could actually dispatch this to the hosting activity, but we do not need this for now.
+			}
+		} else {
+			ArrayList<Integer> selectedPos = mListAdapter.getSelectedPositions();
+			Song[] selectedSongs = mListAdapter.getSelectedSongs();
+
+			switch (item.getItemId()) {
+				case CTX_MENU_ENQUEUE_ALBUM:
+					service.enqueueFromMultiSong(selectedSongs, MediaUtils.TYPE_ALBUM);
+					break;
+				case CTX_MENU_ENQUEUE_ARTIST:
+					service.enqueueFromMultiSong(selectedSongs, MediaUtils.TYPE_ARTIST);
+					break;
+				case CTX_MENU_ENQUEUE_GENRE:
+					service.enqueueFromMultiSong(selectedSongs, MediaUtils.TYPE_GENRE);
+					break;
+				case CTX_MENU_REMOVE:
+					remove(selectedPos);
+					break;
+				case CTX_MENU_ADD_TO_PLAYLIST:
+					PlaylistDialog.Callback callback = ((PlaylistDialog.Callback)getActivity());
+					PlaylistDialog dialog = PlaylistDialog.newInstance(callback, intent, null);
+					dialog.show(getFragmentManager(), "PlaylistDialog");
+					break;
+				default:
+					throw new IllegalArgumentException("Unhandled menu id received!");
+					// we could actually dispatch this to the hosting activity, but we do not need this for now.
+			}
 		}
+
 		return true;
 	}
 
@@ -191,11 +246,28 @@ public class ShowQueueFragment extends Fragment
 	}
 
 	/**
+	 * Remove multiple positions
+	 * @param pos indices to remove from queue
+	 */
+	public void remove(ArrayList<Integer> pos) {
+		Collections.sort(pos, Collections.reverseOrder());    // Prepare a reverse iterator
+//		ListIterator<Integer> queueIterator = pos.listIterator(pos.size());
+//		while (queueIterator.hasPrevious()) {
+//			remove(queueIterator.previous());
+//		}
+		playbackService().removeSongPosition(pos);
+	}
+
+	/**
 	 * Called when an item in the listview gets clicked
 	 */
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		playbackService().jumpToQueuePosition(position);
+		if (!mActionModeActive) {
+			playbackService().jumpToQueuePosition(position);
+		} else {
+			mListAdapter.toggleSelectedAt(position);
+		}
 	}
 
 	/**
@@ -286,5 +358,61 @@ public class ShowQueueFragment extends Fragment
 	public void replaceSong(int delta, Song song) {
 	}
 	public void setState(long uptime, int state) {
+	}
+
+	@Override
+	public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+		mActionModeActive = true;
+		MenuInflater inflater = mode.getMenuInflater();
+		inflater.inflate(R.menu.action_mode_menu, menu);
+
+		return true;
+	}
+
+	@Override
+	public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+		return true;
+	}
+
+	@Override
+	public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+		PlaybackService service = playbackService();
+		switch (item.getItemId()) {
+			case R.id.enqueue_album:
+				service.enqueueFromMultiSong(mListAdapter.getSelectedSongs(), MediaUtils.TYPE_ALBUM);
+				mode.finish();
+				return true;
+			case R.id.enqueue_artist:
+				service.enqueueFromMultiSong(mListAdapter.getSelectedSongs(), MediaUtils.TYPE_ARTIST);
+				mode.finish();
+				return true;
+			case R.id.enqueue_genre:
+				service.enqueueFromMultiSong(mListAdapter.getSelectedSongs(), MediaUtils.TYPE_GENRE);
+				mode.finish();
+				return true;
+			case R.id.add_playlist:
+				Intent intent = new Intent();
+				intent.putExtra("type", MediaUtils.TYPE_SONG);
+				intent.putExtra("id_list", mListAdapter.getSelectedIds());
+				PlaylistDialog.Callback callback = ((PlaylistDialog.Callback)getActivity());
+				PlaylistDialog dialog = PlaylistDialog.newInstance(callback, intent, null);
+				dialog.show(getFragmentManager(), "PlaylistDialog");
+				mode.finish();
+				return true;
+			case R.id.remove:
+				// Not optimized. remove() has redundant code.
+				ArrayList<Integer> selectedPos = mListAdapter.getSelectedPositions();
+				remove(selectedPos);
+				mode.finish();
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	@Override
+	public void onDestroyActionMode(ActionMode mode) {
+		mListAdapter.clearSelections();
+		mActionModeActive = false;
 	}
 }

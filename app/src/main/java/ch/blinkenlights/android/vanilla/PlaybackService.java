@@ -1881,7 +1881,6 @@ public final class PlaybackService extends Service
 		mHandler.sendMessage(mHandler.obtainMessage(MSG_QUERY, query));
 	}
 
-
 	/**
 	 * Enqueues all the songs with the same album/artist/genre as the passed
 	 * song.
@@ -1915,6 +1914,57 @@ public final class PlaybackService extends Service
 
 		String selection = "_id!=" + song.id;
 		QueryTask query = MediaUtils.buildQuery(type, id, Song.FILLED_PROJECTION, selection);
+		query.mode = SongTimeline.MODE_FLUSH_AND_PLAY_NEXT;
+		addSongs(query);
+	}
+
+	/**
+	 * Enqueues all songs selected, by passing the list of selected songs
+	 *
+	 * This will append the selected songs after the current queue
+	 *
+	 * @param songList A list of songs to base the query on
+	 * @param type The media type, one of MediaUtils.TYPE_ALBUM, TYPE_ARTIST,
+	 * or TYPE_GENRE
+	 */
+	public void enqueueFromMultiSong(Song[] songList, int type)
+	{
+		if (songList == null || songList.length == 0)
+			return;
+
+		long[] idList = new long[songList.length];
+		long[] songIdList = new long[songList.length];
+		for (int i = 0; i < songList.length; ++i) {
+			songIdList[i] = songList[i].id;
+		}
+		switch (type) {
+			case MediaUtils.TYPE_ARTIST:
+				for (int i = 0; i < songList.length; ++i) {
+					idList[i] = songList[i].artistId;
+				}
+				break;
+			case MediaUtils.TYPE_ALBUM:
+				for (int i = 0; i < songList.length; ++i) {
+					idList[i] = songList[i].albumId;
+				}
+				break;
+			case MediaUtils.TYPE_GENRE:
+				idList = MediaUtils.queryGenreForMultiSong(getApplicationContext(), songIdList);
+				break;
+			default:
+				throw new IllegalArgumentException("Unsupported media type: " + type);
+		}
+		StringBuilder selection = new StringBuilder();
+		selection.append("_id NOT IN (");
+		String prefix = "";
+		for (long id: songIdList) {
+			selection.append(prefix);
+			prefix = ",";
+			selection.append(id);
+		}
+		selection.append(")");
+
+		QueryTask query = MediaUtils.buildMultiQuery(type, idList, Song.FILLED_PROJECTION, selection.toString());
 		query.mode = SongTimeline.MODE_FLUSH_AND_PLAY_NEXT;
 		addSongs(query);
 	}
@@ -2456,6 +2506,14 @@ public final class PlaybackService extends Service
 	 */
 	public void removeSongPosition(int which) {
 		mTimeline.removeSongPosition(which);
+	}
+
+	/**
+	 * Removes a song from the queue
+	 * @param pos index to remove
+	 */
+	public void removeSongPosition(ArrayList<Integer> pos) {
+		mTimeline.removeSongPosition(pos);
 	}
 
 }

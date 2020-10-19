@@ -24,6 +24,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.view.LayoutInflater;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
 public class ShowQueueAdapter extends BaseAdapter {
 	/**
 	 * The resource to pass to the inflater
@@ -45,12 +49,18 @@ public class ShowQueueAdapter extends BaseAdapter {
 	 * The playback service reference to query
 	 */
 	private PlaybackService mService;
+	/**
+	 * List of songs selected in multi-selection mode
+	 */
+	private Set<Integer> mSelected;
+
 
 	public ShowQueueAdapter(Context context, int resource) {
 		super();
 		mResource = resource;
 		mContext = context;
 		mHighlightRow = -1;
+		mSelected = new HashSet<>();
 	}
 
 	/**
@@ -114,6 +124,74 @@ public class ShowQueueAdapter extends BaseAdapter {
 	}
 
 	/**
+	 * Change selection status of song at 'pos' and maintain a set of selected positions
+	 *
+	 * @param pos the position to toggle
+	 * @return the previous selection status
+	 */
+	public boolean toggleSelectedAt(int pos) {
+		Song song = getItem(pos);
+		boolean isSelected = song.isSelected();
+
+		if (isSelected) {
+			mSelected.remove(pos);
+		} else {
+			mSelected.add(pos);
+		}
+
+		song.setSelected(!isSelected);
+		notifyDataSetChanged();
+		return isSelected;
+	}
+	/**
+	 * Get the set of positions of selected songs
+	 *
+	 * @return a set of positions
+	 */
+	public ArrayList<Integer> getSelectedPositions() {
+		return new ArrayList<>(new HashSet<>(mSelected));
+	}
+	/**
+	 * Get the set of selected songs
+	 *
+	 * @return a set of songs
+	 */
+	public Song[] getSelectedSongs() {
+		Integer[] selected = (new HashSet<>(mSelected)).toArray(new Integer[0]);
+		Song[] songList = new Song[selected.length];
+		for (int i = 0; i < selected.length; ++i) {
+			songList[i] = mService.getSongByQueuePosition(selected[i]);
+		}
+		return songList;
+	}
+	/**
+	 * Get the set of ids of selected songs
+	 *
+	 * @return a set of ids
+	 */
+	public Long[] getSelectedIds() {
+		Integer[] selected = (new HashSet<>(mSelected)).toArray(new Integer[0]);
+		Long[] idList = new Long[selected.length];
+		for (int i = 0; i < selected.length; ++i) {
+			idList[i] = mService.getSongByQueuePosition(selected[i]).id;
+		}
+		return idList;
+	}
+
+	/**
+	 * Clear the selection status of all positions and empty selection set
+	 *
+	 */
+	public void clearSelections() {
+		for (int i: mSelected) {
+			getItem(i).setSelected(false);
+		}
+
+		mSelected.clear();
+		notifyDataSetChanged();
+	}
+
+	/**
 	 * Returns the view
 	 */
 	@Override
@@ -137,6 +215,12 @@ public class ShowQueueAdapter extends BaseAdapter {
 		}
 
 		row.highlightRow(position == mHighlightRow);
+
+		if (song.selected) {
+			row.setBackgroundColor(row.getResources().getColor(R.color.material_grey_600));
+		} else {
+			row.setBackgroundColor(R.styleable.DragSortListView_float_background_color);
+		}
 
 		return row;
 	}

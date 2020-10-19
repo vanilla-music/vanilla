@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<item
+		android:id="@+id/enqueue_album"
+		android:showAsAction="never"
+		android:title="@string/enqueue_current_album"
+		android:visible="true"
+		android:enabled="true" />
+	<item
+		android:id="@+id/enqueue_artist"
+		android:showAsAction="never"
+		android:title="@string/enqueue_current_artist"
+		android:visible="true"
+		android:enabled="true" />
+	<item
+		android:id="@+id/enqueue_genre"
+		android:showAsAction="never"
+		android:title="@string/enqueue_current_genre"
+		android:visible="true"
+		android:enabled="true" />
+	<item
+		android:id="@+id/add_playlist"
+		android:showAsAction="never"
+		android:title="@string/add_to_playlist"
+		android:visible="true"
+		android:enabled="true" />
+	<item
+		android:id="@+id/remove"
+		android:showAsAction="never"
+		android:title="@string/remove"
+		android:visible="true"
+		android:enabled="true" />
+
+</menu>

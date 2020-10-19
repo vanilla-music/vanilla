@@ -193,6 +193,65 @@ public class MediaUtils {
 	}
 
 	/**
+	 * Builds a query that will return all the songs represented by the given
+	 * parameters.
+	 *
+	 * @param type MediaUtils.TYPE_ARTIST, TYPE_ALBUM, or TYPE_SONG.
+	 * @param idList The List of MediaStore ids of the song, artist, or album.
+	 * @param projection The columns to query.
+	 * @param select An extra selection to pass to the query, or null.
+	 * @return The initialized query.
+	 */
+	private static QueryTask buildMultiMediaQuery(int type, long[] idList, String[] projection, String select)
+	{
+		StringBuilder selection = new StringBuilder();
+		String sort = DEFAULT_SORT;
+
+		if (select != null) {
+			selection.append(select);
+			selection.append(" AND ");
+		}
+
+		switch (type) {
+			case TYPE_SONG:
+				selection.append(MediaLibrary.SongColumns._ID + " IN (");
+				break;
+			case TYPE_ARTIST:
+				selection.append(MediaLibrary.ContributorColumns.ARTIST_ID + " IN (");
+				break;
+			case TYPE_ALBARTIST:
+				selection.append(MediaLibrary.ContributorColumns.ALBUMARTIST_ID + " IN (");
+				break;
+			case TYPE_COMPOSER:
+				selection.append(MediaLibrary.ContributorColumns.COMPOSER_ID + " IN (");
+				break;
+			case TYPE_ALBUM:
+				selection.append(MediaLibrary.SongColumns.ALBUM_ID + " IN (");
+				sort = ALBUM_SORT;
+				break;
+			case TYPE_GENRE:
+				// TODO _genre_id is not in VIEW_SONGS_ALBUMS_ARTISTS?
+				throw new UnsupportedOperationException("Not supported now");
+//				selection.append(MediaLibrary.GenreSongColumns._GENRE_ID + " IN (");
+//				break;
+			default:
+				throw new IllegalArgumentException("Invalid type specified: " + type);
+		}
+
+		String prefix = "";
+		for (long id: idList) {
+			selection.append(prefix);
+			prefix = ",";
+			selection.append(id);
+		}
+		selection.append(")");
+
+		QueryTask result = new QueryTask(MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS, projection, selection.toString(), null, sort);
+		result.type = type;
+		return result;
+	}
+
+	/**
 	 * Builds a query that will return all the songs in the playlist with the
 	 * given id.
 	 *
@@ -204,6 +263,30 @@ public class MediaUtils {
 		String sort = MediaLibrary.PlaylistSongColumns.POSITION;
 		String selection = MediaLibrary.PlaylistSongColumns.PLAYLIST_ID+"="+id;
 		QueryTask result = new QueryTask(MediaLibrary.VIEW_PLAYLISTS_SONGS, projection, selection, null, sort);
+		result.type = TYPE_PLAYLIST;
+		return result;
+	}
+
+	/**
+	 * Builds a query that will return all the songs in the playlist with the
+	 * given id.
+	 *
+	 * @param idList The id of the playlist in MediaStore.Audio.Playlists.
+	 * @param projection The columns to query.
+	 * @return The initialized query.
+	 */
+	public static QueryTask buildMultiPlaylistQuery(long[] idList, String[] projection) {
+		String sort = MediaLibrary.PlaylistSongColumns.POSITION;
+		StringBuilder selection = new StringBuilder();
+		selection.append(MediaLibrary.PlaylistSongColumns.PLAYLIST_ID + " IN (");
+		String prefix = "";
+		for (long id: idList) {
+			selection.append(prefix);
+			prefix = ",";
+			selection.append(id);
+		}
+		selection.append(")");
+		QueryTask result = new QueryTask(MediaLibrary.VIEW_PLAYLISTS_SONGS, projection, selection.toString(), null, sort);
 		result.type = TYPE_PLAYLIST;
 		return result;
 	}
@@ -236,6 +319,35 @@ public class MediaUtils {
 	}
 
 	/**
+	 * Builds a query with the given information under multiple selection modes
+	 * for playlist/queue.
+	 *
+	 * @param type Type the id represents. Must be one of the Song.TYPE_*
+	 * constants.
+	 * @param idList A list of ids of the element in the MediaStore content provider for
+	 * the given type.
+	 * @param projection The columns to query.
+	 * @param selection An extra selection to be passed to the query. May be
+	 * null. Must not be used with type == TYPE_SONG or type == TYPE_PLAYLIST
+	 */
+	public static QueryTask buildMultiQuery(int type, long[] idList, String[] projection, String selection)
+	{
+		switch (type) {
+			case TYPE_ARTIST:
+			case TYPE_ALBARTIST:
+			case TYPE_COMPOSER:
+			case TYPE_ALBUM:
+			case TYPE_SONG:
+			case TYPE_GENRE:
+				return buildMultiMediaQuery(type, idList, projection, selection);
+			case TYPE_PLAYLIST:
+				return buildMultiPlaylistQuery(idList, projection);
+			default:
+				throw new IllegalArgumentException("Specified type not valid: " + type);
+		}
+	}
+
+	/**
 	 * Query the MediaStore to determine the id of the genre the song belongs
 	 * to.
 	 *
@@ -254,6 +366,38 @@ public class MediaUtils {
 			cursor.close();
 		}
 		return 0;
+	}
+
+	/**
+	 * Query the MediaStore to determine the id of the genre the song belongs
+	 * to.
+	 *
+	 * @param context The context to use
+	 * @param idList The list of ids of the song to query the genre for.
+	 */
+	public static long[] queryGenreForMultiSong(Context context, long[] idList) {
+		String[] projection = { MediaLibrary.GenreSongColumns._GENRE_ID };
+		StringBuilder query = new StringBuilder();
+		query.append(MediaLibrary.GenreSongColumns.SONG_ID + " IN (");
+		String prefix = "";
+		for (long id: idList) {
+			query.append(prefix);
+			prefix = ",";
+			query.append(id);
+		}
+		query.append(")");
+
+		Cursor cursor = MediaLibrary.queryLibrary(context, MediaLibrary.TABLE_GENRES_SONGS, projection, query.toString(), null, null);
+		long[] genreList = new long[cursor.getCount()];
+		if (cursor != null) {
+			int i = 0;
+			while (cursor.moveToNext()) {
+				genreList[i] = cursor.getLong(0);
+				i++;
+			}
+			cursor.close();
+		}
+		return genreList;
 	}
 
 	/**
@@ -536,6 +680,33 @@ public class MediaUtils {
 		result.type = TYPE_FILE;
 		return result;
 	}
+
+	/**
+	 * Build a query that will contain all the media under multiple given path.
+	 *
+	 * @param paths A list of paths
+	 * @param projection The columns to query
+	 * @param recursive whether or not to do a LIKE search, picking up child items.
+	 * @return The initialized query.
+	 */
+	// TODO
+//	public static QueryTask buildMultiFileQuery(String[] paths, String[] projection, boolean recursive)
+//	{
+//		// Try to detect more popular mount point:
+//		path = sanitizeMediaPath(path);
+//		String query = MediaLibrary.SongColumns.PATH+" = ?";
+//
+//		if (recursive) {
+//			// This is a LIKE query: add a slash to the directory if the current path
+//			// points to an existing one.
+//			path = addDirEndSlash(path) + "%";
+//			query = MediaLibrary.SongColumns.PATH+" LIKE ?";
+//		}
+//
+//		QueryTask result = new QueryTask(MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS, projection, query, new String[]{ path }, FILE_SORT);
+//		result.type = TYPE_FILE;
+//		return result;
+//	}
 
 	/**
 	 * Returns a (possibly empty) Cursor for given file path
