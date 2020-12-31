@@ -25,6 +25,7 @@ package ch.blinkenlights.android.vanilla;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.graphics.Bitmap;
@@ -60,6 +61,10 @@ public class BottomBarControls extends LinearLayout
 	 */
 	private TextView mArtist;
 	/**
+	 * The album of the currently playing song
+	 */
+	private TextView mAlbum;
+	/**
 	 * Cover image
 	 */
 	private ImageView mCover;
@@ -94,6 +99,7 @@ public class BottomBarControls extends LinearLayout
 	public void onFinishInflate() {
 		mTitle = (TextView)findViewById(R.id.title);
 		mArtist = (TextView)findViewById(R.id.artist);
+		mAlbum = (TextView)findViewById(R.id.album);
 		mCover = (ImageView)findViewById(R.id.cover);
 		mSearchView = (SearchView)findViewById(R.id.search_view);
 		mControlsContent = (LinearLayout)findViewById(R.id.content_controls);
@@ -209,6 +215,14 @@ public class BottomBarControls extends LinearLayout
 	 * @return boolean old state
 	 */
 	public boolean showSearch(boolean visible) {
+		SharedPreferences settings = PlaybackService.getSettings(mContext);
+		if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && !settings.getBoolean(PrefKeys.KIDMODE_SHOW_SEARCH, PrefDefaults.KIDMODE_SHOW_SEARCH)) {
+			mSearchView.setVisibility(View.GONE);
+			mControlsContent.setVisibility(View.VISIBLE);
+
+			return false;
+		}
+
 		boolean wasVisible = mSearchView.getVisibility() == View.VISIBLE;
 		if (wasVisible != visible) {
 			mSearchView.setVisibility(visible ? View.VISIBLE : View.GONE);
@@ -242,13 +256,16 @@ public class BottomBarControls extends LinearLayout
 		if (song == null) {
 			mTitle.setText(null);
 			mArtist.setText(null);
+			mAlbum.setText(null);
 			mCover.setImageBitmap(null);
 		} else {
 			Resources res = mContext.getResources();
 			String title = song.title == null ? res.getString(R.string.unknown) : song.title;
 			String artist = song.artist == null ? res.getString(R.string.unknown) : song.artist;
+			String album = song.album == null ? res.getString(R.string.unknown) : song.album;
 			mTitle.setText(title);
 			mArtist.setText(artist);
+			mAlbum.setText(album);
 		}
 	}
 

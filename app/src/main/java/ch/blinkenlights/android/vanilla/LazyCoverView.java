@@ -19,6 +19,7 @@ package ch.blinkenlights.android.vanilla;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -139,7 +140,14 @@ public class LazyCoverView extends ImageView
 						// We only display real covers for queries using the album id as key
 						Song song = MediaUtils.getSongByTypeId(mContext, payload.key.mediaType, payload.key.mediaId);
 						if (song != null) {
-							bitmap = song.getSmallCover(mContext);
+							SharedPreferences settings = PlaybackService.getSettings(mContext);
+							if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED)) {
+								bitmap = song.getCover(mContext);
+							}
+							else
+							{
+								bitmap = song.getSmallCover(mContext);
+							}
 						}
 					} else {
 						bitmap = CoverBitmap.generatePlaceholderCover(mContext, CoverCache.SIZE_SMALL, CoverCache.SIZE_SMALL, payload.title);
@@ -173,7 +181,14 @@ public class LazyCoverView extends ImageView
 	 * @param id The id of this media type to query
 	 */
 	public void setCover(int type, long id, String title) {
-		mExpectedKey = new CoverCache.CoverKey(type, id, CoverCache.SIZE_SMALL);
+		SharedPreferences settings = PlaybackService.getSettings(mContext);
+		if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED)) {
+			mExpectedKey = new CoverCache.CoverKey(type, id, CoverCache.SIZE_LARGE);
+		}
+		else
+		{
+			mExpectedKey = new CoverCache.CoverKey(type, id, CoverCache.SIZE_SMALL);
+		}
 		if (drawFromCache(mExpectedKey, false) == false) {
 			CoverMsg payload = new CoverMsg(mExpectedKey, this, title);
 			sHandler.sendMessage(sHandler.obtainMessage(MSG_CREATE_COVER, payload));

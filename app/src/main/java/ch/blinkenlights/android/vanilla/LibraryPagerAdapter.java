@@ -279,33 +279,59 @@ public class LibraryPagerAdapter
 			LayoutInflater inflater = activity.getLayoutInflater();
 			LibraryAdapter adapter;
 			DraggableRow header = null;
+			SharedPreferences settings = PlaybackService.getSettings(activity);
 
 			switch (type) {
 			case MediaUtils.TYPE_ARTIST:
 				adapter = mArtistAdapter = new MediaAdapter(activity, MediaUtils.TYPE_ARTIST, mPendingArtistLimiter, activity);
 				mArtistAdapter.setExpandable(getMediaTypePosition(MediaUtils.TYPE_SONG) != -1 || getMediaTypePosition(MediaUtils.TYPE_ALBUM) != -1);
-				header = (DraggableRow)inflater.inflate(R.layout.draggable_row, null);
+				if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && settings.getBoolean(PrefKeys.KIDMODE_ENLARGE_COVERS, PrefDefaults.KIDMODE_ENLARGE_COVERS)) {
+					header = (DraggableRow) inflater.inflate(R.layout.draggable_row_xl, null);
+				}
+				else {
+					header = (DraggableRow) inflater.inflate(R.layout.draggable_row, null);
+				}
 				break;
 			case MediaUtils.TYPE_ALBARTIST:
 				adapter = mAlbArtAdapter = new MediaAdapter(activity, MediaUtils.TYPE_ALBARTIST, mPendingAlbArtLimiter, activity);
 				mAlbArtAdapter.setExpandable(getMediaTypePosition(MediaUtils.TYPE_SONG) != -1 || getMediaTypePosition(MediaUtils.TYPE_ALBUM) != -1);
-				header = (DraggableRow)inflater.inflate(R.layout.draggable_row, null);
+				if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && settings.getBoolean(PrefKeys.KIDMODE_ENLARGE_COVERS, PrefDefaults.KIDMODE_ENLARGE_COVERS)) {
+					header = (DraggableRow) inflater.inflate(R.layout.draggable_row_xl, null);
+				}
+				else {
+					header = (DraggableRow) inflater.inflate(R.layout.draggable_row, null);
+				}
 				break;
 			case MediaUtils.TYPE_COMPOSER:
 				adapter = mComposerAdapter = new MediaAdapter(activity, MediaUtils.TYPE_COMPOSER, mPendingComposerLimiter, activity);
 				mComposerAdapter.setExpandable(getMediaTypePosition(MediaUtils.TYPE_SONG) != -1 || getMediaTypePosition(MediaUtils.TYPE_ALBUM) != -1);
-				header = (DraggableRow)inflater.inflate(R.layout.draggable_row, null);
+				if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && settings.getBoolean(PrefKeys.KIDMODE_ENLARGE_COVERS, PrefDefaults.KIDMODE_ENLARGE_COVERS)) {
+					header = (DraggableRow) inflater.inflate(R.layout.draggable_row_xl, null);
+				}
+				else {
+					header = (DraggableRow) inflater.inflate(R.layout.draggable_row, null);
+				}
 				break;
 			case MediaUtils.TYPE_ALBUM:
 				adapter = mAlbumAdapter = new MediaAdapter(activity, MediaUtils.TYPE_ALBUM, mPendingAlbumLimiter, activity);
 				mAlbumAdapter.setExpandable(getMediaTypePosition(MediaUtils.TYPE_SONG) != -1);
 				mPendingAlbumLimiter = null;
-				header = (DraggableRow)inflater.inflate(R.layout.draggable_row, null);
+				if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && settings.getBoolean(PrefKeys.KIDMODE_ENLARGE_COVERS, PrefDefaults.KIDMODE_ENLARGE_COVERS)) {
+					header = (DraggableRow) inflater.inflate(R.layout.draggable_row_xl, null);
+				}
+				else {
+					header = (DraggableRow) inflater.inflate(R.layout.draggable_row, null);
+				}
 				break;
 			case MediaUtils.TYPE_SONG:
 				adapter = mSongAdapter = new MediaAdapter(activity, MediaUtils.TYPE_SONG, mPendingSongLimiter, activity);
 				mPendingSongLimiter = null;
-				header = (DraggableRow)inflater.inflate(R.layout.draggable_row, null);
+				if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && settings.getBoolean(PrefKeys.KIDMODE_ENLARGE_COVERS, PrefDefaults.KIDMODE_ENLARGE_COVERS)) {
+					header = (DraggableRow) inflater.inflate(R.layout.draggable_row_xl, null);
+				}
+				else {
+					header = (DraggableRow) inflater.inflate(R.layout.draggable_row, null);
+				}
 				break;
 			case MediaUtils.TYPE_PLAYLIST:
 				adapter = mPlaylistAdapter = new MediaAdapter(activity, MediaUtils.TYPE_PLAYLIST, null, activity);
@@ -317,7 +343,12 @@ public class LibraryPagerAdapter
 			case MediaUtils.TYPE_FILE:
 				adapter = mFilesAdapter = new FileSystemAdapter(activity, mPendingFileLimiter);
 				mPendingFileLimiter = null;
-				header = (DraggableRow)inflater.inflate(R.layout.draggable_row, null);
+				if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && settings.getBoolean(PrefKeys.KIDMODE_ENLARGE_COVERS, PrefDefaults.KIDMODE_ENLARGE_COVERS)) {
+					header = (DraggableRow) inflater.inflate(R.layout.draggable_row_xl, null);
+				}
+				else {
+					header = (DraggableRow) inflater.inflate(R.layout.draggable_row, null);
+				}
 				break;
 			default:
 				throw new IllegalArgumentException("Invalid media type: " + type);
@@ -328,7 +359,7 @@ public class LibraryPagerAdapter
 			view.setOnItemClickListener(this);
 
 			view.setTag(type);
-			if (header != null) {
+			if (header != null && settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && settings.getBoolean(PrefKeys.KIDMODE_SHOW_OPTIONS_IN_MENU, PrefDefaults.KIDMODE_SHOW_OPTIONS_IN_MENU)) {
 				header.setText(mHeaderText);
 				header.setTag(new ViewHolder()); // behave like a normal library row
 				view.addHeaderView(header);

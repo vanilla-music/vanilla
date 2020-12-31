@@ -18,6 +18,7 @@
 package ch.blinkenlights.android.vanilla;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.text.format.DateUtils;
 import android.os.Message;
@@ -115,18 +116,26 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-
 		// ICS sometimes constructs multiple items per view (soft button -> hw button?)
 		// we work around this by assuming that the first seen menu is the real one
 		if (mMenu == null)
 			mMenu = menu;
 
-		menu.add(0, MENU_SHOW_QUEUE, 20, R.string.show_queue);
-		menu.add(0, MENU_HIDE_QUEUE, 20, R.string.hide_queue);
-		menu.add(0, MENU_CLEAR_QUEUE, 20, R.string.dequeue_rest);
-		menu.add(0, MENU_EMPTY_QUEUE, 20, R.string.empty_the_queue);
-		menu.add(0, MENU_SAVE_QUEUE, 20, R.string.save_as_playlist);
+		SharedPreferences settings = PlaybackService.getSettings(this);
+		if (!settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) ||
+			(settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && settings.getBoolean(PrefKeys.KIDMODE_SHOW_OPTIONS_IN_MENU, PrefDefaults.KIDMODE_SHOW_OPTIONS_IN_MENU))) {
+			super.onCreateOptionsMenu(menu);
+
+			menu.add(0, MENU_SHOW_QUEUE, 20, R.string.show_queue);
+			menu.add(0, MENU_HIDE_QUEUE, 20, R.string.hide_queue);
+			menu.add(0, MENU_CLEAR_QUEUE, 20, R.string.dequeue_rest);
+			menu.add(0, MENU_EMPTY_QUEUE, 20, R.string.empty_the_queue);
+			menu.add(0, MENU_SAVE_QUEUE, 20, R.string.save_as_playlist);
+		}
+		else
+		{
+			menu.add(0, MENU_PREFS, 10, R.string.settings).setIcon(R.drawable.ic_menu_preferences);
+		}
 		// This should only be required on ICS.
 		onSlideExpansionChanged(SlidingView.EXPANSION_PARTIAL);
 		return true;

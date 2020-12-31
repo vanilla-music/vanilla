@@ -130,6 +130,7 @@ THE SOFTWARE.
 	<string name="playlists">Playlists</string>
 	<string name="genres">Genres</string>
 	<string name="files">Files</string>
+	<string name="kidmode">Kid Mode</string>
 
 	<string name="artist">Artist</string>
 	<string name="album">Album</string>
@@ -220,6 +221,14 @@ THE SOFTWARE.
 	<string name="playback_screen">Playback screen</string>
 	<string name="playback_on_startup_title">Open on startup</string>
 	<string name="playback_on_startup_summary">Open playback view on startup</string>
+	<string name="playback_show_previous_title">Show previous button in controls</string>
+	<string name="playback_show_previous_summary">Show previous button in playback controls</string>
+	<string name="playback_show_next_title">Show next button in controls</string>
+	<string name="playback_show_next_summary">Show next button in playback controls</string>
+	<string name="playback_show_shuffle_title">Show shuffle button in controls</string>
+	<string name="playback_show_shuffle_summary">Show shuffle button in playback controls</string>
+	<string name="playback_show_repeat_title">Show repeat button in controls</string>
+	<string name="playback_show_repeat_summary">Show repeat button in playback controls</string>
 	<string name="display_mode_title">Display mode</string>
 	<string name="swipe_up_action_title">Swipe up action</string>
 	<string name="swipe_down_action_title">Swipe down action</string>
@@ -270,6 +279,30 @@ THE SOFTWARE.
 	<string name="scrobble_summary">Scrobble to Last.fm through Scrobble Droid or Simple Last.fm Scrobbler</string>
 	<string name="stock_broadcast_title">Emulate stock broadcasts</string>
 	<string name="stock_broadcast_summary">Send broadcasts emulating those sent by the stock music player to work with 3rd party lockscreen controls, widgets, etc.</string>
+
+	<string name="enable_kidmode_title">Enable Kid Mode</string>
+	<string name="enable_kidmode_summary">Enables a special kid mode for easy use by children</string>
+
+	<string name="kidmode_show_queue_title">Show queue in kid mode</string>
+	<string name="kidmode_show_queue_summary">Show queue in kid mode</string>
+
+	<string name="kidmode_show_favorite_title">Show favorize button in kid mode</string>
+	<string name="kidmode_show_favorite_summary">Show favorize button in kid mode</string>
+
+	<string name="kidmode_show_search_title">Show search button in kid mode</string>
+	<string name="kidmode_show_search_summary">Show search button in kid mode</string>
+
+	<string name="kidmode_show_options_in_menu_title">Show some options in menus in kid mode</string>
+	<string name="kidmode_show_options_in_menu_summary">Show some options in menus in kid mode</string>
+
+	<string name="kidmode_enlarge_covers_title">Enlarge (X2) covers in draggable rows in kid mode</string>
+	<string name="kidmode_enlarge_covers_summary">Enlarge (X2) covers in draggable rows in kid mode</string>
+
+	<string name="kidmode_protect_settings_title">Protect settings with a pin in kid mode</string>
+	<string name="kidmode_protect_settings_summary">Protect settings with a pin in kid mode</string>
+
+	<string name="kidmode_protect_settings_pin_title">Enter a pin for setting protection in kid mode</string>
+	<string name="kidmode_protect_settings_pin_summary">Enter a pin for setting protection in kid mode</string>
 
 	<string name="help">Help</string>
 	<string name="about">About</string>
@@ -391,4 +424,11 @@ THE SOFTWARE.
 	<string name="theme_name_red_light">Red</string>
 	<string name="theme_name_red_dark">Red (Dark)</string>
 	<string name="theme_name_amoled_dark">Pitch Black (AMOLED)</string>
+
+	<!-- Strings related to pin -->
+	<string name="pin_dialog_title">Enter PIN</string>
+	<string name="pin">PIN</string>
+	<string name="sorry_no_pin">Sorry, no pin was entered.</string>
+	<string name="sorry_pin_incorrect">"Sorry, that pin was incorrect. Try again."</string>
+
 </resources>

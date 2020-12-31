@@ -200,12 +200,15 @@ public class PlaylistActivity extends Activity
 		intent.putExtra("position", info.position);
 		intent.putExtra("audioId", (Long)info.targetView.findViewById(R.id.text).getTag());
 
-		menu.add(0, MENU_PLAY, 0, R.string.play).setIntent(intent);
-		menu.add(0, MENU_PLAY_ALL, 0, R.string.play_all).setIntent(intent);
-		menu.add(0, MENU_ENQUEUE_AS_NEXT, 0, R.string.enqueue_as_next).setIntent(intent);
-		menu.add(0, MENU_ENQUEUE, 0, R.string.enqueue).setIntent(intent);
-		menu.add(0, MENU_ENQUEUE_ALL, 0, R.string.enqueue_all).setIntent(intent);
-		menu.add(0, MENU_REMOVE, 0, R.string.remove).setIntent(intent);
+		SharedPreferences settings = PlaybackService.getSettings(this);
+		if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && settings.getBoolean(PrefKeys.KIDMODE_SHOW_OPTIONS_IN_MENU, PrefDefaults.KIDMODE_SHOW_OPTIONS_IN_MENU)) {
+			menu.add(0, MENU_PLAY, 0, R.string.play).setIntent(intent);
+			menu.add(0, MENU_PLAY_ALL, 0, R.string.play_all).setIntent(intent);
+			menu.add(0, MENU_ENQUEUE_AS_NEXT, 0, R.string.enqueue_as_next).setIntent(intent);
+			menu.add(0, MENU_ENQUEUE, 0, R.string.enqueue).setIntent(intent);
+			menu.add(0, MENU_ENQUEUE_ALL, 0, R.string.enqueue_all).setIntent(intent);
+			menu.add(0, MENU_REMOVE, 0, R.string.remove).setIntent(intent);
+		}
 	}
 
 	@Override

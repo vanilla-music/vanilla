@@ -73,4 +73,16 @@ public class PrefDefaults {
 	public static final boolean KEEP_SCREEN_ON = false;
 	public static final String  PLAYLIST_SYNC_MODE = "255";
 	public static final String  PLAYLIST_SYNC_FOLDER = "/sdcard/Playlists";
+	public static final boolean KIDMODE_ENABLED = false;
+	public static final boolean KIDMODE_SHOW_QUEUE = false;
+	public static final boolean KIDMODE_SHOW_FAVORITE = false;
+	public static final boolean KIDMODE_SHOW_SEARCH = false;
+	public static final boolean KIDMODE_SHOW_PREVIOUS = false;
+	public static final boolean KIDMODE_SHOW_NEXT = false;
+	public static final boolean KIDMODE_SHOW_SHUFFLE = false;
+	public static final boolean KIDMODE_SHOW_REPEAT = false;
+	public static final boolean KIDMODE_SHOW_OPTIONS_IN_MENU = false;
+	public static final boolean KIDMODE_ENLARGE_COVERS = true;
+	public static final boolean KIDMODE_PROTECT_SETTINGS = true;
+	public static final String  KIDMODE_PROTECT_SETTINGS_PIN = "1234";
 }

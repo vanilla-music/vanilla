@@ -212,7 +212,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
                 lp.weight = 1;
             }
 
-            tabTitleView.setText(adapter.getPageTitle(i));
+			tabTitleView.setText(adapter.getPageTitle(i));
             tabView.setOnClickListener(tabClickListener);
             String desc = mContentDescriptions.get(i, null);
             if (desc != null) {
@@ -221,9 +221,9 @@ public class SlidingTabLayout extends HorizontalScrollView {
 
             mTabStrip.addView(tabView);
             if (i == mViewPager.getCurrentItem()) {
-                tabView.setSelected(true);
+				tabView.setSelected(true);
             }
-        }
+		}
     }
 
     public void setContentDescription(int i, String desc) {

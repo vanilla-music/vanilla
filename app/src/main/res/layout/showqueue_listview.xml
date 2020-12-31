@@ -1,18 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.mobeta.android.dslv.DragSortListView
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:dslv="http://schemas.android.com/apk/res-auto"
-	android:id="@+id/list"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
-	android:listSelector="?android:attr/selectableItemBackground"
-	android:divider="@drawable/inset_divider"
-	android:dividerHeight="1dip"
-	dslv:drag_enabled="true"
-	dslv:drag_start_mode="onMove"
-	dslv:float_background_color="?float_color"
-	dslv:drag_handle_id="@+id/dragger"
-	dslv:remove_enabled="true"
-	dslv:remove_mode="flingRemove"
-	dslv:fling_handle_id="@+id/dragger"
-	/>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			  android:layout_width="match_parent"
+			  android:layout_height="match_parent">
+	<com.mobeta.android.dslv.DragSortListView
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		xmlns:dslv="http://schemas.android.com/apk/res-auto"
+		android:id="@+id/list"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:listSelector="?android:attr/selectableItemBackground"
+		android:divider="@drawable/inset_divider"
+		android:dividerHeight="1dip"
+		dslv:drag_enabled="true"
+		dslv:drag_start_mode="onMove"
+		dslv:float_background_color="?float_color"
+		dslv:drag_handle_id="@+id/dragger"
+		dslv:remove_enabled="true"
+		dslv:remove_mode="flingRemove"
+		dslv:fling_handle_id="@+id/dragger"
+		/>
+	<ch.blinkenlights.android.vanilla.LazyCoverView
+		android:id="@+id/queue_cover"
+		android:visibility="gone"
+		android:scaleType="centerCrop"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_gravity="center_vertical"
+		android:contentDescription="@string/cover_art" />
+</LinearLayout>

@@ -49,14 +49,20 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
+import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -342,6 +348,8 @@ public abstract class PlaybackActivity extends Activity
 	 * Sets up onClick listeners for our common control buttons bar
 	 */
 	protected void bindControlButtons() {
+		SharedPreferences settings = PlaybackService.getSettings(this);
+
 		View previousButton = findViewById(R.id.previous);
 		previousButton.setOnClickListener(this);
 		mPlayPauseButton = (ImageButton)findViewById(R.id.play_pause);
@@ -355,6 +363,23 @@ public abstract class PlaybackActivity extends Activity
 		mEndButton = (ImageButton)findViewById(R.id.end_action);
 		mEndButton.setOnClickListener(this);
 		registerForContextMenu(mEndButton);
+
+		mShuffleButton.setVisibility(View.VISIBLE);
+		mEndButton.setVisibility(View.VISIBLE);
+		previousButton.setVisibility(View.VISIBLE);
+		nextButton.setVisibility(View.VISIBLE);
+		if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && !settings.getBoolean(PrefKeys.KIDMODE_SHOW_SHUFFLE, PrefDefaults.KIDMODE_SHOW_SHUFFLE)) {
+			mShuffleButton.setVisibility(View.INVISIBLE);
+		}
+		if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && !settings.getBoolean(PrefKeys.KIDMODE_SHOW_REPEAT, PrefDefaults.KIDMODE_SHOW_REPEAT)) {
+			mEndButton.setVisibility(View.INVISIBLE);
+		}
+		if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && !settings.getBoolean(PrefKeys.KIDMODE_SHOW_PREVIOUS, PrefDefaults.KIDMODE_SHOW_PREVIOUS)) {
+			previousButton.setVisibility(View.INVISIBLE);
+		}
+		if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && !settings.getBoolean(PrefKeys.KIDMODE_SHOW_NEXT, PrefDefaults.KIDMODE_SHOW_NEXT)) {
+			nextButton.setVisibility(View.INVISIBLE);
+		}
 	}
 
 	/**
@@ -435,7 +460,60 @@ public abstract class PlaybackActivity extends Activity
 	{
 		switch (item.getItemId()) {
 		case MENU_PREFS:
-			startActivity(new Intent(this, PreferencesActivity.class));
+			final Context context = this;
+			final SharedPreferences settings = PlaybackService.getSettings(context);
+			if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && settings.getBoolean(PrefKeys.KIDMODE_PROTECT_SETTINGS, PrefDefaults.KIDMODE_PROTECT_SETTINGS)) {
+				final AlertDialog.Builder pinAuth = new AlertDialog.Builder(this);
+				LayoutInflater inflater = LayoutInflater.from(this);
+				View view = inflater.inflate(R.layout.pin_dialog, null);
+
+				pinAuth.setTitle(R.string.pin_dialog_title);
+				pinAuth.setCancelable(false);
+				pinAuth.setView(view);
+
+				final EditText pin = (EditText) view.findViewById(R.id.pin_field);
+				pin.setInputType(InputType.TYPE_CLASS_PHONE);
+				pin.setTransformationMethod(new PasswordTransformationMethod());
+				pin.setLines(1);
+				pin.setImeOptions(EditorInfo.IME_ACTION_DONE);
+
+				pinAuth.setPositiveButton("Login", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						String checkPin = settings.getString(PrefKeys.KIDMODE_PROTECT_SETTINGS_PIN, PrefDefaults.KIDMODE_PROTECT_SETTINGS_PIN);
+						if(pin.getText().toString().isEmpty())
+						{
+							Toast.makeText(context, R.string.sorry_no_pin, Toast.LENGTH_SHORT).show();
+							return;
+						}
+						else if(!pin.getText().toString().equals(checkPin))
+						{
+							Toast.makeText(context, R.string.sorry_pin_incorrect, Toast.LENGTH_SHORT).show();
+							return;
+						}
+						else
+						{
+							startActivity(new Intent(context, PreferencesActivity.class));
+						}
+					}
+				});
+
+				final AlertDialog ad = pinAuth.create();
+
+				pin.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+					@Override
+					public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+						ad.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+						return true;
+					}
+				});
+
+				ad.show();
+			}
+			else
+			{
+				startActivity(new Intent(this, PreferencesActivity.class));
+			}
 			break;
 		case MENU_CLEAR_QUEUE:
 			PlaybackService.get(this).clearQueue();

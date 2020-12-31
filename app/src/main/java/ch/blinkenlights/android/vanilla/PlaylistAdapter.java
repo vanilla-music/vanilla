@@ -26,6 +26,7 @@ package ch.blinkenlights.android.vanilla;
 import ch.blinkenlights.android.medialibrary.MediaLibrary;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Handler;
 import android.os.Looper;
@@ -126,7 +127,13 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup parent)
 	{
-		return mInflater.inflate(R.layout.draggable_row, parent, false);
+		SharedPreferences settings = PlaybackService.getSettings(context);
+		if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && settings.getBoolean(PrefKeys.KIDMODE_ENLARGE_COVERS, PrefDefaults.KIDMODE_ENLARGE_COVERS)) {
+			return mInflater.inflate(R.layout.draggable_row_xl, parent, false);
+		}
+		else {
+			return mInflater.inflate(R.layout.draggable_row, parent, false);
+		}
 	}
 
 	/**

@@ -21,6 +21,8 @@ import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -28,6 +30,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
+
 import com.mobeta.android.dslv.DragSortListView;
 
 
@@ -40,6 +44,7 @@ public class ShowQueueFragment extends Fragment
 	{
 
 	private DragSortListView mListView;
+	private ImageView mQueueCoverView;
 	private ShowQueueAdapter mListAdapter;
 	private boolean mIsPopulated;
 
@@ -49,9 +54,16 @@ public class ShowQueueFragment extends Fragment
 
 		View view = inflater.inflate(R.layout.showqueue_listview, container, false);
 		Context context = getActivity();
+		SharedPreferences settings = PlaybackService.getSettings(context);
 
-		mListView    = (DragSortListView) view.findViewById(R.id.list);
-		mListAdapter = new ShowQueueAdapter(context, R.layout.draggable_row);
+		mListView    	 = (DragSortListView) view.findViewById(R.id.list);
+		mQueueCoverView  = (ImageView) view.findViewById(R.id.queue_cover);
+		if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && settings.getBoolean(PrefKeys.KIDMODE_ENLARGE_COVERS, PrefDefaults.KIDMODE_ENLARGE_COVERS)) {
+			mListAdapter = new ShowQueueAdapter(context, R.layout.draggable_row_xl);
+		}
+		else {
+			mListAdapter = new ShowQueueAdapter(context, R.layout.draggable_row);
+		}
 		mListView.setAdapter(mListAdapter);
 		mListView.setDropListener(this);
 		mListView.setRemoveListener(this);
@@ -59,7 +71,35 @@ public class ShowQueueFragment extends Fragment
 		mListView.setOnCreateContextMenuListener(this);
 
 		PlaybackService.addTimelineCallback(this);
+
+		mListView.setVisibility(View.VISIBLE);
+		mQueueCoverView.setVisibility(View.GONE);
+		if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && !settings.getBoolean(PrefKeys.KIDMODE_SHOW_QUEUE, PrefDefaults.KIDMODE_SHOW_QUEUE)) {
+			mListView.setVisibility(View.GONE);
+			mQueueCoverView.setVisibility(View.VISIBLE);
+		}
+
 		return view;
+	}
+
+	/**
+	 * Updates the cover image of this view
+	 *
+	 * @param cover the bitmap to display. Will use a placeholder image if cover is null
+	 */
+	public void setCover(final Bitmap cover) {
+		SharedPreferences settings = PlaybackService.getSettings(getActivity());
+		if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && !settings.getBoolean(PrefKeys.KIDMODE_SHOW_QUEUE, PrefDefaults.KIDMODE_SHOW_QUEUE)) {
+			getActivity().runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					if (cover == null)
+						mQueueCoverView.setImageResource(R.drawable.fallback_cover);
+					else
+						mQueueCoverView.setImageBitmap(cover);
+				}
+			});
+		}
 	}
 
 	@Override
@@ -78,6 +118,14 @@ public class ShowQueueFragment extends Fragment
 		// started up, but just lost this view (due to rotation).
 		if (!mIsPopulated && PlaybackService.hasInstance()) {
 			refreshSongQueueList(true);
+		}
+
+		SharedPreferences settings = PlaybackService.getSettings(getActivity());
+		mListView.setVisibility(View.VISIBLE);
+		mQueueCoverView.setVisibility(View.GONE);
+		if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && !settings.getBoolean(PrefKeys.KIDMODE_SHOW_QUEUE, PrefDefaults.KIDMODE_SHOW_QUEUE)) {
+			mListView.setVisibility(View.GONE);
+			mQueueCoverView.setVisibility(View.VISIBLE);
 		}
 	}
 
@@ -188,6 +236,15 @@ public class ShowQueueFragment extends Fragment
 
 				if(scroll)
 					scrollToCurrentSong(pos);
+
+				SharedPreferences settings = PlaybackService.getSettings(getActivity());
+				if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && !settings.getBoolean(PrefKeys.KIDMODE_SHOW_QUEUE, PrefDefaults.KIDMODE_SHOW_QUEUE)) {
+					Bitmap cover = service.getSong(0).getCover(getActivity());
+					if (cover == null)
+						mQueueCoverView.setImageResource(R.drawable.fallback_cover);
+					else
+						mQueueCoverView.setImageBitmap(cover);
+				}
 			}
 		});
 		mIsPopulated = true;
@@ -229,6 +286,9 @@ public class ShowQueueFragment extends Fragment
 	public void setSong(long uptime, Song song) {
 		if (!mIsPopulated) {
 			onTimelineChanged();
+		}
+		if (song != null) {
+			setCover(song.getCover(getActivity()));
 		}
 	}
 

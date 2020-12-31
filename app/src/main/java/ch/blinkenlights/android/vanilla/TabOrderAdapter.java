@@ -23,6 +23,7 @@
 package ch.blinkenlights.android.vanilla;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,7 +90,13 @@ public class TabOrderAdapter extends BaseAdapter {
 	{
 		DraggableRow view;
 		if (convert == null) {
-			view = (DraggableRow)mInflater.inflate(R.layout.draggable_row, parent, false);
+			SharedPreferences settings = PlaybackService.getSettings(mActivity);
+			if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && settings.getBoolean(PrefKeys.KIDMODE_ENLARGE_COVERS, PrefDefaults.KIDMODE_ENLARGE_COVERS)) {
+				view = (DraggableRow)mInflater.inflate(R.layout.draggable_row_xl, parent, false);
+			}
+			else {
+				view = (DraggableRow)mInflater.inflate(R.layout.draggable_row, parent, false);
+			}
 			view.setupLayout(DraggableRow.LAYOUT_CHECKBOXES);
 		} else {
 			view = (DraggableRow)convert;

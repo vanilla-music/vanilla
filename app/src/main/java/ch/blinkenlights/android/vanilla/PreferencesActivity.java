@@ -248,6 +248,15 @@ public class PreferencesActivity extends PreferenceActivity
 		}
 	}
 
+	public static class KidmodeFragment extends PreferenceFragment {
+		@Override
+		public void onCreate(Bundle savedInstanceState)
+		{
+			super.onCreate(savedInstanceState);
+			addPreferencesFromResource(R.xml.preference_kidmode);
+		}
+	}
+
 	public static class HelpFragment extends PreferenceFragment {
 		@Override
 		public void onCreate(Bundle savedInstanceState)

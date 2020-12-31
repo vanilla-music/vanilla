@@ -25,6 +25,7 @@ package ch.blinkenlights.android.vanilla;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.FileObserver;
 import android.util.Log;
@@ -250,9 +251,15 @@ public class FileSystemAdapter
 	{
 		DraggableRow row;
 		ViewHolder holder;
+		SharedPreferences settings = PlaybackService.getSettings(mActivity);
 
 		if (convertView == null) {
-			row = (DraggableRow)mInflater.inflate(R.layout.draggable_row, parent, false);
+			if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && settings.getBoolean(PrefKeys.KIDMODE_ENLARGE_COVERS, PrefDefaults.KIDMODE_ENLARGE_COVERS)) {
+				row = (DraggableRow)mInflater.inflate(R.layout.draggable_row_xl, parent, false);
+			}
+			else {
+				row = (DraggableRow)mInflater.inflate(R.layout.draggable_row, parent, false);
+			}
 			row.setupLayout(DraggableRow.LAYOUT_LISTVIEW);
 
 			holder = new ViewHolder();

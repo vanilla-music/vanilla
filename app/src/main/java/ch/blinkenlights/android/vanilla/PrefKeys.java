@@ -74,4 +74,16 @@ public class PrefKeys {
 	public static final String KEEP_SCREEN_ON = "keep_screen_on";
 	public static final String PLAYLIST_SYNC_MODE = "playlist_sync_mode";
 	public static final String PLAYLIST_SYNC_FOLDER = "playlist_sync_folder";
+	public static final String KIDMODE_ENABLED = "enable_kidmode";
+	public static final String KIDMODE_SHOW_QUEUE = "kidmode_show_queue";
+	public static final String KIDMODE_SHOW_FAVORITE = "kidmode_show_favorite";
+	public static final String KIDMODE_SHOW_SEARCH = "kidmode_show_search";
+	public static final String KIDMODE_SHOW_PREVIOUS = "playback_show_previous";
+	public static final String KIDMODE_SHOW_NEXT = "playback_show_next";
+	public static final String KIDMODE_SHOW_SHUFFLE = "playback_show_shuffle";
+	public static final String KIDMODE_SHOW_REPEAT = "playback_show_repeat";
+	public static final String KIDMODE_SHOW_OPTIONS_IN_MENU = "kidmode_show_options_in_menu";
+	public static final String KIDMODE_ENLARGE_COVERS = "kidmode_enlarge_covers";
+	public static final String KIDMODE_PROTECT_SETTINGS = "kidmode_protect_settings";
+	public static final String KIDMODE_PROTECT_SETTINGS_PIN = "kidmode_protect_settings_pin";
 }

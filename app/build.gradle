@@ -1,33 +1,48 @@
 apply plugin: 'com.android.application'
 
 android {
-    lintOptions {
-        disable 'MissingTranslation'
-        disable 'ExtraTranslation'
-    }
-
-    compileSdkVersion 27
-
-    defaultConfig {
-        applicationId "ch.blinkenlights.android.vanilla"
-        minSdkVersion 15
-        targetSdkVersion 27
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled true
-            useProguard false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-        }
-    }
-
-    lintOptions {
-        abortOnError false
-    }
+	signingConfigs {
+		config {
+			keyAlias 'VanillaKidMode'
+			keyPassword 'vanilla'
+			storeFile file('Z:/AndroidStudioProjects/vanilla_keystore.jks')
+			storePassword 'vanilla'
+		}
+	}
+	lintOptions {
+		disable 'MissingTranslation'
+		disable 'ExtraTranslation'
+	}
+	compileSdkVersion 30
+	defaultConfig {
+		applicationId "ch.blinkenlights.android.vanilla"
+		minSdkVersion 15
+		targetSdkVersion 30
+		signingConfig signingConfigs.config
+	}
+	buildTypes {
+		release {
+			minifyEnabled true
+			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+			signingConfig signingConfigs.config
+		}
+	}
+	lintOptions {
+		abortOnError false
+	}
+	productFlavors {
+	}
+	buildToolsVersion '30.0.3'
+	compileOptions {
+		sourceCompatibility JavaVersion.VERSION_1_7
+		targetCompatibility JavaVersion.VERSION_1_7
+	}
 }
 
 dependencies {
-    implementation 'com.android.support:support-core-ui:27.1.1'
-    compileOnly 'com.android.support:support-annotations:27.1.1'
+	implementation 'com.android.support:support-core-ui:27.1.1'
+	implementation 'com.android.support:appcompat-v7:27.1.1'
+	implementation 'com.android.support:design:27.1.1'
+	compileOnly 'com.android.support:support-annotations:27.1.1'
+	implementation 'junit:junit:4.12'
 }

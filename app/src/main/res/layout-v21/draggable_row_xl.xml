@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright (C) 2014 Adrian Ulrich <adrian@blinkenlights.ch>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>. 
+-->
+<ch.blinkenlights.android.vanilla.DraggableRow
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="horizontal">
+
+	<View
+		android:id="@+id/pmark"
+		android:visibility="gone"
+		android:layout_width="@dimen/pmark_size"
+		android:layout_height="@dimen/row_height_xl"
+		android:background="?now_playing_marker" />
+
+	<ch.blinkenlights.android.vanilla.LazyCoverView
+		android:id="@+id/cover"
+		android:scaleType="centerCrop"
+		android:layout_width="@dimen/cover_size_xl"
+		android:layout_height="@dimen/cover_size_xl"
+		android:layout_marginLeft="@dimen/cover_padding_with_pmark"
+		android:layout_gravity="center_vertical"
+		android:visibility="gone" />
+	<TextView
+		android:id="@+id/text"
+		android:maxLines="2"
+		android:textColor="?android:textColorPrimary"
+		android:gravity="left|center_vertical"
+		android:layout_width="0px"
+		android:layout_height="@dimen/row_height_xl"
+		android:layout_marginLeft="@dimen/text_padding"
+		android:layout_weight="1" />
+	<TextView
+		android:id="@+id/duration"
+		android:layout_width="wrap_content"
+		android:layout_height="match_parent"
+		android:layout_marginLeft="@dimen/text_padding"
+		android:visibility="gone"
+		android:textColor="?android:textColorPrimary"
+		android:gravity="center_vertical" />
+	<CheckedTextView
+		android:id="@+id/checkbox"
+		android:visibility="gone"
+		android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+		android:gravity="center_vertical"
+		android:layout_height="match_parent"
+		android:layout_width="@dimen/row_height_xl"/>
+	<!-- having 'dragger' visible adds significant left-padding
+	     some views may want to use this padding while dragger is not visible, so
+	     in this case, this empty view can be used as a replacement -->
+	<View
+		android:id="@+id/dragger_padder"
+		android:layout_width="@dimen/text_padding"
+		android:layout_height="match_parent"
+		android:visibility="gone"
+	/>
+	<ImageView
+		android:id="@+id/dragger"
+		android:visibility="gone"
+		android:src="@drawable/grabber"
+		android:scaleType="center"
+		android:layout_width="@dimen/row_height_xl"
+		android:layout_height="@dimen/row_height_xl" />
+</ch.blinkenlights.android.vanilla.DraggableRow>

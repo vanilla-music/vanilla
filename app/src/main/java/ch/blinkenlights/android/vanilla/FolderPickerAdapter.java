@@ -19,6 +19,7 @@ package ch.blinkenlights.android.vanilla;
 
 import android.content.Context;
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,6 +50,10 @@ public class FolderPickerAdapter
 	}
 
 	/**
+	 * The context to use for native library queries
+	 */
+	private Context mContext;
+	/**
 	 * Our layout inflater instance
 	 */
 	private final LayoutInflater mInflater;
@@ -76,6 +81,7 @@ public class FolderPickerAdapter
 
 	public FolderPickerAdapter(Context context, int resource) {
 		super(context, resource);
+		mContext = context;
 		mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mStorageDir = Environment.getExternalStorageDirectory();
 		mCurrentDir = mStorageDir;
@@ -85,8 +91,14 @@ public class FolderPickerAdapter
 	public View getView(int pos, View convertView, ViewGroup parent) {
 		DraggableRow row;
 
+		SharedPreferences settings = PlaybackService.getSettings(mContext);
 		if (convertView == null) {
-			row = (DraggableRow)mInflater.inflate(R.layout.draggable_row, parent, false);
+			if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && settings.getBoolean(PrefKeys.KIDMODE_ENLARGE_COVERS, PrefDefaults.KIDMODE_ENLARGE_COVERS)) {
+				row = (DraggableRow)mInflater.inflate(R.layout.draggable_row_xl, parent, false);
+			}
+			else {
+				row = (DraggableRow)mInflater.inflate(R.layout.draggable_row, parent, false);
+			}
 			row.setupLayout(DraggableRow.LAYOUT_LISTVIEW);
 			row.getCoverView().setImageResource(R.drawable.folder);
 

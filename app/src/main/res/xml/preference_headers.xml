@@ -49,6 +49,9 @@ THE SOFTWARE.
 		android:fragment="ch.blinkenlights.android.vanilla.PreferencesActivity$PlaylistFragment"
 		android:title="@string/playlists" />
 	<header
+		android:fragment="ch.blinkenlights.android.vanilla.PreferencesActivity$KidmodeFragment"
+		android:title="@string/kidmode" />
+	<header
 		android:fragment="ch.blinkenlights.android.vanilla.PreferencesTheme"
 		android:title="@string/theme" />
 	<header
