@@ -28,9 +28,10 @@ import ch.blinkenlights.android.medialibrary.MediaLibrary;
 import android.content.Context;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import java.util.ArrayList;
+
+import androidx.annotation.Nullable;
 
 /**
  * Provides various playlist-related utility functions.
@@ -85,7 +86,7 @@ public class Playlist {
 		String name = null;
 		final String[] projection = { MediaLibrary.PlaylistColumns.NAME };
 		final String selection = MediaLibrary.PlaylistColumns._ID+"=?";
-		final String[] selectionArgs = { new Long(id).toString() };
+		final String[] selectionArgs = { Long.valueOf(id).toString() };
 		Cursor cursor = MediaLibrary.queryLibrary(context, MediaLibrary.TABLE_PLAYLISTS, projection, selection, selectionArgs, null);
 
 		if (cursor != null) {

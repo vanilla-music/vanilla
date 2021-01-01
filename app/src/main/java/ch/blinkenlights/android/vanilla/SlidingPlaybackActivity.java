@@ -35,7 +35,8 @@ import java.net.InetAddress;
 public class SlidingPlaybackActivity extends PlaybackActivity
 	implements SlidingView.Callback,
 	           SeekBar.OnSeekBarChangeListener,
-	           PlaylistDialog.Callback
+	           PlaylistDialog.Callback,
+	           JumpToTimeDialog.OnPositionSubmitListener
 {
 	/**
 	 * Reference to the inflated menu
@@ -121,16 +122,16 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 		if (mMenu == null)
 			mMenu = menu;
 
-		SharedPreferences settings = PlaybackService.getSettings(this);
+		SharedPreferences settings = SharedPrefHelper.getSettings(this);
 		if (!settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) ||
-			(settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && settings.getBoolean(PrefKeys.KIDMODE_SHOW_OPTIONS_IN_MENU, PrefDefaults.KIDMODE_SHOW_OPTIONS_IN_MENU))) {
+				(settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && settings.getBoolean(PrefKeys.KIDMODE_SHOW_OPTIONS_IN_MENU, PrefDefaults.KIDMODE_SHOW_OPTIONS_IN_MENU))) {
 			super.onCreateOptionsMenu(menu);
-
 			menu.add(0, MENU_SHOW_QUEUE, 20, R.string.show_queue);
 			menu.add(0, MENU_HIDE_QUEUE, 20, R.string.hide_queue);
 			menu.add(0, MENU_CLEAR_QUEUE, 20, R.string.dequeue_rest);
 			menu.add(0, MENU_EMPTY_QUEUE, 20, R.string.empty_the_queue);
 			menu.add(0, MENU_SAVE_QUEUE, 20, R.string.save_as_playlist);
+			menu.add(0, MENU_JUMP_TO_TIME, 20, R.string.jump_to_time);
 		}
 		else
 		{
@@ -156,32 +157,15 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 			PlaylistDialog dialog = PlaylistDialog.newInstance(this, null, null);
 			dialog.show(getFragmentManager(), "PlaylistDialog");
 			break;
+		case MENU_JUMP_TO_TIME:
+			JumpToTimeDialog.show(getFragmentManager());
+			break;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 		return true;
 	}
 
-
-	static final int CTX_MENU_ADD_TO_PLAYLIST = 300;
-
-	@Override
-	public boolean onContextItemSelected(MenuItem item) {
-		if (item.getGroupId() != 0)
-			return super.onContextItemSelected(item);
-
-		final Intent intent = item.getIntent();
-		switch (item.getItemId()) {
-			case CTX_MENU_ADD_TO_PLAYLIST: {
-				PlaylistDialog dialog = PlaylistDialog.newInstance(this, intent, null);
-				dialog.show(getFragmentManager(), "PlaylistDialog");
-				break;
-			}
-			default:
-				throw new IllegalArgumentException("Unhandled item id");
-		}
-		return true;
-	}
 
 	/**
 	 * Called by PlaylistDialog.Callback to append data to
@@ -257,7 +241,7 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 			query = allSource.buildSongQuery(projection);
 			query.data = id;
 		} else if (type == MediaUtils.TYPE_FILE) {
-			query = MediaUtils.buildFileQuery(intent.getStringExtra(LibraryAdapter.DATA_FILE), projection, false /* recursive */);
+			query = MediaUtils.buildFileQuery(intent.getStringExtra(LibraryAdapter.DATA_FILE), projection, true /* recursive */);
 		} else {
 			query = MediaUtils.buildQuery(type, id, projection, null);
 		}
@@ -365,4 +349,9 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 		}
 	}
 
+	@Override
+	public void onPositionSubmit(int position) {
+		PlaybackService.get(this).seekToPosition(position);
+		updateElapsedTime();
+	}
 }

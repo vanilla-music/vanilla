@@ -13,4 +13,10 @@
 	<!-- Default screen margins, per the Android Design guidelines. -->
 	<dimen name="activity_horizontal_margin">16dp</dimen>
 	<dimen name="activity_vertical_margin">16dp</dimen>
+	<!-- height of the full playback view controls -->
+	<dimen name="full_playback_controls_height">90dip</dimen>
+	<dimen name="track_details_dialog_padding">8dp</dimen>
+	<dimen name="material_text_subhead">16sp</dimen>
+	<!-- height of 'full_playback_alt' text -->
+	<dimen name="full_playback_alt_text">60dip</dimen>
 </resources>

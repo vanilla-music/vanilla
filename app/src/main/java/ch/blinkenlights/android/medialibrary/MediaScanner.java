@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2016-2018 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -111,7 +111,7 @@ public class MediaScanner implements Handler.Callback {
 				startQuickScan(NATIVE_VRFY_COALESCE_DELAY);
 			}
 		};
-		context.getContentResolver().registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, false, mObserver);
+		context.getContentResolver().registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, mObserver);
 	}
 
 	/**
@@ -119,6 +119,7 @@ public class MediaScanner implements Handler.Callback {
 	 * library for new and changed files
 	 */
 	public void startNormalScan() {
+		setNativeLastMtime(MTIME_DIRTY);
 		mScanPlan.addNextStep(RPC_NATIVE_VRFY, null)
 			.addNextStep(RPC_LIBRARY_VRFY, null);
 		mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_RPC, RPC_KICKSTART, 0));
@@ -164,10 +165,7 @@ public class MediaScanner implements Handler.Callback {
 	public void flushDatabase() {
 		mBackend.setPendingDeletion();
 		mPendingCleanup = true;
-
-		MediaLibrary.Preferences prefs = MediaLibrary.getPreferences(mContext);
-		prefs._nativeLastMtime = 0;
-		MediaLibrary.setPreferences(mContext, prefs);
+		setNativeLastMtime(MTIME_PRISTINE);
 	}
 
 	/**
@@ -282,6 +280,19 @@ public class MediaScanner implements Handler.Callback {
 		return true;
 	}
 
+	private static final int MTIME_PRISTINE = 0;
+	private static final int MTIME_DIRTY = 1;
+	/**
+	 * Updates the _nativeLastMtime value in the media scanner storage
+	 *
+	 * @param mtime or one of MTIME_*
+	 */
+	private void setNativeLastMtime(int mtime) {
+		MediaLibrary.Preferences prefs = MediaLibrary.getPreferences(mContext);
+		prefs._nativeLastMtime = mtime;
+		MediaLibrary.setPreferences(mContext, prefs);
+	}
+
 	/**
 	 * Triggers an update to the scan progress notification
 	 *
@@ -325,7 +336,7 @@ public class MediaScanner implements Handler.Callback {
 	private void guessQuickScanPlan() {
 		int lastSeenDbSize = MediaLibrary.getPreferences(mContext)._nativeLibraryCount;
 		String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0";
-		String[] projection = { "COUNT(*)" };
+		String[] projection = { "COUNT("+MediaStore.Audio.Media.IS_MUSIC+")" };
 		Cursor cursor = null;
 		try {
 			cursor = mContext.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection, null, null);
@@ -388,9 +399,7 @@ public class MediaScanner implements Handler.Callback {
 			}
 		} else {
 			cursor.close();
-			MediaLibrary.Preferences prefs = MediaLibrary.getPreferences(mContext);
-			prefs._nativeLastMtime = mtime;
-			MediaLibrary.setPreferences(mContext, prefs);
+			setNativeLastMtime(mtime);
 			Log.v("VanillaMusic", "NativeLibraryScanner finished, mtime mark is now at "+mtime);
 		}
 	}
@@ -426,6 +435,9 @@ public class MediaScanner implements Handler.Callback {
 		if (new File(dir, ".nomedia").exists())
 			return;
 
+		if (isDotfile(dir))
+			return;
+
 		File[] dirents = dir.listFiles();
 		if (dirents == null)
 			return;
@@ -435,6 +447,17 @@ public class MediaScanner implements Handler.Callback {
 			mHandler.sendMessage(mHandler.obtainMessage(MSG_SCAN_RPC, rpc, 0, file));
 		}
 	}
+
+	/**
+	 * Checks if a string is null, empty or whitespace.
+	 *
+	 * @param s the string to check
+	 * @return true if null, empty or whitespace
+	 */
+	private static boolean isUnset(String s) {
+		return s == null || s.trim().isEmpty();
+	}
+
 
 	/**
 	 * Inspects a single file and adds it to the database or removes it. maybe.
@@ -448,6 +471,9 @@ public class MediaScanner implements Handler.Callback {
 		long songId  = MediaLibrary.hash63(path);
 
 		if (isBlacklisted(file))
+			return false;
+
+		if (isDotfile(file))
 			return false;
 
 		long dbEntryMtime = mBackend.getColumnFromSongId(MediaLibrary.SongColumns.MTIME, songId) * 1000; // this is in unixtime -> convert to 'ms'
@@ -483,21 +509,30 @@ public class MediaScanner implements Handler.Callback {
 		if (mustInsert) {
 			hasChanged = true;
 
+			// Clear old flags of this song:
+			songFlags &= ~MediaLibrary.SONG_FLAG_OUTDATED;   // This file is not outdated anymore
+			songFlags &= ~MediaLibrary.SONG_FLAG_NO_ARTIST;  // May find an artist now.
+			songFlags &= ~MediaLibrary.SONG_FLAG_NO_ALBUM;   // May find an album now.
+
 			// Get tags which always must be set
 			String title = tags.getFirst(MediaMetadataExtractor.TITLE);
-			if (title == null)
+			if (isUnset(title))
 				title = file.getName();
 
 			String album = tags.getFirst(MediaMetadataExtractor.ALBUM);
-			if (album == null)
+			if (isUnset(album)) {
 				album = "<No Album>";
+				songFlags |= MediaLibrary.SONG_FLAG_NO_ALBUM;
+			}
 
 			String artist = tags.getFirst(MediaMetadataExtractor.ARTIST);
-			if (artist == null)
+			if (isUnset(artist)) {
 				artist = "<No Artist>";
+				songFlags |= MediaLibrary.SONG_FLAG_NO_ARTIST;
+			}
 
 			String discNumber = tags.getFirst(MediaMetadataExtractor.DISC_NUMBER);
-			if (discNumber == null)
+			if (isUnset(discNumber))
 				discNumber = "1"; // untagged, but most likely '1' - this prevents annoying sorting issues with partially tagged files
 
 			long artistId = MediaLibrary.hash63(artist);
@@ -520,7 +555,7 @@ public class MediaScanner implements Handler.Callback {
 			v.put(MediaLibrary.SongColumns.PLAYCOUNT,   playCount);
 			v.put(MediaLibrary.SongColumns.SKIPCOUNT,   skipCount);
 			v.put(MediaLibrary.SongColumns.PATH,        path);
-			v.put(MediaLibrary.SongColumns.FLAGS,       (songFlags &~MediaLibrary.SONG_FLAG_OUTDATED));
+			v.put(MediaLibrary.SongColumns.FLAGS,       songFlags);
 			mBackend.insert(MediaLibrary.TABLE_SONGS, null, v);
 
 			v.clear();
@@ -645,6 +680,17 @@ public class MediaScanner implements Handler.Callback {
 		return (wlPoints < 0 || blPoints > wlPoints);
 	}
 
+
+	private static final Pattern sDotfilePattern = Pattern.compile("^\\..*$", Pattern.CASE_INSENSITIVE);
+	/**
+	 * Returns true if the file is a hidden dotfile.
+	 *
+	 * @param file to inspect
+	 * @return boolean
+	 */
+	private boolean isDotfile(File file) {
+		return sDotfilePattern.matcher(file.getName()).matches();
+	}
 
 	// MediaScanPlan describes how we are going to perform the media scan
 	class MediaScanPlan {

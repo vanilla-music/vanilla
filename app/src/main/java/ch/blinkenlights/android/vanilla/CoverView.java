@@ -311,7 +311,6 @@ public final class CoverView extends View implements Handler.Callback {
 		int height = getHeight();
 		int x = 0;
 		int scrollX = mScrollX;
-		double padding = 14 * sDensity;
 		boolean snapshot = !mScroller.isFinished();
 		Bitmap bitmap;
 
@@ -319,7 +318,7 @@ public final class CoverView extends View implements Handler.Callback {
 			bitmap = snapshot ? mBitmapBucket.getSnapshot(i) : mBitmapBucket.getBitmap(i);
 			if (bitmap != null && scrollX + width > x && scrollX < x + width) {
 				final int xOffset = (width - bitmap.getWidth()) / 2;
-				final int yOffset = (int)(padding + (height - bitmap.getHeight()) / 2);
+				final int yOffset = (int)(height - bitmap.getHeight()) / 2;
 				canvas.drawBitmap(bitmap, x + xOffset - scrollX, yOffset, null);
 			}
 			x += width;
@@ -543,7 +542,7 @@ public final class CoverView extends View implements Handler.Callback {
 		public Bitmap grepBitmap(Song song) {
 			final int len = mCacheSongs.length;
 			for (int i = 0; i < len ; i++) {
-				if (mCacheSongs[i] == song) {
+				if (song != null && song.equals(mCacheSongs[i])) {
 					return mCacheBitmaps[i];
 				}
 			}

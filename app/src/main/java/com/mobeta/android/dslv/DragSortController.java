@@ -82,6 +82,11 @@ public class DragSortController extends SimpleFloatViewManager implements View.O
     private int mPositionX;
 
     /**
+     * Class which will receive onTouch events
+     */
+    private View.OnTouchListener mSecondaryOnTouchListener;
+
+    /**
      * Calls {@link #DragSortController(DragSortListView, int)} with a
      * 0 drag handle id, FLING_RIGHT_REMOVE remove mode,
      * and ON_DOWN drag init. By default, sorting is enabled, and
@@ -236,6 +241,10 @@ public class DragSortController extends SimpleFloatViewManager implements View.O
 
     @Override
     public boolean onTouch(View v, MotionEvent ev) {
+        if (mSecondaryOnTouchListener != null) {
+            mSecondaryOnTouchListener.onTouch(v, ev);
+        }
+
         if (!mDslv.isDragEnabled() || mDslv.listViewIntercepted()) {
             return false;
         }
@@ -277,6 +286,15 @@ public class DragSortController extends SimpleFloatViewManager implements View.O
         if (mRemoveEnabled && mIsRemoving) {
             mPositionX = position.x;
         }
+    }
+
+    /**
+     * We consume onTouch events: ALSO dispatch them to the listener
+     * if requested.
+     */
+    @Override
+    public void setSecondaryOnTouchListener(View.OnTouchListener l) {
+        mSecondaryOnTouchListener = l;
     }
 
     /**

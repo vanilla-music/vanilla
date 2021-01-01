@@ -44,6 +44,10 @@
   <string name="rename">Alinomi</string>
   <string name="save_as_playlist">Konservi kiel ludliston…</string>
   <string name="add_to_playlist">Aldoni al ludlisto…</string>
+  <string name="add_to_homescreen">Aldoni al hejmekrano…</string>
+  <string name="add_to">Aldoni al…</string>
+  <string name="playlist">Ludlisto</string>
+  <string name="homescreen">Hejmekrano</string>
   <string name="add_to_favorites">Aldoni al ŝatataj</string>
   <string name="remove_from_favorites">Forigi el ŝatataj</string>
   <string name="playlist_favorites">Ŝatataj</string>
@@ -113,6 +117,7 @@
   <string name="play_all">Ludi ĉiujn</string>
   <string name="enqueue_all">Envicigi ĉiujn</string>
   <string name="all_songs">Ĉiuj muzikaĵoj</string>
+  <string name="details">Detaloj</string>
   <string name="more_from_artist">Pli de artisto</string>
   <string name="more_from_album">Pli el albumo</string>
   <string name="title">titolo</string>
@@ -202,13 +207,19 @@
   <string name="idle_timeout_title">Templimo de neaktiveco</string>
   <string name="enable_scroll_to_song_title">Rulumi al ludata muzikaĵo</string>
   <string name="enable_scroll_to_song_summary">Rulumi al nune ludata muzikaĵo/albumo/artisto en biblioteko</string>
+  <string name="queue_enable_scroll_to_song_title">Rulumi al ludata muzikaĵo en ludvico</string>
+  <string name="queue_enable_scroll_to_song_summary">Rulumi al nune ludato muzikaĵo en la ludvico je ŝanĝo de muzikaĵo</string>
+  <string name="jump_to_enqueued_on_play_title">Salti al envicigita muzikaĵo je premi “ludi”</string>
+  <string name="jump_to_enqueued_on_play_summary">Se la petata muzikaĵo jam estas en la ludvico, salti al ĝi anstataŭ forviŝi la ludvicon</string>
   <string name="coverloader_android_title">Enlegi kovrilon de Androido</string>
   <string name="coverloader_android_summary">Peti internan datumbazon de Androido pri album-kovrilo</string>
   <string name="coverloader_vanilla_title">Enlegi kovrilon de dosierujo</string>
   <string name="coverloader_vanilla_summary">Serĉi pri bildaj dosieroj: cover.jpg, album.jpg aŭ artwork.jpg kaj vidigi ilin kiel album-kovrilon</string>
   <string name="coverloader_shadow_title">Enlegi kovrilon de kaŝita dosierujo</string>
   <string name="coverloader_shadow_summary">Provi enlegi album-kovrilon de “/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg”</string>
-  <string name="cover_on_lockscreen_title">Montri kovrilon sur ŝlos-ekranon</string>
+  <string name="coverloader_inline_title">Enlegi kovrilon de dosier-etikedoj</string>
+  <string name="coverloader_inline_summary">Provi enlegi kovrilon de enigitaj etikedoj de dosiero</string>
+  <string name="cover_on_lockscreen_title">Montri kovrilon sur ŝlos-ekrano</string>
   <string name="cover_on_lockscreen_summary">Vidigi la album-kovrilon de nune ludata muzikaĵo sur la ŝlos-ekrano</string>
   <string name="double_tap_title">Du-frapeta fenestraĵo</string>
   <string name="double_tap_summary">Duoble frapetu la fenestraĵon 1x1 por malfermi ludilon. Okazas 400ms de prokrasto antaŭ la fenestraĵo respondas al agoj.</string>
@@ -259,6 +270,12 @@
   <string name="preferences_action_enqueue_current_album">Envicigi albumon</string>
   <string name="preferences_action_enqueue_current_artist">Envicigi artiston</string>
   <string name="preferences_action_enqueue_current_genre">Envicigi ĝenron</string>
+  <string name="jump_to_time">Salti al tempo</string>
+  <string name="time_separator">:</string>
+  <string name="hour_hint">HH</string>
+  <string name="minute_hint">MM</string>
+  <string name="second_hint">SS</string>
+  <string name="error_invalid_position">Erara tempo</string>
   <string name="filebrowser_start">Ĉefdosierujo</string>
   <string name="customize_filebrowser_start">Dosier-foliumilo ekas en tiu ĉi dosierujo</string>
   <string name="select">Elekti</string>
@@ -268,6 +285,15 @@
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s ludliston “%.0f popularaj”</string>
   <string name="autoplaylist_playcounts_disabled">Ne aŭtomate krei ludliston</string>
   <string name="autoplaylist_playcounts_name" formatted="false">%d popularaj</string>
+  <string name="playlist_sync_mode_title">Samtempigo de ludlistoj</string>
+  <string name="playlist_sync_all">Plena samtempigo</string>
+  <string name="playlist_sync_only_import">Enporti .m3u, neniam elporti</string>
+  <string name="playlist_sync_only_export">Konservi .m3u, neniam enporti</string>
+  <string name="playlist_sync_disabled">Malaktiva</string>
+  <string name="playlist_sync_folder_title">Dosierujo de samptempigo</string>
+  <string name="playlist_sync_folder_summary">Dosierujo por uzi por samtempigi ludlistojn</string>
+  <string name="playlist_export_relative_paths_title">Elporti uzante relativajn dosierindikojn</string>
+  <string name="playlist_export_relative_paths_summary">Dosier-indikoj interrilatigas al la dosierujo de ludlisto</string>
   <string name="permission_request_summary">Vanila Muziko postulas permeson por legi SD-karton por vidigi vian muzikan bibliotekon</string>
   <string name="reverse_sort">Ordigi inverse</string>
   <string name="share">Kunhavigi…</string>
@@ -277,6 +303,7 @@
   <string name="duration">Daŭro</string>
   <string name="dump_database">Kopii datumbazon</string>
   <string name="dump_database_result">Kopiis datumbazon al “%s”</string>
+  <string name="force_m3u_import">Devigi reenporti .m3u</string>
   <string name="media_library">Muzik-biblioteko</string>
   <string name="media_folders_header">Indeksataj dosierujoj</string>
   <string name="media_scan_header">Muzik-skanilo</string>
@@ -301,6 +328,7 @@
   <string name="folder_neutral">Neŭtra</string>
   <!--Plugin system-->
   <string name="plugins">Kromprogramoj</string>
+  <string name="plugin_needs_upgrade">Bonvolu ĝisdatigi la kromprogramon “%s” al la plej aktuala versio</string>
   <!--Theme names-->
   <string name="theme_name_standard_light">Norma</string>
   <string name="theme_name_standard_dark">Norma (malhela)</string>

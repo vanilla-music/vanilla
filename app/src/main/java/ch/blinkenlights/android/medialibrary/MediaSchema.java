@@ -191,9 +191,13 @@ public class MediaSchema {
 	 * View which includes album and artist information
 	 */
 	private static final String VIEW_CREATE_ALBUMS_ARTISTS = "CREATE VIEW "+ MediaLibrary.VIEW_ALBUMS_ARTISTS+ " AS "
-	  + "SELECT *, " + VIEW_ARTIST_SELECT + " FROM " + MediaLibrary.TABLE_ALBUMS
+	  + "SELECT " + MediaLibrary.TABLE_ALBUMS + ".*, " + VIEW_ARTIST_SELECT + ", SUM(" + MediaLibrary.SongColumns.DURATION + ")" + " AS " + MediaLibrary.SongColumns.DURATION
+	  +" FROM " + MediaLibrary.TABLE_ALBUMS
 	  +" LEFT JOIN "+MediaLibrary.TABLE_CONTRIBUTORS+" AS _artist"
 	  +" ON _artist."+MediaLibrary.ContributorColumns._ID+" = "+MediaLibrary.TABLE_ALBUMS+"."+MediaLibrary.AlbumColumns.PRIMARY_ARTIST_ID
+	  +" LEFT JOIN " + MediaLibrary.TABLE_SONGS
+	  +" ON " + MediaLibrary.TABLE_SONGS + "." + MediaLibrary.SongColumns.ALBUM_ID + " = " + MediaLibrary.TABLE_ALBUMS + "." + MediaLibrary.AlbumColumns._ID
+	  +" GROUP BY " + MediaLibrary.TABLE_ALBUMS + "." + MediaLibrary.AlbumColumns._ID
 	  +" ;";
 
 	/**
@@ -226,7 +230,7 @@ public class MediaSchema {
 	/**
 	 * View like VIEW_CREATE_ARTISTS but includes playlist information
 	 */
-	private static final String VIEW_CREATE_PLAYLIST_SONGS = "CREATE VIEW "+ MediaLibrary.VIEW_PLAYLIST_SONGS+" AS "
+	private static final String VIEW_CREATE_PLAYLISTS_SONGS = "CREATE VIEW "+ MediaLibrary.VIEW_PLAYLISTS_SONGS+" AS "
 	  + "SELECT *, " + VIEW_ARTIST_SELECT + " FROM " + MediaLibrary.TABLE_PLAYLISTS_SONGS
 	  +" LEFT JOIN "+MediaLibrary.TABLE_SONGS+" ON "+MediaLibrary.TABLE_PLAYLISTS_SONGS+"."+MediaLibrary.PlaylistSongColumns.SONG_ID+"="+MediaLibrary.TABLE_SONGS+"."+MediaLibrary.SongColumns._ID
 	  // -> same sql as VIEW_CREATE_SONGS_ALBUMS_ARTISTS follows:
@@ -236,6 +240,16 @@ public class MediaSchema {
 	  +" AND "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+"."+MediaLibrary.ContributorSongColumns.SONG_ID+" = "+MediaLibrary.TABLE_SONGS+"."+MediaLibrary.SongColumns._ID
 	  +" LEFT JOIN "+MediaLibrary.TABLE_CONTRIBUTORS+" AS _artist ON _artist."+MediaLibrary.ContributorColumns._ID+" = "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+"."+MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID
 	  +" ;";
+
+	/**
+	 * View of all playlists, including additional information such as the duration.
+	 */
+	private static final String VIEW_CREATE_PLAYLISTS = "CREATE VIEW "+ MediaLibrary.VIEW_PLAYLISTS+ " AS "
+		+ "SELECT " + MediaLibrary.TABLE_PLAYLISTS + ".*, SUM(_s." + MediaLibrary.SongColumns.DURATION + ") AS " + MediaLibrary.SongColumns.DURATION + " FROM " + MediaLibrary.TABLE_PLAYLISTS
+		+" LEFT JOIN " + MediaLibrary.TABLE_PLAYLISTS_SONGS + " AS _ps ON " + MediaLibrary.TABLE_PLAYLISTS + "." + MediaLibrary.PlaylistColumns._ID +" = _ps." + MediaLibrary.PlaylistSongColumns.PLAYLIST_ID
+		+" LEFT JOIN " + MediaLibrary.TABLE_SONGS + " AS _s ON _s." + MediaLibrary.SongColumns._ID + " = _ps." + MediaLibrary.PlaylistSongColumns.SONG_ID
+		+" GROUP BY " + MediaLibrary.TABLE_PLAYLISTS + "." + MediaLibrary.PlaylistColumns._ID
+		+" ;";
 
 	/**
 	 * Creates a new database schema on dbh
@@ -260,7 +274,8 @@ public class MediaSchema {
 		dbh.execSQL(VIEW_CREATE_ARTISTS);
 		dbh.execSQL(VIEW_CREATE_ALBUMARTISTS);
 		dbh.execSQL(VIEW_CREATE_COMPOSERS);
-		dbh.execSQL(VIEW_CREATE_PLAYLIST_SONGS);
+		dbh.execSQL(VIEW_CREATE_PLAYLISTS);
+		dbh.execSQL(VIEW_CREATE_PLAYLISTS_SONGS);
 	}
 
 	/**
@@ -316,10 +331,10 @@ public class MediaSchema {
 			// any harm to newer sqlite versions. (We know that this is the best index to use).
 			dbh.execSQL("DROP VIEW "+MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS);
 			dbh.execSQL("DROP VIEW "+MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS_HUGE);
-			dbh.execSQL("DROP VIEW "+MediaLibrary.VIEW_PLAYLIST_SONGS);
+			dbh.execSQL("DROP VIEW "+MediaLibrary.VIEW_PLAYLISTS_SONGS);
 			dbh.execSQL(VIEW_CREATE_SONGS_ALBUMS_ARTISTS);
 			dbh.execSQL(VIEW_CREATE_SONGS_ALBUMS_ARTISTS_HUGE);
-			dbh.execSQL(VIEW_CREATE_PLAYLIST_SONGS);
+			dbh.execSQL(VIEW_CREATE_PLAYLISTS_SONGS);
 		}
 
 		if (oldVersion >= 20170211 && oldVersion < 20180129) {
@@ -340,6 +355,15 @@ public class MediaSchema {
 			dbh.execSQL("DROP TABLE _migrate");
 		}
 
+		if (oldVersion < 20181021) {
+			// Recreate view to include album duration
+			dbh.execSQL("DROP VIEW " + MediaLibrary.VIEW_ALBUMS_ARTISTS);
+			dbh.execSQL(VIEW_CREATE_ALBUMS_ARTISTS);
+		}
+
+		if (oldVersion < 20190210) {
+			dbh.execSQL(VIEW_CREATE_PLAYLISTS);
+		}
 	}
 
 }

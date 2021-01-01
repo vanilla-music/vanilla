@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2015-2019 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,10 +22,17 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import android.os.Environment;
+import java.io.File;
+
 /**
  * SharedPreference default values. Must be kept in sync with keys in res/xml/prefs_*.xml.
  */
 public class PrefDefaults {
+	private PrefDefaults() {
+		// Private constructor to hide implicit one.
+	}
+
 	public static final Action  COVER_LONGPRESS_ACTION = Action.PlayPause;
 	public static final Action  COVER_PRESS_ACTION = Action.ToggleControls;
 	public static final String  DEFAULT_ACTION_INT = "9";
@@ -70,9 +77,12 @@ public class PrefDefaults {
 	public static final int     AUTOPLAYLIST_PLAYCOUNTS = 0;
 	public static final boolean IGNORE_AUDIOFOCUS_LOSS = false;
 	public static final boolean ENABLE_SCROLL_TO_SONG = false;
+	public static final boolean QUEUE_ENABLE_SCROLL_TO_SONG = false;
 	public static final boolean KEEP_SCREEN_ON = false;
-	public static final String  PLAYLIST_SYNC_MODE = "255";
-	public static final String  PLAYLIST_SYNC_FOLDER = "/sdcard/Playlists";
+	public static final String  PLAYLIST_SYNC_MODE = "0";
+	public static final String  PLAYLIST_SYNC_FOLDER = (new File(Environment.getExternalStorageDirectory(), "Playlists")).getAbsolutePath();
+	public static final boolean PLAYLIST_EXPORT_RELATIVE_PATHS = false;
+	public static final boolean JUMP_TO_ENQUEUED_ON_PLAY = true;
 	public static final boolean KIDMODE_ENABLED = false;
 	public static final boolean KIDMODE_SHOW_QUEUE = false;
 	public static final boolean KIDMODE_SHOW_FAVORITE = false;

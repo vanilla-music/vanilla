@@ -78,16 +78,32 @@ public class ID3v2File extends Common {
 		s.seek(0);
 		s.read(v2hdr);
 
-		int v3minor = ((b2be32(v2hdr,0))) & 0xFF;   // swapped ID3\04 -> ver. ist the first byte
-		int v3len   = ((b2be32(v2hdr,6)));          // total size EXCLUDING the this 10 byte header
+		int v3major = (b2be32(v2hdr, 0)) & 0xFF;   // swapped ID3\04 -> ver. ist the first byte
+		int v3minor = (b2be32(v2hdr, 1)) & 0xFF;   // minor version, not used by us.
+		int v3flags = (b2be32(v2hdr, 2)) & 0xFF;   // flags such as extended headers.
+		int v3len   = (b2be32(v2hdr, 6));          // total size EXCLUDING the this 10 byte header
 		v3len       = unsyncsafe(v3len);
 
-		// debug(">> tag version ID3v2."+v3minor);
-		// debug(">> LEN= "+v3len+" // "+v3len);
+		// In 2.4, bit #6 indicates whether or not this file has an extended header
+		boolean flag_ext_hdr = v3major >= 4 && (v3flags & (1 << 6)) != 0;
+
+		if (flag_ext_hdr) {
+			// The extended header is at least 6 bytes:
+			// * 4 byts of size
+			// * 1 byte numflags
+			// * 1 byte extended flags
+			byte[] exthdr = new byte[6];
+			long pos = s.getFilePointer();
+			s.read(exthdr);
+
+			// we got the length, so we can seek to the header end.
+			int extlen = (b2be32(exthdr, 0));
+			s.seek(pos + extlen);
+		}
 
 		// we should already be at the first frame
 		// so we can start the parsing right now
-		tags = parse_v3_frames(s, v3len, v3minor);
+		tags = parse_v3_frames(s, v3len, v3major);
 		tags.put("_hdrlen", v3len+v2hdr_len);
 		return tags;
 	}
@@ -106,14 +122,14 @@ public class ID3v2File extends Common {
 	/**
 	 * Calculates the frame length baased on the frame size and the
 	 */
-	private int calculateFrameLength(byte[] frame, int offset, int v3minor) {
+	private int calculateFrameLength(byte[] frame, int offset, int v3major) {
 		// ID3v2 (aka ID3v2.2) had a 3-byte unencoded length field.
-		if (v3minor < 3) {
+		if (v3major < 3) {
 			return (frame[offset] << 16) + (frame[offset+1] << 8) + frame[offset+2];
 		}
 		int rawlen = b2be32(frame, offset);
 		// Encoders prior ID3v2.4 did not encode the frame length
-		if (v3minor < 4) {
+		if (v3major < 4) {
 			return rawlen;
 		}
 		return unsyncsafe(rawlen);
@@ -122,23 +138,22 @@ public class ID3v2File extends Common {
 	/* Parses all ID3v2 frames at the current position up until payload_len
 	** bytes were read
 	*/
-	public HashMap parse_v3_frames(RandomAccessFile s, long payload_len, int v3minor) throws IOException {
+	public HashMap parse_v3_frames(RandomAccessFile s, long payload_len, int v3major) throws IOException {
 		HashMap tags = new HashMap();
 		// ID3v2 (aka ID3v2.2) had a 6-byte header of a 3-byte name and a 3-byte length.
 		// ID3v2.3 increased the header size to 10 bytes, with a 4-byte name and a 4-byte length
-		int namelen = (v3minor >= 3 ? 4 : 3);
-		int headerlen = (v3minor >= 3 ? 10 : 6);
+		int namelen = (v3major >= 3 ? 4 : 3);
+		int headerlen = (v3major >= 3 ? 10 : 6);
 		byte[] frame   = new byte[headerlen];
 		long bread     = 0;                      // total amount of read bytes
 
 		while(bread < payload_len) {
 			bread += s.read(frame);
 			String framename = new String(frame, 0, namelen);
-			int slen = calculateFrameLength(frame, namelen, v3minor);
-
+			int slen = calculateFrameLength(frame, namelen, v3major);
 			/* Abort on silly sizes */
 			long bytesRemaining = payload_len - bread;
-			if(slen < 1 || slen > (bytesRemaining))
+			if(slen < 1 || slen > bytesRemaining)
 				break;
 
 			byte[] xpl = new byte[slen];

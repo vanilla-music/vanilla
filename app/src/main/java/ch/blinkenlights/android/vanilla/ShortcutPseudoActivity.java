@@ -57,11 +57,22 @@ public class ShortcutPseudoActivity extends Activity {
 			case PlaybackService.ACTION_PREVIOUS_SONG:
 			case PlaybackService.ACTION_PREVIOUS_SONG_AUTOPLAY:
 			case PlaybackService.ACTION_CYCLE_SHUFFLE:
-			case PlaybackService.ACTION_CYCLE_REPEAT:
+			case PlaybackService.ACTION_CYCLE_REPEAT: {
 				Intent intent = new Intent(this, PlaybackService.class);
 				intent.setAction(action);
 				startService(intent);
 				break;
+			}
+			case PlaybackService.ACTION_FROM_TYPE_ID_AUTOPLAY: {
+				// From pinned shortcuts: Same as other actions, but this
+				// includes some extras.
+				Intent intent = new Intent(this, PlaybackService.class);
+				intent.setAction(action);
+				intent.putExtra(LibraryAdapter.DATA_TYPE, getIntent().getIntExtra(LibraryAdapter.DATA_TYPE, MediaUtils.TYPE_INVALID));
+				intent.putExtra(LibraryAdapter.DATA_ID, getIntent().getLongExtra(LibraryAdapter.DATA_ID, LibraryAdapter.INVALID_ID));
+				startService(intent);
+				break;
+			}
 			default:
 				throw new IllegalArgumentException("No such action: " + action);
 		}

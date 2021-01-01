@@ -44,6 +44,10 @@
   <string name="rename">重新命名</string>
   <string name="save_as_playlist">儲存為播放清單…</string>
   <string name="add_to_playlist">加到播放清單…</string>
+  <string name="add_to_homescreen">加入到主畫面…</string>
+  <string name="add_to">增加到…</string>
+  <string name="playlist">播放清單</string>
+  <string name="homescreen">主畫面</string>
   <string name="add_to_favorites">加到我的最愛</string>
   <string name="remove_from_favorites">從我的最愛移除</string>
   <string name="playlist_favorites">我的最愛</string>
@@ -108,6 +112,7 @@
   <string name="play_all">全部播放</string>
   <string name="enqueue_all">佇列全部</string>
   <string name="all_songs">所有曲目</string>
+  <string name="details"> 詳細敘述</string>
   <string name="more_from_artist">更多來的自演出者</string>
   <string name="more_from_album">更多來自專輯</string>
   <string name="title">標題</string>
@@ -194,12 +199,18 @@
   <string name="idle_timeout_title">閒置超時</string>
   <string name="enable_scroll_to_song_title">捲動到歌曲標題</string>
   <string name="enable_scroll_to_song_summary">在媒體庫清單，捲動到目前播放的歌曲/專輯/演出者</string>
+  <string name="queue_enable_scroll_to_song_title">在佇列中捲動來追蹤標題</string>
+  <string name="queue_enable_scroll_to_song_summary">當佇列中的歌曲更改時，捲動到目前正在播放的曲目</string>
+  <string name="jump_to_enqueued_on_play_title">跳到在\'播放\'上已佇列的歌曲</string>
+  <string name="jump_to_enqueued_on_play_summary">如果要求的歌曲已經在佇列中，則跳到它替代更新佇列</string>
   <string name="coverloader_android_title">從 Android 載入封面</string>
   <string name="coverloader_android_summary">查詢 Androids 內部的媒體資料庫，以用於專輯封面</string>
   <string name="coverloader_vanilla_title">從資料夾載入封面</string>
   <string name="coverloader_vanilla_summary">尋找名為 cover.jpg、album.jpg 或 artwork.jpg 的影像檔案，並顯示作為專輯封面</string>
   <string name="coverloader_shadow_title">從隱藏資料夾載入封面</string>
   <string name="coverloader_shadow_summary">試著從 \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\' 載入封面</string>
+  <string name="coverloader_inline_title">從檔案標籤載入圖片</string>
+  <string name="coverloader_inline_summary">試著從檔案標籤載入已嵌入的圖片</string>
   <string name="cover_on_lockscreen_title">在螢幕鎖定時，顯示封面</string>
   <string name="cover_on_lockscreen_summary">在螢幕鎖定畫面上，顯示目前播放歌曲的封面</string>
   <string name="double_tap_title">雙點擊小工具</string>
@@ -251,6 +262,12 @@
   <string name="preferences_action_enqueue_current_album">以專輯儲入佇列</string>
   <string name="preferences_action_enqueue_current_artist">以演出者存入佇列</string>
   <string name="preferences_action_enqueue_current_genre">以流派存入佇列</string>
+  <string name="jump_to_time">跳到時間</string>
+  <string name="time_separator">：</string>
+  <string name="hour_hint">HH</string>
+  <string name="minute_hint">MM</string>
+  <string name="second_hint">SS</string>
+  <string name="error_invalid_position">無效的位置</string>
   <string name="filebrowser_start">啟始目錄</string>
   <string name="customize_filebrowser_start">在此目錄開始瀏覽檔案</string>
   <string name="select">選擇</string>
@@ -260,6 +277,15 @@
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s \'Top %.0f\' 播放清單</string>
   <string name="autoplaylist_playcounts_disabled">不要建立自動播放清單</string>
   <string name="autoplaylist_playcounts_name" formatted="false">置頂 %d</string>
+  <string name="playlist_sync_mode_title">播放清單同步</string>
+  <string name="playlist_sync_all">完整同步</string>
+  <string name="playlist_sync_only_import">匯入 M3U，永不匯出</string>
+  <string name="playlist_sync_only_export">寫入 M3U，永不匯入</string>
+  <string name="playlist_sync_disabled">停用</string>
+  <string name="playlist_sync_folder_title">同步資料夾</string>
+  <string name="playlist_sync_folder_summary">同步播放清單使用的資料夾</string>
+  <string name="playlist_export_relative_paths_title">使用相對路徑匯出</string>
+  <string name="playlist_export_relative_paths_summary">相對於播放清單的參照檔案路徑</string>
   <string name="permission_request_summary">Vanilla 音樂需要讀取的權限，以顯示您的媒體庫</string>
   <string name="reverse_sort">反向排序</string>
   <string name="share">分享…</string>
@@ -269,6 +295,7 @@
   <string name="duration">持續時間</string>
   <string name="dump_database">轉儲資料庫</string>
   <string name="dump_database_result">資料庫轉儲到 \'%s\'</string>
+  <string name="force_m3u_import">強制將 M3U 再次輸入</string>
   <string name="media_library">媒體庫</string>
   <string name="media_folders_header">索引目錄</string>
   <string name="media_scan_header">媒體掃描</string>
@@ -293,6 +320,7 @@
   <string name="folder_neutral">中立</string>
   <!--Plugin system-->
   <string name="plugins">外掛</string>
+  <string name="plugin_needs_upgrade">請將外掛 %s 升級到最新版本</string>
   <!--Theme names-->
   <string name="theme_name_standard_light">標準</string>
   <string name="theme_name_standard_dark">標準(深色)</string>

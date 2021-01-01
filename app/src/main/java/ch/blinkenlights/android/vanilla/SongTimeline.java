@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
- * Copyright (C) 2015-2017 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2015-2019 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -749,11 +749,20 @@ public final class SongTimeline {
 		int added = 0;                 // Items actually added to the queue
 
 		if (count == 0 && type == MediaUtils.TYPE_FILE && query.selectionArgs.length == 1) {
+			// This seems to be a simple file query which lead to no results.
+			// The file might just be unindexed, so try to return a file cursor:
 			String pathQuery = query.selectionArgs[0];
-			pathQuery = pathQuery.substring(0,pathQuery.length()-1); // remove '%' -> this used to be an sql query!
-			cursor.close(); // close old version
-			cursor = MediaUtils.getCursorForFileQuery(pathQuery);
-			count = cursor.getCount();
+			int len = pathQuery.length();
+			if (len > 0) {
+				String lastchar = pathQuery.substring(len-1);
+				if (lastchar.equals("%")) {
+					pathQuery = pathQuery.substring(0, len-1);
+				}
+
+				cursor.close(); // close old version
+				cursor = MediaUtils.getCursorForFileQuery(pathQuery);
+				count = cursor.getCount();
+			}
 		}
 
 		if (count == 0) {
@@ -830,6 +839,9 @@ public final class SongTimeline {
 						case MediaUtils.TYPE_SONG:
 							id = song.id;
 							break;
+						case MediaUtils.TYPE_FILE:
+							id = song.id;
+							break;
 						default:
 							throw new IllegalArgumentException("Unsupported id type: " + type);
 						}
@@ -845,8 +857,8 @@ public final class SongTimeline {
 				MediaUtils.shuffle(timeline.subList(start, start+added), mShuffleMode == SHUFFLE_ALBUMS);
 
 			if (jumpSong != null) {
-				int jumpPos = timeline.indexOf(jumpSong);
-				if (jumpPos != start) {
+				int jumpPos = timeline.lastIndexOf(jumpSong);
+				if (jumpPos > start) {
 					// Get the sublist twice to avoid a ConcurrentModificationException.
 					timeline.addAll(timeline.subList(start, jumpPos));
 					timeline.subList(start, jumpPos).clear();

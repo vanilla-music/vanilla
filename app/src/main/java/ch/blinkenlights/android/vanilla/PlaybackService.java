@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2018 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2012-2019 Adrian Ulrich <adrian@blinkenlights.ch>
  * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -55,7 +55,6 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.os.Process;
 import android.os.SystemClock;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -167,6 +166,10 @@ public final class PlaybackService extends Service
 	 * Flushes the queue, switches to random mode and starts playing.
 	 */
 	public static final String ACTION_RANDOM_MIX_AUTOPLAY = "ch.blinkenlights.android.vanilla.action.RANDOM_MIX_AUTOPLAY";
+	/**
+	 * Flushes the queue and plays everything of the passed type/id combination.
+	 */
+	public static final String ACTION_FROM_TYPE_ID_AUTOPLAY = "ch.blinkenlights.android.vanilla.action.FROM_TYPE_ID_AUTOPLAY";
 	/**
 	 * Change the shuffle mode.
 	 */
@@ -294,10 +297,6 @@ public final class PlaybackService extends Service
 	 * Static referenced-array to PlaybackActivities, used for callbacks
 	 */
 	private static final ArrayList<TimelineCallback> sCallbacks = new ArrayList<TimelineCallback>(5);
-	/**
-	 * Cached app-wide SharedPreferences instance.
-	 */
-	private static SharedPreferences sSettings;
 
 	boolean mHeadsetPause;
 	private boolean mScrobble;
@@ -461,7 +460,7 @@ public final class PlaybackService extends Service
 		mNotificationHelper = new NotificationHelper(this, NOTIFICATION_CHANNEL, getString(R.string.app_name));
 		mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
 
-		SharedPreferences settings = getSettings(this);
+		SharedPreferences settings = SharedPrefHelper.getSettings(this);
 		settings.registerOnSharedPreferenceChangeListener(this);
 		mNotificationVisibility = Integer.parseInt(settings.getString(PrefKeys.NOTIFICATION_VISIBILITY, PrefDefaults.NOTIFICATION_VISIBILITY));
 		mNotificationNag = settings.getBoolean(PrefKeys.NOTIFICATION_NAG, PrefDefaults.NOTIFICATION_NAG);
@@ -476,7 +475,7 @@ public final class PlaybackService extends Service
 		mHeadsetOnly = settings.getBoolean(PrefKeys.HEADSET_ONLY, PrefDefaults.HEADSET_ONLY);
 		mStockBroadcast = settings.getBoolean(PrefKeys.STOCK_BROADCAST, PrefDefaults.STOCK_BROADCAST);
 		mNotificationAction = createNotificationAction(settings);
-		mHeadsetPause = getSettings(this).getBoolean(PrefKeys.HEADSET_PAUSE, PrefDefaults.HEADSET_PAUSE);
+		mHeadsetPause = SharedPrefHelper.getSettings(this).getBoolean(PrefKeys.HEADSET_PAUSE, PrefDefaults.HEADSET_PAUSE);
 		mShakeAction = settings.getBoolean(PrefKeys.ENABLE_SHAKE, PrefDefaults.ENABLE_SHAKE) ? Action.getAction(settings, PrefKeys.SHAKE_ACTION, PrefDefaults.SHAKE_ACTION) : Action.Nothing;
 		mShakeThreshold = settings.getInt(PrefKeys.SHAKE_THRESHOLD, PrefDefaults.SHAKE_THRESHOLD) / 10.0f;
 
@@ -508,8 +507,9 @@ public final class PlaybackService extends Service
 		mRemoteControlClient.initializeRemote();
 
 		int syncMode = Integer.parseInt(settings.getString(PrefKeys.PLAYLIST_SYNC_MODE, PrefDefaults.PLAYLIST_SYNC_MODE));
+		boolean exportRelativePaths = settings.getBoolean(PrefKeys.PLAYLIST_EXPORT_RELATIVE_PATHS, PrefDefaults.PLAYLIST_EXPORT_RELATIVE_PATHS);
 		String syncFolder = settings.getString(PrefKeys.PLAYLIST_SYNC_FOLDER, PrefDefaults.PLAYLIST_SYNC_FOLDER);
-		mPlaylistObserver = new PlaylistObserver(this, syncFolder, syncMode);
+		mPlaylistObserver = new PlaylistObserver(this, syncFolder, syncMode, exportRelativePaths);
 
 		mLooper = thread.getLooper();
 		mHandler = new Handler(mLooper, this);
@@ -600,6 +600,13 @@ public final class PlaybackService extends Service
 				// We therefore send a GO message to the same queue, so it will get handled as
 				// soon as the queue is ready.
 				mHandler.sendEmptyMessage(MSG_CALL_GO);
+			} else if (ACTION_FROM_TYPE_ID_AUTOPLAY.equals(action)) {
+				int type = intent.getIntExtra(LibraryAdapter.DATA_TYPE, MediaUtils.TYPE_INVALID);
+				long id = intent.getLongExtra(LibraryAdapter.DATA_ID, LibraryAdapter.INVALID_ID);
+				QueryTask query = MediaUtils.buildQuery(type, id, Song.FILLED_PROJECTION, null);
+				// Flush the queue and start playing:
+				query.mode = SongTimeline.MODE_PLAY;
+				addSongs(query);
 			} else if (ACTION_CLOSE_NOTIFICATION.equals(action)) {
 				mForceNotificationVisible = false;
 				pause();
@@ -624,6 +631,10 @@ public final class PlaybackService extends Service
 		// defer wakelock and close audioFX
 		enterSleepState();
 
+		// stop getting preference changes.
+		SharedPrefHelper.getSettings(this).unregisterOnSharedPreferenceChangeListener(this);
+
+		// shutdown all observers.
 		MediaLibrary.unregisterLibraryObserver(mObserver);
 		mPlaylistObserver.unregister();
 
@@ -720,37 +731,37 @@ public final class PlaybackService extends Service
 	 */
 	private void applyReplayGain(VanillaMediaPlayer mp) {
 
-		BastpUtil.GainValues rg = getReplayGainValues(mp.getDataSource()); /* base, track, album */
+		BastpUtil.GainValues rg = getReplayGainValues(mp.getDataSource());
 		float adjust = 0f;
 
-		if(mReplayGainAlbumEnabled) {
-			adjust = (rg.track != 0 ? rg.track : adjust); /* do we have track adjustment ? */
-			adjust = (rg.album != 0 ? rg.album : adjust); /* ..or, even better, album adj? */
+		if (mReplayGainAlbumEnabled) {
+			adjust = (rg.track != 0 ? rg.track : adjust); // Album gain enabled, but we use the track gain as a backup.
+			adjust = (rg.album != 0 ? rg.album : adjust); // If album gain is present, we will prefer it.
 		}
 
-		if(mReplayGainTrackEnabled || (mReplayGainAlbumEnabled && adjust == 0)) {
-			adjust = (rg.album != 0 ? rg.album : adjust); /* do we have album adjustment ? */
-			adjust = (rg.track != 0 ? rg.track : adjust); /* ..or, even better, track adj? */
+		if (mReplayGainTrackEnabled || (mReplayGainAlbumEnabled && adjust == 0)) {
+			adjust = (rg.album != 0 ? rg.album : adjust); // Track gain enabled, but we use the album gain as a backup.
+			adjust = (rg.track != 0 ? rg.track : adjust); // If track gain is present, we will prefer it.
 		}
 
-		if(adjust == 0 && rg.base == 0) {
-			/* No RG value found: decrease volume for untagged song if requested by user */
+		if (!rg.found) {
+			// No replay gain information found: adjust volume if requested by user.
 			adjust = (mReplayGainUntaggedDeBump-150)/10f;
 		} else {
-			/* This song has some replay gain info, we are now going to apply the 'bump' value
-			** The preferences stores the raw value of the seekbar, that's 0-150
-			** But we want -15 <-> +15, so 75 shall be zero */
-			adjust += 2*(mReplayGainBump-75)/10f; /* 2* -> we want +-15, not +-7.5 */
+			// This song has some replay gain info, we are now going to apply the 'bump' value
+			// The preferences stores the raw value of the seekbar, that's 0-150
+			// But we want -15 <-> +15, so 75 shall be zero.
+			adjust += 2*(mReplayGainBump-75)/10f; // 2* -> we want +-15, not +-7.5
 		}
 
 		if(mReplayGainAlbumEnabled == false && mReplayGainTrackEnabled == false) {
-			/* Feature is disabled: Make sure that we are going to 100% volume */
+			// Feature is disabled: Make sure that we are going to 100% volume.
 			adjust = 0f;
 		}
 
 		float rg_result = ((float)Math.pow(10, (adjust/20) ))*mFadeOut;
 		if(rg_result > 1.0f) {
-			rg_result = 1.0f; /* android would IGNORE the change if this is > 1 and we would end up with the wrong volume */
+			rg_result = 1.0f; // Android would IGNORE the change if this is > 1 and we would end up with the wrong volume.
 		} else if (rg_result < 0.0f) {
 			rg_result = 0.0f;
 		}
@@ -770,7 +781,7 @@ public final class PlaybackService extends Service
 	 * Closes any open AudioFX session and releases
 	 * our wakelock if held
 	 */
-	private void enterSleepState()
+	private synchronized void enterSleepState()
 	{
 		if (mMediaPlayer != null) {
 			if (mMediaPlayerAudioFxActive) {
@@ -823,7 +834,8 @@ public final class PlaybackService extends Service
 					// a link to it
 					mMediaPlayer.setNextMediaPlayer(mPreparedMediaPlayer);
 				}
-			} catch (IOException e) {
+			} catch (IOException | IllegalArgumentException e) {
+				Log.e("VanillaMusic", "Exception while preparing gapless media player: " + e);
 				mMediaPlayer.setNextMediaPlayer(null);
 				mPreparedMediaPlayer.reset();
 			}
@@ -848,17 +860,6 @@ public final class PlaybackService extends Service
 	}
 
 	/**
-	 * Return the SharedPreferences instance containing the PlaybackService
-	 * settings, creating it if necessary.
-	 */
-	public static SharedPreferences getSettings(Context context)
-	{
-		if (sSettings == null)
-			sSettings = PreferenceManager.getDefaultSharedPreferences(context);
-		return sSettings;
-	}
-
-	/**
 	 * Setup the accelerometer.
 	 */
 	private void setupSensor()
@@ -876,7 +877,7 @@ public final class PlaybackService extends Service
 
 	private void loadPreference(String key)
 	{
-		SharedPreferences settings = getSettings(this);
+		SharedPreferences settings = SharedPrefHelper.getSettings(this);
 		if (PrefKeys.HEADSET_PAUSE.equals(key)) {
 			mHeadsetPause = settings.getBoolean(PrefKeys.HEADSET_PAUSE, PrefDefaults.HEADSET_PAUSE);
 		} else if (PrefKeys.NOTIFICATION_ACTION.equals(key)) {
@@ -943,12 +944,13 @@ public final class PlaybackService extends Service
 			mReadaheadEnabled = settings.getBoolean(PrefKeys.ENABLE_READAHEAD, PrefDefaults.ENABLE_READAHEAD);
 		} else if (PrefKeys.AUTOPLAYLIST_PLAYCOUNTS.equals(key)) {
 			mAutoPlPlaycounts = settings.getInt(PrefKeys.AUTOPLAYLIST_PLAYCOUNTS, PrefDefaults.AUTOPLAYLIST_PLAYCOUNTS);
-		} else if (PrefKeys.PLAYLIST_SYNC_MODE.equals(key) || PrefKeys.PLAYLIST_SYNC_FOLDER.equals(key)) {
+		} else if (PrefKeys.PLAYLIST_SYNC_MODE.equals(key) || PrefKeys.PLAYLIST_SYNC_FOLDER.equals(key) || PrefKeys.PLAYLIST_EXPORT_RELATIVE_PATHS.equals(key)) {
 			int syncMode = Integer.parseInt(settings.getString(PrefKeys.PLAYLIST_SYNC_MODE, PrefDefaults.PLAYLIST_SYNC_MODE));
+			boolean exportRelativePaths = settings.getBoolean(PrefKeys.PLAYLIST_EXPORT_RELATIVE_PATHS, PrefDefaults.PLAYLIST_EXPORT_RELATIVE_PATHS);
 			String syncFolder = settings.getString(PrefKeys.PLAYLIST_SYNC_FOLDER, PrefDefaults.PLAYLIST_SYNC_FOLDER);
 
 			mPlaylistObserver.unregister();
-			mPlaylistObserver = new PlaylistObserver(this, syncFolder, syncMode);
+			mPlaylistObserver = new PlaylistObserver(this, syncFolder, syncMode, exportRelativePaths);
 		} else if (PrefKeys.SELECTED_THEME.equals(key) || PrefKeys.DISPLAY_MODE.equals(key)) {
 			// Theme changed: trigger a restart of all registered activites
 			ArrayList<TimelineCallback> list = sCallbacks;
@@ -1559,6 +1561,9 @@ public final class PlaybackService extends Service
 	 * Otherwise, calls {@link PlaybackService#setCurrentSong(int)} with arg1.
 	 */
 	private static final int MSG_CALL_GO = 8;
+	/**
+	 * The combination of (current song, current playback state) changed.
+	 */
 	private static final int MSG_BROADCAST_CHANGE = 10;
 	private static final int MSG_SAVE_STATE = 12;
 	private static final int MSG_PROCESS_SONG = 13;
@@ -1567,6 +1572,10 @@ public final class PlaybackService extends Service
 	private static final int MSG_GAPLESS_UPDATE = 16;
 	private static final int MSG_UPDATE_PLAYCOUNTS = 17;
 	private static final int MSG_SHOW_TOAST = 18;
+	/**
+	 * The current song's playback position changed.
+	 */
+	private static final int MSG_BROADCAST_SEEK = 19;
 
 	@Override
 	public boolean handleMessage(Message message)
@@ -1655,6 +1664,9 @@ public final class PlaybackService extends Service
 				Toast.makeText(this, resId, duration).show();
 			}
 			break;
+		case MSG_BROADCAST_SEEK:
+			mRemoteControlClient.updateRemote(mCurrentSong, mState, mForceNotificationVisible);
+			break;
 		default:
 			return false;
 		}
@@ -1712,7 +1724,20 @@ public final class PlaybackService extends Service
 		if (!mMediaPlayerInitialized)
 			return;
 		long position = (long)mMediaPlayer.getDuration() * progress / 1000;
-		mMediaPlayer.seekTo((int)position);
+		seekToPosition((int) position);
+	}
+
+	/**
+	 * Seeks to the given position in the current song.
+	 *
+	 * @param msec the offset in milliseconds from the start to seek to
+	 */
+	public void seekToPosition(int msec) {
+		if (!mMediaPlayerInitialized) {
+			return;
+		}
+		mMediaPlayer.seekTo(msec);
+		mHandler.sendEmptyMessage(MSG_BROADCAST_SEEK);
 	}
 
 	@Override
@@ -1944,6 +1969,7 @@ public final class PlaybackService extends Service
 		ArrayList<TimelineCallback> list = sCallbacks;
 		for (int i = list.size(); --i != -1; )
 			list.get(i).onPositionInfoChanged();
+		mRemoteControlClient.updateRemote(mCurrentSong, mState, mForceNotificationVisible);
 	}
 
 	private final LibraryObserver mObserver = new LibraryObserver() {

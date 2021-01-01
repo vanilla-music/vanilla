@@ -85,5 +85,9 @@ public class SimpleFloatViewManager implements DragSortListView.FloatViewManager
         mFloatBitmap = null;
     }
 
+    @Override
+    public void setSecondaryOnTouchListener(View.OnTouchListener l) {
+       // do nothing
+    }
 }
 

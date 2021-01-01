@@ -215,7 +215,7 @@ public class BottomBarControls extends LinearLayout
 	 * @return boolean old state
 	 */
 	public boolean showSearch(boolean visible) {
-		SharedPreferences settings = PlaybackService.getSettings(mContext);
+		SharedPreferences settings = SharedPrefHelper.getSettings(mContext);
 		if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && !settings.getBoolean(PrefKeys.KIDMODE_SHOW_SEARCH, PrefDefaults.KIDMODE_SHOW_SEARCH)) {
 			mSearchView.setVisibility(View.GONE);
 			mControlsContent.setVisibility(View.VISIBLE);

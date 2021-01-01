@@ -30,6 +30,7 @@
 		<item name="android:colorAccent">#ff3e677a</item>
 		<item name="android:colorPrimary">#ff37474f</item>
 		<item name="android:colorPrimaryDark">#ff263238</item>
+		<item name="themed_letter_tile_colors">@array/letter_tile_colors_light</item>
 	</style>
 
 	<style name="Playback" parent="VanillaBase">
@@ -46,9 +47,15 @@
 	</style>
 
 	<style name="PopupDialog" parent="android:Theme.Material.Light.Dialog.MinWidth">
+		<item name="overlay_background_color">@color/overlay_background_light</item>
 		<item name="background_circle_color">@color/material_grey_300</item>
 		<item name="controls_normal">@color/material_grey_900</item>
 		<item name="controls_active">#ff3e677a</item>
 	</style>
+
+	<style name="BottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+		<item name="android:colorBackground">@color/overlay_background_light</item>
+	</style>
+
 
 </resources>

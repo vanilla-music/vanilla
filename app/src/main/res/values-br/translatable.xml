@@ -1,6 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="app_name">Vanilla Music</string>
+  <string name="ok">Mat eo</string>
+  <string name="cancel">Nullañ</string>
   <!--Playback Activity (main screen)-->
   <string name="no_songs">N\'eo bet kavet ton ebet war ho trevnad.</string>
   <string name="empty_queue">Ton ebet diuzet. Dibabit unan er sonaoueg pe kit er mod dargouezhek en ur stokañ ar gemennadenn-mañ.</string>
@@ -9,8 +11,8 @@
   <string name="shuffle_songs">Dargouezhek</string>
   <string name="shuffle_songs_continuously">Dargouezhek kendalc\'hus</string>
   <string name="shuffle_albums">Albomoù dargouezhek</string>
-  <string name="no_repeat">Na adlenn</string>
-  <string name="repeat">Adlenn</string>
+  <string name="no_repeat">Na adseniñ</string>
+  <string name="repeat">Adseniñ</string>
   <string name="repeat_current_song">Adseniñ an ton bremanel</string>
   <string name="stop_current_song">Paouez goude an ton bremanel</string>
   <string name="random">Dargouezhek</string>
@@ -42,11 +44,16 @@
   <string name="rename">Adenvel</string>
   <string name="save_as_playlist">Enrollañ evel ur roll-seniñ...</string>
   <string name="add_to_playlist">Ouzhpennañ er roll-seniñ...</string>
+  <string name="add_to_homescreen">Ouzhpennañ d\'ar skramm degemer</string>
+  <string name="add_to">Ouzhpennañ da...</string>
+  <string name="playlist">Roll seniñ</string>
+  <string name="homescreen">Skramm degemer</string>
   <string name="add_to_favorites">Ouzhpennañ en tonioù gwellañ</string>
   <string name="remove_from_favorites">Dilemel eus an tonioù gwellañ</string>
   <string name="playlist_favorites">Gwellañ</string>
   <string name="new_playlist">Roll-seniñ nevez...</string>
   <string name="expand">Astenn</string>
+  <string name="expand_or_play_all">Astenn pe seniñ pep tra</string>
   <string name="delete">Dilemel</string>
   <string name="playback_view">O seniñ</string>
   <string name="sort_by">Urzhiañ dre</string>
@@ -125,6 +132,7 @@
   <string name="play_all">Seniñ pep tra</string>
   <string name="enqueue_all">Ouzhpennañ an holl el lost</string>
   <string name="all_songs">An holl donioù</string>
+  <string name="details">Munudoù</string>
   <string name="more_from_artist">Muioc\'h gant an arzour-mañ</string>
   <string name="more_from_album">Muioc\'h diwar an albom-mañ</string>
   <string name="title">TItl</string>
@@ -172,8 +180,8 @@
   <string name="headset_only_summary">Mirout ar sonerezh da vezañ sonet dre an uhelgomzerioù diabarzh.</string>
   <string name="headset_pause_title">Ehanañ ma vez diluget</string>
   <string name="headset_pause_summary">Ehanañ an ton ma vez diluget ar selaouelloù.</string>
-  <string name="headset_launch_title">Lenn pa vez luget</string>
-  <string name="headset_launch_summary">Lenn pa vez luget ar selaouelloù. (Azgoulenn a ra vefe staliet an arload \'dinoer selaouelloù\')</string>
+  <string name="headset_launch_title">Seniñ pa vez luget</string>
+  <string name="headset_launch_summary">Seniñ pa vez luget ar selaouelloù. (Azgoulenn a ra vefe staliet an arload \'dinoer selaouelloù\')</string>
   <string name="headset_launch_app_missing">Ar c\'heweriuster-se a azgoulenn vefe luget an arload \'dinoer selaouelloù\'.\nFellout a ra deoc\'h digeriñ ar Play Store evit staliañ an arload? </string>
   <string name="replaygain">ReplayGain</string>
   <string name="replaygain_summary">Kefluniañ an doare da verañ an titouroù gant ReplayGain</string>
@@ -198,7 +206,7 @@
   <string name="notification_nag_summary">Kelaou eus ar cheñchamantoù tonioù dre ur rebuzadur plavus</string>
   <string name="playback_screen">Skramm seniñ</string>
   <string name="playback_on_startup_title">Digeriñ d\'al loc\'hadur</string>
-  <string name="playback_on_startup_summary">Digeriñ ar skramm lenn pa loc\'h</string>
+  <string name="playback_on_startup_summary">Digeriñ ar skramm seniñ vez loc\'het</string>
   <string name="display_mode_title">Doare skrammañ</string>
   <string name="swipe_up_action_title">Riklañ war-zu ar c\'hrec\'h</string>
   <string name="swipe_down_action_title">Riklañ war-zu an draoñ</string>
@@ -223,12 +231,18 @@
   <string name="idle_timeout_title">Prantad dioberiantiz</string>
   <string name="enable_scroll_to_song_title">Lakaat da zibunañ betek titl an ton</string>
   <string name="enable_scroll_to_song_summary">Dibunañ betek an ton/albom/arzour e rolloù ar sonaoueg</string>
+  <string name="queue_enable_scroll_to_song_title">Dibunañ betek an ton el lost</string>
+  <string name="queue_enable_scroll_to_song_summary">Dibunañ betek an ton o seniñ el lost pa vez kemmet an ton</string>
+  <string name="jump_to_enqueued_on_play_title">Lammat betek an ton el lost pa vez sonet</string>
+  <string name="jump_to_enqueued_on_play_summary">M\'emañ an ton goulennet el lost e vo lammet betek eñ kentoc\'h eget skarzhañ al lost</string>
   <string name="coverloader_android_title">Kargañ ar skeudennoù adalek Android</string>
   <string name="coverloader_android_summary">Goulenn digant stlennvon media diabarzh Android evit skeudennoù an albom</string>
   <string name="coverloader_vanilla_title">Kargañ ar skeudennoù adalek an teuliad</string>
   <string name="coverloader_vanilla_summary">Klask war-lec\'h restroù skeudenn anvet cover.jpg, albom.jpg pe artwork.jpg ha dibab anezho evel golo an albom</string>
   <string name="coverloader_shadow_title">Kargañ ar skeudennoù adalek an teuliad kuzhet</string>
   <string name="coverloader_shadow_summary">Klask a raio kargañ ar skeudennoù adalek  \'/sdcard/Music/.vanilla/ARZOUR/ALBOM.jpg\'</string>
+  <string name="coverloader_inline_title">Kargañ ar skeudenn c\'holo diwar an tikedennoù</string>
+  <string name="coverloader_inline_summary">Klask kargañ ar skeudenn c\'holo enkorfet e tikedennoù ar restr</string>
   <string name="cover_on_lockscreen_title">Diskouez ar skeudenn war ar skramm prennañ</string>
   <string name="cover_on_lockscreen_summary">Diskouez golo albom an ton o vezañ sonet war ar skramm prennañ</string>
   <string name="double_tap_title">Stokañ ar widjet div wech</string>
@@ -236,7 +250,7 @@
   <string name="scrobble_title">Arverañ an API Scrobble Droid</string>
   <string name="scrobble_summary">Kas an titouroù Scrobble da Last.fm dre Scrobble Droid pe Simple Last.fm Scrobbler</string>
   <string name="stock_broadcast_title">Kendarvanañ ar rebuzadurioù genidik</string>
-  <string name="stock_broadcast_summary">Kas kemennadennoù lenn o c\'hendarvanañ ar re kaset gant al lenner orin evit ma \'z afe en-dro gant reolerezhioù ar skramm prennañ savet gant tredeoù.</string>
+  <string name="stock_broadcast_summary">Kas kemennadennoù seniñ o c\'hendarvanañ ar re kaset gant al lenner orin evit ma \'z afe en-dro gant reolerezhioù ar skramm prennañ savet gant tredeoù.</string>
   <string name="help">Skoazell</string>
   <string name="about">A-zivout</string>
   <string name="tabs">Urzh an ivinelloù</string>
@@ -256,7 +270,7 @@
   <string name="fixed_info">Titouroù er c\'hrec\'h</string>
   <string name="do_nothing">Na ober netra</string>
   <string name="open_library">Digeriñ ar sonaoueg</string>
-  <string name="play_pause">Lenn/Ehan</string>
+  <string name="play_pause">Seniñ/Ehan</string>
   <string name="next_song">Ton da-heul</string>
   <string name="previous_song">Ton kent</string>
   <string name="next_album">Albom da-heul</string>
@@ -280,6 +294,12 @@
   <string name="preferences_action_enqueue_current_album">Ouzhpennañ an albom el lost</string>
   <string name="preferences_action_enqueue_current_artist">Ouzhpennañ an arzour el lost</string>
   <string name="preferences_action_enqueue_current_genre">Ouzhpennañ an doare el lost</string>
+  <string name="jump_to_time">Mont d\'an amzer...</string>
+  <string name="time_separator">:</string>
+  <string name="hour_hint">EE</string>
+  <string name="minute_hint">MM</string>
+  <string name="second_hint">SS</string>
+  <string name="error_invalid_position">Lec\'hiadur didalvoudek</string>
   <string name="filebrowser_start">Degemer merdeer ar restroù</string>
   <string name="customize_filebrowser_start">Merdeer ar restroù a grogo en teuliad-mañ</string>
   <string name="select">Diuzañ</string>
@@ -289,12 +309,23 @@
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s roll-seniñ \'Top %.0f\'</string>
   <string name="autoplaylist_playcounts_disabled">Na grouiñ a roll seniñ emgefreek</string>
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d </string>
+  <string name="playlist_sync_mode_title">Goubredañ ar rolloù seniñ</string>
+  <string name="playlist_sync_all">Goubredañ echuet</string>
+  <string name="playlist_sync_only_import">Enporzhiañ an M3U hepken</string>
+  <string name="playlist_sync_only_export">Ezporzhiañ an M3U hepken</string>
+  <string name="playlist_sync_disabled">Diweredekaet</string>
+  <string name="playlist_sync_folder_title">Teuliad goubredañ</string>
+  <string name="playlist_sync_folder_summary">Teuliad da arverañ evit goubredañ ar rolloù seniñ</string>
   <string name="permission_request_summary">Ezhomm en deus Vanilla Music da gaout an aotre da lenn ar restroù evit diskouez ho sonaoueg.</string>
   <string name="reverse_sort">Tuginañ an urzh</string>
   <string name="share">Rannañ...</string>
   <string name="share_failed">Fazi en ur rannañ ar restr</string>
   <string name="sendto">Kas da...</string>
   <string name="no_receiving_apps">Arload ebet kavet evit ar rizh media-se!</string>
+  <string name="duration">Padelezh</string>
+  <string name="dump_database">Ezporzhiañ ar stlennvon</string>
+  <string name="dump_database_result">Stlennvon ezporzhiet betek \'%s\'</string>
+  <string name="force_m3u_import">Rediañ adenporzhiadur an M3U</string>
   <string name="media_library">Mediaoueg</string>
   <string name="media_folders_header">Teuliadoù ibilet</string>
   <string name="media_scan_header">C\'hwilerver media</string>
@@ -319,6 +350,7 @@
   <string name="folder_neutral">Neptu</string>
   <!--Plugin system-->
   <string name="plugins">Enlugelladoù</string>
+  <string name="plugin_needs_upgrade">Hizivait an enlugellad %s d\'e handelv diwezhañ</string>
   <!--Theme names-->
   <string name="theme_name_standard_light">Skoueriek</string>
   <string name="theme_name_standard_dark">Skoueriek (teñval)</string>

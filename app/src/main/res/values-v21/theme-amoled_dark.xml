@@ -34,6 +34,7 @@
 		<item name="android:colorAccent">#ffd8d8d8</item>
 		<item name="android:colorPrimary">#ff000000</item>
 		<item name="android:colorPrimaryDark">#ff000000</item>
+		<item name="themed_letter_tile_colors">@array/letter_tile_colors_dark</item>
 	</style>
 
 	<style name="Amoled_dark.Playback" parent="Amoled_dark.VanillaBase">
@@ -50,9 +51,14 @@
 	</style>
 
 	<style name="Amoled_dark.PopupDialog" parent="android:Theme.Material.Dialog.MinWidth">
+		<item name="overlay_background_color">@color/overlay_background_dark</item>
 		<item name="background_circle_color">@color/material_grey_700</item>
 		<item name="controls_normal">@color/material_grey_600</item>
 		<item name="controls_active">#ffd8d8d8</item>
+	</style>
+
+	<style name="Amoled_dark.BottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+		<item name="android:colorBackground">@color/overlay_background_dark</item>
 	</style>
 
 </resources>

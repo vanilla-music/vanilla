@@ -111,10 +111,14 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 		final String album = cursor.getString(3);
 		final String artist = cursor.getString(4);
 
+		ViewHolder holder = new ViewHolder();
+		holder.title = title;
+		holder.id = cursor.getLong(1);
+
 		dview.setupLayout(DraggableRow.LAYOUT_DRAGGABLE);
 		dview.showDragger(mEditable);
 		dview.setText(title, album+", "+artist);
-		dview.setTag(cursor.getLong(1));
+		dview.setTag(holder);
 		dview.setDuration(cursor.getLong(6));
 
 		LazyCoverView cover = dview.getCoverView();
@@ -127,7 +131,7 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup parent)
 	{
-		SharedPreferences settings = PlaybackService.getSettings(context);
+		SharedPreferences settings = SharedPrefHelper.getSettings(context);
 		if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && settings.getBoolean(PrefKeys.KIDMODE_ENLARGE_COVERS, PrefDefaults.KIDMODE_ENLARGE_COVERS)) {
 			return mInflater.inflate(R.layout.draggable_row_xl, parent, false);
 		}

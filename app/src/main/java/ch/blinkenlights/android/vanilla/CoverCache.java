@@ -100,15 +100,15 @@ public class CoverCache {
 	/**
 	 * Returns a (possibly uncached) cover for the song - will return null if the song has no cover
 	 *
-	 * @param key The cache key to use for storing a generated cover
+	 * @param ctx The context to retrieve the bitmap from cache via external content uri
 	 * @param song The song used to identify the artwork to load
 	 * @return a bitmap or null if no artwork was found
 	 */
-	public Bitmap getCoverFromSong(Song song, int size) {
+	public Bitmap getCoverFromSong(Context ctx, Song song, int size) {
 		CoverKey key = new CoverCache.CoverKey(MediaUtils.TYPE_ALBUM, song.albumId, size);
 		Bitmap cover = getStoredCover(key);
 		if (cover == null) {
-			cover = sBitmapDiskCache.createBitmap(song, size*size);
+			cover = sBitmapDiskCache.createBitmap(ctx, song, size*size);
 			if (cover != null) {
 				storeCover(key, cover);
 				cover = getStoredCover(key); // return lossy version to avoid random quality changes
@@ -190,10 +190,6 @@ public class CoverCache {
 
 	private static class BitmapDiskCache extends SQLiteOpenHelper {
 		/**
-		 * The Context to use
-		 */
-		private final Context mContext;
-		/**
 		 * Maximal cache size to use in bytes
 		 */
 		private final long mCacheSize;
@@ -205,10 +201,10 @@ public class CoverCache {
 		 * Priority-ordered list of possible cover names
 		 */
 		private final static Pattern[] COVER_MATCHES = {
-			    Pattern.compile("(?i).+/(COVER|ALBUM)\\.(JPE?G|PNG)$"),
-			    Pattern.compile("(?i).+/ALBUMART(_\\{[-0-9A-F]+\\}_LARGE)?\\.(JPE?G|PNG)$"),
-			    Pattern.compile("(?i).+/(CD|FRONT|ARTWORK|FOLDER)\\.(JPE?G|PNG)$"),
-			    Pattern.compile("(?i).+\\.(JPE?G|PNG)$") };
+			    Pattern.compile("(?i).+/(COVER|ALBUM)\\.(JPE?G|PNG|WEBP)$"),
+			    Pattern.compile("(?i).+/ALBUMART(_\\{[-0-9A-F]+\\}_LARGE)?\\.(JPE?G|PNG|WEBP)$"),
+			    Pattern.compile("(?i).+/(CD|FRONT|ARTWORK|FOLDER)\\.(JPE?G|PNG|WEBP)$"),
+			    Pattern.compile("(?i).+\\.(JPE?G|PNG|WEBP)$") };
 		/**
 		 * Projection of all columns in the database
 		 */
@@ -231,7 +227,6 @@ public class CoverCache {
 		public BitmapDiskCache(Context context, long cacheSize) {
 			super(context, "covercache.db", null, 1 /* version */);
 			mCacheSize = cacheSize;
-			mContext = context;
 		}
 
 		/**
@@ -335,7 +330,7 @@ public class CoverCache {
 		 * Stores a bitmap in the disk cache, does not update existing objects
 		 *
 		 * @param key The cover key to use
-		 * @param Bitmap The bitmap to store
+		 * @param cover The cover to store as bitmap
 		 */
 		public void put(CoverKey key, Bitmap cover) {
 			SQLiteDatabase dbh = getWritableDatabase();
@@ -395,14 +390,13 @@ public class CoverCache {
 		 * Attempts to create a new bitmap object for given song.
 		 * Returns null if no cover art was found
 		 *
+		 * @param ctx The context to read the external content uri of the given song
 		 * @param song the function will search for artwork of this object
 		 * @param maxPxCount the maximum amount of pixels to return (30*30 = 900)
 		 */
-		public Bitmap createBitmap(Song song, long maxPxCount) {
-			if (song.id < 0) {
-				// Unindexed song: return early
-				return null;
-			}
+		public Bitmap createBitmap(Context ctx, Song song, long maxPxCount) {
+			if (song.id < 0)
+				throw new IllegalArgumentException("song id is < 0: " + song.id);
 
 			try {
 				InputStream inputStream = null;
@@ -455,8 +449,8 @@ public class CoverCache {
 				}
 
 				if (inputStream == null && (CoverCache.mCoverLoadMode & CoverCache.COVER_MODE_ANDROID) != 0) {
-					ContentResolver res = mContext.getContentResolver();
-					long[] androidIds = MediaUtils.getAndroidMediaIds(mContext, song);
+					ContentResolver res = ctx.getContentResolver();
+					long[] androidIds = MediaUtils.getAndroidMediaIds(ctx, song);
 					long albumId = androidIds[1];
 
 					if (albumId != -1) {

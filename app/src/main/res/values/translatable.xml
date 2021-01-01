@@ -68,6 +68,10 @@ THE SOFTWARE.
 	<string name="rename">Rename</string>
 	<string name="save_as_playlist">Save as playlist…</string>
 	<string name="add_to_playlist">Add to playlist…</string>
+	<string name="add_to_homescreen">Add to homescreen…</string>
+	<string name="add_to">Add to…</string>
+	<string name="playlist">Playlist</string>
+	<string name="homescreen">Homescreen</string>
 	<string name="add_to_favorites">Add to favorites</string>
 	<string name="remove_from_favorites">Remove from favorites</string>
 	<string name="playlist_favorites">Favorites</string>
@@ -146,6 +150,7 @@ THE SOFTWARE.
 	<string name="play_all">Play all</string>
 	<string name="enqueue_all">Enqueue all</string>
 	<string name="all_songs">All tracks</string>
+	<string name="details">Details</string>
 	<string name="more_from_artist">More from artist</string>
 	<string name="more_from_album">More from album</string>
 
@@ -258,6 +263,12 @@ THE SOFTWARE.
 	<string name="enable_scroll_to_song_title">Scroll to track title</string>
 	<string name="enable_scroll_to_song_summary">Scroll to currently playing track/album/artist in library lists</string>
 
+	<string name="queue_enable_scroll_to_song_title">Scroll to track title in queue</string>
+	<string name="queue_enable_scroll_to_song_summary">Scroll to currently playing track in the queue on song change</string>
+
+	<string name="jump_to_enqueued_on_play_title">Jump to enqueued song on \'Play\'</string>
+	<string name="jump_to_enqueued_on_play_summary">If the requested song is already in the queue, jump to it instead of flushing the queue</string>
+
 	<string name="coverloader_android_title">Load artwork from Android</string>
 	<string name="coverloader_android_summary">Query Androids internal media database for album artwork</string>
 
@@ -354,6 +365,13 @@ THE SOFTWARE.
 	<string name="preferences_action_enqueue_current_artist">Enqueue artist</string>
 	<string name="preferences_action_enqueue_current_genre">Enqueue genre</string>
 
+	<string name="jump_to_time">Jump to Time</string>
+	<string name="time_separator">:</string>
+	<string name="hour_hint">HH</string>
+	<string name="minute_hint">MM</string>
+	<string name="second_hint">SS</string>
+	<string name="error_invalid_position">Invalid position</string>
+
 	<string name="filebrowser_start">Filebrowser home</string>
 	<string name="customize_filebrowser_start">Filebrowser starts at this directory</string>
 	<string name="select">Select</string>
@@ -373,6 +391,8 @@ THE SOFTWARE.
 	<string name="playlist_sync_disabled">Disabled</string>
 	<string name="playlist_sync_folder_title">Synchronization folder</string>
 	<string name="playlist_sync_folder_summary">Folder to use for playlist synchronization</string>
+	<string name="playlist_export_relative_paths_title">Export using relative paths</string>
+	<string name="playlist_export_relative_paths_summary">Reference file paths relative to the playlist</string>
 
 	<string name="permission_request_summary">Vanilla Music needs read permission to display your music library</string>
 	<string name="reverse_sort">Reverse sort</string>
@@ -403,6 +423,7 @@ THE SOFTWARE.
 	<string name="media_scan_preferences">Scanner options</string>
 	<string name="media_scan_preferences_change_title">Scanner options changed</string>
 	<string name="media_scan_preferences_change_message">Changing this option will start a full rescan of your library. Would you like to continue?</string>
+	<string name="folder_picker_spinner_desc">Status of Directory:</string>
 
 	<!-- Folder selector -->
 	<string name="hint_long_press_to_modify_folder">Long press to modify folder options</string>
@@ -411,6 +432,7 @@ THE SOFTWARE.
 	<string name="folder_neutral">Neutral</string>
 	<!-- Plugin system -->
 	<string name="plugins">Plugins</string>
+	<string name="plugin_needs_upgrade">Please upgrade plugin %s to the latest version</string>
 
 	<!-- Theme names -->
 	<string name="theme_name_standard_light">Standard</string>

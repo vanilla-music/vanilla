@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
- * Copyright (C) 2015-2017 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2015-2020 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,9 @@
 package ch.blinkenlights.android.vanilla;
 
 import ch.blinkenlights.android.medialibrary.MediaLibrary;
+import ch.blinkenlights.android.vanilla.ui.FancyMenu;
+import ch.blinkenlights.android.vanilla.ui.FancyMenuItem;
+import ch.blinkenlights.android.vanilla.ui.ArrowedText;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -34,14 +37,11 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.PaintDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.iosched.tabs.VanillaTabLayout;
-import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
-import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -55,6 +55,8 @@ import android.widget.TextView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import androidx.viewpager.widget.ViewPager;
+
 import java.io.File;
 
 import junit.framework.Assert;
@@ -67,6 +69,7 @@ public class LibraryActivity
 	implements DialogInterface.OnClickListener
 			 , DialogInterface.OnDismissListener
 			 , SearchView.OnQueryTextListener
+	                 , FancyMenu.Callback
 {
 
 
@@ -136,6 +139,10 @@ public class LibraryActivity
 	 */
 	private int mDefaultAction;
 	/**
+	 * Whether or not to jump to songs if the are in the queue
+	 */
+	private boolean mJumpToEnqueuedOnPlay;
+	/**
 	 * The last used action from the menu. Used with ACTION_LAST_USED.
 	 */
 	private int mLastAction = ACTION_PLAY;
@@ -171,7 +178,7 @@ public class LibraryActivity
 		pager.setAdapter(pagerAdapter);
 		mViewPager = pager;
 
-		SharedPreferences settings = PlaybackService.getSettings(this);
+		SharedPreferences settings = SharedPrefHelper.getSettings(this);
 
 		mBottomBarControls = (BottomBarControls)findViewById(R.id.bottombar_controls);
 		mBottomBarControls.setOnClickListener(this);
@@ -203,20 +210,22 @@ public class LibraryActivity
 	}
 
 	@Override
-	public void onRestart()
-	{
-		super.onRestart();
-		loadTabOrder();
-	}
-
-	@Override
 	public void onStart()
 	{
 		super.onStart();
 
-		SharedPreferences settings = PlaybackService.getSettings(this);
-		mDefaultAction = Integer.parseInt(settings.getString(PrefKeys.DEFAULT_ACTION_INT, PrefDefaults.DEFAULT_ACTION_INT));
+		loadPreferences();
+		loadTabOrder();
 		updateHeaders();
+	}
+
+	/**
+	 * Load settings and cache them.
+	 */
+	private void loadPreferences() {
+		SharedPreferences settings = SharedPrefHelper.getSettings(this);
+		mDefaultAction = Integer.parseInt(settings.getString(PrefKeys.DEFAULT_ACTION_INT, PrefDefaults.DEFAULT_ACTION_INT));
+		mJumpToEnqueuedOnPlay = settings.getBoolean(PrefKeys.JUMP_TO_ENQUEUED_ON_PLAY, PrefDefaults.JUMP_TO_ENQUEUED_ON_PLAY);
 	}
 
 	/**
@@ -236,7 +245,7 @@ public class LibraryActivity
 	 */
 	private void checkForLaunch(Intent intent)
 	{
-		SharedPreferences settings = PlaybackService.getSettings(this);
+		SharedPreferences settings = SharedPrefHelper.getSettings(this);
 		if (settings.getBoolean(PrefKeys.PLAYBACK_ON_STARTUP, PrefDefaults.PLAYBACK_ON_STARTUP) && Intent.ACTION_MAIN.equals(intent.getAction())) {
 			startActivity(new Intent(this, FullPlaybackActivity.class));
 		}
@@ -364,7 +373,7 @@ public class LibraryActivity
 		if (action == ACTION_LAST_USED)
 			action = mLastAction;
 		boolean isEnqueue = action == ACTION_ENQUEUE || action == ACTION_ENQUEUE_ALL;
-		SharedPreferences settings = PlaybackService.getSettings(this);
+		SharedPreferences settings = SharedPrefHelper.getSettings(this);
 		String text = getString(isEnqueue ? R.string.enqueue_all : R.string.play_all);
 		mPagerAdapter.setHeaderText(text);
 	}
@@ -384,7 +393,7 @@ public class LibraryActivity
 
 		// special handling if we pick one song to be played that is already in queue
 		boolean songPicked = (id >= 0 && type == MediaUtils.TYPE_SONG); // not invalid, not play all
-		if (songPicked && effectiveAction == ACTION_PLAY) {
+		if (songPicked && effectiveAction == ACTION_PLAY && mJumpToEnqueuedOnPlay) {
 			int songPosInQueue = PlaybackService.get(this).getQueuePositionForSongId(id);
 			if (songPosInQueue > -1) {
 				// we picked for play one song that is already present in the queue, just jump to it
@@ -396,7 +405,9 @@ public class LibraryActivity
 
 		boolean all = false;
 		if (action == ACTION_PLAY_ALL || action == ACTION_ENQUEUE_ALL) {
-			boolean notPlayAllAdapter = type > MediaUtils.TYPE_SONG || id == LibraryAdapter.HEADER_ID;
+			boolean notPlayAllAdapter =
+				(id == LibraryAdapter.HEADER_ID)
+				|| !(type <= MediaUtils.TYPE_SONG || type == MediaUtils.TYPE_FILE);
 			if (effectiveAction == ACTION_ENQUEUE_ALL && notPlayAllAdapter) {
 				effectiveAction = ACTION_ENQUEUE;
 			} else if (effectiveAction == ACTION_PLAY_ALL && notPlayAllAdapter) {
@@ -500,28 +511,61 @@ public class LibraryActivity
 
 		Limiter limiterData = mPagerAdapter.getCurrentLimiter();
 		if (limiterData != null) {
+			final int arrowWidth = 8;
 			String[] limiter = limiterData.names;
-
 			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-			params.leftMargin = 5;
 			for (int i = 0; i != limiter.length; ++i) {
-				int color = (i+1 == limiter.length ? 0xFFA0A0A0 : 0xFFC0C0C0);
-				PaintDrawable background = new PaintDrawable(color);
-				background.setCornerRadius(0);
+				final boolean last = i+1 == limiter.length;
+				final boolean first = i == 0;
 
-				TextView view = new TextView(this);
+				String txt = limiter[i];
+				ArrowedText view = new ArrowedText(this);
+				int[] colors = {0xFF606060, 0xFF707070};
+
+				if (i%2 == 0) {
+					int tmp = colors[0];
+					colors[0] = colors[1];
+					colors[1] = tmp;
+				}
+
+				if (last) {
+					colors[1] = 0xFF404040;
+					view.setOnClickListener(this);
+				}
+
+				int leftPadding = 14;
+				if (first) {
+					leftPadding = 6;
+					colors[0] = colors[1];
+				}
+
 				view.setSingleLine();
 				view.setEllipsize(TextUtils.TruncateAt.MARQUEE);
-				view.setText(limiter[i]);
+				view.setText(txt);
 				view.setTextColor(Color.WHITE);
-				view.setBackgroundDrawable(background);
 				view.setLayoutParams(params);
-				view.setPadding(14, 6, 14, 6);
+				view.setPaddingDIP(leftPadding, 2, 6, 2);
+				view.setArrowWidthDIP(arrowWidth);
 				view.setTag(i);
-				view.setOnClickListener(this);
+				view.setColors(colors[0], colors[1]);
 				mLimiterViews.addView(view);
-			}
 
+				if (last) {
+					final int ap = 10;
+					ArrowedText end = new ArrowedText(this);
+					end.setOnClickListener(this);
+					end.setText("×");
+					end.setTextColor(0xFFB0B0B0);
+					end.setLayoutParams(params);
+					end.setPaddingDIP(0, 2, 0, 2);
+					end.setArrowWidthDIP(arrowWidth);
+					end.setArrowPaddingDIP(ap);
+					end.setMinWidthDIP(arrowWidth+ap);
+					end.setTag(i);
+					end.setColors(colors[1], 0);
+					mLimiterViews.addView(end);
+				}
+			}
 			mLimiterScroller.setVisibility(View.VISIBLE);
 		} else {
 			mLimiterScroller.setVisibility(View.GONE);
@@ -608,6 +652,7 @@ public class LibraryActivity
 		}
 	}
 
+	private static final int CTX_MENU_NOOP = -1;
 	private static final int CTX_MENU_PLAY = 0;
 	private static final int CTX_MENU_ENQUEUE = 1;
 	private static final int CTX_MENU_EXPAND = 2;
@@ -620,51 +665,73 @@ public class LibraryActivity
 	private static final int CTX_MENU_MORE_FROM_ARTIST = 9;
 	private static final int CTX_MENU_OPEN_EXTERNAL = 10;
 	private static final int CTX_MENU_PLUGINS = 11;
+	private static final int CTX_MENU_SHOW_DETAILS = 12;
+	private static final int CTX_MENU_ADD_TO_HOMESCREEN = 13;
+	private static final int CTX_MENU_ADD_TO_PLAYLIST = 14;
 
 	/**
 	 * Creates a context menu for an adapter row.
 	 *
-	 * @param menu The menu to create.
 	 * @param rowData Data for the adapter row.
+	 * @param view the view which was clicked.
+	 * @param x x-coords of event
+	 * @param y y-coords of event
 	 */
-	public void onCreateContextMenu(ContextMenu menu, Intent rowData)
-	{
+	public boolean onCreateFancyMenu(Intent rowData, View view, float x, float y) {
+		FancyMenu fm = new FancyMenu(this, this);
+		// Add to playlist is always available.
+		fm.addSpacer(20);
+		fm.add(CTX_MENU_ADD_TO_PLAYLIST, 20, R.drawable.menu_add_to_playlist, R.string.add_to_playlist).setIntent(rowData);
+
 		if (rowData.getLongExtra(LibraryAdapter.DATA_ID, LibraryAdapter.INVALID_ID) == LibraryAdapter.HEADER_ID) {
-			menu.setHeaderTitle(getString(R.string.all_songs));
-			SharedPreferences settings = PlaybackService.getSettings(this);
+			fm.setHeaderTitle(getString(R.string.all_songs));
+			SharedPreferences settings = SharedPrefHelper.getSettings(this);
 			if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && settings.getBoolean(PrefKeys.KIDMODE_SHOW_OPTIONS_IN_MENU, PrefDefaults.KIDMODE_SHOW_OPTIONS_IN_MENU)) {
-				menu.add(0, CTX_MENU_PLAY_ALL, 0, R.string.play_all).setIntent(rowData);
-				menu.add(0, CTX_MENU_ENQUEUE_ALL, 0, R.string.enqueue_all).setIntent(rowData);
-				menu.addSubMenu(0, CTX_MENU_ADD_TO_PLAYLIST, 0, R.string.add_to_playlist).getItem().setIntent(rowData);
+				fm.add(CTX_MENU_PLAY_ALL, 10, R.drawable.menu_play_all, R.string.play_all).setIntent(rowData);
+				fm.add(CTX_MENU_ENQUEUE_ALL, 10, R.drawable.menu_enqueue, R.string.enqueue_all).setIntent(rowData);
 			}
 		} else {
 			int type = rowData.getIntExtra(LibraryAdapter.DATA_TYPE, MediaUtils.TYPE_INVALID);
 
-			menu.setHeaderTitle(rowData.getStringExtra(LibraryAdapter.DATA_TITLE));
+			fm.setHeaderTitle(rowData.getStringExtra(LibraryAdapter.DATA_TITLE));
+
+			if (type != MediaUtils.TYPE_FILE)
+				fm.add(CTX_MENU_ADD_TO_HOMESCREEN, 20, R.drawable.menu_add_to_homescreen, R.string.add_to_homescreen).setIntent(rowData);
 
 			if (FileUtils.canDispatchIntent(rowData))
-				menu.add(0, CTX_MENU_OPEN_EXTERNAL, 0, R.string.open).setIntent(rowData);
-			menu.add(0, CTX_MENU_PLAY, 0, R.string.play).setIntent(rowData);
-			if (type <= MediaUtils.TYPE_SONG) {
-				menu.add(0, CTX_MENU_PLAY_ALL, 0, R.string.play_all).setIntent(rowData);
-			}
-			menu.add(0, CTX_MENU_ENQUEUE_AS_NEXT, 0, R.string.enqueue_as_next).setIntent(rowData);
-			menu.add(0, CTX_MENU_ENQUEUE, 0, R.string.enqueue).setIntent(rowData);
+				fm.add(CTX_MENU_OPEN_EXTERNAL, 10, R.drawable.menu_launch, R.string.open).setIntent(rowData);
+
+			fm.add(CTX_MENU_PLAY, 0, R.drawable.menu_play, R.string.play).setIntent(rowData);
+			if (type <= MediaUtils.TYPE_SONG || type == MediaUtils.TYPE_FILE)
+				fm.add(CTX_MENU_PLAY_ALL, 1, R.drawable.menu_play_all, R.string.play_all).setIntent(rowData);
+
+			fm.add(CTX_MENU_ENQUEUE_AS_NEXT, 1, R.drawable.menu_enqueue_as_next, R.string.enqueue_as_next).setIntent(rowData);
+			fm.add(CTX_MENU_ENQUEUE, 1, R.drawable.menu_enqueue, R.string.enqueue).setIntent(rowData);
+
 			if (type == MediaUtils.TYPE_PLAYLIST) {
-				menu.add(0, CTX_MENU_RENAME_PLAYLIST, 0, R.string.rename).setIntent(rowData);
+				fm.add(CTX_MENU_RENAME_PLAYLIST, 0, R.drawable.menu_edit, R.string.rename).setIntent(rowData);
 			} else if (rowData.getBooleanExtra(LibraryAdapter.DATA_EXPANDABLE, false)) {
-				menu.add(0, CTX_MENU_EXPAND, 0, R.string.expand).setIntent(rowData);
+				fm.add(CTX_MENU_EXPAND, 2, R.drawable.menu_expand, R.string.expand).setIntent(rowData);
 			}
-			if (type == MediaUtils.TYPE_ALBUM || type == MediaUtils.TYPE_SONG)
-				menu.add(0, CTX_MENU_MORE_FROM_ARTIST, 0, R.string.more_from_artist).setIntent(rowData);
-			if (type == MediaUtils.TYPE_SONG) {
-				menu.add(0, CTX_MENU_MORE_FROM_ALBUM, 0, R.string.more_from_album).setIntent(rowData);
-				if (PluginUtils.checkPlugins(this))
-					menu.add(0, CTX_MENU_PLUGINS, 1, R.string.plugins).setIntent(rowData); // last in order
+
+			if (type == MediaUtils.TYPE_SONG || type == MediaUtils.TYPE_ALBUM) {
+				fm.addSpacer(30);
+				fm.add(CTX_MENU_MORE_FROM_ARTIST, 30, R.drawable.menu_artist, R.string.more_from_artist).setIntent(rowData);
+
+				if (type == MediaUtils.TYPE_SONG) {
+					fm.add(CTX_MENU_MORE_FROM_ALBUM, 30, R.drawable.menu_album, R.string.more_from_album).setIntent(rowData);
+					fm.add(CTX_MENU_SHOW_DETAILS, 91, R.drawable.menu_details, R.string.details).setIntent(rowData);
+					if (PluginUtils.checkPlugins(this)) {
+						// not part of submenu: just last item in normal menu.
+						fm.add(CTX_MENU_PLUGINS, 99, R.drawable.menu_plugins, R.string.plugins).setIntent(rowData);
+					}
+				}
 			}
-			menu.addSubMenu(0, CTX_MENU_ADD_TO_PLAYLIST, 0, R.string.add_to_playlist).getItem().setIntent(rowData);
-			menu.add(0, CTX_MENU_DELETE, 0, R.string.delete).setIntent(rowData);
+			fm.addSpacer(90);
+			fm.add(CTX_MENU_DELETE, 91, R.drawable.menu_delete, R.string.delete).setIntent(rowData);
 		}
+		fm.show(view, x, y);
+		return true;
 	}
 
 	/**
@@ -679,13 +746,11 @@ public class LibraryActivity
 	}
 
 	@Override
-	public boolean onContextItemSelected(MenuItem item)
-	{
-		if (item.getGroupId() != 0)
-			return super.onContextItemSelected(item);
-
+	public boolean onFancyItemSelected(FancyMenuItem item) {
 		final Intent intent = item.getIntent();
 		switch (item.getItemId()) {
+		case CTX_MENU_NOOP:
+			break;
 		case CTX_MENU_EXPAND:
 			expand(intent);
 			if (mDefaultAction == ACTION_LAST_USED && mLastAction != ACTION_EXPAND) {
@@ -742,8 +807,12 @@ public class LibraryActivity
 			FileUtils.dispatchIntent(this, intent);
 			break;
 		}
+		case CTX_MENU_SHOW_DETAILS:
+			long songId = intent.getLongExtra(LibraryAdapter.DATA_ID, -1);
+			TrackDetailsDialog.show(getFragmentManager(), songId);
+			break;
 		case CTX_MENU_PLUGINS: {
-			queryPluginsForIntent(intent);
+			showPluginMenu(intent);
 			break;
 		}
 		case CTX_MENU_MORE_FROM_ARTIST: {
@@ -762,22 +831,29 @@ public class LibraryActivity
 			setLimiter(MediaUtils.TYPE_ALBUM, "_id=" + intent.getLongExtra(LibraryAdapter.DATA_ID, LibraryAdapter.INVALID_ID));
 			updateLimiterViews();
 			break;
-		case CTX_MENU_ADD_TO_PLAYLIST:
+		case CTX_MENU_ADD_TO_PLAYLIST: {
 			long id = intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
 			PlaylistDialog plDialog = PlaylistDialog.newInstance(this, intent, (id == LibraryAdapter.HEADER_ID ? mCurrentAdapter : null));
 			plDialog.show(getFragmentManager(), "PlaylistDialog");
 			break;
+		}
+		case CTX_MENU_ADD_TO_HOMESCREEN: {
+			int type = intent.getIntExtra(LibraryAdapter.DATA_TYPE, MediaUtils.TYPE_INVALID);
+			long id = intent.getLongExtra(LibraryAdapter.DATA_ID, LibraryAdapter.INVALID_ID);
+			String label = intent.getStringExtra(LibraryAdapter.DATA_TITLE);
+			SystemUtils.installLauncherShortcut(this, label, type, id);
+			break;
+		}
 		default:
 			return super.onContextItemSelected(item);
 		}
-
 		return true;
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-		SharedPreferences settings = PlaybackService.getSettings(this);
+		SharedPreferences settings = SharedPrefHelper.getSettings(this);
 		if (!settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) ||
 			(settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && settings.getBoolean(PrefKeys.KIDMODE_SHOW_OPTIONS_IN_MENU, PrefDefaults.KIDMODE_SHOW_OPTIONS_IN_MENU))) {
 			super.onCreateOptionsMenu(menu);
@@ -892,7 +968,7 @@ public class LibraryActivity
 	{
 		switch (message.what) {
 		case MSG_SAVE_PAGE: {
-			SharedPreferences.Editor editor = PlaybackService.getSettings(this).edit();
+			SharedPreferences.Editor editor = SharedPrefHelper.getSettings(this).edit();
 			editor.putInt("library_page", message.arg1);
 			editor.apply();
 			super.adjustSpines();
@@ -902,7 +978,7 @@ public class LibraryActivity
 			Bitmap cover = null;
 			Song song = (Song)message.obj;
 			if (song != null) {
-				SharedPreferences settings = PlaybackService.getSettings(this);
+				SharedPreferences settings = SharedPrefHelper.getSettings(this);
 				if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED)) {
 					cover = song.getCover(this);
 				}

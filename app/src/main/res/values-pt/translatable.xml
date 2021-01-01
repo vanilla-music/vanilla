@@ -44,6 +44,10 @@
   <string name="rename">Mudar nome</string>
   <string name="save_as_playlist">Guardar como lista de reprodução...</string>
   <string name="add_to_playlist">Adicionar à lista de reprodução...</string>
+  <string name="add_to_homescreen">Adicionar ao ecrã inicial...</string>
+  <string name="add_to">Adicionar a...</string>
+  <string name="playlist">Lista de reprodução</string>
+  <string name="homescreen">Ecrã inicial</string>
   <string name="add_to_favorites">Adicionar aos favoritos</string>
   <string name="remove_from_favorites">Remover dos favoritos</string>
   <string name="playlist_favorites">Favoritos</string>
@@ -113,6 +117,7 @@
   <string name="play_all">Reproduzir tudo</string>
   <string name="enqueue_all">Colocar tudo na fila</string>
   <string name="all_songs">Todas as faixas</string>
+  <string name="details">Detalhes</string>
   <string name="more_from_artist">Mais deste artista</string>
   <string name="more_from_album">Mais deste álbum</string>
   <string name="title">Título</string>
@@ -202,12 +207,18 @@
   <string name="idle_timeout_title">Período de inatividade</string>
   <string name="enable_scroll_to_song_title">Deslocar para o título</string>
   <string name="enable_scroll_to_song_summary">Ir para o título da faixa/álbum/artista nas listas da coleção</string>
+  <string name="queue_enable_scroll_to_song_title">Deslocar para a faixa na fila</string>
+  <string name="queue_enable_scroll_to_song_summary">Ao alterar de faixa, ir para a faixa em reprodição</string>
+  <string name="jump_to_enqueued_on_play_title">Ao tocar \'Reproduzir\', ir para a faixa na fila</string>
+  <string name="jump_to_enqueued_on_play_summary">Se a faixa escolhida já estiver na fila, ir para a faixa em vez de a colocar mais uma vez na fila</string>
   <string name="coverloader_android_title">Carregar  imagem do Android</string>
   <string name="coverloader_android_summary">Consulta a capa do álbum na base de dados interna do Android</string>
   <string name="coverloader_vanilla_title">Carregar imagem da pasta</string>
   <string name="coverloader_vanilla_summary">Procura as imagens com o nome cover.jpg, album.jpg e artwork.jpg e mostra-as como capa</string>
   <string name="coverloader_shadow_title">Carregar imagem de pasta oculta</string>
   <string name="coverloader_shadow_summary">Tenta carregar a imagem em \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\'</string>
+  <string name="coverloader_inline_title">Carregar imagem das etiquetas</string>
+  <string name="coverloader_inline_summary">Tentar carregar a imagem das etiquetas do ficheiro</string>
   <string name="cover_on_lockscreen_title">Mostrar imagem no ecrã de bloqueio</string>
   <string name="cover_on_lockscreen_summary">Mostra a imagem do faixa em reprodução no ecrã de bloqueio</string>
   <string name="double_tap_title">Duplo toque no widget</string>
@@ -259,6 +270,12 @@
   <string name="preferences_action_enqueue_current_album">Colocar álbum na fila</string>
   <string name="preferences_action_enqueue_current_artist">Colocar artista na fila</string>
   <string name="preferences_action_enqueue_current_genre">Colocar género na fila</string>
+  <string name="jump_to_time">Ir para duração</string>
+  <string name="time_separator">:</string>
+  <string name="hour_hint">HH</string>
+  <string name="minute_hint">MM</string>
+  <string name="second_hint">SS</string>
+  <string name="error_invalid_position">Posição inválida</string>
   <string name="filebrowser_start">Pasta inicial do explorador</string>
   <string name="customize_filebrowser_start">O explorador de ficheiros abre esta pasta</string>
   <string name="select">Selecionar</string>
@@ -268,6 +285,15 @@
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s uma lista de reprodução \'Top %.0f\'</string>
   <string name="autoplaylist_playcounts_disabled">Não criar lista de reprodução automaticamente</string>
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
+  <string name="playlist_sync_mode_title">Sincronização de listas de reprodução</string>
+  <string name="playlist_sync_all">Sincronização total</string>
+  <string name="playlist_sync_only_import">Importar M3U e nunca exportar</string>
+  <string name="playlist_sync_only_export">Escrever M3U e nunca importar</string>
+  <string name="playlist_sync_disabled">Desligada</string>
+  <string name="playlist_sync_folder_title">Pasta de sincronização</string>
+  <string name="playlist_sync_folder_summary">Pasta a utilizar para sincronizar a lista de reprodução</string>
+  <string name="playlist_export_relative_paths_title">Exportar utilizando caminhos relativos</string>
+  <string name="playlist_export_relative_paths_summary">Exportar lista de reprodução utilizando caminhos relativos</string>
   <string name="permission_request_summary">O Vanilla Music necessita da permissão de leitura para mostrar a sua coleção</string>
   <string name="reverse_sort">Inverter organização</string>
   <string name="share">Partilhar...</string>
@@ -277,6 +303,7 @@
   <string name="duration">Duração</string>
   <string name="dump_database">Guardar base de dados</string>
   <string name="dump_database_result">Base de dados guardada em \'%s\'</string>
+  <string name="force_m3u_import">Forçar importação de ficheiros M3U</string>
   <string name="media_library">Coleção multimédia</string>
   <string name="media_folders_header">Diretórios indexados</string>
   <string name="media_scan_header">Analisador multimédia</string>
@@ -301,6 +328,7 @@
   <string name="folder_neutral">Neutra</string>
   <!--Plugin system-->
   <string name="plugins">Suplementos</string>
+  <string name="plugin_needs_upgrade">Por favor atualize %s para a versão mais recente</string>
   <!--Theme names-->
   <string name="theme_name_standard_light">Padrão</string>
   <string name="theme_name_standard_dark">Padrão (escuro)</string>

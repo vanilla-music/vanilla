@@ -89,7 +89,7 @@ public class OneCellWidget extends AppWidgetProvider {
 		if (!sEnabled)
 			return;
 
-		SharedPreferences settings = PlaybackService.getSettings(context);
+		SharedPreferences settings = SharedPrefHelper.getSettings(context);
 		boolean doubleTap = settings.getBoolean(PrefKeys.DOUBLE_TAP, PrefDefaults.DOUBLE_TAP);
 
 		RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.one_cell_widget);

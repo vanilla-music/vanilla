@@ -44,6 +44,10 @@
   <string name="rename">Zmień nazwę</string>
   <string name="save_as_playlist">Zapisz listę odtwarzania jako…</string>
   <string name="add_to_playlist">Dodaj do listy odtwarzania…</string>
+  <string name="add_to_homescreen">Dodaj do ekranu głównego…</string>
+  <string name="add_to">Dodaj do…</string>
+  <string name="playlist">listy odtwarzania</string>
+  <string name="homescreen">ekranu głównego</string>
   <string name="add_to_favorites">Dodaj do ulubionych</string>
   <string name="remove_from_favorites">Usuń z ulubionych</string>
   <string name="playlist_favorites">Ulubione</string>
@@ -123,6 +127,7 @@
   <string name="play_all">Odtwórz wszystkie</string>
   <string name="enqueue_all">Kolejkuj wszystkie</string>
   <string name="all_songs">Wszystkie utwory</string>
+  <string name="details">Szczegóły</string>
   <string name="more_from_artist">Więcej od tego artysty</string>
   <string name="more_from_album">Więcej z tego albumu</string>
   <string name="title">Tytuł</string>
@@ -218,12 +223,16 @@
   <string name="idle_timeout_title">Czas bezczynności</string>
   <string name="enable_scroll_to_song_title">Przewiń do odtwarzanego utworu</string>
   <string name="enable_scroll_to_song_summary">Przewiń do aktualnie odtwarzanego utworu/albumu/artysty w widoku biblioteki</string>
+  <string name="queue_enable_scroll_to_song_title">Przewiń do odtwarzanego utworu</string>
+  <string name="queue_enable_scroll_to_song_summary">Przewiń do obecnie odtwarzanego utworu na liście odtwarzania przy zmianie piosenki</string>
   <string name="coverloader_android_title">Załaduj okładkę albumu z systemu Android</string>
   <string name="coverloader_android_summary">Sprawdzanie w wewnętrznej bazie systemu Android w poszukiwaniu okładki albumu</string>
   <string name="coverloader_vanilla_title">Ładowanie okładki albumu z folderu</string>
   <string name="coverloader_vanilla_summary">Szukaj obrazów o nazwie \'cover.jpg\', \'album.jpg\' lub \'artwork.jpg\' i wyświetlaj je jako okładki albumu</string>
   <string name="coverloader_shadow_title">Ładowanie okladek albumów z ukrytych folderów</string>
   <string name="coverloader_shadow_summary">Spróbuj załadować okładkę albumu z \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\'</string>
+  <string name="coverloader_inline_title">Wczytaj okładkę ze znaczników</string>
+  <string name="coverloader_inline_summary">Spróbuj załadować okładkę z zagnieżdżonych znaczników pliku</string>
   <string name="cover_on_lockscreen_title">Pokazuj okładkę albumu na ekranie blokady</string>
   <string name="cover_on_lockscreen_summary">Wyświetlanie okładki albumu aktualnie odtwarzanego utworu na ekranie blokady</string>
   <string name="double_tap_title">Dwukrotne kliknięcie widżetu</string>
@@ -275,6 +284,12 @@
   <string name="preferences_action_enqueue_current_album">Kolejkuj album</string>
   <string name="preferences_action_enqueue_current_artist">Kolejkuj artystę</string>
   <string name="preferences_action_enqueue_current_genre">Kolejkuj gatunek muzyczny</string>
+  <string name="jump_to_time">Przeskocz do czasu</string>
+  <string name="time_separator">:</string>
+  <string name="hour_hint">HH</string>
+  <string name="minute_hint">MM</string>
+  <string name="second_hint">SS</string>
+  <string name="error_invalid_position">Błędny czas</string>
   <string name="filebrowser_start">Domyślny katalog przeglądarki plików</string>
   <string name="customize_filebrowser_start">Przeglądarka plików zacznie nawigację od tego miejsca</string>
   <string name="select">Wybierz</string>
@@ -284,6 +299,13 @@
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s listę odtwarzania „Najlepsza %.0f”</string>
   <string name="autoplaylist_playcounts_disabled">Nie twórz automatycznie listy odtwarzania</string>
   <string name="autoplaylist_playcounts_name" formatted="false">Najczęściej odtwarzane %d</string>
+  <string name="playlist_sync_mode_title">Synchronizacja list odtwarzania</string>
+  <string name="playlist_sync_all">Pełna synchronizacja</string>
+  <string name="playlist_sync_only_import">Importuj M3U, nigdy eksportuj</string>
+  <string name="playlist_sync_only_export">Zapisz M3U, nigdy importuj</string>
+  <string name="playlist_sync_disabled">Wyłączono</string>
+  <string name="playlist_sync_folder_title">Katalog synchronizacji</string>
+  <string name="playlist_sync_folder_summary">Katalog do synchronizacji list odtwarzania</string>
   <string name="permission_request_summary">Vanilla Music potrzebuje uprawnień do wyświetlenia Twojej biblioteki muzycznej</string>
   <string name="reverse_sort">Odwróć sortowanie</string>
   <string name="share">Udostępnij…</string>
@@ -293,6 +315,7 @@
   <string name="duration">Czas trwania</string>
   <string name="dump_database">Zrzuć bazę danych</string>
   <string name="dump_database_result">Zrzucono bazę danych do „%s”</string>
+  <string name="force_m3u_import">Wymuś reimport M3U</string>
   <string name="media_library">Biblioteka muzyczna</string>
   <string name="media_folders_header">Indeksowane katalogi</string>
   <string name="media_scan_header">Skaner multimediów</string>
@@ -317,6 +340,7 @@
   <string name="folder_neutral">Normalnie</string>
   <!--Plugin system-->
   <string name="plugins">Wtyczki</string>
+  <string name="plugin_needs_upgrade">Proszę zaktualizować wtyczkę „%s” do najnowszej wersji</string>
   <!--Theme names-->
   <string name="theme_name_standard_light">Zwykła</string>
   <string name="theme_name_standard_dark">Zwykła (ciemna)</string>

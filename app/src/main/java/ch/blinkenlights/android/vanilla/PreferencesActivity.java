@@ -24,8 +24,8 @@
 package ch.blinkenlights.android.vanilla;
 
 import android.app.Activity;
-import android.app.AlertDialog.Builder;
 import android.app.AlertDialog;
+import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -34,8 +34,6 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceGroup;
-import android.preference.PreferenceScreen;
 import android.preference.CheckBoxPreference;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -72,13 +70,13 @@ public class PreferencesActivity extends PreferenceActivity
 	{
 		ThemeHelper.setTheme(this, R.style.BackActionBar);
 		super.onCreate(savedInstanceState);
-		PlaybackService.getSettings(this).registerOnSharedPreferenceChangeListener(this);
+		SharedPrefHelper.getSettings(this).registerOnSharedPreferenceChangeListener(this);
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		PlaybackService.getSettings(this).unregisterOnSharedPreferenceChangeListener(this);
+		SharedPrefHelper.getSettings(this).unregisterOnSharedPreferenceChangeListener(this);
 	}
 
 	@Override
@@ -91,17 +89,6 @@ public class PreferencesActivity extends PreferenceActivity
 			// Themes are 5.x only, so do not add PreferencesTheme on holo devices
 			if (!ThemeHelper.usesHoloTheme() || !obj.fragment.equals(PreferencesTheme.class.getName()))
 				target.add(obj);
-		}
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item)
-	{
-		if (item.getItemId() == android.R.id.home) {
-			finish();
-			return true;
-		} else {
-			return super.onOptionsItemSelected(item);
 		}
 	}
 
@@ -181,7 +168,10 @@ public class PreferencesActivity extends PreferenceActivity
 				// ignored. Whee!
 			}
 
-			getActivity().finish();
+			FragmentManager fragmentManager = getFragmentManager();
+			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || !fragmentManager.isStateSaved()) {
+				fragmentManager.popBackStack();
+			}
 		}
 	}
 
@@ -299,7 +289,10 @@ public class PreferencesActivity extends PreferenceActivity
 
 			if (intent != null) {
 				startActivity(intent);
-				activity.finish();
+				FragmentManager fragmentManager = getFragmentManager();
+				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || !fragmentManager.isStateSaved()) {
+					fragmentManager.popBackStack();
+				}
 			} else {
 				// package is not installed, ask user to install it
 				new AlertDialog.Builder(activity)
@@ -310,12 +303,12 @@ public class PreferencesActivity extends PreferenceActivity
 						Intent marketIntent = new Intent(Intent.ACTION_VIEW);
 						marketIntent.setData(Uri.parse("market://details?id="+VPLUG_PACKAGE_NAME));
 						startActivity(marketIntent);
-						getActivity().finish();
+						getActivity().onBackPressed();
 					}
 				})
 				.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
-						getActivity().finish();
+						getActivity().onBackPressed();
 					}
 				})
 				.show();

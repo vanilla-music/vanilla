@@ -44,6 +44,10 @@
   <string name="rename">Nimeä uudelleen</string>
   <string name="save_as_playlist">Tallenna soittolistana…</string>
   <string name="add_to_playlist">Lisää soittolistaan…</string>
+  <string name="add_to_homescreen">Lisää kotinäyttöön…</string>
+  <string name="add_to">Lisää…</string>
+  <string name="playlist">Soittolista</string>
+  <string name="homescreen">Kotinäyttö</string>
   <string name="add_to_favorites">Lisää suosikkeihin</string>
   <string name="remove_from_favorites">Poista suosikeista</string>
   <string name="playlist_favorites">Suosikit</string>
@@ -113,6 +117,7 @@
   <string name="play_all">Toista kaikki</string>
   <string name="enqueue_all">Jonota kaikki</string>
   <string name="all_songs">Kaikki kappaleet</string>
+  <string name="details">Yksityiskohdat</string>
   <string name="more_from_artist">Lisää esittäjältä</string>
   <string name="more_from_album">Lisää albumilta</string>
   <string name="title">Nimi</string>
@@ -164,6 +169,7 @@
   <string name="replaygain_untagged_debump_title">Kappaleet ilman ReplayGain-tunnistetta</string>
   <string name="replaygain_untagged_debump_summary">Vähennä äänenvoimakkuutta</string>
   <string name="replaygain_preamp_note_title">Huomio</string>
+  <string name="replaygain_preamp_note_content">Android ei salli Vanilla Musicin nostaa äänenvoimakkuutta &gt;100%. Esivahvistuksen asettaminen suurelle arvolle saattaa aiheuttaa ongelmia, jos kuuntelet \"hiljaista\" musiikkia. \n\nSuositellut arvot ovat:\n-&gt; -3dB hiljaiselle/klassiselle musiikille\n-&gt; +3dB 2000-luvun ja uudemmalle musiikille</string>
   <string name="readahead">Käytä etukäteen lukemista</string>
   <string name="readahead_summary">Lue eteenpäin toistettavaa kappaletta. Tämä valinta voi auttaa sellaisiin äänen katkeamisongelmiin, mitkä johtuvat hitaasta SD-kortista.</string>
   <string name="equalizer">Taajuuskorjain</string>
@@ -201,18 +207,25 @@
   <string name="idle_timeout_title">Joutenolon aikakatkaisu</string>
   <string name="enable_scroll_to_song_title">Vieritä kappaleen nimeen</string>
   <string name="enable_scroll_to_song_summary">Vieritä parhaillaan toistettavaan kappaleeseen/albumiin/esittäjään kirjastonäkymässä</string>
+  <string name="queue_enable_scroll_to_song_title">Vieritä kappaleen nimeen jonossa</string>
+  <string name="queue_enable_scroll_to_song_summary">Vieritä parhaillaan toistettavan kappaleeseen jonossa kappaleen vaihtuessa</string>
+  <string name="jump_to_enqueued_on_play_title">Siirry jonossa olevaan kappaleeseen \"Toista\"-toiminnosta</string>
+  <string name="jump_to_enqueued_on_play_summary">Jos pyydetty kappale on jo jonossa, siirry siihen sen sijaan että jono pyyhkiytyy</string>
   <string name="coverloader_android_title">Lataa kuvitus Androidista</string>
   <string name="coverloader_android_summary">Etsi kuvitusta Androidin sisäisestä mediatietokannasta</string>
   <string name="coverloader_vanilla_title">Lataa kuvitus kansiosta</string>
   <string name="coverloader_vanilla_summary">Etsi kuvatiedostoja nimeltä cover.jpg, album.jpg tai artwork.jpg ja näytä löytynyt tiedosto kansikuvituksena</string>
   <string name="coverloader_shadow_title">Lataa kuvitus piilotetusta kansiosta</string>
   <string name="coverloader_shadow_summary">Yritä ladata kuvitus polusta \'/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg\'</string>
+  <string name="coverloader_inline_title">Lataa kuvitus tiedostotunnisteista</string>
+  <string name="coverloader_inline_summary">Yritä ladata upotettu kuvitus tiedostotunnisteista</string>
   <string name="cover_on_lockscreen_title">Näytä kuvitus lukitusnäytöllä</string>
   <string name="cover_on_lockscreen_summary">Näytä toistettavan kappaleen kansikuvitus lukitusnäytöllä</string>
   <string name="double_tap_title">Kaksoisnapautus-widget</string>
   <string name="double_tap_summary">1x1-widgetin kaksoisnapautus avaa soittimen. Asettaa 400 ms viiveen, ennen kuin widget vastaa toimintoon.</string>
   <string name="scrobble_title">Käytä Scrobble Droid API:a</string>
   <string name="scrobble_summary">Lähetä kuuntelutiedot Last.fm:ään Scrobble Droidia tai Simple Last.fm Scrobbleria käyttäen</string>
+  <string name="stock_broadcast_title">Emuloi vakiomuotoisia yleislähetyksiä</string>
   <string name="stock_broadcast_summary">Lähetä vakiosoitinta emuloivia yleislähetyksiä. Auttaa kolmansien osapuolten lukitusnäyttöohjainten, widgettien yms. toimivuuden kanssa.</string>
   <string name="help">Ohje</string>
   <string name="about">Tietoja</string>
@@ -257,6 +270,12 @@
   <string name="preferences_action_enqueue_current_album">Aseta albumi jonoon</string>
   <string name="preferences_action_enqueue_current_artist">Aseta esittäjä jonoon</string>
   <string name="preferences_action_enqueue_current_genre">Aseta tyylilaji jonoon</string>
+  <string name="jump_to_time">Siirry aikaan</string>
+  <string name="time_separator">:</string>
+  <string name="hour_hint">HH</string>
+  <string name="minute_hint">MM</string>
+  <string name="second_hint">SS</string>
+  <string name="error_invalid_position">Virheellinen arvo</string>
   <string name="filebrowser_start">Tiedostohallinnan aloitus</string>
   <string name="customize_filebrowser_start">Tiedostohallinta käynnistyy tästä kansiosta</string>
   <string name="select">Valitse</string>
@@ -266,6 +285,15 @@
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s \'Top %.0f\' -soittolista</string>
   <string name="autoplaylist_playcounts_disabled">Älä luo automaattista soittolistaa</string>
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
+  <string name="playlist_sync_mode_title">Soittolistan synkronointi</string>
+  <string name="playlist_sync_all">Täysi synkronointi</string>
+  <string name="playlist_sync_only_import">Tuo M3U, älä vie koskaan</string>
+  <string name="playlist_sync_only_export">Kirjoita M3U, älä tuo koskaan</string>
+  <string name="playlist_sync_disabled">Pois käytöstä</string>
+  <string name="playlist_sync_folder_title">Synkronointikansio</string>
+  <string name="playlist_sync_folder_summary">Soittolistan synkronointiin käytettävä kansio</string>
+  <string name="playlist_export_relative_paths_title">Vie käyttäen suhteellisia polkuja</string>
+  <string name="playlist_export_relative_paths_summary">Viittaa tiedostopolkuihin suhteellisena soittolistaan</string>
   <string name="permission_request_summary">Vanilla Music tarvitsee lukuoikeuden näyttääkseen musiikkikirjastosi</string>
   <string name="reverse_sort">Käänteinen järjestys</string>
   <string name="share">Jaa…</string>
@@ -275,6 +303,7 @@
   <string name="duration">Kesto</string>
   <string name="dump_database">Vie tietokanta</string>
   <string name="dump_database_result">Tietokanta viety tiedostoon \'%s\'</string>
+  <string name="force_m3u_import">Pakota M3U-uudelleentuonti</string>
   <string name="media_library">Mediakirjasto</string>
   <string name="media_folders_header">Indeksoidut kansiot</string>
   <string name="media_scan_header">Mediaskanneri</string>
@@ -299,6 +328,7 @@
   <string name="folder_neutral">Neutraali</string>
   <!--Plugin system-->
   <string name="plugins">Liitännäiset</string>
+  <string name="plugin_needs_upgrade">Päivitä liitännäinen %s uusimpaan versioon</string>
   <!--Theme names-->
   <string name="theme_name_standard_light">Standardi</string>
   <string name="theme_name_standard_dark">Standardi (tumma)</string>

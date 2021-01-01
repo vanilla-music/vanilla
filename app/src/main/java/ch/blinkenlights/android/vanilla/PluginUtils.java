@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Oleg Chernovskiy <adonai@xaker.ru>
+ * Copyright (C) 2016-2018 Oleg Chernovskiy <adonai@xaker.ru>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,9 +18,15 @@ package ch.blinkenlights.android.vanilla;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.widget.Toast;
+import androidx.annotation.NonNull;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Common plugin utilities and constants reside here.
@@ -35,7 +41,6 @@ public class PluginUtils {
     // these actions are for passing between main player and plugins
     public static final String ACTION_REQUEST_PLUGIN_PARAMS = "ch.blinkenlights.android.vanilla.action.REQUEST_PLUGIN_PARAMS"; // broadcast
     public static final String ACTION_HANDLE_PLUGIN_PARAMS = "ch.blinkenlights.android.vanilla.action.HANDLE_PLUGIN_PARAMS"; // answer
-    public static final String ACTION_WAKE_PLUGIN = "ch.blinkenlights.android.vanilla.action.WAKE_PLUGIN"; // targeted at each found
     public static final String ACTION_LAUNCH_PLUGIN = "ch.blinkenlights.android.vanilla.action.LAUNCH_PLUGIN"; // targeted at selected by user
 
     // these are used by plugins to describe themselves
@@ -51,19 +56,42 @@ public class PluginUtils {
 
     static final String EXTRA_PLUGIN_MAP = "ch.blinkenlights.android.vanilla.internal.extra.PLUGIN_MAP";
 
-    public static boolean checkPlugins(Context ctx) {
-        List<ResolveInfo> resolved = ctx.getPackageManager().queryBroadcastReceivers(new Intent(ACTION_REQUEST_PLUGIN_PARAMS), 0);
-        if(!resolved.isEmpty()) {
-            // If plugin is just installed, Android will not deliver intents to its receiver
-            // until it's started at least one time
-            for (ResolveInfo ri : resolved) {
-                Intent awaker = new Intent(ACTION_WAKE_PLUGIN);
-                awaker.setPackage(ri.activityInfo.packageName);
-                ctx.startService(awaker);
-            }
-            return true;
-        }
+	/**
+	 * Find all vanilla plugins by their very specific broadcast receiver intent.
+	 * @param ctx context to use when resolving packages.
+	 * @return list of all resolved plugins, may be empty but never null
+	 */
+	@NonNull
+	private static List<ResolveInfo> resolvePlugins(Context ctx) {
+		PackageManager pm = ctx.getPackageManager();
+		Intent filter = new Intent(ACTION_REQUEST_PLUGIN_PARAMS);
+		return pm.queryBroadcastReceivers(filter, PackageManager.GET_DISABLED_COMPONENTS);
+	}
 
-        return false;
+	/**
+	 * Checks whether does any of vanilla plugins exist on this Android system
+	 * @param ctx context to use when resolving packages
+	 * @return true if at least one plugin is installed, false otherwise
+	 */
+    public static boolean checkPlugins(Context ctx) {
+        return !resolvePlugins(ctx).isEmpty();
     }
+
+	/**
+	 * Same as {@link #resolvePlugins(Context)} but in a map convenient for showing in dialogs.
+	 * @param ctx ctx context to use when resolving packages
+	 * @return all vanilla plugins in a map App Name <-> App Info
+	 */
+	@NonNull
+	public static Map<String, ApplicationInfo> getPluginMap(Context ctx) {
+		PackageManager pm = ctx.getPackageManager();
+		List<ResolveInfo> resolved = resolvePlugins(ctx);
+
+		Map<String, ApplicationInfo> pluginMap = new HashMap<>(resolved.size());
+		for (ResolveInfo ri : resolved) {
+			ApplicationInfo appInfo = ri.activityInfo.applicationInfo;
+			pluginMap.put(appInfo.loadLabel(pm).toString(), appInfo);
+		}
+		return pluginMap;
+	}
 }

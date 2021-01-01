@@ -36,8 +36,6 @@ import java.util.Random;
 
 import android.util.Log;
 
-import junit.framework.Assert;
-
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -45,11 +43,10 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.content.FileProvider;
-import android.text.TextUtils;
 import android.database.MatrixCursor;
-import android.util.Log;
 import android.widget.Toast;
+
+import androidx.core.content.FileProvider;
 
 
 /**
@@ -206,7 +203,7 @@ public class MediaUtils {
 	public static QueryTask buildPlaylistQuery(long id, String[] projection) {
 		String sort = MediaLibrary.PlaylistSongColumns.POSITION;
 		String selection = MediaLibrary.PlaylistSongColumns.PLAYLIST_ID+"="+id;
-		QueryTask result = new QueryTask(MediaLibrary.VIEW_PLAYLIST_SONGS, projection, selection, null, sort);
+		QueryTask result = new QueryTask(MediaLibrary.VIEW_PLAYLISTS_SONGS, projection, selection, null, sort);
 		result.type = TYPE_PLAYLIST;
 		return result;
 	}
@@ -528,7 +525,7 @@ public class MediaUtils {
 		path = sanitizeMediaPath(path);
 		String query = MediaLibrary.SongColumns.PATH+" = ?";
 
-		if (!recursive) {
+		if (recursive) {
 			// This is a LIKE query: add a slash to the directory if the current path
 			// points to an existing one.
 			path = addDirEndSlash(path) + "%";
@@ -564,7 +561,7 @@ public class MediaUtils {
 				songId = -2; // must be less than -1 (-1 defines an empty song object)
 
 			// Build minimal fake-database entry for this file
-			Object[] objData = new Object[] { songId, path, "", "", "", 0, 0, 0, 0, 0 };
+			Object[] objData = new Object[] { songId, path, "", "", "", 0, 0, 0, 0, 0, 0 };
 
 			if (title != null)
 				objData[2] = title;

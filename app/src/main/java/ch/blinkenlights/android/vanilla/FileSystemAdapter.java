@@ -28,19 +28,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.FileObserver;
-import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.regex.Pattern;
 
 /**
@@ -54,11 +51,7 @@ public class FileSystemAdapter
 	private static final Pattern SPACE_SPLIT = Pattern.compile("\\s+");
 	private static final Pattern FILE_SEPARATOR = Pattern.compile(File.separator);
 	private static final Pattern GUESS_MUSIC = Pattern.compile("^(.+\\.(mp3|ogg|mka|opus|flac|aac|m4a|wav))$", Pattern.CASE_INSENSITIVE);
-	private static final Pattern GUESS_IMAGE = Pattern.compile("^(.+\\.(gif|jpe?g|png|bmp|tiff?))$", Pattern.CASE_INSENSITIVE);
-	/**
-	 * The string (but also valid path!) to use to indicate the parent directory
-	 */
-	private static final String NAME_PARENT_FOLDER = "..";
+	private static final Pattern GUESS_IMAGE = Pattern.compile("^(.+\\.(gif|jpe?g|png|bmp|tiff?|webp))$", Pattern.CASE_INSENSITIVE);
 	/**
 	 * The root directory of the device
 	 */
@@ -207,7 +200,7 @@ public class FileSystemAdapter
 		ArrayList<File> files = new ArrayList<File>(Arrays.asList(readdir));
 		Collections.sort(files, mFileComparator);
 		if (!mFsRoot.equals(file))
-			files.add(0, new File(file, NAME_PARENT_FOLDER));
+			files.add(0, new File(file, FileUtils.NAME_PARENT_FOLDER));
 
 		return files.toArray(new File[files.size()]);
 	}
@@ -243,7 +236,7 @@ public class FileSystemAdapter
 	@Override
 	public long getItemId(int pos)
 	{
-		return pos;
+		return FileUtils.songIdFromFile(mFiles[pos]);
 	}
 
 	@Override
@@ -251,7 +244,7 @@ public class FileSystemAdapter
 	{
 		DraggableRow row;
 		ViewHolder holder;
-		SharedPreferences settings = PlaybackService.getSettings(mActivity);
+		SharedPreferences settings = SharedPrefHelper.getSettings(mActivity);
 
 		if (convertView == null) {
 			if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && settings.getBoolean(PrefKeys.KIDMODE_ENLARGE_COVERS, PrefDefaults.KIDMODE_ENLARGE_COVERS)) {
@@ -344,7 +337,7 @@ public class FileSystemAdapter
 	 * @return true if given file points to the parent folder
 	 */
 	private static boolean pointsToParentFolder(File file) {
-		return NAME_PARENT_FOLDER.equals(file.getName());
+		return FileUtils.NAME_PARENT_FOLDER.equals(file.getName());
 	}
 
 	/**
@@ -373,9 +366,13 @@ public class FileSystemAdapter
 	}
 
 	@Override
-	public Limiter buildLimiter(long id)
-	{
-		return buildLimiter(mFiles[(int)id]);
+	public Limiter buildLimiter(long id) {
+		for (int i = 0; i < mFiles.length; i++) {
+			if (id == getItemId(i)) {
+				return buildLimiter(mFiles[i]);
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -410,7 +407,7 @@ public class FileSystemAdapter
 
 		Intent intent = new Intent();
 		intent.putExtra(LibraryAdapter.DATA_TYPE, MediaUtils.TYPE_FILE);
-		intent.putExtra(LibraryAdapter.DATA_ID, holder.id);
+		intent.putExtra(LibraryAdapter.DATA_ID, getItemId((int)holder.id));
 		intent.putExtra(LibraryAdapter.DATA_TITLE, holder.title);
 		intent.putExtra(LibraryAdapter.DATA_EXPANDABLE, file.isDirectory());
 		intent.putExtra(LibraryAdapter.DATA_FILE, file.getAbsolutePath());
@@ -447,8 +444,10 @@ public class FileSystemAdapter
 	 */
 	public void onItemClicked(Intent intent) {
 		boolean isFolder = intent.getBooleanExtra(LibraryAdapter.DATA_EXPANDABLE, false);
+		boolean isHeader = intent.getLongExtra(LibraryAdapter.DATA_ID, LibraryAdapter.INVALID_ID)
+			== LibraryAdapter.HEADER_ID;
 
-		if (FileUtils.canDispatchIntent(intent) && FileUtils.dispatchIntent(mActivity, intent))
+		if (!isHeader && FileUtils.canDispatchIntent(intent) && FileUtils.dispatchIntent(mActivity, intent))
 			return;
 
 		if (isFolder) {
@@ -459,17 +458,20 @@ public class FileSystemAdapter
 	}
 
 	/**
-	 * Context menu of a row: this was dispatched by LibraryPAgerAdapter
+	 * Context menu of a row: this was dispatched by LibraryPagerAdapter
 	 *
-	 * @param menu the context menu to populate
 	 * @param intent likely created by createData()
+	 * @param view the parent view
+	 * @param x x-coords of event
+	 * @param y y-coords of event
 	 */
-	public void onCreateContextMenu(ContextMenu menu, Intent intent) {
+	public boolean onCreateFancyMenu(Intent intent, View view, float x, float y) {
 		String path = intent.getStringExtra(LibraryAdapter.DATA_FILE);
 		boolean isParentRow = (path != null && pointsToParentFolder(new File(path)));
 
 		if (!isParentRow)
-			mActivity.onCreateContextMenu(menu, intent);
-		// else: no context menu
+			return mActivity.onCreateFancyMenu(intent, view, x, y);
+		// else: no context menu, but consume event.
+		return true;
 	}
 }

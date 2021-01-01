@@ -22,60 +22,32 @@ THE SOFTWARE.
 -->
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
        xmlns:vanilla="http://schemas.android.com/apk/res-auto" >
-	<ch.blinkenlights.android.vanilla.CoverView
-		android:id="@+id/cover_view"
-		android:layout_height="fill_parent"
-		android:layout_width="fill_parent" />
-	<LinearLayout
-		android:id="@+id/controls_top"
-		android:layout_height="wrap_content"
-		android:layout_width="fill_parent"
-		android:layout_gravity="top"
-		android:background="?overlay_background_color"
-		android:orientation="horizontal">
-		<TextView
-			android:id="@+id/elapsed"
-			android:layout_height="wrap_content"
-			android:layout_width="wrap_content"
-			android:layout_gravity="center"
-			android:paddingLeft="5dip" />
-		<SeekBar
-			android:id="@+id/seek_bar"
-			android:layout_height="wrap_content"
-			android:layout_width="0px"
-			android:layout_gravity="center"
-			android:minHeight="32dip"
-			android:maxHeight="32dip"
-			android:paddingTop="5dip"
-			android:paddingBottom="5dip"
-			android:paddingLeft="18dip"
-			android:paddingRight="18dip"
-			android:layout_weight="1" />
-		<TextView
-			android:id="@+id/duration"
-			android:layout_height="wrap_content"
-			android:layout_width="wrap_content"
-			android:layout_gravity="center"
-			android:paddingRight="5dip" />
-	</LinearLayout>
+
+  <ch.blinkenlights.android.vanilla.CoverView
+      android:id="@+id/cover_view"
+      android:layout_marginBottom="@dimen/full_playback_controls_height"
+      android:layout_height="fill_parent"
+      android:layout_width="fill_parent" />
 
 	<ch.blinkenlights.android.vanilla.SlidingView
 		android:id="@+id/sliding_view"
 		android:layout_height="fill_parent"
 		android:layout_width="fill_parent"
 		android:layout_gravity="bottom|left"
-		android:layout_marginTop="40dip"
+		android:layout_marginTop="0dip"
 		android:orientation="horizontal"
 		vanilla:slider_handle_id="@+id/queue_slider">
 			<LinearLayout
-				android:id="@+id/queue_slider"
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_width="fill_parent"
 				android:background="?overlay_background_color"
-				android:orientation="horizontal"
-				android:elevation="2dp">
-					<include layout="@layout/controls" />
+				android:elevation="2dp"
+				android:orientation="vertical">
+					<include layout="@layout/seek_bar" />
+					<include layout="@layout/controls" android:id="@+id/queue_slider" />
 			</LinearLayout>
+
+
 			<fragment class="ch.blinkenlights.android.vanilla.ShowQueueFragment"
 				android:id="@+id/queue"
 				android:layout_width="fill_parent"

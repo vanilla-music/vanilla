@@ -28,7 +28,7 @@ import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 
 public class VanillaImageButton extends ImageButton {

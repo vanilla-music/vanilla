@@ -1,20 +1,30 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="app_name">وانیلا موزیک</string>
+  <string name="ok">بسیار خوب</string>
+  <string name="cancel">کنسل</string>
   <!--Playback Activity (main screen)-->
+  <string name="no_songs">آهنگی بر روی دستگاه شما پیدا تشد.</string>
+  <string name="empty_queue">موسیقی انتخاب نشده است. تعدادی موسیقی از کتابخانه انتخاب کنید یا با لمس کردن این پیام وارد حالت تصادفی شوید.</string>
   <string name="settings">تنظیمات</string>
   <string name="no_shuffle">بدون تصادفی</string>
+  <string name="shuffle_songs">آهنگ های تصادفی</string>
+  <string name="shuffle_songs_continuously">آهنگ ها را بصورت مداوم تصادفی پخش کن</string>
   <string name="shuffle_albums">تصادفی‌سازی آلبوم‌ها</string>
   <string name="no_repeat">بدون تکرار</string>
   <string name="repeat">تکرار</string>
+  <string name="repeat_current_song">تکرار آهنگ در حال پخش</string>
+  <string name="stop_current_song">بعد آهنگ در حال پخش، متوقف کن</string>
   <string name="random">تصادفی</string>
   <string name="random_enabling">فعال کردن حالت تصادفی</string>
+  <string name="song_load_failed">پخش آهنگ %s ناموفق بود.  شاید فایل خراب شده یا وجود ندارد.</string>
   <string name="queue_cleared">صف خالی شد.</string>
   <string name="cover_art">جلد آلبوم</string>
   <string name="close_notification">بستن اعلان</string>
   <string name="_genre">ژانر</string>
   <string name="_track">اثر</string>
   <string name="_composer">آهنگساز</string>
+  <string name="_path">مسیر</string>
   <string name="_format">فرمت</string>
   <string name="_title">عنوان</string>
   <string name="_artist">هنرمند</string>
@@ -34,11 +44,16 @@
   <string name="rename">تغییر نام</string>
   <string name="save_as_playlist">ذخیره لیست پخش...</string>
   <string name="add_to_playlist">اضافه به لیست پخش...</string>
+  <string name="add_to_homescreen">افزودن به صفحه اصلی...</string>
+  <string name="add_to">افزودن به...</string>
+  <string name="playlist">لیست در حال اجرا</string>
+  <string name="homescreen">صفحه اصلی</string>
   <string name="add_to_favorites">اضافه به علاقه‌مندی‌ها</string>
   <string name="remove_from_favorites">حذف از علاقه‌مندی‌ها</string>
   <string name="playlist_favorites">علاقه‌مندی‌ها</string>
   <string name="new_playlist">لیست پخش جدید...</string>
   <string name="expand">بسط دادن</string>
+  <string name="expand_or_play_all">باز کردن یا پخش همه</string>
   <string name="delete">حذف</string>
   <string name="playback_view">در حال پخش</string>
   <string name="sort_by">مرتب‌سازی بر اساس</string>
@@ -47,6 +62,8 @@
   <string name="remove">حذف</string>
   <string name="play_or_enqueue">اضافه به صف اگر در حال پخش، در غیر این صورت شروع به پخش</string>
   <string name="open">بازکردن</string>
+  <string name="go_home">دایرکتوری اصلی</string>
+  <string name="jumping_to_song">آهنگ به درستی در صف است، در حال پریدن...</string>
   <!--As a developer, you should always supply "one" and "other"
 		strings. Your translators will know which strings are actually
 		needed for their language. Always include %d in "one" because
@@ -56,30 +73,77 @@
 		Translators should use http://unicode.org/reports/tr35/tr35-numbers.html#Language_Plural_Rules and
 		http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html, Type cardinal,
 		to see which categories apply to integer numbers in their languages-->
+  <plurals name="playing">
+    <item quantity="one">%dموسیقی در حال پخش است.</item>
+    <item quantity="other">%d موسیقی در حال پخش است.</item>
+  </plurals>
+  <plurals name="enqueued">
+    <item quantity="one">%d موسیقی به لیست اضافه شده است.</item>
+    <item quantity="other">%d موسیقی به لیست اضافه شده است.</item>
+  </plurals>
+  <plurals name="added_to_playlist">
+    <item quantity="one">%1$d موسیقی به لیست پخش %2$s افزوده شده است.</item>
+    <item quantity="other">%1$d موسیقی به لیست پخش %2$s افزوده شده است.</item>
+  </plurals>
+  <plurals name="removed_from_playlist">
+    <item quantity="one">%1$d موسیقی از لیست پخش %2$s حذف شد.</item>
+    <item quantity="other">%1$d موسیقی از لیست پخش %2$s حذف شد.</item>
+  </plurals>
+  <plurals name="deleted">
+    <item quantity="one">%d موسیقی حذف شد.</item>
+    <item quantity="other">%d موسیقی حذف شد.</item>
+  </plurals>
   <string name="delete_file_failed">حذف %s ناموفق بود.</string>
   <string name="deleted_item">\'%s\' حذف شد.</string>
   <string name="delete_item">\'%s\' پاک شود؟</string>
   <string name="delete_file">فایل \'%s\' پاک شود؟</string>
   <string name="artists">هنرمندان</string>
   <string name="albums">آلبوم‌ها</string>
+  <string name="albumartists">آلبوم خوانندگان</string>
+  <string name="composers">آهنگسازان</string>
+  <string name="songs">موسیقی ها</string>
   <string name="playlists">لیست‌های پخش</string>
   <string name="genres">ژانرها</string>
   <string name="files">فایل‌ها</string>
+  <string name="artist">خواننده</string>
+  <string name="album">آلبوم</string>
+  <string name="genre">ژانر</string>
+  <string name="folder">پوشه</string>
+  <string name="filename">نام فایل</string>
+  <string name="file_size">حجم فایل</string>
+  <string name="file_time">زمان اصلاح</string>
+  <string name="extension">افزونه</string>
   <string name="unknown">ناشناخته</string>
   <string name="play_all">پخش همه</string>
   <string name="enqueue_all">اضافه‌کردن همه به صف</string>
+  <string name="all_songs">همه موسیقی ها</string>
+  <string name="details">جزییات</string>
   <string name="more_from_artist">آهنگ‌های بیشتر از این هنرمند</string>
   <string name="more_from_album">آهنگ‌های بیشتر از این آلبوم</string>
+  <string name="title">عنوان</string>
   <string name="number_of_tracks">تعداد ترک‌ها</string>
   <string name="year">آهنگ</string>
   <string name="date_added">تاریخ اضافه‌شدن</string>
   <string name="artist_album">هنرمند، آلبوم</string>
+  <string name="artist_year_album">خواننده، سال، آلبوم</string>
   <string name="artist_album_track">هنرمند، آلبوم، شماره ترک</string>
   <string name="artist_album_title">هنرمند، آلبوم، عنوان</string>
   <string name="artist_year">هنرمند، سال</string>
   <string name="album_track">آلبوم، شماره ترک</string>
   <string name="song_playcount">تعداد پخش</string>
   <!--Preferences-->
+  <plurals name="seconds">
+    <item quantity="one">%d ثانیه</item>
+    <item quantity="other">%d ثانیه ها</item>
+  </plurals>
+  <plurals name="minutes">
+    <item quantity="one">%d دقیقه ها</item>
+    <item quantity="other">%d دقیقه</item>
+  </plurals>
+  <plurals name="hours">
+    <item quantity="one">%d ساعت</item>
+    <item quantity="other">%d ساعت ها</item>
+  </plurals>
   <string name="audio">صدا</string>
   <string name="volume_during_ducking_title">حجم صدا در زمان اعلان ها</string>
   <string name="volume_during_ducking_summary">میزان صدای پخش:</string>
@@ -89,9 +153,17 @@
   <string name="media_button_beep_title">بوق کنترل هدست</string>
   <string name="media_button_beep_summary">اجرای صدای بوق هنگامی که از یک آهنگ با دوبار کلیک بر روی کنترک هدست رد می شود</string>
   <string name="headset_only_title">فقط خروجی های جانبی</string>
+  <string name="headset_only_summary">مانع از پخش موسیقی از طریق بلندگوهای داخلی می شود.</string>
   <string name="headset_pause_title">هنگامی که جدا می شود پخش متوقف گردد</string>
   <string name="headset_pause_summary">هنگامی که هدفون جدا می شود پخش متوقف گردد.</string>
   <string name="headset_launch_title">هنگامی که متصل می شود پخش گردد</string>
+  <string name="headset_launch_summary">هنگام وصل شدن هدفون موسیقی پخش شود. (نیاز به نصب برنامه ردیاب هدفون دارد.)</string>
+  <string name="headset_launch_app_missing">این ویژگی نیاز به نصب برنامه \"آشکارساز هدفون\" دارد. \n آیا می خواهید فروشگاه برنام ها را برای نصب برنامه باز کنید؟</string>
+  <string name="replaygain">پخش مجدد</string>
+  <string name="replaygain_summary">اطلاعات پخش مجدد را پیکربندی کنید</string>
+  <string name="replaygain_track_title">فعال کردن پخش مجدد برای هر موسیقی</string>
+  <string name="replaygain_track_summary">همه موسیقی ها را با صدای بلند اجرا کند</string>
+  <string name="replaygain_album_title">فعال کردن پخش مجدد آلبوم</string>
   <string name="replaygain_preamp_note_title">یادداشت</string>
   <string name="equalizer">اکولایزر</string>
   <string name="cycle_continuous_shuffling">تصادفی متوالی</string>

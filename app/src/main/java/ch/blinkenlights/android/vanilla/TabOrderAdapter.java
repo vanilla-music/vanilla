@@ -90,7 +90,7 @@ public class TabOrderAdapter extends BaseAdapter {
 	{
 		DraggableRow view;
 		if (convert == null) {
-			SharedPreferences settings = PlaybackService.getSettings(mActivity);
+			SharedPreferences settings = SharedPrefHelper.getSettings(mActivity);
 			if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && settings.getBoolean(PrefKeys.KIDMODE_ENLARGE_COVERS, PrefDefaults.KIDMODE_ENLARGE_COVERS)) {
 				view = (DraggableRow)mInflater.inflate(R.layout.draggable_row_xl, parent, false);
 			}

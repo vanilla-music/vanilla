@@ -23,6 +23,8 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import ch.blinkenlights.android.vanilla.ext.CoordClickListener;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -30,10 +32,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Parcelable;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +41,10 @@ import android.widget.ListView;
 import java.util.Arrays;
 import java.util.ArrayList;
 
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
+
 /**
  * PagerAdapter that manages the library media ListViews.
  */
@@ -50,7 +52,7 @@ public class LibraryPagerAdapter
 	extends PagerAdapter
 	implements Handler.Callback
 	         , ViewPager.OnPageChangeListener
-	         , View.OnCreateContextMenuListener
+	         , CoordClickListener.Callback
 	         , AdapterView.OnItemClickListener
 {
 	/**
@@ -215,7 +217,7 @@ public class LibraryPagerAdapter
 	 */
 	public boolean loadTabOrder()
 	{
-		String in = PlaybackService.getSettings(mActivity).getString(PrefKeys.TAB_ORDER, PrefDefaults.TAB_ORDER);
+		String in = SharedPrefHelper.getSettings(mActivity).getString(PrefKeys.TAB_ORDER, PrefDefaults.TAB_ORDER);
 		int[] order = new int[MAX_ADAPTER_COUNT];
 		int count = 0;
 		if (in != null && in.length() == MAX_ADAPTER_COUNT) {
@@ -279,7 +281,7 @@ public class LibraryPagerAdapter
 			LayoutInflater inflater = activity.getLayoutInflater();
 			LibraryAdapter adapter;
 			DraggableRow header = null;
-			SharedPreferences settings = PlaybackService.getSettings(activity);
+			SharedPreferences settings = SharedPrefHelper.getSettings(activity);
 
 			switch (type) {
 			case MediaUtils.TYPE_ARTIST:
@@ -354,11 +356,12 @@ public class LibraryPagerAdapter
 				throw new IllegalArgumentException("Invalid media type: " + type);
 			}
 
+			CoordClickListener ccl = new CoordClickListener(this);
 			view = (ListView)inflater.inflate(R.layout.listview, null);
-			view.setOnCreateContextMenuListener(this);
+			ccl.registerForOnItemLongClickListener(view);
 			view.setOnItemClickListener(this);
-
 			view.setTag(type);
+
 			if (header != null && settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && settings.getBoolean(PrefKeys.KIDMODE_SHOW_OPTIONS_IN_MENU, PrefDefaults.KIDMODE_SHOW_OPTIONS_IN_MENU)) {
 				header.setText(mHeaderText);
 				header.setTag(new ViewHolder()); // behave like a normal library row
@@ -711,7 +714,7 @@ public class LibraryPagerAdapter
 		}
 		case MSG_SAVE_SORT: {
 			SortableAdapter adapter = (SortableAdapter)message.obj;
-			SharedPreferences.Editor editor = PlaybackService.getSettings(mActivity).edit();
+			SharedPreferences.Editor editor = SharedPrefHelper.getSettings(mActivity).edit();
 			editor.putInt(adapter.getSortSettingsKey(), adapter.getSortMode());
 			editor.apply();
 			break;
@@ -805,7 +808,7 @@ public class LibraryPagerAdapter
 	{
 		String key = adapter.getSortSettingsKey();
 		int def = adapter.getDefaultSortMode();
-		int sort = PlaybackService.getSettings(mActivity).getInt(key, def);
+		int sort = SharedPrefHelper.getSettings(mActivity).getInt(key, def);
 		adapter.setSortMode(sort);
 	}
 
@@ -883,18 +886,26 @@ public class LibraryPagerAdapter
 	}
 
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View view, ContextMenuInfo menuInfo)
-	{
-		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
-		View targetView = info.targetView;
-		Intent intent = info.id == LibraryAdapter.HEADER_ID ? createHeaderIntent(targetView) : mCurrentAdapter.createData(targetView);
-		int type = (Integer)((View)targetView.getParent()).getTag();
+	/**
+	 * Dispatch long click event of a row.
+	 *
+	 * @param parent the parent adapter view
+	 * @param view the long clicked view
+	 * @param position row position
+	 * @param id id of the long clicked row
+	 * @param x x-coords of event
+	 * @param y y-coords of event
+	 *
+	 * @return true if the event was consumed
+	 */
+	public boolean onItemLongClickWithCoords (AdapterView<?> parent, View view, int position, long id, float x, float y) {
+		Intent intent = id == LibraryAdapter.HEADER_ID ? createHeaderIntent(view) : mCurrentAdapter.createData(view);
+		int type = (Integer)((View)view.getParent()).getTag();
 
 		if (type == MediaUtils.TYPE_FILE) {
-			mFilesAdapter.onCreateContextMenu(menu, intent);
-		} else {
-			mActivity.onCreateContextMenu(menu, intent);
+			return mFilesAdapter.onCreateFancyMenu(intent, view, x, y);
 		}
+		return mActivity.onCreateFancyMenu(intent, view, x, y);
 	}
 
 	@Override
@@ -928,13 +939,15 @@ public class LibraryPagerAdapter
 			return;
 
 		// scroll to song on song change if opted-in
-		SharedPreferences sharedPrefs = PlaybackService.getSettings(mActivity);
+		SharedPreferences sharedPrefs = SharedPrefHelper.getSettings(mActivity);
 		boolean shouldScroll = sharedPrefs.getBoolean(PrefKeys.ENABLE_SCROLL_TO_SONG, PrefDefaults.ENABLE_SCROLL_TO_SONG);
 		if(shouldScroll) {
-			int middlePos = (view.getFirstVisiblePosition() + view.getLastVisiblePosition()) / 2;
 			for (int pos = 0; pos < view.getCount(); pos++) {
 				if (view.getItemIdAtPosition(pos) == id) {
-					if (Math.abs(middlePos - pos) < 30) {
+					// for Android < 6.x visible positions are valid only if view is shown
+					boolean interactive = view.isShown();
+					int middlePos = (view.getFirstVisiblePosition() + view.getLastVisiblePosition()) / 2;
+					if (interactive && Math.abs(middlePos - pos) < 30) {
 						view.smoothScrollToPosition(pos);
 					} else {
 						view.setSelection(pos);

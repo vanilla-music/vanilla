@@ -17,6 +17,10 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import ch.blinkenlights.android.vanilla.ui.FancyMenu;
+import ch.blinkenlights.android.vanilla.ui.FancyMenuItem;
+import ch.blinkenlights.android.vanilla.ext.CoordClickListener;
+
 import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.content.Context;
@@ -24,9 +28,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -37,10 +39,11 @@ import com.mobeta.android.dslv.DragSortListView;
 
 public class ShowQueueFragment extends Fragment
 	implements TimelineCallback,
-	           AdapterView.OnItemClickListener,
-	           DragSortListView.DropListener,
-	           DragSortListView.RemoveListener,
-	           MenuItem.OnMenuItemClickListener
+			   AdapterView.OnItemClickListener,
+			   CoordClickListener.Callback,
+			   DragSortListView.DropListener,
+			   DragSortListView.RemoveListener,
+			   FancyMenu.Callback
 	{
 
 	private DragSortListView mListView;
@@ -54,9 +57,8 @@ public class ShowQueueFragment extends Fragment
 
 		View view = inflater.inflate(R.layout.showqueue_listview, container, false);
 		Context context = getActivity();
-		SharedPreferences settings = PlaybackService.getSettings(context);
+		SharedPreferences settings = SharedPrefHelper.getSettings(context);
 
-		mListView    	 = (DragSortListView) view.findViewById(R.id.list);
 		mQueueCoverView  = (ImageView) view.findViewById(R.id.queue_cover);
 		if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && settings.getBoolean(PrefKeys.KIDMODE_ENLARGE_COVERS, PrefDefaults.KIDMODE_ENLARGE_COVERS)) {
 			mListAdapter = new ShowQueueAdapter(context, R.layout.draggable_row_xl);
@@ -64,11 +66,14 @@ public class ShowQueueFragment extends Fragment
 		else {
 			mListAdapter = new ShowQueueAdapter(context, R.layout.draggable_row);
 		}
+		mListView = (DragSortListView) view.findViewById(R.id.list);
 		mListView.setAdapter(mListAdapter);
 		mListView.setDropListener(this);
 		mListView.setRemoveListener(this);
 		mListView.setOnItemClickListener(this);
-		mListView.setOnCreateContextMenuListener(this);
+
+		CoordClickListener ccl = new CoordClickListener(this);
+		ccl.registerForOnItemLongClickListener(mListView);
 
 		PlaybackService.addTimelineCallback(this);
 
@@ -88,7 +93,7 @@ public class ShowQueueFragment extends Fragment
 	 * @param cover the bitmap to display. Will use a placeholder image if cover is null
 	 */
 	public void setCover(final Bitmap cover) {
-		SharedPreferences settings = PlaybackService.getSettings(getActivity());
+		SharedPreferences settings = SharedPrefHelper.getSettings(getActivity());
 		if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && !settings.getBoolean(PrefKeys.KIDMODE_SHOW_QUEUE, PrefDefaults.KIDMODE_SHOW_QUEUE)) {
 			getActivity().runOnUiThread(new Runnable() {
 				@Override
@@ -120,7 +125,7 @@ public class ShowQueueFragment extends Fragment
 			refreshSongQueueList(true);
 		}
 
-		SharedPreferences settings = PlaybackService.getSettings(getActivity());
+		SharedPreferences settings = SharedPrefHelper.getSettings(getActivity());
 		mListView.setVisibility(View.VISIBLE);
 		mQueueCoverView.setVisibility(View.GONE);
 		if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && !settings.getBoolean(PrefKeys.KIDMODE_SHOW_QUEUE, PrefDefaults.KIDMODE_SHOW_QUEUE)) {
@@ -130,42 +135,52 @@ public class ShowQueueFragment extends Fragment
 	}
 
 
-	private final static int CTX_MENU_PLAY           = 100;
-	private final static int CTX_MENU_ENQUEUE_ALBUM  = 101;
-	private final static int CTX_MENU_ENQUEUE_ARTIST = 102;
-	private final static int CTX_MENU_ENQUEUE_GENRE  = 103;
-	private final static int CTX_MENU_REMOVE         = 104;
+	private final static int CTX_MENU_PLAY            = 100;
+	private final static int CTX_MENU_ENQUEUE_ALBUM   = 101;
+	private final static int CTX_MENU_ENQUEUE_ARTIST  = 102;
+	private final static int CTX_MENU_ENQUEUE_GENRE   = 103;
+	private final static int CTX_MENU_REMOVE          = 104;
+	private final static int CTX_MENU_SHOW_DETAILS    = 105;
+	private final static int CTX_MENU_ADD_TO_PLAYLIST = 106;
 
 	/**
-	 * Called by Android on long press. Builds the long press context menu.
+	 * Called on long-click on a adapeter row
 	 */
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View listView, ContextMenu.ContextMenuInfo absInfo) {
-		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)absInfo;
-		Song song = playbackService().getSongByQueuePosition(info.position);
+	public boolean onItemLongClickWithCoords(AdapterView<?> parent, View view, int pos, long id, float x, float y) {
+		Song song = playbackService().getSongByQueuePosition(pos);
 
 		Intent intent = new Intent();
 		intent.putExtra("id", song.id);
 		intent.putExtra("type", MediaUtils.TYPE_SONG);
-		intent.putExtra("position", info.position);
-		menu.setHeaderTitle(song.title);
-		menu.add(0, CTX_MENU_PLAY, 0, R.string.play).setIntent(intent).setOnMenuItemClickListener(this);
-		menu.add(0, CTX_MENU_ENQUEUE_ALBUM, 0, R.string.enqueue_current_album).setIntent(intent).setOnMenuItemClickListener(this);
-		menu.add(0, CTX_MENU_ENQUEUE_ARTIST, 0, R.string.enqueue_current_artist).setIntent(intent).setOnMenuItemClickListener(this);
-		menu.add(0, CTX_MENU_ENQUEUE_GENRE, 0, R.string.enqueue_current_genre).setIntent(intent).setOnMenuItemClickListener(this);
-		menu.addSubMenu(0, SlidingPlaybackActivity.CTX_MENU_ADD_TO_PLAYLIST, 0, R.string.add_to_playlist).getItem().setIntent(intent); // handled by fragment parent
-		menu.add(0, CTX_MENU_REMOVE, 0, R.string.remove).setIntent(intent).setOnMenuItemClickListener(this);
+		intent.putExtra("position", pos);
+
+		FancyMenu fm = new FancyMenu(getActivity(), this);
+		fm.setHeaderTitle(song.title);
+
+		fm.add(CTX_MENU_PLAY, 0, R.drawable.menu_play, R.string.play).setIntent(intent);
+
+		fm.addSpacer(0);
+		fm.add(CTX_MENU_ENQUEUE_ALBUM, 0, R.drawable.menu_enqueue, R.string.enqueue_current_album).setIntent(intent);
+		fm.add(CTX_MENU_ENQUEUE_ARTIST, 0, R.drawable.menu_enqueue, R.string.enqueue_current_artist).setIntent(intent);
+		fm.add(CTX_MENU_ENQUEUE_GENRE, 0, R.drawable.menu_enqueue, R.string.enqueue_current_genre).setIntent(intent);
+		fm.add(CTX_MENU_ADD_TO_PLAYLIST, 0, R.drawable.menu_add_to_playlist, R.string.add_to_playlist).setIntent(intent);
+
+		fm.addSpacer(0);
+		fm.add(CTX_MENU_SHOW_DETAILS, 0, R.drawable.menu_details, R.string.details).setIntent(intent);
+		fm.add(CTX_MENU_REMOVE, 90, R.drawable.menu_remove, R.string.remove).setIntent(intent);
+		fm.show(view, x, y);
+		return true;
 	}
 
 	/**
-	 * Called by Android after the User selected a MenuItem.
+	 * Callback for FancyMenu clicks.
 	 *
 	 * @param item The selected menu item.
 	 */
 	@Override
-	public boolean onMenuItemClick(MenuItem item) {
+	public boolean onFancyItemSelected(FancyMenuItem item) {
 		Intent intent = item.getIntent();
-		int itemId = item.getItemId();
 		int pos = intent.getIntExtra("position", -1);
 
 		PlaybackService service = playbackService();
@@ -183,8 +198,16 @@ public class ShowQueueFragment extends Fragment
 			case CTX_MENU_ENQUEUE_GENRE:
 				service.enqueueFromSong(song, MediaUtils.TYPE_GENRE);
 				break;
+			case CTX_MENU_SHOW_DETAILS:
+				TrackDetailsDialog.show(getFragmentManager(), song.id);
+				break;
 			case CTX_MENU_REMOVE:
 				remove(pos);
+				break;
+		    case CTX_MENU_ADD_TO_PLAYLIST:
+				PlaylistDialog.Callback callback = ((PlaylistDialog.Callback)getActivity());
+				PlaylistDialog dialog = PlaylistDialog.newInstance(callback, intent, null);
+				dialog.show(getFragmentManager(), "PlaylistDialog");
 				break;
 			default:
 				throw new IllegalArgumentException("Unhandled menu id received!");
@@ -234,10 +257,15 @@ public class ShowQueueFragment extends Fragment
 			public void run() {
 				mListAdapter.setData(service, pos);
 
-				if(scroll)
-					scrollToCurrentSong(pos);
+				if(scroll) {
+					// check that we really need to jump to this song, i.e. it is not visible in list right now
+					int min = mListView.getFirstVisiblePosition();
+					int max = mListView.getLastVisiblePosition();
+					if (pos < min || pos > max) // it's out of visible range, scroll
+						scrollToCurrentSong(pos);
+				}
 
-				SharedPreferences settings = PlaybackService.getSettings(getActivity());
+				SharedPreferences settings = SharedPrefHelper.getSettings(getActivity());
 				if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && !settings.getBoolean(PrefKeys.KIDMODE_SHOW_QUEUE, PrefDefaults.KIDMODE_SHOW_QUEUE)) {
 					Bitmap cover = service.getSong(0).getCover(getActivity());
 					if (cover == null)
@@ -284,8 +312,15 @@ public class ShowQueueFragment extends Fragment
 	 * its startup and is ready to be queried.
 	 */
 	public void setSong(long uptime, Song song) {
-		if (!mIsPopulated) {
-			onTimelineChanged();
+		if (PlaybackService.hasInstance()) {
+			boolean scroll = SharedPrefHelper
+				.getSettings(getActivity().getApplicationContext())
+				.getBoolean(PrefKeys.QUEUE_ENABLE_SCROLL_TO_SONG,
+							PrefDefaults.QUEUE_ENABLE_SCROLL_TO_SONG);
+
+			if (!mIsPopulated || scroll) {
+				refreshSongQueueList(scroll);
+			}
 		}
 		if (song != null) {
 			setCover(song.getCover(getActivity()));

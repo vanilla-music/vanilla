@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
- * Copyright (C) 2016 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2016-2019 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -58,7 +58,6 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 	public static final int DISPLAY_INFO_WIDGETS = 2;
 
 	private TextView mOverlayText;
-	private View mControlsTop;
 
 	private TableLayout mInfoTable;
 	private TextView mQueuePosView;
@@ -113,7 +112,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 
 		setTitle(R.string.playback_view);
 
-		SharedPreferences settings = PlaybackService.getSettings(this);
+		SharedPreferences settings = SharedPrefHelper.getSettings(this);
 		int displayMode = Integer.parseInt(settings.getString(PrefKeys.DISPLAY_MODE, PrefDefaults.DISPLAY_MODE));
 		mDisplayMode = displayMode;
 
@@ -155,7 +154,6 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 		mAlbum = (TextView)findViewById(R.id.album);
 		mArtist = (TextView)findViewById(R.id.artist);
 
-		mControlsTop = findViewById(R.id.controls_top);
 		mQueuePosView = (TextView)findViewById(R.id.queue_pos);
 
 		mGenreView = (TextView)findViewById(R.id.genre);
@@ -177,7 +175,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 	{
 		super.onStart();
 
-		SharedPreferences settings = PlaybackService.getSettings(this);
+		SharedPreferences settings = SharedPrefHelper.getSettings(this);
 		if (mDisplayMode != Integer.parseInt(settings.getString(PrefKeys.DISPLAY_MODE, PrefDefaults.DISPLAY_MODE))) {
 			finish();
 			startActivity(new Intent(this, FullPlaybackActivity.class));
@@ -297,7 +295,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-		SharedPreferences settings = PlaybackService.getSettings(this);
+		SharedPreferences settings = SharedPrefHelper.getSettings(this);
 		if (!settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) ||
 			(settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && settings.getBoolean(PrefKeys.KIDMODE_SHOW_OPTIONS_IN_MENU, PrefDefaults.KIDMODE_SHOW_OPTIONS_IN_MENU))) {
 			super.onCreateOptionsMenu(menu);
@@ -309,10 +307,14 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 			menu.add(0, MENU_SHARE, 30, R.string.share);
 
 			if (PluginUtils.checkPlugins(this)) {
-				menu.add(0, MENU_PLUGINS, 30, R.string.plugins);
+				menu.add(0, MENU_PLUGINS, 30, R.string.plugins)
+						.setIcon(R.drawable.plugin)
+						.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 			}
 
-			mFavorites = menu.add(0, MENU_SONG_FAVORITE, 0, R.string.add_to_favorites).setIcon(R.drawable.btn_rating_star_off_mtrl_alpha).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+			mFavorites = menu.add(0, MENU_SONG_FAVORITE, 0, R.string.add_to_favorites)
+					.setIcon(R.drawable.btn_rating_star_off_mtrl_alpha)
+					.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
 			// Subitems of 'enqueue...'
 			enqueueMenu.add(0, MENU_ENQUEUE_ALBUM, 30, R.string.album);
@@ -417,7 +419,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 				if (song != null) {
 					Intent songIntent = new Intent();
 					songIntent.putExtra("id", song.id);
-					queryPluginsForIntent(songIntent);
+					showPluginMenu(songIntent);
 				}
 				break;
 		default:
@@ -484,7 +486,6 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 	private void setControlsVisible(boolean visible)
 	{
 		int mode = visible ? View.VISIBLE : View.GONE;
-		mControlsTop.setVisibility(mode);
 		mSlidingView.setVisibility(mode);
 		mControlsVisible = visible;
 
@@ -512,9 +513,9 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 			((TextView)row.getChildAt(1)).setSingleLine(singleLine);
 		}
 		// toggle visibility of all but the first three rows (the title/artist/
-		// album rows) and the last row (the seek bar)
+		// album rows)
 		int visibility = visible ? View.VISIBLE : View.GONE;
-		for (int i = table.getChildCount() - 1; --i != 2; ) {
+		for (int i = table.getChildCount() - 1; i > 2 ; i--) {
 			table.getChildAt(i).setVisibility(visibility);
 		}
 		mExtraInfoVisible = visible;
@@ -542,50 +543,18 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 			MediaMetadataExtractor data = new MediaMetadataExtractor(song.path);
 
 			mGenre = data.getFirst(MediaMetadataExtractor.GENRE);
-			mTrack = data.getFirst(MediaMetadataExtractor.TRACK_NUMBER);
+			mTrack = song.getTrackAndDiscNumber();
 			mComposer = data.getFirst(MediaMetadataExtractor.COMPOSER);
 			mYear = data.getFirst(MediaMetadataExtractor.YEAR);
 			mPath = song.path;
 
-			mTrack = String.format("%d", song.trackNumber);
-			if (song.discNumber > 0) {
-				mTrack += String.format(" (%d💿)", song.discNumber);
-			}
-
-			StringBuilder sb = new StringBuilder(12);
-			sb.append(decodeMimeType(data.getFirst(MediaMetadataExtractor.MIME_TYPE)));
-			String bitrate = data.getFirst(MediaMetadataExtractor.BITRATE);
-			if (bitrate != null && bitrate.length() > 3) {
-				sb.append(' ');
-				sb.append(bitrate.substring(0, bitrate.length() - 3));
-				sb.append("kbps");
-			}
-			mFormat = sb.toString();
+			mFormat = data.getFormat();
 
 			BastpUtil.GainValues rg = PlaybackService.get(this).getReplayGainValues(song.path);
-			mReplayGain = String.format("base=%.2f, track=%.2f, album=%.2f", rg.base, rg.track, rg.album);
+			mReplayGain = String.format("found=%s, track=%.2f, album=%.2f", rg.found, rg.track, rg.album);
 		}
 
 		mUiHandler.sendEmptyMessage(MSG_COMMIT_INFO);
-	}
-
-	/**
-	 * Decode the given mime type into a more human-friendly description.
-	 */
-	private static String decodeMimeType(String mime)
-	{
-		if ("audio/mpeg".equals(mime)) {
-			return "MP3";
-		} else if ("audio/mp4".equals(mime)) {
-			return "AAC";
-		} else if ("audio/vorbis".equals(mime)) {
-			return "Ogg Vorbis";
-		} else if ("application/ogg".equals(mime)) {
-			return "Ogg Vorbis";
-		} else if ("audio/flac".equals(mime)) {
-			return "FLAC";
-		}
-		return mime;
 	}
 
 	/**
@@ -618,7 +587,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 	{
 		switch (message.what) {
 		case MSG_SAVE_CONTROLS: {
-			SharedPreferences.Editor editor = PlaybackService.getSettings(this).edit();
+			SharedPreferences.Editor editor = SharedPrefHelper.getSettings(this).edit();
 			editor.putBoolean(PrefKeys.VISIBLE_CONTROLS, mControlsVisible);
 			editor.putBoolean(PrefKeys.VISIBLE_EXTRA_INFO, mExtraInfoVisible);
 			editor.apply();
@@ -653,7 +622,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 				mFavorites.setIcon(found ? R.drawable.btn_rating_star_on_mtrl_alpha: R.drawable.btn_rating_star_off_mtrl_alpha);
 				mFavorites.setTitle(found ? R.string.remove_from_favorites : R.string.add_to_favorites);
 
-				SharedPreferences settings = PlaybackService.getSettings(this);
+				SharedPreferences settings = SharedPrefHelper.getSettings(this);
 				mFavorites.setVisible(true);
 				if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && !settings.getBoolean(PrefKeys.KIDMODE_SHOW_FAVORITE, PrefDefaults.KIDMODE_SHOW_FAVORITE)) {
 					mFavorites.setVisible(false);
@@ -722,7 +691,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 		if (expansion != SlidingView.EXPANSION_PARTIAL) {
 			setExtraInfoVisible(false);
 		} else {
-			SharedPreferences settings = PlaybackService.getSettings(this);
+			SharedPreferences settings = SharedPrefHelper.getSettings(this);
 			setExtraInfoVisible(settings.getBoolean(PrefKeys.VISIBLE_EXTRA_INFO, PrefDefaults.VISIBLE_EXTRA_INFO));
 		}
 	}

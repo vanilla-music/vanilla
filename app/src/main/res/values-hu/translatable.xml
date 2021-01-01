@@ -44,6 +44,10 @@
   <string name="rename">Átnevezés</string>
   <string name="save_as_playlist">Mentés lejátszólistaként…</string>
   <string name="add_to_playlist">Hozzáadás a lejátszólistához…</string>
+  <string name="add_to_homescreen">Hozzáadás a kezdőképernyőhöz…</string>
+  <string name="add_to">Hozzáadás…</string>
+  <string name="playlist">Lejátszólista</string>
+  <string name="homescreen">Kezdőképernyő</string>
   <string name="add_to_favorites">Hozzáadás a kedvencekhez</string>
   <string name="remove_from_favorites">Eltávolítás a kedvencekből</string>
   <string name="playlist_favorites">Kedvencek</string>
@@ -113,6 +117,7 @@
   <string name="play_all">Összes lejátszása</string>
   <string name="enqueue_all">Összes sorbaállítása</string>
   <string name="all_songs">Minden szám</string>
+  <string name="details">Részletek</string>
   <string name="more_from_artist">Több ettől az előadótól</string>
   <string name="more_from_album">Több erről az albumról</string>
   <string name="title">Cím</string>
@@ -202,12 +207,18 @@
   <string name="idle_timeout_title">Tétlenségi időtúllépés</string>
   <string name="enable_scroll_to_song_title">Görgetés a szám címéhez</string>
   <string name="enable_scroll_to_song_summary">Görgetés a most játszott számhoz/albumhoz/előadóhoz a gyűjtemény listákban</string>
+  <string name="queue_enable_scroll_to_song_title">Görgetés a szám címéhez a sorban</string>
+  <string name="queue_enable_scroll_to_song_summary">Görgetés a most játszott számhoz a sorban számváltáskor</string>
+  <string name="jump_to_enqueued_on_play_title">Ugrás a sorba állított számra „Lejátszáskor”</string>
+  <string name="jump_to_enqueued_on_play_summary">Ha a kért szám már sorba van állítva, akkor ugrás hozzá a teljes sor kiürítése helyett</string>
   <string name="coverloader_android_title">Borítók betöltése az Androidból</string>
   <string name="coverloader_android_summary">Az Android belső adatbázisának lekérdezése az albumborítóért</string>
   <string name="coverloader_vanilla_title">Borítók betöltése mappából</string>
   <string name="coverloader_vanilla_summary">Cover.jpg, album.jpg vagy artwork.jpg nevű fájlok keresése és megjelenítése mint albumborító</string>
   <string name="coverloader_shadow_title">Borítók betöltése rejtett mappából</string>
   <string name="coverloader_shadow_summary">Borító betöltésének kísérlete innen: „/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg”</string>
+  <string name="coverloader_inline_title">Borítók betöltése a fájlcímkékből</string>
+  <string name="coverloader_inline_summary">Próbálja meg a fájlcímkékbe ágyazott borítókat betölteni</string>
   <string name="cover_on_lockscreen_title">Borító megjelenítése a zárképernyőn</string>
   <string name="cover_on_lockscreen_summary">A most játszott szám albumborítójának megjelenítése a zárképernyőn</string>
   <string name="double_tap_title">Dupla érintés a vezérlőelemen</string>
@@ -259,6 +270,12 @@
   <string name="preferences_action_enqueue_current_album">Album sorba állítása</string>
   <string name="preferences_action_enqueue_current_artist">Előadó sorba állítása</string>
   <string name="preferences_action_enqueue_current_genre">Műfaj sorba állítása</string>
+  <string name="jump_to_time">Időponthoz ugrás</string>
+  <string name="time_separator">:</string>
+  <string name="hour_hint">ÓÓ</string>
+  <string name="minute_hint">PP</string>
+  <string name="second_hint">MM</string>
+  <string name="error_invalid_position">Érvénytelen pozíció</string>
   <string name="filebrowser_start">Fájlböngésző kezdőmappája</string>
   <string name="customize_filebrowser_start">A fájlböngésző ebben a mappában indul</string>
   <string name="select">Kiváalsztás</string>
@@ -268,6 +285,15 @@
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s „Legjobb %.0f” lejátszólistát</string>
   <string name="autoplaylist_playcounts_disabled">Ne hozzon létre automatikusan lejátszólistát</string>
   <string name="autoplaylist_playcounts_name" formatted="false">Legjobb %d</string>
+  <string name="playlist_sync_mode_title">Lejátszólista szinkronizáció</string>
+  <string name="playlist_sync_all">Teljes szinkronizáció</string>
+  <string name="playlist_sync_only_import">M3U importálása, sose exportálja</string>
+  <string name="playlist_sync_only_export">M3U írása, sose importálja</string>
+  <string name="playlist_sync_disabled">Letiltva</string>
+  <string name="playlist_sync_folder_title">Szinkronizációs mappa</string>
+  <string name="playlist_sync_folder_summary">A lejátszólista szinkronizációhoz használandó mappa</string>
+  <string name="playlist_export_relative_paths_title">Exportálás relatív útvonalak használatáva</string>
+  <string name="playlist_export_relative_paths_summary">A fájlok relatív hivatkozása a lejátszólistához képest</string>
   <string name="permission_request_summary">A Vanilla zenelejátszónak olvasási engedélyre van szükségre, hogy megjelenítse a gyűjteményét</string>
   <string name="reverse_sort">Fordított rendezés</string>
   <string name="share">Megosztás…</string>
@@ -277,6 +303,7 @@
   <string name="duration">Hossz</string>
   <string name="dump_database">Adatbázis kiírása</string>
   <string name="dump_database_result">Adatbázis kiírva ide: „%s”</string>
+  <string name="force_m3u_import">M3U kényszerített újraimportálása</string>
   <string name="media_library">Médiagyűjtemény</string>
   <string name="media_folders_header">Indexelt könyvtárak</string>
   <string name="media_scan_header">Médiaátvizsgáló</string>
@@ -301,6 +328,7 @@
   <string name="folder_neutral">Semleges</string>
   <!--Plugin system-->
   <string name="plugins">Bővítmények</string>
+  <string name="plugin_needs_upgrade">Frissítse a(z) %s bővítményt a legfrissebb verzióra</string>
   <!--Theme names-->
   <string name="theme_name_standard_light">Szokásos</string>
   <string name="theme_name_standard_dark">Szokásos (Sötét)</string>

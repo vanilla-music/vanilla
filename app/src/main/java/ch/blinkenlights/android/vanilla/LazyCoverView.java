@@ -140,7 +140,7 @@ public class LazyCoverView extends ImageView
 						// We only display real covers for queries using the album id as key
 						Song song = MediaUtils.getSongByTypeId(mContext, payload.key.mediaType, payload.key.mediaId);
 						if (song != null) {
-							SharedPreferences settings = PlaybackService.getSettings(mContext);
+							SharedPreferences settings = SharedPrefHelper.getSettings(mContext);
 							if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED)) {
 								bitmap = song.getCover(mContext);
 							}
@@ -181,7 +181,7 @@ public class LazyCoverView extends ImageView
 	 * @param id The id of this media type to query
 	 */
 	public void setCover(int type, long id, String title) {
-		SharedPreferences settings = PlaybackService.getSettings(mContext);
+		SharedPreferences settings = SharedPrefHelper.getSettings(mContext);
 		if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED)) {
 			mExpectedKey = new CoverCache.CoverKey(type, id, CoverCache.SIZE_LARGE);
 		}

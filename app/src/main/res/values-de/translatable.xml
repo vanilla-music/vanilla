@@ -42,12 +42,16 @@
   <string name="play">Wiedergeben</string>
   <string name="edit">Bearbeiten</string>
   <string name="rename">Umbenennen</string>
-  <string name="save_as_playlist">Als Wiedergabeliste speichern …</string>
-  <string name="add_to_playlist">Zur Wiedergabeliste hinzufügen …</string>
-  <string name="add_to_favorites">Zu Favoriten hinzufügen …</string>
+  <string name="save_as_playlist">Als Wiedergabeliste speichern …</string>
+  <string name="add_to_playlist">Zur Wiedergabeliste hinzufügen …</string>
+  <string name="add_to_homescreen">Zu Startbildschirm hinzufügen …</string>
+  <string name="add_to">Hinzufügen zu …</string>
+  <string name="playlist">Wiedergabeliste</string>
+  <string name="homescreen">Startbildschirm</string>
+  <string name="add_to_favorites">Zu Favoriten hinzufügen …</string>
   <string name="remove_from_favorites">Aus Favoriten entfernen</string>
   <string name="playlist_favorites">Favoriten</string>
-  <string name="new_playlist">Neue Wiedergabeliste …</string>
+  <string name="new_playlist">Neue Wiedergabeliste …</string>
   <string name="expand">Aufklappen</string>
   <string name="expand_or_play_all">Aufklappen oder alle wiedergeben</string>
   <string name="delete">Löschen</string>
@@ -59,7 +63,7 @@
   <string name="play_or_enqueue">Einreihen während Wiedergabe oder wiedergeben, falls pausiert</string>
   <string name="open">Öffnen</string>
   <string name="go_home">Benutzerverzeichnis</string>
-  <string name="jumping_to_song">Titel bereits in Warteschlange, wird direkt angesprungen …</string>
+  <string name="jumping_to_song">Titel bereits in Warteschlange, wird direkt angesprungen …</string>
   <!--As a developer, you should always supply "one" and "other"
 		strings. Your translators will know which strings are actually
 		needed for their language. Always include %d in "one" because
@@ -113,6 +117,7 @@
   <string name="play_all">Alle wiedergeben</string>
   <string name="enqueue_all">Alle einreihen</string>
   <string name="all_songs">Alle Titel</string>
+  <string name="details">Details</string>
   <string name="more_from_artist">Mehr vom Interpreten</string>
   <string name="more_from_album">Mehr aus dem Album</string>
   <string name="title">Titel</string>
@@ -201,13 +206,19 @@
   <string name="use_idle_timeout_summary">Falls aktiviert, wird die Wiedergabe nach der angegebenen Inaktivitätsdauer angehalten</string>
   <string name="idle_timeout_title">Inaktivitätsdauer</string>
   <string name="enable_scroll_to_song_title">Zum Titelnamen scrollen</string>
-  <string name="enable_scroll_to_song_summary">In Bibliothekslisten zum aktuell wiedergegeben Titel/Album/Interpreten scrollen</string>
+  <string name="enable_scroll_to_song_summary">In Bibliothekslisten zum gerade wiedergegebenen Titel/Album/Interpreten scrollen</string>
+  <string name="queue_enable_scroll_to_song_title">Zu Titelname in Warteschlange scrollen</string>
+  <string name="queue_enable_scroll_to_song_summary">Bei Titelwechsel zum derzeit wiedergegebenen Titel in der Warteschlange scrollen</string>
+  <string name="jump_to_enqueued_on_play_title">Bei »Wiedergeben« zu eingereihtem Titel springen</string>
+  <string name="jump_to_enqueued_on_play_summary">Falls sich der angefragte Titel bereits in der Warteschlange befindet, diesen anspringen anstatt die Warteschlange zu löschen</string>
   <string name="coverloader_android_title">Albumcover von Android verwenden</string>
   <string name="coverloader_android_summary">Androids interne Mediendatenbank für Albumcover verwenden</string>
   <string name="coverloader_vanilla_title">Cover aus Ordner laden</string>
   <string name="coverloader_vanilla_summary">Nach Dateien mit den Namen »cover.jpg«, »album.jpg« oder »artwork.jpg« suchen und diese als Albumcover anzeigen</string>
   <string name="coverloader_shadow_title">Cover aus verstecktem Ordner laden</string>
   <string name="coverloader_shadow_summary">Albumcover von »/sdcard/Music/.vanilla/ARTIST/ALBUM.jpg« laden, falls möglich</string>
+  <string name="coverloader_inline_title">Bilder aus Datei-Tags laden</string>
+  <string name="coverloader_inline_summary">Eingebettete Bilder falls möglich aus Datei-Tags laden</string>
   <string name="cover_on_lockscreen_title">Cover auf Sperrbildschirm anzeigen</string>
   <string name="cover_on_lockscreen_summary">Albumcover des aktuell wiedergegebenen Titels auf dem Sperrbildschirm anzeigen</string>
   <string name="double_tap_title">Widget-Doppelantippen</string>
@@ -245,8 +256,8 @@
   <string name="enqueue_current_album">Album einreihen</string>
   <string name="enqueue_current_artist">Interpret einreihen</string>
   <string name="enqueue_current_genre">Genre einreihen</string>
-  <string name="enqueue_current">Einreihen …</string>
-  <string name="more_from_current">Mehr von …</string>
+  <string name="enqueue_current">Einreihen …</string>
+  <string name="more_from_current">Mehr von …</string>
   <string name="empty_the_queue">Warteschlange verwerfen</string>
   <string name="show_queue">Warteschlange anzeigen</string>
   <string name="hide_queue">Warteschlange ausblenden</string>
@@ -259,6 +270,12 @@
   <string name="preferences_action_enqueue_current_album">Album einreihen</string>
   <string name="preferences_action_enqueue_current_artist">Interpret einreihen</string>
   <string name="preferences_action_enqueue_current_genre">Genre einreihen</string>
+  <string name="jump_to_time">In Zeit springen</string>
+  <string name="time_separator">:</string>
+  <string name="hour_hint">HH</string>
+  <string name="minute_hint">MM</string>
+  <string name="second_hint">SS</string>
+  <string name="error_invalid_position">Ungültige Position</string>
   <string name="filebrowser_start">Startordner</string>
   <string name="customize_filebrowser_start">Dateimanager startet in diesem Ordner</string>
   <string name="select">Auswählen</string>
@@ -268,15 +285,23 @@
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s »Top %.0f«-Wiedergabeliste</string>
   <string name="autoplaylist_playcounts_disabled">Keine automatische Wiedergabeliste erstellen</string>
   <string name="autoplaylist_playcounts_name" formatted="false">Top %d</string>
+  <string name="playlist_sync_mode_title">Wiedergabelistensynchronisation</string>
+  <string name="playlist_sync_all">Vollständige Synchronisation</string>
+  <string name="playlist_sync_only_import">M3U importieren, nie exportieren</string>
+  <string name="playlist_sync_only_export">M3U schreiben, nie importieren</string>
+  <string name="playlist_sync_disabled">Deaktiviert</string>
+  <string name="playlist_sync_folder_title">Synchronisationsordner</string>
+  <string name="playlist_sync_folder_summary">Zu verwendender Ordner für Wiedergabelistensynchronisation</string>
   <string name="permission_request_summary">Vanilla Music benötigt Leserechte, um Ihre Musikbibliothek anzuzeigen</string>
   <string name="reverse_sort">Sortierung umkehren</string>
-  <string name="share">Teilen …</string>
+  <string name="share">Teilen …</string>
   <string name="share_failed">Teilen von Datei gescheitert</string>
-  <string name="sendto">Senden an …</string>
+  <string name="sendto">Senden an …</string>
   <string name="no_receiving_apps">Keine kompatiblen Apps für diesen Medientyp gefunden!</string>
   <string name="duration">Dauer</string>
   <string name="dump_database">Datenbank exportieren</string>
   <string name="dump_database_result">Datenbank nach \'%s\' exportiert</string>
+  <string name="force_m3u_import">M3U-Reimport erzwingen</string>
   <string name="media_library">Medienbibliothek</string>
   <string name="media_folders_header">Indizierte Verzeichnisse</string>
   <string name="media_scan_header">Mediensuche</string>
@@ -290,7 +315,7 @@
   <string name="media_stats_library_playtime">Gesamtwiedergabedauer (Stunden)</string>
   <string name="media_stats_listen_playtime">Bisher wiedergegebene Musik in Stunden</string>
   <string name="media_stats_progress">Suchfortschritt</string>
-  <string name="media_library_scan_running">Medienbibliothek wird durchsucht …</string>
+  <string name="media_library_scan_running">Medienbibliothek wird durchsucht …</string>
   <string name="media_scan_preferences">Suchoptionen</string>
   <string name="media_scan_preferences_change_title">Suchoptionen geändert</string>
   <string name="media_scan_preferences_change_message">Durch Ändern dieser Option wird ein erneutes, vollständiges Durchsuchen Ihrer Bibliothek veranlasst. Möchten Sie fortfahren?</string>
@@ -301,6 +326,7 @@
   <string name="folder_neutral">Neutral</string>
   <!--Plugin system-->
   <string name="plugins">Erweiterungen</string>
+  <string name="plugin_needs_upgrade">Bitte aktualisiere die Erweiterung %s auf die neueste Version</string>
   <!--Theme names-->
   <string name="theme_name_standard_light">Standard</string>
   <string name="theme_name_standard_dark">Standard (dunkel)</string>

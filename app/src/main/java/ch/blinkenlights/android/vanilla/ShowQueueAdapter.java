@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2013-2019 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -131,7 +131,7 @@ public class ShowQueueAdapter extends BaseAdapter {
 		Song song = getItem(position);
 
 		if (song.isFilled()) {
-			row.setText(song.title, song.album+", "+song.artist);
+			row.setText(song.title, song.album+" · "+song.artist);
 			row.setDuration(song.duration);
 			row.getCoverView().setCover(MediaUtils.TYPE_ALBUM, song.albumId, null);
 		}

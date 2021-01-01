@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2018 Adrian Ulrich <adrian@blinkenlights.ch>
  * Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,6 +23,10 @@
 
 package ch.blinkenlights.android.vanilla;
 
+import ch.blinkenlights.android.vanilla.ui.FancyMenu;
+import ch.blinkenlights.android.vanilla.ui.FancyMenuItem;
+import ch.blinkenlights.android.vanilla.ext.CoordClickListener;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -30,7 +35,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.HandlerThread;
 import android.os.Looper;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,15 +44,18 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import com.mobeta.android.dslv.DragSortListView;
 
+
 /**
  * The playlist activity where playlist songs can be viewed and reordered.
  */
 public class PlaylistActivity extends Activity
 	implements View.OnClickListener
-	         , AbsListView.OnItemClickListener
-	         , DialogInterface.OnClickListener
-	         , DragSortListView.DropListener
-	         , DragSortListView.RemoveListener
+			   , AbsListView.OnItemClickListener
+			   , CoordClickListener.Callback
+			   , DialogInterface.OnClickListener
+			   , DragSortListView.DropListener
+			   , DragSortListView.RemoveListener
+			   , FancyMenu.Callback
 {
 	/**
 	 * The SongTimeline play mode corresponding to each
@@ -103,9 +110,10 @@ public class PlaylistActivity extends Activity
 
 		setContentView(R.layout.playlist_activity);
 
+		CoordClickListener ccl = new CoordClickListener(this);
 		DragSortListView view = (DragSortListView)findViewById(R.id.list);
+		ccl.registerForOnItemLongClickListener(view);
 		view.setOnItemClickListener(this);
-		view.setOnCreateContextMenuListener(this);
 		view.setDropListener(this);
 		view.setRemoveListener(this);
 		mListView = view;
@@ -127,7 +135,7 @@ public class PlaylistActivity extends Activity
 	public void onStart()
 	{
 		super.onStart();
-		SharedPreferences settings = PlaybackService.getSettings(this);
+		SharedPreferences settings = SharedPrefHelper.getSettings(this);
 		mDefaultAction = Integer.parseInt(settings.getString(PrefKeys.DEFAULT_PLAYLIST_ACTION, PrefDefaults.DEFAULT_PLAYLIST_ACTION));
 	}
 
@@ -190,29 +198,39 @@ public class PlaylistActivity extends Activity
 	private static final int MENU_ENQUEUE_ALL = LibraryActivity.ACTION_ENQUEUE_ALL;
 	private static final int MENU_ENQUEUE_AS_NEXT = LibraryActivity.ACTION_ENQUEUE_AS_NEXT;
 	private static final int MENU_REMOVE = -1;
+	private static final int MENU_SHOW_DETAILS = -2;
 
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View listView, ContextMenu.ContextMenuInfo absInfo)
-	{
-		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)absInfo;
+	public boolean onItemLongClickWithCoords(AdapterView<?> parent, View view, int pos, long id, float x, float y) {
+		ViewHolder holder = (ViewHolder)view.findViewById(R.id.text).getTag();
 		Intent intent = new Intent();
-		intent.putExtra("id", info.id);
-		intent.putExtra("position", info.position);
-		intent.putExtra("audioId", (Long)info.targetView.findViewById(R.id.text).getTag());
+		intent.putExtra("id", id);
+		intent.putExtra("position", pos);
+		intent.putExtra("audioId", holder.id);
 
-		SharedPreferences settings = PlaybackService.getSettings(this);
+		SharedPreferences settings = SharedPrefHelper.getSettings(this);
 		if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && settings.getBoolean(PrefKeys.KIDMODE_SHOW_OPTIONS_IN_MENU, PrefDefaults.KIDMODE_SHOW_OPTIONS_IN_MENU)) {
-			menu.add(0, MENU_PLAY, 0, R.string.play).setIntent(intent);
-			menu.add(0, MENU_PLAY_ALL, 0, R.string.play_all).setIntent(intent);
-			menu.add(0, MENU_ENQUEUE_AS_NEXT, 0, R.string.enqueue_as_next).setIntent(intent);
-			menu.add(0, MENU_ENQUEUE, 0, R.string.enqueue).setIntent(intent);
-			menu.add(0, MENU_ENQUEUE_ALL, 0, R.string.enqueue_all).setIntent(intent);
-			menu.add(0, MENU_REMOVE, 0, R.string.remove).setIntent(intent);
+			FancyMenu fm = new FancyMenu(this, this);
+			fm.setHeaderTitle(holder.title);
+
+			fm.add(MENU_PLAY, 0, R.drawable.menu_play, R.string.play).setIntent(intent);
+			fm.add(MENU_PLAY_ALL, 0, R.drawable.menu_play_all, R.string.play_all).setIntent(intent);
+
+			fm.addSpacer(0);
+			fm.add(MENU_ENQUEUE_AS_NEXT, 0, R.drawable.menu_enqueue_as_next, R.string.enqueue_as_next).setIntent(intent);
+			fm.add(MENU_ENQUEUE, 0, R.drawable.menu_enqueue, R.string.enqueue).setIntent(intent);
+			fm.add(MENU_ENQUEUE_ALL, 0, R.drawable.menu_enqueue, R.string.enqueue_all).setIntent(intent);
+
+			fm.addSpacer(0);
+			fm.add(MENU_SHOW_DETAILS, 0, R.drawable.menu_details, R.string.details).setIntent(intent);
+			fm.add(MENU_REMOVE, 0, R.drawable.menu_remove, R.string.remove).setIntent(intent);
+			fm.show(view, x, y);
 		}
+		return true;
 	}
 
 	@Override
-	public boolean onContextItemSelected(MenuItem item)
+	public boolean onFancyItemSelected(FancyMenuItem item)
 	{
 		int itemId = item.getItemId();
 		Intent intent = item.getIntent();
@@ -220,6 +238,9 @@ public class PlaylistActivity extends Activity
 
 		if (itemId == MENU_REMOVE) {
 			mAdapter.removeItem(pos - mListView.getHeaderViewsCount());
+		} else if (itemId == MENU_SHOW_DETAILS) {
+			long songId = intent.getLongExtra("audioId", -1);
+			TrackDetailsDialog.show(getFragmentManager(), songId);
 		} else {
 			performAction(itemId, pos, intent.getLongExtra("audioId", -1));
 		}
@@ -271,7 +292,8 @@ public class PlaylistActivity extends Activity
 		if (!mEditing && mDefaultAction != LibraryActivity.ACTION_DO_NOTHING) {
 			// A DSLV row was clicked, but we need to get the DraggableRow class.
 			final View target = ((ViewGroup)view).getChildAt(0);
-			performAction(mDefaultAction, position, (Long)target.getTag());
+			final ViewHolder holder = (ViewHolder)target.getTag();
+			performAction(mDefaultAction, position, holder.id);
 		}
 	}
 

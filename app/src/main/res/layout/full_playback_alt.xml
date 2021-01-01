@@ -22,10 +22,12 @@ THE SOFTWARE.
 -->
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
        xmlns:vanilla="http://schemas.android.com/apk/res-auto" >
-	<ch.blinkenlights.android.vanilla.CoverView
-		android:id="@+id/cover_view"
-		android:layout_height="fill_parent"
-		android:layout_width="fill_parent" />
+  <ch.blinkenlights.android.vanilla.CoverView
+      android:id="@+id/cover_view"
+      android:layout_marginTop="@dimen/full_playback_alt_text"
+      android:layout_marginBottom="@dimen/full_playback_controls_height"
+      android:layout_height="fill_parent"
+      android:layout_width="fill_parent" />
 	<TableLayout
 		android:id="@+id/info_table"
 		android:layout_width="fill_parent"
@@ -37,86 +39,9 @@ THE SOFTWARE.
 		android:background="?overlay_background_color"
 		android:paddingLeft="5dip"
 		android:paddingRight="5dip">
-		<TableRow>
-			<TextView
-				android:text="@string/_title"
-				android:textColor="?overlay_foreground_color"
-				android:paddingRight="5dip"
-				android:gravity="right" />
-			<TextView
-				android:id="@+id/title"
-				android:textColor="?overlay_foreground_color"
-				android:textStyle="bold" />
-			<TextView
-				android:id="@+id/queue_pos"
-				android:singleLine="true"
-				android:gravity="right"
-				android:layout_gravity="top" />
-		</TableRow>
-		<TableRow>
-			<TextView
-				android:text="@string/_artist"
-				android:textColor="?overlay_foreground_color"
-				android:paddingRight="5dip"
-				android:gravity="right" />
-			<TextView android:id="@+id/artist" android:textColor="?overlay_foreground_color"/>
-		</TableRow>
-		<TableRow>
-			<TextView
-				android:text="@string/_album"
-				android:textColor="?overlay_foreground_color"
-				android:paddingRight="5dip"
-				android:gravity="right" />
-			<TextView android:id="@+id/album" android:textColor="?overlay_foreground_color"/>
-		</TableRow>
-		<TableRow>
-			<TextView
-				android:text="@string/_genre"
-				android:textColor="?overlay_foreground_color"
-				android:paddingRight="5dip"
-				android:gravity="right" />
-			<TextView android:id="@+id/genre" android:textColor="?overlay_foreground_color"/>
-		</TableRow>
-		<TableRow>
-			<TextView
-				android:text="@string/_track"
-				android:textColor="?overlay_foreground_color"
-				android:paddingRight="5dip"
-				android:gravity="right" />
-			<TextView android:id="@+id/track" android:textColor="?overlay_foreground_color"/>
-		</TableRow>
-		<TableRow>
-			<TextView
-				android:text="@string/_year"
-				android:textColor="?overlay_foreground_color"
-				android:paddingRight="5dip"
-				android:gravity="right" />
-			<TextView android:id="@+id/year" android:textColor="?overlay_foreground_color"/>
-		</TableRow>
-		<TableRow>
-			<TextView
-				android:text="@string/_composer"
-				android:textColor="?overlay_foreground_color"
-				android:paddingRight="5dip"
-				android:gravity="right" />
-			<TextView android:id="@+id/composer" android:textColor="?overlay_foreground_color"/>
-		</TableRow>
-		<TableRow>
-			<TextView
-				android:text="@string/_path"
-				android:textColor="?overlay_foreground_color"
-				android:paddingRight="5dip"
-				android:gravity="right" />
-			<TextView android:id="@+id/path" android:textColor="?overlay_foreground_color"/>
-		</TableRow>
-		<TableRow>
-			<TextView
-				android:text="@string/_format"
-				android:textColor="?overlay_foreground_color"
-				android:paddingRight="5dip"
-				android:gravity="right" />
-			<TextView android:id="@+id/format" android:textColor="?overlay_foreground_color"/>
-		</TableRow>
+
+		<include layout="@layout/track_details" />
+
 		<TableRow>
 			<TextView
 				android:text="@string/_replaygain"
@@ -125,30 +50,6 @@ THE SOFTWARE.
 				android:gravity="right" />
 			<TextView android:id="@+id/replaygain" android:textColor="?overlay_foreground_color"/>
 		</TableRow>
-		<LinearLayout android:id="@+id/controls_top">
-			<TextView
-				android:id="@+id/elapsed"
-				android:layout_height="wrap_content"
-				android:layout_width="wrap_content"
-				android:textSize="10sp"
-				android:layout_gravity="center" />
-			<SeekBar
-				android:id="@+id/seek_bar"
-				android:layout_height="wrap_content"
-				android:layout_width="0px"
-				android:layout_gravity="center"
-				android:layout_weight="1"
-				android:minHeight="32dip"
-				android:maxHeight="32dip"
-				android:paddingLeft="18dip"
-				android:paddingRight="18dip" />
-			<TextView
-				android:id="@+id/duration"
-				android:layout_height="wrap_content"
-				android:layout_width="wrap_content"
-				android:textSize="10sp"
-				android:layout_gravity="center" />
-		</LinearLayout>
 	</TableLayout>
 
 
@@ -157,18 +58,20 @@ THE SOFTWARE.
 		android:layout_height="fill_parent"
 		android:layout_width="fill_parent"
 		android:layout_gravity="bottom|left"
-		android:layout_marginTop="88dip"
+		android:layout_marginTop="@dimen/full_playback_alt_text"
 		android:orientation="horizontal"
 		vanilla:slider_handle_id="@+id/queue_slider">
+
 			<LinearLayout
-				android:id="@+id/queue_slider"
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_width="fill_parent"
 				android:background="?overlay_background_color"
-				android:orientation="horizontal"
-				android:elevation="2dp">
-					<include layout="@layout/controls" />
+				android:elevation="2dp"
+				android:orientation="vertical">
+					<include layout="@layout/seek_bar" />
+					<include layout="@layout/controls" android:id="@+id/queue_slider" />
 			</LinearLayout>
+
 			<fragment class="ch.blinkenlights.android.vanilla.ShowQueueFragment"
 				android:id="@+id/queue"
 				android:layout_width="fill_parent"

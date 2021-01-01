@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
+ * Copyright (C) 2019 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -64,6 +65,7 @@ public class Song implements Comparable<Song> {
 		MediaLibrary.SongColumns.DURATION,
 		MediaLibrary.SongColumns.SONG_NUMBER,
 		MediaLibrary.SongColumns.DISC_NUMBER,
+		MediaLibrary.SongColumns.FLAGS,
 	};
 
 	public static final String[] EMPTY_PLAYLIST_PROJECTION = {
@@ -81,6 +83,7 @@ public class Song implements Comparable<Song> {
 		MediaLibrary.SongColumns.DURATION,
 		MediaLibrary.SongColumns.SONG_NUMBER,
 		MediaLibrary.SongColumns.DISC_NUMBER,
+		MediaLibrary.SongColumns.FLAGS,
 	};
 
 	/**
@@ -189,6 +192,15 @@ public class Song implements Comparable<Song> {
 		duration = cursor.getLong(7);
 		trackNumber = cursor.getInt(8);
 		discNumber = cursor.getInt(9);
+
+		// Read and interpret the media library flags of this entry.
+		// There is no 1:1 mapping, so we must check each flag on its own.
+		int libraryFlags = cursor.getInt(10);
+		if ((libraryFlags & MediaLibrary.SONG_FLAG_NO_ALBUM) != 0) {
+			// Note that we only set, never unset: the song may already
+			// have the flag set for other reasons.
+			flags |= FLAG_NO_COVER;
+		}
 	}
 
 	/**
@@ -202,6 +214,17 @@ public class Song implements Comparable<Song> {
 		if (song == null)
 			return 0;
 		return song.id;
+	}
+
+	/**
+	 * @return track and disc number of this song within its album
+	 */
+	public String getTrackAndDiscNumber() {
+		String result = Integer.toString(trackNumber);
+		if (discNumber > 0) {
+			result += String.format(" (%d💿)", discNumber);
+		}
+		return result;
 	}
 
 	/**
@@ -238,7 +261,7 @@ public class Song implements Comparable<Song> {
 		if (sCoverCache == null)
 			sCoverCache = new CoverCache(context.getApplicationContext());
 
-		Bitmap cover = sCoverCache.getCoverFromSong(this, size);
+		Bitmap cover = sCoverCache.getCoverFromSong(context, this, size);
 
 		if (cover == null)
 			flags |= FLAG_NO_COVER;
@@ -267,5 +290,32 @@ public class Song implements Comparable<Song> {
 
 		// else: is equal
 		return 0;
+	}
+
+	/**
+	 * Overrides 'equals' for the Song object.
+	 */
+    @Override
+    public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+
+		if (!(obj instanceof Song))
+			return false;
+
+		// Java requires that equals will only return
+		// true if the hash codes match. So we must always
+		// check this - for now, this is actually the only
+		// check we do.
+		return obj.hashCode() == hashCode();
+	}
+
+	/**
+	 * Return hash code of this object, just takes the hash code
+	 * of the id long (which is bound to the path).
+	 */
+	@Override
+	public int hashCode() {
+		return Long.valueOf(id).hashCode();
 	}
 }

@@ -129,16 +129,16 @@ THE SOFTWARE.
 
 	<!-- START playlist sync mode entries definition -->
 	<string-array name="playlist_sync_mode_entries">
+		<item>@string/playlist_sync_disabled</item>
 		<item>@string/playlist_sync_all</item>
 		<item>@string/playlist_sync_only_export</item>
 		<item>@string/playlist_sync_only_import</item>
-		<item>@string/playlist_sync_disabled</item>
 	</string-array>
 	<string-array name="playlist_sync_mode_values">
-		<item>255</item> <!-- default, sync all   -->
+		<item>0</item>   <!-- DISABLE (Default)   -->
+		<item>255</item> <!-- SYNC_ALL            -->
 		<item>2</item>   <!-- SYNC_MODE_EXPORT    -->
 		<item>1</item>   <!-- SYNC_MODE_IMPORT    -->
-		<item>0</item>   <!-- DISABLE             -->
 	</string-array>
 	<!-- END playlist sync mode entries definition -->
 
@@ -157,6 +157,15 @@ THE SOFTWARE.
 		<item>@string/info_below_cover</item>
 		<item>@string/fixed_info</item>
 	</string-array>
+
+
+	<!-- START folder_picker_spinner -->
+        <string-array name="folder_picker_spinner_entries">
+                <item>@string/folder_include</item>
+                <item>@string/folder_exclude</item>
+                <item>@string/folder_neutral</item>
+        </string-array>
+	<!-- END folder_picker_spinner -->
 
 	<string name="empty"></string>
 

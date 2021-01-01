@@ -47,6 +47,16 @@ THE SOFTWARE.
 		android:title="@string/enable_scroll_to_song_title"
 		android:summary="@string/enable_scroll_to_song_summary"
 		android:defaultValue="false" />
+	<CheckBoxPreference
+		android:key="queue_enable_scroll_to_song"
+		android:title="@string/queue_enable_scroll_to_song_title"
+		android:summary="@string/queue_enable_scroll_to_song_summary"
+		android:defaultValue="false" />
+	<CheckBoxPreference
+		android:key="jump_to_enqueued_on_play"
+		android:title="@string/jump_to_enqueued_on_play_title"
+		android:summary="@string/jump_to_enqueued_on_play_summary"
+		android:defaultValue="true" />
 	<PreferenceScreen
 		android:title="@string/filebrowser_start"
 		android:summary="@string/customize_filebrowser_start">
