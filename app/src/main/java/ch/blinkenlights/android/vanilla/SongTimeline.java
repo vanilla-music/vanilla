@@ -732,6 +732,11 @@ public final class SongTimeline {
 		return getSong(0);
 	}
 
+	/**
+	 * Jumps to a previously-created queue
+	 * @author Markil 3
+	 * @since 1.0.86
+	 */
 	public void revertQueue()
 	{
 		ArrayList<Song> timeline = mSongs;

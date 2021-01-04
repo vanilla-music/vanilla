@@ -1919,6 +1919,11 @@ public final class PlaybackService extends Service
 		addSongs(query);
 	}
 
+	/**
+	 * Jumps to a previously-created queue
+	 * @author Markil 3
+	 * @since 1.0.86
+	 */
 	public void previousQueue()
 	{
 		this.mTimeline.revertQueue();
