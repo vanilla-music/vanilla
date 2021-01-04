@@ -1919,6 +1919,11 @@ public final class PlaybackService extends Service
 		addSongs(query);
 	}
 
+	public void previousQueue()
+	{
+		this.mTimeline.revertQueue();
+	}
+
 	/**
 	 * Clear the song queue.
 	 */
