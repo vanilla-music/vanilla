@@ -234,15 +234,6 @@ public class FileUtils {
 
 		if (folder.equals("")) {
 			folder = Environment.getExternalStorageDirectory().getAbsolutePath();
-
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-				// If we are running on a platform which enforces scoped access, try to find
-				// the suggested media dir instead.
-				for (File p : context.getExternalMediaDirs()) {
-					folder = p.getAbsolutePath();
-					break;
-				}
-			}
 		}
 		return new File(folder);
 	}
