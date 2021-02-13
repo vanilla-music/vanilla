@@ -262,12 +262,21 @@ public class LibraryPagerAdapter
 	 */
 	public void computeExpansions()
 	{
-		if (mArtistAdapter != null)
-			mArtistAdapter.setExpandable(getMediaTypePosition(MediaUtils.TYPE_SONG) != -1 || getMediaTypePosition(MediaUtils.TYPE_ALBUM) != -1);
-		if (mAlbumAdapter != null)
-			mAlbumAdapter.setExpandable(getMediaTypePosition(MediaUtils.TYPE_SONG) != -1);
 		if (mGenreAdapter != null)
-			mGenreAdapter.setExpandable(getMediaTypePosition(MediaUtils.TYPE_SONG) != -1);
+			mGenreAdapter.setExpandable(
+				getMediaTypePosition(MediaUtils.TYPE_SONG) != -1 ||
+				getMediaTypePosition(MediaUtils.TYPE_ALBUM) != -1 ||
+				getMediaTypePosition(MediaUtils.TYPE_ARTIST) != -1
+			);
+		if (mArtistAdapter != null)
+			mArtistAdapter.setExpandable(
+				getMediaTypePosition(MediaUtils.TYPE_SONG) != -1 ||
+				getMediaTypePosition(MediaUtils.TYPE_ALBUM) != -1
+			);
+		if (mAlbumAdapter != null)
+			mAlbumAdapter.setExpandable(
+				getMediaTypePosition(MediaUtils.TYPE_SONG) != -1
+			);
 	}
 
 	@Override
@@ -314,7 +323,11 @@ public class LibraryPagerAdapter
 				break;
 			case MediaUtils.TYPE_GENRE:
 				adapter = mGenreAdapter = new MediaAdapter(activity, MediaUtils.TYPE_GENRE, null, activity);
-				mGenreAdapter.setExpandable(getMediaTypePosition(MediaUtils.TYPE_SONG) != -1);
+				mGenreAdapter.setExpandable(
+					getMediaTypePosition(MediaUtils.TYPE_SONG) != -1 ||
+					getMediaTypePosition(MediaUtils.TYPE_ALBUM) != -1 ||
+					getMediaTypePosition(MediaUtils.TYPE_ARTIST) != -1
+				);
 				break;
 			case MediaUtils.TYPE_FILE:
 				adapter = mFilesAdapter = new FileSystemAdapter(activity, mPendingFileLimiter);
