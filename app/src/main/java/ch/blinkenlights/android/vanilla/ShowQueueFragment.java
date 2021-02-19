@@ -120,8 +120,8 @@ public class ShowQueueFragment extends Fragment
 		fm.add(CTX_MENU_ENQUEUE_GENRE, 0, R.drawable.menu_enqueue, R.string.enqueue_current_genre).setIntent(intent);
 		fm.add(CTX_MENU_ADD_TO_PLAYLIST, 0, R.drawable.menu_add_to_playlist, R.string.add_to_playlist).setIntent(intent);
 		fm.addSpacer(0);
-		fm.add(CTX_MENU_MOVE_TO_TOP, 0, 0, R.string.move_to_top).setIntent(intent);
-		fm.add(CTX_MENU_MOVE_TO_BOTTOM, 0, 0, R.string.move_to_bottom).setIntent(intent);
+		fm.add(CTX_MENU_MOVE_TO_TOP, 0, R.drawable.menu_move_to_top, R.string.move_to_top).setIntent(intent);
+		fm.add(CTX_MENU_MOVE_TO_BOTTOM, 0, R.drawable.menu_move_to_bottom, R.string.move_to_bottom).setIntent(intent);
 
 		fm.addSpacer(0);
 		fm.add(CTX_MENU_SHOW_DETAILS, 0, R.drawable.menu_details, R.string.details).setIntent(intent);
