@@ -326,6 +326,8 @@ THE SOFTWARE.
 	<string name="toggle_controls">Toggle controls</string>
 	<string name="seek_10s_backward">Seek 10 seconds backward</string>
 	<string name="seek_10s_forward">Seek 10 seconds forward</string>
+	<string name="move_to_top">Move to top</string>
+	<string name="move_to_bottom">Move to bottom</string>
 	<string name="preferences_action_show_queue">Show queue</string>
 	<string name="preferences_action_clear_queue">Clear queue</string>
 	<string name="preferences_action_enqueue_current_album">Enqueue album</string>

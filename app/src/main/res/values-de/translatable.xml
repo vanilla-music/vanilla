@@ -265,6 +265,8 @@
   <string name="toggle_controls">Steuerelemente ein-/ausblenden</string>
   <string name="seek_10s_backward">10 Sekunden zurück springen</string>
   <string name="seek_10s_forward">10 Sekunden vorwärts springen</string>
+  <string name="move_to_top">Nach oben schieben</string>
+  <string name="move_to_bottom">Nach unten schieben</string>
   <string name="preferences_action_show_queue">Warteschlange anzeigen</string>
   <string name="preferences_action_clear_queue">Warteschlange leeren</string>
   <string name="preferences_action_enqueue_current_album">Album einreihen</string>
