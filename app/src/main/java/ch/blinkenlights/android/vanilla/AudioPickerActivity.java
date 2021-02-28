@@ -169,13 +169,7 @@ public class AudioPickerActivity extends PlaybackActivity {
 
 		mPlayButton.setEnabled(true);
 
-		// Set the title to display, we use the filename as a fallback
-		// if the title is empty for whatever reason.
-		String displayName = song.title;
-		if ("".equals(song.title))
-			displayName = new File(song.path).getName();
-
-		mTextView.setText(song.title);
+		mTextView.setText(song.getTitle());
 		mTextView.setVisibility(View.VISIBLE);
 		mProgressBar.setVisibility(View.GONE);
 	}

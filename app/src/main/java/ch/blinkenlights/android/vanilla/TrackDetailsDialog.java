@@ -99,7 +99,7 @@ public class TrackDetailsDialog extends DialogFragment {
 				getActivity().runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
-						titleView.setText(song.title);
+						titleView.setText(song.getTitle());
 						artistView.setText(song.artist);
 						albumView.setText(song.album);
 						genreView.setText(metadata.getFirst(MediaMetadataExtractor.GENRE));

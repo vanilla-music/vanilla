@@ -145,7 +145,7 @@ public final class CoverBitmap {
 		Paint paint = new Paint();
 		paint.setAntiAlias(true);
 
-		String title = song.title == null ? "" : song.title;
+		String title = song.getTitle();
 		String album = song.album == null ? "" : song.album;
 		String artist = song.artist == null ? "" : song.artist;
 
@@ -230,7 +230,7 @@ public final class CoverBitmap {
 
 		// Prepare text and calculate minimum height, so we can ensure
 		// that the cover doesn't 'eat' into it.
-		String title = song.title == null ? "" : song.title;
+		String title = song.getTitle();
 		String album = song.album == null ? "" : song.album;
 		String artist = song.artist == null ? "" : song.artist;
 		// Space required to draw the bottom text.

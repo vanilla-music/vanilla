@@ -117,7 +117,7 @@ public class OneCellWidget extends AppWidgetProvider {
 		} else if (song == null) {
 			views.setInt(R.id.title, "setText", R.string.app_name);
 		} else {
-			views.setTextViewText(R.id.title, song.title);
+			views.setTextViewText(R.id.title, song.getTitle());
 			cover = song.getCover(context);
 		}
 

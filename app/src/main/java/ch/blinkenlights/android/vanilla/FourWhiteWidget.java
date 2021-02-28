@@ -112,7 +112,7 @@ public class FourWhiteWidget extends AppWidgetProvider {
 			views.setViewVisibility(R.id.previous, View.VISIBLE);
 			views.setViewVisibility(R.id.next, View.VISIBLE);
 			views.setViewVisibility(R.id.title, View.VISIBLE);
-			views.setTextViewText(R.id.title, song.title);
+			views.setTextViewText(R.id.title, song.getTitle());
 			views.setTextViewText(R.id.artist, song.artist);
 			Bitmap cover = song.getCover(context);
 			if (cover == null) {

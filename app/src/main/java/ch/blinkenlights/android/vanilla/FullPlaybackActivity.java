@@ -248,7 +248,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 				mAlbum.setText(null);
 				mArtist.setText(null);
 			} else {
-				mTitle.setText(song.title);
+				mTitle.setText(song.getTitle());
 				mAlbum.setText(song.album);
 				mArtist.setText(song.artist);
 			}
@@ -385,7 +385,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 			final PlaybackActivity activity = this;
 
 			if (song != null) {
-				String delete_message = getString(R.string.delete_file, song.title);
+				String delete_message = getString(R.string.delete_file, song.getTitle());
 				AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 				dialog.setTitle(R.string.delete);
 				dialog

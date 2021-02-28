@@ -245,7 +245,7 @@ public class BottomBarControls extends LinearLayout
 			mCover.setImageBitmap(null);
 		} else {
 			Resources res = mContext.getResources();
-			String title = song.title == null ? res.getString(R.string.unknown) : song.title;
+			String title = song.getTitle();
 			String artist = song.artist == null ? res.getString(R.string.unknown) : song.artist;
 			mTitle.setText(title);
 			mArtist.setText(artist);

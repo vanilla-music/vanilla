@@ -1172,7 +1172,7 @@ public final class PlaybackService extends Service
 		if (mStockBroadcast) {
 			Intent intent = new Intent("com.android.music.playstatechanged");
 			intent.putExtra("playing", (mState & FLAG_PLAYING) != 0);
-			intent.putExtra("track", song.title);
+			intent.putExtra("track", song.getTitle());
 			intent.putExtra("album", song.album);
 			intent.putExtra("artist", song.artist);
 			if (androidIds[0] != -1) {
@@ -2187,9 +2187,9 @@ public final class PlaybackService extends Service
 		expanded.setOnClickPendingIntent(R.id.close, PendingIntent.getService(this, 0, close, 0));
 		expanded.setViewVisibility(R.id.close, closeButtonVisibility);
 
-		views.setTextViewText(R.id.title, song.title);
+		views.setTextViewText(R.id.title, song.getTitle());
 		views.setTextViewText(R.id.artist, song.artist);
-		expanded.setTextViewText(R.id.title, song.title);
+		expanded.setTextViewText(R.id.title, song.getTitle());
 		expanded.setTextViewText(R.id.album, song.album);
 		expanded.setTextViewText(R.id.artist, song.artist);
 
@@ -2213,7 +2213,7 @@ public final class PlaybackService extends Service
 				notification.priority = Notification.PRIORITY_MAX;
 				notification.vibrate = new long[0]; // needed to get headsup
 			} else {
-				notification.tickerText = song.title + " - " + song.artist;
+				notification.tickerText = song.getTitle() + " - " + song.artist;
 			}
 		}
 
