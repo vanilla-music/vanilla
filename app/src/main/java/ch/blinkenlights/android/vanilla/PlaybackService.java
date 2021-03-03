@@ -57,8 +57,8 @@ import android.os.Process;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
-import android.widget.RemoteViews;
 import android.widget.Toast;
+import androidx.core.app.NotificationCompat;
 import java.lang.Math;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -178,10 +178,6 @@ public final class PlaybackService extends Service
 	 * Change the repeat mode.
 	 */
 	public static final String ACTION_CYCLE_REPEAT = "ch.blinkenlights.android.vanilla.CYCLE_REPEAT";
-	/**
-	 * Pause music and hide the notification.
-	 */
-	public static final String ACTION_CLOSE_NOTIFICATION = "ch.blinkenlights.android.vanilla.CLOSE_NOTIFICATION";
 	/**
 	 * Whether we should create a foreground notification as early as possible.
 	 */
@@ -309,10 +305,6 @@ public final class PlaybackService extends Service
 	 * Behaviour of the notification
 	 */
 	private int mNotificationVisibility;
-	/**
-	 * If true, create a notification with ticker text or heads up display
-	 */
-	private boolean mNotificationNag;
 	/**
 	 * If true, audio will not be played through the speaker.
 	 */
@@ -463,7 +455,6 @@ public final class PlaybackService extends Service
 		SharedPreferences settings = SharedPrefHelper.getSettings(this);
 		settings.registerOnSharedPreferenceChangeListener(this);
 		mNotificationVisibility = Integer.parseInt(settings.getString(PrefKeys.NOTIFICATION_VISIBILITY, PrefDefaults.NOTIFICATION_VISIBILITY));
-		mNotificationNag = settings.getBoolean(PrefKeys.NOTIFICATION_NAG, PrefDefaults.NOTIFICATION_NAG);
 		mScrobble = settings.getBoolean(PrefKeys.SCROBBLE, PrefDefaults.SCROBBLE);
 		mIdleTimeout = settings.getBoolean(PrefKeys.USE_IDLE_TIMEOUT, PrefDefaults.USE_IDLE_TIMEOUT) ? settings.getInt(PrefKeys.IDLE_TIMEOUT, PrefDefaults.IDLE_TIMEOUT) : 0;
 
@@ -607,11 +598,6 @@ public final class PlaybackService extends Service
 				// Flush the queue and start playing:
 				query.mode = SongTimeline.MODE_PLAY;
 				addSongs(query);
-			} else if (ACTION_CLOSE_NOTIFICATION.equals(action)) {
-				mForceNotificationVisible = false;
-				pause();
-				stopForeground(true); // sometimes required to clear notification
-				updateNotification();
 			}
 		}
 
@@ -890,9 +876,6 @@ public final class PlaybackService extends Service
 			// mode.
 			stopForeground(true);
 			updateNotification();
-		} else if (PrefKeys.NOTIFICATION_NAG.equals(key)) {
-			mNotificationNag = settings.getBoolean(PrefKeys.NOTIFICATION_NAG, PrefDefaults.NOTIFICATION_NAG);
-			// no need to update notification: happens on next event
 		} else if (PrefKeys.SCROBBLE.equals(key)) {
 			mScrobble = settings.getBoolean(PrefKeys.SCROBBLE, PrefDefaults.SCROBBLE);
 		} else if (PrefKeys.MEDIA_BUTTON.equals(key) || PrefKeys.MEDIA_BUTTON_BEEP.equals(key)) {
@@ -2143,81 +2126,38 @@ public final class PlaybackService extends Service
 	 */
 	public Notification createNotification(Song song, int state, int mode)
 	{
-		boolean playing = (state & FLAG_PLAYING) != 0;
-
-		RemoteViews views = new RemoteViews(getPackageName(), R.layout.notification);
-		RemoteViews expanded = new RemoteViews(getPackageName(), R.layout.notification_expanded);
-
-		Bitmap cover = song.getCover(this);
-		if (cover == null) {
-			views.setImageViewResource(R.id.cover, R.drawable.fallback_cover);
-			expanded.setImageViewResource(R.id.cover, R.drawable.fallback_cover_large);
-		} else {
-			views.setImageViewBitmap(R.id.cover, cover);
-			expanded.setImageViewBitmap(R.id.cover, cover);
-		}
-
-		int playButton = ThemeHelper.getPlayButtonResource(playing);
-
-		views.setImageViewResource(R.id.play_pause, playButton);
-		expanded.setImageViewResource(R.id.play_pause, playButton);
+		final boolean playing = (state & FLAG_PLAYING) != 0;
+		final Bitmap cover = song.getCover(this);
 
 		ComponentName service = new ComponentName(this, PlaybackService.class);
 
-		Intent previous = new Intent(PlaybackService.ACTION_PREVIOUS_SONG);
-		previous.setComponent(service);
-		views.setOnClickPendingIntent(R.id.previous, PendingIntent.getService(this, 0, previous, 0));
-		expanded.setOnClickPendingIntent(R.id.previous, PendingIntent.getService(this, 0, previous, 0));
-
+		int playButton = ThemeHelper.getPlayButtonResource(playing);
 		Intent playPause = new Intent(PlaybackService.ACTION_TOGGLE_PLAYBACK_NOTIFICATION);
 		playPause.setComponent(service);
-		views.setOnClickPendingIntent(R.id.play_pause, PendingIntent.getService(this, 0, playPause, 0));
-		expanded.setOnClickPendingIntent(R.id.play_pause, PendingIntent.getService(this, 0, playPause, 0));
 
 		Intent next = new Intent(PlaybackService.ACTION_NEXT_SONG);
 		next.setComponent(service);
-		views.setOnClickPendingIntent(R.id.next, PendingIntent.getService(this, 0, next, 0));
-		expanded.setOnClickPendingIntent(R.id.next, PendingIntent.getService(this, 0, next, 0));
 
-		int closeButtonVisibility = (mode == VISIBILITY_WHEN_PLAYING) ? View.VISIBLE : View.INVISIBLE;
-		Intent close = new Intent(PlaybackService.ACTION_CLOSE_NOTIFICATION);
-		close.setComponent(service);
-		views.setOnClickPendingIntent(R.id.close, PendingIntent.getService(this, 0, close, 0));
-		views.setViewVisibility(R.id.close, closeButtonVisibility);
-		expanded.setOnClickPendingIntent(R.id.close, PendingIntent.getService(this, 0, close, 0));
-		expanded.setViewVisibility(R.id.close, closeButtonVisibility);
+		Intent previous = new Intent(PlaybackService.ACTION_PREVIOUS_SONG);
+		previous.setComponent(service);
 
-		views.setTextViewText(R.id.title, song.title);
-		views.setTextViewText(R.id.artist, song.artist);
-		expanded.setTextViewText(R.id.title, song.title);
-		expanded.setTextViewText(R.id.album, song.album);
-		expanded.setTextViewText(R.id.artist, song.artist);
-
-		Notification notification = mNotificationHelper.getNewNotification(getApplicationContext());
-		notification.contentView = views;
-		notification.icon = R.drawable.status_icon;
-		notification.flags |= Notification.FLAG_ONGOING_EVENT;
-		notification.contentIntent = mNotificationAction;
-		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-			// expanded view is available since 4.1
-			notification.bigContentView = expanded;
-			// 4.1 also knows about notification priorities
-			// HIGH is one higher than the default.
-			notification.priority = Notification.PRIORITY_HIGH;
-		}
-		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-			notification.visibility = Notification.VISIBILITY_PUBLIC;
-		}
-		if(mNotificationNag) {
-			if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-				notification.priority = Notification.PRIORITY_MAX;
-				notification.vibrate = new long[0]; // needed to get headsup
-			} else {
-				notification.tickerText = song.title + " - " + song.artist;
-			}
-		}
-
-		return notification;
+		Notification n = mNotificationHelper.getNewBuilder(getApplicationContext())
+			.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+			.setSmallIcon(R.drawable.status_icon)
+			.setLargeIcon(cover)
+			.setContentTitle(song.title)
+			.setContentText(song.album)
+			.setSubText(song.artist)
+			.setContentIntent(mNotificationAction)
+			.addAction(new NotificationCompat.Action(R.drawable.previous,
+													 getString(R.string.previous_song), PendingIntent.getService(this, 0, previous, 0)))
+			.addAction(new NotificationCompat.Action(playButton,
+													 getString(R.string.play_pause), PendingIntent.getService(this, 0, playPause, 0)))
+			.addAction(new NotificationCompat.Action(R.drawable.next,
+													 getString(R.string.next_song), PendingIntent.getService(this, 0, next, 0)))
+			.setStyle(new androidx.media.app.NotificationCompat.MediaStyle())
+			.build();
+		return n;
 	}
 
 	public void onAudioFocusChange(int type)

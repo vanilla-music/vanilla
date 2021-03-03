@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2017-2021 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,10 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Build;
+import androidx.core.app.NotificationCompat;
+
 
 public class NotificationHelper {
 	/**
@@ -51,27 +54,12 @@ public class NotificationHelper {
 	}
 
 	/**
-	 * Returns a new Notification.Builder.
+	 * Returns a new NotificationCompat.Builder.
 	 *
 	 * @param context the context to use
 	 */
-	public Notification.Builder getNewBuilder(Context context) {
-		Notification.Builder builder;
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			builder = new Notification.Builder(context, mChannelId);
-		} else {
-			builder = new Notification.Builder(context);
-		}
-		return builder;
-	}
-
-	/**
-	 * Retruns a new Notification.
-	 *
-	 * @param context the context to use.
-	 */
-	public Notification getNewNotification(Context context) {
-		return getNewBuilder(context).getNotification(); // build() is API16.
+	public NotificationCompat.Builder getNewBuilder(Context context) {
+		return new NotificationCompat.Builder(context, mChannelId);
 	}
 
 	/**

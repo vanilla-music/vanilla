@@ -219,9 +219,6 @@ THE SOFTWARE.
 	<string name="notification_visibility_title">Notification visibility</string>
 	<string name="notification_action_title">Notification action</string>
 
-	<string name="notification_nag">Very verbose notification</string>
-	<string name="notification_nag_summary">Announce track changes using a \'Heads-Up-Notification\'</string>
-
 	<string name="playback_screen">Playback screen</string>
 	<string name="playback_on_startup_title">Open on startup</string>
 	<string name="playback_on_startup_summary">Open playback view on startup</string>
