@@ -50,8 +50,6 @@ public class PrefDefaults {
 	public static final boolean HEADSET_PAUSE = true;
 	public static final int     IDLE_TIMEOUT = 3600;
 	public static final int     LIBRARY_PAGE = 0;
-	public static final boolean MEDIA_BUTTON = true;
-	public static final boolean MEDIA_BUTTON_BEEP = true;
 	public static final String  NOTIFICATION_ACTION = "0";
 	public static final String  NOTIFICATION_VISIBILITY = "0";
 	public static final boolean NOTIFICATION_NAG = false;

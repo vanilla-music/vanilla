@@ -888,9 +888,6 @@ public final class PlaybackService extends Service
 			updateNotification();
 		} else if (PrefKeys.SCROBBLE.equals(key)) {
 			mScrobble = settings.getBoolean(PrefKeys.SCROBBLE, PrefDefaults.SCROBBLE);
-		} else if (PrefKeys.MEDIA_BUTTON.equals(key) || PrefKeys.MEDIA_BUTTON_BEEP.equals(key)) {
-			MediaButtonReceiver.reloadPreference(this);
-			mRemoteControlClient.initializeRemote();
 		} else if (PrefKeys.COVER_ON_LOCKSCREEN.equals(key)) {
 			mRemoteControlClient.reloadPreference();
 		} else if (PrefKeys.USE_IDLE_TIMEOUT.equals(key) || PrefKeys.IDLE_TIMEOUT.equals(key)) {

@@ -63,8 +63,6 @@ public class RemoteControlImplICS implements RemoteControl.Client {
 	public void initializeRemote() {
 		// make sure there is only one registered remote
 		unregisterRemote();
-		if (MediaButtonReceiver.useHeadsetControls(mContext) == false)
-			return;
 
 		// Receive 'background' play button events
 		AudioManager audioManager = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
