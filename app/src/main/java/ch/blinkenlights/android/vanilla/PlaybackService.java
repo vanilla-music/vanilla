@@ -340,6 +340,11 @@ public final class PlaybackService extends Service
 	 */
 	private RemoteControl.Client mRemoteControlClient;
 
+	/**
+	 * Media session state tracker for notification
+	 */
+	private MediaSessionTracker mMediaSessionTracker;
+
 	SongTimeline mTimeline;
 	private Song mCurrentSong;
 
@@ -497,6 +502,8 @@ public final class PlaybackService extends Service
 		mRemoteControlClient = new RemoteControl().getClient(this);
 		mRemoteControlClient.initializeRemote();
 
+		mMediaSessionTracker = new MediaSessionTracker(this);
+
 		int syncMode = Integer.parseInt(settings.getString(PrefKeys.PLAYLIST_SYNC_MODE, PrefDefaults.PLAYLIST_SYNC_MODE));
 		boolean exportRelativePaths = settings.getBoolean(PrefKeys.PLAYLIST_EXPORT_RELATIVE_PATHS, PrefDefaults.PLAYLIST_EXPORT_RELATIVE_PATHS);
 		String syncFolder = settings.getString(PrefKeys.PLAYLIST_SYNC_FOLDER, PrefDefaults.PLAYLIST_SYNC_FOLDER);
@@ -645,6 +652,9 @@ public final class PlaybackService extends Service
 
 		if (mRemoteControlClient != null)
 			mRemoteControlClient.unregisterRemote();
+
+		if (mMediaSessionTracker != null)
+			mMediaSessionTracker.release();
 
 		super.onDestroy();
 	}
@@ -1106,6 +1116,7 @@ public final class PlaybackService extends Service
 			triggerReadAhead();
 
 		mRemoteControlClient.updateRemote(mCurrentSong, mState, mForceNotificationVisible);
+		mMediaSessionTracker.updateSession(mCurrentSong, mState);
 
 		scrobbleBroadcast();
 	}
@@ -1649,6 +1660,7 @@ public final class PlaybackService extends Service
 			break;
 		case MSG_BROADCAST_SEEK:
 			mRemoteControlClient.updateRemote(mCurrentSong, mState, mForceNotificationVisible);
+			mMediaSessionTracker.updateSession(mCurrentSong, mState);
 			break;
 		default:
 			return false;
@@ -2155,7 +2167,8 @@ public final class PlaybackService extends Service
 													 getString(R.string.play_pause), PendingIntent.getService(this, 0, playPause, 0)))
 			.addAction(new NotificationCompat.Action(R.drawable.next,
 													 getString(R.string.next_song), PendingIntent.getService(this, 0, next, 0)))
-			.setStyle(new androidx.media.app.NotificationCompat.MediaStyle())
+			.setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+					  .setMediaSession(mMediaSessionTracker.getSessionToken()))
 			.build();
 		return n;
 	}
