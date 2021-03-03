@@ -1965,6 +1965,7 @@ public final class PlaybackService extends Service
 		for (int i = list.size(); --i != -1; )
 			list.get(i).onPositionInfoChanged();
 		mRemoteControlClient.updateRemote(mCurrentSong, mState, mForceNotificationVisible);
+		mMediaSessionTracker.updateSession(mCurrentSong, mState);
 	}
 
 	private final LibraryObserver mObserver = new LibraryObserver() {

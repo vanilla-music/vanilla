@@ -38,6 +38,9 @@ import android.view.KeyEvent;
 /**
  * Receives media button events and calls to PlaybackService to respond
  * appropriately.
+ *
+ * Most of this logic is only needed for RemoteControlImplICS (like double-click)
+ * as >= LP devices handle this using the MediaSessionCompat.
  */
 public class MediaButtonReceiver extends BroadcastReceiver {
 	/**
@@ -202,6 +205,7 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 	/**
 	 * Runable to run a delayed action
 	 * Inspects sLastClickTime and sDelayedClicks to guess what to do
+	 * Note: this is only used on pre-lolipop devices.
 	 *
 	 * @param context the context to use
 	 * @param serial the value of sLastClickTime during creation, used to identify stale events
