@@ -73,6 +73,7 @@ public class MediaSessionTracker {
 			public void onSeekTo(long pos) {
 				PlaybackService.get(mContext).seekToPosition((int)pos);
 			}});
+		mMediaSession.setActive(true);
 	}
 
 	/**
@@ -86,6 +87,7 @@ public class MediaSessionTracker {
 	 * Cleans up the underlying media session
 	 */
 	public void release() {
+		mMediaSession.setActive(false);
 		mMediaSession.release();
 	}
 
