@@ -159,14 +159,6 @@ THE SOFTWARE.
 		</service>
 
 		<service
-			android:name=".MirrorLinkMediaBrowserService"
-			android:exported="true">
-			<intent-filter>
-				<action android:name="android.media.browse.MediaBrowserService" />
-			</intent-filter>
-		</service>
-
-		<service
 			android:name=".ScheduledLibraryUpdate"
 			android:permission="android.permission.BIND_JOB_SERVICE"
 			android:exported="true"/>
