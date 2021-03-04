@@ -2145,7 +2145,8 @@ public final class PlaybackService extends Service
 			.addAction(new NotificationCompat.Action(R.drawable.next,
 													 getString(R.string.next_song), PendingIntent.getService(this, 0, next, 0)))
 			.setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
-					  .setMediaSession(mMediaSessionTracker.getSessionToken()))
+					  .setMediaSession(mMediaSessionTracker.getSessionToken())
+					  .setShowActionsInCompactView(0, 1, 2))
 			.build();
 		return n;
 	}
