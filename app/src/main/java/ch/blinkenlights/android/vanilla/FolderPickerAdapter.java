@@ -18,16 +18,11 @@
 package ch.blinkenlights.android.vanilla;
 
 import android.content.Context;
-import android.app.Activity;
 import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.LayoutInflater;
 import android.widget.ArrayAdapter;
-import android.widget.TextView;
-import android.widget.ImageView;
-import android.graphics.drawable.Drawable;
 
 import java.io.File;
 import java.util.Arrays;
@@ -183,13 +178,26 @@ public class FolderPickerAdapter
 		if (!mFsRoot.equals(path))
 			add(new FolderPickerAdapter.Item("..", null, 0));
 
-		// Hack alert: Android >= 6.0's default storage root directory
-		// is usually not readable. That's not a big issue but
-		// can be very annoying for users who browse around.
-		// We are therefore detecting this and will 'simulate'
-		// the existence of the default storage root.
-		if (dirs == null && mStorageDir.getParentFile().equals(path)) {
-			dirs = new File[] { mStorageDir };
+		// Hack alert: On Android >. 6.0, some of the parent directories
+		// of the external storage may not be readable, meaning that if
+		// the user browses up the tree, they may suddenly not have the
+		// option to go back. Think of going from /storage/emulated/0 to
+		// /storage/emulated and not seeing the 0 option anymore.
+		if (dirs == null) {
+			File possibleChild = mStorageDir;
+			while (true) {
+				File possibleParent = possibleChild.getParentFile();
+				if (possibleParent == null) {
+					break;
+				}
+
+				if (possibleParent.equals(path)) {
+					dirs = new File[] { possibleChild };
+					break;
+				}
+
+				possibleChild = possibleChild.getParentFile();
+			}
 		}
 
 		if (dirs != null) {

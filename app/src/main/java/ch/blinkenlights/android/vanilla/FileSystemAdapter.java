@@ -25,6 +25,7 @@ package ch.blinkenlights.android.vanilla;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Environment;
 import android.os.FileObserver;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -197,6 +198,29 @@ public class FileSystemAdapter
 
 		ArrayList<File> files = new ArrayList<File>(Arrays.asList(readdir));
 		Collections.sort(files, mFileComparator);
+
+		// Hack alert: On Android >. 6.0, some of the parent directories
+		// of the external storage may not be readable, meaning that if
+		// the user browses up the tree, they may suddenly not have the
+		// option to go back. Think of going from /storage/emulated/0 to
+		// /storage/emulated and not seeing the 0 option anymore.
+		if (files.isEmpty()) {
+			File possibleChild = Environment.getExternalStorageDirectory();
+			while (true) {
+				File possibleParent = possibleChild.getParentFile();
+				if (possibleParent == null) {
+					break;
+				}
+
+				if (possibleParent.equals(file)) {
+					files.add(possibleChild);
+					break;
+				}
+
+				possibleChild = possibleChild.getParentFile();
+			}
+		}
+
 		if (!mFsRoot.equals(file))
 			files.add(0, new File(file, FileUtils.NAME_PARENT_FOLDER));
 
@@ -343,6 +367,7 @@ public class FileSystemAdapter
 	{
 		if (pointsToParentFolder(file))
 			file = file.getParentFile().getParentFile();
+
 		String[] fields = FILE_SEPARATOR.split(file.getPath().substring(1));
 		return new Limiter(MediaUtils.TYPE_FILE, fields, file);
 	}
