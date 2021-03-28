@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2016-2021 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@ import android.os.Environment;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
@@ -162,15 +163,24 @@ public class MediaLibrary  {
 	 * @return array with guessed directories
 	 */
 	private static ArrayList<String> discoverDefaultMediaPaths(Context context) {
-		ArrayList<String> defaultPaths = new ArrayList<>();
+		HashSet<String> defaultPaths = new HashSet<>();
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-			// Running on a platform which enforces scoped access, so we blindly accept all dirs.
+			// Running on a platform which enforces scoped access.
+			// Add the external storage dir by default but also try to guess good external paths.
+			defaultPaths.add(Environment.getExternalStorageDirectory().getAbsolutePath());
+
 			for (File file : context.getExternalMediaDirs()) {
 				defaultPaths.add(file.getAbsolutePath());
+				// Check if we have access to a subdir which contains the 'Music' folder.
+				while ( (file = file.getParentFile()) != null) {
+					File candidate = new File(file, "Music");
+					if (candidate.exists() && !defaultPaths.contains(file.getAbsolutePath())) {
+						defaultPaths.add(candidate.getAbsolutePath());
+						break;
+					}
+				}
 			}
-			// but for now, we also add the default SD directory.
-			defaultPaths.add(Environment.getExternalStorageDirectory().getAbsolutePath());
 		} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 			// Try to discover media paths using getExternalMediaDirs() on 5.x and newer
 			for (File file : context.getExternalMediaDirs()) {
@@ -194,8 +204,7 @@ public class MediaLibrary  {
 			if (sdCard.isDirectory())
 				defaultPaths.add(sdCard.getAbsolutePath());
 		}
-
-		return defaultPaths;
+		return new ArrayList<String>(defaultPaths);
 	}
 
 	/**
