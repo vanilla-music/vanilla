@@ -142,8 +142,6 @@
   <string name="ignore_audiofocus_loss_summary">失去焦点时持续播放</string>
   <string name="media_button_title">耳机 / 蓝牙控制</string>
   <string name="media_button_summary">此特性也需要 ICS 锁屏控制器。</string>
-  <string name="media_button_beep_title">耳机控制提示音</string>
-  <string name="media_button_beep_summary">使用耳机控制器连按两次以后切换到下一曲目，并发出哔的一声。</string>
   <string name="headset_only_title">仅外部输出</string>
   <string name="headset_only_summary">防止经由内部扬声器播放音乐</string>
   <string name="headset_pause_title">拔出时暂停</string>
@@ -170,8 +168,6 @@
   <string name="notifications">通知</string>
   <string name="notification_visibility_title">通知可见性</string>
   <string name="notification_action_title">通知动作</string>
-  <string name="notification_nag">非常详尽的通知</string>
-  <string name="notification_nag_summary">以“抬头通知”的方式通知曲目改变</string>
   <string name="playback_screen">回放画面</string>
   <string name="playback_on_startup_title">启动时打开</string>
   <string name="playback_on_startup_summary">启动时打开播放界面</string>
@@ -309,6 +305,7 @@
   <string name="media_scan_preferences">扫描选项</string>
   <string name="media_scan_preferences_change_title">已更改扫描选项</string>
   <string name="media_scan_preferences_change_message">更改此选项将完全重新开始扫描您的媒体库。你想继续吗？</string>
+  <string name="folder_picker_spinner_desc">文件夹状态：</string>
   <!--Folder selector-->
   <string name="hint_long_press_to_modify_folder">长按以编辑文件夹选项</string>
   <string name="folder_include">包括</string>

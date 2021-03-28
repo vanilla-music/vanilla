@@ -142,8 +142,6 @@
   <string name="ignore_audiofocus_loss_summary">在永久性音訊焦點遺失時繼續播放</string>
   <string name="media_button_title">耳機/藍牙控制</string>
   <string name="media_button_summary">這也需要由 ICS 螢幕鎖定控制。</string>
-  <string name="media_button_beep_title">耳機控制嗶音</string>
-  <string name="media_button_beep_summary">嗶音之後以耳機控制按兩下跳一個曲目。</string>
   <string name="headset_only_title">僅外部輸出</string>
   <string name="headset_only_summary">防止經由內部喇叭播放音樂。</string>
   <string name="headset_pause_title">耳機拔出時暫停</string>
@@ -170,8 +168,6 @@
   <string name="notifications">通知</string>
   <string name="notification_visibility_title">通知明顯度</string>
   <string name="notification_action_title">通知啟動</string>
-  <string name="notification_nag">非常詳細的通知</string>
-  <string name="notification_nag_summary">通報歌曲的更換使用 \'抬頭顯示通知\'</string>
   <string name="playback_screen">回播畫面</string>
   <string name="playback_on_startup_title">啟動時開啟</string>
   <string name="playback_on_startup_summary">啟動時開啟回播檢視</string>

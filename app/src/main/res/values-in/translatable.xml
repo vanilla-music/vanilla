@@ -142,8 +142,6 @@
   <string name="ignore_audiofocus_loss_summary">Tetap mainkan saat kehilangan fokus suara</string>
   <string name="media_button_title">Pengendali Set Kepala/Bluetooth</string>
   <string name="media_button_summary">Membutuhkan kontrol pengunci layar ICS</string>
-  <string name="media_button_beep_title">Bip pengendali set kepala</string>
-  <string name="media_button_beep_summary">Bip setelah melompati lagu dengan klik ganda set kepala.</string>
   <string name="headset_only_title">Hanya luaran ekternal</string>
   <string name="headset_only_summary">Non-aktifkan pengeras suara internal</string>
   <string name="headset_pause_title">Jeda saat dicabut</string>
@@ -168,7 +166,6 @@
   <string name="notifications">Pemberitahuan</string>
   <string name="notification_visibility_title">Visibilitas notifikasi</string>
   <string name="notification_action_title">Aksi pemberitahuan</string>
-  <string name="notification_nag_summary">Umumkan perubahan lagu menggunakan Pemberitahuan Mendongak</string>
   <string name="playback_screen">Layar pemutaran</string>
   <string name="playback_on_startup_title">Buka waktu startup</string>
   <string name="playback_on_startup_summary">Buka tampilan pemutaran saat memulai</string>

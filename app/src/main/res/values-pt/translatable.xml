@@ -150,8 +150,6 @@
   <string name="ignore_audiofocus_loss_summary">Manter reprodução ao perder o foco áudio</string>
   <string name="media_button_title">Auscultadores/bluetooth</string>
   <string name="media_button_summary">Necessário para os controlos do ecrã de bloqueio ICS</string>
-  <string name="media_button_beep_title">Sinal de auscultador</string>
-  <string name="media_button_beep_summary">Sinalizar ao avançar uma faixa com duplo clique no controlo de auscultador</string>
   <string name="headset_only_title">Apenas saída externa</string>
   <string name="headset_only_summary">Impede que a música seja reproduzida através dos altifalantes internos</string>
   <string name="headset_pause_title">Pausa ao remover</string>
@@ -178,8 +176,6 @@
   <string name="notifications">Notificações</string>
   <string name="notification_visibility_title">Visibilidade da notificação</string>
   <string name="notification_action_title">Ação na notificação</string>
-  <string name="notification_nag">Notificação muito detalhada</string>
-  <string name="notification_nag_summary">Anunciar alteração de faixa com notificação \'Heads-Up\'</string>
   <string name="playback_screen">Ecrã de reprodução</string>
   <string name="playback_on_startup_title">Abrir ao iniciar</string>
   <string name="playback_on_startup_summary">Abrir vista de reprodução ao iniciar</string>

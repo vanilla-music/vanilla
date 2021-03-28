@@ -166,8 +166,6 @@
   <string name="ignore_audiofocus_loss_summary">Podtrzymuj odtwarzanie przy całkowitej utracie koncentracji dźwięku</string>
   <string name="media_button_title">Sterowanie przyciskami zestawu słuchawkowego/Bluetooth</string>
   <string name="media_button_summary">Wymagane także dla blokady ekranu Androida 4.0+.</string>
-  <string name="media_button_beep_title">Dzwięk przy sterowaniu zestawem słuchawkowym.</string>
-  <string name="media_button_beep_summary">Odtwórz dźwięk po przeskoczeniu do następnego utworu za pomocą podwójnego kliknięcia przyciskiem sterowania zestawu słuchawkowego.</string>
   <string name="headset_only_title">Jedynie wyjście zewnętrzne</string>
   <string name="headset_only_summary">Zapobiega odtwarzaniu dźwięku przez głośnik wewnętrzny urządzenia.</string>
   <string name="headset_pause_title">Zapauzuj po odłączeniu</string>
@@ -194,8 +192,6 @@
   <string name="notifications">Powiadomienie</string>
   <string name="notification_visibility_title">Widoczność powiadomienia</string>
   <string name="notification_action_title">Akcja powiadomienia</string>
-  <string name="notification_nag">Zawsze widoczne powiadomienie</string>
-  <string name="notification_nag_summary">Ogłaszaj zmiany utworów na zawsze przypiętym powiadomieniu</string>
   <string name="playback_screen">Ekran odtwarzania</string>
   <string name="playback_on_startup_title">Otwórz na starcie</string>
   <string name="playback_on_startup_summary">Otwieranie ekranu odtwarzania na starcie</string>
@@ -225,6 +221,8 @@
   <string name="enable_scroll_to_song_summary">Przewiń do aktualnie odtwarzanego utworu/albumu/artysty w widoku biblioteki</string>
   <string name="queue_enable_scroll_to_song_title">Przewiń do odtwarzanego utworu</string>
   <string name="queue_enable_scroll_to_song_summary">Przewiń do obecnie odtwarzanego utworu na liście odtwarzania przy zmianie piosenki</string>
+  <string name="jump_to_enqueued_on_play_title">Przeskocz do utworu w kolejce</string>
+  <string name="jump_to_enqueued_on_play_summary">Jeżeli żądany utwór już znajduje się w kolejce odtwarzania, przeskocz do niego zamiast wymazywać całą kolejkę</string>
   <string name="coverloader_android_title">Załaduj okładkę albumu z systemu Android</string>
   <string name="coverloader_android_summary">Sprawdzanie w wewnętrznej bazie systemu Android w poszukiwaniu okładki albumu</string>
   <string name="coverloader_vanilla_title">Ładowanie okładki albumu z folderu</string>
@@ -306,6 +304,8 @@
   <string name="playlist_sync_disabled">Wyłączono</string>
   <string name="playlist_sync_folder_title">Katalog synchronizacji</string>
   <string name="playlist_sync_folder_summary">Katalog do synchronizacji list odtwarzania</string>
+  <string name="playlist_export_relative_paths_title">Eksportuj używając ścieżek względnych</string>
+  <string name="playlist_export_relative_paths_summary">Ścieżki plików są względne do katalogu z listą odtwarzania</string>
   <string name="permission_request_summary">Vanilla Music potrzebuje uprawnień do wyświetlenia Twojej biblioteki muzycznej</string>
   <string name="reverse_sort">Odwróć sortowanie</string>
   <string name="share">Udostępnij…</string>
@@ -333,6 +333,7 @@
   <string name="media_scan_preferences">Opcje skanowania</string>
   <string name="media_scan_preferences_change_title">Zmieniono opcje skanowania</string>
   <string name="media_scan_preferences_change_message">Zmiana tej opcji spowoduje ponowny skan Twojej biblioteki. Czy chcesz kontynuować?</string>
+  <string name="folder_picker_spinner_desc">Stan katalogu:</string>
   <!--Folder selector-->
   <string name="hint_long_press_to_modify_folder">Naciśnij i przytrzymaj, aby zmienić opcje katalogów</string>
   <string name="folder_include">Zawrzyj</string>

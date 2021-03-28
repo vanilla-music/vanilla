@@ -150,8 +150,6 @@
   <string name="ignore_audiofocus_loss_summary">Lejátszás folytatása az audió fókusz végleges elvesztésekor</string>
   <string name="media_button_title">Headset/Bluetooth vezérlés</string>
   <string name="media_button_summary">Ez az ICS képernyőzár kezelőszerveihez is szükséges.</string>
-  <string name="media_button_beep_title">Headset vezérlés visszajelzés</string>
-  <string name="media_button_beep_summary">Sípolás egy szám kihagyása után, ha az a headset dupla kattintásával történt.</string>
   <string name="headset_only_title">Csak külső kimenet</string>
   <string name="headset_only_summary">Megakadályozza, hogy a beépített hangszórókon szóljon a zene.</string>
   <string name="headset_pause_title">Szüneteltetés szétcsatlakozáskor</string>
@@ -178,8 +176,6 @@
   <string name="notifications">Értesítések</string>
   <string name="notification_visibility_title">Értesítések láthatósága</string>
   <string name="notification_action_title">Értesítési művelet</string>
-  <string name="notification_nag">Nagyon bőbeszédű értesítések</string>
-  <string name="notification_nag_summary">Értesítés a számok közötti váltásokról</string>
   <string name="playback_screen">Lejátszási képernyő</string>
   <string name="playback_on_startup_title">Megnyitás indításkor</string>
   <string name="playback_on_startup_summary">A lejátszási nézet megjelenítési indításkor</string>
@@ -321,6 +317,7 @@
   <string name="media_scan_preferences">Átvizsgáló beállítások</string>
   <string name="media_scan_preferences_change_title">Átvizsgáló beállítások módosítva</string>
   <string name="media_scan_preferences_change_message">A beállítás megváltoztatása a gyűjtemény teljes átvizsgálását okozza. Folytatja?</string>
+  <string name="folder_picker_spinner_desc">Könyvtár állapota:</string>
   <!--Folder selector-->
   <string name="hint_long_press_to_modify_folder">Nyomja meg hosszan a mappabeállítások módosításához</string>
   <string name="folder_include">Belevétel</string>

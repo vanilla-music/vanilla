@@ -115,8 +115,6 @@
   <string name="ignore_audiofocus_loss_summary">Přehrávat dále i při trvalé ztrátě zvukového výstupu</string>
   <string name="media_button_title">Ovládání headsetu/bluetooth</string>
   <string name="media_button_summary">Toto je také vyžadováno pro ICS ovládání uzamčené obrazovky.</string>
-  <string name="media_button_beep_title">Kontrolní zvuk sluchátek</string>
-  <string name="media_button_beep_summary">Zvukový signál při přeskočení skladby dvojitým stlačením ovladače headsetu</string>
   <string name="headset_only_title">Pouze externí výstup</string>
   <string name="headset_only_summary">Zabrání přehrávání skladeb vnitřním reproduktorem přístroje.</string>
   <string name="headset_pause_title">Pozastavit při odpojení</string>
@@ -142,8 +140,6 @@
   <string name="cycle_continuous_shuffling_summary">\'Náhodný mód\' přehrává skladby v náhodném pořadí</string>
   <string name="notifications">Upozornění</string>
   <string name="notification_action_title">Akce upozornění</string>
-  <string name="notification_nag">Velmi detailní upozornění</string>
-  <string name="notification_nag_summary">Oznamovat změny skladeb za použití \'Heads-Up-Notification\'</string>
   <string name="playback_screen">Obrazovka přehrávání</string>
   <string name="playback_on_startup_title">Otevřít při spuštění</string>
   <string name="playback_on_startup_summary">Při spuštění otevřít náhled přehrávání</string>

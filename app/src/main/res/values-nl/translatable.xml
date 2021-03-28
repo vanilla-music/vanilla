@@ -150,8 +150,6 @@
   <string name="ignore_audiofocus_loss_summary">Blijf afspelen bij permanent verlies van audiofocus</string>
   <string name="media_button_title">Koptelefoon-/bluetoothbediening</string>
   <string name="media_button_summary">Dit is ook vereist voor ICS-vergrendelschermbediening.</string>
-  <string name="media_button_beep_title">Pieptoon koptelefoon</string>
-  <string name="media_button_beep_summary">Pieptoon na het overslaan van een nummer m.b.v. een dubbele klik op de koptelefoonbediening.</string>
   <string name="headset_only_title">Alleen externe uitvoer</string>
   <string name="headset_only_summary">Voorkomt dat muziek via de interne luidsprekers wordt afgespeeld.</string>
   <string name="headset_pause_title">Pauzeer bij unpluggen</string>
@@ -178,8 +176,6 @@
   <string name="notifications">Meldingen</string>
   <string name="notification_visibility_title">Zichtbaarheid van meldingen</string>
   <string name="notification_action_title">Meldingsactie</string>
-  <string name="notification_nag">Zeer uitgebreide melding</string>
-  <string name="notification_nag_summary">Kondig het volgende nummer aan met behulp van een \'Heads-Up-melding\'</string>
   <string name="playback_screen">Afspeelscherm</string>
   <string name="playback_on_startup_title">Open bij opstarten</string>
   <string name="playback_on_startup_summary">Open afspeelschermweergave bij opstarten</string>
@@ -321,6 +317,7 @@
   <string name="media_scan_preferences">Scanneropties</string>
   <string name="media_scan_preferences_change_title">Scanneropties zijn veranderd</string>
   <string name="media_scan_preferences_change_message">Veranderen van deze optie zorgt ervoor dat de gehele bibliotheek opnieuw gescand wordt. Doorgaan?</string>
+  <string name="folder_picker_spinner_desc">Directoriestatus:</string>
   <!--Folder selector-->
   <string name="hint_long_press_to_modify_folder">Lang aanraken voor het veranderen van de mapopties</string>
   <string name="folder_include">Sluit in</string>
