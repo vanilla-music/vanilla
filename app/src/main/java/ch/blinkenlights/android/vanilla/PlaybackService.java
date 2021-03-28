@@ -1948,6 +1948,9 @@ public final class PlaybackService extends Service
 		@Override
 		public void onChange(LibraryObserver.Type type, long id, boolean ongoing)
 		{
+			if (type != LibraryObserver.Type.SONG && type != LibraryObserver.Type.PLAYLIST)
+				return;
+
 			MediaUtils.onMediaChange();
 			onMediaChange();
 		}

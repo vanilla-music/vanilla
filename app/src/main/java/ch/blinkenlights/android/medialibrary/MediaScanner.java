@@ -178,7 +178,7 @@ public class MediaScanner implements Handler.Callback {
 		MediaLibrary.Preferences prefs = MediaLibrary.getPreferences(mContext);
 		MediaScanPlan.Statistics stats = mScanPlan.getStatistics();
 
-		progress.isRunning = (stats.lastFile != null);
+		progress.isRunning = mScanPlan.hasNextStep();
 		progress.lastFile = stats.lastFile;
 		progress.seen = stats.seen;
 		progress.changed = stats.changed;
@@ -225,6 +225,7 @@ public class MediaScanner implements Handler.Callback {
 				// for this scan.
 				mHandler.removeMessages(MSG_NOTIFY_CHANGE);
 				MediaLibrary.notifyObserver(LibraryObserver.Type.SONG, LibraryObserver.Value.UNKNOWN, false);
+				MediaLibrary.notifyObserver(LibraryObserver.Type.SCAN_PROGRESS, LibraryObserver.Value.UNKNOWN, false);
 
 				updateNotification(false);
 				break;
@@ -247,6 +248,7 @@ public class MediaScanner implements Handler.Callback {
 				if (changed && !mHandler.hasMessages(MSG_NOTIFY_CHANGE)) {
 					mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_NOTIFY_CHANGE), 500);
 				}
+				MediaLibrary.notifyObserver(LibraryObserver.Type.SCAN_PROGRESS, LibraryObserver.Value.UNKNOWN, true);
 				updateNotification(true);
 				break;
 			}
@@ -813,6 +815,13 @@ public class MediaScanner implements Handler.Callback {
 			}
 			mStats.reset();
 			return next;
+		}
+
+		/**
+		 * Returns true if the scan plan has a step to execute
+		 */
+		boolean hasNextStep() {
+			return mSteps.size() > 0;
 		}
 	}
 }
