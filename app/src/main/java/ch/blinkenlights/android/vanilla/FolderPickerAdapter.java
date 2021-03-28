@@ -33,10 +33,8 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 
-import java.nio.file.Path;
 
 public class FolderPickerAdapter
 	extends ArrayAdapter<FolderPickerAdapter.Item>
@@ -192,7 +190,7 @@ public class FolderPickerAdapter
 		if (l != null) {
 			dirs = Arrays.asList(l);
 		} else {
-			dirs = getFallbackDirectories(path);
+			dirs = FileUtils.getFallbackDirectories(mContext, path);
 		}
 
 		Collections.sort(dirs);
@@ -209,24 +207,4 @@ public class FolderPickerAdapter
 		}
 	}
 
-	/**
-	 * Returns a list of directores contained in 'dir' which are very likely to exist, based
-	 * on what Android told us about the existence of external media dirs.
-	 * This is required as users otherwise may end up in folders they can not navigate out of.
-	 */
-	private List<File> getFallbackDirectories(File dir) {
-		HashSet<File> result = new HashSet<>();
-
-		Path prefix = dir.toPath();
-		for (File f : mContext.getExternalMediaDirs()) {
-			Path p = f.toPath();
-			if (p.getNameCount() <= prefix.getNameCount())
-				continue;
-			if (!p.startsWith(prefix))
-				continue;
-			Path sp = p.subpath(prefix.getNameCount(), prefix.getNameCount()+1);
-			result.add(new File(dir, sp.toString()));
-		}
-		return new ArrayList<File>(result);
-	}
 }
