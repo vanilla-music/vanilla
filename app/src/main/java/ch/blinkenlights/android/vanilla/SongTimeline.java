@@ -31,6 +31,8 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -247,6 +249,10 @@ public final class SongTimeline {
 	 * The last song we added randomly by calling MediaUtils.getRandomSong()
 	 */
 	private Song mLastRandomSong;
+	/**
+	 * Snapshot of a previous queue incarnation, may be null.
+	 */
+	private byte[] mQueueSnapshot;
 
 	// for saveActiveSongs()
 	private Song mSavedPrevious;
@@ -921,18 +927,24 @@ public final class SongTimeline {
 	/**
 	 * Swaps the current queue with an old version
 	 */
-	public void revertQueueChange() {
+	public boolean revertQueueChange() {
 		synchronized (this) {
+			if (mQueueSnapshot == null)
+				return false;
+
 			try {
-				DataInputStream in = new DataInputStream(mContext.openFileInput("out"));
+				ByteArrayInputStream bais = new ByteArrayInputStream(mQueueSnapshot);
+				DataInputStream in = new DataInputStream(bais);
 				readState(in);
 				in.close();
+				mQueueSnapshot = null;
 			} catch (IOException e) {
 				Log.v("VanillaMusic", "Failed to read queue input: ", e);
 			}
 			broadcastChangedSongs();
 		}
 		changed();
+		return true;
 	}
 
 	/**
@@ -944,9 +956,11 @@ public final class SongTimeline {
 	{
 		if (snapshot) {
 			try {
-				DataOutputStream out = new DataOutputStream(mContext.openFileOutput("out", 0));
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				DataOutputStream out = new DataOutputStream(baos);
 				writeState(out);
 				out.close();
+				mQueueSnapshot = baos.toByteArray();
 			} catch (IOException e) {
 				Log.v("VanillaMusic", "Failed to snapshot queue: ", e);
 			}
