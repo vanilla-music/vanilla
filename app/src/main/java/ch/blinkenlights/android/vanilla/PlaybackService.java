@@ -1908,6 +1908,13 @@ public final class PlaybackService extends Service
 		mTimeline.emptyQueue();
 	}
 
+	public void revertQueueChange()
+	{
+		pause();
+		mTimeline.revertQueueChange();
+		setCurrentSong(0);
+	}
+
 	/**
 	 * Return the error message set when FLAG_ERROR is set.
 	 */

@@ -315,6 +315,7 @@ THE SOFTWARE.
 	<string name="enqueue_current">Enqueue…</string>
 	<string name="more_from_current">More from…</string>
 	<string name="empty_the_queue">Empty queue</string>
+	<string name="revert_queue_change">Revert queue change</string>
 	<string name="show_queue">Show queue</string>
 	<string name="hide_queue">Hide queue</string>
 	<string name="dequeue_rest">Dequeue rest</string>

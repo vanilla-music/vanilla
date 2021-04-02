@@ -127,6 +127,7 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 		menu.add(0, MENU_HIDE_QUEUE, 20, R.string.hide_queue);
 		menu.add(0, MENU_CLEAR_QUEUE, 20, R.string.dequeue_rest);
 		menu.add(0, MENU_EMPTY_QUEUE, 20, R.string.empty_the_queue);
+		menu.add(0, MENU_REVERT_QUEUE, 20, R.string.revert_queue_change);
 		menu.add(0, MENU_SAVE_QUEUE, 20, R.string.save_as_playlist);
 		menu.add(0, MENU_JUMP_TO_TIME, 20, R.string.jump_to_time);
 		// This should only be required on ICS.
@@ -316,7 +317,7 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 		if (mMenu == null)
 			return; // not initialized yet
 
-		final int[] slide_visible = {MENU_CLEAR_QUEUE, MENU_EMPTY_QUEUE, MENU_SAVE_QUEUE};
+		final int[] slide_visible = {MENU_CLEAR_QUEUE, MENU_EMPTY_QUEUE, MENU_REVERT_QUEUE, MENU_SAVE_QUEUE};
 		final int[] slide_hidden = {MENU_SORT, MENU_DELETE, MENU_ENQUEUE, MENU_MORE,
 		                            MENU_ADD_TO_PLAYLIST, MENU_SHARE};
 

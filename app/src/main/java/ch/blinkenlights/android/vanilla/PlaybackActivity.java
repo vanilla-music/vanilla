@@ -396,6 +396,7 @@ public abstract class PlaybackActivity extends Activity
 	static final int MENU_MORE_GENRE = 24;
 	static final int MENU_MORE_FOLDER = 25;
 	static final int MENU_JUMP_TO_TIME = 26;
+	static final int MENU_REVERT_QUEUE = 27;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
@@ -417,6 +418,8 @@ public abstract class PlaybackActivity extends Activity
 		case MENU_EMPTY_QUEUE:
 			PlaybackService.get(this).emptyQueue();
 			break;
+		case MENU_REVERT_QUEUE:
+			PlaybackService.get(this).revertQueueChange();
 		default:
 			return false;
 		}
