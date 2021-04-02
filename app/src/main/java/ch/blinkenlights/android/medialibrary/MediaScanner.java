@@ -78,9 +78,9 @@ public class MediaScanner implements Handler.Callback {
 	 */
 	private NotificationHelper mNotificationHelper;
 	/**
-	 * Timestamp in half-seconds since last notification
+	 * uptimeMillis ts at which we will dispatch the next scan update report
 	 */
-	private int mLastNotification;
+	private long mNextProgressReportAt;
 	/**
 	 * The id we are using for the scan notification
 	 */
@@ -253,8 +253,16 @@ public class MediaScanner implements Handler.Callback {
 				if (changed && !mHandler.hasMessages(MSG_NOTIFY_CHANGE)) {
 					mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_NOTIFY_CHANGE), 500);
 				}
-				MediaLibrary.notifyObserver(LibraryObserver.Type.SCAN_PROGRESS, LibraryObserver.Value.UNKNOWN, true);
-				updateNotification(true);
+
+				// Unlike MSG_NOTIFY_CHANGE, we don't want the progress report to lag behind, but we also don't want
+				// to call it on EVERY file inspection; so we add our own delay which will not be influenced by
+				// the message queue size.
+				long now = SystemClock.uptimeMillis();
+				if (now >= mNextProgressReportAt) {
+					mNextProgressReportAt = now + 80;
+					MediaLibrary.notifyObserver(LibraryObserver.Type.SCAN_PROGRESS, LibraryObserver.Value.UNKNOWN, true);
+					updateNotification(true);
+				}
 				break;
 			}
 			case RPC_READ_DIR: {
@@ -310,22 +318,19 @@ public class MediaScanner implements Handler.Callback {
 		MediaLibrary.ScanProgress progress = describeScanProgress();
 
 		if (visible) {
-			int nowTime = (int)(SystemClock.uptimeMillis() / 500);
-			if (nowTime != mLastNotification) {
-				mLastNotification = nowTime;
-				int icon = R.drawable.status_scan_0 + (mLastNotification % 5);
-				String title = mContext.getResources().getString(R.string.media_library_scan_running);
-				String content = progress.lastFile;
-
-				Notification notification = mNotificationHelper.getNewBuilder(mContext)
-					.setProgress(progress.total, progress.seen, false)
-					.setContentTitle(title)
-					.setContentText(content)
-					.setSmallIcon(icon)
-					.setOngoing(true)
-					.getNotification(); // build() is API 16 :-/
-				mNotificationHelper.notify(NOTIFICATION_ID, notification);
-			}
+			// We there are 5 drawables, pick one based on the 'uptime-seconds'.
+			int tick = (int)(SystemClock.uptimeMillis() / 1000) % 5;
+			int icon = R.drawable.status_scan_0 + tick;
+			String title = mContext.getResources().getString(R.string.media_library_scan_running);
+			String content = progress.lastFile;
+			Notification notification = mNotificationHelper.getNewBuilder(mContext)
+				.setProgress(progress.total, progress.seen, false)
+				.setContentTitle(title)
+				.setContentText(content)
+				.setSmallIcon(icon)
+				.setOngoing(true)
+				.getNotification(); // build() is API 16 :-/
+			mNotificationHelper.notify(NOTIFICATION_ID, notification);
 
 			if (!mWakeLock.isHeld())
 				mWakeLock.acquire();
