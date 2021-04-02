@@ -261,6 +261,8 @@
   <string name="toggle_controls">Alternar controles</string>
   <string name="seek_10s_backward">Retroceder 10 segundos</string>
   <string name="seek_10s_forward">Avanzar 10 segundos</string>
+  <string name="move_to_top">Ir al principio</string>
+  <string name="move_to_bottom">Ir al final</string>
   <string name="preferences_action_show_queue">Mostrar cola</string>
   <string name="preferences_action_clear_queue">Limpiar cola</string>
   <string name="preferences_action_enqueue_current_album">Añadir álbum a la cola</string>
@@ -317,6 +319,7 @@
   <string name="media_scan_preferences">Opciones del escáner</string>
   <string name="media_scan_preferences_change_title">Las opciones del escáner han cambiado</string>
   <string name="media_scan_preferences_change_message">Modificar esta opción comenzará un nuevo re-escaneo completo de tu biblioteca. ¿Quieres continuar?</string>
+  <string name="folder_picker_spinner_desc">Estado del directorio</string>
   <!--Folder selector-->
   <string name="hint_long_press_to_modify_folder">Pulsación larga para modificar las opciones de carpeta</string>
   <string name="folder_include">Incluir</string>

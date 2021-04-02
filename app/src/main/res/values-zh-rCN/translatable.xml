@@ -195,6 +195,9 @@
   <string name="idle_timeout_title">闲置超时</string>
   <string name="enable_scroll_to_song_title">滚动到曲目标题</string>
   <string name="enable_scroll_to_song_summary">在库列表中滚动到当前播放的曲目/专辑/艺术家</string>
+  <string name="queue_enable_scroll_to_song_title">滚动到队列中的曲目标题</string>
+  <string name="queue_enable_scroll_to_song_summary">歌曲更改时滚动到当前播放曲目</string>
+  <string name="jump_to_enqueued_on_play_title">按“播放”时跳到入列的歌曲</string>
   <string name="jump_to_enqueued_on_play_summary">如果请求的曲目已经在队列中，直接跳到请求的曲目而不是清空队列</string>
   <string name="coverloader_android_title">从 Android 设备载入</string>
   <string name="coverloader_android_summary">查询 Android 内部的媒体数据库来做专辑封面</string>
@@ -250,12 +253,15 @@
   <string name="toggle_controls">切换控制器</string>
   <string name="seek_10s_backward">向后倒退 10 秒</string>
   <string name="seek_10s_forward">向前快进 10 秒</string>
+  <string name="move_to_top">移动到顶部</string>
+  <string name="move_to_bottom">移动到底部</string>
   <string name="preferences_action_show_queue">显示序列</string>
   <string name="preferences_action_clear_queue">清空序列</string>
   <string name="preferences_action_enqueue_current_album">以专辑加入序列</string>
   <string name="preferences_action_enqueue_current_artist">以演出者加入序列</string>
   <string name="preferences_action_enqueue_current_genre">以风格加入序列</string>
   <string name="jump_to_time">跳转到</string>
+  <string name="time_separator">：</string>
   <string name="hour_hint">时</string>
   <string name="minute_hint">分钟</string>
   <string name="second_hint">秒</string>
@@ -310,6 +316,7 @@
   <string name="hint_long_press_to_modify_folder">长按以编辑文件夹选项</string>
   <string name="folder_include">包括</string>
   <string name="folder_exclude">排除</string>
+  <string name="folder_neutral">中性的</string>
   <!--Plugin system-->
   <string name="plugins">插件</string>
   <string name="plugin_needs_upgrade">请更新 %s 插件至最新版本</string>
