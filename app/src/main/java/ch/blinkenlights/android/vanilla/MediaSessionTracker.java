@@ -119,8 +119,13 @@ public class MediaSessionTracker {
 				.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, song.artist)
 				.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, song.album)
 				.putString(MediaMetadataCompat.METADATA_KEY_TITLE, song.title)
-				.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.duration)
-				.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, cover);
+				.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.duration);
+
+			boolean showCover = SharedPrefHelper.getSettings(mContext).getBoolean(PrefKeys.COVER_ON_LOCKSCREEN, PrefDefaults.COVER_ON_LOCKSCREEN);
+			if (showCover) {
+				metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, cover);
+			}
+
 			// logic copied from FullPlaybackActivity.updateQueuePosition()
 			if (PlaybackService.finishAction(service.getState()) != SongTimeline.FINISH_RANDOM) {
 				metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, service.getTimelinePosition() + 1);
