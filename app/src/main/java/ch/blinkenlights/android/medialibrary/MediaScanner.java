@@ -66,6 +66,10 @@ public class MediaScanner implements Handler.Callback {
 	 */
 	private boolean mIsInitialScan;
 	/**
+	 * True if we are currently in a scan phase
+	 */
+	private boolean mScanIsRunning;
+	/**
 	 * True if we must do a full cleanup of orphaned entries after the scan finished.
 	 */
 	private boolean mPendingCleanup;
@@ -178,7 +182,7 @@ public class MediaScanner implements Handler.Callback {
 		MediaLibrary.Preferences prefs = MediaLibrary.getPreferences(mContext);
 		MediaScanPlan.Statistics stats = mScanPlan.getStatistics();
 
-		progress.isRunning = mScanPlan.hasNextStep();
+		progress.isRunning = mScanIsRunning;
 		progress.lastFile = stats.lastFile;
 		progress.seen = stats.seen;
 		progress.changed = stats.changed;
@@ -207,6 +211,7 @@ public class MediaScanner implements Handler.Callback {
 				break;
 			}
 			case MSG_SCAN_FINISHED: {
+				mScanIsRunning = false;
 				if (mIsInitialScan) {
 					mIsInitialScan = false;
 					MediaLibrary.notifyObserver(LibraryObserver.Type.PLAYLIST, LibraryObserver.Value.OUTDATED, false);
@@ -270,6 +275,7 @@ public class MediaScanner implements Handler.Callback {
 		}
 
 		if (message.what == MSG_SCAN_RPC && !mHandler.hasMessages(MSG_SCAN_RPC)) {
+			mScanIsRunning = true;
 			MediaScanPlan.Step step = mScanPlan.getNextStep();
 			if (step == null) {
 				mHandler.sendEmptyMessage(MSG_SCAN_FINISHED);
@@ -815,13 +821,6 @@ public class MediaScanner implements Handler.Callback {
 			}
 			mStats.reset();
 			return next;
-		}
-
-		/**
-		 * Returns true if the scan plan has a step to execute
-		 */
-		boolean hasNextStep() {
-			return mSteps.size() > 0;
 		}
 	}
 }
