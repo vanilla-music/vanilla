@@ -2119,7 +2119,7 @@ public final class PlaybackService extends Service
 	public Notification createNotification(Song song, int state, int mode)
 	{
 		final boolean playing = (state & FLAG_PLAYING) != 0;
-		final Bitmap cover = song.getCover(this);
+		final Bitmap cover = song.getMediumCover(this);
 
 		ComponentName service = new ComponentName(this, PlaybackService.class);
 

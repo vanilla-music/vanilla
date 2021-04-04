@@ -138,7 +138,7 @@ public class RemoteControlImplICS implements RemoteControl.Client {
 
 			editor.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, artist_album);
 			editor.putString(MediaMetadataRetriever.METADATA_KEY_TITLE, song.title);
-			Bitmap bitmap = song.getCover(mContext);
+			Bitmap bitmap = song.getMediumCover(mContext);
 			if (bitmap != null  && mShowCover == 1 && (isPlaying || keepPaused)) {
 				// Create a copy of the cover art, since RemoteControlClient likes
 				// to recycle what we give it.

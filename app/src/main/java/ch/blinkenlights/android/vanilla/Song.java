@@ -232,8 +232,18 @@ public class Song implements Comparable<Song> {
 	 * @param context A context to use.
 	 * @return The album art or null if no album art could be found
 	 */
-	public Bitmap getCover(Context context) {
+	public Bitmap getLargeCover(Context context) {
 		return getCoverInternal(context, CoverCache.SIZE_LARGE);
+	}
+
+	/**
+	 * Query the medium album art for this song.
+	 *
+	 * @param context A context to use.
+	 * @return The album art or null if no album art could be found
+	 */
+	public Bitmap getMediumCover(Context context) {
+		return getCoverInternal(context, CoverCache.SIZE_MEDIUM);
 	}
 
 	/**

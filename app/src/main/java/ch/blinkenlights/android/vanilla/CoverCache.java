@@ -53,7 +53,11 @@ public class CoverCache {
 	 */
 	public final static int SIZE_SMALL = (int)(44 * METRICS.density);
 	/**
-	 * Returned size of large (cover view) album covers
+	 * Cover to use in remote views with a medium size.
+	 */
+	public final static int SIZE_MEDIUM = (int)(240 * METRICS.density);
+	/**
+	 * Cover to use in the highest quality possible (full cover view).
 	 */
 	public final static int SIZE_LARGE = (METRICS.heightPixels > METRICS.widthPixels ? METRICS.widthPixels : METRICS.heightPixels);
 	/**

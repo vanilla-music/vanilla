@@ -227,7 +227,7 @@ public final class CoverView extends View implements Handler.Callback {
 	 */
 	private Bitmap generateBitmap(Song song) {
 		int style = mCoverStyle;
-		Bitmap cover = song == null ? null : song.getCover(mContext);
+		Bitmap cover = song == null ? null : song.getLargeCover(mContext);
 
 		if (cover == null && style != CoverBitmap.STYLE_OVERLAPPING_BOX) {
 			cover = CoverBitmap.generateDefaultCover(mContext, getWidth(), getHeight());
