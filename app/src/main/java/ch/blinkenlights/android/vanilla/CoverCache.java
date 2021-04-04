@@ -30,6 +30,7 @@ import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Environment;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
@@ -43,14 +44,18 @@ import java.util.regex.Pattern;
 
 public class CoverCache {
 	/**
+	 * Display metrics as reported by the system during class creation.
+	 */
+	private final static DisplayMetrics METRICS = Resources.getSystem().getDisplayMetrics();
+	/**
 	 * Returned size of small album covers
 	 * 44sp is the width & height of a library row
 	 */
-	public final static int SIZE_SMALL = (int)(44 * Resources.getSystem().getDisplayMetrics().density);
+	public final static int SIZE_SMALL = (int)(44 * METRICS.density);
 	/**
 	 * Returned size of large (cover view) album covers
 	 */
-	public final static int SIZE_LARGE = (int)(200 * Resources.getSystem().getDisplayMetrics().density);
+	public final static int SIZE_LARGE = (METRICS.heightPixels > METRICS.widthPixels ? METRICS.widthPixels : METRICS.heightPixels);
 	/**
 	 * Use all cover providers to load cover art
 	 */
