@@ -34,6 +34,14 @@ THE SOFTWARE.
 	<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 	<!-- Playlist shortcuts -->
 	<uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+
+	<!-- Allow us to query plugins -->
+	<queries>
+		<intent>
+			<action android:name="ch.blinkenlights.android.vanilla.action.REQUEST_PLUGIN_PARAMS" />
+		</intent>
+	</queries>
+
 	<application
 	    android:allowBackup="true"
 	    android:resizeableActivity="true"
