@@ -1,0 +1,254 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="app_name">Vanilla Music</string>
+  <string name="ok">OK</string>
+  <string name="cancel">Ezeztatu</string>
+  <!--Playback Activity (main screen)-->
+  <string name="no_songs">Ez da abestirik aurkitu zure gailuan.</string>
+  <string name="empty_queue">Ez dago abestirik aukeratuta. Aukeratu bat bibliotekatik edo sartu aleatorio moduan mezu hau sakatzen.</string>
+  <string name="settings">Konfigurazio</string>
+  <string name="no_shuffle">Ez nahasi</string>
+  <string name="shuffle_songs">Abestiak nahasi</string>
+  <string name="shuffle_songs_continuously">Etengabe nahasi abestiak</string>
+  <string name="shuffle_albums">Albumak nahasi</string>
+  <string name="no_repeat">Ez errepikatu</string>
+  <string name="repeat">Errepikatu</string>
+  <string name="repeat_current_song">Errepikatu abestia</string>
+  <string name="stop_current_song">Gelditu abestiaren ondoren</string>
+  <string name="random">Aleatorio</string>
+  <string name="random_enabling">Aleatorio aktibatuta</string>
+  <string name="song_load_failed">Errorea abesti %s kargatzean. Ustela edo falta izan liteke.</string>
+  <string name="queue_cleared">Errenkada hustuta.</string>
+  <string name="cover_art">Karatula</string>
+  <string name="close_notification">Jakinarazpena ixtea.</string>
+  <string name="_genre">generoa</string>
+  <string name="_track">abestia</string>
+  <string name="_composer">konpositorea</string>
+  <string name="_path">bidea</string>
+  <string name="_format">formatua</string>
+  <string name="_title">izenburua</string>
+  <string name="_artist">artista</string>
+  <string name="_album">albuma</string>
+  <string name="_year">urtea</string>
+  <string name="_replaygain">r-irabazia</string>
+  <!--New Playlist Dialog-->
+  <string name="choose_playlist_name">Aukeratu izena erreprodukzio-zerrendarako</string>
+  <string name="create">Sortu</string>
+  <string name="overwrite">Gainean idatzi</string>
+  <string name="delete_playlist">Ezabatu %s erreprodukzio-zerrenda?</string>
+  <!--Library-->
+  <string name="enqueue">Errenkadan jarri</string>
+  <string name="enqueue_as_next">Hurrengo erreproduzitu</string>
+  <string name="play">Erreproduzitu</string>
+  <string name="edit">Editatu</string>
+  <string name="rename">Berrizendatu</string>
+  <string name="save_as_playlist">Gorde erreprodukzio-zerrenda gisa...</string>
+  <string name="add_to_playlist">Gehitu erreprodukzio-zerrendara...</string>
+  <string name="add_to_homescreen">Gehitu hasierako pantailara</string>
+  <string name="add_to">Gehitu honi:</string>
+  <string name="playlist">Erreprodukzio-zerrenda</string>
+  <string name="homescreen">Hasierako pantaila</string>
+  <string name="add_to_favorites">Gehitu gogokoenei</string>
+  <string name="remove_from_favorites">Ezabatu gogokoenetik</string>
+  <string name="playlist_favorites">Gogokoenak</string>
+  <string name="new_playlist">Erreprodukzio-zerrenda berria...</string>
+  <string name="expand">Zabaldu</string>
+  <string name="expand_or_play_all">Zabaldu edo guztiak erreproduzitu</string>
+  <string name="delete">Kendu</string>
+  <string name="playback_view">Orain erreproduzitzen</string>
+  <string name="sort_by">Honela ordenatu</string>
+  <string name="search">Bilatu</string>
+  <string name="done">Eginda</string>
+  <string name="remove">Kendu</string>
+  <string name="play_or_enqueue">Jarri errenkadan musika erreproduzitzen ari bada; erreproduzitu pausatuta badago</string>
+  <string name="open">Ireki</string>
+  <string name="go_home">Hasierako direktorioa</string>
+  <string name="jumping_to_song">Abestia errenkadan dago, saihesten...</string>
+  <!--As a developer, you should always supply "one" and "other"
+		strings. Your translators will know which strings are actually
+		needed for their language. Always include %d in "one" because
+		translators will need to use %d for languages where "one"
+		doesn't mean 1 (as explained above).
+
+		Translators should use http://unicode.org/reports/tr35/tr35-numbers.html#Language_Plural_Rules and
+		http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html, Type cardinal,
+		to see which categories apply to integer numbers in their languages-->
+  <plurals name="playing">
+    <item quantity="one">%d abestia erreproduzitzen.</item>
+    <item quantity="other">%d abestiak erreproduzitzen.</item>
+  </plurals>
+  <plurals name="enqueued">
+    <item quantity="one">%dabestia errenkadan jarrita.</item>
+    <item quantity="other">%d abestiak errenkadan jarrita.</item>
+  </plurals>
+  <plurals name="added_to_playlist">
+    <item quantity="one">%1$d abestia %2$s erreprodukzio-zerrendara gehituta.</item>
+    <item quantity="other">%1$d abestiak %2$s erreprodukzio-zerrendara gehituta.</item>
+  </plurals>
+  <plurals name="removed_from_playlist">
+    <item quantity="one">%1$d abestia %2$s erreprodukzio-zerrendara gehituta.</item>
+    <item quantity="other">%1$d abestiak %2$s erreprodukzio-zerrendara gehituta.</item>
+  </plurals>
+  <plurals name="deleted">
+    <item quantity="one">%d abestia kenduta.</item>
+    <item quantity="other">%d abestiak kenduta.</item>
+  </plurals>
+  <string name="delete_file_failed">Errorea %s kentzen.</string>
+  <string name="deleted_item">\'%s\' kenduta.</string>
+  <string name="delete_item">\'%s\' kendu?</string>
+  <string name="delete_file">\'%s\' artxiboa kendu?</string>
+  <string name="artists">Artistak</string>
+  <string name="albums">Albumak</string>
+  <string name="albumartists">Albumeko Artistak</string>
+  <string name="composers">Konpositoreak</string>
+  <string name="songs">Abestiak</string>
+  <string name="playlists">Erreprodukzio-zerrendak</string>
+  <string name="genres">Generoak</string>
+  <string name="files">Artxiboak</string>
+  <string name="artist">Artista</string>
+  <string name="album">Albuma</string>
+  <string name="genre">Generoa</string>
+  <string name="folder">Karpeta</string>
+  <string name="filename">Izenburua</string>
+  <string name="file_size">Artxiboaren tamaina.</string>
+  <string name="file_time">Aldaketaren data.</string>
+  <string name="extension">Luzapena</string>
+  <string name="unknown">Ezezaguna</string>
+  <string name="play_all">Dena erreproduzitu</string>
+  <string name="enqueue_all">Dena errenkadan jarri</string>
+  <string name="all_songs">Abesti guztiak</string>
+  <string name="details">Xehetasunak</string>
+  <string name="more_from_artist">Gehiago artistaz</string>
+  <string name="more_from_album">Gehiago albumaz</string>
+  <string name="title">Izenburua</string>
+  <string name="number_of_tracks">Abesti kopurua</string>
+  <string name="year">Urtea</string>
+  <string name="date_added">Noiz gehitu zen</string>
+  <string name="artist_album">Artista, albuma</string>
+  <string name="artist_year_album">Artista, urtea, albuma</string>
+  <string name="artist_album_track">Artista, albuma, abesti zenbakia</string>
+  <string name="artist_album_title">Artista, albuma, izenburua</string>
+  <string name="artist_year">Artista, urtea</string>
+  <string name="album_track">Albuma, abesti zenbakia</string>
+  <string name="song_playcount">Erreprodukzio-kopurua</string>
+  <!--Preferences-->
+  <plurals name="seconds">
+    <item quantity="one">%d segundo</item>
+    <item quantity="other">%d segundo</item>
+  </plurals>
+  <plurals name="minutes">
+    <item quantity="one">%d minutu</item>
+    <item quantity="other">%d minutu</item>
+  </plurals>
+  <plurals name="hours">
+    <item quantity="one">%d ordu</item>
+    <item quantity="other">%d ordu</item>
+  </plurals>
+  <string name="audio">Audio</string>
+  <string name="volume_during_ducking_title">Jakinarazpenen bolumena</string>
+  <string name="volume_during_ducking_summary">Erreprodukzio bolumena:</string>
+  <string name="ignore_audiofocus_loss_summary">Audioaren kontrola etengabe galdu ondoren, erreproduzitzen jarraitu</string>
+  <string name="media_button_title">Bluetooth/Aurikularretarako kontrolak</string>
+  <string name="media_button_summary">Hau beharrezkoa da ICS pantaila-blokeoa kontrolatzeko.</string>
+  <string name="headset_only_title">Kanpoko irteera bakarrik</string>
+  <string name="headset_only_summary">Musika barneko bozgorailuetatik erreproduzitzea eragozten du.</string>
+  <string name="headset_pause_title">Eten deskonektatzen denean.</string>
+  <string name="headset_pause_summary">Eten aurikularrak deskonektatzen direnean.</string>
+  <string name="headset_launch_title">Erreproduzitu konektatzean</string>
+  <string name="headset_launch_summary">Aurikularrak konektatzean erreproduzitu. (\'Headphone detector\' aplikazioa instalatuta egotea eskatzen du.)</string>
+  <string name="headset_launch_app_missing">Ezaugarri honek \'Headphone detector\' instalatuta egotea eskatzen du. Play Store ireki nahi duzu aplikazioa instalatzeko?</string>
+  <string name="replaygain">ReplayGain</string>
+  <string name="replaygain_summary">ReplayGain informazioa nola erabiltzen den konfiguratzea</string>
+  <string name="replaygain_track_title">ReplayGain gaitu abesti bakoitzerako</string>
+  <string name="replaygain_track_summary">Abesti guztiak bolumen berean erreproduzitu</string>
+  <string name="replaygain_album_title">ReplayGain gaitu album bakoitzerako</string>
+  <string name="replaygain_album_summary">Albumaren dinamika gorde</string>
+  <string name="replaygain_bump_title">ReplayGain aurre-anplifikazioa</string>
+  <string name="replaygain_untagged_debump_title">ReplayGain etiketarik gabeko abestiak</string>
+  <string name="replaygain_untagged_debump_summary">Bolumena murriztu honen arabera:</string>
+  <string name="replaygain_preamp_note_title">Oharra</string>
+  <string name="replaygain_preamp_note_content">Androidek ez dio uzten Vanilla Music-i bolumena &gt;100% era igotzea. Aurre-anplifikadorea balio altuan ezartzeak arazoak sor ditzake musika \"lasaia\" entzuten ari bazara. Aurre-anplifikadorea balio altuan ezartzeak arazoak sor ditzake musika \"lasaia\" entzuten ari bazara. \n\nGomendatutako balioak hauek dira: \n-&gt; -3db musika klasiko/baketsuarentzat\n-&gt; +3dB 2000 ondorengo grabazioentzat</string>
+  <string name="readahead">Irakurketa-katxea gaitu</string>
+  <string name="readahead_summary">Irakurri aldez aurretik erreproduzitzen ari den pista. Aukera horrek \'mozketa\' arazoak konpon ditzake (SD txartel motel batek eragindakoak).</string>
+  <string name="equalizer">Ekualizadorea</string>
+  <string name="cycle_continuous_shuffling">Etengabe nahasi</string>
+  <string name="cycle_continuous_shuffling_summary">\"Nahasketa modua\" abestiak erreproduzituko ditu, aleatorio ordena bati jarraituz</string>
+  <string name="notifications">Jakinarazpenak</string>
+  <string name="notification_visibility_title">Jakinarazpenaren ikusgarritasuna</string>
+  <string name="notification_action_title">Jakinarazpenaren ekintza</string>
+  <string name="playback_screen">Erreprodukzio-pantaila</string>
+  <string name="playback_on_startup_title">Ireki hasieran</string>
+  <string name="playback_on_startup_summary">Ireki erreprodukzio-ikuspegia hasieran</string>
+  <string name="display_mode_title">Bistaratzeko modua</string>
+  <string name="swipe_up_action_title">Ekintza gorantz irristatzerakoan</string>
+  <string name="swipe_down_action_title">Ekintza beherantz irristatzerakoan</string>
+  <string name="cover_press_action_title">Ekintza karatula ukitzerakoan</string>
+  <string name="cover_longpress_action_title">Karatula luzaroan ukitzerakoan egindako ekintza</string>
+  <string name="library_screen">Bibliotekako pantaila</string>
+  <string name="default_action_title">Ekintza lehenetsia</string>
+  <string name="default_playlist_action_title">Erreprodukzio-zerrenda ekintza lehenetsia</string>
+  <string name="misc_features">Ezaugarri miszelaneoak</string>
+  <string name="theme">Gaia</string>
+  <string name="help">Laguntza</string>
+  <!--The following are for the list preferences-->
+  <string name="never_show">Inoiz ez irakatsi</string>
+  <string name="always_show">Beti irakatsi</string>
+  <string name="open_main_activity">Liburutegia ireki (lehenetsi)</string>
+  <string name="do_nothing">Ezer egin</string>
+  <string name="open_library">Liburutegia ireki</string>
+  <string name="play_pause">Erreproduzitu/Gelditu</string>
+  <string name="next_song">Hurrengo abestia</string>
+  <string name="previous_song">Aurreko abestia</string>
+  <string name="next_album">Hurrengo albuma</string>
+  <string name="previous_album">Aurreko albuma</string>
+  <string name="empty_the_queue">Ilara hustu</string>
+  <string name="show_queue">Ilara irakatsi</string>
+  <string name="hide_queue">Ilara eskutatu</string>
+  <string name="move_to_top">Mugitu erabat goian</string>
+  <string name="move_to_bottom">Mugitu hondora</string>
+  <string name="preferences_action_show_queue">Ilara irakatsi</string>
+  <string name="preferences_action_clear_queue">Ilara garbitu</string>
+  <string name="time_separator">:</string>
+  <string name="hour_hint">HH</string>
+  <string name="minute_hint">MM</string>
+  <string name="second_hint">SS</string>
+  <string name="error_invalid_position">Posizio baliogabea</string>
+  <string name="select">Aukeratu</string>
+  <string name="save">Gorde</string>
+  <string name="playlist_sync_all">Erabateko sinkronizazioa</string>
+  <string name="playlist_sync_disabled">Desgaituta</string>
+  <string name="share">Partitu...</string>
+  <string name="share_failed">Errorea fitxategia partekatzean</string>
+  <string name="sendto">Bidali...</string>
+  <string name="duration">Iraupena</string>
+  <string name="media_folders_header">Direktorio indexatuak</string>
+  <string name="media_scan_start">Eskaneatzen hastea</string>
+  <string name="media_scan_group_albums">Karpeta bakoitzeko album-taldeak</string>
+  <string name="media_statistics">Estatistikak</string>
+  <string name="media_stats_tracks">Abesti kopurua</string>
+  <string name="media_stats_library_playtime">Erreprodukzio denbora guztira (Orduak)</string>
+  <string name="media_stats_listen_playtime">Orain arte jarritako musika-orduak</string>
+  <string name="media_stats_progress">Eskaneatzearen abantzamendua</string>
+  <string name="media_scan_preferences">Eskanearren aukerak</string>
+  <string name="media_scan_preferences_change_title">Eskanearren aukerak aldatuta</string>
+  <string name="folder_picker_spinner_desc">Direktorioaren egoera:</string>
+  <!--Folder selector-->
+  <string name="hint_long_press_to_modify_folder">Sakatu karpetako aukerak aldatzeko</string>
+  <string name="folder_include">Sartu</string>
+  <string name="folder_exclude">Baztertu</string>
+  <string name="folder_neutral">Neutral</string>
+  <!--Plugin system-->
+  <string name="plugins">Pluginak</string>
+  <!--Theme names-->
+  <string name="theme_name_standard_light">Estandarra</string>
+  <string name="theme_name_standard_dark">Estandarra (Iluna)</string>
+  <string name="theme_name_grey_light">Grisa</string>
+  <string name="theme_name_grey_dark">Grisa (Iluna)</string>
+  <string name="theme_name_orange_light">Laranja</string>
+  <string name="theme_name_orange_dark">Laranja (Iluna)</string>
+  <string name="theme_name_blue_light">Urdina</string>
+  <string name="theme_name_blue_dark">Urdina (Iluna)</string>
+  <string name="theme_name_red_light">Gorria</string>
+  <string name="theme_name_red_dark">Gorria (Iluna)</string>
+  <string name="theme_name_amoled_dark">Tonu beltza (AMOLED)</string>
+</resources>
