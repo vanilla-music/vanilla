@@ -171,6 +171,10 @@ public class MediaLibrary  {
 			defaultPaths.add(Environment.getExternalStorageDirectory().getAbsolutePath());
 
 			for (File file : context.getExternalMediaDirs()) {
+				// Returns 'null' on some Samsung devices?!.
+				if (file == null)
+					continue;
+
 				defaultPaths.add(file.getAbsolutePath());
 				// Check if we have access to a subdir which contains the 'Music' folder.
 				while ( (file = file.getParentFile()) != null) {
