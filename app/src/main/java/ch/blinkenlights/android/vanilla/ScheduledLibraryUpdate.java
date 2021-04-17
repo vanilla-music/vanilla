@@ -134,7 +134,7 @@ public class ScheduledLibraryUpdate extends JobService {
 	private final LibraryObserver mObserver = new LibraryObserver() {
 		@Override
 		public void onChange(LibraryObserver.Type type, long id, boolean ongoing) {
-			if (!ongoing) {
+			if (type == LibraryObserver.Type.SONG && !ongoing) {
 				jobFinished(mJobParams, false);
 				finalizeScan();
 			}

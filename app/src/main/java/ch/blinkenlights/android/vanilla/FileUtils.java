@@ -24,7 +24,10 @@ import java.net.URI;
 import java.net.URLConnection;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.StringTokenizer;
+
+import java.nio.file.Path;
 
 import android.content.Context;
 import android.content.Intent;
@@ -234,15 +237,6 @@ public class FileUtils {
 
 		if (folder.equals("")) {
 			folder = Environment.getExternalStorageDirectory().getAbsolutePath();
-
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-				// If we are running on a platform which enforces scoped access, try to find
-				// the suggested media dir instead.
-				for (File p : context.getExternalMediaDirs()) {
-					folder = p.getAbsolutePath();
-					break;
-				}
-			}
 		}
 		return new File(folder);
 	}
@@ -254,6 +248,39 @@ public class FileUtils {
 	public static String getFileExtension(String filename) {
 		int index = filename.lastIndexOf('.');
 		return index > 0 ? filename.substring(index) : "";
+	}
+
+	/**
+	 * Returns a list of directores contained in 'dir' which are very likely to exist, based
+	 * on what Android told us about the existence of external media dirs.
+	 * This is required as users otherwise may end up in folders they can not navigate out of.
+	 */
+	public static ArrayList<File> getFallbackDirectories(Context context, File dir) {
+		HashSet<File> result = new HashSet<>();
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			Path prefix = dir.toPath();
+			for (File f : context.getExternalMediaDirs()) {
+				Path p = f.toPath();
+				if (p.getNameCount() <= prefix.getNameCount())
+					continue;
+				if (!p.startsWith(prefix))
+					continue;
+				Path sp = p.subpath(prefix.getNameCount(), prefix.getNameCount()+1);
+				result.add(new File(dir, sp.toString()));
+			}
+		} else {
+			// java.nio.Paths was only added in API 26 *sigh*.
+			switch (dir.toString()) {
+			case "/":
+				result.add(new File("/storage"));
+				break;
+			case "/storage/emulated":
+				result.add(new File("/storage/emulated/0"));
+				break;
+			}
+		}
+		return new ArrayList<File>(result);
 	}
 
 	/**

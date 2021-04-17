@@ -105,7 +105,7 @@ public class WidgetD extends AppWidgetProvider {
 			views.setViewVisibility(R.id.buttons, View.VISIBLE);
 			views.setTextViewText(R.id.title, song.title);
 			views.setTextViewText(R.id.artist, song.artist);
-			cover = song.getCover(context);
+			cover = song.getMediumCover(context);
 		}
 
 		if (cover == null) {

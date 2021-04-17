@@ -30,6 +30,7 @@ import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Environment;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
@@ -43,14 +44,22 @@ import java.util.regex.Pattern;
 
 public class CoverCache {
 	/**
+	 * Display metrics as reported by the system during class creation.
+	 */
+	private final static DisplayMetrics METRICS = Resources.getSystem().getDisplayMetrics();
+	/**
 	 * Returned size of small album covers
 	 * 44sp is the width & height of a library row
 	 */
-	public final static int SIZE_SMALL = (int)(44 * Resources.getSystem().getDisplayMetrics().density);
+	public final static int SIZE_SMALL = (int)(44 * METRICS.density);
 	/**
-	 * Returned size of large (cover view) album covers
+	 * Cover to use in remote views with a medium size.
 	 */
-	public final static int SIZE_LARGE = (int)(200 * Resources.getSystem().getDisplayMetrics().density);
+	public final static int SIZE_MEDIUM = (int)(240 * METRICS.density);
+	/**
+	 * Cover to use in the highest quality possible (full cover view).
+	 */
+	public final static int SIZE_LARGE = (METRICS.heightPixels > METRICS.widthPixels ? METRICS.widthPixels : METRICS.heightPixels);
 	/**
 	 * Front album art
 	 */
@@ -216,14 +225,15 @@ public class CoverCache {
 		 * Priority-ordered list of possible cover names
 		 */
 		private final static Pattern[] COVER_MATCHES = {
-			    Pattern.compile("(?i).+/(COVER|ALBUM)\\.(JPE?G|PNG)$"),
-			    Pattern.compile("(?i).+/ALBUMART(_\\{[-0-9A-F]+\\}_LARGE)?\\.(JPE?G|PNG)$"),
-			    Pattern.compile("(?i).+/(CD|FRONT|ARTWORK|FOLDER)\\.(JPE?G|PNG)$"),
-			    Pattern.compile("(?i).+\\.(JPE?G|PNG)$") };
+			Pattern.compile("(?i).+/(COVER|ALBUM)\\.(JPE?G|PNG|WEBP)$"),
+			Pattern.compile("(?i).+/ALBUMART(_\\{[-0-9A-F]+\\}_LARGE)?\\.(JPE?G|PNG|WEBP)$"),
+			Pattern.compile("(?i).+/(CD|FRONT|ARTWORK|FOLDER)\\.(JPE?G|PNG|WEBP)$"),
+			Pattern.compile("(?i).+\\.(JPE?G|PNG|WEBP)$") };
 
 		private final static Pattern[] COVERBACK_MATCHES = {
-			Pattern.compile("(?i).+/(Back)\\.(JPE?G|PNG)$")
+			Pattern.compile("(?i).+/(Back)\\.(JPE?G|PNG|WEBP)$")
 		};
+
 		/**
 		 * Projection of all columns in the database
 		 */

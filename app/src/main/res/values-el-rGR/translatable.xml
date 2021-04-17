@@ -70,7 +70,6 @@
   <!--Preferences-->
   <string name="audio">Ήχος</string>
   <string name="media_button_summary">Αυτό απαιτείται επίσης για τους ελέγχους  ICS lockscreen. </string>
-  <string name="media_button_beep_summary">Μπιπ μετά από παράλειψη ενός κομματιού με διπλό κλικ στον έλεγχο ακουστικων.</string>
   <string name="headset_only_summary">Εμποδίζει τη μουσική από το να παίζεται μέσω των εσωτερικών ηχείων.</string>
   <string name="headset_pause_summary">Παύση όταν τα ακουστικά εχουν αποσυνδεθεί.</string>
   <string name="replaygain_track_summary">Αναπαραγωγή όλων των τραγουδιων σε ίση ηχηρότητα</string>

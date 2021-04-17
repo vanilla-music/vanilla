@@ -115,8 +115,6 @@
   <string name="ignore_audiofocus_loss_summary">המשך לנגן באיבוד מיקוד השמע לחלוטין</string>
   <string name="media_button_title">מקשי שליטה באוזניות/Blutooth</string>
   <string name="media_button_summary">זה נדרש גם עבור שליטה ממסך הנעילה ב- ICS.</string>
-  <string name="media_button_beep_title">צפצוף במקשי שליטה</string>
-  <string name="media_button_beep_summary">צפצף לאחר דילוג על רצועה באמצעות הקשה כפולה על מקשי אוזניות</string>
   <string name="headset_only_title">פלט חיצוני בלבד</string>
   <string name="headset_only_summary">מנע מהשמעת מוסיקה מהרמקולים המובנים</string>
   <string name="headset_pause_title">השהה בניתוק</string>
@@ -142,8 +140,6 @@
   <string name="cycle_continuous_shuffling_summary">\'מצב ערבוב\' ינגן רצועות בסדר אקראי לחלוטין</string>
   <string name="notifications">התראות</string>
   <string name="notification_action_title">פעולת התראה</string>
-  <string name="notification_nag">התראה מילולית מאוד</string>
-  <string name="notification_nag_summary">הכרז על שינויי רצועה באמצעות \'התראה קופצת\'</string>
   <string name="playback_screen">מסך נגינה</string>
   <string name="playback_on_startup_title">פתח בהפעלה</string>
   <string name="playback_on_startup_summary">פתח תצוגת נגינה בהפעלה</string>

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2017-2021 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,15 +39,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
-public class PreferencesMediaLibrary extends Fragment implements View.OnClickListener
-{
-	/**
-	 * The ugly timer which fires every 200ms
-	 */
-	private Timer mTimer;
+public class PreferencesMediaLibrary extends Fragment implements View.OnClickListener {
 	/**
 	 * Our start button
 	 */
@@ -113,6 +105,20 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 	 */
 	private String mInitialMediaFolders;
 
+	private final LibraryObserver mLibraryObserver = new LibraryObserver() {
+			@Override
+			public void onChange(LibraryObserver.Type type, long id, boolean ongoing) {
+				if (type != LibraryObserver.Type.SCAN_PROGRESS)
+					return;
+				getActivity().runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							updateProgress();
+						}
+					});
+			}
+		};
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.medialibrary_preferences, container, false);
@@ -149,18 +155,6 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 	@Override
 	public void onResume() {
 		super.onResume();
-		mTimer = new Timer();
-		// Yep: its as ugly as it seems: we are POLLING
-		// the database.
-		mTimer.scheduleAtFixedRate((new TimerTask() {
-			@Override
-			public void run() {
-				getActivity().runOnUiThread(new Runnable(){
-					public void run() {
-						updateProgress();
-					}
-				});
-			}}), 0, 200);
 
 		// We got freshly created and user didn't have a chance
 		// to edit anything: remember this state
@@ -176,17 +170,15 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 				mFullScanPending = true;
 		}
 
+		MediaLibrary.registerLibraryObserver(mLibraryObserver);
+		updateProgress();
 		updatePreferences(null);
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
-		if (mTimer != null) {
-			mTimer.cancel();
-			mTimer = null;
-		}
-
+		MediaLibrary.unregisterLibraryObserver(mLibraryObserver);
 		// User exited this view -> scan if needed
 		if (mFullScanPending && !mIsEditingDirectories) {
 			MediaLibrary.startLibraryScan(getActivity(), true, true);
@@ -216,6 +208,7 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 
 	private static final int MENU_DUMP_DB = 1;
 	private static final int MENU_FORCE_M3U_IMPORT = 2;
+
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		super.onCreateOptionsMenu(menu, inflater);
@@ -373,7 +366,6 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 	 */
 	public void startButtonPressed(View view) {
 		MediaLibrary.startLibraryScan(getActivity(), mFullScanCheck.isChecked(), mDropDbCheck.isChecked());
-		updateProgress();
 	}
 
 	/**
@@ -383,7 +375,6 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 	 */
 	public void cancelButtonPressed(View view) {
 		MediaLibrary.abortLibraryScan(getActivity());
-		updateProgress();
 	}
 
 	/**

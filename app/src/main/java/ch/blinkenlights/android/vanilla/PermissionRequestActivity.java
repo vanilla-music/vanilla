@@ -34,10 +34,6 @@ import android.os.Bundle;
 public class PermissionRequestActivity extends Activity {
 
 	/**
-	 * 'dangerous' permissions not granted by the manifest on versions >= M
-	 */
-	private static final String[] NEEDED_PERMISSIONS = { Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE };
-	/**
 	 * The intent to start after acquiring the required permissions
 	 */
 	private Intent mCallbackIntent;
@@ -48,7 +44,7 @@ public class PermissionRequestActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		mCallbackIntent = getIntent().getExtras().getParcelable("callbackIntent");
-		requestPermissions(NEEDED_PERMISSIONS, 0);
+		requestPermissions(getNeededPermissions(), 0);
 	}
 
 	/**
@@ -131,13 +127,20 @@ public class PermissionRequestActivity extends Activity {
 	 */
 	public static boolean havePermissions(Context context) {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-			for (String permission : NEEDED_PERMISSIONS) {
+			for (String permission : getNeededPermissions()) {
 				if (context.checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
 					return false;
 				}
 			}
 		} // else: granted during installation
 		return true;
+	}
+
+	private static String[] getNeededPermissions() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+			return new String[] { Manifest.permission.READ_EXTERNAL_STORAGE };
+		}
+		return new String[] { Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE };
 	}
 
 }

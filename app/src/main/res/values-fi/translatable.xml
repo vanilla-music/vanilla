@@ -62,7 +62,7 @@
   <string name="remove">Poista</string>
   <string name="play_or_enqueue">Lisää jonoon jos toistetaan; toista jos keskeytetty</string>
   <string name="open">Avaa</string>
-  <string name="go_home">Kotihakemisto</string>
+  <string name="go_home">Kotikansio</string>
   <string name="jumping_to_song">Kappale on jo jonossa, ohitetaan…</string>
   <!--As a developer, you should always supply "one" and "other"
 		strings. Your translators will know which strings are actually
@@ -150,8 +150,6 @@
   <string name="ignore_audiofocus_loss_summary">Jatka toistamista pysyvän äänen kohdistuksen menettämisen jälkeen</string>
   <string name="media_button_title">Kuulokkeiden/bluetoothin ohjaimet</string>
   <string name="media_button_summary">Vaadittu myös ICS:n lukitusnäytön ohjaimia varten.</string>
-  <string name="media_button_beep_title">Kuulokeohjauksen piippaus</string>
-  <string name="media_button_beep_summary">Piippaa kun kappale ohitetaan kuulokkeiden ohjaimella.</string>
   <string name="headset_only_title">Vain ulkoinen ulostulo</string>
   <string name="headset_only_summary">Estää musiikin soiton sisäisistä kaiuttimista.</string>
   <string name="headset_pause_title">Keskeytä kun kuulokkeet irrotetaan</string>
@@ -178,8 +176,6 @@
   <string name="notifications">Ilmoitukset</string>
   <string name="notification_visibility_title">Ilmoituksen näkyvyys</string>
   <string name="notification_action_title">Ilmoitustoiminto</string>
-  <string name="notification_nag">Erittäin runsas ilmoitus</string>
-  <string name="notification_nag_summary">Ilmoita kappaleen vaihtumisesta \'Heads-Up\'-ilmoituksella</string>
   <string name="playback_screen">Toistonäkymä</string>
   <string name="playback_on_startup_title">Avaa käynnistäessä</string>
   <string name="playback_on_startup_summary">Avaa toistonäkymä käynnistäessä</string>
@@ -265,6 +261,8 @@
   <string name="toggle_controls">Näytä/piilota ohjaimet</string>
   <string name="seek_10s_backward">Siirry 10 sekuntia taakse</string>
   <string name="seek_10s_forward">Siirry 10 sekuntia eteen</string>
+  <string name="move_to_top">Siirrä ylös</string>
+  <string name="move_to_bottom">Siirrä alas</string>
   <string name="preferences_action_show_queue">Näytä jono</string>
   <string name="preferences_action_clear_queue">Tyhjennä jono</string>
   <string name="preferences_action_enqueue_current_album">Aseta albumi jonoon</string>
@@ -277,7 +275,7 @@
   <string name="second_hint">SS</string>
   <string name="error_invalid_position">Virheellinen arvo</string>
   <string name="filebrowser_start">Tiedostohallinnan aloitus</string>
-  <string name="customize_filebrowser_start">Tiedostohallinta käynnistyy tästä kansiosta</string>
+  <string name="customize_filebrowser_start">Tiedostonhallinta käynnistyy tästä kansiosta</string>
   <string name="select">Valitse</string>
   <string name="save">Tallenna</string>
   <string name="autoplaylist_playcounts_title">Automaattisen soittolistan luonti</string>
@@ -321,6 +319,7 @@
   <string name="media_scan_preferences">Skannerivalinnat</string>
   <string name="media_scan_preferences_change_title">Skannerivalinnat muuttuivat</string>
   <string name="media_scan_preferences_change_message">Tämän valinnan muuttaminen käynnistää kirjaston täyden läpikäynnin. Haluatko jatkaa?</string>
+  <string name="folder_picker_spinner_desc">Kansion tila:</string>
   <!--Folder selector-->
   <string name="hint_long_press_to_modify_folder">Pitkä painallus muokkaa kansiovalintoja</string>
   <string name="folder_include">Sisällytä</string>

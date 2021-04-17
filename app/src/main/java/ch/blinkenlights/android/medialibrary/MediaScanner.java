@@ -66,6 +66,10 @@ public class MediaScanner implements Handler.Callback {
 	 */
 	private boolean mIsInitialScan;
 	/**
+	 * True if we are currently in a scan phase
+	 */
+	private boolean mScanIsRunning;
+	/**
 	 * True if we must do a full cleanup of orphaned entries after the scan finished.
 	 */
 	private boolean mPendingCleanup;
@@ -74,9 +78,9 @@ public class MediaScanner implements Handler.Callback {
 	 */
 	private NotificationHelper mNotificationHelper;
 	/**
-	 * Timestamp in half-seconds since last notification
+	 * uptimeMillis ts at which we will dispatch the next scan update report
 	 */
-	private int mLastNotification;
+	private long mNextProgressReportAt;
 	/**
 	 * The id we are using for the scan notification
 	 */
@@ -178,7 +182,7 @@ public class MediaScanner implements Handler.Callback {
 		MediaLibrary.Preferences prefs = MediaLibrary.getPreferences(mContext);
 		MediaScanPlan.Statistics stats = mScanPlan.getStatistics();
 
-		progress.isRunning = (stats.lastFile != null);
+		progress.isRunning = mScanIsRunning;
 		progress.lastFile = stats.lastFile;
 		progress.seen = stats.seen;
 		progress.changed = stats.changed;
@@ -207,6 +211,7 @@ public class MediaScanner implements Handler.Callback {
 				break;
 			}
 			case MSG_SCAN_FINISHED: {
+				mScanIsRunning = false;
 				if (mIsInitialScan) {
 					mIsInitialScan = false;
 					MediaLibrary.notifyObserver(LibraryObserver.Type.PLAYLIST, LibraryObserver.Value.OUTDATED, false);
@@ -225,6 +230,7 @@ public class MediaScanner implements Handler.Callback {
 				// for this scan.
 				mHandler.removeMessages(MSG_NOTIFY_CHANGE);
 				MediaLibrary.notifyObserver(LibraryObserver.Type.SONG, LibraryObserver.Value.UNKNOWN, false);
+				MediaLibrary.notifyObserver(LibraryObserver.Type.SCAN_PROGRESS, LibraryObserver.Value.UNKNOWN, false);
 
 				updateNotification(false);
 				break;
@@ -247,7 +253,16 @@ public class MediaScanner implements Handler.Callback {
 				if (changed && !mHandler.hasMessages(MSG_NOTIFY_CHANGE)) {
 					mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_NOTIFY_CHANGE), 500);
 				}
-				updateNotification(true);
+
+				// Unlike MSG_NOTIFY_CHANGE, we don't want the progress report to lag behind, but we also don't want
+				// to call it on EVERY file inspection; so we add our own delay which will not be influenced by
+				// the message queue size.
+				long now = SystemClock.uptimeMillis();
+				if (now >= mNextProgressReportAt) {
+					mNextProgressReportAt = now + 80;
+					MediaLibrary.notifyObserver(LibraryObserver.Type.SCAN_PROGRESS, LibraryObserver.Value.UNKNOWN, true);
+					updateNotification(true);
+				}
 				break;
 			}
 			case RPC_READ_DIR: {
@@ -268,6 +283,7 @@ public class MediaScanner implements Handler.Callback {
 		}
 
 		if (message.what == MSG_SCAN_RPC && !mHandler.hasMessages(MSG_SCAN_RPC)) {
+			mScanIsRunning = true;
 			MediaScanPlan.Step step = mScanPlan.getNextStep();
 			if (step == null) {
 				mHandler.sendEmptyMessage(MSG_SCAN_FINISHED);
@@ -302,22 +318,19 @@ public class MediaScanner implements Handler.Callback {
 		MediaLibrary.ScanProgress progress = describeScanProgress();
 
 		if (visible) {
-			int nowTime = (int)(SystemClock.uptimeMillis() / 500);
-			if (nowTime != mLastNotification) {
-				mLastNotification = nowTime;
-				int icon = R.drawable.status_scan_0 + (mLastNotification % 5);
-				String title = mContext.getResources().getString(R.string.media_library_scan_running);
-				String content = progress.lastFile;
-
-				Notification notification = mNotificationHelper.getNewBuilder(mContext)
-					.setProgress(progress.total, progress.seen, false)
-					.setContentTitle(title)
-					.setContentText(content)
-					.setSmallIcon(icon)
-					.setOngoing(true)
-					.getNotification(); // build() is API 16 :-/
-				mNotificationHelper.notify(NOTIFICATION_ID, notification);
-			}
+			// We there are 5 drawables, pick one based on the 'uptime-seconds'.
+			int tick = (int)(SystemClock.uptimeMillis() / 1000) % 5;
+			int icon = R.drawable.status_scan_0 + tick;
+			String title = mContext.getResources().getString(R.string.media_library_scan_running);
+			String content = progress.lastFile;
+			Notification notification = mNotificationHelper.getNewBuilder(mContext)
+				.setProgress(progress.total, progress.seen, false)
+				.setContentTitle(title)
+				.setContentText(content)
+				.setSmallIcon(icon)
+				.setOngoing(true)
+				.getNotification(); // build() is API 16 :-/
+			mNotificationHelper.notify(NOTIFICATION_ID, notification);
 
 			if (!mWakeLock.isHeld())
 				mWakeLock.acquire();

@@ -109,8 +109,6 @@
   <string name="ignore_audiofocus_loss_summary">Manter reprodução ao perder o foco de áudio</string>
   <string name="media_button_title">Controles Headset/Bluetooth</string>
   <string name="media_button_summary">Isto é necessário para o controles na Tela de bloqueio ICS</string>
-  <string name="media_button_beep_title">Sinal de controle para o Headset</string>
-  <string name="media_button_beep_summary">Sinalizar ao avançar uma faixa com duplo clique no controlo do headset</string>
   <string name="headset_only_title">Apenas sáida externa</string>
   <string name="headset_only_summary">Prevenir que a música seja reproduzida pelos altofalantes internos</string>
   <string name="headset_pause_title">Pausar ao desconectar</string>
@@ -133,7 +131,6 @@
   <string name="cycle_continuous_shuffling">Misturar continuamente</string>
   <string name="notifications">Notificações</string>
   <string name="notification_action_title">Ação da notificação</string>
-  <string name="notification_nag">Notificação bem detalhada</string>
   <string name="playback_screen">Tela de reprodução</string>
   <string name="playback_on_startup_title">Abrir quando iniciar</string>
   <string name="playback_on_startup_summary">Abrir lista de reprodução no inicio</string>

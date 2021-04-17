@@ -150,8 +150,6 @@
   <string name="ignore_audiofocus_loss_summary">Continuar reproduciendo tras haber perdido permanentemente el control sobre el audio </string>
   <string name="media_button_title">Controles para Bluetooth/Auriculares</string>
   <string name="media_button_summary">Esto es necesario para los controles del bloqueo de pantalla en ICS.</string>
-  <string name="media_button_beep_title">Pitido de control de auriculares</string>
-  <string name="media_button_beep_summary">Pitar después de saltar una pista con un doble clic sobre el control de los auriculares.</string>
   <string name="headset_only_title">Salida externa unicamente</string>
   <string name="headset_only_summary">Impide que la música suene por los altavoces internos.</string>
   <string name="headset_pause_title">Pausar cuando se desconecte</string>
@@ -178,8 +176,6 @@
   <string name="notifications">Notificaciones</string>
   <string name="notification_visibility_title">Visibilidad de la notificación</string>
   <string name="notification_action_title">Acción de la notificación</string>
-  <string name="notification_nag">Notificación muy detallada</string>
-  <string name="notification_nag_summary">Avisar de los cambios de pista utilizando una notificación emergente</string>
   <string name="playback_screen">Pantalla de reproducción</string>
   <string name="playback_on_startup_title">Abrir al inicio</string>
   <string name="playback_on_startup_summary">Abrir vista de reproducción al inicio</string>
@@ -265,6 +261,8 @@
   <string name="toggle_controls">Alternar controles</string>
   <string name="seek_10s_backward">Retroceder 10 segundos</string>
   <string name="seek_10s_forward">Avanzar 10 segundos</string>
+  <string name="move_to_top">Ir al principio</string>
+  <string name="move_to_bottom">Ir al final</string>
   <string name="preferences_action_show_queue">Mostrar cola</string>
   <string name="preferences_action_clear_queue">Limpiar cola</string>
   <string name="preferences_action_enqueue_current_album">Añadir álbum a la cola</string>
@@ -321,6 +319,7 @@
   <string name="media_scan_preferences">Opciones del escáner</string>
   <string name="media_scan_preferences_change_title">Las opciones del escáner han cambiado</string>
   <string name="media_scan_preferences_change_message">Modificar esta opción comenzará un nuevo re-escaneo completo de tu biblioteca. ¿Quieres continuar?</string>
+  <string name="folder_picker_spinner_desc">Estado del directorio</string>
   <!--Folder selector-->
   <string name="hint_long_press_to_modify_folder">Pulsación larga para modificar las opciones de carpeta</string>
   <string name="folder_include">Incluir</string>

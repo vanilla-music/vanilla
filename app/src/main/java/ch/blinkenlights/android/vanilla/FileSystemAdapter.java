@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2010, 2011 Christopher Eby <kreed@kreed.org>
- * Copyright (C) 2015-2016 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2015-2021 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -49,7 +49,7 @@ public class FileSystemAdapter
 	private static final Pattern SPACE_SPLIT = Pattern.compile("\\s+");
 	private static final Pattern FILE_SEPARATOR = Pattern.compile(File.separator);
 	private static final Pattern GUESS_MUSIC = Pattern.compile("^(.+\\.(mp3|ogg|mka|opus|flac|aac|m4a|wav))$", Pattern.CASE_INSENSITIVE);
-	private static final Pattern GUESS_IMAGE = Pattern.compile("^(.+\\.(gif|jpe?g|png|bmp|tiff?))$", Pattern.CASE_INSENSITIVE);
+	private static final Pattern GUESS_IMAGE = Pattern.compile("^(.+\\.(gif|jpe?g|png|bmp|tiff?|webp))$", Pattern.CASE_INSENSITIVE);
 	/**
 	 * The root directory of the device
 	 */
@@ -191,11 +191,14 @@ public class FileSystemAdapter
 			mFileObserver = new Observer(file.getPath());
 		}
 
+		ArrayList<File> files;
 		File[] readdir = file.listFiles(mFileFilter);
-		if (readdir == null)
-			readdir = new File[]{};
+		if (readdir != null) {
+			files = new ArrayList<File>(Arrays.asList(readdir));
+		} else {
+			files = FileUtils.getFallbackDirectories((Context)mActivity, file);
+		}
 
-		ArrayList<File> files = new ArrayList<File>(Arrays.asList(readdir));
 		Collections.sort(files, mFileComparator);
 		if (!mFsRoot.equals(file))
 			files.add(0, new File(file, FileUtils.NAME_PARENT_FOLDER));

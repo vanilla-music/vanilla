@@ -185,8 +185,6 @@ THE SOFTWARE.
 	<string name="ignore_audiofocus_loss_summary">Keep playing on permanent audio focus loss</string>
 	<string name="media_button_title">Headset/Bluetooth controls</string>
 	<string name="media_button_summary">This is also required for ICS lockscreen controls.</string>
-	<string name="media_button_beep_title">Headset control beep</string>
-	<string name="media_button_beep_summary">Beep after skipping a track with a headset control double click.</string>
 	<string name="headset_only_title">External output only</string>
 	<string name="headset_only_summary">Prevents music from being played through the internal speakers.</string>
 	<string name="headset_pause_title">Pause when unplugged</string>
@@ -218,9 +216,6 @@ THE SOFTWARE.
 	<string name="notifications">Notifications</string>
 	<string name="notification_visibility_title">Notification visibility</string>
 	<string name="notification_action_title">Notification action</string>
-
-	<string name="notification_nag">Very verbose notification</string>
-	<string name="notification_nag_summary">Announce track changes using a \'Heads-Up-Notification\'</string>
 
 	<string name="playback_screen">Playback screen</string>
 	<string name="playback_on_startup_title">Open on startup</string>
@@ -326,6 +321,8 @@ THE SOFTWARE.
 	<string name="toggle_controls">Toggle controls</string>
 	<string name="seek_10s_backward">Seek 10 seconds backward</string>
 	<string name="seek_10s_forward">Seek 10 seconds forward</string>
+	<string name="move_to_top">Move to top</string>
+	<string name="move_to_bottom">Move to bottom</string>
 	<string name="preferences_action_show_queue">Show queue</string>
 	<string name="preferences_action_clear_queue">Clear queue</string>
 	<string name="preferences_action_enqueue_current_album">Enqueue album</string>
@@ -390,6 +387,7 @@ THE SOFTWARE.
 	<string name="media_scan_preferences">Scanner options</string>
 	<string name="media_scan_preferences_change_title">Scanner options changed</string>
 	<string name="media_scan_preferences_change_message">Changing this option will start a full rescan of your library. Would you like to continue?</string>
+	<string name="folder_picker_spinner_desc">Status of Directory:</string>
 
 	<!-- Folder selector -->
 	<string name="hint_long_press_to_modify_folder">Long press to modify folder options</string>

@@ -35,9 +35,4 @@ THE SOFTWARE.
 		android:entries="@array/notification_action_entries"
 		android:entryValues="@array/entry_values"
 		android:defaultValue="0" />
-	<CheckBoxPreference
-		android:key="notification_nag"
-		android:title="@string/notification_nag"
-		android:defaultValue="false"
-		android:summary="@string/notification_nag_summary" />
 </PreferenceScreen>

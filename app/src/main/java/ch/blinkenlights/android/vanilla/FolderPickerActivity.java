@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2013-2020 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,13 +33,15 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.widget.Spinner;
 
 import com.mobeta.android.dslv.DragSortListView;
 
 
 public abstract class FolderPickerActivity extends Activity
 	implements AdapterView.OnItemClickListener,
-	           AdapterView.OnItemLongClickListener
+	           AdapterView.OnItemLongClickListener,
+			   AdapterView.OnItemSelectedListener
 {
 
 	/**
@@ -55,14 +57,13 @@ public abstract class FolderPickerActivity extends Activity
 	 */
 	private Button mSaveButton;
 	/**
+	 * Tristate spinner
+	 */
+	private Spinner mSpinner;
+	/**
 	 * The array adapter of our listview
 	 */
 	private FolderPickerAdapter mListAdapter;
-	/**
-	 * True if folder-tri-state selection mode
-	 * is enabled
-	 */
-	private boolean mTritastic;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -75,6 +76,7 @@ public abstract class FolderPickerActivity extends Activity
 		mListView    = (DragSortListView)findViewById(R.id.list);
 		mPathDisplay = (EditText) findViewById(R.id.path_display);
 		mSaveButton  = (Button) findViewById(R.id.save_button);
+		mSpinner = (Spinner) findViewById(R.id.folder_picker_spinner);
 
 		mListView.setAdapter(mListAdapter);
 		mListView.setOnItemClickListener(this);
@@ -82,8 +84,12 @@ public abstract class FolderPickerActivity extends Activity
 		mPathDisplay.addTextChangedListener(mTextWatcher);
 		mSaveButton.setOnClickListener(mSaveButtonClickListener);
 
+		mSpinner.setSelection(0);
+		mSpinner.setOnItemSelectedListener(this);
+
 		// init defaults
 		enableTritasticSelect(false, null, null);
+		enableTritasticSpinner(false);
 	}
 
 	/**
@@ -134,14 +140,21 @@ public abstract class FolderPickerActivity extends Activity
 	 * @param excluded initial list of excluded dirs
 	 */
 	public void enableTritasticSelect(boolean enabled, ArrayList<String> included, ArrayList<String> excluded) {
-		mTritastic = enabled;
-		mListAdapter.setIncludedDirs(enabled ? included : null);
-		mListAdapter.setExcludedDirs(enabled ? excluded : null);
+		if (enabled) {
+			Toast.makeText(this, R.string.hint_long_press_to_modify_folder, Toast.LENGTH_SHORT).show();
+			mListAdapter.setIncludedDirs(included);
+			mListAdapter.setExcludedDirs(excluded);
+		}
 		mListView.setOnItemLongClickListener(enabled ? this : null);
 		mSaveButton.setText(enabled ? R.string.save : R.string.select);
+	}
 
-		if (enabled)
-			Toast.makeText(this, R.string.hint_long_press_to_modify_folder, Toast.LENGTH_SHORT).show();
+	/**
+	 * Whether or not to enable the tristate spinner.
+	 */
+	public void enableTritasticSpinner(boolean enabled) {
+		View view = findViewById(R.id.folder_picker_spinner_container);
+		view.setVisibility(enabled ? View.VISIBLE : View.GONE);
 	}
 
 	/**
@@ -151,6 +164,7 @@ public abstract class FolderPickerActivity extends Activity
 	 */
 	void setCurrentDir(File dir) {
 		mSaveButton.setEnabled(dir.isDirectory());
+		mSpinner.setEnabled(dir.isDirectory());
 		mListAdapter.setCurrentDir(dir);
 		mListView.setSelectionFromTop(0, 0);
 
@@ -163,6 +177,15 @@ public abstract class FolderPickerActivity extends Activity
 			final String label = dir.getAbsolutePath();
 			mPathDisplay.setText(label);
 			mPathDisplay.setSelection(label.length());
+
+			// Since the folder changed, also update the spinner state.
+			if (mListAdapter.getIncludedDirs().contains(label)) {
+				mSpinner.setSelection(0);
+			} else if (mListAdapter.getExcludedDirs().contains(label)) {
+				mSpinner.setSelection(1);
+			} else {
+				mSpinner.setSelection(2);
+			}
 		}
 	}
 
@@ -183,6 +206,31 @@ public abstract class FolderPickerActivity extends Activity
 		} else {
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+	/**
+	 * Called if user interacts with the spinner.
+	 */
+	@Override
+	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+		FolderState state = FolderState.NEUTRAL;
+		switch(position) {
+		case 0:
+			state = FolderState.INCLUDE;
+			break;
+		case 1:
+			state = FolderState.EXCLUDE;
+			break;
+		}
+		setFolderState(mListAdapter.getCurrentDir().getAbsolutePath(), state);
+	}
+
+	/**
+	 * Called if user dismisses the spinner.
+	 */
+	@Override
+	public void onNothingSelected(AdapterView<?> parent) {
+		// noop.
 	}
 
 	/**
@@ -228,24 +276,55 @@ public abstract class FolderPickerActivity extends Activity
 			.setItems(options,
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
-						ArrayList<String> includedDirs = mListAdapter.getIncludedDirs();
-						ArrayList<String> excludedDirs = mListAdapter.getExcludedDirs();
-						includedDirs.remove(path);
-						excludedDirs.remove(path);
 						switch (which) {
 							case 0:
-								includedDirs.add(path);
+								setFolderState(path, FolderState.INCLUDE);
 								break;
 							case 1:
-								excludedDirs.add(path);
+								setFolderState(path, FolderState.EXCLUDE);
 								break;
 							default:
+								setFolderState(path, FolderState.NEUTRAL);
 						}
-						mListAdapter.setIncludedDirs(includedDirs);
-						mListAdapter.setExcludedDirs(excludedDirs);
 					}
 				});
 		builder.create().show();
 		return true;
+	}
+
+	/**
+	 * Enums to pass to setFolderState()
+	 */
+	enum FolderState {
+		NEUTRAL,
+		INCLUDE,
+		EXCLUDE,
+	}
+
+	/**
+	 * update included/excluded folders on the adapter.
+	 *
+	 * @param folder the folder to act on.
+	 * @param state the state the passed in folder should have.
+	 */
+	private void setFolderState(String folder, FolderState state) {
+		ArrayList<String> includedDirs = mListAdapter.getIncludedDirs();
+		ArrayList<String> excludedDirs = mListAdapter.getExcludedDirs();
+		includedDirs.remove(folder);
+		excludedDirs.remove(folder);
+		switch (state) {
+		case INCLUDE:
+			includedDirs.add(folder);
+			break;
+		case EXCLUDE:
+			excludedDirs.add(folder);
+			break;
+		case NEUTRAL:
+			// noop.
+			break;
+		}
+
+		mListAdapter.setIncludedDirs(includedDirs);
+		mListAdapter.setExcludedDirs(excludedDirs);
 	}
 }
