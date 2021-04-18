@@ -39,6 +39,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -2121,7 +2122,7 @@ public final class PlaybackService extends Service
 		final boolean playing = (state & FLAG_PLAYING) != 0;
 		Bitmap cover = song.getMediumCover(this);
 		if (cover == null) {
-			cover = CoverBitmap.generateDefaultCover(this, CoverCache.SIZE_MEDIUM, CoverCache.SIZE_MEDIUM);
+			cover = BitmapFactory.decodeResource(getResources(), R.drawable.fallback_cover_large);
 		}
 
 		ComponentName service = new ComponentName(this, PlaybackService.class);
