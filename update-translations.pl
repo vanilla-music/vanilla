@@ -4,6 +4,7 @@ use strict;
 # nasty mapping table
 my $LMAP = {
 	'el'    => 'el-rGR',
+	'eu'    => 'eu-rES',
 	'fa_IR' => 'fa-rIR',
 	'zh_CN' => 'zh-rCN',
 	'zh_TW' => 'zh-rTW',

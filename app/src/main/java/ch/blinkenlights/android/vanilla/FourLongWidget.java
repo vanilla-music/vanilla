@@ -111,7 +111,7 @@ public class FourLongWidget extends AppWidgetProvider {
 			views.setTextViewText(R.id.title, song.title);
 			views.setTextViewText(R.id.artist, song.artist);
 			views.setTextViewText(R.id.album, song.album);
-			Bitmap cover = song.getCover(context);
+			Bitmap cover = song.getMediumCover(context);
 			if (cover == null) {
 				views.setImageViewResource(R.id.cover, R.drawable.fallback_cover_large);
 			} else {

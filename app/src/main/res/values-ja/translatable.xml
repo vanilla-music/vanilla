@@ -142,8 +142,6 @@
   <string name="ignore_audiofocus_loss_summary">オーディオのフォーカスを失っても永久に再生を続けます</string>
   <string name="media_button_title">ヘッドセット/Bluetooth コントロール</string>
   <string name="media_button_summary">ICS ロックスクリーンのコントロールにも必要です。</string>
-  <string name="media_button_beep_title">ヘッドセット コントロール ビープ音</string>
-  <string name="media_button_beep_summary">ヘッドセットのコントロールをダブルクリックして、トラックをスキップした後のビープ音。</string>
   <string name="headset_only_title">外部出力のみ</string>
   <string name="headset_only_summary">内部スピーカーから音楽が再生されないようにします。</string>
   <string name="headset_pause_title">プラグを外した時に一時停止</string>
@@ -170,8 +168,6 @@
   <string name="notifications">通知</string>
   <string name="notification_visibility_title">通知の表示</string>
   <string name="notification_action_title">通知操作</string>
-  <string name="notification_nag">非常に詳細な通知</string>
-  <string name="notification_nag_summary">\'Heads-Up-通知\' を使用してトラックの変更をお知らせします</string>
   <string name="playback_screen">再生画面</string>
   <string name="playback_on_startup_title">起動時に開く</string>
   <string name="playback_on_startup_summary">起動時に再生ビューを開きます</string>
@@ -257,6 +253,8 @@
   <string name="toggle_controls">コントロールを切り替え</string>
   <string name="seek_10s_backward">10 秒前にシーク</string>
   <string name="seek_10s_forward">10 秒先にシーク</string>
+  <string name="move_to_top">先頭に移動</string>
+  <string name="move_to_bottom">最後に移動</string>
   <string name="preferences_action_show_queue">キューを表示</string>
   <string name="preferences_action_clear_queue">キューをクリア</string>
   <string name="preferences_action_enqueue_current_album">アルバムをキューに入れる</string>
@@ -313,6 +311,7 @@
   <string name="media_scan_preferences">スキャナーオプション</string>
   <string name="media_scan_preferences_change_title">スキャナーオプションを変更しました</string>
   <string name="media_scan_preferences_change_message">このオプションを変更すると、ライブラリーのフル再スキャンが始まります。 続行しますか?</string>
+  <string name="folder_picker_spinner_desc">ディレクトリーのステータス:</string>
   <!--Folder selector-->
   <string name="hint_long_press_to_modify_folder">長押ししてフォルダーオプションを変更します</string>
   <string name="folder_include">含む</string>

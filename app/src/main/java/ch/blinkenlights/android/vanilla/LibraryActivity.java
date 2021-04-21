@@ -525,7 +525,6 @@ public class LibraryActivity
 
 				if (last) {
 					colors[1] = 0xFF404040;
-					view.setOnClickListener(this);
 				}
 
 				int leftPadding = 14;
@@ -543,6 +542,7 @@ public class LibraryActivity
 				view.setArrowWidthDIP(arrowWidth);
 				view.setTag(i);
 				view.setColors(colors[0], colors[1]);
+				view.setOnClickListener(this);
 				mLimiterViews.addView(view);
 
 				if (last) {

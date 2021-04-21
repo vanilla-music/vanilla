@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2013-2021 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,9 @@ import android.graphics.drawable.Drawable;
 import java.io.File;
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 
 public class FolderPickerAdapter
 	extends ArrayAdapter<FolderPickerAdapter.Item>
@@ -49,13 +52,13 @@ public class FolderPickerAdapter
 	}
 
 	/**
+	 * The context we run in.
+	 */
+	private Context mContext;
+	/**
 	 * Our layout inflater instance
 	 */
 	private final LayoutInflater mInflater;
-	/**
-	 * The external storage directory as reported by the OS
-	 */
-	final private File mStorageDir;
 	/**
 	 * The filesystem root
 	 */
@@ -76,9 +79,9 @@ public class FolderPickerAdapter
 
 	public FolderPickerAdapter(Context context, int resource) {
 		super(context, resource);
+		mContext = context;
 		mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		mStorageDir = Environment.getExternalStorageDirectory();
-		mCurrentDir = mStorageDir;
+		mCurrentDir = Environment.getExternalStorageDirectory();
 	}
 
 	@Override
@@ -176,35 +179,32 @@ public class FolderPickerAdapter
 	 */
 	private void refresh() {
 		File path = mCurrentDir;
-		File[]dirs = path.listFiles();
 
 		clear();
 
 		if (!mFsRoot.equals(path))
 			add(new FolderPickerAdapter.Item("..", null, 0));
 
-		// Hack alert: Android >= 6.0's default storage root directory
-		// is usually not readable. That's not a big issue but
-		// can be very annoying for users who browse around.
-		// We are therefore detecting this and will 'simulate'
-		// the existence of the default storage root.
-		if (dirs == null && mStorageDir.getParentFile().equals(path)) {
-			dirs = new File[] { mStorageDir };
+		List<File> dirs;
+		File []l = path.listFiles();
+		if (l != null) {
+			dirs = Arrays.asList(l);
+		} else {
+			dirs = FileUtils.getFallbackDirectories(mContext, path);
 		}
 
-		if (dirs != null) {
-			Arrays.sort(dirs);
-			for(File fentry: dirs) {
-				if(fentry.isDirectory()) {
-					int color = 0;
-					if (mIncludedDirs.contains(fentry.getAbsolutePath()))
-						color = 0xff00c853;
-					if (mExcludedDirs.contains(fentry.getAbsolutePath()))
-						color = 0xffd50000;
-					Item item = new Item(fentry.getName(), fentry, color);
-					add(item);
-				}
+		Collections.sort(dirs);
+		for(File fentry: dirs) {
+			if(fentry.isDirectory()) {
+				int color = 0;
+				if (mIncludedDirs.contains(fentry.getAbsolutePath()))
+					color = 0xff00c853;
+				if (mExcludedDirs.contains(fentry.getAbsolutePath()))
+					color = 0xffd50000;
+				Item item = new Item(fentry.getName(), fentry, color);
+				add(item);
 			}
 		}
 	}
+
 }

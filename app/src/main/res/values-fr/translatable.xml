@@ -150,8 +150,6 @@
   <string name="ignore_audiofocus_loss_summary">Continuer la lecture après une perte complète du focus audio</string>
   <string name="media_button_title">Contrôlable par casque/bluetooth</string>
   <string name="media_button_summary">Également nécessaire pour les contrôles de l\'écran verrouillé d\'Android ICS</string>
-  <string name="media_button_beep_title">Bip du contrôle casque</string>
-  <string name="media_button_beep_summary">Bip lors du changement de morceau par double clic avec le contrôle casque</string>
   <string name="headset_only_title">Sortie externe seulement</string>
   <string name="headset_only_summary">Empêche la lecture depuis les haut-parleurs internes</string>
   <string name="headset_pause_title">Mettre en pause à la déconnexion</string>
@@ -178,8 +176,6 @@
   <string name="notifications">Notifications</string>
   <string name="notification_visibility_title">Affichage de la notification</string>
   <string name="notification_action_title">Action de notification</string>
-  <string name="notification_nag">Notification très verbeuse</string>
-  <string name="notification_nag_summary">Annonce les changements de morceau avec une notification flottante</string>
   <string name="playback_screen">Écran de lecture</string>
   <string name="playback_on_startup_title">Ouvrir au démarrage</string>
   <string name="playback_on_startup_summary">Ouvrir l\'écran de lecture au démarrage</string>
@@ -265,6 +261,8 @@
   <string name="toggle_controls">Afficher/cacher les contrôles</string>
   <string name="seek_10s_backward">Aller 10 secondes en arrière</string>
   <string name="seek_10s_forward">Aller 10 secondes en avant</string>
+  <string name="move_to_top">Déplacer au début</string>
+  <string name="move_to_bottom">Déplacer à la fin</string>
   <string name="preferences_action_show_queue">Afficher la file d\'attente</string>
   <string name="preferences_action_clear_queue">Effacer la file d\'attente</string>
   <string name="preferences_action_enqueue_current_album">Ajouter l\'album à la file d\'attente</string>
@@ -321,6 +319,7 @@
   <string name="media_scan_preferences">Options du scanner</string>
   <string name="media_scan_preferences_change_title">Avertissement</string>
   <string name="media_scan_preferences_change_message">Toute modification entraînera un scan complet de la bibliothèque. Voulez-vous continuer ?</string>
+  <string name="folder_picker_spinner_desc">Statut du Dossier:</string>
   <!--Folder selector-->
   <string name="hint_long_press_to_modify_folder">Appuyez longuement pour modifier les options des dossiers</string>
   <string name="folder_include">Inclure</string>

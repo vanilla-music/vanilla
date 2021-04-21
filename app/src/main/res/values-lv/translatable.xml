@@ -158,8 +158,6 @@
   <string name="ignore_audiofocus_loss_summary">Turpināt atskaņošanu patstāvīga audio fokusa zaudējuma gadījumā</string>
   <string name="media_button_title">Austiņu/Bluetooth vadīklas</string>
   <string name="media_button_summary">Šis ir nepieciešams arī ICS slēgekrāna vadīklām.</string>
-  <string name="media_button_beep_title">Austiņu vadīklu pīkstēšana</string>
-  <string name="media_button_beep_summary">Pīkstēt pēc celiņa izlaišanas ar austiņu vadīklas dubultklikšķi.</string>
   <string name="headset_only_title">Tikai ārēja izvade</string>
   <string name="headset_only_summary">Nepieļauj mūzikas atskaņošanu caur iekšējiem skaļruņiem.</string>
   <string name="headset_pause_title">Pauzēt, kad atvienotas austiņas</string>
@@ -187,8 +185,6 @@
   <string name="notifications">Paziņojumi</string>
   <string name="notification_visibility_title">Paziņojuma redzamība</string>
   <string name="notification_action_title">Paziņojuma darbība</string>
-  <string name="notification_nag">Ļoti runīgs paziņojums</string>
-  <string name="notification_nag_summary">Paziņot par dziesmas maiņu ar uzekrāna paziņojumu</string>
   <string name="playback_screen">Atskaņošanas ekrāns</string>
   <string name="playback_on_startup_title">Atvērt palaižot</string>
   <string name="playback_on_startup_summary">Palaižot programmu, atvērt atskaņošanas skatu</string>

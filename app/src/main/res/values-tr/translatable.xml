@@ -32,35 +32,35 @@
   <string name="_year">yıl</string>
   <string name="_replaygain">seseşit</string>
   <!--New Playlist Dialog-->
-  <string name="choose_playlist_name">Oynatmalık adını seç</string>
+  <string name="choose_playlist_name">Çalma listesi adını seç</string>
   <string name="create">Oluştur</string>
   <string name="overwrite">Üzerine yaz</string>
-  <string name="delete_playlist">Oynatmalık %s silinsin mi?</string>
+  <string name="delete_playlist">Çalma listesi %s silinsin mi?</string>
   <!--Library-->
   <string name="enqueue">Kuyruğa ekle</string>
-  <string name="enqueue_as_next">Sonrakini oynat</string>
-  <string name="play">Oynat</string>
+  <string name="enqueue_as_next">Sonrakini çal</string>
+  <string name="play">Çal</string>
   <string name="edit">Düzenle</string>
   <string name="rename">Yeniden adlandır</string>
   <string name="save_as_playlist">Çalma listesi olarak kaydet...</string>
   <string name="add_to_playlist">Çalma listesine ekle...</string>
   <string name="add_to_homescreen">Ana ekrana ekle...</string>
   <string name="add_to">Şuraya ekle...</string>
-  <string name="playlist">Oynatmalık</string>
+  <string name="playlist">Çalma listesi</string>
   <string name="homescreen">Ana ekran</string>
   <string name="add_to_favorites">Gözdelere ekle</string>
   <string name="remove_from_favorites">Gözdelerden kaldır</string>
   <string name="playlist_favorites">Gözdeler</string>
-  <string name="new_playlist">Yeni oynatmalık...</string>
+  <string name="new_playlist">Yeni çalma listesi...</string>
   <string name="expand">Genişlet</string>
-  <string name="expand_or_play_all">Genişlet veya hepsini oynat</string>
+  <string name="expand_or_play_all">Genişlet veya hepsini çal</string>
   <string name="delete">Sil</string>
-  <string name="playback_view">Şimdi oynatılıyor</string>
+  <string name="playback_view">Şimdi çalınıyor</string>
   <string name="sort_by">Sırala</string>
   <string name="search">Ara</string>
   <string name="done">Bitti</string>
   <string name="remove">Kaldır</string>
-  <string name="play_or_enqueue">Oynatma varsa kuyruğa ekle; duraklatıldıysa oynat</string>
+  <string name="play_or_enqueue">Çalınıyorsa kuyruğa ekle; duraklatıldıysa çal</string>
   <string name="open">Aç</string>
   <string name="go_home">Ev dizini</string>
   <string name="jumping_to_song">Şarkı zaten kuyrukta, atlanıyor...</string>
@@ -74,8 +74,8 @@
 		http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html, Type cardinal,
 		to see which categories apply to integer numbers in their languages-->
   <plurals name="playing">
-    <item quantity="one">%d parça oynatılıyor.</item>
-    <item quantity="other">%d parça oynatılıyor.</item>
+    <item quantity="one">%d parça çalınıyor.</item>
+    <item quantity="other">%d parça çalınıyor.</item>
   </plurals>
   <plurals name="enqueued">
     <item quantity="one">%d parça kuyruğa alındı.</item>
@@ -83,11 +83,11 @@
   </plurals>
   <plurals name="added_to_playlist">
     <item quantity="one"> %1$d parça %2$s oynatmalığına eklendi.</item>
-    <item quantity="other">%1$d parça %2$s oynatmalığına eklendi.</item>
+    <item quantity="other">%1$d parça %2$s çalma listesine eklendi.</item>
   </plurals>
   <plurals name="removed_from_playlist">
     <item quantity="one">%1$d parça %2$s oynatmalığından kaldırıldı.</item>
-    <item quantity="other">%1$d parça %2$s oynatmalığından kaldıldı.</item>
+    <item quantity="other">%1$d parça %2$s çalma listesinden kaldırıldı.</item>
   </plurals>
   <plurals name="deleted">
     <item quantity="one">%d parça silindi.</item>
@@ -102,7 +102,7 @@
   <string name="albumartists">Albüm Sanatçıları</string>
   <string name="composers">Besteciler</string>
   <string name="songs">Parçalar</string>
-  <string name="playlists">Oynatmalıklar</string>
+  <string name="playlists">Listeler</string>
   <string name="genres">Türler</string>
   <string name="files">Dosyalar</string>
   <string name="artist">Sanatçı</string>
@@ -114,7 +114,7 @@
   <string name="file_time">Değiştirilme zamanı</string>
   <string name="extension">Uzantı</string>
   <string name="unknown">Bilinmeyen</string>
-  <string name="play_all">Hepsini oynat</string>
+  <string name="play_all">Hepsini çal</string>
   <string name="enqueue_all">Hepsini kuyruğa ekle</string>
   <string name="all_songs">Tüm parçalar</string>
   <string name="details">Ayrıntılar</string>
@@ -130,7 +130,7 @@
   <string name="artist_album_title">Sanatçı, albüm, başlık</string>
   <string name="artist_year">Sanatçı, yıl</string>
   <string name="album_track">Albüm, parça numarası</string>
-  <string name="song_playcount">Oynatma sayısı</string>
+  <string name="song_playcount">Çalma sayısı</string>
   <!--Preferences-->
   <plurals name="seconds">
     <item quantity="one">%d saniye</item>
@@ -146,23 +146,21 @@
   </plurals>
   <string name="audio">Ses</string>
   <string name="volume_during_ducking_title">Bildirim sırasında ses düzeyi</string>
-  <string name="volume_during_ducking_summary">Oynatma ses düzeyi</string>
-  <string name="ignore_audiofocus_loss_summary">Sürekli ses odak kaybında oynatmayı sürdür</string>
+  <string name="volume_during_ducking_summary">Çalma ses düzeyi</string>
+  <string name="ignore_audiofocus_loss_summary">Sürekli ses odak kaybında çalmayı sürdür</string>
   <string name="media_button_title">Kulaklık/Bluetooth denetimleri</string>
   <string name="media_button_summary">Bu aynı zamanda ICS kilit ekranı denetimleri için de gereklidir.</string>
-  <string name="media_button_beep_title">Kulaklık denetim bipi</string>
-  <string name="media_button_beep_summary">Kulaklık düğmesine iki kez basınca izi atlayıp biple.</string>
   <string name="headset_only_title">Yalnızca harici çıkış</string>
-  <string name="headset_only_summary">Müziğin dahili hoparlörlerden oynatılmasını engeller.</string>
+  <string name="headset_only_summary">Müziğin dahili hoparlörlerden çalınmasını engeller.</string>
   <string name="headset_pause_title">Çıkarıldığında duraklat</string>
   <string name="headset_pause_summary">Kulaklıklar takılı olmadığında müziği duraklatır.</string>
-  <string name="headset_launch_title">Takıldığında oynat</string>
-  <string name="headset_launch_summary">Kulaklıklar takıldığında oynatmaya başla (\'Kulaklık Bulucu\' uygulamasının yüklü olmasını gerektirir).</string>
+  <string name="headset_launch_title">Takıldığında çal</string>
+  <string name="headset_launch_summary">Kulaklıklar takıldığında çalmaya başla (\'Kulaklık Bulucu\' uygulamasının yüklü olmasını gerektirir).</string>
   <string name="headset_launch_app_missing">Bu özellik \'Kulaklık Bulucu\' uygulamasının yüklü olmasını gerektirir.\nBu uygulamayı yüklemek için Play Store\'u şimdi açmak ister misiniz?</string>
   <string name="replaygain">Ses Eşitleme</string>
   <string name="replaygain_summary">Ses Eşitleme bilgisinin nasıl kullanılacağını düzenle</string>
   <string name="replaygain_track_title">Parça başına Ses Eşitlemeyi etkinleştir</string>
-  <string name="replaygain_track_summary">Tüm parçaları aynı ses düzeyinde oynat</string>
+  <string name="replaygain_track_summary">Tüm parçaları aynı ses düzeyinde çal</string>
   <string name="replaygain_album_title">Albüm Ses Eşitlemeyi etkinleştir</string>
   <string name="replaygain_album_summary">Albüm dinamiklerini koru</string>
   <string name="replaygain_bump_title">Pre-amp Ses Eşitlemesi</string>
@@ -171,18 +169,16 @@
   <string name="replaygain_preamp_note_title">Not</string>
   <string name="replaygain_preamp_note_content">Android Vanilya Müzik\'in ses düzeyini &gt;%100\'e çıkartmasına izin vermiyor. Pre-amp\'ı daha yüksek bir değere çıkarmak özellikle \"sessiz\" müzikler dinlerken sorunlara neden olabilir.\n\nTavsiye edilen değerler: sessiz/klasik müzik için \n-&gt; -3dB -2000 yılı sonrası kayıtlar için +3dB\'dir.</string>
   <string name="readahead">Önbelleğe yazmayı etkinleştir</string>
-  <string name="readahead_summary">Şu anda oynatılan parçayı önden oku. Bu seçenek \'ses kaybı\' sorunlarını çözebilir (genelde yavaş SD kart nedenli).</string>
+  <string name="readahead_summary">Şu anda çalınan parçayı önden oku. Bu seçenek \'ses kaybı\' sorunlarını çözebilir (genelde yavaş SD kart nedenli).</string>
   <string name="equalizer">Ses Efektleri</string>
   <string name="cycle_continuous_shuffling">Sürekli karıştır</string>
   <string name="cycle_continuous_shuffling_summary">\'Karıştır kipi\' parçaları tümüyle rastgele sırada çalar</string>
   <string name="notifications">Bildirimler</string>
   <string name="notification_visibility_title">Bildirim görünürlüğü</string>
   <string name="notification_action_title">Bildirim eylemi</string>
-  <string name="notification_nag">Tam sözlü bildirim</string>
-  <string name="notification_nag_summary">Parça değişikliklerini \'Ekran Üstü Bildirimi\' ile duyur</string>
-  <string name="playback_screen">Oynatma ekranı</string>
+  <string name="playback_screen">Çalma ekranı</string>
   <string name="playback_on_startup_title">Başlangıçta aç</string>
-  <string name="playback_on_startup_summary">Başlangıçta oynatım görünümünü açar</string>
+  <string name="playback_on_startup_summary">Başlangıçta çalma görünümünü açar</string>
   <string name="display_mode_title">Görüntü kipi</string>
   <string name="swipe_up_action_title">Yukarı çekme eylemi</string>
   <string name="swipe_down_action_title">Aşağı çekme eylemi</string>
@@ -190,7 +186,7 @@
   <string name="cover_longpress_action_title">Kapağa uzun dokunma eylemi</string>
   <string name="library_screen">Arşiv ekranı</string>
   <string name="default_action_title">Öntanımlı eylem</string>
-  <string name="default_playlist_action_title">Oynatmalıklar için öntanımlı eylem</string>
+  <string name="default_playlist_action_title">Çalma listeleri için öntanımlı eylem</string>
   <string name="accelerometer_shake">İvmeölçer sallama</string>
   <string name="enable_shake_title">İvmeölçer sallamasını etkinleştir</string>
   <string name="enable_shake_summary">Yalnızca müzik çalarken etkindir. Bazı aygıtlarda ekran kapalıyken çalışmaz.</string>
@@ -199,17 +195,17 @@
   <string name="misc_features">Diğer özellikler</string>
   <string name="theme">Tema</string>
   <string name="disable_lockscreen_title">Kilit ekranını devre dışı bırak</string>
-  <string name="disable_lockscreen_summary">Arşiv ekranında veya oynatma ekranındayken kilit ekranını devre dışı bırak</string>
+  <string name="disable_lockscreen_summary">Arşiv veya çalma ekranındayken kilit ekranını devre dışı bırak</string>
   <string name="keep_screen_on_title">Ekranı açık tut</string>
   <string name="keep_screen_on_summary">Vanilya Müzik görünür olduğu zaman ekranı (ve aygıtı) uyanık tut</string>
   <string name="use_idle_timeout_title">Boşta kalma süresini etkinleştir</string>
-  <string name="use_idle_timeout_summary">Oynatma belli bir sürelik etkisizliğin ardından durdurulur</string>
+  <string name="use_idle_timeout_summary">Çalma belli bir sürelik etkisizliğin ardından durdurulur</string>
   <string name="idle_timeout_title">Boşta kalma süresi</string>
   <string name="enable_scroll_to_song_title">Parça adına kaydır</string>
-  <string name="enable_scroll_to_song_summary">Arşiv listelerinde şu anda oynatılan parça/albüm/sanatçı adına kaydır</string>
+  <string name="enable_scroll_to_song_summary">Arşiv listelerinde şu anda çalınan parça/albüm/sanatçı adına kaydır</string>
   <string name="queue_enable_scroll_to_song_title">Kuyruktaki parça adına kaydır</string>
-  <string name="queue_enable_scroll_to_song_summary">Parça değişiminde kuyrukta şu anda oynatılan parçaya kaydır</string>
-  <string name="jump_to_enqueued_on_play_title">\'Oynat\'mada kuyruğa eklenmiş parçaya atla</string>
+  <string name="queue_enable_scroll_to_song_summary">Parça değişiminde kuyrukta şu anda çalınan parçaya kaydır</string>
+  <string name="jump_to_enqueued_on_play_title">\'Çalma\'da kuyruğa eklenmiş parçaya atla</string>
   <string name="jump_to_enqueued_on_play_summary">Eğer istenen parça zaten kuyruktaysa kuyruğu temizlemek yerine parçaya atla</string>
   <string name="coverloader_android_title">Android\'ten albüm resmi yükle</string>
   <string name="coverloader_android_summary">Android iç veritabanını albüm resimleri için sorgula</string>
@@ -220,13 +216,13 @@
   <string name="coverloader_inline_title">Dosya etiketlerinden kapak resimleri yükle</string>
   <string name="coverloader_inline_summary">Dosya etiketlerinden gömülü albüm kapaklarını yüklemeye çalışır</string>
   <string name="cover_on_lockscreen_title">Kilit ekranında kapak resmini göster</string>
-  <string name="cover_on_lockscreen_summary">Şu anda oynatılan parçanın albüm resmini kilit ekranında göster</string>
+  <string name="cover_on_lockscreen_summary">Şu anda çalınan parçanın albüm resmini kilit ekranında göster</string>
   <string name="double_tap_title">İkili dokunma pencereciği</string>
-  <string name="double_tap_summary">1x1 widget\'a iki kez basmak oynatıcıyı açar. 400ms\'lik bir gecikme ile çalışır.</string>
+  <string name="double_tap_summary">1x1 widget\'a iki kez basmak çaları açar. 400ms\'lik bir gecikme ile çalışır.</string>
   <string name="scrobble_title">Scrobble Droid API\'sini kullan</string>
   <string name="scrobble_summary">Last.fm\'e Scrobble Droid veya Simple Last.fm Scrobbler kullanarak işleyin</string>
   <string name="stock_broadcast_title">Varsayılan yayınları öykün</string>
-  <string name="stock_broadcast_summary">Varsayılan müzik oynatıcısı tarafından üçüncü parti kilit ekranı denetimleri ve widgetlar ile çalışması için gönderilen yayınları öykün.</string>
+  <string name="stock_broadcast_summary">Varsayılan müzik çalar tarafından 3. parti kilit ekranı denetimleri ve uygulamacıklar ile çalışması için öykünen yayınlar gönder.</string>
   <string name="help">Yardım</string>
   <string name="about">Hakkında</string>
   <string name="tabs">Sekme sırası</string>
@@ -235,18 +231,18 @@
   <!--The following are for the list preferences-->
   <string name="last_used_action">Son kullanılan eylem</string>
   <string name="never_show">Hiçbir zaman gösterme</string>
-  <string name="show_when_playing">Oynatırken göster (varsayılan)</string>
+  <string name="show_when_playing">Çalarken göster (varsayılan)</string>
   <string name="always_show">Her zaman göster</string>
   <string name="open_main_activity">Arşivi aç (varsayılan)</string>
   <string name="open_mini_popup">Ufak pıtlayanı aç</string>
   <string name="skip_to_next_song">Sonraki parçaya atla</string>
-  <string name="open_full_player">Tüm oynatıcıyı aç</string>
+  <string name="open_full_player">Tam çaları aç</string>
   <string name="info_on_cover">Bilgi kapak resmi üstünde</string>
   <string name="info_below_cover">Bilgi kapak resmi altında</string>
   <string name="fixed_info">Bilgi üstte sabit</string>
   <string name="do_nothing">Hiçbir şey yapmaz</string>
   <string name="open_library">Arşivi aç</string>
-  <string name="play_pause">Oynat/Duraklat</string>
+  <string name="play_pause">Çal/Duraklat</string>
   <string name="next_song">Sonraki parça</string>
   <string name="previous_song">Önceki parça</string>
   <string name="next_album">Sonraki albüm</string>
@@ -265,6 +261,8 @@
   <string name="toggle_controls">Denetimleri göster</string>
   <string name="seek_10s_backward">10 saniye geri sar</string>
   <string name="seek_10s_forward">10 saniye ileri sar</string>
+  <string name="move_to_top">Tepeye taşı</string>
+  <string name="move_to_bottom">Alta taşı</string>
   <string name="preferences_action_show_queue">Kuyruğu göster</string>
   <string name="preferences_action_clear_queue">Kuyruğu temizle</string>
   <string name="preferences_action_enqueue_current_album">Albümü kuyruğa ekle</string>
@@ -280,20 +278,20 @@
   <string name="customize_filebrowser_start">Dosya yöneticisi bu dizinde başlar</string>
   <string name="select">Seç</string>
   <string name="save">Kaydet</string>
-  <string name="autoplaylist_playcounts_title">Kendiliğinden oynatmalık oluşturma</string>
+  <string name="autoplaylist_playcounts_title">Kendiliğinden çalma listesi oluşturma</string>
   <string name="autoplaylist_playcounts_summary">Kendiliğinden oluştur:</string>
   <string name="autoplaylist_playcounts_fmt" formatted="false">%s \'En iyi %.0f parça\'</string>
-  <string name="autoplaylist_playcounts_disabled">Kendiliğinden oynatmalık oluşturma!</string>
+  <string name="autoplaylist_playcounts_disabled">Kendiliğinden çalma listesi oluşturma!</string>
   <string name="autoplaylist_playcounts_name" formatted="false">En iyi %d</string>
-  <string name="playlist_sync_mode_title">Oynatmalık eşitlemesi</string>
+  <string name="playlist_sync_mode_title">Çalma listesi eşitlemesi</string>
   <string name="playlist_sync_all">Toptan eşitleme</string>
   <string name="playlist_sync_only_import">M3U içe aktar ancak dışa aktarma</string>
   <string name="playlist_sync_only_export">M3U\'ya yaz, ancak içe aktarma</string>
   <string name="playlist_sync_disabled">Kapatılmış</string>
   <string name="playlist_sync_folder_title">Eşitleme klasörü</string>
-  <string name="playlist_sync_folder_summary">Oynatmalık eşitlemesi için kullanılacak klasör</string>
+  <string name="playlist_sync_folder_summary">Çalma listesi eşitlemesi için kullanılacak klasör</string>
   <string name="playlist_export_relative_paths_title">Göreceli yol adları kullanarak dışa aktar</string>
-  <string name="playlist_export_relative_paths_summary">Oynatmalığa bağlı dosya yol adlarını bağla</string>
+  <string name="playlist_export_relative_paths_summary">Çalma listesine göreli dosya yollarına başvur</string>
   <string name="permission_request_summary">Vanilya Müzik, müzik arşivinizi görüntüleyebilmek için izninize gereksinim duyar</string>
   <string name="reverse_sort">Sıralamayı tersine çevir</string>
   <string name="share">Paylaş…</string>
@@ -314,13 +312,14 @@
   <string name="media_scan_group_albums">Albümleri klasöre göre öbekle</string>
   <string name="media_statistics">İstatistikler</string>
   <string name="media_stats_tracks">Parça sayısı</string>
-  <string name="media_stats_library_playtime">Toplam oynatılma süresi (Saat)</string>
-  <string name="media_stats_listen_playtime">Saat cinsinden oynatılan müzik süresi</string>
+  <string name="media_stats_library_playtime">Toplam çalma süresi (Saat)</string>
+  <string name="media_stats_listen_playtime">Saat cinsinden çalınan müzik süresi</string>
   <string name="media_stats_progress">Tarama durumu</string>
   <string name="media_library_scan_running">Ortam arşivi taranıyor...</string>
   <string name="media_scan_preferences">Tarayıcı seçenekleri</string>
   <string name="media_scan_preferences_change_title">Tarayıcı seçenekleri değiştirildi</string>
   <string name="media_scan_preferences_change_message">Bu seçeneği değiştirmek arşivinizi yeniden taratacaktır. Sürdürmek istiyor musunuz?</string>
+  <string name="folder_picker_spinner_desc">Dizin Durumu:</string>
   <!--Folder selector-->
   <string name="hint_long_press_to_modify_folder">Klasör seçeneklerini değiştirmek için uzun basın</string>
   <string name="folder_include">İçer</string>

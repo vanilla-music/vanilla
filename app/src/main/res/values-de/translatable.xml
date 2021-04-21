@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="app_name">Vanilla Music</string>
-  <string name="ok">O. K.</string>
+  <string name="ok">OK</string>
   <string name="cancel">Abbrechen</string>
   <!--Playback Activity (main screen)-->
   <string name="no_songs">Keine Titel auf Ihrem Gerät gefunden.</string>
@@ -62,7 +62,7 @@
   <string name="remove">Entfernen</string>
   <string name="play_or_enqueue">Einreihen während Wiedergabe oder wiedergeben, falls pausiert</string>
   <string name="open">Öffnen</string>
-  <string name="go_home">Benutzerverzeichnis</string>
+  <string name="go_home">Startverzeichnis</string>
   <string name="jumping_to_song">Titel bereits in Warteschlange, wird direkt angesprungen …</string>
   <!--As a developer, you should always supply "one" and "other"
 		strings. Your translators will know which strings are actually
@@ -150,8 +150,6 @@
   <string name="ignore_audiofocus_loss_summary">Wiedergabe auch bei permanenter Unterbrechung nicht pausieren</string>
   <string name="media_button_title">Headset-/Bluetooth-Steuerung</string>
   <string name="media_button_summary">Wird auch für Steuerelemente der ICS-Bildschirmsperre benötigt</string>
-  <string name="media_button_beep_title">Headset-Kontrollsignal</string>
-  <string name="media_button_beep_summary">Akustisches Signal nach Überspringen eines Titels via Headset-Steuerung</string>
   <string name="headset_only_title">Nur externer Ausgang</string>
   <string name="headset_only_summary">Verhindert die Musikwiedergabe über interne Lautsprecher</string>
   <string name="headset_pause_title">Pausieren, wenn nicht angeschlossen</string>
@@ -178,8 +176,6 @@
   <string name="notifications">Benachrichtigungen</string>
   <string name="notification_visibility_title">Benachrichtigungssichtbarkeit</string>
   <string name="notification_action_title">Benachrichtigungsaktion</string>
-  <string name="notification_nag">Ausführliche Benachrichtigung</string>
-  <string name="notification_nag_summary">Titelwechsel als »Heads-Up«-Benachrichtigung anzeigen</string>
   <string name="playback_screen">Wiedergabeansicht</string>
   <string name="playback_on_startup_title">Beim Start öffnen</string>
   <string name="playback_on_startup_summary">Wiedergabeansicht beim Start öffnen</string>
@@ -207,7 +203,7 @@
   <string name="idle_timeout_title">Inaktivitätsdauer</string>
   <string name="enable_scroll_to_song_title">Zum Titelnamen scrollen</string>
   <string name="enable_scroll_to_song_summary">In Bibliothekslisten zum gerade wiedergegebenen Titel/Album/Interpreten scrollen</string>
-  <string name="queue_enable_scroll_to_song_title">Zu Titelname in Warteschlange scrollen</string>
+  <string name="queue_enable_scroll_to_song_title">Zum Titel in Warteschlange scrollen</string>
   <string name="queue_enable_scroll_to_song_summary">Bei Titelwechsel zum derzeit wiedergegebenen Titel in der Warteschlange scrollen</string>
   <string name="jump_to_enqueued_on_play_title">Bei »Wiedergeben« zu eingereihtem Titel springen</string>
   <string name="jump_to_enqueued_on_play_summary">Falls sich der angefragte Titel bereits in der Warteschlange befindet, diesen anspringen anstatt die Warteschlange zu löschen</string>
@@ -265,6 +261,8 @@
   <string name="toggle_controls">Steuerelemente ein-/ausblenden</string>
   <string name="seek_10s_backward">10 Sekunden zurück springen</string>
   <string name="seek_10s_forward">10 Sekunden vorwärts springen</string>
+  <string name="move_to_top">Zum Anfang verschieben</string>
+  <string name="move_to_bottom">Ans Ende verschieben</string>
   <string name="preferences_action_show_queue">Warteschlange anzeigen</string>
   <string name="preferences_action_clear_queue">Warteschlange leeren</string>
   <string name="preferences_action_enqueue_current_album">Album einreihen</string>
@@ -277,7 +275,7 @@
   <string name="second_hint">SS</string>
   <string name="error_invalid_position">Ungültige Position</string>
   <string name="filebrowser_start">Startordner</string>
-  <string name="customize_filebrowser_start">Dateimanager startet in diesem Ordner</string>
+  <string name="customize_filebrowser_start">Dateimanager startet in diesem Verzeichnis</string>
   <string name="select">Auswählen</string>
   <string name="save">Speichern</string>
   <string name="autoplaylist_playcounts_title">Wiedergabeliste automatisch erstellen</string>
@@ -292,6 +290,8 @@
   <string name="playlist_sync_disabled">Deaktiviert</string>
   <string name="playlist_sync_folder_title">Synchronisationsordner</string>
   <string name="playlist_sync_folder_summary">Zu verwendender Ordner für Wiedergabelistensynchronisation</string>
+  <string name="playlist_export_relative_paths_title">Beim Exportieren relative Pfade verwenden</string>
+  <string name="playlist_export_relative_paths_summary">Dateipfade relativ zur Wiedergabeliste referenzieren</string>
   <string name="permission_request_summary">Vanilla Music benötigt Leserechte, um Ihre Musikbibliothek anzuzeigen</string>
   <string name="reverse_sort">Sortierung umkehren</string>
   <string name="share">Teilen …</string>
@@ -319,6 +319,7 @@
   <string name="media_scan_preferences">Suchoptionen</string>
   <string name="media_scan_preferences_change_title">Suchoptionen geändert</string>
   <string name="media_scan_preferences_change_message">Durch Ändern dieser Option wird ein erneutes, vollständiges Durchsuchen Ihrer Bibliothek veranlasst. Möchten Sie fortfahren?</string>
+  <string name="folder_picker_spinner_desc">Verzeichnisstatus:</string>
   <!--Folder selector-->
   <string name="hint_long_press_to_modify_folder">Gedrückt halten für Ordneroptionen</string>
   <string name="folder_include">Einschließen</string>

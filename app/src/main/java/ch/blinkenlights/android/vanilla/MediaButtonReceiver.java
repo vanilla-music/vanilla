@@ -26,9 +26,6 @@ package ch.blinkenlights.android.vanilla;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.media.AsyncPlayer;
-import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.SystemClock;
@@ -38,6 +35,9 @@ import android.view.KeyEvent;
 /**
  * Receives media button events and calls to PlaybackService to respond
  * appropriately.
+ *
+ * Most of this logic is only needed for RemoteControlImplICS (like double-click)
+ * as >= LP devices handle this using the MediaSessionCompat.
  */
 public class MediaButtonReceiver extends BroadcastReceiver {
 	/**
@@ -47,73 +47,9 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 	private static final int DOUBLE_CLICK_DELAY = 600;
 
 	/**
-	 * Whether the headset controls should be used. 1 for yes, 0 for no, -1 for
-	 * uninitialized.
-	 */
-	private static int sUseControls = -1;
-	/**
 	 * Time of the last play/pause click. Used to detect double-clicks.
 	 */
 	private static long sLastClickTime = 0;
-	/**
-	 * Whether a beep should be played in response to double clicks be used.
-	 * 1 for yes, 0 for no, -1 for uninitialized.
-	 */
-	private static int sBeep = -1;
-	/**
-	 * Lazy-loaded AsyncPlayer for beep sounds.
-	 */
-	private static AsyncPlayer sBeepPlayer;
-	/**
-	 * Lazy-loaded URI of the beep resource.
-	 */
-	private static Uri sBeepSound;
-
-	/**
-	 * Play a beep sound.
-	 */
-	private static void beep(Context context)
-	{
-		if (sBeep == -1) {
-			SharedPreferences settings = SharedPrefHelper.getSettings(context);
-			sBeep = settings.getBoolean(PrefKeys.MEDIA_BUTTON_BEEP, PrefDefaults.MEDIA_BUTTON_BEEP) ? 1 : 0;
-		}
-
-		if (sBeep == 1) {
-			if (sBeepPlayer == null) {
-				sBeepPlayer = new AsyncPlayer("BeepPlayer");
-				sBeepSound = Uri.parse("android.resource://ch.blinkenlights.android.vanilla/raw/beep");
-			}
-			sBeepPlayer.play(context, sBeepSound, false, AudioManager.STREAM_MUSIC);
-		}
-	}
-
-	/**
-	 * Reload the preferences and enable/disable buttons as appropriate.
-	 *
-	 * @param context A context to use.
-	 */
-	public static void reloadPreference(Context context)
-	{
-		sUseControls = -1;
-		sBeep = -1;
-	}
-
-	/**
-	 * Return whether headset controls should be used, loading the preference
-	 * if necessary.
-	 *
-	 * @param context A context to use.
-	 */
-	public static boolean useHeadsetControls(Context context)
-	{
-		if (sUseControls == -1) {
-			SharedPreferences settings = SharedPrefHelper.getSettings(context);
-			sUseControls = settings.getBoolean(PrefKeys.MEDIA_BUTTON, PrefDefaults.MEDIA_BUTTON) ? 1 : 0;
-		}
-
-		return sUseControls == 1;
-	}
 
 	/**
 	 * Process a media button key press.
@@ -125,7 +61,7 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 	 */
 	public static boolean processKey(Context context, KeyEvent event)
 	{
-		if (event == null || !useHeadsetControls(context))
+		if (event == null)
 			return false;
 
 		int action = event.getAction();
@@ -140,7 +76,6 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 			if (action == KeyEvent.ACTION_DOWN) {
 				long time = SystemClock.uptimeMillis();
 				if (time - sLastClickTime < DOUBLE_CLICK_DELAY) {
-					beep(context);
 					Handler handler = new Handler();
 					DelayedClickCounter dcc = new DelayedClickCounter(context, time);
 					handler.postDelayed(dcc, DOUBLE_CLICK_DELAY);
@@ -202,6 +137,7 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 	/**
 	 * Runable to run a delayed action
 	 * Inspects sLastClickTime and sDelayedClicks to guess what to do
+	 * Note: this is only used on pre-lolipop devices.
 	 *
 	 * @param context the context to use
 	 * @param serial the value of sLastClickTime during creation, used to identify stale events

@@ -150,8 +150,6 @@
   <string name="ignore_audiofocus_loss_summary">Pluigi ludadon eĉ dum permanenta perdo de sona fokuso</string>
   <string name="media_button_title">Stiri per butonoj de aŭskultiloj/Bludento</string>
   <string name="media_button_summary">Ankaŭ postulata por ŝlosekranaj stiriloj ĉe Androido 4.0.3.</string>
-  <string name="media_button_beep_title">Pepo de aŭskultila stir-butono</string>
-  <string name="media_button_beep_summary">Pepi dum transsalti muzikaĵon per duobla premo de aŭskultila stir-butono.</string>
   <string name="headset_only_title">Nur ekstera eligo</string>
   <string name="headset_only_summary">Neniam ludi muzikon per internaj laŭtparoliloj.</string>
   <string name="headset_pause_title">Paŭzi je malkonekto</string>
@@ -178,8 +176,6 @@
   <string name="notifications">Atentigo</string>
   <string name="notification_visibility_title">Videblo de la atentigo</string>
   <string name="notification_action_title">Ago de la atentigo</string>
-  <string name="notification_nag">Tre montrema atentigo</string>
-  <string name="notification_nag_summary">Anonci ŝanĝojn de muzikaĵoj per la ĉiam videbla atentigo</string>
   <string name="playback_screen">Ekrano de ludado</string>
   <string name="playback_on_startup_title">Malfermi dum starto</string>
   <string name="playback_on_startup_summary">Montri ekranon de ludado dum starto</string>
@@ -265,6 +261,8 @@
   <string name="toggle_controls">Baskuli stir-butonojn</string>
   <string name="seek_10s_backward">10 sekundoj malantaŭen</string>
   <string name="seek_10s_forward">10 sekundoj antaŭen</string>
+  <string name="move_to_top">Movi plej supren</string>
+  <string name="move_to_bottom">Movi plej suben</string>
   <string name="preferences_action_show_queue">Montri ludvicon</string>
   <string name="preferences_action_clear_queue">Forviŝi ludvicon</string>
   <string name="preferences_action_enqueue_current_album">Envicigi albumon</string>
@@ -321,6 +319,7 @@
   <string name="media_scan_preferences">Agordoj de skanilo</string>
   <string name="media_scan_preferences_change_title">Ŝanĝis agordojn de skanilo</string>
   <string name="media_scan_preferences_change_message">Ŝanĝo de tiu ĉi agordo ekigos plenan reskanon de via muzik-biblioteko. Ĉu vi volas pluigi?</string>
+  <string name="folder_picker_spinner_desc">Stato de dosierujo:</string>
   <!--Folder selector-->
   <string name="hint_long_press_to_modify_folder">Frapetadu por modifi dosierujajn agordojn</string>
   <string name="folder_include">Inkluzivi</string>

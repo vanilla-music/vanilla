@@ -44,16 +44,6 @@ THE SOFTWARE.
 		vanilla:sbpCheckBoxText="@string/ignore_audiofocus_loss_summary"
 		/>
 	<CheckBoxPreference
-		android:key="media_button"
-		android:title="@string/media_button_title"
-		android:summary="@string/media_button_summary"
-		android:defaultValue="true" />
-	<CheckBoxPreference
-		android:key="media_button_beep"
-		android:title="@string/media_button_beep_title"
-		android:summary="@string/media_button_beep_summary"
-		android:defaultValue="true" />
-	<CheckBoxPreference
 		android:key="headset_only"
 		android:title="@string/headset_only_title"
 		android:defaultValue="false"

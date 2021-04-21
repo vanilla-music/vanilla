@@ -1,10 +1,16 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="app_name">Vanilla Music</string>
+  <string name="ok">D\'acord</string>
+  <string name="cancel">Cancel·la</string>
   <!--Playback Activity (main screen)-->
   <string name="no_songs">No s\'ha trobat cap pista al dispositiu.</string>
   <string name="empty_queue">No s\'ha seleccionat cap pista. Trieu de la llibreria o accediu al mode aleatori tocant aquest missatge.</string>
   <string name="settings">Configuració</string>
+  <string name="no_shuffle">Sense mode aleatori</string>
+  <string name="shuffle_songs">Pistes aleatòries</string>
+  <string name="shuffle_songs_continuously">Pistes aleatòries contínuament</string>
+  <string name="shuffle_albums">Àlbums aleatoris</string>
   <string name="no_repeat">No repeteixis</string>
   <string name="repeat">Repeteix</string>
   <string name="repeat_current_song">Repeteix la pista actual</string>
@@ -12,6 +18,7 @@
   <string name="random">Aleatori</string>
   <string name="random_enabling">Mode aleatori habilitat</string>
   <string name="song_load_failed">Ha fallat en reproduir la pista %s. No s\'ha trobat el fitxer o està corrupte.</string>
+  <string name="queue_cleared">S\'ha netejat la llista de reproducció.</string>
   <string name="cover_art">Caràtula</string>
   <string name="close_notification">Tanca la notificació</string>
   <string name="_genre">gènere</string>
@@ -29,16 +36,23 @@
   <string name="overwrite">Sobreescriu</string>
   <string name="delete_playlist">Voleu suprimir la llista de reproducció %s?</string>
   <!--Library-->
+  <string name="enqueue">Afegeix a la cua</string>
+  <string name="enqueue_as_next">Reprodueix el següent element</string>
   <string name="play">Reprodueix</string>
   <string name="edit">Edita</string>
   <string name="rename">Reanomena</string>
   <string name="save_as_playlist">Desa la llista de reproducció al fitxer…</string>
   <string name="add_to_playlist">Afegeix a la llista de reproducció…</string>
+  <string name="add_to_homescreen">Afegeix a la pantalla d\'inici...</string>
+  <string name="add_to">Afegeix a...</string>
+  <string name="playlist">Llista de reproducció</string>
+  <string name="homescreen">Pantalla d\'inici</string>
   <string name="add_to_favorites">Afegeix a favorits</string>
   <string name="remove_from_favorites">Suprimeix dels favorits</string>
   <string name="playlist_favorites">Favorits</string>
   <string name="new_playlist">Llista de reproducció nova…</string>
   <string name="expand">Expandeix</string>
+  <string name="expand_or_play_all">Expandeix o reprodueix-ho tot</string>
   <string name="delete">Suprimeix</string>
   <string name="playback_view">En reproducció</string>
   <string name="sort_by">Ordena per</string>
@@ -117,7 +131,6 @@
   <string name="equalizer">Equalitzador</string>
   <string name="notifications">Notificacions</string>
   <string name="notification_action_title">Acció de la notificació</string>
-  <string name="notification_nag">Notificació molt detallada</string>
   <string name="playback_on_startup_title">Obre en iniciar</string>
   <string name="playback_on_startup_summary">Obre la reproducció en iniciar</string>
   <string name="cover_press_action_title">Acció en tocar la caràtula</string>

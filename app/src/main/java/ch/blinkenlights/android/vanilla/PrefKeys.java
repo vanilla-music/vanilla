@@ -48,11 +48,8 @@ public class PrefKeys {
 	public static final String HEADSET_PAUSE = "headset_pause";
 	public static final String IDLE_TIMEOUT = "idle_timeout";
 	public static final String LIBRARY_PAGE = "library_page";
-	public static final String MEDIA_BUTTON = "media_button";
-	public static final String MEDIA_BUTTON_BEEP = "media_button_beep";
 	public static final String NOTIFICATION_ACTION = "notification_action";
 	public static final String NOTIFICATION_VISIBILITY = "notification_visibility";
-	public static final String NOTIFICATION_NAG = "notification_nag";
 	public static final String PLAYBACK_ON_STARTUP = "playback_on_startup";
 	public static final String SCROBBLE = "scrobble";
 	public static final String SHAKE_ACTION = "shake_action";

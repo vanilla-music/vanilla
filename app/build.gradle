@@ -17,8 +17,6 @@ android {
     buildTypes {
         release {
             minifyEnabled true
-            useProguard false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
 
@@ -29,7 +27,8 @@ android {
 
 dependencies {
     implementation 'androidx.legacy:legacy-support-core-ui:1.0.0'
+    implementation 'androidx.media:media:1.2.1'
     implementation 'com.google.android.material:material:1.0.0'
+    implementation 'junit:junit:4.12'
     compileOnly 'androidx.annotation:annotation:1.0.0'
-    compileOnly 'junit:junit:4.12'
 }

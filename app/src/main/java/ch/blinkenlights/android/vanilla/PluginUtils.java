@@ -65,7 +65,7 @@ public class PluginUtils {
 	private static List<ResolveInfo> resolvePlugins(Context ctx) {
 		PackageManager pm = ctx.getPackageManager();
 		Intent filter = new Intent(ACTION_REQUEST_PLUGIN_PARAMS);
-		return pm.queryBroadcastReceivers(filter, PackageManager.GET_DISABLED_COMPONENTS);
+		return pm.queryBroadcastReceivers(filter, PackageManager.MATCH_DISABLED_COMPONENTS);
 	}
 
 	/**

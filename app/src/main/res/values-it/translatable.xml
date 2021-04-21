@@ -7,7 +7,7 @@
   <string name="no_songs">Nessun brano trovato sul tuo dispositivo.</string>
   <string name="empty_queue">Nessuna traccia selezionata. Scegline alcune dalla libreria o entra nella modalità casuale premendo su questo messaggio.</string>
   <string name="settings">Impostazioni</string>
-  <string name="no_shuffle">Non mischiare</string>
+  <string name="no_shuffle">Nessuna riproduzione casuale</string>
   <string name="shuffle_songs">Mischia brani</string>
   <string name="shuffle_songs_continuously">Mischia brani continuamente</string>
   <string name="shuffle_albums">Album in shuffle</string>
@@ -150,8 +150,6 @@
   <string name="ignore_audiofocus_loss_summary">Continua a riprodurre alla perdita permanente del focus dell\'audio</string>
   <string name="media_button_title">Controlli cuffie/Bluetooth</string>
   <string name="media_button_summary">Questo è anche richiesto per i controlli ICS lockscreen.</string>
-  <string name="media_button_beep_title">Segnale acustico del controllo cuffie</string>
-  <string name="media_button_beep_summary">Beep dopo aver saltato una traccia con il doppio click sul controllo cuffie.</string>
   <string name="headset_only_title">Solo output esterno</string>
   <string name="headset_only_summary">Previeni la riproduzione della musica attraverso gli altoparlanti interni.</string>
   <string name="headset_pause_title">Metti in pausa quando scollegate</string>
@@ -178,8 +176,6 @@
   <string name="notifications">Notifiche</string>
   <string name="notification_visibility_title">Visibilità delle notifiche</string>
   <string name="notification_action_title">Azione notifica</string>
-  <string name="notification_nag">Notifica molto dettagliata</string>
-  <string name="notification_nag_summary">Annuncia cambi di brano con una notifica \"heads-up\"</string>
   <string name="playback_screen">Schermata riproduzione</string>
   <string name="playback_on_startup_title">Apri all\'avvio</string>
   <string name="playback_on_startup_summary">Apri vista playback all\'avvio</string>
