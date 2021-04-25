@@ -33,7 +33,6 @@
   <string name="headset_only_title">Iba externý výstup</string>
   <string name="headset_pause_title">Pozastaviť pri odpojení</string>
   <string name="headset_pause_summary">Pozastaví prehrávanie keď odpojíte sluchátka.</string>
-  <string name="notification_mode_title">Režim upozornení</string>
   <string name="notification_action_title">Akcia upozornenia</string>
   <string name="display_mode_title">Režim zobrazenia</string>
   <string name="swipe_up_action_title">Akcia prejedním prstu nahor</string>
