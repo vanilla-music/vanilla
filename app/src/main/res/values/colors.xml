@@ -2,4 +2,5 @@
 <resources>
 	<!-- library tabs -->
 	<color name="tabs_active_indicator">@android:color/holo_blue_dark</color>
+	<color name="shortcuts_background">#4F4F4F</color>
 </resources>
