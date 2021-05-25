@@ -37,7 +37,7 @@ import android.widget.ImageView;
  * View updates should be triggered via setCover(type, id) to
  * instruct the view to load the cover from its own LRU cache.
  * 
- * The cover will automatically  be fetched & scaled in a background
+ * The cover will automatically be fetched & scaled in a background
  * thread on cache miss
  */
 public class LazyCoverView extends ImageView
@@ -75,10 +75,14 @@ public class LazyCoverView extends ImageView
 		public CoverCache.CoverKey key; // A cache key identifying this RPC
 		public LazyCoverView view;      // The view we are updating
 		public String title;            // The title of this view, used for Initial-Covers
-		CoverMsg(CoverCache.CoverKey key, LazyCoverView view, String title) {
+		public boolean front;           // The front or back album art
+		public int coverSize;           // The size of the album art
+		CoverMsg(CoverCache.CoverKey key, LazyCoverView view, String title, boolean front, int coverSize) {
 			this.key = key;
 			this.view = view;
 			this.title = title;
+			this.front = front;
+			this.coverSize = coverSize;
 		}
 		/**
 		 * Returns true if the view still requires updating
@@ -139,10 +143,10 @@ public class LazyCoverView extends ImageView
 						// We only display real covers for queries using the album id as key
 						Song song = MediaUtils.getSongByTypeId(mContext, payload.key.mediaType, payload.key.mediaId);
 						if (song != null) {
-							bitmap = song.getSmallCover(mContext);
+							bitmap = song.getCover(mContext, payload.coverSize, payload.front);
 						}
 					} else {
-						bitmap = CoverBitmap.generatePlaceholderCover(mContext, CoverCache.SIZE_SMALL, CoverCache.SIZE_SMALL, payload.title);
+						bitmap = CoverBitmap.generatePlaceholderCover(mContext, payload.coverSize, payload.coverSize, payload.title);
 					}
 					if (bitmap == null) {
 						// item has no cover: return a failback
@@ -171,11 +175,26 @@ public class LazyCoverView extends ImageView
 	 * 
 	 * @param type The Media type
 	 * @param id The id of this media type to query
+	 * @param title The title of the media type
 	 */
 	public void setCover(int type, long id, String title) {
-		mExpectedKey = new CoverCache.CoverKey(type, id, CoverCache.SIZE_SMALL);
+		setCover(type, id, title, CoverCache.COVER_FRONT, CoverCache.SIZE_SMALL);
+	}
+
+	/**
+	 * Attempts to set the image of this cover
+	 * Must be called from an UI thread
+	 *
+	 * @param type The Media type
+	 * @param id The id of this media type to query
+	 * @param title The title of the media type
+	 * @param front The front (CoverCache.COVER_FRONT) or back (CoverCache.COVER_BACK) album art
+	 * @param coverSize The size of the album art
+	 */
+	public void setCover(int type, long id, String title, boolean front, int coverSize) {
+		mExpectedKey = new CoverCache.CoverKey(type, id, coverSize, front);
 		if (drawFromCache(mExpectedKey, false) == false) {
-			CoverMsg payload = new CoverMsg(mExpectedKey, this, title);
+			CoverMsg payload = new CoverMsg(mExpectedKey, this, title, front, coverSize);
 			sHandler.sendMessage(sHandler.obtainMessage(MSG_CREATE_COVER, payload));
 		}
 	}
@@ -232,5 +251,4 @@ public class LazyCoverView extends ImageView
 			return value.getByteCount();
 		}
 	}
-
 }

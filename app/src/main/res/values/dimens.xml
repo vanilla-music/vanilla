@@ -2,6 +2,9 @@
 
 <resources>
 	<dimen name="cover_size">44sp</dimen>
+	<!-- CD backcover width 13.9 cm height 11.8cm -> ratio height/width 0.8489 -->
+	<dimen name="backcover_size_huge_height">255sp</dimen>
+	<dimen name="backcover_size_huge_width">300sp</dimen>
 	<dimen name="cover_padding">14sp</dimen>
 	<dimen name="pmark_size">4sp</dimen>
 	<dimen name="cover_padding_with_pmark">10sp</dimen>
