@@ -34,6 +34,13 @@ import android.os.Bundle;
 public class PlaylistDialog extends DialogFragment
 	implements DialogInterface.OnClickListener
 {
+
+	// Unicode of checkbox 
+	String CHECKBOX_UNCHECKED = "\u2610";
+	String CHECKBOX_CHECKED = "\u2611";
+
+	Song mCurrentSong;
+
 	/**
 	 * Default constructor as required by Gradle Release Lint
 	 */
@@ -44,13 +51,21 @@ public class PlaylistDialog extends DialogFragment
 	 * Creates a new playlist dialog to assemble a playlist using an intent.
 	 * Uses a static constructor method to satisfy Gradle Release Lint.
 	 */
-	public static PlaylistDialog newInstance(Callback callback, Intent intent, LibraryAdapter allSource) {
+	public static PlaylistDialog newInstance(Callback callback, Intent intent, LibraryAdapter allSource, Song currentSong) {
 		PlaylistDialog pd = new PlaylistDialog();
 		pd.mCallback = callback;
 		pd.mData = pd.new Data();
 		pd.mData.sourceIntent = intent;
 		pd.mData.allSource = allSource;
+		pd.mCurrentSong = currentSong;
 		return pd;
+	}
+
+	/**
+	 * For backward compatible
+	 */
+	public static PlaylistDialog newInstance(Callback callback, Intent intent, LibraryAdapter allSource) {
+		return newInstance( callback, intent, allSource, null);
 	}
 
 	/**
@@ -92,28 +107,45 @@ public class PlaylistDialog extends DialogFragment
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		Cursor cursor = Playlist.queryPlaylists(getActivity());
+		Context ctx = getActivity();
+		Cursor cursor = Playlist.queryPlaylists(ctx);
 		if (cursor == null)
 			return null;
 
 		int count = cursor.getCount();
 		mItemName = new String[1+count];
 		mItemValue = new long[1+count];
+		String[] displayItem = new String[count+1];
 
 		// Index 0 is always 'New Playlist...'
 		mItemName[0] = getResources().getString(R.string.new_playlist);
 		mItemValue[0] = -1;
+		displayItem[0] = mItemName[0];
 
 		for (int i = 0 ; i < count; i++) {
 			cursor.moveToPosition(i);
 			mItemValue[1+i] = cursor.getLong(0);
 			mItemName[1+i] = cursor.getString(1);
+			if(mCurrentSong==null){
+				displayItem[1+i] = mItemName[1+i];
+			}
+			else {
+				if (Playlist.isInPlaylist(ctx, mItemValue[1+i], mCurrentSong)) {
+					displayItem[1 + i] = CHECKBOX_CHECKED + " " + mItemName[1 + i];
+				}
+				else {
+					displayItem[1 + i] = CHECKBOX_UNCHECKED + " " + mItemName[1 + i];
+				}
+			}
 		}
+
+
+
 
 		// All names are now known: we can show the dialog
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setTitle(R.string.add_to_playlist)
-			.setItems(mItemName, this);
+			.setItems(displayItem, this);
 		return builder.create();
 	}
 
