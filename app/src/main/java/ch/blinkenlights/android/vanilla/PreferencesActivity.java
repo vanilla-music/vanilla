@@ -64,7 +64,6 @@ public class PreferencesActivity extends PreferenceActivity
 	/**
 	 * Initialize the activity, loading the preference specifications.
 	 */
-	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -99,6 +98,16 @@ public class PreferencesActivity extends PreferenceActivity
 			// themselfes if the theme changed
 			recreate();
 		}
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case android.R.id.home:
+				this.onBackPressed();
+				return true;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	public static class AudioFragment extends PreferenceFragment {
@@ -167,9 +176,15 @@ public class PreferencesActivity extends PreferenceActivity
 			} catch (Exception e) {
 				// ignored. Whee!
 			}
+		}
 
+		@Override
+		public void onStart() {
+			super.onStart();
 			FragmentManager fragmentManager = getFragmentManager();
-			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || !fragmentManager.isStateSaved()) {
+			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+				getActivity().onBackPressed();
+			} else {
 				fragmentManager.popBackStack();
 			}
 		}
@@ -244,12 +259,19 @@ public class PreferencesActivity extends PreferenceActivity
 		{
 			super.onCreate(savedInstanceState);
 
-			Activity activity = getActivity();
 			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/vanilla-music/vanilla-music.github.io/wiki"));
 			if (intent != null) {
 				startActivity(intent);
 			}
-			activity.finish();
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+				getActivity().onBackPressed();
+		}
+
+		@Override
+		public void onStart() {
+			super.onStart();
+			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
+				getActivity().onBackPressed();
 		}
 	}
 
@@ -275,15 +297,11 @@ public class PreferencesActivity extends PreferenceActivity
 		{
 			super.onCreate(savedInstanceState);
 
-			Activity activity = getActivity();
+			final Activity activity = getActivity();
 			Intent intent = activity.getPackageManager().getLaunchIntentForPackage(VPLUG_PACKAGE_NAME);
 
 			if (intent != null) {
 				startActivity(intent);
-				FragmentManager fragmentManager = getFragmentManager();
-				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || !fragmentManager.isStateSaved()) {
-					fragmentManager.popBackStack();
-				}
 			} else {
 				// package is not installed, ask user to install it
 				new AlertDialog.Builder(activity)
@@ -294,16 +312,30 @@ public class PreferencesActivity extends PreferenceActivity
 						Intent marketIntent = new Intent(Intent.ACTION_VIEW);
 						marketIntent.setData(Uri.parse("market://details?id="+VPLUG_PACKAGE_NAME));
 						startActivity(marketIntent);
-						getActivity().onBackPressed();
+						activity.onBackPressed();
 					}
 				})
 				.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
-						getActivity().onBackPressed();
+						activity.onBackPressed();
 					}
 				})
 				.show();
 			}
+		}
+
+		@Override
+		public void onStart() {
+			super.onStart();
+			Activity activity = getActivity();
+			Intent intent = activity.getPackageManager().getLaunchIntentForPackage(VPLUG_PACKAGE_NAME);
+			FragmentManager fragmentManager = getFragmentManager();
+			if (intent != null)
+				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+						activity.onBackPressed();
+				} else {
+					fragmentManager.popBackStack();
+				}
 		}
 	}
 
