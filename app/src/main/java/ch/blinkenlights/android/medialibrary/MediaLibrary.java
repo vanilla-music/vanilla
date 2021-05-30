@@ -403,6 +403,115 @@ public class MediaLibrary  {
 	}
 
 	/**
+	 * Updates the timestamp of a played song
+	 *
+	 * @param context the context to use
+	 * @param id the song id to update
+	 * @param timestamp the timestamp
+	 */
+	public static void updateSongTimestamp(Context context, long id, int timestamp) {
+		String selection = MediaLibrary.SongColumns._ID+"="+id;
+		getBackend(context).execSQL("UPDATE "+MediaLibrary.TABLE_SONGS+" SET "+SongColumns.TIMESTAMP_LAST_PLAY+"="+timestamp+" WHERE "+selection);
+	}
+
+	/**
+	 * Get the timestamp of a played song
+	 *
+	 * @param context the context to use
+	 * @param id the song id to update
+	 * @return the timestamp
+	 */
+	public static int getSongTimestamp(Context context, long id) {
+
+		String[] projection = {SongColumns._ID, SongColumns.TIMESTAMP_LAST_PLAY};
+		String selection = SongColumns._ID + " = ?";
+		String[] selectionArgs = { String.valueOf(id) };
+
+		Cursor cursor = MediaLibrary.queryLibrary(context, MediaLibrary.TABLE_SONGS, projection, selection, selectionArgs, null);
+
+		int timestamp=-1;
+		if (cursor != null) {
+			if (cursor.moveToFirst()) {
+				timestamp = cursor.getInt(1);
+			}
+			cursor.close();
+		}
+		return timestamp;
+	}
+
+	/**
+	 * Updates the timestamp of a played song
+	 *
+	 * @param context the context to use
+	 * @param songId the song id
+	 * @param albumId the album id to update
+	 */
+	public static void updateAlbumLastSong(Context context, long songId, long albumId) {
+		String selection = MediaLibrary.AlbumColumns._ID+"="+albumId;
+		getBackend(context).execSQL("UPDATE "+MediaLibrary.TABLE_ALBUMS+" SET "+AlbumColumns.LAST_TRACK_PLAYED+"="+songId+" WHERE "+selection);
+	}
+
+	/**
+	 * Get the last played song of an album
+	 *
+	 * @param context the context to use
+	 * @param id the song id to update
+	 * @return the songid
+	 */
+	public static long getAlbumLastSong(Context context, long id) {
+
+		String[] projection = {AlbumColumns._ID, AlbumColumns.LAST_TRACK_PLAYED};
+		String selection = AlbumColumns._ID + " = ?";
+		String[] selectionArgs = { String.valueOf(id) };
+
+		Cursor cursor = MediaLibrary.queryLibrary(context, MediaLibrary.TABLE_ALBUMS, projection, selection, selectionArgs, null);
+
+		long timestamp=-1;
+		if (cursor != null) {
+			if (cursor.moveToFirst()) {
+				timestamp = cursor.getLong(1);
+			}
+			cursor.close();
+		}
+		return timestamp;
+	}
+
+	/**
+	 * Sets the state if the album should use the last played timestamp on playstart
+	 *
+	 * @param context the context to use
+	 * @param albumId the album id to update
+	 * @param startAtTimestamp the album id to update
+	 */
+	public static void updateAlbumUseSongTimestamp(Context context, long albumId, boolean startAtTimestamp) {
+		int state = 0;
+		if(startAtTimestamp){
+			state = 1;
+		}
+
+		String selection = MediaLibrary.AlbumColumns._ID+"="+albumId;
+		getBackend(context).execSQL("UPDATE "+MediaLibrary.TABLE_ALBUMS+" SET "+AlbumColumns.START_AT_TRACKTIMESTAMP+"="+state+" WHERE "+selection);
+	}
+
+	public static int getAlbumUseSongTimestamp(Context context, long id) {
+
+		String[] projection = {AlbumColumns._ID, AlbumColumns.START_AT_TRACKTIMESTAMP};
+		String selection = AlbumColumns._ID + " = ?";
+		String[] selectionArgs = { String.valueOf(id) };
+
+		Cursor cursor = MediaLibrary.queryLibrary(context, MediaLibrary.TABLE_ALBUMS, projection, selection, selectionArgs, null);
+
+		int state=-1;
+		if (cursor != null) {
+			if (cursor.moveToFirst()) {
+				state = cursor.getInt(1);
+			}
+			cursor.close();
+		}
+		return state;
+	}
+
+	/**
 	 * Creates a new empty playlist
 	 *
 	 * @param context the context to use
@@ -673,6 +782,11 @@ public class MediaLibrary  {
 		 * Various flags of this entry, see SONG_FLAG...
 		 */
 		String FLAGS = "_flags";
+		/**
+		 * Contains the last known timestamp of the song.
+		 * This is important for audiobooks/podcasts
+		 */
+		String TIMESTAMP_LAST_PLAY = "timestamp_last_play";
 	}
 
 	// Columns of Album entries
@@ -701,6 +815,14 @@ public class MediaLibrary  {
 		 * The mtime of this item
 		 */
 		String MTIME = "mtime";
+		/**
+		 * The id of the last played song from this album
+		 */
+		String LAST_TRACK_PLAYED = "last_track_played";
+		/**
+		 * The id of the last played song from this album
+		 */
+		String START_AT_TRACKTIMESTAMP = "start_at_tracktimestamp";
 	}
 
 	// Columns of Contributors entries

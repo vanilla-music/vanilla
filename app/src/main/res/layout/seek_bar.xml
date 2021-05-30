@@ -28,10 +28,11 @@ THE SOFTWARE.
 	android:background="?overlay_background_color"
 	android:elevation="2dp"
 	android:orientation="horizontal">
+
 	<TextView
 		android:id="@+id/elapsed"
-		android:layout_height="wrap_content"
 		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
 		android:layout_gravity="center"
 		android:paddingLeft="5dip" />
 	<SeekBar
