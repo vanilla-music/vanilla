@@ -192,6 +192,8 @@ THE SOFTWARE.
 	<string name="headset_launch_title">Play when plugged</string>
 	<string name="headset_launch_summary">Play when the headphones are plugged in. (Requires the \'Headphone detector\' app to be installed.)</string>
 	<string name="headset_launch_app_missing">This features requires the \'Headphone detector\' app to be installed.\nWould you like to open the Play Store to install the application?</string>
+	<string name="smooth_fade_title">Smooth Fade</string>
+	<string name="smooth_fade_summary">Smoothly fades the music in and out, when starting or pausing the playback.</string>
 
 	<string name="replaygain">ReplayGain</string>
 	<string name="replaygain_summary">Configure handling of ReplayGain information</string>
