@@ -113,6 +113,12 @@ public class MediaUtils {
 	private static final String FILE_SORT = "path";
 
 	/**
+	 * The number of files that are added when "play all" selects
+	 * files from the file-system.
+	 */
+	private static final int MAX_QUEUED_FILES = 500;
+
+	/**
 	 * Cached random instance.
 	 */
 	private static Random sRandom;
@@ -603,6 +609,12 @@ public class MediaUtils {
 		Arrays.sort(files);
 
 		for (File file : files) {
+			// don't add more files endlessly, but stop after
+			// the given maximum number of entries
+			if (matrixCursor.getCount() >= MAX_QUEUED_FILES) {
+				break;
+			}
+
 			if (file.isDirectory()) {
 				// recurse into this sub-directory
 				addDirectoryToCursor(file, matrixCursor);
