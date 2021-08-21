@@ -28,6 +28,7 @@ import ch.blinkenlights.android.medialibrary.MediaMetadataExtractor;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -110,6 +111,12 @@ public class MediaUtils {
 	 * The default sort order for files. Simply use the path
 	 */
 	private static final String FILE_SORT = "path";
+
+	/**
+	 * The number of files that are added when "play all" selects
+	 * files from the file-system.
+	 */
+	private static final int MAX_QUEUED_FILES = 500;
 
 	/**
 	 * Cached random instance.
@@ -538,12 +545,28 @@ public class MediaUtils {
 	}
 
 	/**
-	 * Returns a (possibly empty) Cursor for given file path
+	 * Returns a (possibly empty) Cursor for given file path.
+	 *
+	 * For directories, it recursively adds all files contained
+	 * in this directory.
+	 *
 	 * @param path The path to the file to be queried
 	 * @return A new Cursor object
 	 * */
 	public static Cursor getCursorForFileQuery(String path) {
 		MatrixCursor matrixCursor = new MatrixCursor(Song.FILLED_PROJECTION);
+
+		File directory = new File(path);
+		if (directory.isDirectory()) {
+			addDirectoryToCursor(directory, matrixCursor);
+		} else {
+			addFileToCursor(path, matrixCursor);
+		}
+
+		return matrixCursor;
+	}
+
+	private static void addFileToCursor(String path, MatrixCursor matrixCursor) {
 		MediaMetadataExtractor tags = new MediaMetadataExtractor(path);
 		String title = tags.getFirst(MediaMetadataExtractor.TITLE);
 		String album = tags.getFirst(MediaMetadataExtractor.ALBUM);
@@ -574,8 +597,31 @@ public class MediaUtils {
 
 			matrixCursor.addRow(objData);
 		}
+	}
 
-		return matrixCursor;
+	private static void addDirectoryToCursor(File directory, MatrixCursor matrixCursor) {
+		File[] files = directory.listFiles();
+		if (files == null) {
+			return;
+		}
+
+		// make sure items are returned in sorted order by the cursor
+		Arrays.sort(files);
+
+		for (File file : files) {
+			// don't add more files endlessly, but stop after
+			// the given maximum number of entries
+			if (matrixCursor.getCount() >= MAX_QUEUED_FILES) {
+				break;
+			}
+
+			if (file.isDirectory()) {
+				// recurse into this sub-directory
+				addDirectoryToCursor(file, matrixCursor);
+			} else {
+				addFileToCursor(file.getAbsolutePath(), matrixCursor);
+			}
+		}
 	}
 
 	/**
