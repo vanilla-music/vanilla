@@ -93,6 +93,7 @@ public class PrefDefaults {
 	public static final boolean KIDMODE_SHOW_REPEAT = false;
 	public static final boolean KIDMODE_SHOW_OPTIONS_IN_MENU = false;
 	public static final boolean KIDMODE_ENLARGE_COVERS = true;
+	public static final int     KIDMODE_MAX_VOLUME = 75;
 	public static final boolean KIDMODE_PROTECT_SETTINGS = true;
 	public static final String  KIDMODE_PROTECT_SETTINGS_PIN = "1234";
 }

@@ -309,6 +309,9 @@ THE SOFTWARE.
 	<string name="kidmode_enlarge_covers_title">Enlarge (X2) covers in draggable rows in kid mode</string>
 	<string name="kidmode_enlarge_covers_summary">Enlarge (X2) covers in draggable rows in kid mode</string>
 
+	<string name="kidmode_max_volume_title">Limit max volume to given value in kid mode</string>
+	<string name="kidmode_max_volume_summary">Limit max volume to given value in kid mode</string>
+
 	<string name="kidmode_protect_settings_title">Protect settings with a pin in kid mode</string>
 	<string name="kidmode_protect_settings_summary">Protect settings with a pin in kid mode</string>
 

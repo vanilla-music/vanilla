@@ -66,8 +66,8 @@ THE SOFTWARE.
 		<activity
 			android:name=".LibraryActivity"
 			android:launchMode="singleTask"
-			android:theme="@style/Library">
-			android:configChanges="orientation"
+			android:theme="@style/Library"
+			android:configChanges="orientation">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<action android:name="android.intent.action.MUSIC_PLAYER" />

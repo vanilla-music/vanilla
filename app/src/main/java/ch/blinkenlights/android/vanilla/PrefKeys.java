@@ -91,6 +91,7 @@ public class PrefKeys {
 	public static final String KIDMODE_SHOW_REPEAT = "playback_show_repeat";
 	public static final String KIDMODE_SHOW_OPTIONS_IN_MENU = "kidmode_show_options_in_menu";
 	public static final String KIDMODE_ENLARGE_COVERS = "kidmode_enlarge_covers";
+	public static final String KIDMODE_MAX_VOLUME = "kidmode_max_volume";
 	public static final String KIDMODE_PROTECT_SETTINGS = "kidmode_protect_settings";
 	public static final String KIDMODE_PROTECT_SETTINGS_PIN = "kidmode_protect_settings_pin";
 }

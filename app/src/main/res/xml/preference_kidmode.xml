@@ -83,6 +83,17 @@ THE SOFTWARE.
 		android:summary="@string/kidmode_enlarge_covers_summary"
 		android:defaultValue="true"
 		android:dependency="enable_kidmode"/>
+	<ch.blinkenlights.android.vanilla.SeekBarPreference
+		android:id="@+id/kidmode_max_volume"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:defaultValue="75"
+		android:dialogLayout="@layout/seekbar_pref"
+		android:key="kidmode_max_volume"
+		android:title="@string/kidmode_max_volume_title"
+		vanilla:sbpMaxValue="100"
+		vanilla:sbpSummaryFormat="%s %.0f%%"
+		vanilla:sbpSummaryText="@string/kidmode_max_volume_summary" />
 	<CheckBoxPreference
 		android:key="kidmode_protect_settings"
 		android:title="@string/kidmode_protect_settings_title"

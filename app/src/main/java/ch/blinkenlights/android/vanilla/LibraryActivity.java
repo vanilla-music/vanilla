@@ -59,8 +59,6 @@ import androidx.viewpager.widget.ViewPager;
 
 import java.io.File;
 
-import junit.framework.Assert;
-
 /**
  * The library activity where songs to play can be selected from the library.
  */
@@ -600,7 +598,6 @@ public class LibraryActivity
 			if (i == 1 && type == MediaUtils.TYPE_ALBUM) {
 				setLimiter(MediaUtils.TYPE_ARTIST, limiter.data.toString());
 			} else if (i > 0) {
-				Assert.assertEquals(MediaUtils.TYPE_FILE, limiter.type);
 				File file = (File)limiter.data;
 				int diff = limiter.names.length - i;
 				while (--diff != -1) {
