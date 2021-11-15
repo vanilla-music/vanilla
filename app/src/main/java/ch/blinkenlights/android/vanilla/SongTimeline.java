@@ -39,8 +39,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import junit.framework.Assert;
-
 /**
  * Contains the list of currently playing songs, implements repeat and shuffle
  * support, and contains methods to fetch more songs from the MediaStore.
@@ -565,7 +563,9 @@ public final class SongTimeline {
 	 */
 	public Song getSong(int delta)
 	{
-		Assert.assertTrue(delta >= -1 && delta <= 1);
+		if(!(delta >= -1 && delta <= 1)) {
+			return null;
+		}
 
 		ArrayList<Song> timeline = mSongs;
 		Song song;
