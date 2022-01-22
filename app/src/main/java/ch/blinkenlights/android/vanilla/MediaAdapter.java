@@ -215,9 +215,6 @@ public class MediaAdapter
 			                                    MediaLibrary.SongColumns.PATH+" %1$s",
 			                                    MediaLibrary.SongColumns.DURATION+" %1$s",
 			                                  };
-			// Songs covers are cached per-album
-			mCoverCacheType = MediaUtils.TYPE_ALBUM;
-			coverCacheKey = MediaStore.Audio.Albums.ALBUM_ID;
 			break;
 		case MediaUtils.TYPE_PLAYLIST:
 			mSource = MediaLibrary.VIEW_PLAYLISTS;

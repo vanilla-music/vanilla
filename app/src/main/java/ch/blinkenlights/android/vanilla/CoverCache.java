@@ -114,7 +114,12 @@ public class CoverCache {
 	 * @return a bitmap or null if no artwork was found
 	 */
 	public Bitmap getCoverFromSong(Context ctx, Song song, int size) {
-		CoverKey key = new CoverCache.CoverKey(MediaUtils.TYPE_ALBUM, song.albumId, size);
+		CoverKey key;
+		if (MediaUtils.isSongInAlbum(song.flags))
+			key = new CoverCache.CoverKey(MediaUtils.TYPE_ALBUM, song.albumId, size);
+		else
+			key = new CoverCache.CoverKey(MediaUtils.TYPE_SONG, song.id, size);
+
 		Bitmap cover = getStoredCover(key);
 		if (cover == null) {
 			cover = sBitmapDiskCache.createBitmap(ctx, song, size*size);
@@ -411,63 +416,66 @@ public class CoverCache {
 				InputStream inputStream = null;
 				InputStream sampleInputStream = null; // same as inputStream but used for getSampleSize
 
-				if ((CoverCache.mCoverLoadMode & CoverCache.COVER_MODE_VANILLA) != 0) {
-					final File baseFile  = new File(song.path);  // File object of queried song
-					String bestMatchPath = null;                 // The best cover-path we found
-					int bestMatchIndex   = COVER_MATCHES.length; // The best cover-index/priority found
-					int loopCount        = 0;                    // Directory items loop counter
+				//If the song is not in an album, skip checking for art in albums
+				if (MediaUtils.isSongInAlbum(song.flags)) {
+					if ((CoverCache.mCoverLoadMode & CoverCache.COVER_MODE_VANILLA) != 0) {
+						final File baseFile  = new File(song.path);  // File object of queried song
+						String bestMatchPath = null;                 // The best cover-path we found
+						int bestMatchIndex   = COVER_MATCHES.length; // The best cover-index/priority found
+						int loopCount        = 0;                    // Directory items loop counter
 
-					// Only start search if the base directory of this file is NOT the public
-					// downloads folder: Picking files from there would lead to a false positive
-					// in most cases
-					if (baseFile.getParentFile().equals(sDownloadsDir) == false) {
-						for (final File entry : baseFile.getParentFile().listFiles()) {
-							for (int i=0; i < bestMatchIndex ; i++) {
-								// We are checking each file entry to see if it matches a known
-								// cover pattern. We abort on first hit as the Pattern array is sorted from good->meh
-								if (COVER_MATCHES[i].matcher(entry.toString()).matches()) {
-									bestMatchIndex = i;
-									bestMatchPath = entry.toString();
-									break;
+						// Only start search if the base directory of this file is NOT the public
+						// downloads folder: Picking files from there would lead to a false positive
+						// in most cases
+						if (baseFile.getParentFile().equals(sDownloadsDir) == false) {
+							for (final File entry : baseFile.getParentFile().listFiles()) {
+								for (int i=0; i < bestMatchIndex ; i++) {
+									// We are checking each file entry to see if it matches a known
+									// cover pattern. We abort on first hit as the Pattern array is sorted from good->meh
+									if (COVER_MATCHES[i].matcher(entry.toString()).matches()) {
+										bestMatchIndex = i;
+										bestMatchPath = entry.toString();
+										break;
+									}
 								}
+								// Stop loop if we found the best match or if we looped 150 times
+								if (loopCount++ > 150 || bestMatchIndex == 0)
+									break;
 							}
-							// Stop loop if we found the best match or if we looped 150 times
-							if (loopCount++ > 150 || bestMatchIndex == 0)
-								break;
+						}
+
+						if (bestMatchPath != null) {
+							final File guessedFile = new File(bestMatchPath);
+							if (guessedFile.exists() && !guessedFile.isDirectory()) {
+								inputStream = new FileInputStream(guessedFile);
+								sampleInputStream = new FileInputStream(guessedFile);
+							}
 						}
 					}
 
-					if (bestMatchPath != null) {
-						final File guessedFile = new File(bestMatchPath);
+					if (inputStream == null && (CoverCache.mCoverLoadMode & CoverCache.COVER_MODE_SHADOW) != 0) {
+						final String shadowBase = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath() + "/.vanilla";
+						final String shadowPath = shadowBase + "/" + (song.artist.replaceAll("/", "_"))+"/"+(song.album.replaceAll("/", "_"))+".jpg";
+
+						File guessedFile = new File(shadowPath);
 						if (guessedFile.exists() && !guessedFile.isDirectory()) {
 							inputStream = new FileInputStream(guessedFile);
 							sampleInputStream = new FileInputStream(guessedFile);
 						}
 					}
-				}
 
-				if (inputStream == null && (CoverCache.mCoverLoadMode & CoverCache.COVER_MODE_SHADOW) != 0) {
-					final String shadowBase = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath() + "/.vanilla";
-					final String shadowPath = shadowBase + "/" + (song.artist.replaceAll("/", "_"))+"/"+(song.album.replaceAll("/", "_"))+".jpg";
+					if (inputStream == null && (CoverCache.mCoverLoadMode & CoverCache.COVER_MODE_ANDROID) != 0) {
+						ContentResolver res = ctx.getContentResolver();
+						long[] androidIds = MediaUtils.getAndroidMediaIds(ctx, song);
+						long albumId = androidIds[1];
 
-					File guessedFile = new File(shadowPath);
-					if (guessedFile.exists() && !guessedFile.isDirectory()) {
-						inputStream = new FileInputStream(guessedFile);
-						sampleInputStream = new FileInputStream(guessedFile);
-					}
-				}
-
-				if (inputStream == null && (CoverCache.mCoverLoadMode & CoverCache.COVER_MODE_ANDROID) != 0) {
-					ContentResolver res = ctx.getContentResolver();
-					long[] androidIds = MediaUtils.getAndroidMediaIds(ctx, song);
-					long albumId = androidIds[1];
-
-					if (albumId != -1) {
-						// now we can query for the album art path if we found an album id
-						Uri uri =  Uri.parse("content://media/external/audio/albumart/"+albumId);
-						sampleInputStream = res.openInputStream(uri);
-						if (sampleInputStream != null) // cache misses are VERY expensive here, so we check if the first open worked
-							inputStream = res.openInputStream(uri);
+						if (albumId != -1) {
+							// now we can query for the album art path if we found an album id
+							Uri uri =  Uri.parse("content://media/external/audio/albumart/"+albumId);
+							sampleInputStream = res.openInputStream(uri);
+							if (sampleInputStream != null) // cache misses are VERY expensive here, so we check if the first open worked
+								inputStream = res.openInputStream(uri);
+						}
 					}
 				}
 

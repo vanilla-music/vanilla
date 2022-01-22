@@ -44,9 +44,13 @@ public class Song implements Comparable<Song> {
 	 */
 	public static final int FLAG_NO_COVER = 0x2;
 	/**
+	 * Indicates that this song does not belong to an album.
+	 */
+	public static final int FLAG_NO_ALBUM = 0x4;
+	/**
 	 * The number of flags.
 	 */
-	public static final int FLAG_COUNT = 2;
+	public static final int FLAG_COUNT = 3;
 
 
 	public static final String[] EMPTY_PROJECTION = {
@@ -135,7 +139,7 @@ public class Song implements Comparable<Song> {
 	public int discNumber;
 
 	/**
-	 * Song flags. Currently {@link #FLAG_RANDOM} or {@link #FLAG_NO_COVER}.
+	 * Song flags. Currently {@link #FLAG_RANDOM}, {@link #FLAG_NO_COVER} or {@link #FLAG_NO_ALBUM}.
 	 */
 	public int flags;
 
@@ -198,7 +202,7 @@ public class Song implements Comparable<Song> {
 		if ((libraryFlags & MediaLibrary.SONG_FLAG_NO_ALBUM) != 0) {
 			// Note that we only set, never unset: the song may already
 			// have the flag set for other reasons.
-			flags |= FLAG_NO_COVER;
+			flags |= FLAG_NO_ALBUM;
 		}
 	}
 
