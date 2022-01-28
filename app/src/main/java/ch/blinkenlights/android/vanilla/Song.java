@@ -39,18 +39,13 @@ public class Song implements Comparable<Song> {
 	 */
 	public static final int FLAG_RANDOM = 0x1;
 	/**
-	 * If set, this song has no cover art. If not set, this song may or may not
-	 * have cover art.
-	 */
-	public static final int FLAG_NO_COVER = 0x2;
-	/**
 	 * Indicates that this song does not belong to an album.
 	 */
-	public static final int FLAG_NO_ALBUM = 0x4;
+	public static final int FLAG_NO_ALBUM = 0x2;
 	/**
 	 * The number of flags.
 	 */
-	public static final int FLAG_COUNT = 3;
+	public static final int FLAG_COUNT = 2;
 
 
 	public static final String[] EMPTY_PROJECTION = {
@@ -139,7 +134,7 @@ public class Song implements Comparable<Song> {
 	public int discNumber;
 
 	/**
-	 * Song flags. Currently {@link #FLAG_RANDOM}, {@link #FLAG_NO_COVER} or {@link #FLAG_NO_ALBUM}.
+	 * Song flags. Currently {@link #FLAG_RANDOM}, {@link #FLAG_NO_ALBUM}.
 	 */
 	public int flags;
 
@@ -268,17 +263,13 @@ public class Song implements Comparable<Song> {
 	 * @return The album art or null if no album art could be found
 	 */
 	private Bitmap getCoverInternal(Context context, int size) {
-		if (CoverCache.mCoverLoadMode == 0 || id <= -1 || (flags & FLAG_NO_COVER) != 0)
+		if (CoverCache.mCoverLoadMode == 0 || id <= -1)
 			return null;
 
 		if (sCoverCache == null)
 			sCoverCache = new CoverCache(context.getApplicationContext());
 
-		Bitmap cover = sCoverCache.getCoverFromSong(context, this, size);
-
-		if (cover == null)
-			flags |= FLAG_NO_COVER;
-		return cover;
+		return sCoverCache.getCoverFromSong(context, this, size);
 	}
 
 	@Override

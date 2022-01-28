@@ -81,6 +81,10 @@ public class CoverCache {
 	 */
 	public static final int COVER_MODE_INLINE = 0x8;
 	/**
+	 * The fallback cover image resource encoded as bitmap
+	 */
+	private static Bitmap sFallbackCover;
+	/**
 	 * Shared on-disk cache class
 	 */
 	private static BitmapDiskCache sBitmapDiskCache;
@@ -104,6 +108,9 @@ public class CoverCache {
 		if (sBitmapDiskCache == null) {
 			sBitmapDiskCache = new BitmapDiskCache(context.getApplicationContext(), 25*1024*1024);
 		}
+		if (sFallbackCover == null) {
+			sFallbackCover = BitmapFactory.decodeResource(context.getResources(), R.drawable.fallback_cover);
+		}
 	}
 
 	/**
@@ -123,10 +130,8 @@ public class CoverCache {
 		Bitmap cover = getStoredCover(key);
 		if (cover == null) {
 			cover = sBitmapDiskCache.createBitmap(ctx, song, size*size);
-			if (cover != null) {
-				storeCover(key, cover);
-				cover = getStoredCover(key); // return lossy version to avoid random quality changes
-			}
+			storeCover(key, cover);
+			cover = getStoredCover(key); // return lossy version to avoid random quality changes
 		}
 		return cover;
 	}
@@ -352,10 +357,13 @@ public class CoverCache {
 			// Ensure that there is some space left
 			trim(mCacheSize);
 
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			// We store a lossy version as this image was
-			// created from the original source (and will not be re-compressed)
-			cover.compress(Bitmap.CompressFormat.JPEG, 85, out);
+			ByteArrayOutputStream out = null;
+			if (cover != null) {
+				out = new ByteArrayOutputStream();
+				// We store a lossy version as this image was
+				// created from the original source (and will not be re-compressed)
+				cover.compress(Bitmap.CompressFormat.JPEG, 85, out);
+			}
 
 			Random rnd = new Random();
 			long ttl = getUnixTime() + rnd.nextInt(OBJECT_TTL);
@@ -363,8 +371,14 @@ public class CoverCache {
 			ContentValues values = new ContentValues();
 			values.put("id"     , key.hashCode());
 			values.put("expires", ttl);
-			values.put("size"   , out.size());
-			values.put("blob"   , out.toByteArray());
+			if (out != null) {
+				values.put("size", out.size());
+				values.put("blob", out.toByteArray());
+			}
+			else {
+				values.putNull("size");
+				values.putNull("blob");
+			}
 
 			dbh.insert(TABLE_NAME, null, values);
 		}
@@ -382,8 +396,8 @@ public class CoverCache {
 			String selection = "id=?";
 			String[] selectionArgs = { Long.toString(key.hashCode()) };
 			Cursor cursor = dbh.query(TABLE_NAME, FULL_PROJECTION, selection, selectionArgs, null, null, null);
-			if (cursor != null) {
-				if (cursor.moveToFirst()) {
+			if (cursor != null && cursor.moveToFirst()) {
+				if (!cursor.isNull(3)) {
 					long expires = cursor.getLong(2);
 					byte[] blob = cursor.getBlob(3);
 
@@ -393,6 +407,8 @@ public class CoverCache {
 						ByteArrayInputStream stream = new ByteArrayInputStream(blob);
 						cover = BitmapFactory.decodeStream(stream);
 					}
+				} else {
+					cover = sFallbackCover;
 				}
 				cursor.close();
 			}
