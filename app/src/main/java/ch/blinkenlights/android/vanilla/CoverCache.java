@@ -85,6 +85,10 @@ public class CoverCache {
 	 */
 	private static Bitmap sFallbackCover;
 	/**
+	 * The large fallback cover image resource encoded as bitmap
+	 */
+	private static Bitmap sFallbackCoverLarge;
+	/**
 	 * Shared on-disk cache class
 	 */
 	private static BitmapDiskCache sBitmapDiskCache;
@@ -110,6 +114,9 @@ public class CoverCache {
 		}
 		if (sFallbackCover == null) {
 			sFallbackCover = BitmapFactory.decodeResource(context.getResources(), R.drawable.fallback_cover);
+		}
+		if (sFallbackCoverLarge == null) {
+			sFallbackCoverLarge = BitmapFactory.decodeResource(context.getResources(), R.drawable.fallback_cover_large);
 		}
 	}
 
@@ -408,7 +415,7 @@ public class CoverCache {
 						cover = BitmapFactory.decodeStream(stream);
 					}
 				} else {
-					cover = sFallbackCover;
+					cover = key.coverSize >= CoverCache.SIZE_MEDIUM ? sFallbackCoverLarge : sFallbackCover;
 				}
 				cursor.close();
 			}
