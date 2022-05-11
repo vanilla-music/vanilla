@@ -1,3 +1,11 @@
+Vanilla Sol
+=====================
+
+A fork (May 11 2022) from Vanilla Music intended for personal use.
+
+Changes/Differences
+---------------
+
 Vanilla Music
 =====================
 
