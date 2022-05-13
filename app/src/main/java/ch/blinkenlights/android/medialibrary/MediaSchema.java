@@ -156,29 +156,42 @@ public class MediaSchema {
 
 
 	/**
-	 * View which includes song, album and artist information, enough for a filled song projection
+	 * View which includes song, album and artist information, enough for a filled song projection;
+	 * the information is retrieve from the tables: songs, albums, contributors where role = AlbumArtist.
+	 * The artist information is retrieved from the role AlbumArtist since we support multiple Artists but just one Album Artist.
+	 * SELECT *, _albumartist._contributor AS albumartist,_albumartist._contributor_sort AS albumartist_sort,_albumartist._id AS albumartist_id
+	 * FROM songs
+	 * LEFT JOIN albums ON songs.album_id = albums._id
+	 * LEFT JOIN contributors_songs INDEXED BY idx_contributors_songs ON contributors_songs.role=2 AND contributors_songs.song_id = songs._id
+	 * LEFT JOIN contributors AS _albumartist ON _albumartist._id = contributors_songs._contributor_id
 	 */
 	private static final String VIEW_CREATE_SONGS_ALBUMS_ARTISTS = "CREATE VIEW "+ MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS+ " AS "
-	  + "SELECT *, " + VIEW_ARTIST_SELECT + " FROM " + MediaLibrary.TABLE_SONGS
+	  + "SELECT *, " + VIEW_ALBUMARTIST_SELECT + " FROM " + MediaLibrary.TABLE_SONGS
 	  +" LEFT JOIN "+MediaLibrary.TABLE_ALBUMS+" ON "+MediaLibrary.TABLE_SONGS+"."+MediaLibrary.SongColumns.ALBUM_ID+" = "+MediaLibrary.TABLE_ALBUMS+"."+MediaLibrary.AlbumColumns._ID
 	  +" LEFT JOIN "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+" INDEXED BY "+NAME_IDX_CONTRIBUTORS_SONGS
-	  +" ON "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+"."+MediaLibrary.ContributorSongColumns.ROLE+"="+MediaLibrary.ROLE_ARTIST
+	  +" ON "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+"."+MediaLibrary.ContributorSongColumns.ROLE+"="+MediaLibrary.ROLE_ALBUMARTIST
 	  +" AND "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+"."+MediaLibrary.ContributorSongColumns.SONG_ID+" = "+MediaLibrary.TABLE_SONGS+"."+MediaLibrary.SongColumns._ID
-	  +" LEFT JOIN "+MediaLibrary.TABLE_CONTRIBUTORS+" AS _artist ON _artist."+MediaLibrary.ContributorColumns._ID+" = "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+"."+MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID
+	  +" LEFT JOIN "+MediaLibrary.TABLE_CONTRIBUTORS+" AS _albumartist ON _albumartist."+MediaLibrary.ContributorColumns._ID+" = "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+"."+MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID
 	  +" ;";
 
 	/**
-	 * View wich includes SONGS_ALBUMS_ARTISTS and any other contributors
-	 * This view should only be used if needed as the SQL query is pretty expensive
+	 * View which includes SONGS_ALBUMS_ARTISTS and any other contributors
+	 * This view should only be used if needed as the SQL query is pretty expensive.
+	 * SELECT *, _artist._contributor AS artist,_artist._contributor_sort AS artist_sort,_artist._id AS artist_id, _composer._contributor AS composer,_composer._contributor_sort AS composer_sort,_composer._id AS composer_id
+	 * FROM _songs_albums_artists
+	 * LEFT JOIN contributors_songs as __artists INDEXED BY idx_contributors_songs ON  __artists.role=0 AND __artists.song_id = _songs_albums_artists._id
+	 * LEFT JOIN contributors AS _artist ON  _artist._id = __artists._contributor_id
+	 * LEFT JOIN contributors_songs as __composers INDEXED BY idx_contributors_songs ON  __composers.role=1 AND __composers.song_id = _songs_albums_artists._id
+	 * LEFT JOIN contributors AS _composer ON  _composer._id = __composers._contributor_id
 	 */
 	private static final String VIEW_CREATE_SONGS_ALBUMS_ARTISTS_HUGE = "CREATE VIEW "+ MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS_HUGE+" AS "
-	  + "SELECT *, "+ VIEW_ALBUMARTIST_SELECT +", "+ VIEW_COMPOSER_SELECT +" FROM "+MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS
-	  // albumartists
-	  +" LEFT JOIN "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+" as __albumartists INDEXED BY "+NAME_IDX_CONTRIBUTORS_SONGS
-	  +" ON  __albumartists."+MediaLibrary.ContributorSongColumns.ROLE+"="+MediaLibrary.ROLE_ALBUMARTIST
-	  +" AND __albumartists."+MediaLibrary.ContributorSongColumns.SONG_ID+" = "+MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS+"."+MediaLibrary.SongColumns._ID
-	  +" LEFT JOIN "+MediaLibrary.TABLE_CONTRIBUTORS+" AS _albumartist ON"
-	  +"  _albumartist."+MediaLibrary.ContributorColumns._ID+" = __albumartists."+MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID
+	  + "SELECT *, "+ VIEW_ARTIST_SELECT +", "+ VIEW_COMPOSER_SELECT +" FROM "+MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS
+	  // artists
+	  +" LEFT JOIN "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+" as __artists INDEXED BY "+NAME_IDX_CONTRIBUTORS_SONGS
+	  +" ON  __artists."+MediaLibrary.ContributorSongColumns.ROLE+"="+MediaLibrary.ROLE_ARTIST
+	  +" AND __artists."+MediaLibrary.ContributorSongColumns.SONG_ID+" = "+MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS+"."+MediaLibrary.SongColumns._ID
+	  +" LEFT JOIN "+MediaLibrary.TABLE_CONTRIBUTORS+" AS _artist ON"
+	  +"  _artist."+MediaLibrary.ContributorColumns._ID+" = __artists."+MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID
 	  // composers
 	  +" LEFT JOIN "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+" as __composers INDEXED BY "+NAME_IDX_CONTRIBUTORS_SONGS
 	  +" ON  __composers."+MediaLibrary.ContributorSongColumns.ROLE+"="+MediaLibrary.ROLE_COMPOSER
@@ -188,7 +201,12 @@ public class MediaSchema {
 	  +" ;";
 
 	/**
-	 * View which includes album and artist information
+	 * View which includes album and artist information.
+	 * SELECT albums.*, _artist._contributor AS artist,_artist._contributor_sort AS artist_sort,_artist._id AS artist_id, SUM(duration) AS duration
+	 * FROM albums
+	 * LEFT JOIN contributors AS _artist ON _artist._id = albums.primary_artist_id
+	 * LEFT JOIN songs ON songs.album_id = albums._id
+	 * GROUP BY albums._id
 	 */
 	private static final String VIEW_CREATE_ALBUMS_ARTISTS = "CREATE VIEW "+ MediaLibrary.VIEW_ALBUMS_ARTISTS+ " AS "
 	  + "SELECT " + MediaLibrary.TABLE_ALBUMS + ".*, " + VIEW_ARTIST_SELECT + ", SUM(" + MediaLibrary.SongColumns.DURATION + ")" + " AS " + MediaLibrary.SongColumns.DURATION
@@ -201,7 +219,12 @@ public class MediaSchema {
 	  +" ;";
 
 	/**
-	 * View which includes artist information
+	 * View that retrieves artist information from the contributors table and where the role = Artist;
+	 * the role is retrieved from the contributors_songs table.
+	 * SELECT *, _artist._contributor AS artist,_artist._contributor_sort AS artist_sort,_artist._id AS artist_id
+	 * FROM contributors AS _artist
+	 * WHERE _id IN
+	 * (SELECT _contributor_id FROM contributors_songs WHERE role=0 GROUP BY _contributor_id)
 	 */
 	private static final String VIEW_CREATE_ARTISTS = "CREATE VIEW "+ MediaLibrary.VIEW_ARTISTS+ " AS "
 	  + "SELECT *, " + VIEW_ARTIST_SELECT + " FROM "+MediaLibrary.TABLE_CONTRIBUTORS+" AS _artist WHERE "+MediaLibrary.ContributorColumns._ID+" IN "
@@ -210,7 +233,12 @@ public class MediaSchema {
 	  +" ;";
 
 	/**
-	 * View which includes albumArtists information
+	 * View that retrieves album artist information from the contributors table where the role = AlbumArtist;
+	 * the role is retrieved from the contributors_songs table.
+	 * SELECT *, _albumartist._contributor AS albumartist,_albumartist._contributor_sort AS albumartist_sort,_albumartist._id AS albumartist_id
+	 * FROM contributors AS _albumartist
+	 * WHERE _id IN
+	 * (SELECT _contributor_id FROM contributors_songs WHERE role=2 GROUP BY _contributor_id)
 	 */
 	private static final String VIEW_CREATE_ALBUMARTISTS = "CREATE VIEW "+ MediaLibrary.VIEW_ALBUMARTISTS+ " AS "
 	  + "SELECT *, " + VIEW_ALBUMARTIST_SELECT + " FROM "+MediaLibrary.TABLE_CONTRIBUTORS+" AS _albumartist WHERE "+MediaLibrary.ContributorColumns._ID+" IN "
@@ -219,7 +247,12 @@ public class MediaSchema {
 	  +" ;";
 
 	/**
-	 * View which includes composer information
+	 * View that retrieves composer information from the contributors table and where the role = Composer;
+	 * the role is retrieved from the contributors_songs table.
+	 * SELECT *, _composer._contributor AS composer,_composer._contributor_sort AS composer_sort,_composer._id AS composer_id
+	 * FROM contributors AS _composer
+	 * WHERE _id IN
+	 * (SELECT _contributor_id FROM contributors_songs WHERE role=1 GROUP BY _contributor_id)
 	 */
 	private static final String VIEW_CREATE_COMPOSERS = "CREATE VIEW "+ MediaLibrary.VIEW_COMPOSERS+ " AS "
 	  + "SELECT *, " + VIEW_COMPOSER_SELECT + " FROM "+MediaLibrary.TABLE_CONTRIBUTORS+" AS _composer WHERE "+MediaLibrary.ContributorColumns._ID+" IN "
@@ -228,21 +261,34 @@ public class MediaSchema {
 	  +" ;";
 
 	/**
-	 * View like VIEW_CREATE_ARTISTS but includes playlist information
+	 * View that retrieves playlist songs information fom the playlists_songs table;
+	 * the song information is retrieved from the tables: songs, albums, contributors (artists) where role = AlbumArtist.
+	 * The artist information is retrieved from the role AlbumArtist since we support multiple Artists but just one Album Artist.
+	 * SELECT *, _albumartist._contributor AS albumartist,_albumartist._contributor_sort AS albumartist_sort,_albumartist._id AS albumartist_id
+	 * FROM playlists_songs
+	 * LEFT JOIN songs ON playlists_songs.song_id=songs._id
+	 * LEFT JOIN albums ON songs.album_id = albums._id
+	 * LEFT JOIN contributors_songs INDEXED BY idx_contributors_songs ON contributors_songs.role=2 AND contributors_songs.song_id = songs._id
+	 * LEFT JOIN contributors AS _albumartist ON _albumartist._id = contributors_songs._contributor_id
 	 */
 	private static final String VIEW_CREATE_PLAYLISTS_SONGS = "CREATE VIEW "+ MediaLibrary.VIEW_PLAYLISTS_SONGS+" AS "
-	  + "SELECT *, " + VIEW_ARTIST_SELECT + " FROM " + MediaLibrary.TABLE_PLAYLISTS_SONGS
+	  + "SELECT *, " + VIEW_ALBUMARTIST_SELECT + " FROM " + MediaLibrary.TABLE_PLAYLISTS_SONGS
 	  +" LEFT JOIN "+MediaLibrary.TABLE_SONGS+" ON "+MediaLibrary.TABLE_PLAYLISTS_SONGS+"."+MediaLibrary.PlaylistSongColumns.SONG_ID+"="+MediaLibrary.TABLE_SONGS+"."+MediaLibrary.SongColumns._ID
 	  // -> same sql as VIEW_CREATE_SONGS_ALBUMS_ARTISTS follows:
 	  +" LEFT JOIN "+MediaLibrary.TABLE_ALBUMS+" ON "+MediaLibrary.TABLE_SONGS+"."+MediaLibrary.SongColumns.ALBUM_ID+" = "+MediaLibrary.TABLE_ALBUMS+"."+MediaLibrary.AlbumColumns._ID
 	  +" LEFT JOIN "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+" INDEXED BY "+NAME_IDX_CONTRIBUTORS_SONGS
-	  +" ON "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+"."+MediaLibrary.ContributorSongColumns.ROLE+"="+MediaLibrary.ROLE_ARTIST
+	  +" ON "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+"."+MediaLibrary.ContributorSongColumns.ROLE+"="+MediaLibrary.ROLE_ALBUMARTIST
 	  +" AND "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+"."+MediaLibrary.ContributorSongColumns.SONG_ID+" = "+MediaLibrary.TABLE_SONGS+"."+MediaLibrary.SongColumns._ID
-	  +" LEFT JOIN "+MediaLibrary.TABLE_CONTRIBUTORS+" AS _artist ON _artist."+MediaLibrary.ContributorColumns._ID+" = "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+"."+MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID
+	  +" LEFT JOIN "+MediaLibrary.TABLE_CONTRIBUTORS+" AS _albumartist ON _albumartist."+MediaLibrary.ContributorColumns._ID+" = "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+"."+MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID
 	  +" ;";
 
 	/**
 	 * View of all playlists, including additional information such as the duration.
+	 * SELECT playlists.*, SUM(_s.duration) AS duration
+	 * FROM playlists
+	 * LEFT JOIN playlists_songs AS _ps ON playlists._id = _ps.playlist_id
+	 * LEFT JOIN songs AS _s ON _s._id = _ps.song_id
+	 * GROUP BY playlists._id
 	 */
 	private static final String VIEW_CREATE_PLAYLISTS = "CREATE VIEW "+ MediaLibrary.VIEW_PLAYLISTS+ " AS "
 		+ "SELECT " + MediaLibrary.TABLE_PLAYLISTS + ".*, SUM(_s." + MediaLibrary.SongColumns.DURATION + ") AS " + MediaLibrary.SongColumns.DURATION + " FROM " + MediaLibrary.TABLE_PLAYLISTS

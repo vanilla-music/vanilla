@@ -23,7 +23,6 @@ import ch.blinkenlights.android.vanilla.NotificationHelper;
 import android.app.Notification;
 import android.content.Context;
 import android.content.ContentValues;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.ContentObserver;
 import android.util.Log;
@@ -527,35 +526,78 @@ public class MediaScanner implements Handler.Callback {
 			songFlags &= ~MediaLibrary.SONG_FLAG_NO_ARTIST;  // May find an artist now.
 			songFlags &= ~MediaLibrary.SONG_FLAG_NO_ALBUM;   // May find an album now.
 
-			// Get tags which always must be set
+
+			String lang = tags.getFirst(MediaMetadataExtractor.LANGUAGE);
+			if (lang != null) {
+				Log.w("VanillaMusic", lang);
+			}
+			String mood = tags.getFirst(MediaMetadataExtractor.MOOD);
+			if (mood != null) {
+				Log.w("VanillaMusic", mood);
+			}
+
+			// TITLE
 			String title = tags.getFirst(MediaMetadataExtractor.TITLE);
 			if (isUnset(title))
 				title = file.getName();
 
+			// ALBUM
 			String album = tags.getFirst(MediaMetadataExtractor.ALBUM);
 			if (isUnset(album)) {
 				album = "<No Album>";
 				songFlags |= MediaLibrary.SONG_FLAG_NO_ALBUM;
 			}
 
-			String artist = tags.getFirst(MediaMetadataExtractor.ARTIST);
-			if (isUnset(artist)) {
-				artist = "<No Artist>";
-				songFlags |= MediaLibrary.SONG_FLAG_NO_ARTIST;
-			}
-
-			String discNumber = tags.getFirst(MediaMetadataExtractor.DISC_NUMBER);
-			if (isUnset(discNumber))
-				discNumber = "1"; // untagged, but most likely '1' - this prevents annoying sorting issues with partially tagged files
-
-			long artistId = MediaLibrary.hash63(artist);
 			long albumId = MediaLibrary.hash63(album);
-
 			// Overwrite albumId with a hash that included the parent dir if set in preferences
 			if (prefs.groupAlbumsByFolder) {
 				albumId = MediaLibrary.hash63(album + "\n" + file.getParent());
 			}
 
+			// ARTISTS AND ALBUM ARTISTS
+			ArrayList<String> performers = null;
+			if (tags.containsKey(MediaMetadataExtractor.ARTIST)) {
+				performers = tags.get(MediaMetadataExtractor.ARTIST);
+			}
+
+			ArrayList<String> albumArtists = null;
+			if (tags.containsKey(MediaMetadataExtractor.ALBUMARTIST)) {
+				albumArtists = tags.get(MediaMetadataExtractor.ALBUMARTIST);
+			}
+
+			// Try to use the album artist as the primary artist.
+			String primaryArtist = null;
+			if (albumArtists != null && albumArtists.size() > 0) {
+				primaryArtist = albumArtists.get(0);
+			}
+
+			// If primary artist not found yet, try to use the first artist tag
+			if (isUnset(primaryArtist)) {
+				if (performers != null && performers.size() > 0) {
+					primaryArtist = performers.get(0);
+				}
+			}
+
+			// No artist found :(
+			if (isUnset(primaryArtist)) {
+				primaryArtist = "<No Artist>";
+				songFlags |= MediaLibrary.SONG_FLAG_NO_ARTIST;
+				// If we get to this point there are no artists or album artists so add the default
+				performers = new ArrayList<>();
+				performers.add(primaryArtist);
+			}
+
+			long primaryArtistId = MediaLibrary.hash63(primaryArtist);
+
+			// DISC NUMBER
+			String discNumber = tags.getFirst(MediaMetadataExtractor.DISC_NUMBER);
+			if (isUnset(discNumber))
+				discNumber = "1"; // untagged, but most likely '1' - this prevents annoying sorting issues with partially tagged files
+
+			// YEAR
+			String year = tags.getFirst(MediaMetadataExtractor.YEAR);
+
+			// SONG TABLE
 			ContentValues v = new ContentValues();
 			v.put(MediaLibrary.SongColumns._ID,         songId);
 			v.put(MediaLibrary.SongColumns.TITLE,       title);
@@ -564,19 +606,20 @@ public class MediaScanner implements Handler.Callback {
 			v.put(MediaLibrary.SongColumns.DURATION,    tags.getFirst(MediaMetadataExtractor.DURATION));
 			v.put(MediaLibrary.SongColumns.SONG_NUMBER, tags.getFirst(MediaMetadataExtractor.TRACK_NUMBER));
 			v.put(MediaLibrary.SongColumns.DISC_NUMBER, discNumber);
-			v.put(MediaLibrary.SongColumns.YEAR,        tags.getFirst(MediaMetadataExtractor.YEAR));
+			v.put(MediaLibrary.SongColumns.YEAR,        year);
 			v.put(MediaLibrary.SongColumns.PLAYCOUNT,   playCount);
 			v.put(MediaLibrary.SongColumns.SKIPCOUNT,   skipCount);
 			v.put(MediaLibrary.SongColumns.PATH,        path);
 			v.put(MediaLibrary.SongColumns.FLAGS,       songFlags);
 			mBackend.insert(MediaLibrary.TABLE_SONGS, null, v);
 
+			// ALBUMS TABLE
 			v.clear();
 			v.put(MediaLibrary.AlbumColumns._ID,               albumId);
 			v.put(MediaLibrary.AlbumColumns.ALBUM,             album);
 			v.put(MediaLibrary.AlbumColumns.ALBUM_SORT,        MediaLibrary.keyFor(album));
-			v.put(MediaLibrary.AlbumColumns.PRIMARY_ARTIST_ID, artistId);
-			v.put(MediaLibrary.AlbumColumns.PRIMARY_ALBUM_YEAR,tags.getFirst(MediaMetadataExtractor.YEAR));
+			v.put(MediaLibrary.AlbumColumns.PRIMARY_ARTIST_ID, primaryArtistId);
+			v.put(MediaLibrary.AlbumColumns.PRIMARY_ALBUM_YEAR, year);
 			long albumInsert = mBackend.insert(MediaLibrary.TABLE_ALBUMS, null, v);
 			if (albumInsert == -1) {
 				// Insert failed, so the column probably already existed.
@@ -585,24 +628,47 @@ public class MediaScanner implements Handler.Callback {
 				// Failure to do so would mean that we never update the year or may point to an
 				// orphaned artist id.
 				v.clear();
-				v.put(MediaLibrary.AlbumColumns.PRIMARY_ARTIST_ID, artistId);
-				v.put(MediaLibrary.AlbumColumns.PRIMARY_ALBUM_YEAR,tags.getFirst(MediaMetadataExtractor.YEAR));
+				v.put(MediaLibrary.AlbumColumns.PRIMARY_ARTIST_ID, primaryArtistId);
+				v.put(MediaLibrary.AlbumColumns.PRIMARY_ALBUM_YEAR, year);
 				mBackend.update(MediaLibrary.TABLE_ALBUMS, v, MediaLibrary.AlbumColumns._ID+"=?", new String[]{ Long.toString(albumId) });
 			}
 
-			v.clear();
-			v.put(MediaLibrary.ContributorColumns._ID,               artistId);
-			v.put(MediaLibrary.ContributorColumns._CONTRIBUTOR,      artist);
-			v.put(MediaLibrary.ContributorColumns._CONTRIBUTOR_SORT, MediaLibrary.keyFor(artist));
-			mBackend.insert(MediaLibrary.TABLE_CONTRIBUTORS, null, v);
+			// CONTRIBUTORS: ALBUM ARTIST (we support a single album artist which is the primary artist)
+			// In theory primary artist will never be null but just in case
+			if (primaryArtist != null) {
+				long albumArtistId = MediaLibrary.hash63(primaryArtist);
+				v.clear();
+				v.put(MediaLibrary.ContributorColumns._ID,               albumArtistId);
+				v.put(MediaLibrary.ContributorColumns._CONTRIBUTOR,      primaryArtist);
+				v.put(MediaLibrary.ContributorColumns._CONTRIBUTOR_SORT, MediaLibrary.keyFor(primaryArtist));
+				mBackend.insert(MediaLibrary.TABLE_CONTRIBUTORS, null, v);
 
-			v.clear();
-			v.put(MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID, artistId);
-			v.put(MediaLibrary.ContributorSongColumns.SONG_ID,         songId);
-			v.put(MediaLibrary.ContributorSongColumns.ROLE,            MediaLibrary.ROLE_ARTIST);
-			mBackend.insert(MediaLibrary.TABLE_CONTRIBUTORS_SONGS, null, v);
+				v.clear();
+				v.put(MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID, albumArtistId);
+				v.put(MediaLibrary.ContributorSongColumns.SONG_ID,         songId);
+				v.put(MediaLibrary.ContributorSongColumns.ROLE,            MediaLibrary.ROLE_ALBUMARTIST);
+				mBackend.insert(MediaLibrary.TABLE_CONTRIBUTORS_SONGS, null, v);
+			}
 
-			// Composers are optional: only add if we found it
+			// CONTRIBUTORS: ARTISTS (we support multiple artists)
+			if (performers != null) {
+				for (String performer: performers) {
+					long artistId = MediaLibrary.hash63(performer);
+					v.clear();
+					v.put(MediaLibrary.ContributorColumns._ID,               artistId);
+					v.put(MediaLibrary.ContributorColumns._CONTRIBUTOR,      performer);
+					v.put(MediaLibrary.ContributorColumns._CONTRIBUTOR_SORT, MediaLibrary.keyFor(performer));
+					mBackend.insert(MediaLibrary.TABLE_CONTRIBUTORS, null, v);
+
+					v.clear();
+					v.put(MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID, artistId);
+					v.put(MediaLibrary.ContributorSongColumns.SONG_ID,         songId);
+					v.put(MediaLibrary.ContributorSongColumns.ROLE,            MediaLibrary.ROLE_ARTIST);
+					mBackend.insert(MediaLibrary.TABLE_CONTRIBUTORS_SONGS, null, v);
+				}
+			}
+
+			// CONTRIBUTORS: COMPOSER
 			String composer = tags.getFirst(MediaMetadataExtractor.COMPOSER);
 			if (composer != null) {
 				long composerId = MediaLibrary.hash63(composer);
@@ -619,24 +685,7 @@ public class MediaScanner implements Handler.Callback {
 				mBackend.insert(MediaLibrary.TABLE_CONTRIBUTORS_SONGS, null, v);
 			}
 
-			// Same as with composer: albumartist is an optional tag
-			String albumartist = tags.getFirst(MediaMetadataExtractor.ALBUMARTIST);
-			if (albumartist != null) {
-				long albumartistId = MediaLibrary.hash63(albumartist);
-				v.clear();
-				v.put(MediaLibrary.ContributorColumns._ID,               albumartistId);
-				v.put(MediaLibrary.ContributorColumns._CONTRIBUTOR,      albumartist);
-				v.put(MediaLibrary.ContributorColumns._CONTRIBUTOR_SORT, MediaLibrary.keyFor(albumartist));
-				mBackend.insert(MediaLibrary.TABLE_CONTRIBUTORS, null, v);
-
-				v.clear();
-				v.put(MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID, albumartistId);
-				v.put(MediaLibrary.ContributorSongColumns.SONG_ID,         songId);
-				v.put(MediaLibrary.ContributorSongColumns.ROLE,            MediaLibrary.ROLE_ALBUMARTIST);
-				mBackend.insert(MediaLibrary.TABLE_CONTRIBUTORS_SONGS, null, v);
-			}
-
-			// A song might be in multiple genres
+			// GENRES (multiple genre support)
 			if (tags.containsKey(MediaMetadataExtractor.GENRE)) {
 				ArrayList<String> genres = tags.get(MediaMetadataExtractor.GENRE);
 				for (String genre : genres) {

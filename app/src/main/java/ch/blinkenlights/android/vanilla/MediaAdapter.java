@@ -108,7 +108,7 @@ public class MediaAdapter
 	/**
 	 * The columns to query from the content provider.
 	 */
-	private String[] mProjection;
+	private String[] mColumns;
 	/**
 	 * A limiter is used for filtering. The intention is to restrict items
 	 * displayed in the list to only those of a specific artist or album, as
@@ -201,13 +201,20 @@ public class MediaAdapter
 			break;
 		case MediaUtils.TYPE_SONG:
 			mSource = MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS;
-			mFields = new String[] { MediaLibrary.SongColumns.TITLE, MediaLibrary.AlbumColumns.ALBUM, MediaLibrary.ContributorColumns.ARTIST, MediaLibrary.SongColumns.DURATION };
-			mFieldKeys = new String[] { MediaLibrary.SongColumns.TITLE_SORT, MediaLibrary.AlbumColumns.ALBUM_SORT, MediaLibrary.ContributorColumns.ARTIST_SORT, null };
-			mSortEntries = new int[] { R.string.title, R.string.artist_album_track, R.string.artist_album_title, R.string.album_track, R.string.year, R.string.date_added,
-			                           R.string.song_playcount, R.string.filename, R.string.duration };
+			mFields = new String[] { MediaLibrary.SongColumns.TITLE, MediaLibrary.AlbumColumns.ALBUM, MediaLibrary.ContributorColumns.ALBUMARTIST, MediaLibrary.SongColumns.DURATION };
+			mFieldKeys = new String[] { MediaLibrary.SongColumns.TITLE_SORT, MediaLibrary.AlbumColumns.ALBUM_SORT, MediaLibrary.ContributorColumns.ALBUMARTIST_SORT, null };
+			mSortEntries = new int[] { R.string.title,
+					                   R.string.artist_album_track,
+					                   R.string.artist_album_title,
+					                   R.string.album_track,
+					                   R.string.year,
+					                   R.string.date_added,
+			                       R.string.song_playcount,
+					                   R.string.filename,
+					                   R.string.duration };
 			mAdapterSortValues = new String[] { MediaLibrary.SongColumns.TITLE_SORT+" %1$s",
-			                                    MediaLibrary.ContributorColumns.ARTIST_SORT+" %1$s,"+MediaLibrary.AlbumColumns.ALBUM_SORT+" %1$s,"+MediaLibrary.SongColumns.DISC_NUMBER+","+MediaLibrary.SongColumns.SONG_NUMBER,
-			                                    MediaLibrary.ContributorColumns.ARTIST_SORT+" %1$s,"+MediaLibrary.AlbumColumns.ALBUM_SORT+" %1$s,"+MediaLibrary.SongColumns.TITLE_SORT+" %1$s",
+			                                    MediaLibrary.ContributorColumns.ALBUMARTIST_SORT+" %1$s,"+MediaLibrary.AlbumColumns.ALBUM_SORT+" %1$s,"+MediaLibrary.SongColumns.DISC_NUMBER+","+MediaLibrary.SongColumns.SONG_NUMBER,
+			                                    MediaLibrary.ContributorColumns.ALBUMARTIST_SORT+" %1$s,"+MediaLibrary.AlbumColumns.ALBUM_SORT+" %1$s,"+MediaLibrary.SongColumns.TITLE_SORT+" %1$s",
 			                                    MediaLibrary.AlbumColumns.ALBUM_SORT+" %1$s,"+MediaLibrary.SongColumns.DISC_NUMBER+","+MediaLibrary.SongColumns.SONG_NUMBER,
 			                                    MediaLibrary.SongColumns.YEAR+" %1$s,"+MediaLibrary.AlbumColumns.ALBUM_SORT+" %1$s,"+MediaLibrary.SongColumns.DISC_NUMBER+","+MediaLibrary.SongColumns.SONG_NUMBER,
 			                                    MediaLibrary.SongColumns.MTIME+" %1$s,"+MediaLibrary.SongColumns.DISC_NUMBER+","+MediaLibrary.SongColumns.SONG_NUMBER,
@@ -240,11 +247,11 @@ public class MediaAdapter
 		}
 
 
-		mProjection = new String[mFields.length + 2];
-		mProjection[0] = BaseColumns._ID;
-		mProjection[1] = coverCacheKey;
+		mColumns = new String[mFields.length + 2];
+		mColumns[0] = BaseColumns._ID;
+		mColumns[1] = coverCacheKey;
 		for (int i = 0; i < mFields.length; i++) {
-			mProjection[i + 2] = mFields[i];
+			mColumns[i + 2] = mFields[i];
 		}
 	}
 
@@ -288,17 +295,17 @@ public class MediaAdapter
 	/**
 	 * Build the query to be run with runQuery().
 	 *
-	 * @param projection The columns to query.
+	 * @param columns The columns to query.
 	 * @param returnSongs return songs instead of mType if true.
 	 */
-	private QueryTask buildQuery(String[] projection, boolean returnSongs) {
+	private QueryTask buildQuery(String[] columns, boolean returnSongs) {
 		String source = mSource;
 		String constraint = mConstraint;
 		Limiter limiter = mLimiter;
 
 		StringBuilder selection = new StringBuilder();
 		String[] selectionArgs = null;
-		String[] enrichedProjection = projection;
+		String[] enrichedProjection = columns;
 
 		// Assemble the sort string as requested by the user
 		int mode = getSortModeIndex();
@@ -360,8 +367,8 @@ public class MediaAdapter
 		if (returnSongs == true) {
 			source = MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS_HUGE;
 		} else {
-			enrichedProjection = Arrays.copyOf(projection, projection.length + 1);
-			enrichedProjection[projection.length] = getFirstSortColumn();
+			enrichedProjection = Arrays.copyOf(columns, columns.length + 1);
+			enrichedProjection[columns.length] = getFirstSortColumn();
 		}
 
 		QueryTask query = new QueryTask(source, enrichedProjection, selection.toString(), selectionArgs, sort);
@@ -371,7 +378,7 @@ public class MediaAdapter
 	@Override
 	public Cursor query()
 	{
-		return buildQuery(mProjection, false).runQuery(mContext);
+		return buildQuery(mColumns, false).runQuery(mContext);
 	}
 
 	@Override
@@ -384,12 +391,12 @@ public class MediaAdapter
 	 * Build a query for all the songs represented by this adapter, for adding
 	 * to the timeline.
 	 *
-	 * @param projection The columns to query.
+	 * @param columns The columns to query.
 	 */
 	@Override
-	public QueryTask buildSongQuery(String[] projection)
+	public QueryTask buildSongQuery(String[] columns)
 	{
-		QueryTask query = buildQuery(projection, true);
+		QueryTask query = buildQuery(columns, true);
 		query.type = mType;
 		return query;
 	}
@@ -429,29 +436,36 @@ public class MediaAdapter
 			return null;
 		for (int i = 0, count = cursor.getCount(); i != count; ++i) {
 			cursor.moveToPosition(i);
-			if (cursor.getLong(0) == id)
+			long rowId = cursor.getLong(0);
+			if (rowId == id)
 				break;
 		}
 
 		switch (mType) {
 		case MediaUtils.TYPE_ARTIST:
-			fields = new String[] { cursor.getString(2) };
+			String artistName = cursor.getString(2);
+			fields = new String[] { artistName };
 			data = String.format("%s=%d", MediaLibrary.ContributorColumns.ARTIST_ID, id);
 			break;
 		case MediaUtils.TYPE_ALBARTIST:
-			fields = new String[] { cursor.getString(2) };
+			String albumArtistName = cursor.getString(2);
+			fields = new String[] { albumArtistName };
 			data = String.format("%s=%d", MediaLibrary.ContributorColumns.ALBUMARTIST_ID, id);
 			break;
 		case MediaUtils.TYPE_COMPOSER:
-			fields = new String[] { cursor.getString(2) };
+			String composer = cursor.getString(2);
+			fields = new String[] { composer };
 			data = String.format("%s=%d", MediaLibrary.ContributorColumns.COMPOSER_ID, id);
 			break;
 		case MediaUtils.TYPE_ALBUM:
-			fields = new String[] { cursor.getString(3), cursor.getString(2) };
+			String primaryArtistName = cursor.getString(3);
+			String albumName = cursor.getString(2);
+			fields = new String[] { primaryArtistName, albumName };
 			data = String.format("%s=%d",  MediaLibrary.SongColumns.ALBUM_ID, id);
 			break;
 		case MediaUtils.TYPE_GENRE:
-			fields = new String[] { cursor.getString(2) };
+			String genreName = cursor.getString(2);
+			fields = new String[] { genreName };
 			data = String.format("%s=%d", MediaLibrary.GenreSongColumns._GENRE_ID, id);
 			break;
 		default:

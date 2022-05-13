@@ -5,6 +5,31 @@ A fork (May 11 2022) from Vanilla Music intended for personal use.
 
 Changes/Differences
 ---------------
+* Album Artist is considered the primary artist
+  * If no Album Artist found, the first Artist tag will be considered the primary artist
+  * Only one Album Artist is supported
+* Support for multiple Artist tags
+  * You will have the ability to get songs by a certain artist (like featuring artists)
+* Support for iD3v2.4 year frame (TDRC)
+  * I found cases where tags using this version was ignoring this frame and albums ended up with no year
+* Get rid of BOM unicode character in tags
+  * This was causing the underlying id generator to duplicate artists with (apparently) the same name
+* Added processing on some custom tags for personal use
+  * Language
+  * Mood
+  * Rating
+  * Play Count
+  * Add Date
+  * Country
+  * Artist Type
+  * Artist Song Count
+  * Artist Last Song Add Date
+  * Artist Last Song Change Date
+  * Artist Album Count
+  * Album Song Count
+  * Album Last Song Add Date
+  * Album Last Song Change Date
+  * Album Complete
 
 Vanilla Music
 =====================

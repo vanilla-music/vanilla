@@ -44,9 +44,9 @@ public class Playlist {
 	 * @return The queried cursor.
 	 */
 	public static Cursor queryPlaylists(Context context) {
-		final String[] projection = { MediaLibrary.PlaylistColumns._ID, MediaLibrary.PlaylistColumns.NAME };
+		final String[] columns = { MediaLibrary.PlaylistColumns._ID, MediaLibrary.PlaylistColumns.NAME };
 		final String sort = MediaLibrary.PlaylistColumns.NAME;
-		return MediaLibrary.queryLibrary(context, MediaLibrary.TABLE_PLAYLISTS, projection, null, null, sort);
+		return MediaLibrary.queryLibrary(context, MediaLibrary.TABLE_PLAYLISTS, columns, null, null, sort);
 	}
 
 	/**
@@ -60,10 +60,10 @@ public class Playlist {
 	public static long getPlaylist(Context context, String name)
 	{
 		long id = -1;
-		final String[] projection = { MediaLibrary.PlaylistColumns._ID };
+		final String[] columns = { MediaLibrary.PlaylistColumns._ID };
 		final String selection = MediaLibrary.PlaylistColumns.NAME+"=?";
 		final String[] selectionArgs = { name };
-		Cursor cursor = MediaLibrary.queryLibrary(context, MediaLibrary.TABLE_PLAYLISTS, projection, selection, selectionArgs, null);
+		Cursor cursor = MediaLibrary.queryLibrary(context, MediaLibrary.TABLE_PLAYLISTS, columns, selection, selectionArgs, null);
 
 		if (cursor != null) {
 			if (cursor.moveToNext())
@@ -84,10 +84,10 @@ public class Playlist {
 	public static @Nullable String getPlaylist(Context context, long id)
 	{
 		String name = null;
-		final String[] projection = { MediaLibrary.PlaylistColumns.NAME };
+		final String[] columns = { MediaLibrary.PlaylistColumns.NAME };
 		final String selection = MediaLibrary.PlaylistColumns._ID+"=?";
 		final String[] selectionArgs = { Long.valueOf(id).toString() };
-		Cursor cursor = MediaLibrary.queryLibrary(context, MediaLibrary.TABLE_PLAYLISTS, projection, selection, selectionArgs, null);
+		Cursor cursor = MediaLibrary.queryLibrary(context, MediaLibrary.TABLE_PLAYLISTS, columns, selection, selectionArgs, null);
 
 		if (cursor != null) {
 			if (cursor.moveToNext())

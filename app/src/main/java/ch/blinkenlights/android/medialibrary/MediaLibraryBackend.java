@@ -229,24 +229,24 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	}
 
 	/**
-	 * Wrappr for SQLiteDatabase.query() function
+	 * Wrapper for SQLiteDatabase.query() function
 	 */
-	Cursor query (boolean distinct, String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy, String limit) {
+	Cursor query (boolean distinct, String table, String[] columns, String criteria, String[] criteriaArgs, String groupBy, String having, String orderBy, String limit) {
 
 		if (MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS_HUGE.equals(table)) {
 			Log.v("VanillaMusic", "+++ warning : using HUGE table in genquery!");
 		}
 
-		if (selection != null) {
+		if (criteria != null) {
 			if (MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS.equals(table)) {
-				// artist matches in the song-view are costy: try to give sqlite a hint
-				String[] contributorMatch = extractVirtualColumn(selection);
+				// artist matches in the song-view are costly: try to give sqlite a hint
+				String[] contributorMatch = extractVirtualColumn(criteria);
 				if (contributorMatch != null) {
-					selection = contributorMatch[0];
+					criteria = contributorMatch[0];
 					final String contributorId = contributorMatch[1];
 					final String contributorRole = contributorMatch[2];
 
-					selection += MediaLibrary.SongColumns._ID+" IN (SELECT "+MediaLibrary.ContributorSongColumns.SONG_ID+" FROM "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+" WHERE "
+					criteria += MediaLibrary.SongColumns._ID+" IN (SELECT "+MediaLibrary.ContributorSongColumns.SONG_ID+" FROM "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+" WHERE "
 					          + MediaLibrary.ContributorSongColumns.ROLE+"="+contributorRole+" AND "+MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID+"="+contributorId+")";
 				}
 			}
@@ -254,49 +254,49 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 			if (MediaLibrary.VIEW_ALBUMS_ARTISTS.equals(table)) {
 				// looking up artists by albums will magically return every album where this
 				// artist has at least one item (while still using the primary_artist_id as the artist key)
-				String[] contributorMatch = extractVirtualColumn(selection);
+				String[] contributorMatch = extractVirtualColumn(criteria);
 				if (contributorMatch != null) {
-					selection = contributorMatch[0];
+					criteria = contributorMatch[0];
 					final String contributorId = contributorMatch[1];
 					final String contributorRole = contributorMatch[2];
 
-					selection += MediaLibrary.SongColumns._ID+" IN (SELECT DISTINCT "+MediaLibrary.SongColumns.ALBUM_ID+" FROM "+MediaLibrary.TABLE_SONGS+" WHERE "
+					criteria += MediaLibrary.SongColumns._ID+" IN (SELECT DISTINCT "+MediaLibrary.SongColumns.ALBUM_ID+" FROM "+MediaLibrary.TABLE_SONGS+" WHERE "
 					          + MediaLibrary.SongColumns._ID+" IN (SELECT "+MediaLibrary.ContributorSongColumns.SONG_ID+" FROM "+MediaLibrary.TABLE_CONTRIBUTORS_SONGS+" WHERE "
 					          + MediaLibrary.ContributorSongColumns.ROLE+"="+contributorRole+" AND "+MediaLibrary.ContributorSongColumns._CONTRIBUTOR_ID+"="+contributorId+"))";
 				}
 			}
 
 			// Genre queries are a special beast: 'optimize' all of them
-			Matcher genreMatch = sQueryMatchGenreSearch.matcher(selection);
+			Matcher genreMatch = sQueryMatchGenreSearch.matcher(criteria);
 			if (genreMatch.matches()) {
-				selection = genreMatch.group(1); // keep the non-genre search part of the query
+				criteria = genreMatch.group(1); // keep the non-genre search part of the query
 				final String genreId = genreMatch.group(2); // and extract the searched genre id
-				final String songsQuery = buildSongIdFromGenreSelect(genreId);
+				final String songsFromGenreQuery = buildSongIdFromGenre(genreId);
 
 				if(table.equals(MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS)      ||
 				   table.equals(MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS_HUGE) ) {
-					selection += MediaLibrary.SongColumns._ID+" IN ("+songsQuery+") ";
+					criteria += MediaLibrary.SongColumns._ID+" IN ("+songsFromGenreQuery+") ";
 				}
 
 				if (table.equals(MediaLibrary.VIEW_ALBUMS_ARTISTS)) {
-					selection += MediaLibrary.AlbumColumns._ID+" IN ("+
-						buildSongIdFromGenreSelect(MediaLibrary.SongColumns.ALBUM_ID, MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS, songsQuery)+") ";
+					criteria += MediaLibrary.AlbumColumns._ID+" IN ("+
+						buildSongIdWithInSelect(MediaLibrary.SongColumns.ALBUM_ID, MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS, songsFromGenreQuery)+") ";
 				}
 
 				if (table.equals(MediaLibrary.VIEW_ARTISTS)) {
-					selection += MediaLibrary.ContributorColumns.ARTIST_ID+" IN ("+
-						buildSongIdFromGenreSelect(MediaLibrary.ContributorColumns.ARTIST_ID, MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS, songsQuery)+") ";
+					criteria += MediaLibrary.ContributorColumns.ARTIST_ID+" IN ("+
+						buildSongIdWithInSelect(MediaLibrary.ContributorColumns.ARTIST_ID, MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS_HUGE, songsFromGenreQuery)+") ";
+					Log.v("VanillaMusic", "+++ warning: huge genrequery for artist!");
 				}
 
 				if (table.equals(MediaLibrary.VIEW_ALBUMARTISTS)) {
-					selection += MediaLibrary.ContributorColumns.ALBUMARTIST_ID+" IN ("+
-						buildSongIdFromGenreSelect(MediaLibrary.ContributorColumns.ALBUMARTIST_ID, MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS_HUGE, songsQuery)+") ";
-					Log.v("VanillaMusic", "+++ warning: huge genrequery for albumartist!");
+					criteria += MediaLibrary.ContributorColumns.ALBUMARTIST_ID+" IN ("+
+						buildSongIdWithInSelect(MediaLibrary.ContributorColumns.ALBUMARTIST_ID, MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS, songsFromGenreQuery)+") ";
 				}
 
 				if (table.equals(MediaLibrary.VIEW_COMPOSERS)) {
-					selection += MediaLibrary.ContributorColumns.COMPOSER_ID+" IN ("+
-						buildSongIdFromGenreSelect(MediaLibrary.ContributorColumns.COMPOSER_ID, MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS_HUGE, songsQuery)+") ";
+					criteria += MediaLibrary.ContributorColumns.COMPOSER_ID+" IN ("+
+						buildSongIdWithInSelect(MediaLibrary.ContributorColumns.COMPOSER_ID, MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS_HUGE, songsFromGenreQuery)+") ";
 					Log.v("VanillaMusic", "+++ warning: huge genrequery composer!");
 				}
 
@@ -304,9 +304,9 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 		}
 
 		if (DEBUG)
-			debugQuery(distinct, table, columns, selection, selectionArgs, groupBy, having, orderBy, limit);
+			debugQuery(distinct, table, columns, criteria, criteriaArgs, groupBy, having, orderBy, limit);
 
-		Cursor cursor = getReadableDatabase().query(distinct, table, columns, selection, selectionArgs, groupBy, having, orderBy, limit);
+		Cursor cursor = getReadableDatabase().query(distinct, table, columns, criteria, criteriaArgs, groupBy, having, orderBy, limit);
 		if (cursor != null) {
 			// Hold on! This is not some kind of black magic - it makes '''sense''':
 			// SQLites count() performance is pretty poor, but most queries will call getCount() during their
@@ -339,27 +339,27 @@ public class MediaLibraryBackend extends SQLiteOpenHelper {
 	}
 
 	/**
-	 * Returns a select query to get all songs from a genre
+	 * Returns a query to get all songs from a genre
 	 *
 	 * @param genreId the id to query as a string
 	 * @return an SQL string which should return song id's for the queried genre
 	 */
-	private String buildSongIdFromGenreSelect(String genreId) {
+	private String buildSongIdFromGenre(String genreId) {
 		return "SELECT "+MediaLibrary.GenreSongColumns.SONG_ID+" FROM "+MediaLibrary.TABLE_GENRES_SONGS+" WHERE "
 		                +MediaLibrary.GenreSongColumns._GENRE_ID+"="+genreId+" GROUP BY "+MediaLibrary.GenreSongColumns.SONG_ID;
 	}
 
 	/**
-	 * Returns a select query to get artists or albums from a genre
+	 * Returns a select query to get entities by matching the SongColumns._ID field.
 	 *
 	 * @param target the target to query
 	 * @param table the table to query
-	 * @param genreSelect the select string generated by buildSongIdFromGenreSelect
+	 * @param select the select string
 	 * @return an SQL string
 	 */
-	private String buildSongIdFromGenreSelect(String target, String table, String genreSelect) {
+	private String buildSongIdWithInSelect(String target, String table, String select) {
 		return "SELECT "+target+" FROM "+ table +" WHERE "
-		                +MediaLibrary.SongColumns._ID+" IN ("+genreSelect+") GROUP BY "+target;
+		                +MediaLibrary.SongColumns._ID+" IN ("+select+") GROUP BY "+target;
 	}
 
 	/**

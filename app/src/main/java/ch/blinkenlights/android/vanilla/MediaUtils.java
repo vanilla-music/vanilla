@@ -153,11 +153,11 @@ public class MediaUtils {
 	 *
 	 * @param type MediaUtils.TYPE_ARTIST, TYPE_ALBUM, or TYPE_SONG.
 	 * @param id The MediaStore id of the song, artist, or album.
-	 * @param projection The columns to query.
+	 * @param columns The columns to query.
 	 * @param select An extra selection to pass to the query, or null.
 	 * @return The initialized query.
 	 */
-	private static QueryTask buildMediaQuery(int type, long id, String[] projection, String select)
+	private static QueryTask buildMediaQuery(int type, long id, String[] columns, String select)
 	{
 		StringBuilder selection = new StringBuilder();
 		String sort = DEFAULT_SORT;
@@ -194,7 +194,7 @@ public class MediaUtils {
 		selection.append('=');
 		selection.append(id);
 
-		QueryTask result = new QueryTask(MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS, projection, selection.toString(), null, sort);
+		QueryTask result = new QueryTask(MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS, columns, selection.toString(), null, sort);
 		result.type = type;
 		return result;
 	}
@@ -204,13 +204,13 @@ public class MediaUtils {
 	 * given id.
 	 *
 	 * @param id The id of the playlist in MediaStore.Audio.Playlists.
-	 * @param projection The columns to query.
+	 * @param columns The columns to query.
 	 * @return The initialized query.
 	 */
-	public static QueryTask buildPlaylistQuery(long id, String[] projection) {
+	public static QueryTask buildPlaylistQuery(long id, String[] columns) {
 		String sort = MediaLibrary.PlaylistSongColumns.POSITION;
 		String selection = MediaLibrary.PlaylistSongColumns.PLAYLIST_ID+"="+id;
-		QueryTask result = new QueryTask(MediaLibrary.VIEW_PLAYLISTS_SONGS, projection, selection, null, sort);
+		QueryTask result = new QueryTask(MediaLibrary.VIEW_PLAYLISTS_SONGS, columns, selection, null, sort);
 		result.type = TYPE_PLAYLIST;
 		return result;
 	}
@@ -225,7 +225,7 @@ public class MediaUtils {
 	 * @param selection An extra selection to be passed to the query. May be
 	 * null. Must not be used with type == TYPE_SONG or type == TYPE_PLAYLIST
 	 */
-	public static QueryTask buildQuery(int type, long id, String[] projection, String selection)
+	public static QueryTask buildQuery(int type, long id, String[] columns, String selection)
 	{
 		switch (type) {
 		case TYPE_ARTIST:
@@ -234,9 +234,9 @@ public class MediaUtils {
 		case TYPE_ALBUM:
 		case TYPE_SONG:
 		case TYPE_GENRE:
-			return buildMediaQuery(type, id, projection, selection);
+			return buildMediaQuery(type, id, columns, selection);
 		case TYPE_PLAYLIST:
-			return buildPlaylistQuery(id, projection);
+			return buildPlaylistQuery(id, columns);
 		default:
 			throw new IllegalArgumentException("Specified type not valid: " + type);
 		}
@@ -250,11 +250,11 @@ public class MediaUtils {
 	 * @param id The id of the song to query the genre for.
 	 */
 	public static long queryGenreForSong(Context context, long id) {
-		String[] projection = { MediaLibrary.GenreSongColumns._GENRE_ID };
-		String query = MediaLibrary.GenreSongColumns.SONG_ID+"=?";
-		String[] queryArgs = new String[] { Long.toString(id) };
+		String[] columns = { MediaLibrary.GenreSongColumns._GENRE_ID };
+		String criteria = MediaLibrary.GenreSongColumns.SONG_ID+"=?";
+		String[] criteriaArgs = new String[] { Long.toString(id) };
 
-		Cursor cursor = MediaLibrary.queryLibrary(context, MediaLibrary.TABLE_GENRES_SONGS, projection, query, queryArgs, null);
+		Cursor cursor = MediaLibrary.queryLibrary(context, MediaLibrary.TABLE_GENRES_SONGS, columns, criteria, criteriaArgs, null);
 		if (cursor != null) {
 			if (cursor.moveToNext())
 				return cursor.getLong(0);
@@ -522,11 +522,11 @@ public class MediaUtils {
 	 * Build a query that will contain all the media under the given path.
 	 *
 	 * @param path The path, e.g. /mnt/sdcard/music/
-	 * @param projection The columns to query
+	 * @param columns The columns to query
 	 * @param recursive whether or not to do a LIKE search, picking up child items.
 	 * @return The initialized query.
 	 */
-	public static QueryTask buildFileQuery(String path, String[] projection, boolean recursive)
+	public static QueryTask buildFileQuery(String path, String[] columns, boolean recursive)
 	{
 		// Try to detect more popular mount point:
 		path = sanitizeMediaPath(path);
@@ -539,7 +539,7 @@ public class MediaUtils {
 			query = MediaLibrary.SongColumns.PATH+" LIKE ?";
 		}
 
-		QueryTask result = new QueryTask(MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS, projection, query, new String[]{ path }, FILE_SORT);
+		QueryTask result = new QueryTask(MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS, columns, query, new String[]{ path }, FILE_SORT);
 		result.type = TYPE_FILE;
 		return result;
 	}
@@ -663,7 +663,7 @@ public class MediaUtils {
 
 		switch(mType) {
 			case TYPE_ARTIST:
-				return song.artistId;
+				return song.albumArtistId;
 			case TYPE_ALBUM:
 				return song.albumId;
 			case TYPE_SONG:

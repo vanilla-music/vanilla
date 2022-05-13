@@ -631,7 +631,7 @@ public abstract class PlaybackActivity extends Activity
 			String folder = null;
 			switch(type) {
 				case MediaUtils.TYPE_ARTIST:
-					id = song.artistId;
+					id = song.albumArtistId;
 				break;
 				case MediaUtils.TYPE_ALBUM:
 					id = song.albumId;
@@ -721,7 +721,7 @@ public abstract class PlaybackActivity extends Activity
 							request.setPackage(selected.packageName);
 							request.putExtra(PluginUtils.EXTRA_PARAM_URI, Uri.fromFile(new File(song.path)));
 							request.putExtra(PluginUtils.EXTRA_PARAM_SONG_TITLE, song.title);
-							request.putExtra(PluginUtils.EXTRA_PARAM_SONG_ARTIST, song.artist);
+							request.putExtra(PluginUtils.EXTRA_PARAM_SONG_ARTIST, song.albumArtist);
 							request.putExtra(PluginUtils.EXTRA_PARAM_SONG_ALBUM, song.album);
 							if (request.resolveActivity(getPackageManager()) != null) {
 								startActivity(request);

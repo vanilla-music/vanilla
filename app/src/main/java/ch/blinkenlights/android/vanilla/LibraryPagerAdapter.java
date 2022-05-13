@@ -510,7 +510,8 @@ public class LibraryPagerAdapter
 
 	/**
 	 * Update the adapters with the given limiter.
-	 *
+	 * Remarks: this is the place that determines the limiters for each tab and
+	 * the tab that will load when and item is expanded.
 	 * @param limiter The limiter to set.
 	 * @return The tab type that should be switched to to expand the row.
 	 */

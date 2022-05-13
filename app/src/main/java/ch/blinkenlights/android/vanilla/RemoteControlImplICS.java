@@ -131,10 +131,10 @@ public class RemoteControlImplICS implements RemoteControl.Client {
 
 		remote.setPlaybackState(isPlaying ? RemoteControlClient.PLAYSTATE_PLAYING : RemoteControlClient.PLAYSTATE_PAUSED);
 		RemoteControlClient.MetadataEditor editor = remote.editMetadata(true);
-		if (song != null && song.artist != null && song.album != null) {
-			String artist_album = song.artist + " - " + song.album;
-			artist_album = (song.artist.length() == 0 ? song.album : artist_album); // no artist ? -> only display album
-			artist_album = (song.album.length() == 0 ? song.artist : artist_album); // no album ? -> only display artist
+		if (song != null && song.albumArtist != null && song.album != null) {
+			String artist_album = song.albumArtist + " - " + song.album;
+			artist_album = (song.albumArtist.length() == 0 ? song.album : artist_album); // no artist ? -> only display album
+			artist_album = (song.album.length() == 0 ? song.albumArtist : artist_album); // no album ? -> only display artist
 
 			editor.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, artist_album);
 			editor.putString(MediaMetadataRetriever.METADATA_KEY_TITLE, song.title);

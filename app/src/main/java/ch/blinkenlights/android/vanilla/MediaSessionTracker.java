@@ -116,7 +116,7 @@ public class MediaSessionTracker {
 		if (song != null) {
 			final Bitmap cover = song.getMediumCover(mContext);
 			MediaMetadataCompat.Builder metadataBuilder = new MediaMetadataCompat.Builder()
-				.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, song.artist)
+				.putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ARTIST, song.albumArtist)
 				.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, song.album)
 				.putString(MediaMetadataCompat.METADATA_KEY_TITLE, song.title)
 				.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.duration);

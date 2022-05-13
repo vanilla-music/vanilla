@@ -423,13 +423,13 @@ public class FileSystemAdapter
 	 * Returns all songs represented by this adapter.
 	 * Note that this will do a recursive query!
 	 *
-	 * @param projection the projection to use
+	 * @param columns the columns to use
 	 * @return a query task
 	 */
 	@Override
-	public QueryTask buildSongQuery(String[] projection) {
+	public QueryTask buildSongQuery(String[] columns) {
 		File path = getLimiterPath();
-		return MediaUtils.buildFileQuery(path.getPath(), projection, true);
+		return MediaUtils.buildFileQuery(path.getPath(), columns, true);
 	}
 
 	/**

@@ -44,6 +44,22 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 	public final static String TRACK_NUMBER = "TRACK_NUM";
 	public final static String TITLE        = "TITLE";
 	public final static String YEAR         = "YEAR";
+	public final static String LANGUAGE     = "LANGUAGE";
+	public final static String MOOD         = "MOOD";
+	public final static String ADD_DATE     = "ADD_DATE";
+	public final static String RATING       = "RATING";
+	public final static String PLAY_COUNT   = "PLAY_COUNT";
+	public final static String COUNTRY      = "COUNTRY";
+	public final static String ARTIST_TYPE  = "ARTIST_TYPE";
+	public final static String ARTIST_SONG_COUNT            = "ARTIST_SONG_COUNT";
+	public final static String ARTIST_ALBUM_COUNT           = "ARTIST_ALBUM_COUNT";
+	public final static String ARTIST_LAST_SONG_ADD_DATE    = "ARTIST_LAST_SONG_ADD_DATE";
+	public final static String ARTIST_LAST_SONG_CHANGE_DATE = "ARTIST_LAST_SONG_CHANGE_DATE";
+	public final static String ALBUM_SONG_COUNT             = "ALBUM_SONG_COUNT";
+	public final static String ALBUM_COMPLETE               = "ALBUM_COMPLETE";
+	public final static String ALBUM_LAST_SONG_ADD_DATE     = "ALBUM_LAST_SONG_ADD_DATE";
+	public final static String ALBUM_LAST_SONG_CHANGE_DATE  = "ALBUM_LAST_SONG_CHANGE_DATE";
+
 
 	/**
 	 * Regexp used to match a year in a date field
@@ -365,17 +381,44 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 	}
 
 	/**
-	 * Populates `this' with tags read from bastp
+	 * Populates `this' object with tags read from bastp custom class.
 	 *
 	 * @param bastp A hashmap as returned by bastp
 	 */
 	private void populateSelf(HashMap bastp) {
 		// mapping between vorbiscomment -> constant
-		String[] map = new String[]{ "TITLE", TITLE, "ARTIST", ARTIST, "ALBUM", ALBUM, "ALBUMARTIST", ALBUMARTIST, "COMPOSER", COMPOSER, "GENRE", GENRE,
-		                             "TRACKNUMBER", TRACK_NUMBER, "TRACKTOTAL", TRACK_COUNT, "DISCNUMBER", DISC_NUMBER, "DISCTOTAL", DISC_COUNT,
-		                             "YEAR", YEAR };
+		String[] map = new String[]{
+				// We use a generic filter that accepts any kind of value
+				"TITLE", TITLE,
+				"ARTIST", ARTIST,
+				"ALBUM", ALBUM,
+				"ALBUMARTIST", ALBUMARTIST,
+				"COMPOSER", COMPOSER,
+				"GENRE", GENRE,
+				"TLAN", LANGUAGE,
+				"TMOO", MOOD,
+				"COUNTRY", COUNTRY,
+				"TDAT", ADD_DATE,
+				"ARTISTTYPE", ARTIST_TYPE,
+				"ARTISTLASTSONGADDDATE", ARTIST_LAST_SONG_ADD_DATE,
+				"ARTISTLASTSONGCHANGEDATE", ARTIST_LAST_SONG_CHANGE_DATE,
+				"ALBUMLASTSONGADDDATE", ALBUM_LAST_SONG_ADD_DATE,
+				"ALBUMLASTSONGCHANGEDATE", ALBUM_LAST_SONG_CHANGE_DATE,
+				"ALBUMCOMPLETE", ALBUM_COMPLETE,
+				// Here we use a filter to get integer values
+		        "TRACKNUMBER", TRACK_NUMBER,
+				"TRACKTOTAL", TRACK_COUNT,
+				"DISCNUMBER", DISC_NUMBER,
+				"DISCTOTAL", DISC_COUNT,
+		        "YEAR", YEAR,
+		        "RATING", RATING,
+		        "PLAYCOUNT", PLAY_COUNT,
+		        "ARTISTSONGCOUNT", ARTIST_SONG_COUNT,
+		        "ARTISTALBUMCOUNT", ARTIST_ALBUM_COUNT,
+		        "ALBUMSONGCOUNT", ALBUM_SONG_COUNT
+		};
 		// switch to integer filter if i >= x
-		int filterByIntAt = 12;
+		int filterByIntAt = 32;
 		// the filter we are normally using
 		Pattern filter = sFilterAny;
 
@@ -383,8 +426,9 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 			if (i >= filterByIntAt)
 				filter = sFilterLeftInt;
 
-			if (bastp.containsKey(map[i])) {
-				addFiltered(filter, map[i+1], (ArrayList<String>)bastp.get(map[i]));
+			String key = map[i];
+			if (bastp.containsKey(key)) {
+				addFiltered(filter, map[i+1], (ArrayList<String>)bastp.get(key));
 			}
 		}
 
@@ -405,7 +449,7 @@ public class MediaMetadataExtractor extends HashMap<String, ArrayList<String>> {
 	}
 
 	/**
-	 * Populates `this' with tags read from the MediaMetadataRetriever
+	 * Populates `this' object with tags read from the MediaMetadataRetriever built-in class.
 	 *
 	 * @param tags a MediaMetadataRetriever object
 	 */

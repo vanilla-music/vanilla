@@ -101,7 +101,7 @@ public class WidgetE extends AppWidgetProvider {
 			views.setViewVisibility(R.id.title, View.VISIBLE);
 			views.setViewVisibility(R.id.buttons, View.VISIBLE);
 			views.setTextViewText(R.id.title, song.title);
-			views.setTextViewText(R.id.artist, song.artist);
+			views.setTextViewText(R.id.artist, song.albumArtist);
 		}
 
 		boolean playing = (state & PlaybackService.FLAG_PLAYING) != 0;

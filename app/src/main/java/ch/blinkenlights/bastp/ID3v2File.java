@@ -18,6 +18,8 @@
 
 package ch.blinkenlights.bastp;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
@@ -33,8 +35,12 @@ public class ID3v2File extends Common {
 	private static final int ID3_ENC_UTF8    = 0x03;
 	private static final HashMap<String, String> sOggNames;
 	static {
-		// ID3v2.3 -> ogg mapping
 		sOggNames = new HashMap<String, String>();
+		// ID3v2.4
+		sOggNames.put("TDRC", "YEAR");
+		sOggNames.put("TLAN", "LANGUAGE");
+		sOggNames.put("TMOO", "MOOD");
+		// ID3v2.3 -> ogg mapping
 		sOggNames.put("TIT2", "TITLE");
 		sOggNames.put("TALB", "ALBUM");
 		sOggNames.put("TPE1", "ARTIST");
@@ -160,7 +166,7 @@ public class ID3v2File extends Common {
 			bread += s.read(xpl);
 
 			if(framename.substring(0,1).equals("T")) {
-				TagItem nti = normalizeTaginfo(framename, xpl);
+				TagItem nti = normalizeTagInfo(framename, xpl);
 				if (nti.key.length() > 0) {
 					for (TagItem ti : splitTagPayload(nti)) {
 						addTagEntry(tags, ti.key, ti.value);
@@ -198,19 +204,20 @@ public class ID3v2File extends Common {
 		return res;
 	}
 
-	/* Converts ID3v2 sillyframes to OggNames */
-	private TagItem normalizeTaginfo(String k, byte[] v) {
+	/* Converts ID3v2 silly frames to OggNames */
+	private TagItem normalizeTagInfo(String k, byte[] v) {
 		TagItem ti = new TagItem("", "");
 		if(sOggNames.containsKey(k)) {
 			/* A normal, known key: translate into Ogg-Frame name */
 			ti.key = (String)sOggNames.get(k);
 			ti.value = getDecodedString(v);
+			//Log.w("VanillaMusic", ti.value);
 		}
 		else if(k.equals("TXXX")) {
 			/* A freestyle field, ieks! */
-			String txData[] = getDecodedString(v).split(Character.toString('\0'), 2);
-			/* Check if we got replaygain info in key\0value style */
-			if(txData.length == 2 && txData[0].matches("^(?i)REPLAYGAIN_(ALBUM|TRACK)_GAIN$")) {
+			String decoded = getDecodedString(v);
+			String txData[] = decoded.split(Character.toString('\0'), 2);
+			if(txData.length == 2) {
 				ti.key = txData[0].toUpperCase(); /* some tagwriters use lowercase for this */
 				ti.value = txData[1];
 			}

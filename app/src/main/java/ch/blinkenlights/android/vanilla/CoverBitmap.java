@@ -147,7 +147,7 @@ public final class CoverBitmap {
 
 		String title = song.title == null ? "" : song.title;
 		String album = song.album == null ? "" : song.album;
-		String artist = song.artist == null ? "" : song.artist;
+		String artist = song.albumArtist == null ? "" : song.albumArtist;
 
 		int titleSize = TEXT_SIZE_BIG;
 		int subSize = TEXT_SIZE;
@@ -232,7 +232,7 @@ public final class CoverBitmap {
 		// that the cover doesn't 'eat' into it.
 		String title = song.title == null ? "" : song.title;
 		String album = song.album == null ? "" : song.album;
-		String artist = song.artist == null ? "" : song.artist;
+		String artist = song.albumArtist == null ? "" : song.albumArtist;
 		// Space required to draw the bottom text.
 		int textTotalHeight = padding + textSizeBig + (padding+textSize) * 2 + padding;
 		// Y coord where text shall be placed.

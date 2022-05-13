@@ -831,7 +831,7 @@ public final class SongTimeline {
 						long id;
 						switch (type) {
 						case MediaUtils.TYPE_ARTIST:
-							id = song.artistId;
+							id = song.albumArtistId;
 							break;
 						case MediaUtils.TYPE_ALBUM:
 							id = song.albumId;

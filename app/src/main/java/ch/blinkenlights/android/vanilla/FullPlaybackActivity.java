@@ -250,7 +250,7 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 			} else {
 				mTitle.setText(song.title);
 				mAlbum.setText(song.album);
-				mArtist.setText(song.artist);
+				mArtist.setText(song.albumArtist);
 			}
 			updateQueuePosition();
 		}

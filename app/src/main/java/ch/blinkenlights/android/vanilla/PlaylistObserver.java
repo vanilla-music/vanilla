@@ -568,7 +568,7 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 	}
 
 	/**
-	 * Obtain a cursor to our metadaata database.
+	 * Obtain a cursor to our metadata database.
 	 *
 	 * @param selection selection for query
 	 * @return cursor with results.

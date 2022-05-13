@@ -363,13 +363,13 @@ public class MediaLibrary  {
 	 *
 	 * @param context the context to use
 	 * @param table the table to query, one of MediaLibrary.TABLE_*
-	 * @param projection the columns to returns in this query
-	 * @param selection the selection (WHERE) to use
-	 * @param selectionArgs arguments for the selection
+	 * @param columns the columns to returns in this query
+	 * @param criteria the criteria used as part of the WHERE clause
+	 * @param criteriaArgs arguments for the criteria. You may include question marks (?) in the criteria which will be replaced by the values from the args in the order they appear.
 	 * @param orderBy how the result should be sorted
 	 */
-	public static Cursor queryLibrary(Context context, String table, String[] projection, String selection, String[] selectionArgs, String orderBy) {
-		return getBackend(context).query(false, table, projection, selection, selectionArgs, null, null, orderBy, null);
+	public static Cursor queryLibrary(Context context, String table, String[] columns, String criteria, String[] criteriaArgs, String orderBy) {
+		return getBackend(context).query(false, table, columns, criteria, criteriaArgs, null, null, orderBy, null);
 	}
 
 	/**
@@ -450,10 +450,10 @@ public class MediaLibrary  {
 	public static int addToPlaylist(Context context, long playlistId, ArrayList<Long> ids) {
 		long pos = 0;
 		// First we need to get the position of the last item
-		String[] projection = { MediaLibrary.PlaylistSongColumns.POSITION };
-		String selection = MediaLibrary.PlaylistSongColumns.PLAYLIST_ID+"="+playlistId;
+		String[] columns = { MediaLibrary.PlaylistSongColumns.POSITION };
+		String criteria = MediaLibrary.PlaylistSongColumns.PLAYLIST_ID+"="+playlistId;
 		String order = MediaLibrary.PlaylistSongColumns.POSITION+" DESC";
-		Cursor cursor = queryLibrary(context, MediaLibrary.TABLE_PLAYLISTS_SONGS, projection, selection, null, order);
+		Cursor cursor = queryLibrary(context, MediaLibrary.TABLE_PLAYLISTS_SONGS, columns, criteria, null, order);
 		if (cursor.moveToFirst())
 			pos = cursor.getLong(0) + 1;
 		cursor.close();
@@ -481,16 +481,16 @@ public class MediaLibrary  {
 	 * Removes a set of items from a playlist
 	 *
 	 * @param context the context to use
-	 * @param selection the selection for the items to drop
-	 * @param selectionArgs arguments for `selection'
+	 * @param criteria the selection for the items to drop
+	 * @param criteriaArgs arguments for `selection'
 	 * @return the number of deleted rows, -1 on error
 	 */
-	public static int removeFromPlaylist(Context context, String selection, String[] selectionArgs) {
+	public static int removeFromPlaylist(Context context, String criteria, String[] criteriaArgs) {
 		// Grab the list of affected playlist id's before performing a delete.
 		// These are needed for the observer notification.
 		ArrayList<Long> playlists = new ArrayList<>();
-		String[] projection = { "DISTINCT("+MediaLibrary.PlaylistSongColumns.PLAYLIST_ID+")" };
-		Cursor cursor = queryLibrary(context, MediaLibrary.TABLE_PLAYLISTS_SONGS, projection, selection, selectionArgs, null);
+		String[] columns = { "DISTINCT("+MediaLibrary.PlaylistSongColumns.PLAYLIST_ID+")" };
+		Cursor cursor = queryLibrary(context, MediaLibrary.TABLE_PLAYLISTS_SONGS, columns, criteria, criteriaArgs, null);
 		while(cursor.moveToNext()) {
 			playlists.add(cursor.getLong(0));
 		}
@@ -498,7 +498,7 @@ public class MediaLibrary  {
 
 		int affected = 0;
 		if (playlists.size() > 0) {
-			affected = getBackend(context).delete(MediaLibrary.TABLE_PLAYLISTS_SONGS, selection, selectionArgs);
+			affected = getBackend(context).delete(MediaLibrary.TABLE_PLAYLISTS_SONGS, criteria, criteriaArgs);
 			for (long id : playlists) {
 				notifyObserver(LibraryObserver.Type.PLAYLIST, id, false);
 			}
@@ -543,18 +543,18 @@ public class MediaLibrary  {
 	public static void movePlaylistItem(Context context, long from, long to) {
 		long fromPos, toPos, playlistId;
 
-		String[] projection = { MediaLibrary.PlaylistSongColumns.POSITION, MediaLibrary.PlaylistSongColumns.PLAYLIST_ID };
-		String selection = MediaLibrary.PlaylistSongColumns._ID+"=";
+		String[] columns = { MediaLibrary.PlaylistSongColumns.POSITION, MediaLibrary.PlaylistSongColumns.PLAYLIST_ID };
+		String criteria = MediaLibrary.PlaylistSongColumns._ID+"=";
 
 		// Get playlist id and position of the 'from' item
-		Cursor cursor = queryLibrary(context, MediaLibrary.TABLE_PLAYLISTS_SONGS, projection, selection+Long.toString(from), null, null);
+		Cursor cursor = queryLibrary(context, MediaLibrary.TABLE_PLAYLISTS_SONGS, columns, criteria+Long.toString(from), null, null);
 		cursor.moveToFirst();
 		fromPos = cursor.getLong(0);
 		playlistId = cursor.getLong(1);
 		cursor.close();
 
 		// Get position of the target item
-		cursor = queryLibrary(context, MediaLibrary.TABLE_PLAYLISTS_SONGS, projection, selection+Long.toString(to), null, null);
+		cursor = queryLibrary(context, MediaLibrary.TABLE_PLAYLISTS_SONGS, columns, criteria+Long.toString(to), null, null);
 		cursor.moveToFirst();
 		toPos = cursor.getLong(0);
 		cursor.close();
@@ -565,13 +565,13 @@ public class MediaLibrary  {
 
 		// shift all rows +1
 		String setArg = MediaLibrary.PlaylistSongColumns.POSITION+"="+MediaLibrary.PlaylistSongColumns.POSITION+"+1";
-		selection = MediaLibrary.PlaylistSongColumns.PLAYLIST_ID+"="+playlistId+" AND "+MediaLibrary.PlaylistSongColumns.POSITION+" >= "+toPos;
-		getBackend(context).execSQL("UPDATE "+MediaLibrary.TABLE_PLAYLISTS_SONGS+" SET "+setArg+" WHERE "+selection);
+		criteria = MediaLibrary.PlaylistSongColumns.PLAYLIST_ID+"="+playlistId+" AND "+MediaLibrary.PlaylistSongColumns.POSITION+" >= "+toPos;
+		getBackend(context).execSQL("UPDATE "+MediaLibrary.TABLE_PLAYLISTS_SONGS+" SET "+setArg+" WHERE "+criteria);
 
 		ContentValues v = new ContentValues();
 		v.put(MediaLibrary.PlaylistSongColumns.POSITION, toPos);
-		selection = MediaLibrary.PlaylistSongColumns._ID+"="+from;
-		getBackend(context).update(MediaLibrary.TABLE_PLAYLISTS_SONGS, v, selection, null);
+		criteria = MediaLibrary.PlaylistSongColumns._ID+"="+from;
+		getBackend(context).update(MediaLibrary.TABLE_PLAYLISTS_SONGS, v, criteria, null);
 
 		notifyObserver(LibraryObserver.Type.PLAYLIST, playlistId, false);
 	}
@@ -613,6 +613,13 @@ public class MediaLibrary  {
 
 		long hash = 0;
 		int len = str.length();
+
+		// Remove invisible BOM
+		if (len > 0 && str.charAt(0) == 65279) {
+			str = str.substring(1);
+			len--;
+		}
+
 		for (int i = 0; i < len ; i++) {
 			hash = 31*hash + str.charAt(i);
 		}

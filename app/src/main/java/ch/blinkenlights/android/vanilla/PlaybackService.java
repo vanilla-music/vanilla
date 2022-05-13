@@ -1166,7 +1166,8 @@ public final class PlaybackService extends Service
 			intent.putExtra("playing", (mState & FLAG_PLAYING) != 0);
 			intent.putExtra("track", song.title);
 			intent.putExtra("album", song.album);
-			intent.putExtra("artist", song.artist);
+			intent.putExtra("artist", song.albumArtist);
+			intent.putExtra("albumArtist", song.albumArtist);
 			if (androidIds[0] != -1) {
 				intent.putExtra("songid", androidIds[0]);
 				intent.putExtra("albumid", androidIds[1]);
@@ -1740,8 +1741,8 @@ public final class PlaybackService extends Service
 	public int deleteMedia(int type, long id)
 	{
 		int count = 0;
-		String[] projection = new String [] { MediaLibrary.SongColumns._ID, MediaLibrary.SongColumns.PATH };
-		Cursor cursor = MediaUtils.buildQuery(type, id, projection, null).runQuery(getApplicationContext());
+		String[] columns = new String [] { MediaLibrary.SongColumns._ID, MediaLibrary.SongColumns.PATH };
+		Cursor cursor = MediaUtils.buildQuery(type, id, columns, null).runQuery(getApplicationContext());
 
 		if (cursor != null) {
 			while (cursor.moveToNext()) {
@@ -1873,7 +1874,7 @@ public final class PlaybackService extends Service
 		long id;
 		switch (type) {
 		case MediaUtils.TYPE_ARTIST:
-			id = song.artistId;
+			id = song.albumArtistId;
 			break;
 		case MediaUtils.TYPE_ALBUM:
 			id = song.albumId;
@@ -2143,7 +2144,7 @@ public final class PlaybackService extends Service
 			.setLargeIcon(cover)
 			.setContentTitle(song.title)
 			.setContentText(song.album)
-			.setSubText(song.artist)
+			.setSubText(song.albumArtist)
 			.setContentIntent(mNotificationAction)
 			.addAction(new NotificationCompat.Action(R.drawable.previous,
 													 getString(R.string.previous_song), PendingIntent.getService(this, 0, previous, 0)))

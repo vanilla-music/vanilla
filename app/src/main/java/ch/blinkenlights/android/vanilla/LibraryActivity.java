@@ -621,8 +621,8 @@ public class LibraryActivity
 	 */
 	private void setLimiter(int limiterType, String selection)
 	{
-		String[] projection = new String[] { MediaLibrary.ContributorColumns.ARTIST_ID, MediaLibrary.SongColumns.ALBUM_ID, MediaLibrary.ContributorColumns.ARTIST, MediaLibrary.AlbumColumns.ALBUM };
-		QueryTask query = new QueryTask(MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS, projection, selection, null, null);
+		String[] columns = new String[] { MediaLibrary.ContributorColumns.ALBUMARTIST_ID, MediaLibrary.SongColumns.ALBUM_ID, MediaLibrary.ContributorColumns.ALBUMARTIST, MediaLibrary.AlbumColumns.ALBUM };
+		QueryTask query = new QueryTask(MediaLibrary.VIEW_SONGS_ALBUMS_ARTISTS, columns, selection, null, null);
 		Cursor cursor = query.runQuery(getApplicationContext());
 
 		if (cursor != null) {
@@ -630,13 +630,18 @@ public class LibraryActivity
 				String[] fields;
 				String data;
 				switch (limiterType) {
-				case MediaUtils.TYPE_ARTIST:
-					fields = new String[] { cursor.getString(2) };
-					data = String.format(MediaLibrary.ContributorColumns.ARTIST_ID+"=%d", cursor.getLong(0));
+				case MediaUtils.TYPE_ALBARTIST:
+					long albumArtistId = cursor.getLong(0);
+					String albumArtist1 = cursor.getString(2);
+					fields = new String[] { albumArtist1 };
+					data = String.format(MediaLibrary.ContributorColumns.ALBUMARTIST_ID+"=%d", albumArtistId);
 					break;
 				case MediaUtils.TYPE_ALBUM:
-					fields = new String[] { cursor.getString(2), cursor.getString(3) };
-					data = String.format(MediaLibrary.SongColumns.ALBUM_ID+"=%d", cursor.getLong(1));
+					long albumId = cursor.getLong(1);
+					String albumArtist2 = cursor.getString(2);
+					String album = cursor.getString(3);
+					fields = new String[] { albumArtist2, album };
+					data = String.format(MediaLibrary.SongColumns.ALBUM_ID+"=%d", albumId);
 					break;
 				default:
 					throw new IllegalArgumentException("setLimiter() does not support limiter type " + limiterType);

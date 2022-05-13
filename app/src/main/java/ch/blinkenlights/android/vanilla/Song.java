@@ -53,14 +53,17 @@ public class Song implements Comparable<Song> {
 		MediaLibrary.SongColumns._ID,
 	};
 
-	public static final String[] FILLED_PROJECTION = {
+    /**
+     * _id, path, title, album, albumartist, album_id, albumartist_id, duration, song_number, disc_number, flags
+     */
+    public static final String[] FILLED_PROJECTION = {
 		MediaLibrary.SongColumns._ID,
 		MediaLibrary.SongColumns.PATH,
 		MediaLibrary.SongColumns.TITLE,
 		MediaLibrary.AlbumColumns.ALBUM,
-		MediaLibrary.ContributorColumns.ARTIST,
+		MediaLibrary.ContributorColumns.ALBUMARTIST,
 		MediaLibrary.SongColumns.ALBUM_ID,
-		MediaLibrary.ContributorColumns.ARTIST_ID,
+		MediaLibrary.ContributorColumns.ALBUMARTIST_ID,
 		MediaLibrary.SongColumns.DURATION,
 		MediaLibrary.SongColumns.SONG_NUMBER,
 		MediaLibrary.SongColumns.DISC_NUMBER,
@@ -71,14 +74,17 @@ public class Song implements Comparable<Song> {
 		MediaLibrary.PlaylistSongColumns.SONG_ID,
 	};
 
+	/**
+	 * _id, path, title, album, albumartist, album_id, albumartist_id, duration, song_number, disc_number, flags
+	 */
 	public static final String[] FILLED_PLAYLIST_PROJECTION = {
 		MediaLibrary.PlaylistSongColumns.SONG_ID,
 		MediaLibrary.SongColumns.PATH,
 		MediaLibrary.SongColumns.TITLE,
 		MediaLibrary.AlbumColumns.ALBUM,
-		MediaLibrary.ContributorColumns.ARTIST,
+		MediaLibrary.ContributorColumns.ALBUMARTIST,
 		MediaLibrary.SongColumns.ALBUM_ID,
-		MediaLibrary.ContributorColumns.ARTIST_ID,
+		MediaLibrary.ContributorColumns.ALBUMARTIST_ID,
 		MediaLibrary.SongColumns.DURATION,
 		MediaLibrary.SongColumns.SONG_NUMBER,
 		MediaLibrary.SongColumns.DISC_NUMBER,
@@ -101,7 +107,7 @@ public class Song implements Comparable<Song> {
 	/**
 	 * Id of this song's artist in the MediaStore
 	 */
-	public long artistId;
+	public long albumArtistId;
 
 	/**
 	 * Path to the data for this song
@@ -117,9 +123,9 @@ public class Song implements Comparable<Song> {
 	 */
 	public String album;
 	/**
-	 * Artist name
+	 * Album Artist name
 	 */
-	public String artist;
+	public String albumArtist;
 
 	/**
 	 * Length of the song in milliseconds.
@@ -185,9 +191,9 @@ public class Song implements Comparable<Song> {
 		path = cursor.getString(1);
 		title = cursor.getString(2);
 		album = cursor.getString(3);
-		artist = cursor.getString(4);
+		albumArtist = cursor.getString(4);
 		albumId = cursor.getLong(5);
-		artistId = cursor.getLong(6);
+		albumArtistId = cursor.getLong(6);
 		duration = cursor.getLong(7);
 		trackNumber = cursor.getInt(8);
 		discNumber = cursor.getInt(9);

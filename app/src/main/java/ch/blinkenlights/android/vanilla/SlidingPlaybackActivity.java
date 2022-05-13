@@ -221,21 +221,21 @@ public class SlidingPlaybackActivity extends PlaybackActivity
 	{
 		int type = intent.getIntExtra("type", MediaUtils.TYPE_INVALID);
 
-		String[] projection;
+		String[] columns;
 		if (type == MediaUtils.TYPE_PLAYLIST)
-			projection = empty ? Song.EMPTY_PLAYLIST_PROJECTION : Song.FILLED_PLAYLIST_PROJECTION;
+			columns = empty ? Song.EMPTY_PLAYLIST_PROJECTION : Song.FILLED_PLAYLIST_PROJECTION;
 		else
-			projection = empty ? Song.EMPTY_PROJECTION : Song.FILLED_PROJECTION;
+			columns = empty ? Song.EMPTY_PROJECTION : Song.FILLED_PROJECTION;
 
 		long id = intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
 		QueryTask query;
 		if (allSource != null) {
-			query = allSource.buildSongQuery(projection);
+			query = allSource.buildSongQuery(columns);
 			query.data = id;
 		} else if (type == MediaUtils.TYPE_FILE) {
-			query = MediaUtils.buildFileQuery(intent.getStringExtra(LibraryAdapter.DATA_FILE), projection, true /* recursive */);
+			query = MediaUtils.buildFileQuery(intent.getStringExtra(LibraryAdapter.DATA_FILE), columns, true /* recursive */);
 		} else {
-			query = MediaUtils.buildQuery(type, id, projection, null);
+			query = MediaUtils.buildQuery(type, id, columns, null);
 		}
 
 		return query;

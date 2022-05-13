@@ -41,12 +41,12 @@ import android.widget.TextView;
  */
 public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 
-	private static final String[] PROJECTION = new String[] {
+	private static final String[] COLUMNS = new String[] {
 		MediaLibrary.PlaylistSongColumns._ID,
 		MediaLibrary.PlaylistSongColumns.SONG_ID,
 		MediaLibrary.SongColumns.TITLE,
 		MediaLibrary.AlbumColumns.ALBUM,
-		MediaLibrary.ContributorColumns.ARTIST,
+		MediaLibrary.ContributorColumns.ALBUMARTIST,
 		MediaLibrary.SongColumns.ALBUM_ID,
 		MediaLibrary.SongColumns.DURATION,
 	};
@@ -108,7 +108,7 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 		DraggableRow dview = (DraggableRow)view;
 		final String title = cursor.getString(2);
 		final String album = cursor.getString(3);
-		final String artist = cursor.getString(4);
+		final String albumArtist = cursor.getString(4);
 
 		ViewHolder holder = new ViewHolder();
 		holder.title = title;
@@ -116,7 +116,7 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 
 		dview.setupLayout(DraggableRow.LAYOUT_DRAGGABLE);
 		dview.showDragger(mEditable);
-		dview.setText(title, album+", "+artist);
+		dview.setText(title, album+", "+albumArtist);
 		dview.setTag(holder);
 		dview.setDuration(cursor.getLong(6));
 
@@ -168,7 +168,7 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 	 */
 	private Cursor runQuery()
 	{
-		QueryTask query = MediaUtils.buildPlaylistQuery(mPlaylistId, PROJECTION);
+		QueryTask query = MediaUtils.buildPlaylistQuery(mPlaylistId, COLUMNS);
 		return query.runQuery(mContext);
 	}
 

@@ -131,7 +131,7 @@ public class ShowQueueAdapter extends BaseAdapter {
 		Song song = getItem(position);
 
 		if (song.isFilled()) {
-			row.setText(song.title, song.album+" · "+song.artist);
+			row.setText(song.title, song.album+" · "+song.albumArtist);
 			row.setDuration(song.duration);
 			row.getCoverView().setCover(MediaUtils.TYPE_ALBUM, song.albumId, null);
 		}
