@@ -1,28 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical"
+	android:gravity="center_horizontal"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
-	<TimePicker
-		android:id="@+id/sleep_timer_picker"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:timePickerMode="spinner"/>
 
 	<LinearLayout
+		android:orientation="vertical"
+		android:gravity="center_horizontal"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:gravity="center"
-		android:orientation="horizontal">
-		<Button
-			android:id="@+id/sleep_timer_button_ok"
+		android:layout_height="wrap_content">
+		<LinearLayout
+			android:id="@+id/sleep_timer_timer"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:gravity="center"
+			android:orientation="horizontal">
+
+			<NumberPicker
+				android:id="@+id/sleep_timer_hours"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content" />
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/sleep_timer_hours" />
+
+			<NumberPicker
+				android:id="@+id/sleep_timer_minutes"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content" />
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/sleep_timer_minutes" />
+		</LinearLayout>
+		<TextView
 			android:layout_width="wrap_content"
-			android:layout_height="wrap_content" />
-		<Button
-			android:id="@+id/sleep_timer_button_cancel"
-			android:text="@string/sleep_timer_cancel"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"/>
+			android:layout_height="wrap_content"
+			android:textSize="24sp"
+			android:layout_margin="24dp"
+			android:visibility="gone"
+			android:id="@+id/sleep_timer_countdown"/>
 	</LinearLayout>
+	<Button
+		android:id="@+id/sleep_timer_button_ok"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" />
 
 </LinearLayout>

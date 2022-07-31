@@ -420,26 +420,13 @@ public abstract class PlaybackActivity extends Activity
 			PlaybackService.get(this).emptyQueue();
 			break;
 		case MENU_SLEEP_TIMER:
-			Intent intent = new Intent(this, SleepTimerActivity.class);
-			intent.putExtra("sleep_timeout", PlaybackService.get(this).getSleepTimer());
-			startActivityForResult(intent, 1);
+			PlaybackService.get(this);	// force creation with `this` context, if not created yet
+			startActivity(new Intent(this, SleepTimerActivity.class));
 			break;
 		default:
 			return false;
 		}
 		return true;
-	}
-
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data)
-	{
-		if(requestCode != 1 || resultCode != RESULT_OK)
-			// just ignore it
-			return;
-
-		int sleep_timeout = data.getIntExtra("sleep_timeout", -1);
-
-		PlaybackService.get(this).setSleepTimer(sleep_timeout);
 	}
 
 
