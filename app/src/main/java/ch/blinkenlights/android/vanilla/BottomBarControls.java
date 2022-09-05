@@ -293,7 +293,8 @@ public class BottomBarControls extends LinearLayout
 	 * Because ...reasons.
 	 */
 	private boolean menuMargin() {
-		return ThemeHelper.usesHoloTheme() == false;
+		// Was false for holo, maybe will be true again in the future? ;-)
+		return true;
 	}
 
 	/**

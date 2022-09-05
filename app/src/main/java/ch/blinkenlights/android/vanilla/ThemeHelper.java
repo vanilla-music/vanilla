@@ -38,31 +38,28 @@ public class ThemeHelper {
 	 * and platform API.
 	 */
 	final public static int getThemeResource(Context context, int theme) {
-		if(usesHoloTheme() == false) {
-			TypedArray ar = null;
-
-			switch (theme) {
-			case R.style.Playback:
-				ar = context.getResources().obtainTypedArray(R.array.theme_category_playback);
-				break;
-			case R.style.Library:
-				ar = context.getResources().obtainTypedArray(R.array.theme_category_library);
-				break;
-			case R.style.BackActionBar:
-				ar = context.getResources().obtainTypedArray(R.array.theme_category_backactionbar);
-				break;
-			case R.style.PopupDialog:
-				ar = context.getResources().obtainTypedArray(R.array.theme_category_popupdialog);
-				break;
-			case R.style.BottomSheetDialog:
-				ar = context.getResources().obtainTypedArray(R.array.theme_category_bottomsheetdialog);
-				break;
-			default:
-				throw new IllegalArgumentException("setTheme() called with unknown theme!");
-			}
-			theme = ar.getResourceId(getSelectedThemeIndex(context), -1);
-			ar.recycle();
+		TypedArray ar = null;
+		switch (theme) {
+		case R.style.Playback:
+			ar = context.getResources().obtainTypedArray(R.array.theme_category_playback);
+			break;
+		case R.style.Library:
+			ar = context.getResources().obtainTypedArray(R.array.theme_category_library);
+			break;
+		case R.style.BackActionBar:
+			ar = context.getResources().obtainTypedArray(R.array.theme_category_backactionbar);
+			break;
+		case R.style.PopupDialog:
+			ar = context.getResources().obtainTypedArray(R.array.theme_category_popupdialog);
+			break;
+		case R.style.BottomSheetDialog:
+			ar = context.getResources().obtainTypedArray(R.array.theme_category_bottomsheetdialog);
+			break;
+		default:
+			throw new IllegalArgumentException("setTheme() called with unknown theme!");
 		}
+		theme = ar.getResourceId(getSelectedThemeIndex(context), -1);
+		ar.recycle();
 		return theme;
 	}
 
@@ -73,14 +70,7 @@ public class ThemeHelper {
 	 */
 	final public static int getPlayButtonResource(boolean playing)
 	{
-		int playButton = 0;
-		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-			// Android >= 5.0 uses the dark version of this drawable
-			playButton = playing ? R.drawable.widget_pause : R.drawable.widget_play;
-		} else {
-			playButton = playing ? R.drawable.pause : R.drawable.play;
-		}
-		return playButton;
+		return playing ? R.drawable.widget_pause : R.drawable.widget_play;
 	}
 
 	/**
@@ -89,12 +79,9 @@ public class ThemeHelper {
 	 */
 	final private static boolean usesDarkTheme(Context context)
 	{
-		boolean useDark = false;
-		if(usesHoloTheme() == false) {
-			final int idx = getSelectedThemeIndex(context);
-			final String[] variants = context.getResources().getStringArray(R.array.theme_variant);
-			useDark = variants[idx].equals("dark");
-		}
+		final int idx = getSelectedThemeIndex(context);
+		final String[] variants = context.getResources().getStringArray(R.array.theme_variant);
+		boolean useDark = variants[idx].equals("dark");
 		return useDark;
 	}
 
@@ -118,13 +105,6 @@ public class ThemeHelper {
 	}
 
 	/**
-	 * Returns TRUE if this device uses the HOLO (android 4) theme
-	 */
-	final public static boolean usesHoloTheme() {
-		return (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP);
-	}
-
-	/**
 	 * Fetches a color resource from the current theme
 	 */
 	final public static int fetchThemeColor(Context context, int resId) {
@@ -138,9 +118,6 @@ public class ThemeHelper {
 	 * Returns the color to be used to draw the placeholder cover.
 	 */
 	final public static int[] getDefaultCoverColors(Context context) {
-		if (usesHoloTheme()) // pre material device
-			return new int[] { 0xff000000, 0xff404040 };
-
 		int bg = fetchThemeColor(context, android.R.attr.colorBackground);
 		int diff = 0x00171717 * (bg > 0xFF888888 ? -1 : 1);
 		return new int[]{ bg, bg+diff };

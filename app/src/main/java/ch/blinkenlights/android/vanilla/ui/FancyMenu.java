@@ -151,13 +151,9 @@ public class FancyMenu {
 	 */
 	private Adapter assembleAdapter(ArrayList<ArrayList<FancyMenuItem>> items) {
 	    final Adapter adapter = new Adapter(mContext, 0);
-		// spacers look awful on holo themes
-		final boolean usesSpacers = !ThemeHelper.usesHoloTheme();
 		for (ArrayList<FancyMenuItem> sub : items) {
 			for (FancyMenuItem item : sub ) {
-				if (usesSpacers || !item.isSpacer()) {
-					adapter.add(item);
-				}
+				adapter.add(item);
 			}
 		}
 		return adapter;

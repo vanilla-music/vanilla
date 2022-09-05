@@ -527,9 +527,7 @@ public final class PlaybackService extends Service
 		mAccelLast = SensorManager.GRAVITY_EARTH;
 		setupSensor();
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-			ScheduledLibraryUpdate.scheduleUpdate(this);
-		}
+		ScheduledLibraryUpdate.scheduleUpdate(this);
 	}
 
 	@Override
@@ -799,9 +797,6 @@ public final class PlaybackService extends Service
 	private void triggerGaplessUpdate() {
 		if(mMediaPlayerInitialized != true)
 			return;
-
-		if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
-			return; /* setNextMediaPlayer is supported since JB */
 
 		boolean doGapless = false;
 		int fa = finishAction(mState);

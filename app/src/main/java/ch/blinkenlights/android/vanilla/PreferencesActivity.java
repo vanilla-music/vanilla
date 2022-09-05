@@ -86,9 +86,7 @@ public class PreferencesActivity extends PreferenceActivity
 		loadHeadersFromResource(R.xml.preference_headers, tmp);
 
 		for(Header obj : tmp) {
-			// Themes are 5.x only, so do not add PreferencesTheme on holo devices
-			if (!ThemeHelper.usesHoloTheme() || !obj.fragment.equals(PreferencesTheme.class.getName()))
-				target.add(obj);
+			target.add(obj);
 		}
 	}
 

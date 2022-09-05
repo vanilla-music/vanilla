@@ -152,11 +152,7 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 		MediaLibrary.unregisterLibraryObserver(mLibraryObserver);
 		mFileObserver.stopWatching();
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-			mHandlerThread.quitSafely();
-		} else {
-			mHandlerThread.quit();
-		}
+		mHandlerThread.quitSafely();
 		mHandlerThread = null;
 		mHandler = null;
 	}

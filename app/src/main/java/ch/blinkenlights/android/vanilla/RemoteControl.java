@@ -27,10 +27,7 @@ public class RemoteControl {
 	 * Returns a RemoteControl.Client implementation
 	 */
 	public RemoteControl.Client getClient(Context context) {
-		return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ?
-			new RemoteControlImplLp(context) :
-			new RemoteControlImplICS(context)  // legacy implementation, kept until we drop 4.x support
-		);
+		return new RemoteControlImplLp(context);
 	}
 
 	/**
