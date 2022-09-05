@@ -69,6 +69,7 @@ THE SOFTWARE.
 		<activity
 			android:name="LibraryActivity"
 			android:theme="@style/Library"
+			android:exported="true"
 			android:launchMode="singleTask">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
@@ -93,7 +94,8 @@ THE SOFTWARE.
 			android:launchMode="singleInstance" />
 		<receiver
 			android:name=".OneCellWidget"
-			android:label="Vanilla Music 1x1">
+			android:label="Vanilla Music 1x1"
+			android:exported="false">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
 			</intent-filter>
@@ -103,7 +105,8 @@ THE SOFTWARE.
 		</receiver>
 		<receiver
 			android:name=".FourLongWidget"
-			android:label="Vanilla Music 4x1 A">
+			android:label="Vanilla Music 4x1 A"
+			android:exported="false">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
 			</intent-filter>
@@ -113,7 +116,8 @@ THE SOFTWARE.
 		</receiver>
 		<receiver
 			android:name=".FourWhiteWidget"
-			android:label="Vanilla Music 4x1 White">
+			android:label="Vanilla Music 4x1 White"
+			android:exported="false">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
 			</intent-filter>
@@ -123,7 +127,8 @@ THE SOFTWARE.
 		</receiver>
 		<receiver
 			android:name=".WidgetE"
-			android:label="Vanilla Music 4x1 B">
+			android:label="Vanilla Music 4x1 B"
+			android:exported="false">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
 			</intent-filter>
@@ -133,7 +138,8 @@ THE SOFTWARE.
 		</receiver>
 		<receiver
 			android:name=".FourSquareWidget"
-			android:label="Vanilla Music 2x2 A">
+			android:label="Vanilla Music 2x2 A"
+			android:exported="false">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
 			</intent-filter>
@@ -143,7 +149,8 @@ THE SOFTWARE.
 		</receiver>
 		<receiver
 			android:name=".WidgetD"
-			android:label="Vanilla Music 2x2 B">
+			android:label="Vanilla Music 2x2 B"
+			android:exported="false">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
 			</intent-filter>
@@ -151,12 +158,14 @@ THE SOFTWARE.
 				android:name="android.appwidget.provider"
 				android:resource="@xml/widget_d" />
 		</receiver>
-		<receiver android:name="MediaButtonReceiver" >
+		<receiver android:name="MediaButtonReceiver"
+			  android:exported="true">
 			<intent-filter android:priority="999">
 				<action android:name="android.intent.action.MEDIA_BUTTON" />
 			</intent-filter>
 		</receiver>
-		<service android:name="PlaybackService">
+		<service android:name="PlaybackService"
+			 android:exported="false">
 			<intent-filter>
 				<action android:name="ch.blinkenlights.android.vanilla.action.PLAY" />
 				<action android:name="ch.blinkenlights.android.vanilla.action.PAUSE" />
@@ -169,7 +178,7 @@ THE SOFTWARE.
 		<service
 			android:name=".ScheduledLibraryUpdate"
 			android:permission="android.permission.BIND_JOB_SERVICE"
-			android:exported="true"/>
+			android:exported="true" />
 
 		<activity
 			android:name="PreferencesActivity" />
@@ -187,14 +196,17 @@ THE SOFTWARE.
 
 		<activity
 			android:name="ShortcutPseudoActivity"
-			android:theme="@android:style/Theme.Translucent.NoTitleBar">
+			android:theme="@android:style/Theme.Translucent.NoTitleBar"
+			android:exported="false">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN"/>
 			</intent-filter>
 		</activity>
 
-		<activity android:name="AudioPickerActivity" android:theme="@style/PopupDialog"
-			android:excludeFromRecents="true" android:exported="true" >
+		<activity android:name="AudioPickerActivity"
+			  android:theme="@style/PopupDialog"
+			  android:excludeFromRecents="true"
+			  android:exported="true" >
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW" />
 				<category android:name="android.intent.category.DEFAULT" />
@@ -218,6 +230,7 @@ THE SOFTWARE.
 		</activity>
 
 		<activity android:name="AudioSearchActivity" android:theme="@style/PopupDialog"
+			android:exported="true"
 			android:excludeFromRecents="true">
 			<intent-filter>
 				<action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH" />
