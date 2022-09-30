@@ -29,6 +29,7 @@ import ch.blinkenlights.android.vanilla.ui.FancyMenuItem;
 import ch.blinkenlights.android.vanilla.ui.ArrowedText;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -41,6 +42,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.iosched.tabs.VanillaTabLayout;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -119,6 +121,10 @@ public class LibraryActivity
 	 */
 	public static final int ACTION_EXPAND_OR_PLAY_ALL = 9;
 	/**
+	 * Action for row click: Queue all and continue at last known timestamp
+	 */
+	public static final int ACTION_CONTINUE = 10;
+		/**
 	 * The SongTimeline add song modes corresponding to each relevant action.
 	 */
 	private static final int[] modeForAction =
@@ -384,6 +390,7 @@ public class LibraryActivity
 	{
 		int effectiveAction = action; // mutable copy
 		long id = intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
+
 		int type = mCurrentAdapter.getMediaType();
 
 		// special handling if we pick one song to be played that is already in queue
@@ -412,12 +419,30 @@ public class LibraryActivity
 			}
 		}
 
+		if (action == ACTION_CONTINUE) {
+			effectiveAction = ACTION_PLAY;
+		}
+
 		if (id == LibraryAdapter.HEADER_ID)
 			all = true; // page header was clicked -> force all mode
 
 		QueryTask query = buildQueryFromIntent(intent, false, (all ? mCurrentAdapter : null));
 		query.mode = modeForAction[effectiveAction];
 		PlaybackService.get(this).addSongs(query);
+
+		//Delay this a short time, because sometimes the playlist is not ready and the queue is empty so it cannot set the track properly
+		final long fid= id;
+		final Context c = this;
+		Handler handler = new Handler();
+		handler.postDelayed(new Runnable() {
+			public void run() {
+				long ls = MediaLibrary.getAlbumLastSong(c,fid);
+				int newpos = PlaybackService.get(c).getQueuePositionForSongId(ls);
+				if(action == ACTION_CONTINUE){
+					PlaybackService.get(c).jumpToQueuePosition(newpos);
+				}
+			}
+		}, 50);   //50 milliseconds
 
 		if (mDefaultAction == ACTION_LAST_USED && mLastAction != action) {
 			mLastAction = action;
@@ -465,6 +490,25 @@ public class LibraryActivity
 		int action = mDefaultAction;
 		if (action == ACTION_LAST_USED)
 			action = mLastAction;
+
+
+		int type = rowData.getIntExtra(LibraryAdapter.DATA_TYPE, MediaUtils.TYPE_INVALID);
+		int timestampAlbumState = MediaLibrary.getAlbumUseSongTimestamp(this, rowData.getLongExtra("id", LibraryAdapter.INVALID_ID));
+
+		boolean state = false;
+		if(timestampAlbumState == 1){
+			state = true;
+		}
+
+		SharedPreferences settings = SharedPrefHelper.getSettings(this);
+		if(settings.getBoolean(PrefKeys.JUMP_TO_LAST_POSITION_OF_TRACK_STATE, PrefDefaults.JUMP_TO_LAST_POSITION_OF_TRACK_STATE) && timestampAlbumState == -1){
+			state = true;
+		}
+
+		if (type == MediaUtils.TYPE_ALBUM && state){
+			pickSongs(rowData, ACTION_CONTINUE);
+			return;
+		}
 
 		boolean tryExpand = action == ACTION_EXPAND || action == ACTION_EXPAND_OR_PLAY_ALL;
 		if (tryExpand && rowData.getBooleanExtra(LibraryAdapter.DATA_EXPANDABLE, false)) {
@@ -663,6 +707,9 @@ public class LibraryActivity
 	private static final int CTX_MENU_SHOW_DETAILS = 12;
 	private static final int CTX_MENU_ADD_TO_HOMESCREEN = 13;
 	private static final int CTX_MENU_ADD_TO_PLAYLIST = 14;
+	private static final int CTX_MENU_PLAY_ALL_START_WITH_LAST_PLAYED = 15;
+	private static final int CTX_MENU_STORE_TIMESTAMP_FOR_ALBUM = 16;
+	private static final int CTX_MENU_DONT_STORE_TIMESTAMP_FOR_ALBUM = 17;
 
 	/**
 	 * Creates a context menu for an adapter row.
@@ -697,13 +744,37 @@ public class LibraryActivity
 			if (type <= MediaUtils.TYPE_SONG || type == MediaUtils.TYPE_FILE)
 				fm.add(CTX_MENU_PLAY_ALL, 1, R.drawable.menu_play_all, R.string.play_all).setIntent(rowData);
 
+
+			if(type == MediaUtils.TYPE_ALBUM){
+				fm.add(CTX_MENU_PLAY_ALL_START_WITH_LAST_PLAYED, 1, R.drawable.menu_play_all, R.string.play_all_start_with_last_played).setIntent(rowData);
+			}
+
 			fm.add(CTX_MENU_ENQUEUE_AS_NEXT, 1, R.drawable.menu_enqueue_as_next, R.string.enqueue_as_next).setIntent(rowData);
 			fm.add(CTX_MENU_ENQUEUE, 1, R.drawable.menu_enqueue, R.string.enqueue).setIntent(rowData);
+
 
 			if (type == MediaUtils.TYPE_PLAYLIST) {
 				fm.add(CTX_MENU_RENAME_PLAYLIST, 0, R.drawable.menu_edit, R.string.rename).setIntent(rowData);
 			} else if (rowData.getBooleanExtra(LibraryAdapter.DATA_EXPANDABLE, false)) {
 				fm.add(CTX_MENU_EXPAND, 2, R.drawable.menu_expand, R.string.expand).setIntent(rowData);
+			}
+
+			int timestampstate = MediaLibrary.getAlbumUseSongTimestamp(this, rowData.getLongExtra("id", LibraryAdapter.INVALID_ID));
+			if(type == MediaUtils.TYPE_ALBUM){
+				fm.addSpacer(10);
+				if (timestampstate == 0) {
+					fm.add(CTX_MENU_STORE_TIMESTAMP_FOR_ALBUM, 11, R.drawable.ic_add_black_24dp, R.string.store_album_timestamp).setIntent(rowData);
+				}else if (timestampstate == 1){
+					fm.add(CTX_MENU_DONT_STORE_TIMESTAMP_FOR_ALBUM, 11, R.drawable.ic_clear_black_24dp, R.string.dont_store_album_timestamp).setIntent(rowData);
+				}else{
+
+					SharedPreferences settings = SharedPrefHelper.getSettings(this);
+					if(!settings.getBoolean(PrefKeys.JUMP_TO_LAST_POSITION_OF_TRACK_STATE, PrefDefaults.JUMP_TO_LAST_POSITION_OF_TRACK_STATE)){
+						fm.add(CTX_MENU_STORE_TIMESTAMP_FOR_ALBUM, 11, R.drawable.ic_add_black_24dp, R.string.store_album_timestamp).setIntent(rowData);
+					}else {
+						fm.add(CTX_MENU_DONT_STORE_TIMESTAMP_FOR_ALBUM, 11, R.drawable.ic_clear_black_24dp, R.string.dont_store_album_timestamp).setIntent(rowData);
+					}
+				}
 			}
 
 			if (type == MediaUtils.TYPE_SONG || type == MediaUtils.TYPE_ALBUM) {
@@ -719,6 +790,7 @@ public class LibraryActivity
 					}
 				}
 			}
+
 			fm.addSpacer(90);
 			fm.add(CTX_MENU_DELETE, 91, R.drawable.menu_delete, R.string.delete).setIntent(rowData);
 		}
@@ -758,6 +830,15 @@ public class LibraryActivity
 			break;
 		case CTX_MENU_PLAY_ALL:
 			pickSongs(intent, ACTION_PLAY_ALL);
+			break;
+		case CTX_MENU_PLAY_ALL_START_WITH_LAST_PLAYED:
+			pickSongs(intent, ACTION_CONTINUE);
+			break;
+		case CTX_MENU_STORE_TIMESTAMP_FOR_ALBUM:
+			MediaLibrary.updateAlbumUseSongTimestamp(this, intent.getLongExtra("id", LibraryAdapter.INVALID_ID),true);
+			break;
+		case CTX_MENU_DONT_STORE_TIMESTAMP_FOR_ALBUM:
+			MediaLibrary.updateAlbumUseSongTimestamp(this, intent.getLongExtra("id", LibraryAdapter.INVALID_ID),false);
 			break;
 		case CTX_MENU_ENQUEUE_ALL:
 			pickSongs(intent, ACTION_ENQUEUE_ALL);
