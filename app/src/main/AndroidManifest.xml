@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-Copyright (C) 2012-2018 Adrian Ulrich <adrian@blinkenlights.ch>
+Copyright (C) 2012-2022 Adrian Ulrich <adrian@blinkenlights.ch>
 Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,8 +23,8 @@ THE SOFTWARE.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="ch.blinkenlights.android.vanilla"
-	android:versionName="1.1.0"
-	android:versionCode="11001"
+	android:versionName="1.2.0"
+	android:versionCode="12001"
 	android:installLocation="auto">
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 	<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
