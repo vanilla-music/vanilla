@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2016 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2015-2022 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -137,6 +137,9 @@ public class PermissionRequestActivity extends Activity {
 	}
 
 	private static String[] getNeededPermissions() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+			return new String[] { Manifest.permission.READ_MEDIA_AUDIO, Manifest.permission.READ_MEDIA_IMAGES };
+		}
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
 			return new String[] { Manifest.permission.READ_EXTERNAL_STORAGE };
 		}
