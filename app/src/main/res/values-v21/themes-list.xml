@@ -13,6 +13,7 @@
 		<item>@style/Red_light.BackActionBar</item>
 		<item>@style/Red_dark.BackActionBar</item>
 		<item>@style/Amoled_dark.BackActionBar</item>
+		<item>@style/Start_wearing_purple.BackActionBar</item>
 	</integer-array>
 
 	<integer-array name="theme_category_bottomsheetdialog">
@@ -27,6 +28,7 @@
 		<item>@style/Red_light.BottomSheetDialog</item>
 		<item>@style/Red_dark.BottomSheetDialog</item>
 		<item>@style/Amoled_dark.BottomSheetDialog</item>
+		<item>@style/Start_wearing_purple.BottomSheetDialog</item>
 	</integer-array>
 
 	<integer-array name="theme_category_library">
@@ -41,6 +43,7 @@
 		<item>@style/Red_light.Library</item>
 		<item>@style/Red_dark.Library</item>
 		<item>@style/Amoled_dark.Library</item>
+		<item>@style/Start_wearing_purple.Library</item>
 	</integer-array>
 
 	<integer-array name="theme_category_playback">
@@ -55,6 +58,7 @@
 		<item>@style/Red_light.Playback</item>
 		<item>@style/Red_dark.Playback</item>
 		<item>@style/Amoled_dark.Playback</item>
+		<item>@style/Start_wearing_purple.Playback</item>
 	</integer-array>
 
 	<integer-array name="theme_category_popupdialog">
@@ -69,6 +73,7 @@
 		<item>@style/Red_light.PopupDialog</item>
 		<item>@style/Red_dark.PopupDialog</item>
 		<item>@style/Amoled_dark.PopupDialog</item>
+		<item>@style/Start_wearing_purple.PopupDialog</item>
 	</integer-array>
 
 	<integer-array name="theme_category_vanillabase">
@@ -83,6 +88,7 @@
 		<item>@style/Red_light.VanillaBase</item>
 		<item>@style/Red_dark.VanillaBase</item>
 		<item>@style/Amoled_dark.VanillaBase</item>
+		<item>@style/Start_wearing_purple.VanillaBase</item>
 	</integer-array>
 
 	<string-array name="theme_entries">
@@ -97,6 +103,7 @@
 		<item>@string/theme_name_red_light</item>
 		<item>@string/theme_name_red_dark</item>
 		<item>@string/theme_name_amoled_dark</item>
+		<item>@string/theme_name_start_wearing_purple</item>
 	</string-array>
 
 	<string-array name="theme_ids">
@@ -111,6 +118,7 @@
 		<item>8</item>
 		<item>9</item>
 		<item>10</item>
+		<item>11</item>
 	</string-array>
 
 	<string-array name="theme_values">
@@ -125,6 +133,7 @@
 		<item>#ffb71c1c,#fff0f0f0,#ffc62828</item>
 		<item>#ffb71c1c,#ff2a2a2a,#ffc62828</item>
 		<item>#ff000000,#ff000000,#ff000000</item>
+		<item>#ff5C038C,#ff1B1734,#ff420264</item>
 	</string-array>
 
 	<string-array name="theme_variant">
@@ -137,6 +146,7 @@
 		<item>light</item>
 		<item>dark</item>
 		<item>light</item>
+		<item>dark</item>
 		<item>dark</item>
 		<item>dark</item>
 	</string-array>
