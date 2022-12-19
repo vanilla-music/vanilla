@@ -133,7 +133,7 @@
 		<item>#ffb71c1c,#fff0f0f0,#ffc62828</item>
 		<item>#ffb71c1c,#ff2a2a2a,#ffc62828</item>
 		<item>#ff000000,#ff000000,#ff000000</item>
-		<item>#ff5C038C,#ff1B1734,#ff420264</item>
+		<item>#FF420264,#ff1B1734,#FF5C038C</item>
 	</string-array>
 
 	<string-array name="theme_variant">
