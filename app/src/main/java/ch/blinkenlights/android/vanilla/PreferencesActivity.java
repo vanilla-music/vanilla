@@ -41,6 +41,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewFragment;
+import android.widget.Toast;
 import android.content.Context;
 import android.content.Intent;
 import android.media.audiofx.AudioEffect;
@@ -289,10 +290,14 @@ public class PreferencesActivity extends PreferenceActivity
 				.setMessage(R.string.headset_launch_app_missing)
 				.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
-						Intent marketIntent = new Intent(Intent.ACTION_VIEW);
-						marketIntent.setData(Uri.parse("market://details?id="+VPLUG_PACKAGE_NAME));
-						startActivity(marketIntent);
-						getActivity().onBackPressed();
+						try {
+							Intent marketIntent = new Intent(Intent.ACTION_VIEW);
+							marketIntent.setData(Uri.parse("market://details?id="+VPLUG_PACKAGE_NAME));
+							startActivity(marketIntent);
+							getActivity().onBackPressed();
+						} catch (android.content.ActivityNotFoundException e) {
+							Toast.makeText(getActivity(), "Failed to open market: " + e, Toast.LENGTH_SHORT).show();
+						}
 					}
 				})
 				.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
