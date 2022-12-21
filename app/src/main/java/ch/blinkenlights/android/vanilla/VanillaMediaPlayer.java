@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>. 
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 
@@ -27,6 +27,8 @@ import android.os.Build;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class VanillaMediaPlayer extends MediaPlayer {
 
@@ -36,6 +38,9 @@ public class VanillaMediaPlayer extends MediaPlayer {
 	private float mReplayGain = Float.NaN;
 	private float mDuckingFactor = Float.NaN;
 	private boolean mIsDucking = false;
+	private float volume = 1;
+	private final int FADE_DURATION = 2000;
+	private final int FADE_INTERVAL = 200;
 
 	/**
 	 * Constructs a new VanillaMediaPlayer class
@@ -164,6 +169,60 @@ public class VanillaMediaPlayer extends MediaPlayer {
 		}
 
 		setVolume(volume, volume);
+	}
+
+	public void startFadeIn() {
+		volume = 0;
+		final int FADE_DURATION = 2000;
+		final int FADE_INTERVAL = 200;
+		final int MAX_VOLUME = 1;
+		int numberOfSteps = FADE_DURATION / FADE_INTERVAL;
+		final float deltaVolume = MAX_VOLUME / (float) numberOfSteps;
+
+		final Timer timer = new Timer(true);
+		TimerTask timerTask = new TimerTask() {
+			@Override
+			public void run() {
+				fadeInStep(deltaVolume);
+				if (volume >= 1f) {
+					timer.cancel();
+					timer.purge();
+				}
+			}
+		};
+
+		timer.schedule(timerTask, FADE_INTERVAL, FADE_INTERVAL);
+	}
+
+	private void fadeInStep(float deltaVolume) {
+		setVolume(volume, volume);
+		volume += deltaVolume;
+
+	}
+
+	public void startFadeOut(){
+		volume = 1;
+		int numberOfSteps = FADE_DURATION / FADE_INTERVAL;
+
+		final float deltaVolume = volume / numberOfSteps;
+		final Timer timer = new Timer(true);
+		TimerTask timerTask = new TimerTask() {
+			@Override
+			public void run() {
+				fadeOutStep(deltaVolume);
+				if(volume <= 0){
+					timer.cancel();
+					timer.purge();
+					pause();
+				}
+			}
+		};
+		timer.schedule(timerTask,FADE_INTERVAL,FADE_INTERVAL);
+	}
+
+	private void fadeOutStep(float deltaVolume){
+		setVolume(volume, volume);
+		volume -= deltaVolume;
 	}
 
 }

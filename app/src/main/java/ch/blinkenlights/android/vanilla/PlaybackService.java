@@ -421,6 +421,10 @@ public final class PlaybackService extends Service
 	 */
 	private boolean mIgnoreAudioFocusLoss;
 	/**
+	 * Fade in or out the audio on start/pause
+	 */
+	private boolean mSmoothFade;
+	/**
 	 * TRUE if the readahead feature is enabled
 	 */
 	private boolean mReadaheadEnabled;
@@ -468,6 +472,7 @@ public final class PlaybackService extends Service
 		CoverCache.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_VANILLA, PrefDefaults.COVERLOADER_VANILLA) ? CoverCache.mCoverLoadMode | CoverCache.COVER_MODE_VANILLA : CoverCache.mCoverLoadMode & ~(CoverCache.COVER_MODE_VANILLA);
 		CoverCache.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_SHADOW , PrefDefaults.COVERLOADER_SHADOW)  ? CoverCache.mCoverLoadMode | CoverCache.COVER_MODE_SHADOW  : CoverCache.mCoverLoadMode & ~(CoverCache.COVER_MODE_SHADOW);
 		CoverCache.mCoverLoadMode = settings.getBoolean(PrefKeys.COVERLOADER_INLINE , PrefDefaults.COVERLOADER_INLINE)  ? CoverCache.mCoverLoadMode | CoverCache.COVER_MODE_INLINE  : CoverCache.mCoverLoadMode & ~(CoverCache.COVER_MODE_INLINE);
+		mSmoothFade = settings.getBoolean(PrefKeys.SMOOTH_FADE, PrefDefaults.SMOOTH_FADE);
 
 		mHeadsetOnly = settings.getBoolean(PrefKeys.HEADSET_ONLY, PrefDefaults.HEADSET_ONLY);
 		mStockBroadcast = settings.getBoolean(PrefKeys.STOCK_BROADCAST, PrefDefaults.STOCK_BROADCAST);
@@ -942,6 +947,8 @@ public final class PlaybackService extends Service
 			ArrayList<TimelineCallback> list = sCallbacks;
 			for (int i = list.size(); --i != -1; )
 				list.get(i).recreate();
+		}else if (PrefKeys.SMOOTH_FADE.equals(key)){
+			mSmoothFade = settings.getBoolean(PrefKeys.SMOOTH_FADE, PrefDefaults.SMOOTH_FADE);
 		}
 		/* Tell androids cloud-backup manager that we just changed our preferences */
 		(new BackupManager(this)).dataChanged();
@@ -1029,10 +1036,12 @@ public final class PlaybackService extends Service
 					mMediaPlayerAudioFxActive = true;
 				}
 
-				if (mMediaPlayerInitialized)
+				if (mMediaPlayerInitialized){
 					mMediaPlayer.start();
-
-				// Update the notification with the current song information.
+					if(mSmoothFade)
+						mMediaPlayer.startFadeIn();
+				}
+					// Update the notification with the current song information.
 				startForeground(NOTIFICATION_ID, createNotification(mCurrentSong, mState, mNotificationVisibility));
 
 				final int result = mAudioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
@@ -1049,7 +1058,8 @@ public final class PlaybackService extends Service
 				}
 			} else {
 				if (mMediaPlayerInitialized)
-					mMediaPlayer.pause();
+					if(mSmoothFade) mMediaPlayer.startFadeOut();
+					else mMediaPlayer.pause();
 
 				// We are switching into background mode. The notification will be removed
 				// unless we forcefully show it (or the user selected to always show it)

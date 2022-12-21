@@ -57,4 +57,10 @@ THE SOFTWARE.
 		android:fragment="ch.blinkenlights.android.vanilla.PreferencesActivity$HeadsetLaunchFragment"
 		android:title="@string/headset_launch_title"
 		android:summary="@string/headset_launch_summary" />
+
+	<CheckBoxPreference
+		android:key="smooth_fade"
+		android:title="@string/smooth_fade_title"
+		android:defaultValue="false"
+		android:summary="@string/smooth_fade_summary" />
 </PreferenceScreen>
