@@ -25,7 +25,7 @@
 		<item name="overlay_background_color">@color/start_wearing_purple_background</item>
 		
 		<item name="overlay_foreground_color">@color/overlay_foreground_dark</item>
-		<item name="float_color">@color/material_grey_300</item>
+		<item name="float_color">#FF420264</item>
 		<item name="background_circle_color">#001B1734</item>
 		<item name="tabs_background">#FF5C038C</item>
 		<item name="now_playing_marker">#FF896FBC</item>

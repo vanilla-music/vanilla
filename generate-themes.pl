@@ -18,7 +18,7 @@ my $THEMES = [
     { name=>"amoled_dark", id=>10, dark=>1, colorAccent => '#ffd8d8d8', colorPrimary => '#ff000000', colorPrimaryDark => '#ff000000', controlsNormal=>'@color/material_grey_600', colorBackground=>'@android:color/black', floatColor=>'@color/material_grey_900', _bg => '#ff000000' },
     { name=>"start_wearing_purple", id=>11, dark=>1,
       colorAccent => '#FF896FBC', colorPrimary=> '#FF5C038C', colorPrimaryDark => '#FF420264', controlsNormal=>'@color/material_grey_600',
-      colorBackground => '@color/start_wearing_purple_background', controlsActive=> '#FF5C038C', floatColor => '@color/material_grey_300',
+      colorBackground => '@color/start_wearing_purple_background', controlsActive=> '#FF5C038C', floatColor => '#FF420264',
       bgCircleColor => '#001B1734',
       _bg => '#ff1B1734' },
 ];
