@@ -21,8 +21,8 @@
 	<!-- dark theme -->
 	<style name="Start_wearing_purple.VanillaBase" parent="android:Theme.Material">
 		
-		<item name="android:colorBackground">#FF1B1734</item>
-		<item name="overlay_background_color">#FF1B1734</item>
+		<item name="android:colorBackground">@color/start_wearing_purple_background</item>
+		<item name="overlay_background_color">@color/start_wearing_purple_background</item>
 		
 		<item name="overlay_foreground_color">@color/overlay_foreground_dark</item>
 		<item name="float_color">@color/material_grey_300</item>
