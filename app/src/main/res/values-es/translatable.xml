@@ -75,22 +75,27 @@
 		to see which categories apply to integer numbers in their languages-->
   <plurals name="playing">
     <item quantity="one">%d pista reproduciéndose.</item>
+    <item quantity="many">%d pistas reproduciendose.</item>
     <item quantity="other">%d pistas reproduciendose.</item>
   </plurals>
   <plurals name="enqueued">
     <item quantity="one">%d  pista añadida a la cola.</item>
+    <item quantity="many">%d pistas añadidas a la cola.</item>
     <item quantity="other">%d pistas añadidas a la cola.</item>
   </plurals>
   <plurals name="added_to_playlist">
     <item quantity="one">%1$d pista añadida a la lista de reproducción %2$s.</item>
+    <item quantity="many">%1$d pistas añadidas a la lista de reproducción %2$s.</item>
     <item quantity="other">%1$d pistas añadidas a la lista de reproducción %2$s.</item>
   </plurals>
   <plurals name="removed_from_playlist">
     <item quantity="one">%1$d pista eliminada de la lista de reproducción %2$s.</item>
+    <item quantity="many">%1$d pistas eliminadas de la lista de reproducción %2$s.</item>
     <item quantity="other">%1$d pistas eliminadas de la lista de reproducción %2$s.</item>
   </plurals>
   <plurals name="deleted">
     <item quantity="one">%d pista borrada.</item>
+    <item quantity="many">%d pistas borradas.</item>
     <item quantity="other">%d pistas borradas.</item>
   </plurals>
   <string name="delete_file_failed">Error al eliminar %s.</string>
@@ -134,14 +139,17 @@
   <!--Preferences-->
   <plurals name="seconds">
     <item quantity="one">%d segundo</item>
+    <item quantity="many">%d segundos</item>
     <item quantity="other">%d segundos</item>
   </plurals>
   <plurals name="minutes">
     <item quantity="one">%d minuto</item>
+    <item quantity="many">%d minutos</item>
     <item quantity="other">%d minutos</item>
   </plurals>
   <plurals name="hours">
     <item quantity="one">%d hora</item>
+    <item quantity="many">%d horas</item>
     <item quantity="other">%d horas</item>
   </plurals>
   <string name="audio">Audio</string>

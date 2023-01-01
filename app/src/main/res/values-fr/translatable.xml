@@ -43,7 +43,7 @@
   <string name="edit">Modifier</string>
   <string name="rename">Renommer</string>
   <string name="save_as_playlist">Enregistrer en playlist...</string>
-  <string name="add_to_playlist">Ajouter à la playlist...</string>
+  <string name="add_to_playlist">Ajouter à une playlist...</string>
   <string name="add_to_homescreen">Ajouter à l\'accueil...</string>
   <string name="add_to">Ajouter à...</string>
   <string name="playlist">Playlist</string>
@@ -59,7 +59,7 @@
   <string name="sort_by">Trier par</string>
   <string name="search">Rechercher</string>
   <string name="done">Terminé</string>
-  <string name="remove">Supprimer</string>
+  <string name="remove">Retirer</string>
   <string name="play_or_enqueue">Ajouter à la file d\'attente si en lecture ; Lire si en pause</string>
   <string name="open">Ouvrir</string>
   <string name="go_home">Dossier principal</string>
@@ -75,22 +75,27 @@
 		to see which categories apply to integer numbers in their languages-->
   <plurals name="playing">
     <item quantity="one">%d morceau en lecture.</item>
+    <item quantity="many">%d morceaux en lecture.</item>
     <item quantity="other">%d morceaux en lecture.</item>
   </plurals>
   <plurals name="enqueued">
     <item quantity="one">%d morceau ajouté à la file d\'attente.</item>
+    <item quantity="many">%d morceaux ajoutés à la file d\'attente.</item>
     <item quantity="other">%d morceaux ajoutés à la file d\'attente.</item>
   </plurals>
   <plurals name="added_to_playlist">
     <item quantity="one">%1$d morceau ajouté à la playlist %2$s.</item>
+    <item quantity="many">%1$d morceaux ajoutés à la playlist %2$s.</item>
     <item quantity="other">%1$d morceaux ajoutés à la playlist %2$s.</item>
   </plurals>
   <plurals name="removed_from_playlist">
     <item quantity="one">%1$d morceau supprimé de la playlist %2$s.</item>
+    <item quantity="many">%1$d morceaux supprimés de la playlist %2$s.</item>
     <item quantity="other">%1$d morceaux supprimés de la playlist %2$s.</item>
   </plurals>
   <plurals name="deleted">
     <item quantity="one">%d morceau supprimé.</item>
+    <item quantity="many">%d morceaux supprimés.</item>
     <item quantity="other">%d morceaux supprimés.</item>
   </plurals>
   <string name="delete_file_failed">Échec lors de la suppression %s.</string>
@@ -134,14 +139,17 @@
   <!--Preferences-->
   <plurals name="seconds">
     <item quantity="one">%d seconde</item>
+    <item quantity="many">%d secondes</item>
     <item quantity="other">%d secondes</item>
   </plurals>
   <plurals name="minutes">
     <item quantity="one">%d minute</item>
+    <item quantity="many">%d minutes</item>
     <item quantity="other">%d minutes</item>
   </plurals>
   <plurals name="hours">
     <item quantity="one">%d heure</item>
+    <item quantity="many">%d heures</item>
     <item quantity="other">%d heures</item>
   </plurals>
   <string name="audio">Audio</string>
