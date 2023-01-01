@@ -185,7 +185,7 @@ public class MediaLibrary  {
 					}
 				}
 			}
-		} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+		} else {
 			// Try to discover media paths using getExternalMediaDirs() on 5.x and newer
 			for (File file : context.getExternalMediaDirs()) {
 				// Seems to happen on some Samsung 5.x devices. :-(

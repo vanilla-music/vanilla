@@ -977,20 +977,16 @@ public final class PlaybackService extends Service
 		final Integer[] headsetTypes = { AudioDeviceInfo.TYPE_BLUETOOTH_A2DP, AudioDeviceInfo.TYPE_BLUETOOTH_SCO,
 		                                 AudioDeviceInfo.TYPE_WIRED_HEADSET, AudioDeviceInfo.TYPE_WIRED_HEADPHONES,
 		                                 AudioDeviceInfo.TYPE_USB_HEADSET, AudioDeviceInfo.TYPE_USB_DEVICE };
-		boolean result = true;
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-			AudioDeviceInfo[] devices = mAudioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
-			for (AudioDeviceInfo device: devices) {
-				Log.v("VanillaMusic", "AudioDeviceInfo type = " + device.getType());
-				if (Arrays.asList(headsetTypes).contains(device.getType())) {
-					result = false;
-					break;
-				}
-			}
-		} else {
-			result = !mAudioManager.isWiredHeadsetOn() && !mAudioManager.isBluetoothA2dpOn() && !mAudioManager.isBluetoothScoOn();
-		}
 
+		boolean result = true;
+		AudioDeviceInfo[] devices = mAudioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
+		for (AudioDeviceInfo device: devices) {
+			Log.v("VanillaMusic", "AudioDeviceInfo type = " + device.getType());
+			if (Arrays.asList(headsetTypes).contains(device.getType())) {
+				result = false;
+				break;
+			}
+		}
 		return result;
 	}
 

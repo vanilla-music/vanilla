@@ -136,13 +136,11 @@ public class PermissionRequestActivity extends Activity {
 	 * @return boolean true if all permissions have been granded
 	 */
 	public static boolean havePermissions(Context context) {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-			for (String permission : getNeededPermissions()) {
-				if (context.checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
-					return false;
-				}
+		for (String permission : getNeededPermissions()) {
+			if (context.checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+				return false;
 			}
-		} // else: granted during installation
+		}
 		return true;
 	}
 
