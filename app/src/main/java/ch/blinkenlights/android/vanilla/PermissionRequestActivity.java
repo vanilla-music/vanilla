@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2022 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2015-2023 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,8 @@ import android.view.LayoutInflater;
 import android.os.Build;
 import android.os.Bundle;
 
+import java.util.Arrays;
+import java.util.ArrayList;
 
 public class PermissionRequestActivity extends Activity {
 
@@ -44,7 +46,11 @@ public class PermissionRequestActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		mCallbackIntent = getIntent().getExtras().getParcelable("callbackIntent");
-		requestPermissions(getNeededPermissions(), 0);
+
+		ArrayList<String> allPerms = new ArrayList<>(Arrays.asList(getNeededPermissions()));
+		allPerms.addAll(Arrays.asList(getOptionalPermissions()));
+
+		requestPermissions(allPerms.toArray(new String[0]), 0);
 	}
 
 	/**
@@ -57,16 +63,20 @@ public class PermissionRequestActivity extends Activity {
 	 */
 	@Override
 	public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+		ArrayList<String> neededPerms = new ArrayList<>(Arrays.asList(getNeededPermissions()));
 		int grantedPermissions = 0;
-		for (int result : grantResults) {
-			if (result == PackageManager.PERMISSION_GRANTED)
+
+		for (int i = 0; i < permissions.length; i++) {
+			if (!neededPerms.contains(permissions[i]))
+				continue;
+			if (grantResults[i] == PackageManager.PERMISSION_GRANTED)
 				grantedPermissions++;
 		}
 
 		// set as finished before (possibly) killing ourselfs
 		finish();
 
-		if (grantedPermissions == grantResults.length) {
+		if (grantedPermissions == neededPerms.size()) {
 			if (mCallbackIntent != null) {
 				// start the old intent but ensure to make it a new task & clear any old attached activites
 				mCallbackIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -144,6 +154,13 @@ public class PermissionRequestActivity extends Activity {
 			return new String[] { Manifest.permission.READ_EXTERNAL_STORAGE };
 		}
 		return new String[] { Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE };
+	}
+
+	private static String[] getOptionalPermissions() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+			return new String[] { Manifest.permission.POST_NOTIFICATIONS };
+		}
+		return new String[]{};
 	}
 
 }
