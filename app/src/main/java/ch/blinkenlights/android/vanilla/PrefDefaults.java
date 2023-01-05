@@ -33,8 +33,8 @@ public class PrefDefaults {
 		// Private constructor to hide implicit one.
 	}
 
-	public static final Action  COVER_LONGPRESS_ACTION = Action.PlayPause;
-	public static final Action  COVER_PRESS_ACTION = Action.ToggleControls;
+	public static final Action  COVER_LONGPRESS_ACTION = Action.Nothing;
+	public static final Action  COVER_PRESS_ACTION = Action.Nothing;
 	public static final String  DEFAULT_ACTION_INT = "9";
 	public static final String  DEFAULT_PLAYLIST_ACTION = "3";
 	public static final boolean COVERLOADER_ANDROID = true;

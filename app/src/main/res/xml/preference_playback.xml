@@ -51,11 +51,11 @@ THE SOFTWARE.
 		android:title="@string/cover_press_action_title"
 		android:entries="@array/swipe_action_entries"
 		android:entryValues="@array/swipe_action_values"
-		android:defaultValue="ToggleControls" />
+		android:defaultValue="Nothing" />
 	<ch.blinkenlights.android.vanilla.ListPreferenceSummary
 		android:key="cover_longpress_action"
 		android:title="@string/cover_longpress_action_title"
 		android:entries="@array/swipe_action_entries"
 		android:entryValues="@array/swipe_action_values"
-		android:defaultValue="PlayPause" />
+		android:defaultValue="Nothing" />
 </PreferenceScreen>
