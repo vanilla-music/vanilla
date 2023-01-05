@@ -26,7 +26,6 @@ THE SOFTWARE.
 		<!-- color to use in full_playback text, set to bright_foreground_disabled_holo_light //-->
 		<item name="overlay_foreground_color">#ffb2b2b2</item>
 		<item name="float_color">#f222</item>
-		<item name="background_circle_color">#4A4A4A</item>
 		<item name="tabs_background">#ff1e1e1e</item>
 		<item name="now_playing_marker">@android:color/holo_blue_dark</item>
 		<item name="controls_normal">#fff5f5f5</item>
@@ -51,7 +50,6 @@ THE SOFTWARE.
 
 	<style name="PopupDialog" parent="android:Theme.Holo.Dialog.MinWidth">
 		<item name="overlay_background_color">#a000</item>
-		<item name="background_circle_color">#4A4A4A</item>
 		<item name="controls_normal">#fff5f5f5</item>
 		<item name="controls_active">@android:color/holo_blue_dark</item>
 	</style>

@@ -26,7 +26,6 @@
 		
 		<item name="overlay_foreground_color">@color/overlay_foreground_dark</item>
 		<item name="float_color">#FF420264</item>
-		<item name="background_circle_color">#001B1734</item>
 		<item name="tabs_background">#FF5C038C</item>
 		<item name="now_playing_marker">#FF896FBC</item>
 		<item name="controls_normal">@color/material_grey_600</item>
@@ -52,7 +51,6 @@
 
 	<style name="Start_wearing_purple.PopupDialog" parent="android:Theme.Material.Dialog.MinWidth">
 		<item name="overlay_background_color">@color/overlay_background_dark</item>
-		<item name="background_circle_color">@color/material_grey_700</item>
 		<item name="controls_normal">@color/material_grey_600</item>
 		<item name="controls_active">#FF5C038C</item>
 	</style>
