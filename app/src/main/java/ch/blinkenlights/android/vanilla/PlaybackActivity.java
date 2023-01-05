@@ -196,7 +196,7 @@ public abstract class PlaybackActivity extends Activity
 	public void playPause()
 	{
 		PlaybackService service = PlaybackService.get(this);
-		int state = service.playPause();
+		int state = service.playPause(false);
 		if ((state & PlaybackService.FLAG_ERROR) != 0)
 			showToast(service.getErrorMessage(), Toast.LENGTH_LONG);
 		setState(state);

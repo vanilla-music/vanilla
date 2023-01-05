@@ -124,6 +124,7 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 
 		Intent intent = new Intent(context, PlaybackService.class)
 			.setAction(act)
+			.putExtra(PlaybackService.EXTRA_FORCE_NOTIFICATION, true)
 			.putExtra(PlaybackService.EXTRA_EARLY_NOTIFICATION, true);
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

@@ -126,13 +126,6 @@ public final class PlaybackService extends Service
 	 */
 	public static final String ACTION_TOGGLE_PLAYBACK_DELAYED = "ch.blinkenlights.android.vanilla.action.TOGGLE_PLAYBACK_DELAYED";
 	/**
-	 * Action for startService: toggle playback on/off.
-	 *
-	 * This works the same way as ACTION_PLAY_PAUSE but prevents the notification
-	 * from being hidden regardless of notification visibility settings.
-	 */
-	public static final String ACTION_TOGGLE_PLAYBACK_NOTIFICATION = "ch.blinkenlights.android.vanilla.action.TOGGLE_PLAYBACK_NOTIFICATION";
-	/**
 	 * Action for startService: advance to the next song.
 	 */
 	public static final String ACTION_NEXT_SONG = "ch.blinkenlights.android.vanilla.action.NEXT_SONG";
@@ -183,6 +176,10 @@ public final class PlaybackService extends Service
 	 * Whether we should create a foreground notification as early as possible.
 	 */
 	public static final String EXTRA_EARLY_NOTIFICATION = "extra_early_notification";
+	/**
+	 * Keep notification forcefully around on stops if set.
+	 */
+	public static final String EXTRA_FORCE_NOTIFICATION = "extra_force_notification";
 
 	/**
 	 * Visibility modes of the notification.
@@ -535,6 +532,7 @@ public final class PlaybackService extends Service
 		if (intent != null) {
 			final String action = intent.getAction();
 			final boolean earlyNotification = intent.hasExtra(EXTRA_EARLY_NOTIFICATION);
+			final boolean forceNotification = intent.hasExtra(EXTRA_FORCE_NOTIFICATION);
 
 			if (earlyNotification) {
 				Song song = mCurrentSong != null ? mCurrentSong : new Song(-1);
@@ -542,15 +540,7 @@ public final class PlaybackService extends Service
 			}
 
 			if (ACTION_TOGGLE_PLAYBACK.equals(action)) {
-				playPause();
-			} else if (ACTION_TOGGLE_PLAYBACK_NOTIFICATION.equals(action)) {
-				mForceNotificationVisible = true;
-				synchronized (mStateLock) {
-					if ((mState & FLAG_PLAYING) != 0)
-						pause();
-					else
-						play();
-				}
+				playPause(forceNotification);
 			} else if (ACTION_TOGGLE_PLAYBACK_DELAYED.equals(action)) {
 				if (mHandler.hasMessages(MSG_CALL_GO, Integer.valueOf(0))) {
 					mHandler.removeMessages(MSG_CALL_GO, Integer.valueOf(0));
@@ -1238,10 +1228,10 @@ public final class PlaybackService extends Service
 	 *
 	 * @return The new state after this is called.
 	 */
-	public int playPause()
+	public int playPause(boolean forceNotification)
 	{
-		mForceNotificationVisible = false;
 		synchronized (mStateLock) {
+			mForceNotificationVisible = forceNotification;
 			if ((mState & FLAG_PLAYING) != 0)
 				return pause();
 			else
@@ -1545,7 +1535,7 @@ public final class PlaybackService extends Service
 		switch (message.what) {
 		case MSG_CALL_GO:
 			if (message.arg1 == 0)
-				playPause();
+				playPause(false);
 			else
 				setCurrentSong(message.arg1);
 			break;
@@ -2119,14 +2109,15 @@ public final class PlaybackService extends Service
 		ComponentName service = new ComponentName(this, PlaybackService.class);
 
 		int playButton = ThemeHelper.getPlayButtonResource(playing);
-		Intent playPause = new Intent(PlaybackService.ACTION_TOGGLE_PLAYBACK_NOTIFICATION);
-		playPause.setComponent(service);
+		Intent playPause = new Intent(PlaybackService.ACTION_TOGGLE_PLAYBACK)
+			.putExtra(PlaybackService.EXTRA_FORCE_NOTIFICATION, true)
+			.setComponent(service);
 
-		Intent next = new Intent(PlaybackService.ACTION_NEXT_SONG);
-		next.setComponent(service);
+		Intent next = new Intent(PlaybackService.ACTION_NEXT_SONG)
+			.setComponent(service);
 
-		Intent previous = new Intent(PlaybackService.ACTION_PREVIOUS_SONG);
-		previous.setComponent(service);
+		Intent previous = new Intent(PlaybackService.ACTION_PREVIOUS_SONG)
+			.setComponent(service);
 
 		Notification n = mNotificationHelper.getNewBuilder(getApplicationContext())
 			.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
@@ -2137,11 +2128,11 @@ public final class PlaybackService extends Service
 			.setSubText(song.artist)
 			.setContentIntent(mNotificationAction)
 			.addAction(new NotificationCompat.Action(R.drawable.previous,
-													 getString(R.string.previous_song), PendingIntent.getService(this, 0, previous, PendingIntent.FLAG_IMMUTABLE)))
+													 getString(R.string.previous_song), PendingIntent.getService(this, 0, previous, PendingIntent.FLAG_IMMUTABLE|PendingIntent.FLAG_UPDATE_CURRENT)))
 			.addAction(new NotificationCompat.Action(playButton,
-													 getString(R.string.play_pause), PendingIntent.getService(this, 0, playPause, PendingIntent.FLAG_IMMUTABLE)))
+													 getString(R.string.play_pause), PendingIntent.getService(this, 0, playPause, PendingIntent.FLAG_IMMUTABLE|PendingIntent.FLAG_UPDATE_CURRENT)))
 			.addAction(new NotificationCompat.Action(R.drawable.next,
-													 getString(R.string.next_song), PendingIntent.getService(this, 0, next, PendingIntent.FLAG_IMMUTABLE)))
+													 getString(R.string.next_song), PendingIntent.getService(this, 0, next, PendingIntent.FLAG_IMMUTABLE|PendingIntent.FLAG_UPDATE_CURRENT)))
 			.setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
 					  .setMediaSession(mMediaSessionTracker.getSessionToken())
 					  .setShowActionsInCompactView(0, 1, 2))
@@ -2242,7 +2233,7 @@ public final class PlaybackService extends Service
 			startActivity(intent);
 			break;
 		case PlayPause: {
-			int state = playPause();
+			int state = playPause(false);
 			if (receiver != null)
 				receiver.setState(state);
 			break;
