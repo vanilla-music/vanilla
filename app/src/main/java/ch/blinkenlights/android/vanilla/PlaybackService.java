@@ -2101,10 +2101,6 @@ public final class PlaybackService extends Service
 	public Notification createNotification(Song song, int state)
 	{
 		final boolean playing = (state & FLAG_PLAYING) != 0;
-		Bitmap cover = song.getMediumCover(this);
-		if (cover == null) {
-			cover = BitmapFactory.decodeResource(getResources(), R.drawable.fallback_cover_large);
-		}
 
 		ComponentName service = new ComponentName(this, PlaybackService.class);
 
@@ -2119,10 +2115,9 @@ public final class PlaybackService extends Service
 		Intent previous = new Intent(PlaybackService.ACTION_PREVIOUS_SONG)
 			.setComponent(service);
 
-		Notification n = mNotificationHelper.getNewBuilder(getApplicationContext())
+		NotificationCompat.Builder n = mNotificationHelper.getNewBuilder(getApplicationContext())
 			.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 			.setSmallIcon(R.drawable.status_icon)
-			.setLargeIcon(cover)
 			.setContentTitle(song.title)
 			.setContentText(song.album)
 			.setSubText(song.artist)
@@ -2136,9 +2131,18 @@ public final class PlaybackService extends Service
 			.setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
 					  .setMediaSession(mMediaSessionTracker.getSessionToken())
 					  .setShowActionsInCompactView(0, 1, 2))
-			.setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
-			.build();
-		return n;
+			.setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE);
+
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+			// Only set the cover for android < 13 since newer versions display the cover from the media session anyway.
+			Bitmap cover = song.getMediumCover(this);
+			if (cover == null) {
+				cover = BitmapFactory.decodeResource(getResources(), R.drawable.fallback_cover_large);
+			}
+			n.setLargeIcon(cover);
+		}
+
+		return n.build();
 	}
 
 	public void onAudioFocusChange(int type)
