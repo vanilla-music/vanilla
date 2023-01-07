@@ -40,7 +40,6 @@ public class PermissionRequestActivity extends Activity {
 	 */
 	private Intent mCallbackIntent;
 
-	@TargetApi(Build.VERSION_CODES.M)
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
