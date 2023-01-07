@@ -1753,13 +1753,14 @@ public final class PlaybackService extends Service
 	}
 
 	/**
-	 * Skips to the previous song OR rewinds the currently playing track
+	 * Skips to the previous song OR rewinds the currently playing track, depending
+	 * on the current position.
 	 *
 	 * @return The new current song
 	 */
 	public Song rewindCurrentSong() {
 		int delta = SongTimeline.SHIFT_PREVIOUS_SONG;
-		if(isPlaying() && getPosition() > REWIND_AFTER_PLAYED_MS && getDuration() > REWIND_AFTER_PLAYED_MS*2) {
+		if(getPosition() > REWIND_AFTER_PLAYED_MS && getDuration() > REWIND_AFTER_PLAYED_MS*2) {
 			delta = SongTimeline.SHIFT_KEEP_SONG;
 		}
 		return shiftCurrentSong(delta);
