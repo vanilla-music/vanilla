@@ -433,6 +433,10 @@ public final class PlaybackService extends Service
 	 * Reference to precreated BASTP Object
 	 */
 	private BastpUtil mBastpUtil;
+	/**
+	 * Don't use gapless playback, useful for bug ridden devices.
+	 */
+	private boolean mDisableGaplessPlayback;
 
 	@Override
 	public void onCreate()
@@ -477,6 +481,7 @@ public final class PlaybackService extends Service
 		mReplayGainAlbumEnabled = settings.getBoolean(PrefKeys.ENABLE_ALBUM_REPLAYGAIN, PrefDefaults.ENABLE_ALBUM_REPLAYGAIN);
 		mReplayGainBump = settings.getInt(PrefKeys.REPLAYGAIN_BUMP, PrefDefaults.REPLAYGAIN_BUMP);
 		mReplayGainUntaggedDeBump = settings.getInt(PrefKeys.REPLAYGAIN_UNTAGGED_DEBUMP, PrefDefaults.REPLAYGAIN_UNTAGGED_DEBUMP);
+		mDisableGaplessPlayback = settings.getBoolean(PrefKeys.DISABLE_GAPLESS_PLAYBACK, PrefDefaults.DISABLE_GAPLESS_PLAYBACK);
 
 		mVolumeDuringDucking = settings.getInt(PrefKeys.VOLUME_DURING_DUCKING, PrefDefaults.VOLUME_DURING_DUCKING);
 		mIgnoreAudioFocusLoss = settings.getBoolean(PrefKeys.IGNORE_AUDIOFOCUS_LOSS, PrefDefaults.IGNORE_AUDIOFOCUS_LOSS);
@@ -660,6 +665,7 @@ public final class PlaybackService extends Service
 	}
 
 	public void prepareMediaPlayer(VanillaMediaPlayer mp, String path) throws IOException{
+		Log.v("VanillaMusic", "prepareMediaPlayer: "+path);
 		mp.setDataSource(path);
 		mp.prepare();
 		applyReplayGain(mp);
@@ -786,6 +792,9 @@ public final class PlaybackService extends Service
 	 */
 	private void triggerGaplessUpdate() {
 		if(mMediaPlayerInitialized != true)
+			return;
+
+		if(mDisableGaplessPlayback)
 			return;
 
 		boolean doGapless = false;
@@ -932,7 +941,10 @@ public final class PlaybackService extends Service
 			ArrayList<TimelineCallback> list = sCallbacks;
 			for (int i = list.size(); --i != -1; )
 				list.get(i).recreate();
+		} else if (PrefKeys.DISABLE_GAPLESS_PLAYBACK.equals(key)) {
+			mDisableGaplessPlayback = settings.getBoolean(PrefKeys.DISABLE_GAPLESS_PLAYBACK, PrefDefaults.DISABLE_GAPLESS_PLAYBACK);
 		}
+
 		/* Tell androids cloud-backup manager that we just changed our preferences */
 		(new BackupManager(this)).dataChanged();
 	}
