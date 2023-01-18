@@ -45,8 +45,8 @@ THE SOFTWARE.
 		/>
 	<CheckBoxPreference
 	        android:key="disable_gapless_playback"
-		android:title="DISABLE GAPLESS PLAYBACK"
-		android:summary="DISABLE GAPLESS PLAYBACK (USEFUL ON BUGGY ANDROID FIRMWARE)"
+		android:title="@string/disable_gapless_playback_title"
+		android:summary="@string/disable_gapless_playback_summary"
 		android:defaultValue="false" />
 	<CheckBoxPreference
 		android:key="headset_only"

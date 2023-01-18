@@ -665,7 +665,6 @@ public final class PlaybackService extends Service
 	}
 
 	public void prepareMediaPlayer(VanillaMediaPlayer mp, String path) throws IOException{
-		Log.v("VanillaMusic", "prepareMediaPlayer: "+path);
 		mp.setDataSource(path);
 		mp.prepare();
 		applyReplayGain(mp);
