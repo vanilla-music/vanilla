@@ -132,7 +132,7 @@ public class FourWhiteWidget extends AppWidgetProvider {
 
 		intent = new Intent(context, LibraryActivity.class).setAction(Intent.ACTION_MAIN);
 		pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
-		views.setOnClickPendingIntent(R.id.cover, pendingIntent);
+		views.setOnClickPendingIntent(R.id.coverFrame, pendingIntent);
 		views.setOnClickPendingIntent(R.id.text_layout, pendingIntent);
 
 		intent = ShortcutPseudoActivity.getIntent(context, PlaybackService.ACTION_TOGGLE_PLAYBACK);
