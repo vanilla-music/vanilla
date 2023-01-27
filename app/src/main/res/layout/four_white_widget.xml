@@ -26,33 +26,47 @@ THE SOFTWARE.
 	android:background="@drawable/widget_bg"
 	android:baselineAligned="false"
 	android:orientation="horizontal" >
-	<FrameLayout
+	<LinearLayout
 		android:id="@+id/coverFrame"
 		android:layout_width="wrap_content"
 		android:layout_height="match_parent"
+		android:orientation="horizontal"
 		android:padding="5dp" >
-		<ImageView
-			android:id="@+id/vinyl"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_gravity="left"
-			android:adjustViewBounds="true"
-			android:src="@drawable/vinyl"
-			android:contentDescription="@string/cover_art"
-			android:scaleType="fitCenter" />
-		<ImageView
-			android:id="@+id/cover"
-			android:layout_width="60dp"
-			android:layout_height="60dp"
-			android:layout_gravity="left"
-			android:adjustViewBounds="true"
-			android:contentDescription="@string/cover_art"
-			android:background="#1b1b2a"
-			android:scaleType="fitCenter" />
-	</FrameLayout>
+	  <FrameLayout
+	      android:layout_width="wrap_content"
+	      android:layout_height="match_parent">
+	    <ImageView
+		android:id="@+id/fallbackCover"
+		android:layout_width="wrap_content"
+		android:layout_height="match_parent"
+		android:layout_gravity="left"
+		android:adjustViewBounds="true"
+		android:src="@drawable/vinyl_left"
+		android:contentDescription="@string/cover_art"
+		android:scaleType="fitCenter" />
+	    <ImageView
+		android:id="@+id/cover"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_gravity="center"
+		android:adjustViewBounds="true"
+		android:contentDescription="@string/cover_art"
+		android:background="#424242"
+		android:scaleType="fitCenter" />
+	  </FrameLayout>
+	  <ImageView
+	      android:id="@+id/vinyl"
+	      android:layout_width="wrap_content"
+	      android:layout_height="match_parent"
+	      android:layout_gravity="left"
+	      android:adjustViewBounds="true"
+	      android:src="@drawable/vinyl_right"
+	      android:contentDescription="@string/cover_art"
+	      android:scaleType="fitCenter" />
+	</LinearLayout>
 	<LinearLayout
 		android:layout_width="match_parent"
-		android:layout_height="fill_parent"
+		android:layout_height="match_parent"
 		android:orientation="vertical"
 		android:baselineAligned="false" >
 		<LinearLayout

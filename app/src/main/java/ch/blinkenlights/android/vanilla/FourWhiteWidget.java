@@ -118,8 +118,12 @@ public class FourWhiteWidget extends AppWidgetProvider {
 			if (cover == null) {
 				views.setViewVisibility(R.id.cover, View.INVISIBLE);
 			} else {
-				views.setViewVisibility(R.id.cover, View.VISIBLE);
+				// Ensure that the cover is not longer than its height - we can deal with non-square images
+				// if the reverse is true, but w > h messes up the layout.
+				if (cover.getWidth() > cover.getHeight())
+					cover = Bitmap.createScaledBitmap(cover, cover.getHeight(), cover.getHeight(), true);
 				views.setImageViewBitmap(R.id.cover, cover);
+				views.setViewVisibility(R.id.cover, View.VISIBLE);
 			}
 		}
 
