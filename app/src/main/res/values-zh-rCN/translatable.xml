@@ -160,6 +160,8 @@
   <string name="replaygain_untagged_debump_summary">降低音量依据</string>
   <string name="replaygain_preamp_note_title">注意</string>
   <string name="replaygain_preamp_note_content">Android 不允许 Vanilla Music 将音量调到 &gt;100%，将前置放大器设置较高树枝可能会导致聆听比较“安静”的音乐时产生问题。\n\n建议将数值：为安静和古典音乐设置\n-&gt; -3dB \n-&gt; 为新世纪音乐设置+3dB </string>
+  <string name="disable_gapless_playback_title">禁用无缝播放</string>
+  <string name="disable_gapless_playback_summary">禁用“无缝播放“功能可能有助解决在固件有故障的设备上遇到的播放问题</string>
   <string name="readahead">启用预先读取</string>
   <string name="readahead_summary">预读当前播放的曲目。此选项可以解决“音频卡顿”现象 (因为慢速 SD 所引起)。</string>
   <string name="equalizer">均衡器</string>

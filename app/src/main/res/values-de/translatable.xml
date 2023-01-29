@@ -168,6 +168,8 @@
   <string name="replaygain_untagged_debump_summary">Lautstärke senken um: </string>
   <string name="replaygain_preamp_note_title">Hinweis</string>
   <string name="replaygain_preamp_note_content">Android erlaubt Vanilla Music kein Verändern der Lautstärke auf über 100%. Hohe Werte für den Vorverstärker können bei »stiller« Musik zu Problemen führen.\n\nEmpfohlene Werte sind:\n-&gt; -3 dB für stille/klassische Musik\n-&gt; +3 dB für Aufnahmen nach dem Jahr 2000</string>
+  <string name="disable_gapless_playback_title">\"Gapless Playback\" deaktivieren</string>
+  <string name="disable_gapless_playback_summary">Keine lückenlose Wiedergabe (Gapless Playback) verwenden. Dies kann Geräten mit fehlerhafter Firmware helfen</string>
   <string name="readahead">Datei vorauslesen</string>
   <string name="readahead_summary">Aktuell wiedergegebenen Titel im Voraus einlesen (löst ggf. Audioprobleme mit langsamen SD-Karten)</string>
   <string name="equalizer">Equalizer</string>
@@ -340,4 +342,5 @@
   <string name="theme_name_red_light">Rot</string>
   <string name="theme_name_red_dark">Rot (dunkel)</string>
   <string name="theme_name_amoled_dark">Pechschwarz (AMOLED)</string>
+  <string name="theme_name_start_wearing_purple">Start Wearing Purple</string>
 </resources>

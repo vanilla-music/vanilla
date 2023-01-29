@@ -168,6 +168,8 @@
   <string name="replaygain_untagged_debump_summary">Ses düzeyini şu kadar indir:</string>
   <string name="replaygain_preamp_note_title">Not</string>
   <string name="replaygain_preamp_note_content">Android Vanilya Müzik\'in ses düzeyini &gt;%100\'e çıkartmasına izin vermiyor. Pre-amp\'ı daha yüksek bir değere çıkarmak özellikle \"sessiz\" müzikler dinlerken sorunlara neden olabilir.\n\nTavsiye edilen değerler: sessiz/klasik müzik için \n-&gt; -3dB -2000 yılı sonrası kayıtlar için +3dB\'dir.</string>
+  <string name="disable_gapless_playback_title">Boşluksuz Çalmayı Devre Dışı Bırak</string>
+  <string name="disable_gapless_playback_summary">Boşluksuz Çalma’yı devre dışı bırakmak, düzgün olmayan üretici yazılımlarıyla yaşanabilecek sorunları azaltmada yardımcı olabilir</string>
   <string name="readahead">Önbelleğe yazmayı etkinleştir</string>
   <string name="readahead_summary">Şu anda çalınan parçayı önden oku. Bu seçenek \'ses kaybı\' sorunlarını çözebilir (genelde yavaş SD kart nedenli).</string>
   <string name="equalizer">Ses Efektleri</string>
@@ -340,4 +342,5 @@
   <string name="theme_name_red_light">Kırmızı</string>
   <string name="theme_name_red_dark">Kırmızı (Koyu)</string>
   <string name="theme_name_amoled_dark">Kapkara (AMOLED)</string>
+  <string name="theme_name_start_wearing_purple">Mor Giymeye Başla</string>
 </resources>
