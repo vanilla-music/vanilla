@@ -42,6 +42,8 @@ THE SOFTWARE.
 				android:layout_height="wrap_content"
 				android:background="?overlay_background_color"
 				android:elevation="2dp"
+				android:layout_marginBottom="20dip"
+				android:paddingBottom="20dip"
 				android:orientation="vertical">
 					<include layout="@layout/seek_bar" />
 					<include layout="@layout/controls" android:id="@+id/queue_slider" />

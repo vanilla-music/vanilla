@@ -23,8 +23,8 @@ THE SOFTWARE.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="ch.blinkenlights.android.vanilla"
-	android:versionName="1.2.2"
-	android:versionCode="12202"
+	android:versionName="1.3.0"
+	android:versionCode="13003"
 	android:installLocation="auto">
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 	<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
@@ -36,7 +36,8 @@ THE SOFTWARE.
 	<uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>
 	<!-- Playlist shortcuts -->
 	<uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
-
+	<!-- Android 13 notifications -->
+	<uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 	<!-- Allow us to query plugins -->
 	<queries>
 		<intent>
@@ -167,6 +168,7 @@ THE SOFTWARE.
 			</intent-filter>
 		</receiver>
 		<service android:name="PlaybackService"
+			 android:foregroundServiceType="mediaPlayback"
 			 android:exported="false">
 			<intent-filter>
 				<action android:name="ch.blinkenlights.android.vanilla.action.PLAY" />

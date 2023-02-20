@@ -7,9 +7,9 @@
 	<dimen name="cover_padding_with_pmark">10sp</dimen>
 	<dimen name="text_padding">14sp</dimen>
 	<dimen name="row_normal_height">56sp</dimen>
-	<dimen name="controls_padding">4dip</dimen>
+	<dimen name="controls_padding">12dip</dimen>
 	<!-- height of the full playback view controls -->
-	<dimen name="full_playback_controls_height">90dip</dimen>
+	<dimen name="full_playback_controls_height">120dip</dimen>
 	<dimen name="track_details_dialog_padding">8dp</dimen>
 	<dimen name="material_text_subhead">16sp</dimen>
 	<!-- height of 'full_playback_alt' text -->

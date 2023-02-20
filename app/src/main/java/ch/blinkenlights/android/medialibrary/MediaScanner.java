@@ -105,7 +105,7 @@ public class MediaScanner implements Handler.Callback {
 		HandlerThread handlerThread = new HandlerThread("MediaScannerThread", Process.THREAD_PRIORITY_LOWEST);
 		handlerThread.start();
 		mHandler = new Handler(handlerThread.getLooper(), this);
-		mWakeLock = ((PowerManager)context.getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicIndexerLock");
+		mWakeLock = ((PowerManager)context.getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusic:Indexer");
 		mNotificationHelper = new NotificationHelper(context, NOTIFICATION_CHANNEL, context.getString(R.string.media_stats_progress));
 
 		// the content observer to use

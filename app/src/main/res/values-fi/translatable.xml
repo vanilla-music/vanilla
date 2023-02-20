@@ -168,6 +168,8 @@
   <string name="replaygain_untagged_debump_summary">Vähennä äänenvoimakkuutta</string>
   <string name="replaygain_preamp_note_title">Huomio</string>
   <string name="replaygain_preamp_note_content">Android ei salli Vanilla Musicin nostaa äänenvoimakkuutta &gt;100%. Esivahvistuksen asettaminen suurelle arvolle saattaa aiheuttaa ongelmia, jos kuuntelet \"hiljaista\" musiikkia. \n\nSuositellut arvot ovat:\n-&gt; -3dB hiljaiselle/klassiselle musiikille\n-&gt; +3dB 2000-luvun ja uudemmalle musiikille</string>
+  <string name="disable_gapless_playback_title">Poista tauoton toisto käytöstä</string>
+  <string name="disable_gapless_playback_summary">Älä käytä tauotonta toistoa, mikä saattaa auttaa toisto-ongelmissa sellaisilla laitteilla, missä on firmware-ohjelmistovirheitä.</string>
   <string name="readahead">Käytä etukäteen lukemista</string>
   <string name="readahead_summary">Lue eteenpäin toistettavaa kappaletta. Tämä valinta voi auttaa sellaisiin äänen katkeamisongelmiin, mitkä johtuvat hitaasta SD-kortista.</string>
   <string name="equalizer">Taajuuskorjain</string>
@@ -340,4 +342,5 @@
   <string name="theme_name_red_light">Punainen</string>
   <string name="theme_name_red_dark">Punainen (tumma)</string>
   <string name="theme_name_amoled_dark">Yönmusta (AMOLED)</string>
+  <string name="theme_name_start_wearing_purple">Pue violettia yllesi</string>
 </resources>

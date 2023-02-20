@@ -118,8 +118,12 @@ public class FourWhiteWidget extends AppWidgetProvider {
 			if (cover == null) {
 				views.setViewVisibility(R.id.cover, View.INVISIBLE);
 			} else {
-				views.setViewVisibility(R.id.cover, View.VISIBLE);
+				// Ensure that the cover is not longer than its height - we can deal with non-square images
+				// if the reverse is true, but w > h messes up the layout.
+				if (cover.getWidth() > cover.getHeight())
+					cover = Bitmap.createScaledBitmap(cover, cover.getHeight(), cover.getHeight(), true);
 				views.setImageViewBitmap(R.id.cover, cover);
+				views.setViewVisibility(R.id.cover, View.VISIBLE);
 			}
 		}
 
@@ -132,7 +136,7 @@ public class FourWhiteWidget extends AppWidgetProvider {
 
 		intent = new Intent(context, LibraryActivity.class).setAction(Intent.ACTION_MAIN);
 		pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
-		views.setOnClickPendingIntent(R.id.cover, pendingIntent);
+		views.setOnClickPendingIntent(R.id.coverFrame, pendingIntent);
 		views.setOnClickPendingIntent(R.id.text_layout, pendingIntent);
 
 		intent = ShortcutPseudoActivity.getIntent(context, PlaybackService.ACTION_TOGGLE_PLAYBACK);

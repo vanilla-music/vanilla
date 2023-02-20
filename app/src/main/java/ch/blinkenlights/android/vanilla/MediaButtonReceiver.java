@@ -27,7 +27,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.SystemClock;
 import android.os.Handler;
 import android.view.KeyEvent;
@@ -124,13 +123,9 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 
 		Intent intent = new Intent(context, PlaybackService.class)
 			.setAction(act)
+			.putExtra(PlaybackService.EXTRA_FORCE_NOTIFICATION, true)
 			.putExtra(PlaybackService.EXTRA_EARLY_NOTIFICATION, true);
-
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 			context.startForegroundService(intent);
-		} else {
-			context.startService(intent);
-		}
 	}
 
 

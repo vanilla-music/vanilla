@@ -261,6 +261,8 @@
   <string name="toggle_controls">Toon/verberg bediening</string>
   <string name="seek_10s_backward">Spel 10 seconden terug</string>
   <string name="seek_10s_forward">Spoel 10 seconden vooruit</string>
+  <string name="move_to_top">Verplaats naar boven</string>
+  <string name="move_to_bottom">Verplaats naar onderen</string>
   <string name="preferences_action_show_queue">Toon wachtrij</string>
   <string name="preferences_action_clear_queue">Maak wachtrij leeg</string>
   <string name="preferences_action_enqueue_current_album">Voeg album toe aan wachtrij</string>

@@ -75,22 +75,27 @@
 		to see which categories apply to integer numbers in their languages-->
   <plurals name="playing">
     <item quantity="one">%d traccia in riproduzione.</item>
+    <item quantity="many">%d tracce in riproduzione.</item>
     <item quantity="other">%d tracce in riproduzione.</item>
   </plurals>
   <plurals name="enqueued">
     <item quantity="one">%d traccia accodata.</item>
+    <item quantity="many">%d tracce accodate.</item>
     <item quantity="other">%d tracce accodate.</item>
   </plurals>
   <plurals name="added_to_playlist">
     <item quantity="one">%1$d traccia aggiunta alla playlist %2$s</item>
+    <item quantity="many">%1$d tracce aggiunte alla playlist %2$s.</item>
     <item quantity="other">%1$d tracce aggiunte alla playlist %2$s.</item>
   </plurals>
   <plurals name="removed_from_playlist">
     <item quantity="one">%1$d traccia rimossa dalla playlist %2$s.</item>
+    <item quantity="many">%1$d tracce rimosse dalla playlist %2$s.</item>
     <item quantity="other">%1$d tracce rimosse dalla playlist %2$s.</item>
   </plurals>
   <plurals name="deleted">
     <item quantity="one">%d traccia rimossa.</item>
+    <item quantity="many">%d tracce rimosse.</item>
     <item quantity="other">%d tracce rimosse.</item>
   </plurals>
   <string name="delete_file_failed">Impossibile eliminare %s.</string>
@@ -134,14 +139,17 @@
   <!--Preferences-->
   <plurals name="seconds">
     <item quantity="one">%d secondo</item>
+    <item quantity="many">%d secondi</item>
     <item quantity="other">%d secondi</item>
   </plurals>
   <plurals name="minutes">
     <item quantity="one">%d minuto</item>
+    <item quantity="many">%d minuti</item>
     <item quantity="other">%d minuti</item>
   </plurals>
   <plurals name="hours">
     <item quantity="one">%d ora</item>
+    <item quantity="many">%d ore</item>
     <item quantity="other">%d ore</item>
   </plurals>
   <string name="audio">Audio</string>

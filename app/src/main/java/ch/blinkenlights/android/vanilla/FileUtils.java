@@ -258,27 +258,15 @@ public class FileUtils {
 	public static ArrayList<File> getFallbackDirectories(Context context, File dir) {
 		HashSet<File> result = new HashSet<>();
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			Path prefix = dir.toPath();
-			for (File f : context.getExternalMediaDirs()) {
-				Path p = f.toPath();
-				if (p.getNameCount() <= prefix.getNameCount())
-					continue;
-				if (!p.startsWith(prefix))
-					continue;
-				Path sp = p.subpath(prefix.getNameCount(), prefix.getNameCount()+1);
-				result.add(new File(dir, sp.toString()));
-			}
-		} else {
-			// java.nio.Paths was only added in API 26 *sigh*.
-			switch (dir.toString()) {
-			case "/":
-				result.add(new File("/storage"));
-				break;
-			case "/storage/emulated":
-				result.add(new File("/storage/emulated/0"));
-				break;
-			}
+		Path prefix = dir.toPath();
+		for (File f : context.getExternalMediaDirs()) {
+			Path p = f.toPath();
+			if (p.getNameCount() <= prefix.getNameCount())
+				continue;
+			if (!p.startsWith(prefix))
+				continue;
+			Path sp = p.subpath(prefix.getNameCount(), prefix.getNameCount()+1);
+			result.add(new File(dir, sp.toString()));
 		}
 		return new ArrayList<File>(result);
 	}

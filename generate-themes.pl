@@ -19,7 +19,6 @@ my $THEMES = [
     { name=>"start_wearing_purple", id=>11, dark=>1,
       colorAccent => '#FF896FBC', colorPrimary=> '#FF5C038C', colorPrimaryDark => '#FF420264', controlsNormal=>'@color/material_grey_600',
       colorBackground => '@color/start_wearing_purple_background', controlsActive=> '#FF5C038C', floatColor => '#FF420264',
-      bgCircleColor => '#001B1734',
       _bg => '#ff1B1734' },
 ];
 
@@ -109,14 +108,12 @@ my $DATA = << "EOF";
 EOF
 
 	my $controlsActive = $this->{controlsActive} || $this->{colorAccent};
-	my $bgCircleColor = $this->{bgCircleColor} || ( $this->{dark} ? '@color/material_grey_700' : '@color/material_grey_300');
 	if($this->{dark} == 0) {
 	$DATA .= << "EOF"
 	<style name="${tid}VanillaBase" parent="android:Theme.Material.Light.DarkActionBar">
 		<item name="overlay_background_color">\@color/overlay_background_light</item>
 		<item name="overlay_foreground_color">\@color/overlay_foreground_light</item>
 		<item name="float_color">$this->{floatColor}</item>
-		<item name="background_circle_color">$bgCircleColor</item>
 		<item name="tabs_background">$this->{colorPrimary}</item>
 		<item name="now_playing_marker">$this->{colorAccent}</item>
 		<item name="controls_normal">$this->{controlsNormal}</item>
@@ -142,7 +139,6 @@ EOF
 
 	<style name="${tid}PopupDialog" parent="android:Theme.Material.Light.Dialog.MinWidth">
 		<item name="overlay_background_color">\@color/overlay_background_light</item>
-		<item name="background_circle_color">$bgCircleColor</item>
 		<item name="controls_normal">$this->{controlsNormal}</item>
 		<item name="controls_active">$controlsActive</item>
 	</style>
@@ -159,7 +155,6 @@ EOF
 		<item name="overlay_background_color">\@color/overlay_background_dark</item>
 		<item name="overlay_foreground_color">\@color/overlay_foreground_dark</item>
 		<item name="float_color">$this->{floatColor}</item>
-		<item name="background_circle_color">$bgCircleColor</item>
 		<item name="tabs_background">$this->{colorPrimary}</item>
 		<item name="now_playing_marker">$this->{colorAccent}</item>
 		<item name="controls_normal">$this->{controlsNormal}</item>
@@ -185,7 +180,6 @@ EOF
 
 	<style name="${tid}PopupDialog" parent="android:Theme.Material.Dialog.MinWidth">
 		<item name="overlay_background_color">\@color/overlay_background_dark</item>
-		<item name="background_circle_color">\@color/material_grey_700</item>
 		<item name="controls_normal">$this->{controlsNormal}</item>
 		<item name="controls_active">$controlsActive</item>
 	</style>

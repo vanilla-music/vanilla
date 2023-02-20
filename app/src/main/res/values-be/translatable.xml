@@ -14,7 +14,7 @@
   <string name="no_repeat">Не паўтараць</string>
   <string name="repeat">Паўтарэнне</string>
   <string name="repeat_current_song">Паўтараць бягучую кампазіцыю</string>
-  <string name="stop_current_song">Спыніць пасля бягучага трэка</string>
+  <string name="stop_current_song">Спыніць пасля бягучай кампазіцыі</string>
   <string name="random">Выпадкова</string>
   <string name="random_enabling">Выпадковы рэжым уключаны</string>
   <string name="song_load_failed">Не атрымалася загрузіць кампазіцыю %s\". Магчыма, яна пашкоджаная альбо была выдаленая.</string>

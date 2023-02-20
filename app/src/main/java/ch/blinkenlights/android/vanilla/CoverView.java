@@ -367,7 +367,7 @@ public final class CoverView extends View implements Handler.Callback {
 			case MotionEvent.ACTION_DOWN: {
 
 				if (mScroller.isFinished()) {
-					mUiHandler.sendEmptyMessageDelayed(MSG_UI_LONG_CLICK, ViewConfiguration.getLongPressTimeout());
+					mUiHandler.sendEmptyMessageDelayed(MSG_UI_LONG_CLICK, ViewConfiguration.getLongPressTimeout() * 2);
 				} else {
 					// Animation was still running while we got a new down event
 					// Abort the current animation!

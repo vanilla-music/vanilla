@@ -29,7 +29,6 @@ import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -168,7 +167,7 @@ public class PreferencesActivity extends PreferenceActivity
 			}
 
 			FragmentManager fragmentManager = getFragmentManager();
-			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || !fragmentManager.isStateSaved()) {
+			if (!fragmentManager.isStateSaved()) {
 				fragmentManager.popBackStack();
 			}
 		}
@@ -280,7 +279,7 @@ public class PreferencesActivity extends PreferenceActivity
 			if (intent != null) {
 				startActivity(intent);
 				FragmentManager fragmentManager = getFragmentManager();
-				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || !fragmentManager.isStateSaved()) {
+				if (!fragmentManager.isStateSaved()) {
 					fragmentManager.popBackStack();
 				}
 			} else {

@@ -126,13 +126,6 @@ public final class PlaybackService extends Service
 	 */
 	public static final String ACTION_TOGGLE_PLAYBACK_DELAYED = "ch.blinkenlights.android.vanilla.action.TOGGLE_PLAYBACK_DELAYED";
 	/**
-	 * Action for startService: toggle playback on/off.
-	 *
-	 * This works the same way as ACTION_PLAY_PAUSE but prevents the notification
-	 * from being hidden regardless of notification visibility settings.
-	 */
-	public static final String ACTION_TOGGLE_PLAYBACK_NOTIFICATION = "ch.blinkenlights.android.vanilla.action.TOGGLE_PLAYBACK_NOTIFICATION";
-	/**
 	 * Action for startService: advance to the next song.
 	 */
 	public static final String ACTION_NEXT_SONG = "ch.blinkenlights.android.vanilla.action.NEXT_SONG";
@@ -183,6 +176,10 @@ public final class PlaybackService extends Service
 	 * Whether we should create a foreground notification as early as possible.
 	 */
 	public static final String EXTRA_EARLY_NOTIFICATION = "extra_early_notification";
+	/**
+	 * Keep notification forcefully around on stops if set.
+	 */
+	public static final String EXTRA_FORCE_NOTIFICATION = "extra_force_notification";
 
 	/**
 	 * Visibility modes of the notification.
@@ -436,6 +433,10 @@ public final class PlaybackService extends Service
 	 * Reference to precreated BASTP Object
 	 */
 	private BastpUtil mBastpUtil;
+	/**
+	 * Don't use gapless playback, useful for bug ridden devices.
+	 */
+	private boolean mDisableGaplessPlayback;
 
 	@Override
 	public void onCreate()
@@ -480,6 +481,7 @@ public final class PlaybackService extends Service
 		mReplayGainAlbumEnabled = settings.getBoolean(PrefKeys.ENABLE_ALBUM_REPLAYGAIN, PrefDefaults.ENABLE_ALBUM_REPLAYGAIN);
 		mReplayGainBump = settings.getInt(PrefKeys.REPLAYGAIN_BUMP, PrefDefaults.REPLAYGAIN_BUMP);
 		mReplayGainUntaggedDeBump = settings.getInt(PrefKeys.REPLAYGAIN_UNTAGGED_DEBUMP, PrefDefaults.REPLAYGAIN_UNTAGGED_DEBUMP);
+		mDisableGaplessPlayback = settings.getBoolean(PrefKeys.DISABLE_GAPLESS_PLAYBACK, PrefDefaults.DISABLE_GAPLESS_PLAYBACK);
 
 		mVolumeDuringDucking = settings.getInt(PrefKeys.VOLUME_DURING_DUCKING, PrefDefaults.VOLUME_DURING_DUCKING);
 		mIgnoreAudioFocusLoss = settings.getBoolean(PrefKeys.IGNORE_AUDIOFOCUS_LOSS, PrefDefaults.IGNORE_AUDIOFOCUS_LOSS);
@@ -490,7 +492,7 @@ public final class PlaybackService extends Service
 		mAutoPlPlaycounts = settings.getInt(PrefKeys.AUTOPLAYLIST_PLAYCOUNTS, PrefDefaults.AUTOPLAYLIST_PLAYCOUNTS);
 
 		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
-		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicLock");
+		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusic:PlaybackService");
 
 		mReceiver = new Receiver();
 		IntentFilter filter = new IntentFilter();
@@ -535,22 +537,15 @@ public final class PlaybackService extends Service
 		if (intent != null) {
 			final String action = intent.getAction();
 			final boolean earlyNotification = intent.hasExtra(EXTRA_EARLY_NOTIFICATION);
+			final boolean forceNotification = intent.hasExtra(EXTRA_FORCE_NOTIFICATION);
 
 			if (earlyNotification) {
 				Song song = mCurrentSong != null ? mCurrentSong : new Song(-1);
-				startForeground(NOTIFICATION_ID, createNotification(song, mState, VISIBILITY_WHEN_PLAYING));
+				startForeground(NOTIFICATION_ID, createNotification(song, mState));
 			}
 
 			if (ACTION_TOGGLE_PLAYBACK.equals(action)) {
-				playPause();
-			} else if (ACTION_TOGGLE_PLAYBACK_NOTIFICATION.equals(action)) {
-				mForceNotificationVisible = true;
-				synchronized (mStateLock) {
-					if ((mState & FLAG_PLAYING) != 0)
-						pause();
-					else
-						play();
-				}
+				playPause(forceNotification);
 			} else if (ACTION_TOGGLE_PLAYBACK_DELAYED.equals(action)) {
 				if (mHandler.hasMessages(MSG_CALL_GO, Integer.valueOf(0))) {
 					mHandler.removeMessages(MSG_CALL_GO, Integer.valueOf(0));
@@ -798,6 +793,9 @@ public final class PlaybackService extends Service
 		if(mMediaPlayerInitialized != true)
 			return;
 
+		if(mDisableGaplessPlayback)
+			return;
+
 		boolean doGapless = false;
 		int fa = finishAction(mState);
 		Song nextSong = getSong(1);
@@ -942,7 +940,10 @@ public final class PlaybackService extends Service
 			ArrayList<TimelineCallback> list = sCallbacks;
 			for (int i = list.size(); --i != -1; )
 				list.get(i).recreate();
+		} else if (PrefKeys.DISABLE_GAPLESS_PLAYBACK.equals(key)) {
+			mDisableGaplessPlayback = settings.getBoolean(PrefKeys.DISABLE_GAPLESS_PLAYBACK, PrefDefaults.DISABLE_GAPLESS_PLAYBACK);
 		}
+
 		/* Tell androids cloud-backup manager that we just changed our preferences */
 		(new BackupManager(this)).dataChanged();
 	}
@@ -977,20 +978,16 @@ public final class PlaybackService extends Service
 		final Integer[] headsetTypes = { AudioDeviceInfo.TYPE_BLUETOOTH_A2DP, AudioDeviceInfo.TYPE_BLUETOOTH_SCO,
 		                                 AudioDeviceInfo.TYPE_WIRED_HEADSET, AudioDeviceInfo.TYPE_WIRED_HEADPHONES,
 		                                 AudioDeviceInfo.TYPE_USB_HEADSET, AudioDeviceInfo.TYPE_USB_DEVICE };
-		boolean result = true;
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-			AudioDeviceInfo[] devices = mAudioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
-			for (AudioDeviceInfo device: devices) {
-				Log.v("VanillaMusic", "AudioDeviceInfo type = " + device.getType());
-				if (Arrays.asList(headsetTypes).contains(device.getType())) {
-					result = false;
-					break;
-				}
-			}
-		} else {
-			result = !mAudioManager.isWiredHeadsetOn() && !mAudioManager.isBluetoothA2dpOn() && !mAudioManager.isBluetoothScoOn();
-		}
 
+		boolean result = true;
+		AudioDeviceInfo[] devices = mAudioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
+		for (AudioDeviceInfo device: devices) {
+			Log.v("VanillaMusic", "AudioDeviceInfo type = " + device.getType());
+			if (Arrays.asList(headsetTypes).contains(device.getType())) {
+				result = false;
+				break;
+			}
+		}
 		return result;
 	}
 
@@ -1033,7 +1030,7 @@ public final class PlaybackService extends Service
 					mMediaPlayer.start();
 
 				// Update the notification with the current song information.
-				startForeground(NOTIFICATION_ID, createNotification(mCurrentSong, mState, mNotificationVisibility));
+				startForeground(NOTIFICATION_ID, createNotification(mCurrentSong, mState));
 
 				final int result = mAudioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 				if (result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
@@ -1183,7 +1180,7 @@ public final class PlaybackService extends Service
 		if (mCurrentSong != null) {
 			// We always update the notification, even if we are about to cancel it as it may still stick around
 			// for a few seconds and we want to ensure that we are showing the correct state.
-			mNotificationHelper.notify(NOTIFICATION_ID, createNotification(mCurrentSong, mState, mNotificationVisibility));
+			mNotificationHelper.notify(NOTIFICATION_ID, createNotification(mCurrentSong, mState));
 		}
 		if (!(mForceNotificationVisible ||
 			 mNotificationVisibility == VISIBILITY_ALWAYS ||
@@ -1242,10 +1239,10 @@ public final class PlaybackService extends Service
 	 *
 	 * @return The new state after this is called.
 	 */
-	public int playPause()
+	public int playPause(boolean forceNotification)
 	{
-		mForceNotificationVisible = false;
 		synchronized (mStateLock) {
+			mForceNotificationVisible = forceNotification;
 			if ((mState & FLAG_PLAYING) != 0)
 				return pause();
 			else
@@ -1549,7 +1546,7 @@ public final class PlaybackService extends Service
 		switch (message.what) {
 		case MSG_CALL_GO:
 			if (message.arg1 == 0)
-				playPause();
+				playPause(false);
 			else
 				setCurrentSong(message.arg1);
 			break;
@@ -1767,13 +1764,14 @@ public final class PlaybackService extends Service
 	}
 
 	/**
-	 * Skips to the previous song OR rewinds the currently playing track
+	 * Skips to the previous song OR rewinds the currently playing track, depending
+	 * on the current position.
 	 *
 	 * @return The new current song
 	 */
 	public Song rewindCurrentSong() {
 		int delta = SongTimeline.SHIFT_PREVIOUS_SONG;
-		if(isPlaying() && getPosition() > REWIND_AFTER_PLAYED_MS && getDuration() > REWIND_AFTER_PLAYED_MS*2) {
+		if(getPosition() > REWIND_AFTER_PLAYED_MS && getDuration() > REWIND_AFTER_PLAYED_MS*2) {
 			delta = SongTimeline.SHIFT_KEEP_SONG;
 		}
 		return shiftCurrentSong(delta);
@@ -2112,45 +2110,51 @@ public final class PlaybackService extends Service
 	 * @param song The Song to display information about.
 	 * @param state The state. Determines whether to show paused or playing icon.
 	 */
-	public Notification createNotification(Song song, int state, int mode)
+	public Notification createNotification(Song song, int state)
 	{
 		final boolean playing = (state & FLAG_PLAYING) != 0;
-		Bitmap cover = song.getMediumCover(this);
-		if (cover == null) {
-			cover = BitmapFactory.decodeResource(getResources(), R.drawable.fallback_cover_large);
-		}
 
 		ComponentName service = new ComponentName(this, PlaybackService.class);
 
 		int playButton = ThemeHelper.getPlayButtonResource(playing);
-		Intent playPause = new Intent(PlaybackService.ACTION_TOGGLE_PLAYBACK_NOTIFICATION);
-		playPause.setComponent(service);
+		Intent playPause = new Intent(PlaybackService.ACTION_TOGGLE_PLAYBACK)
+			.putExtra(PlaybackService.EXTRA_FORCE_NOTIFICATION, true)
+			.setComponent(service);
 
-		Intent next = new Intent(PlaybackService.ACTION_NEXT_SONG);
-		next.setComponent(service);
+		Intent next = new Intent(PlaybackService.ACTION_NEXT_SONG)
+			.setComponent(service);
 
-		Intent previous = new Intent(PlaybackService.ACTION_PREVIOUS_SONG);
-		previous.setComponent(service);
+		Intent previous = new Intent(PlaybackService.ACTION_PREVIOUS_SONG)
+			.setComponent(service);
 
-		Notification n = mNotificationHelper.getNewBuilder(getApplicationContext())
+		NotificationCompat.Builder n = mNotificationHelper.getNewBuilder(getApplicationContext())
 			.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 			.setSmallIcon(R.drawable.status_icon)
-			.setLargeIcon(cover)
 			.setContentTitle(song.title)
 			.setContentText(song.album)
 			.setSubText(song.artist)
 			.setContentIntent(mNotificationAction)
 			.addAction(new NotificationCompat.Action(R.drawable.previous,
-													 getString(R.string.previous_song), PendingIntent.getService(this, 0, previous, PendingIntent.FLAG_IMMUTABLE)))
+													 getString(R.string.previous_song), PendingIntent.getService(this, 0, previous, PendingIntent.FLAG_IMMUTABLE|PendingIntent.FLAG_UPDATE_CURRENT)))
 			.addAction(new NotificationCompat.Action(playButton,
-													 getString(R.string.play_pause), PendingIntent.getService(this, 0, playPause, PendingIntent.FLAG_IMMUTABLE)))
+													 getString(R.string.play_pause), PendingIntent.getService(this, 0, playPause, PendingIntent.FLAG_IMMUTABLE|PendingIntent.FLAG_UPDATE_CURRENT)))
 			.addAction(new NotificationCompat.Action(R.drawable.next,
-													 getString(R.string.next_song), PendingIntent.getService(this, 0, next, PendingIntent.FLAG_IMMUTABLE)))
+													 getString(R.string.next_song), PendingIntent.getService(this, 0, next, PendingIntent.FLAG_IMMUTABLE|PendingIntent.FLAG_UPDATE_CURRENT)))
 			.setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
 					  .setMediaSession(mMediaSessionTracker.getSessionToken())
 					  .setShowActionsInCompactView(0, 1, 2))
-			.build();
-		return n;
+			.setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE);
+
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+			// Only set the cover for android < 13 since newer versions display the cover from the media session anyway.
+			Bitmap cover = song.getMediumCover(this);
+			if (cover == null) {
+				cover = BitmapFactory.decodeResource(getResources(), R.drawable.fallback_cover_large);
+			}
+			n.setLargeIcon(cover);
+		}
+
+		return n.build();
 	}
 
 	public void onAudioFocusChange(int type)
@@ -2246,7 +2250,7 @@ public final class PlaybackService extends Service
 			startActivity(intent);
 			break;
 		case PlayPause: {
-			int state = playPause();
+			int state = playPause(false);
 			if (receiver != null)
 				receiver.setState(state);
 			break;

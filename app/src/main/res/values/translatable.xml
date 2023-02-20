@@ -205,6 +205,9 @@ THE SOFTWARE.
 	<string name="replaygain_preamp_note_title">Note</string>
 	<string name="replaygain_preamp_note_content">Android does not allow Vanilla Music to raise the volume to >100%. Setting the Pre-amp to a high value may cause issues if you are listening to \'quiet\' music. \n\nRecommended values are:\n-> -3dB for silent/classical music\n-> +3dB for post-2000 recordings</string>
 
+	<string name="disable_gapless_playback_title">Disable Gapless Playback</string>
+	<string name="disable_gapless_playback_summary">Do not use Gapless Playback which might help with playback issues on devices with buggy firmware</string>
+
 	<string name="readahead">Enable readahead</string>
 	<string name="readahead_summary">Readahead the currently playing track. This option may solve \'audio dropout\' issues. (caused by a slow SD card)</string>
 
