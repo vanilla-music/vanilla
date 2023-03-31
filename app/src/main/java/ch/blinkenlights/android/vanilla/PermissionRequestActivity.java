@@ -39,12 +39,18 @@ public class PermissionRequestActivity extends Activity {
 	 * The intent to start after acquiring the required permissions
 	 */
 	private Intent mCallbackIntent;
+	private String intentData;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		mCallbackIntent = getIntent().getExtras().getParcelable("callbackIntent");
+		intentData = getIntent().getData();
+
+		if (intentData == "requestFullAccess") {
+			requestPermissions(getFullAccessPermissions(), 1);
+		}
 
 		ArrayList<String> allPerms = new ArrayList<>(Arrays.asList(getNeededPermissions()));
 		allPerms.addAll(Arrays.asList(getOptionalPermissions()));
@@ -160,4 +166,7 @@ public class PermissionRequestActivity extends Activity {
 		return new String[]{};
 	}
 
+	private static String[] getFullAccessPermissions() {
+		return new String[] { Manifest.permission.MANAGE_EXTERNAL_STORAGE };
+	}
 }

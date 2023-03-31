@@ -60,6 +60,7 @@ THE SOFTWARE.
 		android:summary="@string/playlist_request_all_files_permission_summary">
 		<intent
 			android:targetPackage="ch.blinkenlights.android.vanilla"
-			android:targetClass="ch.blinkenlights.android.vanilla.FullAccessPermissionRequestActivity" />
+			android:targetClass="ch.blinkenlights.android.vanilla.PermissionRequestActivity"
+			android:data="requestFullAccess" />
 	</PreferenceScreen>
 </PreferenceScreen>
