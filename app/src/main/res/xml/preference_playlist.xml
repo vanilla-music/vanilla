@@ -61,4 +61,5 @@ THE SOFTWARE.
 		<intent
 			android:targetPackage="space.rcmd.android.vanillaplus"
 			android:targetClass="space.rcmd.android.vanillaplus.FullAccessPermissionRequestActivity" />
+	</PreferenceScreen>
 </PreferenceScreen>
