@@ -55,4 +55,10 @@ THE SOFTWARE.
 		android:key="playlist_export_relative_paths"
 		android:summary="@string/playlist_export_relative_paths_summary"
 		android:title="@string/playlist_export_relative_paths_title" />
+	<PreferenceScreen
+		android:title="@string/playlist_request_all_files_permission_title"
+		android:summary="@string/playlist_request_all_files_permission_summary">
+		<intent
+			android:targetPackage="space.rcmd.android.vanillaplus"
+			android:targetClass="space.rcmd.android.vanillaplus.FullAccessPermissionRequestActivity" />
 </PreferenceScreen>

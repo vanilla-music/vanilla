@@ -198,7 +198,8 @@ THE SOFTWARE.
 		<activity
 			android:name="PermissionRequestActivity"
 			android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-
+		<activity
+			android:name="FullAccessPermissionRequestActivity" />
 		<activity
 			android:name="ShortcutPseudoActivity"
 			android:theme="@android:style/Theme.Translucent.NoTitleBar"
