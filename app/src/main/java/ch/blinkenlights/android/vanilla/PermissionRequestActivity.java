@@ -46,10 +46,10 @@ public class PermissionRequestActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		mCallbackIntent = getIntent().getExtras().getParcelable("callbackIntent");
-		intentData = getIntent().getData();
+		intentData = getIntent().getStringExtra("request");
 
-		if (intentData == "requestFullAccess") {
-			requestPermissions(getFullAccessPermissions(), 1);
+		if (intentData == "AllFilesAccess") {
+			requestPermissions(getAllFilesAccessPermissions(), 1);
 		}
 
 		ArrayList<String> allPerms = new ArrayList<>(Arrays.asList(getNeededPermissions()));
@@ -166,7 +166,7 @@ public class PermissionRequestActivity extends Activity {
 		return new String[]{};
 	}
 
-	private static String[] getFullAccessPermissions() {
+	private static String[] getAllFilesAccessPermissions() {
 		return new String[] { Manifest.permission.MANAGE_EXTERNAL_STORAGE };
 	}
 }
