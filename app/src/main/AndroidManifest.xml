@@ -169,7 +169,7 @@ THE SOFTWARE.
 		</receiver>
 		<service android:name="PlaybackService"
 			 android:foregroundServiceType="mediaPlayback"
-			 android:exported="false">
+			 android:exported="true">
 			<intent-filter>
 				<action android:name="ch.blinkenlights.android.vanilla.action.PLAY" />
 				<action android:name="ch.blinkenlights.android.vanilla.action.PAUSE" />
