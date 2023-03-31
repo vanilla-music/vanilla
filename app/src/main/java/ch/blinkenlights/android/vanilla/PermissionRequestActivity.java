@@ -171,7 +171,7 @@ public class PermissionRequestActivity extends Activity {
 		return new String[] { Manifest.permission.MANAGE_EXTERNAL_STORAGE };
 	}
 
-	private static void requestAllFilesAccessPermissions(Intent callbackIntent) {
+	private void requestAllFilesAccessPermissions(Intent callbackIntent) {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
 			if (Environment.isExternalStorageManager()) {
 				startActivity(callbackIntent);
