@@ -32,6 +32,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
+import android.util.Log;
 
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -52,6 +53,7 @@ public class PermissionRequestActivity extends Activity {
 		intentData = getIntent().getStringExtra("request");
 
 		if (intentData == "AllFilesAccess") {
+			Log.i("VanillaMusic", "We are HERE");
 			requestAllFilesAccessPermissions(mCallbackIntent);
 		}
 
