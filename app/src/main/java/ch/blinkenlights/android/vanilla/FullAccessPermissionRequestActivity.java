@@ -31,10 +31,17 @@ import android.view.LayoutInflater;
 
 
 public class FullAccessPermissionRequestActivity extends Activity {
+	/**
+	 * The intent to start after acquiring the required permissions
+	 */
+	private Intent mCallbackIntent;
+	
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		mCallbackIntent = getIntent().getExtras().getParcelable("callbackIntent");
 
 		requestPermissions(getNeededPermissions(), 1);
 	}
