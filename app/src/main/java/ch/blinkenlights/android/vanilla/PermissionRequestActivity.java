@@ -177,7 +177,7 @@ public class PermissionRequestActivity extends Activity {
 	}
 
 	private void requestAllFilesAccessPermissions(Intent callbackIntent) {
-		Log.i("VanillaMusic", "We're calling a target function")
+		Log.i("VanillaMusic", "We're calling a target function");
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
 			if (Environment.isExternalStorageManager()) {
 				startActivity(callbackIntent);
