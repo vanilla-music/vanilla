@@ -52,8 +52,9 @@ public class PermissionRequestActivity extends Activity {
 		mCallbackIntent = getIntent().getExtras().getParcelable("callbackIntent");
 		intentData = getIntent().getStringExtra("request");
 
+		Log.i("VanillaMusic", "We are HERE");
 		if (intentData == "AllFilesAccess") {
-			Log.i("VanillaMusic", "We are HERE");
+			Log.i("VanillaMusic", "We are ALSO HERE");
 			requestAllFilesAccessPermissions(mCallbackIntent);
 		}
 
