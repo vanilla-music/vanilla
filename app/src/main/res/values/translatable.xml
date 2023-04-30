@@ -360,8 +360,6 @@ THE SOFTWARE.
 	<string name="playlist_sync_folder_summary">Folder to use for playlist synchronization</string>
 	<string name="playlist_export_relative_paths_title">Export using relative paths</string>
 	<string name="playlist_export_relative_paths_summary">Reference file paths relative to the playlist</string>
-	<string name="playlist_request_all_files_permission_title">Request a permission to manage all files</string>
-	<string name="playlist_request_all_files_permission_summary">Use this permission if you need to manage playlist files outside of the application data folder</string>
 
 	<string name="permission_request_summary">Vanilla Music needs read permission to display your music library</string>
 	<string name="reverse_sort">Reverse sort</string>
