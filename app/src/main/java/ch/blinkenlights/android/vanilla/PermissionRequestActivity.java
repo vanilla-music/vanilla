@@ -27,8 +27,11 @@ import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.Settings;
 
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -39,12 +42,18 @@ public class PermissionRequestActivity extends Activity {
 	 * The intent to start after acquiring the required permissions
 	 */
 	private Intent mCallbackIntent;
+	private String intentData;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		mCallbackIntent = getIntent().getExtras().getParcelable("callbackIntent");
+		intentData = getIntent().getStringExtra("request");
+
+		if ("AllFilesAccess".equals(intentData)) {
+			requestAllFilesAccessPermissions(mCallbackIntent);
+		}
 
 		ArrayList<String> allPerms = new ArrayList<>(Arrays.asList(getNeededPermissions()));
 		allPerms.addAll(Arrays.asList(getOptionalPermissions()));
@@ -160,4 +169,20 @@ public class PermissionRequestActivity extends Activity {
 		return new String[]{};
 	}
 
+	private static String[] getAllFilesAccessPermissions() {
+		return new String[] { Manifest.permission.MANAGE_EXTERNAL_STORAGE };
+	}
+
+	private void requestAllFilesAccessPermissions(Intent callbackIntent) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+			if (Environment.isExternalStorageManager()) {
+				startActivity(callbackIntent);
+			} else { //request for the permission
+				Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+				Uri uri = Uri.fromParts("package", getPackageName(), null);
+				intent.setData(uri);
+				startActivity(intent);
+			}
+		}	
+	}
 }
