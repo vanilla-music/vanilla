@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2018-2023 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@ package ch.blinkenlights.android.vanilla;
 
 import android.os.Bundle;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -42,6 +43,19 @@ public class PlaylistObserverDirActivity extends FolderPickerActivity {
 		editor.putString(PrefKeys.PLAYLIST_SYNC_FOLDER, directory.getAbsolutePath());
 		editor.apply();
 		finish();
+	}
+
+	@Override
+	public boolean canUseFile(File dir) {
+		boolean okay = false;
+		try {
+			File f = File.createTempFile("vanilla-write-check", ".sd2", dir);
+			f.delete();
+			okay = true;
+		} catch (Exception e) {
+			Log.v("VanillaMusic", "Current directory not writeable: "+e);
+		}
+		return okay;
 	}
 
 }

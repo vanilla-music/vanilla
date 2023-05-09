@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Adrian Ulrich <adrian@blinkenlights.ch>
+ * Copyright (C) 2018-2023 Adrian Ulrich <adrian@blinkenlights.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,7 +49,17 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 	/**
 	 * Whether or not to write debug logs.
 	 */
-	private static final boolean DEBUG = false;
+	private static final boolean DEBUG = true;
+	/**
+	 * Temp filename
+	 */
+	private static final String TEMP_FILENAME = "vanilla-write-check";
+	/**
+	 * An extension which is used for audio files and hence we are allowed to write into
+	 * certain directories without requiring special permissions.
+	 * See https://cs.android.com/android/platform/superproject/+/refs/heads/master:packages/providers/MediaProvider/src/com/android/providers/media/MediaProvider.java;l=3825;drc=7346c436e5a11ce08f6a80dcfeb8ef941ca30176
+	 */
+	private static final String FAKE_MEDIA_EXTENSION = ".sd2";
 	/**
 	 * Bits for mSyncMode
 	 */
@@ -164,11 +174,12 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 	 * being handled if our playlists folder becomes 'suspect'.
 	 */
 	private boolean shouldDispatch() {
+		XT("Call to shouldDispatch()");
 		// This is so sad, but java.nio.file is only available since API 26,
 		// so we are stuck with java being java.
 		boolean deny = false;
 		try {
-			File f = File.createTempFile("vanilla-write-check", null, mPlaylists);
+			File f = File.createTempFile(TEMP_FILENAME, FAKE_MEDIA_EXTENSION, mPlaylists);
 			f.delete();
 		} catch (Exception e) {
 			// don't care about the exact error: as long as the write failed,
@@ -418,7 +429,7 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 				final String name = cursor.getString(1);
 				// generates possible names of this playlist as M3U.
 				final File src_m3u = getFileForName(mPlaylists, asM3u(name));
-				final File bak_m3u = getFileForName(mPlaylists, name + ".backup");
+				final File bak_m3u = getFileForName(mPlaylists, name + "-backup_m3u" + FAKE_MEDIA_EXTENSION);
 
 				if (Playlist.getPlaylist(mContext, id) == null) {
 					// Native version of this playlist is gone, rename M3U variant:
@@ -586,7 +597,6 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 		public void onChange(LibraryObserver.Type type, long id, boolean ongoing) {
 			if (type != LibraryObserver.Type.PLAYLIST || ongoing)
 				return;
-
 			if (!shouldDispatch())
 				return;
 
@@ -630,7 +640,6 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 
 				if (!isM3uFilename(dirent))
 					return;
-
 				if (!shouldDispatch())
 					return;
 
@@ -650,9 +659,9 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 
 	private void XT(String s) {
 		if (DEBUG) {
-			try(PrintWriter pw = new PrintWriter(new FileOutputStream(new File("/sdcard/playlist-observer.txt"), true))) {
+			Log.v("VanillaMusic", "XTRACE: "+s);
+			try(PrintWriter pw = new PrintWriter(new FileOutputStream(new File("/sdcard/Download/playlist-observer.txt"), true))) {
 				pw.println(System.currentTimeMillis()/1000+": "+s);
-				Log.v("VanillaMusic", "XTRACE: "+s);
 			} catch(Exception e) {}
 		}
 	}

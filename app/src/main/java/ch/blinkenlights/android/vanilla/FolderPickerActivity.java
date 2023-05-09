@@ -158,13 +158,23 @@ public abstract class FolderPickerActivity extends Activity
 	}
 
 	/**
+	 * Function should return true if the directory can be used for the
+	 * intended purpose.
+	 */
+	public boolean canUseFile(File dir) {
+		return dir.isDirectory();
+	}
+
+	/**
 	 * Jumps to given directory
 	 *
 	 * @param dir the directory to jump to
 	 */
 	void setCurrentDir(File dir) {
-		mSaveButton.setEnabled(dir.isDirectory());
-		mSpinner.setEnabled(dir.isDirectory());
+		final boolean isUseable = canUseFile(dir);
+		mSaveButton.setEnabled(isUseable);
+		mSpinner.setEnabled(isUseable);
+
 		mListAdapter.setCurrentDir(dir);
 		mListView.setSelectionFromTop(0, 0);
 
