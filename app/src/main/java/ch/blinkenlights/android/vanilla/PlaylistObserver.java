@@ -49,7 +49,7 @@ public class PlaylistObserver extends SQLiteOpenHelper implements Handler.Callba
 	/**
 	 * Whether or not to write debug logs.
 	 */
-	private static final boolean DEBUG = true;
+	private static final boolean DEBUG = false;
 	/**
 	 * Temp filename
 	 */
