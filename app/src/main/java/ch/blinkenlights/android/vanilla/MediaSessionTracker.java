@@ -112,6 +112,9 @@ public class MediaSessionTracker {
 			boolean showCover = SharedPrefHelper.getSettings(mContext).getBoolean(PrefKeys.COVER_ON_LOCKSCREEN, PrefDefaults.COVER_ON_LOCKSCREEN);
 			if (showCover) {
 				metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, cover);
+				// Checking this for debug purposes
+				// I suspect Vanilla fails at rendering album art timely
+				mMediaSession.setMetadata(metadataBuilder.build());
 			}
 
 			// logic copied from FullPlaybackActivity.updateQueuePosition()
