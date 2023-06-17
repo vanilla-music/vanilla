@@ -101,18 +101,6 @@ public class MediaSessionTracker {
 		final boolean playing = (state & PlaybackService.FLAG_PLAYING) != 0;
 		final PlaybackService service = PlaybackService.get(mContext);
 
-		PlaybackStateCompat playbackState = new PlaybackStateCompat.Builder()
-			.setState(playing ? PlaybackStateCompat.STATE_PLAYING : PlaybackStateCompat.STATE_PAUSED,
-					  service.getPosition(), 1.0f)
-			.setActions(PlaybackStateCompat.ACTION_PLAY |
-						PlaybackStateCompat.ACTION_STOP |
-						PlaybackStateCompat.ACTION_PAUSE |
-						PlaybackStateCompat.ACTION_PLAY_PAUSE |
-						PlaybackStateCompat.ACTION_SEEK_TO |
-						PlaybackStateCompat.ACTION_SKIP_TO_NEXT |
-						PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS)
-			.build();
-
 		if (song != null) {
 			final Bitmap cover = song.getMediumCover(mContext);
 			MediaMetadataCompat.Builder metadataBuilder = new MediaMetadataCompat.Builder()
@@ -133,6 +121,19 @@ public class MediaSessionTracker {
 			}
 			mMediaSession.setMetadata(metadataBuilder.build());
 		}
+
+		// Moved this block below to potentially fix the race condition
+		PlaybackStateCompat playbackState = new PlaybackStateCompat.Builder()
+			.setState(playing ? PlaybackStateCompat.STATE_PLAYING : PlaybackStateCompat.STATE_PAUSED,
+					  service.getPosition(), 1.0f)
+			.setActions(PlaybackStateCompat.ACTION_PLAY |
+						PlaybackStateCompat.ACTION_STOP |
+						PlaybackStateCompat.ACTION_PAUSE |
+						PlaybackStateCompat.ACTION_PLAY_PAUSE |
+						PlaybackStateCompat.ACTION_SEEK_TO |
+						PlaybackStateCompat.ACTION_SKIP_TO_NEXT |
+						PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS)
+			.build();
 
 		mMediaSession.setPlaybackState(playbackState);
 		mMediaSession.setActive(true);
