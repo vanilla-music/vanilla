@@ -150,8 +150,6 @@
   <string name="ignore_audiofocus_loss_summary">Fortsætte afspilning på permanent lydfokus</string>
   <string name="media_button_title">Hovedtelefon/Bluetooth kontrol</string>
   <string name="media_button_summary">Påkrævet for ICS låseskærm kontroller.</string>
-  <string name="media_button_beep_title">Hovedtelefon kontrol bip</string>
-  <string name="media_button_beep_summary">Bip efter overspringning af nummer med hovedtelefon kontrol dobbelt klik.</string>
   <string name="headset_only_title">Kun ekstern uddata</string>
   <string name="headset_only_summary">Forhindre musik afspilles gennem interne højttalere.</string>
   <string name="headset_pause_title">Pause når ikke tilsluttet</string>
@@ -178,8 +176,6 @@
   <string name="notifications">Påmindelser</string>
   <string name="notification_visibility_title">Påmindelse synlighed</string>
   <string name="notification_action_title">Påmindelse handling</string>
-  <string name="notification_nag">Meget uddybende påmindelse</string>
-  <string name="notification_nag_summary">Annoncer numre ændringer ved hjælp af en \'Heads-Up påmindelse\'</string>
   <string name="playback_screen">Afspille skærm</string>
   <string name="playback_on_startup_title">Åbne ved opstart</string>
   <string name="playback_on_startup_summary">Åbne afspilning visning ved opstart</string>

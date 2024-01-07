@@ -21,4 +21,7 @@
 
 	<color name="overlay_background_dark">#ff303030</color>
 	<color name="overlay_foreground_dark">#ffffffff</color>
+
+	<!-- defined here due to an Android ~9 bug -->
+	<color name="start_wearing_purple_background">#FF1B1734</color>
 </resources>

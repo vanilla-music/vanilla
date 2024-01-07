@@ -4,7 +4,7 @@
   <string name="ok">OK</string>
   <string name="cancel">Avbryt</string>
   <!--Playback Activity (main screen)-->
-  <string name="no_songs">Inga låtar hittade på enheten.</string>
+  <string name="no_songs">Inga låtar hittades på din enhet.</string>
   <string name="empty_queue">Inga låtar valda. Välj några från biblioteket eller ange slumpmässigt läge genom att trycka på det här meddelandet.</string>
   <string name="settings">Inställningar</string>
   <string name="no_shuffle">Blanda inte</string>
@@ -150,8 +150,6 @@
   <string name="ignore_audiofocus_loss_summary">Fortsätt spela på permanent ljudfokusförlust</string>
   <string name="media_button_title">Headset/Bluetooth-kontroller</string>
   <string name="media_button_summary">Detta är också nödvändigt för ICS-låsskärmskontroller.</string>
-  <string name="media_button_beep_title">Headset-kontrollsignal</string>
-  <string name="media_button_beep_summary">Pip efter att ha hoppat över en låt med ett dubbelklick för headsetkontrollen.</string>
   <string name="headset_only_title">Endast extern utgång</string>
   <string name="headset_only_summary">Förhindrar att musik spelas upp via de interna högtalarna.</string>
   <string name="headset_pause_title">Pausa när de urkopplas</string>
@@ -172,14 +170,12 @@
   <string name="replaygain_preamp_note_content">Android tillåter inte Vanilla Music att höja volymen till &gt;100%. Ställa in förförstärken till ett högt värde kan orsaka problem om du lyssnar på \"tyst\" musik.\n\nRekommendrade värden är:\n-&gt; -3dB för tyst/klassisk musik\n-&gt; +3dB för post-2000 inspelningar</string>
   <string name="readahead">Aktivera att läsa vidare</string>
   <string name="readahead_summary">Läs vidare den aktuella låten. Det här alternativet kan lösa \"ljudavbrotts\"-problem. (orsakas av ett långsam SD-kort)</string>
-  <string name="equalizer">Equalizer</string>
+  <string name="equalizer">Frekvenskorrigerare</string>
   <string name="cycle_continuous_shuffling">Blanda kontinuerligt</string>
   <string name="cycle_continuous_shuffling_summary">\"Blandningsläge\" kommer att spela upp låtar i helt slumpmässig ordning</string>
   <string name="notifications">Aviseringar</string>
   <string name="notification_visibility_title">Synlighet för aviseringar</string>
   <string name="notification_action_title">Åtgärder för aviseringar</string>
-  <string name="notification_nag">Mycket utförlig avisering</string>
-  <string name="notification_nag_summary">Meddela låtändringar med hjälp av en \"Heads-Up-Avisering\"</string>
   <string name="playback_screen">Uppspelningsskärm</string>
   <string name="playback_on_startup_title">Öppna vid start</string>
   <string name="playback_on_startup_summary">Öppna uppspelningsvyn vid start</string>
@@ -309,7 +305,7 @@
   <string name="media_scan_header">Medieskanner</string>
   <string name="media_scan_full">Skanna hela filsystemet (långsammare)</string>
   <string name="media_scan_drop_db">Ta bort mediadatabasen</string>
-  <string name="media_scan_start">Starta skanningen</string>
+  <string name="media_scan_start">Starta skanning</string>
   <string name="media_scan_force_bastp">Använder alltid inbyggda taggläsaren</string>
   <string name="media_scan_group_albums">Gruppera album efter mapp</string>
   <string name="media_statistics">Statistik</string>
@@ -321,6 +317,7 @@
   <string name="media_scan_preferences">Inställningar för skannern</string>
   <string name="media_scan_preferences_change_title">Inställningarna för skannern ändrade</string>
   <string name="media_scan_preferences_change_message">Om du ändrar det här inställningen startar du en fullständig omskanning av ditt bibliotek. Vill du fortsätta?</string>
+  <string name="folder_picker_spinner_desc">Status för mappen:</string>
   <!--Folder selector-->
   <string name="hint_long_press_to_modify_folder">Långt tryck för att ändra mappalternativ</string>
   <string name="folder_include">Inkludera</string>

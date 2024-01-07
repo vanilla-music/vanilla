@@ -5,17 +5,21 @@ use constant THEMES_OUTDIR => './app/src/main/res/values-v21/';
 use constant THEMES_LIST   => './app/src/main/res/values-v21/themes-list.xml';
 
 my $THEMES = [
-	{ name=>"standard_light", id=>0, dark=>0, colorAccent => '#ff3e677a', colorPrimary => '#ff37474f', colorPrimaryDark => '#ff263238', controlsNormal=>'@color/material_grey_900', _bg => '#fff0f0f0' },
-	{ name=>"standard_dark", id=>1, dark=>1, colorAccent => '#ff3e677a', colorPrimary => '#ff37474f', colorPrimaryDark => '#ff263238', controlsNormal=>'@color/material_grey_300', _bg => '#ff2a2a2a' },
-	{ name=>"grey_light", id=>2, dark=>0, colorAccent => '#ff000000', colorPrimary => '#ff212121', colorPrimaryDark => '#ff090909', controlsNormal=>'@color/material_grey_600', _bg => '#fff0f0f0' },
-	{ name=>"grey_dark", id=>3, dark=>1, colorAccent => '#ffd8d8d8', colorPrimary => '#ff212121', colorPrimaryDark => '#ff090909', controlsNormal=>'@color/material_grey_600', _bg => '#ff2a2a2a' },
-	{ name=>"orange_light", id=>4, dark=>0, colorAccent => '#FFF57F17', colorPrimary => '#FFE65100', colorPrimaryDark => '#FFBF360C', controlsNormal=>'@color/material_grey_900', _bg => '#fff0f0f0' },
-	{ name=>"orange_dark", id=>5, dark=>1, colorAccent => '#FFF57F17', colorPrimary => '#FFE65100', colorPrimaryDark => '#FFBF360C', controlsNormal=>'@color/material_grey_300', _bg => '#ff2a2a2a' },
-	{ name=>"blue_light", id=>6, dark=>0, colorAccent => '#FF03A9F4', colorPrimary => '#FF0277BD', colorPrimaryDark => '#FF01579B', controlsNormal=>'@color/material_grey_900', _bg => '#fff0f0f0' },
-	{ name=>"blue_dark", id=>7, dark=>1, colorAccent => '#FF03A9F4', colorPrimary => '#FF0277BD', colorPrimaryDark => '#FF01579B', controlsNormal=>'@color/material_grey_300', _bg => '#ff2a2a2a' },
-	{ name=>"red_light", id=>8, dark=>0, colorAccent => '#ffd50000', colorPrimary => '#ffc62828', colorPrimaryDark => '#ffb71c1c', controlsNormal=>'@color/material_grey_900', _bg => '#fff0f0f0' },
-	{ name=>"red_dark", id=>9, dark=>1, colorAccent => '#ffd50000', colorPrimary => '#ffc62828', colorPrimaryDark => '#ffb71c1c', controlsNormal=>'@color/material_grey_300', _bg => '#ff2a2a2a' },
-	{ name=>"amoled_dark", id=>10, dark=>1, colorAccent => '#ffd8d8d8', colorPrimary => '#ff000000', colorPrimaryDark => '#ff000000', controlsNormal=>'@color/material_grey_600', colorBackground=>'@android:color/black', _bg => '#ff000000' },
+	{ name=>"standard_light", id=>0, dark=>0, colorAccent => '#ff3e677a', colorPrimary => '#ff37474f', colorPrimaryDark => '#ff263238', controlsNormal=>'@color/material_grey_900', floatColor=>'@color/material_grey_400', _bg => '#fff0f0f0' },
+	{ name=>"standard_dark", id=>1, dark=>1, colorAccent => '#ff3e677a', colorPrimary => '#ff37474f', colorPrimaryDark => '#ff263238', controlsNormal=>'@color/material_grey_300', floatColor=>'@color/material_grey_900', _bg => '#ff2a2a2a' },
+	{ name=>"grey_light", id=>2, dark=>0, colorAccent => '#ff000000', colorPrimary => '#ff212121', colorPrimaryDark => '#ff090909', controlsNormal=>'@color/material_grey_600', floatColor=>'@color/material_grey_400', _bg => '#fff0f0f0' },
+	{ name=>"grey_dark", id=>3, dark=>1, colorAccent => '#ffd8d8d8', colorPrimary => '#ff212121', colorPrimaryDark => '#ff090909', controlsNormal=>'@color/material_grey_600', floatColor=>'@color/material_grey_900',_bg => '#ff2a2a2a' },
+	{ name=>"orange_light", id=>4, dark=>0, colorAccent => '#FFF57F17', colorPrimary => '#FFE65100', colorPrimaryDark => '#FFBF360C', controlsNormal=>'@color/material_grey_900', floatColor=>'@color/material_grey_400', _bg => '#fff0f0f0' },
+	{ name=>"orange_dark", id=>5, dark=>1, colorAccent => '#FFF57F17', colorPrimary => '#FFE65100', colorPrimaryDark => '#FFBF360C', controlsNormal=>'@color/material_grey_300', floatColor=>'@color/material_grey_900',_bg => '#ff2a2a2a' },
+	{ name=>"blue_light", id=>6, dark=>0, colorAccent => '#FF03A9F4', colorPrimary => '#FF0277BD', colorPrimaryDark => '#FF01579B', controlsNormal=>'@color/material_grey_900', floatColor=>'@color/material_grey_400', _bg => '#fff0f0f0' },
+	{ name=>"blue_dark", id=>7, dark=>1, colorAccent => '#FF03A9F4', colorPrimary => '#FF0277BD', colorPrimaryDark => '#FF01579B', controlsNormal=>'@color/material_grey_300', floatColor=>'@color/material_grey_900',_bg => '#ff2a2a2a' },
+	{ name=>"red_light", id=>8, dark=>0, colorAccent => '#ffd50000', colorPrimary => '#ffc62828', colorPrimaryDark => '#ffb71c1c', controlsNormal=>'@color/material_grey_900', floatColor=>'@color/material_grey_400', _bg => '#fff0f0f0' },
+	{ name=>"red_dark", id=>9, dark=>1, colorAccent => '#ffd50000', colorPrimary => '#ffc62828', colorPrimaryDark => '#ffb71c1c', controlsNormal=>'@color/material_grey_300', floatColor=>'@color/material_grey_900',_bg => '#ff2a2a2a' },
+    { name=>"amoled_dark", id=>10, dark=>1, colorAccent => '#ffd8d8d8', colorPrimary => '#ff000000', colorPrimaryDark => '#ff000000', controlsNormal=>'@color/material_grey_600', colorBackground=>'@android:color/black', floatColor=>'@color/material_grey_900', _bg => '#ff000000' },
+    { name=>"start_wearing_purple", id=>11, dark=>1,
+      colorAccent => '#FF896FBC', colorPrimary=> '#FF5C038C', colorPrimaryDark => '#FF420264', controlsNormal=>'@color/material_grey_600',
+      colorBackground => '@color/start_wearing_purple_background', controlsActive=> '#FF5C038C', floatColor => '#FF420264',
+      _bg => '#ff1B1734' },
 ];
 
 
@@ -103,17 +107,17 @@ my $DATA = << "EOF";
 <resources>
 EOF
 
+	my $controlsActive = $this->{controlsActive} || $this->{colorAccent};
 	if($this->{dark} == 0) {
 	$DATA .= << "EOF"
 	<style name="${tid}VanillaBase" parent="android:Theme.Material.Light.DarkActionBar">
 		<item name="overlay_background_color">\@color/overlay_background_light</item>
 		<item name="overlay_foreground_color">\@color/overlay_foreground_light</item>
-		<item name="float_color">\@color/material_grey_400</item>
-		<item name="background_circle_color">\@color/material_grey_300</item>
+		<item name="float_color">$this->{floatColor}</item>
 		<item name="tabs_background">$this->{colorPrimary}</item>
 		<item name="now_playing_marker">$this->{colorAccent}</item>
 		<item name="controls_normal">$this->{controlsNormal}</item>
-		<item name="controls_active">$this->{colorAccent}</item>
+		<item name="controls_active">$controlsActive</item>
 		<item name="android:colorAccent">$this->{colorAccent}</item>
 		<item name="android:colorPrimary">$this->{colorPrimary}</item>
 		<item name="android:colorPrimaryDark">$this->{colorPrimaryDark}</item>
@@ -135,9 +139,8 @@ EOF
 
 	<style name="${tid}PopupDialog" parent="android:Theme.Material.Light.Dialog.MinWidth">
 		<item name="overlay_background_color">\@color/overlay_background_light</item>
-		<item name="background_circle_color">\@color/material_grey_300</item>
 		<item name="controls_normal">$this->{controlsNormal}</item>
-		<item name="controls_active">$this->{colorAccent}</item>
+		<item name="controls_active">$controlsActive</item>
 	</style>
 
 	<style name="${tid}BottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
@@ -151,8 +154,7 @@ EOF
 	<style name="${tid}VanillaBase" parent="android:Theme.Material">
 		<item name="overlay_background_color">\@color/overlay_background_dark</item>
 		<item name="overlay_foreground_color">\@color/overlay_foreground_dark</item>
-		<item name="float_color">\@color/material_grey_900</item>
-		<item name="background_circle_color">\@color/material_grey_700</item>
+		<item name="float_color">$this->{floatColor}</item>
 		<item name="tabs_background">$this->{colorPrimary}</item>
 		<item name="now_playing_marker">$this->{colorAccent}</item>
 		<item name="controls_normal">$this->{controlsNormal}</item>
@@ -178,9 +180,8 @@ EOF
 
 	<style name="${tid}PopupDialog" parent="android:Theme.Material.Dialog.MinWidth">
 		<item name="overlay_background_color">\@color/overlay_background_dark</item>
-		<item name="background_circle_color">\@color/material_grey_700</item>
 		<item name="controls_normal">$this->{controlsNormal}</item>
-		<item name="controls_active">$this->{colorAccent}</item>
+		<item name="controls_active">$controlsActive</item>
 	</style>
 
 	<style name="${tid}BottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">

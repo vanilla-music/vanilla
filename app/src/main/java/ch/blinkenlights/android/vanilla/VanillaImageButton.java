@@ -36,10 +36,6 @@ public class VanillaImageButton extends ImageButton {
 	private Context mContext;
 	private static int mNormalTint;
 	private static int mActiveTint;
-	/**
-	 * The paint used to draw this buttons circle.
-	 */
-	private @Nullable Paint mCirclePaint;
 
 	public VanillaImageButton(Context context) {
 		this(context, null);
@@ -55,16 +51,6 @@ public class VanillaImageButton extends ImageButton {
 		mNormalTint = fetchAttrColor(R.attr.controls_normal);
 		mActiveTint = fetchAttrColor(R.attr.controls_active);
 
-		if (attrs != null) {
-			TypedArray a = mContext.obtainStyledAttributes(attrs, R.styleable.VanillaImageButton, 0, 0);
-			final int color = a.getColor(R.styleable.VanillaImageButton_backgroundCircleColor, 0);
-			a.recycle();
-
-			mCirclePaint = new Paint();
-			mCirclePaint.setColor(color);
-			mCirclePaint.setAntiAlias(true);
-		}
-
 		updateImageTint(-1);
 	}
 
@@ -72,20 +58,6 @@ public class VanillaImageButton extends ImageButton {
 	public void setImageResource(int resId) {
 		super.setImageResource(resId);
 		this.updateImageTint(resId);
-	}
-
-	@Override
-	public void onDraw(Canvas canvas) {
-		if (mCirclePaint != null) {
-			// Draw a circle on the background, but only
-			// if the color is set.
-			final int x = getWidth() / 2;
-			final int y = getHeight() / 2;
-			final float r = (x > y ? y : x);
-
-			canvas.drawCircle(x, y, r*0.80f, mCirclePaint);
-		}
-		super.onDraw(canvas);
 	}
 
 	private void updateImageTint(int resHint) {

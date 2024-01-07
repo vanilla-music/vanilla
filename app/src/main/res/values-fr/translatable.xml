@@ -43,7 +43,7 @@
   <string name="edit">Modifier</string>
   <string name="rename">Renommer</string>
   <string name="save_as_playlist">Enregistrer en playlist...</string>
-  <string name="add_to_playlist">Ajouter à la playlist...</string>
+  <string name="add_to_playlist">Ajouter à une playlist...</string>
   <string name="add_to_homescreen">Ajouter à l\'accueil...</string>
   <string name="add_to">Ajouter à...</string>
   <string name="playlist">Playlist</string>
@@ -59,7 +59,7 @@
   <string name="sort_by">Trier par</string>
   <string name="search">Rechercher</string>
   <string name="done">Terminé</string>
-  <string name="remove">Supprimer</string>
+  <string name="remove">Retirer</string>
   <string name="play_or_enqueue">Ajouter à la file d\'attente si en lecture ; Lire si en pause</string>
   <string name="open">Ouvrir</string>
   <string name="go_home">Dossier principal</string>
@@ -75,22 +75,27 @@
 		to see which categories apply to integer numbers in their languages-->
   <plurals name="playing">
     <item quantity="one">%d morceau en lecture.</item>
+    <item quantity="many">%d morceaux en lecture.</item>
     <item quantity="other">%d morceaux en lecture.</item>
   </plurals>
   <plurals name="enqueued">
     <item quantity="one">%d morceau ajouté à la file d\'attente.</item>
+    <item quantity="many">%d morceaux ajoutés à la file d\'attente.</item>
     <item quantity="other">%d morceaux ajoutés à la file d\'attente.</item>
   </plurals>
   <plurals name="added_to_playlist">
     <item quantity="one">%1$d morceau ajouté à la playlist %2$s.</item>
+    <item quantity="many">%1$d morceaux ajoutés à la playlist %2$s.</item>
     <item quantity="other">%1$d morceaux ajoutés à la playlist %2$s.</item>
   </plurals>
   <plurals name="removed_from_playlist">
     <item quantity="one">%1$d morceau supprimé de la playlist %2$s.</item>
+    <item quantity="many">%1$d morceaux supprimés de la playlist %2$s.</item>
     <item quantity="other">%1$d morceaux supprimés de la playlist %2$s.</item>
   </plurals>
   <plurals name="deleted">
     <item quantity="one">%d morceau supprimé.</item>
+    <item quantity="many">%d morceaux supprimés.</item>
     <item quantity="other">%d morceaux supprimés.</item>
   </plurals>
   <string name="delete_file_failed">Échec lors de la suppression %s.</string>
@@ -134,14 +139,17 @@
   <!--Preferences-->
   <plurals name="seconds">
     <item quantity="one">%d seconde</item>
+    <item quantity="many">%d secondes</item>
     <item quantity="other">%d secondes</item>
   </plurals>
   <plurals name="minutes">
     <item quantity="one">%d minute</item>
+    <item quantity="many">%d minutes</item>
     <item quantity="other">%d minutes</item>
   </plurals>
   <plurals name="hours">
     <item quantity="one">%d heure</item>
+    <item quantity="many">%d heures</item>
     <item quantity="other">%d heures</item>
   </plurals>
   <string name="audio">Audio</string>
@@ -150,8 +158,6 @@
   <string name="ignore_audiofocus_loss_summary">Continuer la lecture après une perte complète du focus audio</string>
   <string name="media_button_title">Contrôlable par casque/bluetooth</string>
   <string name="media_button_summary">Également nécessaire pour les contrôles de l\'écran verrouillé d\'Android ICS</string>
-  <string name="media_button_beep_title">Bip du contrôle casque</string>
-  <string name="media_button_beep_summary">Bip lors du changement de morceau par double clic avec le contrôle casque</string>
   <string name="headset_only_title">Sortie externe seulement</string>
   <string name="headset_only_summary">Empêche la lecture depuis les haut-parleurs internes</string>
   <string name="headset_pause_title">Mettre en pause à la déconnexion</string>
@@ -178,8 +184,6 @@
   <string name="notifications">Notifications</string>
   <string name="notification_visibility_title">Affichage de la notification</string>
   <string name="notification_action_title">Action de notification</string>
-  <string name="notification_nag">Notification très verbeuse</string>
-  <string name="notification_nag_summary">Annonce les changements de morceau avec une notification flottante</string>
   <string name="playback_screen">Écran de lecture</string>
   <string name="playback_on_startup_title">Ouvrir au démarrage</string>
   <string name="playback_on_startup_summary">Ouvrir l\'écran de lecture au démarrage</string>
@@ -265,6 +269,8 @@
   <string name="toggle_controls">Afficher/cacher les contrôles</string>
   <string name="seek_10s_backward">Aller 10 secondes en arrière</string>
   <string name="seek_10s_forward">Aller 10 secondes en avant</string>
+  <string name="move_to_top">Déplacer au début</string>
+  <string name="move_to_bottom">Déplacer à la fin</string>
   <string name="preferences_action_show_queue">Afficher la file d\'attente</string>
   <string name="preferences_action_clear_queue">Effacer la file d\'attente</string>
   <string name="preferences_action_enqueue_current_album">Ajouter l\'album à la file d\'attente</string>
@@ -321,6 +327,7 @@
   <string name="media_scan_preferences">Options du scanner</string>
   <string name="media_scan_preferences_change_title">Avertissement</string>
   <string name="media_scan_preferences_change_message">Toute modification entraînera un scan complet de la bibliothèque. Voulez-vous continuer ?</string>
+  <string name="folder_picker_spinner_desc">Statut du Dossier:</string>
   <!--Folder selector-->
   <string name="hint_long_press_to_modify_folder">Appuyez longuement pour modifier les options des dossiers</string>
   <string name="folder_include">Inclure</string>

@@ -6,6 +6,5 @@
 	<attr name="now_playing_marker"       format="color" />
 	<attr name="controls_normal"          format="color" />
 	<attr name="controls_active"          format="color" />
-	<attr name="background_circle_color"  format="color" />
 	<attr name="themed_letter_tile_colors" format="reference" />
 </resources>

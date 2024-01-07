@@ -150,8 +150,6 @@
   <string name="ignore_audiofocus_loss_summary">Lejátszás folytatása az audió fókusz végleges elvesztésekor</string>
   <string name="media_button_title">Headset/Bluetooth vezérlés</string>
   <string name="media_button_summary">Ez az ICS képernyőzár kezelőszerveihez is szükséges.</string>
-  <string name="media_button_beep_title">Headset vezérlés visszajelzés</string>
-  <string name="media_button_beep_summary">Sípolás egy szám kihagyása után, ha az a headset dupla kattintásával történt.</string>
   <string name="headset_only_title">Csak külső kimenet</string>
   <string name="headset_only_summary">Megakadályozza, hogy a beépített hangszórókon szóljon a zene.</string>
   <string name="headset_pause_title">Szüneteltetés szétcsatlakozáskor</string>
@@ -170,6 +168,8 @@
   <string name="replaygain_untagged_debump_summary">Hangerő csökkentése</string>
   <string name="replaygain_preamp_note_title">Megjegyzés</string>
   <string name="replaygain_preamp_note_content">Az Android nem engedi hogy a Vanilla Zenelejátszó &gt;100% értékre állítsa a hangerőt. Az előerősítés értékének túl magasra emelése problémákat okozhat, ha „halk” zenét hallgat.\n\nAz ajánlott értékek:\n-&gt; -3dB halk/klasszikus zenéhez\n-&gt; +3dB a 2000 utáni felvételekhez</string>
+  <string name="disable_gapless_playback_title">Szünetmentes lejátszás kikapcsolása</string>
+  <string name="disable_gapless_playback_summary">A szünetmentes lejátszás használatának mellőzése segíthet a hibás firmware-rel rendelkező eszközök lejátszási problémáin</string>
   <string name="readahead">Előreolvasás engedélyezése</string>
   <string name="readahead_summary">Előre felolvassa a jelenleg játszott számot. Ez megoldhatja a „hangkiesés” problémákat. (amit a lassú SD kártya okoz)</string>
   <string name="equalizer">Hangszínszabályzó</string>
@@ -178,8 +178,6 @@
   <string name="notifications">Értesítések</string>
   <string name="notification_visibility_title">Értesítések láthatósága</string>
   <string name="notification_action_title">Értesítési művelet</string>
-  <string name="notification_nag">Nagyon bőbeszédű értesítések</string>
-  <string name="notification_nag_summary">Értesítés a számok közötti váltásokról</string>
   <string name="playback_screen">Lejátszási képernyő</string>
   <string name="playback_on_startup_title">Megnyitás indításkor</string>
   <string name="playback_on_startup_summary">A lejátszási nézet megjelenítési indításkor</string>
@@ -209,7 +207,7 @@
   <string name="enable_scroll_to_song_summary">Görgetés a most játszott számhoz/albumhoz/előadóhoz a gyűjtemény listákban</string>
   <string name="queue_enable_scroll_to_song_title">Görgetés a szám címéhez a sorban</string>
   <string name="queue_enable_scroll_to_song_summary">Görgetés a most játszott számhoz a sorban számváltáskor</string>
-  <string name="jump_to_enqueued_on_play_title">Ugrás a sorba állított számra „Lejátszáskor”</string>
+  <string name="jump_to_enqueued_on_play_title">Ugrás a sorba állított számra lejátszáskor</string>
   <string name="jump_to_enqueued_on_play_summary">Ha a kért szám már sorba van állítva, akkor ugrás hozzá a teljes sor kiürítése helyett</string>
   <string name="coverloader_android_title">Borítók betöltése az Androidból</string>
   <string name="coverloader_android_summary">Az Android belső adatbázisának lekérdezése az albumborítóért</string>
@@ -265,6 +263,8 @@
   <string name="toggle_controls">Vezérlőelemek megjelenítése</string>
   <string name="seek_10s_backward">Léptetés 10 másodperccel hátra</string>
   <string name="seek_10s_forward">Léptetés 10 másodperccel előre</string>
+  <string name="move_to_top">Áthelyezés a tetejére</string>
+  <string name="move_to_bottom">Áthelyezés az aljára</string>
   <string name="preferences_action_show_queue">Lejátszási sor megjelenítése</string>
   <string name="preferences_action_clear_queue">Lejátszási sor ürítése</string>
   <string name="preferences_action_enqueue_current_album">Album sorba állítása</string>
@@ -321,6 +321,7 @@
   <string name="media_scan_preferences">Átvizsgáló beállítások</string>
   <string name="media_scan_preferences_change_title">Átvizsgáló beállítások módosítva</string>
   <string name="media_scan_preferences_change_message">A beállítás megváltoztatása a gyűjtemény teljes átvizsgálását okozza. Folytatja?</string>
+  <string name="folder_picker_spinner_desc">Könyvtár állapota:</string>
   <!--Folder selector-->
   <string name="hint_long_press_to_modify_folder">Nyomja meg hosszan a mappabeállítások módosításához</string>
   <string name="folder_include">Belevétel</string>
@@ -341,4 +342,5 @@
   <string name="theme_name_red_light">Vörös</string>
   <string name="theme_name_red_dark">Vörös (Sötét)</string>
   <string name="theme_name_amoled_dark">Koromfekete (AMOLED)</string>
+  <string name="theme_name_start_wearing_purple">Kezdjen el lilát hordani</string>
 </resources>

@@ -227,7 +227,7 @@ public final class CoverView extends View implements Handler.Callback {
 	 */
 	private Bitmap generateBitmap(Song song) {
 		int style = mCoverStyle;
-		Bitmap cover = song == null ? null : song.getCover(mContext);
+		Bitmap cover = song == null ? null : song.getLargeCover(mContext);
 
 		if (cover == null && style != CoverBitmap.STYLE_OVERLAPPING_BOX) {
 			cover = CoverBitmap.generateDefaultCover(mContext, getWidth(), getHeight());
@@ -367,7 +367,7 @@ public final class CoverView extends View implements Handler.Callback {
 			case MotionEvent.ACTION_DOWN: {
 
 				if (mScroller.isFinished()) {
-					mUiHandler.sendEmptyMessageDelayed(MSG_UI_LONG_CLICK, ViewConfiguration.getLongPressTimeout());
+					mUiHandler.sendEmptyMessageDelayed(MSG_UI_LONG_CLICK, ViewConfiguration.getLongPressTimeout() * 2);
 				} else {
 					// Animation was still running while we got a new down event
 					// Abort the current animation!

@@ -134,8 +134,6 @@
   <string name="ignore_audiofocus_loss_summary">Vẫn phát nhạc khi bị mất quyền kiểm soát âm thanh vĩnh viễn</string>
   <string name="media_button_title">Điều khiển bằng tai nghe / Bluetooth</string>
   <string name="media_button_summary">Cần phải bật để kích hoạt điều khiển màn hình khoá trên Android ICS</string>
-  <string name="media_button_beep_title">Tiếng bíp khi điều khiển bằng tai nghe</string>
-  <string name="media_button_beep_summary">Phát tiếng bíp sau khi nhấn đúp nút trên tai nghe để chuyển bài</string>
   <string name="headset_only_title">Chỉ phát qua ngõ ra</string>
   <string name="headset_only_summary">Không cho phát nhạc bằng loa của máy.</string>
   <string name="headset_pause_title">Tạm dừng khi rút tai nghe</string>
@@ -162,8 +160,6 @@
   <string name="notifications">Thông báo</string>
   <string name="notification_visibility_title">Cách hiển thị thông báo</string>
   <string name="notification_action_title">Hành động thông báo</string>
-  <string name="notification_nag">Thông báo rất chi tiết</string>
-  <string name="notification_nag_summary">Thông báo chuyển bài bằng \"heads-up notification\"</string>
   <string name="playback_screen">Màn hình phát nhạc</string>
   <string name="playback_on_startup_title">Mở khi khởi động</string>
   <string name="playback_on_startup_summary">Vào giao diện nghe nhạc khi mở ứng dụng</string>

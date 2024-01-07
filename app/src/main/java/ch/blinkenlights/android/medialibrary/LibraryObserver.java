@@ -26,8 +26,9 @@ public class LibraryObserver {
 	 * by the receiver
 	 */
 	public enum Type {
-		SONG,     // Change affected song items.
-		PLAYLIST, // Change affected playlists.
+		SONG,          // Change affected song items.
+		PLAYLIST,      // Change affected playlists.
+		SCAN_PROGRESS, // Information about an ongoing scan.
 	}
 	/**
 	 * Special hint values

@@ -39,6 +39,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -57,8 +58,8 @@ import android.os.Process;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
-import android.widget.RemoteViews;
 import android.widget.Toast;
+import androidx.core.app.NotificationCompat;
 import java.lang.Math;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -125,13 +126,6 @@ public final class PlaybackService extends Service
 	 */
 	public static final String ACTION_TOGGLE_PLAYBACK_DELAYED = "ch.blinkenlights.android.vanilla.action.TOGGLE_PLAYBACK_DELAYED";
 	/**
-	 * Action for startService: toggle playback on/off.
-	 *
-	 * This works the same way as ACTION_PLAY_PAUSE but prevents the notification
-	 * from being hidden regardless of notification visibility settings.
-	 */
-	public static final String ACTION_TOGGLE_PLAYBACK_NOTIFICATION = "ch.blinkenlights.android.vanilla.action.TOGGLE_PLAYBACK_NOTIFICATION";
-	/**
 	 * Action for startService: advance to the next song.
 	 */
 	public static final String ACTION_NEXT_SONG = "ch.blinkenlights.android.vanilla.action.NEXT_SONG";
@@ -179,13 +173,13 @@ public final class PlaybackService extends Service
 	 */
 	public static final String ACTION_CYCLE_REPEAT = "ch.blinkenlights.android.vanilla.CYCLE_REPEAT";
 	/**
-	 * Pause music and hide the notification.
-	 */
-	public static final String ACTION_CLOSE_NOTIFICATION = "ch.blinkenlights.android.vanilla.CLOSE_NOTIFICATION";
-	/**
 	 * Whether we should create a foreground notification as early as possible.
 	 */
 	public static final String EXTRA_EARLY_NOTIFICATION = "extra_early_notification";
+	/**
+	 * Keep notification forcefully around on stops if set.
+	 */
+	public static final String EXTRA_FORCE_NOTIFICATION = "extra_force_notification";
 
 	/**
 	 * Visibility modes of the notification.
@@ -310,10 +304,6 @@ public final class PlaybackService extends Service
 	 */
 	private int mNotificationVisibility;
 	/**
-	 * If true, create a notification with ticker text or heads up display
-	 */
-	private boolean mNotificationNag;
-	/**
 	 * If true, audio will not be played through the speaker.
 	 */
 	private boolean mHeadsetOnly;
@@ -347,6 +337,11 @@ public final class PlaybackService extends Service
 	 * A remote control client implementation
 	 */
 	private RemoteControl.Client mRemoteControlClient;
+
+	/**
+	 * Media session state tracker for notification
+	 */
+	private MediaSessionTracker mMediaSessionTracker;
 
 	SongTimeline mTimeline;
 	private Song mCurrentSong;
@@ -446,6 +441,10 @@ public final class PlaybackService extends Service
 	 * Reference to SettingsContentObserver
 	 */
 	private SettingsContentObserver mSettingsContentObserver;
+	/**
+   * Don't use gapless playback, useful for bug ridden devices.
+	 */
+	private boolean mDisableGaplessPlayback;
 
 	@Override
 	public void onCreate()
@@ -474,7 +473,6 @@ public final class PlaybackService extends Service
 		SharedPreferences settings = SharedPrefHelper.getSettings(this);
 		settings.registerOnSharedPreferenceChangeListener(this);
 		mNotificationVisibility = Integer.parseInt(settings.getString(PrefKeys.NOTIFICATION_VISIBILITY, PrefDefaults.NOTIFICATION_VISIBILITY));
-		mNotificationNag = settings.getBoolean(PrefKeys.NOTIFICATION_NAG, PrefDefaults.NOTIFICATION_NAG);
 		mScrobble = settings.getBoolean(PrefKeys.SCROBBLE, PrefDefaults.SCROBBLE);
 		mIdleTimeout = settings.getBoolean(PrefKeys.USE_IDLE_TIMEOUT, PrefDefaults.USE_IDLE_TIMEOUT) ? settings.getInt(PrefKeys.IDLE_TIMEOUT, PrefDefaults.IDLE_TIMEOUT) : 0;
 
@@ -494,6 +492,7 @@ public final class PlaybackService extends Service
 		mReplayGainAlbumEnabled = settings.getBoolean(PrefKeys.ENABLE_ALBUM_REPLAYGAIN, PrefDefaults.ENABLE_ALBUM_REPLAYGAIN);
 		mReplayGainBump = settings.getInt(PrefKeys.REPLAYGAIN_BUMP, PrefDefaults.REPLAYGAIN_BUMP);
 		mReplayGainUntaggedDeBump = settings.getInt(PrefKeys.REPLAYGAIN_UNTAGGED_DEBUMP, PrefDefaults.REPLAYGAIN_UNTAGGED_DEBUMP);
+		mDisableGaplessPlayback = settings.getBoolean(PrefKeys.DISABLE_GAPLESS_PLAYBACK, PrefDefaults.DISABLE_GAPLESS_PLAYBACK);
 
 		mVolumeDuringDucking = settings.getInt(PrefKeys.VOLUME_DURING_DUCKING, PrefDefaults.VOLUME_DURING_DUCKING);
 		mKidmodeMaxVolume = settings.getInt(PrefKeys.KIDMODE_MAX_VOLUME, PrefDefaults.KIDMODE_MAX_VOLUME);
@@ -506,7 +505,7 @@ public final class PlaybackService extends Service
 		mAutoPlPlaycounts = settings.getInt(PrefKeys.AUTOPLAYLIST_PLAYCOUNTS, PrefDefaults.AUTOPLAYLIST_PLAYCOUNTS);
 
 		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
-		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicLock");
+		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusic:PlaybackService");
 
 		mReceiver = new Receiver();
 		IntentFilter filter = new IntentFilter();
@@ -518,6 +517,8 @@ public final class PlaybackService extends Service
 
 		mRemoteControlClient = new RemoteControl().getClient(this);
 		mRemoteControlClient.initializeRemote();
+
+		mMediaSessionTracker = new MediaSessionTracker(this);
 
 		int syncMode = Integer.parseInt(settings.getString(PrefKeys.PLAYLIST_SYNC_MODE, PrefDefaults.PLAYLIST_SYNC_MODE));
 		boolean exportRelativePaths = settings.getBoolean(PrefKeys.PLAYLIST_EXPORT_RELATIVE_PATHS, PrefDefaults.PLAYLIST_EXPORT_RELATIVE_PATHS);
@@ -541,9 +542,7 @@ public final class PlaybackService extends Service
 		mAccelLast = SensorManager.GRAVITY_EARTH;
 		setupSensor();
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-			ScheduledLibraryUpdate.scheduleUpdate(this);
-		}
+		ScheduledLibraryUpdate.scheduleUpdate(this);
 	}
 
 	@Override
@@ -551,22 +550,15 @@ public final class PlaybackService extends Service
 		if (intent != null) {
 			final String action = intent.getAction();
 			final boolean earlyNotification = intent.hasExtra(EXTRA_EARLY_NOTIFICATION);
+			final boolean forceNotification = intent.hasExtra(EXTRA_FORCE_NOTIFICATION);
 
 			if (earlyNotification) {
 				Song song = mCurrentSong != null ? mCurrentSong : new Song(-1);
-				startForeground(NOTIFICATION_ID, createNotification(song, mState, VISIBILITY_WHEN_PLAYING));
+				startForeground(NOTIFICATION_ID, createNotification(song, mState));
 			}
 
 			if (ACTION_TOGGLE_PLAYBACK.equals(action)) {
-				playPause();
-			} else if (ACTION_TOGGLE_PLAYBACK_NOTIFICATION.equals(action)) {
-				mForceNotificationVisible = true;
-				synchronized (mStateLock) {
-					if ((mState & FLAG_PLAYING) != 0)
-						pause();
-					else
-						play();
-				}
+				playPause(forceNotification);
 			} else if (ACTION_TOGGLE_PLAYBACK_DELAYED.equals(action)) {
 				if (mHandler.hasMessages(MSG_CALL_GO, Integer.valueOf(0))) {
 					mHandler.removeMessages(MSG_CALL_GO, Integer.valueOf(0));
@@ -620,11 +612,6 @@ public final class PlaybackService extends Service
 				// Flush the queue and start playing:
 				query.mode = SongTimeline.MODE_PLAY;
 				addSongs(query);
-			} else if (ACTION_CLOSE_NOTIFICATION.equals(action)) {
-				mForceNotificationVisible = false;
-				pause();
-				stopForeground(true); // sometimes required to clear notification
-				updateNotification();
 			}
 		}
 
@@ -675,6 +662,9 @@ public final class PlaybackService extends Service
 
 		if (mRemoteControlClient != null)
 			mRemoteControlClient.unregisterRemote();
+
+		if (mMediaSessionTracker != null)
+			mMediaSessionTracker.release();
 
 		super.onDestroy();
 	}
@@ -842,8 +832,8 @@ public final class PlaybackService extends Service
 		if(mMediaPlayerInitialized != true)
 			return;
 
-		if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
-			return; /* setNextMediaPlayer is supported since JB */
+		if(mDisableGaplessPlayback)
+			return;
 
 		boolean doGapless = false;
 		int fa = finishAction(mState);
@@ -929,14 +919,8 @@ public final class PlaybackService extends Service
 			// mode.
 			stopForeground(true);
 			updateNotification();
-		} else if (PrefKeys.NOTIFICATION_NAG.equals(key)) {
-			mNotificationNag = settings.getBoolean(PrefKeys.NOTIFICATION_NAG, PrefDefaults.NOTIFICATION_NAG);
-			// no need to update notification: happens on next event
 		} else if (PrefKeys.SCROBBLE.equals(key)) {
 			mScrobble = settings.getBoolean(PrefKeys.SCROBBLE, PrefDefaults.SCROBBLE);
-		} else if (PrefKeys.MEDIA_BUTTON.equals(key) || PrefKeys.MEDIA_BUTTON_BEEP.equals(key)) {
-			MediaButtonReceiver.reloadPreference(this);
-			mRemoteControlClient.initializeRemote();
 		} else if (PrefKeys.COVER_ON_LOCKSCREEN.equals(key)) {
 			mRemoteControlClient.reloadPreference();
 		} else if (PrefKeys.USE_IDLE_TIMEOUT.equals(key) || PrefKeys.IDLE_TIMEOUT.equals(key)) {
@@ -998,7 +982,10 @@ public final class PlaybackService extends Service
 			ArrayList<TimelineCallback> list = sCallbacks;
 			for (int i = list.size(); --i != -1; )
 				list.get(i).recreate();
+		} else if (PrefKeys.DISABLE_GAPLESS_PLAYBACK.equals(key)) {
+			mDisableGaplessPlayback = settings.getBoolean(PrefKeys.DISABLE_GAPLESS_PLAYBACK, PrefDefaults.DISABLE_GAPLESS_PLAYBACK);
 		}
+
 		/* Tell androids cloud-backup manager that we just changed our preferences */
 		(new BackupManager(this)).dataChanged();
 	}
@@ -1033,20 +1020,16 @@ public final class PlaybackService extends Service
 		final Integer[] headsetTypes = { AudioDeviceInfo.TYPE_BLUETOOTH_A2DP, AudioDeviceInfo.TYPE_BLUETOOTH_SCO,
 		                                 AudioDeviceInfo.TYPE_WIRED_HEADSET, AudioDeviceInfo.TYPE_WIRED_HEADPHONES,
 		                                 AudioDeviceInfo.TYPE_USB_HEADSET, AudioDeviceInfo.TYPE_USB_DEVICE };
-		boolean result = true;
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-			AudioDeviceInfo[] devices = mAudioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
-			for (AudioDeviceInfo device: devices) {
-				Log.v("VanillaMusic", "AudioDeviceInfo type = " + device.getType());
-				if (Arrays.asList(headsetTypes).contains(device.getType())) {
-					result = false;
-					break;
-				}
-			}
-		} else {
-			result = !mAudioManager.isWiredHeadsetOn() && !mAudioManager.isBluetoothA2dpOn() && !mAudioManager.isBluetoothScoOn();
-		}
 
+		boolean result = true;
+		AudioDeviceInfo[] devices = mAudioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
+		for (AudioDeviceInfo device: devices) {
+			Log.v("VanillaMusic", "AudioDeviceInfo type = " + device.getType());
+			if (Arrays.asList(headsetTypes).contains(device.getType())) {
+				result = false;
+				break;
+			}
+		}
 		return result;
 	}
 
@@ -1089,7 +1072,7 @@ public final class PlaybackService extends Service
 					mMediaPlayer.start();
 
 				// Update the notification with the current song information.
-				startForeground(NOTIFICATION_ID, createNotification(mCurrentSong, mState, mNotificationVisibility));
+				startForeground(NOTIFICATION_ID, createNotification(mCurrentSong, mState));
 
 				final int result = mAudioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 				if (result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
@@ -1165,6 +1148,7 @@ public final class PlaybackService extends Service
 			triggerReadAhead();
 
 		mRemoteControlClient.updateRemote(mCurrentSong, mState, mForceNotificationVisible);
+		mMediaSessionTracker.updateSession(mCurrentSong, mState);
 
 		scrobbleBroadcast();
 	}
@@ -1235,44 +1219,27 @@ public final class PlaybackService extends Service
 
 	private void updateNotification()
 	{
-		if ((mForceNotificationVisible || mNotificationVisibility == VISIBILITY_ALWAYS
-			  || mNotificationVisibility == VISIBILITY_WHEN_PLAYING && (mState & FLAG_PLAYING) != 0) && mCurrentSong != null) {
-			mNotificationHelper.notify(NOTIFICATION_ID, createNotification(mCurrentSong, mState, mNotificationVisibility));
-		} else {
+		if (mCurrentSong != null) {
+			// We always update the notification, even if we are about to cancel it as it may still stick around
+			// for a few seconds and we want to ensure that we are showing the correct state.
+			mNotificationHelper.notify(NOTIFICATION_ID, createNotification(mCurrentSong, mState));
+		}
+		if (!(mForceNotificationVisible ||
+			 mNotificationVisibility == VISIBILITY_ALWAYS ||
+			 mNotificationVisibility == VISIBILITY_WHEN_PLAYING && (mState & FLAG_PLAYING) != 0)) {
 			mNotificationHelper.cancel(NOTIFICATION_ID);
 		}
 	}
 
 	/**
-	 * When playing through MirrorLink(tm) don't interact
-	 * with the User directly as this is considered distracting
-	 * while driving
+	 * Enqueues a Toast message to be shown.
 	 */
-	private void showMirrorLinkSafeToast(int resId, int duration) {
-		if(getMirrorLinkCallback() == null) {
-			mHandler.sendMessage(mHandler.obtainMessage(MSG_SHOW_TOAST, duration, resId));
-		}
+	private void showToast(int resId, int duration) {
+		mHandler.sendMessage(mHandler.obtainMessage(MSG_SHOW_TOAST, duration, resId));
 	}
 
-	private void showMirrorLinkSafeToast(CharSequence text, int duration) {
-		if(getMirrorLinkCallback() == null) {
-			mHandler.sendMessage(mHandler.obtainMessage(MSG_SHOW_TOAST, duration, 0, text));
-		}
-	}
-
-	/**
-	 * Returns TRUE if the mirror link service has been registered
-	 */
-	private MirrorLinkMediaBrowserService getMirrorLinkCallback() {
-		if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
-			return null; // does not support mirrorlink
-
-		for (Object o : sCallbacks) {
-			if (o instanceof MirrorLinkMediaBrowserService) {
-				return (MirrorLinkMediaBrowserService)o;
-			}
-		}
-		return null;
+	private void showToast(CharSequence text, int duration) {
+		mHandler.sendMessage(mHandler.obtainMessage(MSG_SHOW_TOAST, duration, 0, text));
 	}
 
 	/**
@@ -1285,7 +1252,7 @@ public final class PlaybackService extends Service
 		synchronized (mStateLock) {
 			if ((mState & FLAG_EMPTY_QUEUE) != 0) {
 				setFinishAction(SongTimeline.FINISH_RANDOM);
-				showMirrorLinkSafeToast(R.string.random_enabling, Toast.LENGTH_SHORT);
+				showToast(R.string.random_enabling, Toast.LENGTH_SHORT);
 			}
 
 			int state = updateState(mState | FLAG_PLAYING);
@@ -1314,10 +1281,10 @@ public final class PlaybackService extends Service
 	 *
 	 * @return The new state after this is called.
 	 */
-	public int playPause()
+	public int playPause(boolean forceNotification)
 	{
-		mForceNotificationVisible = false;
 		synchronized (mStateLock) {
+			mForceNotificationVisible = forceNotification;
 			if ((mState & FLAG_PLAYING) != 0)
 				return pause();
 			else
@@ -1475,7 +1442,7 @@ public final class PlaybackService extends Service
 		} catch (IOException e) {
 			mErrorMessage = getResources().getString(R.string.song_load_failed, song.path);
 			updateState(mState | FLAG_ERROR);
-			showMirrorLinkSafeToast(mErrorMessage, Toast.LENGTH_LONG);
+			showToast(mErrorMessage, Toast.LENGTH_LONG);
 			Log.e("VanillaMusic", "IOException", e);
 
 			/* Automatically advance to next song IF we are currently playing or already did skip something
@@ -1516,10 +1483,6 @@ public final class PlaybackService extends Service
 	{
 		Log.e("VanillaMusic", "MediaPlayer error: " + what + ' ' + extra);
 
-		MirrorLinkMediaBrowserService service = getMirrorLinkCallback();
-		if(service != null) {
-			service.onError("MediaPlayer Error");
-		}
 		return true;
 	}
 
@@ -1625,7 +1588,7 @@ public final class PlaybackService extends Service
 		switch (message.what) {
 		case MSG_CALL_GO:
 			if (message.arg1 == 0)
-				playPause();
+				playPause(false);
 			else
 				setCurrentSong(message.arg1);
 			break;
@@ -1708,6 +1671,7 @@ public final class PlaybackService extends Service
 			break;
 		case MSG_BROADCAST_SEEK:
 			mRemoteControlClient.updateRemote(mCurrentSong, mState, mForceNotificationVisible);
+			mMediaSessionTracker.updateSession(mCurrentSong, mState);
 			break;
 		default:
 			return false;
@@ -1842,13 +1806,14 @@ public final class PlaybackService extends Service
 	}
 
 	/**
-	 * Skips to the previous song OR rewinds the currently playing track
+	 * Skips to the previous song OR rewinds the currently playing track, depending
+	 * on the current position.
 	 *
 	 * @return The new current song
 	 */
 	public Song rewindCurrentSong() {
 		int delta = SongTimeline.SHIFT_PREVIOUS_SONG;
-		if(isPlaying() && getPosition() > REWIND_AFTER_PLAYED_MS && getDuration() > REWIND_AFTER_PLAYED_MS*2) {
+		if(getPosition() > REWIND_AFTER_PLAYED_MS && getDuration() > REWIND_AFTER_PLAYED_MS*2) {
 			delta = SongTimeline.SHIFT_KEEP_SONG;
 		}
 		return shiftCurrentSong(delta);
@@ -1910,7 +1875,7 @@ public final class PlaybackService extends Service
 		default:
 			throw new IllegalArgumentException("Invalid add mode: " + query.mode);
 		}
-		showMirrorLinkSafeToast(getResources().getQuantityString(text, count, count), Toast.LENGTH_SHORT);
+		showToast(getResources().getQuantityString(text, count, count), Toast.LENGTH_SHORT);
 	}
 
 	/**
@@ -2012,12 +1977,16 @@ public final class PlaybackService extends Service
 		for (int i = list.size(); --i != -1; )
 			list.get(i).onPositionInfoChanged();
 		mRemoteControlClient.updateRemote(mCurrentSong, mState, mForceNotificationVisible);
+		mMediaSessionTracker.updateSession(mCurrentSong, mState);
 	}
 
 	private final LibraryObserver mObserver = new LibraryObserver() {
 		@Override
 		public void onChange(LibraryObserver.Type type, long id, boolean ongoing)
 		{
+			if (type != LibraryObserver.Type.SONG && type != LibraryObserver.Type.PLAYLIST)
+				return;
+
 			MediaUtils.onMediaChange();
 			onMediaChange();
 		}
@@ -2154,11 +2123,11 @@ public final class PlaybackService extends Service
 		case NOT_ACTION_NEXT_SONG: {
 			Intent intent = new Intent(this, PlaybackService.class);
 			intent.setAction(PlaybackService.ACTION_NEXT_SONG_AUTOPLAY);
-			return PendingIntent.getService(this, 0, intent, 0);
+			return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 		}
 		case NOT_ACTION_MINI_ACTIVITY: {
 			Intent intent = new Intent(this, MiniPlaybackActivity.class);
-			return PendingIntent.getActivity(this, 0, intent, 0);
+			return PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 		}
 		default:
 			Log.w("VanillaMusic", "Unknown value for notification_action. Defaulting to 0.");
@@ -2166,12 +2135,12 @@ public final class PlaybackService extends Service
 		case NOT_ACTION_MAIN_ACTIVITY: {
 			Intent intent = new Intent(this, LibraryActivity.class);
 			intent.setAction(Intent.ACTION_MAIN);
-			return PendingIntent.getActivity(this, 0, intent, 0);
+			return PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 		}
 		case NOT_ACTION_FULL_ACTIVITY: {
 			Intent intent = new Intent(this, FullPlaybackActivity.class);
 			intent.setAction(Intent.ACTION_MAIN);
-			return PendingIntent.getActivity(this, 0, intent, 0);
+			return PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 		}
 		}
 	}
@@ -2183,83 +2152,51 @@ public final class PlaybackService extends Service
 	 * @param song The Song to display information about.
 	 * @param state The state. Determines whether to show paused or playing icon.
 	 */
-	public Notification createNotification(Song song, int state, int mode)
+	public Notification createNotification(Song song, int state)
 	{
-		boolean playing = (state & FLAG_PLAYING) != 0;
-
-		RemoteViews views = new RemoteViews(getPackageName(), R.layout.notification);
-		RemoteViews expanded = new RemoteViews(getPackageName(), R.layout.notification_expanded);
-
-		Bitmap cover = song.getCover(this);
-		if (cover == null) {
-			views.setImageViewResource(R.id.cover, R.drawable.fallback_cover);
-			expanded.setImageViewResource(R.id.cover, R.drawable.fallback_cover_large);
-		} else {
-			views.setImageViewBitmap(R.id.cover, cover);
-			expanded.setImageViewBitmap(R.id.cover, cover);
-		}
-
-		int playButton = ThemeHelper.getPlayButtonResource(playing);
-
-		views.setImageViewResource(R.id.play_pause, playButton);
-		expanded.setImageViewResource(R.id.play_pause, playButton);
+		final boolean playing = (state & FLAG_PLAYING) != 0;
 
 		ComponentName service = new ComponentName(this, PlaybackService.class);
 
-		Intent previous = new Intent(PlaybackService.ACTION_PREVIOUS_SONG);
-		previous.setComponent(service);
-		views.setOnClickPendingIntent(R.id.previous, PendingIntent.getService(this, 0, previous, 0));
-		expanded.setOnClickPendingIntent(R.id.previous, PendingIntent.getService(this, 0, previous, 0));
+		int playButton = ThemeHelper.getPlayButtonResource(playing);
+		Intent playPause = new Intent(PlaybackService.ACTION_TOGGLE_PLAYBACK)
+			.putExtra(PlaybackService.EXTRA_FORCE_NOTIFICATION, true)
+			.setComponent(service);
 
-		Intent playPause = new Intent(PlaybackService.ACTION_TOGGLE_PLAYBACK_NOTIFICATION);
-		playPause.setComponent(service);
-		views.setOnClickPendingIntent(R.id.play_pause, PendingIntent.getService(this, 0, playPause, 0));
-		expanded.setOnClickPendingIntent(R.id.play_pause, PendingIntent.getService(this, 0, playPause, 0));
+		Intent next = new Intent(PlaybackService.ACTION_NEXT_SONG)
+			.setComponent(service);
 
-		Intent next = new Intent(PlaybackService.ACTION_NEXT_SONG);
-		next.setComponent(service);
-		views.setOnClickPendingIntent(R.id.next, PendingIntent.getService(this, 0, next, 0));
-		expanded.setOnClickPendingIntent(R.id.next, PendingIntent.getService(this, 0, next, 0));
+		Intent previous = new Intent(PlaybackService.ACTION_PREVIOUS_SONG)
+			.setComponent(service);
 
-		int closeButtonVisibility = (mode == VISIBILITY_WHEN_PLAYING) ? View.VISIBLE : View.INVISIBLE;
-		Intent close = new Intent(PlaybackService.ACTION_CLOSE_NOTIFICATION);
-		close.setComponent(service);
-		views.setOnClickPendingIntent(R.id.close, PendingIntent.getService(this, 0, close, 0));
-		views.setViewVisibility(R.id.close, closeButtonVisibility);
-		expanded.setOnClickPendingIntent(R.id.close, PendingIntent.getService(this, 0, close, 0));
-		expanded.setViewVisibility(R.id.close, closeButtonVisibility);
+		NotificationCompat.Builder n = mNotificationHelper.getNewBuilder(getApplicationContext())
+			.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+			.setSmallIcon(R.drawable.status_icon)
+			.setContentTitle(song.title)
+			.setContentText(song.album)
+			.setSubText(song.artist)
+			.setContentIntent(mNotificationAction)
+			.addAction(new NotificationCompat.Action(R.drawable.previous,
+													 getString(R.string.previous_song), PendingIntent.getService(this, 0, previous, PendingIntent.FLAG_IMMUTABLE|PendingIntent.FLAG_UPDATE_CURRENT)))
+			.addAction(new NotificationCompat.Action(playButton,
+													 getString(R.string.play_pause), PendingIntent.getService(this, 0, playPause, PendingIntent.FLAG_IMMUTABLE|PendingIntent.FLAG_UPDATE_CURRENT)))
+			.addAction(new NotificationCompat.Action(R.drawable.next,
+													 getString(R.string.next_song), PendingIntent.getService(this, 0, next, PendingIntent.FLAG_IMMUTABLE|PendingIntent.FLAG_UPDATE_CURRENT)))
+			.setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+					  .setMediaSession(mMediaSessionTracker.getSessionToken())
+					  .setShowActionsInCompactView(0, 1, 2))
+			.setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE);
 
-		views.setTextViewText(R.id.title, song.title);
-		views.setTextViewText(R.id.artist, song.artist);
-		expanded.setTextViewText(R.id.title, song.title);
-		expanded.setTextViewText(R.id.album, song.album);
-		expanded.setTextViewText(R.id.artist, song.artist);
-
-		Notification notification = mNotificationHelper.getNewNotification(getApplicationContext());
-		notification.contentView = views;
-		notification.icon = R.drawable.status_icon;
-		notification.flags |= Notification.FLAG_ONGOING_EVENT;
-		notification.contentIntent = mNotificationAction;
-		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-			// expanded view is available since 4.1
-			notification.bigContentView = expanded;
-			// 4.1 also knows about notification priorities
-			// HIGH is one higher than the default.
-			notification.priority = Notification.PRIORITY_HIGH;
-		}
-		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-			notification.visibility = Notification.VISIBILITY_PUBLIC;
-		}
-		if(mNotificationNag) {
-			if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-				notification.priority = Notification.PRIORITY_MAX;
-				notification.vibrate = new long[0]; // needed to get headsup
-			} else {
-				notification.tickerText = song.title + " - " + song.artist;
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+			// Only set the cover for android < 13 since newer versions display the cover from the media session anyway.
+			Bitmap cover = song.getMediumCover(this);
+			if (cover == null) {
+				cover = BitmapFactory.decodeResource(getResources(), R.drawable.fallback_cover_large);
 			}
+			n.setLargeIcon(cover);
 		}
 
-		return notification;
+		return n.build();
 	}
 
 	public void onAudioFocusChange(int type)
@@ -2355,7 +2292,7 @@ public final class PlaybackService extends Service
 			startActivity(intent);
 			break;
 		case PlayPause: {
-			int state = playPause();
+			int state = playPause(false);
 			if (receiver != null)
 				receiver.setState(state);
 			break;
@@ -2407,7 +2344,7 @@ public final class PlaybackService extends Service
 			break;
 		case ClearQueue:
 			clearQueue();
-			showMirrorLinkSafeToast(R.string.queue_cleared, Toast.LENGTH_SHORT);
+			showToast(R.string.queue_cleared, Toast.LENGTH_SHORT);
 			break;
 		case ToggleControls:
 		case ShowQueue:

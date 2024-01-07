@@ -150,8 +150,6 @@
   <string name="ignore_audiofocus_loss_summary">نگهداشتن اجرای موزیک هنگام از تغییر کردن تمرکز صدا</string>
   <string name="media_button_title">هدست / کنترل های بلوتوثی</string>
   <string name="media_button_summary">این برای قفل صفحه در ICS مورد نیاز است</string>
-  <string name="media_button_beep_title">بوق کنترل هدست</string>
-  <string name="media_button_beep_summary">اجرای صدای بوق هنگامی که از یک آهنگ با دوبار کلیک بر روی کنترک هدست رد می شود</string>
   <string name="headset_only_title">فقط خروجی های جانبی</string>
   <string name="headset_only_summary">مانع از پخش موسیقی از طریق بلندگوهای داخلی می شود.</string>
   <string name="headset_pause_title">هنگامی که جدا می شود پخش متوقف گردد</string>

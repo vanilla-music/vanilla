@@ -142,6 +142,8 @@ public class ShowQueueFragment extends Fragment
 	private final static int CTX_MENU_REMOVE          = 104;
 	private final static int CTX_MENU_SHOW_DETAILS    = 105;
 	private final static int CTX_MENU_ADD_TO_PLAYLIST = 106;
+	private final static int CTX_MENU_MOVE_TO_TOP     = 107;
+	private final static int CTX_MENU_MOVE_TO_BOTTOM  = 108;
 
 	/**
 	 * Called on long-click on a adapeter row
@@ -165,10 +167,14 @@ public class ShowQueueFragment extends Fragment
 		fm.add(CTX_MENU_ENQUEUE_ARTIST, 0, R.drawable.menu_enqueue, R.string.enqueue_current_artist).setIntent(intent);
 		fm.add(CTX_MENU_ENQUEUE_GENRE, 0, R.drawable.menu_enqueue, R.string.enqueue_current_genre).setIntent(intent);
 		fm.add(CTX_MENU_ADD_TO_PLAYLIST, 0, R.drawable.menu_add_to_playlist, R.string.add_to_playlist).setIntent(intent);
+		fm.addSpacer(0);
+		fm.add(CTX_MENU_MOVE_TO_TOP, 0, R.drawable.menu_move_to_top, R.string.move_to_top).setIntent(intent);
+		fm.add(CTX_MENU_MOVE_TO_BOTTOM, 0, R.drawable.menu_move_to_bottom, R.string.move_to_bottom).setIntent(intent);
 
 		fm.addSpacer(0);
 		fm.add(CTX_MENU_SHOW_DETAILS, 0, R.drawable.menu_details, R.string.details).setIntent(intent);
 		fm.add(CTX_MENU_REMOVE, 90, R.drawable.menu_remove, R.string.remove).setIntent(intent);
+
 		fm.show(view, x, y);
 		return true;
 	}
@@ -206,8 +212,14 @@ public class ShowQueueFragment extends Fragment
 				break;
 		    case CTX_MENU_ADD_TO_PLAYLIST:
 				PlaylistDialog.Callback callback = ((PlaylistDialog.Callback)getActivity());
-				PlaylistDialog dialog = PlaylistDialog.newInstance(callback, intent, null);
+				PlaylistDialog dialog = PlaylistDialog.newInstance(callback, intent, null, song);
 				dialog.show(getFragmentManager(), "PlaylistDialog");
+				break;
+			case CTX_MENU_MOVE_TO_TOP:
+				service.moveSongPosition(pos, 0);
+				break;
+			case CTX_MENU_MOVE_TO_BOTTOM:
+				service.moveSongPosition(pos, service.getTimelineLength() - 1);
 				break;
 			default:
 				throw new IllegalArgumentException("Unhandled menu id received!");

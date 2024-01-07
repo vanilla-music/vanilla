@@ -111,7 +111,7 @@ public class FourLongWidget extends AppWidgetProvider {
 			views.setTextViewText(R.id.title, song.title);
 			views.setTextViewText(R.id.artist, song.artist);
 			views.setTextViewText(R.id.album, song.album);
-			Bitmap cover = song.getCover(context);
+			Bitmap cover = song.getMediumCover(context);
 			if (cover == null) {
 				views.setImageViewResource(R.id.cover, R.drawable.fallback_cover_large);
 			} else {
@@ -127,16 +127,16 @@ public class FourLongWidget extends AppWidgetProvider {
 		int flags = Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME;
 
 		intent = new Intent(context, LibraryActivity.class).setAction(Intent.ACTION_MAIN);
-		pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+		pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 		views.setOnClickPendingIntent(R.id.cover, pendingIntent);
 		views.setOnClickPendingIntent(R.id.text_layout, pendingIntent);
 
 		intent = ShortcutPseudoActivity.getIntent(context, PlaybackService.ACTION_TOGGLE_PLAYBACK);
-		pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+		pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 		views.setOnClickPendingIntent(R.id.play_pause, pendingIntent);
 
 		intent = ShortcutPseudoActivity.getIntent(context, PlaybackService.ACTION_NEXT_SONG);
-		pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+		pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 		views.setOnClickPendingIntent(R.id.next, pendingIntent);
 
 		manager.updateAppWidget(new ComponentName(context, FourLongWidget.class), views);

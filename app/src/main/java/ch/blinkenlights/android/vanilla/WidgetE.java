@@ -114,28 +114,28 @@ public class WidgetE extends AppWidgetProvider {
 		int flags = Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME;
 
 		intent = new Intent(context, LibraryActivity.class).setAction(Intent.ACTION_MAIN);
-		pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+		pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 		views.setOnClickPendingIntent(R.id.title, pendingIntent);
 		views.setOnClickPendingIntent(R.id.artist, pendingIntent);
 
 		intent = ShortcutPseudoActivity.getIntent(context, PlaybackService.ACTION_TOGGLE_PLAYBACK);
-		pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+		pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 		views.setOnClickPendingIntent(R.id.play_pause, pendingIntent);
 
 		intent = ShortcutPseudoActivity.getIntent(context, PlaybackService.ACTION_NEXT_SONG);
-		pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+		pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 		views.setOnClickPendingIntent(R.id.next, pendingIntent);
 
 		intent = ShortcutPseudoActivity.getIntent(context, PlaybackService.ACTION_PREVIOUS_SONG);
-		pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+		pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 		views.setOnClickPendingIntent(R.id.previous, pendingIntent);
 
 		intent = ShortcutPseudoActivity.getIntent(context, PlaybackService.ACTION_CYCLE_SHUFFLE);
-		pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+		pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 		views.setOnClickPendingIntent(R.id.shuffle, pendingIntent);
 
 		intent = ShortcutPseudoActivity.getIntent(context, PlaybackService.ACTION_CYCLE_REPEAT);
-		pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+		pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 		views.setOnClickPendingIntent(R.id.end_action, pendingIntent);
 
 		manager.updateAppWidget(new ComponentName(context, WidgetE.class), views);

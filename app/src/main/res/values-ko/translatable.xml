@@ -142,8 +142,6 @@
   <string name="ignore_audiofocus_loss_summary">포커스를 잃었을때에도 재생을 유지합니다</string>
   <string name="media_button_title">헤드셋/블루투스 조절</string>
   <string name="media_button_summary">ICS 잠금화면 컨트롤이 필요로 합니다.</string>
-  <string name="media_button_beep_title">헤드셋 조절 음</string>
-  <string name="media_button_beep_summary">헤드셋 컨트롤을 두번눌러 스킵시 비프음 발생.</string>
   <string name="headset_only_title">외부 출력만</string>
   <string name="headset_only_summary">내장 스피커를 통하여 재생 되는것을 방지</string>
   <string name="headset_pause_title">헤드셋 뽑을때 일시 정지</string>
@@ -170,8 +168,6 @@
   <string name="notifications">알림</string>
   <string name="notification_visibility_title">알림 표시</string>
   <string name="notification_action_title">알림을 눌렀을때</string>
-  <string name="notification_nag">매우 잦은 알림</string>
-  <string name="notification_nag_summary">\'Heads-Up-Notification\' 사용중일때 곡 변경 알리기</string>
   <string name="playback_screen">재생 화면</string>
   <string name="playback_on_startup_title">시작 시 열기</string>
   <string name="playback_on_startup_summary">시작시 재생 중 화면 열기</string>
@@ -284,6 +280,8 @@
   <string name="playlist_sync_disabled">비활성</string>
   <string name="playlist_sync_folder_title">동기화 폴더</string>
   <string name="playlist_sync_folder_summary">폴더를 재생목록 동기화에 사용함</string>
+  <string name="playlist_export_relative_paths_title">상대 경로를 사용하여 내보내기</string>
+  <string name="playlist_export_relative_paths_summary">재생 목록과 관련된 참조 파일 경로</string>
   <string name="permission_request_summary">Vanilla Music은 음악 라이브러리를 표시하기 위하여 읽기 권한이 필요합니다
 </string>
   <string name="reverse_sort">반대로 정렬</string>
@@ -312,6 +310,7 @@
   <string name="media_scan_preferences">검색 옵션</string>
   <string name="media_scan_preferences_change_title">검색 옵션이 변경되었습니다</string>
   <string name="media_scan_preferences_change_message">이 옵션을 변경하면 라이브러리를 모두 재 검색합니다. 계속 하시겠습니까?</string>
+  <string name="folder_picker_spinner_desc">디렉토리 상태 : </string>
   <!--Folder selector-->
   <string name="hint_long_press_to_modify_folder">길게 눌러 폴더 옵션을 수정</string>
   <string name="folder_include">포함</string>

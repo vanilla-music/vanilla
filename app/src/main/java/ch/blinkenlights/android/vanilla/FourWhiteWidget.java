@@ -114,12 +114,16 @@ public class FourWhiteWidget extends AppWidgetProvider {
 			views.setViewVisibility(R.id.title, View.VISIBLE);
 			views.setTextViewText(R.id.title, song.title);
 			views.setTextViewText(R.id.artist, song.artist);
-			Bitmap cover = song.getCover(context);
+			Bitmap cover = song.getMediumCover(context);
 			if (cover == null) {
 				views.setViewVisibility(R.id.cover, View.INVISIBLE);
 			} else {
-				views.setViewVisibility(R.id.cover, View.VISIBLE);
+				// Ensure that the cover is not longer than its height - we can deal with non-square images
+				// if the reverse is true, but w > h messes up the layout.
+				if (cover.getWidth() > cover.getHeight())
+					cover = Bitmap.createScaledBitmap(cover, cover.getHeight(), cover.getHeight(), true);
 				views.setImageViewBitmap(R.id.cover, cover);
+				views.setViewVisibility(R.id.cover, View.VISIBLE);
 			}
 		}
 
@@ -131,20 +135,20 @@ public class FourWhiteWidget extends AppWidgetProvider {
 		int flags = Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME;
 
 		intent = new Intent(context, LibraryActivity.class).setAction(Intent.ACTION_MAIN);
-		pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-		views.setOnClickPendingIntent(R.id.cover, pendingIntent);
+		pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+		views.setOnClickPendingIntent(R.id.coverFrame, pendingIntent);
 		views.setOnClickPendingIntent(R.id.text_layout, pendingIntent);
 
 		intent = ShortcutPseudoActivity.getIntent(context, PlaybackService.ACTION_TOGGLE_PLAYBACK);
-		pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+		pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 		views.setOnClickPendingIntent(R.id.play_pause, pendingIntent);
 
 		intent = ShortcutPseudoActivity.getIntent(context, PlaybackService.ACTION_NEXT_SONG);
-		pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+		pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 		views.setOnClickPendingIntent(R.id.next, pendingIntent);
 
 		intent = ShortcutPseudoActivity.getIntent(context, PlaybackService.ACTION_PREVIOUS_SONG);
-		pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+		pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 		views.setOnClickPendingIntent(R.id.previous, pendingIntent);
 
 		manager.updateAppWidget(new ComponentName(context, FourWhiteWidget.class), views);

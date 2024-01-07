@@ -22,7 +22,6 @@
 		<item name="overlay_background_color">@color/overlay_background_light</item>
 		<item name="overlay_foreground_color">@color/overlay_foreground_light</item>
 		<item name="float_color">@color/material_grey_400</item>
-		<item name="background_circle_color">@color/material_grey_300</item>
 		<item name="tabs_background">#FFE65100</item>
 		<item name="now_playing_marker">#FFF57F17</item>
 		<item name="controls_normal">@color/material_grey_900</item>
@@ -48,7 +47,6 @@
 
 	<style name="Orange_light.PopupDialog" parent="android:Theme.Material.Light.Dialog.MinWidth">
 		<item name="overlay_background_color">@color/overlay_background_light</item>
-		<item name="background_circle_color">@color/material_grey_300</item>
 		<item name="controls_normal">@color/material_grey_900</item>
 		<item name="controls_active">#FFF57F17</item>
 	</style>

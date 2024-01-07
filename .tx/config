@@ -1,8 +1,9 @@
 [main]
 host = https://www.transifex.com
 
-[vanilla-music-1.en-strings]
+[o:vanilla_music:p:vanilla-music-1:r:en-strings]
 file_filter = translations/vanilla-music-1.en-strings/<lang>.xml
+source_file = translations/vanilla-music-1.en-strings/en.xml
 source_lang = en
-type = ANDROID
+type        = ANDROID
 

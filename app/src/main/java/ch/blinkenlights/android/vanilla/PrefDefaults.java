@@ -33,10 +33,10 @@ public class PrefDefaults {
 		// Private constructor to hide implicit one.
 	}
 
-	public static final Action  COVER_LONGPRESS_ACTION = Action.PlayPause;
-	public static final Action  COVER_PRESS_ACTION = Action.ToggleControls;
+	public static final Action  COVER_LONGPRESS_ACTION = Action.Nothing;
+	public static final Action  COVER_PRESS_ACTION = Action.Nothing;
 	public static final String  DEFAULT_ACTION_INT = "9";
-	public static final String  DEFAULT_PLAYLIST_ACTION = "0";
+	public static final String  DEFAULT_PLAYLIST_ACTION = "3";
 	public static final boolean COVERLOADER_ANDROID = true;
 	public static final boolean COVERLOADER_VANILLA = true;
 	public static final boolean COVERLOADER_SHADOW = true;
@@ -50,8 +50,6 @@ public class PrefDefaults {
 	public static final boolean HEADSET_PAUSE = true;
 	public static final int     IDLE_TIMEOUT = 3600;
 	public static final int     LIBRARY_PAGE = 0;
-	public static final boolean MEDIA_BUTTON = true;
-	public static final boolean MEDIA_BUTTON_BEEP = true;
 	public static final String  NOTIFICATION_ACTION = "0";
 	public static final String  NOTIFICATION_VISIBILITY = "0";
 	public static final boolean NOTIFICATION_NAG = false;
@@ -71,7 +69,7 @@ public class PrefDefaults {
 	public static final int     REPLAYGAIN_BUMP = 75; // seek bar is 150 -> 75 == middle == 0
 	public static final int     REPLAYGAIN_UNTAGGED_DEBUMP = 150; // seek bar is 150 -> == 0
 	public static final boolean ENABLE_READAHEAD = false;
-	public static final String  SELECTED_THEME = "0";
+	public static final String  SELECTED_THEME = "7";
 	public static final String  FILESYSTEM_BROWSE_START = "";
 	public static final int     VOLUME_DURING_DUCKING = 50;
 	public static final int     AUTOPLAYLIST_PLAYCOUNTS = 0;
@@ -96,4 +94,5 @@ public class PrefDefaults {
 	public static final int     KIDMODE_MAX_VOLUME = 75;
 	public static final boolean KIDMODE_PROTECT_SETTINGS = true;
 	public static final String  KIDMODE_PROTECT_SETTINGS_PIN = "1234";
+	public static final boolean DISABLE_GAPLESS_PLAYBACK = false;
 }

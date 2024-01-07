@@ -4,6 +4,7 @@ use strict;
 # nasty mapping table
 my $LMAP = {
 	'el'    => 'el-rGR',
+	'eu'    => 'eu-rES',
 	'fa_IR' => 'fa-rIR',
 	'zh_CN' => 'zh-rCN',
 	'zh_TW' => 'zh-rTW',
@@ -17,7 +18,7 @@ my $LMAP = {
 
 
 die "Stale 'translations'-dir exists\n" if -d 'translations';
-system("tx pull -a --minimum-perc=30");
+system("transifex pull -a -w 30 --minimum-perc=30");
 
 foreach my $src_file (glob("translations/vanilla-music-1.en-strings/*.xml")) {
 	if ($src_file =~ /\/([a-zA-Z_]+)\.xml/) {

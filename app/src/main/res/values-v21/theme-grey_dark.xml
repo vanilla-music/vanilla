@@ -23,7 +23,6 @@
 		<item name="overlay_background_color">@color/overlay_background_dark</item>
 		<item name="overlay_foreground_color">@color/overlay_foreground_dark</item>
 		<item name="float_color">@color/material_grey_900</item>
-		<item name="background_circle_color">@color/material_grey_700</item>
 		<item name="tabs_background">#ff212121</item>
 		<item name="now_playing_marker">#ffd8d8d8</item>
 		<item name="controls_normal">@color/material_grey_600</item>
@@ -49,7 +48,6 @@
 
 	<style name="Grey_dark.PopupDialog" parent="android:Theme.Material.Dialog.MinWidth">
 		<item name="overlay_background_color">@color/overlay_background_dark</item>
-		<item name="background_circle_color">@color/material_grey_700</item>
 		<item name="controls_normal">@color/material_grey_600</item>
 		<item name="controls_active">#ffd8d8d8</item>
 	</style>

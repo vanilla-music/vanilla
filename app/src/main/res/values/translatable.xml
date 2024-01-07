@@ -186,8 +186,6 @@ THE SOFTWARE.
 	<string name="ignore_audiofocus_loss_summary">Keep playing on permanent audio focus loss</string>
 	<string name="media_button_title">Headset/Bluetooth controls</string>
 	<string name="media_button_summary">This is also required for ICS lockscreen controls.</string>
-	<string name="media_button_beep_title">Headset control beep</string>
-	<string name="media_button_beep_summary">Beep after skipping a track with a headset control double click.</string>
 	<string name="headset_only_title">External output only</string>
 	<string name="headset_only_summary">Prevents music from being played through the internal speakers.</string>
 	<string name="headset_pause_title">Pause when unplugged</string>
@@ -208,6 +206,9 @@ THE SOFTWARE.
 	<string name="replaygain_preamp_note_title">Note</string>
 	<string name="replaygain_preamp_note_content">Android does not allow Vanilla Music to raise the volume to >100%. Setting the Pre-amp to a high value may cause issues if you are listening to \'quiet\' music. \n\nRecommended values are:\n-> -3dB for silent/classical music\n-> +3dB for post-2000 recordings</string>
 
+	<string name="disable_gapless_playback_title">Disable Gapless Playback</string>
+	<string name="disable_gapless_playback_summary">Do not use Gapless Playback which might help with playback issues on devices with buggy firmware</string>
+
 	<string name="readahead">Enable readahead</string>
 	<string name="readahead_summary">Readahead the currently playing track. This option may solve \'audio dropout\' issues. (caused by a slow SD card)</string>
 
@@ -219,9 +220,6 @@ THE SOFTWARE.
 	<string name="notifications">Notifications</string>
 	<string name="notification_visibility_title">Notification visibility</string>
 	<string name="notification_action_title">Notification action</string>
-
-	<string name="notification_nag">Very verbose notification</string>
-	<string name="notification_nag_summary">Announce track changes using a \'Heads-Up-Notification\'</string>
 
 	<string name="playback_screen">Playback screen</string>
 	<string name="playback_on_startup_title">Open on startup</string>
@@ -362,6 +360,8 @@ THE SOFTWARE.
 	<string name="toggle_controls">Toggle controls</string>
 	<string name="seek_10s_backward">Seek 10 seconds backward</string>
 	<string name="seek_10s_forward">Seek 10 seconds forward</string>
+	<string name="move_to_top">Move to top</string>
+	<string name="move_to_bottom">Move to bottom</string>
 	<string name="preferences_action_show_queue">Show queue</string>
 	<string name="preferences_action_clear_queue">Clear queue</string>
 	<string name="preferences_action_enqueue_current_album">Enqueue album</string>
@@ -456,4 +456,5 @@ THE SOFTWARE.
 	<string name="sorry_no_pin">Sorry, no pin was entered.</string>
 	<string name="sorry_pin_incorrect">"Sorry, that pin was incorrect. Try again."</string>
 
+  <string name="theme_name_start_wearing_purple">Start Wearing Purple</string>
 </resources>

@@ -29,7 +29,6 @@ import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -41,6 +40,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewFragment;
+import android.widget.Toast;
 import android.content.Context;
 import android.content.Intent;
 import android.media.audiofx.AudioEffect;
@@ -86,9 +86,7 @@ public class PreferencesActivity extends PreferenceActivity
 		loadHeadersFromResource(R.xml.preference_headers, tmp);
 
 		for(Header obj : tmp) {
-			// Themes are 5.x only, so do not add PreferencesTheme on holo devices
-			if (!ThemeHelper.usesHoloTheme() || !obj.fragment.equals(PreferencesTheme.class.getName()))
-				target.add(obj);
+			target.add(obj);
 		}
 	}
 
@@ -169,7 +167,7 @@ public class PreferencesActivity extends PreferenceActivity
 			}
 
 			FragmentManager fragmentManager = getFragmentManager();
-			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || !fragmentManager.isStateSaved()) {
+			if (!fragmentManager.isStateSaved()) {
 				fragmentManager.popBackStack();
 			}
 		}
@@ -290,7 +288,7 @@ public class PreferencesActivity extends PreferenceActivity
 			if (intent != null) {
 				startActivity(intent);
 				FragmentManager fragmentManager = getFragmentManager();
-				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || !fragmentManager.isStateSaved()) {
+				if (!fragmentManager.isStateSaved()) {
 					fragmentManager.popBackStack();
 				}
 			} else {
@@ -300,10 +298,14 @@ public class PreferencesActivity extends PreferenceActivity
 				.setMessage(R.string.headset_launch_app_missing)
 				.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
-						Intent marketIntent = new Intent(Intent.ACTION_VIEW);
-						marketIntent.setData(Uri.parse("market://details?id="+VPLUG_PACKAGE_NAME));
-						startActivity(marketIntent);
-						getActivity().onBackPressed();
+						try {
+							Intent marketIntent = new Intent(Intent.ACTION_VIEW);
+							marketIntent.setData(Uri.parse("market://details?id="+VPLUG_PACKAGE_NAME));
+							startActivity(marketIntent);
+							getActivity().onBackPressed();
+						} catch (android.content.ActivityNotFoundException e) {
+							Toast.makeText(getActivity(), "Failed to open market: " + e, Toast.LENGTH_SHORT).show();
+						}
 					}
 				})
 				.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {

@@ -174,8 +174,6 @@
   <string name="ignore_audiofocus_loss_summary">Kenderc\'hel gant ar seniñ goude bezañ bet kollet ar stiañ aodio penn-da-benn</string>
   <string name="media_button_title">Reoliadus gant selaouelloù/bluetooth</string>
   <string name="media_button_summary">Dleet ivez gant reolerezhioù ICS ar skramm-prenañ.</string>
-  <string name="media_button_beep_title">Bip reolerezhioù ar selaouelloù</string>
-  <string name="media_button_beep_summary">Bip pa vez kemmet an ton gant reolerezhioù ar selaouelloù dre daouglik.</string>
   <string name="headset_only_title">Ezkerzh diavaez hepken</string>
   <string name="headset_only_summary">Mirout ar sonerezh da vezañ sonet dre an uhelgomzerioù diabarzh.</string>
   <string name="headset_pause_title">Ehanañ ma vez diluget</string>
@@ -202,8 +200,6 @@
   <string name="notifications">Rebuzadurioù</string>
   <string name="notification_visibility_title">Skrammañ ar rebuzadurioù</string>
   <string name="notification_action_title">Gwered ar rebuzadur</string>
-  <string name="notification_nag">Rebuzadur trabellek</string>
-  <string name="notification_nag_summary">Kelaou eus ar cheñchamantoù tonioù dre ur rebuzadur plavus</string>
   <string name="playback_screen">Skramm seniñ</string>
   <string name="playback_on_startup_title">Digeriñ d\'al loc\'hadur</string>
   <string name="playback_on_startup_summary">Digeriñ ar skramm seniñ vez loc\'het</string>

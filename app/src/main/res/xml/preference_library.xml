@@ -41,7 +41,7 @@ THE SOFTWARE.
 		android:title="@string/default_playlist_action_title"
 		android:entries="@array/default_playlist_action_entries"
 		android:entryValues="@array/default_playlist_action_entry_values"
-		android:defaultValue="0" />
+		android:defaultValue="3" />
 	<CheckBoxPreference
 		android:key="enable_scroll_to_song"
 		android:title="@string/enable_scroll_to_song_title"

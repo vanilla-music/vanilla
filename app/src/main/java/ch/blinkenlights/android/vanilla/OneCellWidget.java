@@ -103,11 +103,11 @@ public class OneCellWidget extends AppWidgetProvider {
 		int flags = Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME;
 
 		intent = ShortcutPseudoActivity.getIntent(context, doubleTap ? PlaybackService.ACTION_TOGGLE_PLAYBACK_DELAYED : PlaybackService.ACTION_TOGGLE_PLAYBACK);
-		pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+		pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 		views.setOnClickPendingIntent(R.id.play_pause, pendingIntent);
 
 		intent = ShortcutPseudoActivity.getIntent(context, doubleTap ? PlaybackService.ACTION_NEXT_SONG_DELAYED : PlaybackService.ACTION_NEXT_SONG);
-		pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+		pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 		views.setOnClickPendingIntent(R.id.next, pendingIntent);
 
 
@@ -118,7 +118,7 @@ public class OneCellWidget extends AppWidgetProvider {
 			views.setInt(R.id.title, "setText", R.string.app_name);
 		} else {
 			views.setTextViewText(R.id.title, song.title);
-			cover = song.getCover(context);
+			cover = song.getMediumCover(context);
 		}
 
 		if (cover == null) {

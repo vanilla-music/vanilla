@@ -16,8 +16,9 @@ android {
 
     buildTypes {
         release {
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            zipAlignEnabled true
         }
     }
 
@@ -28,7 +29,8 @@ android {
 
 dependencies {
     implementation 'androidx.legacy:legacy-support-core-ui:1.0.0'
-	implementation 'com.google.android.material:material:1.0.0'
-	implementation 'androidx.annotation:annotation:1.0.0'
-	implementation 'junit:junit:4.12'
+    implementation 'androidx.media:media:1.6.0'
+    implementation 'com.google.android.material:material:1.7.0'
+    implementation 'junit:junit:4.12'
+    compileOnly 'androidx.annotation:annotation:1.0.0'
 }

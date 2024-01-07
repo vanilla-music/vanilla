@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-Copyright (C) 2012-2018 Adrian Ulrich <adrian@blinkenlights.ch>
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright (C) 2012-2022 Adrian Ulrich <adrian@blinkenlights.ch>
 Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,22 +23,28 @@ THE SOFTWARE.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="ch.blinkenlights.android.vanilla"
-	android:versionName="1.0.85"
-	android:versionCode="10851"
+	android:versionName="1.3.2"
+	android:versionCode="13200"
 	android:installLocation="auto">
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 	<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+	<uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 	<!-- This is needed for isWiredHeadsetOn() to work in some cases. (bug?) -->
 	<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-	<!-- To auto-complete the email text field in the login form with the user's emails -->
-	<uses-permission android:name="android.permission.GET_ACCOUNTS" />
-	<uses-permission android:name="android.permission.READ_PROFILE" />
-	<uses-permission android:name="android.permission.READ_CONTACTS" />
-
+	<uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+	<uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>
 	<!-- Playlist shortcuts -->
 	<uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+	<!-- Android 13 notifications -->
+	<uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+	<!-- Allow us to query plugins -->
+	<queries>
+		<intent>
+			<action android:name="ch.blinkenlights.android.vanilla.action.REQUEST_PLUGIN_PARAMS" />
+		</intent>
+	</queries>
 
 	<application
 	    android:allowBackup="true"
@@ -67,7 +74,8 @@ THE SOFTWARE.
 			android:name=".LibraryActivity"
 			android:launchMode="singleTask"
 			android:theme="@style/Library"
-			android:configChanges="orientation">
+			android:exported="true"
+			android:launchMode="singleTask">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<action android:name="android.intent.action.MUSIC_PLAYER" />
@@ -91,7 +99,8 @@ THE SOFTWARE.
 
 		<receiver
 			android:name=".OneCellWidget"
-			android:label="Vanilla Music 1x1">
+			android:label="Vanilla Music 1x1"
+			android:exported="false">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
 			</intent-filter>
@@ -102,7 +111,8 @@ THE SOFTWARE.
 		</receiver>
 		<receiver
 			android:name=".FourLongWidget"
-			android:label="Vanilla Music 4x1 A">
+			android:label="Vanilla Music 4x1 A"
+			android:exported="false">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
 			</intent-filter>
@@ -113,7 +123,8 @@ THE SOFTWARE.
 		</receiver>
 		<receiver
 			android:name=".FourWhiteWidget"
-			android:label="Vanilla Music 4x1 White">
+			android:label="Vanilla Music 4x1 White"
+			android:exported="false">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
 			</intent-filter>
@@ -124,7 +135,8 @@ THE SOFTWARE.
 		</receiver>
 		<receiver
 			android:name=".WidgetE"
-			android:label="Vanilla Music 4x1 B">
+			android:label="Vanilla Music 4x1 B"
+			android:exported="false">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
 			</intent-filter>
@@ -135,7 +147,8 @@ THE SOFTWARE.
 		</receiver>
 		<receiver
 			android:name=".FourSquareWidget"
-			android:label="Vanilla Music 2x2 A">
+			android:label="Vanilla Music 2x2 A"
+			android:exported="false">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
 			</intent-filter>
@@ -146,7 +159,8 @@ THE SOFTWARE.
 		</receiver>
 		<receiver
 			android:name=".WidgetD"
-			android:label="Vanilla Music 2x2 B">
+			android:label="Vanilla Music 2x2 B"
+			android:exported="false">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
 			</intent-filter>
@@ -155,13 +169,15 @@ THE SOFTWARE.
 				android:name="android.appwidget.provider"
 				android:resource="@xml/widget_d" />
 		</receiver>
-		<receiver android:name=".MediaButtonReceiver">
+		<receiver android:name="MediaButtonReceiver"
+			  android:exported="true">
 			<intent-filter android:priority="999">
 				<action android:name="android.intent.action.MEDIA_BUTTON" />
 			</intent-filter>
 		</receiver>
-
-		<service android:name=".PlaybackService">
+		<service android:name="PlaybackService"
+			 android:foregroundServiceType="mediaPlayback"
+			 android:exported="true">
 			<intent-filter>
 				<action android:name="ch.blinkenlights.android.vanilla.action.PLAY" />
 				<action android:name="ch.blinkenlights.android.vanilla.action.PAUSE" />
@@ -171,39 +187,32 @@ THE SOFTWARE.
 			</intent-filter>
 		</service>
 		<service
-			android:name=".MirrorLinkMediaBrowserService"
-			android:exported="true">
-			<intent-filter>
-				<action android:name="android.media.browse.MediaBrowserService" />
-			</intent-filter>
-		</service>
-		<service
 			android:name=".ScheduledLibraryUpdate"
-			android:exported="true"
-			android:permission="android.permission.BIND_JOB_SERVICE" />
+			android:permission="android.permission.BIND_JOB_SERVICE"
+			android:exported="true" />
 
-		<activity android:name=".PreferencesActivity" />
-		<activity android:name=".TabOrderActivity" />
-		<activity android:name=".FilebrowserStartActivity" />
-		<activity android:name=".PlaylistObserverDirActivity" />
-		<activity android:name=".MediaFoldersSelectionActivity" />
+		<activity
+			android:name="PreferencesActivity" />
+		<activity
+			android:name="TabOrderActivity" />
+		<activity
+			android:name="FilebrowserStartActivity" />
 		<activity
 			android:name=".PermissionRequestActivity"
 			android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 		<activity
-			android:name=".ShortcutPseudoActivity"
-			android:theme="@android:style/Theme.Translucent.NoTitleBar">
+			android:name="ShortcutPseudoActivity"
+			android:theme="@android:style/Theme.Translucent.NoTitleBar"
+			android:exported="false">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN"/>
 			</intent-filter>
 		</activity>
 
-		<activity android:name="AudioPickerActivity" android:theme="@style/PopupDialog"
-			android:excludeFromRecents="true" android:exported="true" >
-			android:name=".AudioPickerActivity"
-			android:excludeFromRecents="true"
-			android:exported="true"
-			android:theme="@style/PopupDialog">
+		<activity android:name="AudioPickerActivity"
+			  android:theme="@style/PopupDialog"
+			  android:excludeFromRecents="true"
+			  android:exported="true" >
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW" />
 
@@ -229,10 +238,9 @@ THE SOFTWARE.
 				<data android:mimeType="application/itunes" />
 			</intent-filter>
 		</activity>
-		<activity
-			android:name=".AudioSearchActivity"
-			android:excludeFromRecents="true"
-			android:theme="@style/PopupDialog">
+		<activity android:name="AudioSearchActivity" android:theme="@style/PopupDialog"
+			android:exported="true"
+			android:excludeFromRecents="true">
 			<intent-filter>
 				<action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH" />
 

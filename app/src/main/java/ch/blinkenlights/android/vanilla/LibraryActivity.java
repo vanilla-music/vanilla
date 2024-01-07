@@ -528,7 +528,6 @@ public class LibraryActivity
 
 				if (last) {
 					colors[1] = 0xFF404040;
-					view.setOnClickListener(this);
 				}
 
 				int leftPadding = 14;
@@ -546,6 +545,7 @@ public class LibraryActivity
 				view.setArrowWidthDIP(arrowWidth);
 				view.setTag(i);
 				view.setColors(colors[0], colors[1]);
+				view.setOnClickListener(this);
 				mLimiterViews.addView(view);
 
 				if (last) {
@@ -804,10 +804,11 @@ public class LibraryActivity
 			FileUtils.dispatchIntent(this, intent);
 			break;
 		}
-		case CTX_MENU_SHOW_DETAILS:
+		case CTX_MENU_SHOW_DETAILS: {
 			long songId = intent.getLongExtra(LibraryAdapter.DATA_ID, -1);
 			TrackDetailsDialog.show(getFragmentManager(), songId);
 			break;
+		}
 		case CTX_MENU_PLUGINS: {
 			showPluginMenu(intent);
 			break;
@@ -830,7 +831,12 @@ public class LibraryActivity
 			break;
 		case CTX_MENU_ADD_TO_PLAYLIST: {
 			long id = intent.getLongExtra("id", LibraryAdapter.INVALID_ID);
-			PlaylistDialog plDialog = PlaylistDialog.newInstance(this, intent, (id == LibraryAdapter.HEADER_ID ? mCurrentAdapter : null));
+			long songId = intent.getLongExtra(LibraryAdapter.DATA_ID, -1);
+			Song song = null;
+			if(songId!=-1) {
+				song = new Song(songId);
+			}
+			PlaylistDialog plDialog = PlaylistDialog.newInstance(this, intent, (id == LibraryAdapter.HEADER_ID ? mCurrentAdapter : null), song);
 			plDialog.show(getFragmentManager(), "PlaylistDialog");
 			break;
 		}

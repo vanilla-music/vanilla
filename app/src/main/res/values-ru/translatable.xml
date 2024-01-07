@@ -166,8 +166,6 @@
   <string name="ignore_audiofocus_loss_summary">Не останавливаться после полной потери аудио-фокуса</string>
   <string name="media_button_title">Управление с проводной гарнитуры/Bluetooth</string>
   <string name="media_button_summary">Необходимо для управления воспроизведением с экрана блокировки в ICS (Android 4).</string>
-  <string name="media_button_beep_title">Гудок при управлении с проводной гарнитуры</string>
-  <string name="media_button_beep_summary">При двойном нажатии на кнопку гарнитуры переход к следующей дорожке сопровождается звуком.</string>
   <string name="headset_only_title">Только внешний аудио-вывод</string>
   <string name="headset_only_summary">Запрещает воспроизведение музыки через встроенные динамики.</string>
   <string name="headset_pause_title">Пауза при отсоединении</string>
@@ -194,8 +192,6 @@
   <string name="notifications">Уведомления</string>
   <string name="notification_visibility_title">Отображение уведомления</string>
   <string name="notification_action_title">Реакция уведомления</string>
-  <string name="notification_nag">Навязчивые уведомления</string>
-  <string name="notification_nag_summary">Объявлять смену дорожек, используя \"Heads-Up-Notification\"</string>
   <string name="playback_screen">Экран воспроизведения</string>
   <string name="playback_on_startup_title">Показывать после запуска</string>
   <string name="playback_on_startup_summary">После запуска перейти к экрану воспроизведения</string>
@@ -281,6 +277,8 @@
   <string name="toggle_controls">Тумблер органов управления</string>
   <string name="seek_10s_backward">Отмотать на 10 секунд назад</string>
   <string name="seek_10s_forward">Промотать на 10 секунд</string>
+  <string name="move_to_top">Наверх</string>
+  <string name="move_to_bottom">Вниз</string>
   <string name="preferences_action_show_queue">Показать очередь</string>
   <string name="preferences_action_clear_queue">Убрать остаток очереди</string>
   <string name="preferences_action_enqueue_current_album">Заполнить очередь альбомом</string>
@@ -337,6 +335,7 @@
   <string name="media_scan_preferences">Настройка сканера</string>
   <string name="media_scan_preferences_change_title">Изменение настроек сканера</string>
   <string name="media_scan_preferences_change_message">Изменение этой настройки приведёт к полному сканированию библиотеки. Продолжить?</string>
+  <string name="folder_picker_spinner_desc">Готовность папки:</string>
   <!--Folder selector-->
   <string name="hint_long_press_to_modify_folder">Длительное нажатие вызовет настройки папки</string>
   <string name="folder_include">Учесть</string>

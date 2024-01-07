@@ -1,20 +1,20 @@
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.1'
+        classpath 'com.android.tools.build:gradle:7.3.1'
     }
 }
 allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 }
 ext {
-    compileSdkVersion = 30
-    targetSdkVersion = 30
-    minSdkVersion = 15
+    compileSdkVersion = 34
+    targetSdkVersion = 34
+    minSdkVersion = 26
 }

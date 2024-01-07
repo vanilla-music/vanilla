@@ -153,8 +153,6 @@
   <string name="ignore_audiofocus_loss_summary">Настави пуштање по трајном губитку фокуса</string>
   <string name="media_button_title">Управљање слушалицама/блутутом</string>
   <string name="media_button_summary">Потребно за контроле закључаног екрана за Ајскрим Сендвич.</string>
-  <string name="media_button_beep_title">Контролни звучни сигнал слушалица</string>
-  <string name="media_button_beep_summary">Пушта звучни сигнал након прескакања нумере двокликом на тастер слушалица.</string>
   <string name="headset_only_title">Само спољашњи излаз</string>
   <string name="headset_only_summary">Спречава пуштање музике на уграђене звучнике.</string>
   <string name="headset_pause_title">Паузирај по искључењу</string>
@@ -181,8 +179,6 @@
   <string name="notifications">Обавештења</string>
   <string name="notification_visibility_title">Видљивост обавештења</string>
   <string name="notification_action_title">Радња обавештења</string>
-  <string name="notification_nag">Веома исцрпно обавештење</string>
-  <string name="notification_nag_summary">Објави промене нумера користећи „Heads-Up“ обавештење</string>
   <string name="playback_screen">Екран пуштања</string>
   <string name="playback_on_startup_title">Отвори по покретању</string>
   <string name="playback_on_startup_summary">Отвара екран пуштања по покретању</string>
