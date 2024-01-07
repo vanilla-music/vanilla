@@ -279,7 +279,7 @@ public class ShowQueueFragment extends Fragment
 
 				SharedPreferences settings = SharedPrefHelper.getSettings(getActivity());
 				if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && !settings.getBoolean(PrefKeys.KIDMODE_SHOW_QUEUE, PrefDefaults.KIDMODE_SHOW_QUEUE)) {
-					Bitmap cover = service.getSong(0).getCover(getActivity());
+					Bitmap cover = service.getSong(0).getLargeCover(getActivity());
 					if (cover == null)
 						mQueueCoverView.setImageResource(R.drawable.fallback_cover);
 					else
@@ -294,7 +294,7 @@ public class ShowQueueFragment extends Fragment
 	 * Scrolls to the current song<br/>
 	 * We suppress the new api lint check as lint thinks
 	 * {@link android.widget.AbsListView#setSelectionFromTop(int, int)} was only added in
-	 * {@link Build.VERSION_CODES#JELLY_BEAN}, but it was actually added in API
+	 * {@link android.os.Build.VERSION_CODES#JELLY_BEAN}, but it was actually added in API
 	 * level 1<br/>
 	 * <a href="https://developer.android.com/reference/android/widget/AbsListView.html#setSelectionFromTop%28int,%20int%29">
 	 *     Android reference: AbsListView.setSelectionFromTop()</a>
@@ -335,7 +335,7 @@ public class ShowQueueFragment extends Fragment
 			}
 		}
 		if (song != null) {
-			setCover(song.getCover(getActivity()));
+			setCover(song.getLargeCover(getActivity()));
 		}
 	}
 

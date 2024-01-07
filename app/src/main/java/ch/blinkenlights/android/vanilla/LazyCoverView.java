@@ -41,7 +41,7 @@ import android.widget.ImageView;
  * The cover will automatically  be fetched & scaled in a background
  * thread on cache miss
  */
-public class LazyCoverView extends ImageView
+public class LazyCoverView extends androidx.appcompat.widget.AppCompatImageView
 	implements Handler.Callback 
 {
 	/**
@@ -142,7 +142,7 @@ public class LazyCoverView extends ImageView
 						if (song != null) {
 							SharedPreferences settings = SharedPrefHelper.getSettings(mContext);
 							if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED)) {
-								bitmap = song.getCover(mContext);
+								bitmap = song.getLargeCover(mContext);
 							}
 							else
 							{

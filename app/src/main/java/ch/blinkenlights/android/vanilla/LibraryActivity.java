@@ -983,7 +983,7 @@ public class LibraryActivity
 			if (song != null) {
 				SharedPreferences settings = SharedPrefHelper.getSettings(this);
 				if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED)) {
-					cover = song.getCover(this);
+					cover = song.getLargeCover(this);
 				}
 				else
 				{
