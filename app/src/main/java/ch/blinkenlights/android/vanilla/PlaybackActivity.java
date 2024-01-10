@@ -384,18 +384,19 @@ public abstract class PlaybackActivity extends Activity
 	static final int MENU_SONG_FAVORITE = 12;
 	static final int MENU_SHOW_QUEUE = 13;
 	static final int MENU_HIDE_QUEUE = 14;
-	static final int MENU_DELETE = 15;
-	static final int MENU_EMPTY_QUEUE = 16;
-	static final int MENU_ADD_TO_PLAYLIST = 17;
-	static final int MENU_SHARE = 18;
-	static final int MENU_GO_HOME = 19;
-	static final int MENU_PLUGINS = 20; // used in FullPlaybackActivity
-	static final int MENU_MORE = 21; // toplevel menu, has no own action
-	static final int MENU_MORE_ALBUM = 22;
-	static final int MENU_MORE_ARTIST = 23;
-	static final int MENU_MORE_GENRE = 24;
-	static final int MENU_MORE_FOLDER = 25;
-	static final int MENU_JUMP_TO_TIME = 26;
+	static final int MENU_PREV_QUEUE = 15;
+	static final int MENU_DELETE = 16;
+	static final int MENU_EMPTY_QUEUE = 17;
+	static final int MENU_ADD_TO_PLAYLIST = 18;
+	static final int MENU_SHARE = 19;
+	static final int MENU_GO_HOME = 20;
+	static final int MENU_PLUGINS = 21; // used in FullPlaybackActivity
+	static final int MENU_MORE = 22; // toplevel menu, has no own action
+	static final int MENU_MORE_ALBUM = 23;
+	static final int MENU_MORE_ARTIST = 24;
+	static final int MENU_MORE_GENRE = 25;
+	static final int MENU_MORE_FOLDER = 26;
+	static final int MENU_JUMP_TO_TIME = 27;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
@@ -410,6 +411,9 @@ public abstract class PlaybackActivity extends Activity
 		switch (item.getItemId()) {
 		case MENU_PREFS:
 			startActivity(new Intent(this, PreferencesActivity.class));
+			break;
+		case MENU_PREV_QUEUE:
+			PlaybackService.get(this).previousQueue();
 			break;
 		case MENU_CLEAR_QUEUE:
 			PlaybackService.get(this).clearQueue();

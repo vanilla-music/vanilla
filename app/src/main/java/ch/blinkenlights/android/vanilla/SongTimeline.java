@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -220,6 +221,12 @@ public final class SongTimeline {
 	 * should be unique, even if it refers to the same media.
 	 */
 	private ArrayList<Song> mSongs = new ArrayList<Song>(12);
+	/**
+	 * Contains a history of previous queues.
+	 *
+	 * @author Markil 3
+	 */
+	private LinkedList<ArrayList<Song>> songHistory = new LinkedList<>();
 	/**
 	 * The position of the current song (i.e. the playing song).
 	 */
@@ -726,6 +733,64 @@ public final class SongTimeline {
 	}
 
 	/**
+	 * Jumps to a previously-created queue
+	 * @author Markil 3
+	 * @since 1.0.86
+	 */
+	public void revertQueue()
+	{
+		ArrayList<Song> timeline = mSongs;
+		synchronized (this)
+		{
+			if (this.songHistory.size() > 0)
+			{
+				/*
+				 * Saves the queue for later
+				 */
+				if (timeline.size() > 0)
+				{
+					this.songHistory.addFirst(new ArrayList<>(timeline));
+				}
+				timeline.clear();
+				timeline.addAll(this.songHistory.removeLast());
+				mCurrentPos = 0;
+				int start =
+						mCurrentPos + 1; // Position where our modification started
+				Song jumpSong =
+						null;        // Jump to this song if `data' requested it
+
+				/* Check if addAtPos is out-of-bounds OR if
+				 * the request does not want to work at the current
+				 * playlist position anyway
+				 */
+				if (start > timeline.size())
+				{
+					start = timeline.size();
+				}
+
+				if (mShuffleMode != SHUFFLE_NONE)
+					MediaUtils.shuffle(timeline.subList(start, start),
+							mShuffleMode == SHUFFLE_ALBUMS);
+
+				if (jumpSong != null)
+				{
+					int jumpPos = timeline.lastIndexOf(jumpSong);
+					if (jumpPos > start)
+					{
+						// Get the sublist twice to avoid a ConcurrentModificationException.
+						timeline.addAll(timeline.subList(start, jumpPos));
+						timeline.subList(start, jumpPos).clear();
+					}
+				}
+
+				broadcastChangedSongs();
+			}
+		}
+
+		changed();
+	}
+
+	/**
 	 * Run the given query and add the results to the song timeline.
 	 *
 	 * @param context A context to use.
@@ -736,6 +801,8 @@ public final class SongTimeline {
 	 */
 	public int addSongs(Context context, QueryTask query)
 	{
+		final int MAX_QUEUE_HISTORY = 1;
+
 		Cursor cursor = query.runQuery(context);
 		if (cursor == null) {
 			return 0;
@@ -793,6 +860,14 @@ public final class SongTimeline {
 			case MODE_PLAY:
 			case MODE_PLAY_POS_FIRST:
 			case MODE_PLAY_ID_FIRST:
+				/*
+				 * Saves the queue for later
+				 */
+				this.songHistory.add(new ArrayList<>(timeline));
+				if (this.songHistory.size() > MAX_QUEUE_HISTORY)
+				{
+					this.songHistory.removeFirst();
+				}
 				timeline.clear();
 				mCurrentPos = 0;
 				break;
