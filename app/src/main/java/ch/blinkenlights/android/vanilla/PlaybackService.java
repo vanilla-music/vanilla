@@ -312,6 +312,11 @@ public final class PlaybackService extends Service
 	 */
 	private int mIdleTimeout;
 	/**
+	 * Time left on the sleep timer, in milliseconds, or -1 if not running
+	 */
+	private int mSleepTimer = -1;
+	private long mSleepStart = -1;
+	/**
 	 * The intent for the notification to execute, created by
 	 * {@link PlaybackService#createNotificationAction(SharedPreferences)}.
 	 */
@@ -800,9 +805,17 @@ public final class PlaybackService extends Service
 		int fa = finishAction(mState);
 		Song nextSong = getSong(1);
 
+		// check if would sleep before next song
+		boolean sleep_before_end = false;
+		if(mSleepStart != -1) {
+			int time_left = mMediaPlayer.getDuration() - mMediaPlayer.getCurrentPosition();
+			sleep_before_end = getSleepTimerMil() < time_left;
+		}
+
 		if( nextSong != null
 		 && fa != SongTimeline.FINISH_REPEAT_CURRENT
 		 && fa != SongTimeline.FINISH_STOP_CURRENT
+		 && !sleep_before_end
 		 && !mTimeline.isEndOfQueue() ) {
 			doGapless = true;
 		}
@@ -1416,6 +1429,47 @@ public final class PlaybackService extends Service
 
 	}
 
+	public void setSleepTimer(int timeout)
+	{
+		if(timeout < 0) {
+			cancelSleepTimer();
+			return;
+		}
+		// use milliseconds here
+		mSleepStart = SystemClock.elapsedRealtime();
+		mSleepTimer = timeout * 1000;
+
+		mHandler.sendEmptyMessage(MSG_GAPLESS_UPDATE);
+	}
+
+	public int getSleepTimer()
+	{
+		if(mSleepTimer == -1)
+			return -1;
+		return getSleepTimerMil()/1000;	// in seconds
+	}
+
+	public int getSleepTimerMil()
+	{
+		if(mSleepTimer == -1)
+			return -1;
+		int time_elapsed = (int)(SystemClock.elapsedRealtime() - mSleepStart);
+		int time_left = mSleepTimer - time_elapsed;
+		if(time_left < 0)
+			time_left = 0;
+
+		return time_left;
+	}
+
+	public void cancelSleepTimer()
+	{
+		boolean retrigger_gapless = getSleepTimer() != 0;
+		mSleepTimer = -1;
+		mSleepStart = -1;
+		if(retrigger_gapless)
+			mHandler.sendEmptyMessage(MSG_GAPLESS_UPDATE);
+	}
+
 	@Override
 	public void onCompletion(MediaPlayer player)
 	{
@@ -1428,6 +1482,10 @@ public final class PlaybackService extends Service
 		} else if (finishAction(mState) == SongTimeline.FINISH_STOP_CURRENT) {
 			unsetFlag(FLAG_PLAYING);
 			setCurrentSong(+1);
+		} else if (getSleepTimer() == 0) {
+			unsetFlag(FLAG_PLAYING);
+			setCurrentSong(+1);
+			cancelSleepTimer();
 		} else {
 			if (mTimeline.isEndOfQueue()) {
 				unsetFlag(FLAG_PLAYING);
@@ -1539,6 +1597,7 @@ public final class PlaybackService extends Service
 	 * The current song's playback position changed.
 	 */
 	private static final int MSG_BROADCAST_SEEK = 19;
+	private static final int MSG_SLEEP_RESET = 20;
 
 	@Override
 	public boolean handleMessage(Message message)
@@ -1630,6 +1689,9 @@ public final class PlaybackService extends Service
 		case MSG_BROADCAST_SEEK:
 			mRemoteControlClient.updateRemote(mCurrentSong, mState, mForceNotificationVisible);
 			mMediaSessionTracker.updateSession(mCurrentSong, mState);
+			break;
+		case MSG_SLEEP_RESET:
+			cancelSleepTimer();
 			break;
 		default:
 			return false;

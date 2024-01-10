@@ -396,11 +396,13 @@ public abstract class PlaybackActivity extends Activity
 	static final int MENU_MORE_GENRE = 24;
 	static final int MENU_MORE_FOLDER = 25;
 	static final int MENU_JUMP_TO_TIME = 26;
+	static final int MENU_SLEEP_TIMER = 27;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
 		menu.add(0, MENU_PREFS, 10, R.string.settings).setIcon(R.drawable.ic_menu_preferences);
+		menu.add(0, MENU_SLEEP_TIMER, 90, R.string.sleep_timer);
 		return true;
 	}
 
@@ -416,6 +418,10 @@ public abstract class PlaybackActivity extends Activity
 			break;
 		case MENU_EMPTY_QUEUE:
 			PlaybackService.get(this).emptyQueue();
+			break;
+		case MENU_SLEEP_TIMER:
+			PlaybackService.get(this);	// force creation with `this` context, if not created yet
+			startActivity(new Intent(this, SleepTimerActivity.class));
 			break;
 		default:
 			return false;

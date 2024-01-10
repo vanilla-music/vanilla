@@ -243,6 +243,9 @@ THE SOFTWARE.
 			</intent-filter>
 		</activity>
 
+		<activity
+			android:name="SleepTimerActivity"/>
+
 
 
 		<meta-data

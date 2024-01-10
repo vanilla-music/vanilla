@@ -29,6 +29,11 @@ THE SOFTWARE.
 	<string name="no_songs">No tracks found on your device.</string>
 	<string name="empty_queue">No tracks selected. Pick some from the library or enter random mode by tapping this message.</string>
 	<string name="settings">Settings</string>
+	<string name="sleep_timer">Sleep Timer</string>
+	<string name="sleep_timer_start">Start</string>
+	<string name="sleep_timer_stop">Stop</string>
+	<string name="sleep_timer_hours">Hours</string>
+	<string name="sleep_timer_minutes">Minutes</string>
 	<string name="no_shuffle">No shuffle</string>
 	<string name="shuffle_songs">Shuffle tracks</string>
 	<string name="shuffle_songs_continuously">Shuffle tracks continuously</string>
