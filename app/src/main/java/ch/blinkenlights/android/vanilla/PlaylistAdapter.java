@@ -49,6 +49,7 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 		MediaLibrary.ContributorColumns.ARTIST,
 		MediaLibrary.SongColumns.ALBUM_ID,
 		MediaLibrary.SongColumns.DURATION,
+		MediaLibrary.SongColumns.FLAGS
 	};
 
 	private final Context mContext;
@@ -109,6 +110,7 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 		final String title = cursor.getString(2);
 		final String album = cursor.getString(3);
 		final String artist = cursor.getString(4);
+		final int flags = cursor.getInt(7);
 
 		ViewHolder holder = new ViewHolder();
 		holder.title = title;
@@ -121,7 +123,11 @@ public class PlaylistAdapter extends CursorAdapter implements Handler.Callback {
 		dview.setDuration(cursor.getLong(6));
 
 		LazyCoverView cover = dview.getCoverView();
-		cover.setCover(MediaUtils.TYPE_ALBUM, cursor.getLong(5), null);
+
+		if ((flags & MediaLibrary.SONG_FLAG_NO_ALBUM) == 0)
+			cover.setCover(MediaUtils.TYPE_ALBUM, cursor.getLong(5), null);
+		else
+			cover.setCover(MediaUtils.TYPE_SONG, cursor.getLong(1), null);
 	}
 
 	/**

@@ -672,4 +672,12 @@ public class MediaUtils {
 				return TYPE_INVALID;
 		}
 	}
+
+	/**
+	 * Check if a song's FLAG_NO_ALBUM flag is set
+	 * @param songFlags the Song's flags
+	 */
+	public static boolean isSongInAlbum(int songFlags) {
+		return (songFlags & Song.FLAG_NO_ALBUM) == 0;
+	}
 }
