@@ -22,7 +22,7 @@ THE SOFTWARE.
 -->
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-       xmlns:vanilla="http://schemas.android.com/apk/res-auto" >
+	xmlns:vanilla="http://schemas.android.com/apk/res-auto" >
 	<LinearLayout
 		android:id="@+id/content"
 		android:orientation="vertical"

@@ -414,6 +414,10 @@ public final class PlaybackService extends Service
 	 */
 	private int mVolumeDuringDucking;
 	/**
+	 * Percentage to limit the volume to in kidmode
+	 */
+	private int mKidmodeMaxVolume;
+	/**
 	 *
 	 */
 	private boolean mIgnoreAudioFocusLoss;
@@ -434,7 +438,11 @@ public final class PlaybackService extends Service
 	 */
 	private BastpUtil mBastpUtil;
 	/**
-	 * Don't use gapless playback, useful for bug ridden devices.
+	 * Reference to SettingsContentObserver
+	 */
+	private SettingsContentObserver mSettingsContentObserver;
+	/**
+   * Don't use gapless playback, useful for bug ridden devices.
 	 */
 	private boolean mDisableGaplessPlayback;
 
@@ -443,6 +451,9 @@ public final class PlaybackService extends Service
 	{
 		HandlerThread thread = new HandlerThread("PlaybackService", Process.THREAD_PRIORITY_DEFAULT);
 		thread.start();
+
+		mSettingsContentObserver = new SettingsContentObserver(this,new Handler());
+		getApplicationContext().getContentResolver().registerContentObserver(android.provider.Settings.System.CONTENT_URI, true, mSettingsContentObserver );
 
 		mTimeline = new SongTimeline(this);
 		mTimeline.setCallback(this);
@@ -484,8 +495,10 @@ public final class PlaybackService extends Service
 		mDisableGaplessPlayback = settings.getBoolean(PrefKeys.DISABLE_GAPLESS_PLAYBACK, PrefDefaults.DISABLE_GAPLESS_PLAYBACK);
 
 		mVolumeDuringDucking = settings.getInt(PrefKeys.VOLUME_DURING_DUCKING, PrefDefaults.VOLUME_DURING_DUCKING);
+		mKidmodeMaxVolume = settings.getInt(PrefKeys.KIDMODE_MAX_VOLUME, PrefDefaults.KIDMODE_MAX_VOLUME);
 		mIgnoreAudioFocusLoss = settings.getBoolean(PrefKeys.IGNORE_AUDIOFOCUS_LOSS, PrefDefaults.IGNORE_AUDIOFOCUS_LOSS);
 		refreshDuckingValues();
+		refreshMaxVolumeValues();
 
 		mReadaheadEnabled = settings.getBoolean(PrefKeys.ENABLE_READAHEAD, PrefDefaults.ENABLE_READAHEAD);
 
@@ -610,6 +623,9 @@ public final class PlaybackService extends Service
 	{
 		sInstance = null;
 
+		if (mSettingsContentObserver != null)
+			getApplicationContext().getContentResolver().unregisterContentObserver(mSettingsContentObserver);
+
 		mLooper.quit();
 
 		// clear the notification
@@ -714,6 +730,29 @@ public final class PlaybackService extends Service
 			mPreparedMediaPlayer.setDuckingFactor(duckingFactor);
 		}
 	}
+
+	private void refreshMaxVolumeValues() {
+		SharedPreferences settings = SharedPrefHelper.getSettings(this);
+		if (mSettingsContentObserver != null && settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED))
+		{
+			mSettingsContentObserver.SetVolumeLimit(mKidmodeMaxVolume);
+/*
+			float maxVolume = ((float) mKidmodeMaxVolume)/100f;
+			if (mMediaPlayer != null) {
+				mMediaPlayer.setVolume(maxVolume, maxVolume);
+			}
+			if (mPreparedMediaPlayer != null) {
+				mPreparedMediaPlayer.setVolume(maxVolume, maxVolume);
+			}
+ */
+		}
+		else if (mSettingsContentObserver != null)
+		{
+			mSettingsContentObserver.SetVolumeLimit(1.0f);
+		}
+	}
+
+
 
 	/***
 	 * Reads the replay gain value of the media players data source
@@ -922,6 +961,9 @@ public final class PlaybackService extends Service
 		} else if (PrefKeys.VOLUME_DURING_DUCKING.equals(key)) {
 			mVolumeDuringDucking = settings.getInt(PrefKeys.VOLUME_DURING_DUCKING, PrefDefaults.VOLUME_DURING_DUCKING);
 			refreshDuckingValues();
+		} else if (PrefKeys.KIDMODE_MAX_VOLUME.equals(key)) {
+			mKidmodeMaxVolume = settings.getInt(PrefKeys.KIDMODE_MAX_VOLUME, PrefDefaults.KIDMODE_MAX_VOLUME);
+			refreshMaxVolumeValues();
 		} else if (PrefKeys.IGNORE_AUDIOFOCUS_LOSS.equals(key)) {
 			mIgnoreAudioFocusLoss = settings.getBoolean(PrefKeys.IGNORE_AUDIOFOCUS_LOSS, PrefDefaults.IGNORE_AUDIOFOCUS_LOSS);
 		} else if (PrefKeys.ENABLE_READAHEAD.equals(key)) {

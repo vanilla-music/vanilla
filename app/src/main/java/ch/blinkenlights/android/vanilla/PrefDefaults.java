@@ -81,5 +81,18 @@ public class PrefDefaults {
 	public static final String  PLAYLIST_SYNC_FOLDER = (new File(Environment.getExternalStorageDirectory(), "Playlists")).getAbsolutePath();
 	public static final boolean PLAYLIST_EXPORT_RELATIVE_PATHS = false;
 	public static final boolean JUMP_TO_ENQUEUED_ON_PLAY = true;
+	public static final boolean KIDMODE_ENABLED = false;
+	public static final boolean KIDMODE_SHOW_QUEUE = false;
+	public static final boolean KIDMODE_SHOW_FAVORITE = false;
+	public static final boolean KIDMODE_SHOW_SEARCH = false;
+	public static final boolean KIDMODE_SHOW_PREVIOUS = false;
+	public static final boolean KIDMODE_SHOW_NEXT = false;
+	public static final boolean KIDMODE_SHOW_SHUFFLE = false;
+	public static final boolean KIDMODE_SHOW_REPEAT = false;
+	public static final boolean KIDMODE_SHOW_OPTIONS_IN_MENU = false;
+	public static final boolean KIDMODE_ENLARGE_COVERS = true;
+	public static final int     KIDMODE_MAX_VOLUME = 75;
+	public static final boolean KIDMODE_PROTECT_SETTINGS = true;
+	public static final String  KIDMODE_PROTECT_SETTINGS_PIN = "1234";
 	public static final boolean DISABLE_GAPLESS_PLAYBACK = false;
 }

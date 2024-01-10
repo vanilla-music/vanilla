@@ -27,6 +27,7 @@ import ch.blinkenlights.android.medialibrary.MediaLibrary;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.provider.BaseColumns;
@@ -490,7 +491,13 @@ public class MediaAdapter
 		if (convertView == null) {
 			// We must create a new view if we're not given a recycle view or
 			// if the recycle view has the wrong layout.
-			row = (DraggableRow)mInflater.inflate(R.layout.draggable_row, parent, false);
+			SharedPreferences settings = SharedPrefHelper.getSettings(mContext);
+			if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && settings.getBoolean(PrefKeys.KIDMODE_ENLARGE_COVERS, PrefDefaults.KIDMODE_ENLARGE_COVERS)) {
+				row = (DraggableRow)mInflater.inflate(R.layout.draggable_row_xl, parent, false);
+			}
+			else {
+				row = (DraggableRow)mInflater.inflate(R.layout.draggable_row, parent, false);
+			}
 			row.setupLayout(DraggableRow.LAYOUT_LISTVIEW);
 
 			holder = new ViewHolder();

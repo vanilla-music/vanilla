@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+Copyright (C) 2012 Christopher Eby <kreed@kreed.org>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+-->
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:vanilla="http://schemas.android.com/apk/res-auto"
+	android:persistent="true">
+	<CheckBoxPreference
+		android:key="enable_kidmode"
+		android:title="@string/enable_kidmode_title"
+		android:summary="@string/enable_kidmode_summary"
+		android:defaultValue="false" />
+	<CheckBoxPreference
+		android:key="playback_show_previous"
+		android:title="@string/playback_show_previous_title"
+		android:summary="@string/playback_show_previous_summary"
+		android:defaultValue="true"
+		android:dependency="enable_kidmode"/>
+	<CheckBoxPreference
+		android:key="playback_show_next"
+		android:title="@string/playback_show_next_title"
+		android:summary="@string/playback_show_next_summary"
+		android:defaultValue="true"
+		android:dependency="enable_kidmode"/>
+	<CheckBoxPreference
+		android:key="playback_show_shuffle"
+		android:title="@string/playback_show_shuffle_title"
+		android:summary="@string/playback_show_shuffle_summary"
+		android:defaultValue="true"
+		android:dependency="enable_kidmode"/>
+	<CheckBoxPreference
+		android:key="playback_show_repeat"
+		android:title="@string/playback_show_repeat_title"
+		android:summary="@string/playback_show_repeat_summary"
+		android:defaultValue="true"
+		android:dependency="enable_kidmode"/>
+	<CheckBoxPreference
+		android:key="kidmode_show_queue"
+		android:title="@string/kidmode_show_queue_title"
+		android:summary="@string/kidmode_show_queue_summary"
+		android:defaultValue="true"
+		android:dependency="enable_kidmode"/>
+	<CheckBoxPreference
+		android:key="kidmode_show_favorite"
+		android:title="@string/kidmode_show_favorite_title"
+		android:summary="@string/kidmode_show_favorite_summary"
+		android:defaultValue="true"
+		android:dependency="enable_kidmode"/>
+	<CheckBoxPreference
+		android:key="kidmode_show_search"
+		android:title="@string/kidmode_show_search_title"
+		android:summary="@string/kidmode_show_search_summary"
+		android:defaultValue="true"
+		android:dependency="enable_kidmode"/>
+	<CheckBoxPreference
+		android:key="kidmode_show_options_in_menu"
+		android:title="@string/kidmode_show_options_in_menu_title"
+		android:summary="@string/kidmode_show_options_in_menu_summary"
+		android:defaultValue="true"
+		android:dependency="enable_kidmode"/>
+	<CheckBoxPreference
+		android:key="kidmode_enlarge_covers"
+		android:title="@string/kidmode_enlarge_covers_title"
+		android:summary="@string/kidmode_enlarge_covers_summary"
+		android:defaultValue="true"
+		android:dependency="enable_kidmode"/>
+	<ch.blinkenlights.android.vanilla.SeekBarPreference
+		android:id="@+id/kidmode_max_volume"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:defaultValue="75"
+		android:dialogLayout="@layout/seekbar_pref"
+		android:key="kidmode_max_volume"
+		android:title="@string/kidmode_max_volume_title"
+		vanilla:sbpMaxValue="100"
+		vanilla:sbpSummaryFormat="%s %.0f%%"
+		vanilla:sbpSummaryText="@string/kidmode_max_volume_summary" />
+	<CheckBoxPreference
+		android:key="kidmode_protect_settings"
+		android:title="@string/kidmode_protect_settings_title"
+		android:summary="@string/kidmode_protect_settings_summary"
+		android:defaultValue="true"
+		android:dependency="enable_kidmode"/>
+	<EditTextPreference
+		android:key="kidmode_protect_settings_pin"
+		android:title="@string/kidmode_protect_settings_pin_title"
+		android:persistent="true"
+		android:dialogTitle="@string/kidmode_protect_settings_pin_title"
+		android:dialogMessage="@string/kidmode_protect_settings_pin_summary"
+		android:defaultValue="1234"
+		android:inputType="phone"
+		android:dependency="kidmode_protect_settings"/>
+	android:key=""
+		android:defaultValue="true"
+		/>
+</PreferenceScreen>

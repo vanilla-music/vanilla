@@ -39,6 +39,7 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -294,34 +295,42 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-		super.onCreateOptionsMenu(menu);
-		menu.add(0, MENU_DELETE, 30, R.string.delete);
-		SubMenu enqueueMenu = menu.addSubMenu(0, MENU_ENQUEUE, 30, R.string.enqueue_current);
-		SubMenu moreMenu = menu.addSubMenu(0, MENU_MORE, 30, R.string.more_from_current);
-		menu.addSubMenu(0, MENU_ADD_TO_PLAYLIST, 30, R.string.add_to_playlist);
-		menu.add(0, MENU_SHARE, 30, R.string.share);
+		SharedPreferences settings = SharedPrefHelper.getSettings(this);
+		if (!settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) ||
+			(settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && settings.getBoolean(PrefKeys.KIDMODE_SHOW_OPTIONS_IN_MENU, PrefDefaults.KIDMODE_SHOW_OPTIONS_IN_MENU))) {
+			super.onCreateOptionsMenu(menu);
 
-		if (PluginUtils.checkPlugins(this)) {
-			menu.add(0, MENU_PLUGINS, 30, R.string.plugins)
-				.setIcon(R.drawable.plugin)
-				.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+			menu.add(0, MENU_DELETE, 30, R.string.delete);
+			SubMenu enqueueMenu = menu.addSubMenu(0, MENU_ENQUEUE, 30, R.string.enqueue_current);
+			SubMenu moreMenu = menu.addSubMenu(0, MENU_MORE, 30, R.string.more_from_current);
+			menu.addSubMenu(0, MENU_ADD_TO_PLAYLIST, 30, R.string.add_to_playlist);
+			menu.add(0, MENU_SHARE, 30, R.string.share);
+
+			if (PluginUtils.checkPlugins(this)) {
+				menu.add(0, MENU_PLUGINS, 30, R.string.plugins)
+						.setIcon(R.drawable.plugin)
+						.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+			}
+
+			mFavorites = menu.add(0, MENU_SONG_FAVORITE, 0, R.string.add_to_favorites)
+					.setIcon(R.drawable.btn_rating_star_off_mtrl_alpha)
+					.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+			// Subitems of 'enqueue...'
+			enqueueMenu.add(0, MENU_ENQUEUE_ALBUM, 30, R.string.album);
+			enqueueMenu.add(0, MENU_ENQUEUE_ARTIST, 30, R.string.artist);
+			enqueueMenu.add(0, MENU_ENQUEUE_GENRE, 30, R.string.genre);
+
+			// Subitems of 'more from...'
+			moreMenu.add(0, MENU_MORE_ALBUM, 30, R.string.album);
+			moreMenu.add(0, MENU_MORE_ARTIST, 30, R.string.artist);
+			moreMenu.add(0, MENU_MORE_GENRE, 30, R.string.genre);
+			moreMenu.add(0, MENU_MORE_FOLDER, 30, R.string.folder);
 		}
-
-		mFavorites = menu.add(0, MENU_SONG_FAVORITE, 0, R.string.add_to_favorites)
-			.setIcon(R.drawable.btn_rating_star_off_mtrl_alpha)
-			.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-
-		// Subitems of 'enqueue...'
-		enqueueMenu.add(0, MENU_ENQUEUE_ALBUM, 30, R.string.album);
-		enqueueMenu.add(0, MENU_ENQUEUE_ARTIST, 30, R.string.artist);
-		enqueueMenu.add(0, MENU_ENQUEUE_GENRE, 30, R.string.genre);
-
-		// Subitems of 'more from...'
-		moreMenu.add(0, MENU_MORE_ALBUM, 30, R.string.album);
-		moreMenu.add(0, MENU_MORE_ARTIST, 30, R.string.artist);
-		moreMenu.add(0, MENU_MORE_GENRE, 30, R.string.genre);
-		moreMenu.add(0, MENU_MORE_FOLDER, 30, R.string.folder);
-
+		else
+		{
+			menu.add(0, MENU_PREFS, 10, R.string.settings).setIcon(R.drawable.ic_menu_preferences);
+		}
 		// ensure that mFavorites is updated
 		mHandler.sendEmptyMessage(MSG_LOAD_FAVOURITE_INFO);
 		return true;
@@ -612,6 +621,12 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 				boolean found = (boolean)message.obj;
 				mFavorites.setIcon(found ? R.drawable.btn_rating_star_on_mtrl_alpha: R.drawable.btn_rating_star_off_mtrl_alpha);
 				mFavorites.setTitle(found ? R.string.remove_from_favorites : R.string.add_to_favorites);
+
+				SharedPreferences settings = SharedPrefHelper.getSettings(this);
+				mFavorites.setVisible(true);
+				if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && !settings.getBoolean(PrefKeys.KIDMODE_SHOW_FAVORITE, PrefDefaults.KIDMODE_SHOW_FAVORITE)) {
+					mFavorites.setVisible(false);
+				}
 			}
 			break;
 		default:

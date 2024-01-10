@@ -53,7 +53,7 @@
 			android:orientation="vertical">
 			<TextView
 				android:id="@+id/title"
-				android:textSize="14sp"
+				android:textSize="12sp"
 				android:singleLine="true"
 				android:gravity="center_vertical"
 				android:ellipsize="marquee"
@@ -62,7 +62,16 @@
 				android:layout_height="wrap_content" />
 			<TextView
 				android:id="@+id/artist"
-				android:textSize="12sp"
+				android:textSize="10sp"
+				android:singleLine="true"
+				android:gravity="center_vertical"
+				android:ellipsize="marquee"
+				android:layout_width="fill_parent"
+				android:textColor="@android:color/secondary_text_dark"
+				android:layout_height="wrap_content" />
+			<TextView
+				android:id="@+id/album"
+				android:textSize="10sp"
 				android:singleLine="true"
 				android:gravity="center_vertical"
 				android:ellipsize="marquee"

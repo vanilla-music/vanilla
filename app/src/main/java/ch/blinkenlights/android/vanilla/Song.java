@@ -26,6 +26,7 @@ package ch.blinkenlights.android.vanilla;
 import ch.blinkenlights.android.medialibrary.MediaLibrary;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 

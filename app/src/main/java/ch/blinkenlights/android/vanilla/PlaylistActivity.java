@@ -208,21 +208,24 @@ public class PlaylistActivity extends Activity
 		intent.putExtra("position", pos);
 		intent.putExtra("audioId", holder.id);
 
-		FancyMenu fm = new FancyMenu(this, this);
-		fm.setHeaderTitle(holder.title);
+		SharedPreferences settings = SharedPrefHelper.getSettings(this);
+		if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && settings.getBoolean(PrefKeys.KIDMODE_SHOW_OPTIONS_IN_MENU, PrefDefaults.KIDMODE_SHOW_OPTIONS_IN_MENU)) {
+			FancyMenu fm = new FancyMenu(this, this);
+			fm.setHeaderTitle(holder.title);
 
-		fm.add(MENU_PLAY, 0, R.drawable.menu_play, R.string.play).setIntent(intent);
-		fm.add(MENU_PLAY_ALL, 0, R.drawable.menu_play_all, R.string.play_all).setIntent(intent);
+			fm.add(MENU_PLAY, 0, R.drawable.menu_play, R.string.play).setIntent(intent);
+			fm.add(MENU_PLAY_ALL, 0, R.drawable.menu_play_all, R.string.play_all).setIntent(intent);
 
-		fm.addSpacer(0);
-		fm.add(MENU_ENQUEUE_AS_NEXT, 0, R.drawable.menu_enqueue_as_next, R.string.enqueue_as_next).setIntent(intent);
-		fm.add(MENU_ENQUEUE, 0, R.drawable.menu_enqueue, R.string.enqueue).setIntent(intent);
-		fm.add(MENU_ENQUEUE_ALL, 0, R.drawable.menu_enqueue, R.string.enqueue_all).setIntent(intent);
+			fm.addSpacer(0);
+			fm.add(MENU_ENQUEUE_AS_NEXT, 0, R.drawable.menu_enqueue_as_next, R.string.enqueue_as_next).setIntent(intent);
+			fm.add(MENU_ENQUEUE, 0, R.drawable.menu_enqueue, R.string.enqueue).setIntent(intent);
+			fm.add(MENU_ENQUEUE_ALL, 0, R.drawable.menu_enqueue, R.string.enqueue_all).setIntent(intent);
 
-		fm.addSpacer(0);
-		fm.add(MENU_SHOW_DETAILS, 0, R.drawable.menu_details, R.string.details).setIntent(intent);
-		fm.add(MENU_REMOVE, 0, R.drawable.menu_remove, R.string.remove).setIntent(intent);
-		fm.show(view, x, y);
+			fm.addSpacer(0);
+			fm.add(MENU_SHOW_DETAILS, 0, R.drawable.menu_details, R.string.details).setIntent(intent);
+			fm.add(MENU_REMOVE, 0, R.drawable.menu_remove, R.string.remove).setIntent(intent);
+			fm.show(view, x, y);
+		}
 		return true;
 	}
 

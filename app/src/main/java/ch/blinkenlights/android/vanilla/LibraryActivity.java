@@ -32,6 +32,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -57,8 +58,6 @@ import android.widget.Toast;
 import androidx.viewpager.widget.ViewPager;
 
 import java.io.File;
-
-import junit.framework.Assert;
 
 /**
  * The library activity where songs to play can be selected from the library.
@@ -183,6 +182,9 @@ public class LibraryActivity
 		mBottomBarControls.setOnClickListener(this);
 		mBottomBarControls.setOnQueryTextListener(this);
 		mBottomBarControls.enableOptionsMenu(this);
+
+
+		mBottomBarControls.showSearch(false);
 
 		if(PermissionRequestActivity.havePermissions(this) == false) {
 			PermissionRequestActivity.showWarning(this, getIntent());
@@ -369,6 +371,7 @@ public class LibraryActivity
 		if (action == ACTION_LAST_USED)
 			action = mLastAction;
 		boolean isEnqueue = action == ACTION_ENQUEUE || action == ACTION_ENQUEUE_ALL;
+		SharedPreferences settings = SharedPrefHelper.getSettings(this);
 		String text = getString(isEnqueue ? R.string.enqueue_all : R.string.play_all);
 		mPagerAdapter.setHeaderText(text);
 	}
@@ -595,7 +598,6 @@ public class LibraryActivity
 			if (i == 1 && type == MediaUtils.TYPE_ALBUM) {
 				setLimiter(MediaUtils.TYPE_ARTIST, limiter.data.toString());
 			} else if (i > 0) {
-				Assert.assertEquals(MediaUtils.TYPE_FILE, limiter.type);
 				File file = (File)limiter.data;
 				int diff = limiter.names.length - i;
 				while (--diff != -1) {
@@ -680,8 +682,11 @@ public class LibraryActivity
 
 		if (rowData.getLongExtra(LibraryAdapter.DATA_ID, LibraryAdapter.INVALID_ID) == LibraryAdapter.HEADER_ID) {
 			fm.setHeaderTitle(getString(R.string.all_songs));
-			fm.add(CTX_MENU_PLAY_ALL, 10, R.drawable.menu_play_all, R.string.play_all).setIntent(rowData);
-			fm.add(CTX_MENU_ENQUEUE_ALL, 10, R.drawable.menu_enqueue, R.string.enqueue_all).setIntent(rowData);
+			SharedPreferences settings = SharedPrefHelper.getSettings(this);
+			if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && settings.getBoolean(PrefKeys.KIDMODE_SHOW_OPTIONS_IN_MENU, PrefDefaults.KIDMODE_SHOW_OPTIONS_IN_MENU)) {
+				fm.add(CTX_MENU_PLAY_ALL, 10, R.drawable.menu_play_all, R.string.play_all).setIntent(rowData);
+				fm.add(CTX_MENU_ENQUEUE_ALL, 10, R.drawable.menu_enqueue, R.string.enqueue_all).setIntent(rowData);
+			}
 		} else {
 			int type = rowData.getIntExtra(LibraryAdapter.DATA_TYPE, MediaUtils.TYPE_INVALID);
 
@@ -851,11 +856,29 @@ public class LibraryActivity
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-		super.onCreateOptionsMenu(menu);
-		menu.add(0, MENU_PLAYBACK, 0, R.string.playback_view);
-		menu.add(0, MENU_SEARCH, 0, R.string.search).setIcon(R.drawable.ic_menu_search).setVisible(false);
-		menu.add(0, MENU_GO_HOME, 30, R.string.go_home);
-		menu.add(0, MENU_SORT, 30, R.string.sort_by).setIcon(R.drawable.ic_menu_sort_alphabetically);
+		SharedPreferences settings = SharedPrefHelper.getSettings(this);
+		if (!settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) ||
+			(settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && settings.getBoolean(PrefKeys.KIDMODE_SHOW_OPTIONS_IN_MENU, PrefDefaults.KIDMODE_SHOW_OPTIONS_IN_MENU))) {
+			super.onCreateOptionsMenu(menu);
+
+			menu.add(0, MENU_PLAYBACK, 0, R.string.playback_view);
+		}
+		else
+		{
+			menu.add(0, MENU_PREFS, 10, R.string.settings).setIcon(R.drawable.ic_menu_preferences);
+			menu.add(0, MENU_GO_HOME, 30, R.string.go_home);
+		}
+
+		if (!settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) ||
+			(settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && settings.getBoolean(PrefKeys.KIDMODE_SHOW_SEARCH, PrefDefaults.KIDMODE_SHOW_SEARCH))) {
+			menu.add(0, MENU_SEARCH, 0, R.string.search).setIcon(R.drawable.ic_menu_search).setVisible(false);
+		}
+
+		if (!settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) ||
+			(settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && settings.getBoolean(PrefKeys.KIDMODE_SHOW_OPTIONS_IN_MENU, PrefDefaults.KIDMODE_SHOW_OPTIONS_IN_MENU))) {
+			menu.add(0, MENU_GO_HOME, 30, R.string.go_home);
+			menu.add(0, MENU_SORT, 30, R.string.sort_by).setIcon(R.drawable.ic_menu_sort_alphabetically);
+		}
 		return true;
 	}
 
@@ -958,7 +981,14 @@ public class LibraryActivity
 			Bitmap cover = null;
 			Song song = (Song)message.obj;
 			if (song != null) {
-				cover = song.getSmallCover(this);
+				SharedPreferences settings = SharedPrefHelper.getSettings(this);
+				if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED)) {
+					cover = song.getLargeCover(this);
+				}
+				else
+				{
+					cover = song.getSmallCover(this);
+				}
 			}
 			// Dispatch view update to UI thread
 			updateCover(cover);

@@ -25,11 +25,15 @@ import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
+
 import com.mobeta.android.dslv.DragSortListView;
 
 
@@ -43,6 +47,7 @@ public class ShowQueueFragment extends Fragment
 	{
 
 	private DragSortListView mListView;
+	private ImageView mQueueCoverView;
 	private ShowQueueAdapter mListAdapter;
 	private boolean mIsPopulated;
 
@@ -52,8 +57,15 @@ public class ShowQueueFragment extends Fragment
 
 		View view = inflater.inflate(R.layout.showqueue_listview, container, false);
 		Context context = getActivity();
+		SharedPreferences settings = SharedPrefHelper.getSettings(context);
 
-		mListAdapter = new ShowQueueAdapter(context, R.layout.draggable_row);
+		mQueueCoverView  = (ImageView) view.findViewById(R.id.queue_cover);
+		if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && settings.getBoolean(PrefKeys.KIDMODE_ENLARGE_COVERS, PrefDefaults.KIDMODE_ENLARGE_COVERS)) {
+			mListAdapter = new ShowQueueAdapter(context, R.layout.draggable_row_xl);
+		}
+		else {
+			mListAdapter = new ShowQueueAdapter(context, R.layout.draggable_row);
+		}
 		mListView = (DragSortListView) view.findViewById(R.id.list);
 		mListView.setAdapter(mListAdapter);
 		mListView.setDropListener(this);
@@ -64,7 +76,35 @@ public class ShowQueueFragment extends Fragment
 		ccl.registerForOnItemLongClickListener(mListView);
 
 		PlaybackService.addTimelineCallback(this);
+
+		mListView.setVisibility(View.VISIBLE);
+		mQueueCoverView.setVisibility(View.GONE);
+		if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && !settings.getBoolean(PrefKeys.KIDMODE_SHOW_QUEUE, PrefDefaults.KIDMODE_SHOW_QUEUE)) {
+			mListView.setVisibility(View.GONE);
+			mQueueCoverView.setVisibility(View.VISIBLE);
+		}
+
 		return view;
+	}
+
+	/**
+	 * Updates the cover image of this view
+	 *
+	 * @param cover the bitmap to display. Will use a placeholder image if cover is null
+	 */
+	public void setCover(final Bitmap cover) {
+		SharedPreferences settings = SharedPrefHelper.getSettings(getActivity());
+		if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && !settings.getBoolean(PrefKeys.KIDMODE_SHOW_QUEUE, PrefDefaults.KIDMODE_SHOW_QUEUE)) {
+			getActivity().runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					if (cover == null)
+						mQueueCoverView.setImageResource(R.drawable.fallback_cover);
+					else
+						mQueueCoverView.setImageBitmap(cover);
+				}
+			});
+		}
 	}
 
 	@Override
@@ -83,6 +123,14 @@ public class ShowQueueFragment extends Fragment
 		// started up, but just lost this view (due to rotation).
 		if (!mIsPopulated && PlaybackService.hasInstance()) {
 			refreshSongQueueList(true);
+		}
+
+		SharedPreferences settings = SharedPrefHelper.getSettings(getActivity());
+		mListView.setVisibility(View.VISIBLE);
+		mQueueCoverView.setVisibility(View.GONE);
+		if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && !settings.getBoolean(PrefKeys.KIDMODE_SHOW_QUEUE, PrefDefaults.KIDMODE_SHOW_QUEUE)) {
+			mListView.setVisibility(View.GONE);
+			mQueueCoverView.setVisibility(View.VISIBLE);
 		}
 	}
 
@@ -228,6 +276,15 @@ public class ShowQueueFragment extends Fragment
 					if (pos < min || pos > max) // it's out of visible range, scroll
 						scrollToCurrentSong(pos);
 				}
+
+				SharedPreferences settings = SharedPrefHelper.getSettings(getActivity());
+				if (settings.getBoolean(PrefKeys.KIDMODE_ENABLED, PrefDefaults.KIDMODE_ENABLED) && !settings.getBoolean(PrefKeys.KIDMODE_SHOW_QUEUE, PrefDefaults.KIDMODE_SHOW_QUEUE)) {
+					Bitmap cover = service.getSong(0).getLargeCover(getActivity());
+					if (cover == null)
+						mQueueCoverView.setImageResource(R.drawable.fallback_cover);
+					else
+						mQueueCoverView.setImageBitmap(cover);
+				}
 			}
 		});
 		mIsPopulated = true;
@@ -237,7 +294,7 @@ public class ShowQueueFragment extends Fragment
 	 * Scrolls to the current song<br/>
 	 * We suppress the new api lint check as lint thinks
 	 * {@link android.widget.AbsListView#setSelectionFromTop(int, int)} was only added in
-	 * {@link Build.VERSION_CODES#JELLY_BEAN}, but it was actually added in API
+	 * {@link android.os.Build.VERSION_CODES#JELLY_BEAN}, but it was actually added in API
 	 * level 1<br/>
 	 * <a href="https://developer.android.com/reference/android/widget/AbsListView.html#setSelectionFromTop%28int,%20int%29">
 	 *     Android reference: AbsListView.setSelectionFromTop()</a>
@@ -276,6 +333,9 @@ public class ShowQueueFragment extends Fragment
 			if (!mIsPopulated || scroll) {
 				refreshSongQueueList(scroll);
 			}
+		}
+		if (song != null) {
+			setCover(song.getLargeCover(getActivity()));
 		}
 	}
 
