@@ -1101,6 +1101,7 @@ public final class PlaybackService extends Service
 		}
 
 		updateWidgets();
+		updateNotification();
 
 		if (mReadaheadEnabled)
 			triggerReadAhead();
