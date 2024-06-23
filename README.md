@@ -15,6 +15,11 @@ Vanilla Music player is a [GPLv3](LICENSE) licensed MP3/OGG/FLAC/PCM player for 
       alt="Get it on F-Droid"
       height="80">](https://f-droid.org/app/ch.blinkenlights.android.vanilla)
 
+**Note:** As of 23. Jun 2024, Vanilla Music is *no longer* available in the Google Play store:
+I simply don't have time to comply with random policy changes and verification requests.
+Any release you see there is probably an ad-infested fork uploaded by someone else.
+
+
 Plugins
 ===========
 
