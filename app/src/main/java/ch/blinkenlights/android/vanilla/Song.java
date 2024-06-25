@@ -39,10 +39,9 @@ public class Song implements Comparable<Song> {
 	 */
 	public static final int FLAG_RANDOM = 0x1;
 	/**
-	 * If set, this song has no cover art. If not set, this song may or may not
-	 * have cover art.
+	 * Indicates that this song does not belong to an album.
 	 */
-	public static final int FLAG_NO_COVER = 0x2;
+	public static final int FLAG_NO_ALBUM = 0x2;
 	/**
 	 * The number of flags.
 	 */
@@ -135,7 +134,7 @@ public class Song implements Comparable<Song> {
 	public int discNumber;
 
 	/**
-	 * Song flags. Currently {@link #FLAG_RANDOM} or {@link #FLAG_NO_COVER}.
+	 * Song flags. Currently {@link #FLAG_RANDOM}, {@link #FLAG_NO_ALBUM}.
 	 */
 	public int flags;
 
@@ -198,7 +197,7 @@ public class Song implements Comparable<Song> {
 		if ((libraryFlags & MediaLibrary.SONG_FLAG_NO_ALBUM) != 0) {
 			// Note that we only set, never unset: the song may already
 			// have the flag set for other reasons.
-			flags |= FLAG_NO_COVER;
+			flags |= FLAG_NO_ALBUM;
 		}
 	}
 
@@ -230,7 +229,7 @@ public class Song implements Comparable<Song> {
 	 * Query the large album art for this song.
 	 *
 	 * @param context A context to use.
-	 * @return The album art or null if no album art could be found
+	 * @return The album art or the fallback art if no album art could be found
 	 */
 	public Bitmap getLargeCover(Context context) {
 		return getCoverInternal(context, CoverCache.SIZE_LARGE);
@@ -240,7 +239,7 @@ public class Song implements Comparable<Song> {
 	 * Query the medium album art for this song.
 	 *
 	 * @param context A context to use.
-	 * @return The album art or null if no album art could be found
+	 * @return The album art or the fallback art if no album art could be found
 	 */
 	public Bitmap getMediumCover(Context context) {
 		return getCoverInternal(context, CoverCache.SIZE_MEDIUM);
@@ -250,7 +249,7 @@ public class Song implements Comparable<Song> {
 	 * Query the small album art for this song.
 	 *
 	 * @param context A context to use.
-	 * @return The album art or null if no album art could be found
+	 * @return The album art or the fallback art if no album art could be found
 	 */
 	public Bitmap getSmallCover(Context context) {
 		return getCoverInternal(context, CoverCache.SIZE_SMALL);
@@ -261,20 +260,16 @@ public class Song implements Comparable<Song> {
 	 *
 	 * @param context A context to use.
 	 * @param size The desired cover size
-	 * @return The album art or null if no album art could be found
+	 * @return The album art or the fallback art if no album art could be found
 	 */
 	private Bitmap getCoverInternal(Context context, int size) {
-		if (CoverCache.mCoverLoadMode == 0 || id <= -1 || (flags & FLAG_NO_COVER) != 0)
+		if (CoverCache.mCoverLoadMode == 0 || id <= -1)
 			return null;
 
 		if (sCoverCache == null)
 			sCoverCache = new CoverCache(context.getApplicationContext());
 
-		Bitmap cover = sCoverCache.getCoverFromSong(context, this, size);
-
-		if (cover == null)
-			flags |= FLAG_NO_COVER;
-		return cover;
+		return sCoverCache.getCoverFromSong(context, this, size);
 	}
 
 	@Override
