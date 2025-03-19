@@ -32,12 +32,17 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Parcelable;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.util.LruCache;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
+
 import java.util.Arrays;
 import java.util.ArrayList;
 
@@ -891,15 +896,51 @@ public class LibraryPagerAdapter
 	}
 
 	@Override
+	/**
+	 * If view is a cover view, create a popup window onClick which can be dismissed by touch
+	 * the popup window itself or taps outside of the popup window.
+	 * Coverviews only created for entries within the Albumadapter.
+	 *
+	 * If its not a cover view it simply forwards the click to the underlying filesAdapter
+	 * or activity.
+	 *
+	 * @param parent the parent adapter view
+	 * @param view the long clicked view
+	 * @param position row position
+	 * @param id id of the long clicked row
+	 */
 	public void onItemClick (AdapterView<?> parent, View view, int position, long id) {
-		Intent intent = id == LibraryAdapter.HEADER_ID ? createHeaderIntent(view) : mCurrentAdapter.createData(view);
-		int type = (Integer)((View)view.getParent()).getTag();
+		if (view.getId() == R.id.cover) {
+			LayoutInflater inflater = mActivity.getLayoutInflater();
+			View popupView = inflater.inflate(R.layout.popup_backcover, null);
+			LazyCoverView backcoverView = popupView.findViewById(R.id.popup_backcover_LazyView);
+			backcoverView.setVisibility(View.VISIBLE);
+			long clickedCacheId = mCurrentAdapter.getItemId(position);
+			backcoverView.setCover(MediaUtils.TYPE_ALBUM, clickedCacheId, null, CoverCache.COVER_BACK, CoverCache.SIZE_LARGE);
 
-		if (type == MediaUtils.TYPE_FILE) {
-			mFilesAdapter.onItemClicked(intent);
-		} else {
-			mActivity.onItemClicked(intent);
+			int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+			int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+			final PopupWindow popupWindow = new PopupWindow(popupView, width, height, true);
+			popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+
+			popupView.setOnTouchListener(new View.OnTouchListener() {
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					popupWindow.dismiss();
+					return true;
+				}
+			});
 		}
+		else {
+			Intent intent = id == LibraryAdapter.HEADER_ID ? createHeaderIntent(view) : mCurrentAdapter.createData(view);
+			int type = (Integer) ((View) view.getParent()).getTag();
+			if (type == MediaUtils.TYPE_FILE) {
+				mFilesAdapter.onItemClicked(intent);
+			} else {
+				mActivity.onItemClicked(intent);
+			}
+		}
+
 	}
 
 	/**
