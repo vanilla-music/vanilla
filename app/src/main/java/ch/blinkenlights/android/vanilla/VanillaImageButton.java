@@ -63,14 +63,13 @@ public class VanillaImageButton extends ImageButton {
 	private void updateImageTint(int resHint) {
 		int filterColor = mNormalTint;
 
-		switch (resHint) {
-			case R.drawable.repeat_active:
-			case R.drawable.repeat_current_active:
-			case R.drawable.stop_current_active:
-			case R.drawable.shuffle_active:
-			case R.drawable.shuffle_album_active:
-			case R.drawable.random_active:
-				filterColor = mActiveTint;
+		if (resHint == R.drawable.repeat_active ||
+				resHint == R.drawable.repeat_current_active ||
+				resHint == R.drawable.stop_current_active ||
+				resHint == R.drawable.shuffle_active ||
+				resHint == R.drawable.shuffle_album_active ||
+				resHint == R.drawable.random_active) {
+			filterColor = mActiveTint;
 		}
 
 		this.setColorFilter(filterColor);

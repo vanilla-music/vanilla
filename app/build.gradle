@@ -1,9 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    lintOptions {
+    namespace 'ch.blinkenlights.android.vanilla'
+
+    lint {
         disable 'MissingTranslation'
         disable 'ExtraTranslation'
+        abortOnError false
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -20,10 +23,6 @@ android {
             minifyEnabled true
             zipAlignEnabled true
         }
-    }
-
-    lintOptions {
-        abortOnError false
     }
 }
 

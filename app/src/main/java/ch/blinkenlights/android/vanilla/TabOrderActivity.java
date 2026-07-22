@@ -80,13 +80,11 @@ public class TabOrderActivity extends Activity
 	@Override
 	public void onClick(View view)
 	{
-		switch (view.getId()) {
-		case R.id.done:
+		int id = view.getId();
+		if (id == R.id.done) {
 			finish();
-			break;
-		case R.id.restore_default:
+		} else if (id == R.id.restore_default) {
 			restoreDefault();
-			break;
 		}
 	}
 
