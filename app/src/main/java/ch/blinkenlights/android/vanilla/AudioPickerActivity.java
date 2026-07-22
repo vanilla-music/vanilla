@@ -120,17 +120,15 @@ public class AudioPickerActivity extends PlaybackActivity {
 		int mode;
 		QueryTask query;
 
-		switch(view.getId()) {
-			case R.id.play:
-				mode = SongTimeline.MODE_PLAY;
-				break;
-			case R.id.enqueue:
-				mode = SongTimeline.MODE_ENQUEUE;
-				break;
-			default:
-				mWorker.cancel(false);
-				finish();
-				return;
+		int id = view.getId();
+		if (id == R.id.play) {
+			mode = SongTimeline.MODE_PLAY;
+		} else if (id == R.id.enqueue) {
+			mode = SongTimeline.MODE_ENQUEUE;
+		} else {
+			mWorker.cancel(false);
+			finish();
+			return;
 		}
 
 		// This code is not reached unless mSong is filled and non-empty

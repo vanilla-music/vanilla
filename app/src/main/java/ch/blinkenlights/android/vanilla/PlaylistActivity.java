@@ -176,19 +176,16 @@ public class PlaylistActivity extends Activity
 	@Override
 	public void onClick(View view)
 	{
-		switch (view.getId()) {
-		case R.id.edit:
+		int id = view.getId();
+		if (id == R.id.edit) {
 			setEditing(!mEditing);
-			break;
-		case R.id.delete: {
+		} else if (id == R.id.delete) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			String message = getResources().getString(R.string.delete_playlist, mPlaylistName);
 			builder.setMessage(message);
 			builder.setPositiveButton(R.string.delete, this);
 			builder.setNegativeButton(android.R.string.cancel, this);
 			builder.show();
-			break;
-		}
 		}
 	}
 

@@ -653,15 +653,13 @@ public class FullPlaybackActivity extends SlidingPlaybackActivity
 	@Override
 	public boolean onLongClick(View view)
 	{
-		switch (view.getId()) {
-		case R.id.cover_view:
+		int id = view.getId();
+		if (id == R.id.cover_view) {
 			performAction(mCoverLongPressAction);
-			break;
-		case R.id.info_table:
+		} else if (id == R.id.info_table) {
 			setExtraInfoVisible(!mExtraInfoVisible);
 			mHandler.sendEmptyMessage(MSG_SAVE_CONTROLS);
-			break;
-		default:
+		} else {
 			return false;
 		}
 

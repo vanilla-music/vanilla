@@ -53,12 +53,10 @@ public class MiniPlaybackActivity extends PlaybackActivity {
 	@Override
 	public void onClick(View view)
 	{
-		switch (view.getId()) {
-		case R.id.cover_view:
+		if (view.getId() == R.id.cover_view) {
 			startActivity(new Intent(this, FullPlaybackActivity.class));
 			finish();
-			break;
-		default:
+		} else {
 			super.onClick(view);
 		}
 	}

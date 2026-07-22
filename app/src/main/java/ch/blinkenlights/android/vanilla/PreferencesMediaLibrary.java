@@ -189,20 +189,15 @@ public class PreferencesMediaLibrary extends Fragment implements View.OnClickLis
 
 	@Override
 	public void onClick(View view) {
-		switch (view.getId()) {
-			case R.id.start_button:
-				startButtonPressed(view);
-				break;
-			case R.id.cancel_button:
-				cancelButtonPressed(view);
-				break;
-			case R.id.edit_button:
-				editButtonPressed(view);
-				break;
-			case R.id.media_scan_group_albums:
-			case R.id.media_scan_force_bastp:
-				confirmUpdatePreferences((CheckBox)view);
-				break;
+		int id = view.getId();
+		if (id == R.id.start_button) {
+			startButtonPressed(view);
+		} else if (id == R.id.cancel_button) {
+			cancelButtonPressed(view);
+		} else if (id == R.id.edit_button) {
+			editButtonPressed(view);
+		} else if (id == R.id.media_scan_group_albums || id == R.id.media_scan_force_bastp) {
+			confirmUpdatePreferences((CheckBox)view);
 		}
 	}
 

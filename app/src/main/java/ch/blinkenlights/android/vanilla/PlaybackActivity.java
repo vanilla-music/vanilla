@@ -211,22 +211,17 @@ public abstract class PlaybackActivity extends Activity
 	@Override
 	public void onClick(View view)
 	{
-		switch (view.getId()) {
-		case R.id.next:
+		int id = view.getId();
+		if (id == R.id.next) {
 			shiftCurrentSong(SongTimeline.SHIFT_NEXT_SONG);
-			break;
-		case R.id.play_pause:
+		} else if (id == R.id.play_pause) {
 			playPause();
-			break;
-		case R.id.previous:
+		} else if (id == R.id.previous) {
 			rewindCurrentSong();
-			break;
-		case R.id.end_action:
+		} else if (id == R.id.end_action) {
 			cycleFinishAction();
-			break;
-		case R.id.shuffle:
+		} else if (id == R.id.shuffle) {
 			cycleShuffle();
-			break;
 		}
 	}
 

@@ -39,23 +39,17 @@ public class ThemeHelper {
 	 */
 	final public static int getThemeResource(Context context, int theme) {
 		TypedArray ar = null;
-		switch (theme) {
-		case R.style.Playback:
+		if (theme == R.style.Playback) {
 			ar = context.getResources().obtainTypedArray(R.array.theme_category_playback);
-			break;
-		case R.style.Library:
+		} else if (theme == R.style.Library) {
 			ar = context.getResources().obtainTypedArray(R.array.theme_category_library);
-			break;
-		case R.style.BackActionBar:
+		} else if (theme == R.style.BackActionBar) {
 			ar = context.getResources().obtainTypedArray(R.array.theme_category_backactionbar);
-			break;
-		case R.style.PopupDialog:
+		} else if (theme == R.style.PopupDialog) {
 			ar = context.getResources().obtainTypedArray(R.array.theme_category_popupdialog);
-			break;
-		case R.style.BottomSheetDialog:
+		} else if (theme == R.style.BottomSheetDialog) {
 			ar = context.getResources().obtainTypedArray(R.array.theme_category_bottomsheetdialog);
-			break;
-		default:
+		} else {
 			throw new IllegalArgumentException("setTheme() called with unknown theme!");
 		}
 		theme = ar.getResourceId(getSelectedThemeIndex(context), -1);
