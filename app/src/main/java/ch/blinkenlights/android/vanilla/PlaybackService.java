@@ -1030,7 +1030,7 @@ public final class PlaybackService extends Service
 					mMediaPlayer.start();
 
 				// Update the notification with the current song information.
-				startForeground(NOTIFICATION_ID, createNotification(mCurrentSong, mState));
+				updateNotification();
 
 				final int result = mAudioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 				if (result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
@@ -1177,14 +1177,23 @@ public final class PlaybackService extends Service
 
 	private void updateNotification()
 	{
+		boolean playing = (mState & FLAG_PLAYING) != 0;
 		if (mCurrentSong != null) {
+			// Notification listeners (system media controls, smartwatch apps, ...) query
+			// the media session as soon as the notification is posted, so update it first.
+			mMediaSessionTracker.updateSession(mCurrentSong, mState);
+
 			// We always update the notification, even if we are about to cancel it as it may still stick around
 			// for a few seconds and we want to ensure that we are showing the correct state.
-			mNotificationHelper.notify(NOTIFICATION_ID, createNotification(mCurrentSong, mState));
+			Notification notification = createNotification(mCurrentSong, mState);
+			if (playing)
+				startForeground(NOTIFICATION_ID, notification);
+			else
+				mNotificationHelper.notify(NOTIFICATION_ID, notification);
 		}
 		if (!(mForceNotificationVisible ||
 			 mNotificationVisibility == VISIBILITY_ALWAYS ||
-			 mNotificationVisibility == VISIBILITY_WHEN_PLAYING && (mState & FLAG_PLAYING) != 0)) {
+			 mNotificationVisibility == VISIBILITY_WHEN_PLAYING && playing)) {
 			mNotificationHelper.cancel(NOTIFICATION_ID);
 		}
 	}
